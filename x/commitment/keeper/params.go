@@ -1,13 +1,14 @@
 package keeper
 
 import (
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
 // GetParams get all parameters as types.Params
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(types.ParamsKey)
 	if b == nil {
@@ -20,7 +21,7 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 
 // remove after migration
 func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.Params) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get([]byte(types.LegacyParamsKey))
 	if b == nil {
@@ -32,13 +33,13 @@ func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.Params) {
 }
 
 func (k Keeper) DeleteLegacyParams(ctx sdk.Context) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete([]byte(types.LegacyParamsKey))
 }
 
 // SetParams set the params
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	b := k.cdc.MustMarshal(&params)
 	store.Set(types.ParamsKey, b)
 }

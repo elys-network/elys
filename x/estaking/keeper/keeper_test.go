@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	simapp "github.com/elys-network/elys/app"
@@ -16,16 +16,20 @@ import (
 
 func TestEstakingExtendedFunctions(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	stakingKeeper := app.StakingKeeper
 	estakingKeeper := app.EstakingKeeper
 
 	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
+	validators, err := stakingKeeper.GetAllValidators(ctx)
+	require.NoError(t, err)
 	require.True(t, len(validators) > 0)
 	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
+	validator, err := sdk.ValAddressFromBech32(valAddr)
+	require.NoError(t, err)
+	delegations, err := stakingKeeper.GetValidatorDelegations(ctx, validator)
+	require.NoError(t, err)
 	require.True(t, len(delegations) > 0)
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
@@ -44,10 +48,10 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 		WithdrawEnabled: true,
 	})
 	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(app.CommitmentKeeper)
-	_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &commitmenttypes.MsgCommitClaimedRewards{
+	_, err = commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &commitmenttypes.MsgCommitClaimedRewards{
 		Creator: addr.String(),
 		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(1000_000),
+		Amount:  math.NewInt(1000_000),
 	})
 	require.Nil(t, err)
 
@@ -60,13 +64,17 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 	edenBVal := estakingKeeper.GetEdenBValidator(ctx)
 	require.Equal(t, edenBVal.GetMoniker(), "EdenBValidator")
 
-	require.Equal(t, estakingKeeper.Validator(ctx, edenVal.GetOperator()), edenVal)
-	require.Equal(t, estakingKeeper.Validator(ctx, edenBVal.GetOperator()), edenBVal)
+	edenValidator, err := sdk.ValAddressFromBech32(edenVal.GetOperator())
+	require.NoError(t, err)
+	edenBValidator, err := sdk.ValAddressFromBech32(edenBVal.GetOperator())
+	require.NoError(t, err)
+	require.Equal(t, estakingKeeper.Validator(ctx, edenValidator), edenVal)
+	require.Equal(t, estakingKeeper.Validator(ctx, edenBValidator), edenBVal)
 
-	edenDel := estakingKeeper.Delegation(ctx, addr, edenVal.GetOperator())
-	require.Equal(t, edenDel.GetShares(), sdk.NewDec(1000_000))
+	edenDel := estakingKeeper.Delegation(ctx, addr, edenValidator)
+	require.Equal(t, edenDel.GetShares(), math.LegacyNewDec(1000_000))
 
-	edenBDel := estakingKeeper.Delegation(ctx, addr, edenBVal.GetOperator())
+	edenBDel := estakingKeeper.Delegation(ctx, addr, edenBValidator)
 	require.Nil(t, edenBDel)
 
 	numDelegations := int64(0)

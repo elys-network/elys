@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -10,6 +11,9 @@ import (
 )
 
 func (k msgServer) RemovePool(goCtx context.Context, msg *types.MsgRemovePool) (*types.MsgRemovePoolResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {
@@ -19,7 +23,7 @@ func (k msgServer) RemovePool(goCtx context.Context, msg *types.MsgRemovePool) (
 	pool, found := k.GetPool(ctx, msg.Id)
 
 	if found {
-		if pool.LeveragedLpAmount.GT(sdk.NewInt(0)) {
+		if pool.LeveragedLpAmount.GT(sdkmath.NewInt(0)) {
 			return nil, errorsmod.Wrap(types.ErrPoolLeverageAmountNotZero, pool.LeveragedLpAmount.String())
 		}
 		k.DeletePool(ctx, msg.Id)

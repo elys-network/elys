@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
 	"errors"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -26,6 +27,7 @@ const (
 	FlagRewardPercentage     = "reward-percentage"
 	FlagMarginError          = "margin-error"
 	FlagMinimumDeposit       = "minimum-deposit"
+	FlagExpedited            = "expedited"
 )
 
 // Governance command
@@ -109,7 +111,12 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			minimumDeposit, ok := sdk.NewIntFromString(minDeposit)
+			expedited, err := cmd.Flags().GetBool(FlagExpedited)
+			if err != nil {
+				return err
+			}
+
+			minimumDeposit, ok := math.NewIntFromString(minDeposit)
 			if !ok {
 				return errors.New("invalid minimum deposit amount")
 			}
@@ -123,8 +130,8 @@ func CmdUpdateParams() *cobra.Command {
 				RewardEnabled:        rewardEnabled,
 				LeverageEnabled:      leverageEnabled,
 				LimitProcessOrder:    limitProcessOrder,
-				RewardPercentage:     sdk.MustNewDecFromStr(rewardPercentage),
-				MarginError:          sdk.MustNewDecFromStr(marginError),
+				RewardPercentage:     math.LegacyMustNewDecFromStr(rewardPercentage),
+				MarginError:          math.LegacyMustNewDecFromStr(marginError),
 				MinimumDeposit:       minimumDeposit,
 			}
 
@@ -153,7 +160,7 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary)
+			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary, expedited)
 			if err != nil {
 				return err
 			}
@@ -176,6 +183,7 @@ func CmdUpdateParams() *cobra.Command {
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
+	cmd.Flags().String(FlagExpedited, "", "expedited")
 	_ = cmd.MarkFlagRequired(FlagMarketOrderEnabled)
 	_ = cmd.MarkFlagRequired(FlagStakeEnabled)
 	_ = cmd.MarkFlagRequired(FlagProcessOrdersEnabled)

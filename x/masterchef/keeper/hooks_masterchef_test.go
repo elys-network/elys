@@ -5,7 +5,6 @@ import (
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -47,28 +46,28 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
-		Price:     sdk.NewDec(1000000),
+		Price:     math.LegacyNewDec(1000000),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDT",
-		Price:     sdk.NewDec(1000000),
+		Price:     math.LegacyNewDec(1000000),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ELYS",
-		Price:     sdk.NewDec(100),
+		Price:     math.LegacyNewDec(100),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
-		Price:     sdk.NewDec(100),
+		Price:     math.LegacyNewDec(100),
 		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
@@ -77,7 +76,7 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 
 func TestHookMasterchef(t *testing.T) {
 	app, _, _ := simapp.InitElysTestAppWithGenAccount()
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -121,13 +120,13 @@ func TestHookMasterchef(t *testing.T) {
 	require.NoError(t, err)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(10000000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(10000000000))
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000000)))
 
-	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken.MulInt(sdk.NewInt(2)))
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken.MulInt(math.NewInt(2)))
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
@@ -136,17 +135,17 @@ func TestHookMasterchef(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(10000000)),
+			Weight: math.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.Elys, math.NewInt(10000000)),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000)),
+			Weight: math.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000)),
 		},
 	}
 
-	argSwapFee := sdk.MustNewDecFromStr("0.0")
-	argExitFee := sdk.MustNewDecFromStr("0.0")
+	argSwapFee := math.LegacyMustNewDecFromStr("0.0")
+	argExitFee := math.LegacyMustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
 		SwapFee: argSwapFee,
@@ -177,7 +176,7 @@ func TestHookMasterchef(t *testing.T) {
 	t.Log(mk.GetPoolTotalCommit(ctx, pools[0].PoolId))
 	require.Equal(t, mk.GetPoolTotalCommit(ctx, pools[0].PoolId).String(), "10002000000000000000000000")
 	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[0]).String(), "10000000000000000000000000")
-	_, _, err = amm.JoinPoolNoSwap(ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdk.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000))))
+	_, _, err = amm.JoinPoolNoSwap(ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, math.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000))))
 	require.NoError(t, err)
 	require.Equal(t, mk.GetPoolTotalCommit(ctx, pools[0].PoolId).String(), "20002000000000000000000000")
 	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[1]), share)
@@ -192,7 +191,7 @@ func TestHookMasterchef(t *testing.T) {
 	_, err = masterchefSrv.AddExternalRewardDenom(sdk.WrapSDKContext(ctx), &types.MsgAddExternalRewardDenom{
 		Authority:   app.GovKeeper.GetAuthority(),
 		RewardDenom: "uatom",
-		MinAmount:   sdk.OneInt(),
+		MinAmount:   math.OneInt(),
 		Supported:   true,
 	})
 	require.NoError(t, err)

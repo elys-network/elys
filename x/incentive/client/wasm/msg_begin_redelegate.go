@@ -62,11 +62,10 @@ func performMsgRedelegateElys(f *stakingkeeper.Keeper, ctx sdk.Context, contract
 		return nil, errorsmod.Wrap(err, "invalid address")
 	}
 
-	msgMsgRedelegate := stakingtypes.NewMsgBeginRedelegate(address, valSrcAddr, valDstAddr, msgRedelegate.Amount)
-
-	if err := msgMsgRedelegate.ValidateBasic(); err != nil {
-		return nil, errorsmod.Wrap(err, "failed validating msgMsgDelegate")
+	if !msgRedelegate.Amount.IsValid() || msgRedelegate.Amount.IsZero() {
+		return nil, errorsmod.Wrap(err, "invalid amount")
 	}
+	msgMsgRedelegate := stakingtypes.NewMsgBeginRedelegate(address.String(), valSrcAddr.String(), valDstAddr.String(), msgRedelegate.Amount)
 
 	_, err = msgServer.BeginRedelegate(sdk.WrapSDKContext(ctx), msgMsgRedelegate) // Discard the response because it's empty
 	if err != nil {

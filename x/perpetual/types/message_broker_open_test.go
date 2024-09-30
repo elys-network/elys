@@ -1,6 +1,7 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,58 +17,26 @@ func TestNewMsgBrokerOpen(t *testing.T) {
 	got := NewMsgBrokerOpen(
 		accAdress,
 		Position_LONG,
-		sdk.NewDec(200),
+		sdkmath.LegacyNewDec(200),
 		"uatom",
-		sdk.NewCoin("uusdc", sdk.NewInt(2000)),
-		sdk.NewDec(100),
+		sdk.NewCoin("uusdc", sdkmath.NewInt(2000)),
+		sdkmath.LegacyNewDec(100),
 		owner,
-		sdk.ZeroDec(),
+		sdkmath.LegacyZeroDec(),
 	)
 
 	want := &MsgBrokerOpen{
 		Creator:         accAdress,
 		Position:        Position_LONG,
-		Leverage:        sdk.NewDec(200),
+		Leverage:        sdkmath.LegacyNewDec(200),
 		TradingAsset:    "uatom",
-		Collateral:      sdk.NewCoin("uusdc", sdk.NewInt(2000)),
-		TakeProfitPrice: sdk.NewDec(100),
+		Collateral:      sdk.NewCoin("uusdc", sdkmath.NewInt(2000)),
+		TakeProfitPrice: sdkmath.LegacyNewDec(100),
 		Owner:           owner,
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   sdkmath.LegacyZeroDec(),
 	}
 
 	assert.Equal(t, want, got)
-}
-
-func TestMsgBrokerOpen_Route(t *testing.T) {
-	msg := MsgBrokerOpen{}
-	assert.Equal(t, "perpetual", msg.Route())
-}
-
-func TestMsgBrokerOpen_Type(t *testing.T) {
-	msg := MsgBrokerOpen{}
-	assert.Equal(t, "broker_open", msg.Type())
-}
-
-func TestMsgBrokerOpen_GetSigners(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgBrokerOpen{Creator: accAdress}
-
-	creator, err := sdk.AccAddressFromBech32(accAdress)
-	if err != nil {
-		panic(err)
-	}
-
-	assert.Equal(t, []sdk.AccAddress{creator}, msg.GetSigners())
-}
-
-func TestMsgBrokerOpen_GetSignBytes(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgBrokerOpen{Creator: accAdress}
-
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	b := sdk.MustSortJSON(bz)
-
-	assert.Equal(t, b, msg.GetSignBytes())
 }
 
 func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
@@ -121,7 +90,7 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 				Owner:        sample.AccAddress(),
 				Position:     Position_LONG,
 				TradingAsset: "uatom",
-				Leverage:     sdk.NewDec(-200),
+				Leverage:     sdkmath.LegacyNewDec(-200),
 			},
 			want: ErrInvalidLeverage,
 		},
@@ -132,7 +101,7 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 				Owner:        sample.AccAddress(),
 				Position:     Position_LONG,
 				TradingAsset: "",
-				Leverage:     sdk.NewDec(200),
+				Leverage:     sdkmath.LegacyNewDec(200),
 			},
 			want: ErrTradingAssetIsEmpty,
 		},
@@ -143,7 +112,7 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 				Owner:        sample.AccAddress(),
 				Position:     Position_SHORT,
 				TradingAsset: "uatom",
-				Leverage:     sdk.NewDec(200),
+				Leverage:     sdkmath.LegacyNewDec(200),
 			},
 			want: ErrInvalidTakeProfitPriceIsNegative,
 		},
@@ -154,8 +123,8 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 				Owner:           sample.AccAddress(),
 				Position:        Position_SHORT,
 				TradingAsset:    "uatom",
-				TakeProfitPrice: sdk.NewDec(-10),
-				Leverage:        sdk.NewDec(200),
+				TakeProfitPrice: sdkmath.LegacyNewDec(-10),
+				Leverage:        sdkmath.LegacyNewDec(200),
 			},
 			want: ErrInvalidTakeProfitPriceIsNegative,
 		},
@@ -166,8 +135,8 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 				Owner:           sample.AccAddress(),
 				Position:        Position_LONG,
 				TradingAsset:    "uatom",
-				TakeProfitPrice: sdk.NewDec(10),
-				Leverage:        sdk.NewDec(200),
+				TakeProfitPrice: sdkmath.LegacyNewDec(10),
+				Leverage:        sdkmath.LegacyNewDec(200),
 			},
 			want: nil,
 		},

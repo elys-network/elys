@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -11,6 +12,9 @@ import (
 )
 
 func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBondResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	params := k.GetParams(ctx)
@@ -27,7 +31,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	if params.RedemptionRate.IsZero() {
 		return nil, types.ErrRedemptionRateIsZero
 	}
-	shareAmount := sdk.NewDecFromInt(depositCoin.Amount).Quo(params.RedemptionRate).RoundInt()
+	shareAmount := sdkmath.LegacyNewDecFromInt(depositCoin.Amount).Quo(params.RedemptionRate).RoundInt()
 	shareCoins := sdk.NewCoins(sdk.NewCoin(shareDenom, shareAmount))
 
 	err = k.bk.MintCoins(ctx, types.ModuleName, shareCoins)

@@ -1,14 +1,17 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
 // SetPool set a specific pool in the store from its index
 func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) error {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
 	store.Set(types.PoolKey(pool.PoolId), b)
 	return nil
@@ -16,7 +19,7 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) error {
 
 // GetPool returns a pool from its index
 func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 
 	b := store.Get(types.PoolKey(poolId))
 	if b == nil {
@@ -29,14 +32,14 @@ func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found b
 
 // RemovePool removes a pool from the store
 func (k Keeper) RemovePool(ctx sdk.Context, poolId uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	store.Delete(types.PoolKey(poolId))
 }
 
 // GetAllPool returns all pool
 func (k Keeper) GetAllPool(ctx sdk.Context) (list []types.Pool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -50,9 +53,10 @@ func (k Keeper) GetAllPool(ctx sdk.Context) (list []types.Pool) {
 }
 
 // GetLatestPool retrieves the latest pool item from the list of pools
+// TODO Validate if it works correctly, iterator function changed with v0.50.9
 func (k Keeper) GetLatestPool(ctx sdk.Context) (val types.Pool, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
-	iterator := sdk.KVStoreReversePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
+	iterator := store.ReverseIterator(nil, nil)
 	defer iterator.Close()
 
 	if !iterator.Valid() {
@@ -74,7 +78,7 @@ func (k Keeper) GetNextPoolId(ctx sdk.Context) uint64 {
 
 // PoolExists checks if a pool with the given poolId exists in the list of pools
 func (k Keeper) PoolExists(ctx sdk.Context, poolId uint64) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	b := store.Get(types.PoolKey(poolId))
 	return b != nil
 }
@@ -84,7 +88,7 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 	// Get all pools
 	pools := k.GetAllPool(ctx)
 
-	maxTvl := sdk.NewDec(-1)
+	maxTvl := sdkmath.LegacyNewDec(-1)
 	bestPool := types.Pool{}
 	for _, p := range pools {
 		// If usesOracle is false, function filters in all pools.
@@ -117,7 +121,7 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 
 		poolTvl, err := p.TVL(ctx, k.oracleKeeper)
 		if err != nil {
-			poolTvl = sdk.ZeroDec()
+			poolTvl = sdkmath.LegacyZeroDec()
 		}
 
 		// If all denoms are found in this pool, return the pool id
@@ -133,8 +137,8 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 // IterateLiquidty iterates over all LiquidityPools and performs a
 // callback.
 func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types.Pool) (stop bool)) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

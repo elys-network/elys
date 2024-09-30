@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/commitment/types"
 )
@@ -14,7 +16,7 @@ func (k Keeper) SetCommitments(ctx sdk.Context, commitments types.Commitments) {
 		params.NumberOfCommitments++
 		k.SetParams(ctx, params)
 	}
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetCommitmentsKey(commitments.GetCreatorAccount())
 	b := k.cdc.MustMarshal(&commitments)
 	store.Set(key, b)
@@ -22,8 +24,8 @@ func (k Keeper) SetCommitments(ctx sdk.Context, commitments types.Commitments) {
 
 // GetAllCommitments returns all commitments
 func (k Keeper) GetAllCommitments(ctx sdk.Context) (list []*types.Commitments) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.CommitmentsKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.CommitmentsKeyPrefix)
 
 	defer iterator.Close()
 
@@ -38,8 +40,8 @@ func (k Keeper) GetAllCommitments(ctx sdk.Context) (list []*types.Commitments) {
 
 // remove after migration
 func (k Keeper) GetAllLegacyCommitments(ctx sdk.Context) (list []*types.Commitments) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -54,7 +56,7 @@ func (k Keeper) GetAllLegacyCommitments(ctx sdk.Context) (list []*types.Commitme
 
 // GetCommitments returns a commitments from its index
 func (k Keeper) GetCommitments(ctx sdk.Context, creator sdk.AccAddress) types.Commitments {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(types.GetCommitmentsKey(creator))
 	if b == nil {
@@ -72,14 +74,14 @@ func (k Keeper) GetCommitments(ctx sdk.Context, creator sdk.AccAddress) types.Co
 }
 
 func (k Keeper) HasCommitments(ctx sdk.Context, creator sdk.AccAddress) bool {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetCommitmentsKey(creator)
 	return store.Has(key)
 }
 
 // remove after migration
 func (k Keeper) HasLegacyCommitments(ctx sdk.Context, creator string) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
 	b := store.Get(types.LegacyCommitmentsKey(creator))
 	return b != nil
 }
@@ -91,7 +93,7 @@ func (k Keeper) RemoveCommitments(ctx sdk.Context, creator sdk.AccAddress) {
 		params.NumberOfCommitments--
 		k.SetParams(ctx, params)
 	}
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetCommitmentsKey(creator))
 }
 
@@ -102,15 +104,15 @@ func (k Keeper) DeleteLegacyCommitments(ctx sdk.Context, creator string) {
 		params.NumberOfCommitments--
 		k.SetParams(ctx, params)
 	}
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
 	store.Delete(types.LegacyCommitmentsKey(creator))
 }
 
 // IterateCommitments iterates over all Commitments and performs a
 // callback.
 func (k Keeper) IterateCommitments(ctx sdk.Context, handlerFn func(commitments types.Commitments) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.CommitmentsKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.CommitmentsKeyPrefix)
 
 	defer iterator.Close()
 

@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"fmt"
 
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -16,9 +16,9 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
-		swapFee           sdk.Dec
+		swapFee           sdkmath.LegacyDec
 		tokenIn           sdk.Coin
-		tokenOutMin       math.Int
+		tokenOutMin       sdkmath.Int
 		tokenOut          sdk.Coin
 		swapRoute         []types.SwapAmountInRoute
 		expSenderBalance  sdk.Coins
@@ -27,9 +27,9 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 		{
 			desc:              "successful execution with positive swap fee",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFee:           sdk.NewDecWithPrec(1, 2), // 1%
+			swapFee:           sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
 			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
-			tokenOutMin:       sdk.ZeroInt(),
+			tokenOutMin:       sdkmath.ZeroInt(),
 			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9704),
 			swapRoute: []types.SwapAmountInRoute{
 				{
@@ -43,9 +43,9 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 		{
 			desc:              "successful execution with zero swap fee",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFee:           sdk.ZeroDec(),
+			swapFee:           sdkmath.LegacyZeroDec(),
 			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
-			tokenOutMin:       sdk.ZeroInt(),
+			tokenOutMin:       sdkmath.ZeroInt(),
 			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9900),
 			swapRoute: []types.SwapAmountInRoute{
 				{
@@ -59,9 +59,9 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 		{
 			desc:              "not available pool as route",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFee:           sdk.ZeroDec(),
+			swapFee:           sdkmath.LegacyZeroDec(),
 			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
-			tokenOutMin:       sdk.ZeroInt(),
+			tokenOutMin:       sdkmath.ZeroInt(),
 			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9900),
 			swapRoute: []types.SwapAmountInRoute{
 				{
@@ -75,9 +75,9 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 		{
 			desc:              "multiple routes",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFee:           sdk.ZeroDec(),
+			swapFee:           sdkmath.LegacyZeroDec(),
 			tokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			tokenOutMin:       sdk.ZeroInt(),
+			tokenOutMin:       sdkmath.ZeroInt(),
 			tokenOut:          sdk.NewInt64Coin("uusdt", 9802),
 			swapRoute: []types.SwapAmountInRoute{
 				{
@@ -122,15 +122,15 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 			// execute function
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 				Denom:     ptypes.Elys,
-				Liquidity: sdk.NewInt(2000000),
+				Liquidity: sdkmath.NewInt(2000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 				Denom:     ptypes.BaseCurrency,
-				Liquidity: sdk.NewInt(1000000),
+				Liquidity: sdkmath.NewInt(1000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 				Denom:     "uusdt",
-				Liquidity: sdk.NewInt(1000000),
+				Liquidity: sdkmath.NewInt(1000000),
 			})
 
 			pool := types.Pool{
@@ -145,14 +145,14 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  poolCoins[0],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 					{
 						Token:  poolCoins[1],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 				},
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: sdkmath.ZeroInt(),
 			}
 			pool2 := types.Pool{
 				PoolId:            2,
@@ -166,14 +166,14 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  pool2Coins[0],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 					{
 						Token:  pool2Coins[1],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 				},
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: sdkmath.ZeroInt(),
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
@@ -186,7 +186,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 					Routes:            tc.swapRoute,
 					TokenIn:           tc.tokenIn,
 					TokenOutMinAmount: tc.tokenOutMin,
-					Discount:          sdk.ZeroDec(),
+					Discount:          sdkmath.LegacyZeroDec(),
 				})
 			if !tc.expPass {
 				suite.Require().Error(err)
@@ -208,9 +208,9 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	suite.SetupStableCoinPrices()
 
 	senderInitBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}
-	swapFee := sdk.ZeroDec()
+	swapFee := sdkmath.LegacyZeroDec()
 	tokenIn := sdk.NewInt64Coin(ptypes.BaseCurrency, 100000)
-	tokenOutMin := sdk.ZeroInt()
+	tokenOutMin := sdkmath.ZeroInt()
 	tokenOut := sdk.NewInt64Coin("uusdt", 99900)
 	swapRoute := []types.SwapAmountInRoute{
 		{
@@ -239,11 +239,11 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	// execute function
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 		Denom:     ptypes.BaseCurrency,
-		Liquidity: sdk.NewInt(1000000),
+		Liquidity: sdkmath.NewInt(1000000),
 	})
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 		Denom:     "uusdt",
-		Liquidity: sdk.NewInt(1000000),
+		Liquidity: sdkmath.NewInt(1000000),
 	})
 
 	pool := types.Pool{
@@ -254,20 +254,20 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 			SwapFee:                swapFee,
 			FeeDenom:               ptypes.BaseCurrency,
 			UseOracle:              true,
-			ExternalLiquidityRatio: sdk.NewDec(10), // 2x
+			ExternalLiquidityRatio: sdkmath.LegacyNewDec(10), // 2x
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []types.PoolAsset{
 			{
 				Token:  poolCoins[0],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 			{
 				Token:  poolCoins[1],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 		},
-		TotalWeight: sdk.ZeroInt(),
+		TotalWeight: sdkmath.ZeroInt(),
 	}
 	suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 
@@ -280,7 +280,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 			Routes:            swapRoute,
 			TokenIn:           tokenIn,
 			TokenOutMinAmount: tokenOutMin,
-			Discount:          sdk.ZeroDec(),
+			Discount:          sdkmath.LegacyZeroDec(),
 		})
 	suite.Require().NoError(err)
 	suite.Require().Equal(resp.TokenOutAmount.String(), tokenOut.Amount.String())
@@ -298,9 +298,9 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 			&types.MsgSwapExactAmountIn{
 				Sender:            sender.String(),
 				Routes:            swapRoute,
-				TokenIn:           sdk.Coin{Denom: tokenIn.Denom, Amount: tokenIn.Amount.Quo(sdk.NewInt(100))},
+				TokenIn:           sdk.Coin{Denom: tokenIn.Denom, Amount: tokenIn.Amount.Quo(sdkmath.NewInt(100))},
 				TokenOutMinAmount: tokenOutMin,
-				Discount:          sdk.ZeroDec(),
+				Discount:          sdkmath.LegacyZeroDec(),
 			})
 		suite.Require().NoError(err)
 		fmt.Printf("outAmount%d: %s\n", i, resp.TokenOutAmount.String())

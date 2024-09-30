@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"errors"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
@@ -37,7 +38,7 @@ func (suite KeeperTestSuite) TestCheckUserAuthorization() {
 func (suite KeeperTestSuite) TestCheckSameAssets() {
 	app := suite.app
 	k := app.LeveragelpKeeper
-	addr := simapp.AddTestAddrs(app, suite.ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, suite.ctx, 1, math.NewInt(1000000))
 	suite.SetupCoinPrices(suite.ctx)
 
 	position := types.NewPosition(addr[0].String(), sdk.NewInt64Coin("USDC", 0), 1)
@@ -46,9 +47,9 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 	msg := &types.MsgOpen{
 		Creator:          addr[0].String(),
 		CollateralAsset:  "USDC",
-		CollateralAmount: sdk.NewInt(100),
+		CollateralAmount: math.NewInt(100),
 		AmmPoolId:        1,
-		Leverage:         sdk.NewDec(1),
+		Leverage:         math.LegacyNewDec(1),
 	}
 
 	// Expect no error
@@ -76,7 +77,7 @@ func (suite KeeperTestSuite) TestCheckPoolHealth() {
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.Pool{
 		AmmPoolId: 1,
 		Enabled:   false,
-		Health:    sdk.NewDec(5),
+		Health:    math.LegacyNewDec(5),
 	})
 	err = k.CheckPoolHealth(suite.ctx, poolId)
 	suite.Require().Error(err)
@@ -85,7 +86,7 @@ func (suite KeeperTestSuite) TestCheckPoolHealth() {
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.Pool{
 		AmmPoolId: 1,
 		Enabled:   true,
-		Health:    sdk.NewDec(15),
+		Health:    math.LegacyNewDec(15),
 		Closed:    false,
 	})
 	err = k.CheckPoolHealth(suite.ctx, poolId)

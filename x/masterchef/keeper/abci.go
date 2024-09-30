@@ -73,9 +73,9 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 			tvl := k.GetPoolTVL(ctx, pool.PoolId)
 			if tvl.IsPositive() {
 				yearlyIncentiveRewardsTotal := externalIncentive.AmountPerBlock.
-					Mul(sdk.NewInt(totalBlocksPerYear))
+					Mul(math.NewInt(totalBlocksPerYear))
 
-				apr := sdk.NewDecFromInt(yearlyIncentiveRewardsTotal).
+				apr := math.LegacyNewDecFromInt(yearlyIncentiveRewardsTotal).
 					Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
 					Quo(tvl)
 				externalIncentive.Apr = apr
@@ -132,7 +132,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) {
 
 		params.LpIncentives = &types.IncentiveInfo{
 			// reward amount in eden for 1 year
-			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.LmRewards)),
+			EdenAmountPerYear: math.NewInt(int64(inflation.Inflation.LmRewards)),
 			// number of blocks distributed
 			BlocksDistributed: blocksDistributed,
 		}
@@ -158,7 +158,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	gasFeesForLpsDec := k.CollectGasFees(ctx, baseCurrency)
 	_, _, rewardsPerPool := k.CollectDEXRevenue(ctx)
 
-	// USDC amount in sdk.Dec type
+	// USDC amount in math.LegacyDec type
 	gasFeeUsdcAmountForLps := gasFeesForLpsDec.AmountOf(baseCurrency)
 
 	// Proxy TVL
@@ -175,11 +175,11 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	}
 
 	// Calculate eden amount per block
-	edenAmountPerYear := sdk.ZeroInt()
+	edenAmountPerYear := math.ZeroInt()
 	if lpIncentive != nil && lpIncentive.EdenAmountPerYear.IsPositive() {
 		edenAmountPerYear = lpIncentive.EdenAmountPerYear
 	}
-	lpsEdenAmount := edenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear))
+	lpsEdenAmount := edenAmountPerYear.Quo(math.NewInt(totalBlocksPerYear))
 
 	// Ensure edenDenomPrice is not zero to avoid division by zero
 	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
@@ -196,8 +196,8 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			continue
 		}
 
-		poolShare := sdk.ZeroDec()
-		poolShareEdenEnable := sdk.ZeroDec()
+		poolShare := math.LegacyZeroDec()
+		poolShareEdenEnable := math.LegacyZeroDec()
 		if totalProxyTVL.IsPositive() {
 			poolShare = proxyTVL.Quo(totalProxyTVL)
 		}
@@ -217,7 +217,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 		if pool.EnableEdenRewards {
-			newEdenAllocatedForPool = sdk.MinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
+			newEdenAllocatedForPool = math.LegacyMinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
 			if newEdenAllocatedForPool.IsPositive() {
 				err = k.commitmentKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.TruncateInt())})
 				if err != nil {
@@ -235,7 +235,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		// Get tracked amount for Lps per pool
 		dexRewardsAllocatedForPool, ok := rewardsPerPool[pool.PoolId]
 		if !ok {
-			dexRewardsAllocatedForPool = sdk.NewDec(0)
+			dexRewardsAllocatedForPool = math.LegacyNewDec(0)
 		}
 
 		k.AddEdenInfo(ctx, newEdenAllocatedForPool)
@@ -250,7 +250,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		// Track pool rewards accumulation
 		edenReward := newEdenAllocatedForPool
 		if !pool.EnableEdenRewards {
-			edenReward = sdk.ZeroDec()
+			edenReward = math.LegacyZeroDec()
 		}
 
 		k.AddPoolRewardsAccum(
@@ -278,7 +278,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 				Mul(edenDenomPrice).
 				Quo(tvl)
 		} else {
-			pool.EdenApr = sdk.ZeroDec()
+			pool.EdenApr = math.LegacyZeroDec()
 		}
 
 		k.SetPoolInfo(ctx, pool)
@@ -318,7 +318,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string) sdk.C
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
 		snapshot := k.amm.GetPoolSnapshotOrSet(ctx, pool)
-		tokenOutCoin, _, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, baseCurrency, sdk.ZeroDec())
+		tokenOutCoin, _, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, baseCurrency, math.LegacyZeroDec())
 		if err != nil {
 			continue
 		}
@@ -331,7 +331,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string) sdk.C
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 		// Also emits a swap event and updates related liquidity metrics.
 		cacheCtx, write := ctx.CacheContext()
-		_, err = k.amm.UpdatePoolForSwap(cacheCtx, pool, feeCollector.GetAddress(), feeCollector.GetAddress(), tokenIn, tokenOutCoin, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
+		_, err = k.amm.UpdatePoolForSwap(cacheCtx, pool, feeCollector.GetAddress(), feeCollector.GetAddress(), tokenIn, tokenOutCoin, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec())
 		if err != nil {
 			continue
 		}
@@ -391,11 +391,11 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) sdk.DecCoin
 // while tracking the 60% of it for LPs reward distribution
 // transfer collected fees from different wallets(liquidity pool, perpetual module etc) to the distribution module account
 // Assume this is already in USDC.
-func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map[uint64]sdk.Dec) {
+func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map[uint64]math.LegacyDec) {
 	// Total colllected revenue amount
 	amountTotalCollected := sdk.Coins{}
 	amountLPsCollected := sdk.DecCoins{}
-	rewardsPerPool := make(map[uint64]sdk.Dec)
+	rewardsPerPool := make(map[uint64]math.LegacyDec)
 
 	// Iterate to calculate total Eden from LpElys, MElys committed
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
@@ -469,7 +469,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 }
 
 // Calculate Proxy TVL
-func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) (sdk.Dec, sdk.Dec) {
+func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) (math.LegacyDec, math.LegacyDec) {
 	// Ensure stablestakePoolParams exist
 	stableStakePoolId := uint64(stabletypes.PoolId)
 	_, found := k.GetPoolInfo(ctx, stableStakePoolId)
@@ -477,8 +477,8 @@ func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) (sdk.Dec
 		k.InitStableStakePoolParams(ctx, stableStakePoolId)
 	}
 
-	multipliedShareSum := sdk.ZeroDec()
-	multipliedShareSumOnlyEden := sdk.ZeroDec()
+	multipliedShareSum := math.LegacyZeroDec()
+	multipliedShareSumOnlyEden := math.LegacyZeroDec()
 	for _, pool := range k.GetAllPoolInfos(ctx) {
 		tvl := k.GetPoolTVL(ctx, pool.PoolId)
 		proxyTVL := tvl.Mul(pool.Multiplier)
@@ -506,7 +506,7 @@ func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
 			// reward wallet address
 			RewardWallet: ammtypes.NewPoolRevenueAddress(poolId).String(),
 			// multiplier for lp rewards
-			Multiplier: sdk.NewDec(1),
+			Multiplier: math.LegacyNewDec(1),
 			// Eden APR, updated at every distribution
 			EdenApr: math.LegacyZeroDec(),
 			// Dex APR, updated at every distribution
@@ -534,7 +534,7 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 			// reward wallet address
 			RewardWallet: stabletypes.PoolAddress().String(),
 			// multiplier for lp rewards
-			Multiplier: sdk.NewDec(1),
+			Multiplier: math.LegacyNewDec(1),
 			// Eden APR, updated at every distribution
 			EdenApr: math.LegacyZeroDec(),
 			// Dex APR, updated at every distribution
@@ -553,7 +553,7 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 }
 
 // Update APR for AMM pool
-func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL sdk.Dec, edenDenomPrice sdk.Dec) {
+func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL math.LegacyDec, edenDenomPrice math.LegacyDec) {
 	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 

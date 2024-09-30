@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
@@ -26,7 +27,7 @@ func (k Keeper) EpochInfos(
 	ctx := sdk.UnwrapSDKContext(c)
 
 	var epochs []types.EpochInfo
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixEpoch)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefixEpoch)
 
 	pageRes, err := query.Paginate(store, req.Pagination, func(_, value []byte) error {
 		var epoch types.EpochInfo

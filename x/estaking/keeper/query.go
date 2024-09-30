@@ -32,13 +32,25 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryRewardsRequest) (
 		return nil, err
 	}
 
-	k.IterateDelegations(
+	err = k.IterateDelegations(
 		ctx, delAddr,
 		func(_ int64, del stakingtypes.DelegationI) (stop bool) {
-			valAddr := del.GetValidatorAddr()
-			val := k.Validator(ctx, valAddr)
-			endingPeriod := k.distrKeeper.IncrementValidatorPeriod(ctx, val)
-			delReward := k.distrKeeper.CalculateDelegationRewards(ctx, val, del, endingPeriod)
+			valAddr, err := sdk.ValAddressFromBech32(del.GetValidatorAddr())
+			if err != nil {
+				panic(err)
+			}
+			val, err := k.Validator(ctx, valAddr)
+			if err != nil {
+				return false
+			}
+			endingPeriod, err := k.distrKeeper.IncrementValidatorPeriod(ctx, val)
+			if err != nil {
+				return false
+			}
+			delReward, err := k.distrKeeper.CalculateDelegationRewards(ctx, val, del, endingPeriod)
+			if err != nil {
+				return false
+			}
 
 			finalRewards, _ := delReward.TruncateDecimal()
 			if finalRewards == nil {
@@ -52,6 +64,9 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryRewardsRequest) (
 			return false
 		},
 	)
+	if err != nil {
+		return nil, err
+	}
 	finalTotalRewards, _ := total.TruncateDecimal()
 
 	return &types.QueryRewardsResponse{Rewards: delRewards, Total: finalTotalRewards}, nil

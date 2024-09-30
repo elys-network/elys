@@ -2,7 +2,6 @@ package types_test
 
 import (
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
@@ -32,14 +31,14 @@ func TestParamsValidation(t *testing.T) {
 		{
 			name: "PoolCreationFee is nil",
 			setter: func() {
-				params.PoolCreationFee = sdk.Int{}
+				params.PoolCreationFee = math.Int{}
 			},
 			err: "pool creation fee must not be empty",
 		},
 		{
 			name: "PoolCreationFee < 0",
 			setter: func() {
-				params.PoolCreationFee = sdk.NewInt(1).MulRaw(-1)
+				params.PoolCreationFee = math.NewInt(1).MulRaw(-1)
 			},
 			err: "pool creation fee must be positive",
 		},

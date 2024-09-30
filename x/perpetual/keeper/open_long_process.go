@@ -2,11 +2,12 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
+func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdkmath.LegacyDec, eta sdkmath.LegacyDec, collateralAmountDec sdkmath.LegacyDec, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {
@@ -25,7 +26,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdk.De
 	}
 
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
-	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
+	leveragedAmount := sdkmath.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
 
 	// If collateral is not base currency, calculate the borrowing amount in base currency and check the balance
 	if mtp.CollateralAsset != baseCurrency {

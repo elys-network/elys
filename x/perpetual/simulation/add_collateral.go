@@ -17,13 +17,13 @@ func SimulateMsgAddCollateral(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgAddCollateral{
-			Creator: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgAddCollateral{
+		//	Creator: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the AddCollateral simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "AddCollateral simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgAddCollateral{}), "AddCollateral simulation not implemented"), nil, nil
 	}
 }

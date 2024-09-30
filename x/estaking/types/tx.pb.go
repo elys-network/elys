@@ -83,7 +83,8 @@ func (m *MsgUpdateParams) GetParams() Params {
 	return Params{}
 }
 
-// MsgUpdateParamsResponse defines the response structure for executing a MsgUpdateParams message.
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
 type MsgUpdateParamsResponse struct {
 }
 
@@ -120,7 +121,8 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
-// MsgWithdrawReward represents delegation withdrawal to a delegator from a single validator.
+// MsgWithdrawReward represents delegation withdrawal to a delegator from a
+// single validator.
 type MsgWithdrawReward struct {
 	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
 	ValidatorAddress string `protobuf:"bytes,2,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
@@ -173,7 +175,8 @@ func (m *MsgWithdrawReward) GetValidatorAddress() string {
 	return ""
 }
 
-// MsgWithdrawRewardResponse defines the Msg/WithdrawDelegatorReward response type.
+// MsgWithdrawRewardResponse defines the Msg/WithdrawDelegatorReward response
+// type.
 type MsgWithdrawRewardResponse struct {
 	Amount github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=amount,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"amount"`
 }
@@ -218,7 +221,8 @@ func (m *MsgWithdrawRewardResponse) GetAmount() github_com_cosmos_cosmos_sdk_typ
 	return nil
 }
 
-// MsgWithdrawElysStakingRewards represents delegation withdrawal to a delegator from all the validators.
+// MsgWithdrawElysStakingRewards represents delegation withdrawal to a delegator
+// from all the validators.
 type MsgWithdrawElysStakingRewards struct {
 	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
 }
@@ -263,7 +267,8 @@ func (m *MsgWithdrawElysStakingRewards) GetDelegatorAddress() string {
 	return ""
 }
 
-// MsgWithdrawElysStakingRewards defines the Msg/WithdrawElysStakingRewards response type.
+// MsgWithdrawElysStakingRewards defines the Msg/WithdrawElysStakingRewards
+// response type.
 type MsgWithdrawElysStakingRewardsResponse struct {
 	Amount github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=amount,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"amount"`
 }
@@ -308,7 +313,8 @@ func (m *MsgWithdrawElysStakingRewardsResponse) GetAmount() github_com_cosmos_co
 	return nil
 }
 
-// MsgWithdrawAllRewards represents delegation withdrawal to a delegator from all the validators and Eden/EdenB commitment.
+// MsgWithdrawAllRewards represents delegation withdrawal to a delegator from
+// all the validators and Eden/EdenB commitment.
 type MsgWithdrawAllRewards struct {
 	DelegatorAddress string `protobuf:"bytes,1,opt,name=delegator_address,json=delegatorAddress,proto3" json:"delegator_address,omitempty"`
 }
@@ -353,7 +359,8 @@ func (m *MsgWithdrawAllRewards) GetDelegatorAddress() string {
 	return ""
 }
 
-// MsgWithdrawAllRewardsResponse defines the Msg/WithdrawAllRewards response type.
+// MsgWithdrawAllRewardsResponse defines the Msg/WithdrawAllRewards response
+// type.
 type MsgWithdrawAllRewardsResponse struct {
 	Amount github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=amount,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"amount"`
 }
@@ -463,11 +470,14 @@ type MsgClient interface {
 	// UpdateParams defines a governance operation for updating the x/distribution
 	// module parameters. The authority is defined in the keeper.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	// WithdrawReward defines a method to withdraw rewards of delegator from a single validator.
+	// WithdrawReward defines a method to withdraw rewards of delegator from a
+	// single validator.
 	WithdrawReward(ctx context.Context, in *MsgWithdrawReward, opts ...grpc.CallOption) (*MsgWithdrawRewardResponse, error)
-	// WithdrawElysStakingRewards defines a method to withdraw rewards of delegator from all the validators.
+	// WithdrawElysStakingRewards defines a method to withdraw rewards of
+	// delegator from all the validators.
 	WithdrawElysStakingRewards(ctx context.Context, in *MsgWithdrawElysStakingRewards, opts ...grpc.CallOption) (*MsgWithdrawElysStakingRewardsResponse, error)
-	// WithdrawAllRewards defines a method to withdraw rewards of delegator from all the validators and Eden/EdenB commitment.
+	// WithdrawAllRewards defines a method to withdraw rewards of delegator from
+	// all the validators and Eden/EdenB commitment.
 	WithdrawAllRewards(ctx context.Context, in *MsgWithdrawAllRewards, opts ...grpc.CallOption) (*MsgWithdrawAllRewardsResponse, error)
 }
 
@@ -520,11 +530,14 @@ type MsgServer interface {
 	// UpdateParams defines a governance operation for updating the x/distribution
 	// module parameters. The authority is defined in the keeper.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
-	// WithdrawReward defines a method to withdraw rewards of delegator from a single validator.
+	// WithdrawReward defines a method to withdraw rewards of delegator from a
+	// single validator.
 	WithdrawReward(context.Context, *MsgWithdrawReward) (*MsgWithdrawRewardResponse, error)
-	// WithdrawElysStakingRewards defines a method to withdraw rewards of delegator from all the validators.
+	// WithdrawElysStakingRewards defines a method to withdraw rewards of
+	// delegator from all the validators.
 	WithdrawElysStakingRewards(context.Context, *MsgWithdrawElysStakingRewards) (*MsgWithdrawElysStakingRewardsResponse, error)
-	// WithdrawAllRewards defines a method to withdraw rewards of delegator from all the validators and Eden/EdenB commitment.
+	// WithdrawAllRewards defines a method to withdraw rewards of delegator from
+	// all the validators and Eden/EdenB commitment.
 	WithdrawAllRewards(context.Context, *MsgWithdrawAllRewards) (*MsgWithdrawAllRewardsResponse, error)
 }
 

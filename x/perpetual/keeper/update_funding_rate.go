@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -10,12 +11,12 @@ func (k Keeper) UpdateFundingRate(ctx sdk.Context, pool *types.Pool) error {
 	poolAssetsLong := pool.GetPoolAssets(types.Position_LONG)
 	poolAssetsShort := pool.GetPoolAssets(types.Position_SHORT)
 
-	liabilitiesLong := sdk.ZeroInt()
+	liabilitiesLong := sdkmath.ZeroInt()
 	for _, asset := range *poolAssetsLong {
 		liabilitiesLong = liabilitiesLong.Add(asset.Liabilities)
 	}
 
-	liabilitiesShort := sdk.ZeroInt()
+	liabilitiesShort := sdkmath.ZeroInt()
 	for _, asset := range *poolAssetsShort {
 		liabilitiesShort = liabilitiesShort.Add(asset.Liabilities)
 	}

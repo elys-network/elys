@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -15,8 +16,8 @@ import (
 )
 
 func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string, createAmmPool bool) {
-	fee := sdk.MustNewDecFromStr("0.0002")
-	issueAmount := sdk.NewInt(10_000_000_000_000)
+	fee := sdkmath.LegacyMustNewDecFromStr("0.0002")
+	issueAmount := sdkmath.NewInt(10_000_000_000_000)
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
 			sdk.NewCoin(ptypes.ATOM, issueAmount),
@@ -48,11 +49,11 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 		PoolAssets: []ammtypes.PoolAsset{
 			{
 				Token:  sdk.NewInt64Coin(asset1, 100_000_000),
-				Weight: sdk.NewInt(50),
+				Weight: sdkmath.NewInt(50),
 			},
 			{
 				Token:  sdk.NewInt64Coin(asset2, 100_000_000),
-				Weight: sdk.NewInt(50),
+				Weight: sdkmath.NewInt(50),
 			},
 		},
 	}
@@ -81,14 +82,14 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 	}
 }
 
-func openPosition(suite *KeeperTestSuite, address sdk.AccAddress, collateralAmount sdk.Int, leverage sdk.Dec) {
+func openPosition(suite *KeeperTestSuite, address sdk.AccAddress, collateralAmount sdkmath.Int, leverage sdkmath.LegacyDec) {
 	msg := types.MsgOpen{
 		Creator:          address.String(),
 		CollateralAsset:  ptypes.BaseCurrency,
 		CollateralAmount: collateralAmount,
 		AmmPoolId:        1,
 		Leverage:         leverage,
-		StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+		StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 	}
 	_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
 	if err != nil {
@@ -98,11 +99,11 @@ func openPosition(suite *KeeperTestSuite, address sdk.AccAddress, collateralAmou
 }
 
 func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
-	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
-	leverage := sdk.MustNewDecFromStr("2.0")
-	collateralAmount := sdk.NewInt(10000000)
+	leverage := sdkmath.LegacyMustNewDecFromStr("2.0")
+	collateralAmount := sdkmath.NewInt(10000000)
 	testCases := []struct {
 		name                 string
 		input                *types.MsgClaimRewards
@@ -146,7 +147,7 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 					User:          positonAddress.String(),
 					PoolId:        1,
 					RewardDenom:   "uusdc",
-					RewardPending: sdk.MustNewDecFromStr("100"),
+					RewardPending: sdkmath.LegacyMustNewDecFromStr("100"),
 				})
 			},
 		},

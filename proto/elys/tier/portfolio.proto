@@ -8,7 +8,7 @@ import "cosmos/base/v1beta1/coin.proto";
 message LegacyPortfolio {
   string creator = 1;
   string portfolio = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 }
@@ -17,7 +17,7 @@ message Portfolio {
   string date = 1;
   string creator = 2;
   string portfolio = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 }

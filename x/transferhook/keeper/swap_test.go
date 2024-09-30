@@ -1,14 +1,15 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"encoding/json"
 	"fmt"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	"github.com/cosmos/ibc-go/v7/modules/apps/transfer"
-	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
-	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
-	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
+	"github.com/cosmos/ibc-go/v8/modules/apps/transfer"
+	transfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
+	clienttypes "github.com/cosmos/ibc-go/v8/modules/core/02-client/types"
+	channeltypes "github.com/cosmos/ibc-go/v8/modules/core/04-channel/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -212,11 +213,11 @@ func (suite *KeeperTestSuite) TestSwapOnRecvPacket() {
 			// execute function
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 				Denom:     ptypes.Elys,
-				Liquidity: sdk.NewInt(100000000),
+				Liquidity: math.NewInt(100000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 				Denom:     usdcIbcDenom,
-				Liquidity: sdk.NewInt(100000000),
+				Liquidity: math.NewInt(100000000),
 			})
 
 			pool := ammtypes.Pool{
@@ -224,21 +225,21 @@ func (suite *KeeperTestSuite) TestSwapOnRecvPacket() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: ammtypes.PoolParams{
-					SwapFee:  sdk.ZeroDec(),
+					SwapFee:  math.LegacyZeroDec(),
 					FeeDenom: usdcIbcDenom,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []ammtypes.PoolAsset{
 					{
 						Token:  poolCoins[0],
-						Weight: sdk.NewInt(10),
+						Weight: math.NewInt(10),
 					},
 					{
 						Token:  poolCoins[1],
-						Weight: sdk.NewInt(10),
+						Weight: math.NewInt(10),
 					},
 				},
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: math.ZeroInt(),
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 

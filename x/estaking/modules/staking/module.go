@@ -1,6 +1,8 @@
 package staking
 
 import (
+	"context"
+	"cosmossdk.io/core/appmodule"
 	"encoding/json"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -15,9 +17,15 @@ import (
 )
 
 var (
-	_ module.AppModule           = AppModule{}
 	_ module.AppModuleBasic      = AppModuleBasic{}
 	_ module.AppModuleSimulation = AppModule{}
+	_ module.HasServices         = AppModule{}
+	_ module.HasInvariants       = AppModule{}
+	_ module.HasABCIGenesis      = AppModule{}
+	_ module.HasABCIEndBlock     = AppModule{}
+
+	_ appmodule.AppModule       = AppModule{}
+	_ appmodule.HasBeginBlocker = AppModule{}
 )
 
 // AppModule embeds the Cosmos SDK's x/staking AppModuleBasic.
@@ -57,7 +65,16 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 }
 
 // EndBlock delegates the EndBlock call to the underlying x/staking module,
-func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
-	updates := am.keeper.BlockValidatorUpdates(ctx)
-	return updates
+func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	updates, err := am.keeper.BlockValidatorUpdates(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return updates, nil
+}
+
+// BeginBlock returns the begin blocker for the staking module.
+func (am AppModule) BeginBlock(ctx context.Context) error {
+	return am.keeper.BeginBlocker(ctx)
 }

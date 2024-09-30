@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
@@ -11,18 +12,18 @@ import (
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk.Dec, error) {
+func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdkmath.LegacyDec, error) {
 	masterchefParams := k.masterchef.GetParams(ctx)
 	estakingParams := k.estaking.GetParams(ctx)
 
 	// If we don't have enough params
 	if estakingParams.StakeIncentives == nil || masterchefParams.LpIncentives == nil {
-		return sdk.ZeroDec(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
+		return sdkmath.LegacyZeroDec(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
 	}
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
-		return sdk.ZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
 	stkIncentive := estakingParams.StakeIncentives
@@ -40,15 +41,15 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {
-				return sdk.ZeroDec(), nil
+				return sdkmath.LegacyZeroDec(), nil
 			}
 
 			if stkIncentive == nil || stkIncentive.EdenAmountPerYear.IsNil() {
-				return sdk.ZeroDec(), nil
+				return sdkmath.LegacyZeroDec(), nil
 			}
 
 			// Calculate
-			stakersEdenAmount := stkIncentive.EdenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear)).ToLegacyDec()
+			stakersEdenAmount := stkIncentive.EdenAmountPerYear.Quo(sdkmath.NewInt(totalBlocksPerYear)).ToLegacyDec()
 
 			// Maximum eden APR - 30% by default
 			stakersMaxEdenAmount := estakingParams.MaxEdenRewardAprStakers.
@@ -56,12 +57,12 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 				QuoInt64(totalBlocksPerYear)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-			stakersEdenAmount = sdk.MinDec(stakersEdenAmount, stakersMaxEdenAmount)
+			stakersEdenAmount = sdkmath.LegacyMinDec(stakersEdenAmount, stakersMaxEdenAmount)
 
 			// For Eden reward Apr for elys staking
 			apr := stakersEdenAmount.
-				Mul(sdk.NewDec(totalBlocksPerYear)).
-				Quo(sdk.NewDecFromInt(totalStakedSnapshot))
+				Mul(sdkmath.LegacyNewDec(totalBlocksPerYear)).
+				Quo(sdkmath.LegacyNewDecFromInt(totalStakedSnapshot))
 
 			return apr, nil
 		}
@@ -70,7 +71,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			params := k.stableKeeper.GetParams(ctx)
 			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{})
 			if err != nil {
-				return sdk.ZeroDec(), err
+				return sdkmath.LegacyZeroDec(), err
 			}
 			apr := params.InterestRate.Mul(res.BorrowRatio)
 			return apr, nil
@@ -79,19 +80,19 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			params := k.estaking.GetParams(ctx)
 			amount := params.DexRewardsStakers.Amount
 			if amount.IsZero() {
-				return sdk.ZeroDec(), nil
+				return sdkmath.LegacyZeroDec(), nil
 			}
 
 			// If no rewards were given.
 			if params.DexRewardsStakers.NumBlocks == 0 {
-				return sdk.ZeroDec(), nil
+				return sdkmath.LegacyZeroDec(), nil
 			}
 
 			// Calc Eden price in usdc
 			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
 			edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 			if edenDenomPrice.IsZero() {
-				return sdk.ZeroDec(), nil
+				return sdkmath.LegacyZeroDec(), nil
 			}
 
 			// Update total committed states
@@ -99,7 +100,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {
-				return sdk.ZeroDec(), nil
+				return sdkmath.LegacyZeroDec(), nil
 			}
 
 			usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
@@ -119,5 +120,5 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 		return apr, nil
 	}
 
-	return sdk.ZeroDec(), nil
+	return sdkmath.LegacyZeroDec(), nil
 }

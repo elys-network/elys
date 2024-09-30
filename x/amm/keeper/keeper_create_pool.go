@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
@@ -23,7 +24,7 @@ import (
 // - Minting LP shares to pool creator
 // - Setting metadata for the shares
 func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, error) {
-	sender := msg.GetSigners()[0]
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
@@ -91,7 +92,7 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 	}
 
 	if tvl.IsPositive() {
-		pool.TotalShares = sdk.NewCoin(pool.TotalShares.Denom, tvl.Mul(sdk.NewDecFromInt(types.OneShare)).RoundInt())
+		pool.TotalShares = sdk.NewCoin(pool.TotalShares.Denom, tvl.Mul(sdkmath.LegacyNewDecFromInt(types.OneShare)).RoundInt())
 	}
 
 	// Mint the initial pool shares share token to the sender

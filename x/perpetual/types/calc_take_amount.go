@@ -1,16 +1,13 @@
 package types
 
-import (
-	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-)
+import sdkmath "cosmossdk.io/math"
 
 // CalcTakeAmount calculates the take amount in the custody asset based on the funding rate
-func CalcTakeAmount(custodyAmount math.Int, fundingRate sdk.Dec) math.Int {
+func CalcTakeAmount(custodyAmount sdkmath.Int, fundingRate sdkmath.LegacyDec) sdkmath.Int {
 	absoluteFundingRate := fundingRate.Abs()
 
 	// Calculate the take amount
-	takeAmountValue := sdk.NewDecFromInt(custodyAmount).Mul(absoluteFundingRate).TruncateInt()
+	takeAmountValue := sdkmath.LegacyNewDecFromInt(custodyAmount).Mul(absoluteFundingRate).TruncateInt()
 
 	return takeAmountValue
 }

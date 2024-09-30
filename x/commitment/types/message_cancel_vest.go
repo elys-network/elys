@@ -20,27 +20,6 @@ func NewMsgCancelVest(creator string, amount math.Int, denom string) *MsgCancelV
 	}
 }
 
-func (msg *MsgCancelVest) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgCancelVest) Type() string {
-	return TypeMsgCancelVest
-}
-
-func (msg *MsgCancelVest) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgCancelVest) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
 func (msg *MsgCancelVest) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {

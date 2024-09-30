@@ -1,14 +1,13 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) GetNetOpenInterest(pool types.Pool) math.Int {
-	assetLiabilitiesLong := sdk.ZeroInt()
-	assetLiabilitiesShort := sdk.ZeroInt()
+func (k Keeper) GetNetOpenInterest(pool types.Pool) sdkmath.Int {
+	assetLiabilitiesLong := sdkmath.ZeroInt()
+	assetLiabilitiesShort := sdkmath.ZeroInt()
 
 	for _, asset := range pool.PoolAssetsLong {
 		assetLiabilitiesLong = assetLiabilitiesLong.Add(asset.Liabilities)

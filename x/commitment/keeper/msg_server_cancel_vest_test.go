@@ -1,9 +1,8 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
-
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/app"
@@ -16,7 +15,7 @@ import (
 func TestCancelVest(t *testing.T) {
 	app := app.InitElysTestApp(true)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
@@ -27,7 +26,7 @@ func TestCancelVest(t *testing.T) {
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 	}
@@ -49,7 +48,7 @@ func TestCancelVest(t *testing.T) {
 	cancelVestMsg := &types.MsgCancelVest{
 		Creator: creator.String(),
 		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(25),
+		Amount:  sdkmath.NewInt(25),
 	}
 
 	// Set up the commitments for the creator
@@ -58,8 +57,8 @@ func TestCancelVest(t *testing.T) {
 		VestingTokens: []*types.VestingTokens{
 			{
 				Denom:         ptypes.Elys,
-				TotalAmount:   sdk.NewInt(100),
-				ClaimedAmount: sdk.NewInt(1),
+				TotalAmount:   sdkmath.NewInt(100),
+				ClaimedAmount: sdkmath.NewInt(1),
 				NumBlocks:     100,
 				StartBlock:    0,
 			},
@@ -74,13 +73,13 @@ func TestCancelVest(t *testing.T) {
 	// Check if the vesting tokens were updated correctly
 	newCommitments := keeper.GetCommitments(ctx, creator)
 	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not updated correctly")
-	require.Equal(t, sdk.NewInt(75), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
-	require.Equal(t, sdk.NewInt(1), newCommitments.VestingTokens[0].ClaimedAmount, "claimed amount was not updated correctly")
+	require.Equal(t, sdkmath.NewInt(75), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
+	require.Equal(t, sdkmath.NewInt(1), newCommitments.VestingTokens[0].ClaimedAmount, "claimed amount was not updated correctly")
 	// check if the unclaimed tokens were updated correctly
-	require.Equal(t, sdk.NewInt(25), newCommitments.GetClaimedForDenom(ptypes.Eden))
+	require.Equal(t, sdkmath.NewInt(25), newCommitments.GetClaimedForDenom(ptypes.Eden))
 
 	// Try to cancel an amount that exceeds the unvested amount
-	cancelVestMsg.Amount = sdk.NewInt(100)
+	cancelVestMsg.Amount = sdkmath.NewInt(100)
 	_, err = msgServer.CancelVest(ctx, cancelVestMsg)
 	require.Error(t, err, "should throw an error when trying to cancel more tokens than available")
 	require.True(t, types.ErrInsufficientVestingTokens.Is(err), "error should be insufficient vesting tokens")

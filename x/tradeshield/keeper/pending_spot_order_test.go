@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -70,7 +71,7 @@ func TestSortedSpotOrder(t *testing.T) {
 		OrderPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+			Rate:       sdkmath.LegacyNewDec(1),
 		},
 	})
 
@@ -92,7 +93,7 @@ func TestSortedSpotOrder(t *testing.T) {
 		OrderPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(20),
+			Rate:       sdkmath.LegacyNewDec(20),
 		},
 	})
 
@@ -103,7 +104,7 @@ func TestSortedSpotOrder(t *testing.T) {
 		OrderPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(5),
+			Rate:       sdkmath.LegacyNewDec(5),
 		},
 	})
 
@@ -121,7 +122,7 @@ func TestSortedSpotOrder(t *testing.T) {
 	assert.Equal(t, res, [][]uint64{{1, 3, 2}})
 
 	// Test binary search, search with rate 5
-	index, err := keeper.SpotBinarySearch(ctx, sdk.NewDec(5), []uint64{1, 3, 2})
+	index, err := keeper.SpotBinarySearch(ctx, sdkmath.LegacyNewDec(5), []uint64{1, 3, 2})
 	require.NoError(t, err)
 
 	// second element

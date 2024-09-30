@@ -10,28 +10,36 @@ import "elys/leveragelp/types.proto";
 import "elys/leveragelp/pool.proto";
 import "elys/leveragelp/query.proto";
 
-
 // Msg defines the Msg service.
 service Msg {
-  rpc Open           (MsgOpen) returns (MsgOpenResponse);
-  rpc Close          (MsgClose) returns (MsgCloseResponse);
-  rpc ClaimRewards   (MsgClaimRewards) returns (MsgClaimRewardsResponse);
-  rpc UpdateParams   (MsgUpdateParams) returns (MsgUpdateParamsResponse);
-  rpc AddPool       (MsgAddPool) returns (MsgAddPoolResponse);
-  rpc UpdatePool    (MsgUpdatePool) returns (MsgUpdatePoolResponse);
-  rpc RemovePool    (MsgRemovePool) returns (MsgRemovePoolResponse);
-  rpc Whitelist      (MsgWhitelist) returns (MsgWhitelistResponse);
-  rpc Dewhitelist    (MsgDewhitelist) returns (MsgDewhitelistResponse);
-  rpc UpdateStopLoss (MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
-  rpc ClosePositions (MsgClosePositions) returns (MsgClosePositionsResponse);
+  rpc Open(MsgOpen) returns (MsgOpenResponse);
+  rpc Close(MsgClose) returns (MsgCloseResponse);
+  rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc AddPool(MsgAddPool) returns (MsgAddPoolResponse);
+  rpc UpdatePool(MsgUpdatePool) returns (MsgUpdatePoolResponse);
+  rpc RemovePool(MsgRemovePool) returns (MsgRemovePoolResponse);
+  rpc Whitelist(MsgWhitelist) returns (MsgWhitelistResponse);
+  rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
+  rpc UpdateStopLoss(MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
+  rpc ClosePositions(MsgClosePositions) returns (MsgClosePositionsResponse);
 }
 message MsgOpen {
   string creator = 1;
   string collateral_asset = 2;
-  string collateral_amount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string collateral_amount = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
   uint64 amm_pool_id = 4;
-  string leverage = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string stop_loss_price = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string leverage = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string stop_loss_price = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgOpenResponse {}
@@ -39,7 +47,10 @@ message MsgOpenResponse {}
 message MsgClose {
   string creator = 1;
   uint64 id = 2;
-  string lp_amount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string lp_amount = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgCloseResponse {}
@@ -65,12 +76,12 @@ message MsgUpdateParamsResponse {}
 
 message UpdatePool {
   uint64 pool_id = 1;
-  bool   enabled = 2;
-  bool   closed = 3;
+  bool enabled = 2;
+  bool closed = 3;
 }
 
 message MsgUpdatePool {
-  string     authority = 1;
+  string authority = 1;
   UpdatePool UpdatePool = 2;
 }
 
@@ -93,21 +104,27 @@ message MsgDewhitelistResponse {}
 message MsgUpdateStopLoss {
   string creator = 1;
   uint64 position = 2;
-  string price = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string price = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgUpdateStopLossResponse {}
 
 message AddPool {
   uint64 amm_pool_id = 1;
-  bool   enabled = 2;
-  bool   closed = 3;
-  string leverage_max = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  bool enabled = 2;
+  bool closed = 3;
+  string leverage_max = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgAddPool {
-  string  authority = 1;
-  AddPool pool = 2 [(gogoproto.nullable) = false];
+  string authority = 1;
+  AddPool pool = 2 [ (gogoproto.nullable) = false ];
 }
 
 message MsgAddPoolResponse {}
@@ -126,4 +143,3 @@ message MsgClosePositions {
 }
 
 message MsgClosePositionsResponse {}
-

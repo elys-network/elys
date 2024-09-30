@@ -1,6 +1,7 @@
 package cli
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"errors"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -19,7 +20,7 @@ func CmdOpenEstimation() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqPosition := types.GetPositionFromString(args[0])
 
-			reqLeverage, err := sdk.NewDecFromStr(args[1])
+			reqLeverage, err := sdkmath.LegacyNewDecFromStr(args[1])
 			if err != nil {
 				return err
 			}
@@ -35,7 +36,7 @@ func CmdOpenEstimation() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			discount, err := sdk.NewDecFromStr(discountStr)
+			discount, err := sdkmath.LegacyNewDecFromStr(discountStr)
 			if err != nil {
 				return err
 			}
@@ -45,14 +46,14 @@ func CmdOpenEstimation() *cobra.Command {
 				return err
 			}
 
-			var takeProfitPrice sdk.Dec
+			var takeProfitPrice sdkmath.LegacyDec
 			if takeProfitPriceStr != types.InfinitePriceString {
-				takeProfitPrice, err = sdk.NewDecFromStr(takeProfitPriceStr)
+				takeProfitPrice, err = sdkmath.LegacyNewDecFromStr(takeProfitPriceStr)
 				if err != nil {
 					return errors.New("invalid take profit price")
 				}
 			} else {
-				takeProfitPrice, err = sdk.NewDecFromStr(types.TakeProfitPriceDefault)
+				takeProfitPrice, err = sdkmath.LegacyNewDecFromStr(types.TakeProfitPriceDefault)
 				if err != nil {
 					return errors.New("failed to set default take profit price")
 				}

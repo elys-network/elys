@@ -3,15 +3,13 @@ package keeper_test
 import (
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 
-	// oracletypes "github.com/elys-network/elys/x/oracle/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 
-	// "github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	simapp "github.com/elys-network/elys/app"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
@@ -19,7 +17,7 @@ import (
 
 func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -39,13 +37,13 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	})
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 3, sdk.NewInt(1000000000000))
+	addr := simapp.AddTestAddrs(app, ctx, 3, sdkmath.NewInt(1000000000000))
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(200000000000))}
+	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(200000000000))}
 	// Mint 100000ATOM
-	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(200000000000))}
+	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(200000000000))}
 
 	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -59,25 +57,25 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(10000000000)),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000000)),
 		},
 	}
 
-	argSwapFee := sdk.MustNewDecFromStr("0.0")
-	argExitFee := sdk.MustNewDecFromStr("0.0")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.0")
+	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
-		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdk.ZeroDec(),
+		ExternalLiquidityRatio:      sdkmath.LegacyNewDec(2),
+		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 		SwapFee:                     argSwapFee,
 		ExitFee:                     argExitFee,
 		FeeDenom:                    ptypes.BaseCurrency,
@@ -108,21 +106,21 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	poolAddress := sdk.MustAccAddressFromBech32(pool.GetAddress())
 	require.NoError(t, err)
 
-	app.BankKeeper.SendCoins(ctx, addr[0], poolAddress, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000000))))
+	app.BankKeeper.SendCoins(ctx, addr[0], poolAddress, sdk.NewCoins(sdk.NewCoin("stake", sdkmath.NewInt(1000000))))
 	// Balance check before create a perpetual position
 	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100000000000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdkmath.NewInt(100000000000))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdkmath.NewInt(10000000000))
 
 	// Create a perpetual position open msg
 	msg2 := types.NewMsgOpen(
 		addr[0].String(),
 		types.Position_LONG,
-		sdk.NewDec(5),
+		sdkmath.LegacyNewDec(5),
 		ptypes.ATOM,
-		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
-		sdk.ZeroDec(),
+		sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
+		sdkmath.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
+		sdkmath.LegacyZeroDec(),
 	)
 
 	_, err = mk.Open(ctx, msg2, false)
@@ -132,8 +130,8 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	require.Equal(t, len(mtps), 1)
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100100000000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdkmath.NewInt(100100000000))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdkmath.NewInt(10000000000))
 
 	_, found = mk.OpenLongChecker.GetPool(ctx, pool.PoolId)
 	require.Equal(t, found, true)
@@ -145,7 +143,7 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	params := mk.GetParams(ctx)
 	params.FundingFeeCollectionAddress = addr[1].String()
 	params.IncrementalBorrowInterestPaymentFundAddress = addr[2].String()
-	params.IncrementalBorrowInterestPaymentFundPercentage = sdk.MustNewDecFromStr("0.5")
+	params.IncrementalBorrowInterestPaymentFundPercentage = sdkmath.LegacyMustNewDecFromStr("0.5")
 	mk.SetParams(ctx, &params)
 
 	mtp := mtps[0]
@@ -156,7 +154,7 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	require.NoError(t, err)
 
 	// Set borrow interest rate to 100% to test liquidation
-	perpPool.BorrowInterestRate = sdk.MustNewDecFromStr("1.0")
+	perpPool.BorrowInterestRate = sdkmath.LegacyMustNewDecFromStr("1.0")
 	mk.SetPool(ctx, perpPool)
 
 	// Check MTP
@@ -166,31 +164,31 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 		TradingAsset:                   "uatom",
 		LiabilitiesAsset:               "uusdc",
 		CustodyAsset:                   "uatom",
-		Collateral:                     sdk.NewInt(100000000),
-		Liabilities:                    sdk.NewInt(400000000),
-		BorrowInterestPaidCollateral:   sdk.NewInt(0),
-		BorrowInterestPaidCustody:      sdk.NewInt(0),
-		BorrowInterestUnpaidCollateral: sdk.NewInt(0),
-		Custody:                        sdk.NewInt(486520593),
-		TakeProfitLiabilities:          sdk.NewInt(473929244),
-		TakeProfitCustody:              sdk.NewInt(486520593),
-		Leverage:                       sdk.NewDec(5),
-		MtpHealth:                      sdk.MustNewDecFromStr("1.250000057500000000"),
+		Collateral:                     sdkmath.NewInt(100000000),
+		Liabilities:                    sdkmath.NewInt(400000000),
+		BorrowInterestPaidCollateral:   sdkmath.NewInt(0),
+		BorrowInterestPaidCustody:      sdkmath.NewInt(0),
+		BorrowInterestUnpaidCollateral: sdkmath.NewInt(0),
+		Custody:                        sdkmath.NewInt(486520593),
+		TakeProfitLiabilities:          sdkmath.NewInt(473929244),
+		TakeProfitCustody:              sdkmath.NewInt(486520593),
+		Leverage:                       sdkmath.LegacyNewDec(5),
+		MtpHealth:                      sdkmath.LegacyMustNewDecFromStr("1.250000057500000000"),
 		Position:                       types.Position_LONG,
 		Id:                             uint64(1),
 		AmmPoolId:                      uint64(1),
-		ConsolidateLeverage:            sdk.NewDec(4),
-		SumCollateral:                  sdk.NewInt(100000000),
-		TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
-		TakeProfitBorrowRate:           sdk.MustNewDecFromStr("1.0"),
-		FundingFeePaidCollateral:       sdk.NewInt(0),
-		FundingFeePaidCustody:          sdk.NewInt(0),
-		FundingFeeReceivedCollateral:   sdk.NewInt(0),
-		FundingFeeReceivedCustody:      sdk.NewInt(0),
-		OpenPrice:                      sdk.MustNewDecFromStr("1.027705727555914576"),
+		ConsolidateLeverage:            sdkmath.LegacyNewDec(4),
+		SumCollateral:                  sdkmath.NewInt(100000000),
+		TakeProfitPrice:                sdkmath.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
+		TakeProfitBorrowRate:           sdkmath.LegacyMustNewDecFromStr("1.0"),
+		FundingFeePaidCollateral:       sdkmath.NewInt(0),
+		FundingFeePaidCustody:          sdkmath.NewInt(0),
+		FundingFeeReceivedCollateral:   sdkmath.NewInt(0),
+		FundingFeeReceivedCustody:      sdkmath.NewInt(0),
+		OpenPrice:                      sdkmath.LegacyMustNewDecFromStr("1.027705727555914576"),
 		LastInterestCalcTime:           uint64(ctx.BlockTime().Unix()),
 		LastFundingCalcTime:            uint64(ctx.BlockTime().Unix()),
-		StopLossPrice:                  sdk.ZeroDec(),
+		StopLossPrice:                  sdkmath.LegacyZeroDec(),
 	}, mtp)
 
 	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
@@ -202,7 +200,7 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 
 func TestCheckAndLiquidateStopLossPosition(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -222,13 +220,13 @@ func TestCheckAndLiquidateStopLossPosition(t *testing.T) {
 	})
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 3, sdk.NewInt(1000000000000))
+	addr := simapp.AddTestAddrs(app, ctx, 3, sdkmath.NewInt(1000000000000))
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(200000000000))}
+	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(200000000000))}
 	// Mint 100000ATOM
-	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(200000000000))}
+	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(200000000000))}
 
 	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -242,25 +240,25 @@ func TestCheckAndLiquidateStopLossPosition(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(10000000000)),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000000)),
 		},
 	}
 
-	argSwapFee := sdk.MustNewDecFromStr("0.0")
-	argExitFee := sdk.MustNewDecFromStr("0.0")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.0")
+	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
-		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdk.ZeroDec(),
+		ExternalLiquidityRatio:      sdkmath.LegacyNewDec(2),
+		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 		SwapFee:                     argSwapFee,
 		ExitFee:                     argExitFee,
 		FeeDenom:                    ptypes.BaseCurrency,
@@ -291,21 +289,21 @@ func TestCheckAndLiquidateStopLossPosition(t *testing.T) {
 	poolAddress := sdk.MustAccAddressFromBech32(pool.GetAddress())
 	require.NoError(t, err)
 
-	app.BankKeeper.SendCoins(ctx, addr[0], poolAddress, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000000))))
+	app.BankKeeper.SendCoins(ctx, addr[0], poolAddress, sdk.NewCoins(sdk.NewCoin("stake", sdkmath.NewInt(1000000))))
 	// Balance check before create a perpetual position
 	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100000000000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdkmath.NewInt(100000000000))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdkmath.NewInt(10000000000))
 
 	// Create a perpetual position open msg
 	msg2 := types.NewMsgOpen(
 		addr[0].String(),
 		types.Position_LONG,
-		sdk.NewDec(5),
+		sdkmath.LegacyNewDec(5),
 		ptypes.ATOM,
-		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-		sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
-		sdk.NewDec(2),
+		sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
+		sdkmath.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
+		sdkmath.LegacyNewDec(2),
 	)
 
 	_, err = mk.Open(ctx, msg2, false)
@@ -315,8 +313,8 @@ func TestCheckAndLiquidateStopLossPosition(t *testing.T) {
 	require.Equal(t, len(mtps), 1)
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100100000000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdkmath.NewInt(100100000000))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdkmath.NewInt(10000000000))
 
 	_, found = mk.OpenLongChecker.GetPool(ctx, pool.PoolId)
 	require.Equal(t, found, true)

@@ -27,17 +27,17 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000), sdk.NewInt64Coin("uusdt", 100000)},
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
-				SwapFee:                     sdk.ZeroDec(),
-				ExitFee:                     sdk.ZeroDec(),
+				SwapFee:                     math.LegacyZeroDec(),
+				ExitFee:                     math.LegacyZeroDec(),
 				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
-				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdk.ZeroDec(),
+				WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
+				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+				ExternalLiquidityRatio:      math.LegacyNewDec(1),
+				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   math.LegacyZeroDec(),
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
-			shareOutAmount:   types.OneShare.Quo(sdk.NewInt(5)),
+			shareOutAmount:   types.OneShare.Quo(math.NewInt(5)),
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000), sdk.NewInt64Coin("uusdt", 100000)},
 			expPass:          true,
@@ -47,17 +47,17 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
-				SwapFee:                     sdk.ZeroDec(),
-				ExitFee:                     sdk.ZeroDec(),
+				SwapFee:                     math.LegacyZeroDec(),
+				ExitFee:                     math.LegacyZeroDec(),
 				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
-				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdk.ZeroDec(),
+				WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
+				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+				ExternalLiquidityRatio:      math.LegacyNewDec(1),
+				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   math.LegacyZeroDec(),
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
-			shareOutAmount:   types.OneShare.Quo(sdk.NewInt(5)),
+			shareOutAmount:   types.OneShare.Quo(math.NewInt(5)),
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{},
 			expPass:          false,
@@ -67,18 +67,18 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
-				SwapFee:                     sdk.ZeroDec(),
-				ExitFee:                     sdk.ZeroDec(),
+				SwapFee:                     math.LegacyZeroDec(),
+				ExitFee:                     math.LegacyZeroDec(),
 				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
-				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
-				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
+				WeightBreakingFeeMultiplier: math.LegacyNewDecWithPrec(1, 2),  // 0.01
+				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+				ExternalLiquidityRatio:      math.LegacyNewDec(1),
+				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   math.LegacyNewDecWithPrec(2, 1),  // 20%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
-			// shareOutAmount:   sdk.NewInt(694444166666666666), // weight breaking fee - slippage enable
-			shareOutAmount:   sdk.NewInt(943431457505076198), // weight breaking fee - slippage disable
+			// shareOutAmount:   math.NewInt(694444166666666666), // weight breaking fee - slippage enable
+			shareOutAmount:   math.NewInt(943431457505076198), // weight breaking fee - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -88,18 +88,18 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1500000), sdk.NewInt64Coin("uusdt", 500000)},
 			poolParams: types.PoolParams{
-				SwapFee:                     sdk.ZeroDec(),
-				ExitFee:                     sdk.ZeroDec(),
+				SwapFee:                     math.LegacyZeroDec(),
+				ExitFee:                     math.LegacyZeroDec(),
 				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
-				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
-				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
+				WeightBreakingFeeMultiplier: math.LegacyNewDecWithPrec(1, 2),  // 0.01
+				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+				ExternalLiquidityRatio:      math.LegacyNewDec(1),
+				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   math.LegacyNewDecWithPrec(2, 1),  // 20%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
-			// shareOutAmount:   sdk.NewInt(805987500000000000), // weight recovery direction - slippage enable
-			shareOutAmount:   sdk.NewInt(1002500000000000000), // weight recovery direction - slippage disable
+			// shareOutAmount:   math.NewInt(805987500000000000), // weight recovery direction - slippage enable
+			shareOutAmount:   math.NewInt(1002500000000000000), // weight recovery direction - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -109,17 +109,17 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1500000), sdk.NewInt64Coin("uusdt", 500000)},
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1500000), sdk.NewInt64Coin("uusdt", 500000)},
 			poolParams: types.PoolParams{
-				SwapFee:                     sdk.ZeroDec(),
-				ExitFee:                     sdk.ZeroDec(),
+				SwapFee:                     math.LegacyZeroDec(),
+				ExitFee:                     math.LegacyZeroDec(),
 				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
-				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
-				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
+				WeightBreakingFeeMultiplier: math.LegacyNewDecWithPrec(1, 2),  // 0.01
+				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+				ExternalLiquidityRatio:      math.LegacyNewDec(1),
+				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   math.LegacyNewDecWithPrec(2, 1),  // 20%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
-			shareOutAmount:   sdk.NewInt(2000000000000000000),
+			shareOutAmount:   math.NewInt(2000000000000000000),
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1500000), sdk.NewInt64Coin("uusdt", 500000)},
 			expPass:          true,
@@ -159,18 +159,18 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams:        tc.poolParams,
-				TotalShares:       sdk.NewCoin("amm/pool/1", sdk.NewInt(2).Mul(types.OneShare)),
+				TotalShares:       sdk.NewCoin("amm/pool/1", math.NewInt(2).Mul(types.OneShare)),
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  tc.poolInitBalance[0],
-						Weight: sdk.NewInt(10),
+						Weight: math.NewInt(10),
 					},
 					{
 						Token:  tc.poolInitBalance[1],
-						Weight: sdk.NewInt(10),
+						Weight: math.NewInt(10),
 					},
 				},
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: math.ZeroInt(),
 			}
 			err = suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.Require().NoError(err)

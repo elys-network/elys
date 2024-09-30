@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/elys-network/elys/app"
@@ -14,7 +13,7 @@ import (
 
 func TestEpochInfoChangesBeginBlockerAndInitGenesis(t *testing.T) {
 	app := app.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 
 	var (
 		epochInfo types.EpochInfo
@@ -159,7 +158,7 @@ func TestEpochInfoChangesBeginBlockerAndInitGenesis(t *testing.T) {
 
 func TestEpochStartingOneMonthAfterInitGenesis(t *testing.T) {
 	app := app.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 
 	// On init genesis, default epochs information is set
 	// To check init genesis again, should make it fresh status

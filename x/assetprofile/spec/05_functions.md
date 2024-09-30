@@ -10,7 +10,7 @@ The `SetEntry` function stores a new asset entry or updates an existing one.
 
 ```go
 func (k Keeper) SetEntry(ctx sdk.Context, entry types.Entry) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.EntryKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.EntryKeyPrefix))
     b := k.cdc.MustMarshal(&entry)
     store.Set(types.EntryKey(entry.BaseDenom), b)
 }
@@ -22,7 +22,7 @@ The `GetEntry` function retrieves an asset entry based on its base denomination.
 
 ```go
 func (k Keeper) GetEntry(ctx sdk.Context, baseDenom string) (val types.Entry, found bool) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.EntryKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.EntryKeyPrefix))
     b := store.Get(types.EntryKey(baseDenom))
     if b == nil {
         return val, false
@@ -38,7 +38,7 @@ The `RemoveEntry` function deletes an asset entry from the store.
 
 ```go
 func (k Keeper) RemoveEntry(ctx sdk.Context, baseDenom string) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.EntryKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.EntryKeyPrefix))
     store.Delete(types.EntryKey(baseDenom))
 }
 ```
@@ -49,8 +49,8 @@ The `GetAllEntry` function retrieves all asset entries from the store.
 
 ```go
 func (k Keeper) GetAllEntry(ctx sdk.Context) (list []types.Entry) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.EntryKeyPrefix))
-    iterator := sdk.KVStorePrefixIterator(store, []byte{})
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.EntryKeyPrefix))
+    iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
     defer iterator.Close()
 
@@ -283,7 +283,7 @@ func (k Keeper) EntryAll(goCtx context.Context, req *types.QueryAllEntryRequest)
     var entries []types.Entry
     ctx := sdk.UnwrapSDKContext(goCtx)
 
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     entryStore := prefix.NewStore(store, types.KeyPrefix(types.EntryKeyPrefix))
 
     pageRes, err := query.Paginate(entryStore, req.Pagination, func(key []byte, value []byte) error {

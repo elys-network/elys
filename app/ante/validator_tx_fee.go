@@ -8,6 +8,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametertypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -32,12 +33,12 @@ func CheckTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx) (sdk.Coins,
 		msgs := tx.GetMsgs()
 		if len(msgs) == 1 {
 			msgType := strings.ToLower(sdk.MsgTypeURL(msgs[0]))
-			if strings.Contains(msgType, "/elys.oracle.msgfeedprice") ||
-				strings.Contains(msgType, "/elys.oracle.msgfeedmultipleprices") {
+			sdk.MsgTypeURL(&oracletypes.MsgFeedPrice{})
+			if strings.Contains(msgType, sdk.MsgTypeURL(&oracletypes.MsgFeedPrice{})) || strings.Contains(msgType, sdk.MsgTypeURL(&oracletypes.MsgFeedMultiplePrices{})) {
 				// set the minimum gas price to 0 ELYS if the message is a feed price
 				minGasPrice := sdk.DecCoin{
 					Denom:  parametertypes.Elys,
-					Amount: sdk.ZeroDec(),
+					Amount: sdkmath.LegacyZeroDec(),
 				}
 				if !minGasPrice.IsValid() {
 					return nil, 0, errorsmod.Wrap(sdkerrors.ErrLogic, "invalid gas price")

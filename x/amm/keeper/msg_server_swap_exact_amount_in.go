@@ -3,13 +3,15 @@ package keeper
 import (
 	"context"
 
-	// "cosmossdk.io/math"
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
 func (k msgServer) SwapExactAmountIn(goCtx context.Context, msg *types.MsgSwapExactAmountIn) (*types.MsgSwapExactAmountInResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
@@ -23,7 +25,7 @@ func (k msgServer) SwapExactAmountIn(goCtx context.Context, msg *types.MsgSwapEx
 	}
 	// Try executing the tx on cached context environment, to filter invalid transactions out
 	cacheCtx, _ := ctx.CacheContext()
-	tokenOutAmount, swapFee, discount, err := k.RouteExactAmountIn(cacheCtx, sender, recipient, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount), msg.Discount)
+	tokenOutAmount, swapFee, discount, err := k.RouteExactAmountIn(cacheCtx, sender, recipient, msg.Routes, msg.TokenIn, sdkmath.Int(msg.TokenOutMinAmount), msg.Discount)
 	if err != nil {
 		return nil, err
 	}

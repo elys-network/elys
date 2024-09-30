@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -15,9 +15,9 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
-		swapFee           sdk.Dec
+		swapFee           sdkmath.LegacyDec
 		tokenIn           sdk.Coin
-		tokenOutMin       math.Int
+		tokenOutMin       sdkmath.Int
 		tokenOut          sdk.Coin
 		expSenderBalance  sdk.Coins
 		expPass           bool
@@ -25,9 +25,9 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 		{
 			desc:              "successful execution with positive swap fee",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFee:           sdk.NewDecWithPrec(1, 2), // 1%
+			swapFee:           sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
 			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
-			tokenOutMin:       sdk.ZeroInt(),
+			tokenOutMin:       sdkmath.ZeroInt(),
 			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9704),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
 			expPass:           true,
@@ -35,9 +35,9 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 		{
 			desc:              "successful execution with zero swap fee",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFee:           sdk.ZeroDec(),
+			swapFee:           sdkmath.LegacyZeroDec(),
 			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
-			tokenOutMin:       sdk.ZeroInt(),
+			tokenOutMin:       sdkmath.ZeroInt(),
 			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9900),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009900)},
 			expPass:           true,
@@ -45,9 +45,9 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 		{
 			desc:              "multiple routes",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFee:           sdk.ZeroDec(),
+			swapFee:           sdkmath.LegacyZeroDec(),
 			tokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			tokenOutMin:       sdk.ZeroInt(),
+			tokenOutMin:       sdkmath.ZeroInt(),
 			tokenOut:          sdk.NewInt64Coin("uusdt", 9802),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000), sdk.NewInt64Coin("uusdt", 9802)},
 			expPass:           false,
@@ -89,15 +89,15 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 			// execute function
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 				Denom:     ptypes.Elys,
-				Liquidity: sdk.NewInt(2000000),
+				Liquidity: sdkmath.NewInt(2000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 				Denom:     ptypes.BaseCurrency,
-				Liquidity: sdk.NewInt(1000000),
+				Liquidity: sdkmath.NewInt(1000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 				Denom:     "uusdt",
-				Liquidity: sdk.NewInt(1000000),
+				Liquidity: sdkmath.NewInt(1000000),
 			})
 
 			pool := types.Pool{
@@ -112,14 +112,14 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  poolCoins[0],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 					{
 						Token:  poolCoins[1],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 				},
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: sdkmath.ZeroInt(),
 			}
 			pool2 := types.Pool{
 				PoolId:            2,
@@ -133,14 +133,14 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  pool2Coins[0],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 					{
 						Token:  pool2Coins[1],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 				},
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: sdkmath.ZeroInt(),
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
@@ -155,7 +155,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 					MaxAmount: sdk.Coin{},
 					DenomIn:   tc.tokenIn.Denom,
 					DenomOut:  tc.tokenOut.Denom,
-					Discount:  sdk.ZeroDec(),
+					Discount:  sdkmath.LegacyZeroDec(),
 				})
 			if !tc.expPass {
 				suite.Require().Error(err)

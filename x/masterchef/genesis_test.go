@@ -1,7 +1,6 @@
 package masterchef_test
 
 import (
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	simapp "github.com/elys-network/elys/app"
 	"testing"
 
@@ -19,7 +18,7 @@ func TestGenesis(t *testing.T) {
 
 		// this line is used by starport scaffolding # genesis/test/state
 	}
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 	k := app.MasterchefKeeper
 	masterchef.InitGenesis(ctx, k, genesisState)
 	got := masterchef.ExportGenesis(ctx, k)

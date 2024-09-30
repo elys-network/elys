@@ -18,8 +18,8 @@ func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) 
 		return err
 	}
 	leverageLpTvl := tvl.
-		Mul(sdk.NewDecFromInt(leveragelpPool.LeveragedLpAmount)).
-		Quo(sdk.NewDecFromInt(ammPool.TotalShares.Amount))
+		Mul(math.LegacyNewDecFromInt(leveragelpPool.LeveragedLpAmount)).
+		Quo(math.LegacyNewDecFromInt(ammPool.TotalShares.Amount))
 
 	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
 	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, depositDenom)

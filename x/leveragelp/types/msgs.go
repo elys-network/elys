@@ -9,18 +9,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	TypeMsgOpen         = "open"
-	TypeMsgClose        = "close"
-	TypeMsgUpdateParams = "update_params"
-	TypeMsgWhitelist    = "whitelist"
-	TypeMsgAddPool      = "add_pool"
-	TypeMsgRemovePool   = "remove_pool"
-	TypeMsgUpdatePool   = "update_pool"
-	TypeMsgDewhitelist  = "dewhitelist"
-	TypeMsgClaimRewards = "claim_rewards"
-)
-
 var (
 	_ sdk.Msg = &MsgClose{}
 	_ sdk.Msg = &MsgOpen{}
@@ -41,27 +29,6 @@ func NewMsgClose(creator string, id uint64, amount math.Int) *MsgClose {
 	}
 }
 
-func (msg *MsgClose) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgClose) Type() string {
-	return TypeMsgClose
-}
-
-func (msg *MsgClose) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgClose) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
 func (msg *MsgClose) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -74,7 +41,7 @@ func (msg *MsgClose) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgOpen(creator string, collateralAsset string, collateralAmount math.Int, ammPoolId uint64, leverage sdk.Dec, stopLossPrice sdk.Dec) *MsgOpen {
+func NewMsgOpen(creator string, collateralAsset string, collateralAmount math.Int, ammPoolId uint64, leverage math.LegacyDec, stopLossPrice math.LegacyDec) *MsgOpen {
 	return &MsgOpen{
 		Creator:          creator,
 		CollateralAsset:  collateralAsset,
@@ -85,34 +52,13 @@ func NewMsgOpen(creator string, collateralAsset string, collateralAmount math.In
 	}
 }
 
-func (msg *MsgOpen) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgOpen) Type() string {
-	return TypeMsgOpen
-}
-
-func (msg *MsgOpen) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgOpen) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
 func (msg *MsgOpen) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	// leverage should be greater than or equal to 1
-	if msg.Leverage.LT(sdk.OneDec()) {
+	if msg.Leverage.LT(math.LegacyOneDec()) {
 		return ErrLeverageTooSmall
 	}
 	collateralCoin := sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount)
@@ -126,19 +72,6 @@ func (msg *MsgOpen) ValidateBasic() error {
 		return fmt.Errorf("stop loss price cannot be negative")
 	}
 	return nil
-}
-
-func (msg *MsgUpdateParams) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgUpdateParams) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUpdateParams) ValidateBasic() error {
@@ -159,38 +92,11 @@ func NewMsgUpdateParams(signer string, params *Params) *MsgUpdateParams {
 	}
 }
 
-func (msg *MsgUpdateParams) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUpdateParams) Type() string {
-	return TypeMsgUpdateParams
-}
-
 func NewMsgWhitelist(signer string, whitelistedAddress string) *MsgWhitelist {
 	return &MsgWhitelist{
 		Authority:          signer,
 		WhitelistedAddress: whitelistedAddress,
 	}
-}
-
-func (msg *MsgWhitelist) Route() string { return RouterKey }
-
-func (msg *MsgWhitelist) Type() string {
-	return TypeMsgWhitelist
-}
-
-func (msg *MsgWhitelist) GetSigners() []sdk.AccAddress {
-	authority, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{authority}
-}
-
-func (msg *MsgWhitelist) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgWhitelist) ValidateBasic() error {
@@ -205,32 +111,13 @@ func (msg *MsgWhitelist) ValidateBasic() error {
 	return nil
 }
 
-func (msg *MsgAddPool) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgAddPool) Type() string { return TypeMsgAddPool }
-
-func (msg *MsgAddPool) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgAddPool) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgAddPool) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	if msg.Pool.LeverageMax.LTE(sdk.OneDec()) {
+	if msg.Pool.LeverageMax.LTE(math.LegacyOneDec()) {
 		return ErrLeverageTooSmall
 	}
 	return nil
@@ -242,27 +129,6 @@ func NewMsgAddPool(signer string, pool AddPool) *MsgAddPool {
 		Authority: signer,
 		Pool:      pool,
 	}
-}
-
-func (msg *MsgRemovePool) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgRemovePool) Type() string {
-	return TypeMsgRemovePool
-}
-
-func (msg *MsgRemovePool) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgRemovePool) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
 }
 
 func (msg *MsgRemovePool) ValidateBasic() error {
@@ -287,23 +153,6 @@ func NewMsgUpdatePool(signer string, pool UpdatePool) *MsgUpdatePool {
 	}
 }
 
-func (msg *MsgUpdatePool) Route() string { return RouterKey }
-
-func (msg *MsgUpdatePool) Type() string { return TypeMsgUpdatePool }
-
-func (msg *MsgUpdatePool) GetSigners() []sdk.AccAddress {
-	authority, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{authority}
-}
-
-func (msg *MsgUpdatePool) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
 func (msg *MsgUpdatePool) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
@@ -317,27 +166,6 @@ func NewMsgDewhitelist(signer string, whitelistedAddress string) *MsgDewhitelist
 		Authority:          signer,
 		WhitelistedAddress: whitelistedAddress,
 	}
-}
-
-func (msg *MsgDewhitelist) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgDewhitelist) Type() string {
-	return TypeMsgDewhitelist
-}
-
-func (msg *MsgDewhitelist) GetSigners() []sdk.AccAddress {
-	authority, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{authority}
-}
-
-func (msg *MsgDewhitelist) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgDewhitelist) ValidateBasic() error {
@@ -357,27 +185,6 @@ func NewMsgClaimRewards(signer string, ids []uint64) *MsgClaimRewards {
 		Sender: signer,
 		Ids:    ids,
 	}
-}
-
-func (msg *MsgClaimRewards) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgClaimRewards) Type() string {
-	return TypeMsgClaimRewards
-}
-
-func (msg *MsgClaimRewards) GetSigners() []sdk.AccAddress {
-	authority, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{authority}
-}
-
-func (msg *MsgClaimRewards) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgClaimRewards) ValidateBasic() error {

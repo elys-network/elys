@@ -1,30 +1,30 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"math"
 	"strconv"
 )
 
-func computeExp(x sdk.Dec) (sdk.Dec, error) {
-	if x.Equal(sdk.ZeroDec()) {
-		return sdk.OneDec(), nil
+func computeExp(x sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
+	if x.Equal(sdkmath.LegacyZeroDec()) {
+		return sdkmath.LegacyOneDec(), nil
 	}
-	if x.Equal(sdk.OneDec()) {
+	if x.Equal(sdkmath.LegacyOneDec()) {
 		return euler, nil
 	}
 	// exp(-42) is approx 5.7 x 10^-19, smallest dec possible is 10^-18
-	if x.LTE(sdk.NewDecFromInt(sdk.NewInt(-42))) {
-		return sdk.ZeroDec(), nil
+	if x.LTE(sdkmath.LegacyNewDecFromInt(sdkmath.NewInt(-42))) {
+		return sdkmath.LegacyZeroDec(), nil
 	}
 
 	// Range reduction: x = k * ln(2) + y
 	k := x.Mul(inverseLn2).TruncateInt64()
-	y := x.Sub(sdk.NewDecFromInt(sdk.NewInt(k)).Mul(ln2))
+	y := x.Sub(sdkmath.LegacyNewDecFromInt(sdkmath.NewInt(k)).Mul(ln2))
 
-	expY := sdk.OneDec()
-	term := sdk.OneDec()
+	expY := sdkmath.LegacyOneDec()
+	term := sdkmath.LegacyOneDec()
 
 	//n decides the precision of the value, higher the n, greater is the accuracy
 	for n := int64(1); ; n++ {
@@ -34,15 +34,15 @@ func computeExp(x sdk.Dec) (sdk.Dec, error) {
 			break
 		}
 		if n > powIterationLimit {
-			return sdk.Dec{}, fmt.Errorf("failed to reach precision within %d iterations while comuting Exp for: %s", powIterationLimit, x.String())
+			return sdkmath.LegacyDec{}, fmt.Errorf("failed to reach precision within %d iterations while comuting Exp for: %s", powIterationLimit, x.String())
 		}
 	}
 
-	twoPowK := sdk.OneDec()
+	twoPowK := sdkmath.LegacyOneDec()
 	if k > 0 {
 		twoPowK = twoDec.Power(uint64(k))
 	} else if k < 0 {
-		twoPowK = sdk.OneDec().Quo(twoDec.Power(uint64(-k)))
+		twoPowK = sdkmath.LegacyOneDec().Quo(twoDec.Power(uint64(-k)))
 	}
 
 	result := expY.Mul(twoPowK)
@@ -50,12 +50,12 @@ func computeExp(x sdk.Dec) (sdk.Dec, error) {
 	return result, nil
 }
 
-func computeLn(x sdk.Dec) (result sdk.Dec, err error) {
-	if x.LTE(sdk.ZeroDec()) {
-		return sdk.Dec{}, fmt.Errorf("x for computing it's Ln must be greater than 0")
+func computeLn(x sdkmath.LegacyDec) (result sdkmath.LegacyDec, err error) {
+	if x.LTE(sdkmath.LegacyZeroDec()) {
+		return sdkmath.LegacyDec{}, fmt.Errorf("x for computing it's Ln must be greater than 0")
 	}
-	if x.Equal(sdk.OneDec()) {
-		return sdk.ZeroDec(), nil
+	if x.Equal(sdkmath.LegacyOneDec()) {
+		return sdkmath.LegacyZeroDec(), nil
 	}
 
 	// To bring x is in the range [0.5, 2]
@@ -69,17 +69,17 @@ func computeLn(x sdk.Dec) (result sdk.Dec, err error) {
 		x = x.MulInt64(2)
 		k--
 	}
-	y := x.Sub(sdk.OneDec())
-	result = sdk.ZeroDec()
+	y := x.Sub(sdkmath.LegacyOneDec())
+	result = sdkmath.LegacyZeroDec()
 	yPower := y
 
 	// maximum value of y is 1
 	// Though n doesn't have upper cap, this iteration will break as |y| < 1,
 	// if y is very close to 1 it will large number of iterations
 	for n := int64(1); ; n++ {
-		sign := sdk.NewInt(-1)
+		sign := sdkmath.NewInt(-1)
 		if (n+1)%2 == 0 {
-			sign = sdk.OneInt()
+			sign = sdkmath.OneInt()
 		}
 		term := yPower.MulInt(sign).QuoInt64(n)
 		result = result.Add(term)
@@ -90,7 +90,7 @@ func computeLn(x sdk.Dec) (result sdk.Dec, err error) {
 		}
 
 		if n > powIterationLimit {
-			return sdk.Dec{}, fmt.Errorf("failed to reach precision within %d iterations while comuting Ln for: %s", powIterationLimit, x.String())
+			return sdkmath.LegacyDec{}, fmt.Errorf("failed to reach precision within %d iterations while comuting Ln for: %s", powIterationLimit, x.String())
 		}
 
 		yPower = yPower.Mul(y)
@@ -100,35 +100,35 @@ func computeLn(x sdk.Dec) (result sdk.Dec, err error) {
 }
 
 // powerApproximation Check exponentialLogarithmicMethod and maclaurinSeriesApproximation to understand the limits of this function
-func powerApproximation(base sdk.Dec, exp sdk.Dec) (sdk.Dec, error) {
+func powerApproximation(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
 	if !base.IsPositive() {
-		return sdk.Dec{}, fmt.Errorf("base must be greater than 0")
+		return sdkmath.LegacyDec{}, fmt.Errorf("base must be greater than 0")
 	}
-	if exp.LT(sdk.ZeroDec()) {
-		return sdk.Dec{}, fmt.Errorf("exp must be greater than 0")
+	if exp.LT(sdkmath.LegacyZeroDec()) {
+		return sdkmath.LegacyDec{}, fmt.Errorf("exp must be greater than 0")
 	}
 	if exp.IsZero() {
-		return sdk.OneDec(), nil
+		return sdkmath.LegacyOneDec(), nil
 	}
-	if exp.Equal(sdk.OneDec()) {
+	if exp.Equal(sdkmath.LegacyOneDec()) {
 		return base, nil
 	}
-	if exp.Equal(sdk.OneDec().Neg()) {
-		return sdk.OneDec().Quo(base), nil
+	if exp.Equal(sdkmath.LegacyOneDec().Neg()) {
+		return sdkmath.LegacyOneDec().Quo(base), nil
 	}
 	if exp.Equal(oneHalf) {
 		output, err := base.ApproxSqrt()
 		if err != nil {
-			return sdk.Dec{}, err
+			return sdkmath.LegacyDec{}, err
 		}
 		return output, nil
 	}
 	// case where exp can be represented as uint64
-	if exp.IsInteger() && exp.IsPositive() && exp.LTE(sdk.MustNewDecFromStr(strconv.FormatUint(math.MaxUint64, 10))) {
+	if exp.IsInteger() && exp.IsPositive() && exp.LTE(sdkmath.LegacyMustNewDecFromStr(strconv.FormatUint(math.MaxUint64, 10))) {
 		return base.Power(uint64(exp.TruncateInt64())), nil
 	}
 
-	if exp.GT(sdk.OneDec()) {
+	if exp.GT(sdkmath.LegacyOneDec()) {
 		return Pow(base, exp), nil
 	}
 
@@ -145,14 +145,14 @@ func powerApproximation(base sdk.Dec, exp sdk.Dec) (sdk.Dec, error) {
 // if the base is large enough, the error propagates and decreases the inaccuracy.
 // For example, when calculating 1000^2.23, it can calculate 1000^0.23 upto required accuracy but when we multiply this result
 // to 1000^2, the error propagates to other decimal places
-func exponentialLogarithmicMethod(base sdk.Dec, exp sdk.Dec) (sdk.Dec, error) {
+func exponentialLogarithmicMethod(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
 	lnBase, err := computeLn(base)
 	if err != nil {
-		return sdk.Dec{}, err
+		return sdkmath.LegacyDec{}, err
 	}
 	expResult, err := computeExp(exp.Mul(lnBase))
 	if err != nil {
-		return sdk.Dec{}, err
+		return sdkmath.LegacyDec{}, err
 	}
 	return expResult, nil
 }
@@ -160,13 +160,13 @@ func exponentialLogarithmicMethod(base sdk.Dec, exp sdk.Dec) (sdk.Dec, error) {
 // maclaurinSeriesApproximation This function is very accurate when 0.5 <= base < 2, over 2 it panics
 // When base is extremely close to 2 then this function might panic as it's unable to reach accuracy within desired iterations
 // 0 <= exp < 1.
-func maclaurinSeriesApproximation(originalBase sdk.Dec, exp sdk.Dec, precision sdk.Dec) sdk.Dec {
+func maclaurinSeriesApproximation(originalBase sdkmath.LegacyDec, exp sdkmath.LegacyDec, precision sdkmath.LegacyDec) sdkmath.LegacyDec {
 	if !originalBase.IsPositive() {
 		panic(fmt.Errorf("base must be greater than 0"))
 	}
 
 	if exp.IsZero() {
-		return sdk.OneDec()
+		return sdkmath.LegacyOneDec()
 	}
 
 	// Common case optimization
@@ -209,13 +209,13 @@ func maclaurinSeriesApproximation(originalBase sdk.Dec, exp sdk.Dec, precision s
 	// TODO: If there's a bug, balancer is also wrong here :thonk:
 
 	base := originalBase.Clone()
-	x, xneg := AbsDifferenceWithSign(base, sdk.OneDec())
-	term := sdk.OneDec()
-	sum := sdk.OneDec()
+	x, xneg := AbsDifferenceWithSign(base, sdkmath.LegacyOneDec())
+	term := sdkmath.LegacyOneDec()
+	sum := sdkmath.LegacyOneDec()
 	negative := false
 
 	a := exp.Clone()
-	bigK := sdk.NewDec(0)
+	bigK := sdkmath.LegacyNewDec(0)
 	// TODO: Document this computation via taylor expansion
 	for i := int64(1); term.GTE(precision); i++ {
 		// At each iteration, we need two values, i and i-1.

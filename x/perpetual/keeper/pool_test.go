@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -26,15 +27,15 @@ func createNPoolResponse(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.
 	for i := range items {
 		items[i] = types.PoolResponse{
 			AmmPoolId:                            uint64(i),
-			Health:                               sdk.NewDec(100),
+			Health:                               sdkmath.LegacyNewDec(100),
 			Enabled:                              true,
 			Closed:                               false,
-			BorrowInterestRate:                   sdk.MustNewDecFromStr("0.000000000000000001"),
+			BorrowInterestRate:                   sdkmath.LegacyMustNewDecFromStr("0.000000000000000001"),
 			PoolAssetsLong:                       []types.PoolAsset{},
 			PoolAssetsShort:                      []types.PoolAsset{},
 			LastHeightBorrowInterestRateComputed: 0,
-			FundingRate:                          sdk.ZeroDec(),
-			NetOpenInterest:                      sdk.ZeroInt(),
+			FundingRate:                          sdkmath.LegacyZeroDec(),
+			NetOpenInterest:                      sdkmath.ZeroInt(),
 		}
 
 		keeper.SetPool(ctx, types.NewPool(uint64(i)))

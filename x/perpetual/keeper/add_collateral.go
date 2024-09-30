@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -49,7 +50,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 		return nil, types.ErrBalanceNotAvailable
 	}
 
-	//collateralAmountDec := sdk.NewDecFromBigInt(msg.Amount.BigInt())
+	//collateralAmountDec := sdk.LegacyNewDecFromBigInt(msg.Amount.BigInt())
 	liabilitiesDec := collateralCoin.Amount.ToLegacyDec()
 	// As we are adding to current position, liabilities will decrease
 
@@ -65,7 +66,7 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 			return nil, err
 		}
 
-		liabilitiesDec = sdk.NewDecFromInt(liabilityAmt)
+		liabilitiesDec = sdkmath.LegacyNewDecFromInt(liabilityAmt)
 	}
 
 	// If position is short, liabilities should be swapped to liabilities asset
@@ -76,13 +77,13 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 			return nil, err
 		}
 
-		liabilitiesDec = sdk.NewDecFromInt(liabilitiesAmt)
+		liabilitiesDec = sdkmath.LegacyNewDecFromInt(liabilitiesAmt)
 	}
 
 	// Add collateral, decrease liability
 	mtp.Collateral = mtp.Collateral.Add(collateralCoin.Amount)
 
-	mtp.Liabilities = mtp.Liabilities.Sub(sdk.NewIntFromBigInt(liabilitiesDec.TruncateInt().BigInt()))
+	mtp.Liabilities = mtp.Liabilities.Sub(sdkmath.NewIntFromBigInt(liabilitiesDec.TruncateInt().BigInt()))
 
 	// calculate mtp take profit custody, delta y_tp_c = delta x_l / take profit price (take profit custody = liabilities / take profit price)
 	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(&mtp)

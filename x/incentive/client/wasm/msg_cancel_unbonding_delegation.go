@@ -57,11 +57,11 @@ func performMsgCancelUnbondingElys(f *stakingkeeper.Keeper, ctx sdk.Context, con
 		return nil, errorsmod.Wrap(err, "invalid address")
 	}
 
-	msgMsgCancelUnbonding := stakingtypes.NewMsgCancelUnbondingDelegation(address, valAddr, msgCancelUnbonding.CreationHeight, msgCancelUnbonding.Amount)
-
-	if err := msgMsgCancelUnbonding.ValidateBasic(); err != nil {
-		return nil, errorsmod.Wrap(err, "failed validating msgCancelUnbonding")
+	if !msgCancelUnbonding.Amount.IsValid() || msgCancelUnbonding.Amount.IsZero() {
+		return nil, errorsmod.Wrap(err, "invalid amount")
 	}
+
+	msgMsgCancelUnbonding := stakingtypes.NewMsgCancelUnbondingDelegation(address.String(), valAddr.String(), msgCancelUnbonding.CreationHeight, msgCancelUnbonding.Amount)
 
 	_, err = msgServer.CancelUnbondingDelegation(sdk.WrapSDKContext(ctx), msgMsgCancelUnbonding)
 	if err != nil {

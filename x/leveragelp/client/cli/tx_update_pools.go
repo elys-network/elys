@@ -43,6 +43,11 @@ func CmdUpdatePools() *cobra.Command {
 				return err
 			}
 
+			expedited, err := cmd.Flags().GetBool(FlagExpedited)
+			if err != nil {
+				return err
+			}
+
 			signer := clientCtx.GetFromAddress()
 			if signer == nil {
 				return errors.New("signer address is missing")
@@ -73,7 +78,7 @@ func CmdUpdatePools() *cobra.Command {
 				return err
 			}
 
-			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary)
+			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary, expedited)
 			if err != nil {
 				return err
 			}
@@ -85,6 +90,7 @@ func CmdUpdatePools() *cobra.Command {
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
+	cmd.Flags().String(FlagExpedited, "", "expedited")
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
 	_ = cmd.MarkFlagRequired(cli.FlagSummary)
 	_ = cmd.MarkFlagRequired(cli.FlagMetadata)

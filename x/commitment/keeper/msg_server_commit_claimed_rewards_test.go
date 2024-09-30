@@ -1,11 +1,10 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/app"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -19,7 +18,7 @@ func TestCommitClaimedRewards(t *testing.T) {
 	// Create a test context and keeper
 	app := app.InitElysTestApp(true)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	keeper := app.CommitmentKeeper
 
 	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
@@ -27,8 +26,8 @@ func TestCommitClaimedRewards(t *testing.T) {
 	// Define the test data
 	creator := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String()
 	denom := "test_denom"
-	initialUnclaimed := sdk.NewInt(500)
-	commitAmount := sdk.NewInt(100)
+	initialUnclaimed := sdkmath.NewInt(500)
+	commitAmount := sdkmath.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed tokens
 	rewardsClaimed := sdk.NewCoin(denom, initialUnclaimed)

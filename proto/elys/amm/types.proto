@@ -9,42 +9,68 @@ import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
 enum FilterType {
-    FilterAll           = 0;
-    FilterPerpetual     = 1;
-    FilterFixedWeight   = 2;
-    FilterDynamicWeight = 3;
-	FilterLeverage      = 4;
+  FilterAll = 0;
+  FilterPerpetual = 1;
+  FilterFixedWeight = 2;
+  FilterDynamicWeight = 3;
+  FilterLeverage = 4;
 }
-  
+
 message QueryEarnPoolRequest {
-    repeated uint64 pool_ids    = 1;
-    FilterType filter_type      = 2;
-    cosmos.base.query.v1beta1.PageRequest pagination = 3;
+  repeated uint64 pool_ids = 1;
+  FilterType filter_type = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
-  
+
 message EarnPool {
-    uint64 pool_id = 1;
-    repeated PoolAsset assets = 2 [(gogoproto.nullable) = false];
-    string pool_ratio         = 3;
-    string rewards_apr        = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    string borrow_apr         = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    string leverage_lp        = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    string perpetual          = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    string tvl                = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    string lp_token_price     = 9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    string rewards_usd        = 10 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    repeated cosmos.base.v1beta1.Coin reward_coins = 11 [
-      (gogoproto.nullable) = false,
-      (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-    ];
-    cosmos.base.v1beta1.Coin total_shares = 12 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin", (gogoproto.nullable) = false];
-    string swap_fee = 13 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-    string fee_denom = 14;
-    bool use_oracle = 15;
-    bool is_leveragelp = 16;
+  uint64 pool_id = 1;
+  repeated PoolAsset assets = 2 [ (gogoproto.nullable) = false ];
+  string pool_ratio = 3;
+  string rewards_apr = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_apr = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string leverage_lp = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string perpetual = 7 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string tvl = 8 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string lp_token_price = 9 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string rewards_usd = 10 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin reward_coins = 11 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  cosmos.base.v1beta1.Coin total_shares = 12 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  string swap_fee = 13 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string fee_denom = 14;
+  bool use_oracle = 15;
+  bool is_leveragelp = 16;
 }
-  
+
 message QueryEarnPoolResponse {
-    repeated EarnPool pools = 1 [(gogoproto.nullable) = false];
+  repeated EarnPool pools = 1 [ (gogoproto.nullable) = false ];
 }
-  

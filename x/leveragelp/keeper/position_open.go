@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"strconv"
 
@@ -13,7 +14,7 @@ import (
 
 func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, error) {
 	// Initialize a new Leveragelp Trading Position (Position).
-	if msg.Leverage.LT(sdk.OneDec()) {
+	if msg.Leverage.LT(sdkmath.LegacyOneDec()) {
 		return nil, types.ErrLeverageTooSmall
 	}
 	position := types.NewPosition(msg.Creator, sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount), msg.AmmPoolId)
@@ -29,7 +30,7 @@ func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, 
 }
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
-	if msg.Leverage.LT(sdk.OneDec()) {
+	if msg.Leverage.LT(sdkmath.LegacyOneDec()) {
 		return nil, types.ErrLeverageTooSmall
 	}
 
@@ -63,10 +64,10 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 }
 
 func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolId uint64, msg *types.MsgOpen) (*types.Position, error) {
-	collateralAmountDec := sdk.NewDecFromInt(msg.CollateralAmount)
+	collateralAmountDec := sdkmath.LegacyNewDecFromInt(msg.CollateralAmount)
 	// Determine the maximum leverage available and compute the effective leverage to be used.
 	maxLeverage := k.GetMaxLeverageParam(ctx)
-	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
+	leverage := sdkmath.LegacyMinDec(msg.Leverage, maxLeverage)
 
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
@@ -89,7 +90,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	}
 
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
-	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
+	leveragedAmount := sdkmath.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
 
 	// send collateral coins to Position address from Position owner address
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
@@ -108,7 +109,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 		}
 	}
 
-	_, shares, err := k.amm.JoinPoolNoSwap(ctx, position.GetPositionAddress(), poolId, sdk.OneInt(), sdk.Coins{leverageCoin})
+	_, shares, err := k.amm.JoinPoolNoSwap(ctx, position.GetPositionAddress(), poolId, sdkmath.OneInt(), sdk.Coins{leverageCoin})
 	if err != nil {
 		return nil, err
 	}

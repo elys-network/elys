@@ -1,14 +1,16 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
 func (k Keeper) GetSlippageTrack(ctx sdk.Context, poolId uint64, timestamp uint64) types.OraclePoolSlippageTrack {
 	track := types.OraclePoolSlippageTrack{}
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.OraclePoolSlippageTrackPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), []byte(types.OraclePoolSlippageTrackPrefix))
 	bz := store.Get(types.OraclePoolSlippageTrackKey(poolId, timestamp))
 	if len(bz) == 0 {
 		return types.OraclePoolSlippageTrack{
@@ -23,20 +25,20 @@ func (k Keeper) GetSlippageTrack(ctx sdk.Context, poolId uint64, timestamp uint6
 }
 
 func (k Keeper) SetSlippageTrack(ctx sdk.Context, track types.OraclePoolSlippageTrack) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.OraclePoolSlippageTrackPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), []byte(types.OraclePoolSlippageTrackPrefix))
 	bz := k.cdc.MustMarshal(&track)
 	store.Set(types.OraclePoolSlippageTrackKey(track.PoolId, track.Timestamp), bz)
 }
 
 func (k Keeper) DeleteSlippageTrack(ctx sdk.Context, track types.OraclePoolSlippageTrack) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.OraclePoolSlippageTrackPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), []byte(types.OraclePoolSlippageTrackPrefix))
 	store.Delete(types.OraclePoolSlippageTrackKey(track.PoolId, track.Timestamp))
 }
 
 func (k Keeper) AllSlippageTracks(ctx sdk.Context) []types.OraclePoolSlippageTrack {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.OraclePoolSlippageTrackPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), []byte(types.OraclePoolSlippageTrackPrefix))
 
-	iterator := sdk.KVStorePrefixIterator(store, nil)
+	iterator := storetypes.KVStorePrefixIterator(store, nil)
 	defer iterator.Close()
 
 	tracks := []types.OraclePoolSlippageTrack{}
@@ -49,10 +51,11 @@ func (k Keeper) AllSlippageTracks(ctx sdk.Context) []types.OraclePoolSlippageTra
 	return tracks
 }
 
+// TODO Validate if it works correctly, iterator function changed with v0.50.9
 func (k Keeper) GetLastSlippageTrack(ctx sdk.Context, poolId uint64) types.OraclePoolSlippageTrack {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.OraclePoolSlippageTrackPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), []byte(types.OraclePoolSlippageTrackPrefix))
 
-	iterator := sdk.KVStoreReversePrefixIterator(store, sdk.Uint64ToBigEndian(poolId))
+	iterator := store.ReverseIterator(sdk.Uint64ToBigEndian(poolId), nil)
 	defer iterator.Close()
 
 	track := types.OraclePoolSlippageTrack{}
@@ -69,9 +72,9 @@ func (k Keeper) GetLastSlippageTrack(ctx sdk.Context, poolId uint64) types.Oracl
 }
 
 func (k Keeper) GetFirstSlippageTrack(ctx sdk.Context, poolId uint64) types.OraclePoolSlippageTrack {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.OraclePoolSlippageTrackPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), []byte(types.OraclePoolSlippageTrackPrefix))
 
-	iterator := sdk.KVStorePrefixIterator(store, sdk.Uint64ToBigEndian(poolId))
+	iterator := storetypes.KVStorePrefixIterator(store, sdk.Uint64ToBigEndian(poolId))
 	defer iterator.Close()
 
 	track := types.OraclePoolSlippageTrack{}

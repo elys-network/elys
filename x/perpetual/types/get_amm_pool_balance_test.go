@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	"cosmossdk.io/math"
 	"errors"
 	"testing"
 
@@ -18,7 +19,7 @@ func TestGetAmmPoolBalance_GetAmmPoolBalanceAvailable(t *testing.T) {
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
-					Amount: sdk.NewInt(100),
+					Amount: math.NewInt(100),
 				},
 			},
 		},
@@ -32,7 +33,7 @@ func TestGetAmmPoolBalance_GetAmmPoolBalanceAvailable(t *testing.T) {
 	// Expect that there is no error
 	assert.Nil(t, err)
 	// Expect that there is 100 balance
-	assert.Equal(t, balance, sdk.NewInt(100))
+	assert.Equal(t, balance, math.NewInt(100))
 }
 
 func TestGetAmmPoolBalance_GetAmmPoolBalanceUnavailable(t *testing.T) {
@@ -42,7 +43,7 @@ func TestGetAmmPoolBalance_GetAmmPoolBalanceUnavailable(t *testing.T) {
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
-					Amount: sdk.NewInt(100),
+					Amount: math.NewInt(100),
 				},
 			},
 		},
@@ -55,5 +56,5 @@ func TestGetAmmPoolBalance_GetAmmPoolBalanceUnavailable(t *testing.T) {
 
 	// Expect that there is an insufficient balance
 	assert.True(t, errors.Is(err, errorsmod.Wrap(types.ErrBalanceNotAvailable, "Balance not available")))
-	assert.Equal(t, balance, sdk.ZeroInt())
+	assert.Equal(t, balance, math.ZeroInt())
 }

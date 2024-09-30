@@ -1,11 +1,11 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"fmt"
 	"strconv"
 
 	"cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -28,7 +28,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		pageReq.Offset = offset
 		positions, _, err := k.GetPositions(ctx, pageReq)
 		if err != nil {
-			ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error fetching paginated positions")).Error())
+			ctx.Logger().Error(errorsmod.Wrap(err, fmt.Sprintf("error fetching paginated positions")).Error())
 			return
 		}
 		if offset+uint64(params.NumberPerBlock) >= k.GetOpenPositionCount(ctx) {
@@ -70,8 +70,8 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 	}()
 	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
-		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
-		return false, false, sdk.ZeroDec(), err
+		ctx.Logger().Error(errorsmod.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
+		return false, false, math.LegacyZeroDec(), err
 	}
 	position.PositionHealth = h
 	k.SetPosition(ctx, position)
@@ -87,7 +87,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 
 	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount)
 	if err != nil {
-		ctx.Logger().Debug(errors.Wrap(err, "error executing liquidation").Error())
+		ctx.Logger().Debug(errorsmod.Wrap(err, "error executing liquidation").Error())
 		return isHealthy, true, h, err
 	}
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
@@ -111,7 +111,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 	}()
 	h, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
-		ctx.Logger().Error(errors.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
+		ctx.Logger().Error(errorsmod.Wrap(err, fmt.Sprintf("error updating position health: %s", position.String())).Error())
 		return false, false, err
 	}
 	position.PositionHealth = h
@@ -129,7 +129,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 
 	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount)
 	if err != nil {
-		ctx.Logger().Error(errors.Wrap(err, "error executing close for stopLossPrice").Error())
+		ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 		return underStopLossPrice, true, err
 	}
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,

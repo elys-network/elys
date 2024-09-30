@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/leveragelp/keeper"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -10,7 +10,7 @@ import (
 func (suite *KeeperTestSuite) TestRemove_Pool() {
 	suite.ResetSuite()
 	suite.SetupCoinPrices(suite.ctx)
-	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	testCases := []struct {
 		name                 string
 		input                *types.MsgRemovePool
@@ -37,7 +37,7 @@ func (suite *KeeperTestSuite) TestRemove_Pool() {
 			expectErrMsg: "pool leverage amount is greater than zero",
 			prerequisiteFunction: func() {
 				pool := types.NewPool(1)
-				pool.LeveragedLpAmount = sdk.OneInt()
+				pool.LeveragedLpAmount = sdkmath.OneInt()
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 		},
@@ -50,7 +50,7 @@ func (suite *KeeperTestSuite) TestRemove_Pool() {
 			expectErrMsg: "",
 			prerequisiteFunction: func() {
 				pool := types.NewPool(1)
-				pool.LeveragedLpAmount = sdk.ZeroInt()
+				pool.LeveragedLpAmount = sdkmath.ZeroInt()
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 		},

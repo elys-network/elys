@@ -1,9 +1,9 @@
 package types_test
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 )
@@ -13,20 +13,20 @@ func TestKeeper_GetPerpetualPoolBalances(t *testing.T) {
 	perpetualPool := types.NewPool(1)
 	perpetualPool.PoolAssetsLong = append(perpetualPool.PoolAssetsLong, types.PoolAsset{
 		AssetDenom:   "testAsset",
-		AssetBalance: sdk.NewInt(100),
-		Liabilities:  sdk.NewInt(100),
-		Custody:      sdk.NewInt(100),
+		AssetBalance: math.NewInt(100),
+		Liabilities:  math.NewInt(100),
+		Custody:      math.NewInt(100),
 	})
 	perpetualPool.PoolAssetsShort = append(perpetualPool.PoolAssetsShort, types.PoolAsset{
 		AssetDenom:   "testAsset",
-		AssetBalance: sdk.NewInt(100),
-		Liabilities:  sdk.NewInt(100),
-		Custody:      sdk.NewInt(100),
+		AssetBalance: math.NewInt(100),
+		Liabilities:  math.NewInt(100),
+		Custody:      math.NewInt(100),
 	})
 
 	assetBalance, liabilities, custody := types.GetPerpetualPoolBalances(perpetualPool, "testAsset")
 
-	require.Equal(t, sdk.NewInt(200), assetBalance)
-	require.Equal(t, sdk.NewInt(200), liabilities)
-	require.Equal(t, sdk.NewInt(200), custody)
+	require.Equal(t, math.NewInt(200), assetBalance)
+	require.Equal(t, math.NewInt(200), liabilities)
+	require.Equal(t, math.NewInt(200), custody)
 }

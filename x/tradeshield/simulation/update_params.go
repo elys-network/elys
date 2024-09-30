@@ -17,13 +17,13 @@ func SimulateMsgUpdateParams(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgUpdateParams{
-			Authority: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgUpdateParams{
+		//	Authority: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the UpdateParams simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "UpdateParams simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateParams{}), "UpdateParams simulation not implemented"), nil, nil
 	}
 }

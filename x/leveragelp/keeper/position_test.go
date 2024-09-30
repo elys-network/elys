@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -15,20 +14,20 @@ import (
 
 func TestSetGetPosition(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
 
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
 	for i := 0; i < 2; i++ {
 		position := types.Position{
 			Address:        addr[i].String(),
-			Collateral:     sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
-			Liabilities:    sdk.NewInt(0),
+			Collateral:     sdk.NewCoin(paramtypes.BaseCurrency, math.NewInt(0)),
+			Liabilities:    math.NewInt(0),
 			AmmPoolId:      1,
-			PositionHealth: sdk.NewDec(0),
+			PositionHealth: math.LegacyNewDec(0),
 			Id:             0,
 		}
 		leveragelp.SetPosition(ctx, &position)
@@ -40,20 +39,20 @@ func TestSetGetPosition(t *testing.T) {
 
 func TestSetLiquidation(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
 
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
 	for i := 0; i < 2; i++ {
 		position := types.Position{
 			Address:        addr[i].String(),
-			Collateral:     sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
-			Liabilities:    sdk.NewInt(0),
+			Collateral:     sdk.NewCoin(paramtypes.BaseCurrency, math.NewInt(0)),
+			Liabilities:    math.NewInt(0),
 			AmmPoolId:      1,
-			PositionHealth: sdk.NewDec(0),
+			PositionHealth: math.LegacyNewDec(0),
 			Id:             0,
 		}
 		leveragelp.SetPosition(ctx, &position)
@@ -64,13 +63,13 @@ func TestSetLiquidation(t *testing.T) {
 
 func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
 	stablestake := app.StablestakeKeeper
 
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
 	positions := []struct {
 		Id                uint64
@@ -126,10 +125,10 @@ func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
 			LeveragedLpAmount: info.LeveragedLpAmount,
 			Id:                info.Id,
 			Address:           addr[0].String(),
-			Collateral:        sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
-			Liabilities:       sdk.NewInt(0),
+			Collateral:        sdk.NewCoin(paramtypes.BaseCurrency, math.NewInt(0)),
+			Liabilities:       math.NewInt(0),
 			AmmPoolId:         info.PoolId,
-			PositionHealth:    sdk.NewDec(0),
+			PositionHealth:    math.LegacyNewDec(0),
 		}
 		debt := stablestaketypes.Debt{
 			Address:               position.GetPositionAddress().String(),
@@ -147,12 +146,12 @@ func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
 
 func TestIteratePoolPosIdsStopLossSorted(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
 
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
 	positions := []struct {
 		Id            uint64
@@ -200,10 +199,10 @@ func TestIteratePoolPosIdsStopLossSorted(t *testing.T) {
 			LeveragedLpAmount: math.NewInt(1),
 			Id:                info.Id,
 			Address:           addr[0].String(),
-			Collateral:        sdk.NewCoin(paramtypes.BaseCurrency, sdk.NewInt(0)),
-			Liabilities:       sdk.NewInt(0),
+			Collateral:        sdk.NewCoin(paramtypes.BaseCurrency, math.NewInt(0)),
+			Liabilities:       math.NewInt(0),
 			AmmPoolId:         info.PoolId,
-			PositionHealth:    sdk.NewDec(0),
+			PositionHealth:    math.LegacyNewDec(0),
 			StopLossPrice:     math.LegacyDec(info.StopLossPrice),
 		}
 		leveragelp.SetPosition(ctx, &position)

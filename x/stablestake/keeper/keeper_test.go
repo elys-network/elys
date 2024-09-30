@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -26,7 +25,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	app := simapp.InitElysTestApp(initChain)
 
 	suite.legacyAmino = app.LegacyAmino()
-	suite.ctx = app.BaseApp.NewContext(initChain, tmproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(initChain)
 	suite.app = app
 }
 

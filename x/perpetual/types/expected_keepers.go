@@ -1,9 +1,9 @@
 package types
 
 import (
+	"context"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 )
@@ -46,18 +46,18 @@ type OpenChecker interface {
 
 //go:generate mockery --srcpkg . --name OpenLongChecker --structname OpenLongChecker --filename open_long_checker.go --with-expecter
 type OpenLongChecker interface {
-	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
+	GetMaxLeverageParam(ctx sdk.Context) math.LegacyDec
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
+	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta math.LegacyDec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
-	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
+	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta math.LegacyDec, baseCurrency string, isBroker bool) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	GetMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
-	GetSafetyFactor(ctx sdk.Context) sdk.Dec
+	GetMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error)
+	GetSafetyFactor(ctx sdk.Context) math.LegacyDec
 	SetPool(ctx sdk.Context, pool Pool)
 	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
 	SetMTP(ctx sdk.Context, mtp *MTP) error
@@ -66,18 +66,18 @@ type OpenLongChecker interface {
 
 //go:generate mockery --srcpkg . --name OpenShortChecker --structname OpenShortChecker --filename open_short_checker.go --with-expecter
 type OpenShortChecker interface {
-	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
+	GetMaxLeverageParam(ctx sdk.Context) math.LegacyDec
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
+	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta math.LegacyDec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
-	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
+	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta math.LegacyDec, baseCurrency string, isBroker bool) error
 	UpdatePoolHealth(ctx sdk.Context, pool *Pool) error
 	TakeInCustody(ctx sdk.Context, mtp MTP, pool *Pool) error
-	GetMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error)
-	GetSafetyFactor(ctx sdk.Context) sdk.Dec
+	GetMTPHealth(ctx sdk.Context, mtp MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error)
+	GetSafetyFactor(ctx sdk.Context) math.LegacyDec
 	SetPool(ctx sdk.Context, pool Pool)
 	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
 	SetMTP(ctx sdk.Context, mtp *MTP) error
@@ -114,7 +114,7 @@ type CloseShortChecker interface {
 //
 //go:generate mockery --srcpkg . --name AccountKeeper --structname AccountKeeper --filename account_keeper.go --with-expecter
 type AccountKeeper interface {
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
+	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
 	// Methods imported from account should be defined here
 }
 
@@ -132,8 +132,8 @@ type AmmKeeper interface {
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	GetPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
 
-	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, sdk.Dec, error)
-	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (tokenIn sdk.Coin, slippage sdk.Dec, err error)
+	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec) (sdk.Coin, math.LegacyDec, error)
+	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee math.LegacyDec) (tokenIn sdk.Coin, slippage math.LegacyDec, err error)
 
 	CalcSwapEstimationByDenom(
 		ctx sdk.Context,
@@ -141,20 +141,20 @@ type AmmKeeper interface {
 		denomIn string,
 		denomOut string,
 		baseCurrency string,
-		discount sdk.Dec,
-		overrideSwapFee sdk.Dec,
+		discount math.LegacyDec,
+		overrideSwapFee math.LegacyDec,
 		decimals uint64,
 	) (
 		inRoute []*ammtypes.SwapAmountInRoute,
 		outRoute []*ammtypes.SwapAmountOutRoute,
 		outAmount sdk.Coin,
-		spotPrice sdk.Dec,
-		swapFee sdk.Dec,
-		discountOut sdk.Dec,
+		spotPrice math.LegacyDec,
+		swapFee math.LegacyDec,
+		discountOut math.LegacyDec,
 		availableLiquidity sdk.Coin,
-		slippage sdk.Dec,
-		weightBonus sdk.Dec,
-		priceImpact sdk.Dec,
+		slippage math.LegacyDec,
+		weightBonus math.LegacyDec,
+		priceImpact math.LegacyDec,
 		err error,
 	)
 }
@@ -163,18 +163,18 @@ type AmmKeeper interface {
 //
 //go:generate mockery --srcpkg . --name BankKeeper --structname BankKeeper --filename bank_keeper.go --with-expecter
 type BankKeeper interface {
-	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	GetAllBalances(ctx context.Context, addr sdk.AccAddress) sdk.Coins
+	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
 
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 
-	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule string, recipientModule string, amt sdk.Coins) error
-	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
-	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
-	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromModuleToModule(ctx context.Context, senderModule string, recipientModule string, amt sdk.Coins) error
+	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+	SendCoins(ctx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 
 	BlockedAddr(addr sdk.AccAddress) bool
-	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool
+	HasBalance(ctx context.Context, addr sdk.AccAddress, amt sdk.Coin) bool
 }
 
 // AssetProfileKeeper defines the expected interfaces

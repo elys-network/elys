@@ -7,8 +7,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgUncommitTokens = "uncommit_tokens"
-
 var _ sdk.Msg = &MsgUncommitTokens{}
 
 func NewMsgUncommitTokens(creator string, amount math.Int, denom string) *MsgUncommitTokens {
@@ -17,27 +15,6 @@ func NewMsgUncommitTokens(creator string, amount math.Int, denom string) *MsgUnc
 		Amount:  amount,
 		Denom:   denom,
 	}
-}
-
-func (msg *MsgUncommitTokens) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUncommitTokens) Type() string {
-	return TypeMsgUncommitTokens
-}
-
-func (msg *MsgUncommitTokens) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgUncommitTokens) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg MsgUncommitTokens) ValidateBasic() error {

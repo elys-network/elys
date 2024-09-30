@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,11 +15,11 @@ func (k Keeper) SwapOutAmtGivenIn(
 	snapshot *types.Pool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
-	swapFee sdk.Dec,
-) (tokenOut sdk.Coin, slippage sdk.Dec, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error) {
+	swapFee sdkmath.LegacyDec,
+) (tokenOut sdk.Coin, slippage sdkmath.LegacyDec, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, err error) {
 	ammPool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), fmt.Errorf("invalid pool: %d", poolId)
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("invalid pool: %d", poolId)
 	}
 
 	return ammPool.SwapOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper)

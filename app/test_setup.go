@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"time"
 
+	"cosmossdk.io/log"
 	"cosmossdk.io/math"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/secp256k1"
-	"github.com/cometbft/cometbft/libs/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -162,7 +162,7 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 			Description:       stakingtypes.Description{},
 			UnbondingHeight:   int64(0),
 			UnbondingTime:     time.Unix(0, 0).UTC(),
-			Commission:        stakingtypes.NewCommission(sdk.NewDecWithPrec(5, 2), sdk.NewDecWithPrec(10, 2), sdk.NewDecWithPrec(10, 2)),
+			Commission:        stakingtypes.NewCommission(sdkmath.LegacyNewDecWithPrec(5, 2), sdkmath.LegacyNewDecWithPrec(10, 2), sdkmath.LegacyNewDecWithPrec(10, 2)),
 			MinSelfDelegation: math.OneInt(),
 		}
 		validators = append(validators, validator)

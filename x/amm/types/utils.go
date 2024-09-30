@@ -1,6 +1,7 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	fmt "fmt"
 	"strconv"
 	"strings"
@@ -44,7 +45,7 @@ func EnsureDenomInPool(poolAssetsByDenom map[string]PoolAsset, tokensIn sdk.Coin
 
 // AbsDifferenceWithSign returns | a - b |, (a - b).sign()
 // a is mutated and returned.
-func AbsDifferenceWithSign(a, b sdk.Dec) (sdk.Dec, bool) {
+func AbsDifferenceWithSign(a, b sdkmath.LegacyDec) (sdkmath.LegacyDec, bool) {
 	if a.GTE(b) {
 		return a.SubMut(b), false
 	} else {
@@ -53,21 +54,21 @@ func AbsDifferenceWithSign(a, b sdk.Dec) (sdk.Dec, bool) {
 }
 
 // ApplyDiscount applies discount to swap fee if applicable
-func ApplyDiscount(swapFee sdk.Dec, discount sdk.Dec) sdk.Dec {
+func ApplyDiscount(swapFee sdkmath.LegacyDec, discount sdkmath.LegacyDec) sdkmath.LegacyDec {
 	// apply discount percentage to swap fee
-	swapFee = swapFee.Mul(sdk.OneDec().Sub(discount))
+	swapFee = swapFee.Mul(sdkmath.LegacyOneDec().Sub(discount))
 	return swapFee
 }
 
-func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut sdk.Dec, poolParams PoolParams) sdk.Dec {
-	weightBreakingFee := sdk.ZeroDec()
+func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut sdkmath.LegacyDec, poolParams PoolParams) sdkmath.LegacyDec {
+	weightBreakingFee := sdkmath.LegacyZeroDec()
 	if !weightOut.IsZero() && !weightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() && !poolParams.WeightBreakingFeeMultiplier.IsZero() {
 		// (45/55*60/40) ^ 2.5
 		weightBreakingFee = poolParams.WeightBreakingFeeMultiplier.
 			Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), poolParams.WeightBreakingFeeExponent))
 
-		if weightBreakingFee.GT(sdk.NewDecWithPrec(99, 2)) {
-			weightBreakingFee = sdk.NewDecWithPrec(99, 2)
+		if weightBreakingFee.GT(sdkmath.LegacyNewDecWithPrec(99, 2)) {
+			weightBreakingFee = sdkmath.LegacyNewDecWithPrec(99, 2)
 		}
 	}
 	return weightBreakingFee
@@ -78,7 +79,7 @@ func (params PoolParams) Validate(poolWeights []PoolAsset) error {
 		return ErrNegativeExitFee
 	}
 
-	if params.ExitFee.GTE(sdk.OneDec()) {
+	if params.ExitFee.GTE(sdkmath.LegacyOneDec()) {
 		return ErrTooMuchExitFee
 	}
 
@@ -86,7 +87,7 @@ func (params PoolParams) Validate(poolWeights []PoolAsset) error {
 		return ErrNegativeSwapFee
 	}
 
-	if params.SwapFee.GTE(sdk.OneDec()) {
+	if params.SwapFee.GTE(sdkmath.LegacyOneDec()) {
 		return ErrTooMuchSwapFee
 	}
 
@@ -120,7 +121,7 @@ func GetPoolAssetByDenom(assets []PoolAsset, denom string) (PoolAsset, bool) {
 
 // validates a pool asset, to check if it has a valid weight.
 func (pa PoolAsset) validateWeight() error {
-	if pa.Weight.LTE(sdk.ZeroInt()) {
+	if pa.Weight.LTE(sdkmath.ZeroInt()) {
 		return fmt.Errorf("a token's weight in the pool must be greater than 0")
 	}
 

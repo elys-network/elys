@@ -2,14 +2,15 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func PortionCoins(coins sdk.Coins, portion sdk.Dec) sdk.Coins {
+func PortionCoins(coins sdk.Coins, portion sdkmath.LegacyDec) sdk.Coins {
 	portionCoins := sdk.Coins{}
 	for _, coin := range coins {
-		portionAmount := sdk.NewDecFromInt(coin.Amount).Mul(portion).RoundInt()
+		portionAmount := sdkmath.LegacyNewDecFromInt(coin.Amount).Mul(portion).RoundInt()
 		portionCoins = portionCoins.Add(sdk.NewCoin(
 			coin.Denom, portionAmount,
 		))
@@ -50,7 +51,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
 		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
-		tokenOutCoin, _, _, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdk.ZeroDec(), k.accountedPoolKeeper)
+		tokenOutCoin, _, _, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdkmath.LegacyZeroDec(), k.accountedPoolKeeper)
 		if err != nil {
 			return err
 		}
@@ -63,7 +64,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 		// Also emits a swap event and updates related liquidity metrics.
-		_, err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, poolRevenueAddress, tokenIn, tokenOutCoin, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
+		_, err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, poolRevenueAddress, tokenIn, tokenOutCoin, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())
 		if err != nil {
 			return err
 		}

@@ -1,10 +1,10 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -31,7 +31,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	app := simapp.InitElysTestApp(initChain)
 
 	suite.legacyAmino = app.LegacyAmino()
-	suite.ctx = app.BaseApp.NewContext(initChain, tmproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(initChain)
 	suite.app = app
 }
 
@@ -59,21 +59,21 @@ func (suite *KeeperTestSuite) SetupStableCoinPrices() {
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDC",
-		Price:     sdk.NewDec(1),
+		Price:     sdkmath.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDT",
-		Price:     sdk.NewDec(1),
+		Price:     sdkmath.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDA",
-		Price:     sdk.NewDec(1),
+		Price:     sdkmath.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
@@ -86,10 +86,10 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 		{
 			PoolId: 1,
 			PoolAssets: []types.PoolAsset{
-				{Token: sdk.NewCoin("denom1", sdk.NewInt(1000)), Weight: sdk.OneInt()},
-				{Token: sdk.NewCoin("denom2", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+				{Token: sdk.NewCoin("denom1", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
+				{Token: sdk.NewCoin("denom2", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
 			},
-			TotalWeight: sdk.NewInt(2),
+			TotalWeight: sdkmath.NewInt(2),
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},
@@ -98,10 +98,10 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 		{
 			PoolId: 2,
 			PoolAssets: []types.PoolAsset{
-				{Token: sdk.NewCoin("uusdc", sdk.NewInt(1000)), Weight: sdk.OneInt()},
-				{Token: sdk.NewCoin("denom1", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+				{Token: sdk.NewCoin("uusdc", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
+				{Token: sdk.NewCoin("denom1", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
 			},
-			TotalWeight: sdk.NewInt(2),
+			TotalWeight: sdkmath.NewInt(2),
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},
@@ -110,10 +110,10 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 		{
 			PoolId: 3,
 			PoolAssets: []types.PoolAsset{
-				{Token: sdk.NewCoin("uusdc", sdk.NewInt(1000)), Weight: sdk.OneInt()},
-				{Token: sdk.NewCoin("denom3", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+				{Token: sdk.NewCoin("uusdc", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
+				{Token: sdk.NewCoin("denom3", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
 			},
-			TotalWeight: sdk.NewInt(2),
+			TotalWeight: sdkmath.NewInt(2),
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},

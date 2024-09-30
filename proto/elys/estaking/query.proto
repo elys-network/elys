@@ -17,7 +17,8 @@ service Query {
   }
   // Rewards queries the total rewards accrued by a delegation
   rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
-    option (google.api.http).get = "/elys-network/elys/estaking/rewards/{address}";
+    option (google.api.http).get =
+        "/elys-network/elys/estaking/rewards/{address}";
   }
   // Invariant queries the invariant values
   rpc Invariant(QueryInvariantRequest) returns (QueryInvariantResponse) {
@@ -31,12 +32,10 @@ message QueryParamsRequest {}
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryRewardsRequest {
-  string address = 1;
-}
+message QueryRewardsRequest { string address = 1; }
 
 message DelegationDelegatorReward {
   string validator_address = 1;
@@ -48,10 +47,11 @@ message DelegationDelegatorReward {
 
 message QueryRewardsResponse {
   // rewards defines all the rewards accrued by a delegator.
-  repeated DelegationDelegatorReward rewards = 1 [(gogoproto.nullable) = false];
+  repeated DelegationDelegatorReward rewards = 1
+      [ (gogoproto.nullable) = false ];
   // total defines the sum of all the rewards.
   repeated cosmos.base.v1beta1.Coin total = 2 [
-    (gogoproto.nullable)     = false,
+    (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }
@@ -59,11 +59,11 @@ message QueryRewardsResponse {
 message QueryInvariantRequest {}
 message QueryInvariantResponse {
   string total_bonded = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   string bonded_validator_tokens_sum = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 }

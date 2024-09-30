@@ -2,10 +2,10 @@ package cli
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/spf13/cobra"
@@ -17,7 +17,7 @@ func CmdStake() *cobra.Command {
 		Short: "Stake Elys tokens",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argAmount, found := sdk.NewIntFromString(args[0])
+			argAmount, found := math.NewIntFromString(args[0])
 			if !found {
 				return errorsmod.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
 			}

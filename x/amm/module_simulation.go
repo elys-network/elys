@@ -4,7 +4,6 @@ import (
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
@@ -54,7 +53,7 @@ const (
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
-func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
+func (am AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	accs := make([]string, len(simState.Accounts))
 	for i, acc := range simState.Accounts {
 		accs[i] = acc.Address.String()
@@ -72,14 +71,15 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 }
 
 // RegisterStoreDecoder registers a decoder
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(registry simtypes.StoreDecoderRegistry) {
+}
 
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgCreatePool int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePool, &weightMsgCreatePool, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreatePool, &weightMsgCreatePool, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreatePool = defaultWeightMsgCreatePool
 		},
@@ -90,7 +90,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgJoinPool int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgJoinPool, &weightMsgJoinPool, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgJoinPool, &weightMsgJoinPool, nil,
 		func(_ *rand.Rand) {
 			weightMsgJoinPool = defaultWeightMsgJoinPool
 		},
@@ -101,7 +101,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgExitPool int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgExitPool, &weightMsgExitPool, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgExitPool, &weightMsgExitPool, nil,
 		func(_ *rand.Rand) {
 			weightMsgExitPool = defaultWeightMsgExitPool
 		},
@@ -112,7 +112,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgSwapExactAmountIn int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSwapExactAmountIn, &weightMsgSwapExactAmountIn, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgSwapExactAmountIn, &weightMsgSwapExactAmountIn, nil,
 		func(_ *rand.Rand) {
 			weightMsgSwapExactAmountIn = defaultWeightMsgSwapExactAmountIn
 		},
@@ -123,7 +123,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgSwapExactAmountOut int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSwapExactAmountOut, &weightMsgSwapExactAmountOut, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgSwapExactAmountOut, &weightMsgSwapExactAmountOut, nil,
 		func(_ *rand.Rand) {
 			weightMsgSwapExactAmountOut = defaultWeightMsgSwapExactAmountOut
 		},
@@ -134,7 +134,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgSwapByDenom int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSwapByDenom, &weightMsgSwapByDenom, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgSwapByDenom, &weightMsgSwapByDenom, nil,
 		func(_ *rand.Rand) {
 			weightMsgSwapByDenom = defaultWeightMsgSwapByDenom
 		},
@@ -145,7 +145,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdatePoolParams int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePoolParams, &weightMsgUpdatePoolParams, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdatePoolParams, &weightMsgUpdatePoolParams, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdatePoolParams = defaultWeightMsgUpdatePoolParams
 		},

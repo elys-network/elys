@@ -2,7 +2,7 @@ package ante
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -31,16 +31,19 @@ func (min MinCommissionDecorator) getValidator(ctx sdk.Context, bech32ValAddr st
 		return stakingtypes.Validator{}, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, bech32ValAddr)
 	}
 
-	val, found := min.sk.GetValidator(ctx, valAddr)
-	if !found {
+	val, err := min.sk.GetValidator(ctx, valAddr)
+	if err != nil {
 		return stakingtypes.Validator{}, errorsmod.Register("ante", 12, "validator does not exist")
 	}
 
 	return val, nil
 }
 
-func (min MinCommissionDecorator) getTotalDelegatedTokens(ctx sdk.Context) math.Int {
-	bondDenom := min.sk.BondDenom(ctx)
+func (min MinCommissionDecorator) getTotalDelegatedTokens(ctx sdk.Context) sdkmath.Int {
+	bondDenom, err := min.sk.BondDenom(ctx)
+	if err != nil {
+		panic(err)
+	}
 	bondedPool := min.sk.GetBondedPool(ctx)
 	notBondedPool := min.sk.GetNotBondedPool(ctx)
 
@@ -51,11 +54,11 @@ func (min MinCommissionDecorator) getTotalDelegatedTokens(ctx sdk.Context) math.
 }
 
 // Returns the projected voting power as a percentage (not a fraction)
-func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk.Context, delegateAmount sdk.Dec) sdk.Dec {
-	totalDelegatedTokens := sdk.NewDecFromInt(min.getTotalDelegatedTokens(ctx))
+func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk.Context, delegateAmount sdkmath.LegacyDec) sdkmath.LegacyDec {
+	totalDelegatedTokens := sdkmath.LegacyNewDecFromInt(min.getTotalDelegatedTokens(ctx))
 	// If I am the first validator, then accept 100% voting power
-	if totalDelegatedTokens.LTE(sdk.ZeroDec()) {
-		return sdk.ZeroDec()
+	if totalDelegatedTokens.LTE(sdkmath.LegacyZeroDec()) {
+		return sdkmath.LegacyZeroDec()
 	}
 
 	projectedTotalDelegatedTokens := totalDelegatedTokens.Add(delegateAmount)
@@ -63,38 +66,38 @@ func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk
 
 	// Ensure projectedTotalDelegatedTokens is not zero to avoid division by zero
 	if projectedTotalDelegatedTokens.IsZero() {
-		return sdk.ZeroDec()
+		return sdkmath.LegacyZeroDec()
 	}
 
 	return projectedValidatorTokens.Quo(projectedTotalDelegatedTokens)
 }
 
 // Returns the projected voting power as a percentage (not a fraction)
-func (min MinCommissionDecorator) CalculateDelegateProjectedVotingPower(ctx sdk.Context, validator stakingtypes.ValidatorI, delegateAmount sdk.Dec) sdk.Dec {
-	validatorTokens := sdk.NewDecFromInt(validator.GetTokens())
-	totalDelegatedTokens := sdk.NewDecFromInt(min.getTotalDelegatedTokens(ctx))
+func (min MinCommissionDecorator) CalculateDelegateProjectedVotingPower(ctx sdk.Context, validator stakingtypes.ValidatorI, delegateAmount sdkmath.LegacyDec) sdkmath.LegacyDec {
+	validatorTokens := sdkmath.LegacyNewDecFromInt(validator.GetTokens())
+	totalDelegatedTokens := sdkmath.LegacyNewDecFromInt(min.getTotalDelegatedTokens(ctx))
 
 	projectedTotalDelegatedTokens := totalDelegatedTokens.Add(delegateAmount)
 	projectedValidatorTokens := validatorTokens.Add(delegateAmount)
 
 	// Ensure projectedTotalDelegatedTokens is not zero to avoid division by zero
 	if projectedTotalDelegatedTokens.IsZero() {
-		return sdk.ZeroDec()
+		return sdkmath.LegacyZeroDec()
 	}
 
 	return projectedValidatorTokens.Quo(projectedTotalDelegatedTokens)
 }
 
 // Returns the projected voting power as a percentage (not a fraction)
-func (min MinCommissionDecorator) CalculateRedelegateProjectedVotingPower(ctx sdk.Context, validator stakingtypes.ValidatorI, delegateAmount sdk.Dec) sdk.Dec {
-	validatorTokens := sdk.NewDecFromInt(validator.GetTokens())
-	projectedTotalDelegatedTokens := sdk.NewDecFromInt(min.getTotalDelegatedTokens(ctx)) // no additional delegated tokens
+func (min MinCommissionDecorator) CalculateRedelegateProjectedVotingPower(ctx sdk.Context, validator stakingtypes.ValidatorI, delegateAmount sdkmath.LegacyDec) sdkmath.LegacyDec {
+	validatorTokens := sdkmath.LegacyNewDecFromInt(validator.GetTokens())
+	projectedTotalDelegatedTokens := sdkmath.LegacyNewDecFromInt(min.getTotalDelegatedTokens(ctx)) // no additional delegated tokens
 
 	projectedValidatorTokens := validatorTokens.Add(delegateAmount)
 
 	// Ensure projectedTotalDelegatedTokens is not zero to avoid division by zero
 	if projectedTotalDelegatedTokens.IsZero() {
-		return sdk.ZeroDec()
+		return sdkmath.LegacyZeroDec()
 	}
 
 	return projectedValidatorTokens.Quo(projectedTotalDelegatedTokens)
@@ -119,11 +122,11 @@ func (min MinCommissionDecorator) AnteHandle(
 			if msg.Commission.Rate.LT(minCommissionRate) {
 				return errorsmod.Wrap(sdkerrors.ErrUnauthorized, "commission can't be lower than 5%")
 			}
-			projectedVotingPower := min.CalculateValidatorProjectedVotingPower(ctx, sdk.NewDecFromInt(msg.Value.Amount))
+			projectedVotingPower := min.CalculateValidatorProjectedVotingPower(ctx, sdkmath.LegacyNewDecFromInt(msg.Value.Amount))
 			if projectedVotingPower.GT(maxVotingPower) {
 				return errorsmod.Wrapf(
 					sdkerrors.ErrInvalidRequest,
-					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdk.NewDec(100)), maxVotingPower.Mul(sdk.NewDec(100)))
+					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdkmath.LegacyNewDec(100)), maxVotingPower.Mul(sdkmath.LegacyNewDec(100)))
 			}
 		case *stakingtypes.MsgEditValidator:
 			// if commission rate is nil, it means only
@@ -140,11 +143,11 @@ func (min MinCommissionDecorator) AnteHandle(
 				return err
 			}
 
-			projectedVotingPower := min.CalculateDelegateProjectedVotingPower(ctx, val, sdk.NewDecFromInt(msg.Amount.Amount))
+			projectedVotingPower := min.CalculateDelegateProjectedVotingPower(ctx, val, sdkmath.LegacyNewDecFromInt(msg.Amount.Amount))
 			if projectedVotingPower.GT(maxVotingPower) {
 				return errorsmod.Wrapf(
 					sdkerrors.ErrInvalidRequest,
-					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdk.NewDec(100)), maxVotingPower.Mul(sdk.NewDec(100)))
+					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please delegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdkmath.LegacyNewDec(100)), maxVotingPower.Mul(sdkmath.LegacyNewDec(100)))
 			}
 		case *stakingtypes.MsgBeginRedelegate:
 			dstVal, err := min.getValidator(ctx, msg.ValidatorDstAddress)
@@ -152,20 +155,20 @@ func (min MinCommissionDecorator) AnteHandle(
 				return err
 			}
 
-			var delegateAmount sdk.Dec
+			var delegateAmount sdkmath.LegacyDec
 			if msg.ValidatorSrcAddress == msg.ValidatorDstAddress {
 				// This is blocked later on by the SDK. However we may as well calculate the correct projected voting power.
 				// Since this is a self redelegation, no additional tokens are delegated to this validator hence delegateAmount = 0
-				delegateAmount = sdk.ZeroDec()
+				delegateAmount = sdkmath.LegacyZeroDec()
 			} else {
-				delegateAmount = sdk.NewDecFromInt(msg.Amount.Amount)
+				delegateAmount = sdkmath.LegacyNewDecFromInt(msg.Amount.Amount)
 			}
 
 			projectedVotingPower := min.CalculateRedelegateProjectedVotingPower(ctx, dstVal, delegateAmount)
 			if projectedVotingPower.GT(maxVotingPower) {
 				return errorsmod.Wrapf(
 					sdkerrors.ErrInvalidRequest,
-					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please redelegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdk.NewDec(100)), maxVotingPower.Mul(sdk.NewDec(100)))
+					"This validator has a voting power of %s%%. Delegations not allowed to a validator whose post-delegation voting power is more than %s%%. Please redelegate to a validator with less bonded tokens", projectedVotingPower.Mul(sdkmath.LegacyNewDec(100)), maxVotingPower.Mul(sdkmath.LegacyNewDec(100)))
 			}
 		}
 

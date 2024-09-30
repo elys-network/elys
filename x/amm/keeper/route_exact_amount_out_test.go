@@ -15,12 +15,12 @@ func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
 		senderInitBalance   sdk.Coins
 		poolInitBalance     sdk.Coins
 		treasuryInitBalance sdk.Coins
-		swapFeeIn           sdk.Dec
-		swapFeeOut          sdk.Dec
+		swapFeeIn           math.LegacyDec
+		swapFeeOut          math.LegacyDec
 		tokenIn             sdk.Coin
 		tokenInMax          math.Int
 		tokenOut            sdk.Coin
-		weightBalanceBonus  sdk.Dec
+		weightBalanceBonus  math.LegacyDec
 		expSenderBalance    sdk.Coins
 		expPoolBalance      sdk.Coins
 		expTreasuryBalance  sdk.Coins
@@ -31,12 +31,12 @@ func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFeeIn:           sdk.ZeroDec(),
-			swapFeeOut:          sdk.ZeroDec(),
+			swapFeeIn:           math.LegacyZeroDec(),
+			swapFeeOut:          math.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10000),
-			tokenInMax:          sdk.NewInt(10000000),
+			tokenInMax:          math.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdk.ZeroDec(),
+			weightBalanceBonus:  math.LegacyZeroDec(),
 			expSenderBalance:    sdk.Coins{},
 			expPoolBalance:      sdk.Coins{},
 			expTreasuryBalance:  sdk.Coins{},
@@ -47,12 +47,12 @@ func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 100)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFeeIn:           sdk.ZeroDec(),
-			swapFeeOut:          sdk.ZeroDec(),
+			swapFeeIn:           math.LegacyZeroDec(),
+			swapFeeOut:          math.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10000),
-			tokenInMax:          sdk.NewInt(10000000),
+			tokenInMax:          math.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdk.ZeroDec(),
+			weightBalanceBonus:  math.LegacyZeroDec(),
 			expSenderBalance:    sdk.Coins{},
 			expPoolBalance:      sdk.Coins{},
 			expTreasuryBalance:  sdk.Coins{},
@@ -63,12 +63,12 @@ func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFeeIn:           sdk.NewDecWithPrec(1, 2), // 1%
-			swapFeeOut:          sdk.ZeroDec(),
+			swapFeeIn:           math.LegacyNewDecWithPrec(1, 2), // 1%
+			swapFeeOut:          math.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10102),
-			tokenInMax:          sdk.NewInt(10000000),
+			tokenInMax:          math.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdk.ZeroDec(),
+			weightBalanceBonus:  math.LegacyZeroDec(),
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989898), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010102), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
@@ -79,12 +79,12 @@ func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFeeIn:           sdk.ZeroDec(),
-			swapFeeOut:          sdk.ZeroDec(),
+			swapFeeIn:           math.LegacyZeroDec(),
+			swapFeeOut:          math.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10102),
-			tokenInMax:          sdk.NewInt(10000000),
+			tokenInMax:          math.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdk.ZeroDec(),
+			weightBalanceBonus:  math.LegacyZeroDec(),
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989898), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010102), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
@@ -95,12 +95,12 @@ func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			swapFeeIn:           sdk.ZeroDec(),
-			swapFeeOut:          sdk.ZeroDec(),
+			swapFeeIn:           math.LegacyZeroDec(),
+			swapFeeOut:          math.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10102),
-			tokenInMax:          sdk.NewInt(10000000),
+			tokenInMax:          math.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdk.NewDecWithPrec(3, 1), // 30% bonus
+			weightBalanceBonus:  math.LegacyNewDecWithPrec(3, 1), // 30% bonus
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989898), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010102), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
@@ -111,12 +111,12 @@ func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
 			senderInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100)},
-			swapFeeIn:           sdk.ZeroDec(),
-			swapFeeOut:          sdk.ZeroDec(),
+			swapFeeIn:           math.LegacyZeroDec(),
+			swapFeeOut:          math.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10102),
-			tokenInMax:          sdk.NewInt(10000000),
+			tokenInMax:          math.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdk.NewDecWithPrec(3, 1), // 30% bonus
+			weightBalanceBonus:  math.LegacyNewDecWithPrec(3, 1), // 30% bonus
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989898), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010102), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100)},
@@ -163,14 +163,14 @@ func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  tc.poolInitBalance[0],
-						Weight: sdk.NewInt(10),
+						Weight: math.NewInt(10),
 					},
 					{
 						Token:  tc.poolInitBalance[1],
-						Weight: sdk.NewInt(10),
+						Weight: math.NewInt(10),
 					},
 				},
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: math.ZeroInt(),
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 
@@ -184,7 +184,7 @@ func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
 						TokenInDenom: tc.tokenIn.Denom,
 					},
 				}, tc.tokenInMax, tc.tokenOut,
-				sdk.ZeroDec(),
+				math.LegacyZeroDec(),
 			)
 			if !tc.expPass {
 				suite.Require().Error(err)

@@ -1,6 +1,7 @@
 package migrations
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/commitment/types"
 )
@@ -30,7 +31,7 @@ func (m Migrator) V4Migration(ctx sdk.Context) error {
 
 		newCommittedTokens := []*types.CommittedTokens{}
 		for _, commitmentToken := range c.CommittedTokens {
-			if commitmentToken.Amount.GT(sdk.ZeroInt()) {
+			if commitmentToken.Amount.GT(sdkmath.ZeroInt()) {
 				newCommittedTokens = append(newCommittedTokens, commitmentToken)
 			}
 		}

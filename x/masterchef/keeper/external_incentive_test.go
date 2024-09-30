@@ -1,10 +1,9 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/masterchef/types"
 	"github.com/stretchr/testify/require"
@@ -12,7 +11,7 @@ import (
 
 func TestExternalIncentive(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	externalIncentives := []types.ExternalIncentive{
 		{
@@ -21,8 +20,8 @@ func TestExternalIncentive(t *testing.T) {
 			PoolId:         1,
 			FromBlock:      0,
 			ToBlock:        100,
-			AmountPerBlock: sdk.OneInt(),
-			Apr:            sdk.ZeroDec(),
+			AmountPerBlock: sdkmath.OneInt(),
+			Apr:            sdkmath.LegacyZeroDec(),
 		},
 		{
 			Id:             1,
@@ -30,8 +29,8 @@ func TestExternalIncentive(t *testing.T) {
 			PoolId:         1,
 			FromBlock:      0,
 			ToBlock:        100,
-			AmountPerBlock: sdk.OneInt(),
-			Apr:            sdk.ZeroDec(),
+			AmountPerBlock: sdkmath.OneInt(),
+			Apr:            sdkmath.LegacyZeroDec(),
 		},
 		{
 			Id:             2,
@@ -39,8 +38,8 @@ func TestExternalIncentive(t *testing.T) {
 			PoolId:         2,
 			FromBlock:      0,
 			ToBlock:        100,
-			AmountPerBlock: sdk.OneInt(),
-			Apr:            sdk.ZeroDec(),
+			AmountPerBlock: sdkmath.OneInt(),
+			Apr:            sdkmath.LegacyZeroDec(),
 		},
 	}
 	for _, externalIncentive := range externalIncentives {

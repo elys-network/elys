@@ -31,7 +31,6 @@ func SimulateMsgCreatePendingPerpetualOrder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -65,7 +64,7 @@ func SimulateMsgUpdatePendingPerpetualOrder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingPerpetualOrder creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePendingPerpetualOrder{}), "pendingPerpetualOrder creator not found"), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
 		msg.Id = pendingPerpetualOrder.OrderId
@@ -76,7 +75,6 @@ func SimulateMsgUpdatePendingPerpetualOrder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -110,7 +108,7 @@ func SimulateMsgDeletePendingPerpetualOrder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingPerpetualOrder creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePendingPerpetualOrder{}), "pendingPerpetualOrder creator not found"), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
 		msg.Id = pendingPerpetualOrder.OrderId
@@ -121,7 +119,6 @@ func SimulateMsgDeletePendingPerpetualOrder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,

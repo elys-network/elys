@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,6 +12,9 @@ import (
 )
 
 func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom) (*types.MsgSwapByDenomResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
@@ -24,7 +28,7 @@ func (k msgServer) SwapByDenom(goCtx context.Context, msg *types.MsgSwapByDenom)
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	inRoute, outRoute, _, spotPrice, _, _, _, _, _, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Discount, sdk.ZeroDec(), 0)
+	inRoute, outRoute, _, spotPrice, _, _, _, _, _, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Discount, sdkmath.LegacyZeroDec(), 0)
 	if err != nil {
 		return nil, err
 	}

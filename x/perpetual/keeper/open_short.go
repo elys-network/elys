@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -8,13 +9,13 @@ import (
 func (k Keeper) OpenShort(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
 	// Determine the maximum leverage available and compute the effective leverage to be used.
 	maxLeverage := k.OpenShortChecker.GetMaxLeverageParam(ctx)
-	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
+	leverage := sdkmath.LegacyMinDec(msg.Leverage, maxLeverage)
 
 	// Calculate the eta value.
-	eta := leverage.Sub(sdk.OneDec())
+	eta := leverage.Sub(sdkmath.LegacyOneDec())
 
 	// Convert the collateral amount into a decimal format.
-	collateralAmountDec := sdk.NewDecFromBigInt(msg.Collateral.Amount.BigInt())
+	collateralAmountDec := sdkmath.LegacyNewDecFromBigInt(msg.Collateral.Amount.BigInt())
 
 	// Define the assets
 	liabilitiesAsset := msg.TradingAsset

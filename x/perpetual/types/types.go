@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
@@ -17,35 +18,35 @@ func GetPositionFromString(s string) Position {
 	}
 }
 
-func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsset string, position Position, leverage, takeProfitPrice sdk.Dec, poolId uint64) *MTP {
+func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsset string, position Position, leverage, takeProfitPrice sdkmath.LegacyDec, poolId uint64) *MTP {
 	return &MTP{
 		Address:                        signer,
 		CollateralAsset:                collateralAsset,
 		TradingAsset:                   tradingAsset,
 		LiabilitiesAsset:               liabilitiesAsset,
 		CustodyAsset:                   custodyAsset,
-		Collateral:                     sdk.ZeroInt(),
-		Liabilities:                    sdk.ZeroInt(),
-		BorrowInterestPaidCollateral:   sdk.ZeroInt(),
-		BorrowInterestPaidCustody:      sdk.ZeroInt(),
-		BorrowInterestUnpaidCollateral: sdk.ZeroInt(),
-		Custody:                        sdk.ZeroInt(),
-		TakeProfitLiabilities:          sdk.ZeroInt(),
-		TakeProfitCustody:              sdk.ZeroInt(),
+		Collateral:                     sdkmath.ZeroInt(),
+		Liabilities:                    sdkmath.ZeroInt(),
+		BorrowInterestPaidCollateral:   sdkmath.ZeroInt(),
+		BorrowInterestPaidCustody:      sdkmath.ZeroInt(),
+		BorrowInterestUnpaidCollateral: sdkmath.ZeroInt(),
+		Custody:                        sdkmath.ZeroInt(),
+		TakeProfitLiabilities:          sdkmath.ZeroInt(),
+		TakeProfitCustody:              sdkmath.ZeroInt(),
 		Leverage:                       leverage,
-		MtpHealth:                      sdk.ZeroDec(),
+		MtpHealth:                      sdkmath.LegacyZeroDec(),
 		Position:                       position,
 		Id:                             0,
 		AmmPoolId:                      poolId,
 		ConsolidateLeverage:            leverage,
-		SumCollateral:                  sdk.ZeroInt(),
+		SumCollateral:                  sdkmath.ZeroInt(),
 		TakeProfitPrice:                takeProfitPrice,
-		TakeProfitBorrowRate:           sdk.OneDec(),
-		FundingFeePaidCollateral:       sdk.ZeroInt(),
-		FundingFeePaidCustody:          sdk.ZeroInt(),
-		FundingFeeReceivedCollateral:   sdk.ZeroInt(),
-		FundingFeeReceivedCustody:      sdk.ZeroInt(),
-		OpenPrice:                      sdk.ZeroDec(),
+		TakeProfitBorrowRate:           sdkmath.LegacyOneDec(),
+		FundingFeePaidCollateral:       sdkmath.ZeroInt(),
+		FundingFeePaidCustody:          sdkmath.ZeroInt(),
+		FundingFeeReceivedCollateral:   sdkmath.ZeroInt(),
+		FundingFeeReceivedCustody:      sdkmath.ZeroInt(),
+		OpenPrice:                      sdkmath.LegacyZeroDec(),
 	}
 }
 

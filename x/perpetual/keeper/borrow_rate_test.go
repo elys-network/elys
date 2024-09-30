@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,7 +17,7 @@ func createNBorrowRate(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.I
 	ctx = ctx.WithBlockHeight(1000)
 	curBlock := ctx.BlockHeight()
 	for i := range items {
-		items[i].InterestRate = sdk.NewDec(int64(i + 1)) // Start from 1 to avoid zero interest
+		items[i].InterestRate = sdkmath.LegacyNewDec(int64(i + 1)) // Start from 1 to avoid zero interest
 		items[i].BlockHeight = int64(i * 10)
 
 		curBlock++
@@ -31,18 +32,18 @@ func TestBorrowRateGet(t *testing.T) {
 	ctx = ctx.WithBlockHeight(lastBlock)
 
 	// 1st case: recent block
-	res := keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-2), 1, sdk.NewDec(1000))
-	require.Equal(t, sdk.NewDec(19000), res) // 19 * 1000
+	res := keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-2), 1, sdkmath.LegacyNewDec(1000))
+	require.Equal(t, sdkmath.LegacyNewDec(19000), res) // 19 * 1000
 
 	// 2nd case: older block
-	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-8), 1, sdk.NewDec(1000))
-	require.Equal(t, sdk.NewDec(52000), res) // 52 * 1000
+	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-8), 1, sdkmath.LegacyNewDec(1000))
+	require.Equal(t, sdkmath.LegacyNewDec(52000), res) // 52 * 1000
 
 	// 3rd case: future block (should return zero)
-	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()+10), 1, sdk.NewDec(1000))
-	require.Equal(t, sdk.ZeroDec(), res)
+	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()+10), 1, sdkmath.LegacyNewDec(1000))
+	require.Equal(t, sdkmath.LegacyZeroDec(), res)
 
 	// 4th case: non-existent pool
-	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-2), 2, sdk.NewDec(1000))
-	require.Equal(t, sdk.ZeroDec(), res)
+	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-2), 2, sdkmath.LegacyNewDec(1000))
+	require.Equal(t, sdkmath.LegacyZeroDec(), res)
 }

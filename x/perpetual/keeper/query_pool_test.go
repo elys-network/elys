@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -21,7 +20,7 @@ import (
 
 func TestPools_InvalidRequest(t *testing.T) {
 	mockAmm := new(mocks.AmmKeeper)
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
 	ctx := sdk.Context{}
 	_, err := k.Pools(ctx, nil)
 
@@ -31,7 +30,7 @@ func TestPools_InvalidRequest(t *testing.T) {
 func TestPools_ErrPoolDoesNotExist(t *testing.T) {
 
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	app.PerpetualKeeper.SetPool(ctx, types.Pool{
 		AmmPoolId: uint64(23),
@@ -44,7 +43,7 @@ func TestPools_ErrPoolDoesNotExist(t *testing.T) {
 func TestPools_Success(t *testing.T) {
 
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	app.PerpetualKeeper.SetPool(ctx, types.Pool{
 		AmmPoolId: uint64(1),

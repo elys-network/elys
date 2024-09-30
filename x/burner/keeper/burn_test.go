@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -42,14 +43,14 @@ func TestBurnTokensForAllDenoms(t *testing.T) {
 		callback(banktypes.Metadata{Base: balances[1].denom})
 	}).Once()
 
-	bankKeeper.EXPECT().GetBalance(ctx, types.GetZeroAddress(), balances[0].denom).Return(sdk.NewCoin(balances[0].denom, sdk.NewInt(balances[0].amount))).Once()
-	bankKeeper.EXPECT().GetBalance(ctx, types.GetZeroAddress(), balances[1].denom).Return(sdk.NewCoin(balances[1].denom, sdk.NewInt(balances[1].amount))).Once()
+	bankKeeper.EXPECT().GetBalance(ctx, types.GetZeroAddress(), balances[0].denom).Return(sdk.NewCoin(balances[0].denom, math.NewInt(balances[0].amount))).Once()
+	bankKeeper.EXPECT().GetBalance(ctx, types.GetZeroAddress(), balances[1].denom).Return(sdk.NewCoin(balances[1].denom, math.NewInt(balances[1].amount))).Once()
 
-	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, types.GetZeroAddress(), types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[0].denom, sdk.NewInt(balances[0].amount)))).Return(nil).Once()
-	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, types.GetZeroAddress(), types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[1].denom, sdk.NewInt(balances[1].amount)))).Return(nil).Once()
+	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, types.GetZeroAddress(), types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[0].denom, math.NewInt(balances[0].amount)))).Return(nil).Once()
+	bankKeeper.EXPECT().SendCoinsFromAccountToModule(ctx, types.GetZeroAddress(), types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[1].denom, math.NewInt(balances[1].amount)))).Return(nil).Once()
 
-	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[0].denom, sdk.NewInt(balances[0].amount)))).Return(nil)
-	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[1].denom, sdk.NewInt(balances[1].amount)))).Return(nil)
+	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[0].denom, math.NewInt(balances[0].amount)))).Return(nil)
+	bankKeeper.EXPECT().BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(balances[1].denom, math.NewInt(balances[1].amount)))).Return(nil)
 
 	// Burn the tokens
 	err := k.BurnTokensForAllDenoms(ctx)

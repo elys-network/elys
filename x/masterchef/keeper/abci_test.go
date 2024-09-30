@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -18,7 +18,7 @@ import (
 
 func TestABCI_EndBlocker(t *testing.T) {
 	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.MasterchefKeeper
 
@@ -26,8 +26,8 @@ func TestABCI_EndBlocker(t *testing.T) {
 	var unclaimed sdk.Coins
 
 	// Prepare unclaimed tokens
-	uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000))
-	uedenBToken := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(2000))
+	uedenToken := sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(2000))
+	uedenBToken := sdk.NewCoin(ptypes.EdenB, sdkmath.NewInt(2000))
 	unclaimed = unclaimed.Add(uedenToken, uedenBToken)
 
 	// Mint coins
@@ -85,7 +85,7 @@ func TestABCI_EndBlocker(t *testing.T) {
 	// Check if the params are correctly set
 	params := mk.GetParams(ctx)
 	require.NotNil(t, params.LpIncentives)
-	require.Equal(t, params.LpIncentives.EdenAmountPerYear, sdk.NewInt(int64(listTimeBasdInflations[0].Inflation.LmRewards)))
+	require.Equal(t, params.LpIncentives.EdenAmountPerYear, sdkmath.NewInt(int64(listTimeBasdInflations[0].Inflation.LmRewards)))
 
 	// After the first year
 	ctx = ctx.WithBlockHeight(6307210)
@@ -96,12 +96,12 @@ func TestABCI_EndBlocker(t *testing.T) {
 	// Check if the params are correctly set
 	params = mk.GetParams(ctx)
 	require.NotNil(t, params.LpIncentives)
-	require.Equal(t, params.LpIncentives.EdenAmountPerYear, sdk.NewInt(int64(listTimeBasdInflations[0].Inflation.LmRewards)))
+	require.Equal(t, params.LpIncentives.EdenAmountPerYear, sdkmath.NewInt(int64(listTimeBasdInflations[0].Inflation.LmRewards)))
 }
 
 func TestCollectGasFees(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	mk, bk, amm, oracle := app.MasterchefKeeper, app.BankKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -115,8 +115,8 @@ func TestCollectGasFees(t *testing.T) {
 	require.True(t, collectedAmt.IsZero())
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
-	transferAmt := sdk.NewCoin(ptypes.Elys, sdk.NewInt(100))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
+	transferAmt := sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100))
 
 	// Set revenue address
 	params := mk.GetParams(ctx)
@@ -129,7 +129,7 @@ func TestCollectGasFees(t *testing.T) {
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)))
 
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -138,17 +138,17 @@ func TestCollectGasFees(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100000)),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),
 		},
 	}
 
-	argSwapFee := sdk.MustNewDecFromStr("0.1")
-	argExitFee := sdk.MustNewDecFromStr("0.1")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.1")
+	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.1")
 
 	poolParams := &ammtypes.PoolParams{
 		SwapFee: argSwapFee,
@@ -186,7 +186,7 @@ func TestCollectGasFees(t *testing.T) {
 
 func TestCollectDEXRevenue(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	mk, bk, amm, oracle := app.MasterchefKeeper, app.BankKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -194,14 +194,14 @@ func TestCollectDEXRevenue(t *testing.T) {
 	SetupStableCoinPrices(ctx, oracle)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(1000000))
 
 	// Create 2 pools
 
 	// #######################
 	// ####### POOL 1 ########
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)))
 
 	err := bk.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -210,17 +210,17 @@ func TestCollectDEXRevenue(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100000)),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),
 		},
 	}
 
-	argSwapFee := sdk.MustNewDecFromStr("0.1")
-	argExitFee := sdk.MustNewDecFromStr("0.1")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.1")
+	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.1")
 
 	poolParams := &ammtypes.PoolParams{
 		SwapFee: argSwapFee,
@@ -241,7 +241,7 @@ func TestCollectDEXRevenue(t *testing.T) {
 	// ####### POOL 2 ########
 	// ATOM+USDC pool
 	// Mint uusdc
-	usdcToken = sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(200000)))
+	usdcToken = sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(200000)))
 
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -249,7 +249,7 @@ func TestCollectDEXRevenue(t *testing.T) {
 	require.NoError(t, err)
 
 	// Mint uatom
-	atomToken := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(200000)))
+	atomToken := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(200000)))
 	err = bk.MintCoins(ctx, ammtypes.ModuleName, atomToken)
 	require.NoError(t, err)
 	err = bk.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[1], atomToken)
@@ -257,12 +257,12 @@ func TestCollectDEXRevenue(t *testing.T) {
 
 	poolAssets2 := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(150000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(150000)),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),
 		},
 	}
 
@@ -287,7 +287,7 @@ func TestCollectDEXRevenue(t *testing.T) {
 
 	// Fill in pool #1 revenue wallet
 	revenueAddress1 := ammtypes.NewPoolRevenueAddress(0)
-	usdcRevToken1 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000)))
+	usdcRevToken1 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(1000)))
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcRevToken1)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, revenueAddress1, usdcRevToken1)
@@ -295,7 +295,7 @@ func TestCollectDEXRevenue(t *testing.T) {
 
 	// Fill in pool #2 revenue wallet
 	revenueAddress2 := ammtypes.NewPoolRevenueAddress(1)
-	usdcRevToken2 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(3000)))
+	usdcRevToken2 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(3000)))
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcRevToken2)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, revenueAddress2, usdcRevToken2)
@@ -313,7 +313,7 @@ func TestCollectDEXRevenue(t *testing.T) {
 	require.Equal(t, int64(0), ctx.BlockHeight())
 
 	// It should be 3000=1000+2000 usdc
-	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(3000))})
+	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(3000))})
 	// It should be 1950=3000*0.65 usdc
-	require.Equal(t, rewardForLpsAmt, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdk.NewInt(1800))})
+	require.Equal(t, rewardForLpsAmt, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdkmath.NewInt(1800))})
 }

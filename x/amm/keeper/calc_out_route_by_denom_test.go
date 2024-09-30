@@ -3,14 +3,13 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/stretchr/testify/require"
 )
 
 func TestCalcOutRouteByDenom(t *testing.T) {
 	app := simapp.InitElysTestApp(initChain)
-	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(initChain)
 	k := app.AmmKeeper
 
 	// Setup mock pools and assets

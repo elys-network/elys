@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	errorsmod "cosmossdk.io/errors"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,6 +12,9 @@ import (
 
 // TODO: Complete message in another task
 func (k msgServer) CreatePendingPerpetualOrder(goCtx context.Context, msg *types.MsgCreatePendingPerpetualOrder) (*types.MsgCreatePendingPerpetualOrderResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var pendingPerpetualOrder = types.PerpetualOrder{
@@ -28,6 +32,9 @@ func (k msgServer) CreatePendingPerpetualOrder(goCtx context.Context, msg *types
 }
 
 func (k msgServer) UpdatePendingPerpetualOrder(goCtx context.Context, msg *types.MsgUpdatePendingPerpetualOrder) (*types.MsgUpdatePendingPerpetualOrderResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var pendingPerpetualOrder = types.PerpetualOrder{
@@ -37,12 +44,12 @@ func (k msgServer) UpdatePendingPerpetualOrder(goCtx context.Context, msg *types
 	// Checks that the element exists
 	val, found := k.GetPendingPerpetualOrder(ctx, msg.Id)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
 	}
 
 	// Checks if the msg creator is the same as the current owner
 	if msg.Creator != val.OwnerAddress {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	k.SetPendingPerpetualOrder(ctx, pendingPerpetualOrder)
@@ -51,17 +58,20 @@ func (k msgServer) UpdatePendingPerpetualOrder(goCtx context.Context, msg *types
 }
 
 func (k msgServer) DeletePendingPerpetualOrder(goCtx context.Context, msg *types.MsgDeletePendingPerpetualOrder) (*types.MsgDeletePendingPerpetualOrderResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
 	val, found := k.GetPendingPerpetualOrder(ctx, msg.Id)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
 	}
 
 	// Checks if the msg creator is the same as the current owner
 	if msg.Creator != val.OwnerAddress {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	k.RemovePendingPerpetualOrder(ctx, msg.Id)

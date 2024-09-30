@@ -15,35 +15,38 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
+
   // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/commitment/params";
-  
   }
-  
+
   // Queries a Commitment item.
-  rpc ShowCommitments (QueryShowCommitmentsRequest) returns (QueryShowCommitmentsResponse) {
-    option (google.api.http).get = "/elys-network/elys/commitment/show_commitments/{creator}";
-  
+  rpc ShowCommitments(QueryShowCommitmentsRequest)
+      returns (QueryShowCommitmentsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/commitment/show_commitments/{creator}";
   }
-  
+
   // Queries sum of committed tokens locked and not unlockable
-  rpc CommittedTokensLocked (QueryCommittedTokensLockedRequest) returns (QueryCommittedTokensLockedResponse) {
-    option (google.api.http).get = "/elys-network/elys/commitment/committed_tokens_locked/{address}";
-  
+  rpc CommittedTokensLocked(QueryCommittedTokensLockedRequest)
+      returns (QueryCommittedTokensLockedResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/commitment/committed_tokens_locked/{address}";
   }
-  
+
   // Queries the total number of commitment items.
-  rpc NumberOfCommitments (QueryNumberOfCommitmentsRequest) returns (QueryNumberOfCommitmentsResponse) {
-    option (google.api.http).get = "/elys-network/elys/commitment/number_of_commitments";
-  
+  rpc NumberOfCommitments(QueryNumberOfCommitmentsRequest)
+      returns (QueryNumberOfCommitmentsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/commitment/number_of_commitments";
   }
-  
+
   // Queries a list of CommitmentVestingInfo items.
-  rpc CommitmentVestingInfo (QueryCommitmentVestingInfoRequest) returns (QueryCommitmentVestingInfoResponse) {
-    option (google.api.http).get = "/elys-network/elys/commitment/commitment_vesting_info/{address}";
-  
+  rpc CommitmentVestingInfo(QueryCommitmentVestingInfoRequest)
+      returns (QueryCommitmentVestingInfoResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/commitment/commitment_vesting_info/{address}";
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -51,64 +54,64 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  
+
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryShowCommitmentsRequest {
-  string creator = 1;
-}
+message QueryShowCommitmentsRequest { string creator = 1; }
 
 message QueryShowCommitmentsResponse {
-  Commitments commitments = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+  Commitments commitments = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 message QueryNumberOfCommitmentsRequest {}
 
-message QueryNumberOfCommitmentsResponse {
-  int64 number = 1;
-}
+message QueryNumberOfCommitmentsResponse { int64 number = 1; }
 
-message QueryCommittedTokensLockedRequest {
-  string address = 1;
-}
+message QueryCommittedTokensLockedRequest { string address = 1; }
 
 message QueryCommittedTokensLockedResponse {
-           string                   address          = 1;
-  repeated cosmos.base.v1beta1.Coin locked_committed = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
-  repeated cosmos.base.v1beta1.Coin total_committed  = 3 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+  string address = 1;
+  repeated cosmos.base.v1beta1.Coin locked_committed = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin total_committed = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
 
-message QueryCommitmentVestingInfoRequest {
-  string address = 1;
-}
+message QueryCommitmentVestingInfoRequest { string address = 1; }
 
 message QueryCommitmentVestingInfoResponse {
   string total = 1 [
-        (cosmos_proto.scalar)  = "cosmos.Int",
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.nullable)   = false
-    ];
-  repeated VestingDetails vesting_details = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  repeated VestingDetails vesting_details = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 message VestingDetails {
-    string id = 1;
-    string totalVesting = 2 [
-        (cosmos_proto.scalar)  = "cosmos.Int",
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.nullable)   = false
-    ];
-    string claimed = 3 [
-        (cosmos_proto.scalar)  = "cosmos.Int",
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.nullable)   = false
-    ];
-    string vestedSoFar = 4 [
-        (cosmos_proto.scalar)  = "cosmos.Int",
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.nullable)   = false
-    ];
-    int64 remaining_blocks = 5;
+  string id = 1;
+  string totalVesting = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string claimed = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string vestedSoFar = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  int64 remaining_blocks = 5;
 }

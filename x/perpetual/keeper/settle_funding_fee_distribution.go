@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -13,18 +14,18 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		return sdk.Coin{}, err
 	}
 
-	totalCustodyLong := sdk.ZeroInt()
-	totalCustodyShort := sdk.ZeroInt()
+	totalCustodyLong := sdkmath.ZeroInt()
+	totalCustodyShort := sdkmath.ZeroInt()
 
 	// account liabilities from long position
-	liabilitiesLong := sdk.ZeroInt()
+	liabilitiesLong := sdkmath.ZeroInt()
 	for _, asset := range pool.PoolAssetsLong {
 		liabilitiesLong = liabilitiesLong.Add(asset.Liabilities)
 		totalCustodyLong = totalCustodyLong.Add(asset.Custody)
 	}
 
 	// account liabilities from short position
-	liabilitiesShort := sdk.ZeroInt()
+	liabilitiesShort := sdkmath.ZeroInt()
 	for _, asset := range pool.PoolAssetsShort {
 		liabilitiesShort = liabilitiesShort.Add(asset.Liabilities)
 		totalCustodyShort = totalCustodyShort.Add(asset.Custody)
@@ -43,22 +44,22 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 
 	// Total fund collected should be
 	long, short := k.GetFundingDistributionValue(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId)
-	var totalFund sdk.Dec
+	var totalFund sdkmath.LegacyDec
 	// calc funding fee share
-	var fundingFeeShare sdk.Dec
+	var fundingFeeShare sdkmath.LegacyDec
 	if mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
 		if liabilitiesLong.IsZero() {
 			return sdk.Coin{}, types.ErrAmountTooLow
 		}
-		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesLong))
+		fundingFeeShare = sdkmath.LegacyNewDecFromInt(mtp.Liabilities).Quo(sdkmath.LegacyNewDecFromInt(liabilitiesLong))
 		totalFund = short
 	} else {
 		// Ensure liabilitiesShort is not zero to avoid division by zero
 		if liabilitiesShort.IsZero() {
 			return sdk.Coin{}, types.ErrAmountTooLow
 		}
-		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesShort))
+		fundingFeeShare = sdkmath.LegacyNewDecFromInt(mtp.Liabilities).Quo(sdkmath.LegacyNewDecFromInt(liabilitiesShort))
 		totalFund = long
 	}
 

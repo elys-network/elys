@@ -1,6 +1,7 @@
 package cli_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"testing"
 
@@ -10,7 +11,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/testutil/network"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/perpetual/client/cli"
@@ -47,7 +47,7 @@ func TestShowPool(t *testing.T) {
 		objs[k].LastHeightBorrowInterestRateComputed = v.LastHeightBorrowInterestRateComputed
 		objs[k].PoolAssetsLong = v.PoolAssetsLong
 		objs[k].PoolAssetsShort = v.PoolAssetsShort
-		objs[k].NetOpenInterest = sdk.ZeroInt()
+		objs[k].NetOpenInterest = sdkmath.ZeroInt()
 	}
 
 	ctx := net.Validators[0].ClientCtx

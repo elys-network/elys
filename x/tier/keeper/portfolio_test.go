@@ -1,11 +1,11 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"strconv"
 	"testing"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
@@ -36,7 +36,7 @@ func createNPortfolio(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Por
 	addresses := app.CreateRandomAccounts(n)
 	for i := range items {
 		items[i].Creator = addresses[i].String()
-		items[i].Portfolio = sdk.NewDec(1000)
+		items[i].Portfolio = math.LegacyNewDec(1000)
 		items[i].Date = keeper.GetDateFromContext(ctx)
 
 		keeper.SetPortfolio(ctx, items[i])
@@ -88,7 +88,7 @@ func TestPortfolioGetAll(t *testing.T) {
 
 func TestGetPortfolioNative(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	_, _, oracle, tier, assetProfiler := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper, app.TierKeeper, app.AssetprofileKeeper
 
@@ -96,7 +96,7 @@ func TestGetPortfolioNative(t *testing.T) {
 	SetupCoinPrices(ctx, oracle, assetProfiler)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(0))
+	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(0))
 
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
@@ -110,12 +110,12 @@ func TestGetPortfolioNative(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, portfolio, sdk.NewDec(101000))
+	require.Equal(t, portfolio, math.LegacyNewDec(101000))
 }
 
 func TestGetPortfolioAmm(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	_, amm, oracle, tier, assetProfiler := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper, app.TierKeeper, app.AssetprofileKeeper
 
@@ -123,7 +123,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 	SetupCoinPrices(ctx, oracle, assetProfiler)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(1000000))
 
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
@@ -136,25 +136,25 @@ func TestGetPortfolioAmm(t *testing.T) {
 	var poolAssets []ammtypes.PoolAsset
 	// Elys
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
+		Weight: math.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.Elys, math.NewInt(100000)),
 	})
 
 	// USDC
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+		Weight: math.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000)),
 	})
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee:                     sdk.ZeroDec(),
-		ExitFee:                     sdk.ZeroDec(),
+		SwapFee:                     math.LegacyZeroDec(),
+		ExitFee:                     math.LegacyZeroDec(),
 		UseOracle:                   false,
-		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-		ExternalLiquidityRatio:      sdk.OneDec(),
-		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdk.ZeroDec(),
+		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
+		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+		ExternalLiquidityRatio:      math.LegacyOneDec(),
+		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   math.LegacyZeroDec(),
 		FeeDenom:                    "",
 	}
 
@@ -173,9 +173,9 @@ func TestGetPortfolioAmm(t *testing.T) {
 	//info := amm.PoolExtraInfo(ctx, pool)
 	//require.Equal(t, pool.TotalShares, pool)
 
-	//require.Equal(t, info.Tvl, sdk.NewDec(2))
+	//require.Equal(t, info.Tvl, math.LegacyNewDec(2))
 
-	//require.Equal(t, info.LpTokenPrice, sdk.NewDec(2))
+	//require.Equal(t, info.LpTokenPrice, math.LegacyNewDec(2))
 
 	require.NoError(t, err)
 	require.Equal(t, resp.PoolID, uint64(1))
@@ -184,7 +184,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, portfolio, sdk.NewDec(100100))
+	require.Equal(t, portfolio, math.LegacyNewDec(100100))
 }
 
 func TestPortfolioGetDiscount(t *testing.T) {
@@ -195,14 +195,14 @@ func TestPortfolioGetDiscount(t *testing.T) {
 		ctx = ctx.WithBlockTime(ctx.BlockTime().AddDate(0, 0, 1))
 		for i := range items {
 			items[i].Creator = addresses[i].String()
-			items[i].Portfolio = sdk.NewDec(400000)
+			items[i].Portfolio = math.LegacyNewDec(400000)
 			items[i].Date = keeper.GetDateFromContext(ctx)
 
 			keeper.SetPortfolio(ctx, items[i])
 		}
 	}
 
-	items[9].Portfolio = sdk.NewDec(500)
+	items[9].Portfolio = math.LegacyNewDec(500)
 	items[9].Date = keeper.GetDateFromContext(ctx)
 
 	keeper.SetPortfolio(ctx, items[9])
@@ -216,7 +216,7 @@ func TestPortfolioGetDiscount(t *testing.T) {
 
 func TestGetPortfolioPerpetual(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	perpetual, amm, oracle, tier, assetProfiler := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper, app.TierKeeper, app.AssetprofileKeeper
 
@@ -224,7 +224,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 	SetupCoinPrices(ctx, oracle, assetProfiler)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(1000000))
 
 	// Create a pool
 	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 1000000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 10000000))
@@ -236,25 +236,25 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 	var poolAssets []ammtypes.PoolAsset
 	// Elys
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(10000000)),
+		Weight: math.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.Elys, math.NewInt(10000000)),
 	})
 
 	// USDC
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000000)),
+		Weight: math.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000000)),
 	})
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee:                     sdk.ZeroDec(),
-		ExitFee:                     sdk.ZeroDec(),
+		SwapFee:                     math.LegacyZeroDec(),
+		ExitFee:                     math.LegacyZeroDec(),
 		UseOracle:                   false,
-		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-		ExternalLiquidityRatio:      sdk.OneDec(),
-		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdk.ZeroDec(),
+		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
+		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+		ExternalLiquidityRatio:      math.LegacyOneDec(),
+		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   math.LegacyZeroDec(),
 		FeeDenom:                    "",
 	}
 
@@ -275,18 +275,18 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 		Address:                        addr[0].String(),
 		CollateralAsset:                ptypes.BaseCurrency,
 		CustodyAsset:                   ptypes.Elys,
-		Collateral:                     sdk.NewInt(0),
-		Liabilities:                    sdk.NewInt(0),
-		BorrowInterestPaidCollateral:   sdk.NewInt(0),
-		BorrowInterestPaidCustody:      sdk.NewInt(0),
-		BorrowInterestUnpaidCollateral: sdk.NewInt(0),
-		Custody:                        sdk.NewInt(10000),
-		Leverage:                       sdk.NewDec(0),
-		MtpHealth:                      sdk.NewDec(0),
+		Collateral:                     math.NewInt(0),
+		Liabilities:                    math.NewInt(0),
+		BorrowInterestPaidCollateral:   math.NewInt(0),
+		BorrowInterestPaidCustody:      math.NewInt(0),
+		BorrowInterestUnpaidCollateral: math.NewInt(0),
+		Custody:                        math.NewInt(10000),
+		Leverage:                       math.LegacyNewDec(0),
+		MtpHealth:                      math.LegacyNewDec(0),
 		Position:                       perpetualtypes.Position_LONG,
 		Id:                             0,
-		ConsolidateLeverage:            sdk.ZeroDec(),
-		SumCollateral:                  sdk.ZeroInt(),
+		ConsolidateLeverage:            math.LegacyZeroDec(),
+		SumCollateral:                  math.ZeroInt(),
 	})
 	require.NoError(t, err)
 
@@ -294,7 +294,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, portfolio, sdk.NewDec(10099100))
+	require.Equal(t, portfolio, math.LegacyNewDec(10099100))
 }
 
 // TODO
@@ -328,28 +328,28 @@ func SetupCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper, assetProfiler 
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
-		Price:     sdk.NewDec(1000000),
+		Price:     math.LegacyNewDec(1000000),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDT",
-		Price:     sdk.NewDec(1000000),
+		Price:     math.LegacyNewDec(1000000),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ELYS",
-		Price:     sdk.NewDec(100),
+		Price:     math.LegacyNewDec(100),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
-		Price:     sdk.NewDec(100),
+		Price:     math.LegacyNewDec(100),
 		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),

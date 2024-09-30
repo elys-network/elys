@@ -1,6 +1,7 @@
 package cli_test
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"strconv"
 	"testing"
@@ -12,7 +13,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/testutil/network"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/amm/client/cli"
@@ -28,7 +28,7 @@ func networkWithDenomLiquidityObjects(t *testing.T, n int) (*network.Network, []
 	for i := 0; i < n; i++ {
 		denomLiquidity := types.DenomLiquidity{
 			Denom:     strconv.Itoa(i),
-			Liquidity: sdk.ZeroInt(),
+			Liquidity: math.ZeroInt(),
 		}
 		nullify.Fill(&denomLiquidity)
 		state.DenomLiquidityList = append(state.DenomLiquidityList, denomLiquidity)

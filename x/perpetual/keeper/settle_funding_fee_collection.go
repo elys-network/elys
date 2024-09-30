@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -36,7 +36,7 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	// get funding rate
 	_, longRate, shortRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
 
-	var takeAmountCustodyAmount math.Int
+	var takeAmountCustodyAmount sdkmath.Int
 	if mtp.Position == types.Position_LONG {
 		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, longRate)
 	} else {
@@ -59,7 +59,7 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	fundingFeeCollectionAddress := k.GetFundingFeeCollectionAddress(ctx)
 
 	// Transfer take amount in collateral asset to funding fee collection address
-	_, err = k.TakeFundPayment(ctx, takeAmountCollateralAmount, mtp.CollateralAsset, sdk.OneDec(), fundingFeeCollectionAddress, &ammPool)
+	_, err = k.TakeFundPayment(ctx, takeAmountCollateralAmount, mtp.CollateralAsset, sdkmath.LegacyOneDec(), fundingFeeCollectionAddress, &ammPool)
 	if err != nil {
 		return err
 	}

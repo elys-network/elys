@@ -1,16 +1,15 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // Pow computes base^(exp)
 // However since the exponent is not an integer, we must do an approximation algorithm.
 // TODO: In the future, lets add some optimized routines for common exponents, e.g. for common wIn / wOut ratios
 // Many simple exponents like 2:1 pools.
-func Pow(base sdk.Dec, exp sdk.Dec) sdk.Dec {
+func Pow(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) sdkmath.LegacyDec {
 	// Exponentiation of a negative base with an arbitrary real exponent is not closed within the reals.
 	// You can see this by recalling that `i = (-1)^(.5)`. We have to go to complex numbers to define this.
 	// (And would have to implement complex logarithms)

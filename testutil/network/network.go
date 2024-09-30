@@ -2,18 +2,17 @@ package network
 
 import (
 	"fmt"
+	cosmosdb "github.com/cosmos/cosmos-db"
 	"testing"
 	"time"
 
+	pruningtypes "cosmossdk.io/store/pruning/types"
 	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	cometbftdb "github.com/cometbft/cometbft-db"
 	cometbftrand "github.com/cometbft/cometbft/libs/rand"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	pruningtypes "github.com/cosmos/cosmos-sdk/store/pruning/types"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -65,8 +64,7 @@ func DefaultConfig() network.Config {
 		AccountRetriever:  authtypes.AccountRetriever{},
 		AppConstructor: func(val network.ValidatorI) servertypes.Application {
 			return app.NewElysApp(
-				val.GetCtx().Logger, cometbftdb.NewMemDB(), nil, true,
-				wasmtypes.EnableAllProposals,
+				val.GetCtx().Logger, cosmosdb.NewMemDB(), nil, true,
 				appOptions,
 				[]wasm.Option{},
 				baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),

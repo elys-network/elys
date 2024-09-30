@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,7 +21,7 @@ func (k Keeper) CommitmentVestingInfo(goCtx context.Context, req *types.QueryCom
 	commitment := k.GetCommitments(ctx, address)
 	vestingTokens := commitment.GetVestingTokens()
 
-	totalVesting := sdk.ZeroInt()
+	totalVesting := sdkmath.ZeroInt()
 	vestingDetails := make([]types.VestingDetails, 0)
 	for i, vesting := range vestingTokens {
 		vestingDetail := types.VestingDetails{

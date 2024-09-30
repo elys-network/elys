@@ -13,7 +13,7 @@ import (
 	"io"
 	"net/http"
 
-	types_1 "github.com/elys-network/elys/x/commitment/types"
+	types_0 "github.com/elys-network/elys/x/commitment/types"
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -51,13 +51,13 @@ func request_Query_Apr_0(ctx context.Context, marshaler runtime.Marshaler, clien
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "withdraw_type")
 	}
 
-	e, err = runtime.Enum(val, types_1.EarnType_value)
+	e, err = runtime.Enum(val, types_0.EarnType_value)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "withdraw_type", err)
 	}
 
-	protoReq.WithdrawType = types_1.EarnType(e)
+	protoReq.WithdrawType = types_0.EarnType(e)
 
 	val, ok = pathParams["denom"]
 	if !ok {
@@ -92,13 +92,13 @@ func local_request_Query_Apr_0(ctx context.Context, marshaler runtime.Marshaler,
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "withdraw_type")
 	}
 
-	e, err = runtime.Enum(val, types_1.EarnType_value)
+	e, err = runtime.Enum(val, types_0.EarnType_value)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "withdraw_type", err)
 	}
 
-	protoReq.WithdrawType = types_1.EarnType(e)
+	protoReq.WithdrawType = types_0.EarnType(e)
 
 	val, ok = pathParams["denom"]
 	if !ok {
@@ -350,11 +350,11 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Apr_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "incentive", "apr", "withdraw_type", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Apr_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "incentive", "apr", "withdraw_type", "denom"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Aprs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "incentive", "aprs"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Aprs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "incentive", "aprs"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_PoolRewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "incentive", "pool_rewards"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_PoolRewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "incentive", "pool_rewards"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

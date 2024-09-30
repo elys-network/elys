@@ -14,7 +14,7 @@ import (
 
 func TestEpochsExportGenesis(t *testing.T) {
 	app := app.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 
 	chainStartTime := ctx.BlockTime()
 	chainStartHeight := ctx.BlockHeight()
@@ -74,7 +74,7 @@ func TestEpochsExportGenesis(t *testing.T) {
 func TestEpochsInitGenesis(t *testing.T) {
 	app := app.InitElysTestApp(true)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 
 	// On init genesis, default epochs information is set
 	// To check init genesis again, should make it fresh status

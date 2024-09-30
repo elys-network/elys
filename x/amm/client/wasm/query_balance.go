@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
@@ -18,7 +19,7 @@ func (oq *Querier) queryBalance(ctx sdk.Context, query *ammtypes.QueryBalanceReq
 	balance := res.Balance
 	resp := commitmenttypes.BalanceAvailable{
 		Amount:    balance.Amount,
-		UsdAmount: sdk.NewDecFromInt(balance.Amount),
+		UsdAmount: sdkmath.LegacyNewDecFromInt(balance.Amount),
 	}
 
 	responseBytes, err := json.Marshal(resp)

@@ -11,6 +11,9 @@ import (
 )
 
 func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateStopLoss) (*types.MsgUpdateStopLossResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	position, found := k.GetPositionWithId(ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Position)

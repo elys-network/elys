@@ -13,14 +13,19 @@ service Msg {
   // module parameters. The authority is defined in the keeper.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 
-  // WithdrawReward defines a method to withdraw rewards of delegator from a single validator.
+  // WithdrawReward defines a method to withdraw rewards of delegator from a
+  // single validator.
   rpc WithdrawReward(MsgWithdrawReward) returns (MsgWithdrawRewardResponse);
 
-  // WithdrawElysStakingRewards defines a method to withdraw rewards of delegator from all the validators.
-  rpc WithdrawElysStakingRewards(MsgWithdrawElysStakingRewards) returns (MsgWithdrawElysStakingRewardsResponse);
+  // WithdrawElysStakingRewards defines a method to withdraw rewards of
+  // delegator from all the validators.
+  rpc WithdrawElysStakingRewards(MsgWithdrawElysStakingRewards)
+      returns (MsgWithdrawElysStakingRewardsResponse);
 
-  // WithdrawAllRewards defines a method to withdraw rewards of delegator from all the validators and Eden/EdenB commitment.
-  rpc WithdrawAllRewards(MsgWithdrawAllRewards) returns (MsgWithdrawAllRewardsResponse);
+  // WithdrawAllRewards defines a method to withdraw rewards of delegator from
+  // all the validators and Eden/EdenB commitment.
+  rpc WithdrawAllRewards(MsgWithdrawAllRewards)
+      returns (MsgWithdrawAllRewardsResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -29,45 +34,48 @@ message MsgUpdateParams {
   Params params = 2 [ (gogoproto.nullable) = false ];
 }
 
-// MsgUpdateParamsResponse defines the response structure for executing a MsgUpdateParams message.
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
 message MsgUpdateParamsResponse {}
 
-// MsgWithdrawReward represents delegation withdrawal to a delegator from a single validator.
+// MsgWithdrawReward represents delegation withdrawal to a delegator from a
+// single validator.
 message MsgWithdrawReward {
   string delegator_address = 1;
   string validator_address = 2;
 }
 
-// MsgWithdrawRewardResponse defines the Msg/WithdrawDelegatorReward response type.
+// MsgWithdrawRewardResponse defines the Msg/WithdrawDelegatorReward response
+// type.
 message MsgWithdrawRewardResponse {
   repeated cosmos.base.v1beta1.Coin amount = 1 [
-    (gogoproto.nullable)     = false,
+    (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }
 
-// MsgWithdrawElysStakingRewards represents delegation withdrawal to a delegator from all the validators.
-message MsgWithdrawElysStakingRewards {
-  string delegator_address = 1;
-}
+// MsgWithdrawElysStakingRewards represents delegation withdrawal to a delegator
+// from all the validators.
+message MsgWithdrawElysStakingRewards { string delegator_address = 1; }
 
-// MsgWithdrawElysStakingRewards defines the Msg/WithdrawElysStakingRewards response type.
+// MsgWithdrawElysStakingRewards defines the Msg/WithdrawElysStakingRewards
+// response type.
 message MsgWithdrawElysStakingRewardsResponse {
   repeated cosmos.base.v1beta1.Coin amount = 1 [
-    (gogoproto.nullable)     = false,
+    (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }
 
-// MsgWithdrawAllRewards represents delegation withdrawal to a delegator from all the validators and Eden/EdenB commitment.
-message MsgWithdrawAllRewards {
-  string delegator_address = 1;
-}
+// MsgWithdrawAllRewards represents delegation withdrawal to a delegator from
+// all the validators and Eden/EdenB commitment.
+message MsgWithdrawAllRewards { string delegator_address = 1; }
 
-// MsgWithdrawAllRewardsResponse defines the Msg/WithdrawAllRewards response type.
+// MsgWithdrawAllRewardsResponse defines the Msg/WithdrawAllRewards response
+// type.
 message MsgWithdrawAllRewardsResponse {
   repeated cosmos.base.v1beta1.Coin amount = 1 [
-    (gogoproto.nullable)     = false,
+    (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }

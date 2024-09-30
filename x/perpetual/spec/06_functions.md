@@ -80,7 +80,7 @@ The `GetParams` function retrieves the current parameters of the `perpetual` mod
 
 ```go
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     bz := store.Get(types.KeyPrefix(types.ParamsKey))
     if bz == nil {
         return params
@@ -101,7 +101,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) error {
         return err
     }
 
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     bz, err := k.cdc.Marshal(params)
     if err != nil {
         return err
@@ -122,7 +122,7 @@ The `GetMTP` function retrieves an MTP by address and ID.
 func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress string, id uint64) (types.MTP, error) {
     var mtp types.MTP
     key := types.GetMTPKey(mtpAddress, id)
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     if !store.Has(key) {
         return mtp, types.ErrMTPDoesNotExist
     }
@@ -138,7 +138,7 @@ The `SetMTP` function sets an MTP in the store.
 
 ```go
 func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     count := k.GetMTPCount(ctx)
     openCount := k.GetOpenMTPCount(ctx)
 
@@ -169,7 +169,7 @@ The `GetPool` function returns a pool by its ID.
 
 ```go
 func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found bool) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 
     b := store.Get(types.PoolKey(poolId))
     if b == nil {
@@ -187,7 +187,7 @@ The `SetPool` function sets a specific pool in the store by its index.
 
 ```go
 func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
     b := k.cdc.MustMarshal(&pool)
     store.Set(types.PoolKey(pool.AmmPoolId), b)
 }
@@ -325,8 +325,8 @@ The `GetAllPools` function retrieves all pools from the store.
 
 ```go
 func (k Keeper) GetAllPools(ctx sdk.Context) (pools []types.Pool) {
-    store := ctx.KVStore(k.storeKey)
-    iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefix(types.PoolKeyPrefix))
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+    iterator := storetypes.KVStorePrefixIterator(store, types.KeyPrefix(types.PoolKeyPrefix))
 
     defer iterator.Close()
     for ; iterator.Valid(); iterator.Next() {
@@ -410,11 +410,11 @@ func (k Keeper) HandleFundingFeeDistribution(
 The `BorrowInterestRateComputation` function computes the borrow interest rate for a pool.
 
 ```go
-func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) (sdk.Dec, error) {
+func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) (sdkmath.LegacyDec, error) {
     // Implementation of the interest rate computation
     // ...
 
-    return sdk.ZeroDec(), nil
+    return sdkmath.LegacyZeroDec(), nil
 }
 ```
 

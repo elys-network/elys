@@ -8,12 +8,11 @@ option go_package = "github.com/elys-network/elys/x/burner/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc UpdateParams (MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 message MsgUpdateParams {
   string authority = 1;
-  Params params    = 2;
+  Params params = 2;
 }
 
 message MsgUpdateParamsResponse {}
-

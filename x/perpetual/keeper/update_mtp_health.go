@@ -1,16 +1,17 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error) {
+func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (sdkmath.LegacyDec, error) {
 	xl := mtp.Liabilities
 
 	if xl.IsZero() {
-		return sdk.ZeroDec(), nil
+		return sdkmath.LegacyZeroDec(), nil
 	}
 
 	pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
@@ -22,11 +23,11 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 		var err error
 		xl, err = k.EstimateSwapGivenOut(ctx, liabilities, baseCurrency, ammPool)
 		if err != nil {
-			return sdk.ZeroDec(), err
+			return sdkmath.LegacyZeroDec(), err
 		}
 
 		if xl.IsZero() {
-			return sdk.ZeroDec(), nil
+			return sdkmath.LegacyZeroDec(), nil
 		}
 	}
 
@@ -39,7 +40,7 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 		} else {
 			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateral, baseCurrency, ammPool)
 			if err != nil {
-				return sdk.ZeroDec(), err
+				return sdkmath.LegacyZeroDec(), err
 			}
 
 			xl = xl.Add(C)
@@ -49,12 +50,12 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 	// Funding rate payment consideration
 	// get funding rate
 	fundingRate, _, _ := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
-	var takeAmountCustodyAmount sdk.Int
+	var takeAmountCustodyAmount sdkmath.Int
 	// if funding rate is zero, return
 	if fundingRate.IsZero() {
-		takeAmountCustodyAmount = sdk.ZeroInt()
+		takeAmountCustodyAmount = sdkmath.ZeroInt()
 	} else if (fundingRate.IsNegative() && mtp.Position == types.Position_LONG) || (fundingRate.IsPositive() && mtp.Position == types.Position_SHORT) {
-		takeAmountCustodyAmount = sdk.ZeroInt()
+		takeAmountCustodyAmount = sdkmath.ZeroInt()
 	} else {
 		// Calculate the take amount in custody asset
 		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, fundingRate)
@@ -68,11 +69,11 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 		var err error
 		custodyAmtInBaseCurrency, err = k.EstimateSwapGivenOut(ctx, custodyAmt, baseCurrency, ammPool)
 		if err != nil {
-			return sdk.ZeroDec(), err
+			return sdkmath.LegacyZeroDec(), err
 		}
 	}
 
-	lr := sdk.NewDecFromBigInt(custodyAmtInBaseCurrency.BigInt()).Quo(sdk.NewDecFromBigInt(xl.BigInt()))
+	lr := sdkmath.LegacyNewDecFromBigInt(custodyAmtInBaseCurrency.BigInt()).Quo(sdkmath.LegacyNewDecFromBigInt(xl.BigInt()))
 
 	return lr, nil
 }

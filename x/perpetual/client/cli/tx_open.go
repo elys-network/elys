@@ -1,6 +1,7 @@
 package cli
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"errors"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -33,7 +34,7 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --f
 
 			argPosition := types.GetPositionFromString(args[0])
 
-			argLeverage, err := sdk.NewDecFromStr(args[1])
+			argLeverage, err := sdkmath.LegacyNewDecFromStr(args[1])
 			if err != nil {
 				return err
 			}
@@ -50,19 +51,19 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --f
 				return err
 			}
 
-			stopLossPrice, err := sdk.NewDecFromStr(args[4])
+			stopLossPrice, err := sdkmath.LegacyNewDecFromStr(args[4])
 			if err != nil {
 				return err
 			}
 
-			var takeProfitPrice sdk.Dec
+			var takeProfitPrice sdkmath.LegacyDec
 			if takeProfitPriceStr != types.InfinitePriceString {
-				takeProfitPrice, err = sdk.NewDecFromStr(takeProfitPriceStr)
+				takeProfitPrice, err = sdkmath.LegacyNewDecFromStr(takeProfitPriceStr)
 				if err != nil {
 					return errors.New("invalid take profit price")
 				}
 			} else {
-				takeProfitPrice, err = sdk.NewDecFromStr(types.TakeProfitPriceDefault)
+				takeProfitPrice, err = sdkmath.LegacyNewDecFromStr(types.TakeProfitPriceDefault)
 				if err != nil {
 					return errors.New("failed to set default take profit price")
 				}

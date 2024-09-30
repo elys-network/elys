@@ -1,9 +1,9 @@
 package types
 
 import (
-	"cosmossdk.io/math"
+	"context"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
@@ -11,22 +11,22 @@ import (
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
-	NewAccount(sdk.Context, authtypes.AccountI) authtypes.AccountI
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
-	SetAccount(ctx sdk.Context, acc authtypes.AccountI)
+	NewAccount(context.Context, sdk.AccountI) sdk.AccountI
+	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
+	SetAccount(ctx context.Context, acc sdk.AccountI)
 	// Methods imported from account should be defined here
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
-	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
-	BurnCoins(ctx sdk.Context, name string, amt sdk.Coins) error
-	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
-	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
-	SetDenomMetaData(ctx sdk.Context, denomMetaData banktypes.Metadata)
-	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
+	MintCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
+	BurnCoins(ctx context.Context, name string, amt sdk.Coins) error
+	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+	SetDenomMetaData(ctx context.Context, denomMetaData banktypes.Metadata)
+	SendCoins(ctx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 	// Methods imported from bank should be defined here
 }
 
@@ -35,7 +35,7 @@ type BankKeeper interface {
 //go:generate mockery --srcpkg . --name OracleKeeper --structname OracleKeeper --filename oracle_keeper.go --with-expecter
 type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
 
@@ -55,5 +55,5 @@ type AssetProfileKeeper interface {
 //
 //go:generate mockery --srcpkg . --name AccountedPoolKeeper --structname AccountedPoolKeeper --filename accounted_pool_keeper.go --with-expecter
 type AccountedPoolKeeper interface {
-	GetAccountedBalance(sdk.Context, uint64, string) math.Int
+	GetAccountedBalance(sdk.Context, uint64, string) sdkmath.Int
 }

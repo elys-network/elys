@@ -1,9 +1,8 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
-
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
@@ -17,7 +16,7 @@ import (
 func TestAddVestingInfo(t *testing.T) {
 	app := app.InitElysTestApp(true)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
@@ -47,7 +46,7 @@ func TestAddVestingInfo(t *testing.T) {
 func TestUpdateVestingInfo(t *testing.T) {
 	app := app.InitElysTestApp(true)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
@@ -60,7 +59,7 @@ func TestUpdateVestingInfo(t *testing.T) {
 		BaseDenom:      "test_denom",
 		VestingDenom:   "test_denom",
 		NumBlocks:      10,
-		VestNowFactor:  sdk.NewInt(10),
+		VestNowFactor:  sdkmath.NewInt(10),
 		NumMaxVestings: 10,
 	}
 

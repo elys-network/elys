@@ -1,6 +1,7 @@
 package migrations
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/parameter/types"
 )
@@ -15,9 +16,9 @@ func (m Migrator) V4Migration(ctx sdk.Context) error {
 		legacy.BrokerAddress,      // broker address
 		legacy.TotalBlocksPerYear, // total blocks per year
 		86400,                     // 24 hrs
-		sdk.NewInt(256),
-		sdk.NewInt(1638400),
-		sdk.NewInt(6291456),
+		math.NewInt(256),
+		math.NewInt(1638400),
+		math.NewInt(6291456),
 	)
 	m.keeper.SetParams(ctx, params)
 

@@ -13,7 +13,7 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position, sdk.Dec, types.Pool) {
+func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position, math.LegacyDec, types.Pool) {
 	k := suite.app.LeveragelpKeeper
 	suite.SetupCoinPrices(suite.ctx)
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -23,9 +23,9 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 		AmmPoolId:         1,
 		Enabled:           true,
 		Closed:            false,
-		Health:            sdk.ZeroDec(),
-		LeveragedLpAmount: sdk.ZeroInt(),
-		LeverageMax:       sdk.OneDec().MulInt64(10),
+		Health:            math.LegacyZeroDec(),
+		LeveragedLpAmount: math.ZeroInt(),
+		LeverageMax:       math.LegacyOneDec().MulInt64(10),
 	}
 	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", amount), sdk.NewInt64Coin("uusdt", amount)}
 
@@ -39,38 +39,38 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: ammtypes.PoolParams{
-			SwapFee:                     sdk.ZeroDec(),
-			ExitFee:                     sdk.ZeroDec(),
+			SwapFee:                     math.LegacyZeroDec(),
+			ExitFee:                     math.LegacyZeroDec(),
 			UseOracle:                   true,
-			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-			ExternalLiquidityRatio:      sdk.NewDec(1),
-			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdk.ZeroDec(),
+			WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
+			WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+			ExternalLiquidityRatio:      math.LegacyNewDec(1),
+			WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+			ThresholdWeightDifference:   math.LegacyZeroDec(),
 			FeeDenom:                    "uusdc",
 		},
-		TotalShares: sdk.NewCoin("amm/pool/1", sdk.NewInt(2).Mul(ammtypes.OneShare)),
+		TotalShares: sdk.NewCoin("amm/pool/1", math.NewInt(2).Mul(ammtypes.OneShare)),
 		PoolAssets: []ammtypes.PoolAsset{
 			{
 				Token:  poolInit[0],
-				Weight: sdk.NewInt(10),
+				Weight: math.NewInt(10),
 			},
 			{
 				Token:  poolInit[1],
-				Weight: sdk.NewInt(10),
+				Weight: math.NewInt(10),
 			},
 		},
-		TotalWeight: sdk.NewInt(20),
+		TotalWeight: math.NewInt(20),
 	})
 	suite.Require().NoError(err)
 	k.SetPool(suite.ctx, pool)
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     "uusdc",
-		Liquidity: sdk.NewInt(amount),
+		Liquidity: math.NewInt(amount),
 	})
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     "uusdt",
-		Liquidity: sdk.NewInt(amount),
+		Liquidity: math.NewInt(amount),
 	})
 
 	usdcToken := sdk.NewInt64Coin("uusdc", amount*20)
@@ -82,16 +82,16 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	stableMsgServer := stablestakekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
 	_, err = stableMsgServer.Bond(sdk.WrapSDKContext(suite.ctx), &stablestaketypes.MsgBond{
 		Creator: addr.String(),
-		Amount:  sdk.NewInt(amount * 10),
+		Amount:  math.NewInt(amount * 10),
 	})
 	suite.Require().NoError(err)
 
-	leverage := sdk.NewDec(5)
+	leverage := math.LegacyNewDec(5)
 	// open a position
 	position, err := k.OpenLong(suite.ctx, &types.MsgOpen{
 		Creator:          addr.String(),
 		CollateralAsset:  "uusdc",
-		CollateralAmount: sdk.NewInt(amount).QuoRaw(1000),
+		CollateralAmount: math.NewInt(amount).QuoRaw(1000),
 		AmmPoolId:        1,
 		Leverage:         leverage,
 	})
@@ -107,7 +107,7 @@ func (suite KeeperTestSuite) TestCloseLong() {
 		msg = &types.MsgClose{
 			Creator:  addr.String(),
 			Id:       1,
-			LpAmount: sdk.ZeroInt(),
+			LpAmount: math.ZeroInt(),
 		}
 		repayAmount = math.NewInt(0)
 	)
@@ -123,11 +123,11 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 	position, leverage, pool := suite.OpenPosition(addr)
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour).Unix() - suite.ctx.BlockTime().Unix()
 	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
-	borrowed := leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
+	borrowed := leverage.Sub(math.LegacyOneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).
-		Mul(sdk.NewDec(timeDifference)).
-		Quo(sdk.NewDec(86400 * 365))).RoundInt()
+		Mul(math.LegacyNewDec(timeDifference)).
+		Quo(math.LegacyNewDec(86400 * 365))).RoundInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount)
@@ -141,11 +141,11 @@ func (suite KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 	position, leverage, pool := suite.OpenPosition(addr)
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour*24*365*5).Unix() - suite.ctx.BlockTime().Unix()
 	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
-	borrowed := leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
+	borrowed := leverage.Sub(math.LegacyOneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).
-		Mul(sdk.NewDec(timeDifference)).
-		Quo(sdk.NewDec(86400 * 365))).RoundInt()
+		Mul(math.LegacyNewDec(timeDifference)).
+		Quo(math.LegacyNewDec(86400 * 365))).RoundInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365 * 5))
 	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount)
@@ -159,16 +159,16 @@ func (suite KeeperTestSuite) TestForceCloseLongPartial() {
 	position, leverage, pool := suite.OpenPosition(addr)
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour).Unix() - suite.ctx.BlockTime().Unix()
 	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
-	borrowed := leverage.Sub(sdk.OneDec()).MulInt(position.Collateral.Amount)
+	borrowed := leverage.Sub(math.LegacyOneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).
-		Mul(sdk.NewDec(timeDifference)).
-		Quo(sdk.NewDec(86400 * 365))).RoundInt()
+		Mul(math.LegacyNewDec(timeDifference)).
+		Quo(math.LegacyNewDec(86400 * 365))).RoundInt()
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 	// close 50%
-	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount.Quo(sdk.NewInt(2)))
+	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount.Quo(math.NewInt(2)))
 	suite.Require().NoError(err)
-	suite.Require().Equal(repayAmount.Quo(sdk.NewInt(2)).String(), repayAmountOut.String())
+	suite.Require().Equal(repayAmount.Quo(math.NewInt(2)).String(), repayAmountOut.String())
 }
 
 func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
@@ -204,12 +204,12 @@ func (suite KeeperTestSuite) TestPositionHealth() {
 
 	//setting position debt/liablities to zero
 	debt := suite.app.StablestakeKeeper.GetDebt(suite.ctx, position.GetPositionAddress())
-	debt.Borrowed = sdk.ZeroInt()
-	debt.InterestStacked = sdk.ZeroInt()
-	debt.InterestPaid = sdk.ZeroInt()
+	debt.Borrowed = math.ZeroInt()
+	debt.InterestStacked = math.ZeroInt()
+	debt.InterestPaid = math.ZeroInt()
 	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
 
 	//get position health
 	positionHealth, _ := suite.app.LeveragelpKeeper.GetPositionHealth(suite.ctx, *position)
-	suite.Require().Equal(sdk.MaxSortableDec, positionHealth)
+	suite.Require().Equal(math.LegacyMaxSortableDec, positionHealth)
 }

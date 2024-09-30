@@ -1,13 +1,15 @@
 package keeper
 
 import (
+	"cosmossdk.io/core/store"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	gomath "math"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	errorsmod "cosmossdk.io/errors"
@@ -20,8 +22,7 @@ import (
 type (
 	Keeper struct {
 		cdc                codec.BinaryCodec
-		storeKey           storetypes.StoreKey
-		memKey             storetypes.StoreKey
+		storeService       store.KVStoreService
 		authority          string
 		amm                types.AmmKeeper
 		bankKeeper         types.BankKeeper
@@ -37,8 +38,7 @@ type (
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
+	storeService store.KVStoreService,
 	authority string,
 	amm types.AmmKeeper,
 	bk types.BankKeeper,
@@ -55,8 +55,7 @@ func NewKeeper(
 
 	keeper := &Keeper{
 		cdc:                cdc,
-		storeKey:           storeKey,
-		memKey:             memKey,
+		storeService:       storeService,
 		authority:          authority,
 		amm:                amm,
 		bankKeeper:         bk,
@@ -75,17 +74,17 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 func (k Keeper) WhitelistAddress(ctx sdk.Context, address sdk.AccAddress) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.GetWhitelistKey(address), address)
 }
 
 func (k Keeper) DewhitelistAddress(ctx sdk.Context, address sdk.AccAddress) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetWhitelistKey(address))
 }
 
 func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address sdk.AccAddress) bool {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return store.Has(types.GetWhitelistKey(address))
 }
 
@@ -96,19 +95,19 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 		return math.Int{}, fmt.Errorf("pool %d not found", ammPool.PoolId)
 	}
 	if !pool.Enabled {
-		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrLeveragelpDisabled, fmt.Sprintf("pool %d", ammPool.PoolId))
+		return math.ZeroInt(), errorsmod.Wrap(types.ErrLeveragelpDisabled, fmt.Sprintf("pool %d", ammPool.PoolId))
 	}
 
 	tokensOut := sdk.NewCoins(tokenOutAmount)
 	// Estimate swap
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
-	swapResult, _, err := k.amm.CalcInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, sdk.ZeroDec())
+	swapResult, _, err := k.amm.CalcInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, math.LegacyZeroDec())
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return math.ZeroInt(), err
 	}
 
 	if swapResult.IsZero() {
-		return sdk.ZeroInt(), types.ErrAmountTooLow
+		return math.ZeroInt(), types.ErrAmountTooLow
 	}
 	return swapResult.Amount, nil
 }
@@ -118,29 +117,29 @@ func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) {
 	k.SetPool(ctx, *pool)
 }
 
-func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
+func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) math.LegacyDec {
 	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
 	if !found {
-		return sdk.ZeroDec()
+		return math.LegacyZeroDec()
 	}
 
 	if ammPool.TotalShares.Amount.IsZero() {
-		return sdk.OneDec()
+		return math.LegacyOneDec()
 	}
 
-	return sdk.NewDecFromBigInt(ammPool.TotalShares.Amount.Sub(pool.LeveragedLpAmount).BigInt()).
-		Quo(sdk.NewDecFromBigInt(ammPool.TotalShares.Amount.BigInt()))
+	return math.LegacyNewDecFromBigInt(ammPool.TotalShares.Amount.Sub(pool.LeveragedLpAmount).BigInt()).
+		Quo(math.LegacyNewDecFromBigInt(ammPool.TotalShares.Amount.BigInt()))
 }
 
-func (k Keeper) GetWhitelistAddressIterator(ctx sdk.Context) sdk.Iterator {
-	store := ctx.KVStore(k.storeKey)
-	return sdk.KVStorePrefixIterator(store, types.WhitelistPrefix)
+func (k Keeper) GetWhitelistAddressIterator(ctx sdk.Context) storetypes.Iterator {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	return storetypes.KVStorePrefixIterator(store, types.WhitelistPrefix)
 }
 
 func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []sdk.AccAddress {
 	var list []sdk.AccAddress
 	iterator := k.GetWhitelistAddressIterator(ctx)
-	defer func(iterator sdk.Iterator) {
+	defer func(iterator storetypes.Iterator) {
 		err := iterator.Close()
 		if err != nil {
 			panic(err)
@@ -156,7 +155,7 @@ func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []sdk.AccAddress {
 
 func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageRequest) ([]sdk.AccAddress, *query.PageResponse, error) {
 	var list []sdk.AccAddress
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	prefixStore := prefix.NewStore(store, types.WhitelistPrefix)
 
 	if pagination == nil {

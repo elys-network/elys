@@ -6,62 +6,68 @@ option go_package = "github.com/elys-network/elys/x/parameter/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc UpdateMinCommission       (MsgUpdateMinCommission      ) returns (MsgUpdateMinCommissionResponse      );
-  rpc UpdateMaxVotingPower      (MsgUpdateMaxVotingPower     ) returns (MsgUpdateMaxVotingPowerResponse     );
-  rpc UpdateMinSelfDelegation   (MsgUpdateMinSelfDelegation  ) returns (MsgUpdateMinSelfDelegationResponse  );
-  rpc UpdateBrokerAddress       (MsgUpdateBrokerAddress      ) returns (MsgUpdateBrokerAddressResponse      );
-  rpc UpdateTotalBlocksPerYear  (MsgUpdateTotalBlocksPerYear ) returns (MsgUpdateTotalBlocksPerYearResponse );
-  rpc UpdateWasmConfig          (MsgUpdateWasmConfig         ) returns (MsgUpdateWasmConfigResponse         );
-  rpc UpdateRewardsDataLifetime (MsgUpdateRewardsDataLifetime) returns (MsgUpdateRewardsDataLifetimeResponse);
+  rpc UpdateMinCommission(MsgUpdateMinCommission)
+      returns (MsgUpdateMinCommissionResponse);
+  rpc UpdateMaxVotingPower(MsgUpdateMaxVotingPower)
+      returns (MsgUpdateMaxVotingPowerResponse);
+  rpc UpdateMinSelfDelegation(MsgUpdateMinSelfDelegation)
+      returns (MsgUpdateMinSelfDelegationResponse);
+  rpc UpdateBrokerAddress(MsgUpdateBrokerAddress)
+      returns (MsgUpdateBrokerAddressResponse);
+  rpc UpdateTotalBlocksPerYear(MsgUpdateTotalBlocksPerYear)
+      returns (MsgUpdateTotalBlocksPerYearResponse);
+  rpc UpdateWasmConfig(MsgUpdateWasmConfig)
+      returns (MsgUpdateWasmConfigResponse);
+  rpc UpdateRewardsDataLifetime(MsgUpdateRewardsDataLifetime)
+      returns (MsgUpdateRewardsDataLifetimeResponse);
 }
 message MsgUpdateMinCommission {
-  string creator        = 1;
+  string creator = 1;
   string min_commission = 2;
 }
 
 message MsgUpdateMinCommissionResponse {}
 
 message MsgUpdateMaxVotingPower {
-  string creator          = 1;
+  string creator = 1;
   string max_voting_power = 2;
 }
 
 message MsgUpdateMaxVotingPowerResponse {}
 
 message MsgUpdateMinSelfDelegation {
-  string creator             = 1;
+  string creator = 1;
   string min_self_delegation = 2;
 }
 
 message MsgUpdateMinSelfDelegationResponse {}
 
 message MsgUpdateBrokerAddress {
-  string creator        = 1;
+  string creator = 1;
   string broker_address = 2;
 }
 
 message MsgUpdateBrokerAddressResponse {}
 
 message MsgUpdateTotalBlocksPerYear {
-  string creator               = 1;
-  int64  total_blocks_per_year = 2;
+  string creator = 1;
+  int64 total_blocks_per_year = 2;
 }
 
 message MsgUpdateTotalBlocksPerYearResponse {}
 
 message MsgUpdateWasmConfig {
-  string creator                     = 1;
-  string wasm_max_label_size         = 2;
-  string wasm_max_size               = 3;
+  string creator = 1;
+  string wasm_max_label_size = 2;
+  string wasm_max_size = 3;
   string wasm_max_proposal_wasm_size = 4;
 }
 
 message MsgUpdateWasmConfigResponse {}
 
 message MsgUpdateRewardsDataLifetime {
-  string creator             = 1;
+  string creator = 1;
   string rewardsDataLifetime = 2;
 }
 
 message MsgUpdateRewardsDataLifetimeResponse {}
-

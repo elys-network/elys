@@ -11,6 +11,9 @@ import (
 )
 
 func (k msgServer) CreateTimeBasedInflation(goCtx context.Context, msg *types.MsgCreateTimeBasedInflation) (*types.MsgCreateTimeBasedInflationResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
@@ -36,6 +39,9 @@ func (k msgServer) CreateTimeBasedInflation(goCtx context.Context, msg *types.Ms
 }
 
 func (k msgServer) UpdateTimeBasedInflation(goCtx context.Context, msg *types.MsgUpdateTimeBasedInflation) (*types.MsgUpdateTimeBasedInflationResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
@@ -67,6 +73,9 @@ func (k msgServer) UpdateTimeBasedInflation(goCtx context.Context, msg *types.Ms
 }
 
 func (k msgServer) DeleteTimeBasedInflation(goCtx context.Context, msg *types.MsgDeleteTimeBasedInflation) (*types.MsgDeleteTimeBasedInflationResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}

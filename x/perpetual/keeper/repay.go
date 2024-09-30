@@ -1,15 +1,15 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, repayAmount math.Int, takeFundPayment bool, amount math.Int, baseCurrency string) error {
+func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, repayAmount sdkmath.Int, takeFundPayment bool, amount sdkmath.Int, baseCurrency string) error {
 	// nolint:staticcheck,ineffassign
-	returnAmount := sdk.ZeroInt()
+	returnAmount := sdkmath.ZeroInt()
 	Liabilities := mtp.Liabilities
 	BorrowInterestUnpaid := mtp.BorrowInterestUnpaidCollateral
 
@@ -50,10 +50,10 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	if have.LT(Liabilities) {
 		// can't afford principle liability
-		returnAmount = sdk.ZeroInt()
+		returnAmount = sdkmath.ZeroInt()
 	} else if have.LT(owe) {
 		// v principle liability; x excess liability
-		returnAmount = sdk.ZeroInt()
+		returnAmount = sdkmath.ZeroInt()
 	} else {
 		// can afford both
 		returnAmount = have.Sub(Liabilities).Sub(BorrowInterestUnpaid)
@@ -65,7 +65,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 			takePercentage := k.GetForceCloseFundPercentage(ctx)
 
 			fundAddr := k.GetForceCloseFundAddress(ctx)
-			takeAmount := sdk.ZeroInt()
+			takeAmount := sdkmath.ZeroInt()
 			if mtp.Position == types.Position_LONG {
 				takeAmount, err = k.TakeFundPayment(ctx, returnAmount, baseCurrency, takePercentage, fundAddr, &ammPool)
 				if err != nil {
@@ -105,7 +105,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 				actualReturnAmount = C
 			}
 
-			returnCoin := sdk.NewCoin(mtp.CollateralAsset, sdk.NewIntFromBigInt(actualReturnAmount.BigInt()))
+			returnCoin := sdk.NewCoin(mtp.CollateralAsset, sdkmath.NewIntFromBigInt(actualReturnAmount.BigInt()))
 			returnCoins := sdk.NewCoins(returnCoin)
 			addr, err := sdk.AccAddressFromBech32(mtp.Address)
 			if err != nil {

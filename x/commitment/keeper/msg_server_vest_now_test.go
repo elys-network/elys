@@ -1,9 +1,8 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
-
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/app"
@@ -21,7 +20,7 @@ func TestVestNow(t *testing.T) {
 	// Enable VestNow for test
 	commitmentkeeper.VestNowEnabled = true
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
@@ -31,15 +30,15 @@ func TestVestNow(t *testing.T) {
 	// Define the test data
 	creator := creatorAddr.String()
 	denom := ptypes.Eden
-	initialClaimed := sdk.NewInt(5000)
-	initialCommitted := sdk.NewInt(10000)
+	initialClaimed := sdkmath.NewInt(5000)
+	initialCommitted := sdkmath.NewInt(10000)
 
 	vestingInfos := []*types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 	}
@@ -72,7 +71,7 @@ func TestVestNow(t *testing.T) {
 	// Test scenario 1: Withdraw within claimed balance
 	msg := &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(3000),
+		Amount:  sdkmath.NewInt(3000),
 		Denom:   denom,
 	}
 
@@ -82,16 +81,16 @@ func TestVestNow(t *testing.T) {
 	updatedCommitments := keeper.GetCommitments(ctx, creatorAddr)
 
 	claimedBalance := updatedCommitments.GetClaimedForDenom(denom)
-	assert.Equal(t, sdk.NewInt(2000), claimedBalance)
+	assert.Equal(t, sdkmath.NewInt(2000), claimedBalance)
 
 	// Check if the vested tokens were received
 	creatorBalance := app.BankKeeper.GetBalance(ctx, creatorAddr, vestingInfos[0].VestingDenom)
-	require.Equal(t, sdk.NewInt(33), creatorBalance.Amount, "tokens were not vested correctly")
+	require.Equal(t, sdkmath.NewInt(33), creatorBalance.Amount, "tokens were not vested correctly")
 
 	// Test scenario 2: Withdraw more than claimed balance but within total balance
 	msg = &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(7000),
+		Amount:  sdkmath.NewInt(7000),
 		Denom:   denom,
 	}
 

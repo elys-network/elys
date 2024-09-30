@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,12 +13,6 @@ import (
 
 func TestMsgClose(t *testing.T) {
 	msg := types.NewMsgClose(sample.AccAddress(), 1, sdk.OneInt())
-	require.Equal(t, msg.Route(), types.RouterKey)
-	require.Equal(t, msg.Type(), types.TypeMsgClose)
-	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Creator)})
-	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
-	msg.Creator = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
 	tests := []struct {
 		name   string
 		setter func()
@@ -41,7 +36,7 @@ func TestMsgClose(t *testing.T) {
 			name: "lp is < 0",
 			setter: func() {
 				msg.Creator = sample.AccAddress()
-				msg.LpAmount = sdk.OneInt().MulRaw(-1)
+				msg.LpAmount = sdkmath.OneInt().MulRaw(-1)
 			},
 			errMsg: "invalid lp amount: cannot be negative",
 		},
@@ -60,14 +55,7 @@ func TestMsgClose(t *testing.T) {
 }
 
 func TestMsgOpen(t *testing.T) {
-	msg := types.NewMsgOpen(sample.AccAddress(), "uusdc", sdk.OneInt(), 1, sdk.OneDec().MulInt64(2), sdk.OneDec())
-	require.Equal(t, msg.Route(), types.RouterKey)
-	require.Equal(t, msg.Type(), types.TypeMsgOpen)
-	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Creator)})
-	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
-	msg.Creator = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
-
+	msg := types.NewMsgOpen(sample.AccAddress(), "uusdc", sdkmath.OneInt(), 1, sdkmath.LegacyOneDec().MulInt64(2), sdkmath.LegacyOneDec())
 	tests := []struct {
 		name   string
 		setter func()
@@ -91,31 +79,31 @@ func TestMsgOpen(t *testing.T) {
 			name: "leverage is 0",
 			setter: func() {
 				msg.Creator = sample.AccAddress()
-				msg.Leverage = sdk.ZeroDec()
+				msg.Leverage = sdkmath.LegacyZeroDec()
 			},
 			errMsg: types.ErrLeverageTooSmall.Error(),
 		},
 		{
 			name: "leverage is < 0",
 			setter: func() {
-				msg.Leverage = sdk.OneDec().MulInt64(-1)
+				msg.Leverage = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			errMsg: types.ErrLeverageTooSmall.Error(),
 		},
 		{
 			name: "collateral amt is 0",
 			setter: func() {
-				msg.Leverage = sdk.OneDec().MulInt64(2)
+				msg.Leverage = sdkmath.LegacyOneDec().MulInt64(2)
 				msg.CollateralAsset = "uusdc"
-				msg.CollateralAmount = sdk.ZeroInt()
+				msg.CollateralAmount = sdkmath.ZeroInt()
 			},
 			errMsg: types.ErrInvalidCollateralAsset.Error(),
 		},
 		{
 			name: "collateral amt is 0",
 			setter: func() {
-				msg.CollateralAmount = sdk.OneInt().MulRaw(10)
-				msg.StopLossPrice = sdk.OneDec().MulInt64(-1)
+				msg.CollateralAmount = sdkmath.OneInt().MulRaw(10)
+				msg.StopLossPrice = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			errMsg: "stop loss price cannot be negative",
 		},
@@ -136,12 +124,6 @@ func TestMsgOpen(t *testing.T) {
 func TestMsgUpdateParams(t *testing.T) {
 	params := types.DefaultParams()
 	msg := types.NewMsgUpdateParams(sample.AccAddress(), &params)
-	require.Equal(t, msg.Route(), types.RouterKey)
-	require.Equal(t, msg.Type(), types.TypeMsgUpdateParams)
-	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Authority)})
-	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
-	msg.Authority = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
 
 	tests := []struct {
 		name   string
@@ -166,7 +148,7 @@ func TestMsgUpdateParams(t *testing.T) {
 			name: "invalid params",
 			setter: func() {
 				msg.Authority = sample.AccAddress()
-				msg.Params.LeverageMax = sdk.OneDec().MulInt64(100)
+				msg.Params.LeverageMax = sdkmath.LegacyOneDec().MulInt64(100)
 			},
 			errMsg: "invalid params",
 		},
@@ -186,12 +168,6 @@ func TestMsgUpdateParams(t *testing.T) {
 
 func TestMsgWhitelistAddress(t *testing.T) {
 	msg := types.NewMsgWhitelist(sample.AccAddress(), sample.AccAddress())
-	require.Equal(t, msg.Route(), types.RouterKey)
-	require.Equal(t, msg.Type(), types.TypeMsgWhitelist)
-	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Authority)})
-	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
-	msg.Authority = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
 
 	tests := []struct {
 		name   string
@@ -239,15 +215,9 @@ func TestMsgAddPool(t *testing.T) {
 		AmmPoolId:   1,
 		Enabled:     false,
 		Closed:      false,
-		LeverageMax: sdk.OneDec().MulInt64(2),
+		LeverageMax: sdkmath.LegacyOneDec().MulInt64(2),
 	}
 	msg := types.NewMsgAddPool(sample.AccAddress(), addPool)
-	require.Equal(t, msg.Route(), types.RouterKey)
-	require.Equal(t, msg.Type(), types.TypeMsgAddPool)
-	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Authority)})
-	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
-	msg.Authority = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
 
 	tests := []struct {
 		name   string
@@ -272,21 +242,21 @@ func TestMsgAddPool(t *testing.T) {
 			name: "leverage is 0",
 			setter: func() {
 				msg.Authority = sample.AccAddress()
-				msg.Pool.LeverageMax = sdk.ZeroDec()
+				msg.Pool.LeverageMax = sdkmath.LegacyZeroDec()
 			},
 			errMsg: types.ErrLeverageTooSmall.Error(),
 		},
 		{
 			name: "leverage is < 0",
 			setter: func() {
-				msg.Pool.LeverageMax = sdk.OneDec().MulInt64(-1)
+				msg.Pool.LeverageMax = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			errMsg: types.ErrLeverageTooSmall.Error(),
 		},
 		{
 			name: "leverage is 1",
 			setter: func() {
-				msg.Pool.LeverageMax = sdk.OneDec()
+				msg.Pool.LeverageMax = sdkmath.LegacyOneDec()
 			},
 			errMsg: types.ErrLeverageTooSmall.Error(),
 		},
@@ -306,12 +276,6 @@ func TestMsgAddPool(t *testing.T) {
 
 func TestMsgRemovePool(t *testing.T) {
 	msg := types.NewMsgRemovePool(sample.AccAddress(), 1)
-	require.Equal(t, msg.Route(), types.RouterKey)
-	require.Equal(t, msg.Type(), types.TypeMsgRemovePool)
-	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Authority)})
-	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
-	msg.Authority = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
 
 	tests := []struct {
 		name   string
@@ -353,12 +317,6 @@ func TestMsgUpdatePool(t *testing.T) {
 		Closed:  false,
 	}
 	msg := types.NewMsgUpdatePool(sample.AccAddress(), updatePool)
-	require.Equal(t, msg.Route(), types.RouterKey)
-	require.Equal(t, msg.Type(), types.TypeMsgUpdatePool)
-	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Authority)})
-	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
-	msg.Authority = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
 
 	tests := []struct {
 		name   string
@@ -395,13 +353,6 @@ func TestMsgUpdatePool(t *testing.T) {
 
 func TestMsgDewhitelistAddress(t *testing.T) {
 	msg := types.NewMsgDewhitelist(sample.AccAddress(), sample.AccAddress())
-	require.Equal(t, msg.Route(), types.RouterKey)
-	require.Equal(t, msg.Type(), types.TypeMsgDewhitelist)
-	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Authority)})
-	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
-	msg.Authority = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
-
 	tests := []struct {
 		name   string
 		setter func()
@@ -445,12 +396,6 @@ func TestMsgDewhitelistAddress(t *testing.T) {
 
 func TestMsgClaimRewards(t *testing.T) {
 	msg := types.NewMsgClaimRewards(sample.AccAddress(), []uint64{1})
-	require.Equal(t, msg.Route(), types.RouterKey)
-	require.Equal(t, msg.Type(), types.TypeMsgClaimRewards)
-	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Sender)})
-	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
-	msg.Sender = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
 
 	tests := []struct {
 		name   string

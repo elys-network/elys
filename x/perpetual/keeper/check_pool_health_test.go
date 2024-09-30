@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"errors"
 	"testing"
 
@@ -70,7 +71,7 @@ func TestCheckPoolHealth_PoolHealthTooLow(t *testing.T) {
 
 	poolId := uint64(1)
 	pool := types.Pool{
-		Health: sdk.NewDec(5), // mock a low health
+		Health: sdkmath.LegacyNewDec(5), // mock a low health
 		// ... other pool attributes
 	}
 
@@ -78,7 +79,7 @@ func TestCheckPoolHealth_PoolHealthTooLow(t *testing.T) {
 	mockChecker.On("GetPool", ctx, poolId).Return(pool, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
 	mockChecker.On("IsPoolClosed", ctx, poolId).Return(false)
-	mockChecker.On("GetPoolOpenThreshold", ctx).Return(sdk.NewDec(10)) // threshold higher than health
+	mockChecker.On("GetPoolOpenThreshold", ctx).Return(sdkmath.LegacyNewDec(10)) // threshold higher than health
 
 	err := k.CheckPoolHealth(ctx, poolId)
 
@@ -99,7 +100,7 @@ func TestCheckPoolHealth_PoolIsHealthy(t *testing.T) {
 
 	poolId := uint64(1)
 	pool := types.Pool{
-		Health: sdk.NewDec(15), // mock a good health
+		Health: sdkmath.LegacyNewDec(15), // mock a good health
 		// ... other pool attributes
 	}
 
@@ -107,7 +108,7 @@ func TestCheckPoolHealth_PoolIsHealthy(t *testing.T) {
 	mockChecker.On("GetPool", ctx, poolId).Return(pool, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
 	mockChecker.On("IsPoolClosed", ctx, poolId).Return(false)
-	mockChecker.On("GetPoolOpenThreshold", ctx).Return(sdk.NewDec(10))
+	mockChecker.On("GetPoolOpenThreshold", ctx).Return(sdkmath.LegacyNewDec(10))
 
 	err := k.CheckPoolHealth(ctx, poolId)
 

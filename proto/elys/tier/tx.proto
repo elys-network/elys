@@ -8,7 +8,7 @@ option go_package = "github.com/elys-network/elys/x/tier/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc SetPortfolio    (MsgSetPortfolio) returns (MsgSetPortfolioResponse);
+  rpc SetPortfolio(MsgSetPortfolio) returns (MsgSetPortfolioResponse);
 }
 
 message MsgSetPortfolio {
@@ -17,4 +17,3 @@ message MsgSetPortfolio {
 }
 
 message MsgSetPortfolioResponse {}
-

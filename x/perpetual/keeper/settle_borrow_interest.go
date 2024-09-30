@@ -2,7 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -10,10 +10,10 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) SettleBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) (math.Int, error) {
+func (k Keeper) SettleBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) (sdkmath.Int, error) {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return sdk.ZeroInt(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return sdkmath.ZeroInt(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
 
@@ -35,14 +35,14 @@ func (k Keeper) SettleBorrowInterest(ctx sdk.Context, mtp *types.MTP, pool *type
 	return finalBorrowInterestPayment, err
 }
 
-func (k Keeper) GetBorrowInterest(ctx sdk.Context, mtp *types.MTP, ammPool ammtypes.Pool) math.Int {
+func (k Keeper) GetBorrowInterest(ctx sdk.Context, mtp *types.MTP, ammPool ammtypes.Pool) sdkmath.Int {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return sdk.ZeroInt()
+		return sdkmath.ZeroInt()
 	}
 	baseCurrency := entry.Denom
 	// Unpaid collateral
-	unpaidCollateral := sdk.ZeroInt()
+	unpaidCollateral := sdkmath.ZeroInt()
 	if mtp.BorrowInterestUnpaidCollateral.IsPositive() {
 		if mtp.CollateralAsset == baseCurrency {
 			unpaidCollateral = unpaidCollateral.Add(mtp.BorrowInterestUnpaidCollateral)
@@ -51,7 +51,7 @@ func (k Keeper) GetBorrowInterest(ctx sdk.Context, mtp *types.MTP, ammPool ammty
 			unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
 			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
 			if err != nil {
-				return sdk.ZeroInt()
+				return sdkmath.ZeroInt()
 			}
 
 			unpaidCollateral = unpaidCollateral.Add(C)
@@ -60,6 +60,6 @@ func (k Keeper) GetBorrowInterest(ctx sdk.Context, mtp *types.MTP, ammPool ammty
 	sum := mtp.Liabilities.Add(unpaidCollateral)
 
 	// Get interest
-	borrowInterestPayment := k.GetBorrowRate(ctx, mtp.LastInterestCalcBlock, mtp.AmmPoolId, sdk.NewDecFromInt(sum))
+	borrowInterestPayment := k.GetBorrowRate(ctx, mtp.LastInterestCalcBlock, mtp.AmmPoolId, sdkmath.LegacyNewDecFromInt(sum))
 	return borrowInterestPayment.Mul(mtp.TakeProfitBorrowRate).TruncateInt()
 }

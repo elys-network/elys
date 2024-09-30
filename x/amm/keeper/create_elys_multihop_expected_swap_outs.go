@@ -11,7 +11,7 @@ func (k Keeper) createElysMultihopExpectedSwapOuts(
 	ctx sdk.Context,
 	routes []types.SwapAmountOutRoute,
 	tokenOut sdk.Coin,
-	cumulativeRouteSwapFee, sumOfSwapFees sdk.Dec,
+	cumulativeRouteSwapFee, sumOfSwapFees math.LegacyDec,
 ) ([]math.Int, error) {
 	insExpected := make([]math.Int, len(routes))
 
@@ -23,7 +23,7 @@ func (k Keeper) createElysMultihopExpectedSwapOuts(
 		}
 
 		swapFee := pool.GetPoolParams().SwapFee
-		actualSwapFee := sdk.ZeroDec()
+		actualSwapFee := math.LegacyZeroDec()
 		if sumOfSwapFees.IsPositive() {
 			actualSwapFee = cumulativeRouteSwapFee.Mul(swapFee.Quo(sumOfSwapFees))
 		}

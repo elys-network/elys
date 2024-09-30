@@ -1,11 +1,11 @@
 package keeper
 
 import (
+	"cosmossdk.io/core/store"
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"cosmossdk.io/math"
@@ -19,8 +19,7 @@ import (
 type (
 	Keeper struct {
 		cdc                 codec.BinaryCodec
-		storeKey            storetypes.StoreKey
-		memKey              storetypes.StoreKey
+		storeService        store.KVStoreService
 		parameterKeeper     types.ParameterKeeper
 		commitmentKeeper    types.CommitmentKeeper
 		stk                 types.StakingKeeper
@@ -41,8 +40,7 @@ type (
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
+	storeService store.KVStoreService,
 	parameterKeeper types.ParameterKeeper,
 	ck types.CommitmentKeeper,
 	sk types.StakingKeeper,
@@ -61,8 +59,7 @@ func NewKeeper(
 ) *Keeper {
 	return &Keeper{
 		cdc:                 cdc,
-		storeKey:            storeKey,
-		memKey:              memKey,
+		storeService:        storeService,
 		parameterKeeper:     parameterKeeper,
 		commitmentKeeper:    ck,
 		stk:                 sk,
@@ -85,8 +82,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // Caculate total TVL
-func (k Keeper) CalculateTVL(ctx sdk.Context) sdk.Dec {
-	TVL := sdk.ZeroDec()
+func (k Keeper) CalculateTVL(ctx sdk.Context) math.LegacyDec {
+	TVL := math.LegacyZeroDec()
 
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
 		tvl, err := p.TVL(ctx, k.oracleKeeper)
@@ -101,7 +98,7 @@ func (k Keeper) CalculateTVL(ctx sdk.Context) sdk.Dec {
 }
 
 // Get total dex rewards amount from the specified pool
-func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (sdk.Dec, sdk.Coins) {
+func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (math.LegacyDec, sdk.Coins) {
 	dailyDexRewardsTotal := math.LegacyZeroDec()
 	dailyGasRewardsTotal := math.LegacyZeroDec()
 	dailyEdenRewardsTotal := math.LegacyZeroDec()
@@ -121,7 +118,7 @@ func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (sd
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
-		return sdk.ZeroDec(), sdk.Coins{}
+		return math.LegacyZeroDec(), sdk.Coins{}
 	}
 
 	rewardCoins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, dailyEdenRewardsTotal.RoundInt()))

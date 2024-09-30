@@ -11,14 +11,14 @@ import (
 func NewPool(poolId uint64) Pool {
 	return Pool{
 		AmmPoolId:                            poolId,
-		Health:                               sdk.NewDec(100),
+		Health:                               math.LegacyNewDec(100),
 		Enabled:                              true,
 		Closed:                               false,
-		BorrowInterestRate:                   sdk.MustNewDecFromStr("0.000000000000000001"),
+		BorrowInterestRate:                   math.LegacyMustNewDecFromStr("0.000000000000000001"),
 		PoolAssetsLong:                       []PoolAsset{},
 		PoolAssetsShort:                      []PoolAsset{},
 		LastHeightBorrowInterestRateComputed: 0,
-		FundingRate:                          sdk.ZeroDec(),
+		FundingRate:                          math.LegacyZeroDec(),
 	}
 }
 
@@ -149,10 +149,10 @@ func (p *Pool) InitiatePool(ctx sdk.Context, ammPool *ammtypes.Pool) error {
 
 	for _, asset := range ammPool.PoolAssets {
 		poolAsset := PoolAsset{
-			Liabilities:         sdk.ZeroInt(),
-			Custody:             sdk.ZeroInt(),
-			AssetBalance:        sdk.ZeroInt(),
-			BlockBorrowInterest: sdk.ZeroInt(),
+			Liabilities:         math.ZeroInt(),
+			Custody:             math.ZeroInt(),
+			AssetBalance:        math.ZeroInt(),
+			BlockBorrowInterest: math.ZeroInt(),
 			AssetDenom:          asset.Token.Denom,
 		}
 

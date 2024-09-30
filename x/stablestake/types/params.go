@@ -1,46 +1,23 @@
 package types
 
 import (
-	fmt "fmt"
+	"fmt"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
-
-var _ paramtypes.ParamSet = (*Params)(nil)
-
-// Parameter keys
-var (
-	KeyDepositDenom         = []byte("DepositDenom")
-	KeyRedemptionRate       = []byte("RedemptionRate")
-	KeyEpochLength          = []byte("EpochLength")
-	KeyInterestRate         = []byte("InterestRate")
-	KeyInterestRateMax      = []byte("InterestRateMax")
-	KeyInterestRateMin      = []byte("InterestRateMin")
-	KeyInterestRateIncrease = []byte("InterestRateIncrease")
-	KeyInterestRateDecrease = []byte("InterestRateDecrease")
-	KeyHealthGainFactor     = []byte("HealthGainFactor")
-	KeyTotalValue           = []byte("TotalValue")
-)
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 // NewParams creates a new Params instance
 func NewParams(
 	depositDenom string,
-	redemptionRate sdk.Dec,
+	redemptionRate math.LegacyDec,
 	epochLength int64,
-	interestRate sdk.Dec,
-	interestRateMax sdk.Dec,
-	interestRateMin sdk.Dec,
-	interestRateIncrease sdk.Dec,
-	interestRateDecrease sdk.Dec,
-	healthGainFactor sdk.Dec,
+	interestRate math.LegacyDec,
+	interestRateMax math.LegacyDec,
+	interestRateMin math.LegacyDec,
+	interestRateIncrease math.LegacyDec,
+	interestRateDecrease math.LegacyDec,
+	healthGainFactor math.LegacyDec,
 	totalValue math.Int,
 ) Params {
 	return Params{
@@ -60,33 +37,17 @@ func NewParams(
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return NewParams(
-		"uusdc",                   // deposit denom
-		sdk.OneDec(),              // default redemption rate
-		1,                         // epoch length
-		sdk.NewDecWithPrec(15, 2), // 15% - default interest
-		sdk.NewDecWithPrec(17, 2), // 17% - max
-		sdk.NewDecWithPrec(12, 2), // 12% - min
-		sdk.NewDecWithPrec(1, 2),  // 1% - interest rate increase
-		sdk.NewDecWithPrec(1, 2),  // 1% - interest rate decrease
-		sdk.NewDec(1),             // health gain factor
-		sdk.NewInt(0),             // total value - 0
+		"uusdc",                          // deposit denom
+		math.LegacyOneDec(),              // default redemption rate
+		1,                                // epoch length
+		math.LegacyNewDecWithPrec(15, 2), // 15% - default interest
+		math.LegacyNewDecWithPrec(17, 2), // 17% - max
+		math.LegacyNewDecWithPrec(12, 2), // 12% - min
+		math.LegacyNewDecWithPrec(1, 2),  // 1% - interest rate increase
+		math.LegacyNewDecWithPrec(1, 2),  // 1% - interest rate decrease
+		math.LegacyNewDec(1),             // health gain factor
+		math.NewInt(0),                   // total value - 0
 	)
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyDepositDenom, &p.DepositDenom, validateDepositDenom),
-		paramtypes.NewParamSetPair(KeyRedemptionRate, &p.RedemptionRate, validateRedemptionRate),
-		paramtypes.NewParamSetPair(KeyInterestRate, &p.InterestRate, validateInterestRate),
-		paramtypes.NewParamSetPair(KeyInterestRateMax, &p.InterestRateMax, validateInterestRateMax),
-		paramtypes.NewParamSetPair(KeyInterestRateMin, &p.InterestRateMin, validateInterestRateMin),
-		paramtypes.NewParamSetPair(KeyInterestRateIncrease, &p.InterestRateIncrease, validateInterestRateIncrease),
-		paramtypes.NewParamSetPair(KeyInterestRateDecrease, &p.InterestRateDecrease, validateInterestRateDecrease),
-		paramtypes.NewParamSetPair(KeyHealthGainFactor, &p.HealthGainFactor, validateHealthGainFactor),
-		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
-		paramtypes.NewParamSetPair(KeyTotalValue, &p.TotalValue, validateTotalValue),
-	}
 }
 
 // Validate validates the set of params
@@ -146,7 +107,7 @@ func validateDepositDenom(i interface{}) error {
 }
 
 func validateRedemptionRate(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid redemption rate type: %T", i)
 	}
@@ -154,7 +115,7 @@ func validateRedemptionRate(i interface{}) error {
 	if v.IsNil() {
 		return fmt.Errorf("redemption rate must be not nil")
 	}
-	if v.LT(sdk.OneDec()) {
+	if v.LT(math.LegacyOneDec()) {
 		return fmt.Errorf("redemption rate must be bigger than 1: %s", v)
 	}
 
@@ -175,7 +136,7 @@ func validateEpochLength(i interface{}) error {
 }
 
 func validateInterestRate(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -191,7 +152,7 @@ func validateInterestRate(i interface{}) error {
 }
 
 func validateInterestRateMax(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -207,7 +168,7 @@ func validateInterestRateMax(i interface{}) error {
 }
 
 func validateInterestRateMin(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -223,7 +184,7 @@ func validateInterestRateMin(i interface{}) error {
 }
 
 func validateInterestRateIncrease(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -239,7 +200,7 @@ func validateInterestRateIncrease(i interface{}) error {
 }
 
 func validateInterestRateDecrease(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -255,7 +216,7 @@ func validateInterestRateDecrease(i interface{}) error {
 }
 
 func validateHealthGainFactor(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

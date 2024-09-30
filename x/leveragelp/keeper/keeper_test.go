@@ -1,11 +1,11 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 	"time"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -20,7 +20,7 @@ import (
 type assetPriceInfo struct {
 	denom   string
 	display string
-	price   sdk.Dec
+	price   sdkmath.LegacyDec
 }
 
 const (
@@ -32,22 +32,22 @@ var (
 		"uusdc": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   sdk.OneDec(),
+			price:   sdkmath.LegacyOneDec(),
 		},
 		"uusdt": {
 			denom:   "uusdt",
 			display: "USDT",
-			price:   sdk.OneDec(),
+			price:   sdkmath.LegacyOneDec(),
 		},
 		"uelys": {
 			denom:   ptypes.Elys,
 			display: "ELYS",
-			price:   sdk.MustNewDecFromStr("3.0"),
+			price:   sdkmath.LegacyMustNewDecFromStr("3.0"),
 		},
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
-			price:   sdk.MustNewDecFromStr("6.0"),
+			price:   sdkmath.LegacyMustNewDecFromStr("6.0"),
 		},
 	}
 )
@@ -64,7 +64,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	app := simapp.InitElysTestApp(initChain)
 
 	suite.legacyAmino = app.LegacyAmino()
-	suite.ctx = app.BaseApp.NewContext(initChain, tmproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(initChain)
 	suite.app = app
 }
 
@@ -107,7 +107,7 @@ func (suite *KeeperTestSuite) SetMaxOpenPositions(value int64) {
 	}
 }
 
-func (suite *KeeperTestSuite) SetPoolThreshold(value sdk.Dec) {
+func (suite *KeeperTestSuite) SetPoolThreshold(value sdkmath.LegacyDec) {
 	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
 	params.PoolOpenThreshold = value
 	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
@@ -116,7 +116,7 @@ func (suite *KeeperTestSuite) SetPoolThreshold(value sdk.Dec) {
 	}
 }
 
-func (suite *KeeperTestSuite) SetSafetyFactor(value sdk.Dec) {
+func (suite *KeeperTestSuite) SetSafetyFactor(value sdkmath.LegacyDec) {
 	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
 	params.SafetyFactor = value
 	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
@@ -196,12 +196,12 @@ func (suite *KeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []string) {
 
 func TestGetAllWhitelistedAddress(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
 
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(1000000))
 
 	// Set whitelisted addresses
 	leveragelp.WhitelistAddress(ctx, addr[0])
@@ -228,12 +228,12 @@ func TestGetAllWhitelistedAddress(t *testing.T) {
 
 func TestGetWhitelistedAddress(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
 
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(1000000))
 
 	// Set whitelisted addresses
 	leveragelp.WhitelistAddress(ctx, addr[0])
@@ -276,7 +276,7 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 	}{
 		{
 			"pool not found",
-			sdk.NewCoin("uusdc", sdk.NewInt(100)),
+			sdk.NewCoin("uusdc", sdkmath.NewInt(100)),
 			"uusdc",
 			ammtypes.Pool{PoolId: 1},
 			true,
@@ -287,7 +287,7 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 		},
 		{
 			"pool not enabled",
-			sdk.NewCoin("uusdc", sdk.NewInt(100)),
+			sdk.NewCoin("uusdc", sdkmath.NewInt(100)),
 			"uusdc",
 			ammtypes.Pool{PoolId: 1},
 			true,
@@ -302,7 +302,7 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 		},
 		{
 			"amm pool not created",
-			sdk.NewCoin("uusdc", sdk.NewInt(100).MulRaw(1000_000_000_000)),
+			sdk.NewCoin("uusdc", sdkmath.NewInt(100).MulRaw(1000_000_000_000)),
 			"uusdc",
 			ammtypes.Pool{PoolId: 1},
 			true,
@@ -317,14 +317,14 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 		},
 		{
 			"amm pool not found in transient store ",
-			sdk.NewCoin("uusdc", sdk.NewInt(100).MulRaw(1000_000_000_000)),
+			sdk.NewCoin("uusdc", sdkmath.NewInt(100).MulRaw(1000_000_000_000)),
 			"uusdc",
 			ammtypes.Pool{PoolId: 1},
 			true,
 			"(uusdc) does not exist in the pool",
 			func() {
 				suite.SetupCoinPrices(suite.ctx)
-				addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
+				addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 				asset1 := ptypes.ATOM
 				asset2 := ptypes.BaseCurrency
 				initializeForClose(suite, addresses, asset1, asset2)
@@ -352,30 +352,30 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 
 	leveragelp := app.LeveragelpKeeper
 
-	leveragelpAmount := sdk.NewInt(10)
+	leveragelpAmount := sdkmath.NewInt(10)
 	pool := &types.Pool{
 		AmmPoolId:         1,
 		LeveragedLpAmount: leveragelpAmount,
 	}
 	ammPool := ammtypes.Pool{PoolId: 1}
-	totalShares := sdk.NewInt(100)
+	totalShares := sdkmath.NewInt(100)
 
 	testCases := []struct {
 		name                 string
 		prerequisiteFunction func()
-		expectedValue        sdk.Dec
+		expectedValue        sdkmath.LegacyDec
 	}{
 		{
 			"amm pool not found",
 			func() {},
-			sdk.ZeroDec(),
+			sdkmath.LegacyZeroDec(),
 		},
 		{
 			"amm pool shares is  0",
 			func() {
 				_ = app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			sdk.OneDec(),
+			sdkmath.LegacyOneDec(),
 		},
 		{
 			"success",

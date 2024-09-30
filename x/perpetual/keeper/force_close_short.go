@@ -7,7 +7,7 @@ import (
 )
 
 func (k Keeper) ForceCloseShort(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, takeFundPayment bool, baseCurrency string) (math.Int, error) {
-	repayAmount := sdk.ZeroInt()
+	repayAmount := math.ZeroInt()
 	// Retrieve AmmPool
 	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, mtp.TradingAsset)
 	if err != nil {

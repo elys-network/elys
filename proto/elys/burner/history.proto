@@ -4,9 +4,7 @@ package elys.burner;
 option go_package = "github.com/elys-network/elys/x/burner/types";
 
 message History {
-  string timestamp = 1; 
-  string denom = 2; 
-  string amount = 3; 
-  
+  string timestamp = 1;
+  string denom = 2;
+  string amount = 3;
 }
-

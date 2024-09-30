@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -8,7 +9,6 @@ import (
 	"github.com/spf13/cobra"
 
 	errorsmod "cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
@@ -18,7 +18,7 @@ func CmdUncommitTokens() *cobra.Command {
 		Short: "Broadcast message uncommit-tokens",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argAmount, found := sdk.NewIntFromString(args[0])
+			argAmount, found := math.NewIntFromString(args[0])
 			if !found {
 				return errorsmod.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
 			}

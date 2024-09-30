@@ -4,7 +4,6 @@ import (
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
@@ -55,28 +54,28 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 }
 
 // RegisterStoreDecoder registers a decoder
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {}
 
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgSetWithdrawAddress int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSetWithdrawAddress, &weightMsgSetWithdrawAddress, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgSetWithdrawAddress, &weightMsgSetWithdrawAddress, nil,
 		func(_ *rand.Rand) {
 			weightMsgSetWithdrawAddress = defaultWeightMsgSetWithdrawAddress
 		},
 	)
 
 	var weightMsgWithdrawValidatorCommission int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawValidatorCommission, &weightMsgWithdrawValidatorCommission, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgWithdrawValidatorCommission, &weightMsgWithdrawValidatorCommission, nil,
 		func(_ *rand.Rand) {
 			weightMsgWithdrawValidatorCommission = defaultWeightMsgWithdrawValidatorCommission
 		},
 	)
 
 	var weightMsgWithdrawDelegatorReward int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawDelegatorReward, &weightMsgWithdrawDelegatorReward, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgWithdrawDelegatorReward, &weightMsgWithdrawDelegatorReward, nil,
 		func(_ *rand.Rand) {
 			weightMsgWithdrawDelegatorReward = defaultWeightMsgWithdrawDelegatorReward
 		},

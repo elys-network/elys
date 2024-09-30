@@ -1,13 +1,13 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
 	"errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/spf13/cobra"
 )
@@ -20,7 +20,7 @@ func CmdAddCollateral() *cobra.Command {
 		Short: "Broadcast message add-collateral",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argAmount, ok := sdk.NewIntFromString(args[0])
+			argAmount, ok := math.NewIntFromString(args[0])
 			if !ok {
 				return errors.New("invalid collateral amount")
 			}

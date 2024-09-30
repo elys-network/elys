@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -20,21 +20,21 @@ func (k Keeper) JoinPoolNoSwap(
 	ctx sdk.Context,
 	sender sdk.AccAddress,
 	poolId uint64,
-	shareOutAmount math.Int,
+	shareOutAmount sdkmath.Int,
 	tokenInMaxs sdk.Coins,
-) (tokenIn sdk.Coins, sharesOut math.Int, err error) {
+) (tokenIn sdk.Coins, sharesOut sdkmath.Int, err error) {
 	// defer to catch panics, in case something internal overflows.
 	defer func() {
 		if r := recover(); r != nil {
 			tokenIn = sdk.Coins{}
-			sharesOut = math.Int{}
+			sharesOut = sdkmath.Int{}
 			err = fmt.Errorf("function JoinPoolNoSwap failed due to internal reason: %v", r)
 		}
 	}()
 	// all pools handled within this method are pointer references, `JoinPool` directly updates the pools
 	pool, poolExists := k.GetPool(ctx, poolId)
 	if !poolExists {
-		return nil, sdk.ZeroInt(), types.ErrInvalidPoolId
+		return nil, sdkmath.ZeroInt(), types.ErrInvalidPoolId
 	}
 
 	if !pool.PoolParams.UseOracle {
@@ -44,21 +44,21 @@ func (k Keeper) JoinPoolNoSwap(
 			// the designated amount of given shares of the pool without performing swap
 			neededLpLiquidity, err := pool.GetMaximalNoSwapLPAmount(shareOutAmount)
 			if err != nil {
-				return nil, sdk.ZeroInt(), err
+				return nil, sdkmath.ZeroInt(), err
 			}
 
 			// check that needed lp liquidity does not exceed the given `tokenInMaxs` parameter. Return error if so.
 			// if tokenInMaxs == 0, don't do this check.
 			if tokenInMaxs.Len() != 0 {
 				if !(neededLpLiquidity.DenomsSubsetOf(tokenInMaxs)) {
-					return nil, sdk.ZeroInt(), errorsmod.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs does not include all the tokens that are part of the target pool,"+
+					return nil, sdkmath.ZeroInt(), errorsmod.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs does not include all the tokens that are part of the target pool,"+
 						" upperbound: %v, needed %v", tokenInMaxs, neededLpLiquidity)
 				} else if !(tokenInMaxs.DenomsSubsetOf(neededLpLiquidity)) {
-					return nil, sdk.ZeroInt(), errorsmod.Wrapf(types.ErrDenomNotFoundInPool, "TokenInMaxs includes tokens that are not part of the target pool,"+
+					return nil, sdkmath.ZeroInt(), errorsmod.Wrapf(types.ErrDenomNotFoundInPool, "TokenInMaxs includes tokens that are not part of the target pool,"+
 						" input tokens: %v, pool tokens %v", tokenInMaxs, neededLpLiquidity)
 				}
 				if !(tokenInMaxs.IsAllGTE(neededLpLiquidity)) {
-					return nil, sdk.ZeroInt(), errorsmod.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs is less than the needed LP liquidity to this JoinPoolNoSwap,"+
+					return nil, sdkmath.ZeroInt(), errorsmod.Wrapf(types.ErrLimitMaxAmount, "TokenInMaxs is less than the needed LP liquidity to this JoinPoolNoSwap,"+
 						" upperbound: %v, needed %v", tokenInMaxs, neededLpLiquidity)
 				}
 			}
@@ -69,7 +69,7 @@ func (k Keeper) JoinPoolNoSwap(
 		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
 		sharesOut, _, _, err = pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn)
 		if err != nil {
-			return nil, sdk.ZeroInt(), err
+			return nil, sdkmath.ZeroInt(), err
 		}
 
 		// sanity check, don't return error as not worth halting the LP. We know its not too much.
@@ -90,7 +90,7 @@ func (k Keeper) JoinPoolNoSwap(
 	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
 	sharesOut, _, _, err = pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs)
 	if err != nil {
-		return nil, sdk.ZeroInt(), err
+		return nil, sdkmath.ZeroInt(), err
 	}
 
 	// sanity check, don't return error as not worth halting the LP. We know its not too much.

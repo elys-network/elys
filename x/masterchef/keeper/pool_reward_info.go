@@ -1,20 +1,22 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
 func (k Keeper) SetPoolRewardInfo(ctx sdk.Context, poolReward types.PoolRewardInfo) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPoolRewardInfoKey(poolReward.PoolId, poolReward.RewardDenom)
 	b := k.cdc.MustMarshal(&poolReward)
 	store.Set(key, b)
 }
 
 func (k Keeper) GetPoolRewardInfo(ctx sdk.Context, poolId uint64, rewardDenom string) (val types.PoolRewardInfo, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPoolRewardInfoKey(poolId, rewardDenom)
 
 	b := store.Get(key)
@@ -27,14 +29,14 @@ func (k Keeper) GetPoolRewardInfo(ctx sdk.Context, poolId uint64, rewardDenom st
 }
 
 func (k Keeper) RemovePoolRewardInfo(ctx sdk.Context, poolId uint64, rewardDenom string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPoolRewardInfoKey(poolId, rewardDenom)
 	store.Delete(key)
 }
 
 func (k Keeper) GetAllPoolRewardInfos(ctx sdk.Context) (list []types.PoolRewardInfo) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.PoolRewardInfoKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.PoolRewardInfoKeyPrefix)
 
 	defer iterator.Close()
 
@@ -48,13 +50,13 @@ func (k Keeper) GetAllPoolRewardInfos(ctx sdk.Context) (list []types.PoolRewardI
 }
 
 func (k Keeper) DeleteLegacyPoolRewardInfo(ctx sdk.Context, poolId uint64, rewardDenom string) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyPoolRewardInfoKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyPoolRewardInfoKeyPrefix))
 	store.Delete(types.LegacyPoolRewardInfoKey(poolId, rewardDenom))
 }
 
 func (k Keeper) GetAllLegacyPoolRewardInfos(ctx sdk.Context) (list []types.PoolRewardInfo) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyPoolRewardInfoKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyPoolRewardInfoKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

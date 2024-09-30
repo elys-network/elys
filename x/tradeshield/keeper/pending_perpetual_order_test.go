@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"testing"
 
@@ -21,11 +22,11 @@ func createNPendingPerpetualOrder(keeper *keeper.Keeper, ctx sdk.Context, n int)
 			OwnerAddress:       fmt.Sprintf("address%d", i),
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
-			TriggerPrice:       &types.OrderPrice{Rate: sdk.NewDec(1), BaseDenom: "base", QuoteDenom: "quote"},
-			Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
+			TriggerPrice:       &types.OrderPrice{Rate: sdkmath.LegacyNewDec(1), BaseDenom: "base", QuoteDenom: "quote"},
+			Collateral:         sdk.Coin{Denom: "denom", Amount: math.NewInt(10)},
 			TradingAsset:       "asset",
-			Leverage:           sdk.NewDec(int64(i)),
-			TakeProfitPrice:    sdk.NewDec(1),
+			Leverage:           sdkmath.LegacyNewDec(int64(i)),
+			TakeProfitPrice:    sdkmath.LegacyNewDec(1),
 			PositionId:         uint64(i),
 			Status:             types.Status_PENDING,
 		}
@@ -84,7 +85,7 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		TriggerPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+			Rate:       sdkmath.LegacyNewDec(1),
 		},
 	})
 
@@ -106,7 +107,7 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		TriggerPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(20),
+			Rate:       sdkmath.LegacyNewDec(20),
 		},
 	})
 
@@ -117,7 +118,7 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		TriggerPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(5),
+			Rate:       sdkmath.LegacyNewDec(5),
 		},
 	})
 
@@ -128,7 +129,7 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		TriggerPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(25),
+			Rate:       sdkmath.LegacyNewDec(25),
 		},
 	})
 
@@ -149,7 +150,7 @@ func TestSortedPerpetualOrder(t *testing.T) {
 	assert.Equal(t, res, [][]uint64{{1, 3, 2, 4}})
 
 	// Test binary search, search with rate 5
-	index, err := keeper.PerpetualBinarySearch(ctx, sdk.NewDec(5), []uint64{1, 3, 2, 4})
+	index, err := keeper.PerpetualBinarySearch(ctx, sdkmath.LegacyNewDec(5), []uint64{1, 3, 2, 4})
 	require.NoError(t, err)
 
 	// second element

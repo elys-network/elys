@@ -1,24 +1,19 @@
 package keeper
 
 import (
+	"cosmossdk.io/core/store"
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
 type (
 	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		paramstore paramtypes.Subspace
-
+		cdc                 codec.BinaryCodec
+		storeService        store.KVStoreService
 		parameterKeeper     types.ParameterKeeper
 		commitmentKeeper    types.CommitmentKeeper
 		amm                 types.AmmKeeper
@@ -36,9 +31,7 @@ type (
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
-	ps paramtypes.Subspace,
+	storeService store.KVStoreService,
 	parameterKeeper types.ParameterKeeper,
 	ck types.CommitmentKeeper,
 	amm types.AmmKeeper,
@@ -53,9 +46,7 @@ func NewKeeper(
 ) *Keeper {
 	return &Keeper{
 		cdc:                 cdc,
-		storeKey:            storeKey,
-		memKey:              memKey,
-		paramstore:          ps,
+		storeService:        storeService,
 		parameterKeeper:     parameterKeeper,
 		commitmentKeeper:    ck,
 		amm:                 amm,

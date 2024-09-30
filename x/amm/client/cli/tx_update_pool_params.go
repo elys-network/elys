@@ -1,10 +1,10 @@
 package cli
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -68,14 +68,14 @@ func CmdUpdatePoolParams() *cobra.Command {
 			}
 
 			poolParams := &types.PoolParams{
-				SwapFee:                     sdk.MustNewDecFromStr(swapFeeStr),
-				ExitFee:                     sdk.MustNewDecFromStr(exitFeeStr),
+				SwapFee:                     sdkmath.LegacyMustNewDecFromStr(swapFeeStr),
+				ExitFee:                     sdkmath.LegacyMustNewDecFromStr(exitFeeStr),
 				UseOracle:                   useOracle,
-				WeightBreakingFeeMultiplier: sdk.MustNewDecFromStr(weightBreakingFeeMultiplierStr),
-				WeightBreakingFeeExponent:   sdk.MustNewDecFromStr(weightBreakingFeeExponentStr),
-				ExternalLiquidityRatio:      sdk.MustNewDecFromStr(externalLiquidityRatioStr),
-				WeightRecoveryFeePortion:    sdk.MustNewDecFromStr(weightRecoveryFeePortionStr),
-				ThresholdWeightDifference:   sdk.MustNewDecFromStr(thresholdWeightDifferenceStr),
+				WeightBreakingFeeMultiplier: sdkmath.LegacyMustNewDecFromStr(weightBreakingFeeMultiplierStr),
+				WeightBreakingFeeExponent:   sdkmath.LegacyMustNewDecFromStr(weightBreakingFeeExponentStr),
+				ExternalLiquidityRatio:      sdkmath.LegacyMustNewDecFromStr(externalLiquidityRatioStr),
+				WeightRecoveryFeePortion:    sdkmath.LegacyMustNewDecFromStr(weightRecoveryFeePortionStr),
+				ThresholdWeightDifference:   sdkmath.LegacyMustNewDecFromStr(thresholdWeightDifferenceStr),
 				FeeDenom:                    feeDenom,
 			}
 

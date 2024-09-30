@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
@@ -14,7 +14,7 @@ import (
 
 func TestCalculatePoolAprs(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -22,7 +22,7 @@ func TestCalculatePoolAprs(t *testing.T) {
 	SetupStableCoinPrices(ctx, oracle)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(100010))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(100010))
 
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
@@ -35,25 +35,25 @@ func TestCalculatePoolAprs(t *testing.T) {
 	var poolAssets []ammtypes.PoolAsset
 	// Elys
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(1000)),
+		Weight: sdkmath.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(1000)),
 	})
 
 	// USDC
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100)),
+		Weight: sdkmath.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100)),
 	})
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee:                     sdk.ZeroDec(),
-		ExitFee:                     sdk.ZeroDec(),
+		SwapFee:                     sdkmath.LegacyZeroDec(),
+		ExitFee:                     sdkmath.LegacyZeroDec(),
 		UseOracle:                   false,
-		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-		ExternalLiquidityRatio:      sdk.OneDec(),
-		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdk.ZeroDec(),
+		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+		ExternalLiquidityRatio:      sdkmath.LegacyOneDec(),
+		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 		FeeDenom:                    "",
 	}
 
@@ -73,8 +73,8 @@ func TestCalculatePoolAprs(t *testing.T) {
 	poolInfo, found := mk.GetPoolInfo(ctx, resp.PoolID)
 	require.True(t, found)
 
-	poolInfo.DexApr = sdk.NewDecWithPrec(1, 2)  // 1%
-	poolInfo.EdenApr = sdk.NewDecWithPrec(2, 2) // 2%
+	poolInfo.DexApr = sdkmath.LegacyNewDecWithPrec(1, 2)  // 1%
+	poolInfo.EdenApr = sdkmath.LegacyNewDecWithPrec(2, 2) // 2%
 	mk.SetPoolInfo(ctx, poolInfo)
 
 	// When passing empty array

@@ -1,7 +1,8 @@
 package types_test
 
 import (
-	fmt "fmt"
+	sdkmath "cosmossdk.io/math"
+	"fmt"
 	"testing"
 	"time"
 
@@ -18,7 +19,7 @@ func (suite *TestSuite) TestPoolTVL() {
 		desc       string
 		poolAssets []types.PoolAsset
 		useOracle  bool
-		expTVL     sdk.Dec
+		expTVL     sdkmath.LegacyDec
 		expError   bool
 	}{
 		{
@@ -26,15 +27,15 @@ func (suite *TestSuite) TestPoolTVL() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			useOracle: true,
-			expTVL:    sdk.NewDec(2000),
+			expTVL:    sdkmath.LegacyNewDec(2000),
 			expError:  false,
 		},
 		{
@@ -42,15 +43,15 @@ func (suite *TestSuite) TestPoolTVL() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("ujuno", 1000_000_000), // 1000 JUNO
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			useOracle: true,
-			expTVL:    sdk.NewDec(0),
+			expTVL:    sdkmath.LegacyNewDec(0),
 			expError:  true,
 		},
 		{
@@ -58,15 +59,15 @@ func (suite *TestSuite) TestPoolTVL() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("ujuno", 1000_000_000), // 1000 JUNO
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("ukava", 1000_000_000), // 1000 KAVA
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			useOracle: false,
-			expTVL:    sdk.NewDec(0),
+			expTVL:    sdkmath.LegacyNewDec(0),
 			expError:  false,
 		},
 		{
@@ -74,15 +75,15 @@ func (suite *TestSuite) TestPoolTVL() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("ujuno", 1000_000_000), // 1000 JUNO
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			useOracle: false,
-			expTVL:    sdk.NewDec(2000),
+			expTVL:    sdkmath.LegacyNewDec(2000),
 			expError:  false,
 		},
 	} {
@@ -105,12 +106,12 @@ func (suite *TestSuite) TestPoolTVL() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
-					SwapFee:   sdk.ZeroDec(),
+					SwapFee:   sdkmath.LegacyZeroDec(),
 					UseOracle: tc.useOracle,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets:  tc.poolAssets,
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: sdkmath.ZeroInt(),
 			}
 			tvl, err := pool.TVL(suite.ctx, suite.app.OracleKeeper)
 			if tc.expError {
@@ -126,12 +127,12 @@ func (suite *TestSuite) TestPoolTVL() {
 func TestPool_GetPoolAssetAndIndex(t *testing.T) {
 	poolAssets := []types.PoolAsset{
 		{
-			Token:  sdk.NewCoin("token1", sdk.NewInt(100)),
-			Weight: sdk.NewInt(10),
+			Token:  sdk.NewCoin("token1", sdkmath.NewInt(100)),
+			Weight: sdkmath.NewInt(10),
 		},
 		{
-			Token:  sdk.NewCoin("token2", sdk.NewInt(200)),
-			Weight: sdk.NewInt(20),
+			Token:  sdk.NewCoin("token2", sdkmath.NewInt(200)),
+			Weight: sdkmath.NewInt(20),
 		},
 	}
 
@@ -165,12 +166,12 @@ func TestPool_GetPoolAssetAndIndex(t *testing.T) {
 func TestPool_GetAllPoolAssets(t *testing.T) {
 	poolAssets := []types.PoolAsset{
 		{
-			Token:  sdk.NewCoin("token1", sdk.NewInt(100)),
-			Weight: sdk.NewInt(10),
+			Token:  sdk.NewCoin("token1", sdkmath.NewInt(100)),
+			Weight: sdkmath.NewInt(10),
 		},
 		{
-			Token:  sdk.NewCoin("token2", sdk.NewInt(200)),
-			Weight: sdk.NewInt(20),
+			Token:  sdk.NewCoin("token2", sdkmath.NewInt(200)),
+			Weight: sdkmath.NewInt(20),
 		},
 	}
 

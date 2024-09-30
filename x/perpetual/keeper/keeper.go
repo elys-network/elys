@@ -1,14 +1,14 @@
 package keeper
 
 import (
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 	"fmt"
-	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -26,8 +26,7 @@ type (
 		types.CloseShortChecker
 
 		cdc                codec.BinaryCodec
-		storeKey           storetypes.StoreKey
-		memKey             storetypes.StoreKey
+		storeService       store.KVStoreService
 		authority          string
 		parameterKeeper    *pkeeper.Keeper
 		amm                types.AmmKeeper
@@ -41,8 +40,7 @@ type (
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
+	storeService store.KVStoreService,
 	authority string,
 	amm types.AmmKeeper,
 	bk types.BankKeeper,
@@ -57,8 +55,7 @@ func NewKeeper(
 
 	keeper := &Keeper{
 		cdc:                cdc,
-		storeKey:           storeKey,
-		memKey:             memKey,
+		storeService:       storeService,
 		authority:          authority,
 		amm:                amm,
 		bankKeeper:         bk,
@@ -84,27 +81,27 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // Swap estimation using amm CalcInAmtGivenOut function
-func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error) {
+func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (sdkmath.Int, error) {
 	perpetualEnabled := k.IsPoolEnabled(ctx, ammPool.PoolId)
 	if !perpetualEnabled {
-		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrPerpetualDisabled, "Perpetual disabled pool")
+		return sdkmath.ZeroInt(), errorsmod.Wrap(types.ErrPerpetualDisabled, "Perpetual disabled pool")
 	}
 
 	tokensOut := sdk.Coins{tokenOutAmount}
 	// Estimate swap
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
-	swapResult, _, err := k.amm.CalcInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, sdk.ZeroDec())
+	swapResult, _, err := k.amm.CalcInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, sdkmath.LegacyZeroDec())
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return sdkmath.ZeroInt(), err
 	}
 
 	if swapResult.IsZero() {
-		return sdk.ZeroInt(), types.ErrAmountTooLow
+		return sdkmath.ZeroInt(), types.ErrAmountTooLow
 	}
 	return swapResult.Amount, nil
 }
 
-func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error {
+func (k Keeper) Borrow(ctx sdk.Context, collateralAmount sdkmath.Int, custodyAmount sdkmath.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, eta sdkmath.LegacyDec, baseCurrency string, isBroker bool) error {
 	senderAddress, err := sdk.AccAddressFromBech32(mtp.Address)
 	if err != nil {
 		return err
@@ -124,7 +121,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		return types.ErrBalanceNotAvailable
 	}
 
-	collateralAmountDec := sdk.NewDecFromBigInt(collateralAmount.BigInt())
+	collateralAmountDec := sdkmath.LegacyNewDecFromBigInt(collateralAmount.BigInt())
 	liabilitiesDec := collateralAmountDec.Mul(eta)
 
 	// If collateral asset is not base currency, should calculate liability in base currency with the given out.
@@ -139,7 +136,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 			return err
 		}
 
-		liabilitiesDec = sdk.NewDecFromInt(liabilityAmt)
+		liabilitiesDec = sdkmath.LegacyNewDecFromInt(liabilityAmt)
 	}
 
 	// If position is short, liabilities should be swapped to liabilities asset
@@ -150,11 +147,11 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 			return err
 		}
 
-		liabilitiesDec = sdk.NewDecFromInt(liabilitiesAmt)
+		liabilitiesDec = sdkmath.LegacyNewDecFromInt(liabilitiesAmt)
 	}
 
 	mtp.Collateral = collateralAmount
-	mtp.Liabilities = sdk.NewIntFromBigInt(liabilitiesDec.TruncateInt().BigInt())
+	mtp.Liabilities = sdkmath.NewIntFromBigInt(liabilitiesDec.TruncateInt().BigInt())
 	mtp.Custody = custodyAmount
 
 	// calculate mtp take profit custody, delta y_tp_c = delta x_l / take profit price (take profit custody = liabilities / take profit price)
@@ -166,7 +163,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		return err
 	}
 
-	mtp.Leverage = eta.Add(sdk.OneDec())
+	mtp.Leverage = eta.Add(sdkmath.LegacyOneDec())
 
 	h, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency) // set mtp in func or return h?
 	if err != nil {
@@ -221,22 +218,22 @@ func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) error {
 	return nil
 }
 
-func (k Keeper) CalculatePoolHealthByPosition(ctx sdk.Context, pool *types.Pool, ammPool ammtypes.Pool, position types.Position) sdk.Dec {
+func (k Keeper) CalculatePoolHealthByPosition(ctx sdk.Context, pool *types.Pool, ammPool ammtypes.Pool, position types.Position) sdkmath.LegacyDec {
 	poolAssets := pool.GetPoolAssets(position)
-	H := sdk.NewDec(1)
+	H := sdkmath.LegacyNewDec(1)
 	for _, asset := range *poolAssets {
 		ammBalance, err := types.GetAmmPoolBalance(ammPool, asset.AssetDenom)
 		if err != nil {
-			return sdk.ZeroDec()
+			return sdkmath.LegacyZeroDec()
 		}
 
-		balance := sdk.NewDecFromInt(asset.AssetBalance.Add(ammBalance))
+		balance := sdkmath.LegacyNewDecFromInt(asset.AssetBalance.Add(ammBalance))
 
 		// X_L = X_P_L - X_TP_L (pool liabilities = pool synthetic liabilities - pool take profit liabilities)
-		liabilities := sdk.NewDecFromInt(asset.Liabilities.Sub(asset.TakeProfitLiabilities))
+		liabilities := sdkmath.LegacyNewDecFromInt(asset.Liabilities.Sub(asset.TakeProfitLiabilities))
 
 		if balance.Add(liabilities).IsZero() {
-			return sdk.ZeroDec()
+			return sdkmath.LegacyZeroDec()
 		}
 
 		mul := balance.Quo(balance.Add(liabilities))
@@ -245,10 +242,10 @@ func (k Keeper) CalculatePoolHealthByPosition(ctx sdk.Context, pool *types.Pool,
 	return H
 }
 
-func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
+func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdkmath.LegacyDec {
 	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
 	if !found {
-		return sdk.ZeroDec()
+		return sdkmath.LegacyZeroDec()
 	}
 
 	H := k.CalculatePoolHealthByPosition(ctx, pool, ammPool, types.Position_LONG)
@@ -272,7 +269,7 @@ func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) 
 	return nil
 }
 
-func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, borrowInterestPayment math.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) (math.Int, error) {
+func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, borrowInterestPayment sdkmath.Int, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) (sdkmath.Int, error) {
 	// if mtp has unpaid borrow interest, add to payment
 	// convert it into base currency
 	if mtp.BorrowInterestUnpaidCollateral.IsPositive() {
@@ -282,7 +279,7 @@ func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, borrowInterest
 			unpaidCollateralIn := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
 			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateralIn, baseCurrency, ammPool)
 			if err != nil {
-				return sdk.ZeroInt(), err
+				return sdkmath.ZeroInt(), err
 			}
 
 			borrowInterestPayment = borrowInterestPayment.Add(C)
@@ -293,7 +290,7 @@ func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, borrowInterest
 	// swap borrow interest payment to custody asset for payment
 	borrowInterestPaymentCustody, err := k.EstimateSwap(ctx, borrowInterestPaymentTokenIn, mtp.CustodyAsset, ammPool)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return sdkmath.ZeroInt(), err
 	}
 
 	// If collateralAsset is not in base currency, convert it to original asset format
@@ -302,12 +299,12 @@ func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, borrowInterest
 		amtTokenIn := sdk.NewCoin(baseCurrency, borrowInterestPayment)
 		borrowInterestPayment, err = k.EstimateSwap(ctx, amtTokenIn, mtp.CollateralAsset, ammPool) // may need spot price here to not deduct fee
 		if err != nil {
-			return sdk.ZeroInt(), err
+			return sdkmath.ZeroInt(), err
 		}
 	}
 
 	// if paying unpaid borrow interest reset to 0
-	mtp.BorrowInterestUnpaidCollateral = sdk.ZeroInt()
+	mtp.BorrowInterestUnpaidCollateral = sdkmath.ZeroInt()
 
 	// edge case, not enough custody to cover payment
 	if borrowInterestPaymentCustody.GT(mtp.Custody) {
@@ -315,7 +312,7 @@ func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, borrowInterest
 		custodyAmtTokenIn := sdk.NewCoin(mtp.CustodyAsset, mtp.Custody)
 		custodyAmountCollateral, err := k.EstimateSwap(ctx, custodyAmtTokenIn, mtp.CollateralAsset, ammPool) // may need spot price here to not deduct fee
 		if err != nil {
-			return sdk.ZeroInt(), err
+			return sdkmath.ZeroInt(), err
 		}
 		mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(borrowInterestPayment).Sub(custodyAmountCollateral)
 
@@ -336,7 +333,7 @@ func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, borrowInterest
 	fundAddr := k.GetIncrementalBorrowInterestPaymentFundAddress(ctx)
 	takeAmount, err := k.TakeFundPayment(ctx, borrowInterestPaymentCustody, mtp.CustodyAsset, takePercentage, fundAddr, &ammPool)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return sdkmath.ZeroInt(), err
 	}
 	actualBorrowInterestPaymentCustody := borrowInterestPaymentCustody.Sub(takeAmount)
 
@@ -346,17 +343,17 @@ func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, borrowInterest
 
 	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, borrowInterestPaymentCustody, false, mtp.Position)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return sdkmath.ZeroInt(), err
 	}
 
 	err = pool.UpdateBalance(ctx, mtp.CustodyAsset, actualBorrowInterestPaymentCustody, true, mtp.Position)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return sdkmath.ZeroInt(), err
 	}
 
 	err = k.SetMTP(ctx, mtp)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return sdkmath.ZeroInt(), err
 	}
 
 	k.SetPool(ctx, *pool)
@@ -364,24 +361,24 @@ func (k Keeper) IncrementalBorrowInterestPayment(ctx sdk.Context, borrowInterest
 	return actualBorrowInterestPaymentCustody, nil
 }
 
-func (k Keeper) BorrowInterestRateComputationByPosition(ctx sdk.Context, pool types.Pool, ammPool ammtypes.Pool, position types.Position) (sdk.Dec, error) {
+func (k Keeper) BorrowInterestRateComputationByPosition(ctx sdk.Context, pool types.Pool, ammPool ammtypes.Pool, position types.Position) (sdkmath.LegacyDec, error) {
 	poolAssets := pool.GetPoolAssets(position)
-	targetBorrowInterestRate := sdk.OneDec()
+	targetBorrowInterestRate := sdkmath.LegacyOneDec()
 	for _, asset := range *poolAssets {
 		ammBalance, err := types.GetAmmPoolBalance(ammPool, asset.AssetDenom)
 		if err != nil {
-			return sdk.ZeroDec(), err
+			return sdkmath.LegacyZeroDec(), err
 		}
 
-		balance := sdk.NewDecFromInt(asset.AssetBalance.Add(ammBalance))
-		liabilities := sdk.NewDecFromInt(asset.Liabilities)
+		balance := sdkmath.LegacyNewDecFromInt(asset.AssetBalance.Add(ammBalance))
+		liabilities := sdkmath.LegacyNewDecFromInt(asset.Liabilities)
 
 		// Ensure balance is not zero to avoid division by zero
 		if balance.IsZero() {
-			return sdk.ZeroDec(), nil
+			return sdkmath.LegacyZeroDec(), nil
 		}
 		if balance.Add(liabilities).IsZero() {
-			return sdk.ZeroDec(), nil
+			return sdkmath.LegacyZeroDec(), nil
 		}
 
 		mul := balance.Add(liabilities).Quo(balance)
@@ -390,10 +387,10 @@ func (k Keeper) BorrowInterestRateComputationByPosition(ctx sdk.Context, pool ty
 	return targetBorrowInterestRate, nil
 }
 
-func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) (sdk.Dec, error) {
+func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) (sdkmath.LegacyDec, error) {
 	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
 	if !found {
-		return sdk.ZeroDec(), errorsmod.Wrap(types.ErrBalanceNotAvailable, "Balance not available")
+		return sdkmath.LegacyZeroDec(), errorsmod.Wrap(types.ErrBalanceNotAvailable, "Balance not available")
 	}
 
 	borrowInterestRateMax := k.GetBorrowInterestRateMax(ctx)
@@ -407,22 +404,22 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 	targetBorrowInterestRate := healthGainFactor
 	targetBorrowInterestRateLong, err := k.BorrowInterestRateComputationByPosition(ctx, pool, ammPool, types.Position_LONG)
 	if err != nil {
-		return sdk.ZeroDec(), err
+		return sdkmath.LegacyZeroDec(), err
 	}
 	targetBorrowInterestRateShort, err := k.BorrowInterestRateComputationByPosition(ctx, pool, ammPool, types.Position_SHORT)
 	if err != nil {
-		return sdk.ZeroDec(), err
+		return sdkmath.LegacyZeroDec(), err
 	}
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateLong)
 	targetBorrowInterestRate = targetBorrowInterestRate.Mul(targetBorrowInterestRateShort)
 
 	borrowInterestRateChange := targetBorrowInterestRate.Sub(prevBorrowInterestRate)
 	borrowInterestRate := prevBorrowInterestRate
-	if borrowInterestRateChange.GTE(borrowInterestRateDecrease.Mul(sdk.NewDec(-1))) && borrowInterestRateChange.LTE(borrowInterestRateIncrease) {
+	if borrowInterestRateChange.GTE(borrowInterestRateDecrease.Mul(sdkmath.LegacyNewDec(-1))) && borrowInterestRateChange.LTE(borrowInterestRateIncrease) {
 		borrowInterestRate = targetBorrowInterestRate
 	} else if borrowInterestRateChange.GT(borrowInterestRateIncrease) {
 		borrowInterestRate = prevBorrowInterestRate.Add(borrowInterestRateIncrease)
-	} else if borrowInterestRateChange.LT(borrowInterestRateDecrease.Mul(sdk.NewDec(-1))) {
+	} else if borrowInterestRateChange.LT(borrowInterestRateDecrease.Mul(sdkmath.LegacyNewDec(-1))) {
 		borrowInterestRate = prevBorrowInterestRate.Sub(borrowInterestRateDecrease)
 	}
 
@@ -439,7 +436,7 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 	return newBorrowInterestRate, nil
 }
 
-func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, custodyAsset string, baseCurrency string) error {
+func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, eta sdkmath.LegacyDec, ammPool ammtypes.Pool, custodyAsset string, baseCurrency string) error {
 	minBorrowInterestRate := k.GetBorrowInterestRateMin(ctx)
 
 	// Ensure minBorrowInterestRate is not zero to avoid division by zero
@@ -447,9 +444,9 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 		return types.ErrAmountTooLow
 	}
 
-	collateralAmountDec := sdk.NewDecFromInt(collateralAmount.Amount)
+	collateralAmountDec := sdkmath.LegacyNewDecFromInt(collateralAmount.Amount)
 	liabilitiesDec := collateralAmountDec.Mul(eta)
-	liabilities := sdk.NewInt(liabilitiesDec.TruncateInt64())
+	liabilities := sdkmath.NewInt(liabilitiesDec.TruncateInt64())
 
 	// liabilty has to be always in base currency
 	if collateralAmount.Denom != baseCurrency {
@@ -460,10 +457,10 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 		if err != nil {
 			return types.ErrBorrowTooLow
 		}
-		liabilities = sdk.NewInt(inAmt.Int64())
+		liabilities = sdkmath.NewInt(inAmt.Int64())
 	}
 	minBorrowedInterest := liabilities.ToLegacyDec().Mul(minBorrowInterestRate)
-	samplePayment := sdk.NewInt(minBorrowedInterest.TruncateInt64())
+	samplePayment := sdkmath.NewInt(minBorrowedInterest.TruncateInt64())
 	if samplePayment.IsZero() {
 		return types.ErrBorrowTooLow
 	}
@@ -491,21 +488,21 @@ func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, 
 	return nil
 }
 
-func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAsset string, takePercentage sdk.Dec, fundAddr sdk.AccAddress, ammPool *ammtypes.Pool) (math.Int, error) {
-	returnAmountDec := sdk.NewDecFromBigInt(returnAmount.BigInt())
-	takeAmount := sdk.NewIntFromBigInt(takePercentage.Mul(returnAmountDec).TruncateInt().BigInt())
+func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount sdkmath.Int, returnAsset string, takePercentage sdkmath.LegacyDec, fundAddr sdk.AccAddress, ammPool *ammtypes.Pool) (sdkmath.Int, error) {
+	returnAmountDec := sdkmath.LegacyNewDecFromBigInt(returnAmount.BigInt())
+	takeAmount := sdkmath.NewIntFromBigInt(takePercentage.Mul(returnAmountDec).TruncateInt().BigInt())
 
 	if !takeAmount.IsZero() {
-		takeCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, sdk.NewIntFromBigInt(takeAmount.BigInt())))
+		takeCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, sdkmath.NewIntFromBigInt(takeAmount.BigInt())))
 
 		ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
 		if err != nil {
-			return sdk.ZeroInt(), err
+			return sdkmath.ZeroInt(), err
 		}
 		err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, fundAddr, takeCoins)
 		//err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, fundAddr, takeCoins)
 		if err != nil {
-			return sdk.ZeroInt(), err
+			return sdkmath.ZeroInt(), err
 		}
 	}
 	return takeAmount, nil

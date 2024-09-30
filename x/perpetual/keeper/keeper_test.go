@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -17,30 +17,30 @@ import (
 
 func TestSetGetMTP(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	perpetual := app.PerpetualKeeper
 
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
 	for i := 0; i < 2; i++ {
 		mtp := types.MTP{
 			Address:                        addr[i].String(),
 			CollateralAsset:                ptypes.BaseCurrency,
 			CustodyAsset:                   "ATOM",
-			Collateral:                     sdk.NewInt(0),
-			Liabilities:                    sdk.NewInt(0),
-			BorrowInterestPaidCollateral:   sdk.NewInt(0),
-			BorrowInterestPaidCustody:      sdk.NewInt(0),
-			BorrowInterestUnpaidCollateral: sdk.NewInt(0),
-			Custody:                        sdk.NewInt(0),
-			Leverage:                       sdk.NewDec(0),
-			MtpHealth:                      sdk.NewDec(0),
+			Collateral:                     math.NewInt(0),
+			Liabilities:                    math.NewInt(0),
+			BorrowInterestPaidCollateral:   math.NewInt(0),
+			BorrowInterestPaidCustody:      math.NewInt(0),
+			BorrowInterestUnpaidCollateral: math.NewInt(0),
+			Custody:                        math.NewInt(0),
+			Leverage:                       math.LegacyNewDec(0),
+			MtpHealth:                      math.LegacyNewDec(0),
 			Position:                       types.Position_LONG,
 			Id:                             0,
-			ConsolidateLeverage:            sdk.ZeroDec(),
-			SumCollateral:                  sdk.ZeroInt(),
+			ConsolidateLeverage:            math.LegacyZeroDec(),
+			SumCollateral:                  math.ZeroInt(),
 		}
 		err := perpetual.SetMTP(ctx, &mtp)
 		require.NoError(t, err)
@@ -52,12 +52,12 @@ func TestSetGetMTP(t *testing.T) {
 
 func TestGetAllWhitelistedAddress(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	perpetual := app.PerpetualKeeper
 
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
 	// Set whitelisted addresses
 	perpetual.WhitelistAddress(ctx, addr[0])
@@ -113,35 +113,35 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
-		Price:     sdk.NewDec(1),
+		Price:     math.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDT",
-		Price:     sdk.NewDec(1),
+		Price:     math.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ELYS",
-		Price:     sdk.NewDec(23),
+		Price:     math.LegacyNewDec(23),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
-		Price:     sdk.NewDec(6),
+		Price:     math.LegacyNewDec(6),
 		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "uatom",
-		Price:     sdk.NewDec(1),
+		Price:     math.LegacyNewDec(1),
 		Source:    "uatom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),

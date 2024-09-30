@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"errors"
 	"testing"
 
@@ -20,7 +21,7 @@ func TestOpen_ErrorCheckUserAuthorization(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -28,7 +29,7 @@ func TestOpen_ErrorCheckUserAuthorization(t *testing.T) {
 		msg = &types.MsgOpen{
 			Position:     types.Position_LONG,
 			TradingAsset: "uatom",
-			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdkmath.OneInt()),
 		}
 	)
 
@@ -48,16 +49,16 @@ func TestOpen_ErrorCheckMaxOpenPositions(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
 			Position:     types.Position_LONG,
-			Leverage:     sdk.NewDec(10),
+			Leverage:     sdkmath.LegacyNewDec(10),
 			TradingAsset: "uatom",
-			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdkmath.OneInt()),
 		}
 	)
 
@@ -79,7 +80,7 @@ func TestOpen_ErrorPreparePools(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -87,9 +88,9 @@ func TestOpen_ErrorPreparePools(t *testing.T) {
 		msg = &types.MsgOpen{
 			Creator:      "creator",
 			Position:     types.Position_LONG,
-			Leverage:     sdk.NewDec(10),
+			Leverage:     sdkmath.LegacyNewDec(10),
 			TradingAsset: "uatom",
-			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdkmath.OneInt()),
 		}
 	)
 
@@ -112,7 +113,7 @@ func TestOpen_ErrPoolHasToBeOracle(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -120,7 +121,7 @@ func TestOpen_ErrPoolHasToBeOracle(t *testing.T) {
 		msg = &types.MsgOpen{
 			Position:     types.Position_LONG,
 			TradingAsset: "uelys",
-			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdkmath.OneInt()),
 		}
 		poolId = uint64(1)
 	)
@@ -144,7 +145,7 @@ func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -152,7 +153,7 @@ func TestOpen_ErrorCheckPoolHealth(t *testing.T) {
 		msg = &types.MsgOpen{
 			Position:     types.Position_LONG,
 			TradingAsset: "uatom",
-			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdkmath.OneInt()),
 		}
 		poolId = uint64(1)
 	)
@@ -177,14 +178,14 @@ func TestOpen_ErrorInvalidPosition(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
 		ctx = sdk.Context{} // Mock or setup a context
 		msg = &types.MsgOpen{
 			TradingAsset: "uatom",
-			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdkmath.OneInt()),
 		}
 	)
 
@@ -203,7 +204,7 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -211,7 +212,7 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 		msg = &types.MsgOpen{
 			Position:     types.Position_LONG,
 			TradingAsset: "uatom",
-			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdkmath.OneInt()),
 		}
 		poolId = uint64(1)
 	)
@@ -237,7 +238,7 @@ func TestOpen_ErrorOpenShort(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -245,7 +246,7 @@ func TestOpen_ErrorOpenShort(t *testing.T) {
 		msg = &types.MsgOpen{
 			Position:     types.Position_SHORT,
 			TradingAsset: "uatom",
-			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdkmath.OneInt()),
 		}
 		poolId = uint64(1)
 	)
@@ -271,7 +272,7 @@ func TestOpen_Successful(t *testing.T) {
 	mockChecker := new(mocks.OpenChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenChecker = mockChecker
 
 	var (
@@ -280,7 +281,7 @@ func TestOpen_Successful(t *testing.T) {
 			Creator:      "cosmos10duudma7ef9849ee42zhe5q4t4fmk0z99uuh92",
 			Position:     types.Position_SHORT,
 			TradingAsset: "uatom",
-			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdk.OneInt()),
+			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, sdkmath.OneInt()),
 		}
 		poolId = uint64(1)
 		mtp    = &types.MTP{}

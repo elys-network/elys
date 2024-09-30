@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -33,29 +34,29 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			}
 
 			// account custody from long position
-			totalCustodyLong := sdk.ZeroInt()
+			totalCustodyLong := sdkmath.ZeroInt()
 			for _, asset := range pool.PoolAssetsLong {
 				totalCustodyLong = totalCustodyLong.Add(asset.Custody)
 			}
 
 			// account custody from short position
-			totalCustodyShort := sdk.ZeroInt()
+			totalCustodyShort := sdkmath.ZeroInt()
 			for _, asset := range pool.PoolAssetsShort {
 				totalCustodyShort = totalCustodyShort.Add(asset.Custody)
 			}
 
 			fundingAmountLong := types.CalcTakeAmount(totalCustodyLong, pool.FundingRate)
-			fundingAmountShort := sdk.ZeroInt()
+			fundingAmountShort := sdkmath.ZeroInt()
 
 			fundingRateLong := pool.FundingRate
-			fundingRateShort := sdk.ZeroDec()
+			fundingRateShort := sdkmath.LegacyZeroDec()
 
 			// if funding rate is negative, collect from short position
 			if pool.FundingRate.IsNegative() {
 				fundingAmountShort = types.CalcTakeAmount(totalCustodyShort, pool.FundingRate)
-				fundingAmountLong = sdk.ZeroInt()
+				fundingAmountLong = sdkmath.ZeroInt()
 
-				fundingRateLong = sdk.ZeroDec()
+				fundingRateLong = sdkmath.LegacyZeroDec()
 				fundingRateShort = pool.FundingRate
 			}
 			k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{

@@ -1,6 +1,7 @@
 package migrations
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -39,7 +40,7 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 			FundingFeeReceivedCollateral:   mtp.FundingFeeReceivedCollateral,
 			FundingFeeReceivedCustody:      mtp.FundingFeeReceivedCustody,
 			OpenPrice:                      mtp.OpenPrice,
-			StopLossPrice:                  sdk.NewDec(0),
+			StopLossPrice:                  sdkmath.LegacyNewDec(0),
 			LastInterestCalcTime:           uint64(ctx.BlockTime().Unix()),
 			LastInterestCalcBlock:          uint64(ctx.BlockHeight()),
 			LastFundingCalcTime:            uint64(ctx.BlockTime().Unix()),

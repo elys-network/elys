@@ -13,6 +13,9 @@ import (
 // The pool creation fee is used to fund the community pool.
 // It will create a dedicated module account for the pool and sends the initial liquidity to the created module account.
 func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (*types.MsgCreatePoolResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Pay pool creation fee
@@ -39,7 +42,7 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.GetSigners()[0].String()),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
 		),
 	})
 

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -10,6 +11,9 @@ import (
 )
 
 func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types.MsgAddPoolResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	var newPool types.Pool
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -24,14 +28,14 @@ func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types
 
 		if !found {
 			maxLeverageAllowed := k.GetMaxLeverageParam(ctx)
-			leverage := sdk.MinDec(msg.Pool.LeverageMax, maxLeverageAllowed)
+			leverage := sdkmath.LegacyMinDec(msg.Pool.LeverageMax, maxLeverageAllowed)
 
 			newPool.AmmPoolId = msg.Pool.AmmPoolId
 			newPool.Closed = msg.Pool.Closed
 			newPool.Enabled = msg.Pool.Enabled
 			newPool.LeverageMax = leverage
-			newPool.Health = sdk.NewDec(0)
-			newPool.LeveragedLpAmount = sdk.NewInt(0)
+			newPool.Health = sdkmath.LegacyNewDec(0)
+			newPool.LeveragedLpAmount = sdkmath.NewInt(0)
 			k.SetPool(ctx, newPool)
 		}
 	}

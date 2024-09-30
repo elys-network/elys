@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 )
 
 // solveConstantFunctionInvariant solves the constant function of an AMM
@@ -19,11 +19,11 @@ func solveConstantFunctionInvariant(
 	tokenBalanceFixedAfter,
 	tokenWeightFixed,
 	tokenBalanceUnknownBefore,
-	tokenWeightUnknown sdk.Dec,
-) (sdk.Dec, error) {
+	tokenWeightUnknown sdkmath.LegacyDec,
+) (sdkmath.LegacyDec, error) {
 	// Ensure tokenWeightUnknown is not zero to avoid division by zero
 	if tokenWeightUnknown.IsZero() {
-		return sdk.ZeroDec(), ErrAmountTooLow
+		return sdkmath.LegacyZeroDec(), ErrAmountTooLow
 	}
 
 	// weightRatio = (weightX/weightY)
@@ -31,7 +31,7 @@ func solveConstantFunctionInvariant(
 
 	// Ensure tokenBalanceFixedAfter is not zero to avoid division by zero
 	if tokenBalanceFixedAfter.IsZero() {
-		return sdk.ZeroDec(), ErrAmountTooLow
+		return sdkmath.LegacyZeroDec(), ErrAmountTooLow
 	}
 
 	// y = balanceXBefore/balanceXAfter
@@ -39,15 +39,15 @@ func solveConstantFunctionInvariant(
 
 	// amountY = balanceY * (1 - (y ^ weightRatio))
 	yToWeightRatio := Pow(y, weightRatio)
-	paranthetical := sdk.OneDec().Sub(yToWeightRatio)
+	paranthetical := sdkmath.LegacyOneDec().Sub(yToWeightRatio)
 	amountY := tokenBalanceUnknownBefore.Mul(paranthetical)
 	return amountY, nil
 }
 
 // E.g. tokenA: ELYS, tokenB: USDC
-func CalculateTokenARate(tokenBalanceA, tokenWeightA, tokenBalanceB, tokenWeightB sdk.Dec) sdk.Dec {
+func CalculateTokenARate(tokenBalanceA, tokenWeightA, tokenBalanceB, tokenWeightB sdkmath.LegacyDec) sdkmath.LegacyDec {
 	if tokenBalanceA.IsZero() || tokenWeightB.IsZero() {
-		return sdk.ZeroDec()
+		return sdkmath.LegacyZeroDec()
 	}
 	return tokenBalanceB.
 		Mul(tokenWeightA).
@@ -57,8 +57,8 @@ func CalculateTokenARate(tokenBalanceA, tokenWeightA, tokenBalanceB, tokenWeight
 
 // feeRatio returns the fee ratio that is defined as follows:
 // 1 - ((1 - normalizedTokenWeightOut) * spreadFactor)
-func feeRatio(normalizedWeight, spreadFactor sdk.Dec) sdk.Dec {
-	return sdk.OneDec().Sub((sdk.OneDec().Sub(normalizedWeight)).Mul(spreadFactor))
+func feeRatio(normalizedWeight, spreadFactor sdkmath.LegacyDec) sdkmath.LegacyDec {
+	return sdkmath.LegacyOneDec().Sub((sdkmath.LegacyOneDec().Sub(normalizedWeight)).Mul(spreadFactor))
 }
 
 // balancer notation: pAo - pool shares amount out, given single asset in
@@ -68,8 +68,8 @@ func calcPoolSharesOutGivenSingleAssetIn(
 	normalizedTokenWeightIn,
 	poolShares,
 	tokenAmountIn,
-	spreadFactor sdk.Dec,
-) (sdk.Dec, error) {
+	spreadFactor sdkmath.LegacyDec,
+) (sdkmath.LegacyDec, error) {
 	// deduct spread factor on the in asset.
 	// We don't charge spread factor on the token amount that we imagine as unswapped (the normalized weight).
 	// So effective_swapfee = spread factor * (1 - normalized_token_weight)
@@ -89,9 +89,9 @@ func calcPoolSharesOutGivenSingleAssetIn(
 		tokenBalanceIn,
 		normalizedTokenWeightIn,
 		poolShares,
-		sdk.OneDec())
+		sdkmath.LegacyOneDec())
 	if err != nil {
-		return sdk.Dec{}, err
+		return sdkmath.LegacyDec{}, err
 	}
 	poolAmountOut = poolAmountOut.Neg()
 	return poolAmountOut, nil

@@ -1,10 +1,9 @@
 package distribution
 
 import (
-	"time"
-
+	"context"
+	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/math"
-	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,12 +16,18 @@ import (
 	assetprofilekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"time"
 )
 
 var (
-	_ module.AppModule           = AppModule{}
-	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.AppModuleBasic      = AppModule{}
 	_ module.AppModuleSimulation = AppModule{}
+	_ module.HasGenesis          = AppModule{}
+	_ module.HasServices         = AppModule{}
+	_ module.HasInvariants       = AppModule{}
+
+	_ appmodule.AppModule       = AppModule{}
+	_ appmodule.HasBeginBlocker = AppModule{}
 )
 
 // AppModule embeds the Cosmos SDK's x/distribution AppModuleBasic.
@@ -67,12 +72,21 @@ func NewAppModule(
 
 // BeginBlocker mirror functionality of cosmos-sdk/distribution BeginBlocker
 // however it allocates no proposer reward
-func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
+func (am AppModule) BeginBlock(goCtx context.Context) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	defer telemetry.ModuleMeasureSince(distrtypes.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
+
+	var previousTotalPower int64
+	for _, voteInfo := range ctx.VoteInfos() {
+		previousTotalPower += voteInfo.Validator.Power
+	}
 
 	if ctx.BlockHeight() > 1 {
 		am.AllocateTokens(ctx)
 	}
+
+	consAddr := sdk.ConsAddress(ctx.BlockHeader().ProposerAddress)
+	return am.keeper.SetPreviousProposerConsAddr(ctx, consAddr)
 }
 
 // RegisterInvariants registers the distribution module invariants.
@@ -110,8 +124,11 @@ func (am AppModule) AllocateTokens(ctx sdk.Context) {
 	// calculate the fraction allocated to representatives by subtracting the community tax.
 	// e.g. if community tax is 0.02, representatives fraction will be 0.98 (2% goes to the community pool and the rest to the representatives)
 	remaining := feesCollected
-	communityTax := am.keeper.GetCommunityTax(ctx)
-	representativesFraction := sdk.OneDec().Sub(communityTax)
+	communityTax, err := am.keeper.GetCommunityTax(ctx)
+	if err != nil {
+		panic(err)
+	}
+	representativesFraction := math.LegacyOneDec().Sub(communityTax)
 
 	// Note: to prevent negative coin amount issue when invariant's broken,
 	// calculation of total bonded tokens manually through iteration
@@ -126,20 +143,29 @@ func (am AppModule) AllocateTokens(ctx sdk.Context) {
 		ctx.Logger().Error("invariant broken", "sumOfValTokens", sumOfValTokens.String(), "totalBondedTokens", totalBondedTokens.String())
 	}
 
-	sumOfValTokensDec := sdk.NewDecFromInt(sumOfValTokens)
+	sumOfValTokensDec := math.LegacyNewDecFromInt(sumOfValTokens)
 	// allocate tokens proportionally to representatives voting power
 	am.estakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
 		// we get this validator's percentage of the total power by dividing their tokens by the total bonded tokens
-		powerFraction := sdk.NewDecFromInt(validator.GetTokens()).QuoTruncate(sumOfValTokensDec)
+		powerFraction := math.LegacyNewDecFromInt(validator.GetTokens()).QuoTruncate(sumOfValTokensDec)
 		// we truncate here again, which means that the reward will be slightly lower than it should be
 		reward := feesCollected.MulDecTruncate(representativesFraction).MulDecTruncate(powerFraction)
-		am.keeper.AllocateTokensToValidator(ctx, validator, reward)
+		err = am.keeper.AllocateTokensToValidator(ctx, validator, reward)
+		if err != nil {
+			panic(err)
+		}
 		remaining = remaining.Sub(reward)
 		return false
 	})
 
 	// temporary workaround to keep CanWithdrawInvariant happy
-	feePool := am.keeper.GetFeePool(ctx)
+	feePool, err := am.keeper.FeePool.Get(ctx)
+	if err != nil {
+		panic(err)
+	}
 	feePool.CommunityPool = feePool.CommunityPool.Add(remaining...)
-	am.keeper.SetFeePool(ctx, feePool)
+	err = am.keeper.FeePool.Set(ctx, feePool)
+	if err != nil {
+		panic(err)
+	}
 }

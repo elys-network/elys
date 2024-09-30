@@ -1,14 +1,12 @@
 package types
 
-import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-)
+import sdkmath "cosmossdk.io/math"
 
-func CalcMTPConsolidateLiability(mtp *MTP) sdk.Dec {
+func CalcMTPConsolidateLiability(mtp *MTP) sdkmath.LegacyDec {
 	if mtp.SumCollateral.IsZero() {
 		return mtp.ConsolidateLeverage
 	}
 
 	leverage := mtp.Liabilities.Quo(mtp.SumCollateral)
-	return sdk.NewDecFromInt(leverage)
+	return sdkmath.LegacyNewDecFromInt(leverage)
 }

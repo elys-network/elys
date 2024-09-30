@@ -6,23 +6,28 @@ import (
 	"math"
 
 	errorsmod "cosmossdk.io/errors"
-	cosmos_sdk_math "cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 )
 
 func (oq *Querier) queryStakedPositions(ctx sdk.Context, query *commitmenttypes.QueryValidatorsRequest) ([]byte, error) {
-	totalBonded := oq.stakingKeeper.TotalBondedTokens(ctx)
+	totalBonded, err := oq.stakingKeeper.TotalBondedTokens(ctx)
+	if err != nil {
+		return nil, err
+	}
 	delegatorAddr, err := sdk.AccAddressFromBech32(query.DelegatorAddress)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "invalid delegator address")
 	}
 
-	validators := make([]stakingtypes.Validator, 0)
-	validators = oq.stakingKeeper.GetDelegatorValidators(ctx, delegatorAddr, math.MaxInt16)
+	validators, err := oq.stakingKeeper.GetDelegatorValidators(ctx, delegatorAddr, math.MaxInt16)
+	if err != nil {
+		return nil, err
+	}
 
-	stakedPositionsCW := oq.BuildStakedPositionResponseCW(ctx, validators, totalBonded, query.DelegatorAddress)
+	stakedPositionsCW := oq.BuildStakedPositionResponseCW(ctx, validators.Validators, totalBonded, query.DelegatorAddress)
 	res := commitmenttypes.QueryStakedPositionResponse{
 		StakedPosition: stakedPositionsCW,
 	}
@@ -35,8 +40,8 @@ func (oq *Querier) queryStakedPositions(ctx sdk.Context, query *commitmenttypes.
 	return responseBytes, nil
 }
 
-func (oq *Querier) BuildStakedPositionResponseCW(ctx sdk.Context, validators []stakingtypes.Validator, totalBonded cosmos_sdk_math.Int, delegatorAddress string) []commitmenttypes.StakedPosition {
-	edenDenomPrice := sdk.ZeroDec()
+func (oq *Querier) BuildStakedPositionResponseCW(ctx sdk.Context, validators []stakingtypes.Validator, totalBonded sdkmath.Int, delegatorAddress string) []commitmenttypes.StakedPosition {
+	edenDenomPrice := sdkmath.LegacyZeroDec()
 
 	baseCurrency, found := oq.assetKeeper.GetUsdcDenom(ctx)
 	if found {
@@ -62,7 +67,7 @@ func (oq *Querier) BuildStakedPositionResponseCW(ctx sdk.Context, validators []s
 		shares := delegations.GetShares()
 		tokens := validator.TokensFromSharesTruncated(shares)
 		delAmount := tokens.TruncateInt()
-		votingPower := sdk.NewDecFromInt(validator.Tokens).QuoInt(totalBonded).MulInt(sdk.NewInt(100))
+		votingPower := sdkmath.LegacyNewDecFromInt(validator.Tokens).QuoInt(totalBonded).MulInt(sdkmath.NewInt(100))
 
 		website := validator.Description.Website
 		if len(website) < 1 {

@@ -1,7 +1,9 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -9,28 +11,28 @@ import (
 )
 
 func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address sdk.AccAddress) bool {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return store.Has(types.GetWhitelistKey(address))
 }
 
 func (k Keeper) WhitelistAddress(ctx sdk.Context, address sdk.AccAddress) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.GetWhitelistKey(address), address)
 }
 
 func (k Keeper) DewhitelistAddress(ctx sdk.Context, address sdk.AccAddress) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetWhitelistKey(address))
 }
 
-func (k Keeper) GetWhitelistAddressIterator(ctx sdk.Context) sdk.Iterator {
-	store := ctx.KVStore(k.storeKey)
-	return sdk.KVStorePrefixIterator(store, types.WhitelistPrefix)
+func (k Keeper) GetWhitelistAddressIterator(ctx sdk.Context) storetypes.Iterator {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	return storetypes.KVStorePrefixIterator(store, types.WhitelistPrefix)
 }
 
 func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageRequest) ([]sdk.AccAddress, *query.PageResponse, error) {
 	var list []sdk.AccAddress
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	prefixStore := prefix.NewStore(store, types.WhitelistPrefix)
 
 	if pagination == nil {
@@ -50,7 +52,7 @@ func (k Keeper) GetWhitelistedAddress(ctx sdk.Context, pagination *query.PageReq
 func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []sdk.AccAddress {
 	var list []sdk.AccAddress
 	iterator := k.GetWhitelistAddressIterator(ctx)
-	defer func(iterator sdk.Iterator) {
+	defer func(iterator storetypes.Iterator) {
 		err := iterator.Close()
 		if err != nil {
 			panic(err)
@@ -65,8 +67,8 @@ func (k Keeper) GetAllWhitelistedAddress(ctx sdk.Context) []sdk.AccAddress {
 }
 
 func (k Keeper) V6_MigrateWhitelistedAddress(ctx sdk.Context) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.WhitelistPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.WhitelistPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -80,6 +82,6 @@ func (k Keeper) V6_MigrateWhitelistedAddress(ctx sdk.Context) {
 }
 
 func (k Keeper) removeLegacyWhitelistAddress(ctx sdk.Context, address string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetLegacyWhitelistKey(address))
 }

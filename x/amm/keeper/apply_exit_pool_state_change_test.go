@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,10 +19,10 @@ func (suite *KeeperTestSuite) TestApplyExitPoolStateChange_WithdrawFromCommitmen
 	ctx := suite.ctx
 
 	// Generate 1 random account with 1000stake balanced
-	addrs := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addrs := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Mint 100000USDC+100000USDT
-	coins := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)), sdk.NewCoin("uusdt", sdk.NewInt(100000)))
+	coins := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)), sdk.NewCoin("uusdt", sdkmath.NewInt(100000)))
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, coins)
 	suite.Require().NoError(err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addrs[0], coins)
@@ -29,30 +30,30 @@ func (suite *KeeperTestSuite) TestApplyExitPoolStateChange_WithdrawFromCommitmen
 
 	poolAssets := []atypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin("uusdt", sdk.NewInt(100000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin("uusdt", sdkmath.NewInt(100000)),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)),
 		},
 	}
 
-	swapFee, err := sdk.NewDecFromStr("0.1")
+	swapFee, err := sdkmath.LegacyNewDecFromStr("0.1")
 	suite.Require().NoError(err)
 
-	exitFee, err := sdk.NewDecFromStr("0.1")
+	exitFee, err := sdkmath.LegacyNewDecFromStr("0.1")
 	suite.Require().NoError(err)
 
 	poolParams := &atypes.PoolParams{
 		SwapFee:                     swapFee,
 		ExitFee:                     exitFee,
 		UseOracle:                   true,
-		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-		ExternalLiquidityRatio:      sdk.NewDec(1),
-		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdk.ZeroDec(),
+		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+		ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
+		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 		FeeDenom:                    ptypes.BaseCurrency,
 	}
 
@@ -72,7 +73,7 @@ func (suite *KeeperTestSuite) TestApplyExitPoolStateChange_WithdrawFromCommitmen
 
 	lpTokenDenom := types.GetPoolShareDenom(poolId)
 	lpTokenBalance := bk.GetBalance(ctx, addrs[0], lpTokenDenom)
-	suite.Require().True(lpTokenBalance.Amount.Equal(sdk.ZeroInt()))
+	suite.Require().True(lpTokenBalance.Amount.Equal(sdkmath.ZeroInt()))
 
 	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
 	_, err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins)

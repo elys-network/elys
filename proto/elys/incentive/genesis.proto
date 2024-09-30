@@ -4,7 +4,5 @@ package elys.incentive;
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
-  
 // GenesisState defines the incentive module's genesis state.
-message GenesisState {
-}
+message GenesisState {}

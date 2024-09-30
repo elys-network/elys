@@ -20,7 +20,7 @@ func TestMsgCancelVest_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgCancelVest{
 				Creator: "invalid_address",
-				Amount:  sdk.ZeroInt(),
+				Amount:  sdkmath.ZeroInt(),
 				Denom:   ptypes.Eden,
 			},
 			err: sdkerrors.ErrInvalidAddress,
@@ -29,7 +29,7 @@ func TestMsgCancelVest_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCancelVest{
 				Creator: sample.AccAddress(),
-				Amount:  sdk.ZeroInt(),
+				Amount:  sdkmath.ZeroInt(),
 				Denom:   ptypes.Eden,
 			},
 		},
@@ -37,7 +37,7 @@ func TestMsgCancelVest_ValidateBasic(t *testing.T) {
 			name: "invalid denom",
 			msg: MsgCancelVest{
 				Creator: sample.AccAddress(),
-				Amount:  sdk.ZeroInt(),
+				Amount:  sdkmath.ZeroInt(),
 				Denom:   "uusdc",
 			},
 			err: ErrInvalidDenom,
@@ -55,7 +55,7 @@ func TestMsgCancelVest_ValidateBasic(t *testing.T) {
 			msg: MsgCancelVest{
 				Creator: sample.AccAddress(),
 				Denom:   ptypes.Eden,
-				Amount:  sdk.NewInt(-200),
+				Amount:  math.NewInt(-200),
 			},
 			err: ErrInvalidAmount,
 		},

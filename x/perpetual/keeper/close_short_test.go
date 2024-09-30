@@ -29,7 +29,7 @@ func TestCloseShort_MtpNotFound(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
-			Amount:  sdk.NewInt(100),
+			Amount:  math.NewInt(100),
 		}
 	)
 
@@ -57,11 +57,11 @@ func TestCloseShort_InvalidCloseSize(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
-			Amount:  sdk.NewInt(100),
+			Amount:  math.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId: 2,
-			Custody:   sdk.NewInt(0),
+			Custody:   math.NewInt(0),
 		}
 	)
 
@@ -89,11 +89,11 @@ func TestCloseShort_PoolNotFound(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
-			Amount:  sdk.NewInt(100),
+			Amount:  math.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId: 2,
-			Custody:   sdk.NewInt(100),
+			Custody:   math.NewInt(100),
 		}
 	)
 
@@ -122,11 +122,11 @@ func TestCloseShort_AmmPoolNotFound(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
-			Amount:  sdk.NewInt(100),
+			Amount:  math.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId: 2,
-			Custody:   sdk.NewInt(100),
+			Custody:   math.NewInt(100),
 		}
 	)
 
@@ -156,12 +156,12 @@ func TestCloseShort_ErrorSettleBorrowInterest(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
-			Amount:  sdk.NewInt(100),
+			Amount:  math.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId:  2,
-			Custody:    sdk.NewInt(100),
-			Collateral: sdk.NewInt(0),
+			Custody:    math.NewInt(100),
+			Collateral: math.NewInt(0),
 		}
 		pool = types.Pool{
 			BorrowInterestRate: math.LegacyNewDec(2),
@@ -196,12 +196,12 @@ func TestCloseShort_ErrorTakeOutCustody(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
-			Amount:  sdk.NewInt(100),
+			Amount:  math.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId:  2,
-			Custody:    sdk.NewInt(100),
-			Collateral: sdk.NewInt(0),
+			Custody:    math.NewInt(100),
+			Collateral: math.NewInt(0),
 		}
 		pool = types.Pool{
 			BorrowInterestRate: math.LegacyNewDec(2),
@@ -237,12 +237,12 @@ func TestCloseShort_ErrorEstimateAndRepay(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 			Id:      1,
-			Amount:  sdk.NewInt(100),
+			Amount:  math.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId:  2,
-			Custody:    sdk.NewInt(100),
-			Collateral: sdk.NewInt(0),
+			Custody:    math.NewInt(100),
+			Collateral: math.NewInt(0),
 		}
 		pool = types.Pool{
 			BorrowInterestRate: math.LegacyNewDec(2),
@@ -279,12 +279,12 @@ func TestCloseShort_SuccessfulClosingLongPosition(t *testing.T) {
 		msg = &types.MsgClose{
 			Creator: "cosmos10duudma7ef9849ee42zhe5q4t4fmk0z99uuh92",
 			Id:      1,
-			Amount:  sdk.NewInt(100),
+			Amount:  math.NewInt(100),
 		}
 		mtp = types.MTP{
 			AmmPoolId:  2,
-			Custody:    sdk.NewInt(100),
-			Collateral: sdk.NewInt(0),
+			Custody:    math.NewInt(100),
+			Collateral: math.NewInt(0),
 		}
 		pool = types.Pool{
 			BorrowInterestRate: math.LegacyNewDec(2),

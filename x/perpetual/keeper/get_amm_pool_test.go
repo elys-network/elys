@@ -1,10 +1,10 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"errors"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -15,7 +15,7 @@ import (
 
 func TestGetAmmPool_PoolNotFound(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	perpetual := app.PerpetualKeeper
 
@@ -29,7 +29,7 @@ func TestGetAmmPool_PoolNotFound(t *testing.T) {
 
 func TestGetAmmPool_PoolFound(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 
 	perpetual := app.PerpetualKeeper
 
@@ -42,26 +42,26 @@ func TestGetAmmPool_PoolFound(t *testing.T) {
 		RebalanceTreasury: "",
 		PoolParams: ammtypes.PoolParams{
 			UseOracle:                   false,
-			ExternalLiquidityRatio:      sdk.NewDec(2),
-			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdk.ZeroDec(),
-			SwapFee:                     sdk.ZeroDec(),
+			ExternalLiquidityRatio:      sdkmath.LegacyNewDec(2),
+			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
+			SwapFee:                     sdkmath.LegacyZeroDec(),
 			FeeDenom:                    ptypes.BaseCurrency,
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  sdk.NewCoin(collateralAsset, sdk.NewInt(10000)),
-				Weight: sdk.NewInt(10),
+				Token:  sdk.NewCoin(collateralAsset, sdkmath.NewInt(10000)),
+				Weight: sdkmath.NewInt(10),
 			},
 			{
-				Token:  sdk.NewCoin(borrowAsset, sdk.NewInt(10000)),
-				Weight: sdk.NewInt(10),
+				Token:  sdk.NewCoin(borrowAsset, sdkmath.NewInt(10000)),
+				Weight: sdkmath.NewInt(10),
 			},
 		},
-		TotalWeight: sdk.ZeroInt(),
+		TotalWeight: sdkmath.ZeroInt(),
 	}
 	app.AmmKeeper.SetPool(ctx, expectedPool)
 

@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/app"
@@ -16,7 +16,7 @@ func TestGetParams(t *testing.T) {
 	// Create a test context and keeper
 	testapp := app.InitElysTestApp(true)
 
-	ctx := testapp.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := testapp.BaseApp.NewContext(false)
 	k := testapp.CommitmentKeeper
 	require.NotNil(t, k)
 
@@ -25,7 +25,7 @@ func TestGetParams(t *testing.T) {
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 	}
@@ -46,7 +46,7 @@ func TestEncodeDecodeParams(t *testing.T) {
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 	}
@@ -70,7 +70,7 @@ func TestGetParamsNew(t *testing.T) {
 	// Create a test context and keeper
 	testapp := app.InitElysTestApp(true)
 
-	ctx := testapp.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := testapp.BaseApp.NewContext(false)
 	k := testapp.CommitmentKeeper
 	require.NotNil(t, k)
 
@@ -79,7 +79,7 @@ func TestGetParamsNew(t *testing.T) {
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 	}
@@ -91,7 +91,7 @@ func TestGetParamsNew(t *testing.T) {
 	k.SetParams(ctx, params)
 
 	// Create a new context to test GetParams
-	newCtx := testapp.BaseApp.NewContext(false, tmproto.Header{})
+	newCtx := testapp.BaseApp.NewContext(false)
 	p := k.GetParams(newCtx)
 	require.EqualValues(t, params, p)
 }
@@ -100,7 +100,7 @@ func TestGetVestingInfo(t *testing.T) {
 	// Create a test context and keeper
 	testapp := app.InitElysTestApp(true)
 
-	ctx := testapp.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := testapp.BaseApp.NewContext(false)
 	k := testapp.CommitmentKeeper
 	require.NotNil(t, k)
 
@@ -109,14 +109,14 @@ func TestGetVestingInfo(t *testing.T) {
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 		{
 			BaseDenom:      "test",
 			VestingDenom:   "test_vesting",
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 	}

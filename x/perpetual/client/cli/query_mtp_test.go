@@ -1,6 +1,7 @@
 package cli_test
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"testing"
 
@@ -10,8 +11,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/network"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -22,12 +21,12 @@ import (
 func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP) {
 	t.Helper()
 	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 	state := types.GenesisState{}
 
 	mtps := make([]*types.MTP, 0)
 	// Generate n random accounts with 1000000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, n, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, n, math.NewInt(1000000))
 
 	cfg := network.DefaultConfig()
 	for i := 0; i < n; i++ {
@@ -37,29 +36,29 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP)
 			TradingAsset:                   "ATOM",
 			LiabilitiesAsset:               ptypes.BaseCurrency,
 			CustodyAsset:                   "ATOM",
-			Collateral:                     sdk.NewInt(0),
-			Liabilities:                    sdk.NewInt(0),
-			BorrowInterestPaidCollateral:   sdk.NewInt(0),
-			BorrowInterestPaidCustody:      sdk.NewInt(0),
-			BorrowInterestUnpaidCollateral: sdk.NewInt(0),
-			Custody:                        sdk.NewInt(0),
-			TakeProfitLiabilities:          sdk.NewInt(0),
-			TakeProfitCustody:              sdk.NewInt(0),
-			Leverage:                       sdk.NewDec(0),
-			MtpHealth:                      sdk.NewDec(0),
+			Collateral:                     math.NewInt(0),
+			Liabilities:                    math.NewInt(0),
+			BorrowInterestPaidCollateral:   math.NewInt(0),
+			BorrowInterestPaidCustody:      math.NewInt(0),
+			BorrowInterestUnpaidCollateral: math.NewInt(0),
+			Custody:                        math.NewInt(0),
+			TakeProfitLiabilities:          math.NewInt(0),
+			TakeProfitCustody:              math.NewInt(0),
+			Leverage:                       math.LegacyNewDec(0),
+			MtpHealth:                      math.LegacyNewDec(0),
 			Position:                       types.Position_LONG,
 			Id:                             (uint64)(i + 1),
 			AmmPoolId:                      (uint64)(i + 1),
-			ConsolidateLeverage:            sdk.ZeroDec(),
-			SumCollateral:                  sdk.ZeroInt(),
-			TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
-			TakeProfitBorrowRate:           sdk.OneDec(),
-			FundingFeePaidCollateral:       sdk.NewInt(0),
-			FundingFeePaidCustody:          sdk.NewInt(0),
-			FundingFeeReceivedCollateral:   sdk.NewInt(0),
-			FundingFeeReceivedCustody:      sdk.NewInt(0),
-			OpenPrice:                      sdk.NewDec(0),
-			StopLossPrice:                  sdk.NewDec(0),
+			ConsolidateLeverage:            math.LegacyZeroDec(),
+			SumCollateral:                  math.ZeroInt(),
+			TakeProfitPrice:                math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
+			TakeProfitBorrowRate:           math.LegacyOneDec(),
+			FundingFeePaidCollateral:       math.NewInt(0),
+			FundingFeePaidCustody:          math.NewInt(0),
+			FundingFeeReceivedCollateral:   math.NewInt(0),
+			FundingFeeReceivedCustody:      math.NewInt(0),
+			OpenPrice:                      math.LegacyNewDec(0),
+			StopLossPrice:                  math.LegacyNewDec(0),
 		}
 
 		mtps = append(mtps, &mtp)

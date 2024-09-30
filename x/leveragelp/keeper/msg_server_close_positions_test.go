@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/leveragelp/keeper"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -9,10 +9,10 @@ import (
 )
 
 func (suite *KeeperTestSuite) TestCloseositions() {
-	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
-	leverage := sdk.NewDec(2)
+	leverage := sdkmath.LegacyNewDec(2)
 	testCases := []struct {
 		name                 string
 		input                *types.MsgClosePositions
@@ -37,10 +37,10 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
-					CollateralAmount: sdk.NewInt(1000_000),
+					CollateralAmount: sdkmath.NewInt(1000_000),
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.NewDec(2),
+					StopLossPrice:    sdkmath.LegacyNewDec(2),
 				}
 				suite.SetCurrentHeight(1)
 				params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
@@ -77,10 +77,10 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
-					CollateralAmount: sdk.NewInt(1000_000),
+					CollateralAmount: sdkmath.NewInt(1000_000),
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.NewDec(2),
+					StopLossPrice:    sdkmath.LegacyNewDec(2),
 				}
 				suite.SetCurrentHeight(1)
 				params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
@@ -117,10 +117,10 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
-					CollateralAmount: sdk.NewInt(1000_000),
+					CollateralAmount: sdkmath.NewInt(1000_000),
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("1.5"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("1.5"),
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
@@ -150,10 +150,10 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
-					CollateralAmount: sdk.NewInt(1000_000),
+					CollateralAmount: sdkmath.NewInt(1000_000),
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("1.5"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("1.5"),
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
@@ -183,10 +183,10 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
-					CollateralAmount: sdk.NewInt(1000_000),
+					CollateralAmount: sdkmath.NewInt(1000_000),
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("1.5"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("1.5"),
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
@@ -216,10 +216,10 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
-					CollateralAmount: sdk.NewInt(1000_000),
+					CollateralAmount: sdkmath.NewInt(1000_000),
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("1.5"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("1.5"),
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
@@ -249,10 +249,10 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
-					CollateralAmount: sdk.NewInt(1000_000),
+					CollateralAmount: sdkmath.NewInt(1000_000),
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("1.5"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("1.5"),
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
@@ -281,10 +281,10 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				openMsg1 := types.MsgOpen{
 					Creator:          addresses[1].String(),
 					CollateralAsset:  "uusdc",
-					CollateralAmount: sdk.NewInt(1000_000),
+					CollateralAmount: sdkmath.NewInt(1000_000),
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("1.5"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("1.5"),
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)

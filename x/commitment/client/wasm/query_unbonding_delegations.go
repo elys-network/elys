@@ -22,7 +22,10 @@ func (oq *Querier) queryUnbondingDelegations(ctx sdk.Context, query *types.Query
 		return nil, err
 	}
 
-	unbonding_delegations := oq.stakingKeeper.GetUnbondingDelegations(ctx, delAddr, math.MaxInt16)
+	unbonding_delegations, err := oq.stakingKeeper.GetUnbondingDelegations(ctx, delAddr, math.MaxInt16)
+	if err != nil {
+		return nil, err
+	}
 	unbonding_delegations_cw := BuildUnbondingDelegationResponseCW(unbonding_delegations)
 	res := types.QueryDelegatorUnbondingDelegationsResponse{
 		UnbondingResponses: unbonding_delegations_cw,

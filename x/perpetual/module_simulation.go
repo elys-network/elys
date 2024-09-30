@@ -4,7 +4,6 @@ import (
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
@@ -76,14 +75,14 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 }
 
 // RegisterStoreDecoder registers a decoder
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {}
 
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgOpen int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgOpen, &weightMsgOpen, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgOpen, &weightMsgOpen, nil,
 		func(_ *rand.Rand) {
 			weightMsgOpen = defaultWeightMsgOpen
 		},
@@ -94,7 +93,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgClosep int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgClosep, &weightMsgClosep, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgClosep, &weightMsgClosep, nil,
 		func(_ *rand.Rand) {
 			weightMsgClosep = defaultWeightMsgClosep
 		},
@@ -105,14 +104,14 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdateParams int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateParams, &weightMsgUpdateParams, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdateParams, &weightMsgUpdateParams, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdateParams = defaultWeightMsgUpdateParams
 		},
 	)
 
 	var weightMsgWhitelist int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWhitelist, &weightMsgWhitelist, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgWhitelist, &weightMsgWhitelist, nil,
 		func(_ *rand.Rand) {
 			weightMsgWhitelist = defaultWeightMsgWhitelist
 		},
@@ -123,7 +122,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgDewhitelist int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDewhitelist, &weightMsgDewhitelist, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgDewhitelist, &weightMsgDewhitelist, nil,
 		func(_ *rand.Rand) {
 			weightMsgDewhitelist = defaultWeightMsgDewhitelist
 		},
@@ -134,7 +133,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgAddCollateral int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgAddCollateral, &weightMsgAddCollateral, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgAddCollateral, &weightMsgAddCollateral, nil,
 		func(_ *rand.Rand) {
 			weightMsgAddCollateral = defaultWeightMsgAddCollateral
 		},
@@ -145,7 +144,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgBrokerAddCollateral int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgBrokerAddCollateral, &weightMsgBrokerAddCollateral, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgBrokerAddCollateral, &weightMsgBrokerAddCollateral, nil,
 		func(_ *rand.Rand) {
 			weightMsgBrokerAddCollateral = defaultWeightMsgBrokerAddCollateral
 		},
@@ -156,7 +155,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgClosePositions int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgClosePositions, &weightMsgClosePositions, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgClosePositions, &weightMsgClosePositions, nil,
 		func(_ *rand.Rand) {
 			weightMsgClosePositions = defaultWeightMsgClosePositions
 		},

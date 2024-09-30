@@ -1,11 +1,10 @@
 package cli_test
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
 	simapp "github.com/elys-network/elys/app"
@@ -18,10 +17,10 @@ func TestGovDeWhitelist(t *testing.T) {
 	val := net.Validators[0]
 
 	app := simapp.InitElysTestApp(true)
-	baseCtx := app.BaseApp.NewContext(true, tmproto.Header{})
+	basectx := app.BaseApp.NewContext(true)
 
 	// Generate n random accounts with 1000000stake balanced
-	addr := simapp.AddTestAddrs(app, baseCtx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, basectx, 1, math.NewInt(1000000))
 
 	// Use baseURL to make API HTTP requests or use val.RPCClient to make direct
 	// Tendermint RPC calls.

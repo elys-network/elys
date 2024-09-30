@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -46,58 +47,58 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
 			UseOracle:                   false,
-			ExternalLiquidityRatio:      sdk.NewDec(2),
-			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdk.ZeroDec(),
-			SwapFee:                     sdk.ZeroDec(),
+			ExternalLiquidityRatio:      sdkmath.LegacyNewDec(2),
+			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
+			SwapFee:                     sdkmath.LegacyZeroDec(),
 			FeeDenom:                    ptypes.BaseCurrency,
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []types.PoolAsset{
 			{
 				Token:  poolInitBalance[0],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 			{
 				Token:  poolInitBalance[1],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 		},
-		TotalWeight: sdk.ZeroInt(),
+		TotalWeight: sdkmath.ZeroInt(),
 	}
 	pool2 := types.Pool{
 		PoolId:            2,
 		Address:           pool2Addr.String(),
 		RebalanceTreasury: treasury2Addr.String(),
 		PoolParams: types.PoolParams{
-			SwapFee:  sdk.ZeroDec(),
+			SwapFee:  sdkmath.LegacyZeroDec(),
 			FeeDenom: ptypes.BaseCurrency,
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []types.PoolAsset{
 			{
 				Token:  pool2InitBalance[0],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 			{
 				Token:  pool2InitBalance[1],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 		},
-		TotalWeight: sdk.ZeroInt(),
+		TotalWeight: sdkmath.ZeroInt(),
 	}
 	suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 	suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
 
-	amount := sdk.NewCoin(ptypes.Elys, sdk.NewInt(100))
+	amount := sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100))
 	inRoute, outRoute, tokenOut, spotPrice, _, _, _, _, _, _, err := suite.app.AmmKeeper.CalcSwapEstimationByDenom(
 		suite.ctx,
 		amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
-		sdk.ZeroDec(),
-		sdk.ZeroDec(),
+		sdkmath.LegacyZeroDec(),
+		sdkmath.LegacyZeroDec(),
 		1,
 	)
 	suite.Require().NoError(err)
@@ -106,13 +107,13 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 	suite.Require().NotZero(tokenOut)
 	suite.Require().NotZero(spotPrice)
 
-	amount = sdk.NewCoin("uusda", sdk.NewInt(100))
+	amount = sdk.NewCoin("uusda", sdkmath.NewInt(100))
 	inRoute, outRoute, tokenOut, spotPrice, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcSwapEstimationByDenom(
 		suite.ctx,
 		amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
-		sdk.ZeroDec(),
-		sdk.ZeroDec(),
+		sdkmath.LegacyZeroDec(),
+		sdkmath.LegacyZeroDec(),
 		1,
 	)
 	suite.Require().NoError(err)
@@ -122,12 +123,12 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 	suite.Require().NotZero(spotPrice)
 
 	// Test no routes
-	amount = sdk.NewCoin("invalid", sdk.NewInt(1000))
+	amount = sdk.NewCoin("invalid", sdkmath.NewInt(1000))
 	_, _, _, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcSwapEstimationByDenom(
 		suite.ctx, amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
-		sdk.ZeroDec(),
-		sdk.ZeroDec(),
+		sdkmath.LegacyZeroDec(),
+		sdkmath.LegacyZeroDec(),
 		1,
 	)
 	suite.Require().Error(err)

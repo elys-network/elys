@@ -23,7 +23,7 @@ func (k Keeper) ExitPool(
 	totalSharesAmount := pool.GetTotalShares()
 	if shareInAmount.GTE(totalSharesAmount.Amount) {
 		return sdk.Coins{}, sdk.Coins{}, errorsmod.Wrapf(types.ErrInvalidMathApprox, "Trying to exit >= the number of shares contained in the pool.")
-	} else if shareInAmount.LTE(sdk.ZeroInt()) {
+	} else if shareInAmount.LTE(math.ZeroInt()) {
 		return sdk.Coins{}, sdk.Coins{}, errorsmod.Wrapf(types.ErrInvalidMathApprox, "Trying to exit a negative amount of shares")
 	}
 	exitCoins, err = pool.ExitPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, shareInAmount, tokenOutDenom)

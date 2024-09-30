@@ -1,12 +1,13 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
 func (k Keeper) CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *types.MTP, baseCurrency string) error {
-	consolidateCollateral := sdk.ZeroInt()
+	consolidateCollateral := sdkmath.ZeroInt()
 	if mtp.CollateralAsset == baseCurrency {
 		consolidateCollateral = consolidateCollateral.Add(mtp.Collateral)
 	} else {

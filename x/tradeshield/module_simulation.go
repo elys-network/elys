@@ -90,7 +90,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 }
 
 // RegisterStoreDecoder registers a decoder.
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {}
 
 // ProposalContents doesn't return any content functions for governance proposals.
 func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalContent {
@@ -102,7 +102,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgCreatePendingSpotOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePendingSpotOrder, &weightMsgCreatePendingSpotOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreatePendingSpotOrder, &weightMsgCreatePendingSpotOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreatePendingSpotOrder = defaultWeightMsgCreatePendingSpotOrder
 		},
@@ -113,7 +113,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdatePendingSpotOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePendingSpotOrder, &weightMsgUpdatePendingSpotOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdatePendingSpotOrder, &weightMsgUpdatePendingSpotOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdatePendingSpotOrder = defaultWeightMsgUpdatePendingSpotOrder
 		},
@@ -124,7 +124,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgDeletePendingSpotOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeletePendingSpotOrder, &weightMsgDeletePendingSpotOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgDeletePendingSpotOrder, &weightMsgDeletePendingSpotOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgDeletePendingSpotOrder = defaultWeightMsgDeletePendingSpotOrder
 		},
@@ -135,7 +135,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgCreatePendingPerpetualOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePendingPerpetualOrder, &weightMsgCreatePendingPerpetualOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreatePendingPerpetualOrder, &weightMsgCreatePendingPerpetualOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreatePendingPerpetualOrder = defaultWeightMsgCreatePendingPerpetualOrder
 		},
@@ -146,7 +146,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdatePendingPerpetualOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePendingPerpetualOrder, &weightMsgUpdatePendingPerpetualOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdatePendingPerpetualOrder, &weightMsgUpdatePendingPerpetualOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdatePendingPerpetualOrder = defaultWeightMsgUpdatePendingPerpetualOrder
 		},
@@ -157,7 +157,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgDeletePendingPerpetualOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeletePendingPerpetualOrder, &weightMsgDeletePendingPerpetualOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgDeletePendingPerpetualOrder, &weightMsgDeletePendingPerpetualOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgDeletePendingPerpetualOrder = defaultWeightMsgDeletePendingPerpetualOrder
 		},
@@ -168,7 +168,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdateParams int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateParams, &weightMsgUpdateParams, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdateParams, &weightMsgUpdateParams, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdateParams = defaultWeightMsgUpdateParams
 		},

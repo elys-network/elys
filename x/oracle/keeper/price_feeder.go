@@ -1,14 +1,16 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
 // SetPriceFeeder set a specific priceFeeder in the store from its index
 func (k Keeper) SetPriceFeeder(ctx sdk.Context, priceFeeder types.PriceFeeder) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPriceFeederKey(priceFeeder.GetFeederAccount())
 	b := k.cdc.MustMarshal(&priceFeeder)
 	store.Set(key, b)
@@ -16,7 +18,7 @@ func (k Keeper) SetPriceFeeder(ctx sdk.Context, priceFeeder types.PriceFeeder) {
 
 // GetPriceFeeder returns a priceFeeder from its index
 func (k Keeper) GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val types.PriceFeeder, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPriceFeederKey(feeder)
 
 	b := store.Get(key)
@@ -30,15 +32,15 @@ func (k Keeper) GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val type
 
 // RemovePriceFeeder removes a priceFeeder from the store
 func (k Keeper) RemovePriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPriceFeederKey(feeder)
 	store.Delete(key)
 }
 
 // GetAllPriceFeeder returns all priceFeeder
 func (k Keeper) GetAllPriceFeeder(ctx sdk.Context) (list []types.PriceFeeder) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.PriceFeederPrefixKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.PriceFeederPrefixKey)
 
 	defer iterator.Close()
 
@@ -52,8 +54,8 @@ func (k Keeper) GetAllPriceFeeder(ctx sdk.Context) (list []types.PriceFeeder) {
 }
 
 func (k Keeper) GetAllLegacyPriceFeeder(ctx sdk.Context) (list []types.PriceFeeder) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyPriceFeederKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyPriceFeederKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -67,6 +69,6 @@ func (k Keeper) GetAllLegacyPriceFeeder(ctx sdk.Context) (list []types.PriceFeed
 }
 
 func (k Keeper) RemoveLegacyPriceFeeder(ctx sdk.Context, feeder string) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyPriceFeederKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyPriceFeederKeyPrefix))
 	store.Delete(types.LegacyPriceFeederKey(feeder))
 }

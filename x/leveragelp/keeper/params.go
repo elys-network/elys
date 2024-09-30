@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
@@ -11,7 +13,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) error {
 		return err
 	}
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz, err := k.cdc.Marshal(params)
 	if err != nil {
 		return err
@@ -21,11 +23,11 @@ func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) error {
 	return nil
 }
 
-func (k Keeper) GetMaxLeverageParam(ctx sdk.Context) sdk.Dec {
+func (k Keeper) GetMaxLeverageParam(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).LeverageMax
 }
 
-func (k Keeper) GetPoolOpenThreshold(ctx sdk.Context) sdk.Dec {
+func (k Keeper) GetPoolOpenThreshold(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).PoolOpenThreshold
 }
 
@@ -33,7 +35,7 @@ func (k Keeper) GetMaxOpenPositions(ctx sdk.Context) uint64 {
 	return (uint64)(k.GetParams(ctx).MaxOpenPositions)
 }
 
-func (k Keeper) GetSafetyFactor(ctx sdk.Context) sdk.Dec {
+func (k Keeper) GetSafetyFactor(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).SafetyFactor
 }
 
@@ -43,7 +45,7 @@ func (k Keeper) IsWhitelistingEnabled(ctx sdk.Context) bool {
 
 // GetParams get all parameters as types.Params
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.KeyPrefix(types.ParamsKey))
 	if bz == nil {
 		return params
@@ -55,7 +57,7 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 
 // GetParams get all parameters as types.Params
 func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get([]byte(types.ParamsKey))
 	if b == nil {

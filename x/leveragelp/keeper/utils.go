@@ -1,10 +1,11 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/core/store"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
-	cosmosMath "cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -80,7 +81,7 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 
 		exitAmountAfterFee := exitCoinsAfterFee.AmountOf(baseCurrency)
 
-		updated_leverage := sdk.ZeroDec()
+		updated_leverage := sdkmath.LegacyZeroDec()
 		denomimator := exitAmountAfterFee.ToLegacyDec().Sub(position.Liabilities.ToLegacyDec())
 		if denomimator.IsPositive() {
 			updated_leverage = exitAmountAfterFee.ToLegacyDec().Quo(denomimator)
@@ -92,7 +93,7 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 		updatedLeveragePositions = append(updatedLeveragePositions, &types.QueryPosition{
 			Position:         position,
 			UpdatedLeverage:  updated_leverage,
-			PositionUsdValue: sdk.NewDecFromIntWithPrec(exitAmountAfterFee, 6),
+			PositionUsdValue: sdkmath.LegacyNewDecFromIntWithPrec(exitAmountAfterFee, 6),
 		})
 	}
 	return updatedLeveragePositions, nil
@@ -101,7 +102,7 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosition) ([]*types.PositionAndInterest, error) {
 	positions_and_interest := []*types.PositionAndInterest{}
 	params := k.stableKeeper.GetParams(ctx)
-	hours := cosmosMath.LegacyNewDec(365 * 24)
+	hours := sdkmath.LegacyNewDec(365 * 24)
 
 	for _, position := range positions {
 		var positionAndInterest types.PositionAndInterest
@@ -109,7 +110,7 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Position.Collateral.Denom)
 		interestRateHour := params.InterestRate.Quo(hours)
 		positionAndInterest.InterestRateHour = interestRateHour
-		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(cosmosMath.LegacyDec(position.Position.Liabilities.Mul(price.RoundInt())))
+		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(sdkmath.LegacyDec(position.Position.Liabilities.Mul(price.RoundInt())))
 		positions_and_interest = append(positions_and_interest, &positionAndInterest)
 	}
 
@@ -119,7 +120,7 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 // migrating eixsting position and setting position health to max dec when liablities is zero
 func (k Keeper) MigratePositionHealth(ctx sdk.Context) {
 	iterator := k.GetPositionIterator(ctx)
-	defer func(iterator sdk.Iterator) {
+	defer func(iterator storetypes.Iterator) {
 		err := iterator.Close()
 		if err != nil {
 			panic(err)

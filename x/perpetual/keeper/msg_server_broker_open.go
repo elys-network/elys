@@ -9,6 +9,9 @@ import (
 )
 
 func (k msgServer) BrokerOpen(goCtx context.Context, msg *types.MsgBrokerOpen) (*types.MsgOpenResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// fail if msg.Owner is empty

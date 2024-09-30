@@ -3,7 +3,6 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
@@ -15,5 +14,5 @@ func GetAmmPoolBalance(ammPool ammtypes.Pool, assetDenom string) (math.Int, erro
 		}
 	}
 
-	return sdk.ZeroInt(), errorsmod.Wrap(ErrBalanceNotAvailable, "Balance not available")
+	return math.ZeroInt(), errorsmod.Wrap(ErrBalanceNotAvailable, "Balance not available")
 }

@@ -5,17 +5,17 @@ import (
 	"strings"
 	"time"
 
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) sdk.Dec {
+func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) sdkmath.LegacyDec {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.ZeroDec()
+		return sdkmath.LegacyZeroDec()
 	}
 	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
 	return pool.StackedRatioFromSnapshot(ctx, k.oracleKeeper, &snapshot)
@@ -32,7 +32,7 @@ func (k Keeper) ApplySwapRequest(ctx sdk.Context, msg sdk.Msg) error {
 		if err != nil {
 			recipient = sender
 		}
-		_, _, _, err = k.RouteExactAmountIn(ctx, sender, recipient, msg.Routes, msg.TokenIn, math.Int(msg.TokenOutMinAmount), msg.Discount)
+		_, _, _, err = k.RouteExactAmountIn(ctx, sender, recipient, msg.Routes, msg.TokenIn, sdkmath.Int(msg.TokenOutMinAmount), msg.Discount)
 		if err != nil {
 			return err
 		}

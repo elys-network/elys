@@ -1,10 +1,12 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	gomath "math"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -14,7 +16,7 @@ import (
 )
 
 func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	count := k.GetMTPCount(ctx)
 	openCount := k.GetOpenMTPCount(ctx)
 
@@ -38,7 +40,7 @@ func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
 
 func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) error {
 	key := types.GetMTPKey(mtpAddress, id)
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	if !store.Has(key) {
 		return types.ErrMTPDoesNotExist
 	}
@@ -56,7 +58,7 @@ func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64
 func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (types.MTP, error) {
 	var mtp types.MTP
 	key := types.GetMTPKey(mtpAddress, id)
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	if !store.Has(key) {
 		return mtp, types.ErrMTPDoesNotExist
 	}
@@ -84,19 +86,19 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (t
 
 func (k Keeper) DoesMTPExist(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) bool {
 	key := types.GetMTPKey(mtpAddress, id)
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return store.Has(key)
 }
 
-func (k Keeper) GetMTPIterator(ctx sdk.Context) sdk.Iterator {
-	store := ctx.KVStore(k.storeKey)
-	return sdk.KVStorePrefixIterator(store, types.MTPPrefix)
+func (k Keeper) GetMTPIterator(ctx sdk.Context) storetypes.Iterator {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	return storetypes.KVStorePrefixIterator(store, types.MTPPrefix)
 }
 
 func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 	var mtpList []types.MTP
 	iterator := k.GetMTPIterator(ctx)
-	defer func(iterator sdk.Iterator) {
+	defer func(iterator storetypes.Iterator) {
 		err := iterator.Close()
 		if err != nil {
 			panic(err)
@@ -115,7 +117,7 @@ func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 func (k Keeper) GetAllLegacyMTPs(ctx sdk.Context) []types.LegacyMTP {
 	var mtpList []types.LegacyMTP
 	iterator := k.GetMTPIterator(ctx)
-	defer func(iterator sdk.Iterator) {
+	defer func(iterator storetypes.Iterator) {
 		err := iterator.Close()
 		if err != nil {
 			panic(err)
@@ -133,7 +135,7 @@ func (k Keeper) GetAllLegacyMTPs(ctx sdk.Context) []types.LegacyMTP {
 
 func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
 	var mtpList []*types.MTP
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	mtpStore := prefix.NewStore(store, types.MTPPrefix)
 
 	if pagination == nil {
@@ -177,7 +179,7 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
 	var mtps []*types.MTP
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	mtpStore := prefix.NewStore(store, types.MTPPrefix)
 
 	if pagination == nil {
@@ -225,8 +227,8 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 func (k Keeper) GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress) []*types.MTP {
 	var mtps []*types.MTP
 
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetMTPPrefixForAddress(mtpAddress))
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetMTPPrefixForAddress(mtpAddress))
 
 	defer iterator.Close()
 
@@ -242,7 +244,7 @@ func (k Keeper) GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress)
 func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
 	var mtps []*types.MTP
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	mtpStore := prefix.NewStore(store, types.GetMTPPrefixForAddress(mtpAddress))
 
 	if pagination == nil {
@@ -291,13 +293,13 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 
 // Set MTP count
 func (k Keeper) SetMTPCount(ctx sdk.Context, count uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.MTPCountPrefix, types.GetUint64Bytes(count))
 }
 
 func (k Keeper) GetMTPCount(ctx sdk.Context) uint64 {
 	var count uint64
-	countBz := ctx.KVStore(k.storeKey).Get(types.MTPCountPrefix)
+	countBz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.MTPCountPrefix)
 	if countBz == nil {
 		count = 0
 	} else {
@@ -308,13 +310,13 @@ func (k Keeper) GetMTPCount(ctx sdk.Context) uint64 {
 
 // Set Open MTP count
 func (k Keeper) SetOpenMTPCount(ctx sdk.Context, count uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.OpenMTPCountPrefix, types.GetUint64Bytes(count))
 }
 
 func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 	var count uint64
-	countBz := ctx.KVStore(k.storeKey).Get(types.OpenMTPCountPrefix)
+	countBz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.OpenMTPCountPrefix)
 	if countBz == nil {
 		count = 0
 	} else {
@@ -324,7 +326,7 @@ func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 }
 
 func (k Keeper) SetToPay(ctx sdk.Context, toPay *types.ToPay) error {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	address := sdk.MustAccAddressFromBech32(toPay.Address)
 
 	key := types.GetToPayKey(address, toPay.Id)
@@ -334,8 +336,8 @@ func (k Keeper) SetToPay(ctx sdk.Context, toPay *types.ToPay) error {
 
 func (k Keeper) GetAllToPayStore(ctx sdk.Context) []types.ToPay {
 	var toPays []types.ToPay
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.ToPayPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.ToPayPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -348,7 +350,7 @@ func (k Keeper) GetAllToPayStore(ctx sdk.Context) []types.ToPay {
 }
 
 func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) error {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetToPayKey(address, id)
 	if !store.Has(key) {
 		return types.ErrToPayDoesNotExist
@@ -358,7 +360,7 @@ func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) 
 }
 
 func (k Keeper) DeleteLegacyMTP(ctx sdk.Context, mtpaddress string, id uint64) error {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetMTPKey(sdk.MustAccAddressFromBech32(mtpaddress), id)
 	if !store.Has(key) {
 		return types.ErrMTPDoesNotExist
@@ -370,7 +372,7 @@ func (k Keeper) DeleteLegacyMTP(ctx sdk.Context, mtpaddress string, id uint64) e
 func (k Keeper) GetAllLegacyMTP(ctx sdk.Context) []types.LegacyMTP {
 	var mtps []types.LegacyMTP
 	iterator := k.GetMTPIterator(ctx)
-	defer func(iterator sdk.Iterator) {
+	defer func(iterator storetypes.Iterator) {
 		err := iterator.Close()
 		if err != nil {
 			panic(err)
@@ -390,7 +392,7 @@ func (k Keeper) GetAllLegacyMTP(ctx sdk.Context) []types.LegacyMTP {
 }
 
 func (k Keeper) V6_MTPMigration(ctx sdk.Context) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iterator := k.GetMTPIterator(ctx)
 	defer iterator.Close()
 

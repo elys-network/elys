@@ -17,13 +17,13 @@ func SimulateMsgJoinPool(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgJoinPool{
-			Sender: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgJoinPool{
+		//	Sender: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the JoinPool simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "JoinPool simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgJoinPool{}), "JoinPool simulation not implemented"), nil, nil
 	}
 }

@@ -1,10 +1,10 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
@@ -30,7 +30,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	app := simapp.InitElysTestApp(initChain)
 
 	suite.legacyAmino = app.LegacyAmino()
-	suite.ctx = app.BaseApp.NewContext(initChain, tmproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(initChain)
 	suite.app = app
 }
 
@@ -60,28 +60,28 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
-		Price:     sdk.NewDec(1000000),
+		Price:     sdkmath.LegacyNewDec(1000000),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDT",
-		Price:     sdk.NewDec(1000000),
+		Price:     sdkmath.LegacyNewDec(1000000),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ELYS",
-		Price:     sdk.NewDec(100),
+		Price:     sdkmath.LegacyNewDec(100),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
-		Price:     sdk.NewDec(100),
+		Price:     sdkmath.LegacyNewDec(100),
 		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),

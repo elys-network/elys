@@ -31,7 +31,6 @@ func SimulateMsgCreatePendingSpotOrder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -65,7 +64,7 @@ func SimulateMsgUpdatePendingSpotOrder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingSpotOrder creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePendingSpotOrder{}), "pendingSpotOrder creator not found"), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
 		msg.Id = pendingSpotOrder.OrderId
@@ -76,7 +75,6 @@ func SimulateMsgUpdatePendingSpotOrder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -110,7 +108,7 @@ func SimulateMsgDeletePendingSpotOrder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingSpotOrder creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePendingSpotOrder{}), "pendingSpotOrder creator not found"), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
 		msg.Id = pendingSpotOrder.OrderId
@@ -121,7 +119,6 @@ func SimulateMsgDeletePendingSpotOrder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,

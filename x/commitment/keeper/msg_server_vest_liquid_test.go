@@ -1,12 +1,11 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"testing"
 
 	errorsmod "cosmossdk.io/errors"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	simapp "github.com/elys-network/elys/app"
@@ -20,14 +19,14 @@ import (
 func TestLiquidVestWithExceed(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Mint 100ueden
-	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)))
+	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(100)))
 
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, edenToken)
 	require.NoError(t, err)
@@ -41,7 +40,7 @@ func TestLiquidVestWithExceed(t *testing.T) {
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 	}
@@ -56,7 +55,7 @@ func TestLiquidVestWithExceed(t *testing.T) {
 	vestMsg := &types.MsgVestLiquid{
 		Creator: creator.String(),
 		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(100),
+		Amount:  sdkmath.NewInt(100),
 	}
 
 	// Set up the commitments for the creator
@@ -65,13 +64,13 @@ func TestLiquidVestWithExceed(t *testing.T) {
 		CommittedTokens: []*types.CommittedTokens{
 			{
 				Denom:  ptypes.Eden,
-				Amount: sdk.NewInt(50),
+				Amount: sdkmath.NewInt(50),
 			},
 		},
 		Claimed: sdk.Coins{
 			{
 				Denom:  ptypes.Eden,
-				Amount: sdk.NewInt(150),
+				Amount: sdkmath.NewInt(150),
 			},
 		},
 	}
@@ -90,14 +89,14 @@ func TestLiquidVestWithExceed(t *testing.T) {
 
 	// Check if the claimed tokens were updated correctly
 	claimed := newCommitments.GetClaimedForDenom(vestMsg.Denom)
-	require.Equal(t, sdk.NewInt(150).String(), claimed.String(), "claimed tokens were not updated correctly")
+	require.Equal(t, sdkmath.NewInt(150).String(), claimed.String(), "claimed tokens were not updated correctly")
 
 	// Check if the committed tokens were updated correctly
 	committedToken := newCommitments.GetCommittedAmountForDenom(vestMsg.Denom)
-	require.Equal(t, sdk.NewInt(50).String(), committedToken.String(), "committed tokens were not updated correctly")
+	require.Equal(t, sdkmath.NewInt(50).String(), committedToken.String(), "committed tokens were not updated correctly")
 
 	edenCoin := app.BankKeeper.GetBalance(ctx, addr[0], ptypes.Eden)
-	require.Equal(t, edenCoin.Amount, sdk.ZeroInt())
+	require.Equal(t, edenCoin.Amount, sdkmath.ZeroInt())
 
 	_, err = msgServer.VestLiquid(ctx, vestMsg)
 	require.Equal(t, err.Error(), errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", edenToken)).Error())

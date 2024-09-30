@@ -1,15 +1,15 @@
 package types
 
 import (
-	fmt "fmt"
+	"fmt"
 
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type PoolAssetUSDValue struct {
 	Asset string
-	Value sdk.Dec
+	Value sdkmath.LegacyDec
 }
 
 type InternalSwapRequest struct {
@@ -17,14 +17,14 @@ type InternalSwapRequest struct {
 	OutToken string
 }
 
-func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins) (math.LegacyDec, error) {
-	joinValue := sdk.ZeroDec()
+func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins) (sdkmath.LegacyDec, error) {
+	joinValue := sdkmath.LegacyZeroDec()
 	for _, asset := range tokensIn {
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
 		if tokenPrice.IsZero() {
-			return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", asset.Denom)
+			return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", asset.Denom)
 		}
-		v := tokenPrice.Mul(sdk.NewDecFromInt(asset.Amount))
+		v := tokenPrice.Mul(sdkmath.LegacyNewDecFromInt(asset.Amount))
 		joinValue = joinValue.Add(v)
 	}
 	return joinValue, nil
@@ -33,7 +33,7 @@ func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper Oracle
 	// // weights := NormalizedWeights(p.PoolAssets)
 	// weights, err := OraclePoolNormalizedWeights(ctx, oracleKeeper, p.PoolAssets)
 	// if err != nil {
-	// 	return sdk.ZeroDec(), err
+	// 	return sdkmath.LegacyZeroDec(), err
 	// }
 
 	// inAmounts := []PoolAssetUSDValue{}
@@ -43,9 +43,9 @@ func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper Oracle
 	// 	targetAmount := joinValue.Mul(weight.Weight)
 	// 	tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, weight.Asset)
 	// 	if tokenPrice.IsZero() {
-	// 		return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", weight.Asset)
+	// 		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", weight.Asset)
 	// 	}
-	// 	inAmount := tokenPrice.Mul(sdk.NewDecFromInt(tokensIn.AmountOf(weight.Asset)))
+	// 	inAmount := tokenPrice.Mul(sdkmath.LegacyNewDecFromInt(tokensIn.AmountOf(weight.Asset)))
 	// 	if targetAmount.GT(inAmount) {
 	// 		outAmounts = append(outAmounts, PoolAssetUSDValue{
 	// 			Asset: weight.Asset,
@@ -65,11 +65,11 @@ func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper Oracle
 	// for i, j := 0, 0; i < len(inAmounts) && j < len(outAmounts); {
 	// 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, inAmounts[i].Asset)
 	// 	if inTokenPrice.IsZero() {
-	// 		return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", inAmounts[i].Asset)
+	// 		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", inAmounts[i].Asset)
 	// 	}
 	// 	inAsset := inAmounts[i].Asset
 	// 	outAsset := outAmounts[j].Asset
-	// 	inAmount := sdk.ZeroInt()
+	// 	inAmount := sdkmath.ZeroInt()
 	// 	if inAmounts[i].Value.GT(outAmounts[j].Value) {
 	// 		inAmount = outAmounts[j].Value.Quo(inTokenPrice).RoundInt()
 	// 		j++
@@ -87,13 +87,13 @@ func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper Oracle
 	// 	})
 	// }
 
-	// slippageValue := sdk.ZeroDec()
+	// slippageValue := sdkmath.LegacyZeroDec()
 	// for _, req := range internalSwapRequests {
 	// 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, req.InAmount.Denom)
 	// 	if inTokenPrice.IsZero() {
-	// 		return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", req.InAmount.Denom)
+	// 		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", req.InAmount.Denom)
 	// 	}
-	// 	resizedAmount := sdk.NewDecFromInt(req.InAmount.Amount).
+	// 	resizedAmount := sdkmath.LegacyNewDecFromInt(req.InAmount.Amount).
 	// 		Quo(p.PoolParams.ExternalLiquidityRatio).RoundInt()
 	// 	slippageAmount, err := p.CalcGivenInSlippage(
 	// 		ctx,
@@ -104,7 +104,7 @@ func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper Oracle
 	// 		accountedPoolKeeper,
 	// 	)
 	// 	if err != nil {
-	// 		return sdk.ZeroDec(), err
+	// 		return sdkmath.LegacyZeroDec(), err
 	// 	}
 
 	// 	slippageValue = slippageValue.Add(slippageAmount.Mul(inTokenPrice))
@@ -120,26 +120,26 @@ func (p *Pool) JoinPool(
 	ctx sdk.Context, snapshot *Pool,
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
-) (numShares math.Int, slippage sdk.Dec, weightBalanceBonus sdk.Dec, err error) {
+) (numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
 		numShares, tokensJoined, err := p.CalcJoinPoolNoSwapShares(tokensIn)
 		if err != nil {
-			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+			return sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		p.IncreaseLiquidity(numShares, tokensJoined)
-		return numShares, sdk.ZeroDec(), sdk.ZeroDec(), nil
+		return numShares, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 	}
 
 	if !p.PoolParams.UseOracle {
 		tokenIn := tokensIn[0]
-		totalSlippage := sdk.ZeroDec()
+		totalSlippage := sdkmath.LegacyZeroDec()
 		normalizedWeights := NormalizedWeights(p.PoolAssets)
 		for _, weight := range normalizedWeights {
 			if weight.Asset != tokenIn.Denom {
-				_, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, sdk.ZeroDec(), accountedPoolKeeper)
+				_, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, sdkmath.LegacyZeroDec(), accountedPoolKeeper)
 				if err == nil {
 					totalSlippage = totalSlippage.Add(slippage.Mul(weight.Weight))
 				}
@@ -148,38 +148,38 @@ func (p *Pool) JoinPool(
 
 		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
 		if err != nil {
-			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+			return sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		p.IncreaseLiquidity(numShares, tokensJoined)
-		return numShares, totalSlippage, sdk.ZeroDec(), nil
+		return numShares, totalSlippage, sdkmath.LegacyZeroDec(), nil
 	}
 
 	joinValueWithoutSlippage, err := p.CalcJoinValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, tokensIn)
 	if err != nil {
-		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, p.PoolAssets)
 	tvl, err := p.TVL(ctx, oracleKeeper)
 	if err != nil {
-		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
 	// Ensure tvl is not zero to avoid division by zero
 	if tvl.IsZero() {
-		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), ErrAmountTooLow
+		return sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
 	}
 
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(tokensIn, sdk.Coins{})
 	if err != nil {
-		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
-	weightBreakingFee := sdk.ZeroDec()
+	weightBreakingFee := sdkmath.LegacyZeroDec()
 	if distanceDiff.IsPositive() {
 		// old weight breaking fee implementation
 		// weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
@@ -188,11 +188,11 @@ func (p *Pool) JoinPool(
 		tokenInDenom := tokensIn[0].Denom
 		// target weight
 		targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenInDenom)
-		targetWeightOut := sdk.OneDec().Sub(targetWeightIn)
+		targetWeightOut := sdkmath.LegacyOneDec().Sub(targetWeightIn)
 
 		// weight breaking fee as in Plasma pool
 		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenInDenom)
-		weightOut := sdk.OneDec().Sub(weightIn)
+		weightOut := sdkmath.LegacyOneDec().Sub(weightIn)
 		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams)
 	}
 
@@ -202,12 +202,12 @@ func (p *Pool) JoinPool(
 	}
 
 	totalShares := p.GetTotalShares()
-	numSharesDec := sdk.NewDecFromInt(totalShares.Amount).
+	numSharesDec := sdkmath.LegacyNewDecFromInt(totalShares.Amount).
 		Mul(joinValueWithoutSlippage).Quo(tvl).
-		Mul(sdk.OneDec().Add(weightBalanceBonus))
+		Mul(sdkmath.LegacyOneDec().Add(weightBalanceBonus))
 	numShares = numSharesDec.RoundInt()
 	p.IncreaseLiquidity(numShares, tokensIn)
 
 	// No slippage in oracle pool due to 1 hr lock
-	return numShares, sdk.ZeroDec(), weightBalanceBonus, nil
+	return numShares, sdkmath.LegacyZeroDec(), weightBalanceBonus, nil
 }

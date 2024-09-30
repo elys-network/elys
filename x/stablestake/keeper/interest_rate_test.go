@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,7 +17,7 @@ func createNInterest(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.Int
 	ctx = ctx.WithBlockHeight(1000)
 	curBlock := ctx.BlockHeight()
 	for i := range items {
-		items[i].InterestRate = sdk.NewDec(int64(i))
+		items[i].InterestRate = sdkmath.LegacyNewDec(int64(i))
 		items[i].BlockTime = int64(i * 10)
 
 		curBlock++
@@ -31,15 +32,15 @@ func TestInterestGet(t *testing.T) {
 	ctx = ctx.WithBlockHeight(lastBlock)
 
 	// 1st case
-	res := keeper.GetInterest(ctx, uint64(ctx.BlockHeight()-2), uint64(ctx.BlockTime().Unix()-1), sdk.NewDec(86400*365))
+	res := keeper.GetInterest(ctx, uint64(ctx.BlockHeight()-2), uint64(ctx.BlockTime().Unix()-1), sdkmath.LegacyNewDec(86400*365))
 	require.Equal(t, res.Int64(), int64(8))
 
 	// 2nd case
-	res = keeper.GetInterest(ctx, uint64(ctx.BlockHeight()-20), uint64(ctx.BlockTime().Unix()-1), sdk.NewDec(86400*365))
+	res = keeper.GetInterest(ctx, uint64(ctx.BlockHeight()-20), uint64(ctx.BlockTime().Unix()-1), sdkmath.LegacyNewDec(86400*365))
 	require.Equal(t, res.Int64(), int64(2))
 
 	// 3rd case
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1000)
-	res = keeper.GetInterest(ctx, uint64(ctx.BlockHeight()-20), uint64(ctx.BlockTime().Unix()-1), sdk.NewDec(86400*365))
+	res = keeper.GetInterest(ctx, uint64(ctx.BlockHeight()-20), uint64(ctx.BlockTime().Unix()-1), sdkmath.LegacyNewDec(86400*365))
 	require.Equal(t, res.Int64(), int64(0))
 }
