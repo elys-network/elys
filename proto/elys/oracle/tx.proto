@@ -9,6 +9,7 @@ import "elys/oracle/asset_info.proto";
 import "elys/oracle/price.proto";
 import "elys/oracle/price_feeder.proto";
 import "elys/oracle/params.proto";
+import "cosmos/msg/v1/msg.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 
@@ -16,6 +17,7 @@ option go_package = "github.com/elys-network/elys/x/oracle/types";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
   rpc FeedPrice(MsgFeedPrice) returns (MsgFeedPriceResponse);
   rpc FeedMultiplePrices(MsgFeedMultiplePrices)
       returns (MsgFeedMultiplePricesResponse);

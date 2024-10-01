@@ -3,11 +3,13 @@ syntax = "proto3";
 package elys.commitment;
 
 import "gogoproto/gogo.proto";
+import "cosmos/msg/v1/msg.proto";
 
 option go_package = "github.com/elys-network/elys/x/commitment/types";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
   // CommitClaimedRewards commit the tokens on claimed store to committed
   rpc CommitClaimedRewards(MsgCommitClaimedRewards)
       returns (MsgCommitClaimedRewardsResponse);

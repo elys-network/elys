@@ -4,11 +4,13 @@ package elys.stablestake;
 
 import "gogoproto/gogo.proto";
 import "elys/stablestake/params.proto";
+import "cosmos/msg/v1/msg.proto";
 
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
   rpc Bond(MsgBond) returns (MsgBondResponse);
   rpc Unbond(MsgUnbond) returns (MsgUnbondResponse);
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);

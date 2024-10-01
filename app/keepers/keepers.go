@@ -50,7 +50,6 @@ import (
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
-	ica "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts"
 	icacontroller "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/keeper"
 	icacontrollertypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/types"
@@ -107,6 +106,7 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
 	tradeshieldmodulekeeper "github.com/elys-network/elys/x/tradeshield/keeper"
 	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
+	"github.com/elys-network/elys/x/transferhook"
 	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
 	"os"
@@ -142,10 +142,8 @@ type AppKeepers struct {
 	WasmKeeper            wasmmodulekeeper.Keeper
 	GroupKeeper           groupkeeper.Keeper
 
-	ICAModule      ica.AppModule
 	IBCFeeKeeper   ibcfeekeeper.Keeper
 	IBCHooksKeeper *ibchookskeeper.Keeper
-	TransferModule transfer.AppModule
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
@@ -165,7 +163,7 @@ type AppKeepers struct {
 	BurnerKeeper        burnermodulekeeper.Keeper
 	AmmKeeper           *ammmodulekeeper.Keeper
 	ParameterKeeper     parametermodulekeeper.Keeper
-	PerpetualKeeper     perpetualmodulekeeper.Keeper
+	PerpetualKeeper     *perpetualmodulekeeper.Keeper
 	TransferhookKeeper  transferhookkeeper.Keeper
 	ContractKeeper      *wasmmodulekeeper.PermissionedKeeper
 	ClockKeeper         clockmodulekeeper.Keeper
@@ -181,6 +179,18 @@ type AppKeepers struct {
 	HooksICS4Wrapper ibchooks.ICS4Middleware
 }
 
+func (appKeepers AppKeepers) GetKVStoreKeys() map[string]*storetypes.KVStoreKey {
+	return appKeepers.keys
+}
+
+func (appKeepers AppKeepers) GetTransientStoreKeys() map[string]*storetypes.TransientStoreKey {
+	return appKeepers.tkeys
+}
+
+func (appKeepers AppKeepers) GetMemKeys() map[string]*storetypes.MemoryStoreKey {
+	return appKeepers.memKeys
+}
+
 func NewAppKeeper(
 	appCodec codec.Codec,
 	bApp *baseapp.BaseApp,
@@ -194,13 +204,12 @@ func NewAppKeeper(
 	logger log.Logger,
 	appOpts servertypes.AppOptions,
 	wasmOpts []wasmkeeper.Option,
-	enabledProposals []wasmtypes.ProposalType,
 	AccountAddressPrefix string,
 ) AppKeepers {
-	appKeepers := AppKeepers{}
+	app := AppKeepers{}
 
 	// Set keys KVStoreKey, TransientStoreKey, MemoryStoreKey
-	appKeepers.GenerateKeys()
+	app.GenerateKeys()
 
 	/*
 		configure state listening capabilities using AppOptions
@@ -208,61 +217,51 @@ func NewAppKeeper(
 	*/
 	// load state streaming if enabled
 
-	if err := bApp.RegisterStreamingServices(appOpts, appKeepers.keys); err != nil {
+	if err := bApp.RegisterStreamingServices(appOpts, app.keys); err != nil {
 		logger.Error("failed to load state streaming", "err", err)
 		os.Exit(1)
 	}
 
-	appKeepers.ParamsKeeper = initParamsKeeper(
+	app.ParamsKeeper = initParamsKeeper(
 		appCodec,
 		legacyAmino,
-		appKeepers.keys[paramstypes.StoreKey],
-		appKeepers.tkeys[paramstypes.TStoreKey],
+		app.keys[paramstypes.StoreKey],
+		app.tkeys[paramstypes.TStoreKey],
 	)
-
 	// set the BaseApp's parameter store
-	appKeepers.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(
+	app.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[consensusparamtypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[consensusparamtypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		runtime.EventService{},
 	)
-	bApp.SetParamStore(appKeepers.ConsensusParamsKeeper.ParamsStore)
+	bApp.SetParamStore(app.ConsensusParamsKeeper.ParamsStore)
 
-	appKeepers.ParameterKeeper = *parametermodulekeeper.NewKeeper(
+	app.ParameterKeeper = *parametermodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[parametermoduletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[parametermoduletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	// add capability keeper and ScopeToModule for ibc module
-	appKeepers.CapabilityKeeper = capabilitykeeper.NewKeeper(
+	app.CapabilityKeeper = capabilitykeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[capabilitytypes.StoreKey],
-		appKeepers.memKeys[capabilitytypes.MemStoreKey],
+		app.keys[capabilitytypes.StoreKey],
+		app.memKeys[capabilitytypes.MemStoreKey],
 	)
 
-	appKeepers.ScopedIBCKeeper = appKeepers.CapabilityKeeper.ScopeToModule(ibcexported.ModuleName)
-	appKeepers.ScopedICAHostKeeper = appKeepers.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
-	appKeepers.ScopedICAControllerKeeper = appKeepers.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
-	appKeepers.ScopedTransferKeeper = appKeepers.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
-	//appKeepers.ScopedICSproviderkeeper = appKeepers.CapabilityKeeper.ScopeToModule(providertypes.ModuleName)
-	appKeepers.ScopedWasmKeeper = appKeepers.CapabilityKeeper.ScopeToModule(wasmtypes.ModuleName)
-
-	appKeepers.CrisisKeeper = crisiskeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[crisistypes.StoreKey]),
-		invCheckPeriod,
-		appKeepers.BankKeeper,
-		authtypes.FeeCollectorName,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		appKeepers.AccountKeeper.AddressCodec(),
-	)
+	app.ScopedIBCKeeper = app.CapabilityKeeper.ScopeToModule(ibcexported.ModuleName)
+	app.ScopedICAHostKeeper = app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
+	app.ScopedICAControllerKeeper = app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
+	app.ScopedTransferKeeper = app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
+	//app.ScopedICSproviderkeeper = app.CapabilityKeeper.ScopeToModule(providertypes.ModuleName)
+	app.ScopedWasmKeeper = app.CapabilityKeeper.ScopeToModule(wasmtypes.ModuleName)
+	app.ScopedOracleKeeper = app.CapabilityKeeper.ScopeToModule(oracletypes.ModuleName)
 
 	// Add normal keepers
-	appKeepers.AccountKeeper = authkeeper.NewAccountKeeper(
+	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[authtypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[authtypes.StoreKey]),
 		authtypes.ProtoBaseAccount,
 		maccPerms,
 		address.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix()),
@@ -270,105 +269,105 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	appKeepers.BankKeeper = bankkeeper.NewBaseKeeper(
+	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[banktypes.StoreKey]),
-		appKeepers.AccountKeeper,
+		runtime.NewKVStoreService(app.keys[banktypes.StoreKey]),
+		app.AccountKeeper,
 		blockedAddress,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		logger,
 	)
 
-	appKeepers.AuthzKeeper = authzkeeper.NewKeeper(
-		runtime.NewKVStoreService(appKeepers.keys[authzkeeper.StoreKey]),
+	app.AuthzKeeper = authzkeeper.NewKeeper(
+		runtime.NewKVStoreService(app.keys[authzkeeper.StoreKey]),
 		appCodec,
 		bApp.MsgServiceRouter(),
-		appKeepers.AccountKeeper,
+		app.AccountKeeper,
 	)
 
-	appKeepers.FeeGrantKeeper = feegrantkeeper.NewKeeper(
+	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[feegrant.StoreKey]),
-		appKeepers.AccountKeeper,
+		runtime.NewKVStoreService(app.keys[feegrant.StoreKey]),
+		app.AccountKeeper,
 	)
 
-	appKeepers.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
+	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[assetprofilemoduletypes.StoreKey]),
-		&appKeepers.TransferKeeper,
+		runtime.NewKVStoreService(app.keys[assetprofilemoduletypes.StoreKey]),
+		&app.TransferKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	appKeepers.StakingKeeper = stakingkeeper.NewKeeper(
+	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[stakingtypes.StoreKey]),
-		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
+		runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
 		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	)
 
-	commitmentKeeper := commitmentmodulekeeper.NewKeeper(
+	app.CommitmentKeeper = commitmentmodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[commitmentmoduletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[commitmentmoduletypes.StoreKey]),
 
-		appKeepers.BankKeeper,
-		appKeepers.StakingKeeper,
-		appKeepers.AssetprofileKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.AssetprofileKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	appKeepers.TokenomicsKeeper = *tokenomicsmodulekeeper.NewKeeper(
+	app.TokenomicsKeeper = *tokenomicsmodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[tokenomicsmoduletypes.StoreKey]),
-		appKeepers.CommitmentKeeper,
+		runtime.NewKVStoreService(app.keys[tokenomicsmoduletypes.StoreKey]),
+		app.CommitmentKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	appKeepers.EstakingKeeper = estakingmodulekeeper.NewKeeper(
+	app.EstakingKeeper = estakingmodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[estakingmoduletypes.StoreKey]),
-		appKeepers.ParameterKeeper,
-		appKeepers.StakingKeeper,
-		appKeepers.CommitmentKeeper,
-		&appKeepers.DistrKeeper,
-		appKeepers.AssetprofileKeeper,
-		appKeepers.TokenomicsKeeper,
+		runtime.NewKVStoreService(app.keys[estakingmoduletypes.StoreKey]),
+		app.ParameterKeeper,
+		app.StakingKeeper,
+		app.CommitmentKeeper,
+		&app.DistrKeeper,
+		app.AssetprofileKeeper,
+		app.TokenomicsKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	appKeepers.EstakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(
-			// insert staking hooks receivers here
-			appKeepers.SlashingKeeper.Hooks(),
-			appKeepers.DistrKeeper.Hooks(),
-			appKeepers.EstakingKeeper.StakingHooks(),
-			appKeepers.TierKeeper.StakingHooks(),
-		),
-	)
-
-	appKeepers.SlashingKeeper = slashingkeeper.NewKeeper(
+	app.SlashingKeeper = slashingkeeper.NewKeeper(
 		appCodec,
 		legacyAmino,
-		runtime.NewKVStoreService(appKeepers.keys[slashingtypes.StoreKey]),
-		appKeepers.EstakingKeeper,
+		runtime.NewKVStoreService(app.keys[slashingtypes.StoreKey]),
+		app.EstakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.CrisisKeeper = crisiskeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[crisistypes.StoreKey]),
+		invCheckPeriod,
+		app.BankKeeper,
+		authtypes.FeeCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper.AddressCodec(),
 	)
 
 	groupConfig := group.DefaultConfig()
-	appKeepers.GroupKeeper = groupkeeper.NewKeeper(
-		appKeepers.keys[group.StoreKey],
+	app.GroupKeeper = groupkeeper.NewKeeper(
+		app.keys[group.StoreKey],
 		appCodec,
 		bApp.MsgServiceRouter(),
-		appKeepers.AccountKeeper,
+		app.AccountKeeper,
 		groupConfig,
 	)
 
 	// UpgradeKeeper must be created before IBCKeeper
-	appKeepers.UpgradeKeeper = upgradekeeper.NewKeeper(
+	app.UpgradeKeeper = upgradekeeper.NewKeeper(
 		skipUpgradeHeights,
-		runtime.NewKVStoreService(appKeepers.keys[upgradetypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[upgradetypes.StoreKey]),
 		appCodec,
 		homePath,
 		bApp,
@@ -376,203 +375,171 @@ func NewAppKeeper(
 	)
 
 	// UpgradeKeeper must be created before IBCKeeper
-	appKeepers.IBCKeeper = ibckeeper.NewKeeper(
+	app.IBCKeeper = ibckeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[ibcexported.StoreKey],
-		appKeepers.GetSubspace(ibcexported.ModuleName),
-		appKeepers.StakingKeeper,
-		appKeepers.UpgradeKeeper,
-		appKeepers.ScopedIBCKeeper,
+		app.keys[ibcexported.StoreKey],
+		app.GetSubspace(ibcexported.ModuleName),
+		app.StakingKeeper,
+		app.UpgradeKeeper,
+		app.ScopedIBCKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	// IBC Fee Module keeper
-	appKeepers.IBCFeeKeeper = ibcfeekeeper.NewKeeper(
+	app.IBCFeeKeeper = ibcfeekeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[ibcfeetypes.StoreKey],
-		appKeepers.IBCKeeper.ChannelKeeper, // may be replaced with IBC middleware
-		appKeepers.IBCKeeper.ChannelKeeper,
-		appKeepers.IBCKeeper.PortKeeper, appKeepers.AccountKeeper, appKeepers.BankKeeper,
+		app.keys[ibcfeetypes.StoreKey],
+		app.IBCKeeper.ChannelKeeper, // may be replaced with IBC middleware
+		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.PortKeeper, app.AccountKeeper, app.BankKeeper,
 	)
-	appKeepers.TransferKeeper = ibctransferkeeper.NewKeeper(
+	app.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[ibctransfertypes.StoreKey],
-		appKeepers.GetSubspace(ibctransfertypes.ModuleName),
-		appKeepers.IBCFeeKeeper, // ISC4 Wrapper: PFM Router middleware
-		appKeepers.IBCKeeper.ChannelKeeper,
-		appKeepers.IBCKeeper.PortKeeper,
-		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.ScopedTransferKeeper,
+		app.keys[ibctransfertypes.StoreKey],
+		app.GetSubspace(ibctransfertypes.ModuleName),
+		app.IBCFeeKeeper, // ISC4 Wrapper: PFM Router middleware
+		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.PortKeeper,
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.ScopedTransferKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	//transferIBCModule := transfer.NewIBCModule(appKeepers.TransferKeeper)
 
-	appKeepers.ICAHostKeeper = icahostkeeper.NewKeeper(
+	app.ICAHostKeeper = icahostkeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[icahosttypes.StoreKey],
-		appKeepers.GetSubspace(icahosttypes.SubModuleName),
-		appKeepers.IBCKeeper.ChannelKeeper, // ICS4Wrapper
-		appKeepers.IBCKeeper.ChannelKeeper,
-		appKeepers.IBCKeeper.PortKeeper,
-		appKeepers.AccountKeeper,
-		appKeepers.ScopedICAHostKeeper,
+		app.keys[icahosttypes.StoreKey],
+		app.GetSubspace(icahosttypes.SubModuleName),
+		app.IBCKeeper.ChannelKeeper, // ICS4Wrapper
+		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.PortKeeper,
+		app.AccountKeeper,
+		app.ScopedICAHostKeeper,
 		bApp.MsgServiceRouter(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	// required since ibc-go v7.5.0
-	appKeepers.ICAHostKeeper.WithQueryRouter(bApp.GRPCQueryRouter())
+	app.ICAHostKeeper.WithQueryRouter(bApp.GRPCQueryRouter())
 
-	appKeepers.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
+	app.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
 		appCodec,
-		appKeepers.keys[icacontrollertypes.StoreKey],
-		appKeepers.GetSubspace(icacontrollertypes.SubModuleName),
-		appKeepers.IBCKeeper.ChannelKeeper, // ICS4Wrapper
-		appKeepers.IBCKeeper.ChannelKeeper,
-		appKeepers.IBCKeeper.PortKeeper,
-		appKeepers.ScopedICAControllerKeeper,
+		app.keys[icacontrollertypes.StoreKey],
+		app.GetSubspace(icacontrollertypes.SubModuleName),
+		app.IBCKeeper.ChannelKeeper, // ICS4Wrapper
+		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.PortKeeper,
+		app.ScopedICAControllerKeeper,
 		bApp.MsgServiceRouter(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[evidencetypes.StoreKey]),
-		appKeepers.StakingKeeper,
-		appKeepers.SlashingKeeper,
-		appKeepers.AccountKeeper.AddressCodec(),
+		runtime.NewKVStoreService(app.keys[evidencetypes.StoreKey]),
+		app.StakingKeeper,
+		app.SlashingKeeper,
+		app.AccountKeeper.AddressCodec(),
 		runtime.ProvideCometInfoService(),
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
-	appKeepers.EvidenceKeeper = *evidenceKeeper
+	app.EvidenceKeeper = *evidenceKeeper
 
-	appKeepers.ScopedOracleKeeper = appKeepers.CapabilityKeeper.ScopeToModule(oracletypes.ModuleName)
-	appKeepers.OracleKeeper = *oraclekeeper.NewKeeper(
+	app.OracleKeeper = *oraclekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[oracletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		appKeepers.IBCKeeper.ChannelKeeper,
-		appKeepers.IBCKeeper.PortKeeper,
-		appKeepers.ScopedOracleKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.PortKeeper,
+		app.ScopedOracleKeeper,
 	)
 
-	oracleIBCModule := oraclemodule.NewIBCModule(appKeepers.OracleKeeper)
+	oracleIBCModule := oraclemodule.NewIBCModule(app.OracleKeeper)
 
-	appKeepers.EpochsKeeper = epochsmodulekeeper.NewKeeper(
+	app.EpochsKeeper = epochsmodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[epochsmoduletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[epochsmoduletypes.StoreKey]),
 	)
 
-	appKeepers.EpochsKeeper = appKeepers.EpochsKeeper.SetHooks(
-		epochsmodulekeeper.NewMultiEpochHooks(
-			// insert epoch hooks receivers here
-			appKeepers.OracleKeeper.Hooks(),
-			appKeepers.CommitmentKeeper.Hooks(),
-			appKeepers.BurnerKeeper.Hooks(),
-			appKeepers.PerpetualKeeper.Hooks(),
-		),
-	)
-
-	appKeepers.AccountedPoolKeeper = *accountedpoolmodulekeeper.NewKeeper(
+	app.AccountedPoolKeeper = *accountedpoolmodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[accountedpoolmoduletypes.StoreKey]),
-		appKeepers.BankKeeper,
+		runtime.NewKVStoreService(app.keys[accountedpoolmoduletypes.StoreKey]),
+		app.BankKeeper,
 	)
 
-	appKeepers.AmmKeeper = ammmodulekeeper.NewKeeper(
+	app.AmmKeeper = ammmodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[ammmoduletypes.StoreKey]),
-		appKeepers.tkeys[ammmoduletypes.TStoreKey],
+		runtime.NewKVStoreService(app.keys[ammmoduletypes.StoreKey]),
+		app.tkeys[ammmoduletypes.TStoreKey],
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		&appKeepers.ParameterKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.AccountKeeper,
-		appKeepers.OracleKeeper,
-		appKeepers.CommitmentKeeper,
-		appKeepers.AssetprofileKeeper,
-		appKeepers.AccountedPoolKeeper,
+		&app.ParameterKeeper,
+		app.BankKeeper,
+		app.AccountKeeper,
+		app.OracleKeeper,
+		app.CommitmentKeeper,
+		app.AssetprofileKeeper,
+		app.AccountedPoolKeeper,
 	)
 
-	appKeepers.AmmKeeper.SetHooks(
-		ammmoduletypes.NewMultiAmmHooks(
-			// insert amm hooks receivers here
-			appKeepers.PerpetualKeeper.AmmHooks(),
-			appKeepers.LeveragelpKeeper.AmmHooks(),
-			appKeepers.MasterchefKeeper.AmmHooks(),
-			appKeepers.TierKeeper.AmmHooks(),
-		),
-	)
-
-	appKeepers.StablestakeKeeper = stablestakekeeper.NewKeeper(
+	app.StablestakeKeeper = stablestakekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[stablestaketypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[stablestaketypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		appKeepers.BankKeeper,
-		appKeepers.CommitmentKeeper,
-		appKeepers.AssetprofileKeeper,
-	)
-	appKeepers.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
-		appKeepers.MasterchefKeeper.StableStakeHooks(),
-		appKeepers.TierKeeper.StableStakeHooks(),
-	))
-
-	appKeepers.CommitmentKeeper.SetHooks(
-		commitmentmodulekeeper.NewMultiCommitmentHooks(
-			appKeepers.EstakingKeeper.CommitmentHooks(),
-		),
+		app.BankKeeper,
+		app.CommitmentKeeper,
+		app.AssetprofileKeeper,
 	)
 
-	appKeepers.DistrKeeper = distrkeeper.NewKeeper(
+	app.DistrKeeper = distrkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[distrtypes.StoreKey]),
-		appKeepers.AccountKeeper,
-		appKeepers.CommitmentKeeper,
-		appKeepers.EstakingKeeper,
+		runtime.NewKVStoreService(app.keys[distrtypes.StoreKey]),
+		app.AccountKeeper,
+		app.CommitmentKeeper,
+		app.EstakingKeeper,
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	appKeepers.MasterchefKeeper = *masterchefmodulekeeper.NewKeeper(
+	app.MasterchefKeeper = *masterchefmodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[masterchefmoduletypes.StoreKey]),
-		appKeepers.ParameterKeeper,
-		appKeepers.CommitmentKeeper,
-		appKeepers.AmmKeeper,
-		appKeepers.OracleKeeper,
-		appKeepers.AssetprofileKeeper,
-		appKeepers.AccountedPoolKeeper,
-		appKeepers.StablestakeKeeper,
-		appKeepers.TokenomicsKeeper,
-		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
+		runtime.NewKVStoreService(app.keys[masterchefmoduletypes.StoreKey]),
+		app.ParameterKeeper,
+		app.CommitmentKeeper,
+		app.AmmKeeper,
+		app.OracleKeeper,
+		app.AssetprofileKeeper,
+		app.AccountedPoolKeeper,
+		app.StablestakeKeeper,
+		app.TokenomicsKeeper,
+		app.AccountKeeper,
+		app.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	appKeepers.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
+	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[incentivemoduletypes.StoreKey]),
-		appKeepers.ParameterKeeper,
-		commitmentKeeper,
-		appKeepers.StakingKeeper,
-		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.AmmKeeper,
-		appKeepers.OracleKeeper,
-		appKeepers.AssetprofileKeeper,
-		appKeepers.AccountedPoolKeeper,
-		appKeepers.StablestakeKeeper,
-		appKeepers.TokenomicsKeeper,
-		&appKeepers.MasterchefKeeper,
-		appKeepers.EstakingKeeper,
+		runtime.NewKVStoreService(app.keys[incentivemoduletypes.StoreKey]),
+		app.ParameterKeeper,
+		app.CommitmentKeeper,
+		app.StakingKeeper,
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.AmmKeeper,
+		app.OracleKeeper,
+		app.AssetprofileKeeper,
+		app.AccountedPoolKeeper,
+		app.StablestakeKeeper,
+		app.TokenomicsKeeper,
+		&app.MasterchefKeeper,
+		app.EstakingKeeper,
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	appKeepers.BurnerKeeper = *burnermodulekeeper.NewKeeper(
+	app.BurnerKeeper = *burnermodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[burnermoduletypes.StoreKey]),
-		appKeepers.BankKeeper,
+		runtime.NewKVStoreService(app.keys[burnermoduletypes.StoreKey]),
+		app.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -582,46 +549,46 @@ func NewAppKeeper(
 		panic("error while reading wasm config: " + err.Error())
 	}
 
-	bankKeeper := appKeepers.BankKeeper.(bankkeeper.BaseKeeper)
+	bankKeeper := app.BankKeeper.(bankkeeper.BaseKeeper)
 	wasmOpts = append(
 		wasmbindingsclient.RegisterCustomPlugins(
-			&appKeepers.AccountedPoolKeeper,
-			appKeepers.AmmKeeper,
-			&appKeepers.AssetprofileKeeper,
-			&appKeepers.AccountKeeper,
+			&app.AccountedPoolKeeper,
+			app.AmmKeeper,
+			&app.AssetprofileKeeper,
+			&app.AccountKeeper,
 			&bankKeeper,
-			&appKeepers.BurnerKeeper,
-			&appKeepers.ClockKeeper,
-			appKeepers.CommitmentKeeper,
-			appKeepers.EpochsKeeper,
-			&appKeepers.IncentiveKeeper,
-			appKeepers.LeveragelpKeeper,
-			&appKeepers.PerpetualKeeper,
-			&appKeepers.OracleKeeper,
-			&appKeepers.ParameterKeeper,
-			appKeepers.StablestakeKeeper,
-			appKeepers.StakingKeeper,
-			&appKeepers.TokenomicsKeeper,
-			&appKeepers.TransferhookKeeper,
-			&appKeepers.MasterchefKeeper,
-			appKeepers.EstakingKeeper,
-			&appKeepers.TierKeeper,
+			&app.BurnerKeeper,
+			&app.ClockKeeper,
+			app.CommitmentKeeper,
+			app.EpochsKeeper,
+			&app.IncentiveKeeper,
+			app.LeveragelpKeeper,
+			app.PerpetualKeeper,
+			&app.OracleKeeper,
+			&app.ParameterKeeper,
+			app.StablestakeKeeper,
+			app.StakingKeeper,
+			&app.TokenomicsKeeper,
+			&app.TransferhookKeeper,
+			&app.MasterchefKeeper,
+			app.EstakingKeeper,
+			&app.TierKeeper,
 		),
 		wasmOpts...,
 	)
 
-	appKeepers.WasmKeeper = wasmkeeper.NewKeeper(
+	app.WasmKeeper = wasmkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[wasmtypes.StoreKey]),
-		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.StakingKeeper,
-		distrkeeper.NewQuerier(appKeepers.DistrKeeper),
-		appKeepers.IBCFeeKeeper,
-		appKeepers.IBCKeeper.ChannelKeeper,
-		appKeepers.IBCKeeper.PortKeeper,
-		appKeepers.ScopedWasmKeeper,
-		appKeepers.TransferKeeper,
+		runtime.NewKVStoreService(app.keys[wasmtypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		distrkeeper.NewQuerier(app.DistrKeeper),
+		app.IBCFeeKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.PortKeeper,
+		app.ScopedWasmKeeper,
+		app.TransferKeeper,
 		bApp.MsgServiceRouter(),
 		bApp.GRPCQueryRouter(),
 		wasmDir,
@@ -631,30 +598,38 @@ func NewAppKeeper(
 		wasmOpts...,
 	)
 
-	appKeepers.TransferhookKeeper = *transferhookkeeper.NewKeeper(
+	app.TransferhookKeeper = *transferhookkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[transferhooktypes.StoreKey]),
-		*appKeepers.AmmKeeper)
+		runtime.NewKVStoreService(app.keys[transferhooktypes.StoreKey]),
+		*app.AmmKeeper)
 	// Configure the hooks keeper
 	hooksKeeper := ibchookskeeper.NewKeeper(
-		appKeepers.keys[ibchookstypes.StoreKey],
+		app.keys[ibchookstypes.StoreKey],
 	)
-	appKeepers.IBCHooksKeeper = &hooksKeeper
+	app.IBCHooksKeeper = &hooksKeeper
 
-	wasmHooks := ibchooks.NewWasmHooks(appKeepers.IBCHooksKeeper, &appKeepers.WasmKeeper, AccountAddressPrefix) // The contract keeper needs to be set later
-	appKeepers.Ics20WasmHooks = &wasmHooks
+	wasmHooks := ibchooks.NewWasmHooks(app.IBCHooksKeeper, &app.WasmKeeper, AccountAddressPrefix) // The contract keeper needs to be set later
+	app.Ics20WasmHooks = &wasmHooks
+	app.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
+		app.IBCKeeper.ChannelKeeper,
+		app.Ics20WasmHooks,
+	)
+
+	// set the contract keeper for the Ics20WasmHooks
+	app.ContractKeeper = wasmmodulekeeper.NewDefaultPermissionKeeper(app.WasmKeeper)
+	app.Ics20WasmHooks.ContractKeeper = &app.WasmKeeper
 
 	// provider depends on gov, so gov must be registered first
 	govConfig := govtypes.DefaultConfig()
 	// set the MaxMetadataLen for proposals to the same value as it was pre-sdk v0.47.x
 	govConfig.MaxMetadataLen = 10200
-	appKeepers.GovKeeper = govkeeper.NewKeeper(
+	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[govtypes.StoreKey]),
-		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.StakingKeeper,
-		appKeepers.DistrKeeper,
+		runtime.NewKVStoreService(app.keys[govtypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.DistrKeeper,
 		bApp.MsgServiceRouter(),
 		govConfig,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -663,75 +638,62 @@ func NewAppKeeper(
 	govRouter := govv1beta1.NewRouter()
 	govRouter.
 		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
-		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(appKeepers.ParamsKeeper)).
-		//AddRoute(upgradetypes.RouterKey, upgradetypes.NewSoftwareUpgradeProposal(appKeepers.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(appKeepers.IBCKeeper.ClientKeeper))
+		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
+		//AddRoute(upgradetypes.RouterKey, upgradetypes.NewSoftwareUpgradeProposal(app.UpgradeKeeper)).
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 
-	appKeepers.GovKeeper.SetLegacyRouter(govRouter)
+	app.GovKeeper.SetLegacyRouter(govRouter)
 
-	appKeepers.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
-		appKeepers.IBCKeeper.ChannelKeeper,
-		appKeepers.Ics20WasmHooks,
-	)
-
-	// set the contract keeper for the Ics20WasmHooks
-	appKeepers.ContractKeeper = wasmmodulekeeper.NewDefaultPermissionKeeper(appKeepers.WasmKeeper)
-	appKeepers.Ics20WasmHooks.ContractKeeper = &appKeepers.WasmKeeper
-
-	appKeepers.PerpetualKeeper = *perpetualmodulekeeper.NewKeeper(
+	app.PerpetualKeeper = perpetualmodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[perpetualmoduletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[perpetualmoduletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		appKeepers.AmmKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.OracleKeeper,
-		appKeepers.AssetprofileKeeper,
-		&appKeepers.ParameterKeeper,
+		app.AmmKeeper,
+		app.BankKeeper,
+		app.OracleKeeper,
+		app.AssetprofileKeeper,
+		&app.ParameterKeeper,
 	)
 
-	appKeepers.ClockKeeper = *clockmodulekeeper.NewKeeper(
-		runtime.NewKVStoreService(appKeepers.keys[clockmoduletypes.StoreKey]),
+	app.ClockKeeper = *clockmodulekeeper.NewKeeper(
+		runtime.NewKVStoreService(app.keys[clockmoduletypes.StoreKey]),
 		appCodec,
-		*appKeepers.ContractKeeper,
+		*app.ContractKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	appKeepers.LeveragelpKeeper = leveragelpmodulekeeper.NewKeeper(
+	app.LeveragelpKeeper = leveragelpmodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[leveragelpmoduletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[leveragelpmoduletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		appKeepers.AmmKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.OracleKeeper,
-		appKeepers.StablestakeKeeper,
-		appKeepers.CommitmentKeeper,
-		appKeepers.AssetprofileKeeper,
-		appKeepers.MasterchefKeeper,
+		app.AmmKeeper,
+		app.BankKeeper,
+		app.OracleKeeper,
+		app.StablestakeKeeper,
+		app.CommitmentKeeper,
+		app.AssetprofileKeeper,
+		app.MasterchefKeeper,
 	)
 
-	appKeepers.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
-		appKeepers.TierKeeper.LeverageLpHooks(),
-	))
-
-	appKeepers.TierKeeper = *tiermodulekeeper.NewKeeper(
+	app.TierKeeper = *tiermodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[tiermoduletypes.StoreKey]),
-		appKeepers.BankKeeper,
-		appKeepers.OracleKeeper,
-		appKeepers.AssetprofileKeeper,
-		appKeepers.AmmKeeper,
-		appKeepers.EstakingKeeper,
-		appKeepers.MasterchefKeeper,
-		appKeepers.CommitmentKeeper,
-		appKeepers.StakingKeeper,
-		appKeepers.PerpetualKeeper,
-		appKeepers.LeveragelpKeeper,
-		appKeepers.StablestakeKeeper,
+		runtime.NewKVStoreService(app.keys[tiermoduletypes.StoreKey]),
+		app.BankKeeper,
+		app.OracleKeeper,
+		app.AssetprofileKeeper,
+		app.AmmKeeper,
+		app.EstakingKeeper,
+		app.MasterchefKeeper,
+		app.CommitmentKeeper,
+		app.StakingKeeper,
+		app.PerpetualKeeper,
+		app.LeveragelpKeeper,
+		app.StablestakeKeeper,
 	)
 
-	appKeepers.TradeshieldKeeper = *tradeshieldmodulekeeper.NewKeeper(
+	app.TradeshieldKeeper = *tradeshieldmodulekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(appKeepers.keys[tradeshieldmoduletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[tradeshieldmoduletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -740,10 +702,7 @@ func NewAppKeeper(
 	/**** IBC Routing ****/
 
 	// Sealing prevents other modules from creating scoped sub-keepers
-	appKeepers.CapabilityKeeper.Seal()
-
-	appKeepers.ICAModule = ica.NewAppModule(&appKeepers.ICAControllerKeeper, &appKeepers.ICAHostKeeper)
-	appKeepers.TransferModule = transfer.NewAppModule(appKeepers.TransferKeeper)
+	app.CapabilityKeeper.Seal()
 
 	// Create Transfer Stack (from bottom to top of stack)
 	// - core IBC
@@ -758,18 +717,19 @@ func NewAppKeeper(
 	// * SendPacket -> Transfer -> Provider -> PFM -> RateLimit -> Fee -> IBC core (ICS4Wrapper)
 
 	var transferStack porttypes.IBCModule
-	transferStack = transfer.NewIBCModule(appKeepers.TransferKeeper)
-	transferStack = ibcfee.NewIBCMiddleware(transferStack, appKeepers.IBCFeeKeeper)
+	transferStack = transfer.NewIBCModule(app.TransferKeeper)
+	transferStack = transferhook.NewIBCModule(app.TransferhookKeeper, transferStack)
+	transferStack = ibcfee.NewIBCMiddleware(transferStack, app.IBCFeeKeeper)
 
 	// Create ICAHost Stack
-	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(appKeepers.ICAHostKeeper)
+	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(app.ICAHostKeeper)
 
 	// Create Interchain Accounts Controller Stack
-	var icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(nil, appKeepers.ICAControllerKeeper)
+	var icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(nil, app.ICAControllerKeeper)
 
 	var wasmStack porttypes.IBCModule
-	wasmStack = wasm.NewIBCHandler(appKeepers.WasmKeeper, appKeepers.IBCKeeper.ChannelKeeper, appKeepers.IBCFeeKeeper)
-	wasmStack = ibcfee.NewIBCMiddleware(wasmStack, appKeepers.IBCFeeKeeper)
+	wasmStack = wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCFeeKeeper)
+	wasmStack = ibcfee.NewIBCMiddleware(wasmStack, app.IBCFeeKeeper)
 
 	// Create IBC Router & seal
 	ibcRouter := porttypes.NewRouter().
@@ -779,9 +739,62 @@ func NewAppKeeper(
 		AddRoute(wasmtypes.ModuleName, wasmStack).
 		AddRoute(oracletypes.ModuleName, oracleIBCModule)
 
-	appKeepers.IBCKeeper.SetRouter(ibcRouter)
+	app.IBCKeeper.SetRouter(ibcRouter)
 
-	return appKeepers
+	app.EpochsKeeper = app.EpochsKeeper.SetHooks(
+		epochsmodulekeeper.NewMultiEpochHooks(
+			// insert epoch hooks receivers here
+			app.OracleKeeper.Hooks(),
+			app.CommitmentKeeper.Hooks(),
+			app.BurnerKeeper.Hooks(),
+			app.PerpetualKeeper.Hooks(),
+		),
+	)
+
+	app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
+		app.MasterchefKeeper.StableStakeHooks(),
+		app.TierKeeper.StableStakeHooks(),
+	))
+
+	app.AmmKeeper.SetHooks(
+		ammmoduletypes.NewMultiAmmHooks(
+			// insert amm hooks receivers here
+			app.PerpetualKeeper.AmmHooks(),
+			app.LeveragelpKeeper.AmmHooks(),
+			app.MasterchefKeeper.AmmHooks(),
+			app.TierKeeper.AmmHooks(),
+		),
+	)
+
+	app.EstakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(
+			// insert staking hooks receivers here
+			app.SlashingKeeper.Hooks(),
+			app.DistrKeeper.Hooks(),
+			app.EstakingKeeper.StakingHooks(),
+			app.TierKeeper.StakingHooks(),
+		),
+	)
+
+	app.CommitmentKeeper.SetHooks(
+		commitmentmodulekeeper.NewMultiCommitmentHooks(
+			app.EstakingKeeper.CommitmentHooks(),
+		),
+	)
+
+	app.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
+		app.TierKeeper.LeverageLpHooks(),
+	))
+
+	app.PerpetualKeeper.SetHooks(
+		perpetualmoduletypes.NewMultiPerpetualHooks(
+			// insert perpetual hooks receivers here
+			app.AccountedPoolKeeper.PerpetualHooks(),
+			app.TierKeeper.PerpetualHooks(),
+		),
+	)
+
+	return app
 
 }
 
@@ -808,11 +821,12 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
-	paramsKeeper.Subspace(ibcexported.ModuleName).WithKeyTable(keyTable)
+	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(wasmtypes.ModuleName)
 
+	// Can be removed as we are not using param subspace anymore anywhere
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
 	paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)

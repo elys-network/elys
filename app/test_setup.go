@@ -6,11 +6,10 @@ import (
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
-	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/secp256k1"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtypes "github.com/cometbft/cometbft/types"
+	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -24,7 +23,6 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -45,7 +43,8 @@ func InitiateNewElysApp(opts ...wasm.Option) *ElysApp {
 		db,
 		nil,
 		true,
-		wasmtypes.EnableAllProposals,
+		map[int64]bool{},
+		nodeHome,
 		appOptions,
 		opts,
 	)
@@ -57,14 +56,14 @@ func InitiateNewElysApp(opts ...wasm.Option) *ElysApp {
 func InitElysTestApp(initChain bool) *ElysApp {
 	app := InitiateNewElysApp()
 	if initChain {
-		genesisState, valSet, _, _ := GenesisStateWithValSet(app)
+		genesisState, _, _, _ := GenesisStateWithValSet(app)
 		stateBytes, err := json.MarshalIndent(genesisState, "", " ")
 		if err != nil {
 			panic(err)
 		}
 
 		app.InitChain(
-			abci.RequestInitChain{
+			&abci.RequestInitChain{
 				Validators:      []abci.ValidatorUpdate{},
 				ConsensusParams: simtestutil.DefaultConsensusParams,
 				AppStateBytes:   stateBytes,
@@ -73,12 +72,12 @@ func InitElysTestApp(initChain bool) *ElysApp {
 
 		// commit genesis changes
 		app.Commit()
-		app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{
-			Height:             app.LastBlockHeight() + 1,
-			AppHash:            app.LastCommitID().Hash,
-			ValidatorsHash:     valSet.Hash(),
-			NextValidatorsHash: valSet.Hash(),
-		}})
+		//app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{
+		//	Height:             app.LastBlockHeight() + 1,
+		//	AppHash:            app.LastCommitID().Hash,
+		//	ValidatorsHash:     valSet.Hash(),
+		//	NextValidatorsHash: valSet.Hash(),
+		//}})
 	}
 
 	return app
@@ -88,14 +87,14 @@ func InitElysTestApp(initChain bool) *ElysApp {
 func InitElysTestAppWithGenAccount() (*ElysApp, sdk.AccAddress, sdk.ValAddress) {
 	app := InitiateNewElysApp()
 
-	genesisState, valSet, genAcount, valAddress := GenesisStateWithValSet(app)
+	genesisState, _, genAcount, valAddress := GenesisStateWithValSet(app)
 	stateBytes, err := json.MarshalIndent(genesisState, "", " ")
 	if err != nil {
 		panic(err)
 	}
 
 	app.InitChain(
-		abci.RequestInitChain{
+		&abci.RequestInitChain{
 			Validators:      []abci.ValidatorUpdate{},
 			ConsensusParams: simtestutil.DefaultConsensusParams,
 			AppStateBytes:   stateBytes,
@@ -104,12 +103,12 @@ func InitElysTestAppWithGenAccount() (*ElysApp, sdk.AccAddress, sdk.ValAddress) 
 
 	// commit genesis changes
 	app.Commit()
-	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{
-		Height:             app.LastBlockHeight() + 1,
-		AppHash:            app.LastCommitID().Hash,
-		ValidatorsHash:     valSet.Hash(),
-		NextValidatorsHash: valSet.Hash(),
-	}})
+	//app.BeginBlocker(abci.RequestBeginBlock{Header: tmproto.Header{
+	//	Height:             app.LastBlockHeight() + 1,
+	//	AppHash:            app.LastCommitID().Hash,
+	//	ValidatorsHash:     valSet.Hash(),
+	//	NextValidatorsHash: valSet.Hash(),
+	//}})
 
 	return app, genAcount, valAddress
 }
@@ -131,7 +130,7 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 
 	//////////////////////
 	balances := []banktypes.Balance{balance}
-	genesisState := NewDefaultGenesisState(app.AppCodec())
+	genesisState := NewDefaultGenesisState(app, app.AppCodec())
 	genAP := assetprofiletypes.DefaultGenesis()
 	genAP.EntryList = []assetprofiletypes.Entry{
 		{
@@ -158,15 +157,15 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 			Jailed:            false,
 			Status:            stakingtypes.Bonded,
 			Tokens:            bondAmt,
-			DelegatorShares:   sdk.OneDec(),
+			DelegatorShares:   math.LegacyOneDec(),
 			Description:       stakingtypes.Description{},
 			UnbondingHeight:   int64(0),
 			UnbondingTime:     time.Unix(0, 0).UTC(),
-			Commission:        stakingtypes.NewCommission(sdkmath.LegacyNewDecWithPrec(5, 2), sdkmath.LegacyNewDecWithPrec(10, 2), sdkmath.LegacyNewDecWithPrec(10, 2)),
+			Commission:        stakingtypes.NewCommission(math.LegacyNewDecWithPrec(5, 2), math.LegacyNewDecWithPrec(10, 2), math.LegacyNewDecWithPrec(10, 2)),
 			MinSelfDelegation: math.OneInt(),
 		}
 		validators = append(validators, validator)
-		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress(), val.Address.Bytes(), sdk.OneDec()))
+		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress().String(), val.String(), math.LegacyOneDec()))
 	}
 
 	// set validators and delegations
@@ -221,7 +220,7 @@ func AddTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt math.Int) []
 func addTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt math.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
 	testAddrs := strategy(accNum)
 
-	bondDenom := app.StakingKeeper.BondDenom(ctx)
+	bondDenom, _ := app.StakingKeeper.BondDenom(ctx)
 	initCoins := sdk.NewCoins(sdk.NewCoin(bondDenom, accAmt))
 
 	for _, addr := range testAddrs {

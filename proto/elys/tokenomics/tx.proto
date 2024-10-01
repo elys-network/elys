@@ -6,11 +6,13 @@ import "elys/tokenomics/airdrop.proto";
 import "elys/tokenomics/genesis_inflation.proto";
 import "elys/tokenomics/inflation_entry.proto";
 import "elys/tokenomics/time_based_inflation.proto";
+import "cosmos/msg/v1/msg.proto";
 
 option go_package = "github.com/elys-network/elys/x/tokenomics/types";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
   rpc CreateAirdrop(MsgCreateAirdrop) returns (MsgCreateAirdropResponse);
   rpc UpdateAirdrop(MsgUpdateAirdrop) returns (MsgUpdateAirdropResponse);
   rpc DeleteAirdrop(MsgDeleteAirdrop) returns (MsgDeleteAirdropResponse);

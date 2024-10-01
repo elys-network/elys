@@ -2,18 +2,28 @@ package cmd
 
 import (
 	"errors"
+	"github.com/cosmos/cosmos-sdk/client/pruning"
+	"github.com/cosmos/cosmos-sdk/client/snapshot"
+	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
+	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 	"io"
 	"os"
 	"strings"
 	"time"
 
 	"cosmossdk.io/log"
+	confixcmd "cosmossdk.io/tools/confix/cmd"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	dbm "github.com/cometbft/cometbft-db"
 	tmcfg "github.com/cometbft/cometbft/config"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
+	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"
 	"github.com/cosmos/cosmos-sdk/client/debug"
@@ -24,6 +34,7 @@ import (
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
+	authtxconfig "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
@@ -42,14 +53,38 @@ import (
 	appparams "github.com/elys-network/elys/app/params"
 )
 
+var tempDir = func() string {
+	dir, err := os.MkdirTemp("", ".elys")
+	if err != nil {
+		dir = app.DefaultNodeHome
+	}
+	defer os.RemoveAll(dir)
+
+	return dir
+}
+
 // NewRootCmd creates a new root command for a Cosmos SDK application
-func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
-	encodingConfig := app.MakeEncodingConfig()
+func NewRootCmd() *cobra.Command {
+	InitSDKConfig()
+	initAppOptions := viper.New()
+	tempDir := tempDir()
+	initAppOptions.Set(flags.FlagHome, tempDir)
+	tempApplication := app.NewElysApp(
+		log.NewNopLogger(),
+		dbm.NewMemDB(),
+		nil,
+		true,
+		map[int64]bool{},
+		tempDir,
+		initAppOptions,
+		[]wasmkeeper.Option{},
+	)
+
 	initClientCtx := client.Context{}.
-		WithCodec(encodingConfig.Marshaler).
-		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
-		WithTxConfig(encodingConfig.TxConfig).
-		WithLegacyAmino(encodingConfig.Amino).
+		WithCodec(tempApplication.AppCodec()).
+		WithInterfaceRegistry(tempApplication.InterfaceRegistry()).
+		WithTxConfig(tempApplication.TxConfig()).
+		WithLegacyAmino(tempApplication.LegacyAmino()).
 		WithInput(os.Stdin).
 		WithAccountRetriever(types.AccountRetriever{}).
 		WithHomeDir(app.DefaultNodeHome).
@@ -62,13 +97,34 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 			// set the default command outputs
 			cmd.SetOut(cmd.OutOrStdout())
 			cmd.SetErr(cmd.ErrOrStderr())
+
+			initClientCtx = initClientCtx.WithCmdContext(cmd.Context())
 			initClientCtx, err := client.ReadPersistentCommandFlags(initClientCtx, cmd.Flags())
 			if err != nil {
 				return err
 			}
+
 			initClientCtx, err = config.ReadFromClientConfig(initClientCtx)
 			if err != nil {
 				return err
+			}
+
+			// This needs to go after ReadFromClientConfig, as that function
+			// sets the RPC client needed for SIGN_MODE_TEXTUAL. This sign mode
+			// is only available if the client is online.
+			if !initClientCtx.Offline {
+				txConfigOpts := tx.ConfigOptions{
+					EnabledSignModes:           append(tx.DefaultSignModes, signing.SignMode_SIGN_MODE_TEXTUAL),
+					TextualCoinMetadataQueryFn: authtxconfig.NewGRPCCoinMetadataQueryFn(initClientCtx),
+				}
+				txConfigWithTextual, err := tx.NewTxConfigWithOptions(
+					initClientCtx.Codec,
+					txConfigOpts,
+				)
+				if err != nil {
+					return err
+				}
+				initClientCtx = initClientCtx.WithTxConfig(txConfigWithTextual)
 			}
 
 			if err := client.SetCmdClientContextHandler(initClientCtx, cmd); err != nil {
@@ -81,19 +137,17 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 			// override the default timeout commit value
 			customTMConfig.Consensus.TimeoutCommit = 3000 * time.Millisecond
 
-			return server.InterceptConfigsPreRunHandler(
-				cmd, customAppTemplate, customAppConfig, customTMConfig,
-			)
+			return server.InterceptConfigsPreRunHandler(cmd, customAppTemplate, customAppConfig, customTMConfig)
 		},
 	}
 
-	initRootCmd(rootCmd, encodingConfig)
+	initRootCmd(rootCmd, tempApplication.ModuleBasics, tempApplication.AppCodec(), tempApplication.InterfaceRegistry(), tempApplication.GetTxConfig())
 	overwriteFlagDefaults(rootCmd, map[string]string{
 		flags.FlagChainID:        strings.ReplaceAll(app.Name, "-", ""),
 		flags.FlagKeyringBackend: "test",
 	})
 
-	return rootCmd, encodingConfig
+	return rootCmd
 }
 
 // initTendermintConfig helps to override default Tendermint Config values.
@@ -103,56 +157,62 @@ func initTendermintConfig() *tmcfg.Config {
 	return cfg
 }
 
-func initRootCmd(
-	rootCmd *cobra.Command,
-	encodingConfig appparams.EncodingConfig,
+func initRootCmd(rootCmd *cobra.Command,
+	basicManager module.BasicManager,
+	cdc codec.Codec,
+	interfaceRegistry codectypes.InterfaceRegistry,
+	txConfig client.TxConfig,
 ) {
-	// Set config
-	InitSDKConfig()
 
-	gentxModule := app.ModuleBasics[genutiltypes.ModuleName].(genutil.AppModuleBasic)
+	ac := appCreator{}
+	validatorCodec := authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix())
+	gentxModule := basicManager[genutiltypes.ModuleName].(genutil.AppModuleBasic)
 	rootCmd.AddCommand(
-		genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
-		genutilcli.CollectGenTxsCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome, gentxModule.GenTxValidator),
-		genutilcli.MigrateGenesisCmd(),
+		genutilcli.InitCmd(basicManager, app.DefaultNodeHome),
+		tmcli.NewCompletionCmd(rootCmd, true),
+		genutilcli.CollectGenTxsCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome, gentxModule.GenTxValidator, validatorCodec),
+		//genutilcli.MigrateGenesisCmd(basicManager),
 		genutilcli.GenTxCmd(
-			app.ModuleBasics,
-			encodingConfig.TxConfig,
+			basicManager,
+			txConfig,
 			banktypes.GenesisBalancesIterator{},
 			app.DefaultNodeHome,
+			validatorCodec,
 		),
-		genutilcli.ValidateGenesisCmd(app.ModuleBasics),
+		genutilcli.ValidateGenesisCmd(basicManager),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
 		tmcli.NewCompletionCmd(rootCmd, true),
 		debug.Cmd(),
-		config.Cmd(),
-		// this line is used by starport scaffolding # root/commands
+
+		addDebugCommands(debug.Cmd()),
+		confixcmd.ConfigCommand(),
+		pruning.Cmd(ac.newApp, app.DefaultNodeHome),
+		snapshot.Cmd(ac.newApp),
 	)
 
-	a := appCreator{
-		encodingConfig,
-	}
-
-	// add server commands
-	server.AddCommands(
-		rootCmd,
-		app.DefaultNodeHome,
-		a.newApp,
-		a.appExport,
-		addModuleInitFlags,
-	)
+	server.AddCommands(rootCmd, app.DefaultNodeHome, ac.newApp, ac.appExport, addModuleInitFlags)
 
 	// add keybase, auxiliary RPC, query, and tx child commands
 	rootCmd.AddCommand(
-		rpc.StatusCommand(),
-		queryCommand(),
-		txCommand(),
-		keys.Commands(app.DefaultNodeHome),
+		server.StatusCommand(),
+		genesisCommand(txConfig, basicManager),
+		queryCommand(basicManager),
+		txCommand(basicManager),
+		keys.Commands(),
 	)
 }
 
+func genesisCommand(txConfig client.TxConfig, basicManager module.BasicManager, cmds ...*cobra.Command) *cobra.Command {
+	cmd := genutilcli.GenesisCoreCommand(txConfig, basicManager, app.DefaultNodeHome)
+
+	for _, subCmd := range cmds {
+		cmd.AddCommand(subCmd)
+	}
+	return cmd
+}
+
 // queryCommand returns the sub-command to send queries to the app
-func queryCommand() *cobra.Command {
+func queryCommand(basicManager module.BasicManager) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                        "query",
 		Aliases:                    []string{"q"},
@@ -163,21 +223,22 @@ func queryCommand() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		authcmd.GetAccountCmd(),
 		rpc.ValidatorCommand(),
-		rpc.BlockCommand(),
+		server.QueryBlocksCmd(),
+		server.QueryBlockCmd(),
+		server.QueryBlockResultsCmd(),
 		authcmd.QueryTxsByEventsCmd(),
 		authcmd.QueryTxCmd(),
 	)
 
-	app.ModuleBasics.AddQueryCommands(cmd)
+	basicManager.AddQueryCommands(cmd)
 	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
 
 	return cmd
 }
 
 // txCommand returns the sub-command to send transactions to the app
-func txCommand() *cobra.Command {
+func txCommand(basicManager module.BasicManager) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                        "tx",
 		Short:                      "Transactions subcommands",
@@ -190,6 +251,7 @@ func txCommand() *cobra.Command {
 		authcmd.GetSignCommand(),
 		authcmd.GetSignBatchCommand(),
 		authcmd.GetMultiSignCommand(),
+		authcmd.GetMultiSignBatchCmd(),
 		authcmd.GetValidateSignaturesCommand(),
 		flags.LineBreak,
 		authcmd.GetBroadcastCommand(),
@@ -197,7 +259,7 @@ func txCommand() *cobra.Command {
 		authcmd.GetDecodeCommand(),
 	)
 
-	app.ModuleBasics.AddTxCommands(cmd)
+	basicManager.AddTxCommands(cmd)
 	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
 
 	return cmd
@@ -237,14 +299,23 @@ func (a appCreator) newApp(
 ) servertypes.Application {
 	baseappOptions := server.DefaultBaseappOptions(appOpts)
 
+	skipUpgradeHeights := make(map[int64]bool)
+	for _, h := range cast.ToIntSlice(appOpts.Get(server.FlagUnsafeSkipUpgrades)) {
+		skipUpgradeHeights[int64(h)] = true
+	}
+
 	var wasmOpts []wasm.Option
 	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
 		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
 	}
 
 	return app.NewElysApp(
-		logger, db, traceStore, true,
-		app.GetEnabledProposals(),
+		logger,
+		db,
+		traceStore,
+		true,
+		skipUpgradeHeights,
+		cast.ToString(appOpts.Get(flags.FlagHome)),
 		appOpts,
 		wasmOpts,
 		baseappOptions...,
@@ -282,7 +353,8 @@ func (a appCreator) appExport(
 		db,
 		traceStore,
 		height == -1,
-		app.GetEnabledProposals(),
+		map[int64]bool{},
+		homePath,
 		appOpts,
 		emptyWasmOpts,
 	)

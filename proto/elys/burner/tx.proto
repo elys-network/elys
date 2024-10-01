@@ -3,11 +3,13 @@ syntax = "proto3";
 package elys.burner;
 
 import "elys/burner/params.proto";
+import "cosmos/msg/v1/msg.proto";
 
 option go_package = "github.com/elys-network/elys/x/burner/types";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 message MsgUpdateParams {

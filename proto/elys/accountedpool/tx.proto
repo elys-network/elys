@@ -2,6 +2,6 @@ syntax = "proto3";
 package elys.accountedpool;
 
 option go_package = "github.com/elys-network/elys/x/accountedpool/types";
-
+import "cosmos/msg/v1/msg.proto";
 // Msg defines the Msg service.
-service Msg {}
+service Msg { option (cosmos.msg.v1.service) = true; }

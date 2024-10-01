@@ -4,11 +4,13 @@ package elys.masterchef;
 
 import "gogoproto/gogo.proto";
 import "elys/masterchef/params.proto";
+import "cosmos/msg/v1/msg.proto";
 
 option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
   rpc AddExternalRewardDenom(MsgAddExternalRewardDenom)
       returns (MsgAddExternalRewardDenomResponse);
   rpc AddExternalIncentive(MsgAddExternalIncentive)

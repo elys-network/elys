@@ -5,6 +5,7 @@ package elys.incentive;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/msg/v1/msg.proto";
 
 option go_package = "github.com/elys-network/elys/x/incentive/types";
 
@@ -12,6 +13,7 @@ option go_package = "github.com/elys-network/elys/x/incentive/types";
 service Msg {}
 
 message MsgBeginRedelegate {
+  option (cosmos.msg.v1.service) = true;
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 

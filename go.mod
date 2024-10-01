@@ -4,13 +4,14 @@ go 1.22.6
 
 require (
 	cosmossdk.io/api v0.7.5
-	cosmossdk.io/client/v2 v2.0.0-beta.3 // indirect
+	cosmossdk.io/client/v2 v2.0.0-beta.3
 	cosmossdk.io/core v0.11.1
 	cosmossdk.io/errors v1.0.1
 	cosmossdk.io/log v1.3.1
 	cosmossdk.io/math v1.3.0
 	cosmossdk.io/simapp v0.0.0-20240118210941-3897926e722e
 	cosmossdk.io/store v1.1.0
+	cosmossdk.io/tools/confix v0.1.1
 	cosmossdk.io/x/evidence v0.1.1
 	cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/tx v0.13.4
@@ -214,6 +215,8 @@ require (
 	github.com/bufbuild/connect-go v1.5.2 // indirect
 	github.com/bufbuild/protocompile v0.6.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
+	github.com/creachadair/atomicfile v0.3.1 // indirect
+	github.com/creachadair/tomledit v0.0.24 // indirect
 	github.com/dgraph-io/badger/v4 v4.2.0 // indirect
 	github.com/distribution/reference v0.5.0 // indirect
 	github.com/docker/cli v23.0.1+incompatible // indirect

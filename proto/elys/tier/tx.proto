@@ -3,11 +3,13 @@ syntax = "proto3";
 package elys.tier;
 
 import "elys/tier/portfolio.proto";
+import "cosmos/msg/v1/msg.proto";
 
 option go_package = "github.com/elys-network/elys/x/tier/types";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
   rpc SetPortfolio(MsgSetPortfolio) returns (MsgSetPortfolioResponse);
 }
 

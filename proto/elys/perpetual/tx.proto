@@ -8,9 +8,11 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "elys/perpetual/params.proto";
 import "elys/perpetual/types.proto";
+import "cosmos/msg/v1/msg.proto";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
   rpc Open(MsgOpen) returns (MsgOpenResponse);
   rpc BrokerOpen(MsgBrokerOpen) returns (MsgOpenResponse);
   rpc Close(MsgClose) returns (MsgCloseResponse);

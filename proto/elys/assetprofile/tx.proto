@@ -4,11 +4,14 @@ package elys.assetprofile;
 
 import "elys/assetprofile/entry.proto";
 import "elys/assetprofile/add_entry.proto";
+import "cosmos/msg/v1/msg.proto";
 
 option go_package = "github.com/elys-network/elys/x/assetprofile/types";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
+
   rpc UpdateEntry(MsgUpdateEntry) returns (MsgUpdateEntryResponse);
   rpc DeleteEntry(MsgDeleteEntry) returns (MsgDeleteEntryResponse);
   rpc AddEntry(MsgAddEntry) returns (MsgAddEntryResponse);

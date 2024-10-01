@@ -8,11 +8,14 @@ import "elys/amm/params.proto";
 import "elys/amm/swap_route.proto";
 import "elys/amm/pool_params.proto";
 import "elys/amm/pool_asset.proto";
+import "cosmos/msg/v1/msg.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
+
   rpc CreatePool(MsgCreatePool) returns (MsgCreatePoolResponse);
   rpc JoinPool(MsgJoinPool) returns (MsgJoinPoolResponse);
   rpc ExitPool(MsgExitPool) returns (MsgExitPoolResponse);

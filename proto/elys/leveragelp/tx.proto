@@ -9,9 +9,11 @@ import "elys/leveragelp/params.proto";
 import "elys/leveragelp/types.proto";
 import "elys/leveragelp/pool.proto";
 import "elys/leveragelp/query.proto";
+import "cosmos/msg/v1/msg.proto";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
   rpc Open(MsgOpen) returns (MsgOpenResponse);
   rpc Close(MsgClose) returns (MsgCloseResponse);
   rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
