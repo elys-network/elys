@@ -452,7 +452,6 @@ func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAs
 			return sdk.ZeroInt(), err
 		}
 		err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, fundAddr, takeCoins)
-		//err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, fundAddr, takeCoins)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
