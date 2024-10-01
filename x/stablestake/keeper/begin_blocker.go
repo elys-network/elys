@@ -16,6 +16,8 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	if epochPosition == 0 { // if epoch has passed
 		rate := k.InterestRateComputation(ctx)
 		params.InterestRate = rate
+
+		params.RedemptionRate = k.GetRedemptionRate(ctx)
 		k.SetParams(ctx, params)
 	}
 	k.SetInterest(ctx, uint64(ctx.BlockHeight()), types.InterestBlock{InterestRate: params.InterestRate, BlockTime: ctx.BlockTime().Unix(), BlockHeight: uint64(ctx.BlockHeight())})
