@@ -121,11 +121,6 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	if err != nil {
 		panic(err)
 	}
-	
-	err = cfg.RegisterMigration(types.ModuleName, 9, m.V10Migration)
-	if err != nil {
-		panic(err)
-	}
 }
 
 // RegisterInvariants registers the invariants of the module. If an invariant deviates from its predicted value, the InvariantRegistry triggers appropriate logic (most often the chain will be halted)
