@@ -430,18 +430,18 @@ func (k Keeper) GetAllLegacyMTP(ctx sdk.Context) []types.LegacyMTP {
 	return mtps
 }
 
-func (k Keeper) V6_MTPMigration(ctx sdk.Context) {
-	store := ctx.KVStore(k.storeKey)
+func (k Keeper) DeleteAllNegativeCustopMTP(ctx sdk.Context) {
 	iterator := k.GetMTPIterator(ctx)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		var mtp types.MTP
-		bz := iterator.Value()
-		k.cdc.MustUnmarshal(bz, &mtp)
-		newKey := types.GetMTPKey(mtp.GetAccountAddress(), mtp.Id)
-		store.Set(newKey, bz)
-		legacyKey := types.GetLegacyMTPKey(mtp.Address, mtp.Id)
-		store.Delete(legacyKey)
+		bytesValue := iterator.Value()
+		k.cdc.MustUnmarshal(bytesValue, &mtp)
+
+		if mtp.Custody.IsNegative() || mtp.Custody.IsZero() {
+			k.DestroyMTP(ctx, mtp.GetAccountAddress(), mtp.Id)
+		}
 	}
+
 }
