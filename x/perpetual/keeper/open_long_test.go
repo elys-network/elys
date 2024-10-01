@@ -683,8 +683,6 @@ func TestOpenLongConsolidate_Success(t *testing.T) {
 
 	eta := math.LegacyNewDec(9)
 
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
-
 	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
 	custodyAmount := math.NewInt(99)
 
@@ -722,8 +720,6 @@ func TestOpenLongConsolidate_Success(t *testing.T) {
 	}
 
 	eta = math.LegacyNewDec(11)
-
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
 
 	leveragedAmtTokenIn = sdk.NewCoin(msg.Collateral.Denom, math.NewInt(12000))
 	custodyAmount = math.NewInt(99)
