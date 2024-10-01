@@ -12,6 +12,7 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 
 	params := k.GetParams(ctx)
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	redemptionRate := k.GetRedemptionRate(ctx)
 
 	shareDenom := types.GetShareDenom()
 
@@ -33,7 +34,7 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 		return nil, err
 	}
 
-	redemptionAmount := sdk.NewDecFromInt(shareCoin.Amount).Mul(params.RedemptionRate).RoundInt()
+	redemptionAmount := sdk.NewDecFromInt(shareCoin.Amount).Mul(redemptionRate).RoundInt()
 
 	depositDenom := k.GetDepositDenom(ctx)
 	redemptionCoin := sdk.NewCoin(depositDenom, redemptionAmount)
