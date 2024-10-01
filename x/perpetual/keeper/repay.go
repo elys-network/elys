@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -46,17 +48,14 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	// if short both repay amount and liablities are trading asset
 
 	have := repayAmount
-	owe := Liabilities.Add(BorrowInterestUnpaid).Mul(amount).Quo(mtp.Custody)
+	owe := Liabilities.Add(BorrowInterestUnpaid).Mul(amount.Quo(mtp.Custody))
 
-	if have.LT(Liabilities) {
-		// can't afford principle liability
-		returnAmount = sdk.ZeroInt()
-	} else if have.LT(owe) {
+	if have.LT(owe) {
 		// v principle liability; x excess liability
 		returnAmount = sdk.ZeroInt()
 	} else {
 		// can afford both
-		returnAmount = have.Sub(Liabilities).Sub(BorrowInterestUnpaid)
+		returnAmount = have.Sub(owe)
 		mtp.Liabilities = mtp.Liabilities.Sub(Liabilities.Mul(amount).Quo(mtp.Custody))
 	}
 
@@ -129,6 +128,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	// because so far returnAmount is in base currency.
 	if mtp.Position == types.Position_SHORT {
 		// swap to collateral asset
+		fmt.Print("returnAmount: ", returnAmount, "\n")
 		amtTokenIn := sdk.NewCoin(mtp.TradingAsset, returnAmount)
 		C, err := k.EstimateSwapGivenOut(ctx, amtTokenIn, mtp.CollateralAsset, ammPool)
 		if err != nil {
