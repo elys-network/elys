@@ -25,7 +25,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	}
 
 	shareDenom := types.GetShareDenom()
-	// Inital case
+	// Initial case
 	if redemptionRate.IsZero() {
 		redemptionRate = sdk.OneDec()
 	}
