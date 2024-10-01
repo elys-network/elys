@@ -42,5 +42,10 @@ func (k Keeper) GetDepositDenom(ctx sdk.Context) string {
 func (k Keeper) GetRedemptionRate(ctx sdk.Context) sdk.Dec {
 	params := k.GetParams(ctx)
 	totalShares := k.bk.GetSupply(ctx, types.GetShareDenom())
+
+	if totalShares.Amount.IsZero() {
+		return sdk.ZeroDec()
+	}
+
 	return params.TotalValue.ToLegacyDec().Quo(totalShares.Amount.ToLegacyDec())
 }
