@@ -46,7 +46,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	// if short both repay amount and liablities are trading asset
 
 	have := repayAmount
-	owe := Liabilities.Add(BorrowInterestUnpaid)
+	owe := Liabilities.Add(BorrowInterestUnpaid).Mul(amount).Quo(mtp.Custody)
 
 	if have.LT(Liabilities) {
 		// can't afford principle liability
@@ -57,6 +57,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	} else {
 		// can afford both
 		returnAmount = have.Sub(Liabilities).Sub(BorrowInterestUnpaid)
+		mtp.Liabilities = mtp.Liabilities.Sub(Liabilities.Mul(amount).Quo(mtp.Custody))
 	}
 
 	if returnAmount.IsPositive() {
