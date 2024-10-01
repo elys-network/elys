@@ -169,6 +169,10 @@ func (suite KeeperTestSuite) TestForceCloseLongPartial() {
 	repayAmountOut, err := k.ForceCloseLong(suite.ctx, *position, pool, position.LeveragedLpAmount.Quo(sdk.NewInt(2)), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.Quo(sdk.NewInt(2)).String(), repayAmountOut.String())
+
+	// Collateral should be reduced by 50%
+	after, _ := k.GetPosition(suite.ctx, addr, 1)
+	suite.Require().Equal(position.Collateral.Amount.Quo(sdk.NewInt(2)).String(), after.Collateral.Amount.String())
 }
 
 func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {

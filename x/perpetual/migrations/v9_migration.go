@@ -6,6 +6,8 @@ import (
 )
 
 func (m Migrator) V9Migration(ctx sdk.Context) error {
+  m.keeper.DeleteAllNegativeCustopMTP(ctx)
+  
 	mtps := m.keeper.GetAllLegacyMTP(ctx)
 
 	ctx.Logger().Info("Migrating positions from legacy to new format")
@@ -59,5 +61,6 @@ func (m Migrator) V9Migration(ctx sdk.Context) error {
 
 		m.keeper.CheckAndLiquidateUnhealthyPosition(ctx, &newMtp, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
 	}
+
 	return nil
 }

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -437,58 +438,6 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 	return newBorrowInterestRate, nil
 }
 
-func (k Keeper) CheckMinLiabilities(ctx sdk.Context, collateralAmount sdk.Coin, eta sdk.Dec, ammPool ammtypes.Pool, custodyAsset string, baseCurrency string) error {
-	minBorrowInterestRate := k.GetBorrowInterestRateMin(ctx)
-
-	// Ensure minBorrowInterestRate is not zero to avoid division by zero
-	if minBorrowInterestRate.IsZero() {
-		return types.ErrAmountTooLow
-	}
-
-	collateralAmountDec := sdk.NewDecFromInt(collateralAmount.Amount)
-	liabilitiesDec := collateralAmountDec.Mul(eta)
-	liabilities := sdk.NewInt(liabilitiesDec.TruncateInt64())
-
-	// liabilty has to be always in base currency
-	if collateralAmount.Denom != baseCurrency {
-		outAmt := liabilitiesDec.TruncateInt()
-		outAmtToken := sdk.NewCoin(collateralAmount.Denom, outAmt)
-
-		inAmt, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, outAmtToken, baseCurrency, ammPool)
-		if err != nil {
-			return types.ErrBorrowTooLow
-		}
-		liabilities = sdk.NewInt(inAmt.Int64())
-	}
-	minBorrowedInterest := liabilities.ToLegacyDec().Mul(minBorrowInterestRate)
-	samplePayment := sdk.NewInt(minBorrowedInterest.TruncateInt64())
-	if samplePayment.IsZero() {
-		return types.ErrBorrowTooLow
-	}
-
-	// If collateral is not base currency, custody amount is already checked in HasSufficientBalance function.
-	// its liability balance checked in the above if statement, so return
-	if collateralAmount.Denom != baseCurrency {
-		return nil
-	}
-
-	// If custodyAsset is base currency, custody amount is already checkid in HasSufficientBalance function.
-	// its liability balance checked in the above if statement, so return
-	if custodyAsset == baseCurrency {
-		return nil
-	}
-
-	samplePaymentTokenIn := sdk.NewCoin(collateralAmount.Denom, samplePayment)
-
-	// swap borrow interest payment to custody asset
-	_, err := k.EstimateSwap(ctx, samplePaymentTokenIn, custodyAsset, ammPool)
-	if err != nil {
-		return types.ErrBorrowTooLow
-	}
-
-	return nil
-}
-
 func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAsset string, takePercentage sdk.Dec, fundAddr sdk.AccAddress, ammPool *ammtypes.Pool) (math.Int, error) {
 	returnAmountDec := sdk.NewDecFromBigInt(returnAmount.BigInt())
 	takeAmount := sdk.NewIntFromBigInt(takePercentage.Mul(returnAmountDec).TruncateInt().BigInt())
@@ -501,7 +450,6 @@ func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAs
 			return sdk.ZeroInt(), err
 		}
 		err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, fundAddr, takeCoins)
-		//err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ammPool.Address, fundAddr, takeCoins)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}

@@ -260,3 +260,28 @@ func (k Keeper) DeleteAllInterest(ctx sdk.Context) {
 		store.Delete(iterator.Key())
 	}
 }
+
+func (k Keeper) AccountInterest(ctx sdk.Context) []types.Debt {
+	store := ctx.KVStore(k.storeKey)
+	params := k.GetParams(ctx)
+
+	iterator := sdk.KVStorePrefixIterator(store, types.DebtPrefixKey)
+	defer iterator.Close()
+
+	debts := []types.Debt{}
+	for ; iterator.Valid(); iterator.Next() {
+		debt := types.Debt{}
+		k.cdc.MustUnmarshal(iterator.Value(), &debt)
+
+		// Set to 17% (as it couldn't be more over period of ~6 months)
+		// Note: These interest values were inflated due to a migration issue
+		val := sdk.NewDecFromInt(debt.Borrowed).Mul(sdk.NewDecWithPrec(17, 2))
+		if debt.InterestStacked.GT(val.TruncateInt()) {
+			sub := debt.InterestStacked.Sub(val.TruncateInt())
+			params.TotalValue = params.TotalValue.Sub(sub)
+			debt.InterestStacked = val.TruncateInt()
+		}
+	}
+	k.SetParams(ctx, params)
+	return debts
+}
