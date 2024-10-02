@@ -430,17 +430,17 @@ func (k Keeper) GetAllLegacyMTP(ctx sdk.Context) []types.LegacyMTP {
 	return mtps
 }
 
-func (k Keeper) DeleteAllNegativeCustopMTP(ctx sdk.Context) {
+func (k Keeper) DeleteAllNegativeCustomMTP(ctx sdk.Context) {
 	iterator := k.GetMTPIterator(ctx)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var mtp types.MTP
+		var mtp types.LegacyMTP
 		bytesValue := iterator.Value()
 		k.cdc.MustUnmarshal(bytesValue, &mtp)
 
 		if mtp.Custody.IsNegative() || mtp.Custody.IsZero() {
-			k.DestroyMTP(ctx, mtp.GetAccountAddress(), mtp.Id)
+			k.DestroyMTP(ctx, sdk.MustAccAddressFromBech32(mtp.Address), mtp.Id)
 		}
 	}
 
