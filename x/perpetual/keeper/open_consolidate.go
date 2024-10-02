@@ -7,10 +7,6 @@ import (
 )
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MsgOpenResponse, error) {
-	if !existingMtp.Leverage.Equal(msg.Leverage) {
-		return nil, types.ErrInvalidLeverage
-	}
-
 	poolId := existingMtp.AmmPoolId
 	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
 	if !found {

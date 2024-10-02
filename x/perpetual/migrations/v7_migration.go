@@ -25,7 +25,6 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 			Custody:                        mtp.Custody,
 			TakeProfitLiabilities:          mtp.TakeProfitLiabilities,
 			TakeProfitCustody:              mtp.TakeProfitCustody,
-			Leverage:                       mtp.Leverage,
 			MtpHealth:                      mtp.MtpHealth,
 			Position:                       mtp.Position,
 			Id:                             mtp.Id,

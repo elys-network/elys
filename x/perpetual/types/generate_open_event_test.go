@@ -26,7 +26,6 @@ func TestGenerateOpenEvent(t *testing.T) {
 		Custody:                        sdk.OneInt(),
 		TakeProfitLiabilities:          sdk.OneInt(),
 		TakeProfitCustody:              sdk.OneInt(),
-		Leverage:                       sdk.NewDec(10),
 		MtpHealth:                      sdk.ZeroDec(),
 		Position:                       types.Position_LONG,
 		Id:                             1,
@@ -62,7 +61,6 @@ func TestGenerateOpenEvent(t *testing.T) {
 	assert.Equal(t, testMTP.Custody.String(), getAttributeValue(event, "custody"))
 	assert.Equal(t, testMTP.TakeProfitLiabilities.String(), getAttributeValue(event, "take_profit_liabilities"))
 	assert.Equal(t, testMTP.TakeProfitCustody.String(), getAttributeValue(event, "take_profit_custody"))
-	assert.Equal(t, fmt.Sprintf("%s", testMTP.Leverage), getAttributeValue(event, "leverage"))
 	assert.Equal(t, testMTP.MtpHealth.String(), getAttributeValue(event, "mtp_health"))
 	assert.Equal(t, testMTP.Position.String(), getAttributeValue(event, "position"))
 	assert.Equal(t, strconv.FormatInt(int64(testMTP.Id), 10), getAttributeValue(event, "id"))

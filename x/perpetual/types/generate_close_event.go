@@ -23,7 +23,6 @@ func GenerateCloseEvent(mtp *MTP, repayAmount math.Int) sdk.Event {
 		sdk.NewAttribute("custody", mtp.Custody.String()),
 		sdk.NewAttribute("take_profit_liabilities", mtp.TakeProfitLiabilities.String()),
 		sdk.NewAttribute("take_profit_custody", mtp.TakeProfitCustody.String()),
-		sdk.NewAttribute("leverage", fmt.Sprintf("%s", mtp.Leverage)),
 		sdk.NewAttribute("mtp_health", mtp.MtpHealth.String()),
 		sdk.NewAttribute("position", mtp.Position.String()),
 		sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),

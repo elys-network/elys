@@ -463,7 +463,6 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 		Custody:                        sdk.NewInt(500000000),
 		TakeProfitLiabilities:          sdk.NewInt(497512437),
 		TakeProfitCustody:              sdk.NewInt(500000000),
-		Leverage:                       sdk.NewDec(5),
 		MtpHealth:                      sdk.MustNewDecFromStr("1.234567885992989062"),
 		Position:                       types.Position_SHORT,
 		Id:                             uint64(1),
