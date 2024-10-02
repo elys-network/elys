@@ -7,6 +7,8 @@ import "elys/tokenomics/genesis_inflation.proto";
 import "elys/tokenomics/inflation_entry.proto";
 import "elys/tokenomics/time_based_inflation.proto";
 import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/tokenomics/types";
 
@@ -27,7 +29,9 @@ service Msg {
       returns (MsgDeleteTimeBasedInflationResponse);
 }
 message MsgCreateAirdrop {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "tokenomics/MsgCreateAirdrop";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string intent = 2;
   uint64 amount = 3;
   uint64 expiry = 4;
@@ -36,7 +40,9 @@ message MsgCreateAirdrop {
 message MsgCreateAirdropResponse {}
 
 message MsgUpdateAirdrop {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "tokenomics/MsgUpdateAirdrop";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string intent = 2;
   uint64 amount = 3;
   uint64 expiry = 4;
@@ -45,17 +51,25 @@ message MsgUpdateAirdrop {
 message MsgUpdateAirdropResponse {}
 
 message MsgDeleteAirdrop {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "tokenomics/MsgDeleteAirdrop";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string intent = 2;
 }
 
 message MsgDeleteAirdropResponse {}
 
-message MsgClaimAirdrop { string sender = 1; }
+message MsgClaimAirdrop {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "tokenomics/MsgClaimAirdrop";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
 message MsgClaimAirdropResponse {}
 
 message MsgUpdateGenesisInflation {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "tokenomics/MsgUpdateGenesisInflation";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   InflationEntry inflation = 3;
   uint64 seed_vesting = 4;
   uint64 strategic_sales_vesting = 5;
@@ -63,10 +77,10 @@ message MsgUpdateGenesisInflation {
 
 message MsgUpdateGenesisInflationResponse {}
 
-message MsgDeleteGenesisInflation { string authority = 1; }
-
 message MsgCreateTimeBasedInflation {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "tokenomics/MsgCreateTimeBasedInflation";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 start_block_height = 2;
   uint64 end_block_height = 3;
   string description = 4;
@@ -76,7 +90,9 @@ message MsgCreateTimeBasedInflation {
 message MsgCreateTimeBasedInflationResponse {}
 
 message MsgUpdateTimeBasedInflation {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "tokenomics/MsgUpdateTimeBasedInflation";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 start_block_height = 2;
   uint64 end_block_height = 3;
   string description = 4;
@@ -86,7 +102,9 @@ message MsgUpdateTimeBasedInflation {
 message MsgUpdateTimeBasedInflationResponse {}
 
 message MsgDeleteTimeBasedInflation {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "tokenomics/MsgDeleteTimeBasedInflation";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 start_block_height = 2;
   uint64 end_block_height = 3;
 }

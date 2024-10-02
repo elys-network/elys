@@ -5,6 +5,8 @@ package elys.masterchef;
 import "gogoproto/gogo.proto";
 import "elys/masterchef/params.proto";
 import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
@@ -23,7 +25,9 @@ service Msg {
       returns (MsgTogglePoolEdenRewardsResponse);
 }
 message MsgAddExternalRewardDenom {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "masterchef/MsgAddExternalRewardDenom";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string reward_denom = 2;
   string min_amount = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
@@ -35,7 +39,9 @@ message MsgAddExternalRewardDenom {
 message MsgAddExternalRewardDenomResponse {}
 
 message MsgAddExternalIncentive {
-  string sender = 1;
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "masterchef/MsgAddExternalIncentive";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string reward_denom = 2;
   uint64 pool_id = 3;
   int64 from_block = 4;
@@ -49,7 +55,9 @@ message MsgAddExternalIncentive {
 message MsgAddExternalIncentiveResponse {}
 
 message MsgUpdateParams {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "masterchef/MsgUpdateParams";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   Params params = 2 [ (gogoproto.nullable) = false ];
 }
 
@@ -64,21 +72,27 @@ message PoolMultiplier {
 }
 
 message MsgUpdatePoolMultipliers {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "masterchef/MsgUpdatePoolMultipliers";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated PoolMultiplier pool_multipliers = 2 [ (gogoproto.nullable) = false ];
 }
 
 message MsgUpdatePoolMultipliersResponse {}
 
 message MsgClaimRewards {
-  string sender = 1;
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "masterchef/MsgClaimRewards";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated uint64 pool_ids = 2;
 }
 
 message MsgClaimRewardsResponse {}
 
 message MsgTogglePoolEdenRewards {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "masterchef/MsgTogglePoolEdenRewards";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 pool_id = 2;
   bool enable = 3;
 }

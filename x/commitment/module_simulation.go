@@ -125,10 +125,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 			weightMsgClaimReward = defaultWeightMsgClaimReward
 		},
 	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgClaimReward,
-		commitmentsimulation.SimulateMsgClaimReward(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
 
 	var weightMsgVest int
 	simState.AppParams.GetOrGenerate(opWeightMsgVest, &weightMsgVest, nil,
@@ -191,10 +187,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 			weightMsgClaimRewards = defaultWeightMsgClaimRewards
 		},
 	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgClaimRewards,
-		commitmentsimulation.SimulateMsgClaimRewards(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
 
 	var weightMsgStake int
 	simState.AppParams.GetOrGenerate(opWeightMsgStake, &weightMsgStake, nil,

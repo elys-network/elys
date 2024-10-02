@@ -9,6 +9,8 @@ import "elys/amm/swap_route.proto";
 import "elys/amm/pool_params.proto";
 import "elys/amm/pool_asset.proto";
 import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
@@ -31,7 +33,9 @@ service Msg {
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 message MsgCreatePool {
-  string sender = 1;
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "amm/MsgCreatePool";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   PoolParams pool_params = 2;
   repeated PoolAsset pool_assets = 3 [ (gogoproto.nullable) = false ];
 }
@@ -41,7 +45,9 @@ message MsgCreatePoolResponse {
 }
 
 message MsgJoinPool {
-  string sender = 1;
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "amm/MsgJoinPool";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 pool_id = 2;
   repeated cosmos.base.v1beta1.Coin max_amounts_in = 3
       [ (gogoproto.nullable) = false ];
@@ -61,7 +67,9 @@ message MsgJoinPoolResponse {
 }
 
 message MsgExitPool {
-  string sender = 1;
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "amm/MsgExitPool";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 pool_id = 2;
   repeated cosmos.base.v1beta1.Coin min_amounts_out = 3
       [ (gogoproto.nullable) = false ];
@@ -78,7 +86,9 @@ message MsgExitPoolResponse {
 }
 
 message MsgSwapExactAmountIn {
-  string sender = 1;
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "amm/MsgSwapExactAmountIn";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated SwapAmountInRoute routes = 2 [ (gogoproto.nullable) = false ];
   cosmos.base.v1beta1.Coin token_in = 3 [ (gogoproto.nullable) = false ];
   string token_out_min_amount = 4 [
@@ -89,7 +99,7 @@ message MsgSwapExactAmountIn {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string recipient = 6;
+  string recipient = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgSwapExactAmountInResponse {
@@ -109,7 +119,9 @@ message MsgSwapExactAmountInResponse {
 }
 
 message MsgSwapExactAmountOut {
-  string sender = 1;
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "amm/MsgSwapExactAmountOut";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated SwapAmountOutRoute routes = 2 [ (gogoproto.nullable) = false ];
   cosmos.base.v1beta1.Coin token_out = 3 [ (gogoproto.nullable) = false ];
   string token_in_max_amount = 4 [
@@ -120,7 +132,7 @@ message MsgSwapExactAmountOut {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string recipient = 6;
+  string recipient = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgSwapExactAmountOutResponse {
@@ -140,7 +152,9 @@ message MsgSwapExactAmountOutResponse {
 }
 
 message MsgFeedMultipleExternalLiquidity {
-  string sender = 1;
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "amm/MsgFeedMultipleExternalLiquidity";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated ExternalLiquidity liquidity = 2 [ (gogoproto.nullable) = false ];
 }
 
@@ -167,7 +181,9 @@ message ExternalLiquidity {
 }
 
 message MsgSwapByDenom {
-  string sender = 1;
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "amm/MsgSwapByDenom";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   cosmos.base.v1beta1.Coin amount = 2 [ (gogoproto.nullable) = false ];
   cosmos.base.v1beta1.Coin min_amount = 3 [ (gogoproto.nullable) = false ];
   cosmos.base.v1beta1.Coin max_amount = 4 [ (gogoproto.nullable) = false ];
@@ -177,7 +193,7 @@ message MsgSwapByDenom {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string recipient = 8;
+  string recipient = 8 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgSwapByDenomResponse {
@@ -200,7 +216,9 @@ message MsgSwapByDenomResponse {
 }
 
 message MsgUpdatePoolParams {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "amm/MsgUpdatePoolParams";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 pool_id = 2;
   PoolParams pool_params = 3;
 }
@@ -211,7 +229,9 @@ message MsgUpdatePoolParamsResponse {
 }
 
 message MsgUpdateParams {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "amm/MsgUpdateParams";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   Params params = 2;
 }
 

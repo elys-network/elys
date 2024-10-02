@@ -11,7 +11,7 @@ import (
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateEntry{}, "assetprofile/MsgUpdateEntry")
 	legacy.RegisterAminoMsg(cdc, &MsgDeleteEntry{}, "assetprofile/MsgDeleteEntry")
-	legacy.RegisterAminoMsg(cdc, &MsgAddEntry{}, "assetprofile/AddEntry")
+	legacy.RegisterAminoMsg(cdc, &MsgAddEntry{}, "assetprofile/MsgAddEntry")
 	// this line is used by starport scaffolding # 2
 }
 

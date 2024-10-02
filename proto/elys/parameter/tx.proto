@@ -3,6 +3,8 @@ syntax = "proto3";
 package elys.parameter;
 
 import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/parameter/types";
 
@@ -25,42 +27,54 @@ service Msg {
       returns (MsgUpdateRewardsDataLifetimeResponse);
 }
 message MsgUpdateMinCommission {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "parameter/MsgUpdateMinCommission";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string min_commission = 2;
 }
 
 message MsgUpdateMinCommissionResponse {}
 
 message MsgUpdateMaxVotingPower {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "parameter/MsgUpdateMaxVotingPower";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string max_voting_power = 2;
 }
 
 message MsgUpdateMaxVotingPowerResponse {}
 
 message MsgUpdateMinSelfDelegation {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "parameter/MsgUpdateMinSelfDelegation";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string min_self_delegation = 2;
 }
 
 message MsgUpdateMinSelfDelegationResponse {}
 
 message MsgUpdateBrokerAddress {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "parameter/MsgUpdateBrokerAddress";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string broker_address = 2;
 }
 
 message MsgUpdateBrokerAddressResponse {}
 
 message MsgUpdateTotalBlocksPerYear {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "parameter/MsgUpdateTotalBlocksPerYear";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   int64 total_blocks_per_year = 2;
 }
 
 message MsgUpdateTotalBlocksPerYearResponse {}
 
 message MsgUpdateWasmConfig {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "parameter/MsgUpdateWasmConfig";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string wasm_max_label_size = 2;
   string wasm_max_size = 3;
   string wasm_max_proposal_wasm_size = 4;
@@ -69,7 +83,9 @@ message MsgUpdateWasmConfig {
 message MsgUpdateWasmConfigResponse {}
 
 message MsgUpdateRewardsDataLifetime {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "parameter/MsgUpdateRewardsDataLifetime";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string rewardsDataLifetime = 2;
 }
 

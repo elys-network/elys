@@ -4,6 +4,8 @@ package elys.tier;
 
 import "elys/tier/portfolio.proto";
 import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/tier/types";
 
@@ -14,7 +16,9 @@ service Msg {
 }
 
 message MsgSetPortfolio {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "tier/MsgSetPortfolio";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string user = 2;
 }
 

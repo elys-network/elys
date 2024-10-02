@@ -59,7 +59,9 @@ message QueryParamsResponse {
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryShowCommitmentsRequest { string creator = 1; }
+message QueryShowCommitmentsRequest {
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
 
 message QueryShowCommitmentsResponse {
   Commitments commitments = 1

@@ -13,7 +13,7 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 
 // GenesisState defines the commitment module's genesis state.
 message Commitments {
-  string creator = 1;
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated CommittedTokens committed_tokens = 2;
   repeated cosmos.base.v1beta1.Coin claimed = 3 [
     (gogoproto.nullable) = false,
@@ -55,7 +55,7 @@ message VestingTokens {
 }
 
 message LegacyCommitments {
-  string creator = 1;
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated CommittedTokens committed_tokens = 2;
   repeated cosmos.base.v1beta1.Coin rewards_unclaimed = 3 [
     (gogoproto.nullable) = false,

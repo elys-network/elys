@@ -10,6 +10,8 @@ import "elys/oracle/price.proto";
 import "elys/oracle/price_feeder.proto";
 import "elys/oracle/params.proto";
 import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 
@@ -36,58 +38,76 @@ service Msg {
   rpc CreateAssetInfo(MsgCreateAssetInfo) returns (MsgCreateAssetInfoResponse);
 }
 message MsgFeedPrice {
+  option (cosmos.msg.v1.signer) = "provider";
+  option (amino.name) = "oracle/MsgFeedPrice";
   string asset = 1;
   string price = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string source = 3;
-  string provider = 4;
+  string provider = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgFeedPriceResponse {}
 
 message MsgSetPriceFeeder {
-  string feeder = 1;
+  option (cosmos.msg.v1.signer) = "feeder";
+  option (amino.name) = "oracle/MsgSetPriceFeeder";
+  string feeder = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   bool is_active = 2;
 }
 
 message MsgSetPriceFeederResponse {}
 
-message MsgDeletePriceFeeder { string feeder = 1; }
+message MsgDeletePriceFeeder {
+  option (cosmos.msg.v1.signer) = "feeder";
+  option (amino.name) = "oracle/MsgDeletePriceFeeder";
+  string feeder = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
 
 message MsgDeletePriceFeederResponse {}
 
 message MsgFeedMultiplePrices {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "oracle/MsgFeedMultiplePrices";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated Price prices = 2 [ (gogoproto.nullable) = false ];
 }
 
 message MsgFeedMultiplePricesResponse {}
 
 message MsgRemoveAssetInfo {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "oracle/MsgRemoveAssetInfo";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string denom = 2;
 }
 
 message MsgRemoveAssetInfoResponse {}
 
 message MsgAddPriceFeeders {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "oracle/MsgAddPriceFeeders";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated string feeders = 2;
 }
 
 message MsgAddPriceFeedersResponse {}
 
 message MsgRemovePriceFeeders {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "oracle/MsgRemovePriceFeeders";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated string feeders = 2;
 }
 
 message MsgRemovePriceFeedersResponse {}
 
 message MsgUpdateParams {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "oracle/MsgUpdateParams";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // NOTE: All parameters must be supplied.
   Params params = 2 [ (gogoproto.nullable) = false ];
@@ -97,7 +117,9 @@ message MsgUpdateParamsResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message
 message MsgCreateAssetInfo {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "oracle/MsgCreateAssetInfo";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string denom = 2;
   string display = 3;
   string bandTicker = 4;

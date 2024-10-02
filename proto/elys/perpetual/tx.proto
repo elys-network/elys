@@ -9,6 +9,8 @@ import "cosmos/base/v1beta1/coin.proto";
 import "elys/perpetual/params.proto";
 import "elys/perpetual/types.proto";
 import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 
 // Msg defines the Msg service.
 service Msg {
@@ -27,7 +29,9 @@ service Msg {
   rpc ClosePositions(MsgClosePositions) returns (MsgClosePositionsResponse);
 }
 message MsgOpen {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgOpen";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   Position position = 2;
   string leverage = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -46,7 +50,9 @@ message MsgOpen {
 }
 
 message MsgBrokerOpen {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgBrokerOpen";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   Position position = 2;
   string leverage = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -68,7 +74,9 @@ message MsgBrokerOpen {
 message MsgOpenResponse { uint64 id = 1; }
 
 message MsgClose {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgClose";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
   string amount = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
@@ -77,7 +85,9 @@ message MsgClose {
 }
 
 message MsgBrokerClose {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgBrokerClose";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
   string amount = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
@@ -95,10 +105,11 @@ message MsgCloseResponse {
 }
 
 message MsgUpdateParams {
-
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "perpetual/MsgUpdateParams";
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).
-  string authority = 1;
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // NOTE: All parameters must be supplied.
   Params params = 2;
@@ -107,21 +118,27 @@ message MsgUpdateParams {
 message MsgUpdateParamsResponse {}
 
 message MsgWhitelist {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "perpetual/MsgWhitelist";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string whitelisted_address = 2;
 }
 
 message MsgWhitelistResponse {}
 
 message MsgDewhitelist {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "perpetual/MsgDewhitelist";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string whitelisted_address = 2;
 }
 
 message MsgDewhitelistResponse {}
 
 message MsgAddCollateral {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgAddCollateral";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string amount = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
@@ -132,7 +149,9 @@ message MsgAddCollateral {
 message MsgAddCollateralResponse {}
 
 message MsgBrokerAddCollateral {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgBrokerAddCollateral";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string amount = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
@@ -142,7 +161,9 @@ message MsgBrokerAddCollateral {
 }
 
 message MsgClosePositions {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgClosePositions";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated PositionRequest liquidate = 2;
   repeated PositionRequest stop_loss = 3;
 }
@@ -150,7 +171,9 @@ message MsgClosePositions {
 message MsgClosePositionsResponse {}
 
 message MsgUpdateStopLoss {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgUpdateStopLoss";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
   string price = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
