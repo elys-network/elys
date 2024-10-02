@@ -29,6 +29,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdShowPendingSpotOrder())
 	cmd.AddCommand(CmdListPendingPerpetualOrder())
 	cmd.AddCommand(CmdShowPendingPerpetualOrder())
+	cmd.AddCommand(CmdPendingPerpetualOrderForAddress())
+
 	// this line is used by starport scaffolding # 1
 
 	return cmd

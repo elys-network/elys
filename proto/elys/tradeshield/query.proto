@@ -38,6 +38,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/tradeshield/pending_perpetual_order";
   
   }
+  
+  // Queries a list of PendingPerpetualOrderForAddress items.
+  rpc PendingPerpetualOrderForAddress (QueryPendingPerpetualOrderForAddressRequest) returns (QueryPendingPerpetualOrderForAddressResponse) {
+    option (google.api.http).get = "/elys-network/elys/tradeshield/pending_perpetual_order_for_address/{address}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -63,7 +69,7 @@ message QueryAllPendingSpotOrderRequest {
 
 message QueryAllPendingSpotOrderResponse {
   repeated SpotOrder                              pending_spot_order = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination       = 2;
+           cosmos.base.query.v1beta1.PageResponse pagination         = 2;
 }
 
 message QueryGetPendingPerpetualOrderRequest {
@@ -79,7 +85,13 @@ message QueryAllPendingPerpetualOrderRequest {
 }
 
 message QueryAllPendingPerpetualOrderResponse {
-  repeated PerpetualOrder                  pending_perpetual_order = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination            = 2;
+  repeated PerpetualOrder                         pending_perpetual_order = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination              = 2;
 }
+
+message QueryPendingPerpetualOrderForAddressRequest {
+  string address = 1;
+}
+
+message QueryPendingPerpetualOrderForAddressResponse {}
 

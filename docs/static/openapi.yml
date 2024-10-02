@@ -39982,11 +39982,11 @@ paths:
                   properties:
                     id:
                       type: string
-                    totalVesting:
+                    total_vesting:
                       type: string
                     claimed:
                       type: string
-                    vestedSoFar:
+                    vested_so_far:
                       type: string
                     remaining_blocks:
                       type: string
@@ -43605,83 +43605,88 @@ paths:
               mtp:
                 type: object
                 properties:
-                  address:
+                  mtp:
+                    type: object
+                    properties:
+                      address:
+                        type: string
+                      collateral_asset:
+                        type: string
+                      trading_asset:
+                        type: string
+                      liabilities_asset:
+                        type: string
+                      custody_asset:
+                        type: string
+                      collateral:
+                        type: string
+                      liabilities:
+                        type: string
+                      borrow_interest_paid_collateral:
+                        type: string
+                      borrow_interest_paid_custody:
+                        type: string
+                      borrow_interest_unpaid_collateral:
+                        type: string
+                      custody:
+                        type: string
+                      take_profit_liabilities:
+                        type: string
+                      take_profit_custody:
+                        type: string
+                      mtp_health:
+                        type: string
+                      position:
+                        type: string
+                        enum:
+                          - UNSPECIFIED
+                          - LONG
+                          - SHORT
+                        default: UNSPECIFIED
+                      id:
+                        type: string
+                        format: uint64
+                      amm_pool_id:
+                        type: string
+                        format: uint64
+                      consolidate_leverage:
+                        type: string
+                      sum_collateral:
+                        type: string
+                      take_profit_price:
+                        type: string
+                      take_profit_borrow_rate:
+                        type: string
+                      funding_fee_paid_collateral:
+                        type: string
+                        title: funding fee paid
+                      funding_fee_paid_custody:
+                        type: string
+                      funding_fee_received_collateral:
+                        type: string
+                        title: funding fee received
+                      funding_fee_received_custody:
+                        type: string
+                      open_price:
+                        type: string
+                      stop_loss_price:
+                        type: string
+                      last_interest_calc_time:
+                        type: string
+                        format: uint64
+                      last_interest_calc_block:
+                        type: string
+                        format: uint64
+                      last_funding_calc_time:
+                        type: string
+                        format: uint64
+                      last_funding_calc_block:
+                        type: string
+                        format: uint64
+                  trading_asset_price:
                     type: string
-                  collateral_asset:
+                  pnl:
                     type: string
-                  trading_asset:
-                    type: string
-                  liabilities_asset:
-                    type: string
-                  custody_asset:
-                    type: string
-                  collateral:
-                    type: string
-                  liabilities:
-                    type: string
-                  borrow_interest_paid_collateral:
-                    type: string
-                  borrow_interest_paid_custody:
-                    type: string
-                  borrow_interest_unpaid_collateral:
-                    type: string
-                  custody:
-                    type: string
-                  take_profit_liabilities:
-                    type: string
-                  take_profit_custody:
-                    type: string
-                  leverage:
-                    type: string
-                  mtp_health:
-                    type: string
-                  position:
-                    type: string
-                    enum:
-                      - UNSPECIFIED
-                      - LONG
-                      - SHORT
-                    default: UNSPECIFIED
-                  id:
-                    type: string
-                    format: uint64
-                  amm_pool_id:
-                    type: string
-                    format: uint64
-                  consolidate_leverage:
-                    type: string
-                  sum_collateral:
-                    type: string
-                  take_profit_price:
-                    type: string
-                  take_profit_borrow_rate:
-                    type: string
-                  funding_fee_paid_collateral:
-                    type: string
-                    title: funding fee paid
-                  funding_fee_paid_custody:
-                    type: string
-                  funding_fee_received_collateral:
-                    type: string
-                    title: funding fee received
-                  funding_fee_received_custody:
-                    type: string
-                  open_price:
-                    type: string
-                  stop_loss_price:
-                    type: string
-                  last_interest_calc_time:
-                    type: string
-                    format: uint64
-                  last_interest_calc_block:
-                    type: string
-                    format: uint64
-                  last_funding_calc_time:
-                    type: string
-                    format: uint64
-                  last_funding_calc_block:
-                    type: string
-                    format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -43727,83 +43732,88 @@ paths:
                 items:
                   type: object
                   properties:
-                    address:
+                    mtp:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                        collateral_asset:
+                          type: string
+                        trading_asset:
+                          type: string
+                        liabilities_asset:
+                          type: string
+                        custody_asset:
+                          type: string
+                        collateral:
+                          type: string
+                        liabilities:
+                          type: string
+                        borrow_interest_paid_collateral:
+                          type: string
+                        borrow_interest_paid_custody:
+                          type: string
+                        borrow_interest_unpaid_collateral:
+                          type: string
+                        custody:
+                          type: string
+                        take_profit_liabilities:
+                          type: string
+                        take_profit_custody:
+                          type: string
+                        mtp_health:
+                          type: string
+                        position:
+                          type: string
+                          enum:
+                            - UNSPECIFIED
+                            - LONG
+                            - SHORT
+                          default: UNSPECIFIED
+                        id:
+                          type: string
+                          format: uint64
+                        amm_pool_id:
+                          type: string
+                          format: uint64
+                        consolidate_leverage:
+                          type: string
+                        sum_collateral:
+                          type: string
+                        take_profit_price:
+                          type: string
+                        take_profit_borrow_rate:
+                          type: string
+                        funding_fee_paid_collateral:
+                          type: string
+                          title: funding fee paid
+                        funding_fee_paid_custody:
+                          type: string
+                        funding_fee_received_collateral:
+                          type: string
+                          title: funding fee received
+                        funding_fee_received_custody:
+                          type: string
+                        open_price:
+                          type: string
+                        stop_loss_price:
+                          type: string
+                        last_interest_calc_time:
+                          type: string
+                          format: uint64
+                        last_interest_calc_block:
+                          type: string
+                          format: uint64
+                        last_funding_calc_time:
+                          type: string
+                          format: uint64
+                        last_funding_calc_block:
+                          type: string
+                          format: uint64
+                    trading_asset_price:
                       type: string
-                    collateral_asset:
+                    pnl:
                       type: string
-                    trading_asset:
-                      type: string
-                    liabilities_asset:
-                      type: string
-                    custody_asset:
-                      type: string
-                    collateral:
-                      type: string
-                    liabilities:
-                      type: string
-                    borrow_interest_paid_collateral:
-                      type: string
-                    borrow_interest_paid_custody:
-                      type: string
-                    borrow_interest_unpaid_collateral:
-                      type: string
-                    custody:
-                      type: string
-                    take_profit_liabilities:
-                      type: string
-                    take_profit_custody:
-                      type: string
-                    leverage:
-                      type: string
-                    mtp_health:
-                      type: string
-                    position:
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - LONG
-                        - SHORT
-                      default: UNSPECIFIED
-                    id:
-                      type: string
-                      format: uint64
-                    amm_pool_id:
-                      type: string
-                      format: uint64
-                    consolidate_leverage:
-                      type: string
-                    sum_collateral:
-                      type: string
-                    take_profit_price:
-                      type: string
-                    take_profit_borrow_rate:
-                      type: string
-                    funding_fee_paid_collateral:
-                      type: string
-                      title: funding fee paid
-                    funding_fee_paid_custody:
-                      type: string
-                    funding_fee_received_collateral:
-                      type: string
-                      title: funding fee received
-                    funding_fee_received_custody:
-                      type: string
-                    open_price:
-                      type: string
-                    stop_loss_price:
-                      type: string
-                    last_interest_calc_time:
-                      type: string
-                      format: uint64
-                    last_interest_calc_block:
-                      type: string
-                      format: uint64
-                    last_funding_calc_time:
-                      type: string
-                      format: uint64
-                    last_funding_calc_block:
-                      type: string
-                      format: uint64
               pagination:
                 type: object
                 properties:
@@ -43929,83 +43939,88 @@ paths:
                 items:
                   type: object
                   properties:
-                    address:
+                    mtp:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                        collateral_asset:
+                          type: string
+                        trading_asset:
+                          type: string
+                        liabilities_asset:
+                          type: string
+                        custody_asset:
+                          type: string
+                        collateral:
+                          type: string
+                        liabilities:
+                          type: string
+                        borrow_interest_paid_collateral:
+                          type: string
+                        borrow_interest_paid_custody:
+                          type: string
+                        borrow_interest_unpaid_collateral:
+                          type: string
+                        custody:
+                          type: string
+                        take_profit_liabilities:
+                          type: string
+                        take_profit_custody:
+                          type: string
+                        mtp_health:
+                          type: string
+                        position:
+                          type: string
+                          enum:
+                            - UNSPECIFIED
+                            - LONG
+                            - SHORT
+                          default: UNSPECIFIED
+                        id:
+                          type: string
+                          format: uint64
+                        amm_pool_id:
+                          type: string
+                          format: uint64
+                        consolidate_leverage:
+                          type: string
+                        sum_collateral:
+                          type: string
+                        take_profit_price:
+                          type: string
+                        take_profit_borrow_rate:
+                          type: string
+                        funding_fee_paid_collateral:
+                          type: string
+                          title: funding fee paid
+                        funding_fee_paid_custody:
+                          type: string
+                        funding_fee_received_collateral:
+                          type: string
+                          title: funding fee received
+                        funding_fee_received_custody:
+                          type: string
+                        open_price:
+                          type: string
+                        stop_loss_price:
+                          type: string
+                        last_interest_calc_time:
+                          type: string
+                          format: uint64
+                        last_interest_calc_block:
+                          type: string
+                          format: uint64
+                        last_funding_calc_time:
+                          type: string
+                          format: uint64
+                        last_funding_calc_block:
+                          type: string
+                          format: uint64
+                    trading_asset_price:
                       type: string
-                    collateral_asset:
+                    pnl:
                       type: string
-                    trading_asset:
-                      type: string
-                    liabilities_asset:
-                      type: string
-                    custody_asset:
-                      type: string
-                    collateral:
-                      type: string
-                    liabilities:
-                      type: string
-                    borrow_interest_paid_collateral:
-                      type: string
-                    borrow_interest_paid_custody:
-                      type: string
-                    borrow_interest_unpaid_collateral:
-                      type: string
-                    custody:
-                      type: string
-                    take_profit_liabilities:
-                      type: string
-                    take_profit_custody:
-                      type: string
-                    leverage:
-                      type: string
-                    mtp_health:
-                      type: string
-                    position:
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - LONG
-                        - SHORT
-                      default: UNSPECIFIED
-                    id:
-                      type: string
-                      format: uint64
-                    amm_pool_id:
-                      type: string
-                      format: uint64
-                    consolidate_leverage:
-                      type: string
-                    sum_collateral:
-                      type: string
-                    take_profit_price:
-                      type: string
-                    take_profit_borrow_rate:
-                      type: string
-                    funding_fee_paid_collateral:
-                      type: string
-                      title: funding fee paid
-                    funding_fee_paid_custody:
-                      type: string
-                    funding_fee_received_collateral:
-                      type: string
-                      title: funding fee received
-                    funding_fee_received_custody:
-                      type: string
-                    open_price:
-                      type: string
-                    stop_loss_price:
-                      type: string
-                    last_interest_calc_time:
-                      type: string
-                      format: uint64
-                    last_interest_calc_block:
-                      type: string
-                      format: uint64
-                    last_funding_calc_time:
-                      type: string
-                      format: uint64
-                    last_funding_calc_block:
-                      type: string
-                      format: uint64
               pagination:
                 type: object
                 properties:
@@ -44151,23 +44166,8 @@ paths:
                   method
 
                   signatures required by gogoproto.
-              min_collateral:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-              valid_collateral:
-                type: boolean
+              interest_amount:
+                type: string
               position_size:
                 type: object
                 properties:
@@ -44222,6 +44222,36 @@ paths:
                 type: string
               price_impact:
                 type: string
+              borrow_fee:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              funding_fee:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -44295,6 +44325,8 @@ paths:
                   borrow_interest_rate_max:
                     type: string
                   borrow_interest_rate_min:
+                    type: string
+                  min_borrow_interest_amount:
                     type: string
                   borrow_interest_rate_increase:
                     type: string
@@ -44432,6 +44464,8 @@ paths:
                     title: >-
                       funding rate, if positive longs pay shorts, if negative
                       shorts pay longs
+                  net_open_interest:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -44530,6 +44564,8 @@ paths:
                       title: >-
                         funding rate, if positive longs pay shorts, if negative
                         shorts pay longs
+                    net_open_interest:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -44650,83 +44686,88 @@ paths:
                 items:
                   type: object
                   properties:
-                    address:
+                    mtp:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                        collateral_asset:
+                          type: string
+                        trading_asset:
+                          type: string
+                        liabilities_asset:
+                          type: string
+                        custody_asset:
+                          type: string
+                        collateral:
+                          type: string
+                        liabilities:
+                          type: string
+                        borrow_interest_paid_collateral:
+                          type: string
+                        borrow_interest_paid_custody:
+                          type: string
+                        borrow_interest_unpaid_collateral:
+                          type: string
+                        custody:
+                          type: string
+                        take_profit_liabilities:
+                          type: string
+                        take_profit_custody:
+                          type: string
+                        mtp_health:
+                          type: string
+                        position:
+                          type: string
+                          enum:
+                            - UNSPECIFIED
+                            - LONG
+                            - SHORT
+                          default: UNSPECIFIED
+                        id:
+                          type: string
+                          format: uint64
+                        amm_pool_id:
+                          type: string
+                          format: uint64
+                        consolidate_leverage:
+                          type: string
+                        sum_collateral:
+                          type: string
+                        take_profit_price:
+                          type: string
+                        take_profit_borrow_rate:
+                          type: string
+                        funding_fee_paid_collateral:
+                          type: string
+                          title: funding fee paid
+                        funding_fee_paid_custody:
+                          type: string
+                        funding_fee_received_collateral:
+                          type: string
+                          title: funding fee received
+                        funding_fee_received_custody:
+                          type: string
+                        open_price:
+                          type: string
+                        stop_loss_price:
+                          type: string
+                        last_interest_calc_time:
+                          type: string
+                          format: uint64
+                        last_interest_calc_block:
+                          type: string
+                          format: uint64
+                        last_funding_calc_time:
+                          type: string
+                          format: uint64
+                        last_funding_calc_block:
+                          type: string
+                          format: uint64
+                    trading_asset_price:
                       type: string
-                    collateral_asset:
+                    pnl:
                       type: string
-                    trading_asset:
-                      type: string
-                    liabilities_asset:
-                      type: string
-                    custody_asset:
-                      type: string
-                    collateral:
-                      type: string
-                    liabilities:
-                      type: string
-                    borrow_interest_paid_collateral:
-                      type: string
-                    borrow_interest_paid_custody:
-                      type: string
-                    borrow_interest_unpaid_collateral:
-                      type: string
-                    custody:
-                      type: string
-                    take_profit_liabilities:
-                      type: string
-                    take_profit_custody:
-                      type: string
-                    leverage:
-                      type: string
-                    mtp_health:
-                      type: string
-                    position:
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - LONG
-                        - SHORT
-                      default: UNSPECIFIED
-                    id:
-                      type: string
-                      format: uint64
-                    amm_pool_id:
-                      type: string
-                      format: uint64
-                    consolidate_leverage:
-                      type: string
-                    sum_collateral:
-                      type: string
-                    take_profit_price:
-                      type: string
-                    take_profit_borrow_rate:
-                      type: string
-                    funding_fee_paid_collateral:
-                      type: string
-                      title: funding fee paid
-                    funding_fee_paid_custody:
-                      type: string
-                    funding_fee_received_collateral:
-                      type: string
-                      title: funding fee received
-                    funding_fee_received_custody:
-                      type: string
-                    open_price:
-                      type: string
-                    stop_loss_price:
-                      type: string
-                    last_interest_calc_time:
-                      type: string
-                      format: uint64
-                    last_interest_calc_block:
-                      type: string
-                      format: uint64
-                    last_funding_calc_time:
-                      type: string
-                      format: uint64
-                    last_funding_calc_block:
-                      type: string
-                      format: uint64
               pagination:
                 type: object
                 properties:
@@ -45375,11 +45416,11 @@ paths:
           schema:
             type: object
             properties:
-              ammPrice:
+              amm_price:
                 type: string
-              oraclePrice:
+              oracle_price:
                 type: string
-              oraclePriceDec:
+              oracle_price_dec:
                 type: string
         default:
           description: An unexpected error response.
@@ -45574,7 +45615,7 @@ paths:
                 type: string
               unbondings:
                 type: string
-              totalVested:
+              total_vested:
                 type: string
         default:
           description: An unexpected error response.
@@ -46199,7 +46240,7 @@ paths:
           schema:
             type: object
             properties:
-              PendingPerpetualOrder:
+              pending_perpetual_order:
                 type: array
                 items:
                   type: object
@@ -46266,6 +46307,8 @@ paths:
                         - EXECUTED
                         - CANCLED
                       default: PENDING
+                    stop_loss_price:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -46381,7 +46424,7 @@ paths:
           schema:
             type: object
             properties:
-              PendingPerpetualOrder:
+              pending_perpetual_order:
                 type: object
                 properties:
                   order_id:
@@ -46446,6 +46489,8 @@ paths:
                       - EXECUTED
                       - CANCLED
                     default: PENDING
+                  stop_loss_price:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -46472,6 +46517,40 @@ paths:
           format: uint64
       tags:
         - Query
+  /elys-network/elys/tradeshield/pending_perpetual_order_for_address/{address}:
+    get:
+      summary: Queries a list of PendingPerpetualOrderForAddress items.
+      operationId: ElysTradeshieldPendingPerpetualOrderForAddress
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/tradeshield/pending_spot_order:
     get:
       operationId: ElysTradeshieldPendingSpotOrderAll
@@ -46481,7 +46560,7 @@ paths:
           schema:
             type: object
             properties:
-              PendingSpotOrder:
+              pending_spot_order:
                 type: array
                 items:
                   type: object
@@ -46657,7 +46736,7 @@ paths:
           schema:
             type: object
             properties:
-              PendingSpotOrder:
+              pending_spot_order:
                 type: object
                 properties:
                   order_type:
@@ -87529,11 +87608,11 @@ definitions:
           properties:
             id:
               type: string
-            totalVesting:
+            total_vesting:
               type: string
             claimed:
               type: string
-            vestedSoFar:
+            vested_so_far:
               type: string
             remaining_blocks:
               type: string
@@ -87692,11 +87771,11 @@ definitions:
     properties:
       id:
         type: string
-      totalVesting:
+      total_vesting:
         type: string
       claimed:
         type: string
-      vestedSoFar:
+      vested_so_far:
         type: string
       remaining_blocks:
         type: string
@@ -89883,8 +89962,6 @@ definitions:
         type: string
       take_profit_custody:
         type: string
-      leverage:
-        type: string
       mtp_health:
         type: string
       position:
@@ -89940,6 +90017,122 @@ definitions:
       mtp:
         type: object
         properties:
+          mtp:
+            type: object
+            properties:
+              address:
+                type: string
+              collateral_asset:
+                type: string
+              trading_asset:
+                type: string
+              liabilities_asset:
+                type: string
+              custody_asset:
+                type: string
+              collateral:
+                type: string
+              liabilities:
+                type: string
+              borrow_interest_paid_collateral:
+                type: string
+              borrow_interest_paid_custody:
+                type: string
+              borrow_interest_unpaid_collateral:
+                type: string
+              custody:
+                type: string
+              take_profit_liabilities:
+                type: string
+              take_profit_custody:
+                type: string
+              mtp_health:
+                type: string
+              position:
+                type: string
+                enum:
+                  - UNSPECIFIED
+                  - LONG
+                  - SHORT
+                default: UNSPECIFIED
+              id:
+                type: string
+                format: uint64
+              amm_pool_id:
+                type: string
+                format: uint64
+              consolidate_leverage:
+                type: string
+              sum_collateral:
+                type: string
+              take_profit_price:
+                type: string
+              take_profit_borrow_rate:
+                type: string
+              funding_fee_paid_collateral:
+                type: string
+                title: funding fee paid
+              funding_fee_paid_custody:
+                type: string
+              funding_fee_received_collateral:
+                type: string
+                title: funding fee received
+              funding_fee_received_custody:
+                type: string
+              open_price:
+                type: string
+              stop_loss_price:
+                type: string
+              last_interest_calc_time:
+                type: string
+                format: uint64
+              last_interest_calc_block:
+                type: string
+                format: uint64
+              last_funding_calc_time:
+                type: string
+                format: uint64
+              last_funding_calc_block:
+                type: string
+                format: uint64
+          trading_asset_price:
+            type: string
+          pnl:
+            type: string
+  elys.perpetual.MsgAddCollateralResponse:
+    type: object
+  elys.perpetual.MsgClosePositionsResponse:
+    type: object
+  elys.perpetual.MsgCloseResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+      amount:
+        type: string
+  elys.perpetual.MsgDewhitelistResponse:
+    type: object
+  elys.perpetual.MsgOpenResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+  elys.perpetual.MsgUpdateParamsResponse:
+    type: object
+  elys.perpetual.MsgUpdateStopLossResponse:
+    type: object
+  elys.perpetual.MsgUpdateTakeProfitPriceResponse:
+    type: object
+  elys.perpetual.MsgWhitelistResponse:
+    type: object
+  elys.perpetual.MtpAndPrice:
+    type: object
+    properties:
+      mtp:
+        type: object
+        properties:
           address:
             type: string
           collateral_asset:
@@ -89965,8 +90158,6 @@ definitions:
           take_profit_liabilities:
             type: string
           take_profit_custody:
-            type: string
-          leverage:
             type: string
           mtp_health:
             type: string
@@ -90017,32 +90208,10 @@ definitions:
           last_funding_calc_block:
             type: string
             format: uint64
-  elys.perpetual.MsgAddCollateralResponse:
-    type: object
-  elys.perpetual.MsgClosePositionsResponse:
-    type: object
-  elys.perpetual.MsgCloseResponse:
-    type: object
-    properties:
-      id:
+      trading_asset_price:
         type: string
-        format: uint64
-      amount:
+      pnl:
         type: string
-  elys.perpetual.MsgDewhitelistResponse:
-    type: object
-  elys.perpetual.MsgOpenResponse:
-    type: object
-    properties:
-      id:
-        type: string
-        format: uint64
-  elys.perpetual.MsgUpdateParamsResponse:
-    type: object
-  elys.perpetual.MsgUpdateStopLossResponse:
-    type: object
-  elys.perpetual.MsgWhitelistResponse:
-    type: object
   elys.perpetual.Params:
     type: object
     properties:
@@ -90051,6 +90220,8 @@ definitions:
       borrow_interest_rate_max:
         type: string
       borrow_interest_rate_min:
+        type: string
+      min_borrow_interest_amount:
         type: string
       borrow_interest_rate_increase:
         type: string
@@ -90094,6 +90265,9 @@ definitions:
         type: string
       swap_fee:
         type: string
+      max_limit_order:
+        type: string
+        format: int64
     description: Params defines the parameters for the module.
   elys.perpetual.ParamsResponse:
     type: object
@@ -90107,6 +90281,8 @@ definitions:
           borrow_interest_rate_max:
             type: string
           borrow_interest_rate_min:
+            type: string
+          min_borrow_interest_amount:
             type: string
           borrow_interest_rate_increase:
             type: string
@@ -90150,8 +90326,28 @@ definitions:
             type: string
           swap_fee:
             type: string
+          max_limit_order:
+            type: string
+            format: int64
     description: ParamsResponse is response type for the Query/Params RPC method.
-  elys.perpetual.Pool:
+  elys.perpetual.PoolAsset:
+    type: object
+    properties:
+      liabilities:
+        type: string
+      custody:
+        type: string
+      take_profit_liabilities:
+        type: string
+      take_profit_custody:
+        type: string
+      asset_balance:
+        type: string
+      block_borrow_interest:
+        type: string
+      asset_denom:
+        type: string
+  elys.perpetual.PoolResponse:
     type: object
     properties:
       amm_pool_id:
@@ -90211,22 +90407,7 @@ definitions:
         title: >-
           funding rate, if positive longs pay shorts, if negative shorts pay
           longs
-  elys.perpetual.PoolAsset:
-    type: object
-    properties:
-      liabilities:
-        type: string
-      custody:
-        type: string
-      take_profit_liabilities:
-        type: string
-      take_profit_custody:
-        type: string
-      asset_balance:
-        type: string
-      block_borrow_interest:
-        type: string
-      asset_denom:
+      net_open_interest:
         type: string
   elys.perpetual.Position:
     type: string
@@ -90251,83 +90432,88 @@ definitions:
         items:
           type: object
           properties:
-            address:
+            mtp:
+              type: object
+              properties:
+                address:
+                  type: string
+                collateral_asset:
+                  type: string
+                trading_asset:
+                  type: string
+                liabilities_asset:
+                  type: string
+                custody_asset:
+                  type: string
+                collateral:
+                  type: string
+                liabilities:
+                  type: string
+                borrow_interest_paid_collateral:
+                  type: string
+                borrow_interest_paid_custody:
+                  type: string
+                borrow_interest_unpaid_collateral:
+                  type: string
+                custody:
+                  type: string
+                take_profit_liabilities:
+                  type: string
+                take_profit_custody:
+                  type: string
+                mtp_health:
+                  type: string
+                position:
+                  type: string
+                  enum:
+                    - UNSPECIFIED
+                    - LONG
+                    - SHORT
+                  default: UNSPECIFIED
+                id:
+                  type: string
+                  format: uint64
+                amm_pool_id:
+                  type: string
+                  format: uint64
+                consolidate_leverage:
+                  type: string
+                sum_collateral:
+                  type: string
+                take_profit_price:
+                  type: string
+                take_profit_borrow_rate:
+                  type: string
+                funding_fee_paid_collateral:
+                  type: string
+                  title: funding fee paid
+                funding_fee_paid_custody:
+                  type: string
+                funding_fee_received_collateral:
+                  type: string
+                  title: funding fee received
+                funding_fee_received_custody:
+                  type: string
+                open_price:
+                  type: string
+                stop_loss_price:
+                  type: string
+                last_interest_calc_time:
+                  type: string
+                  format: uint64
+                last_interest_calc_block:
+                  type: string
+                  format: uint64
+                last_funding_calc_time:
+                  type: string
+                  format: uint64
+                last_funding_calc_block:
+                  type: string
+                  format: uint64
+            trading_asset_price:
               type: string
-            collateral_asset:
+            pnl:
               type: string
-            trading_asset:
-              type: string
-            liabilities_asset:
-              type: string
-            custody_asset:
-              type: string
-            collateral:
-              type: string
-            liabilities:
-              type: string
-            borrow_interest_paid_collateral:
-              type: string
-            borrow_interest_paid_custody:
-              type: string
-            borrow_interest_unpaid_collateral:
-              type: string
-            custody:
-              type: string
-            take_profit_liabilities:
-              type: string
-            take_profit_custody:
-              type: string
-            leverage:
-              type: string
-            mtp_health:
-              type: string
-            position:
-              type: string
-              enum:
-                - UNSPECIFIED
-                - LONG
-                - SHORT
-              default: UNSPECIFIED
-            id:
-              type: string
-              format: uint64
-            amm_pool_id:
-              type: string
-              format: uint64
-            consolidate_leverage:
-              type: string
-            sum_collateral:
-              type: string
-            take_profit_price:
-              type: string
-            take_profit_borrow_rate:
-              type: string
-            funding_fee_paid_collateral:
-              type: string
-              title: funding fee paid
-            funding_fee_paid_custody:
-              type: string
-            funding_fee_received_collateral:
-              type: string
-              title: funding fee received
-            funding_fee_received_custody:
-              type: string
-            open_price:
-              type: string
-            stop_loss_price:
-              type: string
-            last_interest_calc_time:
-              type: string
-              format: uint64
-            last_interest_calc_block:
-              type: string
-              format: uint64
-            last_funding_calc_time:
-              type: string
-              format: uint64
-            last_funding_calc_block:
-              type: string
-              format: uint64
       pagination:
         type: object
         properties:
@@ -90362,83 +90548,88 @@ definitions:
         items:
           type: object
           properties:
-            address:
+            mtp:
+              type: object
+              properties:
+                address:
+                  type: string
+                collateral_asset:
+                  type: string
+                trading_asset:
+                  type: string
+                liabilities_asset:
+                  type: string
+                custody_asset:
+                  type: string
+                collateral:
+                  type: string
+                liabilities:
+                  type: string
+                borrow_interest_paid_collateral:
+                  type: string
+                borrow_interest_paid_custody:
+                  type: string
+                borrow_interest_unpaid_collateral:
+                  type: string
+                custody:
+                  type: string
+                take_profit_liabilities:
+                  type: string
+                take_profit_custody:
+                  type: string
+                mtp_health:
+                  type: string
+                position:
+                  type: string
+                  enum:
+                    - UNSPECIFIED
+                    - LONG
+                    - SHORT
+                  default: UNSPECIFIED
+                id:
+                  type: string
+                  format: uint64
+                amm_pool_id:
+                  type: string
+                  format: uint64
+                consolidate_leverage:
+                  type: string
+                sum_collateral:
+                  type: string
+                take_profit_price:
+                  type: string
+                take_profit_borrow_rate:
+                  type: string
+                funding_fee_paid_collateral:
+                  type: string
+                  title: funding fee paid
+                funding_fee_paid_custody:
+                  type: string
+                funding_fee_received_collateral:
+                  type: string
+                  title: funding fee received
+                funding_fee_received_custody:
+                  type: string
+                open_price:
+                  type: string
+                stop_loss_price:
+                  type: string
+                last_interest_calc_time:
+                  type: string
+                  format: uint64
+                last_interest_calc_block:
+                  type: string
+                  format: uint64
+                last_funding_calc_time:
+                  type: string
+                  format: uint64
+                last_funding_calc_block:
+                  type: string
+                  format: uint64
+            trading_asset_price:
               type: string
-            collateral_asset:
+            pnl:
               type: string
-            trading_asset:
-              type: string
-            liabilities_asset:
-              type: string
-            custody_asset:
-              type: string
-            collateral:
-              type: string
-            liabilities:
-              type: string
-            borrow_interest_paid_collateral:
-              type: string
-            borrow_interest_paid_custody:
-              type: string
-            borrow_interest_unpaid_collateral:
-              type: string
-            custody:
-              type: string
-            take_profit_liabilities:
-              type: string
-            take_profit_custody:
-              type: string
-            leverage:
-              type: string
-            mtp_health:
-              type: string
-            position:
-              type: string
-              enum:
-                - UNSPECIFIED
-                - LONG
-                - SHORT
-              default: UNSPECIFIED
-            id:
-              type: string
-              format: uint64
-            amm_pool_id:
-              type: string
-              format: uint64
-            consolidate_leverage:
-              type: string
-            sum_collateral:
-              type: string
-            take_profit_price:
-              type: string
-            take_profit_borrow_rate:
-              type: string
-            funding_fee_paid_collateral:
-              type: string
-              title: funding fee paid
-            funding_fee_paid_custody:
-              type: string
-            funding_fee_received_collateral:
-              type: string
-              title: funding fee received
-            funding_fee_received_custody:
-              type: string
-            open_price:
-              type: string
-            stop_loss_price:
-              type: string
-            last_interest_calc_time:
-              type: string
-              format: uint64
-            last_interest_calc_block:
-              type: string
-              format: uint64
-            last_funding_calc_time:
-              type: string
-              format: uint64
-            last_funding_calc_block:
-              type: string
-              format: uint64
       pagination:
         type: object
         properties:
@@ -90473,83 +90664,88 @@ definitions:
         items:
           type: object
           properties:
-            address:
+            mtp:
+              type: object
+              properties:
+                address:
+                  type: string
+                collateral_asset:
+                  type: string
+                trading_asset:
+                  type: string
+                liabilities_asset:
+                  type: string
+                custody_asset:
+                  type: string
+                collateral:
+                  type: string
+                liabilities:
+                  type: string
+                borrow_interest_paid_collateral:
+                  type: string
+                borrow_interest_paid_custody:
+                  type: string
+                borrow_interest_unpaid_collateral:
+                  type: string
+                custody:
+                  type: string
+                take_profit_liabilities:
+                  type: string
+                take_profit_custody:
+                  type: string
+                mtp_health:
+                  type: string
+                position:
+                  type: string
+                  enum:
+                    - UNSPECIFIED
+                    - LONG
+                    - SHORT
+                  default: UNSPECIFIED
+                id:
+                  type: string
+                  format: uint64
+                amm_pool_id:
+                  type: string
+                  format: uint64
+                consolidate_leverage:
+                  type: string
+                sum_collateral:
+                  type: string
+                take_profit_price:
+                  type: string
+                take_profit_borrow_rate:
+                  type: string
+                funding_fee_paid_collateral:
+                  type: string
+                  title: funding fee paid
+                funding_fee_paid_custody:
+                  type: string
+                funding_fee_received_collateral:
+                  type: string
+                  title: funding fee received
+                funding_fee_received_custody:
+                  type: string
+                open_price:
+                  type: string
+                stop_loss_price:
+                  type: string
+                last_interest_calc_time:
+                  type: string
+                  format: uint64
+                last_interest_calc_block:
+                  type: string
+                  format: uint64
+                last_funding_calc_time:
+                  type: string
+                  format: uint64
+                last_funding_calc_block:
+                  type: string
+                  format: uint64
+            trading_asset_price:
               type: string
-            collateral_asset:
+            pnl:
               type: string
-            trading_asset:
-              type: string
-            liabilities_asset:
-              type: string
-            custody_asset:
-              type: string
-            collateral:
-              type: string
-            liabilities:
-              type: string
-            borrow_interest_paid_collateral:
-              type: string
-            borrow_interest_paid_custody:
-              type: string
-            borrow_interest_unpaid_collateral:
-              type: string
-            custody:
-              type: string
-            take_profit_liabilities:
-              type: string
-            take_profit_custody:
-              type: string
-            leverage:
-              type: string
-            mtp_health:
-              type: string
-            position:
-              type: string
-              enum:
-                - UNSPECIFIED
-                - LONG
-                - SHORT
-              default: UNSPECIFIED
-            id:
-              type: string
-              format: uint64
-            amm_pool_id:
-              type: string
-              format: uint64
-            consolidate_leverage:
-              type: string
-            sum_collateral:
-              type: string
-            take_profit_price:
-              type: string
-            take_profit_borrow_rate:
-              type: string
-            funding_fee_paid_collateral:
-              type: string
-              title: funding fee paid
-            funding_fee_paid_custody:
-              type: string
-            funding_fee_received_collateral:
-              type: string
-              title: funding fee received
-            funding_fee_received_custody:
-              type: string
-            open_price:
-              type: string
-            stop_loss_price:
-              type: string
-            last_interest_calc_time:
-              type: string
-              format: uint64
-            last_interest_calc_block:
-              type: string
-              format: uint64
-            last_funding_calc_time:
-              type: string
-              format: uint64
-            last_funding_calc_block:
-              type: string
-              format: uint64
       pagination:
         type: object
         properties:
@@ -90641,6 +90837,8 @@ definitions:
               title: >-
                 funding rate, if positive longs pay shorts, if negative shorts
                 pay longs
+            net_open_interest:
+              type: string
       pagination:
         type: object
         properties:
@@ -90747,6 +90945,8 @@ definitions:
             title: >-
               funding rate, if positive longs pay shorts, if negative shorts pay
               longs
+          net_open_interest:
+            type: string
   elys.perpetual.QueryOpenEstimationResponse:
     type: object
     properties:
@@ -90773,20 +90973,8 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      min_collateral:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      valid_collateral:
-        type: boolean
+      interest_amount:
+        type: string
       position_size:
         type: object
         properties:
@@ -90835,6 +91023,30 @@ definitions:
         type: string
       price_impact:
         type: string
+      borrow_fee:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      funding_fee:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.perpetual.StatusResponse:
     type: object
     properties:
@@ -91032,11 +91244,11 @@ definitions:
   elys.tier.QueryGetConsolidatedPriceResponse:
     type: object
     properties:
-      ammPrice:
+      amm_price:
         type: string
-      oraclePrice:
+      oracle_price:
         type: string
-      oraclePriceDec:
+      oracle_price_dec:
         type: string
   elys.tier.QueryGetPortfolioResponse:
     type: object
@@ -91088,7 +91300,7 @@ definitions:
         type: string
       unbondings:
         type: string
-      totalVested:
+      total_vested:
         type: string
   elys.tokenomics.Airdrop:
     type: object
@@ -91407,13 +91619,13 @@ definitions:
   elys.tradeshield.MsgCreatePendingPerpetualOrderResponse:
     type: object
     properties:
-      id:
+      order_id:
         type: string
         format: uint64
   elys.tradeshield.MsgCreatePendingSpotOrderResponse:
     type: object
     properties:
-      id:
+      order_id:
         type: string
         format: uint64
   elys.tradeshield.MsgDeletePendingPerpetualOrderResponse:
@@ -91527,6 +91739,8 @@ definitions:
           - EXECUTED
           - CANCLED
         default: PENDING
+      stop_loss_price:
+        type: string
   elys.tradeshield.PerpetualOrderType:
     type: string
     enum:
@@ -91547,7 +91761,7 @@ definitions:
   elys.tradeshield.QueryAllPendingPerpetualOrderResponse:
     type: object
     properties:
-      PendingPerpetualOrder:
+      pending_perpetual_order:
         type: array
         items:
           type: object
@@ -91614,6 +91828,8 @@ definitions:
                 - EXECUTED
                 - CANCLED
               default: PENDING
+            stop_loss_price:
+              type: string
       pagination:
         type: object
         properties:
@@ -91643,7 +91859,7 @@ definitions:
   elys.tradeshield.QueryAllPendingSpotOrderResponse:
     type: object
     properties:
-      PendingSpotOrder:
+      pending_spot_order:
         type: array
         items:
           type: object
@@ -91733,7 +91949,7 @@ definitions:
   elys.tradeshield.QueryGetPendingPerpetualOrderResponse:
     type: object
     properties:
-      PendingPerpetualOrder:
+      pending_perpetual_order:
         type: object
         properties:
           order_id:
@@ -91798,10 +92014,12 @@ definitions:
               - EXECUTED
               - CANCLED
             default: PENDING
+          stop_loss_price:
+            type: string
   elys.tradeshield.QueryGetPendingSpotOrderResponse:
     type: object
     properties:
-      PendingSpotOrder:
+      pending_spot_order:
         type: object
         properties:
           order_type:
@@ -91892,6 +92110,8 @@ definitions:
           minimum_deposit:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.tradeshield.QueryPendingPerpetualOrderForAddressResponse:
+    type: object
   elys.tradeshield.SpotOrder:
     type: object
     properties:
