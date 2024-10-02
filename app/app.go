@@ -827,6 +827,18 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	app.PerpetualKeeper = *perpetualmodulekeeper.NewKeeper(
+		appCodec,
+		keys[perpetualmoduletypes.StoreKey],
+		keys[perpetualmoduletypes.MemStoreKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		&app.AmmKeeper,
+		app.BankKeeper,
+		app.OracleKeeper,
+		app.AssetprofileKeeper,
+		&app.ParameterKeeper,
+	)
+
 	app.MasterchefKeeper = *masterchefmodulekeeper.NewKeeper(
 		appCodec,
 		keys[masterchefmoduletypes.StoreKey],
@@ -842,6 +854,7 @@ func NewElysApp(
 		app.TokenomicsKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
+		app.PerpetualKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	masterchefModule := masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper)
@@ -987,18 +1000,6 @@ func NewElysApp(
 		govRouter.AddRoute(wasmmoduletypes.RouterKey, wasmmodulekeeper.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
 	}
 	govKeeper.SetLegacyRouter(govRouter)
-
-	app.PerpetualKeeper = *perpetualmodulekeeper.NewKeeper(
-		appCodec,
-		keys[perpetualmoduletypes.StoreKey],
-		keys[perpetualmoduletypes.MemStoreKey],
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		&app.AmmKeeper,
-		app.BankKeeper,
-		app.OracleKeeper,
-		app.AssetprofileKeeper,
-		&app.ParameterKeeper,
-	)
 
 	app.ClockKeeper = *clockmodulekeeper.NewKeeper(
 		keys[clockmoduletypes.StoreKey],
