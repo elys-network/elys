@@ -9,7 +9,6 @@
   - If `order_type` is `STOPLOSS` and `market_price` is less than or equal to `order_price` then trigger `executeOrders` function.
   - If `order_type` is `LIMITSELL` and `market_price` is greater than or equal to `order_price` then trigger `executeOrders` function.
   - If `order_type` is `LIMITBUY` and `market_price` is less than or equal to `order_price` then trigger `executeOrders` function.
-  - If `order_type` is `MARKETBUY` and regardless of both `market_price` and `order_price` values then trigger `executeOrders` function.
 
 ## Check Perpetual Order Execution Criteria Logic
 
@@ -19,8 +18,6 @@
   - `market_price` can be retrieved from the oracle module.
   - If `perpetual_order_type` is `LIMITOPEN` and `market_price` is less than or equal to `trigger_price` then trigger `executeOrders` function.
   - If `perpetual_order_type` is `LIMITCLOSE` and `market_price` is greater than or equal to `trigger_price` then trigger `executeOrders` function.
-  - If `perpetual_order_type` is `MARKETOPEN` and regardless of both `market_price` and `trigger_price` values then trigger `executeOrders` function.
-  - If `perpetual_order_type` is `MARKETCLOSE` and regardless of both `market_price` and `trigger_price` values then trigger `executeOrders` function.
   - If `perpetual_order_type` is `STOPLOSSPERP` and `market_price` is less than or equal to `trigger_price` then trigger `executeOrders` function.
 
 ### executeOrders function
