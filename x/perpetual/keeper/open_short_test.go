@@ -547,6 +547,9 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 		LastFundingCalcTime:            0,
 		LastFundingCalcBlock:           0,
 	}, mtp)
+
+	resp, _, _ := mk.GetMTPsForAddressWithPagination(ctx, addr[0], nil)
+	require.Equal(t, resp[0].Pnl, sdk.NewDec(-10000005))
 }
 
 func TestOpenShort_ATOM_Collateral(t *testing.T) {
