@@ -271,5 +271,5 @@ message QueryCloseEstimationResponse {
   cosmos.base.v1beta1.Coin liabilities  = 3 [(gogoproto.nullable) = false];
   string                   price_impact  = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string                   swap_fee      = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin repay_amount  = 6 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin return_amount  = 6 [(gogoproto.nullable) = false];
 }
