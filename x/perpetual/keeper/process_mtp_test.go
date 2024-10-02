@@ -174,7 +174,6 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 		Custody:                        sdk.NewInt(481521968),
 		TakeProfitLiabilities:          sdk.NewInt(473929244),
 		TakeProfitCustody:              sdk.NewInt(486520593),
-		Leverage:                       sdk.NewDec(5),
 		MtpHealth:                      sdk.MustNewDecFromStr("1.221533382716049383"),
 		Position:                       types.Position_LONG,
 		Id:                             uint64(1),

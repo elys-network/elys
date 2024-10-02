@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"fmt"
 	"strconv"
 
 	"cosmossdk.io/math"
@@ -25,7 +24,6 @@ func (k Keeper) EmitForceClose(ctx sdk.Context, mtp *types.MTP, repayAmount math
 		sdk.NewAttribute("collaterals", mtp.Collateral.String()),
 		sdk.NewAttribute("custodies", mtp.Custody.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("leverage", fmt.Sprintf("%s", mtp.Leverage)),
 		sdk.NewAttribute("liabilities", mtp.Liabilities.String()),
 		sdk.NewAttribute("borrow_interest_paid_collaterals", mtp.BorrowInterestPaidCollateral.String()),
 		sdk.NewAttribute("borrow_interest_paid_custodies", mtp.BorrowInterestPaidCustody.String()),

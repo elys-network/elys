@@ -318,3 +318,50 @@ func TestCloseLong_SuccessfulClosingLongPosition(t *testing.T) {
 	assert.Equal(t, mtp, *mtpOut)
 	mockChecker.AssertExpectations(t)
 }
+
+func TestPartiallyClosing_LongPosition(t *testing.T) {
+	// Setup the mock checker
+	mockChecker := new(mocks.CloseLongChecker)
+
+	// Create an instance of Keeper with the mock checker
+	k := keeper.Keeper{
+		CloseLongChecker: mockChecker,
+	}
+
+	var (
+		ctx = sdk.Context{} // Mock or setup a context
+		msg = &types.MsgClose{
+			Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
+			Id:      1,
+			Amount:  sdk.NewInt(100),
+		}
+		mtp = types.MTP{
+			AmmPoolId:       2,
+			CollateralAsset: ptypes.BaseCurrency,
+			CustodyAsset:    "uatom",
+			Collateral:      sdk.NewInt(100),
+			Custody:         sdk.NewInt(10000),
+		}
+		pool = types.Pool{
+			BorrowInterestRate: math.LegacyNewDec(2),
+		}
+		ammPool     = ammtypes.Pool{}
+		repayAmount = math.NewInt(100)
+	)
+
+	// Mock behavior
+	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
+	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
+	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
+	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(sdk.ZeroInt(), nil)
+	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
+	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(repayAmount, nil)
+
+	mtpOut, repayAmountOut, err := k.CloseLong(ctx, msg, ptypes.BaseCurrency)
+
+	// Expect no error
+	assert.Nil(t, err)
+	assert.Equal(t, repayAmount, repayAmountOut)
+	assert.Equal(t, mtp, *mtpOut)
+	mockChecker.AssertExpectations(t)
+}
