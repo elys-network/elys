@@ -44,6 +44,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/tradeshield/pending_perpetual_order_for_address/{address}";
   
   }
+  
+  // Queries a list of PendingSpotOrderForAddress items.
+  rpc PendingSpotOrderForAddress (QueryPendingSpotOrderForAddressRequest) returns (QueryPendingSpotOrderForAddressResponse) {
+    option (google.api.http).get = "/elys-network/elys/tradeshield/pending_spot_order_for_address/{address}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -94,4 +100,10 @@ message QueryPendingPerpetualOrderForAddressRequest {
 }
 
 message QueryPendingPerpetualOrderForAddressResponse {}
+
+message QueryPendingSpotOrderForAddressRequest {
+  string address = 1;
+}
+
+message QueryPendingSpotOrderForAddressResponse {}
 
