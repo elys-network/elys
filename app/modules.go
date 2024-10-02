@@ -31,7 +31,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 	"github.com/cosmos/cosmos-sdk/x/group"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
@@ -231,8 +230,11 @@ NOTE: capability module's beginblocker must come before any modules using capabi
 func orderBeginBlockers() []string {
 	return []string{
 		capabilitytypes.ModuleName,
-		minttypes.ModuleName,
+		// Note: epochs' begin should be "real" start of epochs, we keep epochs beginblock at the beginning
+		epochsmoduletypes.ModuleName,
 		distrtypes.ModuleName,
+		stablestaketypes.ModuleName,
+		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
@@ -250,7 +252,6 @@ func orderBeginBlockers() []string {
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-
 		assetprofilemoduletypes.ModuleName,
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
@@ -268,9 +269,6 @@ func orderBeginBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
-		epochsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
-		stablestaketypes.ModuleName,
 	}
 }
 
@@ -287,6 +285,9 @@ func orderEndBlockers() []string {
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		// Note: epochs' endblock should be "real" end of epochs, we keep epochs endblock at the end
+		epochsmoduletypes.ModuleName,
+		clockmoduletypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
@@ -295,16 +296,18 @@ func orderEndBlockers() []string {
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
+		stablestaketypes.ModuleName,
+		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
+		group.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-
 		assetprofilemoduletypes.ModuleName,
 		oracletypes.ModuleName,
 		commitmentmoduletypes.ModuleName,
@@ -321,11 +324,6 @@ func orderEndBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
-		epochsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
-		stablestaketypes.ModuleName,
-		clockmoduletypes.ModuleName,
-		group.ModuleName,
 	}
 }
 
@@ -339,14 +337,18 @@ can do so safely.
 */
 func orderInitBlockers() []string {
 	return []string{
+		parametermoduletypes.ModuleName,
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		commitmentmoduletypes.ModuleName,
 		distrtypes.ModuleName,
 		govtypes.ModuleName,
+		epochsmoduletypes.ModuleName,
+		stablestaketypes.ModuleName,
+		incentivemoduletypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
-		minttypes.ModuleName,
 		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
 		ibctransfertypes.ModuleName,
@@ -356,11 +358,11 @@ func orderInitBlockers() []string {
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
+		group.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-
 		assetprofilemoduletypes.ModuleName,
 		oracletypes.ModuleName,
 		tokenomicsmoduletypes.ModuleName,
@@ -376,11 +378,5 @@ func orderInitBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
-		epochsmoduletypes.ModuleName,
-		incentivemoduletypes.ModuleName,
-		stablestaketypes.ModuleName,
-		group.ModuleName,
-		commitmentmoduletypes.ModuleName,
-		parametermoduletypes.ModuleName,
 	}
 }
