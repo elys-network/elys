@@ -43509,6 +43509,93 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /elys-network/elys/perpetual/close_estimation/{positionId}:
+    get:
+      summary: Queries a list of CloseEstimation items.
+      operationId: ElysPerpetualCloseEstimation
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              position:
+                type: string
+              positionSize:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              liabilities:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              priceImpact:
+                type: string
+              swapFee:
+                type: string
+              repayAmount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: positionId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
   /elys-network/elys/perpetual/get_all_to_pay:
     get:
       summary: Queries a list of GetAllToPay items.
@@ -43634,6 +43721,11 @@ paths:
                         type: string
                       take_profit_custody:
                         type: string
+<<<<<<< HEAD
+=======
+                      leverage:
+                        type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                       mtp_health:
                         type: string
                       position:
@@ -43685,8 +43777,11 @@ paths:
                         format: uint64
                   trading_asset_price:
                     type: string
+<<<<<<< HEAD
                   pnl:
                     type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
         default:
           description: An unexpected error response.
           schema:
@@ -43761,6 +43856,11 @@ paths:
                           type: string
                         take_profit_custody:
                           type: string
+<<<<<<< HEAD
+=======
+                        leverage:
+                          type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                         mtp_health:
                           type: string
                         position:
@@ -43812,8 +43912,11 @@ paths:
                           format: uint64
                     trading_asset_price:
                       type: string
+<<<<<<< HEAD
                     pnl:
                       type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
               pagination:
                 type: object
                 properties:
@@ -43968,6 +44071,11 @@ paths:
                           type: string
                         take_profit_custody:
                           type: string
+<<<<<<< HEAD
+=======
+                        leverage:
+                          type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                         mtp_health:
                           type: string
                         position:
@@ -44019,8 +44127,11 @@ paths:
                           format: uint64
                     trading_asset_price:
                       type: string
+<<<<<<< HEAD
                     pnl:
                       type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
               pagination:
                 type: object
                 properties:
@@ -44715,6 +44826,11 @@ paths:
                           type: string
                         take_profit_custody:
                           type: string
+<<<<<<< HEAD
+=======
+                        leverage:
+                          type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                         mtp_health:
                           type: string
                         position:
@@ -44766,8 +44882,11 @@ paths:
                           format: uint64
                     trading_asset_price:
                       type: string
+<<<<<<< HEAD
                     pnl:
                       type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
               pagination:
                 type: object
                 properties:
@@ -90080,6 +90199,11 @@ definitions:
                 type: string
               take_profit_custody:
                 type: string
+<<<<<<< HEAD
+=======
+              leverage:
+                type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
               mtp_health:
                 type: string
               position:
@@ -90131,8 +90255,11 @@ definitions:
                 format: uint64
           trading_asset_price:
             type: string
+<<<<<<< HEAD
           pnl:
             type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
   elys.perpetual.MsgAddCollateralResponse:
     type: object
   elys.perpetual.MsgClosePositionsResponse:
@@ -90244,8 +90371,11 @@ definitions:
             format: uint64
       trading_asset_price:
         type: string
+<<<<<<< HEAD
       pnl:
         type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
   elys.perpetual.Params:
     type: object
     properties:
@@ -90495,6 +90625,11 @@ definitions:
                   type: string
                 take_profit_custody:
                   type: string
+<<<<<<< HEAD
+=======
+                leverage:
+                  type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                 mtp_health:
                   type: string
                 position:
@@ -90546,8 +90681,11 @@ definitions:
                   format: uint64
             trading_asset_price:
               type: string
+<<<<<<< HEAD
             pnl:
               type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
       pagination:
         type: object
         properties:
@@ -90611,6 +90749,11 @@ definitions:
                   type: string
                 take_profit_custody:
                   type: string
+<<<<<<< HEAD
+=======
+                leverage:
+                  type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                 mtp_health:
                   type: string
                 position:
@@ -90662,8 +90805,11 @@ definitions:
                   format: uint64
             trading_asset_price:
               type: string
+<<<<<<< HEAD
             pnl:
               type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
       pagination:
         type: object
         properties:
@@ -90727,6 +90873,11 @@ definitions:
                   type: string
                 take_profit_custody:
                   type: string
+<<<<<<< HEAD
+=======
+                leverage:
+                  type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                 mtp_health:
                   type: string
                 position:
@@ -90778,8 +90929,11 @@ definitions:
                   format: uint64
             trading_asset_price:
               type: string
+<<<<<<< HEAD
             pnl:
               type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
       pagination:
         type: object
         properties:
@@ -90899,6 +91053,51 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.perpetual.QueryCloseEstimationResponse:
+    type: object
+    properties:
+      position:
+        type: string
+      positionSize:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      liabilities:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      priceImpact:
+        type: string
+      swapFee:
+        type: string
+      repayAmount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.perpetual.QueryGetAllToPayResponse:
     type: object
     properties:

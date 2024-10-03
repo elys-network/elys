@@ -18,7 +18,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AssetProfileKeeper) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -52,5 +52,5 @@ func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	params := types.DefaultParams()
 	k.SetParams(ctx, &params)
 
-	return k, ctx
+	return k, ctx, assetProfileKeeper
 }

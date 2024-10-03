@@ -86,10 +86,15 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/perpetual/get_all_to_pay";
 
   }
+  
+  // Queries a list of CloseEstimation items.
+  rpc CloseEstimation (QueryCloseEstimationRequest) returns (QueryCloseEstimationResponse) {
+    option (google.api.http).get = "/elys-network/elys/perpetual/close-estimation/{position_id}";
+  
+  }
 }
-
 message MtpAndPrice {
-  MTP mtp =1;
+  MTP    mtp                 = 1;
   string trading_asset_price = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
@@ -99,6 +104,7 @@ message MtpAndPrice {
     (gogoproto.nullable) = false
   ];
 }
+
 // ParamsRequest is request type for the Query/Params RPC method.
 message ParamsRequest {}
 
@@ -114,7 +120,7 @@ message PositionsRequest {
 }
 
 message PositionsResponse {
-  repeated MtpAndPrice                                    mtps       = 1;
+  repeated MtpAndPrice                            mtps       = 1;
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -124,7 +130,7 @@ message PositionsByPoolRequest {
 }
 
 message PositionsByPoolResponse {
-  repeated MtpAndPrice                                    mtps       = 1;
+  repeated MtpAndPrice                            mtps       = 1;
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -141,7 +147,7 @@ message PositionsForAddressRequest {
 }
 
 message PositionsForAddressResponse {
-  repeated MtpAndPrice                                    mtps       = 1;
+  repeated MtpAndPrice                            mtps       = 1;
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -176,8 +182,8 @@ message QueryAllPoolRequest {
 }
 
 message QueryAllPoolResponse {
-  repeated PoolResponse                                   pool = 1 [(gogoproto.nullable) = false];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated PoolResponse                           pool       = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message MTPRequest {
@@ -252,6 +258,18 @@ message PoolResponse {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-
 }
 
+message QueryCloseEstimationRequest {
+  string address = 1;
+  uint64 position_id = 2;
+}
+
+message QueryCloseEstimationResponse {
+  Position                   position     = 1;
+  cosmos.base.v1beta1.Coin position_size = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin liabilities  = 3 [(gogoproto.nullable) = false];
+  string                   price_impact  = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   swap_fee      = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin return_amount  = 6 [(gogoproto.nullable) = false];
+}
