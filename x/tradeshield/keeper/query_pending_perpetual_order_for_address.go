@@ -22,6 +22,6 @@ func (k Keeper) PendingPerpetualOrderForAddress(goCtx context.Context, req *type
 	}
 
 	return &types.QueryPendingPerpetualOrderForAddressResponse{
-		PendingPerpetualOrder: res,
+		PendingPerpetualOrders: res,
 	}, nil
 }

@@ -81,8 +81,8 @@ func (k Keeper) GetPendingSpotOrder(ctx sdk.Context, id uint64) (val types.SpotO
 	return val, true
 }
 
-func (k Keeper) GetPendingSpotOrdersForAddress(ctx sdk.Context, address string, pagination *query.PageRequest) ([]*types.SpotOrder, *query.PageResponse, error) {
-	var orders []*types.SpotOrder
+func (k Keeper) GetPendingSpotOrdersForAddress(ctx sdk.Context, address string, pagination *query.PageRequest) ([]types.SpotOrder, *query.PageResponse, error) {
+	var orders []types.SpotOrder
 
 	store := ctx.KVStore(k.storeKey)
 	orderStore := prefix.NewStore(store, types.PendingSpotOrderKey)
@@ -98,7 +98,7 @@ func (k Keeper) GetPendingSpotOrdersForAddress(ctx sdk.Context, address string, 
 		err := k.cdc.Unmarshal(value, &order)
 		if err == nil {
 			if accumulate && order.OwnerAddress == address {
-				orders = append(orders, &order)
+				orders = append(orders, order)
 				return true, nil
 			}
 		}

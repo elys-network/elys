@@ -22,6 +22,6 @@ func (k Keeper) PendingSpotOrderForAddress(goCtx context.Context, req *types.Que
 	}
 
 	return &types.QueryPendingSpotOrderForAddressResponse{
-		PendingSpotOrder: res,
+		PendingSpotOrders: res,
 	}, nil
 }
