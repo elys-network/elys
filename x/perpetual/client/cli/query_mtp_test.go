@@ -52,8 +52,6 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 				Position:                       types.Position_LONG,
 				Id:                             (uint64)(i + 1),
 				AmmPoolId:                      (uint64)(i + 1),
-				ConsolidateLeverage:            sdk.ZeroDec(),
-				SumCollateral:                  sdk.ZeroInt(),
 				TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 				TakeProfitBorrowRate:           sdk.OneDec(),
 				FundingFeePaidCollateral:       sdk.NewInt(0),

@@ -467,8 +467,6 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 		Position:                       types.Position_SHORT,
 		Id:                             uint64(1),
 		AmmPoolId:                      uint64(1),
-		ConsolidateLeverage:            sdk.NewDec(3),
-		SumCollateral:                  sdk.NewInt(100000000),
 		TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		TakeProfitBorrowRate:           sdk.MustNewDecFromStr("1.0"),
 		FundingFeePaidCollateral:       sdk.NewInt(0),

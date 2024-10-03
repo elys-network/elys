@@ -178,8 +178,6 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 		Position:                       types.Position_LONG,
 		Id:                             uint64(1),
 		AmmPoolId:                      uint64(1),
-		ConsolidateLeverage:            sdk.NewDec(4),
-		SumCollateral:                  sdk.NewInt(100000000),
 		TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
 		TakeProfitBorrowRate:           sdk.MustNewDecFromStr("1.0"),
 		FundingFeePaidCollateral:       sdk.NewInt(0),
