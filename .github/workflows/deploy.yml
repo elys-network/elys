@@ -108,12 +108,12 @@ jobs:
           # save private keys to files
           echo "${{ secrets.PRIVATE_KEY_FUJI }}" > /tmp/private_key_fuji.txt
           echo "${{ secrets.PRIVATE_KEY_MALLORCA }}" > /tmp/private_key_mallorca.txt
-          echo "${{ secrets.PRIVATE_KEY_BORA }}" > /tmp/private_key_bora.txt
+          # echo "${{ secrets.PRIVATE_KEY_BORA }}" > /tmp/private_key_bora.txt
           
           # recover keys
           echo "${{ secrets.PASSPHRASE_FUJI }}"     | $ELYSD keys import fuji     --keyring-backend test /tmp/private_key_fuji.txt
           echo "${{ secrets.PASSPHRASE_MALLORCA }}" | $ELYSD keys import mallorca --keyring-backend test /tmp/private_key_mallorca.txt
-          echo "${{ secrets.PASSPHRASE_BORA }}"     | $ELYSD keys import bora --keyring-backend test /tmp/private_key_bora.txt
+          # echo "${{ secrets.PASSPHRASE_BORA }}"     | $ELYSD keys import bora --keyring-backend test /tmp/private_key_bora.txt
 
           # get checksum
           # checksum=$(cat dist/sha256sum.txt | extract_checksum)
@@ -145,5 +145,5 @@ jobs:
           # vote on proposal
           $ELYSD tx gov vote $proposalid yes --from=fuji $OPTIONS
           $ELYSD tx gov vote $proposalid yes --from=mallorca $OPTIONS
-          $ELYSD tx gov vote $proposalid yes --from=bora $OPTIONS
+          # $ELYSD tx gov vote $proposalid yes --from=bora $OPTIONS
           sleep 10
