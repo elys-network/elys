@@ -15,9 +15,13 @@ func CmdPendingSpotOrderForAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pending-spot-order-for-address [address]",
 		Short: "Query pending-spot-order-for-address",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqAddress := args[0]
+			reqStatus, ok := types.Status_value[args[1]]
+			if !ok {
+				return types.ErrInvalidStatus
+			}
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -29,6 +33,7 @@ func CmdPendingSpotOrderForAddress() *cobra.Command {
 			params := &types.QueryPendingSpotOrderForAddressRequest{
 
 				Address: reqAddress,
+				Status:  types.Status(reqStatus),
 			}
 
 			res, err := queryClient.PendingSpotOrderForAddress(cmd.Context(), params)

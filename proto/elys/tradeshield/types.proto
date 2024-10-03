@@ -18,7 +18,7 @@ enum SpotOrderType {
 enum Status {
     PENDING = 0;
     EXECUTED = 1;
-    CANCLED = 2;
+    CANCELED = 2;
 }
 
 message OrderPrice {
