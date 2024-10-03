@@ -284,8 +284,6 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 		MtpHealth:                      sdk.NewDec(0),
 		Position:                       perpetualtypes.Position_LONG,
 		Id:                             0,
-		ConsolidateLeverage:            sdk.ZeroDec(),
-		SumCollateral:                  sdk.ZeroInt(),
 	})
 	require.NoError(t, err)
 
