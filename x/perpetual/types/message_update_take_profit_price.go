@@ -7,15 +7,15 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgUpdateTakeProfitPrice= "update_take_profit_price"
+const TypeMsgUpdateTakeProfitPrice = "update_take_profit_price"
 
 var _ sdk.Msg = &MsgUpdateTakeProfitPrice{}
 
 func NewMsgUpdateTakeProfitPrice(creator string, id uint64, price sdk.Dec) *MsgUpdateTakeProfitPrice {
 	return &MsgUpdateTakeProfitPrice{
-		Creator:  creator,
-		Id: id,
-		Price:    price,
+		Creator: creator,
+		Id:      id,
+		Price:   price,
 	}
 }
 

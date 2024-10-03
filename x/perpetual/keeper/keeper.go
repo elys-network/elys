@@ -25,6 +25,7 @@ type (
 		types.OpenShortChecker
 		types.CloseLongChecker
 		types.CloseShortChecker
+		types.CloseEstimationChecker
 
 		cdc                codec.BinaryCodec
 		storeKey           storetypes.StoreKey
@@ -76,6 +77,7 @@ func NewKeeper(
 	keeper.OpenShortChecker = keeper
 	keeper.CloseLongChecker = keeper
 	keeper.CloseShortChecker = keeper
+	keeper.CloseEstimationChecker = keeper
 
 	return keeper
 }
@@ -455,6 +457,14 @@ func (k Keeper) TakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAs
 		}
 	}
 	return takeAmount, nil
+}
+
+// CalcTakeFundPayment calculates the take fund payment
+func (k Keeper) CalcTakeFundPayment(ctx sdk.Context, returnAmount math.Int, returnAsset string, takePercentage sdk.Dec) math.Int {
+	returnAmountDec := sdk.NewDecFromBigInt(returnAmount.BigInt())
+	takeAmount := sdk.NewIntFromBigInt(takePercentage.Mul(returnAmountDec).TruncateInt().BigInt())
+
+	return takeAmount
 }
 
 // Set the perpetual hooks.
