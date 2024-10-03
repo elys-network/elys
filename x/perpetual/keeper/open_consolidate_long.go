@@ -10,8 +10,6 @@ func (k Keeper) OpenConsolidateLong(ctx sdk.Context, poolId uint64, existingMtp 
 	existingMtp.Custody = existingMtp.Custody.Add(newMtp.Custody)
 	existingMtp.Liabilities = existingMtp.Liabilities.Add(newMtp.Liabilities)
 
-	existingMtp.ConsolidateLeverage = types.CalcMTPConsolidateLiability(existingMtp)
-
 	// Set existing MTP
 	if err := k.SetMTP(ctx, existingMtp); err != nil {
 		return nil, err
