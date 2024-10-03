@@ -2,7 +2,7 @@ name: Deploy in devnet
 on:
   push:
     branches:
-      - avkr003/devnet #main
+      - main
 
 jobs:
   deploy:
@@ -12,7 +12,7 @@ jobs:
       cancel-in-progress: false  # Queue new jobs instead of canceling if one is already running
     environment: devnet
     env:
-      BRANCH_NAME: avkr003/devnet #${{ github.head_ref || github.ref_name }}
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       NAME: elys
       COMMIT: ${{ github.sha }}
       VERSION:
