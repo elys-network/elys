@@ -4,12 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
 )
-
-const MaxPageLimit = 50000
 
 const (
 	// ModuleName defines the module name
@@ -38,22 +33,6 @@ var (
 	PendingPerpetualOrderCountKey = []byte{0x06}
 	SortedPerpetualOrderKey       = []byte{0x07}
 )
-
-func GetSpotOrderKey(creator sdk.AccAddress, id uint64) []byte {
-	return append(PendingSpotOrderKey, append(address.MustLengthPrefix(creator), GetUint64Bytes(id)...)...)
-}
-
-func GetPerpetualOrderKey(creator sdk.AccAddress, id uint64) []byte {
-	return append(PendingPerpetualOrderKey, append(address.MustLengthPrefix(creator), GetUint64Bytes(id)...)...)
-}
-
-func GetSpotOrderPrefixForAddress(creator sdk.AccAddress) []byte {
-	return append(PendingSpotOrderKey, address.MustLengthPrefix(creator)...)
-}
-
-func GetPendingOrderPrefixForAddress(creator sdk.AccAddress) []byte {
-	return append(PendingPerpetualOrderKey, address.MustLengthPrefix(creator)...)
-}
 
 func GenSpotKey(order SpotOrder) (string, error) {
 	if order.OrderType == SpotOrderType_MARKETBUY {

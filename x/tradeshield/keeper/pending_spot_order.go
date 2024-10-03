@@ -3,15 +3,13 @@ package keeper
 import (
 	"encoding/binary"
 	"errors"
-	"fmt"
+	"math"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // GetPendingSpotOrderCount get the total number of pendingSpotOrder
@@ -83,27 +81,28 @@ func (k Keeper) GetPendingSpotOrder(ctx sdk.Context, id uint64) (val types.SpotO
 	return val, true
 }
 
-func (k Keeper) GetPendingSpotOrdersForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.SpotOrder, *query.PageResponse, error) {
+func (k Keeper) GetPendingSpotOrdersForAddress(ctx sdk.Context, address string, pagination *query.PageRequest) ([]*types.SpotOrder, *query.PageResponse, error) {
 	var orders []*types.SpotOrder
 
 	store := ctx.KVStore(k.storeKey)
-	positionStore := prefix.NewStore(store, types.GetSpotOrderPrefixForAddress(positionAddress))
+	orderStore := prefix.NewStore(store, types.PendingSpotOrderKey)
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
-			Limit: types.MaxPageLimit,
+			Limit: math.MaxUint64 - 1,
 		}
 	}
 
-	if pagination.Limit > types.MaxPageLimit {
-		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
-	}
-
-	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.FilteredPaginate(orderStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var order types.SpotOrder
-		k.cdc.MustUnmarshal(value, &order)
-		orders = append(orders, &order)
-		return nil
+		err := k.cdc.Unmarshal(value, &order)
+		if err == nil {
+			if accumulate && order.OwnerAddress == address {
+				orders = append(orders, &order)
+				return true, nil
+			}
+		}
+		return false, nil
 	})
 	if err != nil {
 		return nil, nil, err
