@@ -24,12 +24,12 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	switch msg.Position {
 	case types.Position_LONG:
-		existingMtp, err = k.OpenConsolidateLong(ctx, poolId, existingMtp, newMtp, msg, baseCurrency)
+		existingMtp, err = k.OpenConsolidateLong(ctx, poolId, existingMtp, newMtp)
 		if err != nil {
 			return nil, err
 		}
 	case types.Position_SHORT:
-		existingMtp, err = k.OpenConsolidateShort(ctx, poolId, existingMtp, newMtp, msg, baseCurrency)
+		existingMtp, err = k.OpenConsolidateShort(ctx, poolId, existingMtp, newMtp)
 		if err != nil {
 			return nil, err
 		}
