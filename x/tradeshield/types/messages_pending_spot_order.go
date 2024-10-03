@@ -137,3 +137,40 @@ func (msg *MsgDeletePendingSpotOrder) ValidateBasic() error {
 	}
 	return nil
 }
+
+var _ sdk.Msg = &MsgCancelSpotOrders{}
+
+func NewMsgCancelSpotOrders(creator string, id []uint64) *MsgCancelSpotOrders {
+	return &MsgCancelSpotOrders{
+		SpotOrderIds:      id,
+		Creator: creator,
+	}
+}
+func (msg *MsgCancelSpotOrders) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgCancelSpotOrders) Type() string {
+	return TypeMsgDeletePendingSpotOrder
+}
+
+func (msg *MsgCancelSpotOrders) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgCancelSpotOrders) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgCancelSpotOrders) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
+	}
+	return nil
+}
