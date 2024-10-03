@@ -13,11 +13,12 @@ var _ = strconv.Itoa(0)
 
 func CmdPendingSpotOrderForAddress() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "pending-spot-order-for-address [address]",
+		Use:   "pending-spot-order-for-address [address] [status]",
 		Short: "Query pending-spot-order-for-address",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqAddress := args[0]
+			// TODO: If status is empty
 			reqStatus, ok := types.Status_value[args[1]]
 			if !ok {
 				return types.ErrInvalidStatus
