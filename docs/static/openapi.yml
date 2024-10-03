@@ -44127,11 +44127,6 @@ paths:
                           format: uint64
                     trading_asset_price:
                       type: string
-<<<<<<< HEAD
-                    pnl:
-                      type: string
-=======
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
               pagination:
                 type: object
                 properties:
