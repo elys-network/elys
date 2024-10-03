@@ -85,7 +85,8 @@ func (suite *KeeperTestSuite) TestUnbond() {
 			suite.Require().NoError(err)
 
 			params := suite.app.StablestakeKeeper.GetParams(suite.ctx)
-			params.TotalValue = math.NewInt(1000_000_000)
+			params.TotalValue = math.NewInt(1000_000)
+			params.RedemptionRate = math.LegacyNewDec(1)
 			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
 
 			msgServer := keeper.NewMsgServerImpl(suite.app.StablestakeKeeper)

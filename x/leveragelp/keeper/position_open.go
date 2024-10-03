@@ -14,7 +14,7 @@ import (
 
 func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, error) {
 	// Initialize a new Leveragelp Trading Position (Position).
-	if msg.Leverage.LT(sdkmath.LegacyOneDec()) {
+	if msg.Leverage.LTE(sdkmath.LegacyOneDec()) {
 		return nil, types.ErrLeverageTooSmall
 	}
 	position := types.NewPosition(msg.Creator, sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount), msg.AmmPoolId)

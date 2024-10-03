@@ -24,6 +24,7 @@ type (
 		tokenomicsKeeper    types.TokenomicsKeeper
 		authKeeper          types.AccountKeeper
 		bankKeeper          types.BankKeeper
+		perpetualKeeper     types.PeperpetualKeeper
 
 		authority string // gov module addresss
 	}
@@ -42,6 +43,7 @@ func NewKeeper(
 	tokenomicsKeeper types.TokenomicsKeeper,
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
+	perpetualKeeper types.PeperpetualKeeper,
 	authority string,
 ) *Keeper {
 	return &Keeper{
@@ -57,6 +59,7 @@ func NewKeeper(
 		tokenomicsKeeper:    tokenomicsKeeper,
 		authKeeper:          ak,
 		bankKeeper:          bk,
+		perpetualKeeper:     perpetualKeeper,
 		authority:           authority,
 	}
 }

@@ -64,10 +64,10 @@ func SimulateMsgUpdatePendingSpotOrder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePendingSpotOrder{}), "pendingSpotOrder creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePendingSpotOrder{}), "pendingSpotOrder owner not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-		msg.Id = pendingSpotOrder.OrderId
+		msg.OwnerAddress = simAccount.Address.String()
+		msg.OrderId = pendingSpotOrder.OrderId
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -108,10 +108,10 @@ func SimulateMsgDeletePendingSpotOrder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePendingSpotOrder{}), "pendingSpotOrder creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePendingSpotOrder{}), "pendingSpotOrder owner not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-		msg.Id = pendingSpotOrder.OrderId
+		msg.OwnerAddress = simAccount.Address.String()
+		msg.OrderId = pendingSpotOrder.OrderId
 
 		txCtx := simulation.OperationInput{
 			R:               r,

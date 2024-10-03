@@ -122,8 +122,8 @@ message MsgCreateAssetInfo {
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string denom = 2;
   string display = 3;
-  string bandTicker = 4;
-  string elysTicker = 5;
+  string band_ticker = 4;
+  string elys_ticker = 5;
   uint64 decimal = 6;
 }
 

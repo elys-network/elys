@@ -1,9 +1,9 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
-	fmt "fmt"
+	"fmt"
 
+	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	epochtypes "github.com/elys-network/elys/x/epochs/types"
 	"gopkg.in/yaml.v2"
@@ -24,6 +24,7 @@ func NewParams() Params {
 		BorrowInterestRateIncrease:                     sdkmath.LegacyNewDecWithPrec(33, 10),
 		BorrowInterestRateMax:                          sdkmath.LegacyNewDecWithPrec(27, 7),
 		BorrowInterestRateMin:                          sdkmath.LegacyNewDecWithPrec(3, 8),
+		MinBorrowInterestAmount:                        sdkmath.NewInt(5_000_000),
 		EpochLength:                                    (int64)(1),
 		ForceCloseFundAddress:                          ZeroAddress,
 		ForceCloseFundPercentage:                       sdkmath.LegacyOneDec(),
@@ -37,6 +38,7 @@ func NewParams() Params {
 		PoolOpenThreshold:                              sdkmath.LegacyOneDec(),
 		SafetyFactor:                                   sdkmath.LegacyMustNewDecFromStr("1.050000000000000000"), // 5%
 		WhitelistingEnabled:                            false,
+		MaxLimitOrder:                                  (int64)(500),
 	}
 }
 
@@ -117,11 +119,22 @@ func (p Params) Validate() error {
 	if err := validateSwapFee(p.SwapFee); err != nil {
 		return err
 	}
+	if err := validateMinBorrowInterestAmount(p.MinBorrowInterestAmount); err != nil {
+		return err
+	}
+	if err := validateMaxLimitOrder(p.MaxLimitOrder); err != nil {
+		return err
+	}
 	return nil
 }
 
 // String implements the Stringer interface.
 func (p Params) String() string {
+	out, _ := yaml.Marshal(p)
+	return string(out)
+}
+
+func (p LegacyParams) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
 }
@@ -437,5 +450,31 @@ func validateSwapFee(i interface{}) error {
 		return fmt.Errorf("swap fee must be positive: %s", v)
 	}
 
+	return nil
+}
+
+func validateMinBorrowInterestAmount(i interface{}) error {
+	v, ok := i.(sdkmath.Int)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v.IsNil() {
+		return fmt.Errorf("MinBorrowInterestAmount must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("MinBorrowInterestAmount must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateMaxLimitOrder(i interface{}) error {
+	v, ok := i.(int64)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v < 0 {
+		return fmt.Errorf("MaxLimitOrder should not be -ve: %d", v)
+	}
 	return nil
 }

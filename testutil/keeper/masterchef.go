@@ -45,6 +45,7 @@ func MasterchefKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		nil,
 		nil,
 		nil,
+		nil,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 

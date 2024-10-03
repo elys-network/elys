@@ -10,13 +10,13 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-// SwapExactAmountIn is an internal method for swapping an exact amount of tokens
+// InternalSwapExactAmountIn is an internal method for swapping an exact amount of tokens
 // as input to a pool, using the provided swapFee. This is intended to allow
 // different swap fees as determined by multi-hops, or when recovering from
 // chain liveness failures.
 // TODO: investigate if swapFee can be unexported
 // https://github.com/osmosis-labs/osmosis/issues/3130
-func (k Keeper) SwapExactAmountIn(
+func (k Keeper) InternalSwapExactAmountIn(
 	ctx sdk.Context,
 	sender sdk.AccAddress,
 	recipient sdk.AccAddress,

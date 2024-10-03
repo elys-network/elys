@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/stablestake/types"
@@ -33,4 +34,15 @@ func (k Keeper) GetDepositDenom(ctx sdk.Context) string {
 		return params.DepositDenom
 	}
 	return entry.Denom
+}
+
+func (k Keeper) GetRedemptionRate(ctx sdk.Context) math.LegacyDec {
+	params := k.GetParams(ctx)
+	totalShares := k.bk.GetSupply(ctx, types.GetShareDenom())
+
+	if totalShares.Amount.IsZero() {
+		return math.LegacyZeroDec()
+	}
+
+	return params.TotalValue.ToLegacyDec().Quo(totalShares.Amount.ToLegacyDec())
 }

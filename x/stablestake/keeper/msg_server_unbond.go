@@ -16,11 +16,12 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 
 	params := k.GetParams(ctx)
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	redemptionRate := k.GetRedemptionRate(ctx)
 
 	shareDenom := types.GetShareDenom()
 
 	// Withdraw committed LP tokens
-	err := k.commitmentKeeper.UncommitTokens(ctx, creator, shareDenom, msg.Amount)
+	err := k.commitmentKeeper.UncommitTokens(ctx, creator, shareDenom, msg.Amount, false)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +38,7 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 		return nil, err
 	}
 
-	redemptionAmount := sdkmath.LegacyNewDecFromInt(shareCoin.Amount).Mul(params.RedemptionRate).RoundInt()
+	redemptionAmount := sdkmath.LegacyNewDecFromInt(shareCoin.Amount).Mul(redemptionRate).RoundInt()
 
 	depositDenom := k.GetDepositDenom(ctx)
 	redemptionCoin := sdk.NewCoin(depositDenom, redemptionAmount)

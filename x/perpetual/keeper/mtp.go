@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -9,6 +10,7 @@ import (
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"google.golang.org/grpc/codes"
@@ -79,7 +81,8 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (t
 		mtp.MtpHealth = mtpHealth
 	}
 
-	mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+	pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
+	mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
 
 	return mtp, nil
 }
@@ -133,8 +136,8 @@ func (k Keeper) GetAllLegacyMTPs(ctx sdk.Context) []types.LegacyMTP {
 	return mtpList
 }
 
-func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
-	var mtpList []*types.MTP
+func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
+	var mtpList []*types.MtpAndPrice
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	mtpStore := prefix.NewStore(store, types.MTPPrefix)
 
@@ -160,24 +163,42 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 			realTime = false
 		}
 
+		pnl := math.LegacyZeroDec()
 		if realTime {
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
 				mtp.MtpHealth = mtpHealth
 			}
 
-			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+			pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
+			mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
+			pnl = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
 		}
 
-		mtpList = append(mtpList, &mtp)
+		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
+		if !found {
+			return fmt.Errorf("asset not found")
+		}
+		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
+		asset_price := math.LegacyZeroDec()
+		// If not found set trading_asset_price to zero
+		if found {
+			asset_price = trading_asset_price.Price
+		}
+
+		mtpList = append(mtpList, &types.MtpAndPrice{
+			Mtp:               &mtp,
+			TradingAssetPrice: asset_price,
+			Pnl:               pnl,
+		})
 		return nil
 	})
 
 	return mtpList, pageRes, err
 }
 
-func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
-	var mtps []*types.MTP
+func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
+	var mtps []*types.MtpAndPrice
 
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	mtpStore := prefix.NewStore(store, types.MTPPrefix)
@@ -203,6 +224,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 	pageRes, err := query.FilteredPaginate(mtpStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
+		pnl := math.LegacyZeroDec()
 		if accumulate && mtp.AmmPoolId == ammPoolId {
 			if realTime {
 				// Interest
@@ -211,10 +233,26 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 					mtp.MtpHealth = mtpHealth
 				}
 
-				mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+				pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
+				mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
+				pnl = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
 			}
 
-			mtps = append(mtps, &mtp)
+			info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
+			if !found {
+				return false, fmt.Errorf("asset not found")
+			}
+			trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
+			asset_price := math.LegacyZeroDec()
+			// If not found set trading_asset_price to zero
+			if found {
+				asset_price = trading_asset_price.Price
+			}
+			mtps = append(mtps, &types.MtpAndPrice{
+				Mtp:               &mtp,
+				TradingAssetPrice: asset_price,
+				Pnl:               pnl,
+			})
 			return true, nil
 		}
 
@@ -241,8 +279,8 @@ func (k Keeper) GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress)
 	return mtps
 }
 
-func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MTP, *query.PageResponse, error) {
-	var mtps []*types.MTP
+func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
+	var mtps []*types.MtpAndPrice
 
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	mtpStore := prefix.NewStore(store, types.GetMTPPrefixForAddress(mtpAddress))
@@ -272,16 +310,34 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 			realTime = false
 		}
 
+		pnl := math.LegacyZeroDec()
 		if realTime {
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
 				mtp.MtpHealth = mtpHealth
 			}
 
-			mtp.BorrowInterestUnpaidCollateral = k.GetBorrowInterest(ctx, &mtp, ammPool).Add(mtp.BorrowInterestUnpaidCollateral)
+			pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
+			mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
+			pnl = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
 		}
 
-		mtps = append(mtps, &mtp)
+		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
+		if !found {
+			return fmt.Errorf("asset not found")
+		}
+		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
+		asset_price := math.LegacyZeroDec()
+		// If not found set trading_asset_price to zero
+		if found {
+			asset_price = trading_asset_price.Price
+		}
+
+		mtps = append(mtps, &types.MtpAndPrice{
+			Mtp:               &mtp,
+			TradingAssetPrice: asset_price,
+			Pnl:               pnl,
+		})
 		return nil
 	})
 	if err != nil {
@@ -359,6 +415,70 @@ func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) 
 	return nil
 }
 
+func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) math.LegacyDec {
+	// P&L = Custody (in USD) - Liability ( in USD) - Collateral ( in USD)
+	// Liability should include margin interest and funding fee accrued.
+	totalLiability := mtp.Liabilities
+
+	pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
+	mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
+
+	// if short position, convert liabilities to base currency
+	if mtp.Position == types.Position_SHORT {
+		liabilities := sdk.NewCoin(mtp.LiabilitiesAsset, totalLiability)
+		var err error
+		totalLiability, err = k.EstimateSwapGivenOut(ctx, liabilities, baseCurrency, ammPool)
+		if err != nil {
+			totalLiability = math.ZeroInt()
+		}
+	}
+
+	collateral := mtp.Collateral.Add(mtp.BorrowInterestUnpaidCollateral)
+	// include unpaid borrow interest in debt
+	if collateral.IsPositive() {
+		unpaidCollateral := sdk.NewCoin(mtp.CollateralAsset, collateral)
+
+		if mtp.CollateralAsset == baseCurrency {
+			totalLiability = totalLiability.Add(collateral)
+		} else {
+			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateral, baseCurrency, ammPool)
+			if err != nil {
+				C = math.ZeroInt()
+			}
+
+			totalLiability = totalLiability.Add(C)
+		}
+	}
+
+	// Funding rate payment consideration
+	// get funding rate
+	fundingRate, _, _ := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
+	var takeAmountCustodyAmount math.Int
+	// if funding rate is zero, return
+	if fundingRate.IsZero() {
+		takeAmountCustodyAmount = math.ZeroInt()
+	} else if (fundingRate.IsNegative() && mtp.Position == types.Position_LONG) || (fundingRate.IsPositive() && mtp.Position == types.Position_SHORT) {
+		takeAmountCustodyAmount = math.ZeroInt()
+	} else {
+		// Calculate the take amount in custody asset
+		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, fundingRate)
+	}
+
+	// if short position, custody asset is already in base currency
+	custodyAmtInBaseCurrency := mtp.Custody.Sub(takeAmountCustodyAmount)
+
+	if mtp.Position == types.Position_LONG {
+		custodyAmt := sdk.NewCoin(mtp.CustodyAsset, mtp.Custody)
+		var err error
+		custodyAmtInBaseCurrency, err = k.EstimateSwapGivenOut(ctx, custodyAmt, baseCurrency, ammPool)
+		if err != nil {
+			custodyAmtInBaseCurrency = math.ZeroInt()
+		}
+	}
+
+	return custodyAmtInBaseCurrency.ToLegacyDec().Sub(totalLiability.ToLegacyDec())
+}
+
 func (k Keeper) DeleteLegacyMTP(ctx sdk.Context, mtpaddress string, id uint64) error {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetMTPKey(sdk.MustAccAddressFromBech32(mtpaddress), id)
@@ -391,18 +511,18 @@ func (k Keeper) GetAllLegacyMTP(ctx sdk.Context) []types.LegacyMTP {
 	return mtps
 }
 
-func (k Keeper) V6_MTPMigration(ctx sdk.Context) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+func (k Keeper) DeleteAllNegativeCustomMTP(ctx sdk.Context) {
 	iterator := k.GetMTPIterator(ctx)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var mtp types.MTP
-		bz := iterator.Value()
-		k.cdc.MustUnmarshal(bz, &mtp)
-		newKey := types.GetMTPKey(mtp.GetAccountAddress(), mtp.Id)
-		store.Set(newKey, bz)
-		legacyKey := types.GetLegacyMTPKey(mtp.Address, mtp.Id)
-		store.Delete(legacyKey)
+		var mtp types.LegacyMTP
+		bytesValue := iterator.Value()
+		k.cdc.MustUnmarshal(bytesValue, &mtp)
+
+		if mtp.Custody.IsNegative() || mtp.Custody.IsZero() {
+			k.DestroyMTP(ctx, sdk.MustAccAddressFromBech32(mtp.Address), mtp.Id)
+		}
 	}
+
 }

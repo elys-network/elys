@@ -11,6 +11,8 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	perptypes "github.com/elys-network/elys/x/perpetual/types"
+
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
 	"github.com/stretchr/testify/require"
@@ -316,4 +318,30 @@ func TestCollectDEXRevenue(t *testing.T) {
 	require.Equal(t, collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(3000))})
 	// It should be 1950=3000*0.65 usdc
 	require.Equal(t, rewardForLpsAmt, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdkmath.NewInt(1800))})
+}
+
+func TestCollectPerpRevenue(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true)
+
+	mk, perp := app.MasterchefKeeper, app.PerpetualKeeper
+
+	// Generate 1 random account
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(1000000))
+
+	perpParams := perptypes.DefaultParams()
+	perpParams.IncrementalBorrowInterestPaymentFundAddress = addr[0].String()
+	perp.SetParams(ctx, &perpParams)
+
+	// Fill in perpetual revenue wallet
+	usdcRevToken2 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(3000)))
+	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcRevToken2)
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcRevToken2)
+	require.NoError(t, err)
+
+	fees := mk.CollectPerpRevenue(ctx, ptypes.BaseCurrency)
+
+	// It should be 1950=3000*0.65 usdc
+	require.Equal(t, fees, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdkmath.NewInt(1800))})
 }

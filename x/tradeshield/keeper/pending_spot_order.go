@@ -9,6 +9,7 @@ import (
 
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
@@ -122,7 +123,7 @@ func (k Keeper) SpotBinarySearch(ctx sdk.Context, orderPrice sdkmath.LegacyDec, 
 		// Get order price
 		order, found := k.GetPendingSpotOrder(ctx, orders[mid])
 		if !found {
-			return 0, types.ErrOrderNotFound
+			return 0, types.ErrSpotOrderNotFound
 		}
 		if order.OrderPrice.Rate.LT(orderPrice) {
 			low = mid + 1
@@ -191,7 +192,7 @@ func (k Keeper) GetAllSortedSpotOrder(ctx sdk.Context) (list [][]uint64, err err
 func (k Keeper) RemoveSpotSortedOrder(ctx sdk.Context, orderID uint64) error {
 	order, found := k.GetPendingSpotOrder(ctx, orderID)
 	if !found {
-		return types.ErrOrderNotFound
+		return types.ErrSpotOrderNotFound
 	}
 
 	// Generate the key for the order
@@ -235,5 +236,135 @@ func (k Keeper) RemoveSpotSortedOrder(ctx sdk.Context, orderID uint64) error {
 	encodedOrderIds := types.EncodeUint64Slice(orderIds)
 
 	sortedStore.Set([]byte(key), encodedOrderIds)
+	return nil
+}
+
+// ExecuteStopLossSpotOrder executes a stop loss order
+func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) error {
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	if err != nil {
+		return err
+	}
+
+	if marketPrice.GT(order.OrderPrice.Rate) {
+		// skip the order
+		return nil
+	}
+
+	// Get the discount for the user
+	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
+	if err != nil {
+		return err
+	}
+
+	// Swap the order amount with the target denom
+	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    order.OwnerAddress,
+		Recipient: order.OwnerAddress,
+		Amount:    order.OrderAmount,
+		DenomIn:   order.OrderPrice.BaseDenom,
+		DenomOut:  order.OrderPrice.QuoteDenom,
+		Discount:  discount,
+		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+	})
+
+	// Remove the order from the pending order list
+	k.RemovePendingSpotOrder(ctx, order.OrderId)
+
+	return nil
+}
+
+// ExecuteLimitSellOrder executes a limit sell order
+func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) error {
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	if err != nil {
+		return err
+	}
+
+	if marketPrice.LT(order.OrderPrice.Rate) {
+		// skip the order
+		return nil
+	}
+
+	// Get the discount for the user
+	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
+	if err != nil {
+		return err
+	}
+
+	// Swap the order amount with the target denom
+	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    order.OwnerAddress,
+		Recipient: order.OwnerAddress,
+		Amount:    order.OrderAmount,
+		DenomIn:   order.OrderPrice.BaseDenom,
+		DenomOut:  order.OrderPrice.QuoteDenom,
+		Discount:  discount,
+		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+	})
+
+	// Remove the order from the pending order list
+	k.RemovePendingSpotOrder(ctx, order.OrderId)
+
+	return nil
+}
+
+// ExecuteLimitBuyOrder executes a limit buy order
+func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) error {
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	if err != nil {
+		return err
+	}
+
+	if marketPrice.GT(order.OrderPrice.Rate) {
+		// skip the order
+		return nil
+	}
+
+	// Get the discount for the user
+	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
+	if err != nil {
+		return err
+	}
+
+	// Swap the order amount with the target denom
+	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    order.OwnerAddress,
+		Recipient: order.OwnerAddress,
+		Amount:    order.OrderAmount,
+		DenomIn:   order.OrderPrice.BaseDenom,
+		DenomOut:  order.OrderPrice.QuoteDenom,
+		Discount:  discount,
+		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+	})
+
+	// Remove the order from the pending order list
+	k.RemovePendingSpotOrder(ctx, order.OrderId)
+
+	return nil
+}
+
+// ExecuteMarketBuyOrder executes a market buy order
+func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) error {
+	// Get the discount for the user
+	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
+	if err != nil {
+		return err
+	}
+
+	// Swap the order amount with the target denom
+	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+		Sender:    order.OwnerAddress,
+		Recipient: order.OwnerAddress,
+		Amount:    order.OrderAmount,
+		DenomIn:   order.OrderAmount.Denom,
+		DenomOut:  order.OrderTargetDenom,
+		Discount:  discount,
+		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+	})
+
+	// Remove the order from the pending order list
+	k.RemovePendingSpotOrder(ctx, order.OrderId)
+
 	return nil
 }

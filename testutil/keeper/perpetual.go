@@ -16,10 +16,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/x/perpetual/types/mocks"
 	"github.com/stretchr/testify/require"
 )
 
-func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AssetProfileKeeper) {
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 	storeService := runtime.NewKVStoreService(storeKey)
 
@@ -32,6 +33,8 @@ func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	cdc := codec.NewProtoCodec(registry)
 	govAddress := sdk.AccAddress(address.Module("gov"))
 
+	assetProfileKeeper := mocks.NewAssetProfileKeeper(t)
+
 	k := keeper.NewKeeper(
 		cdc,
 		storeService,
@@ -39,7 +42,7 @@ func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		nil,
 		nil,
 		nil,
-		nil,
+		assetProfileKeeper,
 		nil,
 	)
 
@@ -49,5 +52,5 @@ func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	params := types.DefaultParams()
 	k.SetParams(ctx, &params)
 
-	return k, ctx
+	return k, ctx, assetProfileKeeper
 }

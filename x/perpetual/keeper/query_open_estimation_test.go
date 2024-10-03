@@ -100,14 +100,13 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		Leverage:           math.LegacyMustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(8333334)),
-		ValidCollateral:    true,
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, math.NewInt(499136435)),
 		SwapFee:            math.LegacyMustNewDecFromStr("0.001000000000000000"),
 		Discount:           math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		OpenPrice:          math.LegacyMustNewDecFromStr("1.000000000000000000"),
 		TakeProfitPrice:    math.LegacyMustNewDecFromStr("20.00000000000000000"),
 		LiquidationPrice:   math.LegacyMustNewDecFromStr("0.799653976372211738"),
+		InterestAmount:     types.NewParams().MinBorrowInterestAmount,
 		EstimatedPnl:       math.NewInt(474136435),
 		EstimatedPnlDenom:  ptypes.ATOM,
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, math.NewInt(600000000000)),
@@ -116,6 +115,8 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		BorrowInterestRate: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        math.LegacyMustNewDecFromStr("0.000000000000000000"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)),
+		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)),
 	}, res)
 }
 
@@ -216,8 +217,6 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		Leverage:           math.LegacyMustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.ATOM, math.NewInt(9333333)),
-		ValidCollateral:    true,
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, math.NewInt(49858958)),
 		SwapFee:            math.LegacyMustNewDecFromStr("0.001000000000000000"),
 		Discount:           math.LegacyMustNewDecFromStr("0.000000000000000000"),
@@ -226,12 +225,15 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		LiquidationPrice:   math.LegacyMustNewDecFromStr("0.799662359570370484"),
 		EstimatedPnl:       math.NewInt(47361232),
 		EstimatedPnlDenom:  ptypes.ATOM,
+		InterestAmount:     types.NewParams().MinBorrowInterestAmount,
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
 		Slippage:           math.LegacyMustNewDecFromStr("0.000686040302239768"),
 		WeightBalanceRatio: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        math.LegacyMustNewDecFromStr("0.001685356924966457"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)),
+		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)),
 	}, res)
 }
 
@@ -332,8 +334,6 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		Leverage:           math.LegacyMustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000)),
-		MinCollateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(9333333)),
-		ValidCollateral:    true,
 		PositionSize:       sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(500000000)),
 		SwapFee:            math.LegacyMustNewDecFromStr("0.001000000000000000"),
 		Discount:           math.LegacyMustNewDecFromStr("0.000000000000000000"),
@@ -342,12 +342,15 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		LiquidationPrice:   math.LegacyMustNewDecFromStr("1.200000000000000000"),
 		EstimatedPnl:       math.NewInt(-250000000),
 		EstimatedPnlDenom:  ptypes.BaseCurrency,
+		InterestAmount:     types.NewParams().MinBorrowInterestAmount,
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
 		Slippage:           math.LegacyMustNewDecFromStr("0.006806806000000000"),
 		WeightBalanceRatio: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		BorrowInterestRate: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        math.LegacyMustNewDecFromStr("0.007800000000000000"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)),
+		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)),
 	}, res)
 }
 

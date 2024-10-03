@@ -38,18 +38,18 @@ func (msg *MsgCreatePendingSpotOrder) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgUpdatePendingSpotOrder{}
 
-func NewMsgUpdatePendingSpotOrder(creator string, id uint64, order string) *MsgUpdatePendingSpotOrder {
+func NewMsgUpdatePendingSpotOrder(creator string, id uint64, orderPrice *OrderPrice) *MsgUpdatePendingSpotOrder {
 	return &MsgUpdatePendingSpotOrder{
-		Id:      id,
-		Creator: creator,
-		Order:   order,
+		OrderId:      id,
+		OwnerAddress: creator,
+		OrderPrice:   orderPrice,
 	}
 }
 
 func (msg *MsgUpdatePendingSpotOrder) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 	return nil
 }
@@ -58,15 +58,15 @@ var _ sdk.Msg = &MsgDeletePendingSpotOrder{}
 
 func NewMsgDeletePendingSpotOrder(creator string, id uint64) *MsgDeletePendingSpotOrder {
 	return &MsgDeletePendingSpotOrder{
-		Id:      id,
-		Creator: creator,
+		OrderId:      id,
+		OwnerAddress: creator,
 	}
 }
 
 func (msg *MsgDeletePendingSpotOrder) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 	return nil
 }

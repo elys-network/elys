@@ -19,6 +19,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 
 	params := k.GetParams(ctx)
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	redemptionRate := k.GetRedemptionRate(ctx)
 
 	depositDenom := k.GetDepositDenom(ctx)
 	depositCoin := sdk.NewCoin(depositDenom, msg.Amount)
@@ -28,10 +29,11 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	}
 
 	shareDenom := types.GetShareDenom()
-	if params.RedemptionRate.IsZero() {
-		return nil, types.ErrRedemptionRateIsZero
+	// Initial case
+	if redemptionRate.IsZero() {
+		redemptionRate = sdkmath.LegacyOneDec()
 	}
-	shareAmount := sdkmath.LegacyNewDecFromInt(depositCoin.Amount).Quo(params.RedemptionRate).RoundInt()
+	shareAmount := sdkmath.LegacyNewDecFromInt(depositCoin.Amount).Quo(redemptionRate).RoundInt()
 	shareCoins := sdk.NewCoins(sdk.NewCoin(shareDenom, shareAmount))
 
 	err = k.bk.MintCoins(ctx, types.ModuleName, shareCoins)

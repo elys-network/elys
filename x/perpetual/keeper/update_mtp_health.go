@@ -15,7 +15,7 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 	}
 
 	pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
-	mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
+	totalUnpaidCollateral := mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
 
 	// if short position, convert liabilities to base currency
 	if mtp.Position == types.Position_SHORT {
@@ -32,11 +32,11 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 	}
 
 	// include unpaid borrow interest in debt (from disabled incremental pay)
-	if mtp.BorrowInterestUnpaidCollateral.IsPositive() {
-		unpaidCollateral := sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral)
+	if totalUnpaidCollateral.IsPositive() {
+		unpaidCollateral := sdk.NewCoin(mtp.CollateralAsset, totalUnpaidCollateral)
 
 		if mtp.CollateralAsset == baseCurrency {
-			xl = xl.Add(mtp.BorrowInterestUnpaidCollateral)
+			xl = xl.Add(totalUnpaidCollateral)
 		} else {
 			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateral, baseCurrency, ammPool)
 			if err != nil {

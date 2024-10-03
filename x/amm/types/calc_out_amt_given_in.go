@@ -66,6 +66,9 @@ func (p Pool) CalcOutAmtGivenIn(
 	if err != nil {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
 	}
+	if tokenAmountOut.IsZero() {
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), ErrAmountTooLow
+	}
 
 	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenIn.Denom, tokenOutDenom, accountedPool)
 	if err != nil {

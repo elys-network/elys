@@ -48,13 +48,13 @@ func TestCommitments_WithdrawCommitedTokens(t *testing.T) {
 	commitments.AddCommittedTokens("lp/1", math.NewInt(100), 200)
 	commitments.AddCommittedTokens("lp/2", math.NewInt(100), 100)
 
-	err := commitments.DeductFromCommitted("lp/1", math.NewInt(100), 100)
+	err := commitments.DeductFromCommitted("lp/1", math.NewInt(100), 100, false)
 	require.NoError(t, err)
 
-	err = commitments.DeductFromCommitted("lp/1", math.NewInt(100), 100)
+	err = commitments.DeductFromCommitted("lp/1", math.NewInt(100), 100, false)
 	require.Error(t, err)
 
-	err = commitments.DeductFromCommitted("lp/2", math.NewInt(200), 100)
+	err = commitments.DeductFromCommitted("lp/2", math.NewInt(200), 100, false)
 	require.Error(t, err)
 }
 
@@ -69,6 +69,6 @@ func TestLockupAmount_WithdrawCommited(t *testing.T) {
 	commitments.AddCommittedTokens("lp/1", math.NewInt(5000), 2)
 	commitments.AddCommittedTokens("lp/1", math.NewInt(3000), 4)
 
-	err := commitments.DeductFromCommitted("lp/1", math.NewInt(9000), 3)
+	err := commitments.DeductFromCommitted("lp/1", math.NewInt(9000), 3, false)
 	require.Error(t, err)
 }

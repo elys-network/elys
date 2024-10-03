@@ -11,9 +11,10 @@ option go_package = "github.com/elys-network/elys/x/tradeshield/types";
 // GenesisState defines the tradeshield module's genesis state.
 message GenesisState {
   Params params = 1 [ (gogoproto.nullable) = false ];
-  repeated SpotOrder pendingSpotOrderList = 2 [ (gogoproto.nullable) = false ];
-  uint64 pendingSpotOrderCount = 3;
-  repeated PerpetualOrder pendingPerpetualOrderList = 4
+  repeated SpotOrder pending_spot_order_list = 2
       [ (gogoproto.nullable) = false ];
-  uint64 pendingPerpetualOrderCount = 5;
+  uint64 pending_spot_order_count = 3;
+  repeated PerpetualOrder pending_perpetual_order_list = 4
+      [ (gogoproto.nullable) = false ];
+  uint64 pending_perpetual_order_count = 5;
 }

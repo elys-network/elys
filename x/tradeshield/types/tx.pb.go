@@ -5,11 +5,13 @@ package types
 
 import (
 	context "context"
+	cosmossdk_io_math "cosmossdk.io/math"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
 	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
+	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	grpc "google.golang.org/grpc"
@@ -33,12 +35,10 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgCreatePendingSpotOrder struct {
 	OrderType        SpotOrderType `protobuf:"varint,1,opt,name=order_type,json=orderType,proto3,enum=elys.tradeshield.SpotOrderType" json:"order_type,omitempty"`
-	OrderPrice       *OrderPrice   `protobuf:"bytes,3,opt,name=order_price,json=orderPrice,proto3" json:"order_price,omitempty"`
-	OrderAmount      *types.Coin   `protobuf:"bytes,4,opt,name=order_amount,json=orderAmount,proto3" json:"order_amount,omitempty"`
-	OwnerAddress     string        `protobuf:"bytes,5,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
-	OrderTargetDenom string        `protobuf:"bytes,6,opt,name=order_target_denom,json=orderTargetDenom,proto3" json:"order_target_denom,omitempty"`
-	Status           Status        `protobuf:"varint,7,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
-	Date             *Date         `protobuf:"bytes,8,opt,name=date,proto3" json:"date,omitempty"`
+	OrderPrice       *OrderPrice   `protobuf:"bytes,2,opt,name=order_price,json=orderPrice,proto3" json:"order_price,omitempty"`
+	OrderAmount      *types.Coin   `protobuf:"bytes,3,opt,name=order_amount,json=orderAmount,proto3" json:"order_amount,omitempty"`
+	OwnerAddress     string        `protobuf:"bytes,4,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	OrderTargetDenom string        `protobuf:"bytes,5,opt,name=order_target_denom,json=orderTargetDenom,proto3" json:"order_target_denom,omitempty"`
 }
 
 func (m *MsgCreatePendingSpotOrder) Reset()         { *m = MsgCreatePendingSpotOrder{} }
@@ -109,22 +109,8 @@ func (m *MsgCreatePendingSpotOrder) GetOrderTargetDenom() string {
 	return ""
 }
 
-func (m *MsgCreatePendingSpotOrder) GetStatus() Status {
-	if m != nil {
-		return m.Status
-	}
-	return Status_PENDING
-}
-
-func (m *MsgCreatePendingSpotOrder) GetDate() *Date {
-	if m != nil {
-		return m.Date
-	}
-	return nil
-}
-
 type MsgCreatePendingSpotOrderResponse struct {
-	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	OrderId uint64 `protobuf:"varint,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
 }
 
 func (m *MsgCreatePendingSpotOrderResponse) Reset()         { *m = MsgCreatePendingSpotOrderResponse{} }
@@ -160,17 +146,17 @@ func (m *MsgCreatePendingSpotOrderResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreatePendingSpotOrderResponse proto.InternalMessageInfo
 
-func (m *MsgCreatePendingSpotOrderResponse) GetId() uint64 {
+func (m *MsgCreatePendingSpotOrderResponse) GetOrderId() uint64 {
 	if m != nil {
-		return m.Id
+		return m.OrderId
 	}
 	return 0
 }
 
 type MsgUpdatePendingSpotOrder struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Id      uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
-	Order   string `protobuf:"bytes,3,opt,name=order,proto3" json:"order,omitempty"`
+	OwnerAddress string      `protobuf:"bytes,1,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	OrderId      uint64      `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	OrderPrice   *OrderPrice `protobuf:"bytes,3,opt,name=order_price,json=orderPrice,proto3" json:"order_price,omitempty"`
 }
 
 func (m *MsgUpdatePendingSpotOrder) Reset()         { *m = MsgUpdatePendingSpotOrder{} }
@@ -206,25 +192,25 @@ func (m *MsgUpdatePendingSpotOrder) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdatePendingSpotOrder proto.InternalMessageInfo
 
-func (m *MsgUpdatePendingSpotOrder) GetCreator() string {
+func (m *MsgUpdatePendingSpotOrder) GetOwnerAddress() string {
 	if m != nil {
-		return m.Creator
+		return m.OwnerAddress
 	}
 	return ""
 }
 
-func (m *MsgUpdatePendingSpotOrder) GetId() uint64 {
+func (m *MsgUpdatePendingSpotOrder) GetOrderId() uint64 {
 	if m != nil {
-		return m.Id
+		return m.OrderId
 	}
 	return 0
 }
 
-func (m *MsgUpdatePendingSpotOrder) GetOrder() string {
+func (m *MsgUpdatePendingSpotOrder) GetOrderPrice() *OrderPrice {
 	if m != nil {
-		return m.Order
+		return m.OrderPrice
 	}
-	return ""
+	return nil
 }
 
 type MsgUpdatePendingSpotOrderResponse struct {
@@ -264,8 +250,8 @@ func (m *MsgUpdatePendingSpotOrderResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdatePendingSpotOrderResponse proto.InternalMessageInfo
 
 type MsgDeletePendingSpotOrder struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Id      uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	OwnerAddress string `protobuf:"bytes,1,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	OrderId      uint64 `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
 }
 
 func (m *MsgDeletePendingSpotOrder) Reset()         { *m = MsgDeletePendingSpotOrder{} }
@@ -301,16 +287,16 @@ func (m *MsgDeletePendingSpotOrder) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeletePendingSpotOrder proto.InternalMessageInfo
 
-func (m *MsgDeletePendingSpotOrder) GetCreator() string {
+func (m *MsgDeletePendingSpotOrder) GetOwnerAddress() string {
 	if m != nil {
-		return m.Creator
+		return m.OwnerAddress
 	}
 	return ""
 }
 
-func (m *MsgDeletePendingSpotOrder) GetId() uint64 {
+func (m *MsgDeletePendingSpotOrder) GetOrderId() uint64 {
 	if m != nil {
-		return m.Id
+		return m.OrderId
 	}
 	return 0
 }
@@ -352,8 +338,15 @@ func (m *MsgDeletePendingSpotOrderResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDeletePendingSpotOrderResponse proto.InternalMessageInfo
 
 type MsgCreatePendingPerpetualOrder struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Order   string `protobuf:"bytes,2,opt,name=order,proto3" json:"order,omitempty"`
+	OrderType       PerpetualOrderType          `protobuf:"varint,1,opt,name=order_type,json=orderType,proto3,enum=elys.tradeshield.PerpetualOrderType" json:"order_type,omitempty"`
+	TriggerPrice    *OrderPrice                 `protobuf:"bytes,2,opt,name=trigger_price,json=triggerPrice,proto3" json:"trigger_price,omitempty"`
+	Collateral      types.Coin                  `protobuf:"bytes,3,opt,name=collateral,proto3" json:"collateral"`
+	OwnerAddress    string                      `protobuf:"bytes,4,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	TradingAsset    string                      `protobuf:"bytes,5,opt,name=trading_asset,json=tradingAsset,proto3" json:"trading_asset,omitempty"`
+	Position        PerpetualPosition           `protobuf:"varint,6,opt,name=position,proto3,enum=elys.tradeshield.PerpetualPosition" json:"position,omitempty"`
+	Leverage        cosmossdk_io_math.LegacyDec `protobuf:"bytes,7,opt,name=leverage,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"leverage"`
+	TakeProfitPrice cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=take_profit_price,json=takeProfitPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"take_profit_price"`
+	StopLossPrice   cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=stop_loss_price,json=stopLossPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"stop_loss_price"`
 }
 
 func (m *MsgCreatePendingPerpetualOrder) Reset()         { *m = MsgCreatePendingPerpetualOrder{} }
@@ -389,22 +382,50 @@ func (m *MsgCreatePendingPerpetualOrder) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreatePendingPerpetualOrder proto.InternalMessageInfo
 
-func (m *MsgCreatePendingPerpetualOrder) GetCreator() string {
+func (m *MsgCreatePendingPerpetualOrder) GetOrderType() PerpetualOrderType {
 	if m != nil {
-		return m.Creator
+		return m.OrderType
+	}
+	return PerpetualOrderType_LIMITOPEN
+}
+
+func (m *MsgCreatePendingPerpetualOrder) GetTriggerPrice() *OrderPrice {
+	if m != nil {
+		return m.TriggerPrice
+	}
+	return nil
+}
+
+func (m *MsgCreatePendingPerpetualOrder) GetCollateral() types.Coin {
+	if m != nil {
+		return m.Collateral
+	}
+	return types.Coin{}
+}
+
+func (m *MsgCreatePendingPerpetualOrder) GetOwnerAddress() string {
+	if m != nil {
+		return m.OwnerAddress
 	}
 	return ""
 }
 
-func (m *MsgCreatePendingPerpetualOrder) GetOrder() string {
+func (m *MsgCreatePendingPerpetualOrder) GetTradingAsset() string {
 	if m != nil {
-		return m.Order
+		return m.TradingAsset
 	}
 	return ""
+}
+
+func (m *MsgCreatePendingPerpetualOrder) GetPosition() PerpetualPosition {
+	if m != nil {
+		return m.Position
+	}
+	return PerpetualPosition_UNSPECIFIED
 }
 
 type MsgCreatePendingPerpetualOrderResponse struct {
-	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	OrderId uint64 `protobuf:"varint,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
 }
 
 func (m *MsgCreatePendingPerpetualOrderResponse) Reset() {
@@ -442,17 +463,17 @@ func (m *MsgCreatePendingPerpetualOrderResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreatePendingPerpetualOrderResponse proto.InternalMessageInfo
 
-func (m *MsgCreatePendingPerpetualOrderResponse) GetId() uint64 {
+func (m *MsgCreatePendingPerpetualOrderResponse) GetOrderId() uint64 {
 	if m != nil {
-		return m.Id
+		return m.OrderId
 	}
 	return 0
 }
 
 type MsgUpdatePendingPerpetualOrder struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Id      uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
-	Order   string `protobuf:"bytes,3,opt,name=order,proto3" json:"order,omitempty"`
+	OwnerAddress string      `protobuf:"bytes,1,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	OrderId      uint64      `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	OrderPrice   *OrderPrice `protobuf:"bytes,3,opt,name=order_price,json=orderPrice,proto3" json:"order_price,omitempty"`
 }
 
 func (m *MsgUpdatePendingPerpetualOrder) Reset()         { *m = MsgUpdatePendingPerpetualOrder{} }
@@ -488,25 +509,25 @@ func (m *MsgUpdatePendingPerpetualOrder) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdatePendingPerpetualOrder proto.InternalMessageInfo
 
-func (m *MsgUpdatePendingPerpetualOrder) GetCreator() string {
+func (m *MsgUpdatePendingPerpetualOrder) GetOwnerAddress() string {
 	if m != nil {
-		return m.Creator
+		return m.OwnerAddress
 	}
 	return ""
 }
 
-func (m *MsgUpdatePendingPerpetualOrder) GetId() uint64 {
+func (m *MsgUpdatePendingPerpetualOrder) GetOrderId() uint64 {
 	if m != nil {
-		return m.Id
+		return m.OrderId
 	}
 	return 0
 }
 
-func (m *MsgUpdatePendingPerpetualOrder) GetOrder() string {
+func (m *MsgUpdatePendingPerpetualOrder) GetOrderPrice() *OrderPrice {
 	if m != nil {
-		return m.Order
+		return m.OrderPrice
 	}
-	return ""
+	return nil
 }
 
 type MsgUpdatePendingPerpetualOrderResponse struct {
@@ -548,8 +569,8 @@ func (m *MsgUpdatePendingPerpetualOrderResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdatePendingPerpetualOrderResponse proto.InternalMessageInfo
 
 type MsgDeletePendingPerpetualOrder struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Id      uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	OwnerAddress string `protobuf:"bytes,1,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	OrderId      uint64 `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
 }
 
 func (m *MsgDeletePendingPerpetualOrder) Reset()         { *m = MsgDeletePendingPerpetualOrder{} }
@@ -585,16 +606,16 @@ func (m *MsgDeletePendingPerpetualOrder) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeletePendingPerpetualOrder proto.InternalMessageInfo
 
-func (m *MsgDeletePendingPerpetualOrder) GetCreator() string {
+func (m *MsgDeletePendingPerpetualOrder) GetOwnerAddress() string {
 	if m != nil {
-		return m.Creator
+		return m.OwnerAddress
 	}
 	return ""
 }
 
-func (m *MsgDeletePendingPerpetualOrder) GetId() uint64 {
+func (m *MsgDeletePendingPerpetualOrder) GetOrderId() uint64 {
 	if m != nil {
-		return m.Id
+		return m.OrderId
 	}
 	return 0
 }
@@ -728,6 +749,102 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
+type MsgExecuteOrders struct {
+	Creator           string   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	SpotOrderIds      []uint64 `protobuf:"varint,2,rep,packed,name=spot_order_ids,json=spotOrderIds,proto3" json:"spot_order_ids,omitempty"`
+	PerpetualOrderIds []uint64 `protobuf:"varint,3,rep,packed,name=perpetual_order_ids,json=perpetualOrderIds,proto3" json:"perpetual_order_ids,omitempty"`
+}
+
+func (m *MsgExecuteOrders) Reset()         { *m = MsgExecuteOrders{} }
+func (m *MsgExecuteOrders) String() string { return proto.CompactTextString(m) }
+func (*MsgExecuteOrders) ProtoMessage()    {}
+func (*MsgExecuteOrders) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0534a5eaf85a8c0b, []int{14}
+}
+func (m *MsgExecuteOrders) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgExecuteOrders) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgExecuteOrders.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgExecuteOrders) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgExecuteOrders.Merge(m, src)
+}
+func (m *MsgExecuteOrders) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgExecuteOrders) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgExecuteOrders.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgExecuteOrders proto.InternalMessageInfo
+
+func (m *MsgExecuteOrders) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgExecuteOrders) GetSpotOrderIds() []uint64 {
+	if m != nil {
+		return m.SpotOrderIds
+	}
+	return nil
+}
+
+func (m *MsgExecuteOrders) GetPerpetualOrderIds() []uint64 {
+	if m != nil {
+		return m.PerpetualOrderIds
+	}
+	return nil
+}
+
+type MsgExecuteOrdersResponse struct {
+}
+
+func (m *MsgExecuteOrdersResponse) Reset()         { *m = MsgExecuteOrdersResponse{} }
+func (m *MsgExecuteOrdersResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgExecuteOrdersResponse) ProtoMessage()    {}
+func (*MsgExecuteOrdersResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0534a5eaf85a8c0b, []int{15}
+}
+func (m *MsgExecuteOrdersResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgExecuteOrdersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgExecuteOrdersResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgExecuteOrdersResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgExecuteOrdersResponse.Merge(m, src)
+}
+func (m *MsgExecuteOrdersResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgExecuteOrdersResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgExecuteOrdersResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgExecuteOrdersResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgCreatePendingSpotOrder)(nil), "elys.tradeshield.MsgCreatePendingSpotOrder")
 	proto.RegisterType((*MsgCreatePendingSpotOrderResponse)(nil), "elys.tradeshield.MsgCreatePendingSpotOrderResponse")
@@ -743,64 +860,82 @@ func init() {
 	proto.RegisterType((*MsgDeletePendingPerpetualOrderResponse)(nil), "elys.tradeshield.MsgDeletePendingPerpetualOrderResponse")
 	proto.RegisterType((*MsgUpdateParams)(nil), "elys.tradeshield.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "elys.tradeshield.MsgUpdateParamsResponse")
+	proto.RegisterType((*MsgExecuteOrders)(nil), "elys.tradeshield.MsgExecuteOrders")
+	proto.RegisterType((*MsgExecuteOrdersResponse)(nil), "elys.tradeshield.MsgExecuteOrdersResponse")
 }
 
 func init() { proto.RegisterFile("elys/tradeshield/tx.proto", fileDescriptor_0534a5eaf85a8c0b) }
 
 var fileDescriptor_0534a5eaf85a8c0b = []byte{
-	// 832 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x96, 0xcf, 0x4f, 0x13, 0x41,
-	0x14, 0xc7, 0xd9, 0xf2, 0xcb, 0x0e, 0x88, 0x38, 0x21, 0xb0, 0x2d, 0xb8, 0xc2, 0x1a, 0x4d, 0xad,
-	0xb2, 0x5b, 0x4a, 0x42, 0x08, 0x82, 0x09, 0x3f, 0x4e, 0x26, 0x44, 0xb2, 0xe8, 0xc5, 0x98, 0x90,
-	0x6d, 0x77, 0x52, 0x36, 0xb6, 0x3b, 0x9b, 0x9d, 0x29, 0x50, 0x4e, 0x86, 0x9b, 0x9e, 0xbc, 0x79,
-	0xf6, 0xe4, 0xc1, 0x98, 0x70, 0x30, 0xf1, 0x5f, 0xf0, 0x48, 0x3c, 0x79, 0x54, 0x38, 0xf0, 0x6f,
-	0x98, 0x99, 0xd9, 0x2d, 0xb4, 0xdd, 0x1f, 0xc5, 0xe0, 0x05, 0x76, 0xe6, 0x7d, 0xdf, 0xbc, 0xf7,
-	0x79, 0x6f, 0xf6, 0x6d, 0x41, 0x06, 0x55, 0x1b, 0x44, 0xa7, 0x9e, 0x69, 0x21, 0xb2, 0x6b, 0xa3,
-	0xaa, 0xa5, 0xd3, 0x03, 0xcd, 0xf5, 0x30, 0xc5, 0x70, 0x94, 0x99, 0xb4, 0x4b, 0xa6, 0xec, 0x54,
-	0xa7, 0xb8, 0xe1, 0x22, 0x22, 0xf4, 0xd9, 0x3b, 0x1d, 0x56, 0xd7, 0xf4, 0xcc, 0x5a, 0x60, 0x56,
-	0xca, 0x98, 0xd4, 0x30, 0xd1, 0x4b, 0x26, 0x41, 0xfa, 0xde, 0x5c, 0x09, 0x51, 0x73, 0x4e, 0x2f,
-	0x63, 0xdb, 0xf1, 0xed, 0x13, 0xbe, 0xbd, 0x46, 0x2a, 0xfa, 0xde, 0x1c, 0xfb, 0xe7, 0x1b, 0x6e,
-	0x9b, 0x35, 0xdb, 0xc1, 0x3a, 0xff, 0xeb, 0x6f, 0x65, 0x84, 0x76, 0x87, 0xaf, 0x74, 0xb1, 0x10,
-	0x26, 0xf5, 0x4f, 0x2f, 0xc8, 0x6c, 0x92, 0xca, 0xba, 0x87, 0x4c, 0x8a, 0xb6, 0x90, 0x63, 0xd9,
-	0x4e, 0x65, 0xdb, 0xc5, 0xf4, 0xb9, 0x67, 0x21, 0x0f, 0x3e, 0x05, 0x00, 0xb3, 0x87, 0x1d, 0x96,
-	0xb8, 0x2c, 0x4d, 0x4b, 0xb9, 0x91, 0xe2, 0x5d, 0xad, 0x1d, 0x54, 0x6b, 0x3a, 0xbc, 0x68, 0xb8,
-	0xc8, 0x48, 0xe3, 0xe0, 0x11, 0xae, 0x80, 0x21, 0xe1, 0xef, 0x7a, 0x76, 0x19, 0xc9, 0xbd, 0xd3,
-	0x52, 0x6e, 0xa8, 0x38, 0xd5, 0x79, 0x00, 0x77, 0xde, 0x62, 0x1a, 0x43, 0x04, 0xe4, 0xcf, 0x70,
-	0x19, 0x0c, 0x0b, 0x77, 0xb3, 0x86, 0xeb, 0x0e, 0x95, 0xfb, 0xb8, 0x7f, 0x46, 0xf3, 0x09, 0x58,
-	0x69, 0x34, 0xbf, 0x34, 0xda, 0x3a, 0xb6, 0x1d, 0x43, 0x44, 0x5b, 0xe5, 0x6a, 0xb8, 0x02, 0x6e,
-	0xe2, 0x7d, 0x87, 0x79, 0x5b, 0x96, 0x87, 0x08, 0x91, 0xfb, 0xa7, 0xa5, 0x5c, 0x7a, 0x4d, 0xfe,
-	0xf9, 0x6d, 0x76, 0xcc, 0x3f, 0x61, 0x55, 0x58, 0xb6, 0xa9, 0x67, 0x3b, 0x15, 0x63, 0x98, 0xcb,
-	0xfd, 0x3d, 0xf8, 0x18, 0x40, 0x9f, 0xdd, 0xf4, 0x2a, 0x88, 0xee, 0x58, 0xc8, 0xc1, 0x35, 0x79,
-	0x80, 0x9d, 0x61, 0x8c, 0x0a, 0x44, 0x6e, 0xd8, 0x60, 0xfb, 0xb0, 0x00, 0x06, 0x08, 0x35, 0x69,
-	0x9d, 0xc8, 0x83, 0xbc, 0x4a, 0x72, 0x48, 0x95, 0xb8, 0xdd, 0xf0, 0x75, 0x30, 0x0f, 0xfa, 0x2c,
-	0x93, 0x22, 0xf9, 0x06, 0x87, 0x1a, 0xef, 0xd4, 0x6f, 0x98, 0x14, 0x19, 0x5c, 0xb3, 0xb4, 0x7c,
-	0x74, 0x7e, 0x9c, 0x6f, 0xa5, 0x79, 0x7f, 0x7e, 0x9c, 0xbf, 0x7f, 0xf9, 0xf6, 0x44, 0x76, 0x51,
-	0x9d, 0x07, 0x33, 0x91, 0x46, 0x03, 0x11, 0x17, 0x3b, 0x04, 0xc1, 0x11, 0x90, 0xb2, 0x2d, 0xde,
-	0xe2, 0x3e, 0x23, 0x65, 0x5b, 0xea, 0x57, 0x89, 0x5f, 0x8c, 0x97, 0xae, 0x15, 0x76, 0x31, 0x8a,
-	0x60, 0xb0, 0xcc, 0xce, 0xc3, 0x1e, 0x77, 0x89, 0xab, 0x6a, 0x20, 0xf4, 0x23, 0xa4, 0x82, 0x08,
-	0x70, 0x0c, 0xf4, 0xf3, 0x32, 0xf2, 0x6b, 0x91, 0x36, 0xc4, 0x62, 0x69, 0x81, 0xa1, 0x06, 0x3e,
-	0x61, 0x90, 0xe1, 0x19, 0xa9, 0xf7, 0x38, 0x64, 0xb8, 0x31, 0x80, 0x54, 0x3f, 0x0a, 0xa8, 0x0d,
-	0x54, 0x45, 0xff, 0x07, 0x2a, 0x39, 0xfd, 0xf0, 0xd8, 0x7e, 0xfa, 0xe1, 0xc6, 0x66, 0xfa, 0x9f,
-	0x25, 0xa0, 0xb4, 0x77, 0x72, 0x0b, 0x79, 0x2e, 0xa2, 0x75, 0xb3, 0xfa, 0xef, 0x0c, 0xcd, 0x46,
-	0xa4, 0x2e, 0x37, 0xe2, 0x49, 0x3b, 0x49, 0x3e, 0xee, 0xb6, 0xb5, 0xa6, 0xa1, 0x2e, 0x82, 0x07,
-	0xf1, 0x8a, 0xc8, 0x7b, 0xf7, 0x5d, 0x30, 0xb6, 0x34, 0xf2, 0x1a, 0x18, 0xbb, 0xbb, 0x7c, 0x89,
-	0xcc, 0x31, 0x69, 0xa9, 0x39, 0xce, 0x1c, 0xa3, 0x68, 0xf6, 0xf1, 0x93, 0x60, 0x6c, 0xe9, 0xf6,
-	0xf5, 0x33, 0x26, 0xd3, 0xc4, 0x24, 0xe0, 0xd3, 0xc4, 0x28, 0x9a, 0x34, 0x5f, 0x24, 0x70, 0xeb,
-	0x02, 0x9c, 0x7f, 0xc3, 0xe0, 0x02, 0x48, 0x9b, 0x75, 0xba, 0x8b, 0x3d, 0x9b, 0x36, 0x12, 0x01,
-	0x2e, 0xa4, 0x6c, 0x8c, 0x8a, 0xaf, 0x20, 0xc7, 0x18, 0x0a, 0x1b, 0xa3, 0x22, 0x82, 0xe1, 0xeb,
-	0x96, 0x34, 0x06, 0x79, 0x71, 0x02, 0xc3, 0x9c, 0x0c, 0x6f, 0x1a, 0xd7, 0xab, 0x19, 0x30, 0xd1,
-	0xb6, 0x15, 0x80, 0x14, 0x8f, 0x06, 0x41, 0xef, 0x26, 0xa9, 0xc0, 0x43, 0x30, 0x1e, 0xf1, 0x3d,
-	0x7c, 0xd4, 0x99, 0x4e, 0xe4, 0x64, 0xcd, 0xce, 0x5f, 0x41, 0xdc, 0x7c, 0x1d, 0x0e, 0xc1, 0x78,
-	0xc4, 0xc8, 0x0d, 0x8f, 0x1d, 0x2e, 0x8e, 0x88, 0x1d, 0x3f, 0x1d, 0x59, 0xec, 0x88, 0xc9, 0x18,
-	0x1e, 0x3b, 0x5c, 0x1c, 0x11, 0x3b, 0x7e, 0xb4, 0xc1, 0x77, 0x12, 0x98, 0x8c, 0x9b, 0x6b, 0x85,
-	0xe4, 0x62, 0xb6, 0x7a, 0x64, 0x17, 0xaf, 0xea, 0xd1, 0x92, 0x4b, 0xdc, 0xfc, 0x29, 0x24, 0x17,
-	0xb7, 0xab, 0x5c, 0xba, 0x18, 0x15, 0x3c, 0x97, 0xb8, 0x39, 0x51, 0x48, 0x2e, 0x76, 0x57, 0xb9,
-	0x74, 0xf1, 0xa2, 0xc3, 0xd7, 0x60, 0xb8, 0xe5, 0x25, 0x9f, 0x89, 0xa3, 0xe2, 0x92, 0xec, 0xc3,
-	0x44, 0x49, 0x70, 0x7a, 0xb6, 0xff, 0xed, 0xf9, 0x71, 0x5e, 0x5a, 0x7b, 0xf6, 0xe3, 0x54, 0x91,
-	0x4e, 0x4e, 0x15, 0xe9, 0xf7, 0xa9, 0x22, 0x7d, 0x38, 0x53, 0x7a, 0x4e, 0xce, 0x94, 0x9e, 0x5f,
-	0x67, 0x4a, 0xcf, 0xab, 0x42, 0xc5, 0xa6, 0xbb, 0xf5, 0x92, 0x56, 0xc6, 0x35, 0x9d, 0x9d, 0x3a,
-	0xeb, 0x20, 0xba, 0x8f, 0xbd, 0x37, 0x7c, 0xa1, 0x1f, 0x74, 0xfe, 0xd0, 0x2e, 0x0d, 0xf0, 0xdf,
-	0xb8, 0xf3, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x99, 0x9e, 0x75, 0x87, 0xb6, 0x0b, 0x00, 0x00,
+	// 1079 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x57, 0x4b, 0x6f, 0xdc, 0x54,
+	0x14, 0x8e, 0x3b, 0x79, 0xde, 0x4e, 0x9a, 0xc4, 0x54, 0xad, 0x67, 0x12, 0x26, 0xa9, 0x53, 0x50,
+	0x18, 0x88, 0x3d, 0x49, 0xa5, 0x0a, 0x85, 0x3e, 0x94, 0x07, 0x8b, 0x40, 0xa3, 0x8e, 0x5c, 0xd8,
+	0x20, 0xa4, 0xd1, 0xcd, 0xf8, 0xe2, 0x58, 0x99, 0xf1, 0xb5, 0x7c, 0xef, 0xa4, 0x99, 0xae, 0x10,
+	0xac, 0x60, 0xc5, 0xef, 0x00, 0x21, 0x65, 0x81, 0xc4, 0x5f, 0xa8, 0xc4, 0xa6, 0x62, 0x85, 0x58,
+	0x54, 0x28, 0x59, 0x64, 0xc3, 0x9a, 0x35, 0xba, 0x0f, 0x3b, 0x63, 0x8f, 0xc7, 0x9e, 0x11, 0x52,
+	0xc5, 0xa6, 0xb5, 0xef, 0xf9, 0xce, 0xe3, 0xfb, 0x8e, 0xcf, 0xc9, 0x1d, 0x50, 0x42, 0xad, 0x2e,
+	0x31, 0x69, 0x00, 0x6d, 0x44, 0x8e, 0x5c, 0xd4, 0xb2, 0x4d, 0x7a, 0x6a, 0xf8, 0x01, 0xa6, 0x58,
+	0x9d, 0x67, 0x26, 0xa3, 0xc7, 0x54, 0xbe, 0xe9, 0x60, 0x07, 0x73, 0xa3, 0xc9, 0x9e, 0x04, 0xae,
+	0xbc, 0xd4, 0x1f, 0xa2, 0xeb, 0x23, 0x22, 0xad, 0x6f, 0xf7, 0x59, 0x7d, 0x18, 0xc0, 0x76, 0x68,
+	0xae, 0x34, 0x31, 0x69, 0x63, 0x62, 0x1e, 0x42, 0x82, 0xcc, 0x93, 0x8d, 0x43, 0x44, 0xe1, 0x86,
+	0xd9, 0xc4, 0xae, 0x27, 0xed, 0xb7, 0xa5, 0xbd, 0x4d, 0x1c, 0xf3, 0x64, 0x83, 0xfd, 0x27, 0x0d,
+	0x0b, 0xb0, 0xed, 0x7a, 0xd8, 0xe4, 0xff, 0xca, 0xa3, 0x92, 0xc0, 0x36, 0x44, 0x85, 0xe2, 0x45,
+	0x98, 0xf4, 0x6f, 0x0b, 0xa0, 0x74, 0x40, 0x9c, 0xdd, 0x00, 0x41, 0x8a, 0xea, 0xc8, 0xb3, 0x5d,
+	0xcf, 0x79, 0xe6, 0x63, 0xfa, 0x34, 0xb0, 0x51, 0xa0, 0x3e, 0x02, 0x00, 0xb3, 0x87, 0x06, 0x2b,
+	0x5c, 0x53, 0x56, 0x94, 0xb5, 0x1b, 0x9b, 0xcb, 0x46, 0x92, 0xbe, 0x11, 0x39, 0x7c, 0xd6, 0xf5,
+	0x91, 0x35, 0x83, 0xc3, 0x47, 0xf5, 0x21, 0xb8, 0x2e, 0xfc, 0xfd, 0xc0, 0x6d, 0x22, 0xed, 0xda,
+	0x8a, 0xb2, 0x76, 0x7d, 0x73, 0xa9, 0x3f, 0x00, 0x77, 0xae, 0x33, 0x8c, 0x25, 0x12, 0xf2, 0x67,
+	0xf5, 0x01, 0x28, 0x0a, 0x77, 0xd8, 0xc6, 0x1d, 0x8f, 0x6a, 0x05, 0xee, 0x5f, 0x32, 0x24, 0x03,
+	0x26, 0x8d, 0x21, 0xa5, 0x31, 0x76, 0xb1, 0xeb, 0x59, 0x22, 0xdb, 0x36, 0x47, 0xab, 0x0f, 0xc1,
+	0x2c, 0x7e, 0xee, 0x31, 0x6f, 0xdb, 0x0e, 0x10, 0x21, 0xda, 0xf8, 0x8a, 0xb2, 0x36, 0xb3, 0xa3,
+	0xfd, 0xfe, 0xcb, 0xfa, 0x4d, 0x19, 0x61, 0x5b, 0x58, 0x9e, 0xd1, 0xc0, 0xf5, 0x1c, 0xab, 0xc8,
+	0xe1, 0xf2, 0x4c, 0xfd, 0x00, 0xa8, 0x92, 0x3b, 0x0c, 0x1c, 0x44, 0x1b, 0x36, 0xf2, 0x70, 0x5b,
+	0x9b, 0x60, 0x31, 0xac, 0x79, 0x41, 0x91, 0x1b, 0xf6, 0xd8, 0xf9, 0xd6, 0x83, 0x6f, 0x2e, 0xcf,
+	0xaa, 0xf1, 0x7c, 0xdf, 0x5f, 0x9e, 0x55, 0xdf, 0xe9, 0xed, 0xef, 0x40, 0x9d, 0xf5, 0x47, 0xe0,
+	0xce, 0x40, 0xa3, 0x85, 0x88, 0x8f, 0x3d, 0x82, 0xd4, 0x12, 0x98, 0x16, 0x05, 0xb9, 0x36, 0x6f,
+	0xc5, 0xb8, 0x35, 0xc5, 0xdf, 0xf7, 0x6d, 0xfd, 0x6f, 0x85, 0x77, 0xf1, 0x73, 0xdf, 0x4e, 0xeb,
+	0x62, 0x9f, 0x10, 0xca, 0x48, 0x42, 0xf4, 0xe6, 0xbd, 0x16, 0xcb, 0x9b, 0xec, 0x6f, 0x61, 0xb4,
+	0xfe, 0x6e, 0xdd, 0x67, 0xa2, 0x4d, 0x35, 0x19, 0x6d, 0x1c, 0xa4, 0xc9, 0x95, 0x4e, 0x48, 0x5f,
+	0xe5, 0x72, 0xa5, 0x1b, 0x43, 0xb9, 0xf4, 0x9f, 0x85, 0x26, 0x7b, 0xa8, 0x85, 0xde, 0xa4, 0x26,
+	0xf9, 0xa4, 0xd2, 0x2b, 0x92, 0xa4, 0xd2, 0x8d, 0x11, 0xa9, 0x1f, 0x27, 0x40, 0x25, 0xf9, 0xa5,
+	0xd4, 0x51, 0xe0, 0x23, 0xda, 0x81, 0x2d, 0xc1, 0x6c, 0x37, 0x65, 0x66, 0xef, 0xf6, 0xb7, 0x24,
+	0xee, 0x95, 0x1c, 0xdc, 0x6d, 0x30, 0x4b, 0x03, 0xd7, 0x71, 0x46, 0x1a, 0xdd, 0xa2, 0x74, 0x11,
+	0xc3, 0xfb, 0x18, 0x80, 0x26, 0x6e, 0xb5, 0x20, 0x45, 0x01, 0x6c, 0xe5, 0x8e, 0xee, 0xce, 0xf8,
+	0xcb, 0xd7, 0xcb, 0x63, 0x56, 0x8f, 0xcb, 0x7f, 0x9d, 0xdf, 0x55, 0x46, 0x01, 0x32, 0x81, 0x1a,
+	0x90, 0x10, 0x44, 0xe5, 0xe8, 0x16, 0xe5, 0xe1, 0x36, 0x3b, 0x53, 0x1f, 0x83, 0x69, 0x1f, 0x13,
+	0x97, 0xba, 0xd8, 0xd3, 0x26, 0xb9, 0x54, 0xab, 0x19, 0x52, 0xd5, 0x25, 0xd4, 0x8a, 0x9c, 0x58,
+	0x80, 0x16, 0x3a, 0x41, 0x01, 0x74, 0x90, 0x36, 0xc5, 0xeb, 0x5b, 0x65, 0x44, 0xfe, 0x7c, 0xbd,
+	0xbc, 0x28, 0x6a, 0x24, 0xf6, 0xb1, 0xe1, 0x62, 0xb3, 0x0d, 0xe9, 0x91, 0xf1, 0x04, 0x39, 0xb0,
+	0xd9, 0xdd, 0x43, 0x4d, 0x2b, 0x72, 0x52, 0x9f, 0x82, 0x05, 0x0a, 0x8f, 0x11, 0xdb, 0xcd, 0x5f,
+	0xb9, 0x54, 0xaa, 0x3d, 0x3d, 0x7c, 0xa4, 0x39, 0xe6, 0x5d, 0xe7, 0xce, 0x42, 0xf7, 0x4f, 0xc1,
+	0x1c, 0xa1, 0xd8, 0x6f, 0xb4, 0x30, 0x21, 0x32, 0xdc, 0xcc, 0xf0, 0xe1, 0x66, 0x99, 0xef, 0x13,
+	0x4c, 0x88, 0x98, 0xd0, 0x8f, 0x92, 0x1f, 0x73, 0x35, 0x6b, 0xa1, 0xc5, 0xbf, 0x29, 0x7d, 0x17,
+	0xbc, 0x9b, 0x8d, 0x18, 0x66, 0xb5, 0xfd, 0xa3, 0xf0, 0x2f, 0x3e, 0x36, 0xec, 0x89, 0x2f, 0xfe,
+	0x7f, 0xbb, 0xdf, 0x72, 0xd5, 0xcb, 0x60, 0xa5, 0xaf, 0x71, 0xf5, 0x32, 0x10, 0xd1, 0x52, 0xf8,
+	0x55, 0x48, 0x14, 0x5b, 0x1d, 0x6f, 0x4a, 0xa2, 0x7c, 0x8e, 0x19, 0x65, 0x49, 0x8e, 0x19, 0x88,
+	0x88, 0xe3, 0x4f, 0x0a, 0x98, 0xbb, 0x92, 0x83, 0x5f, 0x94, 0xd4, 0xfb, 0x60, 0x06, 0x76, 0xe8,
+	0x11, 0x0e, 0x5c, 0xda, 0xcd, 0x25, 0x74, 0x05, 0x55, 0x6b, 0x60, 0x52, 0x5c, 0xb5, 0xe4, 0x56,
+	0xd3, 0x52, 0x46, 0x9e, 0xdb, 0x2d, 0x89, 0xdb, 0x32, 0x18, 0xc9, 0xab, 0x08, 0x8c, 0xe6, 0x62,
+	0x7a, 0x2b, 0x39, 0x5e, 0x2f, 0x81, 0xdb, 0x89, 0xa3, 0x88, 0xc8, 0x6f, 0x0a, 0x98, 0x3f, 0x20,
+	0xce, 0xc7, 0xa7, 0xa8, 0xd9, 0xa1, 0x88, 0x93, 0x24, 0xea, 0x26, 0x08, 0x15, 0xcc, 0xe5, 0x11,
+	0x02, 0xd5, 0xbb, 0xe0, 0x06, 0xf1, 0x31, 0x6d, 0x84, 0x8d, 0x61, 0x6c, 0x0a, 0x6b, 0xe3, 0x56,
+	0x91, 0x84, 0x7f, 0x35, 0xf6, 0x6d, 0xa2, 0x1a, 0xe0, 0x2d, 0x3f, 0x54, 0xb4, 0x07, 0x5a, 0xe0,
+	0xd0, 0x05, 0x3f, 0x26, 0xf6, 0xbe, 0x4d, 0xb6, 0xd6, 0x93, 0xed, 0x5c, 0x4a, 0xf0, 0x8c, 0x15,
+	0xae, 0x97, 0x81, 0x96, 0x3c, 0x0b, 0x99, 0x6e, 0x5e, 0x4c, 0x81, 0xc2, 0x01, 0x71, 0xd4, 0x17,
+	0xe0, 0xd6, 0x80, 0xeb, 0xe5, 0xfb, 0xfd, 0xc2, 0x0f, 0xbc, 0x06, 0x95, 0xef, 0x8d, 0x00, 0x8e,
+	0x16, 0xcb, 0x0b, 0x70, 0x6b, 0xc0, 0xa5, 0x28, 0x3d, 0x77, 0x3a, 0x78, 0x40, 0xee, 0xec, 0x0b,
+	0x08, 0xcb, 0x3d, 0xe0, 0xf2, 0x91, 0x9e, 0x3b, 0x1d, 0x3c, 0x20, 0x77, 0xf6, 0x3d, 0x41, 0xfd,
+	0x4e, 0x01, 0x8b, 0x59, 0x97, 0x84, 0x5a, 0xbe, 0x98, 0x71, 0x8f, 0xf2, 0x87, 0xa3, 0x7a, 0xc4,
+	0x6a, 0xc9, 0x5a, 0xdf, 0xb5, 0x7c, 0x71, 0x87, 0xaa, 0x65, 0x88, 0x55, 0xc9, 0x6b, 0xc9, 0xda,
+	0x93, 0xb5, 0x7c, 0xb1, 0x87, 0xaa, 0x65, 0x88, 0x95, 0xa6, 0x7e, 0x09, 0x8a, 0xb1, 0x75, 0x76,
+	0x27, 0x8b, 0x15, 0x87, 0x94, 0xdf, 0xcb, 0x85, 0x44, 0xd1, 0x1b, 0x60, 0x36, 0xbe, 0x63, 0xf4,
+	0x54, 0xdf, 0x18, 0xa6, 0x5c, 0xcd, 0xc7, 0x84, 0x09, 0xca, 0x13, 0x5f, 0x5f, 0x9e, 0x55, 0x95,
+	0x9d, 0x4f, 0x5e, 0x9e, 0x57, 0x94, 0x57, 0xe7, 0x15, 0xe5, 0xaf, 0xf3, 0x8a, 0xf2, 0xc3, 0x45,
+	0x65, 0xec, 0xd5, 0x45, 0x65, 0xec, 0x8f, 0x8b, 0xca, 0xd8, 0x17, 0x35, 0xc7, 0xa5, 0x47, 0x9d,
+	0x43, 0xa3, 0x89, 0xdb, 0x26, 0x0b, 0xbb, 0xee, 0x21, 0xfa, 0x1c, 0x07, 0xc7, 0xfc, 0xc5, 0x3c,
+	0xed, 0xff, 0x61, 0x7c, 0x38, 0xc9, 0x7f, 0x93, 0xde, 0xfb, 0x37, 0x00, 0x00, 0xff, 0xff, 0x75,
+	0x3b, 0x46, 0x3c, 0x7c, 0x0f, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -822,6 +957,7 @@ type MsgClient interface {
 	UpdatePendingPerpetualOrder(ctx context.Context, in *MsgUpdatePendingPerpetualOrder, opts ...grpc.CallOption) (*MsgUpdatePendingPerpetualOrderResponse, error)
 	DeletePendingPerpetualOrder(ctx context.Context, in *MsgDeletePendingPerpetualOrder, opts ...grpc.CallOption) (*MsgDeletePendingPerpetualOrderResponse, error)
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	ExecuteOrders(ctx context.Context, in *MsgExecuteOrders, opts ...grpc.CallOption) (*MsgExecuteOrdersResponse, error)
 }
 
 type msgClient struct {
@@ -895,6 +1031,15 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
+func (c *msgClient) ExecuteOrders(ctx context.Context, in *MsgExecuteOrders, opts ...grpc.CallOption) (*MsgExecuteOrdersResponse, error) {
+	out := new(MsgExecuteOrdersResponse)
+	err := c.cc.Invoke(ctx, "/elys.tradeshield.Msg/ExecuteOrders", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	CreatePendingSpotOrder(context.Context, *MsgCreatePendingSpotOrder) (*MsgCreatePendingSpotOrderResponse, error)
@@ -904,6 +1049,7 @@ type MsgServer interface {
 	UpdatePendingPerpetualOrder(context.Context, *MsgUpdatePendingPerpetualOrder) (*MsgUpdatePendingPerpetualOrderResponse, error)
 	DeletePendingPerpetualOrder(context.Context, *MsgDeletePendingPerpetualOrder) (*MsgDeletePendingPerpetualOrderResponse, error)
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	ExecuteOrders(context.Context, *MsgExecuteOrders) (*MsgExecuteOrdersResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -930,6 +1076,9 @@ func (*UnimplementedMsgServer) DeletePendingPerpetualOrder(ctx context.Context, 
 }
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (*UnimplementedMsgServer) ExecuteOrders(ctx context.Context, req *MsgExecuteOrders) (*MsgExecuteOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ExecuteOrders not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -1062,6 +1211,24 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_ExecuteOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgExecuteOrders)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ExecuteOrders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.tradeshield.Msg/ExecuteOrders",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ExecuteOrders(ctx, req.(*MsgExecuteOrders))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.tradeshield.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -1094,6 +1261,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
 		},
+		{
+			MethodName: "ExecuteOrders",
+			Handler:    _Msg_ExecuteOrders_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "elys/tradeshield/tx.proto",
@@ -1119,36 +1290,19 @@ func (m *MsgCreatePendingSpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
-	if m.Date != nil {
-		{
-			size, err := m.Date.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x42
-	}
-	if m.Status != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.Status))
-		i--
-		dAtA[i] = 0x38
-	}
 	if len(m.OrderTargetDenom) > 0 {
 		i -= len(m.OrderTargetDenom)
 		copy(dAtA[i:], m.OrderTargetDenom)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.OrderTargetDenom)))
 		i--
-		dAtA[i] = 0x32
+		dAtA[i] = 0x2a
 	}
 	if len(m.OwnerAddress) > 0 {
 		i -= len(m.OwnerAddress)
 		copy(dAtA[i:], m.OwnerAddress)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.OwnerAddress)))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x22
 	}
 	if m.OrderAmount != nil {
 		{
@@ -1160,7 +1314,7 @@ func (m *MsgCreatePendingSpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, erro
 			i = encodeVarintTx(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x1a
 	}
 	if m.OrderPrice != nil {
 		{
@@ -1172,7 +1326,7 @@ func (m *MsgCreatePendingSpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, erro
 			i = encodeVarintTx(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x12
 	}
 	if m.OrderType != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.OrderType))
@@ -1202,8 +1356,8 @@ func (m *MsgCreatePendingSpotOrderResponse) MarshalToSizedBuffer(dAtA []byte) (i
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.Id))
+	if m.OrderId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.OrderId))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -1230,22 +1384,27 @@ func (m *MsgUpdatePendingSpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
-	if len(m.Order) > 0 {
-		i -= len(m.Order)
-		copy(dAtA[i:], m.Order)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Order)))
+	if m.OrderPrice != nil {
+		{
+			size, err := m.OrderPrice.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0x1a
 	}
-	if m.Id != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.Id))
+	if m.OrderId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.OrderId))
 		i--
 		dAtA[i] = 0x10
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if len(m.OwnerAddress) > 0 {
+		i -= len(m.OwnerAddress)
+		copy(dAtA[i:], m.OwnerAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.OwnerAddress)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1295,15 +1454,15 @@ func (m *MsgDeletePendingSpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.Id))
+	if m.OrderId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.OrderId))
 		i--
 		dAtA[i] = 0x10
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if len(m.OwnerAddress) > 0 {
+		i -= len(m.OwnerAddress)
+		copy(dAtA[i:], m.OwnerAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.OwnerAddress)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1353,19 +1512,81 @@ func (m *MsgCreatePendingPerpetualOrder) MarshalToSizedBuffer(dAtA []byte) (int,
 	_ = i
 	var l int
 	_ = l
-	if len(m.Order) > 0 {
-		i -= len(m.Order)
-		copy(dAtA[i:], m.Order)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Order)))
+	{
+		size := m.StopLossPrice.Size()
+		i -= size
+		if _, err := m.StopLossPrice.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x4a
+	{
+		size := m.TakeProfitPrice.Size()
+		i -= size
+		if _, err := m.TakeProfitPrice.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x42
+	{
+		size := m.Leverage.Size()
+		i -= size
+		if _, err := m.Leverage.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x3a
+	if m.Position != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Position))
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.TradingAsset) > 0 {
+		i -= len(m.TradingAsset)
+		copy(dAtA[i:], m.TradingAsset)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TradingAsset)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.OwnerAddress) > 0 {
+		i -= len(m.OwnerAddress)
+		copy(dAtA[i:], m.OwnerAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.OwnerAddress)))
+		i--
+		dAtA[i] = 0x22
+	}
+	{
+		size, err := m.Collateral.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if m.TriggerPrice != nil {
+		{
+			size, err := m.TriggerPrice.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if m.OrderType != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.OrderType))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1390,8 +1611,8 @@ func (m *MsgCreatePendingPerpetualOrderResponse) MarshalToSizedBuffer(dAtA []byt
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.Id))
+	if m.OrderId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.OrderId))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -1418,22 +1639,27 @@ func (m *MsgUpdatePendingPerpetualOrder) MarshalToSizedBuffer(dAtA []byte) (int,
 	_ = i
 	var l int
 	_ = l
-	if len(m.Order) > 0 {
-		i -= len(m.Order)
-		copy(dAtA[i:], m.Order)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Order)))
+	if m.OrderPrice != nil {
+		{
+			size, err := m.OrderPrice.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0x1a
 	}
-	if m.Id != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.Id))
+	if m.OrderId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.OrderId))
 		i--
 		dAtA[i] = 0x10
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if len(m.OwnerAddress) > 0 {
+		i -= len(m.OwnerAddress)
+		copy(dAtA[i:], m.OwnerAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.OwnerAddress)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1483,15 +1709,15 @@ func (m *MsgDeletePendingPerpetualOrder) MarshalToSizedBuffer(dAtA []byte) (int,
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.Id))
+	if m.OrderId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.OrderId))
 		i--
 		dAtA[i] = 0x10
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if len(m.OwnerAddress) > 0 {
+		i -= len(m.OwnerAddress)
+		copy(dAtA[i:], m.OwnerAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.OwnerAddress)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1586,6 +1812,95 @@ func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgExecuteOrders) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgExecuteOrders) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgExecuteOrders) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.PerpetualOrderIds) > 0 {
+		dAtA9 := make([]byte, len(m.PerpetualOrderIds)*10)
+		var j8 int
+		for _, num := range m.PerpetualOrderIds {
+			for num >= 1<<7 {
+				dAtA9[j8] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j8++
+			}
+			dAtA9[j8] = uint8(num)
+			j8++
+		}
+		i -= j8
+		copy(dAtA[i:], dAtA9[:j8])
+		i = encodeVarintTx(dAtA, i, uint64(j8))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.SpotOrderIds) > 0 {
+		dAtA11 := make([]byte, len(m.SpotOrderIds)*10)
+		var j10 int
+		for _, num := range m.SpotOrderIds {
+			for num >= 1<<7 {
+				dAtA11[j10] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j10++
+			}
+			dAtA11[j10] = uint8(num)
+			j10++
+		}
+		i -= j10
+		copy(dAtA[i:], dAtA11[:j10])
+		i = encodeVarintTx(dAtA, i, uint64(j10))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgExecuteOrdersResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgExecuteOrdersResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgExecuteOrdersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -1622,13 +1937,6 @@ func (m *MsgCreatePendingSpotOrder) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Status != 0 {
-		n += 1 + sovTx(uint64(m.Status))
-	}
-	if m.Date != nil {
-		l = m.Date.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
 	return n
 }
 
@@ -1638,8 +1946,8 @@ func (m *MsgCreatePendingSpotOrderResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Id != 0 {
-		n += 1 + sovTx(uint64(m.Id))
+	if m.OrderId != 0 {
+		n += 1 + sovTx(uint64(m.OrderId))
 	}
 	return n
 }
@@ -1650,15 +1958,15 @@ func (m *MsgUpdatePendingSpotOrder) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
+	l = len(m.OwnerAddress)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Id != 0 {
-		n += 1 + sovTx(uint64(m.Id))
+	if m.OrderId != 0 {
+		n += 1 + sovTx(uint64(m.OrderId))
 	}
-	l = len(m.Order)
-	if l > 0 {
+	if m.OrderPrice != nil {
+		l = m.OrderPrice.Size()
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
@@ -1679,12 +1987,12 @@ func (m *MsgDeletePendingSpotOrder) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
+	l = len(m.OwnerAddress)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Id != 0 {
-		n += 1 + sovTx(uint64(m.Id))
+	if m.OrderId != 0 {
+		n += 1 + sovTx(uint64(m.OrderId))
 	}
 	return n
 }
@@ -1704,14 +2012,32 @@ func (m *MsgCreatePendingPerpetualOrder) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
+	if m.OrderType != 0 {
+		n += 1 + sovTx(uint64(m.OrderType))
+	}
+	if m.TriggerPrice != nil {
+		l = m.TriggerPrice.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = m.Collateral.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = len(m.OwnerAddress)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Order)
+	l = len(m.TradingAsset)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	if m.Position != 0 {
+		n += 1 + sovTx(uint64(m.Position))
+	}
+	l = m.Leverage.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = m.TakeProfitPrice.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = m.StopLossPrice.Size()
+	n += 1 + l + sovTx(uint64(l))
 	return n
 }
 
@@ -1721,8 +2047,8 @@ func (m *MsgCreatePendingPerpetualOrderResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Id != 0 {
-		n += 1 + sovTx(uint64(m.Id))
+	if m.OrderId != 0 {
+		n += 1 + sovTx(uint64(m.OrderId))
 	}
 	return n
 }
@@ -1733,15 +2059,15 @@ func (m *MsgUpdatePendingPerpetualOrder) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
+	l = len(m.OwnerAddress)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Id != 0 {
-		n += 1 + sovTx(uint64(m.Id))
+	if m.OrderId != 0 {
+		n += 1 + sovTx(uint64(m.OrderId))
 	}
-	l = len(m.Order)
-	if l > 0 {
+	if m.OrderPrice != nil {
+		l = m.OrderPrice.Size()
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
@@ -1762,12 +2088,12 @@ func (m *MsgDeletePendingPerpetualOrder) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
+	l = len(m.OwnerAddress)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Id != 0 {
-		n += 1 + sovTx(uint64(m.Id))
+	if m.OrderId != 0 {
+		n += 1 + sovTx(uint64(m.OrderId))
 	}
 	return n
 }
@@ -1799,6 +2125,42 @@ func (m *MsgUpdateParams) Size() (n int) {
 }
 
 func (m *MsgUpdateParamsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgExecuteOrders) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.SpotOrderIds) > 0 {
+		l = 0
+		for _, e := range m.SpotOrderIds {
+			l += sovTx(uint64(e))
+		}
+		n += 1 + sovTx(uint64(l)) + l
+	}
+	if len(m.PerpetualOrderIds) > 0 {
+		l = 0
+		for _, e := range m.PerpetualOrderIds {
+			l += sovTx(uint64(e))
+		}
+		n += 1 + sovTx(uint64(l)) + l
+	}
+	return n
+}
+
+func (m *MsgExecuteOrdersResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1861,7 +2223,7 @@ func (m *MsgCreatePendingSpotOrder) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 3:
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OrderPrice", wireType)
 			}
@@ -1897,7 +2259,7 @@ func (m *MsgCreatePendingSpotOrder) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OrderAmount", wireType)
 			}
@@ -1933,7 +2295,7 @@ func (m *MsgCreatePendingSpotOrder) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OwnerAddress", wireType)
 			}
@@ -1965,7 +2327,7 @@ func (m *MsgCreatePendingSpotOrder) Unmarshal(dAtA []byte) error {
 			}
 			m.OwnerAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 6:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OrderTargetDenom", wireType)
 			}
@@ -1996,61 +2358,6 @@ func (m *MsgCreatePendingSpotOrder) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.OrderTargetDenom = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
-			}
-			m.Status = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Status |= Status(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Date", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Date == nil {
-				m.Date = &Date{}
-			}
-			if err := m.Date.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2104,9 +2411,9 @@ func (m *MsgCreatePendingSpotOrderResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
 			}
-			m.Id = 0
+			m.OrderId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2116,7 +2423,7 @@ func (m *MsgCreatePendingSpotOrderResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
+				m.OrderId |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2173,7 +2480,7 @@ func (m *MsgUpdatePendingSpotOrder) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OwnerAddress", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2201,13 +2508,13 @@ func (m *MsgUpdatePendingSpotOrder) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.OwnerAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
 			}
-			m.Id = 0
+			m.OrderId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2217,16 +2524,16 @@ func (m *MsgUpdatePendingSpotOrder) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
+				m.OrderId |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Order", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderPrice", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2236,23 +2543,27 @@ func (m *MsgUpdatePendingSpotOrder) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTx
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTx
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Order = string(dAtA[iNdEx:postIndex])
+			if m.OrderPrice == nil {
+				m.OrderPrice = &OrderPrice{}
+			}
+			if err := m.OrderPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2356,7 +2667,7 @@ func (m *MsgDeletePendingSpotOrder) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OwnerAddress", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2384,13 +2695,13 @@ func (m *MsgDeletePendingSpotOrder) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.OwnerAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
 			}
-			m.Id = 0
+			m.OrderId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2400,7 +2711,7 @@ func (m *MsgDeletePendingSpotOrder) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
+				m.OrderId |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2506,10 +2817,10 @@ func (m *MsgCreatePendingPerpetualOrder) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderType", wireType)
 			}
-			var stringLen uint64
+			m.OrderType = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2519,27 +2830,83 @@ func (m *MsgCreatePendingPerpetualOrder) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.OrderType |= PerpetualOrderType(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Order", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TriggerPrice", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.TriggerPrice == nil {
+				m.TriggerPrice = &OrderPrice{}
+			}
+			if err := m.TriggerPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Collateral", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Collateral.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OwnerAddress", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2567,7 +2934,160 @@ func (m *MsgCreatePendingPerpetualOrder) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Order = string(dAtA[iNdEx:postIndex])
+			m.OwnerAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TradingAsset", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TradingAsset = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
+			}
+			m.Position = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Position |= PerpetualPosition(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Leverage", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Leverage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TakeProfitPrice", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.TakeProfitPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StopLossPrice", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.StopLossPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2621,9 +3141,9 @@ func (m *MsgCreatePendingPerpetualOrderResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
 			}
-			m.Id = 0
+			m.OrderId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2633,7 +3153,7 @@ func (m *MsgCreatePendingPerpetualOrderResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
+				m.OrderId |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2690,7 +3210,7 @@ func (m *MsgUpdatePendingPerpetualOrder) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OwnerAddress", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2718,13 +3238,13 @@ func (m *MsgUpdatePendingPerpetualOrder) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.OwnerAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
 			}
-			m.Id = 0
+			m.OrderId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2734,16 +3254,16 @@ func (m *MsgUpdatePendingPerpetualOrder) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
+				m.OrderId |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Order", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderPrice", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2753,23 +3273,27 @@ func (m *MsgUpdatePendingPerpetualOrder) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTx
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTx
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Order = string(dAtA[iNdEx:postIndex])
+			if m.OrderPrice == nil {
+				m.OrderPrice = &OrderPrice{}
+			}
+			if err := m.OrderPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2873,7 +3397,7 @@ func (m *MsgDeletePendingPerpetualOrder) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OwnerAddress", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2901,13 +3425,13 @@ func (m *MsgDeletePendingPerpetualOrder) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.OwnerAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
 			}
-			m.Id = 0
+			m.OrderId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -2917,7 +3441,7 @@ func (m *MsgDeletePendingPerpetualOrder) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
+				m.OrderId |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -3138,6 +3662,290 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgUpdateParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgExecuteOrders) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgExecuteOrders: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgExecuteOrders: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType == 0 {
+				var v uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTx
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.SpotOrderIds = append(m.SpotOrderIds, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTx
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthTx
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthTx
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.SpotOrderIds) == 0 {
+					m.SpotOrderIds = make([]uint64, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTx
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.SpotOrderIds = append(m.SpotOrderIds, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field SpotOrderIds", wireType)
+			}
+		case 3:
+			if wireType == 0 {
+				var v uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTx
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.PerpetualOrderIds = append(m.PerpetualOrderIds, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTx
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthTx
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthTx
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.PerpetualOrderIds) == 0 {
+					m.PerpetualOrderIds = make([]uint64, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTx
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.PerpetualOrderIds = append(m.PerpetualOrderIds, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field PerpetualOrderIds", wireType)
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgExecuteOrdersResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgExecuteOrdersResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgExecuteOrdersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

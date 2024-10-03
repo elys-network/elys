@@ -13,16 +13,16 @@ import (
 // Check pool type
 func (oq *Querier) checkFilterType(ctx sdk.Context, ammPool *types.Pool, filterType types.FilterType) bool {
 	switch filterType {
-	case types.FilterType_FilterAll:
+	case types.FilterType_FILTER_ALL:
 		return true
-	case types.FilterType_FilterPerpetual:
+	case types.FilterType_FILTER_PERPETUAL:
 		_, found := oq.perpetualKeeper.GetPool(ctx, ammPool.PoolId)
 		return found
-	case types.FilterType_FilterFixedWeight:
+	case types.FilterType_FILTER_FIXED_WEIGHT:
 		return ammPool.PoolParams.UseOracle
-	case types.FilterType_FilterDynamicWeight:
+	case types.FilterType_FILTER_DYNAMIC_WEIGHT:
 		return !ammPool.PoolParams.UseOracle
-	case types.FilterType_FilterLeverage:
+	case types.FilterType_FILTER_LEVERAGE:
 		_, found := oq.leveragelpKeeper.GetPool(ctx, ammPool.PoolId)
 		return found
 	}
@@ -69,7 +69,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 		rewardsApr = poolInfo.DexApr.Add(poolInfo.EdenApr)
 	}
 
-	if filterType == types.FilterType_FilterLeverage {
+	if filterType == types.FilterType_FILTER_LEVERAGE {
 		prams := oq.stablestakeKeeper.GetParams(ctx)
 		borrowApr = prams.InterestRate
 	}

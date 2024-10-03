@@ -13,7 +13,7 @@ import (
 
 const (
 	// make sure to update these when you upgrade the version
-	NextVersion = "v0.46.0"
+	NextVersion = "v0.47.0"
 
 	LocalNetVersion = "v999.999.999"
 )
@@ -29,8 +29,8 @@ func (app *ElysApp) setUpgradeHandler() {
 
 				// Add any logic here to run when the chain is upgraded to the new version
 
-				app.Logger().Info("Deleting proposals with ID < 274")
-				for i := uint64(1); i < 274; i++ {
+				app.Logger().Info("Deleting proposals with ID < 280")
+				for i := uint64(1); i < 280; i++ {
 					_ = app.GovKeeper.Proposals.Remove(ctx, i)
 				}
 			}

@@ -131,7 +131,7 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 
 	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
 	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), math.NewInt(10100000000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), math.NewInt(1000000000))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), math.NewInt(965191734))
 
 	// Check balance invariant check
 	err = mk.InvariantCheck(ctx)

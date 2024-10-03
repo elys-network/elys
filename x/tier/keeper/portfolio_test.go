@@ -281,7 +281,6 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 		BorrowInterestPaidCustody:      math.NewInt(0),
 		BorrowInterestUnpaidCollateral: math.NewInt(0),
 		Custody:                        math.NewInt(10000),
-		Leverage:                       math.LegacyNewDec(0),
 		MtpHealth:                      math.LegacyNewDec(0),
 		Position:                       perpetualtypes.Position_LONG,
 		Id:                             0,

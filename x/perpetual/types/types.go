@@ -33,7 +33,6 @@ func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsse
 		Custody:                        sdkmath.ZeroInt(),
 		TakeProfitLiabilities:          sdkmath.ZeroInt(),
 		TakeProfitCustody:              sdkmath.ZeroInt(),
-		Leverage:                       leverage,
 		MtpHealth:                      sdkmath.LegacyZeroDec(),
 		Position:                       position,
 		Id:                             0,

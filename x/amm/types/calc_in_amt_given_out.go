@@ -69,6 +69,9 @@ func (p Pool) CalcInAmtGivenOut(
 	}
 
 	amountInWithoutSlippage := sdkmath.LegacyNewDecFromInt(tokenOut.Amount).Quo(rate)
+	if tokenAmountIn.IsZero() {
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), ErrAmountTooLow
+	}
 	slippage = sdkmath.LegacyOneDec().Sub(amountInWithoutSlippage.Quo(tokenAmountIn))
 
 	// Ensure (1 - swapfee) is not zero to avoid division by zero

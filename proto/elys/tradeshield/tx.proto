@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package elys.tradeshield;
 
+import "gogoproto/gogo.proto";
 import "elys/tradeshield/types.proto";
 import "elys/tradeshield/params.proto";
 import "cosmos/base/v1beta1/coin.proto";
@@ -27,27 +28,26 @@ service Msg {
   rpc DeletePendingPerpetualOrder(MsgDeletePendingPerpetualOrder)
       returns (MsgDeletePendingPerpetualOrderResponse);
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc ExecuteOrders(MsgExecuteOrders) returns (MsgExecuteOrdersResponse);
 }
 message MsgCreatePendingSpotOrder {
   option (cosmos.msg.v1.signer) = "owner_address";
   option (amino.name) = "tradeshield/MsgCreatePendingSpotOrder";
   SpotOrderType order_type = 1;
-  OrderPrice order_price = 3;
-  cosmos.base.v1beta1.Coin order_amount = 4;
-  string owner_address = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string order_target_denom = 6;
-  Status status = 7;
-  Date date = 8;
+  OrderPrice order_price = 2;
+  cosmos.base.v1beta1.Coin order_amount = 3;
+  string owner_address = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string order_target_denom = 5;
 }
 
-message MsgCreatePendingSpotOrderResponse { uint64 id = 1; }
+message MsgCreatePendingSpotOrderResponse { uint64 order_id = 1; }
 
 message MsgUpdatePendingSpotOrder {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "tradeshield/MsgUpdatePendingSpotOrder";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  uint64 id = 2;
-  string order = 3;
+  string owner_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 order_id = 2;
+  OrderPrice order_price = 3;
 }
 
 message MsgUpdatePendingSpotOrderResponse {}
@@ -55,8 +55,8 @@ message MsgUpdatePendingSpotOrderResponse {}
 message MsgDeletePendingSpotOrder {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "tradeshield/MsgDeletePendingSpotOrder";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  uint64 id = 2;
+  string owner_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 order_id = 2;
 }
 
 message MsgDeletePendingSpotOrderResponse {}
@@ -64,18 +64,34 @@ message MsgDeletePendingSpotOrderResponse {}
 message MsgCreatePendingPerpetualOrder {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "tradeshield/MsgCreatePendingPerpetualOrder";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string order = 2;
+  PerpetualOrderType order_type = 1;
+  OrderPrice trigger_price = 2;
+  cosmos.base.v1beta1.Coin collateral = 3 [ (gogoproto.nullable) = false ];
+  string owner_address = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string trading_asset = 5;
+  PerpetualPosition position = 6;
+  string leverage = 7 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string take_profit_price = 8 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string stop_loss_price = 9 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message MsgCreatePendingPerpetualOrderResponse { uint64 id = 1; }
+message MsgCreatePendingPerpetualOrderResponse { uint64 order_id = 1; }
 
 message MsgUpdatePendingPerpetualOrder {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "tradeshield/MsgUpdatePendingPerpetualOrder";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  uint64 id = 2;
-  string order = 3;
+  string owner_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 order_id = 2;
+  OrderPrice order_price = 3;
 }
 
 message MsgUpdatePendingPerpetualOrderResponse {}
@@ -83,13 +99,14 @@ message MsgUpdatePendingPerpetualOrderResponse {}
 message MsgDeletePendingPerpetualOrder {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "tradeshield/MsgDeletePendingPerpetualOrder";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  uint64 id = 2;
+  string owner_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 order_id = 2;
 }
 
 message MsgDeletePendingPerpetualOrderResponse {}
 
 message MsgUpdateParams {
+
   option (cosmos.msg.v1.signer) = "authority";
   option (amino.name) = "tradeshield/MsgUpdateParams";
   // authority is the address that controls the module (defaults to x/gov unless
@@ -101,3 +118,13 @@ message MsgUpdateParams {
 }
 
 message MsgUpdateParamsResponse {}
+
+message MsgExecuteOrders {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "tradeshield/MsgExecuteOrders";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  repeated uint64 spot_order_ids = 2;
+  repeated uint64 perpetual_order_ids = 3;
+}
+
+message MsgExecuteOrdersResponse {}

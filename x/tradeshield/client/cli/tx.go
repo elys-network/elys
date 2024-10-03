@@ -37,6 +37,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdUpdatePendingPerpetualOrder())
 	cmd.AddCommand(CmdDeletePendingPerpetualOrder())
 	cmd.AddCommand(CmdUpdateParams())
+	cmd.AddCommand(CmdExecuteOrders())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

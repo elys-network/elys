@@ -20,6 +20,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgBrokerAddCollateral{}, "perpetual/MsgBrokerAddCollateral")
 	legacy.RegisterAminoMsg(cdc, &MsgClosePositions{}, "perpetual/ClosePositions")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateStopLoss{}, "perpetual/MsgUpdateStopLoss")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateTakeProfitPrice{}, "perpetual/MsgUpdateTakeProfitPrice")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -36,6 +37,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgBrokerAddCollateral{},
 		&MsgClosePositions{},
 		&MsgUpdateStopLoss{},
+		&MsgUpdateTakeProfitPrice{},
 	)
 	// this line is used by starport scaffolding # 3
 

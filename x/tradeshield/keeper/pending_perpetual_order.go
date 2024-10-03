@@ -9,6 +9,7 @@ import (
 
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
@@ -122,7 +123,7 @@ func (k Keeper) PerpetualBinarySearch(ctx sdk.Context, orderPrice sdkmath.Legacy
 		// Get order price
 		order, found := k.GetPendingPerpetualOrder(ctx, orders[mid])
 		if !found {
-			return 0, types.ErrOrderNotFound
+			return 0, types.ErrPerpetualOrderNotFound
 		}
 		if order.TriggerPrice.Rate.LT(orderPrice) {
 			low = mid + 1
@@ -190,7 +191,7 @@ func (k Keeper) GetAllSortedPerpetualOrder(ctx sdk.Context) (list [][]uint64, er
 func (k Keeper) RemovePerpetualSortedOrder(ctx sdk.Context, orderID uint64) error {
 	order, found := k.GetPendingPerpetualOrder(ctx, orderID)
 	if !found {
-		return types.ErrOrderNotFound
+		return types.ErrPerpetualOrderNotFound
 	}
 
 	// Generate the key for the order
@@ -234,5 +235,149 @@ func (k Keeper) RemovePerpetualSortedOrder(ctx sdk.Context, orderID uint64) erro
 	encodedOrderIds := types.EncodeUint64Slice(orderIds)
 
 	sortedStore.Set([]byte(key), encodedOrderIds)
+	return nil
+}
+
+// ExecuteLimitOpenOrder executes a limit open order
+func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.TriggerPrice.BaseDenom, order.TriggerPrice.QuoteDenom)
+	if err != nil {
+		return err
+	}
+
+	found := false
+
+	switch order.Position {
+	case types.PerpetualPosition_LONG:
+		if marketPrice.LTE(order.TriggerPrice.Rate) {
+			_, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+				Creator:         order.OwnerAddress,
+				Position:        perpetualtypes.Position(order.Position),
+				Leverage:        order.Leverage,
+				TradingAsset:    order.TradingAsset,
+				Collateral:      order.Collateral,
+				TakeProfitPrice: order.TakeProfitPrice,
+				StopLossPrice:   order.StopLossPrice,
+			}, false)
+			if err != nil {
+				return err
+			}
+
+			found = true
+		}
+	case types.PerpetualPosition_SHORT:
+		if marketPrice.GTE(order.TriggerPrice.Rate) {
+			_, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+				Creator:         order.OwnerAddress,
+				Position:        perpetualtypes.Position(order.Position),
+				Leverage:        order.Leverage,
+				TradingAsset:    order.TradingAsset,
+				Collateral:      order.Collateral,
+				TakeProfitPrice: order.TakeProfitPrice,
+				StopLossPrice:   order.StopLossPrice,
+			}, false)
+			if err != nil {
+				return err
+			}
+
+			found = true
+		}
+	}
+
+	if found {
+		// Remove the order from the pending order list
+		k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+
+		return nil
+	}
+
+	// skip the order
+	return nil
+}
+
+// ExecuteLimitCloseOrder executes a limit close order
+func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.TriggerPrice.BaseDenom, order.TriggerPrice.QuoteDenom)
+	if err != nil {
+		return err
+	}
+
+	found := false
+
+	switch order.Position {
+	case types.PerpetualPosition_LONG:
+		if marketPrice.GTE(order.TriggerPrice.Rate) {
+			_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
+				Creator: order.OwnerAddress,
+				Id:      order.PositionId,
+				Amount:  sdkmath.ZeroInt(),
+			})
+			if err != nil {
+				return err
+			}
+
+			found = true
+		}
+	case types.PerpetualPosition_SHORT:
+		if marketPrice.LTE(order.TriggerPrice.Rate) {
+			_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
+				Creator: order.OwnerAddress,
+				Id:      order.PositionId,
+				Amount:  sdkmath.ZeroInt(),
+			})
+			if err != nil {
+				return err
+			}
+
+			found = true
+		}
+	}
+
+	if found {
+		// Remove the order from the pending order list
+		k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+
+		return nil
+	}
+
+	// skip the order
+	return nil
+}
+
+// ExecuteMarketOpenOrder executes a market open order
+func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
+	_, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+		Creator:         order.OwnerAddress,
+		Position:        perpetualtypes.Position(order.Position),
+		Leverage:        order.Leverage,
+		TradingAsset:    order.TradingAsset,
+		Collateral:      order.Collateral,
+		TakeProfitPrice: order.TakeProfitPrice,
+		StopLossPrice:   order.StopLossPrice,
+	}, false)
+	if err != nil {
+		return err
+	}
+
+	// Remove the order from the pending order list
+	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+
+	return nil
+}
+
+// ExecuteMarketCloseOrder executes a market close order
+func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
+	_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
+		Creator: order.OwnerAddress,
+		Id:      order.PositionId,
+		Amount:  sdkmath.ZeroInt(),
+	})
+	if err != nil {
+		return err
+	}
+
+	// Remove the order from the pending order list
+	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+
 	return nil
 }

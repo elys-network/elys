@@ -444,6 +444,7 @@ genesis:
         funding_fee_min_rate: "-0.001"
         funding_fee_collection_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
         swap_fee: "0.001"
+        max_limit_order: 500
     stablestake:
       params:
         deposit_denom: "uusdc"

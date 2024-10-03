@@ -14,21 +14,20 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		return sdk.Coin{}, err
 	}
 
-	totalCustodyLong := sdkmath.ZeroInt()
-	totalCustodyShort := sdkmath.ZeroInt()
-
-	// account liabilities from long position
-	liabilitiesLong := sdkmath.ZeroInt()
-	for _, asset := range pool.PoolAssetsLong {
-		liabilitiesLong = liabilitiesLong.Add(asset.Liabilities)
-		totalCustodyLong = totalCustodyLong.Add(asset.Custody)
+	uusdc, found := k.assetProfileKeeper.GetEntry(ctx, "uusdc")
+	if !found {
+		return sdk.Coin{}, nil
 	}
 
-	// account liabilities from short position
-	liabilitiesShort := sdkmath.ZeroInt()
-	for _, asset := range pool.PoolAssetsShort {
-		liabilitiesShort = liabilitiesShort.Add(asset.Liabilities)
-		totalCustodyShort = totalCustodyShort.Add(asset.Custody)
+	// Calculate liabilities for long and short assets using the separate helper function
+	liabilitiesLong, err := k.CalcTotalLiabilities(ctx, pool.PoolAssetsLong, pool.AmmPoolId, uusdc.Denom)
+	if err != nil {
+		return sdk.Coin{}, nil
+	}
+
+	liabilitiesShort, err := k.CalcTotalLiabilities(ctx, pool.PoolAssetsShort, pool.AmmPoolId, uusdc.Denom)
+	if err != nil {
+		return sdk.Coin{}, nil
 	}
 
 	// get funding fee collection address

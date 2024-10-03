@@ -2,10 +2,12 @@ package types
 
 // DONTCOVER
 
-import errorsmod "cosmossdk.io/errors"
+import "cosmossdk.io/errors"
 
 // x/tradeshield module sentinel errors
 var (
-	ErrSample        = errorsmod.Register(ModuleName, 1100, "sample error")
-	ErrOrderNotFound = errorsmod.Register(ModuleName, 1101, "order not found")
+	ErrSample                 = errors.Register(ModuleName, 1100, "sample error")
+	ErrSpotOrderNotFound      = errors.Register(ModuleName, 1101, "spot order not found")
+	ErrPerpetualOrderNotFound = errors.Register(ModuleName, 1102, "perpetual order not found")
+	ErrPriceNotFound          = errors.Register(ModuleName, 1103, "price not found")
 )

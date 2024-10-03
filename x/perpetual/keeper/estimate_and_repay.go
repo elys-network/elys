@@ -30,8 +30,24 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp types.MTP, pool types.Pool
 		return sdkmath.ZeroInt(), types.ErrInvalidPosition
 	}
 
+	returnAmount, err := k.CalcReturnAmount(ctx, mtp, pool, ammPool, repayAmount, amount, baseCurrency)
+	if err != nil {
+		return sdkmath.ZeroInt(), err
+	}
+
+	// update mtp health
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+	if err != nil {
+		return sdkmath.ZeroInt(), err
+	}
+
+	// if return amount positive then update liabilities
+	if returnAmount.IsPositive() {
+		mtp.Liabilities = mtp.Liabilities.Sub(mtp.Liabilities.Mul(amount).Quo(mtp.Custody))
+	}
+
 	// Note: Long settlement is done in trading asset. And short settlement in usdc in Repay function
-	if err := k.Repay(ctx, &mtp, &pool, ammPool, repayAmount, false, amount, baseCurrency); err != nil {
+	if err := k.Repay(ctx, &mtp, &pool, ammPool, returnAmount, amount); err != nil {
 		return sdkmath.ZeroInt(), err
 	}
 

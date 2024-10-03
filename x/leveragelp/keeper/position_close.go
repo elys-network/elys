@@ -7,13 +7,13 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool types.Pool, lpAmount math.Int) (math.Int, error) {
+func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool types.Pool, lpAmount math.Int, isLiquidation bool) (math.Int, error) {
 	if lpAmount.GT(position.LeveragedLpAmount) || lpAmount.IsNegative() {
 		return math.ZeroInt(), types.ErrInvalidCloseSize
 	}
 
 	// Exit liquidity with collateral token
-	_, exitCoinsAfterExitFee, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpAmount, sdk.Coins{}, position.Collateral.Denom)
+	_, exitCoinsAfterExitFee, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpAmount, sdk.Coins{}, position.Collateral.Denom, isLiquidation)
 	if err != nil {
 		return math.ZeroInt(), err
 	}
@@ -26,6 +26,11 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	}
 
 	repayAmount := debt.GetTotalLiablities().Mul(lpAmount).Quo(position.LeveragedLpAmount)
+
+	// Set collateral to same % as reduction in LP position
+	ratio := lpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
+	collateralLeft := position.Collateral.Amount.Sub(position.Collateral.Amount.ToLegacyDec().Mul(ratio).TruncateInt())
+	position.Collateral.Amount = collateralLeft
 
 	// Check if position has enough coins to repay else repay partial
 	bal := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
@@ -117,6 +122,6 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.Position
 		lpAmount = position.LeveragedLpAmount
 	}
 
-	repayAmount, err := k.ForceCloseLong(ctx, position, pool, lpAmount)
+	repayAmount, err := k.ForceCloseLong(ctx, position, pool, lpAmount, false)
 	return &position, repayAmount, err
 }

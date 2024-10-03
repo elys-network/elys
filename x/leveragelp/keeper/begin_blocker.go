@@ -85,7 +85,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 		return true, false, h, fmt.Errorf("position is healthy to close")
 	}
 
-	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount)
+	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount, true)
 	if err != nil {
 		ctx.Logger().Debug(errorsmod.Wrap(err, "error executing liquidation").Error())
 		return isHealthy, true, h, err
@@ -127,7 +127,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		return underStopLossPrice, false, fmt.Errorf("position stop loss price is not <= lp token price")
 	}
 
-	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount)
+	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount, false)
 	if err != nil {
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 		return underStopLossPrice, true, err

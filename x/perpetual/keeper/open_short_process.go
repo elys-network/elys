@@ -32,12 +32,6 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage math.
 		return nil, errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "collateral must be base currency")
 	}
 
-	// Check minimum liabilities.
-	err = k.OpenShortChecker.CheckMinLiabilities(ctx, msg.Collateral, eta, ammPool, mtp.CustodyAsset, baseCurrency)
-	if err != nil {
-		return nil, err
-	}
-
 	// Define custody amount
 	custodyAmount := leveragedAmount
 

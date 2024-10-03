@@ -100,7 +100,7 @@ message QueryCommitmentVestingInfoResponse {
 
 message VestingDetails {
   string id = 1;
-  string totalVesting = 2 [
+  string total_vesting = 2 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
@@ -110,7 +110,7 @@ message VestingDetails {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string vestedSoFar = 4 [
+  string vested_so_far = 4 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false

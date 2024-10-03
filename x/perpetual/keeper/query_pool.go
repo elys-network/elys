@@ -45,7 +45,7 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 				PoolAssetsShort:                      pool.PoolAssetsShort,
 				LastHeightBorrowInterestRateComputed: pool.LastHeightBorrowInterestRateComputed,
 				FundingRate:                          pool.FundingRate,
-				NetOpenInterest:                      k.GetNetOpenInterest(pool),
+				NetOpenInterest:                      k.GetNetOpenInterest(ctx, pool),
 			})
 		}
 
@@ -82,7 +82,7 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 		PoolAssetsShort:                      val.PoolAssetsShort,
 		LastHeightBorrowInterestRateComputed: val.LastHeightBorrowInterestRateComputed,
 		FundingRate:                          val.FundingRate,
-		NetOpenInterest:                      k.GetNetOpenInterest(val),
+		NetOpenInterest:                      k.GetNetOpenInterest(ctx, val),
 	}
 
 	return &types.QueryGetPoolResponse{Pool: pool}, nil

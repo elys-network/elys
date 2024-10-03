@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
@@ -13,61 +14,90 @@ import (
 
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/network"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/client/cli"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MTP) {
+func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpAndPrice) {
 	t.Helper()
 	app := simapp.InitElysTestApp(true)
 	ctx := app.BaseApp.NewContext(true)
 	state := types.GenesisState{}
 
-	mtps := make([]*types.MTP, 0)
+	mtps := make([]*types.MtpAndPrice, 0)
 	// Generate n random accounts with 1000000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, n, math.NewInt(1000000))
 
 	cfg := network.DefaultConfig()
 	for i := 0; i < n; i++ {
-		mtp := types.MTP{
-			Address:                        addr[i].String(),
-			CollateralAsset:                ptypes.BaseCurrency,
-			TradingAsset:                   "ATOM",
-			LiabilitiesAsset:               ptypes.BaseCurrency,
-			CustodyAsset:                   "ATOM",
-			Collateral:                     math.NewInt(0),
-			Liabilities:                    math.NewInt(0),
-			BorrowInterestPaidCollateral:   math.NewInt(0),
-			BorrowInterestPaidCustody:      math.NewInt(0),
-			BorrowInterestUnpaidCollateral: math.NewInt(0),
-			Custody:                        math.NewInt(0),
-			TakeProfitLiabilities:          math.NewInt(0),
-			TakeProfitCustody:              math.NewInt(0),
-			Leverage:                       math.LegacyNewDec(0),
-			MtpHealth:                      math.LegacyNewDec(0),
-			Position:                       types.Position_LONG,
-			Id:                             (uint64)(i + 1),
-			AmmPoolId:                      (uint64)(i + 1),
-			ConsolidateLeverage:            math.LegacyZeroDec(),
-			SumCollateral:                  math.ZeroInt(),
-			TakeProfitPrice:                math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
-			TakeProfitBorrowRate:           math.LegacyOneDec(),
-			FundingFeePaidCollateral:       math.NewInt(0),
-			FundingFeePaidCustody:          math.NewInt(0),
-			FundingFeeReceivedCollateral:   math.NewInt(0),
-			FundingFeeReceivedCustody:      math.NewInt(0),
-			OpenPrice:                      math.LegacyNewDec(0),
-			StopLossPrice:                  math.LegacyNewDec(0),
+		mtp := types.MtpAndPrice{
+			Mtp: &types.MTP{
+				Address:                        addr[i].String(),
+				CollateralAsset:                ptypes.BaseCurrency,
+				TradingAsset:                   "ATOM",
+				LiabilitiesAsset:               ptypes.BaseCurrency,
+				CustodyAsset:                   "ATOM",
+				Collateral:                     math.NewInt(0),
+				Liabilities:                    math.NewInt(0),
+				BorrowInterestPaidCollateral:   math.NewInt(0),
+				BorrowInterestPaidCustody:      math.NewInt(0),
+				BorrowInterestUnpaidCollateral: math.NewInt(0),
+				Custody:                        math.NewInt(0),
+				TakeProfitLiabilities:          math.NewInt(0),
+				TakeProfitCustody:              math.NewInt(0),
+				Leverage:                       math.LegacyNewDec(0),
+				MtpHealth:                      math.LegacyNewDec(0),
+				Position:                       types.Position_LONG,
+				Id:                             (uint64)(i + 1),
+				AmmPoolId:                      (uint64)(i + 1),
+				ConsolidateLeverage:            math.LegacyZeroDec(),
+				SumCollateral:                  math.ZeroInt(),
+				TakeProfitPrice:                math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
+				TakeProfitBorrowRate:           math.LegacyOneDec(),
+				FundingFeePaidCollateral:       math.NewInt(0),
+				FundingFeePaidCustody:          math.NewInt(0),
+				FundingFeeReceivedCollateral:   math.NewInt(0),
+				FundingFeeReceivedCustody:      math.NewInt(0),
+				OpenPrice:                      math.LegacyNewDec(0),
+				StopLossPrice:                  math.LegacyNewDec(0),
+			},
+			TradingAssetPrice: math.LegacyZeroDec(),
+			Pnl:               math.LegacyZeroDec(),
 		}
 
 		mtps = append(mtps, &mtp)
-		state.MtpList = append(state.MtpList, mtp)
+		state.MtpList = append(state.MtpList, *mtp.Mtp)
 	}
 
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf
+
+	// Set oracle price and info
+	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	stateOracle := oracletypes.GenesisState{}
+	stateOracle.Prices = append(stateOracle.Prices, oracletypes.Price{
+		Asset:       "ATOM",
+		Price:       math.LegacyNewDec(4),
+		Source:      oracletypes.BAND,
+		Provider:    provider.String(),
+		Timestamp:   uint64(ctx.BlockTime().Unix()),
+		BlockHeight: uint64(ctx.BlockHeight()),
+	})
+	stateOracle.Params = oracletypes.DefaultParams()
+	stateOracle.PortId = "portid"
+	stateOracle.AssetInfos = append(stateOracle.AssetInfos, oracletypes.AssetInfo{
+		Denom:      "ATOM",
+		Display:    "ATOM",
+		Decimal:    6,
+		BandTicker: "ATOM",
+	})
+
+	bufO, err := cfg.Codec.MarshalJSON(&stateOracle)
+	require.NoError(t, err)
+	cfg.GenesisState[oracletypes.ModuleName] = bufO
 	return network.New(t, cfg), mtps
 }
 
@@ -86,19 +116,19 @@ func TestShowMTP(t *testing.T) {
 
 		args []string
 		err  error
-		obj  *types.MTP
+		obj  *types.MtpAndPrice
 	}{
 		{
 			desc:    "found",
-			addr:    objs[0].Address,
-			idIndex: objs[0].Id,
+			addr:    objs[0].Mtp.Address,
+			idIndex: objs[0].Mtp.Id,
 
 			args: common,
 			obj:  objs[0],
 		},
 		{
 			desc:    "not found",
-			addr:    objs[0].Address,
+			addr:    objs[0].Mtp.Address,
 			idIndex: (uint64)(100000),
 
 			args: common,

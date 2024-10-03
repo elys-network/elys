@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
 //go:generate mockery --srcpkg . --name AuthorizationChecker --structname AuthorizationChecker --filename authorization_checker.go --with-expecter
@@ -50,7 +51,6 @@ type OpenLongChecker interface {
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta math.LegacyDec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
 	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta math.LegacyDec, baseCurrency string, isBroker bool) error
@@ -70,7 +70,6 @@ type OpenShortChecker interface {
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
-	CheckMinLiabilities(ctx sdk.Context, collateralTokenAmt sdk.Coin, eta math.LegacyDec, ammPool ammtypes.Pool, borrowAsset string, baseCurrency string) error
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
 	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta math.LegacyDec, baseCurrency string, isBroker bool) error
@@ -108,6 +107,21 @@ type CloseShortChecker interface {
 	SettleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) (math.Int, error)
 	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, amount math.Int) error
 	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error)
+}
+
+//go:generate mockery --srcpkg . --name CloseEstimationChecker --structname CloseEstimationChecker --filename close_estimation_checker.go --with-expecter
+type CloseEstimationChecker interface {
+	GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (MTP, error)
+	GetPool(
+		ctx sdk.Context,
+		poolId uint64,
+	) (val Pool, found bool)
+	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
+	SettleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) (math.Int, error)
+	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, amount math.Int) error
+	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error)
+	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
+	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -185,4 +199,11 @@ type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val atypes.Entry, found bool)
 	// GetEntryByDenom returns a entry from its denom value
 	GetEntryByDenom(ctx sdk.Context, denom string) (val atypes.Entry, found bool)
+}
+
+type OracleKeeper interface {
+	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) math.LegacyDec
+	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
+	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }

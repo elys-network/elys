@@ -81,4 +81,8 @@ message PerpetualOrder {
   ];
   uint64 position_id = 10;
   Status status = 11;
+  string stop_loss_price = 12 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

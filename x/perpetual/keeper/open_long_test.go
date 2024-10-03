@@ -79,60 +79,6 @@ func TestOpenLong_PoolDisabled(t *testing.T) {
 	mockChecker.AssertExpectations(t)
 }
 
-func TestOpenLong_InsufficientLiabilities(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.OpenLongChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		OpenLongChecker: mockChecker,
-	}
-
-	var (
-		ctx = sdk.Context{} // Mock or setup a context
-		msg = &types.MsgOpen{
-			Creator:      "",
-			Leverage:     math.LegacyNewDec(2),
-			Position:     types.Position_LONG,
-			TradingAsset: "uatom",
-			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-		}
-		ammPool = ammtypes.Pool{
-			PoolId: uint64(42),
-			PoolAssets: []ammtypes.PoolAsset{
-				{
-					Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000)),
-					Weight: math.NewInt(50),
-				},
-				{
-					Token:  sdk.NewCoin("uatom", math.NewInt(10000)),
-					Weight: math.NewInt(50),
-				},
-			},
-		}
-		pool = types.Pool{
-			AmmPoolId: ammPool.PoolId,
-		}
-	)
-
-	// Mock the behaviors to get to the CheckMinLiabilities check
-	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
-	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
-	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil) // Assuming a valid pool is returned
-
-	// Mock the behavior where CheckMinLiabilities returns an error indicating insufficient liabilities
-	liabilityError := errors.New("insufficient liabilities")
-
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, math.LegacyNewDec(1), ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(liabilityError)
-
-	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
-
-	// Expect the custom error indicating insufficient liabilities
-	assert.True(t, errors.Is(err, liabilityError))
-	mockChecker.AssertExpectations(t)
-}
-
 func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 	// Setup the mock checker
 	mockChecker := new(mocks.OpenLongChecker)
@@ -173,10 +119,6 @@ func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
 	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
 	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil)
-
-	eta := math.LegacyNewDec(9)
-
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
 	custodyAmount := math.NewInt(99)
@@ -234,8 +176,6 @@ func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil)
 
 	eta := math.LegacyNewDec(9)
-
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
 	custodyAmount := math.NewInt(99)
@@ -298,8 +238,6 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil)
 
 	eta := math.LegacyNewDec(9)
-
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
 	custodyAmount := math.NewInt(99)
@@ -368,8 +306,6 @@ func TestOpenLong_Success(t *testing.T) {
 	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil)
 
 	eta := math.LegacyNewDec(9)
-
-	mockChecker.On("CheckMinLiabilities", ctx, msg.Collateral, eta, ammPool, msg.TradingAsset, ptypes.BaseCurrency).Return(nil)
 
 	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
 	custodyAmount := math.NewInt(99)
@@ -539,8 +475,7 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 		Custody:                        math.NewInt(486520593),
 		TakeProfitLiabilities:          math.NewInt(473929244),
 		TakeProfitCustody:              math.NewInt(486520593),
-		Leverage:                       math.LegacyNewDec(5),
-		MtpHealth:                      math.LegacyMustNewDecFromStr("1.250000057500000000"),
+		MtpHealth:                      math.LegacyMustNewDecFromStr("1.234567958024691358"),
 		Position:                       types.Position_LONG,
 		Id:                             uint64(1),
 		AmmPoolId:                      uint64(1),
@@ -685,8 +620,7 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 		Custody:                        math.NewInt(50000000),
 		TakeProfitLiabilities:          math.NewInt(48671331),
 		TakeProfitCustody:              math.NewInt(50000000),
-		Leverage:                       math.LegacyNewDec(5),
-		MtpHealth:                      math.LegacyMustNewDecFromStr("1.257169811998802800"),
+		MtpHealth:                      math.LegacyMustNewDecFromStr("1.119902772759909084"),
 		Position:                       types.Position_LONG,
 		Id:                             uint64(1),
 		AmmPoolId:                      uint64(1),
@@ -701,4 +635,109 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 		OpenPrice:                      math.LegacyMustNewDecFromStr("1.017016260000000000"),
 		StopLossPrice:                  math.LegacyNewDec(100),
 	}, mtp)
+}
+
+func TestOpenLongConsolidate_Success(t *testing.T) {
+	// Setup the mock checker
+	mockChecker := new(mocks.OpenLongChecker)
+
+	// Create an instance of Keeper with the mock checker
+	k := keeper.Keeper{
+		OpenLongChecker: mockChecker,
+	}
+
+	var (
+		ctx = sdk.Context{} // Mock or setup a context
+		msg = &types.MsgOpen{
+			Creator:         "",
+			Leverage:        math.LegacyNewDec(10),
+			Position:        types.Position_LONG,
+			TradingAsset:    "uatom",
+			Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
+			TakeProfitPrice: math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
+		}
+		ammPool = ammtypes.Pool{
+			PoolId: uint64(42),
+			PoolAssets: []ammtypes.PoolAsset{
+				{
+					Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000)),
+					Weight: math.NewInt(50),
+				},
+				{
+					Token:  sdk.NewCoin("uatom", math.NewInt(10000000)),
+					Weight: math.NewInt(50),
+				},
+			},
+		}
+		pool = types.Pool{
+			AmmPoolId: ammPool.PoolId,
+		}
+	)
+
+	// Mock behaviors
+	mockChecker.On("GetMaxLeverageParam", ctx).Return(math.LegacyNewDec(50))
+	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
+	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
+	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil)
+
+	eta := math.LegacyNewDec(9)
+
+	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
+	custodyAmount := math.NewInt(99)
+
+	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
+
+	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
+
+	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(nil)
+	mockChecker.On("UpdatePoolHealth", ctx, &pool).Return(nil)
+	mockChecker.On("TakeInCustody", ctx, *mtp, &pool).Return(nil)
+
+	lr := math.LegacyNewDec(50)
+
+	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
+
+	safetyFactor := math.LegacyNewDec(10)
+
+	mockChecker.On("GetSafetyFactor", ctx).Return(safetyFactor)
+
+	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
+
+	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
+	// Expect no error
+	assert.Nil(t, err)
+	mockChecker.AssertExpectations(t)
+
+	msg = &types.MsgOpen{
+		Creator:         "",
+		Leverage:        math.LegacyNewDec(12),
+		Position:        types.Position_LONG,
+		TradingAsset:    "uatom",
+		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
+		TakeProfitPrice: math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
+	}
+
+	eta = math.LegacyNewDec(11)
+
+	leveragedAmtTokenIn = sdk.NewCoin(msg.Collateral.Denom, math.NewInt(12000))
+	custodyAmount = math.NewInt(99)
+	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
+
+	mtp = types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
+	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(nil)
+
+	mockChecker.On("TakeInCustody", ctx, *mtp, &pool).Return(nil)
+
+	lr = math.LegacyNewDec(50)
+
+	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
+
+	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
+	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
+
+	_, err = k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
+	// Expect no error
+	assert.Nil(t, err)
+	mockChecker.AssertExpectations(t)
 }

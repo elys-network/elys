@@ -44,12 +44,6 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, mtp *types.MTP, leverage sdkmat
 		}
 	}
 
-	// Check minimum liabilities.
-	err = k.OpenLongChecker.CheckMinLiabilities(ctx, msg.Collateral, eta, ammPool, mtp.CustodyAsset, baseCurrency)
-	if err != nil {
-		return nil, err
-	}
-
 	// Calculate custody amount.
 	custodyAmount := leveragedAmount
 	// If position is long, calculate custody amount in custody asset

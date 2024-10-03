@@ -570,6 +570,29 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			expTokenOut:            sdk.NewInt64Coin("uusdt", 247913188),
 			expErr:                 false,
 		},
+
+		{
+			desc: "tokenOut is zero",
+			poolAssets: []types.PoolAsset{
+				{
+					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 500_000_000),
+					Weight: sdkmath.NewInt(50),
+				},
+				{
+					Token:  sdk.NewInt64Coin("uusdt", 1500_000_000),
+					Weight: sdkmath.NewInt(50),
+				},
+			},
+			useOracle:              false,
+			externalLiquidityRatio: sdkmath.LegacyNewDec(10),
+			thresholdWeightDiff:    sdk.NewDecWithPrec(20, 2),
+			tokenIn:                sdk.NewInt64Coin(ptypes.BaseCurrency, 0),
+			outTokenDenom:          "uusdt",
+			swapFee:                sdk.NewDecWithPrec(1, 2),
+			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
+			expTokenOut:            sdk.NewInt64Coin("uusdt", 0),
+			expErr:                 true,
+		},
 	} {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
@@ -604,6 +627,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenOut, _, _, weightBonus, err := pool.SwapOutAmtGivenIn(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenIn}, tc.outTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper)
 			if tc.expErr {
 				suite.Require().Error(err)
+				suite.Require().EqualError(err, "amount too low")
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(tokenOut.String(), tc.expTokenOut.String())

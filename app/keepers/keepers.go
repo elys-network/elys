@@ -490,6 +490,12 @@ func NewAppKeeper(
 		app.AssetprofileKeeper,
 	)
 
+	app.CommitmentKeeper.SetHooks(
+		commitmentmodulekeeper.NewMultiCommitmentHooks(
+			app.EstakingKeeper.CommitmentHooks(),
+		),
+	)
+
 	app.DistrKeeper = distrkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[distrtypes.StoreKey]),
@@ -498,6 +504,17 @@ func NewAppKeeper(
 		app.EstakingKeeper,
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.PerpetualKeeper = perpetualmodulekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[perpetualmoduletypes.StoreKey]),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AmmKeeper,
+		app.BankKeeper,
+		app.OracleKeeper,
+		app.AssetprofileKeeper,
+		&app.ParameterKeeper,
 	)
 
 	app.MasterchefKeeper = *masterchefmodulekeeper.NewKeeper(
@@ -513,6 +530,7 @@ func NewAppKeeper(
 		app.TokenomicsKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
+		app.PerpetualKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -642,18 +660,12 @@ func NewAppKeeper(
 		//AddRoute(upgradetypes.RouterKey, upgradetypes.NewSoftwareUpgradeProposal(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 
-	app.GovKeeper.SetLegacyRouter(govRouter)
+	// The gov proposal types can be individually enabled
+	//if len(enabledProposals) != 0 {
+	//	govRouter.AddRoute(wasmtypes.RouterKey, wasmkeeper.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
+	//}
 
-	app.PerpetualKeeper = perpetualmodulekeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[perpetualmoduletypes.StoreKey]),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.AmmKeeper,
-		app.BankKeeper,
-		app.OracleKeeper,
-		app.AssetprofileKeeper,
-		&app.ParameterKeeper,
-	)
+	app.GovKeeper.SetLegacyRouter(govRouter)
 
 	app.ClockKeeper = *clockmodulekeeper.NewKeeper(
 		runtime.NewKVStoreService(app.keys[clockmoduletypes.StoreKey]),
@@ -695,6 +707,9 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[tradeshieldmoduletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AmmKeeper,
+		app.TierKeeper,
+		app.PerpetualKeeper,
 	)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
@@ -741,20 +756,29 @@ func NewAppKeeper(
 
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	app.EpochsKeeper = app.EpochsKeeper.SetHooks(
-		epochsmodulekeeper.NewMultiEpochHooks(
-			// insert epoch hooks receivers here
-			app.OracleKeeper.Hooks(),
-			app.CommitmentKeeper.Hooks(),
-			app.BurnerKeeper.Hooks(),
-			app.PerpetualKeeper.Hooks(),
-		),
-	)
-
 	app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
 		app.MasterchefKeeper.StableStakeHooks(),
 		app.TierKeeper.StableStakeHooks(),
 	))
+
+	app.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
+		app.TierKeeper.LeverageLpHooks(),
+	))
+
+	app.EstakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(
+			// insert staking hooks receivers here
+			app.SlashingKeeper.Hooks(),
+			app.DistrKeeper.Hooks(),
+			app.EstakingKeeper.StakingHooks(),
+			app.TierKeeper.StakingHooks(),
+		),
+	)
+	app.GovKeeper.SetHooks(
+		govtypes.NewMultiGovHooks(
+		// register the governance hooks
+		),
+	)
 
 	app.AmmKeeper.SetHooks(
 		ammmoduletypes.NewMultiAmmHooks(
@@ -766,25 +790,15 @@ func NewAppKeeper(
 		),
 	)
 
-	app.EstakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(
-			// insert staking hooks receivers here
-			app.SlashingKeeper.Hooks(),
-			app.DistrKeeper.Hooks(),
-			app.EstakingKeeper.StakingHooks(),
-			app.TierKeeper.StakingHooks(),
+	app.EpochsKeeper = app.EpochsKeeper.SetHooks(
+		epochsmodulekeeper.NewMultiEpochHooks(
+			// insert epoch hooks receivers here
+			app.OracleKeeper.Hooks(),
+			app.CommitmentKeeper.Hooks(),
+			app.BurnerKeeper.Hooks(),
+			app.PerpetualKeeper.Hooks(),
 		),
 	)
-
-	app.CommitmentKeeper.SetHooks(
-		commitmentmodulekeeper.NewMultiCommitmentHooks(
-			app.EstakingKeeper.CommitmentHooks(),
-		),
-	)
-
-	app.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
-		app.TierKeeper.LeverageLpHooks(),
-	))
 
 	app.PerpetualKeeper.SetHooks(
 		perpetualmoduletypes.NewMultiPerpetualHooks(
