@@ -21,10 +21,8 @@ type (
 		types.PositionChecker
 		types.PoolChecker
 		types.OpenChecker
-		types.OpenLongChecker
-		types.OpenShortChecker
-		types.CloseLongChecker
-		types.CloseShortChecker
+		types.OpenDefineAssetsChecker
+		types.ClosePositionChecker
 		types.CloseEstimationChecker
 
 		cdc                codec.BinaryCodec
@@ -73,10 +71,8 @@ func NewKeeper(
 	keeper.PositionChecker = keeper
 	keeper.PoolChecker = keeper
 	keeper.OpenChecker = keeper
-	keeper.OpenLongChecker = keeper
-	keeper.OpenShortChecker = keeper
-	keeper.CloseLongChecker = keeper
-	keeper.CloseShortChecker = keeper
+	keeper.OpenDefineAssetsChecker = keeper
+	keeper.ClosePositionChecker = keeper
 	keeper.CloseEstimationChecker = keeper
 
 	return keeper
@@ -137,7 +133,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		etaAmt := liabilitiesDec.TruncateInt()
 		etaAmtToken := sdk.NewCoin(mtp.CollateralAsset, etaAmt)
 		// Calculate base currency amount given atom out amount and we use it liabilty amount in base currency
-		liabilityAmt, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, etaAmtToken, baseCurrency, *ammPool)
+		liabilityAmt, err := k.OpenDefineAssetsChecker.EstimateSwapGivenOut(ctx, etaAmtToken, baseCurrency, *ammPool)
 		if err != nil {
 			return err
 		}
@@ -148,7 +144,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	// If position is short, liabilities should be swapped to liabilities asset
 	if mtp.Position == types.Position_SHORT {
 		liabilitiesAmtTokenIn := sdk.NewCoin(baseCurrency, liabilitiesDec.TruncateInt())
-		liabilitiesAmt, err := k.OpenShortChecker.EstimateSwap(ctx, liabilitiesAmtTokenIn, mtp.LiabilitiesAsset, *ammPool)
+		liabilitiesAmt, err := k.OpenDefineAssetsChecker.EstimateSwap(ctx, liabilitiesAmtTokenIn, mtp.LiabilitiesAsset, *ammPool)
 		if err != nil {
 			return err
 		}
