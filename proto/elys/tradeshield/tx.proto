@@ -19,6 +19,7 @@ service Msg {
   rpc DeletePendingPerpetualOrder (MsgDeletePendingPerpetualOrder) returns (MsgDeletePendingPerpetualOrderResponse);
   rpc UpdateParams                (MsgUpdateParams               ) returns (MsgUpdateParamsResponse               );
   rpc ExecuteOrders               (MsgExecuteOrders              ) returns (MsgExecuteOrdersResponse              );
+  rpc CancelSpotOrders            (MsgCancelSpotOrders           ) returns (MsgCancelSpotOrdersResponse           );
 }
 message MsgCreatePendingSpotOrder {
   SpotOrderType            order_type         = 1;
@@ -106,3 +107,11 @@ message MsgExecuteOrders {
 
 message MsgExecuteOrdersResponse {}
 
+message MsgUpdateStopLossResponse {}
+
+message MsgCancelSpotOrders {
+           string creator              = 1;
+  repeated uint64 spot_order_ids       = 2;
+}
+
+message MsgCancelSpotOrdersResponse {}
