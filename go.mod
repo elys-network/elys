@@ -17,7 +17,7 @@ require (
 	cosmossdk.io/x/tx v0.13.4
 	cosmossdk.io/x/upgrade v0.1.4
 	github.com/CosmWasm/wasmd v0.51.0
-	github.com/CosmWasm/wasmvm v1.5.0 // Do we need to upgarde this? To which version?
+	github.com/CosmWasm/wasmvm/v2 v2.0.0
 	github.com/bandprotocol/bandchain-packet v0.0.2
 	github.com/cometbft/cometbft v0.38.11
 	github.com/cometbft/cometbft-db v0.12.0
@@ -191,7 +191,6 @@ require (
 )
 
 require (
-	github.com/CosmWasm/wasmvm/v2 v2.0.0
 	github.com/bufbuild/buf v1.15.1
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0-20240820212149-6a9e98a8be6e
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3
