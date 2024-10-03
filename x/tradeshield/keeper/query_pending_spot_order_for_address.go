@@ -16,8 +16,12 @@ func (k Keeper) PendingSpotOrderForAddress(goCtx context.Context, req *types.Que
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Process the query
-	_ = ctx
+	res, _, err := k.GetPendingSpotOrdersForAddress(ctx, req.Address, nil)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
 
-	return &types.QueryPendingSpotOrderForAddressResponse{}, nil
+	return &types.QueryPendingSpotOrderForAddressResponse{
+		PendingSpotOrder: res,
+	}, nil
 }

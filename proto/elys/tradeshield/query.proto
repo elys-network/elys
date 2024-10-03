@@ -99,11 +99,15 @@ message QueryPendingPerpetualOrderForAddressRequest {
   string address = 1;
 }
 
-message QueryPendingPerpetualOrderForAddressResponse {}
+message QueryPendingPerpetualOrderForAddressResponse {
+  repeated PerpetualOrder                         pending_perpetual_orders = 1 [(gogoproto.nullable) = false];
+}
 
 message QueryPendingSpotOrderForAddressRequest {
   string address = 1;
 }
 
-message QueryPendingSpotOrderForAddressResponse {}
+message QueryPendingSpotOrderForAddressResponse {
+  repeated SpotOrder                              pending_spot_orders = 1 [(gogoproto.nullable) = false];
+}
 
