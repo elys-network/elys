@@ -113,6 +113,8 @@ jobs:
           # recover keys
           echo "${{ secrets.PASSPHRASE_FUJI }}"     | $ELYSD keys import fuji     --keyring-backend test /tmp/private_key_fuji.txt
           echo "${{ secrets.PASSPHRASE_MALLORCA }}" | $ELYSD keys import mallorca --keyring-backend test /tmp/private_key_mallorca.txt
+          a = $ELYSD keys import bora --keyring-backend test 
+          echo "all keys: " $a
           # echo "${{ secrets.PASSPHRASE_BORA }}"     | $ELYSD keys import bora --keyring-backend test /tmp/private_key_bora.txt
 
           # get checksum
