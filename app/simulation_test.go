@@ -17,7 +17,6 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -156,7 +155,7 @@ func TestAppStateDeterminism(t *testing.T) {
 		for j := 0; j < numTimesToRunPerSeed; j++ {
 			var logger log.Logger
 			if simcli.FlagVerboseValue {
-				logger = log.TestingLogger()
+				logger = log.NewNopLogger()
 			} else {
 				logger = log.NewNopLogger()
 			}
@@ -325,8 +324,8 @@ func TestAppImportExport(t *testing.T) {
 		}
 	}()
 
-	ctxA := bApp.NewContext(true, tmproto.Header{Height: bApp.LastBlockHeight()})
-	ctxB := newApp.NewContext(true, tmproto.Header{Height: bApp.LastBlockHeight()})
+	ctxA := bApp.NewContext(true)
+	ctxB := newApp.NewContext(true)
 	newApp.ModuleManager().InitGenesis(ctxB, bApp.AppCodec(), genesisState)
 	newApp.StoreConsensusParams(ctxB, exported.ConsensusParams)
 

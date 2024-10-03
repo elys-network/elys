@@ -3,6 +3,7 @@ package cli_test
 import (
 	"cosmossdk.io/math"
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
@@ -30,7 +31,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	// Generate n random accounts with 1000000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, n, math.NewInt(1000000))
 
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig(t.TempDir())
 	for i := 0; i < n; i++ {
 		mtp := types.MtpAndPrice{
 			Mtp: &types.MTP{
@@ -47,7 +48,6 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 				Custody:                        math.NewInt(0),
 				TakeProfitLiabilities:          math.NewInt(0),
 				TakeProfitCustody:              math.NewInt(0),
-				Leverage:                       math.LegacyNewDec(0),
 				MtpHealth:                      math.LegacyNewDec(0),
 				Position:                       types.Position_LONG,
 				Id:                             (uint64)(i + 1),

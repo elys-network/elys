@@ -13,7 +13,7 @@ import (
 func setupNetwork(t *testing.T) *network.Network {
 	t.Helper()
 
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig(t.TempDir())
 	return network.New(t, cfg)
 }
 

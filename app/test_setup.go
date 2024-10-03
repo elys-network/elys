@@ -165,7 +165,7 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 			MinSelfDelegation: math.OneInt(),
 		}
 		validators = append(validators, validator)
-		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress().String(), val.String(), math.LegacyOneDec()))
+		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress().String(), sdk.ValAddress(val.Address).String(), math.LegacyOneDec()))
 	}
 
 	// set validators and delegations

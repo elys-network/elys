@@ -22,7 +22,7 @@ import (
 
 func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool) {
 	t.Helper()
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig(t.TempDir())
 	state := types.GenesisState{}
 	require.NoError(t, cfg.Codec.UnmarshalJSON(cfg.GenesisState[types.ModuleName], &state))
 

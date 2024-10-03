@@ -19,7 +19,7 @@ import (
 
 func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool) {
 	t.Helper()
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig(t.TempDir())
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
 		pool := types.NewPool((uint64)(i))
