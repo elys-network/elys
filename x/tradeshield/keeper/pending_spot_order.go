@@ -3,11 +3,15 @@ package keeper
 import (
 	"encoding/binary"
 	"errors"
+	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // GetPendingSpotOrderCount get the total number of pendingSpotOrder
@@ -77,6 +81,35 @@ func (k Keeper) GetPendingSpotOrder(ctx sdk.Context, id uint64) (val types.SpotO
 	}
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+func (k Keeper) GetPendingSpotOrdersForAddress(ctx sdk.Context, positionAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.SpotOrder, *query.PageResponse, error) {
+	var orders []*types.SpotOrder
+
+	store := ctx.KVStore(k.storeKey)
+	positionStore := prefix.NewStore(store, types.GetSpotOrderPrefixForAddress(positionAddress))
+
+	if pagination == nil {
+		pagination = &query.PageRequest{
+			Limit: types.MaxPageLimit,
+		}
+	}
+
+	if pagination.Limit > types.MaxPageLimit {
+		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
+	}
+
+	pageRes, err := query.Paginate(positionStore, pagination, func(key []byte, value []byte) error {
+		var order types.SpotOrder
+		k.cdc.MustUnmarshal(value, &order)
+		orders = append(orders, &order)
+		return nil
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return orders, pageRes, nil
 }
 
 // RemovePendingSpotOrder removes a pendingSpotOrder from the store

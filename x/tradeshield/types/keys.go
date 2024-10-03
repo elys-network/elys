@@ -4,7 +4,12 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 )
+
+const MaxPageLimit = 50000
 
 const (
 	// ModuleName defines the module name
@@ -33,6 +38,22 @@ var (
 	PendingPerpetualOrderCountKey = []byte{0x06}
 	SortedPerpetualOrderKey       = []byte{0x07}
 )
+
+func GetSpotOrderKey(creator sdk.AccAddress, id uint64) []byte {
+	return append(PendingSpotOrderKey, append(address.MustLengthPrefix(creator), GetUint64Bytes(id)...)...)
+}
+
+func GetPerpetualOrderKey(creator sdk.AccAddress, id uint64) []byte {
+	return append(PendingPerpetualOrderKey, append(address.MustLengthPrefix(creator), GetUint64Bytes(id)...)...)
+}
+
+func GetSpotOrderPrefixForAddress(creator sdk.AccAddress) []byte {
+	return append(PendingSpotOrderKey, address.MustLengthPrefix(creator)...)
+}
+
+func GetPendingOrderPrefixForAddress(creator sdk.AccAddress) []byte {
+	return append(PendingPerpetualOrderKey, address.MustLengthPrefix(creator)...)
+}
 
 func GenSpotKey(order SpotOrder) (string, error) {
 	if order.OrderType == SpotOrderType_MARKETBUY {
@@ -78,4 +99,16 @@ func DecodeUint64Slice(bz []byte) ([]uint64, error) {
 		slice[i] = binary.BigEndian.Uint64(bz[i*8:])
 	}
 	return slice, nil
+}
+
+// GetUint64Bytes returns the byte representation of the ID
+func GetUint64Bytes(ID uint64) []byte {
+	IDBz := make([]byte, 8)
+	binary.BigEndian.PutUint64(IDBz, ID)
+	return IDBz
+}
+
+// GetUint64FromBytes returns ID in uint64 format from a byte array
+func GetUint64FromBytes(bz []byte) uint64 {
+	return binary.BigEndian.Uint64(bz)
 }
