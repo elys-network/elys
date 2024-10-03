@@ -21,6 +21,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgDeletePendingPerpetualOrder{}, "tradeshield/DeletePendingPerpetualOrder")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "tradeshield/UpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgExecuteOrders{}, "tradeshield/ExecuteOrders")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelSpotOrders{}, "tradeshield/CancelSpotOrders")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -29,6 +30,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgCreatePendingSpotOrder{},
 		&MsgUpdatePendingSpotOrder{},
 		&MsgDeletePendingSpotOrder{},
+		&MsgCancelSpotOrders{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreatePendingPerpetualOrder{},
