@@ -39982,11 +39982,11 @@ paths:
                   properties:
                     id:
                       type: string
-                    totalVesting:
+                    total_vesting:
                       type: string
                     claimed:
                       type: string
-                    vestedSoFar:
+                    vested_so_far:
                       type: string
                     remaining_blocks:
                       type: string
@@ -43721,8 +43721,11 @@ paths:
                         type: string
                       take_profit_custody:
                         type: string
+<<<<<<< HEAD
+=======
                       leverage:
                         type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                       mtp_health:
                         type: string
                       position:
@@ -43774,6 +43777,11 @@ paths:
                         format: uint64
                   trading_asset_price:
                     type: string
+<<<<<<< HEAD
+                  pnl:
+                    type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
         default:
           description: An unexpected error response.
           schema:
@@ -43848,8 +43856,11 @@ paths:
                           type: string
                         take_profit_custody:
                           type: string
+<<<<<<< HEAD
+=======
                         leverage:
                           type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                         mtp_health:
                           type: string
                         position:
@@ -43901,6 +43912,11 @@ paths:
                           format: uint64
                     trading_asset_price:
                       type: string
+<<<<<<< HEAD
+                    pnl:
+                      type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
               pagination:
                 type: object
                 properties:
@@ -44055,8 +44071,11 @@ paths:
                           type: string
                         take_profit_custody:
                           type: string
+<<<<<<< HEAD
+=======
                         leverage:
                           type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                         mtp_health:
                           type: string
                         position:
@@ -44253,23 +44272,8 @@ paths:
                   method
 
                   signatures required by gogoproto.
-              min_collateral:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-              valid_collateral:
-                type: boolean
+              interest_amount:
+                type: string
               position_size:
                 type: object
                 properties:
@@ -44324,6 +44328,36 @@ paths:
                 type: string
               price_impact:
                 type: string
+              borrow_fee:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              funding_fee:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -44397,6 +44431,8 @@ paths:
                   borrow_interest_rate_max:
                     type: string
                   borrow_interest_rate_min:
+                    type: string
+                  min_borrow_interest_amount:
                     type: string
                   borrow_interest_rate_increase:
                     type: string
@@ -44785,8 +44821,11 @@ paths:
                           type: string
                         take_profit_custody:
                           type: string
+<<<<<<< HEAD
+=======
                         leverage:
                           type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                         mtp_health:
                           type: string
                         position:
@@ -44838,6 +44877,11 @@ paths:
                           format: uint64
                     trading_asset_price:
                       type: string
+<<<<<<< HEAD
+                    pnl:
+                      type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
               pagination:
                 type: object
                 properties:
@@ -45486,11 +45530,11 @@ paths:
           schema:
             type: object
             properties:
-              ammPrice:
+              amm_price:
                 type: string
-              oraclePrice:
+              oracle_price:
                 type: string
-              oraclePriceDec:
+              oracle_price_dec:
                 type: string
         default:
           description: An unexpected error response.
@@ -45685,7 +45729,7 @@ paths:
                 type: string
               unbondings:
                 type: string
-              totalVested:
+              total_vested:
                 type: string
         default:
           description: An unexpected error response.
@@ -46310,7 +46354,7 @@ paths:
           schema:
             type: object
             properties:
-              PendingPerpetualOrder:
+              pending_perpetual_order:
                 type: array
                 items:
                   type: object
@@ -46494,7 +46538,7 @@ paths:
           schema:
             type: object
             properties:
-              PendingPerpetualOrder:
+              pending_perpetual_order:
                 type: object
                 properties:
                   order_id:
@@ -46587,6 +46631,40 @@ paths:
           format: uint64
       tags:
         - Query
+  /elys-network/elys/tradeshield/pending_perpetual_order_for_address/{address}:
+    get:
+      summary: Queries a list of PendingPerpetualOrderForAddress items.
+      operationId: ElysTradeshieldPendingPerpetualOrderForAddress
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /elys-network/elys/tradeshield/pending_spot_order:
     get:
       operationId: ElysTradeshieldPendingSpotOrderAll
@@ -46596,7 +46674,7 @@ paths:
           schema:
             type: object
             properties:
-              PendingSpotOrder:
+              pending_spot_order:
                 type: array
                 items:
                   type: object
@@ -46772,7 +46850,7 @@ paths:
           schema:
             type: object
             properties:
-              PendingSpotOrder:
+              pending_spot_order:
                 type: object
                 properties:
                   order_type:
@@ -46855,6 +46933,40 @@ paths:
           required: true
           type: string
           format: uint64
+      tags:
+        - Query
+  /elys-network/elys/tradeshield/pending_spot_order_for_address/{address}:
+    get:
+      summary: Queries a list of PendingSpotOrderForAddress items.
+      operationId: ElysTradeshieldPendingSpotOrderForAddress
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /elys-network/elys/transferhook/params:
@@ -87644,11 +87756,11 @@ definitions:
           properties:
             id:
               type: string
-            totalVesting:
+            total_vesting:
               type: string
             claimed:
               type: string
-            vestedSoFar:
+            vested_so_far:
               type: string
             remaining_blocks:
               type: string
@@ -87807,11 +87919,11 @@ definitions:
     properties:
       id:
         type: string
-      totalVesting:
+      total_vesting:
         type: string
       claimed:
         type: string
-      vestedSoFar:
+      vested_so_far:
         type: string
       remaining_blocks:
         type: string
@@ -89998,8 +90110,6 @@ definitions:
         type: string
       take_profit_custody:
         type: string
-      leverage:
-        type: string
       mtp_health:
         type: string
       position:
@@ -90084,8 +90194,11 @@ definitions:
                 type: string
               take_profit_custody:
                 type: string
+<<<<<<< HEAD
+=======
               leverage:
                 type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
               mtp_health:
                 type: string
               position:
@@ -90137,6 +90250,11 @@ definitions:
                 format: uint64
           trading_asset_price:
             type: string
+<<<<<<< HEAD
+          pnl:
+            type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
   elys.perpetual.MsgAddCollateralResponse:
     type: object
   elys.perpetual.MsgClosePositionsResponse:
@@ -90197,8 +90315,6 @@ definitions:
             type: string
           take_profit_custody:
             type: string
-          leverage:
-            type: string
           mtp_health:
             type: string
           position:
@@ -90250,6 +90366,11 @@ definitions:
             format: uint64
       trading_asset_price:
         type: string
+<<<<<<< HEAD
+      pnl:
+        type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
   elys.perpetual.Params:
     type: object
     properties:
@@ -90258,6 +90379,8 @@ definitions:
       borrow_interest_rate_max:
         type: string
       borrow_interest_rate_min:
+        type: string
+      min_borrow_interest_amount:
         type: string
       borrow_interest_rate_increase:
         type: string
@@ -90301,6 +90424,9 @@ definitions:
         type: string
       swap_fee:
         type: string
+      max_limit_order:
+        type: string
+        format: int64
     description: Params defines the parameters for the module.
   elys.perpetual.ParamsResponse:
     type: object
@@ -90314,6 +90440,8 @@ definitions:
           borrow_interest_rate_max:
             type: string
           borrow_interest_rate_min:
+            type: string
+          min_borrow_interest_amount:
             type: string
           borrow_interest_rate_increase:
             type: string
@@ -90357,6 +90485,9 @@ definitions:
             type: string
           swap_fee:
             type: string
+          max_limit_order:
+            type: string
+            format: int64
     description: ParamsResponse is response type for the Query/Params RPC method.
   elys.perpetual.PoolAsset:
     type: object
@@ -90489,8 +90620,11 @@ definitions:
                   type: string
                 take_profit_custody:
                   type: string
+<<<<<<< HEAD
+=======
                 leverage:
                   type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                 mtp_health:
                   type: string
                 position:
@@ -90542,6 +90676,11 @@ definitions:
                   format: uint64
             trading_asset_price:
               type: string
+<<<<<<< HEAD
+            pnl:
+              type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
       pagination:
         type: object
         properties:
@@ -90605,8 +90744,11 @@ definitions:
                   type: string
                 take_profit_custody:
                   type: string
+<<<<<<< HEAD
+=======
                 leverage:
                   type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                 mtp_health:
                   type: string
                 position:
@@ -90658,6 +90800,11 @@ definitions:
                   format: uint64
             trading_asset_price:
               type: string
+<<<<<<< HEAD
+            pnl:
+              type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
       pagination:
         type: object
         properties:
@@ -90721,8 +90868,11 @@ definitions:
                   type: string
                 take_profit_custody:
                   type: string
+<<<<<<< HEAD
+=======
                 leverage:
                   type: string
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                 mtp_health:
                   type: string
                 position:
@@ -90774,6 +90924,11 @@ definitions:
                   format: uint64
             trading_asset_price:
               type: string
+<<<<<<< HEAD
+            pnl:
+              type: string
+=======
+>>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
       pagination:
         type: object
         properties:
@@ -91046,20 +91201,8 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      min_collateral:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      valid_collateral:
-        type: boolean
+      interest_amount:
+        type: string
       position_size:
         type: object
         properties:
@@ -91108,6 +91251,30 @@ definitions:
         type: string
       price_impact:
         type: string
+      borrow_fee:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      funding_fee:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.perpetual.StatusResponse:
     type: object
     properties:
@@ -91305,11 +91472,11 @@ definitions:
   elys.tier.QueryGetConsolidatedPriceResponse:
     type: object
     properties:
-      ammPrice:
+      amm_price:
         type: string
-      oraclePrice:
+      oracle_price:
         type: string
-      oraclePriceDec:
+      oracle_price_dec:
         type: string
   elys.tier.QueryGetPortfolioResponse:
     type: object
@@ -91361,7 +91528,7 @@ definitions:
         type: string
       unbondings:
         type: string
-      totalVested:
+      total_vested:
         type: string
   elys.tokenomics.Airdrop:
     type: object
@@ -91822,7 +91989,7 @@ definitions:
   elys.tradeshield.QueryAllPendingPerpetualOrderResponse:
     type: object
     properties:
-      PendingPerpetualOrder:
+      pending_perpetual_order:
         type: array
         items:
           type: object
@@ -91920,7 +92087,7 @@ definitions:
   elys.tradeshield.QueryAllPendingSpotOrderResponse:
     type: object
     properties:
-      PendingSpotOrder:
+      pending_spot_order:
         type: array
         items:
           type: object
@@ -92010,7 +92177,7 @@ definitions:
   elys.tradeshield.QueryGetPendingPerpetualOrderResponse:
     type: object
     properties:
-      PendingPerpetualOrder:
+      pending_perpetual_order:
         type: object
         properties:
           order_id:
@@ -92080,7 +92247,7 @@ definitions:
   elys.tradeshield.QueryGetPendingSpotOrderResponse:
     type: object
     properties:
-      PendingSpotOrder:
+      pending_spot_order:
         type: object
         properties:
           order_type:
@@ -92171,6 +92338,10 @@ definitions:
           minimum_deposit:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.tradeshield.QueryPendingPerpetualOrderForAddressResponse:
+    type: object
+  elys.tradeshield.QueryPendingSpotOrderForAddressResponse:
+    type: object
   elys.tradeshield.SpotOrder:
     type: object
     properties:
