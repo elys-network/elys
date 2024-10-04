@@ -166,9 +166,6 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 		return nil, err
 	}
 
-	// Calculate consolidate liability and update consolidate leverage
-	mtp.ConsolidateLeverage = types.CalcMTPConsolidateLiability(&mtp)
-
 	// Set MTP
 	err = k.OpenDefineAssetsChecker.SetMTP(ctx, &mtp)
 	if err != nil {
