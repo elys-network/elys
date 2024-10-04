@@ -17,11 +17,11 @@ import (
 
 func TestCloseShort_MtpNotFound(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.CloseShortChecker)
+	mockChecker := new(mocks.ClosePositionChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		CloseShortChecker: mockChecker,
+		ClosePositionChecker: mockChecker,
 	}
 
 	var (
@@ -36,7 +36,7 @@ func TestCloseShort_MtpNotFound(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(types.MTP{}, types.ErrMTPDoesNotExist)
 
-	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
+	_, _, err := k.ClosePosition(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about the mtp not existing
 	assert.True(t, errors.Is(err, types.ErrMTPDoesNotExist))
@@ -45,11 +45,11 @@ func TestCloseShort_MtpNotFound(t *testing.T) {
 
 func TestCloseShort_InvalidCloseSize(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.CloseShortChecker)
+	mockChecker := new(mocks.ClosePositionChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		CloseShortChecker: mockChecker,
+		ClosePositionChecker: mockChecker,
 	}
 
 	var (
@@ -68,7 +68,7 @@ func TestCloseShort_InvalidCloseSize(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 
-	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
+	_, _, err := k.ClosePosition(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about the pool not existing
 	assert.True(t, errors.Is(err, types.ErrInvalidCloseSize))
@@ -77,11 +77,11 @@ func TestCloseShort_InvalidCloseSize(t *testing.T) {
 
 func TestCloseShort_PoolNotFound(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.CloseShortChecker)
+	mockChecker := new(mocks.ClosePositionChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		CloseShortChecker: mockChecker,
+		ClosePositionChecker: mockChecker,
 	}
 
 	var (
@@ -101,7 +101,7 @@ func TestCloseShort_PoolNotFound(t *testing.T) {
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(types.Pool{}, false)
 
-	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
+	_, _, err := k.ClosePosition(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about the pool not existing
 	assert.True(t, errors.Is(err, types.ErrInvalidBorrowingAsset))
@@ -110,11 +110,11 @@ func TestCloseShort_PoolNotFound(t *testing.T) {
 
 func TestCloseShort_AmmPoolNotFound(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.CloseShortChecker)
+	mockChecker := new(mocks.ClosePositionChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		CloseShortChecker: mockChecker,
+		ClosePositionChecker: mockChecker,
 	}
 
 	var (
@@ -135,7 +135,7 @@ func TestCloseShort_AmmPoolNotFound(t *testing.T) {
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(types.Pool{}, true)
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammtypes.Pool{}, errorsmod.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset))
 
-	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
+	_, _, err := k.ClosePosition(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about the pool not existing
 	assert.True(t, errors.Is(err, types.ErrPoolDoesNotExist))
@@ -144,11 +144,11 @@ func TestCloseShort_AmmPoolNotFound(t *testing.T) {
 
 func TestCloseShort_ErrorSettleBorrowInterest(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.CloseShortChecker)
+	mockChecker := new(mocks.ClosePositionChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		CloseShortChecker: mockChecker,
+		ClosePositionChecker: mockChecker,
 	}
 
 	var (
@@ -175,7 +175,7 @@ func TestCloseShort_ErrorSettleBorrowInterest(t *testing.T) {
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
 	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(sdk.ZeroInt(), errors.New("error executing handle borrow interest"))
 
-	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
+	_, _, err := k.ClosePosition(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about handle borrow interest
 	assert.Equal(t, errors.New("error executing handle borrow interest"), err)
@@ -184,11 +184,11 @@ func TestCloseShort_ErrorSettleBorrowInterest(t *testing.T) {
 
 func TestCloseShort_ErrorTakeOutCustody(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.CloseShortChecker)
+	mockChecker := new(mocks.ClosePositionChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		CloseShortChecker: mockChecker,
+		ClosePositionChecker: mockChecker,
 	}
 
 	var (
@@ -216,7 +216,7 @@ func TestCloseShort_ErrorTakeOutCustody(t *testing.T) {
 	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(sdk.ZeroInt(), nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(errors.New("error executing take out custody"))
 
-	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
+	_, _, err := k.ClosePosition(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about take out custody
 	assert.Equal(t, errors.New("error executing take out custody"), err)
@@ -225,11 +225,11 @@ func TestCloseShort_ErrorTakeOutCustody(t *testing.T) {
 
 func TestCloseShort_ErrorEstimateAndRepay(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.CloseShortChecker)
+	mockChecker := new(mocks.ClosePositionChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		CloseShortChecker: mockChecker,
+		ClosePositionChecker: mockChecker,
 	}
 
 	var (
@@ -258,7 +258,7 @@ func TestCloseShort_ErrorEstimateAndRepay(t *testing.T) {
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
 	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(math.Int{}, errors.New("error executing estimate and repay"))
 
-	_, _, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
+	_, _, err := k.ClosePosition(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect an error about estimate and repay
 	assert.Equal(t, errors.New("error executing estimate and repay"), err)
@@ -267,11 +267,11 @@ func TestCloseShort_ErrorEstimateAndRepay(t *testing.T) {
 
 func TestCloseShort_SuccessfulClosingLongPosition(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.CloseShortChecker)
+	mockChecker := new(mocks.ClosePositionChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		CloseShortChecker: mockChecker,
+		ClosePositionChecker: mockChecker,
 	}
 
 	var (
@@ -301,7 +301,7 @@ func TestCloseShort_SuccessfulClosingLongPosition(t *testing.T) {
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
 	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(repayAmount, nil)
 
-	mtpOut, repayAmountOut, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
+	mtpOut, repayAmountOut, err := k.ClosePosition(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect no error
 	assert.Nil(t, err)
@@ -312,11 +312,11 @@ func TestCloseShort_SuccessfulClosingLongPosition(t *testing.T) {
 
 func TestCloseShort_PartiallyClosingShortPosition(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.CloseShortChecker)
+	mockChecker := new(mocks.ClosePositionChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		CloseShortChecker: mockChecker,
+		ClosePositionChecker: mockChecker,
 	}
 
 	var (
@@ -346,7 +346,7 @@ func TestCloseShort_PartiallyClosingShortPosition(t *testing.T) {
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
 	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(repayAmount, nil)
 
-	mtpOut, repayAmountOut, err := k.CloseShort(ctx, msg, ptypes.BaseCurrency)
+	mtpOut, repayAmountOut, err := k.ClosePosition(ctx, msg, ptypes.BaseCurrency)
 
 	// Expect no error
 	assert.Nil(t, err)
