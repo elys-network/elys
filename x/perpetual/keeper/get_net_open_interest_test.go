@@ -14,11 +14,11 @@ import (
 )
 
 func TestNotFound_GetNetOpenInterest(t *testing.T) {
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
 	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
-	k.OpenLongChecker = mockChecker
+	k.OpenDefineAssetsChecker = mockChecker
 
 	ctx := sdk.Context{}
 	mockAssetProfile.On("GetEntry", ctx, ptypes.BaseCurrency).Return(assetprofiletypes.Entry{BaseDenom: ptypes.BaseCurrency, Denom: ptypes.BaseCurrency}, false)
@@ -29,7 +29,7 @@ func TestNotFound_GetNetOpenInterest(t *testing.T) {
 }
 
 func TestSuccess_GetNetOpenInterest(t *testing.T) {
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 	mockAmm := new(mocks.AmmKeeper)
 
@@ -50,7 +50,7 @@ func TestSuccess_GetNetOpenInterest(t *testing.T) {
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", sdk.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(sdk.NewInt(1000), nil)
 
-	k.OpenLongChecker = mockChecker
+	k.OpenDefineAssetsChecker = mockChecker
 
 	got := k.GetNetOpenInterest(ctx, types.Pool{
 		AmmPoolId: 2,
@@ -80,7 +80,7 @@ func TestSuccess_GetNetOpenInterest(t *testing.T) {
 }
 
 func TestSuccess2_GetNetOpenInterest(t *testing.T) {
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 	mockAmm := new(mocks.AmmKeeper)
 
@@ -101,7 +101,7 @@ func TestSuccess2_GetNetOpenInterest(t *testing.T) {
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", sdk.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(sdk.NewInt(1000), nil)
 
-	k.OpenLongChecker = mockChecker
+	k.OpenDefineAssetsChecker = mockChecker
 
 	got := k.GetNetOpenInterest(ctx, types.Pool{
 		AmmPoolId: 2,
@@ -131,7 +131,7 @@ func TestSuccess2_GetNetOpenInterest(t *testing.T) {
 }
 
 func TestErrorLongPoolNotFound_GetNetOpenInterest(t *testing.T) {
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 	mockAmm := new(mocks.AmmKeeper)
 
@@ -152,7 +152,7 @@ func TestErrorLongPoolNotFound_GetNetOpenInterest(t *testing.T) {
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", sdk.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(sdk.NewInt(1000), nil)
 
-	k.OpenLongChecker = mockChecker
+	k.OpenDefineAssetsChecker = mockChecker
 
 	got := k.GetNetOpenInterest(ctx, types.Pool{
 		AmmPoolId: 2,
@@ -182,7 +182,7 @@ func TestErrorLongPoolNotFound_GetNetOpenInterest(t *testing.T) {
 }
 
 func TestErrorLongEstimateSwapGivenOut_GetNetOpenInterest(t *testing.T) {
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 	mockAmm := new(mocks.AmmKeeper)
 
@@ -203,7 +203,7 @@ func TestErrorLongEstimateSwapGivenOut_GetNetOpenInterest(t *testing.T) {
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", sdk.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(sdk.NewInt(1000), types.ErrInvalidAmount)
 
-	k.OpenLongChecker = mockChecker
+	k.OpenDefineAssetsChecker = mockChecker
 
 	got := k.GetNetOpenInterest(ctx, types.Pool{
 		AmmPoolId: 2,
@@ -233,7 +233,7 @@ func TestErrorLongEstimateSwapGivenOut_GetNetOpenInterest(t *testing.T) {
 }
 
 func TestErrorShortPoolNotFound_GetNetOpenInterest(t *testing.T) {
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 	mockAmm := new(mocks.AmmKeeper)
 
@@ -254,7 +254,7 @@ func TestErrorShortPoolNotFound_GetNetOpenInterest(t *testing.T) {
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", sdk.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(sdk.NewInt(1000), nil)
 
-	k.OpenLongChecker = mockChecker
+	k.OpenDefineAssetsChecker = mockChecker
 
 	got := k.GetNetOpenInterest(ctx, types.Pool{
 		AmmPoolId: 2,

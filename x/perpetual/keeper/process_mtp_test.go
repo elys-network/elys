@@ -135,7 +135,7 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100100000000))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
 
-	_, found = mk.OpenLongChecker.GetPool(ctx, pool.PoolId)
+	_, found = mk.OpenDefineAssetsChecker.GetPool(ctx, pool.PoolId)
 	require.Equal(t, found, true)
 
 	err = mk.InvariantCheck(ctx)
@@ -315,7 +315,7 @@ func TestCheckAndLiquidateStopLossPosition(t *testing.T) {
 	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100100000000))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
 
-	_, found = mk.OpenLongChecker.GetPool(ctx, pool.PoolId)
+	_, found = mk.OpenDefineAssetsChecker.GetPool(ctx, pool.PoolId)
 	require.Equal(t, found, true)
 
 	err = mk.InvariantCheck(ctx)

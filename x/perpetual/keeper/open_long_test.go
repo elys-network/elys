@@ -21,11 +21,11 @@ import (
 
 func TestOpenLong_PoolNotFound(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		OpenLongChecker: mockChecker,
+		OpenDefineAssetsChecker: mockChecker,
 	}
 
 	var (
@@ -34,15 +34,16 @@ func TestOpenLong_PoolNotFound(t *testing.T) {
 			Leverage:     math.LegacyNewDec(10),
 			TradingAsset: "bbb",
 			Collateral:   sdk.NewCoin("aaa", math.NewInt(1)),
+			Position:     types.Position_LONG,
 		}
 		poolId = uint64(42)
 	)
 
 	// Mock behavior
-	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, false)
+	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage).Once()
+	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, false).Once()
 
-	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency, false)
+	_, err := k.OpenDefineAssets(ctx, poolId, msg, ptypes.BaseCurrency, false)
 
 	// Expect an error about the pool not existing
 	assert.True(t, errors.Is(err, types.ErrPoolDoesNotExist))
@@ -51,11 +52,11 @@ func TestOpenLong_PoolNotFound(t *testing.T) {
 
 func TestOpenLong_PoolDisabled(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		OpenLongChecker: mockChecker,
+		OpenDefineAssetsChecker: mockChecker,
 	}
 
 	var (
@@ -64,6 +65,7 @@ func TestOpenLong_PoolDisabled(t *testing.T) {
 			Leverage:     math.LegacyNewDec(10),
 			TradingAsset: "bbb",
 			Collateral:   sdk.NewCoin("aaa", math.NewInt(1)),
+			Position:     types.Position_LONG,
 		}
 		poolId = uint64(42)
 	)
@@ -73,7 +75,7 @@ func TestOpenLong_PoolDisabled(t *testing.T) {
 	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
 	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(false)
 
-	_, err := k.OpenLong(ctx, poolId, msg, ptypes.BaseCurrency, false)
+	_, err := k.OpenDefineAssets(ctx, poolId, msg, ptypes.BaseCurrency, false)
 
 	// Expect an error about the pool being disabled
 	assert.True(t, errors.Is(err, types.ErrMTPDisabled))
@@ -82,11 +84,11 @@ func TestOpenLong_PoolDisabled(t *testing.T) {
 
 func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		OpenLongChecker: mockChecker,
+		OpenDefineAssetsChecker: mockChecker,
 	}
 
 	var (
@@ -126,7 +128,7 @@ func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 
 	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
 
-	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
+	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
 
 	// Expect an error about custody amount being too high
 	assert.True(t, errors.Is(err, types.ErrCustodyTooHigh))
@@ -135,11 +137,11 @@ func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
 
 func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		OpenLongChecker: mockChecker,
+		OpenDefineAssetsChecker: mockChecker,
 	}
 
 	var (
@@ -188,7 +190,7 @@ func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 	borrowError := errors.New("borrow error")
 	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(borrowError)
 
-	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
+	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
 
 	// Expect the borrow error
 	assert.True(t, errors.Is(err, borrowError))
@@ -197,11 +199,11 @@ func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
 
 func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		OpenLongChecker: mockChecker,
+		OpenDefineAssetsChecker: mockChecker,
 	}
 
 	var (
@@ -256,7 +258,7 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
 	mockChecker.On("GetSafetyFactor", ctx).Return(sdk.NewDec(100))
 
-	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
+	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
 
 	// Expect an error indicating MTP is unhealthy
 	assert.True(t, errors.Is(err, types.ErrMTPUnhealthy))
@@ -265,11 +267,11 @@ func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
 
 func TestOpenLong_Success(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		OpenLongChecker: mockChecker,
+		OpenDefineAssetsChecker: mockChecker,
 	}
 
 	var (
@@ -330,7 +332,7 @@ func TestOpenLong_Success(t *testing.T) {
 	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
 
-	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
+	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
 	// Expect no error
 	assert.Nil(t, err)
 	mockChecker.AssertExpectations(t)
@@ -453,7 +455,7 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100100000000))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
 
-	_, found = mk.OpenLongChecker.GetPool(ctx, pool.PoolId)
+	_, found = mk.OpenDefineAssetsChecker.GetPool(ctx, pool.PoolId)
 	require.Equal(t, found, true)
 
 	err = mk.InvariantCheck(ctx)
@@ -596,7 +598,7 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10000000000))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(1010000000))
 
-	_, found = mk.OpenLongChecker.GetPool(ctx, pool.PoolId)
+	_, found = mk.OpenDefineAssetsChecker.GetPool(ctx, pool.PoolId)
 	require.Equal(t, found, true)
 
 	err = mk.InvariantCheck(ctx)
@@ -636,11 +638,11 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 
 func TestOpenLongConsolidate_Success(t *testing.T) {
 	// Setup the mock checker
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 
 	// Create an instance of Keeper with the mock checker
 	k := keeper.Keeper{
-		OpenLongChecker: mockChecker,
+		OpenDefineAssetsChecker: mockChecker,
 	}
 
 	var (
@@ -701,7 +703,7 @@ func TestOpenLongConsolidate_Success(t *testing.T) {
 	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
 
-	_, err := k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
+	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
 	// Expect no error
 	assert.Nil(t, err)
 	mockChecker.AssertExpectations(t)
@@ -733,7 +735,7 @@ func TestOpenLongConsolidate_Success(t *testing.T) {
 	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
 
-	_, err = k.OpenLong(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
+	_, err = k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
 	// Expect no error
 	assert.Nil(t, err)
 	mockChecker.AssertExpectations(t)

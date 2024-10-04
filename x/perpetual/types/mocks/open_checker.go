@@ -339,12 +339,12 @@ func (_c *OpenChecker_GetOpenMTPCount_Call) RunAndReturn(run func(types.Context)
 	return _c
 }
 
-// OpenLong provides a mock function with given fields: ctx, poolId, msg, baseCurrency, isBroker
-func (_m *OpenChecker) OpenLong(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string, isBroker bool) (*perpetualtypes.MTP, error) {
+// OpenDefineAssets provides a mock function with given fields: ctx, poolId, msg, baseCurrency, isBroker
+func (_m *OpenChecker) OpenDefineAssets(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string, isBroker bool) (*perpetualtypes.MTP, error) {
 	ret := _m.Called(ctx, poolId, msg, baseCurrency, isBroker)
 
 	if len(ret) == 0 {
-		panic("no return value specified for OpenLong")
+		panic("no return value specified for OpenDefineAssets")
 	}
 
 	var r0 *perpetualtypes.MTP
@@ -369,96 +369,34 @@ func (_m *OpenChecker) OpenLong(ctx types.Context, poolId uint64, msg *perpetual
 	return r0, r1
 }
 
-// OpenChecker_OpenLong_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'OpenLong'
-type OpenChecker_OpenLong_Call struct {
+// OpenChecker_OpenDefineAssets_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'OpenDefineAssets'
+type OpenChecker_OpenDefineAssets_Call struct {
 	*mock.Call
 }
 
-// OpenLong is a helper method to define mock.On call
+// OpenDefineAssets is a helper method to define mock.On call
 //   - ctx types.Context
 //   - poolId uint64
 //   - msg *perpetualtypes.MsgOpen
 //   - baseCurrency string
 //   - isBroker bool
-func (_e *OpenChecker_Expecter) OpenLong(ctx interface{}, poolId interface{}, msg interface{}, baseCurrency interface{}, isBroker interface{}) *OpenChecker_OpenLong_Call {
-	return &OpenChecker_OpenLong_Call{Call: _e.mock.On("OpenLong", ctx, poolId, msg, baseCurrency, isBroker)}
+func (_e *OpenChecker_Expecter) OpenDefineAssets(ctx interface{}, poolId interface{}, msg interface{}, baseCurrency interface{}, isBroker interface{}) *OpenChecker_OpenDefineAssets_Call {
+	return &OpenChecker_OpenDefineAssets_Call{Call: _e.mock.On("OpenDefineAssets", ctx, poolId, msg, baseCurrency, isBroker)}
 }
 
-func (_c *OpenChecker_OpenLong_Call) Run(run func(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string, isBroker bool)) *OpenChecker_OpenLong_Call {
+func (_c *OpenChecker_OpenDefineAssets_Call) Run(run func(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string, isBroker bool)) *OpenChecker_OpenDefineAssets_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(uint64), args[2].(*perpetualtypes.MsgOpen), args[3].(string), args[4].(bool))
 	})
 	return _c
 }
 
-func (_c *OpenChecker_OpenLong_Call) Return(_a0 *perpetualtypes.MTP, _a1 error) *OpenChecker_OpenLong_Call {
+func (_c *OpenChecker_OpenDefineAssets_Call) Return(_a0 *perpetualtypes.MTP, _a1 error) *OpenChecker_OpenDefineAssets_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *OpenChecker_OpenLong_Call) RunAndReturn(run func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) (*perpetualtypes.MTP, error)) *OpenChecker_OpenLong_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// OpenShort provides a mock function with given fields: ctx, poolId, msg, baseCurrency, isBroker
-func (_m *OpenChecker) OpenShort(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string, isBroker bool) (*perpetualtypes.MTP, error) {
-	ret := _m.Called(ctx, poolId, msg, baseCurrency, isBroker)
-
-	if len(ret) == 0 {
-		panic("no return value specified for OpenShort")
-	}
-
-	var r0 *perpetualtypes.MTP
-	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) (*perpetualtypes.MTP, error)); ok {
-		return rf(ctx, poolId, msg, baseCurrency, isBroker)
-	}
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) *perpetualtypes.MTP); ok {
-		r0 = rf(ctx, poolId, msg, baseCurrency, isBroker)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*perpetualtypes.MTP)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) error); ok {
-		r1 = rf(ctx, poolId, msg, baseCurrency, isBroker)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// OpenChecker_OpenShort_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'OpenShort'
-type OpenChecker_OpenShort_Call struct {
-	*mock.Call
-}
-
-// OpenShort is a helper method to define mock.On call
-//   - ctx types.Context
-//   - poolId uint64
-//   - msg *perpetualtypes.MsgOpen
-//   - baseCurrency string
-//   - isBroker bool
-func (_e *OpenChecker_Expecter) OpenShort(ctx interface{}, poolId interface{}, msg interface{}, baseCurrency interface{}, isBroker interface{}) *OpenChecker_OpenShort_Call {
-	return &OpenChecker_OpenShort_Call{Call: _e.mock.On("OpenShort", ctx, poolId, msg, baseCurrency, isBroker)}
-}
-
-func (_c *OpenChecker_OpenShort_Call) Run(run func(ctx types.Context, poolId uint64, msg *perpetualtypes.MsgOpen, baseCurrency string, isBroker bool)) *OpenChecker_OpenShort_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(uint64), args[2].(*perpetualtypes.MsgOpen), args[3].(string), args[4].(bool))
-	})
-	return _c
-}
-
-func (_c *OpenChecker_OpenShort_Call) Return(_a0 *perpetualtypes.MTP, _a1 error) *OpenChecker_OpenShort_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *OpenChecker_OpenShort_Call) RunAndReturn(run func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) (*perpetualtypes.MTP, error)) *OpenChecker_OpenShort_Call {
+func (_c *OpenChecker_OpenDefineAssets_Call) RunAndReturn(run func(types.Context, uint64, *perpetualtypes.MsgOpen, string, bool) (*perpetualtypes.MTP, error)) *OpenChecker_OpenDefineAssets_Call {
 	_c.Call.Return(run)
 	return _c
 }
