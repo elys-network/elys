@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -93,4 +95,47 @@ func CmdDeletePendingSpotOrder() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
+}
+
+func CmdDCancelSpotOrders() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "cancel-pending-spot-orders [ids]",
+		Short: "Cancel pending-spot-orders by ids",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			id, err := readPositionRequestJSON(args[0])
+			if err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCancelSpotOrders(clientCtx.GetFromAddress().String(), id)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func readPositionRequestJSON(filename string) ([]uint64, error) {
+	var positions []uint64
+	bz, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return []uint64{}, err
+	}
+	err = json.Unmarshal(bz, &positions)
+	if err != nil {
+		return []uint64{}, err
+	}
+
+	return positions, nil
 }
