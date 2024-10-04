@@ -9,7 +9,7 @@ import (
 
 func (suite *PerpetualKeeperTestSuite) TestGetBestPool() {
 	suite.SetupCoinPrices()
-	addr := suite.AddAccounts(1)
+	addr := suite.AddAccounts(1, nil)
 	amount := sdk.NewInt(10_000_000)
 	expectAmmPool := ammtypes.Pool{}
 	testCases := []struct {

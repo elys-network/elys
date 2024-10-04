@@ -197,6 +197,11 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 
 	k.SetPool(ctx, *pool)
 
+	mtp.TakeProfitBorrowRate, err = k.CalcMTPTakeProfitBorrowRate(ctx, mtp)
+	if err != nil {
+		return err
+	}
+
 	return k.SetMTP(ctx, mtp)
 }
 

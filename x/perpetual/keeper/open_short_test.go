@@ -11,7 +11,7 @@ import (
 
 func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 	suite.SetupCoinPrices()
-	addr := suite.AddAccounts(10)
+	addr := suite.AddAccounts(10, nil)
 	amount := sdk.NewInt(1000)
 	poolCreator := addr[0]
 	positionCreator := addr[1]
@@ -183,23 +183,8 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 			"amount too low",
 			false,
 			func() {
-				suite.ResetSuite()
-				suite.SetupCoinPrices()
-				addr = suite.AddAccounts(10)
-				poolCreator = addr[0]
-				positionCreator = addr[1]
-				ammPool = suite.SetAndGetAmmPool(poolCreator, poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(1000), sdk.NewInt(2))
-				pool := types.NewPool(poolId)
-				err := pool.InitiatePool(suite.ctx, &ammPool)
-				suite.Require().NoError(err)
-				pool.Enabled = true
-				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
-				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
-				params.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.12")
-				err = suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
-				suite.Require().NoError(err)
+				suite.ResetAndSetSuite(addr, poolId, true, amount.MulRaw(1000), sdk.NewInt(2))
 
-				msg.Creator = positionCreator.String()
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				msg.Collateral.Amount = amount
 				msg.TradingAsset = ptypes.ATOM

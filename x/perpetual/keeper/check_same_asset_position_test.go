@@ -7,7 +7,7 @@ import (
 )
 
 func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
-	addr := suite.AddAccounts(1)
+	addr := suite.AddAccounts(1, nil)
 	msg := &types.MsgOpen{
 		Creator:       addr[0].String(),
 		Position:      types.Position_LONG,

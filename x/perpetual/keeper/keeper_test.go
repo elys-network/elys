@@ -80,6 +80,25 @@ func (suite *PerpetualKeeperTestSuite) ResetSuite() {
 	suite.SetupTest()
 }
 
+func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, poolId uint64, useOracle bool, baseTokenAmount, assetAmount sdk.Int) (ammtypes.Pool, types.Pool) {
+	suite.ResetSuite()
+	suite.SetupCoinPrices()
+	suite.AddAccounts(len(addr), addr)
+	poolCreator := addr[0]
+	ammPool := suite.SetAndGetAmmPool(poolCreator, poolId, useOracle, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, baseTokenAmount, assetAmount)
+	pool := types.NewPool(poolId)
+	err := pool.InitiatePool(suite.ctx, &ammPool)
+	suite.Require().NoError(err)
+	pool.Enabled = true
+	suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
+	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+	params.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.12")
+	err = suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+
+	return ammPool, pool
+}
+
 func (suite *PerpetualKeeperTestSuite) SetCurrentHeight(h int64) {
 	suite.ctx = suite.ctx.WithBlockHeight(h)
 }
@@ -139,9 +158,15 @@ func (suite *PerpetualKeeperTestSuite) GetAccountIssueAmount() sdk.Int {
 	return sdk.NewInt(1000_000_000_000)
 }
 
-func (suite *PerpetualKeeperTestSuite) AddAccounts(n int) []sdk.AccAddress {
+func (suite *PerpetualKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress) []sdk.AccAddress {
 	issueAmount := suite.GetAccountIssueAmount()
-	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, n, issueAmount)
+	var addresses []sdk.AccAddress
+	if n > len(given) {
+		addresses = simapp.AddTestAddrs(suite.app, suite.ctx, n-len(given), issueAmount)
+		addresses = append(addresses, given...)
+	} else {
+		addresses = given
+	}
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
 			sdk.NewCoin(ptypes.ATOM, issueAmount),
@@ -350,7 +375,7 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 
 func (suite *PerpetualKeeperTestSuite) TestCheckMinLiabilities() {
 	suite.SetupCoinPrices()
-	addr := suite.AddAccounts(10)
+	addr := suite.AddAccounts(10, nil)
 	collateralAmount := sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000_000))
 	leverage := sdk.NewDec(3)
 	custodyAsset := ptypes.ATOM
