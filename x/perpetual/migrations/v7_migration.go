@@ -29,8 +29,6 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 			Position:                       mtp.Position,
 			Id:                             mtp.Id,
 			AmmPoolId:                      mtp.AmmPoolId,
-			ConsolidateLeverage:            mtp.ConsolidateLeverage,
-			SumCollateral:                  mtp.SumCollateral,
 			TakeProfitPrice:                mtp.TakeProfitPrice,
 			TakeProfitBorrowRate:           mtp.TakeProfitBorrowRate,
 			FundingFeePaidCollateral:       mtp.FundingFeePaidCollateral,

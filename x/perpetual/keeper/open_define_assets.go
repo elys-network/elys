@@ -1,13 +1,14 @@
 package keeper
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
+func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
 	// Determine the maximum leverage available and compute the effective leverage to be used.
-	maxLeverage := k.OpenLongChecker.GetMaxLeverageParam(ctx)
+	maxLeverage := k.OpenDefineAssetsChecker.GetMaxLeverageParam(ctx)
 	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
 
 	// Calculate the eta value.
@@ -17,12 +18,21 @@ func (k Keeper) OpenLong(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, bas
 	collateralAmountDec := sdk.NewDecFromBigInt(msg.Collateral.Amount.BigInt())
 
 	// Define the assets
-	liabilitiesAsset := baseCurrency
-	custodyAsset := msg.TradingAsset
+	var liabilitiesAsset, custodyAsset string
+	switch msg.Position {
+	case types.Position_LONG:
+		liabilitiesAsset = baseCurrency
+		custodyAsset = msg.TradingAsset
+	case types.Position_SHORT:
+		liabilitiesAsset = msg.TradingAsset
+		custodyAsset = baseCurrency
+	default:
+		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
+	}
 
 	// Initialize a new Perpetual Trading Position (MTP).
 	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, liabilitiesAsset, custodyAsset, msg.Position, leverage, msg.TakeProfitPrice, poolId)
 
 	// Call the function to process the open long logic.
-	return k.ProcessOpenLong(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg, baseCurrency, isBroker)
+	return k.ProcessOpen(ctx, mtp, leverage, eta, collateralAmountDec, poolId, msg, baseCurrency, isBroker)
 }

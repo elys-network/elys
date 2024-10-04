@@ -223,7 +223,7 @@ func TestOpen_ErrorOpenLong(t *testing.T) {
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
 	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{PoolParams: ammtypes.PoolParams{UseOracle: true}}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
-	mockChecker.On("OpenLong", ctx, poolId, msg, ptypes.BaseCurrency, false).Return(&types.MTP{}, errors.New("error executing open long"))
+	mockChecker.On("OpenDefineAssets", ctx, poolId, msg, ptypes.BaseCurrency, false).Return(&types.MTP{}, errors.New("error executing open long"))
 
 	_, err := k.Open(ctx, msg, false)
 
@@ -257,7 +257,7 @@ func TestOpen_ErrorOpenShort(t *testing.T) {
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
 	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{PoolParams: ammtypes.PoolParams{UseOracle: true}}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
-	mockChecker.On("OpenShort", ctx, poolId, msg, ptypes.BaseCurrency, false).Return(&types.MTP{}, errors.New("error executing open short"))
+	mockChecker.On("OpenDefineAssets", ctx, poolId, msg, ptypes.BaseCurrency, false).Return(&types.MTP{}, errors.New("error executing open short"))
 
 	_, err := k.Open(ctx, msg, false)
 
@@ -293,7 +293,7 @@ func TestOpen_Successful(t *testing.T) {
 	mockChecker.On("CheckMaxOpenPositions", ctx).Return(nil)
 	mockChecker.On("PreparePools", ctx, msg.Collateral.Denom, msg.TradingAsset).Return(poolId, ammtypes.Pool{PoolParams: ammtypes.PoolParams{UseOracle: true}}, types.Pool{}, nil)
 	mockChecker.On("CheckPoolHealth", ctx, poolId).Return(nil)
-	mockChecker.On("OpenShort", ctx, poolId, msg, ptypes.BaseCurrency, false).Return(mtp, nil)
+	mockChecker.On("OpenDefineAssets", ctx, poolId, msg, ptypes.BaseCurrency, false).Return(mtp, nil)
 	mockChecker.On("UpdateOpenPrice", ctx, mtp, ammtypes.Pool{PoolParams: ammtypes.PoolParams{UseOracle: true}}, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("EmitOpenEvent", ctx, mtp).Return()
 
