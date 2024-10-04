@@ -1,7 +1,6 @@
 package types_test
 
 import (
-	"fmt"
 	"strconv"
 	"testing"
 
@@ -30,8 +29,6 @@ func TestGenerateOpenEvent(t *testing.T) {
 		Position:                       types.Position_LONG,
 		Id:                             1,
 		AmmPoolId:                      1,
-		ConsolidateLeverage:            sdk.NewDec(10),
-		SumCollateral:                  sdk.OneInt(),
 		TakeProfitPrice:                sdk.NewDec(10),
 		TakeProfitBorrowRate:           sdk.OneDec(),
 		FundingFeePaidCollateral:       sdk.OneInt(),
@@ -65,8 +62,6 @@ func TestGenerateOpenEvent(t *testing.T) {
 	assert.Equal(t, testMTP.Position.String(), getAttributeValue(event, "position"))
 	assert.Equal(t, strconv.FormatInt(int64(testMTP.Id), 10), getAttributeValue(event, "id"))
 	assert.Equal(t, strconv.FormatInt(int64(testMTP.AmmPoolId), 10), getAttributeValue(event, "amm_pool_id"))
-	assert.Equal(t, fmt.Sprintf("%s", testMTP.ConsolidateLeverage), getAttributeValue(event, "consolidate_leverage"))
-	assert.Equal(t, testMTP.SumCollateral.String(), getAttributeValue(event, "sum_collateral"))
 	assert.Equal(t, testMTP.TakeProfitPrice.String(), getAttributeValue(event, "take_profit_price"))
 	assert.Equal(t, testMTP.TakeProfitBorrowRate.String(), getAttributeValue(event, "take_profit_borrow_rate"))
 	assert.Equal(t, testMTP.FundingFeePaidCollateral.String(), getAttributeValue(event, "funding_fee_paid_collateral"))

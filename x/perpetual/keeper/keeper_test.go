@@ -38,8 +38,6 @@ func TestSetGetMTP(t *testing.T) {
 			MtpHealth:                      sdk.NewDec(0),
 			Position:                       types.Position_LONG,
 			Id:                             0,
-			ConsolidateLeverage:            sdk.ZeroDec(),
-			SumCollateral:                  sdk.ZeroInt(),
 		}
 		err := perpetual.SetMTP(ctx, &mtp)
 		require.NoError(t, err)

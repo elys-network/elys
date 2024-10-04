@@ -70,10 +70,9 @@ func (k Keeper) ProcessOpenShort(ctx sdk.Context, mtp *types.MTP, leverage sdk.D
 	// Update consolidated collateral amount
 	k.OpenShortChecker.CalcMTPConsolidateCollateral(ctx, mtp, baseCurrency)
 
-	// Calculate consolidate liabiltiy and update consolidate leverage
-	mtp.ConsolidateLeverage = types.CalcMTPConsolidateLiability(mtp)
-
+	// Set the stop loss price
 	mtp.StopLossPrice = msg.StopLossPrice
+
 	// Set MTP
 	k.OpenShortChecker.SetMTP(ctx, mtp)
 
