@@ -79,19 +79,15 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		req.TakeProfitPrice = sdk.MustNewDecFromStr(types.TakeProfitPriceDefault)
 	}
 
-	// calculate liabilities amount
-	liabilitiesAmountDec := sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Mul(req.Leverage.Sub(sdk.OneDec()))
-
 	// calculate estimated pnl
-	// estimated_pnl = custody_amount - (liability_amount + collateral_amount) / take_profit_price
-	estimatedPnL := sdk.NewDecFromBigInt(positionSize.Amount.BigInt())
-	estimatedPnL = estimatedPnL.Sub(liabilitiesAmountDec.Add(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt())).Quo(req.TakeProfitPrice))
+	// estimated_pnl = (current_price - entry_price) * custody_amount
+	estimatedPnL := req.TakeProfitPrice.Sub(openPrice).Mul(sdk.NewDecFromBigInt(positionSize.Amount.BigInt()))
 	estimatedPnLDenom := req.TradingAsset
 
-	// if position is short then estimated pnl is custody_amount / open_price - (liability_amount + collateral_amount) / take_profit_price
+	// if position is short then:
+	// estimated_pnl = (entry_price - current_price) * (custody_amount / open_price)
 	if req.Position == types.Position_SHORT {
-		estimatedPnL = liabilitiesAmountDec.Add(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt())).Quo(req.TakeProfitPrice)
-		estimatedPnL = estimatedPnL.Sub(sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Quo(openPrice))
+		estimatedPnL = openPrice.Sub(req.TakeProfitPrice).Mul(sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Quo(openPrice))
 		estimatedPnLDenom = baseCurrency
 	}
 
