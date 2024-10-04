@@ -1,7 +1,6 @@
 package types
 
 import (
-	"fmt"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -26,8 +25,6 @@ func GenerateOpenEvent(mtp *MTP) sdk.Event {
 		sdk.NewAttribute("position", mtp.Position.String()),
 		sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),
 		sdk.NewAttribute("amm_pool_id", strconv.FormatInt(int64(mtp.AmmPoolId), 10)),
-		sdk.NewAttribute("consolidate_leverage", fmt.Sprintf("%s", mtp.ConsolidateLeverage)),
-		sdk.NewAttribute("sum_collateral", mtp.SumCollateral.String()),
 		sdk.NewAttribute("take_profit_price", mtp.TakeProfitPrice.String()),
 		sdk.NewAttribute("take_profit_borrow_rate", mtp.TakeProfitBorrowRate.String()),
 		sdk.NewAttribute("funding_fee_paid_collateral", mtp.FundingFeePaidCollateral.String()),

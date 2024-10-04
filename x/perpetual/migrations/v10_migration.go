@@ -5,9 +5,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (m Migrator) V9Migration(ctx sdk.Context) error {
-	m.keeper.DeleteAllNegativeCustomMTP(ctx)
-
+func (m Migrator) V10Migration(ctx sdk.Context) error {
 	mtps := m.keeper.GetAllLegacyMTP(ctx)
 
 	ctx.Logger().Info("Migrating positions from legacy to new format")

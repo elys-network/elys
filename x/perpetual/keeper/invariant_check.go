@@ -22,7 +22,7 @@ func (k Keeper) AmmPoolBalanceCheck(ctx sdk.Context, poolId uint64) error {
 	mtps := k.GetAllMTPs(ctx)
 	for _, mtp := range mtps {
 		ammPoolId := mtp.AmmPoolId
-		if !k.OpenLongChecker.IsPoolEnabled(ctx, ammPoolId) {
+		if !k.OpenDefineAssetsChecker.IsPoolEnabled(ctx, ammPoolId) {
 			continue
 		}
 
