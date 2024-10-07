@@ -105,11 +105,5 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	// apply changes to pool object
 	k.SetPool(ctx, *pool)
 
-	// update mtp health
-	_, err = k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }

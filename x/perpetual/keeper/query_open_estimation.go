@@ -83,16 +83,23 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 	liabilitiesAmountDec := sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Mul(req.Leverage.Sub(sdk.OneDec()))
 
 	// calculate estimated pnl
-	// estimated_pnl = custody_amount - (liability_amount + collateral_amount) / take_profit_price
-	estimatedPnL := sdk.NewDecFromBigInt(positionSize.Amount.BigInt())
-	estimatedPnL = estimatedPnL.Sub(liabilitiesAmountDec.Add(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt())).Quo(req.TakeProfitPrice))
-	estimatedPnLDenom := req.TradingAsset
+	var estimatedPnL sdk.Dec
+	estimatedPnLDenom := baseCurrency
 
-	// if position is short then estimated pnl is custody_amount / open_price - (liability_amount + collateral_amount) / take_profit_price
+	// if position is short then:
 	if req.Position == types.Position_SHORT {
-		estimatedPnL = liabilitiesAmountDec.Add(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt())).Quo(req.TakeProfitPrice)
-		estimatedPnL = estimatedPnL.Sub(sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Quo(openPrice))
-		estimatedPnLDenom = baseCurrency
+		// estimated_pnl = custody_amount - liabilities_amount * take_profit_price - collateral_amount
+		estimatedPnL = sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Sub(liabilitiesAmountDec.Mul(req.TakeProfitPrice)).Sub(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt()))
+	} else {
+		// if position is long then:
+		// if collateral is not in base currency
+		if req.Collateral.Denom != baseCurrency {
+			// estimated_pnl = (custody_amount - collateral_amount) * take_profit_price - liabilities_amount
+			estimatedPnL = sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Sub(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt())).Mul(req.TakeProfitPrice).Sub(liabilitiesAmountDec)
+		} else {
+			// estimated_pnl = custody_amount * take_profit_price - liabilities_amount - collateral_amount
+			estimatedPnL = sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Mul(req.TakeProfitPrice).Sub(liabilitiesAmountDec).Sub(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt()))
+		}
 	}
 
 	// calculate liquidation price

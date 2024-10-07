@@ -63,6 +63,10 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 	// if short position, custody asset is already in base currency
 	custodyAmtInBaseCurrency := mtp.Custody.Sub(takeAmountCustodyAmount)
 
+	if !custodyAmtInBaseCurrency.IsPositive() {
+		return sdk.ZeroDec(), nil
+	}
+
 	if mtp.Position == types.Position_LONG {
 		custodyAmt := sdk.NewCoin(mtp.CustodyAsset, mtp.Custody)
 		var err error
