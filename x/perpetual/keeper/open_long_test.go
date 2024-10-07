@@ -803,8 +803,30 @@ func TestOpenLong_Long10XAtom1000Usdc(t *testing.T) {
 		StopLossPrice:                  sdk.ZeroDec(),
 	}, mtp)
 
+	oracle.SetPrice(ctx, oracletypes.Price{
+		Asset:     "USDC",
+		Price:     sdk.NewDec(1),
+		Source:    "elys",
+		Provider:  provider.String(),
+		Timestamp: uint64(ctx.BlockTime().Unix()),
+	})
+	oracle.SetPrice(ctx, oracletypes.Price{
+		Asset:     "ATOM",
+		Price:     sdk.MustNewDecFromStr("5.0"),
+		Source:    "atom",
+		Provider:  provider.String(),
+		Timestamp: uint64(ctx.BlockTime().Unix()),
+	})
+	oracle.SetPrice(ctx, oracletypes.Price{
+		Asset:     "uatom",
+		Price:     sdk.MustNewDecFromStr("5.0"),
+		Source:    "uatom",
+		Provider:  provider.String(),
+		Timestamp: uint64(ctx.BlockTime().Unix()),
+	})
+
 	resp, _, _ := mk.GetMTPsForAddressWithPagination(ctx, addr[0], nil)
-	require.Equal(t, resp[0].Pnl, sdk.NewDec(-10000012))
+	require.Equal(t, resp[0].Pnl, sdk.NewDec(1_380_312708))
 }
 
 func TestOpenLongConsolidate_Success(t *testing.T) {
