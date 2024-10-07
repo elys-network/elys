@@ -13,7 +13,7 @@ import (
 )
 
 func TestSuccessPoolAssetsLong_CalcTotalLiabilities(t *testing.T) {
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 	mockAmm := new(mocks.AmmKeeper)
 
 	ctx := sdk.Context{}
@@ -31,7 +31,7 @@ func TestSuccessPoolAssetsLong_CalcTotalLiabilities(t *testing.T) {
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", sdkmath.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(sdkmath.NewInt(1000), nil)
 
-	k.OpenLongChecker = mockChecker
+	k.OpenDefineAssetsChecker = mockChecker
 
 	ammPoolId := uint64(2)
 	assets := []types.PoolAsset{
@@ -52,7 +52,7 @@ func TestSuccessPoolAssetsLong_CalcTotalLiabilities(t *testing.T) {
 }
 
 func TestSuccessPoolAssetsShort_CalcTotalLiabilities(t *testing.T) {
-	mockChecker := new(mocks.OpenLongChecker)
+	mockChecker := new(mocks.OpenDefineAssetsChecker)
 	mockAmm := new(mocks.AmmKeeper)
 
 	ctx := sdk.Context{}
@@ -70,7 +70,7 @@ func TestSuccessPoolAssetsShort_CalcTotalLiabilities(t *testing.T) {
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", sdkmath.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(sdkmath.NewInt(1000), nil)
 
-	k.OpenLongChecker = mockChecker
+	k.OpenDefineAssetsChecker = mockChecker
 
 	ammPoolId := uint64(2)
 	assets := []types.PoolAsset{

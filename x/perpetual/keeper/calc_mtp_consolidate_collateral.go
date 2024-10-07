@@ -26,7 +26,5 @@ func (k Keeper) CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *types.MTP, ba
 		consolidateCollateral = consolidateCollateral.Add(C)
 	}
 
-	mtp.SumCollateral = consolidateCollateral
-
 	return nil
 }

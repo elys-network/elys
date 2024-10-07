@@ -36,7 +36,7 @@ func (k Keeper) CalcTotalLiabilities(
 			return math.ZeroInt(), err
 		}
 
-		estimatedSwap, err := k.OpenLongChecker.EstimateSwapGivenOut(ctx, coin, uusdcDenom, ammPool)
+		estimatedSwap, err := k.OpenDefineAssetsChecker.EstimateSwapGivenOut(ctx, coin, uusdcDenom, ammPool)
 		if err != nil {
 			return math.ZeroInt(), err
 		}

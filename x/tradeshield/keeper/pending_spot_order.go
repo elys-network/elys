@@ -6,9 +6,11 @@ import (
 	"encoding/binary"
 	"errors"
 	"github.com/cosmos/cosmos-sdk/runtime"
+	"math"
 
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
@@ -80,6 +82,36 @@ func (k Keeper) GetPendingSpotOrder(ctx sdk.Context, id uint64) (val types.SpotO
 	}
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+func (k Keeper) GetPendingSpotOrdersForAddress(ctx sdk.Context, address string, pagination *query.PageRequest) ([]types.SpotOrder, *query.PageResponse, error) {
+	var orders []types.SpotOrder
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	orderStore := prefix.NewStore(store, types.PendingSpotOrderKey)
+
+	if pagination == nil {
+		pagination = &query.PageRequest{
+			Limit: math.MaxUint64 - 1,
+		}
+	}
+
+	pageRes, err := query.FilteredPaginate(orderStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var order types.SpotOrder
+		err := k.cdc.Unmarshal(value, &order)
+		if err == nil {
+			if accumulate && order.OwnerAddress == address {
+				orders = append(orders, order)
+				return true, nil
+			}
+		}
+		return false, nil
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return orders, pageRes, nil
 }
 
 // RemovePendingSpotOrder removes a pendingSpotOrder from the store

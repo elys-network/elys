@@ -150,52 +150,44 @@ message MTP {
   Position position = 15;
   uint64 id = 16;
   uint64 amm_pool_id = 17;
-  string consolidate_leverage = 18 [
+  string take_profit_price = 18 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string sum_collateral = 19 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string take_profit_price = 20 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string take_profit_borrow_rate = 21 [
+  string take_profit_borrow_rate = 19 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // funding fee paid
-  string funding_fee_paid_collateral = 22 [
+  string funding_fee_paid_collateral = 20 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string funding_fee_paid_custody = 23 [
+  string funding_fee_paid_custody = 21 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   // funding fee received
-  string funding_fee_received_collateral = 24 [
+  string funding_fee_received_collateral = 22 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string funding_fee_received_custody = 25 [
+  string funding_fee_received_custody = 23 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string open_price = 26 [
+  string open_price = 24 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string stop_loss_price = 27 [
+  string stop_loss_price = 25 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 last_interest_calc_time = 28;
-  uint64 last_interest_calc_block = 29;
-  uint64 last_funding_calc_time = 30;
-  uint64 last_funding_calc_block = 31;
+  uint64 last_interest_calc_time = 26;
+  uint64 last_interest_calc_block = 27;
+  uint64 last_funding_calc_time = 28;
+  uint64 last_funding_calc_block = 29;
 }
 
 message InterestBlock {

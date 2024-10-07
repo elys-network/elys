@@ -26,12 +26,12 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 	var repayAmount sdkmath.Int
 	switch mtp.Position {
 	case types.Position_LONG:
-		closedMtp, repayAmount, err = k.CloseLong(ctx, msg, baseCurrency)
+		closedMtp, repayAmount, err = k.ClosePosition(ctx, msg, baseCurrency)
 		if err != nil {
 			return nil, err
 		}
 	case types.Position_SHORT:
-		closedMtp, repayAmount, err = k.CloseShort(ctx, msg, baseCurrency)
+		closedMtp, repayAmount, err = k.ClosePosition(ctx, msg, baseCurrency)
 		if err != nil {
 			return nil, err
 		}

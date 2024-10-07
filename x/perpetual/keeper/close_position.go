@@ -7,10 +7,10 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, sdkmath.Int, error) {
+func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, sdkmath.Int, error) {
 	// Retrieve MTP
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	mtp, err := k.CloseLongChecker.GetMTP(ctx, creator, msg.Id)
+	mtp, err := k.ClosePositionChecker.GetMTP(ctx, creator, msg.Id)
 	if err != nil {
 		return nil, sdkmath.ZeroInt(), err
 	}
@@ -20,30 +20,30 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose, baseCurrency str
 	}
 
 	// Retrieve Pool
-	pool, found := k.CloseLongChecker.GetPool(ctx, mtp.AmmPoolId)
+	pool, found := k.ClosePositionChecker.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
 		return nil, sdkmath.ZeroInt(), errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
 	// Retrieve AmmPool
-	ammPool, err := k.CloseLongChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+	ammPool, err := k.ClosePositionChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
 	if err != nil {
 		return nil, sdkmath.ZeroInt(), err
 	}
 
 	// Handle Borrow Interest if within epoch position
-	if _, err := k.CloseLongChecker.SettleBorrowInterest(ctx, &mtp, &pool, ammPool); err != nil {
+	if _, err := k.ClosePositionChecker.SettleBorrowInterest(ctx, &mtp, &pool, ammPool); err != nil {
 		return nil, sdkmath.ZeroInt(), err
 	}
 
 	// Take out custody
-	err = k.CloseLongChecker.TakeOutCustody(ctx, mtp, &pool, msg.Amount)
+	err = k.ClosePositionChecker.TakeOutCustody(ctx, mtp, &pool, msg.Amount)
 	if err != nil {
 		return nil, sdkmath.ZeroInt(), err
 	}
 
 	// Estimate swap and repay
-	repayAmt, err := k.CloseLongChecker.EstimateAndRepay(ctx, mtp, pool, ammPool, msg.Amount, baseCurrency)
+	repayAmt, err := k.ClosePositionChecker.EstimateAndRepay(ctx, mtp, pool, ammPool, msg.Amount, baseCurrency)
 	if err != nil {
 		return nil, sdkmath.ZeroInt(), err
 	}

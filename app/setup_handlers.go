@@ -3,20 +3,20 @@ package app
 import (
 	"context"
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
 
 const (
-	// make sure to update these when you upgrade the version
-	NextVersion = "v0.47.0"
-
 	LocalNetVersion = "v999.999.999"
 )
+
+// make sure to update these when you upgrade the version
+var NextVersion = "v0.47.0"
 
 func (app *ElysApp) setUpgradeHandler() {
 	app.UpgradeKeeper.SetUpgradeHandler(

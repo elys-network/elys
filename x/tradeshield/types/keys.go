@@ -73,3 +73,15 @@ func DecodeUint64Slice(bz []byte) ([]uint64, error) {
 	}
 	return slice, nil
 }
+
+// GetUint64Bytes returns the byte representation of the ID
+func GetUint64Bytes(ID uint64) []byte {
+	IDBz := make([]byte, 8)
+	binary.BigEndian.PutUint64(IDBz, ID)
+	return IDBz
+}
+
+// GetUint64FromBytes returns ID in uint64 format from a byte array
+func GetUint64FromBytes(bz []byte) uint64 {
+	return binary.BigEndian.Uint64(bz)
+}

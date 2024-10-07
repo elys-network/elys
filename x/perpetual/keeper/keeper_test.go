@@ -38,8 +38,6 @@ func TestSetGetMTP(t *testing.T) {
 			MtpHealth:                      math.LegacyNewDec(0),
 			Position:                       types.Position_LONG,
 			Id:                             0,
-			ConsolidateLeverage:            math.LegacyZeroDec(),
-			SumCollateral:                  math.ZeroInt(),
 		}
 		err := perpetual.SetMTP(ctx, &mtp)
 		require.NoError(t, err)
