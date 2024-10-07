@@ -32,16 +32,17 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 	if _, err := k.SettleBorrowInterest(ctx, mtp, &pool, ammPool); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", mtp.CollateralAsset))
 	}
-	h, err := k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
-	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String()))
-	}
-	mtp.MtpHealth = h
 
 	toPay, err := k.SettleFunding(ctx, mtp, &pool, ammPool, baseCurrency)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee: %s", mtp.CollateralAsset))
 	}
+
+	h, err := k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	if err != nil {
+		return errors.Wrap(err, fmt.Sprintf("error updating mtp health: %s", mtp.String()))
+	}
+	mtp.MtpHealth = h
 
 	err = k.SetMTP(ctx, mtp)
 	if err != nil {
