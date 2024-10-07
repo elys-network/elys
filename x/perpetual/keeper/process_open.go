@@ -19,7 +19,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
-	ammPool, err := k.OpenDefineAssetsChecker.GetAmmPool(ctx, poolId, mtp.TradingAsset)
+	ammPool, err := k.OpenDefineAssetsChecker.GetAmmPool(ctx, poolId)
 	if err != nil {
 		return nil, err
 	}

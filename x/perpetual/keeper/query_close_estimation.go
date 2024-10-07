@@ -38,7 +38,7 @@ func (k Keeper) CloseEstimation(goCtx context.Context, req *types.QueryCloseEsti
 	_ = pool
 
 	// Retrieve AmmPool
-	ammPool, err := k.CloseEstimationChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+	ammPool, err := k.CloseEstimationChecker.GetAmmPool(ctx, mtp.AmmPoolId)
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}

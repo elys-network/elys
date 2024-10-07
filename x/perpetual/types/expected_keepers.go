@@ -49,7 +49,7 @@ type OpenDefineAssetsChecker interface {
 	GetMaxLeverageParam(ctx sdk.Context) sdk.Dec
 	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
-	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
+	GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error)
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
 	Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *MTP, ammPool *ammtypes.Pool, pool *Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error
@@ -70,7 +70,7 @@ type ClosePositionChecker interface {
 		ctx sdk.Context,
 		poolId uint64,
 	) (val Pool, found bool)
-	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
+	GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error)
 	SettleBorrowInterest(ctx sdk.Context, mtp *MTP, pool *Pool, ammPool ammtypes.Pool) (math.Int, error)
 	TakeOutCustody(ctx sdk.Context, mtp MTP, pool *Pool, amount math.Int) error
 	EstimateAndRepay(ctx sdk.Context, mtp MTP, pool Pool, ammPool ammtypes.Pool, amount math.Int, baseCurrency string) (math.Int, error)
@@ -83,7 +83,7 @@ type CloseEstimationChecker interface {
 		ctx sdk.Context,
 		poolId uint64,
 	) (val Pool, found bool)
-	GetAmmPool(ctx sdk.Context, poolId uint64, tradingAsset string) (ammtypes.Pool, error)
+	GetAmmPool(ctx sdk.Context, poolId uint64) (ammtypes.Pool, error)
 	EstimateSwap(ctx sdk.Context, leveragedAmtTokenIn sdk.Coin, borrowAsset string, ammPool ammtypes.Pool) (math.Int, error)
 	EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error)
 }

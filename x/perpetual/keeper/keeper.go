@@ -123,8 +123,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		return types.ErrBalanceNotAvailable
 	}
 
-	collateralAmountDec := sdk.NewDecFromBigInt(collateralAmount.BigInt())
-	liabilitiesDec := collateralAmountDec.Mul(eta)
+	liabilitiesDec := collateralAmount.ToLegacyDec().Mul(eta)
 
 	// If collateral asset is not base currency, should calculate liability in base currency with the given out.
 	// Liability has to be in base currency

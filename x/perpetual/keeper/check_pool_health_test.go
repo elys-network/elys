@@ -1,116 +1,71 @@
 package keeper_test
 
 import (
-	"errors"
-	"testing"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
-	"github.com/elys-network/elys/x/perpetual/types/mocks"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestCheckPoolHealth_PoolNotFound(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.PoolChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		PoolChecker: mockChecker,
+func (suite *PerpetualKeeperTestSuite) TestCheckPoolHealth() {
+	suite.ResetSuite()
+	params := types.DefaultParams()
+	params.PoolOpenThreshold = sdk.OneDec()
+	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+	suite.Require().NoError(err)
+	testCases := []struct {
+		name                 string
+		expectErrMsg         string
+		prerequisiteFunction func()
+	}{
+		{
+			"Pool not found",
+			types.ErrPoolDoesNotExist.Error(),
+			func() {
+			},
+		},
+		{
+			"Pool not enabled",
+			"pool is disabled or closed",
+			func() {
+				pool := types.NewPool(1)
+				pool.Enabled = false
+				pool.Closed = false
+				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
+			},
+		},
+		{
+			"Pool not closed",
+			"pool is disabled or closed",
+			func() {
+				pool := types.NewPool(1)
+				pool.Enabled = true
+				pool.Closed = true
+				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
+			},
+		},
+		// "Pool health is nil" case is not possible because Getter function always give 0 value of health
+		{
+			"Pool health is low",
+			"pool health too low to open new positions",
+			func() {
+				pool := types.NewPool(1)
+				pool.Enabled = true
+				pool.Closed = false
+				pool.Health = sdk.MustNewDecFromStr("0.5")
+				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
+			},
+		},
 	}
 
-	ctx := sdk.Context{} // mock or setup a context
-
-	poolId := uint64(1)
-
-	// Mock behavior
-	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, false)
-
-	err := k.CheckPoolHealth(ctx, poolId)
-
-	// Expect an error about invalid collateral asset
-	assert.True(t, errors.Is(err, types.ErrInvalidBorrowingAsset))
-}
-
-func TestCheckPoolHealth_PoolDisabledOrClosed(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.PoolChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		PoolChecker: mockChecker,
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			err = suite.app.PerpetualKeeper.CheckPoolHealth(suite.ctx, 1)
+			if tc.expectErrMsg != "" {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+			}
+		})
 	}
-
-	ctx := sdk.Context{} // mock or setup a context
-
-	poolId := uint64(1)
-	pool := types.Pool{} // some mocked pool
-
-	// Mock behavior
-	mockChecker.On("GetPool", ctx, poolId).Return(pool, true)
-	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(false)
-
-	err := k.CheckPoolHealth(ctx, poolId)
-
-	// Expect an error about the pool being disabled or closed
-	assert.True(t, errors.Is(err, types.ErrMTPDisabled))
-}
-
-func TestCheckPoolHealth_PoolHealthTooLow(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.PoolChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		PoolChecker: mockChecker,
-	}
-
-	ctx := sdk.Context{} // mock or setup a context
-
-	poolId := uint64(1)
-	pool := types.Pool{
-		Health: sdk.NewDec(5), // mock a low health
-		// ... other pool attributes
-	}
-
-	// Mock behavior
-	mockChecker.On("GetPool", ctx, poolId).Return(pool, true)
-	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
-	mockChecker.On("IsPoolClosed", ctx, poolId).Return(false)
-	mockChecker.On("GetPoolOpenThreshold", ctx).Return(sdk.NewDec(10)) // threshold higher than health
-
-	err := k.CheckPoolHealth(ctx, poolId)
-
-	// Expect an error about pool health being too low
-	assert.True(t, errors.Is(err, types.ErrInvalidPosition))
-}
-
-func TestCheckPoolHealth_PoolIsHealthy(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.PoolChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		PoolChecker: mockChecker,
-	}
-
-	ctx := sdk.Context{} // mock or setup a context
-
-	poolId := uint64(1)
-	pool := types.Pool{
-		Health: sdk.NewDec(15), // mock a good health
-		// ... other pool attributes
-	}
-
-	// Mock behavior
-	mockChecker.On("GetPool", ctx, poolId).Return(pool, true)
-	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(true)
-	mockChecker.On("IsPoolClosed", ctx, poolId).Return(false)
-	mockChecker.On("GetPoolOpenThreshold", ctx).Return(sdk.NewDec(10))
-
-	err := k.CheckPoolHealth(ctx, poolId)
-
-	// Expect no errors
-	assert.Nil(t, err)
 }

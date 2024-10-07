@@ -37,7 +37,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if !poolFound {
 			continue
 		}
-		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId, position.TradingAsset)
+		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
 		if poolErr != nil {
 			continue
 		}
@@ -62,7 +62,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if !poolFound {
 			continue
 		}
-		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId, position.TradingAsset)
+		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
 		if poolErr != nil {
 			continue
 		}

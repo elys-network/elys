@@ -8,7 +8,7 @@ import (
 
 func (k Keeper) CalcMTPTakeProfitLiability(ctx sdk.Context, mtp *types.MTP, baseCurrency string) (math.Int, error) {
 	// Retrieve AmmPool
-	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}

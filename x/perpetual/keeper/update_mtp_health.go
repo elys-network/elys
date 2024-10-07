@@ -72,7 +72,7 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 		}
 	}
 
-	lr := sdk.NewDecFromBigInt(custodyAmtInBaseCurrency.BigInt()).Quo(sdk.NewDecFromBigInt(xl.BigInt()))
+	lr := custodyAmtInBaseCurrency.ToLegacyDec().Quo(xl.ToLegacyDec())
 
 	return lr, nil
 }

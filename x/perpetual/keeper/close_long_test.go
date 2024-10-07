@@ -4,7 +4,6 @@ import (
 	"errors"
 	"testing"
 
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -134,7 +133,7 @@ func TestCloseLong_AmmPoolNotFound(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(types.Pool{}, true)
-	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammtypes.Pool{}, errorsmod.Wrap(types.ErrPoolDoesNotExist, mtp.CustodyAsset))
+	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId).Return(ammtypes.Pool{}, types.ErrPoolDoesNotExist)
 
 	_, _, err := k.ClosePosition(ctx, msg, ptypes.BaseCurrency)
 
@@ -175,7 +174,7 @@ func TestCloseLong_ErrorSettleBorrowInterest(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
-	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
+	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId).Return(ammPool, nil)
 	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(sdk.ZeroInt(), errors.New("error executing handle borrow interest"))
 
 	_, _, err := k.ClosePosition(ctx, msg, ptypes.BaseCurrency)
@@ -217,7 +216,7 @@ func TestCloseLong_ErrorTakeOutCustody(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
-	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
+	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId).Return(ammPool, nil)
 	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(sdk.ZeroInt(), nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(errors.New("error executing take out custody"))
 
@@ -260,7 +259,7 @@ func TestCloseLong_ErrorEstimateAndRepay(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
-	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
+	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId).Return(ammPool, nil)
 	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(sdk.ZeroInt(), nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
 	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(math.Int{}, errors.New("error executing estimate and repay"))
@@ -305,7 +304,7 @@ func TestCloseLong_SuccessfulClosingLongPosition(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
-	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
+	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId).Return(ammPool, nil)
 	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(sdk.ZeroInt(), nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
 	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(repayAmount, nil)
@@ -352,7 +351,7 @@ func TestPartiallyClosing_LongPosition(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.Id).Return(mtp, nil)
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true)
-	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil)
+	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId).Return(ammPool, nil)
 	mockChecker.On("SettleBorrowInterest", ctx, &mtp, &pool, ammPool).Return(sdk.ZeroInt(), nil)
 	mockChecker.On("TakeOutCustody", ctx, mtp, &pool, msg.Amount).Return(nil)
 	mockChecker.On("EstimateAndRepay", ctx, mtp, pool, ammPool, msg.Amount, ptypes.BaseCurrency).Return(repayAmount, nil)

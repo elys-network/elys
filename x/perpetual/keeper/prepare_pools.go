@@ -13,7 +13,7 @@ func (k Keeper) PreparePools(ctx sdk.Context, collateralAsset, tradingAsset stri
 		return
 	}
 
-	ammPool, err = k.GetAmmPool(ctx, poolId, tradingAsset)
+	ammPool, err = k.GetAmmPool(ctx, poolId)
 	if err != nil {
 		return
 	}

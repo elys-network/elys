@@ -125,7 +125,7 @@ func TestCloseEstimation_ExistingMTP(t *testing.T) {
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(query.Address), query.PositionId).Return(mtp, nil).Once()
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true).Once()
-	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil).Once()
+	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId).Return(ammPool, nil).Once()
 	mockChecker.On("EstimateSwap", ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.CollateralAsset, ammPool).Return(math.NewInt(10000), nil).Once()
 	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral), baseCurrency, ammPool).Return(math.NewInt(200), nil).Once()
 	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(baseCurrency, sdk.NewInt(9400)), mtp.CollateralAsset, ammPool).Return(math.NewInt(9400), nil).Once()

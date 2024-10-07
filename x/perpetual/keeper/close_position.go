@@ -26,7 +26,7 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency
 	}
 
 	// Retrieve AmmPool
-	ammPool, err := k.ClosePositionChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+	ammPool, err := k.ClosePositionChecker.GetAmmPool(ctx, mtp.AmmPoolId)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}

@@ -50,7 +50,7 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		if !poolFound {
 			continue
 		}
-		ammPool, poolErr := m.keeper.GetAmmPool(ctx, newMtp.AmmPoolId, newMtp.TradingAsset)
+		ammPool, poolErr := m.keeper.GetAmmPool(ctx, newMtp.AmmPoolId)
 		if poolErr != nil {
 			continue
 		}

@@ -76,7 +76,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 
 	// check req.TakeProfitPrice not zero to prevent division by zero
 	if req.TakeProfitPrice.IsZero() {
-		req.TakeProfitPrice = sdk.MustNewDecFromStr(types.TakeProfitPriceDefault)
+		req.TakeProfitPrice = types.TakeProfitPriceDefault
 	}
 
 	// calculate liabilities amount
@@ -145,7 +145,7 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 		fundingFee = fundingFee.Abs()
 	}
 
-	ammPool, err := k.GetAmmPool(ctx, poolId, "")
+	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
 		return nil, err
 	}

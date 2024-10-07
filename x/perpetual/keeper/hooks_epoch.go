@@ -12,14 +12,6 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochN
 
 // AfterEpochEnd distributes vested tokens at the end of each epoch
 func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) error {
-	params := k.GetParams(ctx)
-	if epochIdentifier == params.InvariantCheckEpoch {
-		err := k.InvariantCheck(ctx)
-		if err != nil {
-			ctx.Logger().Error("Perpetual: Invariant check failure", "err", err)
-			return err
-		}
-	}
 	return nil
 }
 

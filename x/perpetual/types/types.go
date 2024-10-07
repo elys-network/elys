@@ -43,6 +43,7 @@ func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsse
 		FundingFeeReceivedCollateral:   sdk.ZeroInt(),
 		FundingFeeReceivedCustody:      sdk.ZeroInt(),
 		OpenPrice:                      sdk.ZeroDec(),
+		StopLossPrice:                  sdk.ZeroDec(),
 	}
 }
 
