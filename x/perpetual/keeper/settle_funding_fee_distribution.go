@@ -64,7 +64,7 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	fundingFeeAmount := sdk.NewCoin(baseCurrency, totalFund.Mul(fundingFeeShare).TruncateInt())
 
 	// update mtp custody
-	mtp.Custody = mtp.Custody.Sub(fundingFeeAmount.Amount)
+	mtp.Custody = mtp.Custody.Add(fundingFeeAmount.Amount)
 
 	// update pool custody balance
 	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, fundingFeeAmount.Amount, false, mtp.Position)
