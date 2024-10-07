@@ -6,27 +6,21 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) (sdk.Coin, error) {
-	// get mtp address
-	mtpAddress, err := sdk.AccAddressFromBech32(mtp.Address)
-	if err != nil {
-		return sdk.Coin{}, err
-	}
-
+func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
 	uusdc, found := k.assetProfileKeeper.GetEntry(ctx, "uusdc")
 	if !found {
-		return sdk.Coin{}, nil
+		return nil
 	}
 
 	// Calculate liabilities for long and short assets using the separate helper function
 	liabilitiesLong, err := k.CalcTotalLiabilities(ctx, pool.PoolAssetsLong, pool.AmmPoolId, uusdc.Denom)
 	if err != nil {
-		return sdk.Coin{}, nil
+		return nil
 	}
 
 	liabilitiesShort, err := k.CalcTotalLiabilities(ctx, pool.PoolAssetsShort, pool.AmmPoolId, uusdc.Denom)
 	if err != nil {
-		return sdk.Coin{}, nil
+		return nil
 	}
 
 	// get funding fee collection address
@@ -37,7 +31,7 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 
 	// if balance is zero, return
 	if balance.IsZero() {
-		return sdk.Coin{}, nil
+		return nil
 	}
 
 	// Total fund collected should be
@@ -48,14 +42,14 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	if mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
 		if liabilitiesLong.IsZero() {
-			return sdk.Coin{}, types.ErrAmountTooLow
+			return types.ErrAmountTooLow
 		}
 		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesLong))
 		totalFund = short
 	} else {
 		// Ensure liabilitiesShort is not zero to avoid division by zero
 		if liabilitiesShort.IsZero() {
-			return sdk.Coin{}, types.ErrAmountTooLow
+			return types.ErrAmountTooLow
 		}
 		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesShort))
 		totalFund = long
@@ -63,27 +57,32 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 
 	// if funding fee share is zero, skip mtp
 	if fundingFeeShare.IsZero() {
-		return sdk.Coin{}, nil
+		return nil
 	}
 
 	// calculate funding fee amount
 	fundingFeeAmount := sdk.NewCoin(baseCurrency, totalFund.Mul(fundingFeeShare).TruncateInt())
-	toPay := sdk.Coin{}
 
-	if balance.Amount.LT(fundingFeeAmount.Amount) {
-		toPay = fundingFeeAmount
-	} else {
-		// transfer funding fee amount to mtp address
-		if err := k.bankKeeper.SendCoins(ctx, fundingFeeCollectionAddress, mtpAddress, sdk.NewCoins(fundingFeeAmount)); err != nil {
-			return sdk.Coin{}, err
-		}
+	// update mtp custody
+	mtp.Custody = mtp.Custody.Sub(fundingFeeAmount.Amount)
+
+	// update pool custody balance
+	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, fundingFeeAmount.Amount, false, mtp.Position)
+	if err != nil {
+		return err
+	}
+
+	// update accounted balance for custody side
+	err = pool.UpdateBalance(ctx, mtp.CustodyAsset, fundingFeeAmount.Amount, false, mtp.Position)
+	if err != nil {
+		return err
 	}
 
 	// update received funding fee accounting buckets
 	// Swap the take amount to collateral asset
 	fundingFeeCollateralAmount, err := k.EstimateSwap(ctx, fundingFeeAmount, mtp.CollateralAsset, ammPool)
 	if err != nil {
-		return sdk.Coin{}, err
+		return err
 	}
 
 	// add payment to total funding fee paid in collateral asset
@@ -91,5 +90,5 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	// add payment to total funding fee paid in custody asset
 	mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.Amount)
 
-	return toPay, nil
+	return nil
 }

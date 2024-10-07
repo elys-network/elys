@@ -38,7 +38,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 	}
 	mtp.MtpHealth = h
 
-	toPay, err := k.SettleFunding(ctx, mtp, &pool, ammPool, baseCurrency)
+	err = k.SettleFunding(ctx, mtp, &pool, ammPool, baseCurrency)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee: %s", mtp.CollateralAsset))
 	}
@@ -102,18 +102,6 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 		k.EmitForceClose(ctx, mtp, repayAmount, "")
 	} else {
 		return errors.Wrap(err, "error executing force close")
-	}
-
-	senderAddress, _ := sdk.AccAddressFromBech32(mtp.Address)
-	found = k.DoesMTPExist(ctx, senderAddress, mtp.Id)
-	empty := sdk.Coin{}
-	if !found && toPay != empty {
-		k.SetToPay(ctx, &types.ToPay{
-			AssetDenom:   toPay.Denom,
-			AssetBalance: toPay.Amount,
-			Address:      senderAddress.String(),
-			Id:           mtp.Id,
-		})
 	}
 
 	return nil
