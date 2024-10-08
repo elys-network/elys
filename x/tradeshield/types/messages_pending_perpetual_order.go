@@ -89,9 +89,9 @@ func (msg *MsgUpdatePendingPerpetualOrder) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgCancelPerpetualOrders{}
 
-func NewMsgCancelPerpetualOrders(creator string, id uint64) *MsgCancelPerpetualOrders {
+func NewMsgCancelPerpetualOrders(creator string, ids []uint64) *MsgCancelPerpetualOrders {
 	return &MsgCancelPerpetualOrders{
-		OrderId:      id,
+		OrderIds:      ids,
 		OwnerAddress: creator,
 	}
 }

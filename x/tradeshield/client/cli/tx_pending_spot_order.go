@@ -74,7 +74,7 @@ func CmdCancelSpotOrders() *cobra.Command {
 		Short: "Cancel pending-spot-orders",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			id, err := readPositionRequestJSON(args[0])
+			ids, err := readPositionRequestJSON(args[0])
 			if err != nil {
 				return err
 			}
@@ -84,7 +84,7 @@ func CmdCancelSpotOrders() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCancelSpotOrders(clientCtx.GetFromAddress().String(), id)
+			msg := types.NewMsgCancelSpotOrders(clientCtx.GetFromAddress().String(), ids)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
