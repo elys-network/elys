@@ -170,4 +170,5 @@ type OracleKeeper interface {
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
+	EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec
 }
