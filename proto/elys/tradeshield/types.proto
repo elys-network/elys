@@ -63,6 +63,30 @@ enum PerpetualPosition {
     SHORT = 2;
 }
 
+message LegacyPerpetualOrder {
+    uint64 order_id = 1;
+    string owner_address = 2;
+    PerpetualOrderType perpetual_order_type = 3;
+    PerpetualPosition position = 4;
+    OrderPrice trigger_price = 5;
+    cosmos.base.v1beta1.Coin collateral = 6 [(gogoproto.nullable) = false];
+    string trading_asset = 7;
+    string leverage = 8 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+    string take_profit_price = 9 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+    uint64 position_id = 10;
+    Status status = 11;
+    string stop_loss_price = 12 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+}
+
 message PerpetualOrder {
     uint64 order_id = 1;
     string owner_address = 2;
