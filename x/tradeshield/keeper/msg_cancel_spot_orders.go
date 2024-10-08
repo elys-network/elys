@@ -14,7 +14,6 @@ func (k msgServer) CancelSpotOrders(goCtx context.Context, msg *types.MsgCancelS
 	if len(msg.SpotOrderIds) == 0 {
 		return nil, types.ErrSizeZero
 	}
-
 	// loop through the spot orders and execute them
 	for _, spotOrderId := range msg.SpotOrderIds {
 		// get the spot order
@@ -28,6 +27,7 @@ func (k msgServer) CancelSpotOrders(goCtx context.Context, msg *types.MsgCancelS
 		}
 		
 		k.RemovePendingSpotOrder(ctx, spotOrderId)
+		types.EmitCloseOrdersEvent(ctx, spotOrder)
 	}
 
 	return &types.MsgCancelSpotOrdersResponse{}, nil
