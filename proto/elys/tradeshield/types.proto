@@ -85,4 +85,17 @@ message PerpetualOrder {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ];
+    cosmos.base.v1beta1.Coin position_size = 13 [(gogoproto.nullable) = false];
+    string liquidation_price = 14 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+    string funding_rate = 15 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+    string borrow_interest_rate = 16 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
 }

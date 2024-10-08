@@ -410,3 +410,53 @@ func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOr
 
 	return nil
 }
+
+// FillUpExtraPerpetualOrderInfo fills up the extra information of the perpetual order
+func (k Keeper) FillUpExtraPerpetualOrderInfo(ctx sdk.Context, order *types.PerpetualOrder) error {
+	// If position id not set then estimate the info values
+	if order.PositionId == 0 {
+		res, err := k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
+			Position:        perpetualtypes.Position(order.Position),
+			Leverage:        order.Leverage,
+			TradingAsset:    order.TradingAsset,
+			Collateral:      order.Collateral,
+			TakeProfitPrice: order.TakeProfitPrice,
+		})
+		if err != nil {
+			return err
+		}
+
+		order.PositionSize = res.PositionSize
+		order.LiquidationPrice = res.LiquidationPrice
+		order.FundingRate = res.FundingRate
+		order.BorrowInterestRate = res.BorrowInterestRate
+
+		return nil
+	}
+
+	// otherwise retrieve the position info from existing position
+	mtp, err := k.perpetual.GetMTP(ctx, sdk.AccAddress(order.OwnerAddress), order.PositionId)
+	if err != nil {
+		return err
+	}
+
+	pool, found := k.perpetual.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return perpetualtypes.ErrPoolDoesNotExist
+	}
+
+	res, err := k.perpetual.HandleCloseEstimation(ctx, &perpetualtypes.QueryCloseEstimationRequest{
+		Address:    order.OwnerAddress,
+		PositionId: order.PositionId,
+	})
+	if err != nil {
+		return err
+	}
+
+	order.PositionSize = res.PositionSize
+	order.LiquidationPrice = res.LiquidationPrice
+	order.FundingRate = pool.FundingRate
+	order.BorrowInterestRate = pool.BorrowInterestRate
+
+	return nil
+}
