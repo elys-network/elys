@@ -53,8 +53,8 @@ func NewParams() Params {
 	return Params{
 		SwapFee:                                        sdk.NewDecWithPrec(1, 3), // 0.1%
 		FundingFeeCollectionAddress:                    ZeroAddress,
-		FundingFeeMinRate:                              sdk.NewDecWithPrec(-111, 8), // -0.01% / hour
-		FundingFeeMaxRate:                              sdk.NewDecWithPrec(111, 8),  // 0.01% / hour
+		FundingFeeMinRate:                              sdk.NewDecWithPrec(-111, 8), // -0.1% / hour
+		FundingFeeMaxRate:                              sdk.NewDecWithPrec(111, 8),  // 0.1% / hour
 		FundingFeeBaseRate:                             sdk.NewDecWithPrec(3, 4),    // 0.03%
 		TakeProfitBorrowInterestRateMin:                sdk.OneDec(),
 		BorrowInterestRateDecrease:                     sdk.NewDecWithPrec(33, 10),
