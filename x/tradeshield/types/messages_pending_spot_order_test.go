@@ -70,37 +70,6 @@ func TestMsgUpdatePendingSpotOrder_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgDeletePendingSpotOrder_ValidateBasic(t *testing.T) {
-	tests := []struct {
-		name string
-		msg  MsgDeletePendingSpotOrder
-		err  error
-	}{
-		{
-			name: "invalid address",
-			msg: MsgDeletePendingSpotOrder{
-				OwnerAddress: "invalid_address",
-			},
-			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address",
-			msg: MsgDeletePendingSpotOrder{
-				OwnerAddress: sample.AccAddress(),
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.msg.ValidateBasic()
-			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
-				return
-			}
-			require.NoError(t, err)
-		})
-	}
-}
-
 func TestMsgCancelSpotOrders_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string

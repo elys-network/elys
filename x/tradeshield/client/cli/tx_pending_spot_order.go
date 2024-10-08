@@ -68,36 +68,7 @@ func CmdUpdatePendingSpotOrder() *cobra.Command {
 	return cmd
 }
 
-func CmdDeletePendingSpotOrder() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "delete-pending-spot-order [id]",
-		Short: "Delete a pending-spot-order by id",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			id, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return err
-			}
-
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgDeletePendingSpotOrder(clientCtx.GetFromAddress().String(), id)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdDCancelSpotOrders() *cobra.Command {
+func CmdCancelSpotOrders() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "cancel-pending-spot-orders [ids]",
 		Short: "Cancel pending-spot-orders by ids",

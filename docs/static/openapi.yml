@@ -91858,7 +91858,7 @@ definitions:
         format: uint64
   elys.tradeshield.MsgDeletePendingPerpetualOrderResponse:
     type: object
-  elys.tradeshield.MsgDeletePendingSpotOrderResponse:
+  elys.tradeshield.MsgCancelSpotOrdersResponse:
     type: object
   elys.tradeshield.MsgExecuteOrdersResponse:
     type: object

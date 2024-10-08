@@ -31,10 +31,6 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgUpdatePendingSpotOrder int = 100
 
-	opWeightMsgDeletePendingSpotOrder = "op_weight_msg_pending_spot_order"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgDeletePendingSpotOrder int = 100
-
 	opWeightMsgCreatePendingPerpetualOrder = "op_weight_msg_pending_perpetual_order"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCreatePendingPerpetualOrder int = 100
@@ -127,17 +123,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		tradeshieldsimulation.SimulateMsgUpdatePendingSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgDeletePendingSpotOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeletePendingSpotOrder, &weightMsgDeletePendingSpotOrder, nil,
-		func(_ *rand.Rand) {
-			weightMsgDeletePendingSpotOrder = defaultWeightMsgDeletePendingSpotOrder
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgDeletePendingSpotOrder,
-		tradeshieldsimulation.SimulateMsgDeletePendingSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
 	var weightMsgCreatePendingPerpetualOrder int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePendingPerpetualOrder, &weightMsgCreatePendingPerpetualOrder, nil,
 		func(_ *rand.Rand) {
@@ -214,14 +199,6 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			defaultWeightMsgUpdatePendingSpotOrder,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				tradeshieldsimulation.SimulateMsgUpdatePendingSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper)
-				return nil
-			},
-		),
-		simulation.NewWeightedProposalMsg(
-			opWeightMsgDeletePendingSpotOrder,
-			defaultWeightMsgDeletePendingSpotOrder,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				tradeshieldsimulation.SimulateMsgDeletePendingSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),

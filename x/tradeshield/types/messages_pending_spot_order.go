@@ -8,7 +8,7 @@ import (
 const (
 	TypeMsgCreatePendingSpotOrder = "create_pending_spot_order"
 	TypeMsgUpdatePendingSpotOrder = "update_pending_spot_order"
-	TypeMsgDeletePendingSpotOrder = "delete_pending_spot_order"
+	TypeMsgCancelSpotOrders = "cancel_pending_spot_order"
 )
 
 var _ sdk.Msg = &MsgCreatePendingSpotOrder{}
@@ -101,43 +101,6 @@ func (msg *MsgUpdatePendingSpotOrder) ValidateBasic() error {
 	return nil
 }
 
-var _ sdk.Msg = &MsgDeletePendingSpotOrder{}
-
-func NewMsgDeletePendingSpotOrder(creator string, id uint64) *MsgDeletePendingSpotOrder {
-	return &MsgDeletePendingSpotOrder{
-		OrderId:      id,
-		OwnerAddress: creator,
-	}
-}
-func (msg *MsgDeletePendingSpotOrder) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgDeletePendingSpotOrder) Type() string {
-	return TypeMsgDeletePendingSpotOrder
-}
-
-func (msg *MsgDeletePendingSpotOrder) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgDeletePendingSpotOrder) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgDeletePendingSpotOrder) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
-	}
-	return nil
-}
-
 var _ sdk.Msg = &MsgCancelSpotOrders{}
 
 func NewMsgCancelSpotOrders(creator string, id []uint64) *MsgCancelSpotOrders {
@@ -151,7 +114,7 @@ func (msg *MsgCancelSpotOrders) Route() string {
 }
 
 func (msg *MsgCancelSpotOrders) Type() string {
-	return TypeMsgDeletePendingSpotOrder
+	return TypeMsgCancelSpotOrders
 }
 
 func (msg *MsgCancelSpotOrders) GetSigners() []sdk.AccAddress {

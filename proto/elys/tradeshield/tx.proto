@@ -13,7 +13,6 @@ option go_package = "github.com/elys-network/elys/x/tradeshield/types";
 service Msg {
   rpc CreatePendingSpotOrder      (MsgCreatePendingSpotOrder     ) returns (MsgCreatePendingSpotOrderResponse     );
   rpc UpdatePendingSpotOrder      (MsgUpdatePendingSpotOrder     ) returns (MsgUpdatePendingSpotOrderResponse     );
-  rpc DeletePendingSpotOrder      (MsgDeletePendingSpotOrder     ) returns (MsgDeletePendingSpotOrderResponse     );
   rpc CreatePendingPerpetualOrder (MsgCreatePendingPerpetualOrder) returns (MsgCreatePendingPerpetualOrderResponse);
   rpc UpdatePendingPerpetualOrder (MsgUpdatePendingPerpetualOrder) returns (MsgUpdatePendingPerpetualOrderResponse);
   rpc DeletePendingPerpetualOrder (MsgDeletePendingPerpetualOrder) returns (MsgDeletePendingPerpetualOrderResponse);
@@ -40,13 +39,6 @@ message MsgUpdatePendingSpotOrder {
 }
 
 message MsgUpdatePendingSpotOrderResponse {}
-
-message MsgDeletePendingSpotOrder {
-  string owner_address = 1;
-  uint64 order_id      = 2;
-}
-
-message MsgDeletePendingSpotOrderResponse {}
 
 message MsgCreatePendingPerpetualOrder {
   PerpetualOrderType order_type = 1;
