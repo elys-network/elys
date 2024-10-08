@@ -28,6 +28,10 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 		PositionId:         uint64(1),
 		Status:             types.Status_PENDING,
 		StopLossPrice:      sdk.NewDec(1),
+		PositionSize:       sdk.NewCoin("denom", sdk.NewInt(10)),
+		LiquidationPrice:   sdk.NewDec(1),
+		FundingRate:        sdk.NewDec(1),
+		BorrowInterestRate: sdk.NewDec(1),
 	}
 
 	tests := []struct {
