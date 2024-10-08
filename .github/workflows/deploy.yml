@@ -1,17 +1,22 @@
 name: Deploy in devnet
 on:
-  workflow_dispatch:
-    
+  push:
+    branches:
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: devnet 
+    concurrency:
+      group: deploy-devnet  # Group for limiting concurrent runs
+      cancel-in-progress: false  # Queue new jobs instead of canceling if one is already running
+    environment: devnet
     env:
-      BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       NAME: elys
       COMMIT: ${{ github.sha }}
-      VERSION: 
-      BINARY: 
+      VERSION:
+      BINARY:
       DBENGINE: pebbledb
       COSMWASM_VERSION:
       NAME_WITH_VERSION:
@@ -35,7 +40,7 @@ jobs:
       - name: Setuping go
         uses: actions/setup-go@v5
         with:
-           go-version: "1.21"
+          go-version: "1.21"
       - name: Building elys binary
         env:
           CGO_ENABLED: 1
@@ -54,6 +59,7 @@ jobs:
           -X github.com/cosmos/cosmos-sdk/version.Version=${VERSION} \
           -X github.com/cosmos/cosmos-sdk/version.Commit=${COMMIT} \
           -X github.com/cosmos/cosmos-sdk/types.DBBackend=${DBENGINE} \
+          -X github.com/elys-network/elys/app.NextVersion=${VERSION} \
           -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,${DBENGINE} \
           -w -s \
           -linkmode=external \
@@ -68,7 +74,7 @@ jobs:
           mv ${{env.NAME_WITH_VERSION}}.tar.gz ${{env.NAME_WITH_VERSION}}/${{env.NAME_WITH_VERSION}}.tar.gz
       - uses: ryand56/r2-upload-action@latest
         id: bucket
-        name: Uploading binary to bucket  
+        name: Uploading binary to bucket
         with:
           r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
           r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -102,10 +108,12 @@ jobs:
           # save private keys to files
           echo "${{ secrets.PRIVATE_KEY_FUJI }}" > /tmp/private_key_fuji.txt
           echo "${{ secrets.PRIVATE_KEY_MALLORCA }}" > /tmp/private_key_mallorca.txt
- 
+          echo "${{ secrets.PRIVATE_KEY_BORA }}" > /tmp/private_key_bora.txt
+          
           # recover keys
           echo "${{ secrets.PASSPHRASE_FUJI }}"     | $ELYSD keys import fuji     --keyring-backend test /tmp/private_key_fuji.txt
           echo "${{ secrets.PASSPHRASE_MALLORCA }}" | $ELYSD keys import mallorca --keyring-backend test /tmp/private_key_mallorca.txt
+          echo "${{ secrets.PASSPHRASE_BORA }}"     | $ELYSD keys import bora     --keyring-backend test /tmp/private_key_bora.txt
 
           # get checksum
           # checksum=$(cat dist/sha256sum.txt | extract_checksum)
@@ -137,4 +145,5 @@ jobs:
           # vote on proposal
           $ELYSD tx gov vote $proposalid yes --from=fuji $OPTIONS
           $ELYSD tx gov vote $proposalid yes --from=mallorca $OPTIONS
+          $ELYSD tx gov vote $proposalid yes --from=bora $OPTIONS
           sleep 10

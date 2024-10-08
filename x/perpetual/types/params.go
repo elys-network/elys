@@ -190,7 +190,7 @@ func (p Params) Validate() error {
 	if err := validateMinBorrowInterestAmount(p.MinBorrowInterestAmount); err != nil {
 		return err
 	}
-	if err := validateMaxLimitOrder(p.MaxLimitOrder); err!=nil {
+	if err := validateMaxLimitOrder(p.MaxLimitOrder); err != nil {
 		return err
 	}
 	return nil
@@ -536,7 +536,7 @@ func validateMinBorrowInterestAmount(i interface{}) error {
 	return nil
 }
 
-func validateMaxLimitOrder (i interface{}) error {
+func validateMaxLimitOrder(i interface{}) error {
 	v, ok := i.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)

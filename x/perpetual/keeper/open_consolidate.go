@@ -8,33 +8,23 @@ import (
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MsgOpenResponse, error) {
 	poolId := existingMtp.AmmPoolId
-	pool, found := k.OpenLongChecker.GetPool(ctx, poolId)
+	pool, found := k.OpenDefineAssetsChecker.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, newMtp.CustodyAsset)
 	}
 
-	if !k.OpenLongChecker.IsPoolEnabled(ctx, poolId) {
+	if !k.OpenDefineAssetsChecker.IsPoolEnabled(ctx, poolId) {
 		return nil, errorsmod.Wrap(types.ErrMTPDisabled, existingMtp.CustodyAsset)
 	}
 
-	ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, poolId, existingMtp.CustodyAsset)
+	ammPool, err := k.OpenDefineAssetsChecker.GetAmmPool(ctx, poolId, existingMtp.CustodyAsset)
 	if err != nil {
 		return nil, err
 	}
 
-	switch msg.Position {
-	case types.Position_LONG:
-		existingMtp, err = k.OpenConsolidateLong(ctx, poolId, existingMtp, newMtp)
-		if err != nil {
-			return nil, err
-		}
-	case types.Position_SHORT:
-		existingMtp, err = k.OpenConsolidateShort(ctx, poolId, existingMtp, newMtp)
-		if err != nil {
-			return nil, err
-		}
-	default:
-		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
+	existingMtp, err = k.OpenConsolidateMergeMtp(ctx, poolId, existingMtp, newMtp, msg, baseCurrency)
+	if err != nil {
+		return nil, err
 	}
 
 	// calc and update open price
