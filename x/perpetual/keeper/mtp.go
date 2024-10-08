@@ -457,7 +457,7 @@ func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, ba
 		// For short position, convert liabilities to base currency
 		C, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities), baseCurrency, ammPool)
 		if err != nil {
-			return sdk.ZeroDec(), err
+			C = sdk.ZeroInt()
 		}
 
 		estimatedPnL = custodyAmtInBaseCurrency.ToLegacyDec().Sub(C.ToLegacyDec()).Sub(collateralAmt.ToLegacyDec())
@@ -467,9 +467,10 @@ func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, ba
 			// estimated_pnl = (custody_amount - collateral_amount) * market_price - liabilities_amount
 
 			// For long position, convert both custody and collateral to base currency
-			C, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.CollateralAsset, custodyAmtInBaseCurrency.Sub(collateralAmt)), baseCurrency, ammPool)
+			amt := sdk.MaxInt(custodyAmtInBaseCurrency.Sub(collateralAmt), sdk.ZeroInt())
+			C, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.CollateralAsset, amt), baseCurrency, ammPool)
 			if err != nil {
-				return sdk.ZeroDec(), err
+				C = sdk.ZeroInt()
 			}
 
 			estimatedPnL = C.ToLegacyDec().Sub(mtp.Liabilities.ToLegacyDec())
@@ -477,9 +478,10 @@ func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, ba
 			// estimated_pnl = custody_amount * market_price - liabilities_amount - collateral_amount
 
 			// For long position, convert custody to base currency
-			C, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.CustodyAsset, custodyAmtInBaseCurrency), baseCurrency, ammPool)
+			amt := sdk.MaxInt(custodyAmtInBaseCurrency, sdk.ZeroInt())
+			C, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.CustodyAsset, amt), baseCurrency, ammPool)
 			if err != nil {
-				return sdk.ZeroDec(), err
+				C = sdk.ZeroInt()
 			}
 
 			estimatedPnL = C.ToLegacyDec().Sub(mtp.Liabilities.ToLegacyDec()).Sub(collateralAmt.ToLegacyDec())

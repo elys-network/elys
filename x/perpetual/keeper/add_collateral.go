@@ -160,12 +160,6 @@ func (k Keeper) AddCollateralToMtp(ctx sdk.Context, msg *types.MsgAddCollateral)
 		return nil, types.ErrMTPUnhealthy
 	}
 
-	// Update consolidated collateral amount
-	err = k.OpenDefineAssetsChecker.CalcMTPConsolidateCollateral(ctx, &mtp, baseCurrency)
-	if err != nil {
-		return nil, err
-	}
-
 	// Set MTP
 	err = k.OpenDefineAssetsChecker.SetMTP(ctx, &mtp)
 	if err != nil {

@@ -80,54 +80,6 @@ func (_c *OpenDefineAssetsChecker_Borrow_Call) RunAndReturn(run func(types.Conte
 	return _c
 }
 
-// CalcMTPConsolidateCollateral provides a mock function with given fields: ctx, mtp, baseCurrency
-func (_m *OpenDefineAssetsChecker) CalcMTPConsolidateCollateral(ctx types.Context, mtp *perpetualtypes.MTP, baseCurrency string) error {
-	ret := _m.Called(ctx, mtp, baseCurrency)
-
-	if len(ret) == 0 {
-		panic("no return value specified for CalcMTPConsolidateCollateral")
-	}
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, *perpetualtypes.MTP, string) error); ok {
-		r0 = rf(ctx, mtp, baseCurrency)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CalcMTPConsolidateCollateral'
-type OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call struct {
-	*mock.Call
-}
-
-// CalcMTPConsolidateCollateral is a helper method to define mock.On call
-//   - ctx types.Context
-//   - mtp *perpetualtypes.MTP
-//   - baseCurrency string
-func (_e *OpenDefineAssetsChecker_Expecter) CalcMTPConsolidateCollateral(ctx interface{}, mtp interface{}, baseCurrency interface{}) *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call {
-	return &OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call{Call: _e.mock.On("CalcMTPConsolidateCollateral", ctx, mtp, baseCurrency)}
-}
-
-func (_c *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call) Run(run func(ctx types.Context, mtp *perpetualtypes.MTP, baseCurrency string)) *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(*perpetualtypes.MTP), args[2].(string))
-	})
-	return _c
-}
-
-func (_c *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call) Return(_a0 error) *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MTP, string) error) *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // CheckSameAssetPosition provides a mock function with given fields: ctx, msg
 func (_m *OpenDefineAssetsChecker) CheckSameAssetPosition(ctx types.Context, msg *perpetualtypes.MsgOpen) *perpetualtypes.MTP {
 	ret := _m.Called(ctx, msg)
@@ -173,6 +125,88 @@ func (_c *OpenDefineAssetsChecker_CheckSameAssetPosition_Call) Return(_a0 *perpe
 }
 
 func (_c *OpenDefineAssetsChecker_CheckSameAssetPosition_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MsgOpen) *perpetualtypes.MTP) *OpenDefineAssetsChecker_CheckSameAssetPosition_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DestroyMTP provides a mock function with given fields: ctx, mtpAddress, id
+func (_m *OpenDefineAssetsChecker) DestroyMTP(ctx types.Context, mtpAddress types.AccAddress, id uint64) error {
+	ret := _m.Called(ctx, mtpAddress, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DestroyMTP")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress, uint64) error); ok {
+		r0 = rf(ctx, mtpAddress, id)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// OpenDefineAssetsChecker_DestroyMTP_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DestroyMTP'
+type OpenDefineAssetsChecker_DestroyMTP_Call struct {
+	*mock.Call
+}
+
+// DestroyMTP is a helper method to define mock.On call
+//   - ctx types.Context
+//   - mtpAddress types.AccAddress
+//   - id uint64
+func (_e *OpenDefineAssetsChecker_Expecter) DestroyMTP(ctx interface{}, mtpAddress interface{}, id interface{}) *OpenDefineAssetsChecker_DestroyMTP_Call {
+	return &OpenDefineAssetsChecker_DestroyMTP_Call{Call: _e.mock.On("DestroyMTP", ctx, mtpAddress, id)}
+}
+
+func (_c *OpenDefineAssetsChecker_DestroyMTP_Call) Run(run func(ctx types.Context, mtpAddress types.AccAddress, id uint64)) *OpenDefineAssetsChecker_DestroyMTP_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(types.AccAddress), args[2].(uint64))
+	})
+	return _c
+}
+
+func (_c *OpenDefineAssetsChecker_DestroyMTP_Call) Return(_a0 error) *OpenDefineAssetsChecker_DestroyMTP_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenDefineAssetsChecker_DestroyMTP_Call) RunAndReturn(run func(types.Context, types.AccAddress, uint64) error) *OpenDefineAssetsChecker_DestroyMTP_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// EmitOpenEvent provides a mock function with given fields: ctx, mtp
+func (_m *OpenDefineAssetsChecker) EmitOpenEvent(ctx types.Context, mtp *perpetualtypes.MTP) {
+	_m.Called(ctx, mtp)
+}
+
+// OpenDefineAssetsChecker_EmitOpenEvent_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EmitOpenEvent'
+type OpenDefineAssetsChecker_EmitOpenEvent_Call struct {
+	*mock.Call
+}
+
+// EmitOpenEvent is a helper method to define mock.On call
+//   - ctx types.Context
+//   - mtp *perpetualtypes.MTP
+func (_e *OpenDefineAssetsChecker_Expecter) EmitOpenEvent(ctx interface{}, mtp interface{}) *OpenDefineAssetsChecker_EmitOpenEvent_Call {
+	return &OpenDefineAssetsChecker_EmitOpenEvent_Call{Call: _e.mock.On("EmitOpenEvent", ctx, mtp)}
+}
+
+func (_c *OpenDefineAssetsChecker_EmitOpenEvent_Call) Run(run func(ctx types.Context, mtp *perpetualtypes.MTP)) *OpenDefineAssetsChecker_EmitOpenEvent_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*perpetualtypes.MTP))
+	})
+	return _c
+}
+
+func (_c *OpenDefineAssetsChecker_EmitOpenEvent_Call) Return() *OpenDefineAssetsChecker_EmitOpenEvent_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *OpenDefineAssetsChecker_EmitOpenEvent_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MTP)) *OpenDefineAssetsChecker_EmitOpenEvent_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -733,6 +767,55 @@ func (_c *OpenDefineAssetsChecker_TakeInCustody_Call) Return(_a0 error) *OpenDef
 }
 
 func (_c *OpenDefineAssetsChecker_TakeInCustody_Call) RunAndReturn(run func(types.Context, perpetualtypes.MTP, *perpetualtypes.Pool) error) *OpenDefineAssetsChecker_TakeInCustody_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateOpenPrice provides a mock function with given fields: ctx, mtp, ammPool, baseCurrency
+func (_m *OpenDefineAssetsChecker) UpdateOpenPrice(ctx types.Context, mtp *perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string) error {
+	ret := _m.Called(ctx, mtp, ammPool, baseCurrency)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateOpenPrice")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, *perpetualtypes.MTP, ammtypes.Pool, string) error); ok {
+		r0 = rf(ctx, mtp, ammPool, baseCurrency)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// OpenDefineAssetsChecker_UpdateOpenPrice_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateOpenPrice'
+type OpenDefineAssetsChecker_UpdateOpenPrice_Call struct {
+	*mock.Call
+}
+
+// UpdateOpenPrice is a helper method to define mock.On call
+//   - ctx types.Context
+//   - mtp *perpetualtypes.MTP
+//   - ammPool ammtypes.Pool
+//   - baseCurrency string
+func (_e *OpenDefineAssetsChecker_Expecter) UpdateOpenPrice(ctx interface{}, mtp interface{}, ammPool interface{}, baseCurrency interface{}) *OpenDefineAssetsChecker_UpdateOpenPrice_Call {
+	return &OpenDefineAssetsChecker_UpdateOpenPrice_Call{Call: _e.mock.On("UpdateOpenPrice", ctx, mtp, ammPool, baseCurrency)}
+}
+
+func (_c *OpenDefineAssetsChecker_UpdateOpenPrice_Call) Run(run func(ctx types.Context, mtp *perpetualtypes.MTP, ammPool ammtypes.Pool, baseCurrency string)) *OpenDefineAssetsChecker_UpdateOpenPrice_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*perpetualtypes.MTP), args[2].(ammtypes.Pool), args[3].(string))
+	})
+	return _c
+}
+
+func (_c *OpenDefineAssetsChecker_UpdateOpenPrice_Call) Return(_a0 error) *OpenDefineAssetsChecker_UpdateOpenPrice_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *OpenDefineAssetsChecker_UpdateOpenPrice_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MTP, ammtypes.Pool, string) error) *OpenDefineAssetsChecker_UpdateOpenPrice_Call {
 	_c.Call.Return(run)
 	return _c
 }

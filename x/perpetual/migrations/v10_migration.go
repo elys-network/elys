@@ -6,6 +6,14 @@ import (
 )
 
 func (m Migrator) V10Migration(ctx sdk.Context) error {
+	// Update params
+	params := m.keeper.GetParams(ctx)
+
+	params.FundingFeeMinRate = sdk.NewDecWithPrec(-111, 8)
+	params.FundingFeeMaxRate = sdk.NewDecWithPrec(111, 8)
+
+	m.keeper.SetParams(ctx, &params)
+
 	mtps := m.keeper.GetAllLegacyMTP(ctx)
 
 	ctx.Logger().Info("Migrating positions from legacy to new format")
