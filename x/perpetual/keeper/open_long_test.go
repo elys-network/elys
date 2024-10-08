@@ -331,7 +331,6 @@ func TestOpenLong_Success(t *testing.T) {
 
 	mockChecker.On("GetSafetyFactor", ctx).Return(safetyFactor)
 
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
 
 	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
@@ -893,7 +892,6 @@ func TestOpenLongConsolidate_Success(t *testing.T) {
 
 	mockChecker.On("GetSafetyFactor", ctx).Return(safetyFactor)
 
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
 
 	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
@@ -925,7 +923,6 @@ func TestOpenLongConsolidate_Success(t *testing.T) {
 
 	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
 
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
 
 	_, err = k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)

@@ -80,54 +80,6 @@ func (_c *OpenDefineAssetsChecker_Borrow_Call) RunAndReturn(run func(types.Conte
 	return _c
 }
 
-// CalcMTPConsolidateCollateral provides a mock function with given fields: ctx, mtp, baseCurrency
-func (_m *OpenDefineAssetsChecker) CalcMTPConsolidateCollateral(ctx types.Context, mtp *perpetualtypes.MTP, baseCurrency string) error {
-	ret := _m.Called(ctx, mtp, baseCurrency)
-
-	if len(ret) == 0 {
-		panic("no return value specified for CalcMTPConsolidateCollateral")
-	}
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, *perpetualtypes.MTP, string) error); ok {
-		r0 = rf(ctx, mtp, baseCurrency)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CalcMTPConsolidateCollateral'
-type OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call struct {
-	*mock.Call
-}
-
-// CalcMTPConsolidateCollateral is a helper method to define mock.On call
-//   - ctx types.Context
-//   - mtp *perpetualtypes.MTP
-//   - baseCurrency string
-func (_e *OpenDefineAssetsChecker_Expecter) CalcMTPConsolidateCollateral(ctx interface{}, mtp interface{}, baseCurrency interface{}) *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call {
-	return &OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call{Call: _e.mock.On("CalcMTPConsolidateCollateral", ctx, mtp, baseCurrency)}
-}
-
-func (_c *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call) Run(run func(ctx types.Context, mtp *perpetualtypes.MTP, baseCurrency string)) *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(*perpetualtypes.MTP), args[2].(string))
-	})
-	return _c
-}
-
-func (_c *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call) Return(_a0 error) *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MTP, string) error) *OpenDefineAssetsChecker_CalcMTPConsolidateCollateral_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // CheckSameAssetPosition provides a mock function with given fields: ctx, msg
 func (_m *OpenDefineAssetsChecker) CheckSameAssetPosition(ctx types.Context, msg *perpetualtypes.MsgOpen) *perpetualtypes.MTP {
 	ret := _m.Called(ctx, msg)

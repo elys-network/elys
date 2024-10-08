@@ -60,7 +60,6 @@ type OpenDefineAssetsChecker interface {
 	SetPool(ctx sdk.Context, pool Pool)
 	CheckSameAssetPosition(ctx sdk.Context, msg *MsgOpen) *MTP
 	SetMTP(ctx sdk.Context, mtp *MTP) error
-	CalcMTPConsolidateCollateral(ctx sdk.Context, mtp *MTP, baseCurrency string) error
 }
 
 //go:generate mockery --srcpkg . --name ClosePositionChecker --structname ClosePositionChecker --filename close_position_checker.go --with-expecter
