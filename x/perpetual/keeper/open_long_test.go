@@ -331,7 +331,6 @@ func TestOpenLong_Success(t *testing.T) {
 
 	mockChecker.On("GetSafetyFactor", ctx).Return(safetyFactor)
 
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
 
 	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
@@ -895,7 +894,6 @@ func TestOpenLongConsolidate_Success(t *testing.T) {
 
 	mockChecker.On("GetSafetyFactor", ctx).Return(safetyFactor).Once()
 
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil).Once()
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil).Once()
 
 	existingMtp, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
@@ -934,7 +932,6 @@ func TestOpenLongConsolidate_Success(t *testing.T) {
 	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil).Once()
 	mockChecker.On("GetSafetyFactor", ctx).Return(safetyFactor).Once()
 
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil).Once()
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil).Once()
 
 	newMtp, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
@@ -1027,7 +1024,6 @@ func TestOpenLongConsolidate_FiniteTakeProfitPrice_Success(t *testing.T) {
 
 	mockChecker.On("GetSafetyFactor", ctx).Return(safetyFactor).Once()
 
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil).Once()
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil).Once()
 
 	existingMtp, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
@@ -1066,7 +1062,6 @@ func TestOpenLongConsolidate_FiniteTakeProfitPrice_Success(t *testing.T) {
 	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil).Once()
 	mockChecker.On("GetSafetyFactor", ctx).Return(safetyFactor).Once()
 
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil).Once()
 	mockChecker.On("SetMTP", ctx, mtp).Return(nil).Once()
 
 	newMtp, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
