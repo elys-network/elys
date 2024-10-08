@@ -58,7 +58,7 @@ func (k msgServer) UpdatePendingPerpetualOrder(goCtx context.Context, msg *types
 	return &types.MsgUpdatePendingPerpetualOrderResponse{}, nil
 }
 
-func (k msgServer) DeletePendingPerpetualOrder(goCtx context.Context, msg *types.MsgDeletePendingPerpetualOrder) (*types.MsgDeletePendingPerpetualOrderResponse, error) {
+func (k msgServer) CancelPerpetualOrders(goCtx context.Context, msg *types.MsgCancelPerpetualOrders) (*types.MsgCancelPerpetualOrdersResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
@@ -74,5 +74,5 @@ func (k msgServer) DeletePendingPerpetualOrder(goCtx context.Context, msg *types
 
 	k.RemovePendingPerpetualOrder(ctx, msg.OrderId)
 
-	return &types.MsgDeletePendingPerpetualOrderResponse{}, nil
+	return &types.MsgCancelPerpetualOrdersResponse{}, nil
 }

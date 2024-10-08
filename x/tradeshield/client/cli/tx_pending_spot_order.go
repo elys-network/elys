@@ -70,8 +70,8 @@ func CmdUpdatePendingSpotOrder() *cobra.Command {
 
 func CmdCancelSpotOrders() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "cancel-pending-spot-orders [ids]",
-		Short: "Cancel pending-spot-orders by ids",
+		Use:   "cancel-pending-spot-orders [ids.json]",
+		Short: "Cancel pending-spot-orders",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := readPositionRequestJSON(args[0])

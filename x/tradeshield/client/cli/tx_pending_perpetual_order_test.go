@@ -122,7 +122,7 @@ func TestCreatePendingPerpetualOrder(t *testing.T) {
 // 	}
 // }
 
-// func TestDeletePendingPerpetualOrder(t *testing.T) {
+// func TestCancelPerpetualOrders(t *testing.T) {
 // 	net := network.New(t)
 
 // 	val := net.Validators[0]
@@ -169,7 +169,7 @@ func TestCreatePendingPerpetualOrder(t *testing.T) {
 // 		t.Run(tc.desc, func(t *testing.T) {
 // 			require.NoError(t, net.WaitForNextBlock())
 
-// 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdDeletePendingPerpetualOrder(), append([]string{tc.id}, tc.args...))
+// 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCancelPerpetualOrders(), append([]string{tc.id}, tc.args...))
 // 			if tc.err != nil {
 // 				require.ErrorIs(t, err, tc.err)
 // 				return

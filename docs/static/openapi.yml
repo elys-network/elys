@@ -91856,7 +91856,7 @@ definitions:
       order_id:
         type: string
         format: uint64
-  elys.tradeshield.MsgDeletePendingPerpetualOrderResponse:
+  elys.tradeshield.MsgCancelPerpetualOrdersResponse:
     type: object
   elys.tradeshield.MsgCancelSpotOrdersResponse:
     type: object

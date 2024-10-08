@@ -15,7 +15,7 @@ service Msg {
   rpc UpdatePendingSpotOrder      (MsgUpdatePendingSpotOrder     ) returns (MsgUpdatePendingSpotOrderResponse     );
   rpc CreatePendingPerpetualOrder (MsgCreatePendingPerpetualOrder) returns (MsgCreatePendingPerpetualOrderResponse);
   rpc UpdatePendingPerpetualOrder (MsgUpdatePendingPerpetualOrder) returns (MsgUpdatePendingPerpetualOrderResponse);
-  rpc DeletePendingPerpetualOrder (MsgDeletePendingPerpetualOrder) returns (MsgDeletePendingPerpetualOrderResponse);
+  rpc CancelPerpetualOrders       (MsgCancelPerpetualOrders      ) returns (MsgCancelPerpetualOrdersResponse      );
   rpc UpdateParams                (MsgUpdateParams               ) returns (MsgUpdateParamsResponse               );
   rpc ExecuteOrders               (MsgExecuteOrders              ) returns (MsgExecuteOrdersResponse              );
   rpc CancelSpotOrders            (MsgCancelSpotOrders           ) returns (MsgCancelSpotOrdersResponse           );
@@ -73,12 +73,12 @@ message MsgUpdatePendingPerpetualOrder {
 
 message MsgUpdatePendingPerpetualOrderResponse {}
 
-message MsgDeletePendingPerpetualOrder {
+message MsgCancelPerpetualOrders {
   string owner_address = 1;
   uint64 order_id      = 2;
 }
 
-message MsgDeletePendingPerpetualOrderResponse {}
+message MsgCancelPerpetualOrdersResponse {}
 
 message MsgUpdateParams {
   

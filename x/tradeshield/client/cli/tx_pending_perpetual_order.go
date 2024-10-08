@@ -64,7 +64,7 @@ func CmdUpdatePendingPerpetualOrder() *cobra.Command {
 	return cmd
 }
 
-func CmdDeletePendingPerpetualOrder() *cobra.Command {
+func CmdCancelPerpetualOrders() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete-pending-perpetual-order [id]",
 		Short: "Delete a pending-perpetual-order by id",
@@ -80,7 +80,7 @@ func CmdDeletePendingPerpetualOrder() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDeletePendingPerpetualOrder(clientCtx.GetFromAddress().String(), id)
+			msg := types.NewMsgCancelPerpetualOrders(clientCtx.GetFromAddress().String(), id)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

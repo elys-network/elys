@@ -34,7 +34,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdUpdatePendingSpotOrder())
 	cmd.AddCommand(CmdCreatePendingPerpetualOrder())
 	cmd.AddCommand(CmdUpdatePendingPerpetualOrder())
-	cmd.AddCommand(CmdDeletePendingPerpetualOrder())
+	cmd.AddCommand(CmdCancelPerpetualOrders())
 	cmd.AddCommand(CmdUpdateParams())
 	cmd.AddCommand(CmdExecuteOrders())
 	cmd.AddCommand(CmdCancelSpotOrders())
