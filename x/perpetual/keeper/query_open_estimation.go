@@ -19,6 +19,10 @@ func (k Keeper) OpenEstimation(goCtx context.Context, req *types.QueryOpenEstima
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	return k.HandleOpenEstimation(ctx, req)
+}
+
+func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstimationRequest) (*types.QueryOpenEstimationResponse, error) {
 	// get swap fee param
 	swapFee := k.GetSwapFee(ctx)
 
