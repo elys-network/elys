@@ -21,14 +21,14 @@ func (k Keeper) UpdatedLeverage(ctx sdk.Context, mtp types.MTP) (sdk.Dec, error)
 
 	var custody_in_usdc sdk.Dec
 	if mtp.CustodyAsset != baseCurrency {
-		price := k.oracleKeeper.EstimatePrice(ctx, mtp.CustodyAsset, baseCurrency)
+		price := k.amm.EstimatePrice(ctx, mtp.CustodyAsset, baseCurrency)
 		custody_in_usdc = math.LegacyDec(mtp.Custody).Mul(price)
 	}else {
 		custody_in_usdc = math.LegacyDec(mtp.Custody)
 	}
 	var denominator sdk.Dec
 	if mtp.LiabilitiesAsset != baseCurrency {
-		price := k.oracleKeeper.EstimatePrice(ctx, mtp.CustodyAsset, baseCurrency)
+		price := k.amm.EstimatePrice(ctx, mtp.CustodyAsset, baseCurrency)
 		denominator = custody_in_usdc.Sub(math.LegacyDec(mtp.Liabilities).Mul(price))
 	}else {
 		denominator = custody_in_usdc.Mul(math.LegacyDec(mtp.Liabilities))
