@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	// make sure to update these when you upgrade the version
-	NextVersion = "v0.47.0"
-
 	LocalNetVersion = "v999.999.999"
 )
+
+// make sure to update these when you upgrade the version
+var NextVersion = "v0.47.0"
 
 func SetupHandlers(app *ElysApp) {
 	setUpgradeHandler(app)

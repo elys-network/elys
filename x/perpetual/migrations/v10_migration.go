@@ -5,8 +5,14 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (m Migrator) V9Migration(ctx sdk.Context) error {
-	m.keeper.DeleteAllNegativeCustomMTP(ctx)
+func (m Migrator) V10Migration(ctx sdk.Context) error {
+	// Update params
+	params := m.keeper.GetParams(ctx)
+
+	params.FundingFeeMinRate = sdk.NewDecWithPrec(-111, 8)
+	params.FundingFeeMaxRate = sdk.NewDecWithPrec(111, 8)
+
+	m.keeper.SetParams(ctx, &params)
 
 	mtps := m.keeper.GetAllLegacyMTP(ctx)
 

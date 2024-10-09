@@ -53,20 +53,9 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return nil, err
 	}
 
-	var mtp *types.MTP
-	switch msg.Position {
-	case types.Position_LONG:
-		mtp, err = k.OpenChecker.OpenLong(ctx, poolId, msg, baseCurrency, isBroker)
-		if err != nil {
-			return nil, err
-		}
-	case types.Position_SHORT:
-		mtp, err = k.OpenChecker.OpenShort(ctx, poolId, msg, baseCurrency, isBroker)
-		if err != nil {
-			return nil, err
-		}
-	default:
-		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
+	mtp, err := k.OpenChecker.OpenDefineAssets(ctx, poolId, msg, baseCurrency, isBroker)
+	if err != nil {
+		return nil, err
 	}
 
 	if existingMtp != nil {

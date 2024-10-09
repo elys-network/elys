@@ -114,6 +114,7 @@ func TestCloseEstimation_ExistingMTP(t *testing.T) {
 			TradingAsset:                   "uatom",
 			Position:                       types.Position_LONG,
 			BorrowInterestUnpaidCollateral: sdk.NewInt(10),
+			OpenPrice:                      sdk.MustNewDecFromStr("1.5"),
 		}
 		pool = types.Pool{
 			BorrowInterestRate: math.LegacyNewDec(2),
@@ -129,10 +130,11 @@ func TestCloseEstimation_ExistingMTP(t *testing.T) {
 	mockChecker.On("EstimateSwap", ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.CollateralAsset, ammPool).Return(math.NewInt(10000), nil).Once()
 	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral), baseCurrency, ammPool).Return(math.NewInt(200), nil).Once()
 	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(baseCurrency, sdk.NewInt(9400)), mtp.CollateralAsset, ammPool).Return(math.NewInt(9400), nil).Once()
+	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral), baseCurrency, ammPool).Return(math.NewInt(1111), nil).Once()
 
 	assetProfileKeeper.On("GetEntry", ctx, ptypes.BaseCurrency).Return(atypes.Entry{
 		Denom: baseCurrency,
-	}, true)
+	}, true).Once()
 
 	res, err := k.CloseEstimation(ctx, query)
 	assert.NoError(t, err)
