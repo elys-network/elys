@@ -24,20 +24,13 @@ func (k Keeper) CheckSamePositionAndConsolidate(ctx sdk.Context, m *types.MTP) e
 	for _, mtp := range mtps {
 		if mtp.Position == m.Position && mtp.CollateralAsset == m.CollateralAsset && mtp.CustodyAsset == m.TradingAsset {
 			if mtp.Id != m.Id {
-				switch m.Position {
-				case types.Position_LONG:
-					_, err := k.OpenConsolidateLong(ctx, m.AmmPoolId, mtp, m)
-					if err != nil {
-						return err
-					}
-				case types.Position_SHORT:
-					_, err := k.OpenConsolidateShort(ctx, m.AmmPoolId, mtp, m)
-					if err != nil {
-						return err
-					}
+
+				_, err := k.OpenConsolidateMergeMtp(ctx, m.AmmPoolId, mtp, m, ptypes.BaseCurrency)
+				if err != nil {
+					return err
 				}
 
-				ammPool, err := k.OpenLongChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+				ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
 				if err != nil {
 					return err
 				}
