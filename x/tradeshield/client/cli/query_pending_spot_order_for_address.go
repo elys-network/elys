@@ -28,6 +28,7 @@ func CmdPendingSpotOrderForAddress() *cobra.Command {
 
 			params := &types.QueryPendingSpotOrderForAddressRequest{
 				Address: reqAddress,
+				Status:  types.Status_ALL,
 			}
 
 			if reqStatusStr != "" {

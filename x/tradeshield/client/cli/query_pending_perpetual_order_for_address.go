@@ -25,6 +25,7 @@ func CmdPendingPerpetualOrderForAddress() *cobra.Command {
 
 			params := &types.QueryPendingPerpetualOrderForAddressRequest{
 				Address: reqAddress,
+				Status:  types.Status_ALL,
 			}
 
 			if reqStatusStr != "" {

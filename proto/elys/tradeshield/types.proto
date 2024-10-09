@@ -19,6 +19,7 @@ enum Status {
     PENDING = 0;
     EXECUTED = 1;
     CANCELED = 2;
+    ALL = 3;
 }
 
 message OrderPrice {

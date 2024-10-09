@@ -97,7 +97,7 @@ func (k Keeper) GetPendingSpotOrdersForAddress(ctx sdk.Context, address string, 
 		var order types.SpotOrder
 		err := k.cdc.Unmarshal(value, &order)
 		if err == nil {
-			if accumulate && order.OwnerAddress == address && (status == nil || order.Status == *status) {
+			if accumulate && order.OwnerAddress == address && (*status == types.Status_ALL || order.Status == *status) {
 				orders = append(orders, order)
 				return true, nil
 			}

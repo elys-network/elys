@@ -97,7 +97,7 @@ func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address str
 		var order types.PerpetualOrder
 		err := k.cdc.Unmarshal(value, &order)
 		if err == nil {
-			if accumulate && order.OwnerAddress == address && (status == nil || order.Status == *status) {
+			if accumulate && order.OwnerAddress == address && (*status == types.Status_ALL || order.Status == *status) {
 				orders = append(orders, order)
 				return true, nil
 			}
