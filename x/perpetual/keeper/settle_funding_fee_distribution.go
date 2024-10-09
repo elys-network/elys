@@ -23,17 +23,6 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		return nil
 	}
 
-	// get funding fee collection address
-	fundingFeeCollectionAddress := k.GetFundingFeeCollectionAddress(ctx)
-
-	// get base currency balance
-	balance := k.bankKeeper.GetBalance(ctx, fundingFeeCollectionAddress, baseCurrency)
-
-	// if balance is zero, return
-	if balance.IsZero() {
-		return nil
-	}
-
 	// Total fund collected should be
 	long, short := k.GetFundingDistributionValue(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId)
 	var totalFund sdk.Dec

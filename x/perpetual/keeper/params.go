@@ -175,15 +175,6 @@ func (k Keeper) GetFundingFeeMinRate(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).FundingFeeMinRate
 }
 
-func (k Keeper) GetFundingFeeCollectionAddress(ctx sdk.Context) sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(k.GetParams(ctx).FundingFeeCollectionAddress)
-	if err != nil {
-		panic(err)
-	}
-
-	return addr
-}
-
 func (k Keeper) GetSwapFee(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).SwapFee
 }
