@@ -11,6 +11,7 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 
 	params.FundingFeeMinRate = sdk.NewDecWithPrec(-111, 8)
 	params.FundingFeeMaxRate = sdk.NewDecWithPrec(111, 8)
+	params.FundingFeeBaseRate = sdk.NewDecWithPrec(33, 9)
 
 	m.keeper.SetParams(ctx, &params)
 
