@@ -19,6 +19,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/client/cli"
 	"github.com/elys-network/elys/x/perpetual/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
 func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpAndPrice) {
@@ -37,9 +38,9 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 			Mtp: &types.MTP{
 				Address:                        addr[i].String(),
 				CollateralAsset:                ptypes.BaseCurrency,
-				TradingAsset:                   "ATOM",
+				TradingAsset:                   ptypes.ATOM,
 				LiabilitiesAsset:               ptypes.BaseCurrency,
-				CustodyAsset:                   "ATOM",
+				CustodyAsset:                   ptypes.ATOM,
 				Collateral:                     sdk.NewInt(0),
 				Liabilities:                    sdk.NewInt(0),
 				BorrowInterestPaidCollateral:   sdk.NewInt(0),
@@ -77,9 +78,17 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	stateOracle := oracletypes.GenesisState{}
 	stateOracle.Prices = append(stateOracle.Prices, oracletypes.Price{
-		Asset:       "ATOM",
+		Asset:       ptypes.ATOM,
 		Price:       sdk.NewDec(4),
 		Source:      oracletypes.BAND,
+		Provider:    provider.String(),
+		Timestamp:   uint64(ctx.BlockTime().Unix()),
+		BlockHeight: uint64(ctx.BlockHeight()),
+	})
+	stateOracle.Prices = append(stateOracle.Prices, oracletypes.Price{
+		Asset:       "USDC",
+		Price:       sdk.NewDec(1),
+		Source:      "elys",
 		Provider:    provider.String(),
 		Timestamp:   uint64(ctx.BlockTime().Unix()),
 		BlockHeight: uint64(ctx.BlockHeight()),
@@ -87,15 +96,50 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	stateOracle.Params = oracletypes.DefaultParams()
 	stateOracle.PortId = "portid"
 	stateOracle.AssetInfos = append(stateOracle.AssetInfos, oracletypes.AssetInfo{
-		Denom:      "ATOM",
-		Display:    "ATOM",
+		Denom:      "uatom",
+		Display:    "uatom",
 		Decimal:    6,
-		BandTicker: "ATOM",
+		BandTicker: "uatom",
+	})
+	stateOracle.AssetInfos = append(stateOracle.AssetInfos, oracletypes.AssetInfo{
+		Denom:   ptypes.BaseCurrency,
+		Display: "USDC",
+		Decimal: 6,
 	})
 
 	bufO, err := cfg.Codec.MarshalJSON(&stateOracle)
 	require.NoError(t, err)
 	cfg.GenesisState[oracletypes.ModuleName] = bufO
+	fee := sdk.MustNewDecFromStr("0.0002")
+
+	msgCreatePool := ammtypes.MsgCreatePool{
+		Sender: addr[0].String(),
+		PoolParams: &ammtypes.PoolParams{
+			SwapFee:                     fee,
+			ExitFee:                     fee,
+			UseOracle:                   true,
+			WeightBreakingFeeMultiplier: fee,
+			WeightBreakingFeeExponent:   fee,
+			ExternalLiquidityRatio:      fee,
+			WeightRecoveryFeePortion:    fee,
+			ThresholdWeightDifference:   fee,
+			FeeDenom:                    ptypes.Elys,
+		},
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000),
+				Weight: sdk.NewInt(50),
+			},
+			{
+				Token:  sdk.NewInt64Coin(ptypes.ATOM, 1000_000_000),
+				Weight: sdk.NewInt(50),
+			},
+		},
+	}
+	_, err = app.AmmKeeper.CreatePool(ctx, &msgCreatePool)
+	if err != nil {
+		panic(err)
+	}
 	return network.New(t, cfg), mtps
 }
 
