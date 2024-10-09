@@ -185,11 +185,15 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 		if found {
 			asset_price = trading_asset_price.Price
 		}
-
+		updated_leverage, err := k.UpdatedLeverage(ctx, mtp)
+		if err != nil {
+			return err
+		}
 		mtpList = append(mtpList, &types.MtpAndPrice{
 			Mtp:               &mtp,
 			TradingAssetPrice: asset_price,
 			Pnl:               pnl,
+			UpdatedLeverage:   updated_leverage,
 		})
 		return nil
 	})
@@ -251,10 +255,15 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 			if found {
 				asset_price = trading_asset_price.Price
 			}
+			updated_leverage, err := k.UpdatedLeverage(ctx, mtp)
+			if err != nil {
+				return false, err
+			}
 			mtps = append(mtps, &types.MtpAndPrice{
 				Mtp:               &mtp,
 				TradingAssetPrice: asset_price,
 				Pnl:               pnl,
+				UpdatedLeverage:   updated_leverage,
 			})
 			return true, nil
 		}
@@ -339,10 +348,15 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 			asset_price = trading_asset_price.Price
 		}
 
+		updated_leverage, err := k.UpdatedLeverage(ctx, mtp)
+		if err != nil {
+			return err
+		}
 		mtps = append(mtps, &types.MtpAndPrice{
 			Mtp:               &mtp,
 			TradingAssetPrice: asset_price,
 			Pnl:               pnl,
+			UpdatedLeverage:   updated_leverage,
 		})
 		return nil
 	})
