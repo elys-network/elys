@@ -66,14 +66,20 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	// update mtp custody
 	mtp.Custody = mtp.Custody.Add(fundingFeeAmount.Amount)
 
+	// decrease fees collected
+	err = pool.UpdateFeesCollected(ctx, fundingFeeAmount.Denom, fundingFeeAmount.Amount, false)
+	if err != nil {
+		return err
+	}
+
 	// update pool custody balance
-	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, fundingFeeAmount.Amount, false, mtp.Position)
+	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, fundingFeeAmount.Amount, true, mtp.Position)
 	if err != nil {
 		return err
 	}
 
 	// update accounted balance for custody side
-	err = pool.UpdateBalance(ctx, mtp.CustodyAsset, fundingFeeAmount.Amount, false, mtp.Position)
+	err = pool.UpdateBalance(ctx, mtp.CustodyAsset, fundingFeeAmount.Amount, true, mtp.Position)
 	if err != nil {
 		return err
 	}

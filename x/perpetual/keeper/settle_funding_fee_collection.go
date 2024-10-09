@@ -55,11 +55,8 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 		return err
 	}
 
-	// Get funding fee collection address
-	fundingFeeCollectionAddress := k.GetFundingFeeCollectionAddress(ctx)
-
-	// Transfer take amount in collateral asset to funding fee collection address
-	_, err = k.TakeFundPayment(ctx, takeAmountCollateralAmount, mtp.CollateralAsset, sdk.OneDec(), fundingFeeCollectionAddress, &ammPool)
+	// increase fees collected
+	err = pool.UpdateFeesCollected(ctx, mtp.CollateralAsset, takeAmountCollateralAmount, true)
 	if err != nil {
 		return err
 	}
