@@ -33,7 +33,7 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	return params
 }
 
-func (k Keeper) GetLeagcyParams(ctx sdk.Context) (params types.LegacyParams) {
+func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyPrefix(types.ParamsKey))
 	if bz == nil {

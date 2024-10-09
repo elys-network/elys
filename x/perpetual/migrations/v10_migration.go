@@ -7,13 +7,36 @@ import (
 
 func (m Migrator) V10Migration(ctx sdk.Context) error {
 	// Update params
-	params := m.keeper.GetParams(ctx)
+	params := m.keeper.GetLegacyParams(ctx)
 
-	params.FundingFeeMinRate = sdk.NewDecWithPrec(-111, 8)
-	params.FundingFeeMaxRate = sdk.NewDecWithPrec(111, 8)
-	params.FundingFeeBaseRate = sdk.NewDecWithPrec(33, 9)
+	newParams := types.Params{
+		LeverageMax:                                    params.LeverageMax,
+		BorrowInterestRateMax:                          params.BorrowInterestRateMax,
+		BorrowInterestRateMin:                          params.BorrowInterestRateMin,
+		MinBorrowInterestAmount:                        params.MinBorrowInterestAmount,
+		BorrowInterestRateIncrease:                     params.BorrowInterestRateIncrease,
+		BorrowInterestRateDecrease:                     params.BorrowInterestRateDecrease,
+		HealthGainFactor:                               params.HealthGainFactor,
+		EpochLength:                                    params.EpochLength,
+		MaxOpenPositions:                               params.MaxOpenPositions,
+		PoolOpenThreshold:                              params.PoolOpenThreshold,
+		ForceCloseFundPercentage:                       params.ForceCloseFundPercentage,
+		ForceCloseFundAddress:                          params.ForceCloseFundAddress,
+		IncrementalBorrowInterestPaymentFundPercentage: params.IncrementalBorrowInterestPaymentFundPercentage,
+		IncrementalBorrowInterestPaymentFundAddress:    params.IncrementalBorrowInterestPaymentFundAddress,
+		SafetyFactor:                                   params.SafetyFactor,
+		IncrementalBorrowInterestPaymentEnabled:        params.IncrementalBorrowInterestPaymentEnabled,
+		WhitelistingEnabled:                            params.WhitelistingEnabled,
+		InvariantCheckEpoch:                            params.InvariantCheckEpoch,
+		TakeProfitBorrowInterestRateMin:                params.TakeProfitBorrowInterestRateMin,
+		SwapFee:                                        params.SwapFee,
+		MaxLimitOrder:                                  params.MaxLimitOrder,
+		FundingFeeMinRate:                              sdk.NewDecWithPrec(-111, 8),
+		FundingFeeMaxRate:                              sdk.NewDecWithPrec(111, 8),
+		FundingFeeBaseRate:                             sdk.NewDecWithPrec(33, 9),
+	}
 
-	m.keeper.SetParams(ctx, &params)
+	m.keeper.SetParams(ctx, &newParams)
 
 	mtps := m.keeper.GetAllLegacyMTP(ctx)
 
