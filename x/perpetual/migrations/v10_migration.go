@@ -64,6 +64,27 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 		}
 
 		m.keeper.CheckAndLiquidateUnhealthyPosition(ctx, &newMtp, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
+
+		pools := m.keeper.GetAllLegacyPools(ctx)
+
+		ctx.Logger().Info("Migrating pool")
+
+		for _, pool := range pools {
+			newPool := types.Pool{
+				AmmPoolId:                            pool.AmmPoolId,
+				Health:                               pool.Health,
+				Enabled:                              pool.Enabled,
+				Closed:                               pool.Closed,
+				BorrowInterestRate:                   pool.BorrowInterestRate,
+				PoolAssetsLong:                       pool.PoolAssetsLong,
+				PoolAssetsShort:                      pool.PoolAssetsShort,
+				LastHeightBorrowInterestRateComputed: pool.LastHeightBorrowInterestRateComputed,
+				FundingRate:                          pool.FundingRate,
+				FeesCollected:                        sdk.Coins{},
+			}
+			m.keeper.RemoveLegacyPool(ctx, newPool.AmmPoolId)
+			m.keeper.SetPool(ctx, newPool)
+		}
 	}
 
 	return nil
