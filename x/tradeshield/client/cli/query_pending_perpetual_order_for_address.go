@@ -15,12 +15,27 @@ func CmdPendingPerpetualOrderForAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pending-perpetual-order-for-address [address]",
 		Short: "Query pending-perpetual-order-for-address",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqAddress := args[0]
-			reqStatus, ok := types.Status_value[args[1]]
-			if !ok {
-				return types.ErrInvalidStatus
+			reqStatusStr, err := cmd.Flags().GetString(flagStatus)
+			if err != nil {
+				return err
+			}
+
+			params := &types.QueryPendingPerpetualOrderForAddressRequest{
+				Address: reqAddress,
+			}
+
+			if reqStatusStr != "" {
+				reqStatus, ok := types.Status_value[reqStatusStr]
+				if !ok {
+					return types.ErrInvalidStatus
+				}
+				params = &types.QueryPendingPerpetualOrderForAddressRequest{
+					Address: reqAddress,
+					Status:  types.Status(reqStatus),
+				}
 			}
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -29,11 +44,6 @@ func CmdPendingPerpetualOrderForAddress() *cobra.Command {
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-
-			params := &types.QueryPendingPerpetualOrderForAddressRequest{
-				Address: reqAddress,
-				Status:  types.Status(reqStatus),
-			}
 
 			res, err := queryClient.PendingPerpetualOrderForAddress(cmd.Context(), params)
 			if err != nil {
