@@ -22,6 +22,11 @@ func NewCloseSpotOrderEvt(order SpotOrder) sdk.Event {
 		sdk.NewAttribute("order_type", order.OrderType.String()),
 		sdk.NewAttribute("owner_address", order.OwnerAddress),
 		sdk.NewAttribute("id", strconv.FormatInt(int64(order.OrderId), 10)),
+		sdk.NewAttribute("order_target_denom", order.OrderTargetDenom),
+		sdk.NewAttribute("status", order.Status.String()),
+		sdk.NewAttribute("order_price", order.OrderPrice.String()),
+		sdk.NewAttribute("order_amount", order.OrderAmount.String()),
+		sdk.NewAttribute("date", order.Date.String()),
 	)
 }
 
@@ -36,5 +41,18 @@ func NewClosePerpetualOrderEvt(order PerpetualOrder) sdk.Event {
 		sdk.NewAttribute("order_type", order.PerpetualOrderType.String()),
 		sdk.NewAttribute("owner_address", order.OwnerAddress),
 		sdk.NewAttribute("id", strconv.FormatInt(int64(order.OrderId), 10)),
+		sdk.NewAttribute("position", order.Position.String()),
+		sdk.NewAttribute("trigger_price", order.TriggerPrice.String()),
+		sdk.NewAttribute("collateral", order.Collateral.String()),
+		sdk.NewAttribute("trading_asset", order.TradingAsset),
+		sdk.NewAttribute("leverage", order.Leverage.String()),
+		sdk.NewAttribute("take_profit_price", order.TakeProfitPrice.String()),
+		sdk.NewAttribute("position_id", strconv.FormatInt(int64(order.PositionId), 10)),
+		sdk.NewAttribute("status", order.Status.String()),
+		sdk.NewAttribute("stop_loss_price", order.StopLossPrice.String()),
+		sdk.NewAttribute("position_size", order.PositionSize.String()),
+		sdk.NewAttribute("liquidation_price", order.LiquidationPrice.String()),
+		sdk.NewAttribute("funding_rate", order.FundingRate.String()),
+		sdk.NewAttribute("borrow_interest_rate", order.BorrowInterestRate.String()),
 	)
 }
