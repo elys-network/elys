@@ -4,6 +4,7 @@ import (
 	"fmt"
 	gomath "math"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -419,6 +420,58 @@ func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) 
 	}
 	store.Delete(key)
 	return nil
+}
+
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) sdk.Dec {
+	collateralAmountInBaseCurrency := mtp.Collateral
+	if mtp.CollateralAsset != baseCurrency {
+		C, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral), baseCurrency, ammPool)
+		if err != nil {
+			return sdk.ZeroDec()
+		}
+		collateralAmountInBaseCurrency = C
+	}
+
+	liabilitiesAmountInBaseCurrency := mtp.Liabilities
+	if mtp.LiabilitiesAsset != baseCurrency {
+		L, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities), baseCurrency, ammPool)
+		if err != nil {
+			return sdk.ZeroDec()
+		}
+		liabilitiesAmountInBaseCurrency = L
+	}
+
+	custodyAmountInTradingAsset := mtp.Custody
+	if mtp.CustodyAsset != mtp.TradingAsset {
+		C, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.TradingAsset, ammPool)
+		if err != nil {
+			return sdk.ZeroDec()
+		}
+		custodyAmountInTradingAsset = C
+	}
+
+	// open price = (collateral + liabilities) / custody
+	mtp.OpenPrice = math.LegacyNewDecFromBigInt(
+		collateralAmountInBaseCurrency.Add(liabilitiesAmountInBaseCurrency).BigInt(),
+	).Quo(
+		math.LegacyNewDecFromBigInt(custodyAmountInTradingAsset.BigInt()),
+	)
+
+	// calculate liquidation price
+	// liquidation_price = open_price_value - collateral_amount / custody_amount
+	liquidationPrice := mtp.OpenPrice.Sub(
+		sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.BigInt()).Quo(sdk.NewDecFromBigInt(mtp.Custody.BigInt())),
+	)
+
+	// if position is short then liquidation price is open price + collateral amount / (custody amount / open price)
+	if mtp.Position == types.Position_SHORT {
+		positionSizeInTradingAsset := sdk.NewDecFromBigInt(mtp.Custody.BigInt()).Quo(mtp.OpenPrice)
+		liquidationPrice = mtp.OpenPrice.Add(
+			sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.BigInt()).Quo(positionSizeInTradingAsset),
+		)
+	}
+
+	return liquidationPrice
 }
 
 func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error) {
