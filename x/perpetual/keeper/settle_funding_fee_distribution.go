@@ -75,10 +75,7 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 
 	// update received funding fee accounting buckets
 	// Swap the take amount to collateral asset
-	fundingFeeCollateralAmount, err := k.EstimateSwap(ctx, fundingFeeAmount, mtp.CollateralAsset, ammPool)
-	if err != nil {
-		return err
-	}
+	fundingFeeCollateralAmount, _ := k.EstimateSwap(ctx, fundingFeeAmount, mtp.CollateralAsset, ammPool)
 
 	// add payment to total funding fee paid in collateral asset
 	mtp.FundingFeeReceivedCollateral = mtp.FundingFeeReceivedCollateral.Add(fundingFeeCollateralAmount)
