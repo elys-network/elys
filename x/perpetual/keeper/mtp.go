@@ -162,6 +162,7 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 		}
 
 		pnl := sdk.ZeroDec()
+		liquidationPrice := sdk.ZeroDec()
 		if realTime {
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
@@ -174,6 +175,7 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 			if err != nil {
 				return err
 			}
+			liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
 		}
 
 		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
@@ -191,6 +193,7 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 			Mtp:               &mtp,
 			TradingAssetPrice: asset_price,
 			Pnl:               pnl,
+			LiquidationPrice:  liquidationPrice,
 		})
 		return nil
 	})
@@ -226,6 +229,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
 		pnl := sdk.ZeroDec()
+		liquidationPrice := sdk.ZeroDec()
 		if accumulate && mtp.AmmPoolId == ammPoolId {
 			if realTime {
 				// Interest
@@ -240,6 +244,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 				if err != nil {
 					return false, err
 				}
+				liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
 			}
 
 			info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
@@ -256,6 +261,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 				Mtp:               &mtp,
 				TradingAssetPrice: asset_price,
 				Pnl:               pnl,
+				LiquidationPrice:  liquidationPrice,
 			})
 			return true, nil
 		}
@@ -315,6 +321,7 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 		}
 
 		pnl := sdk.ZeroDec()
+		liquidationPrice := sdk.ZeroDec()
 		if realTime {
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
@@ -327,6 +334,7 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 			if err != nil {
 				return err
 			}
+			liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
 		}
 
 		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
@@ -344,6 +352,7 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 			Mtp:               &mtp,
 			TradingAssetPrice: asset_price,
 			Pnl:               pnl,
+			LiquidationPrice:  liquidationPrice,
 		})
 		return nil
 	})
