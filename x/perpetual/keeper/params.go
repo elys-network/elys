@@ -33,7 +33,7 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	return params
 }
 
-func (k Keeper) GetLeagcyParams(ctx sdk.Context) (params types.LegacyParams) {
+func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyPrefix(types.ParamsKey))
 	if bz == nil {
@@ -173,15 +173,6 @@ func (k Keeper) GetFundingFeeMaxRate(ctx sdk.Context) sdk.Dec {
 
 func (k Keeper) GetFundingFeeMinRate(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).FundingFeeMinRate
-}
-
-func (k Keeper) GetFundingFeeCollectionAddress(ctx sdk.Context) sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(k.GetParams(ctx).FundingFeeCollectionAddress)
-	if err != nil {
-		panic(err)
-	}
-
-	return addr
 }
 
 func (k Keeper) GetSwapFee(ctx sdk.Context) sdk.Dec {

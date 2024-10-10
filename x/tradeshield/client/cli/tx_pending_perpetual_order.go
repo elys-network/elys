@@ -64,13 +64,14 @@ func CmdUpdatePendingPerpetualOrder() *cobra.Command {
 	return cmd
 }
 
-func CmdDeletePendingPerpetualOrder() *cobra.Command {
+func CmdCancelPerpetualOrders() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-pending-perpetual-order [id]",
-		Short: "Delete a pending-perpetual-order by id",
+		Use:   "cancel-perpetual-orders [ids.json]",
+		Short: "Cancel a pending-perpetual-orders by ids",
+		Example: "elysd tx perpetual cancel-perpetual-orders ids.json --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			id, err := strconv.ParseUint(args[0], 10, 64)
+			ids, err := readPositionRequestJSON(args[0])
 			if err != nil {
 				return err
 			}
@@ -80,7 +81,7 @@ func CmdDeletePendingPerpetualOrder() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDeletePendingPerpetualOrder(clientCtx.GetFromAddress().String(), id)
+			msg := types.NewMsgCancelPerpetualOrders(clientCtx.GetFromAddress().String(), ids)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

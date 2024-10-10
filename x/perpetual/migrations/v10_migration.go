@@ -7,13 +7,36 @@ import (
 
 func (m Migrator) V10Migration(ctx sdk.Context) error {
 	// Update params
-	params := m.keeper.GetParams(ctx)
+	params := m.keeper.GetLegacyParams(ctx)
 
-	params.FundingFeeMinRate = sdk.NewDecWithPrec(-111, 8)
-	params.FundingFeeMaxRate = sdk.NewDecWithPrec(111, 8)
-	params.FundingFeeBaseRate = sdk.NewDecWithPrec(33, 9)
+	newParams := types.Params{
+		LeverageMax:                                    params.LeverageMax,
+		BorrowInterestRateMax:                          params.BorrowInterestRateMax,
+		BorrowInterestRateMin:                          params.BorrowInterestRateMin,
+		MinBorrowInterestAmount:                        params.MinBorrowInterestAmount,
+		BorrowInterestRateIncrease:                     params.BorrowInterestRateIncrease,
+		BorrowInterestRateDecrease:                     params.BorrowInterestRateDecrease,
+		HealthGainFactor:                               params.HealthGainFactor,
+		EpochLength:                                    params.EpochLength,
+		MaxOpenPositions:                               params.MaxOpenPositions,
+		PoolOpenThreshold:                              params.PoolOpenThreshold,
+		ForceCloseFundPercentage:                       params.ForceCloseFundPercentage,
+		ForceCloseFundAddress:                          params.ForceCloseFundAddress,
+		IncrementalBorrowInterestPaymentFundPercentage: params.IncrementalBorrowInterestPaymentFundPercentage,
+		IncrementalBorrowInterestPaymentFundAddress:    params.IncrementalBorrowInterestPaymentFundAddress,
+		SafetyFactor:                                   params.SafetyFactor,
+		IncrementalBorrowInterestPaymentEnabled:        params.IncrementalBorrowInterestPaymentEnabled,
+		WhitelistingEnabled:                            params.WhitelistingEnabled,
+		InvariantCheckEpoch:                            params.InvariantCheckEpoch,
+		TakeProfitBorrowInterestRateMin:                params.TakeProfitBorrowInterestRateMin,
+		SwapFee:                                        params.SwapFee,
+		MaxLimitOrder:                                  params.MaxLimitOrder,
+		FundingFeeMinRate:                              sdk.NewDecWithPrec(-111, 8),
+		FundingFeeMaxRate:                              sdk.NewDecWithPrec(111, 8),
+		FundingFeeBaseRate:                             sdk.NewDecWithPrec(33, 9),
+	}
 
-	m.keeper.SetParams(ctx, &params)
+	m.keeper.SetParams(ctx, &newParams)
 
 	mtps := m.keeper.GetAllLegacyMTP(ctx)
 
@@ -65,6 +88,32 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 		}
 
 		m.keeper.CheckAndLiquidateUnhealthyPosition(ctx, &newMtp, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
+
+		pools := m.keeper.GetAllLegacyPools(ctx)
+
+		ctx.Logger().Info("Migrating pool")
+
+		for _, pool := range pools {
+			newPool := types.Pool{
+				AmmPoolId:                            pool.AmmPoolId,
+				Health:                               pool.Health,
+				Enabled:                              pool.Enabled,
+				Closed:                               pool.Closed,
+				BorrowInterestRate:                   pool.BorrowInterestRate,
+				PoolAssetsLong:                       pool.PoolAssetsLong,
+				PoolAssetsShort:                      pool.PoolAssetsShort,
+				LastHeightBorrowInterestRateComputed: pool.LastHeightBorrowInterestRateComputed,
+				FundingRate:                          pool.FundingRate,
+				FeesCollected:                        sdk.Coins{},
+			}
+			m.keeper.RemoveLegacyPool(ctx, newPool.AmmPoolId)
+			m.keeper.SetPool(ctx, newPool)
+		}
+	}
+
+	new_mtps := m.keeper.GetAllMTPs(ctx)
+	for _, mtp := range new_mtps {
+		m.keeper.CheckSamePositionAndConsolidate(ctx, &mtp)
 	}
 
 	return nil

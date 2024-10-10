@@ -58,21 +58,28 @@ func (k msgServer) UpdatePendingPerpetualOrder(goCtx context.Context, msg *types
 	return &types.MsgUpdatePendingPerpetualOrderResponse{}, nil
 }
 
-func (k msgServer) DeletePendingPerpetualOrder(goCtx context.Context, msg *types.MsgDeletePendingPerpetualOrder) (*types.MsgDeletePendingPerpetualOrderResponse, error) {
+func (k msgServer) CancelPerpetualOrders(goCtx context.Context, msg *types.MsgCancelPerpetualOrders) (*types.MsgCancelPerpetualOrdersResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Checks that the element exists
-	val, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
-	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.OrderId))
+	if len(msg.OrderIds) == 0 {
+		return nil, types.ErrSizeZero
 	}
+	// loop through the spot orders and execute them
+	for _, OrderId := range msg.OrderIds {
 
-	// Checks if the msg creator is the same as the current owner
-	if msg.OwnerAddress != val.OwnerAddress {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		// Checks that the element exists
+		val, found := k.GetPendingPerpetualOrder(ctx, OrderId)
+		if !found {
+			return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", OrderId))
+		}
+
+		// Checks if the msg creator is the same as the current owner
+		if msg.OwnerAddress != val.OwnerAddress {
+			return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		}
+
+		k.RemovePendingPerpetualOrder(ctx, OrderId)
+		types.EmitClosePerpetualOrderEvent(ctx, val)
 	}
-
-	k.RemovePendingPerpetualOrder(ctx, msg.OrderId)
-
-	return &types.MsgDeletePendingPerpetualOrderResponse{}, nil
+	return &types.MsgCancelPerpetualOrdersResponse{}, nil
 }
