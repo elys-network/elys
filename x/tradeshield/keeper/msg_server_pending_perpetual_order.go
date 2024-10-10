@@ -79,6 +79,7 @@ func (k msgServer) CancelPerpetualOrders(goCtx context.Context, msg *types.MsgCa
 		}
 
 		k.RemovePendingPerpetualOrder(ctx, OrderId)
+		types.EmitClosePerpetualOrderEvent(ctx, val)
 	}
 	return &types.MsgCancelPerpetualOrdersResponse{}, nil
 }
