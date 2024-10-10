@@ -67,6 +67,10 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 		m.keeper.CheckAndLiquidateUnhealthyPosition(ctx, &newMtp, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
 	}
 
+	new_mtps := m.keeper.GetAllMTPs(ctx)
+	for _, mtp := range new_mtps {
+		m.keeper.CheckSamePositionAndConsolidate(ctx, &mtp)
+	}
+
 	return nil
-	
 }
