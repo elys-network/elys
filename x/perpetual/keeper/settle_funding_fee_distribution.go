@@ -67,12 +67,6 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		return err
 	}
 
-	// update accounted balance for custody side
-	err = pool.UpdateBalance(ctx, mtp.CustodyAsset, fundingFeeAmount.Amount, true, mtp.Position)
-	if err != nil {
-		return err
-	}
-
 	// update received funding fee accounting buckets
 	// Swap the take amount to collateral asset
 	fundingFeeCollateralAmount, _ := k.EstimateSwap(ctx, fundingFeeAmount, mtp.CollateralAsset, ammPool)
