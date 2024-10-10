@@ -67,4 +67,5 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 	}
 
 	return nil
+	
 }
