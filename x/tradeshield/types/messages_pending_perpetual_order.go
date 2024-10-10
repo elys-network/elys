@@ -8,7 +8,7 @@ import (
 const (
 	TypeMsgCreatePendingPerpetualOrder = "create_pending_perpetual_order"
 	TypeMsgUpdatePendingPerpetualOrder = "update_pending_perpetual_order"
-	TypeMsgDeletePendingPerpetualOrder = "delete_pending_perpetual_order"
+	TypeMsgCancelPerpetualOrders = "cancel_perpetual_order"
 )
 
 var _ sdk.Msg = &MsgCreatePendingPerpetualOrder{}
@@ -87,23 +87,23 @@ func (msg *MsgUpdatePendingPerpetualOrder) ValidateBasic() error {
 	return nil
 }
 
-var _ sdk.Msg = &MsgDeletePendingPerpetualOrder{}
+var _ sdk.Msg = &MsgCancelPerpetualOrders{}
 
-func NewMsgDeletePendingPerpetualOrder(creator string, id uint64) *MsgDeletePendingPerpetualOrder {
-	return &MsgDeletePendingPerpetualOrder{
-		OrderId:      id,
+func NewMsgCancelPerpetualOrders(creator string, ids []uint64) *MsgCancelPerpetualOrders {
+	return &MsgCancelPerpetualOrders{
+		OrderIds:      ids,
 		OwnerAddress: creator,
 	}
 }
-func (msg *MsgDeletePendingPerpetualOrder) Route() string {
+func (msg *MsgCancelPerpetualOrders) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgDeletePendingPerpetualOrder) Type() string {
-	return TypeMsgDeletePendingPerpetualOrder
+func (msg *MsgCancelPerpetualOrders) Type() string {
+	return TypeMsgCancelPerpetualOrders
 }
 
-func (msg *MsgDeletePendingPerpetualOrder) GetSigners() []sdk.AccAddress {
+func (msg *MsgCancelPerpetualOrders) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		panic(err)
@@ -111,12 +111,12 @@ func (msg *MsgDeletePendingPerpetualOrder) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgDeletePendingPerpetualOrder) GetSignBytes() []byte {
+func (msg *MsgCancelPerpetualOrders) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgDeletePendingPerpetualOrder) ValidateBasic() error {
+func (msg *MsgCancelPerpetualOrders) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
