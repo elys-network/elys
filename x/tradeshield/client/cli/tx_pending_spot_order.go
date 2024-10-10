@@ -72,6 +72,7 @@ func CmdCancelSpotOrders() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "cancel-pending-spot-orders [ids.json]",
 		Short: "Cancel pending-spot-orders",
+		Example: "elysd tx perpetual cancel-pending-spot-orders ids.json --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ids, err := readPositionRequestJSON(args[0])

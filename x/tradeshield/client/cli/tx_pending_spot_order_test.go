@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test(t *testing.T) {
+func TestCancelSpotOrders(t *testing.T) {
 	net := setupNetwork(t)
 	ctx := net.Validators[0].ClientCtx
 	val := net.Validators[0]

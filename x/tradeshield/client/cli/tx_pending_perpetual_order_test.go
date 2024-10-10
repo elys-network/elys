@@ -1,7 +1,10 @@
 package cli_test
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
@@ -57,128 +60,32 @@ func TestCreatePendingPerpetualOrder(t *testing.T) {
 	}
 }
 
-// TODO: Add this in message task
-// func TestUpdatePendingPerpetualOrder(t *testing.T) {
-// 	net := network.New(t)
+func TestCancelPendingPerpertualOrders(t *testing.T) {
+	net := setupNetwork(t)
+	ctx := net.Validators[0].ClientCtx
+	val := net.Validators[0]
 
-// 	val := net.Validators[0]
-// 	ctx := val.ClientCtx
+	tmpFile, err := ioutil.TempFile("", "ids.json")
+	require.NoError(t, err)
+	defer os.Remove(tmpFile.Name())
+	
+	validIds := []uint64{}
+	validJson, err := json.Marshal(validIds)
+	require.NoError(t, err)
+	_, err = tmpFile.Write(validJson)
+	require.NoError(t, err)
+	tmpFile.Close()
 
-// 	fields := []string{"xyz"}
-// 	common := []string{
-// 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-// 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-// 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
-// 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
-// 	}
-// 	args := []string{}
-// 	args = append(args, fields...)
-// 	args = append(args, common...)
-// 	_, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreatePendingPerpetualOrder(), args)
-// 	require.NoError(t, err)
+	// Use baseURL to make API HTTP requests or use val.RPCClient to make direct
+	// Tendermint RPC calls.
+	// ...
 
-// 	tests := []struct {
-// 		desc string
-// 		id   string
-// 		args []string
-// 		code uint32
-// 		err  error
-// 	}{
-// 		{
-// 			desc: "valid",
-// 			id:   "0",
-// 			args: common,
-// 		},
-// 		{
-// 			desc: "key not found",
-// 			id:   "1",
-// 			args: common,
-// 			code: sdkerrors.ErrKeyNotFound.ABCICode(),
-// 		},
-// 		{
-// 			desc: "invalid key",
-// 			id:   "invalid",
-// 			err:  strconv.ErrSyntax,
-// 		},
-// 	}
-// 	for _, tc := range tests {
-// 		t.Run(tc.desc, func(t *testing.T) {
-// 			require.NoError(t, net.WaitForNextBlock())
+	args := []string{
+		tmpFile.Name(),
+		"--from=" + val.Address.String(),
+		"-y",
+	}
 
-// 			args := []string{tc.id}
-// 			args = append(args, fields...)
-// 			args = append(args, tc.args...)
-// 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdUpdatePendingPerpetualOrder(), args)
-// 			if tc.err != nil {
-// 				require.ErrorIs(t, err, tc.err)
-// 				return
-// 			}
-// 			require.NoError(t, err)
-
-// 			var resp sdk.TxResponse
-// 			require.NoError(t, ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
-// 			require.NoError(t, clitestutil.CheckTxCode(net, ctx, resp.TxHash, tc.code))
-// 		})
-// 	}
-// }
-
-// func TestCancelPerpetualOrders(t *testing.T) {
-// 	net := network.New(t)
-
-// 	val := net.Validators[0]
-// 	ctx := val.ClientCtx
-
-// 	fields := []string{"xyz"}
-// 	common := []string{
-// 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-// 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-// 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
-// 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
-// 	}
-// 	args := []string{}
-// 	args = append(args, fields...)
-// 	args = append(args, common...)
-// 	_, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreatePendingPerpetualOrder(), args)
-// 	require.NoError(t, err)
-
-// 	tests := []struct {
-// 		desc string
-// 		id   string
-// 		args []string
-// 		code uint32
-// 		err  error
-// 	}{
-// 		{
-// 			desc: "valid",
-// 			id:   "0",
-// 			args: common,
-// 		},
-// 		{
-// 			desc: "key not found",
-// 			id:   "1",
-// 			args: common,
-// 			code: sdkerrors.ErrKeyNotFound.ABCICode(),
-// 		},
-// 		{
-// 			desc: "invalid key",
-// 			id:   "invalid",
-// 			err:  strconv.ErrSyntax,
-// 		},
-// 	}
-// 	for _, tc := range tests {
-// 		t.Run(tc.desc, func(t *testing.T) {
-// 			require.NoError(t, net.WaitForNextBlock())
-
-// 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCancelPerpetualOrders(), append([]string{tc.id}, tc.args...))
-// 			if tc.err != nil {
-// 				require.ErrorIs(t, err, tc.err)
-// 				return
-// 			}
-// 			require.NoError(t, err)
-
-// 			var resp sdk.TxResponse
-// 			require.NoError(t, ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
-// 			require.NoError(t, clitestutil.CheckTxCode(net, ctx, resp.TxHash, tc.code))
-// 		})
-// 	}
-// }
+	_, err = clitestutil.ExecTestCLICmd(ctx, cli.CmdCancelPerpetualOrders(), args)
+	require.NoError(t, err)
+}
