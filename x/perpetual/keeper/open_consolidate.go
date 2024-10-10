@@ -22,7 +22,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, err
 	}
 
-	existingMtp, err = k.OpenConsolidateMergeMtp(ctx, poolId, existingMtp, newMtp, msg, baseCurrency)
+	existingMtp, err = k.OpenConsolidateMergeMtp(ctx, poolId, existingMtp, newMtp, baseCurrency)
 	if err != nil {
 		return nil, err
 	}

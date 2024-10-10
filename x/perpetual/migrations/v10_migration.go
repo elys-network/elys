@@ -111,5 +111,10 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 		}
 	}
 
+	new_mtps := m.keeper.GetAllMTPs(ctx)
+	for _, mtp := range new_mtps {
+		m.keeper.CheckSamePositionAndConsolidate(ctx, &mtp)
+	}
+
 	return nil
 }
