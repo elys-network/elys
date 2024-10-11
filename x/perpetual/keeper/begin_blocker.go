@@ -66,8 +66,8 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (sdk.Dec, s
 		if totalLiabilitiesShort.IsZero() {
 			return sdk.ZeroDec(), sdk.ZeroDec()
 		} else {
-			long := sdk.NewDecFromInt(totalCustodyLong.Sub(totalLiabilitiesShort)).Quo(sdk.NewDecFromInt(totalCustodyLong.Add(totalLiabilitiesShort)))
-			return long.Mul(fixedRate), sdk.ZeroDec()
+			netLongRatio := (totalCustodyLong.Sub(totalLiabilitiesShort)).ToLegacyDec().Quo((totalCustodyLong.Add(totalLiabilitiesShort)).ToLegacyDec())
+			return netLongRatio.Mul(fixedRate), sdk.ZeroDec()
 		}
 	} else {
 		// short is popular
@@ -75,8 +75,8 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (sdk.Dec, s
 		if totalCustodyLong.IsZero() {
 			return sdk.ZeroDec(), sdk.ZeroDec()
 		} else {
-			short := sdk.NewDecFromInt(totalLiabilitiesShort.Sub(totalCustodyLong)).Quo(sdk.NewDecFromInt(totalCustodyLong.Add(totalLiabilitiesShort)))
-			return sdk.ZeroDec(), short.Mul(fixedRate)
+			netShortRatio := (totalLiabilitiesShort.Sub(totalCustodyLong)).ToLegacyDec().Quo((totalCustodyLong.Add(totalLiabilitiesShort)).ToLegacyDec())
+			return sdk.ZeroDec(), netShortRatio.Mul(fixedRate)
 		}
 	}
 }
