@@ -58,7 +58,8 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (sdk.Dec, s
 	for _, asset := range pool.PoolAssetsShort {
 		totalLiabilitiesShort = totalLiabilitiesShort.Add(asset.Liabilities)
 	}
-	// TODO: multiply with fixed rate
+
+	fixedRate := k.GetParams(ctx).FixedFundingRate
 	if totalCustodyLong.GT(totalLiabilitiesShort) {
 		// long is popular
 		// long pays short
@@ -66,7 +67,7 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (sdk.Dec, s
 			return sdk.ZeroDec(), sdk.ZeroDec()
 		} else {
 			long := sdk.NewDecFromInt(totalCustodyLong.Sub(totalLiabilitiesShort)).Quo(sdk.NewDecFromInt(totalCustodyLong.Add(totalLiabilitiesShort)))
-			return long, sdk.ZeroDec()
+			return long.Mul(fixedRate), sdk.ZeroDec()
 		}
 	} else {
 		// short is popular
@@ -75,7 +76,7 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (sdk.Dec, s
 			return sdk.ZeroDec(), sdk.ZeroDec()
 		} else {
 			short := sdk.NewDecFromInt(totalLiabilitiesShort.Sub(totalCustodyLong)).Quo(sdk.NewDecFromInt(totalCustodyLong.Add(totalLiabilitiesShort)))
-			return sdk.ZeroDec(), short
+			return sdk.ZeroDec(), short.Mul(fixedRate)
 		}
 	}
 }
