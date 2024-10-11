@@ -37,7 +37,10 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
+		err := k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &types.MsgOpenResponse{
