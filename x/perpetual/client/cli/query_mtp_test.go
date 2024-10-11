@@ -15,11 +15,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/network"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/client/cli"
 	"github.com/elys-network/elys/x/perpetual/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
 func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpAndPrice) {
@@ -64,6 +64,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 			},
 			TradingAssetPrice: sdk.ZeroDec(),
 			Pnl:               sdk.ZeroDec(),
+			UpdatedLeverage:   sdk.ZeroDec(),
 		}
 
 		mtps = append(mtps, &mtp)
@@ -109,21 +110,21 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 
 	bufO, err := cfg.Codec.MarshalJSON(&stateOracle)
 	require.NoError(t, err)
-	cfg.GenesisState[oracletypes.ModuleName] = bufO
-	fee := sdk.MustNewDecFromStr("0.0002")
 
-	msgCreatePool := ammtypes.MsgCreatePool{
-		Sender: addr[0].String(),
-		PoolParams: &ammtypes.PoolParams{
-			SwapFee:                     fee,
-			ExitFee:                     fee,
+	amm_state := ammtypes.GenesisState{}
+	pool := ammtypes.Pool{
+		PoolId:      uint64(1),
+		TotalWeight: sdk.NewInt(100),
+		PoolParams: ammtypes.PoolParams{
+			SwapFee:                     sdk.ZeroDec(),
+			ExitFee:                     sdk.ZeroDec(),
 			UseOracle:                   true,
-			WeightBreakingFeeMultiplier: fee,
-			WeightBreakingFeeExponent:   fee,
-			ExternalLiquidityRatio:      fee,
-			WeightRecoveryFeePortion:    fee,
-			ThresholdWeightDifference:   fee,
-			FeeDenom:                    ptypes.Elys,
+			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+			ExternalLiquidityRatio:      sdk.NewDec(1),
+			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+			ThresholdWeightDifference:   sdk.ZeroDec(),
+			FeeDenom:                    ptypes.BaseCurrency,
 		},
 		PoolAssets: []ammtypes.PoolAsset{
 			{
@@ -136,10 +137,13 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 			},
 		},
 	}
-	_, err = app.AmmKeeper.CreatePool(ctx, &msgCreatePool)
-	if err != nil {
-		panic(err)
-	}
+
+	amm_state.PoolList = append(amm_state.PoolList, pool)
+	buf1, err := cfg.Codec.MarshalJSON(&amm_state)
+	require.NoError(t, err)
+
+	cfg.GenesisState[oracletypes.ModuleName] = bufO
+	cfg.GenesisState[ammtypes.ModuleName] = buf1
 	return network.New(t, cfg), mtps
 }
 
@@ -147,7 +151,6 @@ func TestShowMTP(t *testing.T) {
 	net, objs := networkWithMTPObjects(t, 2)
 
 	ctx := net.Validators[0].ClientCtx
-
 	common := []string{
 		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
