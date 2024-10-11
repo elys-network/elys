@@ -37,7 +37,6 @@ var (
 	KeyFundingFeeBaseRate                             = []byte("FundingFeeBaseRate")
 	KeyFundingFeeMinRate                              = []byte("FundingFeeMinRate")
 	KeyFundingFeeMaxRate                              = []byte("FundingFeeMaxRate")
-	KeyFundingFeeCollectionAddress                    = []byte("FundingFeeCollectionAddress")
 	KeySwapFee                                        = []byte("SwapFee")
 	KeyMinBorrowInterestAmount                        = []byte("MinBorrowInterestAmount")
 	KeyMaxLimitOrder                                  = []byte("MaxLimitOrder")
@@ -51,11 +50,10 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		SwapFee:                                        sdk.NewDecWithPrec(1, 3), // 0.1%
-		FundingFeeCollectionAddress:                    ZeroAddress,
-		FundingFeeMinRate:                              sdk.NewDecWithPrec(-1, 3), // -0.1%
-		FundingFeeMaxRate:                              sdk.NewDecWithPrec(1, 3),  // 0.1%
-		FundingFeeBaseRate:                             sdk.NewDecWithPrec(3, 4),  // 0.03%
+		SwapFee:                                        sdk.NewDecWithPrec(1, 3),    // 0.1%
+		FundingFeeMinRate:                              sdk.NewDecWithPrec(-111, 8), // -0.1% / hour
+		FundingFeeMaxRate:                              sdk.NewDecWithPrec(111, 8),  // 0.1% / hour
+		FundingFeeBaseRate:                             sdk.NewDecWithPrec(33, 9),   // 0.03% / hour
 		TakeProfitBorrowInterestRateMin:                sdk.OneDec(),
 		BorrowInterestRateDecrease:                     sdk.NewDecWithPrec(33, 10),
 		BorrowInterestRateIncrease:                     sdk.NewDecWithPrec(33, 10),
@@ -108,7 +106,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyFundingFeeBaseRate, &p.FundingFeeBaseRate, validateBorrowInterestRateMax),
 		paramtypes.NewParamSetPair(KeyFundingFeeMinRate, &p.FundingFeeMinRate, validateBorrowInterestRateMax),
 		paramtypes.NewParamSetPair(KeyFundingFeeMaxRate, &p.FundingFeeMaxRate, validateBorrowInterestRateMax),
-		paramtypes.NewParamSetPair(KeyFundingFeeCollectionAddress, &p.FundingFeeCollectionAddress, validateFundingFeeCollectionAddress),
 		paramtypes.NewParamSetPair(KeySwapFee, &p.SwapFee, validateSwapFee),
 		paramtypes.NewParamSetPair(KeyMinBorrowInterestAmount, &p.MinBorrowInterestAmount, validateMinBorrowInterestAmount),
 		paramtypes.NewParamSetPair(KeyMaxLimitOrder, &p.MaxLimitOrder, validateMaxLimitOrder),
@@ -179,9 +176,6 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateFundingFeeMaxRate(p.FundingFeeMaxRate); err != nil {
-		return err
-	}
-	if err := validateFundingFeeCollectionAddress(p.FundingFeeCollectionAddress); err != nil {
 		return err
 	}
 	if err := validateSwapFee(p.SwapFee); err != nil {

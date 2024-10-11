@@ -81,7 +81,7 @@ func (k Keeper) GetPendingPerpetualOrder(ctx sdk.Context, id uint64) (val types.
 	return val, true
 }
 
-func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address string, pagination *query.PageRequest) ([]types.PerpetualOrder, *query.PageResponse, error) {
+func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address string, status *types.Status, pagination *query.PageRequest) ([]types.PerpetualOrder, *query.PageResponse, error) {
 	var orders []types.PerpetualOrder
 
 	store := ctx.KVStore(k.storeKey)
@@ -97,7 +97,7 @@ func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address str
 		var order types.PerpetualOrder
 		err := k.cdc.Unmarshal(value, &order)
 		if err == nil {
-			if accumulate && order.OwnerAddress == address {
+			if accumulate && order.OwnerAddress == address && (*status == types.Status_ALL || order.Status == *status) {
 				orders = append(orders, order)
 				return true, nil
 			}
@@ -126,6 +126,22 @@ func (k Keeper) GetAllPendingPerpetualOrder(ctx sdk.Context) (list []types.Perpe
 
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.PerpetualOrder
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
+// GetAllPendingPerpetualOrder returns all legacy pendingPerpetualOrder
+func (k Keeper) GetAllLegacyPendingPerpetualOrder(ctx sdk.Context) (list []types.LegacyPerpetualOrder) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingPerpetualOrderKey)
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyPerpetualOrder
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
@@ -407,6 +423,56 @@ func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOr
 
 	// Remove the order from the pending order list
 	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+
+	return nil
+}
+
+// FillUpExtraPerpetualOrderInfo fills up the extra information of the perpetual order
+func (k Keeper) FillUpExtraPerpetualOrderInfo(ctx sdk.Context, order *types.PerpetualOrder) error {
+	// If position id not set then estimate the info values
+	if order.PositionId == 0 {
+		res, err := k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
+			Position:        perpetualtypes.Position(order.Position),
+			Leverage:        order.Leverage,
+			TradingAsset:    order.TradingAsset,
+			Collateral:      order.Collateral,
+			TakeProfitPrice: order.TakeProfitPrice,
+		})
+		if err != nil {
+			return err
+		}
+
+		order.PositionSize = res.PositionSize
+		order.LiquidationPrice = res.LiquidationPrice
+		order.FundingRate = res.FundingRate
+		order.BorrowInterestRate = res.BorrowInterestRate
+
+		return nil
+	}
+
+	// otherwise retrieve the position info from existing position
+	mtp, err := k.perpetual.GetMTP(ctx, sdk.AccAddress(order.OwnerAddress), order.PositionId)
+	if err != nil {
+		return err
+	}
+
+	pool, found := k.perpetual.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return perpetualtypes.ErrPoolDoesNotExist
+	}
+
+	res, err := k.perpetual.HandleCloseEstimation(ctx, &perpetualtypes.QueryCloseEstimationRequest{
+		Address:    order.OwnerAddress,
+		PositionId: order.PositionId,
+	})
+	if err != nil {
+		return err
+	}
+
+	order.PositionSize = res.PositionSize
+	order.LiquidationPrice = res.LiquidationPrice
+	order.FundingRate = pool.FundingRate
+	order.BorrowInterestRate = pool.BorrowInterestRate
 
 	return nil
 }

@@ -29,6 +29,10 @@ func (k Keeper) PendingPerpetualOrderAll(goCtx context.Context, req *types.Query
 			return err
 		}
 
+		if err := k.FillUpExtraPerpetualOrderInfo(ctx, &pendingPerpetualOrder); err != nil {
+			return err
+		}
+
 		pendingPerpetualOrders = append(pendingPerpetualOrders, pendingPerpetualOrder)
 		return nil
 	})
@@ -49,6 +53,10 @@ func (k Keeper) PendingPerpetualOrder(goCtx context.Context, req *types.QueryGet
 	pendingPerpetualOrder, found := k.GetPendingPerpetualOrder(ctx, req.Id)
 	if !found {
 		return nil, sdkerrors.ErrKeyNotFound
+	}
+
+	if err := k.FillUpExtraPerpetualOrderInfo(ctx, &pendingPerpetualOrder); err != nil {
+		return nil, err
 	}
 
 	return &types.QueryGetPendingPerpetualOrderResponse{PendingPerpetualOrder: pendingPerpetualOrder}, nil

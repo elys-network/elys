@@ -33,7 +33,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 		return errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", mtp.CollateralAsset))
 	}
 
-	toPay, err := k.SettleFunding(ctx, mtp, &pool, ammPool, baseCurrency)
+	err = k.SettleFunding(ctx, mtp, &pool, ammPool, baseCurrency)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee: %s", mtp.CollateralAsset))
 	}
@@ -105,18 +105,6 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 		return errors.Wrap(err, "error executing force close")
 	}
 
-	senderAddress, _ := sdk.AccAddressFromBech32(mtp.Address)
-	found = k.DoesMTPExist(ctx, senderAddress, mtp.Id)
-	empty := sdk.Coin{}
-	if !found && toPay != empty {
-		k.SetToPay(ctx, &types.ToPay{
-			AssetDenom:   toPay.Denom,
-			AssetBalance: toPay.Amount,
-			Address:      senderAddress.String(),
-			Id:           mtp.Id,
-		})
-	}
-
 	return nil
 }
 
@@ -166,32 +154,5 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool ty
 		return errors.Wrap(err, "error executing force close")
 	}
 
-	return nil
-}
-
-func (k Keeper) HandleToPay(ctx sdk.Context) error {
-	toPays := k.GetAllToPayStore(ctx)
-
-	if len(toPays) == 0 {
-		return nil
-	}
-	// get funding fee collection address
-	fundingFeeCollectionAddress := k.GetFundingFeeCollectionAddress(ctx)
-
-	for _, toPay := range toPays {
-		balance := k.bankKeeper.GetBalance(ctx, fundingFeeCollectionAddress, toPay.AssetDenom)
-		if balance.Amount.LT(toPay.AssetBalance) {
-			break
-		} else {
-			// transfer funding fee amount to mtp address
-			if err := k.bankKeeper.SendCoins(ctx, fundingFeeCollectionAddress, sdk.MustAccAddressFromBech32(toPay.Address), sdk.NewCoins(sdk.NewCoin(toPay.AssetDenom, toPay.AssetBalance))); err != nil {
-				return err
-			}
-			err := k.DeleteToPay(ctx, sdk.MustAccAddressFromBech32(toPay.Address), toPay.Id)
-			if err != nil {
-				return err
-			}
-		}
-	}
 	return nil
 }

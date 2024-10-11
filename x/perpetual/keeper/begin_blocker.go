@@ -8,6 +8,7 @@ import (
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	currentHeight := ctx.BlockHeight()
 	pools := k.GetAllPools(ctx)
+
 	for _, pool := range pools {
 		if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
 			rate, err := k.BorrowInterestRateComputation(ctx, pool)

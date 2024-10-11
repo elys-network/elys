@@ -70,21 +70,21 @@ func TestMsgUpdatePendingPerpetualOrder_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgDeletePendingPerpetualOrder_ValidateBasic(t *testing.T) {
+func TestMsgCancelPerpetualOrders_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgDeletePendingPerpetualOrder
+		msg  MsgCancelPerpetualOrders
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgDeletePendingPerpetualOrder{
+			msg: MsgCancelPerpetualOrders{
 				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgDeletePendingPerpetualOrder{
+			msg: MsgCancelPerpetualOrders{
 				OwnerAddress: sample.AccAddress(),
 			},
 		},

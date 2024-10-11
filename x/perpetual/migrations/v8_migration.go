@@ -6,11 +6,10 @@ import (
 )
 
 func (m Migrator) V8Migration(ctx sdk.Context) error {
-	legacyParams := m.keeper.GetLeagcyParams(ctx)
+	legacyParams := m.keeper.GetLegacyParams(ctx)
 	params := types.NewParams()
 
 	params.LeverageMax = legacyParams.LeverageMax
-	params.FundingFeeCollectionAddress = legacyParams.FundingFeeCollectionAddress
 	params.FundingFeeMinRate = legacyParams.FundingFeeMinRate
 	params.FundingFeeMaxRate = legacyParams.FundingFeeMaxRate
 	params.FundingFeeBaseRate = legacyParams.FundingFeeBaseRate

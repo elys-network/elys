@@ -138,6 +138,28 @@ func (p *Pool) UpdateBlockBorrowInterest(ctx sdk.Context, assetDenom string, amo
 	return nil
 }
 
+// Update the fees collected
+func (p *Pool) UpdateFeesCollected(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool) error {
+	if isIncrease {
+		for _, coin := range p.FeesCollected {
+			if coin.Denom == assetDenom {
+				coin.Amount = coin.Amount.Add(amount)
+				return nil
+			}
+		}
+	} else {
+		for _, coin := range p.FeesCollected {
+			if coin.Denom == assetDenom {
+				coin.Amount = coin.Amount.Sub(amount)
+				return nil
+			}
+		}
+	}
+	p.FeesCollected = append(p.FeesCollected, sdk.NewCoin(assetDenom, amount))
+
+	return nil
+}
+
 // Initialite pool asset according to its corresponding amm pool assets.
 func (p *Pool) InitiatePool(ctx sdk.Context, ammPool *ammtypes.Pool) error {
 	if ammPool == nil {
