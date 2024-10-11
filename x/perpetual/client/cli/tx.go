@@ -29,7 +29,6 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdUpdateParams())
 	cmd.AddCommand(CmdWhitelist())
 	cmd.AddCommand(CmdDewhitelist())
-	cmd.AddCommand(CmdAddCollateral())
 	cmd.AddCommand(CmdClosePositions())
 	cmd.AddCommand(CmdUpdateStopLoss())
 	cmd.AddCommand(CmdUpdateTakeProfitPrice())
