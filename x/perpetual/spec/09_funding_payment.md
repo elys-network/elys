@@ -30,12 +30,12 @@ The funding rate is calculated as follows:
 - **When Long Liabilities Exceed Short Liabilities:**
 
   ```
-  funding_rate = fixed_rate * long_custody - short_liability / (long_custody + short_liability)
+  funding_rate = fixed_rate * (long_custody - short_liability) / (long_custody + short_liability)
   ```
 
 - **When Short Liabilities Exceed Long Liabilities:**
   ```
- funding_rate = fixed_rate * short_liability - long_custody / (long_custody + short_liability)
+ funding_rate = fixed_rate * (short_liability - long_custody) / (long_custody + short_liability)
   ```
 
 This formula ensures that the funding rate stays within defined boundaries, incentivizing traders to take positions in opposition to the prevailing market trend, thereby promoting liquidity and market balance.
