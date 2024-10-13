@@ -15,25 +15,13 @@ The funding rate is computed at each block using the total long and short liabil
 
 This system is designed to **incentivize traders to take on risk against the prevailing market trend**. For example, if the majority of traders are long, the funding rate will encourage some traders to open short positions by requiring long traders to pay a funding fee to short traders.
 
-### 2. **Key Parameters Governing the Funding Rate**
+### 2. **Key Parameter Governing the Funding Rate**
 
 The funding rate is influenced by several module governance parameters:
 
-- **Base Funding Fee Rate (`funding_fee_base_rate`)**:  
+- **Fixed Funding Fee Rate (`fixed_funding_fee_rate`)**:  
   The base rate used to calculate the funding rate.  
-  Example value: `"0.000300000000000000"`
-
-- **Funding Fee Collection Address (`funding_fee_collection_address`)**:  
-  The address where collected funding fees are deposited.  
-  Example address: `elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l`
-
-- **Maximum Funding Fee Rate (`funding_fee_max_rate`)**:  
-  The upper cap on the funding fee rate to avoid excessive payments.  
-  Example value: `"0.001000000000000000"`
-
-- **Minimum Funding Fee Rate (`funding_fee_min_rate`)**:  
-  The lower limit on the funding fee rate to prevent negative rate extremes.  
-  Example value: `"-0.001000000000000000"`
+  Example value: `"0.300000000000000"`
 
 ### 3. **Funding Rate Formula**
 
@@ -42,12 +30,12 @@ The funding rate is calculated as follows:
 - **When Long Liabilities Exceed Short Liabilities:**
 
   ```
-  funding_rate = min(max(base_rate * (long_liabilities / short_liabilities), min_rate), max_rate)
+  funding_rate = fixed_rate * long_custody - short_liability / (long_custody + short_liability)
   ```
 
 - **When Short Liabilities Exceed Long Liabilities:**
   ```
-  funding_rate = min(max(base_rate * (short_liabilities / long_liabilities) * -1, min_rate), max_rate)
+ funding_rate = fixed_rate * short_liability - long_custody / (long_custody + short_liability)
   ```
 
 This formula ensures that the funding rate stays within defined boundaries, incentivizing traders to take positions in opposition to the prevailing market trend, thereby promoting liquidity and market balance.
