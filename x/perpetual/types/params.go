@@ -50,10 +50,8 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		SwapFee:                                        sdk.NewDecWithPrec(1, 3),    // 0.1%
-		FundingFeeMinRate:                              sdk.NewDecWithPrec(-111, 8), // -0.1% / hour
-		FundingFeeMaxRate:                              sdk.NewDecWithPrec(111, 8),  // 0.1% / hour
-		FundingFeeBaseRate:                             sdk.NewDecWithPrec(33, 9),   // 0.03% / hour
+		SwapFee:                                        sdk.NewDecWithPrec(1, 3),  // 0.1%
+		FixedFundingRate:                               sdk.NewDecWithPrec(30, 2), // 30%
 		TakeProfitBorrowInterestRateMin:                sdk.OneDec(),
 		BorrowInterestRateDecrease:                     sdk.NewDecWithPrec(33, 10),
 		BorrowInterestRateIncrease:                     sdk.NewDecWithPrec(33, 10),
@@ -103,9 +101,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
 		paramtypes.NewParamSetPair(KeyInvariantCheckEpoch, &p.InvariantCheckEpoch, validateInvariantCheckEpoch),
 		paramtypes.NewParamSetPair(KeyTakeProfitBorrowInterestRateMin, &p.TakeProfitBorrowInterestRateMin, validateTakeProfitBorrowInterestRateMin),
-		paramtypes.NewParamSetPair(KeyFundingFeeBaseRate, &p.FundingFeeBaseRate, validateBorrowInterestRateMax),
-		paramtypes.NewParamSetPair(KeyFundingFeeMinRate, &p.FundingFeeMinRate, validateBorrowInterestRateMax),
-		paramtypes.NewParamSetPair(KeyFundingFeeMaxRate, &p.FundingFeeMaxRate, validateBorrowInterestRateMax),
+		paramtypes.NewParamSetPair(KeyFundingFeeBaseRate, &p.FixedFundingRate, validateFixedFundingRate),
 		paramtypes.NewParamSetPair(KeySwapFee, &p.SwapFee, validateSwapFee),
 		paramtypes.NewParamSetPair(KeyMinBorrowInterestAmount, &p.MinBorrowInterestAmount, validateMinBorrowInterestAmount),
 		paramtypes.NewParamSetPair(KeyMaxLimitOrder, &p.MaxLimitOrder, validateMaxLimitOrder),
@@ -169,13 +165,7 @@ func (p Params) Validate() error {
 	if err := validateTakeProfitBorrowInterestRateMin(p.TakeProfitBorrowInterestRateMin); err != nil {
 		return err
 	}
-	if err := validateFundingFeeBaseRate(p.FundingFeeBaseRate); err != nil {
-		return err
-	}
-	if err := validateFundingFeeMinRate(p.FundingFeeMinRate); err != nil {
-		return err
-	}
-	if err := validateFundingFeeMaxRate(p.FundingFeeMaxRate); err != nil {
+	if err := validateFixedFundingRate(p.FixedFundingRate); err != nil {
 		return err
 	}
 	if err := validateSwapFee(p.SwapFee); err != nil {
@@ -446,55 +436,16 @@ func validateTakeProfitBorrowInterestRateMin(i interface{}) error {
 	return nil
 }
 
-func validateFundingFeeBaseRate(i interface{}) error {
+func validateFixedFundingRate(i interface{}) error {
 	v, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 	if v.IsNil() {
-		return fmt.Errorf("funding fee base rate must be not nil")
+		return fmt.Errorf("fixed funding fee must be not nil")
 	}
 	if v.IsNegative() {
-		return fmt.Errorf("funding fee base rate must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateFundingFeeMinRate(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v.IsNil() {
-		return fmt.Errorf("funding fee min rate must be not nil")
-	}
-	if v.IsPositive() {
-		return fmt.Errorf("funding fee min rate must be negative: %s", v)
-	}
-
-	return nil
-}
-
-func validateFundingFeeMaxRate(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v.IsNil() {
-		return fmt.Errorf("funding fee max rate must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("funding fee max rate must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateFundingFeeCollectionAddress(i interface{}) error {
-	_, ok := i.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		return fmt.Errorf("fixed funding fee must be positive: %s", v)
 	}
 
 	return nil

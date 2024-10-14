@@ -163,18 +163,6 @@ func (k Keeper) GetTakeProfitBorrowInterestRateMin(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).TakeProfitBorrowInterestRateMin
 }
 
-func (k Keeper) GetFundingFeeBaseRate(ctx sdk.Context) sdk.Dec {
-	return k.GetParams(ctx).FundingFeeBaseRate
-}
-
-func (k Keeper) GetFundingFeeMaxRate(ctx sdk.Context) sdk.Dec {
-	return k.GetParams(ctx).FundingFeeMaxRate
-}
-
-func (k Keeper) GetFundingFeeMinRate(ctx sdk.Context) sdk.Dec {
-	return k.GetParams(ctx).FundingFeeMinRate
-}
-
 func (k Keeper) GetSwapFee(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).SwapFee
 }
