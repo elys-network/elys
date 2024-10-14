@@ -22,6 +22,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			k.SetBorrowRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.InterestBlock{
 				InterestRate: rate,
 				BlockHeight:  ctx.BlockHeight(),
+				BlockTime:    ctx.BlockTime().Unix(),
 			})
 
 			err = k.UpdatePoolHealth(ctx, &pool)
@@ -31,14 +32,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 			fundingRateLong, fundingRateShort := k.ComputeFundingRate(ctx, pool)
 
-			// TODO: Change this calculation based on time, going to it in another PR
 			k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
-				FundingRate:        pool.FundingRate,
-				BlockHeight:        ctx.BlockHeight(),
-				FundingAmountShort: sdk.ZeroInt(),
-				FundingAmountLong:  sdk.ZeroInt(),
-				FundingRateLong:    fundingRateLong,
-				FundingRateShort:   fundingRateShort,
+				BlockHeight:      ctx.BlockHeight(),
+				BlockTime:        ctx.BlockTime().Unix(),
+				FundingRateLong:  fundingRateLong,
+				FundingRateShort: fundingRateShort,
 			})
 		}
 		k.SetPool(ctx, pool)

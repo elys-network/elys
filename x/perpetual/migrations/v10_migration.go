@@ -6,6 +6,8 @@ import (
 )
 
 func (m Migrator) V10Migration(ctx sdk.Context) error {
+	// TODO: Delete all interest and funding rate blocks
+
 	// Update params
 	params := m.keeper.GetLegacyParams(ctx)
 

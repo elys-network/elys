@@ -34,7 +34,7 @@ func (k Keeper) SettleFunding(ctx sdk.Context, mtp *types.MTP, pool *types.Pool,
 
 func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
 	// get funding rate
-	_, longRate, shortRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
+	longRate, shortRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
 
 	var takeAmountCustodyAmount math.Int
 	if mtp.Position == types.Position_LONG {
@@ -64,6 +64,7 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	// update mtp custody
 	mtp.Custody = mtp.Custody.Sub(takeAmountCustodyAmount)
 
+	// TODO: Remove FundingFeePaidCollateral and FundingFeePaidCustody from MTP
 	// add payment to total funding fee paid in collateral asset
 	mtp.FundingFeePaidCollateral = mtp.FundingFeePaidCollateral.Add(takeAmountCollateralAmount)
 
