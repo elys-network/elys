@@ -65,20 +65,27 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 		}
 
 		// increase fees collected
+		// Note: fees is collected in liabilities asset
 		err := pool.UpdateFeesCollected(ctx, mtp.LiabilitiesAsset, takeAmountLiabilityAmount, true)
 		if err != nil {
 			return err
 		}
 
-		// update mtp custody
-		mtp.Liabilities = mtp.Liabilities.Sub(takeAmountLiabilityAmount)
+		// should be done in custody
+		// short -> usdc
+		// long -> custody
+		custodyAmt, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, takeAmountLiabilityAmount), mtp.CustodyAsset, ammPool)
+		if err != nil {
+			return err
+		}
 
+		// update mtp custody
+		mtp.Custody = mtp.Custody.Sub(custodyAmt)
 		// add payment to total funding fee paid in custody asset
-		// TODO: Check for short position
-		// mtp.FundingFeePaidCustody = mtp.FundingFeePaidCustody.Add(takeAmountLiabilityAmount)
+		mtp.FundingFeePaidCustody = mtp.FundingFeePaidCustody.Add(custodyAmt)
 
 		// update pool custody balance
-		err = pool.UpdateLiabilities(ctx, mtp.LiabilitiesAsset, takeAmountLiabilityAmount, false, mtp.Position)
+		err = pool.UpdateCustody(ctx, mtp.CustodyAsset, custodyAmt, false, mtp.Position)
 		if err != nil {
 			return err
 		}

@@ -73,24 +73,27 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		// calculate funding fee amount
 		fundingFeeAmount := totalFund.Mul(fundingFeeShare)
 
-		// update mtp liability
-		mtp.Liabilities = mtp.Liabilities.Add(fundingFeeAmount.TruncateInt())
-
 		// decrease fees collected
 		err := pool.UpdateFeesCollected(ctx, mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt(), false)
 		if err != nil {
 			return err
 		}
 
+		custodyAmt, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt()), mtp.CustodyAsset, ammPool)
+		if err != nil {
+			return err
+		}
+		// update mtp Custody
+		mtp.Custody = mtp.Custody.Add(custodyAmt)
+
 		// update pool liability balance
-		err = pool.UpdateLiabilities(ctx, mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt(), true, mtp.Position)
+		err = pool.UpdateCustody(ctx, mtp.CustodyAsset, custodyAmt, true, mtp.Position)
 		if err != nil {
 			return err
 		}
 
-		// TODO
 		// add payment to total funding fee paid in custody asset
-		// mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.TruncateInt())
+		mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(custodyAmt)
 	}
 	return nil
 }
