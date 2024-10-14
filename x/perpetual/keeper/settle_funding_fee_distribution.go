@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -10,6 +11,19 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	uusdc, found := k.assetProfileKeeper.GetEntry(ctx, "uusdc")
 	if !found {
 		return nil
+	}
+
+	// get funding rate
+	longRate, shortRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
+
+	var takeAmountCustodyAmount math.Int
+	if mtp.Position == types.Position_LONG {
+		// long will get based on short rate
+		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, longRate)
+	} else {
+		// short will get based on long rate
+
+		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, shortRate)
 	}
 
 	// Calculate liabilities for long and short assets using the separate helper function

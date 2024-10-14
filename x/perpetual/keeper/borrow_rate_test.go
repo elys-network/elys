@@ -31,18 +31,18 @@ func TestBorrowRateGet(t *testing.T) {
 	ctx = ctx.WithBlockHeight(lastBlock)
 
 	// 1st case: recent block
-	res := keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-2), 1, sdk.NewDec(1000))
+	res := keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-2), 100, 1, sdk.NewDec(1000))
 	require.Equal(t, sdk.NewDec(19000), res) // 19 * 1000
 
 	// 2nd case: older block
-	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-8), 1, sdk.NewDec(1000))
+	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-8), 100, 1, sdk.NewDec(1000))
 	require.Equal(t, sdk.NewDec(52000), res) // 52 * 1000
 
 	// 3rd case: future block (should return zero)
-	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()+10), 1, sdk.NewDec(1000))
+	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()+10), 100, 1, sdk.NewDec(1000))
 	require.Equal(t, sdk.ZeroDec(), res)
 
 	// 4th case: non-existent pool
-	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-2), 2, sdk.NewDec(1000))
+	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-2), 100, 2, sdk.NewDec(1000))
 	require.Equal(t, sdk.ZeroDec(), res)
 }

@@ -127,7 +127,7 @@ func (k Keeper) GetAllBorrowRate(ctx sdk.Context) []types.InterestBlock {
 	return interests
 }
 
-func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, borrowed sdk.Dec) sdk.Dec {
+func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, startTime uint64, pool uint64, borrowed sdk.Dec) sdk.Dec {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestRatePrefix)
 	currentBlockKey := types.GetInterestRateKey(uint64(ctx.BlockHeight()), pool)
 	startBlockKey := types.GetInterestRateKey(startBlock, pool)
@@ -143,8 +143,12 @@ func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, b
 		k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
 		totalInterest := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
+		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
 
-		newInterest := borrowed.Mul(totalInterest)
+		newInterest := borrowed.Mul(totalInterest).
+			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+			Quo(sdk.NewDec(numberOfBlocks)).
+			Quo(sdk.NewDec(86400 * 365))
 
 		return newInterest
 	}
@@ -164,8 +168,13 @@ func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, b
 			endInterestBlock := types.InterestBlock{}
 			k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
+			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
+
 			totalInterest := endInterestBlock.InterestRate
-			newInterest := borrowed.Mul(totalInterest)
+			newInterest := borrowed.Mul(totalInterest).
+				Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+				Quo(sdk.NewDec(numberOfBlocks)).
+				Quo(sdk.NewDec(86400 * 365))
 			return newInterest
 		}
 	}
@@ -173,7 +182,8 @@ func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, b
 	if !found {
 		return sdk.ZeroDec()
 	}
-	newInterest := borrowed.Mul(params.BorrowInterestRate)
+	newInterest := borrowed.Mul(params.BorrowInterestRate).Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+		Quo(sdk.NewDec(86400 * 365))
 	return newInterest
 }
 

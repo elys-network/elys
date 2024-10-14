@@ -49,7 +49,7 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 	// Funding rate payment consideration
 	// get funding rate
 	// TODO: Fix this
-	fundingRate, _ := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
+	fundingRate, _ := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
 	var takeAmountCustodyAmount sdk.Int
 	// if funding rate is zero, return
 	if fundingRate.IsZero() {
