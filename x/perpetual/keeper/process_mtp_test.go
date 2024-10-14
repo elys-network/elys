@@ -143,7 +143,6 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 
 	// Set params
 	params := mk.GetParams(ctx)
-	params.FundingFeeCollectionAddress = addr[1].String()
 	params.IncrementalBorrowInterestPaymentFundAddress = addr[2].String()
 	params.IncrementalBorrowInterestPaymentFundPercentage = sdk.MustNewDecFromStr("0.5")
 	mk.SetParams(ctx, &params)

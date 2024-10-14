@@ -8,16 +8,16 @@ import (
 )
 
 // SettleFunding handles funding fee collection and distribution
-func (k Keeper) SettleFunding(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) (sdk.Coin, error) {
+func (k Keeper) SettleFunding(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
 
 	err := k.SettleFundingFeeCollection(ctx, mtp, pool, ammPool, baseCurrency)
 	if err != nil {
-		return sdk.Coin{}, err
+		return err
 	}
 
-	toPay, err := k.SettleFundingFeeDistribution(ctx, mtp, pool, ammPool, baseCurrency)
+	err = k.SettleFundingFeeDistribution(ctx, mtp, pool, ammPool, baseCurrency)
 	if err != nil {
-		return sdk.Coin{}, err
+		return err
 	}
 
 	mtp.LastFundingCalcBlock = uint64(ctx.BlockHeight())
@@ -26,10 +26,10 @@ func (k Keeper) SettleFunding(ctx sdk.Context, mtp *types.MTP, pool *types.Pool,
 	// apply changes to mtp object
 	err = k.SetMTP(ctx, mtp)
 	if err != nil {
-		return sdk.Coin{}, err
+		return err
 	}
 
-	return toPay, nil
+	return nil
 }
 
 func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
@@ -55,11 +55,8 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 		return err
 	}
 
-	// Get funding fee collection address
-	fundingFeeCollectionAddress := k.GetFundingFeeCollectionAddress(ctx)
-
-	// Transfer take amount in collateral asset to funding fee collection address
-	_, err = k.TakeFundPayment(ctx, takeAmountCollateralAmount, mtp.CollateralAsset, sdk.OneDec(), fundingFeeCollectionAddress, &ammPool)
+	// increase fees collected
+	err = pool.UpdateFeesCollected(ctx, mtp.CollateralAsset, takeAmountCollateralAmount, true)
 	if err != nil {
 		return err
 	}
@@ -84,18 +81,6 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 		return err
 	}
 
-	// update accounted balance for custody side
-	err = pool.UpdateBalance(ctx, mtp.CustodyAsset, takeAmountCustody.Amount, false, mtp.Position)
-	if err != nil {
-		return err
-	}
-
-	// update accounted balance for collateral side
-	err = pool.UpdateBalance(ctx, mtp.CollateralAsset, takeAmountCollateralAmount, false, mtp.Position)
-	if err != nil {
-		return err
-	}
-
 	// apply changes to mtp object
 	err = k.SetMTP(ctx, mtp)
 	if err != nil {
@@ -104,12 +89,6 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 
 	// apply changes to pool object
 	k.SetPool(ctx, *pool)
-
-	// update mtp health
-	_, err = k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
-	if err != nil {
-		return err
-	}
 
 	return nil
 }

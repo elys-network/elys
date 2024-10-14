@@ -12,4 +12,6 @@ var (
 	ErrSpotOrderNotFound      = errors.Register(ModuleName, 1101, "spot order not found")
 	ErrPerpetualOrderNotFound = errors.Register(ModuleName, 1102, "perpetual order not found")
 	ErrPriceNotFound          = errors.Register(ModuleName, 1103, "price not found")
+	ErrSizeZero               = errors.Register(ModuleName, 1104, "zero order ids ")
+  ErrInvalidStatus          = errors.Register(ModuleName, 1105, "invalid status")
 )

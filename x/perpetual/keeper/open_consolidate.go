@@ -22,18 +22,18 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, err
 	}
 
-	existingMtp, err = k.OpenConsolidateMergeMtp(ctx, poolId, existingMtp, newMtp, msg, baseCurrency)
+	existingMtp, err = k.OpenConsolidateMergeMtp(ctx, poolId, existingMtp, newMtp, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
 	// calc and update open price
-	err = k.UpdateOpenPrice(ctx, existingMtp, ammPool, baseCurrency)
+	err = k.OpenDefineAssetsChecker.UpdateOpenPrice(ctx, existingMtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
-	k.EmitOpenEvent(ctx, existingMtp)
+	k.OpenDefineAssetsChecker.EmitOpenEvent(ctx, existingMtp)
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {

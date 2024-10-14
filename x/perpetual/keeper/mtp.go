@@ -169,7 +169,10 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 
 			pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
 			mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
-			pnl = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
+			pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
+			if err != nil {
+				return err
+			}
 		}
 
 		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
@@ -232,7 +235,10 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 
 				pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
 				mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
-				pnl = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
+				pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
+				if err != nil {
+					return false, err
+				}
 			}
 
 			info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
@@ -316,7 +322,10 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 
 			pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
 			mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
-			pnl = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
+			pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
+			if err != nil {
+				return err
+			}
 		}
 
 		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
@@ -412,40 +421,8 @@ func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) 
 	return nil
 }
 
-func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) sdk.Dec {
+func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error) {
 	// P&L = Custody (in USD) - Liability ( in USD) - Collateral ( in USD)
-	// Liability should include margin interest and funding fee accrued.
-	totalLiability := mtp.Liabilities
-
-	pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
-	mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
-
-	// if short position, convert liabilities to base currency
-	if mtp.Position == types.Position_SHORT {
-		liabilities := sdk.NewCoin(mtp.LiabilitiesAsset, totalLiability)
-		var err error
-		totalLiability, err = k.EstimateSwapGivenOut(ctx, liabilities, baseCurrency, ammPool)
-		if err != nil {
-			totalLiability = sdk.ZeroInt()
-		}
-	}
-
-	collateral := mtp.Collateral.Add(mtp.BorrowInterestUnpaidCollateral)
-	// include unpaid borrow interest in debt
-	if collateral.IsPositive() {
-		unpaidCollateral := sdk.NewCoin(mtp.CollateralAsset, collateral)
-
-		if mtp.CollateralAsset == baseCurrency {
-			totalLiability = totalLiability.Add(collateral)
-		} else {
-			C, err := k.EstimateSwapGivenOut(ctx, unpaidCollateral, baseCurrency, ammPool)
-			if err != nil {
-				C = sdk.ZeroInt()
-			}
-
-			totalLiability = totalLiability.Add(C)
-		}
-	}
 
 	// Funding rate payment consideration
 	// get funding rate
@@ -461,19 +438,57 @@ func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, ba
 		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, fundingRate)
 	}
 
+	pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
+	mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
+
+	// Liability should include margin interest and funding fee accrued.
+	collateralAmt := mtp.Collateral.Add(mtp.BorrowInterestUnpaidCollateral)
+
 	// if short position, custody asset is already in base currency
 	custodyAmtInBaseCurrency := mtp.Custody.Sub(takeAmountCustodyAmount)
 
-	if mtp.Position == types.Position_LONG {
-		custodyAmt := sdk.NewCoin(mtp.CustodyAsset, mtp.Custody)
-		var err error
-		custodyAmtInBaseCurrency, err = k.EstimateSwapGivenOut(ctx, custodyAmt, baseCurrency, ammPool)
+	// Calculate estimated PnL
+	var estimatedPnL sdk.Dec
+
+	if mtp.Position == types.Position_SHORT {
+		// Estimated PnL for short position:
+		// estimated_pnl = custody_amount - liabilities_amount * market_price - collateral_amount
+
+		// For short position, convert liabilities to base currency
+		C, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities), baseCurrency, ammPool)
 		if err != nil {
-			custodyAmtInBaseCurrency = sdk.ZeroInt()
+			C = sdk.ZeroInt()
+		}
+
+		estimatedPnL = custodyAmtInBaseCurrency.ToLegacyDec().Sub(C.ToLegacyDec()).Sub(collateralAmt.ToLegacyDec())
+	} else {
+		// Estimated PnL for long position:
+		if mtp.CollateralAsset != baseCurrency {
+			// estimated_pnl = (custody_amount - collateral_amount) * market_price - liabilities_amount
+
+			// For long position, convert both custody and collateral to base currency
+			amt := sdk.MaxInt(custodyAmtInBaseCurrency.Sub(collateralAmt), sdk.ZeroInt())
+			C, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.CollateralAsset, amt), baseCurrency, ammPool)
+			if err != nil {
+				C = sdk.ZeroInt()
+			}
+
+			estimatedPnL = C.ToLegacyDec().Sub(mtp.Liabilities.ToLegacyDec())
+		} else {
+			// estimated_pnl = custody_amount * market_price - liabilities_amount - collateral_amount
+
+			// For long position, convert custody to base currency
+			amt := sdk.MaxInt(custodyAmtInBaseCurrency, sdk.ZeroInt())
+			C, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.CustodyAsset, amt), baseCurrency, ammPool)
+			if err != nil {
+				C = sdk.ZeroInt()
+			}
+
+			estimatedPnL = C.ToLegacyDec().Sub(mtp.Liabilities.ToLegacyDec()).Sub(collateralAmt.ToLegacyDec())
 		}
 	}
 
-	return custodyAmtInBaseCurrency.ToLegacyDec().Sub(totalLiability.ToLegacyDec())
+	return estimatedPnL, nil
 }
 
 func (k Keeper) DeleteLegacyMTP(ctx sdk.Context, mtpaddress string, id uint64) error {
