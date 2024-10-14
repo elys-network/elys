@@ -298,3 +298,25 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 			Quo(sdk.NewDec(86400 * 365))
 	}
 }
+
+// Deletes all pool blocks at delBlock
+func (k Keeper) DeleteAllFundingRate(ctx sdk.Context) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.FundingRatePrefix)
+	iterator := sdk.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		store.Delete(iterator.Key())
+	}
+}
+
+// Deletes all pool blocks at delBlock
+func (k Keeper) DeleteAllInterestRate(ctx sdk.Context) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestRatePrefix)
+	iterator := sdk.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		store.Delete(iterator.Key())
+	}
+}
