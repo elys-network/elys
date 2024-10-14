@@ -47,16 +47,8 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 		return nil
 	}
 
-	takeAmountCustody := sdk.NewCoin(mtp.CustodyAsset, takeAmountCustodyAmount)
-
-	// Swap the take amount to collateral asset
-	takeAmountCollateralAmount, err := k.EstimateSwap(ctx, takeAmountCustody, mtp.CollateralAsset, ammPool)
-	if err != nil {
-		return err
-	}
-
 	// increase fees collected
-	err = pool.UpdateFeesCollected(ctx, mtp.CollateralAsset, takeAmountCollateralAmount, true)
+	err := pool.UpdateFeesCollected(ctx, mtp.CustodyAsset, takeAmountCustodyAmount, true)
 	if err != nil {
 		return err
 	}
@@ -64,20 +56,11 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	// update mtp custody
 	mtp.Custody = mtp.Custody.Sub(takeAmountCustodyAmount)
 
-	// TODO: Remove FundingFeePaidCollateral and FundingFeePaidCustody from MTP
-	// add payment to total funding fee paid in collateral asset
-	mtp.FundingFeePaidCollateral = mtp.FundingFeePaidCollateral.Add(takeAmountCollateralAmount)
-
 	// add payment to total funding fee paid in custody asset
 	mtp.FundingFeePaidCustody = mtp.FundingFeePaidCustody.Add(takeAmountCustodyAmount)
 
-	// emit event
-	if !takeAmountCollateralAmount.IsZero() {
-		k.EmitFundingFeePayment(ctx, mtp, takeAmountCustody.Amount, mtp.CollateralAsset, types.EventIncrementalPayFund)
-	}
-
 	// update pool custody balance
-	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, takeAmountCustody.Amount, false, mtp.Position)
+	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, takeAmountCustodyAmount, false, mtp.Position)
 	if err != nil {
 		return err
 	}
