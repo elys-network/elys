@@ -73,7 +73,7 @@ func DefaultParams() Params {
 		sdk.NewDecWithPrec(1, 2),  // 1% - interest rate decrease
 		sdk.NewDec(1),             // health gain factor
 		sdk.NewInt(0),             // total value - 0
-		sdk.NewDec(60),            // default leverage percent of stablestake pool
+		sdk.NewDec(70),            // default leverage percent of stablestake pool
 	)
 }
 
