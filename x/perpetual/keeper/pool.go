@@ -198,6 +198,9 @@ func (k Keeper) SetFundingRate(ctx sdk.Context, block uint64, pool uint64, fundi
 		funding.FundingRateLong = funding.FundingRateLong.Add(lastBlock.FundingRateLong)
 		funding.FundingRateShort = funding.FundingRateShort.Add(lastBlock.FundingRateShort)
 
+		funding.FundingAmountLong = funding.FundingAmountLong.Add(lastBlock.FundingAmountLong)
+		funding.FundingAmountShort = funding.FundingAmountShort.Add(lastBlock.FundingAmountShort)
+
 		bz = k.cdc.MustMarshal(&funding)
 		store.Set(key, bz)
 	} else {
@@ -308,6 +311,54 @@ func (k Keeper) DeleteAllFundingRate(ctx sdk.Context) {
 	for ; iterator.Valid(); iterator.Next() {
 		store.Delete(iterator.Key())
 	}
+}
+
+func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, pool uint64) (long sdk.Dec, short sdk.Dec) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.FundingRatePrefix)
+	currentBlockKey := types.GetFundingRateKey(uint64(ctx.BlockHeight()), pool)
+	startBlockKey := types.GetFundingRateKey(startBlock, pool)
+
+	// note: exclude start block
+	if store.Has(startBlockKey) && store.Has(currentBlockKey) && startBlock != uint64(ctx.BlockHeight()) {
+		bz := store.Get(startBlockKey)
+		startFundingBlock := types.FundingRateBlock{}
+		k.cdc.MustUnmarshal(bz, &startFundingBlock)
+
+		bz = store.Get(currentBlockKey)
+		endFundingBlock := types.FundingRateBlock{}
+		k.cdc.MustUnmarshal(bz, &endFundingBlock)
+
+		totalCustodyLong := endFundingBlock.FundingAmountLong.Sub(startFundingBlock.FundingAmountLong)
+		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
+
+		totalCustodyShort := endFundingBlock.FundingAmountShort.Sub(startFundingBlock.FundingAmountShort)
+
+		return totalCustodyLong.ToLegacyDec().Quo(sdk.NewDec(numberOfBlocks)), totalCustodyShort.ToLegacyDec().Quo(sdk.NewDec(numberOfBlocks))
+	}
+
+	if !store.Has(startBlockKey) && store.Has(currentBlockKey) {
+		iterator := sdk.KVStorePrefixIterator(store, nil)
+		defer iterator.Close()
+
+		firstStoredBlock := uint64(0)
+		if iterator.Valid() {
+			fundingBlock := types.FundingRateBlock{}
+			firstStoredBlock = sdk.BigEndianToUint64(iterator.Key())
+			k.cdc.MustUnmarshal(iterator.Value(), &fundingBlock)
+		}
+		if firstStoredBlock > startBlock {
+			bz := store.Get(currentBlockKey)
+			endFundingBlock := types.FundingRateBlock{}
+			k.cdc.MustUnmarshal(bz, &endFundingBlock)
+
+			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
+			totalCustodyLong := endFundingBlock.FundingAmountLong
+			totalCustodyShort := endFundingBlock.FundingAmountShort
+			return totalCustodyLong.ToLegacyDec().Quo(sdk.NewDec(numberOfBlocks)), totalCustodyShort.ToLegacyDec().Quo(sdk.NewDec(numberOfBlocks))
+		}
+	}
+
+	return sdk.ZeroDec(), sdk.ZeroDec()
 }
 
 // Deletes all pool blocks at delBlock

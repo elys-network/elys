@@ -1,40 +1,22 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
 func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
-	uusdc, found := k.assetProfileKeeper.GetEntry(ctx, "uusdc")
-	if !found {
-		return nil
+	// account custody from long position
+	totalCustodyLong := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssetsLong {
+		totalCustodyLong = totalCustodyLong.Add(asset.Custody)
 	}
 
-	// get funding rate
-	longRate, shortRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
-
-	var takeAmountCustodyAmount math.Int
-	if mtp.Position == types.Position_LONG {
-		// long will get based on short rate
-		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, longRate)
-	} else {
-		// short will get based on long rate
-
-		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, shortRate)
-	}
-
-	// Calculate liabilities for long and short assets using the separate helper function
-	liabilitiesLong, err := k.CalcTotalLiabilities(ctx, pool.PoolAssetsLong, pool.AmmPoolId, uusdc.Denom)
-	if err != nil {
-		return nil
-	}
-
-	liabilitiesShort, err := k.CalcTotalLiabilities(ctx, pool.PoolAssetsShort, pool.AmmPoolId, uusdc.Denom)
-	if err != nil {
-		return nil
+	// account custody from short position
+	totalLiabilitiesShort := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssetsShort {
+		totalLiabilitiesShort = totalLiabilitiesShort.Add(asset.Liabilities)
 	}
 
 	// Total fund collected should be
@@ -44,17 +26,17 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	var fundingFeeShare sdk.Dec
 	if mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
-		if liabilitiesLong.IsZero() {
+		if totalCustodyLong.IsZero() {
 			return types.ErrAmountTooLow
 		}
-		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesLong))
+		fundingFeeShare = sdk.NewDecFromInt(mtp.Custody).Quo(sdk.NewDecFromInt(totalCustodyLong))
 		totalFund = short
 	} else {
 		// Ensure liabilitiesShort is not zero to avoid division by zero
-		if liabilitiesShort.IsZero() {
+		if totalLiabilitiesShort.IsZero() {
 			return types.ErrAmountTooLow
 		}
-		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesShort))
+		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(totalLiabilitiesShort))
 		totalFund = long
 	}
 
@@ -64,31 +46,26 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	}
 
 	// calculate funding fee amount
-	fundingFeeAmount := sdk.NewCoin(baseCurrency, totalFund.Mul(fundingFeeShare).TruncateInt())
+	fundingFeeAmount := totalFund.Mul(fundingFeeShare)
 
 	// update mtp custody
-	mtp.Custody = mtp.Custody.Add(fundingFeeAmount.Amount)
+	// TODO: Check for short position
+	mtp.Custody = mtp.Custody.Add(fundingFeeAmount.TruncateInt())
 
 	// decrease fees collected
-	err = pool.UpdateFeesCollected(ctx, fundingFeeAmount.Denom, fundingFeeAmount.Amount, false)
+	err := pool.UpdateFeesCollected(ctx, mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), false)
 	if err != nil {
 		return err
 	}
 
 	// update pool custody balance
-	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, fundingFeeAmount.Amount, true, mtp.Position)
+	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), true, mtp.Position)
 	if err != nil {
 		return err
 	}
 
-	// update received funding fee accounting buckets
-	// Swap the take amount to collateral asset
-	fundingFeeCollateralAmount, _ := k.EstimateSwap(ctx, fundingFeeAmount, mtp.CollateralAsset, ammPool)
-
-	// add payment to total funding fee paid in collateral asset
-	mtp.FundingFeeReceivedCollateral = mtp.FundingFeeReceivedCollateral.Add(fundingFeeCollateralAmount)
 	// add payment to total funding fee paid in custody asset
-	mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.Amount)
+	mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.TruncateInt())
 
 	return nil
 }
