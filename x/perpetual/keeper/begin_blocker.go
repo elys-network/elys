@@ -32,6 +32,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 			fundingRateLong, fundingRateShort := k.ComputeFundingRate(ctx, pool)
 
+			pool.FundingRate = fundingRateLong
+			if fundingRateLong.IsZero() {
+				pool.FundingRate = fundingRateShort.Neg()
+			}
+
 			k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
 				BlockHeight:      ctx.BlockHeight(),
 				BlockTime:        ctx.BlockTime().Unix(),
