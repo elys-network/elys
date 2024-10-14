@@ -2,10 +2,13 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
@@ -17,6 +20,21 @@ func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOp
 func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
+	}
+	params := k.stableKeeper.GetParams(ctx)
+	moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
+
+	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
+
+	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
+	borrowed := params.TotalValue.Sub(balance.Amount)
+	borrowRatio := sdk.ZeroDec()
+	if params.TotalValue.GT(sdk.ZeroInt()) {
+		borrowRatio = sdk.NewDecFromInt(borrowed).Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
+			Quo(sdk.NewDecFromInt(params.TotalValue))
+	}
+	if borrowRatio.GTE(params.MaxLeveragePercent) {
+		return nil, errors.New("pool is already leveraged at maximum value")
 	}
 
 	// Check if it is the same direction position for the same trader.
