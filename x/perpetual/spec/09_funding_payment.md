@@ -42,7 +42,7 @@ This formula ensures that the funding rate stays within defined boundaries, ince
 
 ### 4. **Funding Fee Collection**
 
-At every block, the calculated funding fees are tracked. If a user makes a interaction(close position or consolidate) the fee collection is triggered and The details of this process can be found in the source code:  
+At each block, the system tracks the calculated funding fees. If a user performs an interaction, such as closing a position or consolidating, the system triggers the collection of the accumulated fees and The details of this process can be found in the source code:  
 [Funding Fee Collection Code](https://github.com/elys-network/elys/blob/main/x/perpetual/keeper/settle_funding_fee_collection.go).
 
 The collected funding fees act as the source for redistribution to the traders, depending on the market's funding rate outcome.
@@ -59,13 +59,16 @@ The distribution of funding fees is based on the calculated funding rate and ser
 However, the **actual distribution amount** is not directly proportional to the funding rate alone. Instead, the amount that each position receives is calculated based on the size of that position relative to the total liabilities/custody on the side that is receiving the funding payments.
 
 The formula for determining the amount distributed to each position is as follows:
+  ```
+  // For short positions
 
-```
-payment_to_position = (position_liabilities / pool_liabilities) * total_funding_collected
-```
-```
-payment_to_position = (position_custody / pool_custody) * total_funding_collected
-```
+  payment_to_position = (position_liabilities / pool_liabilities) * total_funding_collected
+  ```
+  ```
+  // For long positions
+
+  payment_to_position = (position_custody / pool_custody) * total_funding_collected
+  ```
 
 Where:
 
