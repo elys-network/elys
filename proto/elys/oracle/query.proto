@@ -37,11 +37,11 @@ service Query {
 	}
     // Queries a Price by asset.
     rpc Price(QueryGetPriceRequest) returns (QueryGetPriceResponse) {
-		option (google.api.http).get = "/elys-network/elys/oracle/price";
+		option (google.api.http).get = "/elys-network/elys/oracle/price/{asset}";
 	}
 	// Queries a list of Price items.
 	rpc PriceAll(QueryAllPriceRequest) returns (QueryAllPriceResponse) {
-		option (google.api.http).get = "/elys-network/elys/oracle/price";
+		option (google.api.http).get = "/elys-network/elys/oracle/prices";
 	}
 	// Queries a PriceFeeder by feeder.
 	rpc PriceFeeder(QueryGetPriceFeederRequest) returns (QueryGetPriceFeederResponse) {
