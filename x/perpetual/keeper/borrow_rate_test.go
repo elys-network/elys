@@ -33,6 +33,7 @@ func createNBorrowRate(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.I
 
 func TestBorrowRateGet(t *testing.T) {
 	keeper, ctx, _ := keepertest.PerpetualKeeper(t)
+
 	_, lastBlock := createNBorrowRate(keeper, ctx, 10)
 	ctx = ctx.WithBlockHeight(lastBlock)
 

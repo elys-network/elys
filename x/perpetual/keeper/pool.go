@@ -132,6 +132,8 @@ func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, startTime uint
 	currentBlockKey := types.GetInterestRateKey(uint64(ctx.BlockHeight()), pool)
 	startBlockKey := types.GetInterestRateKey(startBlock, pool)
 
+	blocksPerYear := sdk.NewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
+
 	// note: exclude start block
 	if store.Has(startBlockKey) && store.Has(currentBlockKey) && startBlock != uint64(ctx.BlockHeight()) {
 		bz := store.Get(startBlockKey)
@@ -148,7 +150,7 @@ func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, startTime uint
 		newInterest := borrowed.Mul(totalInterest).
 			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 			Quo(sdk.NewDec(numberOfBlocks)).
-			Quo(sdk.NewDec(86400 * 365))
+			Quo(blocksPerYear)
 
 		return newInterest
 	}
@@ -174,7 +176,7 @@ func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, startTime uint
 			newInterest := borrowed.Mul(totalInterest).
 				Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 				Quo(sdk.NewDec(numberOfBlocks)).
-				Quo(sdk.NewDec(86400 * 365))
+				Quo(blocksPerYear)
 			return newInterest
 		}
 	}
@@ -183,7 +185,7 @@ func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, startTime uint
 		return sdk.ZeroDec()
 	}
 	newInterest := borrowed.Mul(params.BorrowInterestRate).Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-		Quo(sdk.NewDec(86400 * 365))
+		Quo(blocksPerYear)
 	return newInterest
 }
 
@@ -241,6 +243,8 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 	currentBlockKey := types.GetFundingRateKey(uint64(ctx.BlockHeight()), pool)
 	startBlockKey := types.GetFundingRateKey(startBlock, pool)
 
+	blocksPerYear := sdk.NewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
+
 	// note: exclude start block
 	if store.Has(startBlockKey) && store.Has(currentBlockKey) && startBlock != uint64(ctx.BlockHeight()) {
 		bz := store.Get(startBlockKey)
@@ -256,11 +260,11 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 		totalFundingLong := endFundingBlock.FundingRateLong.Sub(startFundingBlock.FundingRateLong).
 			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 			Quo(sdk.NewDec(numberOfBlocks)).
-			Quo(sdk.NewDec(86400 * 365))
+			Quo(blocksPerYear)
 		totalFundingShort := endFundingBlock.FundingRateShort.Sub(startFundingBlock.FundingRateShort).
 			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 			Quo(sdk.NewDec(numberOfBlocks)).
-			Quo(sdk.NewDec(86400 * 365))
+			Quo(blocksPerYear)
 		return totalFundingLong, totalFundingShort
 	}
 
@@ -282,10 +286,10 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 
 			return endFundingBlock.FundingRateLong.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 					Quo(sdk.NewDec(numberOfBlocks)).
-					Quo(sdk.NewDec(86400 * 365)),
+					Quo(blocksPerYear),
 				endFundingBlock.FundingRateShort.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 					Quo(sdk.NewDec(numberOfBlocks)).
-					Quo(sdk.NewDec(86400 * 365))
+					Quo(blocksPerYear)
 		}
 	}
 	params, found := k.GetPool(ctx, pool)
@@ -295,10 +299,10 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 
 	if params.BorrowInterestRate.IsPositive() {
 		return params.FundingRate.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-			Quo(sdk.NewDec(86400 * 365)), sdk.ZeroDec()
+			Quo(blocksPerYear), sdk.ZeroDec()
 	} else {
 		return sdk.ZeroDec(), params.FundingRate.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-			Quo(sdk.NewDec(86400 * 365))
+			Quo(blocksPerYear)
 	}
 }
 
