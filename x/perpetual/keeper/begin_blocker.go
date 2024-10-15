@@ -49,9 +49,9 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				totalCustodyShort = totalCustodyShort.Add(asset.Custody)
 			}
 
-			// TODO: Should be for a block
-			fundingAmountLong := types.CalcTakeAmount(totalCustodyLong, fundingRateLong)
-			fundingAmountShort := types.CalcTakeAmount(totalCustodyShort, fundingRateShort)
+			blocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
+			fundingAmountLong := types.CalcTakeAmount(totalCustodyLong, fundingRateLong).ToLegacyDec().Quo(sdk.NewDec(blocksPerYear))
+			fundingAmountShort := types.CalcTakeAmount(totalCustodyShort, fundingRateShort).ToLegacyDec().Quo(sdk.NewDec(blocksPerYear))
 
 			k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
 				BlockHeight:        ctx.BlockHeight(),
