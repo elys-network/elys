@@ -20,7 +20,7 @@ func (k Keeper) UpdatedLeverage(ctx sdk.Context, mtp types.MTP) (sdk.Dec, error)
 		price := k.amm.EstimatePrice(ctx, mtp.CustodyAsset, ptypes.BaseCurrency)
 		denominator = custody_in_usdc.Sub(math.LegacyDec(mtp.Liabilities).Mul(price))
 	}else {
-		denominator = custody_in_usdc.Mul(math.LegacyDec(mtp.Liabilities))
+		denominator = custody_in_usdc.Sub(math.LegacyDec(mtp.Liabilities))
 	}
 	if denominator.IsZero() {
 		return sdk.ZeroDec(),  nil

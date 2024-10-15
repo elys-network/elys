@@ -41,12 +41,12 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 				TradingAsset:                   ptypes.ATOM,
 				LiabilitiesAsset:               ptypes.BaseCurrency,
 				CustodyAsset:                   ptypes.ATOM,
-				Collateral:                     sdk.NewInt(0),
-				Liabilities:                    sdk.NewInt(0),
+				Collateral:                     sdk.NewInt(10000),
+				Liabilities:                    sdk.NewInt(10000),
 				BorrowInterestPaidCollateral:   sdk.NewInt(0),
 				BorrowInterestPaidCustody:      sdk.NewInt(0),
 				BorrowInterestUnpaidCollateral: sdk.NewInt(0),
-				Custody:                        sdk.NewInt(0),
+				Custody:                        sdk.NewInt(100000),
 				TakeProfitLiabilities:          sdk.NewInt(0),
 				TakeProfitCustody:              sdk.NewInt(0),
 				MtpHealth:                      sdk.NewDec(0),
@@ -64,7 +64,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 			},
 			TradingAssetPrice: sdk.ZeroDec(),
 			Pnl:               sdk.ZeroDec(),
-			UpdatedLeverage:   sdk.ZeroDec(),
+			UpdatedLeverage:   sdk.MustNewDecFromStr("1.111111111111111111"),
 		}
 
 		mtps = append(mtps, &mtp)
@@ -118,7 +118,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 		PoolParams: ammtypes.PoolParams{
 			SwapFee:                     sdk.ZeroDec(),
 			ExitFee:                     sdk.ZeroDec(),
-			UseOracle:                   true,
+			UseOracle:                   false,
 			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 			ExternalLiquidityRatio:      sdk.NewDec(1),
@@ -132,7 +132,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 				Weight: sdk.NewInt(50),
 			},
 			{
-				Token:  sdk.NewInt64Coin(ptypes.ATOM, 1000_000_000),
+				Token:  sdk.NewInt64Coin(ptypes.ATOM, 100_000_000),
 				Weight: sdk.NewInt(50),
 			},
 		},
