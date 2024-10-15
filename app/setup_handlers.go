@@ -7,7 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
@@ -16,7 +15,7 @@ const (
 )
 
 // make sure to update these when you upgrade the version
-var NextVersion = "v0.47.0"
+var NextVersion = "v0.48.0"
 
 func SetupHandlers(app *ElysApp) {
 	setUpgradeHandler(app)
@@ -32,13 +31,40 @@ func setUpgradeHandler(app *ElysApp) {
 
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
 
+				// delete all mtps
+				mtps := app.PerpetualKeeper.GetAllMTPs(ctx)
+				for _, mtp := range mtps {
+					app.PerpetualKeeper.DestroyMTP(ctx, sdk.MustAccAddressFromBech32(mtp.Address), mtp.Id)
+				}
+
+				// delete all perpetual pools
+				perpPools := app.PerpetualKeeper.GetAllPools(ctx)
+				for _, pool := range perpPools {
+					app.PerpetualKeeper.RemovePool(ctx, pool.AmmPoolId)
+				}
+
+				// update perpetual params
+				params := app.PerpetualKeeper.GetParams(ctx)
+				params.MinBorrowInterestAmount = sdk.ZeroInt()
+				app.PerpetualKeeper.SetParams(ctx, &params)
+
+				// delete all accounted pools
+				accountedPools := app.AccountedPoolKeeper.GetAllAccountedPool(ctx)
+				for _, pool := range accountedPools {
+					app.AccountedPoolKeeper.RemoveAccountedPool(ctx, pool.PoolId)
+				}
+
+				// initiate accounted pools
+				pools := app.AmmKeeper.GetAllPool(ctx)
+				for _, pool := range pools {
+					err := app.AccountedPoolKeeper.InitiateAccountedPool(ctx, pool)
+					if err != nil {
+						panic(err)
+					}
+				}
+
 				// Add any logic here to run when the chain is upgraded to the new version
 
-				app.Logger().Info("Deleting proposals with ID < 280")
-				store := ctx.KVStore(app.keys[govtypes.StoreKey])
-				for i := uint64(1); i < 280; i++ {
-					store.Delete(govtypes.ProposalKey(i))
-				}
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)

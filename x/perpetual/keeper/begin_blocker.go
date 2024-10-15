@@ -7,32 +7,6 @@ import (
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	currentHeight := ctx.BlockHeight()
-
-	if currentHeight == 10314701 {
-		ctx.Logger().Info("reached currentHeight == 10314701")
-
-		mtps := k.GetAllMTPs(ctx)
-
-		// delete all mtps
-		for _, mtp := range mtps {
-			k.DestroyMTP(ctx, sdk.MustAccAddressFromBech32(mtp.Address), mtp.Id)
-		}
-
-		pools := k.GetAllPools(ctx)
-
-		// delete all pools
-		for _, pool := range pools {
-			k.RemovePool(ctx, pool.AmmPoolId)
-		}
-
-		// update params
-		params := k.GetParams(ctx)
-
-		params.MinBorrowInterestAmount = sdk.ZeroInt()
-
-		k.SetParams(ctx, &params)
-	}
-
 	pools := k.GetAllPools(ctx)
 
 	for _, pool := range pools {
