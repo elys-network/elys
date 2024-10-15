@@ -31,7 +31,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	borrowRatio := sdk.ZeroDec()
 	if params.TotalValue.GT(sdk.ZeroInt()) {
 		borrowRatio = sdk.NewDecFromInt(borrowed).Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
-			Quo(sdk.NewDecFromInt(params.TotalValue))
+			Quo(sdk.NewDecFromInt(params.TotalValue)).Mul(sdk.NewDec(100))
 	}
 	if borrowRatio.GTE(params.MaxLeveragePercent) {
 		return nil, errors.New("pool is already leveraged at maximum value")
