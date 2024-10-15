@@ -30,24 +30,6 @@ func setUpgradeHandler(app *ElysApp) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
-
-				// delete all mtps
-				mtps := app.PerpetualKeeper.GetAllMTPs(ctx)
-				for _, mtp := range mtps {
-					app.PerpetualKeeper.DestroyMTP(ctx, sdk.MustAccAddressFromBech32(mtp.Address), mtp.Id)
-				}
-
-				// delete all perpetual pools
-				perpPools := app.PerpetualKeeper.GetAllPools(ctx)
-				for _, pool := range perpPools {
-					app.PerpetualKeeper.RemovePool(ctx, pool.AmmPoolId)
-				}
-
-				// update perpetual params
-				params := app.PerpetualKeeper.GetParams(ctx)
-				params.MinBorrowInterestAmount = sdk.ZeroInt()
-				app.PerpetualKeeper.SetParams(ctx, &params)
-
 				// delete all accounted pools
 				accountedPools := app.AccountedPoolKeeper.GetAllAccountedPool(ctx)
 				for _, pool := range accountedPools {
