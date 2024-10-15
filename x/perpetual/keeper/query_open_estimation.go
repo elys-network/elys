@@ -66,13 +66,13 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	leveragedAmount := sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Mul(req.Leverage).TruncateInt()
 	leveragedCoin := sdk.NewCoin(baseCurrency, leveragedAmount)
 
-	_, _, positionSize, openPrice, swapFee, discount, availableLiquidity, slippage, weightBonus, priceImpact, err := k.amm.CalcSwapEstimationByDenom(ctx, leveragedCoin, baseCurrency, req.TradingAsset, baseCurrency, req.Discount, swapFee, decimals)
+	_, _, custody, openPrice, swapFee, discount, availableLiquidity, slippage, weightBonus, priceImpact, err := k.amm.CalcSwapEstimationByDenom(ctx, leveragedCoin, baseCurrency, req.TradingAsset, baseCurrency, req.Discount, swapFee, decimals)
 	if err != nil {
 		return nil, err
 	}
 
 	if req.Position == types.Position_SHORT {
-		positionSize = sdk.NewCoin(req.Collateral.Denom, leveragedAmount)
+		custody = sdk.NewCoin(req.Collateral.Denom, leveragedAmount)
 	}
 
 	// invert openPrice if collateral is not in base currency
@@ -93,31 +93,34 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	// if position is short then:
 	if req.Position == types.Position_SHORT {
 		// estimated_pnl = custody_amount - liabilities_amount * take_profit_price - collateral_amount
-		estimatedPnL = sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Sub(liabilitiesAmountDec.Mul(req.TakeProfitPrice)).Sub(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt()))
+		estimatedPnL = sdk.NewDecFromBigInt(custody.Amount.BigInt()).Sub(liabilitiesAmountDec.Mul(req.TakeProfitPrice)).Sub(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt()))
 	} else {
 		// if position is long then:
 		// if collateral is not in base currency
 		if req.Collateral.Denom != baseCurrency {
 			// estimated_pnl = (custody_amount - collateral_amount) * take_profit_price - liabilities_amount
-			estimatedPnL = sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Sub(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt())).Mul(req.TakeProfitPrice).Sub(liabilitiesAmountDec)
+			estimatedPnL = sdk.NewDecFromBigInt(custody.Amount.BigInt()).Sub(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt())).Mul(req.TakeProfitPrice).Sub(liabilitiesAmountDec)
 		} else {
 			// estimated_pnl = custody_amount * take_profit_price - liabilities_amount - collateral_amount
-			estimatedPnL = sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Mul(req.TakeProfitPrice).Sub(liabilitiesAmountDec).Sub(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt()))
+			estimatedPnL = sdk.NewDecFromBigInt(custody.Amount.BigInt()).Mul(req.TakeProfitPrice).Sub(liabilitiesAmountDec).Sub(sdk.NewDecFromBigInt(req.Collateral.Amount.BigInt()))
 		}
 	}
 
 	// calculate liquidation price
 	// liquidation_price = open_price_value - collateral_amount / custody_amount
 	liquidationPrice := openPrice.Sub(
-		sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Quo(sdk.NewDecFromBigInt(positionSize.Amount.BigInt())),
+		sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Quo(sdk.NewDecFromBigInt(custody.Amount.BigInt())),
 	)
+
+	positionSizeInTradingAsset := custody
 
 	// if position is short then liquidation price is open price + collateral amount / (custody amount / open price)
 	if req.Position == types.Position_SHORT {
-		positionSizeInTradingAsset := sdk.NewDecFromBigInt(positionSize.Amount.BigInt()).Quo(openPrice)
+		positionSizeInTradingAssetDec := sdk.NewDecFromBigInt(custody.Amount.BigInt()).Quo(openPrice)
 		liquidationPrice = openPrice.Add(
-			sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Quo(positionSizeInTradingAsset),
+			sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Quo(positionSizeInTradingAssetDec),
 		)
+		positionSizeInTradingAsset = sdk.NewCoin(req.TradingAsset, positionSizeInTradingAssetDec.TruncateInt())
 	}
 
 	// get pool rates
@@ -171,7 +174,8 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		TradingAsset:       req.TradingAsset,
 		Collateral:         req.Collateral,
 		InterestAmount:     interestAmount,
-		PositionSize:       positionSize,
+		Custody:            custody,
+		PositionSize:       positionSizeInTradingAsset,
 		SwapFee:            swapFee,
 		Discount:           discount,
 		OpenPrice:          openPrice,
