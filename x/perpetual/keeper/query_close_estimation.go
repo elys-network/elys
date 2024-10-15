@@ -99,11 +99,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 
 	positionSizeInTradingAsset := mtp.Custody
 	if mtp.Position == types.Position_SHORT {
-		var err error
-		positionSizeInTradingAsset, err = k.CloseEstimationChecker.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.TradingAsset, ammPool)
-		if err != nil {
-			return nil, err
-		}
+		positionSizeInTradingAsset = mtp.Liabilities
 	}
 
 	return &types.QueryCloseEstimationResponse{

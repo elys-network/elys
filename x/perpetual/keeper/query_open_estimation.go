@@ -116,10 +116,12 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 
 	// if position is short then liquidation price is open price + collateral amount / (custody amount / open price)
 	if req.Position == types.Position_SHORT {
-		positionSizeInTradingAssetDec := sdk.NewDecFromBigInt(custody.Amount.BigInt()).Quo(openPrice)
+		// for short position size = liabilities
+		custodyAmountInTradingAssetDec := sdk.NewDecFromBigInt(custody.Amount.BigInt()).Quo(openPrice)
 		liquidationPrice = openPrice.Add(
-			sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Quo(positionSizeInTradingAssetDec),
+			sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.Amount.BigInt()).Quo(custodyAmountInTradingAssetDec),
 		)
+		positionSizeInTradingAssetDec := sdk.NewDecFromBigInt((custody.Amount.Sub(req.Collateral.Amount)).BigInt()).Quo(openPrice)
 		positionSizeInTradingAsset = sdk.NewCoin(req.TradingAsset, positionSizeInTradingAssetDec.TruncateInt())
 	}
 

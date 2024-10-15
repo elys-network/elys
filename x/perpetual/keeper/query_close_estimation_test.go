@@ -196,7 +196,6 @@ func TestCloseEstimation_ExistingShortMTP(t *testing.T) {
 	mockChecker.On("EstimateSwap", ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.TradingAsset, ammPool).Return(math.NewInt(10000), nil).Once()
 	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral), mtp.TradingAsset, ammPool).Return(math.NewInt(200), nil).Once()
 	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.TradingAsset, sdk.NewInt(9400)), mtp.CollateralAsset, ammPool).Return(math.NewInt(9400), nil).Once()
-	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.TradingAsset, ammPool).Return(math.NewInt(222), nil).Once()
 
 	assetProfileKeeper.On("GetEntry", ctx, ptypes.BaseCurrency).Return(atypes.Entry{
 		Denom: ptypes.BaseCurrency,
@@ -209,7 +208,7 @@ func TestCloseEstimation_ExistingShortMTP(t *testing.T) {
 	assetProfileKeeper.AssertExpectations(t)
 
 	assert.Equal(t, mtp.Position, res.Position)
-	assert.Equal(t, math.NewInt(222), res.PositionSize.Amount)
+	assert.Equal(t, mtp.Liabilities, res.PositionSize.Amount)
 	assert.Equal(t, mtp.Custody, res.Custody.Amount)
 	assert.Equal(t, mtp.Liabilities, res.Liabilities.Amount)
 	assert.Equal(t, sdk.ZeroDec(), res.PriceImpact)
