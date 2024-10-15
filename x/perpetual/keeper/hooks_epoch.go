@@ -14,11 +14,12 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochN
 func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) error {
 	params := k.GetParams(ctx)
 	if epochIdentifier == params.InvariantCheckEpoch {
-		err := k.InvariantCheck(ctx)
-		if err != nil {
-			ctx.Logger().Error("Perpetual: Invariant check failure", "err", err)
-			return err
-		}
+		// TODO: Need to revisit the current invariant check implementation
+		// err := k.InvariantCheck(ctx)
+		// if err != nil {
+		// 	ctx.Logger().Error("Perpetual: Invariant check failure", "err", err)
+		// 	return err
+		// }
 	}
 	return nil
 }

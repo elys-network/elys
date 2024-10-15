@@ -426,7 +426,7 @@ func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, ba
 
 	// Funding rate payment consideration
 	// get funding rate
-	fundingRate, _, _ := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
+	fundingRate, _ := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
 	var takeAmountCustodyAmount sdk.Int
 	// if funding rate is zero, return
 	if fundingRate.IsZero() {

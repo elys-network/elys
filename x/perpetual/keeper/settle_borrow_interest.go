@@ -61,6 +61,6 @@ func (k Keeper) GetBorrowInterest(ctx sdk.Context, mtp *types.MTP, ammPool ammty
 
 	minBorrowInterestAmount := k.GetParams(ctx).MinBorrowInterestAmount
 	// Get interest
-	borrowInterestPayment := k.GetBorrowRate(ctx, mtp.LastInterestCalcBlock, mtp.AmmPoolId, sdk.NewDecFromInt(sum))
+	borrowInterestPayment := k.GetBorrowRate(ctx, mtp.LastInterestCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId, sdk.NewDecFromInt(sum))
 	return sdk.MaxInt(borrowInterestPayment.Mul(mtp.TakeProfitBorrowRate).TruncateInt(), minBorrowInterestAmount)
 }
