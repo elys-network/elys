@@ -97,6 +97,7 @@ message QueryAllPendingPerpetualOrderResponse {
 
 message QueryPendingPerpetualOrderForAddressRequest {
   string address = 1;
+  Status status = 2;
 }
 
 message QueryPendingPerpetualOrderForAddressResponse {
@@ -105,6 +106,7 @@ message QueryPendingPerpetualOrderForAddressResponse {
 
 message QueryPendingSpotOrderForAddressRequest {
   string address = 1;
+  Status status = 2;
 }
 
 message QueryPendingSpotOrderForAddressResponse {

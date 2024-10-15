@@ -34,6 +34,25 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 		BorrowInterestRate: sdk.NewDec(1),
 	}
 
+	order2 := types.PerpetualOrder{
+		OrderId:            2,
+		OwnerAddress:       "valid_address",
+		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
+		Position:           types.PerpetualPosition_LONG,
+		TriggerPrice:       &types.OrderPrice{Rate: sdk.NewDec(2), BaseDenom: "base", QuoteDenom: "quote"},
+		Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
+		TradingAsset:       "asset",
+		Leverage:           sdk.NewDec(int64(1)),
+		TakeProfitPrice:    sdk.NewDec(1),
+		PositionId:         uint64(1),
+		Status:             types.Status_EXECUTED,
+		StopLossPrice:      sdk.NewDec(1),
+		PositionSize:       sdk.NewCoin("denom", sdk.NewInt(10)),
+		LiquidationPrice:   sdk.NewDec(1),
+		FundingRate:        sdk.NewDec(1),
+		BorrowInterestRate: sdk.NewDec(1),
+	}
+
 	tests := []struct {
 		desc     string
 		request  *types.QueryPendingPerpetualOrderForAddressRequest
@@ -44,9 +63,21 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 			desc: "valid request",
 			request: &types.QueryPendingPerpetualOrderForAddressRequest{
 				Address: "valid_address",
+				Status:  types.Status_ALL,
 			},
 			response: &types.QueryPendingPerpetualOrderForAddressResponse{
-				PendingPerpetualOrders: []types.PerpetualOrder{order},
+				PendingPerpetualOrders: []types.PerpetualOrder{order, order2},
+			},
+			err: nil,
+		},
+		{
+			desc: "valid request",
+			request: &types.QueryPendingPerpetualOrderForAddressRequest{
+				Address: "valid_address",
+				Status:  types.Status_EXECUTED,
+			},
+			response: &types.QueryPendingPerpetualOrderForAddressResponse{
+				PendingPerpetualOrders: []types.PerpetualOrder{order2},
 			},
 			err: nil,
 		},
@@ -57,11 +88,11 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 		},
 	}
 
+	_ = k.AppendPendingPerpetualOrder(ctx, order)
+	_ = k.AppendPendingPerpetualOrder(ctx, order2)
+
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
-
-			_ = k.AppendPendingPerpetualOrder(ctx, order)
-
 			response, err := k.PendingPerpetualOrderForAddress(wctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)

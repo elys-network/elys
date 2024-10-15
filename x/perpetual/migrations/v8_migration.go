@@ -10,9 +10,9 @@ func (m Migrator) V8Migration(ctx sdk.Context) error {
 	params := types.NewParams()
 
 	params.LeverageMax = legacyParams.LeverageMax
-	params.FundingFeeMinRate = legacyParams.FundingFeeMinRate
-	params.FundingFeeMaxRate = legacyParams.FundingFeeMaxRate
-	params.FundingFeeBaseRate = legacyParams.FundingFeeBaseRate
+	// params.FundingFeeMinRate = legacyParams.FundingFeeMinRate
+	// params.FundingFeeMaxRate = legacyParams.FundingFeeMaxRate
+	// params.FundingFeeBaseRate = legacyParams.FundingFeeBaseRate
 	params.TakeProfitBorrowInterestRateMin = legacyParams.TakeProfitBorrowInterestRateMin
 	params.BorrowInterestRateDecrease = legacyParams.BorrowInterestRateDecrease
 	params.BorrowInterestRateIncrease = legacyParams.BorrowInterestRateIncrease

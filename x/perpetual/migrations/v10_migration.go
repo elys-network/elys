@@ -31,9 +31,7 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 		TakeProfitBorrowInterestRateMin:                params.TakeProfitBorrowInterestRateMin,
 		SwapFee:                                        params.SwapFee,
 		MaxLimitOrder:                                  params.MaxLimitOrder,
-		FundingFeeMinRate:                              sdk.NewDecWithPrec(-111, 8),
-		FundingFeeMaxRate:                              sdk.NewDecWithPrec(111, 8),
-		FundingFeeBaseRate:                             sdk.NewDecWithPrec(33, 9),
+		FixedFundingRate:                               sdk.NewDecWithPrec(30, 2), // set to 30%
 	}
 
 	m.keeper.SetParams(ctx, &newParams)
@@ -109,6 +107,11 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 			m.keeper.RemoveLegacyPool(ctx, newPool.AmmPoolId)
 			m.keeper.SetPool(ctx, newPool)
 		}
+	}
+
+	new_mtps := m.keeper.GetAllMTPs(ctx)
+	for _, mtp := range new_mtps {
+		m.keeper.CheckSamePositionAndConsolidate(ctx, &mtp)
 	}
 
 	return nil
