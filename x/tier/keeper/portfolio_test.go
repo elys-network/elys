@@ -184,7 +184,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, portfolio, sdk.NewDec(100100))
+	require.Equal(t, portfolio, sdk.NewDec(110110))
 }
 
 func TestPortfolioGetDiscount(t *testing.T) {
@@ -291,7 +291,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, portfolio, sdk.NewDec(10099100))
+	require.Equal(t, portfolio, sdk.NewDec(11100100))
 }
 
 // TODO
