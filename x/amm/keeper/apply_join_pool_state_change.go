@@ -21,7 +21,7 @@ func (k Keeper) applyJoinPoolStateChange(ctx sdk.Context, pool types.Pool, joine
 
 	types.EmitAddLiquidityEvent(ctx, joiner, pool.GetPoolId(), joinCoins)
 	if k.hooks != nil {
-		k.hooks.AfterJoinPool(ctx, joiner, pool, joinCoins, numShares)
+		return k.hooks.AfterJoinPool(ctx, joiner, pool, joinCoins, numShares)
 	}
 	k.RecordTotalLiquidityIncrease(ctx, joinCoins)
 	return nil
