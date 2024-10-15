@@ -6,6 +6,9 @@ import (
 )
 
 func (m Migrator) V10Migration(ctx sdk.Context) error {
+	m.keeper.DeleteAllFundingRate(ctx)
+	m.keeper.DeleteAllInterestRate(ctx)
+
 	// Update params
 	params := m.keeper.GetLegacyParams(ctx)
 
