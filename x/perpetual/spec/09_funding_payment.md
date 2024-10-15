@@ -42,7 +42,7 @@ This formula ensures that the funding rate stays within defined boundaries, ince
 
 ### 4. **Funding Fee Collection**
 
-At each block, the system tracks the calculated funding fees. If a user performs an interaction, such as closing a position or consolidating, the system triggers the collection of the accumulated fees and The details of this process can be found in the source code:  
+At each block, the system tracks the calculated funding fees. If a user performs an interaction, such as closing a position or consolidating, the system triggers the collection of the accumulated fees. The details of this process can be found in the source code:  
 [Funding Fee Collection Code](https://github.com/elys-network/elys/blob/main/x/perpetual/keeper/settle_funding_fee_collection.go).
 
 The collected funding fees act as the source for redistribution to the traders, depending on the market's funding rate outcome.
