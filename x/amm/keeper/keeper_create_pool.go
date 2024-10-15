@@ -128,7 +128,7 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 	}
 
 	if k.hooks != nil {
-		k.hooks.AfterPoolCreated(ctx, sender, *pool)
+		return k.hooks.AfterPoolCreated(ctx, sender, *pool)
 	}
 	return nil
 }

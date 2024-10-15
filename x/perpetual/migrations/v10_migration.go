@@ -16,7 +16,7 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 		LeverageMax:                                    params.LeverageMax,
 		BorrowInterestRateMax:                          params.BorrowInterestRateMax,
 		BorrowInterestRateMin:                          params.BorrowInterestRateMin,
-		MinBorrowInterestAmount:                        params.MinBorrowInterestAmount,
+		MinBorrowInterestAmount:                        sdk.ZeroInt(),
 		BorrowInterestRateIncrease:                     params.BorrowInterestRateIncrease,
 		BorrowInterestRateDecrease:                     params.BorrowInterestRateDecrease,
 		HealthGainFactor:                               params.HealthGainFactor,

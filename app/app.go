@@ -797,7 +797,7 @@ func NewElysApp(
 		app.OracleKeeper,
 		&app.CommitmentKeeper,
 		app.AssetprofileKeeper,
-		app.AccountedPoolKeeper,
+		&app.AccountedPoolKeeper,
 	)
 
 	app.StablestakeKeeper = *stablestakekeeper.NewKeeper(
@@ -1109,6 +1109,15 @@ func NewElysApp(
 		),
 	)
 
+	app.PerpetualKeeper = *app.PerpetualKeeper.SetHooks(
+		perpetualmoduletypes.NewMultiPerpetualHooks(
+			// insert perpetual hooks receivers here
+			app.AccountedPoolKeeper.PerpetualHooks(),
+			app.TierKeeper.PerpetualHooks(),
+		),
+	)
+	perpetualModule := perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper)
+
 	app.AmmKeeper = *app.AmmKeeper.SetHooks(
 		ammmoduletypes.NewMultiAmmHooks(
 			// insert amm hooks receivers here
@@ -1130,15 +1139,6 @@ func NewElysApp(
 		),
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
-
-	app.PerpetualKeeper = *app.PerpetualKeeper.SetHooks(
-		perpetualmoduletypes.NewMultiPerpetualHooks(
-			// insert perpetual hooks receivers here
-			app.AccountedPoolKeeper.PerpetualHooks(),
-			app.TierKeeper.PerpetualHooks(),
-		),
-	)
-	perpetualModule := perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper)
 
 	/**** Module Options ****/
 
