@@ -16,9 +16,9 @@ var _ = strconv.Itoa(0)
 
 func CmdClosePositions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "close-positions [liquidate] [stoploss]",
+		Use:   "close-positions [liquidate] [stoploss] [take-profit]",
 		Short: "Broadcast message close-positions",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -46,10 +46,21 @@ func CmdClosePositions() *cobra.Command {
 				stoplossPtrs = append(stoplossPtrs, &stopLoss[i])
 			}
 
+			takeProfit, err := readPositionRequestJSON(args[2])
+			if err != nil {
+				return err
+			}
+			// Convert to slice of pointers
+			var takeProfitPtrs []*types.PositionRequest
+			for i := range takeProfit {
+				takeProfitPtrs = append(takeProfitPtrs, &takeProfit[i])
+			}
+
 			msg := types.NewMsgClosePositions(
 				clientCtx.GetFromAddress().String(),
 				liqudiatePtrs,
 				stoplossPtrs,
+				takeProfitPtrs,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err
