@@ -77,4 +77,8 @@ message Pool {
     (gogoproto.nullable) = false
   ];
   repeated cosmos.base.v1beta1.Coin fees_collected = 10 [(gogoproto.nullable) = false]; 
+  string max_leveragelp = 11 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
