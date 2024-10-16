@@ -2,9 +2,9 @@ package keeper
 
 import (
 	"context"
-	"errors"
 	"strconv"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -34,7 +34,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 			Quo(sdk.NewDecFromInt(params.TotalValue)).Mul(sdk.NewDec(100))
 	}
 	if borrowRatio.GTE(params.MaxLeveragePercent) {
-		return nil, errors.New("pool is already leveraged at maximum value")
+		return nil, errorsmod.Wrap(types.ErrMaxLeverageLpExists, "no new position can be open")
 	}
 
 	// Check if it is the same direction position for the same trader.
