@@ -132,6 +132,7 @@ func (k Keeper) GetAllLegacyMTPs(ctx sdk.Context) []types.LegacyMTP {
 	}
 	return mtpList
 }
+
 func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, address sdk.AccAddress, ammPoolId *uint64) ([]*types.MtpAndPrice, *query.PageResponse, error) {
 	var mtps []*types.MtpAndPrice
 
@@ -161,15 +162,6 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 	}
 	baseCurrency := entry.Denom
 
-	var ammPool ammtypes.Pool
-	if ammPoolId != nil {
-		var poolFound bool
-		ammPool, poolFound = k.amm.GetPool(ctx, *ammPoolId)
-		if !poolFound {
-			realTime = false
-		}
-	}
-
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
@@ -178,65 +170,13 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 			return nil
 		}
 
-		if ammPoolId == nil {
-			ammPool, found = k.amm.GetPool(ctx, mtp.AmmPoolId)
-			if !found {
-				realTime = false
-			}
+		mtpAndPrice, err := k.fillMTPData(ctx, mtp, ammPoolId, realTime, baseCurrency)
+		if err != nil {
+			return err
 		}
 
-		pnl := sdk.ZeroDec()
-		liquidationPrice := sdk.ZeroDec()
-		if realTime {
-			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-			if err == nil {
-				mtp.MtpHealth = mtpHealth
-			}
+		mtps = append(mtps, mtpAndPrice)
 
-			pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
-			mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
-			pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
-			if err != nil {
-				return err
-			}
-			liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
-		}
-
-		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
-		if !found {
-			return fmt.Errorf("asset not found")
-		}
-		tradingAssetPrice, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
-		assetPrice := sdk.ZeroDec()
-		if found {
-			assetPrice = tradingAssetPrice.Price
-		}
-
-		// TODO: replace custody amount with liability amount when fees are defined in terms of liability asset
-		// calculate total fees in base currency using asset price
-		totalFeesInBaseCurrency := mtp.BorrowInterestPaidCustody.Add(mtp.FundingFeePaidCustody)
-		borrowInterestFeesInBaseCurrency := mtp.BorrowInterestPaidCustody
-		fundingFeesInBaseCurrency := mtp.FundingFeePaidCustody
-
-		if mtp.Position == types.Position_LONG {
-			totalFeesInBaseCurrency = totalFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
-			borrowInterestFeesInBaseCurrency = borrowInterestFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
-			fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
-		}
-
-		mtps = append(mtps, &types.MtpAndPrice{
-			Mtp:               &mtp,
-			TradingAssetPrice: assetPrice,
-			Pnl:               pnl,
-			LiquidationPrice:  liquidationPrice,
-			Fees: &types.Fees{
-				TotalFeesBaseCurrency:            totalFeesInBaseCurrency,
-				BorrowInterestFeesLiabilityAsset: mtp.BorrowInterestPaidCustody,
-				BorrowInterestFeesBaseCurrency:   borrowInterestFeesInBaseCurrency,
-				FundingFeesLiquidityAsset:        mtp.FundingFeePaidCustody,
-				FundingFeesBaseCurrency:          fundingFeesInBaseCurrency,
-			},
-		})
 		return nil
 	})
 	if err != nil {
@@ -244,6 +184,72 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 	}
 
 	return mtps, pageRes, nil
+}
+
+func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, realTime bool, baseCurrency string) (*types.MtpAndPrice, error) {
+	var ammPool ammtypes.Pool
+	var poolFound bool
+	if ammPoolId != nil {
+		ammPool, poolFound = k.amm.GetPool(ctx, *ammPoolId)
+	} else {
+		ammPool, poolFound = k.amm.GetPool(ctx, mtp.AmmPoolId)
+	}
+	if !poolFound {
+		realTime = false
+	}
+
+	pnl := sdk.ZeroDec()
+	liquidationPrice := sdk.ZeroDec()
+	if realTime {
+		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+		if err == nil {
+			mtp.MtpHealth = mtpHealth
+		}
+
+		pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
+		mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
+		pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
+		if err != nil {
+			return nil, err
+		}
+		liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
+	}
+
+	info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
+	if !found {
+		return nil, fmt.Errorf("asset not found")
+	}
+	tradingAssetPrice, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
+	assetPrice := sdk.ZeroDec()
+	if found {
+		assetPrice = tradingAssetPrice.Price
+	}
+
+	// TODO: replace custody amount with liability amount when fees are defined in terms of liability asset
+	// calculate total fees in base currency using asset price
+	totalFeesInBaseCurrency := mtp.BorrowInterestPaidCustody.Add(mtp.FundingFeePaidCustody)
+	borrowInterestFeesInBaseCurrency := mtp.BorrowInterestPaidCustody
+	fundingFeesInBaseCurrency := mtp.FundingFeePaidCustody
+
+	if mtp.Position == types.Position_LONG {
+		totalFeesInBaseCurrency = totalFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
+		borrowInterestFeesInBaseCurrency = borrowInterestFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
+		fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
+	}
+
+	return &types.MtpAndPrice{
+		Mtp:               &mtp,
+		TradingAssetPrice: assetPrice,
+		Pnl:               pnl,
+		LiquidationPrice:  liquidationPrice,
+		Fees: &types.Fees{
+			TotalFeesBaseCurrency:            totalFeesInBaseCurrency,
+			BorrowInterestFeesLiabilityAsset: mtp.BorrowInterestPaidCustody,
+			BorrowInterestFeesBaseCurrency:   borrowInterestFeesInBaseCurrency,
+			FundingFeesLiquidityAsset:        mtp.FundingFeePaidCustody,
+			FundingFeesBaseCurrency:          fundingFeesInBaseCurrency,
+		},
+	}, nil
 }
 
 func (k Keeper) GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress) []*types.MTP {
