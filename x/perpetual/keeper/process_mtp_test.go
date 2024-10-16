@@ -6,11 +6,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 
 	// oracletypes "github.com/elys-network/elys/x/oracle/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 
 	// "github.com/cometbft/cometbft/crypto/ed25519"
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	simapp "github.com/elys-network/elys/app"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -190,6 +192,151 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 	}, mtp)
 
 	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
+	require.NoError(t, err)
+
+	mtps = mk.GetAllMTPs(ctx)
+	require.Equal(t, len(mtps), 0)
+}
+
+func TestCheckAndCloseAtTakeProfit(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+
+	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
+
+	// Setup coin prices
+	SetupStableCoinPrices(ctx, oracle)
+
+	// Set asset profile
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
+		BaseDenom: ptypes.BaseCurrency,
+		Denom:     ptypes.BaseCurrency,
+		Decimals:  6,
+	})
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
+		BaseDenom: ptypes.ATOM,
+		Denom:     ptypes.ATOM,
+		Decimals:  6,
+	})
+
+	// Generate 1 random account with 1000stake balanced
+	addr := simapp.AddTestAddrs(app, ctx, 3, sdk.NewInt(1000000000000))
+
+	// Create a pool
+	// Mint 100000USDC
+	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(200000000000))}
+	// Mint 100000ATOM
+	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(200000000000))}
+
+	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
+	require.NoError(t, err)
+
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, atomToken)
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], atomToken)
+	require.NoError(t, err)
+
+	poolAssets := []ammtypes.PoolAsset{
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
+		},
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
+		},
+	}
+
+	argSwapFee := sdk.MustNewDecFromStr("0.0")
+	argExitFee := sdk.MustNewDecFromStr("0.0")
+
+	poolParams := &ammtypes.PoolParams{
+		UseOracle:                   true,
+		ExternalLiquidityRatio:      sdk.NewDec(2),
+		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdk.ZeroDec(),
+		SwapFee:                     argSwapFee,
+		ExitFee:                     argExitFee,
+		FeeDenom:                    ptypes.BaseCurrency,
+	}
+
+	msg := ammtypes.NewMsgCreatePool(
+		addr[0].String(),
+		poolParams,
+		poolAssets,
+	)
+
+	// Create a ATOM+USDC pool
+	poolId, err := amm.CreatePool(ctx, msg)
+	require.NoError(t, err)
+	require.Equal(t, poolId, uint64(1))
+
+	pools := amm.GetAllPool(ctx)
+
+	// check length of pools
+	require.Equal(t, len(pools), 1)
+
+	// check block height
+	require.Equal(t, int64(0), ctx.BlockHeight())
+
+	pool, found := amm.GetPool(ctx, poolId)
+	require.Equal(t, found, true)
+
+	poolAddress := sdk.MustAccAddressFromBech32(pool.GetAddress())
+	require.NoError(t, err)
+
+	app.BankKeeper.SendCoins(ctx, addr[0], poolAddress, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000000))))
+	// Balance check before create a perpetual position
+	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100000000000))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
+
+	// Create a perpetual position open msg
+	msg2 := types.NewMsgOpen(
+		addr[0].String(),
+		types.Position_LONG,
+		sdk.NewDec(5),
+		ptypes.ATOM,
+		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
+		sdk.MustNewDecFromStr("8"),
+		sdk.ZeroDec(),
+	)
+
+	_, err = mk.Open(ctx, msg2, false)
+	require.NoError(t, err)
+
+	mtps := mk.GetAllMTPs(ctx)
+	require.Equal(t, len(mtps), 1)
+
+	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
+	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100100000000))
+	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
+
+	_, found = mk.OpenDefineAssetsChecker.GetPool(ctx, pool.PoolId)
+	require.Equal(t, found, true)
+
+	mtp := mtps[0]
+
+	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
+
+	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
+	require.Error(t, err)
+
+	// Set price above target price
+	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	oracle.SetPrice(ctx, oracletypes.Price{
+		Asset:     "uatom",
+		Price:     sdk.MustNewDecFromStr("8.1"),
+		Source:    "uatom",
+		Provider:  provider.String(),
+		Timestamp: uint64(ctx.BlockTime().Unix()),
+	})
+
+	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
 	require.NoError(t, err)
 
 	mtps = mk.GetAllMTPs(ctx)

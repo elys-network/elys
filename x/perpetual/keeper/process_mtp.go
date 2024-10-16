@@ -172,14 +172,12 @@ func (k Keeper) CheckAndCloseAtTakeProfit(ctx sdk.Context, mtp *types.MTP, pool 
 	}
 
 	if mtp.Position == types.Position_LONG {
-		overTakeProfitPrice := !mtp.TakeProfitPrice.IsNil() && tradingAssetPrice.Price.GTE(mtp.TakeProfitPrice)
-		if !overTakeProfitPrice {
-			return fmt.Errorf("mtp take profit price is not <=  token price")
+		if !tradingAssetPrice.Price.GTE(mtp.TakeProfitPrice) {
+			return fmt.Errorf("mtp take profit price is not >=  token price")
 		}
 	} else {
-		overTakeProfitPrice := !mtp.TakeProfitPrice.IsNil() && tradingAssetPrice.Price.LTE(mtp.TakeProfitPrice)
-		if !overTakeProfitPrice {
-			return fmt.Errorf("mtp take profit price is not =>  token price")
+		if !tradingAssetPrice.Price.LTE(mtp.TakeProfitPrice) {
+			return fmt.Errorf("mtp take profit price is not <=  token price")
 		}
 	}
 

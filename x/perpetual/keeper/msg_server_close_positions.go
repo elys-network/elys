@@ -86,7 +86,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 			continue
 		}
 
-		err = k.CheckAndCloseAtStopLoss(ctx, &position, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
+		err = k.CheckAndCloseAtTakeProfit(ctx, &position, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
 		if err != nil {
 			// Add log about error or not closed
 			takeProfitLog = append(takeProfitLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
