@@ -16,6 +16,7 @@ import (
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/network"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	assettypes "github.com/elys-network/elys/x/assetprofile/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/client/cli"
@@ -143,8 +144,16 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	buf1, err := cfg.Codec.MarshalJSON(&amm_state)
 	require.NoError(t, err)
 
+	StateAssetTypes := assettypes.GenesisState{}
+	StateAssetTypes.EntryList = append(StateAssetTypes.EntryList, assettypes.Entry{
+		BaseDenom: ptypes.BaseCurrency,
+		Denom: ptypes.BaseCurrency,
+	})
+	buf2, err := cfg.Codec.MarshalJSON(&StateAssetTypes)
+
 	cfg.GenesisState[oracletypes.ModuleName] = bufO
 	cfg.GenesisState[ammtypes.ModuleName] = buf1
+	cfg.GenesisState[assettypes.ModuleName] = buf2
 	return network.New(t, cfg), mtps
 }
 
