@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
@@ -33,7 +34,16 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		borrowRatio = sdk.NewDecFromInt(borrowed).Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
 			Quo(sdk.NewDecFromInt(params.TotalValue)).Mul(sdk.NewDec(100))
 	}
-	if borrowRatio.GTE(params.MaxLeveragePercent) {
+
+	var pool_leveragelp sdk.Dec
+	pool, found := k.GetPool(ctx, msg.AmmPoolId)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
+	}
+	amm_pool, _ := k.amm.GetPool(ctx, msg.AmmPoolId)
+	pool_leveragelp = pool.LeveragedLpAmount.ToLegacyDec().Mul(amm_pool.TotalShares.Amount.ToLegacyDec()).Mul(sdk.NewDec(100))
+
+	if pool_leveragelp.GTE(pool.LeverageMax) || borrowRatio.GTE(params.MaxLeveragePercent) {
 		return nil, errorsmod.Wrap(types.ErrMaxLeverageLpExists, "no new position can be open")
 	}
 
