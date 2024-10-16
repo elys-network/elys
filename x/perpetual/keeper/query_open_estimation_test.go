@@ -494,9 +494,6 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}
-	// print both the expectedRes and res
-	t.Logf("%+v", expectedRes)
-	t.Logf("%+v", res)
 	require.Equal(t, expectedRes, res)
 }
 
