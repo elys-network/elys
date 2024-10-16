@@ -83,7 +83,74 @@ func TestCloseEstimation_MTPNotFound(t *testing.T) {
 	mockChecker.AssertExpectations(t)
 }
 
-func TestCloseEstimation_ExistingMTP(t *testing.T) {
+func TestCloseEstimation_ExistingLongMTP(t *testing.T) {
+	// Setup the perpetual keeper
+	k, ctx, assetProfileKeeper := keepertest.PerpetualKeeper(t)
+
+	// Setup the mock checker
+	mockChecker := new(mocks.CloseEstimationChecker)
+
+	// assign the mock checker to the keeper
+	k.CloseEstimationChecker = mockChecker
+
+	address := sdk.AccAddress([]byte("address"))
+
+	// get swap fee param
+	swapFee := k.GetSwapFee(ctx)
+
+	var (
+		query = &types.QueryCloseEstimationRequest{
+			Address:    address.String(),
+			PositionId: 1,
+		}
+		mtp = types.MTP{
+			AmmPoolId:                      2,
+			CollateralAsset:                ptypes.ATOM,
+			Collateral:                     sdk.NewInt(100),
+			CustodyAsset:                   ptypes.ATOM,
+			Custody:                        sdk.NewInt(50),
+			LiabilitiesAsset:               ptypes.BaseCurrency,
+			Liabilities:                    sdk.NewInt(400),
+			TradingAsset:                   ptypes.ATOM,
+			Position:                       types.Position_LONG,
+			BorrowInterestUnpaidCollateral: sdk.NewInt(10),
+			OpenPrice:                      sdk.MustNewDecFromStr("1.5"),
+		}
+		pool = types.Pool{
+			BorrowInterestRate: math.LegacyNewDec(2),
+		}
+		ammPool = ammtypes.Pool{}
+	)
+
+	// Mock behavior
+	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(query.Address), query.PositionId).Return(mtp, nil).Once()
+	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true).Once()
+	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil).Once()
+	mockChecker.On("EstimateSwap", ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.CollateralAsset, ammPool).Return(math.NewInt(10000), nil).Once()
+	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral), ptypes.BaseCurrency, ammPool).Return(math.NewInt(200), nil).Once()
+	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(9400)), mtp.CollateralAsset, ammPool).Return(math.NewInt(9400), nil).Once()
+	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral), ptypes.BaseCurrency, ammPool).Return(math.NewInt(1111), nil).Once()
+
+	assetProfileKeeper.On("GetEntry", ctx, ptypes.BaseCurrency).Return(atypes.Entry{
+		Denom: ptypes.BaseCurrency,
+	}, true).Once()
+
+	res, err := k.CloseEstimation(ctx, query)
+	assert.NoError(t, err)
+
+	mockChecker.AssertExpectations(t)
+	assetProfileKeeper.AssertExpectations(t)
+
+	assert.Equal(t, mtp.Position, res.Position)
+	assert.Equal(t, mtp.Custody, res.PositionSize.Amount)
+	assert.Equal(t, mtp.Custody, res.Custody.Amount)
+	assert.Equal(t, mtp.Liabilities, res.Liabilities.Amount)
+	assert.Equal(t, sdk.ZeroDec(), res.PriceImpact)
+	assert.Equal(t, swapFee, res.SwapFee)
+	assert.Equal(t, sdk.NewCoin(mtp.CollateralAsset, sdk.NewInt(9400)), res.ReturnAmount)
+}
+
+func TestCloseEstimation_ExistingShortMTP(t *testing.T) {
 	// Setup the perpetual keeper
 	k, ctx, assetProfileKeeper := keepertest.PerpetualKeeper(t)
 
@@ -107,33 +174,31 @@ func TestCloseEstimation_ExistingMTP(t *testing.T) {
 			AmmPoolId:                      2,
 			CollateralAsset:                ptypes.BaseCurrency,
 			Collateral:                     sdk.NewInt(100),
-			CustodyAsset:                   "uatom",
+			CustodyAsset:                   ptypes.BaseCurrency,
 			Custody:                        sdk.NewInt(50),
-			LiabilitiesAsset:               ptypes.BaseCurrency,
+			LiabilitiesAsset:               ptypes.ATOM,
 			Liabilities:                    sdk.NewInt(400),
-			TradingAsset:                   "uatom",
-			Position:                       types.Position_LONG,
+			TradingAsset:                   ptypes.ATOM,
+			Position:                       types.Position_SHORT,
 			BorrowInterestUnpaidCollateral: sdk.NewInt(10),
 			OpenPrice:                      sdk.MustNewDecFromStr("1.5"),
 		}
 		pool = types.Pool{
 			BorrowInterestRate: math.LegacyNewDec(2),
 		}
-		ammPool      = ammtypes.Pool{}
-		baseCurrency = "usdc"
+		ammPool = ammtypes.Pool{}
 	)
 
 	// Mock behavior
 	mockChecker.On("GetMTP", ctx, sdk.MustAccAddressFromBech32(query.Address), query.PositionId).Return(mtp, nil).Once()
 	mockChecker.On("GetPool", ctx, mtp.AmmPoolId).Return(pool, true).Once()
 	mockChecker.On("GetAmmPool", ctx, mtp.AmmPoolId, mtp.CustodyAsset).Return(ammPool, nil).Once()
-	mockChecker.On("EstimateSwap", ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.CollateralAsset, ammPool).Return(math.NewInt(10000), nil).Once()
-	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral), baseCurrency, ammPool).Return(math.NewInt(200), nil).Once()
-	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(baseCurrency, sdk.NewInt(9400)), mtp.CollateralAsset, ammPool).Return(math.NewInt(9400), nil).Once()
-	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral), baseCurrency, ammPool).Return(math.NewInt(1111), nil).Once()
+	mockChecker.On("EstimateSwap", ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.TradingAsset, ammPool).Return(math.NewInt(10000), nil).Once()
+	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.BorrowInterestUnpaidCollateral), mtp.TradingAsset, ammPool).Return(math.NewInt(200), nil).Once()
+	mockChecker.On("EstimateSwapGivenOut", ctx, sdk.NewCoin(mtp.TradingAsset, sdk.NewInt(9400)), mtp.CollateralAsset, ammPool).Return(math.NewInt(9400), nil).Once()
 
 	assetProfileKeeper.On("GetEntry", ctx, ptypes.BaseCurrency).Return(atypes.Entry{
-		Denom: baseCurrency,
+		Denom: ptypes.BaseCurrency,
 	}, true).Once()
 
 	res, err := k.CloseEstimation(ctx, query)
@@ -143,7 +208,8 @@ func TestCloseEstimation_ExistingMTP(t *testing.T) {
 	assetProfileKeeper.AssertExpectations(t)
 
 	assert.Equal(t, mtp.Position, res.Position)
-	assert.Equal(t, mtp.Custody, res.PositionSize.Amount)
+	assert.Equal(t, mtp.Liabilities, res.PositionSize.Amount)
+	assert.Equal(t, mtp.Custody, res.Custody.Amount)
 	assert.Equal(t, mtp.Liabilities, res.Liabilities.Amount)
 	assert.Equal(t, sdk.ZeroDec(), res.PriceImpact)
 	assert.Equal(t, swapFee, res.SwapFee)
