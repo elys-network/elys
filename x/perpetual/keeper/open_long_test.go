@@ -21,6 +21,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// isCloseTo checks if two sdk.Dec values are within a given tolerance.
+func isCloseTo(a, b sdk.Dec, tolerance sdk.Dec) bool {
+	diff := a.Sub(b).Abs()
+	return diff.LTE(tolerance)
+}
+
 func TestOpenLong_PoolNotFound(t *testing.T) {
 	// Setup the mock checker
 	mockChecker := new(mocks.OpenDefineAssetsChecker)
@@ -635,6 +641,9 @@ func TestOpenLong_ATOM_Collateral(t *testing.T) {
 		OpenPrice:                      sdk.MustNewDecFromStr("1.017016260000000000"),
 		StopLossPrice:                  sdk.NewDec(100),
 	}, mtp)
+
+	liq := mk.GetLiquidationPrice(ctx, mtp, pool, ptypes.BaseCurrency)
+	require.Equal(t, liq, sdk.MustNewDecFromStr("0.81810862"))
 }
 
 func TestOpenLong_Long10XAtom1000Usdc(t *testing.T) {
@@ -744,6 +753,17 @@ func TestOpenLong_Long10XAtom1000Usdc(t *testing.T) {
 	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(10_000_000_000000))
 	require.Equal(t, balances.AmountOf(ptypes.ATOM), sdk.NewInt(10_000_000_000000))
 
+	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
+		Position:        types.Position_LONG,
+		Leverage:        sdk.MustNewDecFromStr("10"),
+		TradingAsset:    ptypes.ATOM,
+		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1_000_000000)),
+		Discount:        sdk.MustNewDecFromStr("0.0"),
+		TakeProfitPrice: sdk.MustNewDecFromStr("5.0"),
+	})
+	require.NoError(t, err)
+	estimatedLiqPrice := res.LiquidationPrice
+
 	// Create a perpetual position open msg
 	msg2 := types.NewMsgOpen(
 		addr[0].String(),
@@ -801,6 +821,10 @@ func TestOpenLong_Long10XAtom1000Usdc(t *testing.T) {
 		OpenPrice:                      sdk.MustNewDecFromStr("4.392694655356139762"),
 		StopLossPrice:                  sdk.ZeroDec(),
 	}, mtp)
+
+	liq := mk.GetLiquidationPrice(ctx, mtp, pool, ptypes.BaseCurrency)
+	tolerance := sdk.MustNewDecFromStr("0.02").Mul(liq) // 2% tolerance
+	require.True(t, isCloseTo(liq, estimatedLiqPrice, tolerance), "liquidation price is not within 2% tolerance")
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
