@@ -72,7 +72,10 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, creator)
+		err := k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, creator)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &types.MsgOpenResponse{

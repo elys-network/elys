@@ -30,7 +30,10 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, mtp *types.MTP, pool *types.Pool
 	// Hooks after perpetual position closed
 	address := sdk.MustAccAddressFromBech32(mtp.Address)
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, *pool, address)
+		err := k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, *pool, address)
+		if err != nil {
+			return math.ZeroInt(), err
+		}
 	}
 
 	return repayAmount, nil
