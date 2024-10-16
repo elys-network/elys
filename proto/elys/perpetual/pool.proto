@@ -34,6 +34,7 @@ message PoolAsset {
   string asset_denom =  7;
 }
 
+
 message LegacyPool {
   uint64 amm_pool_id = 1; 
   string health = 2 [
@@ -54,6 +55,7 @@ message LegacyPool {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+  repeated cosmos.base.v1beta1.Coin fees_collected = 10 [(gogoproto.nullable) = false]; 
 }
 
 message Pool {

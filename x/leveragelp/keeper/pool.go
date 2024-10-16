@@ -54,3 +54,24 @@ func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found b
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
 }
+
+// func (k Keeper) GetAllLegacyPool(ctx sdk.Context) []types.LegacyPosition {
+// 	var positions []types.LegacyPosition
+// 	iterator := k.GetPositionIterator(ctx)
+// 	defer func(iterator sdk.Iterator) {
+// 		err := iterator.Close()
+// 		if err != nil {
+// 			panic(err)
+// 		}
+// 	}(iterator)
+
+// 	for ; iterator.Valid(); iterator.Next() {
+// 		var position types.LegacyPosition
+// 		bytesValue := iterator.Value()
+// 		err := k.cdc.Unmarshal(bytesValue, &position)
+// 		if err == nil {
+// 			positions = append(positions, position)
+// 		}
+// 	}
+// 	return positions
+// }
