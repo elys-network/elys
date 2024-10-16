@@ -287,7 +287,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
 			},
 			true,
-			"cannot borrow more than 90%",
+			"pool is already leveraged at maximum value",
 			func() {
 				suite.SetPoolThreshold(sdk.MustNewDecFromStr("0.2"))
 			},
