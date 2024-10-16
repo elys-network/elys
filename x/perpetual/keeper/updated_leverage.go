@@ -15,24 +15,16 @@ func (k Keeper) UpdatedLeverage(ctx sdk.Context, mtp types.MTP) (sdk.Dec, error)
 		return sdk.ZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
-	var custody_in_usdc sdk.Dec
-	if mtp.CustodyAsset != baseCurrency {
-		price := k.amm.EstimatePrice(ctx, mtp.CustodyAsset, baseCurrency)
-		custody_in_usdc = math.LegacyDec(mtp.Custody).Mul(price)
-	}else {
-		custody_in_usdc = math.LegacyDec(mtp.Custody)
-	}
-	var denominator sdk.Dec
+	collateral_in_usdc := math.LegacyDec(mtp.Collateral)
+	liablites := math.LegacyDec(mtp.Liabilities)
 	if mtp.LiabilitiesAsset != baseCurrency {
 		price := k.amm.EstimatePrice(ctx, mtp.CustodyAsset, baseCurrency)
-		denominator = custody_in_usdc.Sub(math.LegacyDec(mtp.Liabilities).Mul(price))
-	}else {
-		denominator = custody_in_usdc.Sub(math.LegacyDec(mtp.Liabilities))
+		liablites = math.LegacyDec(mtp.Liabilities).Mul(price)
 	}
-	if denominator.IsZero() {
+	if collateral_in_usdc.IsZero() {
 		return sdk.ZeroDec(),  nil
 	}
-	updated_leverage := custody_in_usdc.Quo(denominator)
+	updated_leverage := liablites.Quo(collateral_in_usdc).Add(sdk.OneDec())
 
 	return updated_leverage, nil
 }

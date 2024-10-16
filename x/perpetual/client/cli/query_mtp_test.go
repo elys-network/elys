@@ -41,12 +41,12 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 				TradingAsset:                   ptypes.ATOM,
 				LiabilitiesAsset:               ptypes.BaseCurrency,
 				CustodyAsset:                   ptypes.ATOM,
-				Collateral:                     sdk.NewInt(10000),
-				Liabilities:                    sdk.NewInt(10000),
+				Collateral:                     sdk.NewInt(0),
+				Liabilities:                    sdk.NewInt(0),
 				BorrowInterestPaidCollateral:   sdk.NewInt(0),
 				BorrowInterestPaidCustody:      sdk.NewInt(0),
 				BorrowInterestUnpaidCollateral: sdk.NewInt(0),
-				Custody:                        sdk.NewInt(100000),
+				Custody:                        sdk.NewInt(0),
 				TakeProfitLiabilities:          sdk.NewInt(0),
 				TakeProfitCustody:              sdk.NewInt(0),
 				MtpHealth:                      sdk.NewDec(0),
@@ -64,7 +64,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 			},
 			TradingAssetPrice: sdk.ZeroDec(),
 			Pnl:               sdk.ZeroDec(),
-			UpdatedLeverage:   sdk.MustNewDecFromStr("1.111111111111111111"),
+			UpdatedLeverage:   sdk.ZeroDec(),
 		}
 
 		mtps = append(mtps, &mtp)
