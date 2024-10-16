@@ -212,11 +212,30 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 			assetPrice = tradingAssetPrice.Price
 		}
 
+		// TODO: replace custody amount with liability amount when fees are defined in terms of liability asset
+		// calculate total fees in base currency using asset price
+		totalFeesInBaseCurrency := mtp.BorrowInterestPaidCustody.Add(mtp.FundingFeePaidCustody)
+		borrowInterestFeesInBaseCurrency := mtp.BorrowInterestPaidCustody
+		fundingFeesInBaseCurrency := mtp.FundingFeePaidCustody
+
+		if mtp.Position == types.Position_LONG {
+			totalFeesInBaseCurrency = totalFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
+			borrowInterestFeesInBaseCurrency = borrowInterestFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
+			fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
+		}
+
 		mtps = append(mtps, &types.MtpAndPrice{
 			Mtp:               &mtp,
 			TradingAssetPrice: assetPrice,
 			Pnl:               pnl,
 			LiquidationPrice:  liquidationPrice,
+			Fees: &types.Fees{
+				TotalFeesBaseCurrency:            totalFeesInBaseCurrency,
+				BorrowInterestFeesLiabilityAsset: mtp.BorrowInterestPaidCustody,
+				BorrowInterestFeesBaseCurrency:   borrowInterestFeesInBaseCurrency,
+				FundingFeesLiquidityAsset:        mtp.FundingFeePaidCustody,
+				FundingFeesBaseCurrency:          fundingFeesInBaseCurrency,
+			},
 		})
 		return nil
 	})
