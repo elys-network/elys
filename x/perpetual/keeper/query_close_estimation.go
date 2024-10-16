@@ -97,9 +97,15 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.BigInt()).Quo(sdk.NewDecFromBigInt(mtp.Custody.BigInt())),
 	)
 
+	positionSizeInTradingAsset := mtp.Custody
+	if mtp.Position == types.Position_SHORT {
+		positionSizeInTradingAsset = mtp.Liabilities
+	}
+
 	return &types.QueryCloseEstimationResponse{
 		Position:     mtp.Position,
-		PositionSize: sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
+		PositionSize: sdk.NewCoin(mtp.TradingAsset, positionSizeInTradingAsset),
+		Custody:      sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
 		Liabilities:  sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
 		// TODO: price impact calculation
 		PriceImpact:      sdk.ZeroDec(),

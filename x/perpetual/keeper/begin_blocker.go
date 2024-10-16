@@ -22,6 +22,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			k.SetBorrowRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.InterestBlock{
 				InterestRate: rate,
 				BlockHeight:  ctx.BlockHeight(),
+				BlockTime:    ctx.BlockTime().Unix(),
 			})
 
 			err = k.UpdatePoolHealth(ctx, &pool)
@@ -31,14 +32,34 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 			fundingRateLong, fundingRateShort := k.ComputeFundingRate(ctx, pool)
 
-			// TODO: Change this calculation based on time, going to it in another PR
+			pool.FundingRate = fundingRateLong
+			if fundingRateLong.IsZero() {
+				pool.FundingRate = fundingRateShort.Neg()
+			}
+
+			// account custody from long position
+			totalCustodyLong := sdk.ZeroInt()
+			for _, asset := range pool.PoolAssetsLong {
+				totalCustodyLong = totalCustodyLong.Add(asset.Custody)
+			}
+
+			// account custody from short position
+			totalCustodyShort := sdk.ZeroInt()
+			for _, asset := range pool.PoolAssetsShort {
+				totalCustodyShort = totalCustodyShort.Add(asset.Custody)
+			}
+
+			blocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
+			fundingAmountLong := types.CalcTakeAmount(totalCustodyLong, fundingRateLong).ToLegacyDec().Quo(sdk.NewDec(blocksPerYear))
+			fundingAmountShort := types.CalcTakeAmount(totalCustodyShort, fundingRateShort).ToLegacyDec().Quo(sdk.NewDec(blocksPerYear))
+
 			k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
-				FundingRate:        pool.FundingRate,
 				BlockHeight:        ctx.BlockHeight(),
-				FundingAmountShort: sdk.ZeroInt(),
-				FundingAmountLong:  sdk.ZeroInt(),
+				BlockTime:          ctx.BlockTime().Unix(),
 				FundingRateLong:    fundingRateLong,
 				FundingRateShort:   fundingRateShort,
+				FundingAmountShort: fundingAmountShort,
+				FundingAmountLong:  fundingAmountLong,
 			})
 		}
 		k.SetPool(ctx, pool)
