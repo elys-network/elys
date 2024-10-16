@@ -1,6 +1,8 @@
 package keeper
 
+import "C"
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	gomath "math"
 
@@ -63,24 +65,6 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (t
 	}
 	bz := store.Get(key)
 	k.cdc.MustUnmarshal(bz, &mtp)
-	ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
-	if !found {
-		return mtp, nil
-	}
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return mtp, nil
-	}
-	baseCurrency := entry.Denom
-
-	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-	if err == nil {
-		mtp.MtpHealth = mtpHealth
-	}
-
-	pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
-	mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
-
 	return mtp, nil
 }
 
@@ -114,26 +98,7 @@ func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 	return mtpList
 }
 
-func (k Keeper) GetAllLegacyMTPs(ctx sdk.Context) []types.LegacyMTP {
-	var mtpList []types.LegacyMTP
-	iterator := k.GetMTPIterator(ctx)
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		var mtp types.LegacyMTP
-		bytesValue := iterator.Value()
-		k.cdc.MustUnmarshal(bytesValue, &mtp)
-		mtpList = append(mtpList, mtp)
-	}
-	return mtpList
-}
-
-func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
+func (k Keeper) GetMTPsWithPagination(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
 	var mtpList []*types.MtpAndPrice
 	store := ctx.KVStore(k.storeKey)
 	mtpStore := prefix.NewStore(store, types.MTPPrefix)
@@ -160,15 +125,14 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 			realTime = false
 		}
 
-		pnl := sdk.ZeroDec()
+		pnl := math.ZeroInt()
 		if realTime {
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
 				mtp.MtpHealth = mtpHealth
 			}
 
-			pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
-			mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
+			k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
 			pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
 			if err != nil {
 				return err
@@ -224,7 +188,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 	pageRes, err := query.FilteredPaginate(mtpStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
-		pnl := sdk.ZeroDec()
+		pnl := math.ZeroInt()
 		if accumulate && mtp.AmmPoolId == ammPoolId {
 			if realTime {
 				// Interest
@@ -233,8 +197,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 					mtp.MtpHealth = mtpHealth
 				}
 
-				pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
-				mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
+				k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
 				pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
 				if err != nil {
 					return false, err
@@ -313,15 +276,14 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 			realTime = false
 		}
 
-		pnl := sdk.ZeroDec()
+		pnl := math.ZeroInt()
 		if realTime {
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
 				mtp.MtpHealth = mtpHealth
 			}
 
-			pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
-			mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
+			k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
 			pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
 			if err != nil {
 				return err
@@ -421,7 +383,8 @@ func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) 
 	return nil
 }
 
-func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error) {
+// TODO might be incorrect, takeFundingFee is being reduced from custody rather than mtp.BorrowInterestUnpaidLiability
+func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.Int, error) {
 	// P&L = Custody (in USD) - Liability ( in USD) - Collateral ( in USD)
 
 	// Funding rate payment consideration
@@ -438,103 +401,57 @@ func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, ba
 		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, fundingRate)
 	}
 
-	pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
-	mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
-
 	// Liability should include margin interest and funding fee accrued.
-	collateralAmt := mtp.Collateral.Add(mtp.BorrowInterestUnpaidCollateral)
+	collateralAmt := mtp.Collateral
 
-	// if short position, custody asset is already in base currency
-	custodyAmtInBaseCurrency := mtp.Custody.Sub(takeAmountCustodyAmount)
+	// in long it's in trading asset ,if short position, custody asset is already in base currency
+	custodyAmtAfterTake := mtp.Custody.Sub(takeAmountCustodyAmount)
+
+	totalLiabilities := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 
 	// Calculate estimated PnL
-	var estimatedPnL sdk.Dec
+	estimatedPnL := sdk.ZeroInt()
 
 	if mtp.Position == types.Position_SHORT {
 		// Estimated PnL for short position:
-		// estimated_pnl = custody_amount - liabilities_amount * market_price - collateral_amount
+		// collateral asset is in base currency, custody asset is in base currency but liabilities is in trading asset
+		// estimated_pnl = custody_amount - totalLiabilities * market_price - collateral_amount
 
 		// For short position, convert liabilities to base currency
-		C, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities), baseCurrency, ammPool)
+		totalLiabilitiesTokenOut := sdk.NewCoin(mtp.LiabilitiesAsset, totalLiabilities)
+		totalLiabilitiesInBaseCurrency, _, err := k.EstimateSwapGivenOut(ctx, totalLiabilitiesTokenOut, baseCurrency, ammPool)
 		if err != nil {
-			C = sdk.ZeroInt()
+			totalLiabilitiesInBaseCurrency = sdk.ZeroInt()
 		}
 
-		estimatedPnL = custodyAmtInBaseCurrency.ToLegacyDec().Sub(C.ToLegacyDec()).Sub(collateralAmt.ToLegacyDec())
+		estimatedPnL = custodyAmtAfterTake.Sub(totalLiabilitiesInBaseCurrency).Sub(collateralAmt)
 	} else {
 		// Estimated PnL for long position:
+		// collateral asset can be base currency or trading asset, custody asset is in trading asset and liabilities is in base currency
 		if mtp.CollateralAsset != baseCurrency {
-			// estimated_pnl = (custody_amount - collateral_amount) * market_price - liabilities_amount
+			// estimated_pnl = (custody_amount - collateral_amount) * market_price - totalLiabilities
 
 			// For long position, convert both custody and collateral to base currency
-			amt := sdk.MaxInt(custodyAmtInBaseCurrency.Sub(collateralAmt), sdk.ZeroInt())
-			C, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.CollateralAsset, amt), baseCurrency, ammPool)
+			custodyCollateralDiffTokenOut := sdk.NewCoin(mtp.CollateralAsset, sdk.MaxInt(custodyAmtAfterTake.Sub(collateralAmt), sdk.ZeroInt()))
+			custodyCollateralDiffInBaseCurrency, _, err := k.EstimateSwapGivenOut(ctx, custodyCollateralDiffTokenOut, baseCurrency, ammPool)
 			if err != nil {
-				C = sdk.ZeroInt()
+				custodyCollateralDiffInBaseCurrency = sdk.ZeroInt()
 			}
 
-			estimatedPnL = C.ToLegacyDec().Sub(mtp.Liabilities.ToLegacyDec())
+			estimatedPnL = custodyCollateralDiffInBaseCurrency.Sub(totalLiabilities)
 		} else {
-			// estimated_pnl = custody_amount * market_price - liabilities_amount - collateral_amount
+			// estimated_pnl = custody_amount * market_price - totalLiabilities - collateral_amount
 
 			// For long position, convert custody to base currency
-			amt := sdk.MaxInt(custodyAmtInBaseCurrency, sdk.ZeroInt())
-			C, err := k.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.CustodyAsset, amt), baseCurrency, ammPool)
+			custodyAmountOut := sdk.NewCoin(mtp.CustodyAsset, sdk.MaxInt(custodyAmtAfterTake, sdk.ZeroInt()))
+			custodyAmountOutInBaseCurrency, _, err := k.EstimateSwapGivenOut(ctx, custodyAmountOut, baseCurrency, ammPool)
 			if err != nil {
-				C = sdk.ZeroInt()
+				custodyAmountOutInBaseCurrency = sdk.ZeroInt()
 			}
 
-			estimatedPnL = C.ToLegacyDec().Sub(mtp.Liabilities.ToLegacyDec()).Sub(collateralAmt.ToLegacyDec())
+			estimatedPnL = custodyAmountOutInBaseCurrency.Sub(mtp.Liabilities).Sub(collateralAmt)
 		}
 	}
 
 	return estimatedPnL, nil
-}
-
-func (k Keeper) DeleteLegacyMTP(ctx sdk.Context, mtpaddress string, id uint64) error {
-	store := ctx.KVStore(k.storeKey)
-	key := types.GetMTPKey(sdk.MustAccAddressFromBech32(mtpaddress), id)
-	if !store.Has(key) {
-		return types.ErrMTPDoesNotExist
-	}
-	store.Delete(key)
-	return nil
-}
-
-func (k Keeper) GetAllLegacyMTP(ctx sdk.Context) []types.LegacyMTP {
-	var mtps []types.LegacyMTP
-	iterator := k.GetMTPIterator(ctx)
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		var mtp types.LegacyMTP
-		bytesValue := iterator.Value()
-		err := k.cdc.Unmarshal(bytesValue, &mtp)
-		if err == nil {
-			mtps = append(mtps, mtp)
-		}
-	}
-
-	return mtps
-}
-
-func (k Keeper) DeleteAllNegativeCustomMTP(ctx sdk.Context) {
-	iterator := k.GetMTPIterator(ctx)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var mtp types.LegacyMTP
-		bytesValue := iterator.Value()
-		k.cdc.MustUnmarshal(bytesValue, &mtp)
-
-		if mtp.Custody.IsNegative() || mtp.Custody.IsZero() {
-			k.DestroyMTP(ctx, sdk.MustAccAddressFromBech32(mtp.Address), mtp.Id)
-		}
-	}
-
 }

@@ -175,8 +175,8 @@ func (k Keeper) GetFundingFeeMinRate(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).FundingFeeMinRate
 }
 
-func (k Keeper) GetSwapFee(ctx sdk.Context) sdk.Dec {
-	return k.GetParams(ctx).SwapFee
+func (k Keeper) GetPerpetualSwapFee(ctx sdk.Context) sdk.Dec {
+	return k.GetParams(ctx).PerpetualSwapFee
 }
 
 func (k Keeper) GetEpochLength(ctx sdk.Context) int64 {

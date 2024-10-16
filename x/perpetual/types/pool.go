@@ -42,22 +42,6 @@ func (p *Pool) GetPoolAsset(position Position, assetDenom string) *PoolAsset {
 	return nil
 }
 
-// Update the asset balance
-func (p *Pool) UpdateBalance(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
-	poolAsset := p.GetPoolAsset(position, assetDenom)
-	if poolAsset == nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
-	}
-
-	if isIncrease {
-		poolAsset.AssetBalance = poolAsset.AssetBalance.Add(amount)
-	} else {
-		poolAsset.AssetBalance = poolAsset.AssetBalance.Sub(amount)
-	}
-
-	return nil
-}
-
 // Update the asset liabilities
 func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
@@ -122,22 +106,6 @@ func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount math.Int
 	return nil
 }
 
-// Update the unsettled liabilities balance
-func (p *Pool) UpdateBlockBorrowInterest(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
-	poolAsset := p.GetPoolAsset(position, assetDenom)
-	if poolAsset == nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
-	}
-
-	if isIncrease {
-		poolAsset.BlockBorrowInterest = poolAsset.BlockBorrowInterest.Add(amount)
-	} else {
-		poolAsset.BlockBorrowInterest = poolAsset.BlockBorrowInterest.Sub(amount)
-	}
-
-	return nil
-}
-
 // Update the fees collected
 func (p *Pool) UpdateFeesCollected(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool) error {
 	if isIncrease {
@@ -171,11 +139,9 @@ func (p *Pool) InitiatePool(ctx sdk.Context, ammPool *ammtypes.Pool) error {
 
 	for _, asset := range ammPool.PoolAssets {
 		poolAsset := PoolAsset{
-			Liabilities:         sdk.ZeroInt(),
-			Custody:             sdk.ZeroInt(),
-			AssetBalance:        sdk.ZeroInt(),
-			BlockBorrowInterest: sdk.ZeroInt(),
-			AssetDenom:          asset.Token.Denom,
+			Liabilities: sdk.ZeroInt(),
+			Custody:     sdk.ZeroInt(),
+			AssetDenom:  asset.Token.Denom,
 		}
 
 		p.PoolAssetsLong = append(p.PoolAssetsLong, poolAsset)

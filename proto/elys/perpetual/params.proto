@@ -136,26 +136,25 @@ message Params {
   ];
   bool incremental_borrow_interest_payment_enabled = 16;
   bool whitelisting_enabled = 17;
-  string invariant_check_epoch = 18;
-  string take_profit_borrow_interest_rate_min = 19 [
+  string take_profit_borrow_interest_rate_min = 18 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string funding_fee_base_rate = 20 [
+  string funding_fee_base_rate = 19 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string funding_fee_max_rate = 21 [
+  string funding_fee_max_rate = 20 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string funding_fee_min_rate = 22 [
+  string funding_fee_min_rate = 21 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string swap_fee = 23 [
+  string perpetual_swap_fee = 22 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 max_limit_order = 24;
+  int64 max_limit_order = 23;
 }

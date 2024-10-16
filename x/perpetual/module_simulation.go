@@ -133,28 +133,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		perpetualsimulation.SimulateMsgDewhitelist(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgAddCollateral int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgAddCollateral, &weightMsgAddCollateral, nil,
-		func(_ *rand.Rand) {
-			weightMsgAddCollateral = defaultWeightMsgAddCollateral
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgAddCollateral,
-		perpetualsimulation.SimulateMsgAddCollateral(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgBrokerAddCollateral int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgBrokerAddCollateral, &weightMsgBrokerAddCollateral, nil,
-		func(_ *rand.Rand) {
-			weightMsgBrokerAddCollateral = defaultWeightMsgBrokerAddCollateral
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgBrokerAddCollateral,
-		perpetualsimulation.SimulateMsgBrokerAddCollateral(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
 	var weightMsgClosePositions int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgClosePositions, &weightMsgClosePositions, nil,
 		func(_ *rand.Rand) {

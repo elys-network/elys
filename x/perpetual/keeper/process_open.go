@@ -19,15 +19,17 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
-	ammPool, err := k.OpenDefineAssetsChecker.GetAmmPool(ctx, poolId, mtp.TradingAsset)
+	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
 		return nil, err
 	}
 
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
-	leveragedAmount := sdk.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
+	leveragedAmount := collateralAmountDec.Mul(leverage).TruncateInt()
 
 	// Calculate custody amount
+	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
+	// SHORT: collateralAsset is always usdc, and custody has to be in base currency, so custodyAmount = leveragedAmount
 	custodyAmount := leveragedAmount
 
 	switch msg.Position {
@@ -35,7 +37,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 		// If collateral is not base currency, calculate the borrowing amount in base currency and check the balance
 		if mtp.CollateralAsset != baseCurrency {
 			custodyAmtToken := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
-			borrowingAmount, err := k.OpenDefineAssetsChecker.EstimateSwapGivenOut(ctx, custodyAmtToken, baseCurrency, ammPool)
+			borrowingAmount, _, err := k.EstimateSwapGivenOut(ctx, custodyAmtToken, baseCurrency, ammPool)
 			if err != nil {
 				return nil, err
 			}
@@ -51,7 +53,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 		// If position is long, calculate custody amount in custody asset
 		if mtp.CollateralAsset == baseCurrency {
 			leveragedAmtTokenIn := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
-			custodyAmount, err = k.OpenDefineAssetsChecker.EstimateSwap(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool)
+			custodyAmount, _, err = k.EstimateSwap(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool)
 			if err != nil {
 				return nil, err
 			}
@@ -75,29 +77,29 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 	}
 
 	// Borrow the asset the user wants to long.
-	err = k.OpenDefineAssetsChecker.Borrow(ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, baseCurrency, isBroker)
+	err = k.Borrow(ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, baseCurrency, isBroker)
 	if err != nil {
 		return nil, err
 	}
 
 	// Update the pool health.
-	if err = k.OpenDefineAssetsChecker.UpdatePoolHealth(ctx, &pool); err != nil {
+	if err = k.UpdatePoolHealth(ctx, &pool); err != nil {
 		return nil, err
 	}
 
 	// Take custody from the pool balance.
-	if err = k.OpenDefineAssetsChecker.TakeInCustody(ctx, *mtp, &pool); err != nil {
+	if err = k.TakeInCustody(ctx, *mtp, &pool); err != nil {
 		return nil, err
 	}
 
 	// Update the MTP health.
-	lr, err := k.OpenDefineAssetsChecker.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	lr, err := k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
 	// Check if the MTP is unhealthy
-	safetyFactor := k.OpenDefineAssetsChecker.GetSafetyFactor(ctx)
+	safetyFactor := k.GetSafetyFactor(ctx)
 	if lr.LTE(safetyFactor) {
 		return nil, types.ErrMTPUnhealthy
 	}
@@ -106,7 +108,10 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 	mtp.StopLossPrice = msg.StopLossPrice
 
 	// Set MTP
-	k.OpenDefineAssetsChecker.SetMTP(ctx, mtp)
+	err = k.SetMTP(ctx, mtp)
+	if err != nil {
+		return nil, err
+	}
 
 	return mtp, nil
 }

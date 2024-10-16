@@ -1,12 +1,12 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	epochtypes "github.com/elys-network/elys/x/epochs/types"
 	"gopkg.in/yaml.v2"
 )
 
@@ -50,7 +50,7 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		SwapFee:                                        sdk.NewDecWithPrec(1, 3),    // 0.1%
+		PerpetualSwapFee:                               sdk.NewDecWithPrec(1, 3),    // 0.1%
 		FundingFeeMinRate:                              sdk.NewDecWithPrec(-111, 8), // -0.1% / hour
 		FundingFeeMaxRate:                              sdk.NewDecWithPrec(111, 8),  // 0.1% / hour
 		FundingFeeBaseRate:                             sdk.NewDecWithPrec(33, 9),   // 0.03% / hour
@@ -66,12 +66,11 @@ func NewParams() Params {
 		HealthGainFactor:                               sdk.NewDecWithPrec(22, 8),
 		IncrementalBorrowInterestPaymentEnabled:        true,
 		IncrementalBorrowInterestPaymentFundAddress:    ZeroAddress,
-		IncrementalBorrowInterestPaymentFundPercentage: sdk.NewDecWithPrec(35, 1), // 35%
-		InvariantCheckEpoch:                            epochtypes.DayEpochID,
+		IncrementalBorrowInterestPaymentFundPercentage: math.LegacyMustNewDecFromStr("0.1"),
 		LeverageMax:                                    sdk.NewDec(10),
 		MaxOpenPositions:                               (int64)(9999),
-		PoolOpenThreshold:                              sdk.OneDec(),
-		SafetyFactor:                                   sdk.MustNewDecFromStr("1.050000000000000000"), // 5%
+		PoolOpenThreshold:                              sdk.OneDec().Sub(sdk.MustNewDecFromStr("0.5")),
+		SafetyFactor:                                   math.LegacyMustNewDecFromStr("1.050000000000000000"), // 5%
 		WhitelistingEnabled:                            false,
 		MaxLimitOrder:                                  (int64)(500),
 	}
@@ -101,12 +100,11 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeySafetyFactor, &p.SafetyFactor, validateSafetyFactor),
 		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentEnabled, &p.IncrementalBorrowInterestPaymentEnabled, validateIncrementalBorrowInterestPaymentEnabled),
 		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
-		paramtypes.NewParamSetPair(KeyInvariantCheckEpoch, &p.InvariantCheckEpoch, validateInvariantCheckEpoch),
 		paramtypes.NewParamSetPair(KeyTakeProfitBorrowInterestRateMin, &p.TakeProfitBorrowInterestRateMin, validateTakeProfitBorrowInterestRateMin),
 		paramtypes.NewParamSetPair(KeyFundingFeeBaseRate, &p.FundingFeeBaseRate, validateBorrowInterestRateMax),
 		paramtypes.NewParamSetPair(KeyFundingFeeMinRate, &p.FundingFeeMinRate, validateBorrowInterestRateMax),
 		paramtypes.NewParamSetPair(KeyFundingFeeMaxRate, &p.FundingFeeMaxRate, validateBorrowInterestRateMax),
-		paramtypes.NewParamSetPair(KeySwapFee, &p.SwapFee, validateSwapFee),
+		paramtypes.NewParamSetPair(KeySwapFee, &p.PerpetualSwapFee, validateSwapFee),
 		paramtypes.NewParamSetPair(KeyMinBorrowInterestAmount, &p.MinBorrowInterestAmount, validateMinBorrowInterestAmount),
 		paramtypes.NewParamSetPair(KeyMaxLimitOrder, &p.MaxLimitOrder, validateMaxLimitOrder),
 	}
@@ -163,9 +161,6 @@ func (p Params) Validate() error {
 	if err := validateWhitelistingEnabled(p.WhitelistingEnabled); err != nil {
 		return err
 	}
-	if err := validateInvariantCheckEpoch(p.InvariantCheckEpoch); err != nil {
-		return err
-	}
 	if err := validateTakeProfitBorrowInterestRateMin(p.TakeProfitBorrowInterestRateMin); err != nil {
 		return err
 	}
@@ -178,7 +173,7 @@ func (p Params) Validate() error {
 	if err := validateFundingFeeMaxRate(p.FundingFeeMaxRate); err != nil {
 		return err
 	}
-	if err := validateSwapFee(p.SwapFee); err != nil {
+	if err := validateSwapFee(p.PerpetualSwapFee); err != nil {
 		return err
 	}
 	if err := validateMinBorrowInterestAmount(p.MinBorrowInterestAmount); err != nil {
@@ -413,19 +408,6 @@ func validatePoolOpenThreshold(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("pool open threshold must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateInvariantCheckEpoch(i interface{}) error {
-	epoch, ok := i.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if epoch != epochtypes.DayEpochID && epoch != epochtypes.WeekEpochID && epoch != epochtypes.HourEpochID {
-		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	return nil

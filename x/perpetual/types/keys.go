@@ -29,8 +29,11 @@ const (
 const MaxPageLimit = 100
 
 const (
-	InfinitePriceString    = "infinite"
-	TakeProfitPriceDefault = "10000000000000000000000000000000000000000" // 10^40
+	InfinitePriceString = "infinite"
+)
+
+var (
+	TakeProfitPriceDefault = sdk.MustNewDecFromStr("10000000000000000000000000000000000000000") // 10^40
 )
 
 var (
@@ -43,6 +46,7 @@ var (
 	InterestRatePrefix = []byte{0x07}
 	FundingRatePrefix  = []byte{0x08}
 	ToPayPrefix        = []byte{0x09}
+	//ParamsKeyPrefix    = []byte{0x0A}
 )
 
 func KeyPrefix(p string) []byte {

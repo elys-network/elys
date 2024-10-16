@@ -3,6 +3,7 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -10,47 +11,64 @@ import (
 func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, math.Int, error) {
 	// Retrieve MTP
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	mtp, err := k.ClosePositionChecker.GetMTP(ctx, creator, msg.Id)
+	mtp, err := k.GetMTP(ctx, creator, msg.Id)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
-	}
-
-	if msg.Amount.GT(mtp.Custody) || msg.Amount.IsNegative() {
-		return nil, sdk.ZeroInt(), types.ErrInvalidCloseSize
-	}
-
-	// Retrieve Pool
-	pool, found := k.ClosePositionChecker.GetPool(ctx, mtp.AmmPoolId)
-	if !found {
-		return nil, sdk.ZeroInt(), errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
 	// Retrieve AmmPool
-	ammPool, err := k.ClosePositionChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
-	// Handle Borrow Interest if within epoch position
-	if _, err := k.ClosePositionChecker.SettleBorrowInterest(ctx, &mtp, &pool, ammPool); err != nil {
+	// This needs to be updated here to check user doesn't send more than required amount
+	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
+
+	borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
+	borrowInterestPaymentInCustody, _, err := k.EstimateSwapGivenOut(ctx, borrowInterestPaymentTokenIn, mtp.CustodyAsset, ammPool)
+	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
+	maxAmountToCloseWhole := mtp.Custody.Sub(borrowInterestPaymentInCustody)
+	if msg.Amount.GT(maxAmountToCloseWhole) || msg.Amount.IsNegative() {
+		return nil, sdk.ZeroInt(), errorsmod.Wrap(types.ErrInvalidCloseSize, fmt.Sprintf("amount cannot be more than %s", maxAmountToCloseWhole.String()))
+	}
+
+	// Retrieve Pool
+	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return nil, sdk.ZeroInt(), errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", mtp.AmmPoolId))
+	}
+
+	// Handle Borrow Interest if within epoch position SettleMTPBorrowInterestUnpaidLiability settles interest using mtp.Custody, mtp.Custody gets reduced
+	if _, err = k.SettleMTPBorrowInterestUnpaidLiability(ctx, &mtp, &pool, ammPool); err != nil {
+		return nil, sdk.ZeroInt(), err
+	}
+
+	// Should be declared after SettleMTPBorrowInterestUnpaidLiability
+	closingRatio := msg.Amount.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())
+	// have is what user is trying to close
+	have := mtp.Custody.ToLegacyDec().Mul(closingRatio).TruncateInt()
 	// Take out custody
-	err = k.ClosePositionChecker.TakeOutCustody(ctx, mtp, &pool, msg.Amount)
+	err = k.TakeOutCustody(ctx, mtp, &pool, have)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
 	// Estimate swap and repay
-	repayAmt, err := k.ClosePositionChecker.EstimateAndRepay(ctx, mtp, pool, ammPool, msg.Amount, baseCurrency)
+	repayAmt, err := k.EstimateAndRepay(ctx, &mtp, &pool, &ammPool, baseCurrency, closingRatio)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
 
-	// Hooks after perpetual position closed
+	// EpochHooks after perpetual position closed
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, pool, creator)
+		err = k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, pool, creator)
+		if err != nil {
+			return nil, math.Int{}, err
+		}
 	}
 
 	return &mtp, repayAmt, nil

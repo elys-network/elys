@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -9,7 +11,7 @@ import (
 func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 	pool, found := k.PoolChecker.GetPool(ctx, poolId)
 	if !found {
-		return errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset")
+		return errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("pool id %d", poolId))
 	}
 
 	if !k.PoolChecker.IsPoolEnabled(ctx, poolId) || k.PoolChecker.IsPoolClosed(ctx, poolId) {

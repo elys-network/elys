@@ -24,12 +24,14 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 		return errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit liabilities: %s", mtp.String()))
 	}
 	// calculate and update take profit borrow rate
-	mtp.TakeProfitBorrowRate, err = k.CalcMTPTakeProfitBorrowRate(ctx, mtp)
+	err = k.UpdateMTPTakeProfitBorrowFactor(ctx, mtp)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit borrow rate: %s", mtp.String()))
 	}
+
+	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, mtp)
 	// Handle Borrow Interest if within epoch position
-	if _, err := k.SettleBorrowInterest(ctx, mtp, &pool, ammPool); err != nil {
+	if _, err := k.SettleMTPBorrowInterestUnpaidLiability(ctx, mtp, &pool, ammPool); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", mtp.CollateralAsset))
 	}
 
@@ -48,6 +50,8 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 	if err != nil {
 		return err
 	}
+
+	k.SetPool(ctx, pool)
 
 	// check MTP health against threshold
 	safetyFactor := k.GetSafetyFactor(ctx)
@@ -68,7 +72,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 
 	oneToken := math.NewIntFromBigInt(math.LegacyNewDec(10).Power(uint64(custodyAssetDecimals)).TruncateInt().BigInt())
 
-	assetPrice, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, oneToken), baseCurrency, ammPool)
+	assetPrice, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, oneToken), baseCurrency, ammPool)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error estimating swap: %s", mtp.CustodyAsset))
 	}

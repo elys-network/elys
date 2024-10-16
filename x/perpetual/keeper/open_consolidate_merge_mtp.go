@@ -23,7 +23,6 @@ func (k Keeper) OpenConsolidateMergeMtp(ctx sdk.Context, poolId uint64, existing
 	existingMtp.Collateral = existingMtp.Collateral.Add(newMtp.Collateral)
 	existingMtp.Custody = existingMtp.Custody.Add(newMtp.Custody)
 	existingMtp.Liabilities = existingMtp.Liabilities.Add(newMtp.Liabilities)
-
 	// Set existing MTP
 	if err := k.OpenDefineAssetsChecker.SetMTP(ctx, existingMtp); err != nil {
 		return nil, err

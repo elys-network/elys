@@ -26,7 +26,6 @@ func (m Migrator) V8Migration(ctx sdk.Context) error {
 	params.IncrementalBorrowInterestPaymentEnabled = legacyParams.IncrementalBorrowInterestPaymentEnabled
 	params.IncrementalBorrowInterestPaymentFundAddress = legacyParams.IncrementalBorrowInterestPaymentFundAddress
 	params.IncrementalBorrowInterestPaymentFundPercentage = legacyParams.IncrementalBorrowInterestPaymentFundPercentage
-	params.InvariantCheckEpoch = legacyParams.InvariantCheckEpoch
 	params.LeverageMax = legacyParams.LeverageMax
 	params.MaxOpenPositions = legacyParams.MaxOpenPositions
 	params.PoolOpenThreshold = legacyParams.PoolOpenThreshold

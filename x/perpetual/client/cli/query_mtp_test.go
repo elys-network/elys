@@ -35,40 +35,40 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	for i := 0; i < n; i++ {
 		mtp := types.MtpAndPrice{
 			Mtp: &types.MTP{
-				Address:                        addr[i].String(),
-				CollateralAsset:                ptypes.BaseCurrency,
-				TradingAsset:                   "ATOM",
-				LiabilitiesAsset:               ptypes.BaseCurrency,
-				CustodyAsset:                   "ATOM",
-				Collateral:                     sdk.NewInt(0),
-				Liabilities:                    sdk.NewInt(0),
-				BorrowInterestPaidCollateral:   sdk.NewInt(0),
-				BorrowInterestPaidCustody:      sdk.NewInt(0),
-				BorrowInterestUnpaidCollateral: sdk.NewInt(0),
-				Custody:                        sdk.NewInt(0),
-				TakeProfitLiabilities:          sdk.NewInt(0),
-				TakeProfitCustody:              sdk.NewInt(0),
-				MtpHealth:                      sdk.NewDec(0),
-				Position:                       types.Position_LONG,
-				Id:                             (uint64)(i + 1),
-				AmmPoolId:                      (uint64)(i + 1),
-				TakeProfitPrice:                sdk.MustNewDecFromStr(types.TakeProfitPriceDefault),
-				TakeProfitBorrowRate:           sdk.OneDec(),
-				FundingFeePaidCollateral:       sdk.NewInt(0),
-				FundingFeePaidCustody:          sdk.NewInt(0),
-				FundingFeeReceivedCollateral:   sdk.NewInt(0),
-				FundingFeeReceivedCustody:      sdk.NewInt(0),
-				OpenPrice:                      sdk.NewDec(0),
-				StopLossPrice:                  sdk.NewDec(0),
+				Address:                       addr[i].String(),
+				CollateralAsset:               ptypes.BaseCurrency,
+				TradingAsset:                  "ATOM",
+				LiabilitiesAsset:              ptypes.BaseCurrency,
+				CustodyAsset:                  "ATOM",
+				Collateral:                    sdk.NewInt(0),
+				Liabilities:                   sdk.NewInt(0),
+				BorrowInterestPaidCustody:     sdk.NewInt(0),
+				BorrowInterestUnpaidLiability: sdk.NewInt(0),
+				Custody:                       sdk.NewInt(0),
+				TakeProfitLiabilities:         sdk.NewInt(0),
+				TakeProfitCustody:             sdk.NewInt(0),
+				MtpHealth:                     sdk.NewDec(0),
+				Position:                      types.Position_LONG,
+				Id:                            (uint64)(i + 1),
+				AmmPoolId:                     (uint64)(i + 1),
+				TakeProfitPrice:               types.TakeProfitPriceDefault,
+				TakeProfitBorrowFactor:        sdk.OneDec(),
+				FundingFeePaidCollateral:      sdk.NewInt(0),
+				FundingFeePaidCustody:         sdk.NewInt(0),
+				FundingFeeReceivedCollateral:  sdk.NewInt(0),
+				FundingFeeReceivedCustody:     sdk.NewInt(0),
+				OpenPrice:                     sdk.NewDec(0),
+				StopLossPrice:                 sdk.NewDec(0),
 			},
 			TradingAssetPrice: sdk.ZeroDec(),
-			Pnl:               sdk.ZeroDec(),
+			Pnl:               sdk.ZeroInt(),
 		}
 
 		mtps = append(mtps, &mtp)
 		state.MtpList = append(state.MtpList, *mtp.Mtp)
 	}
 
+	state.Params = types.NewParams()
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf

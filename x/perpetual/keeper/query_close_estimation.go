@@ -3,11 +3,8 @@ package keeper
 import (
 	"context"
 
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -24,87 +21,113 @@ func (k Keeper) CloseEstimation(goCtx context.Context, req *types.QueryCloseEsti
 }
 
 func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEstimationRequest) (res *types.QueryCloseEstimationResponse, err error) {
+	if req.CloseAmount.IsNegative() {
+		return nil, status.Error(codes.InvalidArgument, "invalid close_amount")
+	}
 	address, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}
-	mtp, err := k.CloseEstimationChecker.GetMTP(ctx, address, req.PositionId)
+
+	mtp, err := k.GetMTP(ctx, address, req.PositionId)
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}
 
-	// Retrieve Pool
-	pool, found := k.CloseEstimationChecker.GetPool(ctx, mtp.AmmPoolId)
-	if !found {
-		return &types.QueryCloseEstimationResponse{}, errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
-	}
-
-	// Retrieve AmmPool
-	ammPool, err := k.CloseEstimationChecker.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId)
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}
 
-	// get base currency entry
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return &types.QueryCloseEstimationResponse{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	params := k.GetParams(ctx)
+
+	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
+	unpaidInterestLiability := mtp.BorrowInterestUnpaidLiability
+	borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
+	borrowInterestPaymentInCustody, _, err := k.EstimateSwapGivenOut(ctx, borrowInterestPaymentTokenIn, mtp.CustodyAsset, ammPool)
+	if err != nil {
+		return &types.QueryCloseEstimationResponse{}, err
 	}
-	baseCurrency := entry.Denom
-
-	// init repay amount
-	var repayAmount math.Int
-
-	// if position is long, repay in collateral asset
-	if mtp.Position == types.Position_LONG {
-		custodyAmtTokenIn := sdk.NewCoin(mtp.CustodyAsset, mtp.Custody)
-		repayAmount, err = k.CloseEstimationChecker.EstimateSwap(ctx, custodyAmtTokenIn, mtp.CollateralAsset, ammPool)
-		if err != nil {
-			return &types.QueryCloseEstimationResponse{}, err
-		}
-	} else if mtp.Position == types.Position_SHORT {
-		// if position is short, repay in trading asset
-		custodyAmtTokenIn := sdk.NewCoin(mtp.CustodyAsset, mtp.Custody)
-		repayAmount, err = k.CloseEstimationChecker.EstimateSwap(ctx, custodyAmtTokenIn, mtp.TradingAsset, ammPool)
-		if err != nil {
-			return &types.QueryCloseEstimationResponse{}, err
-		}
-	} else {
-		return &types.QueryCloseEstimationResponse{}, types.ErrInvalidPosition
+	maxCloseAmount := mtp.Custody.Sub(borrowInterestPaymentInCustody)
+	closingRatio := math.LegacyOneDec()
+	if req.CloseAmount.IsPositive() && req.CloseAmount.LT(maxCloseAmount) {
+		closingRatio = req.CloseAmount.ToLegacyDec().Quo(maxCloseAmount.ToLegacyDec())
 	}
 
-	returnAmount, err := k.CalcReturnAmount(ctx, mtp, pool, ammPool, repayAmount, mtp.Custody, baseCurrency)
+	repayAmount, payingLiabilities, err := k.CalcRepayAmount(ctx, &mtp, &ammPool, closingRatio)
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}
 
-	// get swap fee param
-	swapFee := k.GetSwapFee(ctx)
-
-	// if collateral amount is not in base currency then convert it
-	collateralAmountInBaseCurrency := mtp.Collateral
-	if mtp.CollateralAsset != baseCurrency {
-		var err error
-		collateralAmountInBaseCurrency, err = k.CloseEstimationChecker.EstimateSwapGivenOut(ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral), baseCurrency, ammPool)
-		if err != nil {
-			return nil, err
-		}
+	// need to make sure mtp.Custody has been used to unpaid liability
+	returnAmount, err := k.CalcReturnAmount(mtp, repayAmount, sdk.OneDec())
+	if err != nil {
+		return &types.QueryCloseEstimationResponse{}, err
 	}
 
+	liquidationPrice := math.LegacyZeroDec()
+	executionPrice := math.LegacyZeroDec()
+	oraclePrice := math.LegacyZeroDec()
 	// calculate liquidation price
-	// liquidation_price = open_price_value - collateral_amount / custody_amount
-	liquidationPrice := mtp.OpenPrice.Sub(
-		sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.BigInt()).Quo(sdk.NewDecFromBigInt(mtp.Custody.BigInt())),
-	)
+	if mtp.Position == types.Position_LONG {
+		// liquidation_price = (safety_factor * liabilities) / custody
+		liquidationPrice = mtp.Liabilities.ToLegacyDec().Quo(params.SafetyFactor.Mul(mtp.Custody.ToLegacyDec()))
+		// executionPrice = payingLiabilities / repayAmount
+		executionPrice = payingLiabilities.ToLegacyDec().Quo(repayAmount.ToLegacyDec())
+		oracleTokenPrice, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.CustodyAsset)
+		if found {
+			oraclePrice = oracleTokenPrice.Price
+		}
+	}
+	if mtp.Position == types.Position_SHORT {
+		// liquidation_price =  Custody / (Liabilities * safety_factor)
+		liquidationPrice = mtp.Custody.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec().Mul(params.SafetyFactor))
+		// executionPrice = repayAmount / payingLiabilities
+		executionPrice = repayAmount.ToLegacyDec().Quo(payingLiabilities.ToLegacyDec())
+		oracleTokenPrice, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.LiabilitiesAsset)
+		if found {
+			oraclePrice = oracleTokenPrice.Price
+		}
+	}
+
+	priceImpact := math.LegacyZeroDec()
+	if !oraclePrice.IsZero() {
+		priceImpact = oraclePrice.Sub(executionPrice).Quo(oraclePrice)
+	}
+
+	returnAmountAtClosingPrice := math.ZeroInt()
+	if req.ClosingPrice.IsPositive() {
+		if mtp.Position == types.Position_LONG {
+			borrowInterestPaymentInCustodyAtClosingPrice := unpaidInterestLiability.ToLegacyDec().Quo(req.ClosingPrice).TruncateInt()
+			custodyAfterInterests := mtp.Custody.Sub(borrowInterestPaymentInCustodyAtClosingPrice)
+			repayAmountAtClosingPrice := payingLiabilities.ToLegacyDec().Quo(req.ClosingPrice).TruncateInt()
+			custodyAfterRepayAtClosingPrice := custodyAfterInterests.Sub(repayAmountAtClosingPrice)
+			if custodyAfterRepayAtClosingPrice.IsPositive() {
+				returnAmountAtClosingPrice = custodyAfterRepayAtClosingPrice
+			}
+		}
+		if mtp.Position == types.Position_SHORT {
+			// For short, liability is in trading asset, eg ATOM, custody is base currency eg USDC
+			borrowInterestPaymentInCustodyAtClosingPrice := unpaidInterestLiability.ToLegacyDec().Mul(req.ClosingPrice).TruncateInt()
+			custodyAfterInterests := mtp.Custody.Sub(borrowInterestPaymentInCustodyAtClosingPrice)
+			repayAmountAtClosingPrice := payingLiabilities.ToLegacyDec().Mul(req.ClosingPrice).TruncateInt()
+			custodyAfterRepayAtClosingPrice := custodyAfterInterests.Sub(repayAmountAtClosingPrice)
+			if custodyAfterRepayAtClosingPrice.IsPositive() {
+				returnAmountAtClosingPrice = custodyAfterRepayAtClosingPrice
+			}
+		}
+	}
 
 	return &types.QueryCloseEstimationResponse{
-		Position:     mtp.Position,
-		PositionSize: sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
-		Liabilities:  sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
-		// TODO: price impact calculation
-		PriceImpact:      sdk.ZeroDec(),
-		SwapFee:          swapFee,
-		ReturnAmount:     sdk.NewCoin(mtp.CollateralAsset, returnAmount),
-		LiquidationPrice: liquidationPrice,
+		Position:                      mtp.Position,
+		PositionSize:                  sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
+		Liabilities:                   sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
+		PriceImpact:                   priceImpact,
+		LiquidationPrice:              liquidationPrice,
+		MaxCloseAmount:                maxCloseAmount,
+		BorrowInterestUnpaidLiability: sdk.NewCoin(mtp.LiabilitiesAsset, unpaidInterestLiability),
+		ReturningAmount:               sdk.NewCoin(mtp.CustodyAsset, returnAmount),
+		PayingLiabilities:             sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities),
+		ReturnAmountAtClosingPrice:    sdk.NewCoin(mtp.CustodyAsset, returnAmountAtClosingPrice),
 	}, nil
 }

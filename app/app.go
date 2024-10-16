@@ -400,7 +400,7 @@ type ElysApp struct {
 	BurnerKeeper       burnermodulekeeper.Keeper
 	AmmKeeper          ammmodulekeeper.Keeper
 	ParameterKeeper    parametermodulekeeper.Keeper
-	PerpetualKeeper    perpetualmodulekeeper.Keeper
+	PerpetualKeeper    *perpetualmodulekeeper.Keeper
 	TransferhookKeeper transferhookkeeper.Keeper
 	ContractKeeper     *wasmmodulekeeper.PermissionedKeeper
 	ClockKeeper        clockmodulekeeper.Keeper
@@ -409,7 +409,7 @@ type ElysApp struct {
 
 	StablestakeKeeper stablestakekeeper.Keeper
 
-	LeveragelpKeeper leveragelpmodulekeeper.Keeper
+	LeveragelpKeeper *leveragelpmodulekeeper.Keeper
 
 	MasterchefKeeper masterchefmodulekeeper.Keeper
 
@@ -827,7 +827,7 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	app.PerpetualKeeper = *perpetualmodulekeeper.NewKeeper(
+	app.PerpetualKeeper = perpetualmodulekeeper.NewKeeper(
 		appCodec,
 		keys[perpetualmoduletypes.StoreKey],
 		keys[perpetualmoduletypes.MemStoreKey],
@@ -836,6 +836,7 @@ func NewElysApp(
 		app.BankKeeper,
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
+		app.LeveragelpKeeper,
 		&app.ParameterKeeper,
 	)
 
@@ -917,8 +918,8 @@ func NewElysApp(
 			&app.CommitmentKeeper,
 			&app.EpochsKeeper,
 			&app.IncentiveKeeper,
-			&app.LeveragelpKeeper,
-			&app.PerpetualKeeper,
+			app.LeveragelpKeeper,
+			app.PerpetualKeeper,
 			&app.OracleKeeper,
 			&app.ParameterKeeper,
 			&app.StablestakeKeeper,
@@ -1010,7 +1011,7 @@ func NewElysApp(
 	)
 	clockModule := clockmodule.NewAppModule(appCodec, app.ClockKeeper)
 
-	app.LeveragelpKeeper = *leveragelpmodulekeeper.NewKeeper(
+	app.LeveragelpKeeper = leveragelpmodulekeeper.NewKeeper(
 		appCodec,
 		keys[leveragelpmoduletypes.StoreKey],
 		keys[leveragelpmoduletypes.MemStoreKey],
@@ -1023,6 +1024,9 @@ func NewElysApp(
 		app.AssetprofileKeeper,
 		app.MasterchefKeeper,
 	)
+
+	// Need to do this otherwise app.PerpetualKeeper.LeverageLpKeeper will be nil
+	app.PerpetualKeeper.LeverageLpKeeper = app.LeveragelpKeeper
 
 	app.TierKeeper = *tiermodulekeeper.NewKeeper(
 		appCodec,
@@ -1078,7 +1082,7 @@ func NewElysApp(
 	// this line is used by starport scaffolding # ibc/app/router
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	/**** Module Hooks ****/
+	/**** Module EpochHooks ****/
 
 	// register hooks after all modules have been initialized
 
@@ -1088,10 +1092,10 @@ func NewElysApp(
 	))
 	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.LeveragelpKeeper = *app.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
+	app.LeveragelpKeeper = app.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
 		app.TierKeeper.LeverageLpHooks(),
 	))
-	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
+	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, *app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
@@ -1112,6 +1116,7 @@ func NewElysApp(
 	app.AmmKeeper = *app.AmmKeeper.SetHooks(
 		ammmoduletypes.NewMultiAmmHooks(
 			// insert amm hooks receivers here
+			app.AccountedPoolKeeper.AmmHooks(),
 			app.PerpetualKeeper.AmmHooks(),
 			app.LeveragelpKeeper.AmmHooks(),
 			app.MasterchefKeeper.AmmHooks(),
@@ -1121,17 +1126,17 @@ func NewElysApp(
 	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.EpochsKeeper = *app.EpochsKeeper.SetHooks(
-		epochsmodulekeeper.NewMultiEpochHooks(
+		epochsmoduletypes.NewMultiEpochHooks(
 			// insert epoch hooks receivers here
 			app.OracleKeeper.Hooks(),
 			app.CommitmentKeeper.Hooks(),
 			app.BurnerKeeper.Hooks(),
-			app.PerpetualKeeper.Hooks(),
+			app.PerpetualKeeper.EpochHooks(),
 		),
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
 
-	app.PerpetualKeeper = *app.PerpetualKeeper.SetHooks(
+	app.PerpetualKeeper = app.PerpetualKeeper.SetHooks(
 		perpetualmoduletypes.NewMultiPerpetualHooks(
 			// insert perpetual hooks receivers here
 			app.AccountedPoolKeeper.PerpetualHooks(),

@@ -15,13 +15,16 @@ import (
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgOpen{}, "perpetual/MsgOpen")
 	legacy.RegisterAminoMsg(cdc, &MsgClose{}, "perpetual/MsgClose")
+	legacy.RegisterAminoMsg(cdc, &MsgBrokerOpen{}, "perpetual/MsgBrokerOpen")
+	legacy.RegisterAminoMsg(cdc, &MsgBrokerClose{}, "perpetual/MsgBrokerClose")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "perpetual/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgWhitelist{}, "perpetual/MsgWhitelist")
 	legacy.RegisterAminoMsg(cdc, &MsgDewhitelist{}, "perpetual/MsgDewhitelist")
-	legacy.RegisterAminoMsg(cdc, &MsgAddCollateral{}, "perpetual/MsgAddCollateral")
 	legacy.RegisterAminoMsg(cdc, &MsgClosePositions{}, "perpetual/ClosePositions")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateStopLoss{}, "perpetual/MsgUpdateStopLoss")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateTakeProfitPrice{}, "perpetual/MsgUpdateTakeProfitPrice")
+	legacy.RegisterAminoMsg(cdc, &MsgEnablePool{}, "perpetual/MsgEnablePool")
+	legacy.RegisterAminoMsg(cdc, &MsgDisablePool{}, "perpetual/MsgDisablePool")
 	// this line is used by starport scaffolding # 2
 }
 
@@ -29,12 +32,16 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgOpen{},
 		&MsgClose{},
+		&MsgBrokerOpen{},
+		&MsgBrokerClose{},
 		&MsgUpdateParams{},
 		&MsgWhitelist{},
 		&MsgDewhitelist{},
-		&MsgAddCollateral{},
+		&MsgClosePositions{},
 		&MsgUpdateStopLoss{},
 		&MsgUpdateTakeProfitPrice{},
+		&MsgEnablePool{},
+		&MsgDisablePool{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgClosePositions{},

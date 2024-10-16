@@ -9,7 +9,7 @@ import (
 func (k Keeper) ForceCloseShort(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, takeFundPayment bool, baseCurrency string) (math.Int, error) {
 	repayAmount := sdk.ZeroInt()
 	// Retrieve AmmPool
-	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, mtp.TradingAsset)
+	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId)
 	if err != nil {
 		return math.ZeroInt(), err
 	}
@@ -20,7 +20,7 @@ func (k Keeper) ForceCloseShort(ctx sdk.Context, mtp *types.MTP, pool *types.Poo
 	}
 
 	// Estimate swap and repay
-	repayAmt, err := k.EstimateAndRepay(ctx, *mtp, *pool, ammPool, mtp.Custody, baseCurrency)
+	repayAmt, err := k.EstimateAndRepay(ctx, mtp, pool, &ammPool, baseCurrency, sdk.OneDec())
 	if err != nil {
 		return math.ZeroInt(), err
 	}
@@ -28,9 +28,12 @@ func (k Keeper) ForceCloseShort(ctx sdk.Context, mtp *types.MTP, pool *types.Poo
 	repayAmount = repayAmount.Add(repayAmt)
 
 	address := sdk.MustAccAddressFromBech32(mtp.Address)
-	// Hooks after perpetual position closed
+	// EpochHooks after perpetual position closed
 	if k.hooks != nil {
-		k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, *pool, address)
+		err = k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, *pool, address)
+		if err != nil {
+			return math.Int{}, err
+		}
 	}
 
 	return repayAmount, nil

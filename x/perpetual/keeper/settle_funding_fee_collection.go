@@ -50,7 +50,7 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 	takeAmountCustody := sdk.NewCoin(mtp.CustodyAsset, takeAmountCustodyAmount)
 
 	// Swap the take amount to collateral asset
-	takeAmountCollateralAmount, err := k.EstimateSwap(ctx, takeAmountCustody, mtp.CollateralAsset, ammPool)
+	takeAmountCollateralAmount, _, err := k.EstimateSwap(ctx, takeAmountCustody, mtp.CollateralAsset, ammPool)
 	if err != nil {
 		return err
 	}

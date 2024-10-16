@@ -89,10 +89,7 @@ func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *typ
 		}
 
 		pool.PoolParams.ExternalLiquidityRatio = elRatio
-		err = k.SetPool(ctx, pool)
-		if err != nil {
-			return nil, err
-		}
+		k.SetPool(ctx, pool)
 	}
 
 	return &types.MsgFeedMultipleExternalLiquidityResponse{}, nil

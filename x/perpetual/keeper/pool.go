@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -127,8 +128,9 @@ func (k Keeper) GetAllBorrowRate(ctx sdk.Context) []types.InterestBlock {
 	return interests
 }
 
-func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, borrowed sdk.Dec) sdk.Dec {
+func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, pool uint64, takeProfitBorrowFactor math.LegacyDec) math.LegacyDec {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestRatePrefix)
+	//startBlock := mtp.LastInterestCalcBlock
 	currentBlockKey := types.GetInterestRateKey(uint64(ctx.BlockHeight()), pool)
 	startBlockKey := types.GetInterestRateKey(startBlock, pool)
 
@@ -142,11 +144,10 @@ func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, b
 		endInterestBlock := types.InterestBlock{}
 		k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
-		totalInterest := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
+		totalInterestRate := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
 
-		newInterest := borrowed.Mul(totalInterest)
-
-		return newInterest
+		finalInterestRate := sdk.MaxDec(totalInterestRate.Mul(takeProfitBorrowFactor), k.GetParams(ctx).BorrowInterestRateMin)
+		return finalInterestRate
 	}
 
 	if !store.Has(startBlockKey) && store.Has(currentBlockKey) {
@@ -164,17 +165,17 @@ func (k Keeper) GetBorrowRate(ctx sdk.Context, startBlock uint64, pool uint64, b
 			endInterestBlock := types.InterestBlock{}
 			k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
-			totalInterest := endInterestBlock.InterestRate
-			newInterest := borrowed.Mul(totalInterest)
-			return newInterest
+			totalInterestRate := endInterestBlock.InterestRate
+			finalInterestRate := sdk.MaxDec(totalInterestRate.Mul(takeProfitBorrowFactor), k.GetParams(ctx).BorrowInterestRateMin)
+
+			return finalInterestRate
 		}
 	}
 	params, found := k.GetPool(ctx, pool)
 	if !found {
 		return sdk.ZeroDec()
 	}
-	newInterest := borrowed.Mul(params.BorrowInterestRate)
-	return newInterest
+	return params.BorrowInterestRate
 }
 
 func (k Keeper) SetFundingRate(ctx sdk.Context, block uint64, pool uint64, funding types.FundingRateBlock) {

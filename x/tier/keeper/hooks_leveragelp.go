@@ -5,21 +5,6 @@ import (
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k Keeper) AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk.AccAddress) error {
-	k.RetrieveAllPortfolio(ctx, sender)
-	return nil
-}
-
-func (k Keeper) AfterLeverageLpPositionClose(ctx sdk.Context, sender sdk.AccAddress) error {
-	k.RetrieveAllPortfolio(ctx, sender)
-	return nil
-}
-
-func (k Keeper) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, sender sdk.AccAddress) error {
-	k.RetrieveAllPortfolio(ctx, sender)
-	return nil
-}
-
 type LeverageLpHooks struct {
 	k Keeper
 }
@@ -32,13 +17,16 @@ func (k Keeper) LeverageLpHooks() LeverageLpHooks {
 }
 
 func (h LeverageLpHooks) AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk.AccAddress) error {
-	return h.k.AfterLeverageLpPositionOpen(ctx, sender)
+	h.k.RetrieveAllPortfolio(ctx, sender)
+	return nil
 }
 
 func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, sender sdk.AccAddress) error {
-	return h.k.AfterLeverageLpPositionClose(ctx, sender)
+	h.k.RetrieveAllPortfolio(ctx, sender)
+	return nil
 }
 
 func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, sender sdk.AccAddress) error {
-	return h.k.AfterLeverageLpPositionOpenConsolidate(ctx, sender)
+	h.k.RetrieveAllPortfolio(ctx, sender)
+	return nil
 }

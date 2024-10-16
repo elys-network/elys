@@ -6,26 +6,19 @@ import (
 )
 
 type PerpetualHooks interface {
+	AfterEnablingPool(ctx sdk.Context, pool ammtypes.Pool) error
+	AfterDisablingPool(ctx sdk.Context, pool ammtypes.Pool) error
 	// AfterPerpetualPositionOpen is called after OpenLong or OpenShort position.
+	// This should be used to update pool health
 	AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
 
 	// AfterPerpetualPositionModified is called after a position gets modified.
+	// This should be used to update pool health
 	AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
 
 	// AfterPerpetualPositionClosed is called after a position gets closed.
+	// This should be used to update pool health
 	AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
-
-	// AfterPoolCreated is called after CreatePool
-	AfterAmmPoolCreated(ctx sdk.Context, ammPool ammtypes.Pool, sender sdk.AccAddress) error
-
-	// AfterJoinPool is called after JoinPool, JoinSwapExternAmountIn, and JoinSwapShareAmountOut
-	AfterAmmJoinPool(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
-
-	// AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
-	AfterAmmExitPool(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
-
-	// AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
-	AfterAmmSwap(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
 }
 
 var _ PerpetualHooks = MultiPerpetualHooks{}
@@ -38,6 +31,24 @@ func NewMultiPerpetualHooks(hooks ...PerpetualHooks) MultiPerpetualHooks {
 	return hooks
 }
 
+func (h MultiPerpetualHooks) AfterEnablingPool(ctx sdk.Context, ammPool ammtypes.Pool) error {
+	for i := range h {
+		err := h[i].AfterEnablingPool(ctx, ammPool)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+func (h MultiPerpetualHooks) AfterDisablingPool(ctx sdk.Context, ammPool ammtypes.Pool) error {
+	for i := range h {
+		err := h[i].AfterDisablingPool(ctx, ammPool)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 func (h MultiPerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error {
 	for i := range h {
 		err := h[i].AfterPerpetualPositionOpen(ctx, ammPool, perpetualPool, sender)
@@ -61,46 +72,6 @@ func (h MultiPerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, amm
 func (h MultiPerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error {
 	for i := range h {
 		err := h[i].AfterPerpetualPositionClosed(ctx, ammPool, perpetualPool, sender)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (h MultiPerpetualHooks) AfterAmmPoolCreated(ctx sdk.Context, ammPool ammtypes.Pool, sender sdk.AccAddress) error {
-	for i := range h {
-		err := h[i].AfterAmmPoolCreated(ctx, ammPool, sender)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (h MultiPerpetualHooks) AfterAmmJoinPool(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error {
-	for i := range h {
-		err := h[i].AfterAmmJoinPool(ctx, ammPool, perpetualPool, sender)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (h MultiPerpetualHooks) AfterAmmExitPool(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error {
-	for i := range h {
-		err := h[i].AfterAmmExitPool(ctx, ammPool, perpetualPool, sender)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (h MultiPerpetualHooks) AfterAmmSwap(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error {
-	for i := range h {
-		err := h[i].AfterAmmSwap(ctx, ammPool, perpetualPool, sender)
 		if err != nil {
 			return err
 		}

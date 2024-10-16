@@ -49,7 +49,7 @@ func (k Keeper) UpdateAccountedPool(ctx sdk.Context, ammPool ammtypes.Pool, perp
         if err != nil {
             return err
         }
-        mBalance, mLiabiltiies, _ := perpetualtypes.GetPerpetualPoolBalances(perpetualPool, asset.Token.Denom)
+        mBalance, mLiabiltiies, _ := perpetualPool.GetPerpetualPoolBalances(asset.Token.Denom)
         accountedAmt := aBalance.Add(mBalance).Add(mLiabiltiies)
         accountedPool.PoolAssets[i].Token = sdk.NewCoin(asset.Token.Denom, accountedAmt)
     }

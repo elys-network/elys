@@ -7,7 +7,7 @@ import (
 
 func CalcMTPTakeProfitCustody(mtp *MTP) math.Int {
 	if IsTakeProfitPriceInifite(mtp) || mtp.TakeProfitPrice.IsZero() {
-		return mtp.Custody
+		return math.ZeroInt()
 	}
 	return sdk.NewDecFromInt(mtp.Liabilities).Quo(mtp.TakeProfitPrice).TruncateInt()
 }
