@@ -4,6 +4,7 @@ import (
 	"fmt"
 	gomath "math"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -161,6 +162,7 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 		}
 
 		pnl := sdk.ZeroDec()
+		liquidationPrice := sdk.ZeroDec()
 		if realTime {
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
@@ -173,6 +175,7 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 			if err != nil {
 				return err
 			}
+			liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
 		}
 
 		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
@@ -190,6 +193,7 @@ func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*type
 			Mtp:               &mtp,
 			TradingAssetPrice: asset_price,
 			Pnl:               pnl,
+			LiquidationPrice:  liquidationPrice,
 		})
 		return nil
 	})
@@ -225,6 +229,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
 		pnl := sdk.ZeroDec()
+		liquidationPrice := sdk.ZeroDec()
 		if accumulate && mtp.AmmPoolId == ammPoolId {
 			if realTime {
 				// Interest
@@ -239,6 +244,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 				if err != nil {
 					return false, err
 				}
+				liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
 			}
 
 			info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
@@ -255,6 +261,7 @@ func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *qu
 				Mtp:               &mtp,
 				TradingAssetPrice: asset_price,
 				Pnl:               pnl,
+				LiquidationPrice:  liquidationPrice,
 			})
 			return true, nil
 		}
@@ -314,6 +321,7 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 		}
 
 		pnl := sdk.ZeroDec()
+		liquidationPrice := sdk.ZeroDec()
 		if realTime {
 			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 			if err == nil {
@@ -326,6 +334,7 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 			if err != nil {
 				return err
 			}
+			liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
 		}
 
 		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
@@ -343,6 +352,7 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 			Mtp:               &mtp,
 			TradingAssetPrice: asset_price,
 			Pnl:               pnl,
+			LiquidationPrice:  liquidationPrice,
 		})
 		return nil
 	})
@@ -426,7 +436,7 @@ func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, ba
 
 	// Funding rate payment consideration
 	// get funding rate
-	fundingRate, _, _ := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.AmmPoolId)
+	fundingRate, _ := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
 	var takeAmountCustodyAmount sdk.Int
 	// if funding rate is zero, return
 	if fundingRate.IsZero() {
@@ -489,6 +499,58 @@ func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, ba
 	}
 
 	return estimatedPnL, nil
+}
+
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) sdk.Dec {
+	collateralAmountInBaseCurrency := mtp.Collateral
+	if mtp.CollateralAsset != baseCurrency {
+		C, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral), baseCurrency, ammPool)
+		if err != nil {
+			return sdk.ZeroDec()
+		}
+		collateralAmountInBaseCurrency = C
+	}
+
+	liabilitiesAmountInBaseCurrency := mtp.Liabilities
+	if mtp.LiabilitiesAsset != baseCurrency {
+		L, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities), baseCurrency, ammPool)
+		if err != nil {
+			return sdk.ZeroDec()
+		}
+		liabilitiesAmountInBaseCurrency = L
+	}
+
+	custodyAmountInTradingAsset := mtp.Custody
+	if mtp.CustodyAsset != mtp.TradingAsset {
+		C, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.TradingAsset, ammPool)
+		if err != nil {
+			return sdk.ZeroDec()
+		}
+		custodyAmountInTradingAsset = C
+	}
+
+	// open price = (collateral + liabilities) / custody
+	mtp.OpenPrice = math.LegacyNewDecFromBigInt(
+		collateralAmountInBaseCurrency.Add(liabilitiesAmountInBaseCurrency).BigInt(),
+	).Quo(
+		math.LegacyNewDecFromBigInt(custodyAmountInTradingAsset.BigInt()),
+	)
+
+	// calculate liquidation price
+	// liquidation_price = open_price_value - collateral_amount / custody_amount
+	liquidationPrice := mtp.OpenPrice.Sub(
+		sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.BigInt()).Quo(sdk.NewDecFromBigInt(mtp.Custody.BigInt())),
+	)
+
+	// if position is short then liquidation price is open price + collateral amount / (custody amount / open price)
+	if mtp.Position == types.Position_SHORT {
+		positionSizeInTradingAsset := sdk.NewDecFromBigInt(mtp.Custody.BigInt()).Quo(mtp.OpenPrice)
+		liquidationPrice = mtp.OpenPrice.Add(
+			sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.BigInt()).Quo(positionSizeInTradingAsset),
+		)
+	}
+
+	return liquidationPrice
 }
 
 func (k Keeper) DeleteLegacyMTP(ctx sdk.Context, mtpaddress string, id uint64) error {
