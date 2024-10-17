@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	gomath "math"
 
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -134,166 +133,17 @@ func (k Keeper) GetAllLegacyMTPs(ctx sdk.Context) []types.LegacyMTP {
 	return mtpList
 }
 
-func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
-	var mtpList []*types.MtpAndPrice
-	store := ctx.KVStore(k.storeKey)
-	mtpStore := prefix.NewStore(store, types.MTPPrefix)
-
-	if pagination == nil {
-		pagination = &query.PageRequest{
-			Limit: types.MaxPageLimit,
-		}
-	}
-
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	realTime := true
-	if !found {
-		realTime = false
-	}
-	baseCurrency := entry.Denom
-
-	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
-		var mtp types.MTP
-		k.cdc.MustUnmarshal(value, &mtp)
-
-		ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
-		if !found {
-			realTime = false
-		}
-
-		pnl := sdk.ZeroDec()
-		liquidationPrice := sdk.ZeroDec()
-		if realTime {
-			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-			if err == nil {
-				mtp.MtpHealth = mtpHealth
-			}
-
-			pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
-			mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
-			pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
-			if err != nil {
-				return err
-			}
-			liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
-		}
-
-		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
-		if !found {
-			return fmt.Errorf("asset not found")
-		}
-		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
-		asset_price := sdk.ZeroDec()
-		// If not found set trading_asset_price to zero
-		if found {
-			asset_price = trading_asset_price.Price
-		}
-
-		mtpList = append(mtpList, &types.MtpAndPrice{
-			Mtp:               &mtp,
-			TradingAssetPrice: asset_price,
-			Pnl:               pnl,
-			LiquidationPrice:  liquidationPrice,
-		})
-		return nil
-	})
-
-	return mtpList, pageRes, err
-}
-
-func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
+func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, address sdk.AccAddress, ammPoolId *uint64) ([]*types.MtpAndPrice, *query.PageResponse, error) {
 	var mtps []*types.MtpAndPrice
 
 	store := ctx.KVStore(k.storeKey)
-	mtpStore := prefix.NewStore(store, types.MTPPrefix)
+	var mtpStore sdk.KVStore
 
-	if pagination == nil {
-		pagination = &query.PageRequest{
-			Limit: gomath.MaxUint64 - 1,
-		}
+	if address != nil {
+		mtpStore = prefix.NewStore(store, types.GetMTPPrefixForAddress(address))
+	} else {
+		mtpStore = prefix.NewStore(store, types.MTPPrefix)
 	}
-
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	realTime := true
-	if !found {
-		realTime = false
-	}
-	baseCurrency := entry.Denom
-
-	ammPool, found := k.amm.GetPool(ctx, ammPoolId)
-	if !found {
-		realTime = false
-	}
-
-	pageRes, err := query.FilteredPaginate(mtpStore, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var mtp types.MTP
-		k.cdc.MustUnmarshal(value, &mtp)
-		pnl := sdk.ZeroDec()
-		liquidationPrice := sdk.ZeroDec()
-		if accumulate && mtp.AmmPoolId == ammPoolId {
-			if realTime {
-				// Interest
-				mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-				if err == nil {
-					mtp.MtpHealth = mtpHealth
-				}
-
-				pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
-				mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
-				pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
-				if err != nil {
-					return false, err
-				}
-				liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
-			}
-
-			info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
-			if !found {
-				return false, fmt.Errorf("asset not found")
-			}
-			trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
-			asset_price := sdk.ZeroDec()
-			// If not found set trading_asset_price to zero
-			if found {
-				asset_price = trading_asset_price.Price
-			}
-			mtps = append(mtps, &types.MtpAndPrice{
-				Mtp:               &mtp,
-				TradingAssetPrice: asset_price,
-				Pnl:               pnl,
-				LiquidationPrice:  liquidationPrice,
-			})
-			return true, nil
-		}
-
-		return false, nil
-	})
-
-	return mtps, pageRes, err
-}
-
-func (k Keeper) GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress) []*types.MTP {
-	var mtps []*types.MTP
-
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetMTPPrefixForAddress(mtpAddress))
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var mtp types.MTP
-		bytesValue := iterator.Value()
-		k.cdc.MustUnmarshal(bytesValue, &mtp)
-		mtps = append(mtps, &mtp)
-	}
-	return mtps
-}
-
-func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
-	var mtps []*types.MtpAndPrice
-
-	store := ctx.KVStore(k.storeKey)
-	mtpStore := prefix.NewStore(store, types.GetMTPPrefixForAddress(mtpAddress))
 
 	if pagination == nil {
 		pagination = &query.PageRequest{
@@ -315,45 +165,18 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
 		var mtp types.MTP
 		k.cdc.MustUnmarshal(value, &mtp)
-		ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
-		if !found {
-			realTime = false
+
+		if ammPoolId != nil && mtp.AmmPoolId != *ammPoolId {
+			return nil
 		}
 
-		pnl := sdk.ZeroDec()
-		liquidationPrice := sdk.ZeroDec()
-		if realTime {
-			mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-			if err == nil {
-				mtp.MtpHealth = mtpHealth
-			}
-
-			pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
-			mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
-			pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
-			if err != nil {
-				return err
-			}
-			liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
+		mtpAndPrice, err := k.fillMTPData(ctx, mtp, ammPoolId, realTime, baseCurrency)
+		if err != nil {
+			return err
 		}
 
-		info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
-		if !found {
-			return fmt.Errorf("asset not found")
-		}
-		trading_asset_price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
-		asset_price := sdk.ZeroDec()
-		// If not found set trading_asset_price to zero
-		if found {
-			asset_price = trading_asset_price.Price
-		}
+		mtps = append(mtps, mtpAndPrice)
 
-		mtps = append(mtps, &types.MtpAndPrice{
-			Mtp:               &mtp,
-			TradingAssetPrice: asset_price,
-			Pnl:               pnl,
-			LiquidationPrice:  liquidationPrice,
-		})
 		return nil
 	})
 	if err != nil {
@@ -361,6 +184,101 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 	}
 
 	return mtps, pageRes, nil
+}
+
+func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, realTime bool, baseCurrency string) (*types.MtpAndPrice, error) {
+	var ammPool ammtypes.Pool
+	var poolFound bool
+	if ammPoolId != nil {
+		ammPool, poolFound = k.amm.GetPool(ctx, *ammPoolId)
+	} else {
+		ammPool, poolFound = k.amm.GetPool(ctx, mtp.AmmPoolId)
+	}
+	if !poolFound {
+		realTime = false
+	}
+
+	pnl := sdk.ZeroDec()
+	liquidationPrice := sdk.ZeroDec()
+	if realTime {
+		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+		if err == nil {
+			mtp.MtpHealth = mtpHealth
+		}
+
+		pendingBorrowInterest := k.GetBorrowInterest(ctx, &mtp, ammPool)
+		mtp.BorrowInterestUnpaidCollateral = mtp.BorrowInterestUnpaidCollateral.Add(pendingBorrowInterest)
+		pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
+		if err != nil {
+			return nil, err
+		}
+		liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
+	}
+
+	info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
+	if !found {
+		return nil, fmt.Errorf("asset not found")
+	}
+	tradingAssetPrice, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
+	assetPrice := sdk.ZeroDec()
+	if found {
+		assetPrice = tradingAssetPrice.Price
+	}
+
+	// TODO: replace custody amount with liability amount when fees are defined in terms of liability asset
+	// calculate total fees in base currency using asset price
+	totalFeesInBaseCurrency := mtp.BorrowInterestPaidCustody.Add(mtp.FundingFeePaidCustody)
+	borrowInterestFeesInBaseCurrency := mtp.BorrowInterestPaidCustody
+	fundingFeesInBaseCurrency := mtp.FundingFeePaidCustody
+
+	if mtp.Position == types.Position_LONG {
+		totalFeesInBaseCurrency = totalFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
+		borrowInterestFeesInBaseCurrency = borrowInterestFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
+		fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
+	}
+
+	return &types.MtpAndPrice{
+		Mtp:               &mtp,
+		TradingAssetPrice: assetPrice,
+		Pnl:               pnl,
+		LiquidationPrice:  liquidationPrice,
+		Fees: &types.Fees{
+			TotalFeesBaseCurrency:            totalFeesInBaseCurrency,
+			BorrowInterestFeesLiabilityAsset: mtp.BorrowInterestPaidCustody,
+			BorrowInterestFeesBaseCurrency:   borrowInterestFeesInBaseCurrency,
+			FundingFeesLiquidityAsset:        mtp.FundingFeePaidCustody,
+			FundingFeesBaseCurrency:          fundingFeesInBaseCurrency,
+		},
+	}, nil
+}
+
+func (k Keeper) GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress) []*types.MTP {
+	var mtps []*types.MTP
+
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetMTPPrefixForAddress(mtpAddress))
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var mtp types.MTP
+		bytesValue := iterator.Value()
+		k.cdc.MustUnmarshal(bytesValue, &mtp)
+		mtps = append(mtps, &mtp)
+	}
+	return mtps
+}
+
+func (k Keeper) GetMTPs(ctx sdk.Context, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
+	return k.GetMTPData(ctx, pagination, nil, nil)
+}
+
+func (k Keeper) GetMTPsForPool(ctx sdk.Context, ammPoolId uint64, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
+	return k.GetMTPData(ctx, pagination, nil, &ammPoolId)
+}
+
+func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*types.MtpAndPrice, *query.PageResponse, error) {
+	return k.GetMTPData(ctx, pagination, mtpAddress, nil)
 }
 
 // Set MTP count
