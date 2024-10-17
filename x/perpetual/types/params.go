@@ -31,8 +31,6 @@ var (
 	KeySafetyFactor                                   = []byte("SafetyFactor")
 	KeyIncrementalBorrowInterestPaymentEnabled        = []byte("IncrementalBorrowInterestPaymentEnabled")
 	KeyWhitelistingEnabled                            = []byte("WhitelistingEnabled")
-	KeyInvariantCheckEpoch                            = []byte("InvariantCheckEpoch")
-	KeyBrokerAddress                                  = []byte("BrokerAddress")
 	KeyTakeProfitBorrowInterestRateMin                = []byte("TakeProfitBorrowInterestRateMin")
 	KeyFundingFeeBaseRate                             = []byte("FundingFeeBaseRate")
 	KeyFundingFeeMinRate                              = []byte("FundingFeeMinRate")
@@ -60,7 +58,6 @@ func NewParams() Params {
 		BorrowInterestRateMax:                          sdk.NewDecWithPrec(27, 7),
 		BorrowInterestRateMin:                          sdk.NewDecWithPrec(3, 8),
 		MinBorrowInterestAmount:                        sdk.NewInt(5_000_000),
-		EpochLength:                                    (int64)(1),
 		ForceCloseFundAddress:                          ZeroAddress,
 		ForceCloseFundPercentage:                       sdk.OneDec(),
 		HealthGainFactor:                               sdk.NewDecWithPrec(22, 8),
@@ -90,7 +87,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyBorrowInterestRateIncrease, &p.BorrowInterestRateIncrease, validateBorrowInterestRateIncrease),
 		paramtypes.NewParamSetPair(KeyBorrowInterestRateDecrease, &p.BorrowInterestRateDecrease, validateBorrowInterestRateDecrease),
 		paramtypes.NewParamSetPair(KeyHealthGainFactor, &p.HealthGainFactor, validateHealthGainFactor),
-		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
 		paramtypes.NewParamSetPair(KeyMaxOpenPositions, &p.MaxOpenPositions, validateMaxOpenPositions),
 		paramtypes.NewParamSetPair(KeyPoolOpenThreshold, &p.PoolOpenThreshold, validatePoolOpenThreshold),
 		paramtypes.NewParamSetPair(KeyForceCloseFundPercentage, &p.ForceCloseFundPercentage, validateForceCloseFundPercentage),
@@ -130,10 +126,6 @@ func (p Params) Validate() error {
 	if err := validateHealthGainFactor(p.HealthGainFactor); err != nil {
 		return err
 	}
-	if err := validateEpochLength(p.EpochLength); err != nil {
-		return err
-	}
-
 	if err := validateMaxOpenPositions(p.MaxOpenPositions); err != nil {
 		return err
 	}
@@ -187,11 +179,6 @@ func (p Params) Validate() error {
 
 // String implements the Stringer interface.
 func (p Params) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
-}
-
-func (p LegacyParams) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
 }
@@ -286,19 +273,6 @@ func validateHealthGainFactor(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("health gain factor must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateEpochLength(i interface{}) error {
-	v, ok := i.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v <= 0 {
-		return fmt.Errorf("epoch length should be positive: %d", v)
 	}
 
 	return nil

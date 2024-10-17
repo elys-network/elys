@@ -272,18 +272,17 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 	require.Equal(t, resp.PoolID, uint64(1))
 
 	err = perpetual.SetMTP(ctx, &perpetualtypes.MTP{
-		Address:                        addr[0].String(),
-		CollateralAsset:                ptypes.BaseCurrency,
-		CustodyAsset:                   ptypes.Elys,
-		Collateral:                     sdk.NewInt(0),
-		Liabilities:                    sdk.NewInt(0),
-		BorrowInterestPaidCollateral:   sdk.NewInt(0),
-		BorrowInterestPaidCustody:      sdk.NewInt(0),
-		BorrowInterestUnpaidCollateral: sdk.NewInt(0),
-		Custody:                        sdk.NewInt(10000),
-		MtpHealth:                      sdk.NewDec(0),
-		Position:                       perpetualtypes.Position_LONG,
-		Id:                             0,
+		Address:                       addr[0].String(),
+		CollateralAsset:               ptypes.BaseCurrency,
+		CustodyAsset:                  ptypes.Elys,
+		Collateral:                    sdk.NewInt(0),
+		Liabilities:                   sdk.NewInt(0),
+		BorrowInterestUnpaidLiability: sdk.NewInt(0),
+		BorrowInterestPaidCustody:     sdk.NewInt(0),
+		Custody:                       sdk.NewInt(10000),
+		MtpHealth:                     sdk.NewDec(0),
+		Position:                      perpetualtypes.Position_LONG,
+		Id:                            0,
 	})
 	require.NoError(t, err)
 

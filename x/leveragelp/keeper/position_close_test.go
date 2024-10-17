@@ -34,7 +34,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, poolAddr, poolInit)
 	suite.Require().NoError(err)
 
-	err = suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
+	suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
 		PoolId:            1,
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),

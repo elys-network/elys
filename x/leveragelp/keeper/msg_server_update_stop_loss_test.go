@@ -177,7 +177,7 @@ func (suite *KeeperTestSuite) TestUpdateSyopLoss() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 			_, err := msgServer.UpdateStopLoss(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)

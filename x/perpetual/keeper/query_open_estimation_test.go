@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -87,8 +88,12 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
+	perpetualPool := types.NewPool(1)
+	mk.SetPool(ctx, perpetualPool)
+
 	// call min collateral query
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
+		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:    ptypes.ATOM,
@@ -97,27 +102,24 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
 	})
 	require.NoError(t, err)
+
 	require.Equal(t, &types.QueryOpenEstimationResponse{
 		Position:           types.Position_LONG,
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(499136435)),
-		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
-		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
-		OpenPrice:          sdk.MustNewDecFromStr("1.000000000000000000"),
+		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, types.NewParams().MinBorrowInterestAmount),
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(498049800)),
+		OpenPrice:          sdk.MustNewDecFromStr("1.003915672689759137"),
 		TakeProfitPrice:    sdk.MustNewDecFromStr("20.00000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("0.799653976372211738"),
-		InterestAmount:     types.NewParams().MinBorrowInterestAmount,
-		EstimatedPnl:       sdk.NewInt(9_482_728700),
-		EstimatedPnlDenom:  ptypes.BaseCurrency,
+		LiquidationPrice:   sdk.MustNewDecFromStr("0.764888131573149818"),
+		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(9360892980)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600000000000)),
-		Slippage:           sdk.MustNewDecFromStr("0.000727856000000000"),
-		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
-		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
-		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		Slippage:           sdk.MustNewDecFromStr("0.002903302158939339"),
+		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000001"),
+		FundingRate:        sdk.MustNewDecFromStr("0.00000000000000000"),
+		PriceImpact:        sdk.MustNewDecFromStr("0.196867461848192691"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.LegacyMustNewDecFromStr("0.0001").TruncateInt()), // Have to do this way, not ZeroDec because TruncateInt() changes structure even though value is same
 		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
@@ -201,11 +203,15 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 
 	pools := amm.GetAllPool(ctx)
 
+	perpetualPool := types.NewPool(1)
+	mk.SetPool(ctx, perpetualPool)
+
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
 	// call min collateral query
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
+		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:    ptypes.ATOM,
@@ -219,22 +225,18 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
-		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(49858958)),
-		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
-		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
-		OpenPrice:          sdk.MustNewDecFromStr("1.000000000000000000"),
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(50000000)),
+		OpenPrice:          sdk.MustNewDecFromStr("1.002257820000000000"),
 		TakeProfitPrice:    sdk.MustNewDecFromStr("20.00000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("0.799662359570370484"),
-		EstimatedPnl:       sdk.NewInt(757_224656),
-		EstimatedPnlDenom:  ptypes.BaseCurrency,
-		InterestAmount:     types.NewParams().MinBorrowInterestAmount,
+		LiquidationPrice:   sdk.MustNewDecFromStr("0.764350038095238095"),
+		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(659743983)),
+		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, types.NewParams().MinBorrowInterestAmount),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
-		Slippage:           sdk.MustNewDecFromStr("0.000686040302239768"),
-		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
-		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
+		Slippage:           sdk.MustNewDecFromStr("0.002201335983550402"),
+		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000001"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("0.001685356924966457"),
-		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		PriceImpact:        sdk.MustNewDecFromStr("0.197432460000000000"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.LegacyMustNewDecFromStr("0.0001").TruncateInt()), // Have to do this way, not ZeroDec because TruncateInt() changes structure even though value is same
 		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
@@ -322,11 +324,15 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 
 	pools := amm.GetAllPool(ctx)
 
+	perpetualPool := types.NewPool(1)
+	mk.SetPool(ctx, perpetualPool)
+
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
 	// call min collateral query
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
+		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        sdk.MustNewDecFromStr("10.0"),
 		TradingAsset:    ptypes.ATOM,
@@ -340,22 +346,18 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("10.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1_000_000000)),
-		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(2_247_067372)),
-		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
-		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
-		OpenPrice:          sdk.MustNewDecFromStr("4.390000000000000009"),
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(2165087869)),
+		OpenPrice:          sdk.MustNewDecFromStr("4.618750187085363047"),
 		TakeProfitPrice:    sdk.MustNewDecFromStr("5.000000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("3.944975514993148154"),
-		InterestAmount:     types.NewParams().MinBorrowInterestAmount,
-		EstimatedPnl:       sdk.NewInt(1_235_336860),
-		EstimatedPnlDenom:  ptypes.BaseCurrency,
+		LiquidationPrice:   sdk.MustNewDecFromStr("3.958928731787454040"),
+		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, types.NewParams().MinBorrowInterestAmount),
+		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(819738735)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600_000_000000)),
-		Slippage:           sdk.MustNewDecFromStr("0.012549973525000000"),
-		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
-		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
+		Slippage:           sdk.MustNewDecFromStr("0.048575000399137173"),
+		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000001"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		PriceImpact:        sdk.MustNewDecFromStr("0.053103606292294592"),
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.LegacyMustNewDecFromStr("0.0001").TruncateInt()), // Have to do this way, not ZeroDec because TruncateInt() changes structure even though value is same
 		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
@@ -439,11 +441,15 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 
 	pools := amm.GetAllPool(ctx)
 
+	perpetualPool := types.NewPool(1)
+	mk.SetPool(ctx, perpetualPool)
+
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
 	// call min collateral query
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
+		PoolId:          1,
 		Position:        types.Position_SHORT,
 		Leverage:        sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:    ptypes.ATOM,
@@ -458,22 +464,18 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		PositionSize:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(500000000)),
-		SwapFee:            sdk.MustNewDecFromStr("0.001000000000000000"),
-		Discount:           sdk.MustNewDecFromStr("0.000000000000000000"),
-		OpenPrice:          sdk.MustNewDecFromStr("1.000000000000000000"),
+		OpenPrice:          sdk.MustNewDecFromStr("0.992492115046784997"),
 		TakeProfitPrice:    sdk.MustNewDecFromStr("2.000000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("1.200000000000000000"),
-		EstimatedPnl:       sdk.NewInt(-400000000),
-		EstimatedPnlDenom:  ptypes.BaseCurrency,
-		InterestAmount:     types.NewParams().MinBorrowInterestAmount,
+		LiquidationPrice:   sdk.MustNewDecFromStr("1.218015004245964982"),
+		EstimatedPnl:       sdk.Coin{ptypes.BaseCurrency, sdk.NewInt(308850380975497176)},
+		InterestAmount:     sdk.NewCoin(ptypes.ATOM, types.NewParams().MinBorrowInterestAmount),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
-		Slippage:           sdk.MustNewDecFromStr("0.006806806000000000"),
-		WeightBalanceRatio: sdk.MustNewDecFromStr("0.000000000000000000"),
-		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
+		Slippage:           sdk.MustNewDecFromStr("0.021631215392556907"),
+		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000001"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("0.007800000000000000"),
-		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
-		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		PriceImpact:        sdk.MustNewDecFromStr("-0.023132603566610585"),
+		BorrowFee:          sdk.NewCoin(ptypes.ATOM, math.LegacyMustNewDecFromStr("0.0001").TruncateInt()), // Have to do this way, not ZeroDec because TruncateInt() changes structure even though value is same
+		FundingFee:         sdk.NewCoin(ptypes.ATOM, sdk.NewInt(0)),
 	}, res)
 }
 
@@ -556,10 +558,14 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 
 	pools := amm.GetAllPool(ctx)
 
+	perpetualPool := types.NewPool(1)
+	mk.SetPool(ctx, perpetualPool)
+
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
 	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
+		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:    ptypes.BaseCurrency,
@@ -572,6 +578,7 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 	assert.Equal(t, "invalid operation: the borrowed asset cannot be the base currency: invalid borrowing asset", err.Error())
 
 	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
+		PoolId:          1,
 		Position:        types.Position_LONG,
 		Leverage:        sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:    ptypes.ATOM,
@@ -584,6 +591,7 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 	assert.Equal(t, "invalid collateral: collateral must either match the borrowed asset or be the base currency: invalid borrowing asset", err.Error())
 
 	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
+		PoolId:          1,
 		Position:        types.Position_SHORT,
 		Leverage:        sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:    ptypes.BaseCurrency,
@@ -596,6 +604,7 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 	assert.Equal(t, "borrowing not allowed: cannot take a short position against the base currency: invalid borrowing asset", err.Error())
 
 	_, err = mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
+		PoolId:          1,
 		Position:        types.Position_SHORT,
 		Leverage:        sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:    ptypes.ATOM,

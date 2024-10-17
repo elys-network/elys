@@ -117,6 +117,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		mtp.Liabilities, slippage, err = k.EstimateSwap(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, ammPool)
 		// executionPrice = liabilitiesInCollateral / Liabilities
 		executionPrice = liabilitiesInCollateralTokenIn.Amount.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
+		mtp.Custody = custodyAmount
 	}
 	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(mtp)
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
@@ -196,7 +197,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		OpenPrice:          mtp.OpenPrice,
 		TakeProfitPrice:    req.TakeProfitPrice,
 		LiquidationPrice:   liquidationPrice,
-		EstimatedPnl:       sdk.NewCoin(mtp.CustodyAsset, estimatedPnLAmount),
+		EstimatedPnl:       sdk.Coin{mtp.CustodyAsset, estimatedPnLAmount},
 		AvailableLiquidity: availableLiquidity,
 		Slippage:           slippage,
 		PriceImpact:        priceImpact,
