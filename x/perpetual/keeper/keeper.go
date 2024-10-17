@@ -304,3 +304,31 @@ func (k *Keeper) SetHooks(gh types.PerpetualHooks) *Keeper {
 
 	return k
 }
+
+func (k Keeper) NukeDB(ctx sdk.Context) {
+	// delete all mtps
+	store := ctx.KVStore(k.storeKey)
+	mtpIterator := sdk.KVStorePrefixIterator(store, types.MTPPrefix)
+	defer mtpIterator.Close()
+
+	for ; mtpIterator.Valid(); mtpIterator.Next() {
+		store.Delete(mtpIterator.Key())
+	}
+
+	// delete all pools
+	poolIterator := sdk.KVStorePrefixIterator(store, types.PoolKeyPrefix)
+	defer poolIterator.Close()
+	for ; poolIterator.Valid(); poolIterator.Next() {
+		store.Delete(poolIterator.Key())
+	}
+
+	k.SetMTPCount(ctx, 0)
+	k.SetOpenMTPCount(ctx, 0)
+
+	k.DeleteAllFundingRate(ctx)
+	k.DeleteAllInterestRate(ctx)
+
+	store.Delete(types.KeyPrefix(types.ParamsKey))
+
+	return
+}

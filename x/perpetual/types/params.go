@@ -48,23 +48,23 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		PerpetualSwapFee:                               sdk.NewDecWithPrec(1, 3),  // 0.1%
-		FixedFundingRate:                               sdk.NewDecWithPrec(30, 2), // 30%
+		PerpetualSwapFee:                               math.LegacyMustNewDecFromStr("0.001"), // 0.1%
+		FixedFundingRate:                               math.LegacyMustNewDecFromStr("0.3"),   // 30%
 		TakeProfitBorrowInterestRateMin:                sdk.OneDec(),
-		BorrowInterestRateDecrease:                     sdk.NewDecWithPrec(33, 10),
-		BorrowInterestRateIncrease:                     sdk.NewDecWithPrec(33, 10),
-		BorrowInterestRateMax:                          sdk.NewDecWithPrec(27, 7),
-		BorrowInterestRateMin:                          sdk.NewDecWithPrec(3, 8),
+		BorrowInterestRateDecrease:                     math.LegacyMustNewDecFromStr("0.000000003300000000"),
+		BorrowInterestRateIncrease:                     math.LegacyMustNewDecFromStr("0.000000003300000000"),
+		BorrowInterestRateMax:                          math.LegacyMustNewDecFromStr("0.000002700000000000"),
+		BorrowInterestRateMin:                          math.LegacyMustNewDecFromStr("0.000000030000000000"),
 		MinBorrowInterestAmount:                        sdk.NewInt(5_000_000),
 		ForceCloseFundAddress:                          ZeroAddress,
 		ForceCloseFundPercentage:                       sdk.OneDec(),
-		HealthGainFactor:                               sdk.NewDecWithPrec(22, 8),
+		HealthGainFactor:                               math.LegacyMustNewDecFromStr("0.000000220000000000"),
 		IncrementalBorrowInterestPaymentEnabled:        true,
 		IncrementalBorrowInterestPaymentFundAddress:    ZeroAddress,
 		IncrementalBorrowInterestPaymentFundPercentage: math.LegacyMustNewDecFromStr("0.1"),
-		LeverageMax:                                    sdk.NewDec(10),
-		MaxOpenPositions:                               (int64)(9999),
-		PoolOpenThreshold:                              sdk.OneDec().Sub(sdk.MustNewDecFromStr("0.5")),
+		LeverageMax:                                    math.LegacyNewDec(25),
+		MaxOpenPositions:                               (int64)(3000),
+		PoolOpenThreshold:                              sdk.MustNewDecFromStr("0.65"),
 		SafetyFactor:                                   math.LegacyMustNewDecFromStr("1.050000000000000000"), // 5%
 		WhitelistingEnabled:                            false,
 		MaxLimitOrder:                                  (int64)(500),

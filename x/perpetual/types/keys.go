@@ -46,7 +46,6 @@ var (
 	InterestRatePrefix = []byte{0x07}
 	FundingRatePrefix  = []byte{0x08}
 	ToPayPrefix        = []byte{0x09}
-	//ParamsKeyPrefix    = []byte{0x0A}
 )
 
 func KeyPrefix(p string) []byte {
