@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"testing"
 	"time"
 
 	"cosmossdk.io/log"
@@ -26,11 +27,12 @@ import (
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Initiate a new ElysApp object - Common function used by the following 2 functions.
-func InitiateNewElysApp(opts ...wasm.Option) *ElysApp {
+func InitiateNewElysApp(t *testing.T, opts ...wasm.Option) *ElysApp {
 	db := dbm.NewMemDB()
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[flags.FlagHome] = DefaultNodeHome
@@ -44,7 +46,7 @@ func InitiateNewElysApp(opts ...wasm.Option) *ElysApp {
 		nil,
 		true,
 		map[int64]bool{},
-		nodeHome,
+		t.TempDir(),
 		appOptions,
 		opts,
 	)
@@ -53,8 +55,8 @@ func InitiateNewElysApp(opts ...wasm.Option) *ElysApp {
 }
 
 // Initializes a new ElysApp without IBC functionality
-func InitElysTestApp(initChain bool) *ElysApp {
-	app := InitiateNewElysApp()
+func InitElysTestApp(initChain bool, t *testing.T) *ElysApp {
+	app := InitiateNewElysApp(t)
 	if initChain {
 		genesisState, _, _, _ := GenesisStateWithValSet(app)
 		stateBytes, err := json.MarshalIndent(genesisState, "", " ")
@@ -84,8 +86,8 @@ func InitElysTestApp(initChain bool) *ElysApp {
 }
 
 // Initializes a new ElysApp without IBC functionality and returns genesis account (delegator)
-func InitElysTestAppWithGenAccount() (*ElysApp, sdk.AccAddress, sdk.ValAddress) {
-	app := InitiateNewElysApp()
+func InitElysTestAppWithGenAccount(t *testing.T) (*ElysApp, sdk.AccAddress, sdk.ValAddress) {
+	app := InitiateNewElysApp(t)
 
 	genesisState, _, genAcount, valAddress := GenesisStateWithValSet(app)
 	stateBytes, err := json.MarshalIndent(genesisState, "", " ")
@@ -215,6 +217,42 @@ func CreateRandomAccounts(accNum int) []sdk.AccAddress {
 // initial balance of accAmt in random order
 func AddTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt math.Int) []sdk.AccAddress {
 	return addTestAddrs(app, ctx, accNum, accAmt, CreateRandomAccounts)
+}
+
+func SetStakingParam(app *ElysApp, ctx sdk.Context) error {
+	return app.StakingKeeper.SetParams(ctx, stakingtypes.Params{
+		UnbondingTime:     1209600,
+		MaxValidators:     60,
+		MaxEntries:        7,
+		HistoricalEntries: 10000,
+		BondDenom:         "uelys",
+		MinCommissionRate: math.LegacyNewDec(0),
+	})
+}
+
+func SetupAssetProfile(app *ElysApp, ctx sdk.Context) {
+
+	app.AssetprofileKeeper.SetEntry(ctx, atypes.Entry{
+		BaseDenom:                "uusdc",
+		Decimals:                 6,
+		Denom:                    "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
+		Path:                     "transfer/channel-12",
+		IbcChannelId:             "channel-12",
+		IbcCounterpartyChannelId: "channel-19",
+		DisplayName:              "USDC",
+		DisplaySymbol:            "uUSDC",
+		Network:                  "",
+		Address:                  "",
+		ExternalSymbol:           "uUSDC",
+		TransferLimit:            "",
+		Permissions:              []string{},
+		UnitDenom:                "uusdc",
+		IbcCounterpartyDenom:     "",
+		IbcCounterpartyChainId:   "",
+		Authority:                "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+		CommitEnabled:            true,
+		WithdrawEnabled:          true,
+	})
 }
 
 func addTestAddrs(app *ElysApp, ctx sdk.Context, accNum int, accAmt math.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
