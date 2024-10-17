@@ -2,7 +2,6 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -15,15 +14,15 @@ func (k Keeper) UpdatedLeverage(ctx sdk.Context, mtp types.MTP) (sdk.Dec, error)
 		return sdk.ZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 	baseCurrency := entry.Denom
-	collateral_in_usdc := math.LegacyDec(mtp.Collateral)
+	collateral_in_usdc := mtp.Collateral.ToLegacyDec()
 	if mtp.CollateralAsset != baseCurrency {
 		price := k.amm.EstimatePrice(ctx, mtp.CollateralAsset, baseCurrency)
-		collateral_in_usdc = math.LegacyDec(mtp.Liabilities).Mul(price)
+		collateral_in_usdc = mtp.Liabilities.ToLegacyDec().Mul(price)
 	}
-	liablites := math.LegacyDec(mtp.Liabilities)
+	liablites := mtp.Liabilities.ToLegacyDec()
 	if mtp.LiabilitiesAsset != baseCurrency {
 		price := k.amm.EstimatePrice(ctx, mtp.LiabilitiesAsset, baseCurrency)
-		liablites = math.LegacyDec(mtp.Liabilities).Mul(price)
+		liablites = mtp.Liabilities.ToLegacyDec().Mul(price)
 	}
 	if collateral_in_usdc.IsZero() {
 		return sdk.ZeroDec(),  nil
