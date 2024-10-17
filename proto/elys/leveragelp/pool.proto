@@ -5,6 +5,24 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 
+message LegacyPool {
+  uint64 amm_pool_id = 1;
+  string health = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  bool enabled = 3;
+  bool closed = 4;
+  string leveraged_lp_amount = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string leverage_max = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
 message Pool {
   uint64 amm_pool_id = 1;
   string health = 2 [
@@ -18,6 +36,10 @@ message Pool {
     (gogoproto.nullable) = false
   ];
   string leverage_max = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string max_leveragelp_percent = 7 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
