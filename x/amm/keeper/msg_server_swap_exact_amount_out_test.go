@@ -175,7 +175,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
 
-			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.SwapExactAmountOut(
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgSwapExactAmountOut{

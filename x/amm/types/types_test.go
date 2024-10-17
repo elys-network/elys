@@ -1,8 +1,9 @@
 package types_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/stretchr/testify/suite"
 
@@ -28,7 +29,8 @@ type TestSuite struct {
 }
 
 func (suite *TestSuite) SetupTest() {
-	app := simapp.InitElysTestApp(initChain)
+	t := suite.Suite.T()
+	app := simapp.InitElysTestApp(initChain, t)
 
 	suite.legacyAmino = app.LegacyAmino()
 	suite.ctx = app.BaseApp.NewContext(initChain)

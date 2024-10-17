@@ -109,6 +109,8 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
 			suite.SetupStableCoinPrices()
+			suite.SetupAssetProfile()
+			suite.SetAmmParams()
 
 			// bootstrap accounts
 			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -120,7 +122,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 			suite.Require().NoError(err)
 
 			// execute function
-			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.CreatePool(
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgCreatePool{
