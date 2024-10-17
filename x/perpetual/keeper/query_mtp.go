@@ -37,10 +37,6 @@ func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPRes
 	if err != nil {
 		return &types.MTPResponse{}, err
 	}
-	updated_leverage, err := k.UpdatedLeverage(ctx, mtp)
-	if err != nil {
-		return nil, err
-	}
 
 	return &types.MTPResponse{Mtp: mtpAndPrice}, nil
 }
