@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -19,7 +20,7 @@ import (
 )
 
 func TestABCI_EndBlocker(t *testing.T) {
-	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
+	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount(t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.MasterchefKeeper
@@ -102,7 +103,7 @@ func TestABCI_EndBlocker(t *testing.T) {
 }
 
 func TestCollectGasFees(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, bk, amm, oracle := app.MasterchefKeeper, app.BankKeeper, app.AmmKeeper, app.OracleKeeper
@@ -187,7 +188,7 @@ func TestCollectGasFees(t *testing.T) {
 }
 
 func TestCollectDEXRevenue(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, bk, amm, oracle := app.MasterchefKeeper, app.BankKeeper, app.AmmKeeper, app.OracleKeeper
@@ -321,7 +322,7 @@ func TestCollectDEXRevenue(t *testing.T) {
 }
 
 func TestCollectPerpRevenue(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, perp := app.MasterchefKeeper, app.PerpetualKeeper

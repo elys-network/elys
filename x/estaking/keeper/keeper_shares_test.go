@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -10,7 +11,7 @@ import (
 )
 
 func TestCalcDelegationAmount(t *testing.T) {
-	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
+	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount(t)
 	ctx := app.BaseApp.NewContext(true)
 
 	ek := app.EstakingKeeper

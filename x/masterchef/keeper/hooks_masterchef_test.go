@@ -75,7 +75,7 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 }
 
 func TestHookMasterchef(t *testing.T) {
-	app, _, _ := simapp.InitElysTestAppWithGenAccount()
+	app, _, _ := simapp.InitElysTestAppWithGenAccount(t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper
