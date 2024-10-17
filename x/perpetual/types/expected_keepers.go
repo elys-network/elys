@@ -123,6 +123,8 @@ type AmmKeeper interface {
 
 	AddToPoolBalance(ctx sdk.Context, pool *ammtypes.Pool, addShares math.Int, coins sdk.Coins) error
 	RemoveFromPoolBalance(ctx sdk.Context, pool *ammtypes.Pool, removeShares math.Int, coins sdk.Coins) error
+
+	EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.

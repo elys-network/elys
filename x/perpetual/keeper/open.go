@@ -1,8 +1,10 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"fmt"
+
+	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -36,6 +38,10 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 
 	// check if existing mtp to consolidate
 	existingMtp := k.CheckSameAssetPosition(ctx, msg)
+
+	if existingMtp == nil && msg.Leverage.Equal(math.LegacyOneDec()) {
+		return nil, fmt.Errorf("cannot open new position with leverage 1")
+	}
 
 	if err := k.CheckMaxOpenPositions(ctx); err != nil {
 		return nil, err
