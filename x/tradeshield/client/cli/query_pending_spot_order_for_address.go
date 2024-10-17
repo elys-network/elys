@@ -60,5 +60,7 @@ func CmdPendingSpotOrderForAddress() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 
+	cmd.Flags().String(flagStatus, "ALL", "status")
+
 	return cmd
 }
