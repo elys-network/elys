@@ -2,8 +2,6 @@ package cmd
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/constants"
-
 	"github.com/elys-network/elys/app"
 )
 
@@ -21,6 +19,4 @@ func InitSDKConfig() {
 	config.SetBech32PrefixForValidator(validatorAddressPrefix, validatorPubKeyPrefix)
 	config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
 	config.Seal()
-
-	constants.SetZeroAddress()
 }

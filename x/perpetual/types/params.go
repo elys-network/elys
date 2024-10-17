@@ -4,8 +4,8 @@ import (
 	"cosmossdk.io/math"
 	fmt "fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/elys-network/elys/constants"
 	"gopkg.in/yaml.v2"
 )
 
@@ -53,11 +53,11 @@ func NewParams() Params {
 		BorrowInterestRateMax:                          math.LegacyMustNewDecFromStr("0.000002700000000000"),
 		BorrowInterestRateMin:                          math.LegacyMustNewDecFromStr("0.000000030000000000"),
 		MinBorrowInterestAmount:                        sdk.NewInt(5_000_000),
-		ForceCloseFundAddress:                          constants.ZeroAddress,
+		ForceCloseFundAddress:                          authtypes.NewModuleAddress("zero").String(),
 		ForceCloseFundPercentage:                       sdk.OneDec(),
 		HealthGainFactor:                               math.LegacyMustNewDecFromStr("0.000000220000000000"),
 		IncrementalBorrowInterestPaymentEnabled:        true,
-		IncrementalBorrowInterestPaymentFundAddress:    constants.ZeroAddress,
+		IncrementalBorrowInterestPaymentFundAddress:    authtypes.NewModuleAddress("zero").String(),
 		IncrementalBorrowInterestPaymentFundPercentage: math.LegacyMustNewDecFromStr("0.1"),
 		LeverageMax:                                    math.LegacyNewDec(25),
 		MaxOpenPositions:                               (int64)(3000),
