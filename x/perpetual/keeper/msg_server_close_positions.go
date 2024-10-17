@@ -68,10 +68,35 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		}
 	}
 
-	// TODO: Handle stop loss
+	//Handle take profit
+	takeProfitLog := []string{}
+	for _, val := range msg.TakeProfit {
+		owner := sdk.MustAccAddressFromBech32(val.Address)
+		position, err := k.GetMTP(ctx, owner, val.Id)
+		if err != nil {
+			continue
+		}
+
+		pool, poolFound := k.GetPool(ctx, position.AmmPoolId)
+		if !poolFound {
+			continue
+		}
+		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
+		if poolErr != nil {
+			continue
+		}
+
+		err = k.CheckAndCloseAtTakeProfit(ctx, &position, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
+		if err != nil {
+			// Add log about error or not closed
+			takeProfitLog = append(takeProfitLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
+		}
+	}
+
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClosePositions,
 		sdk.NewAttribute("liquidations", strings.Join(liqLog, "\n")),
 		sdk.NewAttribute("stop_loss", strings.Join(closeLog, "\n")),
+		sdk.NewAttribute("take_profit", strings.Join(takeProfitLog, "\n")),
 	))
 
 	return &types.MsgClosePositionsResponse{}, nil

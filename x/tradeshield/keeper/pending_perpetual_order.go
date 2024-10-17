@@ -81,7 +81,7 @@ func (k Keeper) GetPendingPerpetualOrder(ctx sdk.Context, id uint64) (val types.
 	return val, true
 }
 
-func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address string, pagination *query.PageRequest) ([]types.PerpetualOrder, *query.PageResponse, error) {
+func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address string, status *types.Status, pagination *query.PageRequest) ([]types.PerpetualOrder, *query.PageResponse, error) {
 	var orders []types.PerpetualOrder
 
 	store := ctx.KVStore(k.storeKey)
@@ -97,7 +97,7 @@ func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address str
 		var order types.PerpetualOrder
 		err := k.cdc.Unmarshal(value, &order)
 		if err == nil {
-			if accumulate && order.OwnerAddress == address {
+			if accumulate && order.OwnerAddress == address && (*status == types.Status_ALL || order.Status == *status) {
 				orders = append(orders, order)
 				return true, nil
 			}

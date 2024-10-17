@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -66,13 +68,14 @@ func CmdUpdatePendingSpotOrder() *cobra.Command {
 	return cmd
 }
 
-func CmdDeletePendingSpotOrder() *cobra.Command {
+func CmdCancelSpotOrders() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-pending-spot-order [id]",
-		Short: "Delete a pending-spot-order by id",
-		Args:  cobra.ExactArgs(1),
+		Use:     "cancel-pending-spot-orders [ids.json]",
+		Short:   "Cancel pending-spot-orders",
+		Example: "elysd tx perpetual cancel-pending-spot-orders ids.json --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000",
+		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			id, err := strconv.ParseUint(args[0], 10, 64)
+			ids, err := readPositionRequestJSON(args[0])
 			if err != nil {
 				return err
 			}
@@ -82,7 +85,7 @@ func CmdDeletePendingSpotOrder() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDeletePendingSpotOrder(clientCtx.GetFromAddress().String(), id)
+			msg := types.NewMsgCancelSpotOrders(clientCtx.GetFromAddress().String(), ids)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -93,4 +96,18 @@ func CmdDeletePendingSpotOrder() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
+}
+
+func readPositionRequestJSON(filename string) ([]uint64, error) {
+	var positions []uint64
+	bz, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return []uint64{}, err
+	}
+	err = json.Unmarshal(bz, &positions)
+	if err != nil {
+		return []uint64{}, err
+	}
+
+	return positions, nil
 }

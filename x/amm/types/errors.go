@@ -38,6 +38,7 @@ var (
 	ErrExitFeeShouldNotExceedTwoPercent = errors.Register(ModuleName, 110, "exit fee should not exceed 2%")
 	ErrFeeShouldNotBeNegative           = errors.Register(ModuleName, 111, "fee should not be negative")
 	ErrInvalidShareAmountOut            = errors.Register(ModuleName, 112, "invalid share amount out")
+	ErrPoolAssetsMustBeTwo              = errors.Register(ModuleName, 113, "pool assets must be exactly two")
 )
 
 const (

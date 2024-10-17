@@ -22,15 +22,19 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 			k.SetBorrowRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.InterestBlock{
 				InterestRate: rate,
 				BlockHeight:  ctx.BlockHeight(),
+				BlockTime:    ctx.BlockTime().Unix(),
 			})
 
 			err = k.UpdatePoolHealth(ctx, &pool)
 			if err != nil {
 				ctx.Logger().Error(err.Error())
 			}
-			err = k.UpdateFundingRate(ctx, &pool)
-			if err != nil {
-				ctx.Logger().Error(err.Error())
+
+			fundingRateLong, fundingRateShort := k.ComputeFundingRate(ctx, pool)
+
+			pool.FundingRate = fundingRateLong
+			if fundingRateLong.IsZero() {
+				pool.FundingRate = fundingRateShort.Neg()
 			}
 
 			// account custody from long position
@@ -45,29 +49,55 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				totalCustodyShort = totalCustodyShort.Add(asset.Custody)
 			}
 
-			fundingAmountLong := types.CalcTakeAmount(totalCustodyLong, pool.FundingRate)
-			fundingAmountShort := sdk.ZeroInt()
+			blocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
+			fundingAmountLong := types.CalcTakeAmount(totalCustodyLong, fundingRateLong).ToLegacyDec().Quo(sdk.NewDec(blocksPerYear))
+			fundingAmountShort := types.CalcTakeAmount(totalCustodyShort, fundingRateShort).ToLegacyDec().Quo(sdk.NewDec(blocksPerYear))
 
-			fundingRateLong := pool.FundingRate
-			fundingRateShort := sdk.ZeroDec()
-
-			// if funding rate is negative, collect from short position
-			if pool.FundingRate.IsNegative() {
-				fundingAmountShort = types.CalcTakeAmount(totalCustodyShort, pool.FundingRate)
-				fundingAmountLong = sdk.ZeroInt()
-
-				fundingRateLong = sdk.ZeroDec()
-				fundingRateShort = pool.FundingRate
-			}
 			k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
-				FundingRate:        pool.FundingRate,
 				BlockHeight:        ctx.BlockHeight(),
-				FundingAmountShort: fundingAmountShort,
-				FundingAmountLong:  fundingAmountLong,
+				BlockTime:          ctx.BlockTime().Unix(),
 				FundingRateLong:    fundingRateLong,
 				FundingRateShort:   fundingRateShort,
+				FundingAmountShort: fundingAmountShort,
+				FundingAmountLong:  fundingAmountLong,
 			})
 		}
 		k.SetPool(ctx, pool)
+	}
+}
+
+func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (sdk.Dec, sdk.Dec) {
+	// Custody amount for long is trading asset -
+	// Liability amount for short is trading asset
+	// popular_rate = fixed_rate * abs(Custody-Liability) / (Custody+Liability)
+	totalCustodyLong := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssetsLong {
+		totalCustodyLong = totalCustodyLong.Add(asset.Custody)
+	}
+
+	totalLiabilitiesShort := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssetsShort {
+		totalLiabilitiesShort = totalLiabilitiesShort.Add(asset.Liabilities)
+	}
+
+	fixedRate := k.GetParams(ctx).FixedFundingRate
+	if totalCustodyLong.GT(totalLiabilitiesShort) {
+		// long is popular
+		// long pays short
+		if totalLiabilitiesShort.IsZero() {
+			return sdk.ZeroDec(), sdk.ZeroDec()
+		} else {
+			netLongRatio := (totalCustodyLong.Sub(totalLiabilitiesShort)).ToLegacyDec().Quo((totalCustodyLong.Add(totalLiabilitiesShort)).ToLegacyDec())
+			return netLongRatio.Mul(fixedRate), sdk.ZeroDec()
+		}
+	} else {
+		// short is popular
+		// short pays long
+		if totalCustodyLong.IsZero() {
+			return sdk.ZeroDec(), sdk.ZeroDec()
+		} else {
+			netShortRatio := (totalLiabilitiesShort.Sub(totalCustodyLong)).ToLegacyDec().Quo((totalCustodyLong.Add(totalLiabilitiesShort)).ToLegacyDec())
+			return sdk.ZeroDec(), netShortRatio.Mul(fixedRate)
+		}
 	}
 }

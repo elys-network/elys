@@ -88,7 +88,7 @@ func SimulateMsgUpdatePendingPerpetualOrder(
 	}
 }
 
-func SimulateMsgDeletePendingPerpetualOrder(
+func SimulateMsgCancelPerpetualOrders(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,

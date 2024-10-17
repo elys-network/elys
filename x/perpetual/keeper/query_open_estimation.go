@@ -182,9 +182,13 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	}
 
 	// TODO, borrowInterestRate and fundingRate both are summed up values, discuss this for correct values
-	borrowInterestRate := k.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()), req.PoolId, mtp.TakeProfitBorrowFactor)
-	fundingRate, _, _ := k.GetFundingRate(ctx, uint64(ctx.BlockHeight()), req.PoolId)
+	borrowInterestRate := k.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()), uint64(ctx.BlockTime().Unix()), req.PoolId, mtp.TakeProfitBorrowFactor)
+	longRate, shortRate := k.GetFundingRate(ctx, uint64(ctx.BlockHeight()), uint64(ctx.BlockTime().Unix()), req.PoolId)
 	borrowFee := borrowInterestRate.MulInt(mtp.Liabilities)
+	fundingRate := longRate
+	if req.Position == types.Position_SHORT {
+		fundingRate = shortRate
+	}
 	fundingFee := fundingRate.MulInt(mtp.BorrowInterestUnpaidLiability)
 
 	return &types.QueryOpenEstimationResponse{

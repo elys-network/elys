@@ -16,7 +16,7 @@ func (k Keeper) GetBorrowInterestAmount(ctx sdk.Context, mtp *types.MTP) math.In
 		panic(err)
 	}
 
-	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.AmmPoolId, mtp.TakeProfitBorrowFactor)
+	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, mtp.AmmPoolId, mtp.TakeProfitBorrowFactor)
 	borrowInterestRateWithProfitFactor := borrowInterestRate.Mul(mtp.TakeProfitBorrowFactor)
 	totalLiability := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 	borrowInterestPayment := totalLiability.ToLegacyDec().Mul(borrowInterestRateWithProfitFactor).TruncateInt()

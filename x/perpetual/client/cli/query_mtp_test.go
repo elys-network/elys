@@ -62,6 +62,14 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 			},
 			TradingAssetPrice: sdk.ZeroDec(),
 			Pnl:               sdk.ZeroInt(),
+			LiquidationPrice:  sdk.ZeroDec(),
+			Fees: &types.Fees{
+				TotalFeesBaseCurrency:            sdk.NewInt(0),
+				BorrowInterestFeesLiabilityAsset: sdk.NewInt(0),
+				BorrowInterestFeesBaseCurrency:   sdk.NewInt(0),
+				FundingFeesLiquidityAsset:        sdk.NewInt(0),
+				FundingFeesBaseCurrency:          sdk.NewInt(0),
+			},
 		}
 
 		mtps = append(mtps, &mtp)

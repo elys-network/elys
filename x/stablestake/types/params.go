@@ -23,6 +23,7 @@ var (
 	KeyInterestRateDecrease = []byte("InterestRateDecrease")
 	KeyHealthGainFactor     = []byte("HealthGainFactor")
 	KeyTotalValue           = []byte("TotalValue")
+	KeyMaxLeveragePercent   = []byte("MaxLeveragePercent")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -42,6 +43,7 @@ func NewParams(
 	interestRateDecrease sdk.Dec,
 	healthGainFactor sdk.Dec,
 	totalValue math.Int,
+	MaxLeveragePercent sdk.Dec,
 ) Params {
 	return Params{
 		DepositDenom:         depositDenom,
@@ -54,6 +56,7 @@ func NewParams(
 		InterestRateDecrease: interestRateDecrease,
 		HealthGainFactor:     healthGainFactor,
 		TotalValue:           totalValue,
+		MaxLeveragePercent:   MaxLeveragePercent,
 	}
 }
 
@@ -70,6 +73,7 @@ func DefaultParams() Params {
 		sdk.NewDecWithPrec(1, 2),  // 1% - interest rate decrease
 		sdk.NewDec(1),             // health gain factor
 		sdk.NewInt(0),             // total value - 0
+		sdk.NewDec(70),            // default leverage percent of stablestake pool
 	)
 }
 
@@ -86,6 +90,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyHealthGainFactor, &p.HealthGainFactor, validateHealthGainFactor),
 		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
 		paramtypes.NewParamSetPair(KeyTotalValue, &p.TotalValue, validateTotalValue),
+		paramtypes.NewParamSetPair(KeyMaxLeveragePercent, &p.MaxLeveragePercent, validateMaxLeveragePercent),
 	}
 }
 
@@ -120,6 +125,9 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateTotalValue(p.TotalValue); err != nil {
+		return err
+	}
+	if err := validateMaxLeveragePercent(p.MaxLeveragePercent); err != nil {
 		return err
 	}
 
@@ -281,6 +289,22 @@ func validateTotalValue(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("total value must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateMaxLeveragePercent(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("max leverage percent must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("max leverage percent must be positive: %s", v)
 	}
 
 	return nil

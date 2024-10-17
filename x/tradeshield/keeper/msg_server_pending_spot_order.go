@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -36,21 +35,27 @@ func (k msgServer) UpdatePendingSpotOrder(goCtx context.Context, msg *types.MsgU
 	return &types.MsgUpdatePendingSpotOrderResponse{}, nil
 }
 
-func (k msgServer) DeletePendingSpotOrder(goCtx context.Context, msg *types.MsgDeletePendingSpotOrder) (*types.MsgDeletePendingSpotOrderResponse, error) {
+func (k msgServer) CancelSpotOrders(goCtx context.Context, msg *types.MsgCancelSpotOrders) (*types.MsgCancelSpotOrdersResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Checks that the element exists
-	val, found := k.GetPendingSpotOrder(ctx, msg.OrderId)
-	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.OrderId))
+	if len(msg.SpotOrderIds) == 0 {
+		return nil, types.ErrSizeZero
+	}
+	// loop through the spot orders and execute them
+	for _, spotOrderId := range msg.SpotOrderIds {
+		// get the spot order
+		spotOrder, found := k.GetPendingSpotOrder(ctx, spotOrderId)
+		if !found {
+			return nil, types.ErrSpotOrderNotFound
+		}
+
+		if spotOrder.OwnerAddress != msg.Creator {
+			return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		}
+
+		k.RemovePendingSpotOrder(ctx, spotOrderId)
+		types.EmitCloseSpotOrderEvent(ctx, spotOrder)
 	}
 
-	// Checks if the msg creator is the same as the current owner
-	if msg.OwnerAddress != val.OwnerAddress {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-	}
-
-	k.RemovePendingSpotOrder(ctx, msg.OrderId)
-
-	return &types.MsgDeletePendingSpotOrderResponse{}, nil
+	return &types.MsgCancelSpotOrdersResponse{}, nil
 }

@@ -382,6 +382,21 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		Denom:     ptypes.ATOM,
 		Decimals:  6,
 	})
+	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	oracle.SetPrice(ctx, oracletypes.Price{
+		Asset:     "ATOM",
+		Price:     sdk.NewDec(5),
+		Source:    "atom",
+		Provider:  provider.String(),
+		Timestamp: uint64(ctx.BlockTime().Unix()),
+	})
+	oracle.SetPrice(ctx, oracletypes.Price{
+		Asset:     "uatom",
+		Price:     sdk.NewDec(5),
+		Source:    "uatom",
+		Provider:  provider.String(),
+		Timestamp: uint64(ctx.BlockTime().Unix()),
+	})
 
 	// Generate 1 random account with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000000000))
@@ -458,7 +473,7 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		TakeProfitPrice: sdk.MustNewDecFromStr("2.0"),
 	})
 	require.NoError(t, err)
-	require.Equal(t, &types.QueryOpenEstimationResponse{
+	expectedRes := &types.QueryOpenEstimationResponse{
 		Position:           types.Position_SHORT,
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
@@ -476,7 +491,8 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		PriceImpact:        sdk.MustNewDecFromStr("-0.023132603566610585"),
 		BorrowFee:          sdk.NewCoin(ptypes.ATOM, math.LegacyMustNewDecFromStr("0.0001").TruncateInt()), // Have to do this way, not ZeroDec because TruncateInt() changes structure even though value is same
 		FundingFee:         sdk.NewCoin(ptypes.ATOM, sdk.NewInt(0)),
-	}, res)
+	}
+	require.Equal(t, expectedRes, res)
 }
 
 func TestOpenEstimation_WrongAsset(t *testing.T) {

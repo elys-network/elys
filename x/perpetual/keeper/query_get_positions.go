@@ -20,7 +20,7 @@ func (k Keeper) GetPositions(goCtx context.Context, req *types.PositionsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	mtps, page, err := k.GetMTPsWithPagination(ctx, req.Pagination)
+	mtps, page, err := k.GetMTPs(ctx, req.Pagination)
 	if err != nil {
 		return nil, err
 	}

@@ -797,7 +797,7 @@ func NewElysApp(
 		app.OracleKeeper,
 		&app.CommitmentKeeper,
 		app.AssetprofileKeeper,
-		app.AccountedPoolKeeper,
+		&app.AccountedPoolKeeper,
 	)
 
 	app.StablestakeKeeper = *stablestakekeeper.NewKeeper(
@@ -1082,7 +1082,7 @@ func NewElysApp(
 	// this line is used by starport scaffolding # ibc/app/router
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	/**** Module EpochHooks ****/
+	/**** Module Hooks ****/
 
 	// register hooks after all modules have been initialized
 

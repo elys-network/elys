@@ -7,20 +7,16 @@ import (
 )
 
 func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
-	uusdc, found := k.assetProfileKeeper.GetEntry(ctx, "uusdc")
-	if !found {
-		return nil
+	// account custody from long position
+	totalCustodyLong := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssetsLong {
+		totalCustodyLong = totalCustodyLong.Add(asset.Custody)
 	}
 
-	// Calculate liabilities for long and short assets using the separate helper function
-	liabilitiesLong, err := k.CalcTotalLiabilities(ctx, pool.PoolAssetsLong, pool.AmmPoolId, uusdc.Denom)
-	if err != nil {
-		return nil
-	}
-
-	liabilitiesShort, err := k.CalcTotalLiabilities(ctx, pool.PoolAssetsShort, pool.AmmPoolId, uusdc.Denom)
-	if err != nil {
-		return nil
+	// account custody from short position
+	totalLiabilitiesShort := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssetsShort {
+		totalLiabilitiesShort = totalLiabilitiesShort.Add(asset.Liabilities)
 	}
 
 	// Total fund collected should be
@@ -30,54 +26,74 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	var fundingFeeShare sdk.Dec
 	if mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
-		if liabilitiesLong.IsZero() {
+		if totalCustodyLong.IsZero() {
 			return types.ErrAmountTooLow
 		}
-		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesLong))
+		fundingFeeShare = sdk.NewDecFromInt(mtp.Custody).Quo(sdk.NewDecFromInt(totalCustodyLong))
 		totalFund = short
+
+		// if funding fee share is zero, skip mtp
+		if fundingFeeShare.IsZero() {
+			return nil
+		}
+
+		// calculate funding fee amount
+		fundingFeeAmount := totalFund.Mul(fundingFeeShare)
+
+		// update mtp custody
+		mtp.Custody = mtp.Custody.Add(fundingFeeAmount.TruncateInt())
+
+		// decrease fees collected
+		err := pool.UpdateFeesCollected(ctx, mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), false)
+		if err != nil {
+			return err
+		}
+
+		// update pool custody balance
+		err = pool.UpdateCustody(ctx, mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), true, mtp.Position)
+		if err != nil {
+			return err
+		}
+
+		// add payment to total funding fee paid in custody asset
+		mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.TruncateInt())
 	} else {
 		// Ensure liabilitiesShort is not zero to avoid division by zero
-		if liabilitiesShort.IsZero() {
+		if totalLiabilitiesShort.IsZero() {
 			return types.ErrAmountTooLow
 		}
-		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(liabilitiesShort))
+		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(totalLiabilitiesShort))
 		totalFund = long
+
+		// if funding fee share is zero, skip mtp
+		if fundingFeeShare.IsZero() {
+			return nil
+		}
+
+		// calculate funding fee amount
+		fundingFeeAmount := totalFund.Mul(fundingFeeShare)
+
+		// decrease fees collected
+		err := pool.UpdateFeesCollected(ctx, mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt(), false)
+		if err != nil {
+			return err
+		}
+
+		custodyAmt, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt()), mtp.CustodyAsset, ammPool)
+		if err != nil {
+			return err
+		}
+		// update mtp Custody
+		mtp.Custody = mtp.Custody.Add(custodyAmt)
+
+		// update pool liability balance
+		err = pool.UpdateCustody(ctx, mtp.CustodyAsset, custodyAmt, true, mtp.Position)
+		if err != nil {
+			return err
+		}
+
+		// add payment to total funding fee paid in custody asset
+		mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(custodyAmt)
 	}
-
-	// if funding fee share is zero, skip mtp
-	if fundingFeeShare.IsZero() {
-		return nil
-	}
-
-	// calculate funding fee amount
-	fundingFeeAmount := sdk.NewCoin(baseCurrency, totalFund.Mul(fundingFeeShare).TruncateInt())
-
-	// update mtp custody
-	mtp.Custody = mtp.Custody.Add(fundingFeeAmount.Amount)
-
-	// decrease fees collected
-	err = pool.UpdateFeesCollected(ctx, fundingFeeAmount.Denom, fundingFeeAmount.Amount, false)
-	if err != nil {
-		return err
-	}
-
-	// update pool custody balance
-	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, fundingFeeAmount.Amount, true, mtp.Position)
-	if err != nil {
-		return err
-	}
-
-	// update received funding fee accounting buckets
-	// Swap the take amount to collateral asset
-	fundingFeeCollateralAmount, _, err := k.EstimateSwap(ctx, fundingFeeAmount, mtp.CollateralAsset, ammPool)
-	if err != nil {
-		return err
-	}
-
-	// add payment to total funding fee paid in collateral asset
-	mtp.FundingFeeReceivedCollateral = mtp.FundingFeeReceivedCollateral.Add(fundingFeeCollateralAmount)
-	// add payment to total funding fee paid in custody asset
-	mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.Amount)
-
 	return nil
 }

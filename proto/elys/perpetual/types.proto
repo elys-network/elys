@@ -99,30 +99,29 @@ message InterestBlock {
     (gogoproto.nullable) = false
   ];
   int64 block_height = 2;
+    int64 block_time = 3;
 }
 
 message FundingRateBlock {
-  string funding_rate = 1 [
+  string funding_rate_long = 1 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 block_height = 2;
+  string funding_rate_short = 2 [
+
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
   string funding_amount_short = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
   string funding_amount_long = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string funding_rate_long = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string funding_rate_short = 6 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
+  int64 block_height = 5;
+  int64 block_time = 6;
 }
 
 message ToPay {

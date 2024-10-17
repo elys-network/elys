@@ -118,6 +118,11 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		}
 	}
 
+	//positionSizeInTradingAsset := mtp.Custody
+	//if mtp.Position == types.Position_SHORT {
+	//	positionSizeInTradingAsset = mtp.Liabilities
+	//}
+
 	return &types.QueryCloseEstimationResponse{
 		Position:                      mtp.Position,
 		PositionSize:                  sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
