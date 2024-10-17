@@ -17,7 +17,7 @@ func (k Keeper) UpdatedLeverage(ctx sdk.Context, mtp types.MTP) (sdk.Dec, error)
 	collateral_in_usdc := mtp.Collateral.ToLegacyDec()
 	if mtp.CollateralAsset != baseCurrency {
 		price := k.amm.EstimatePrice(ctx, mtp.CollateralAsset, baseCurrency)
-		collateral_in_usdc = mtp.Liabilities.ToLegacyDec().Mul(price)
+		collateral_in_usdc = mtp.Collateral.ToLegacyDec().Mul(price)
 	}
 	liablites := mtp.Liabilities.ToLegacyDec()
 	if mtp.LiabilitiesAsset != baseCurrency {
