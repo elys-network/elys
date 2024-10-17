@@ -850,6 +850,13 @@ func TestOpenLong_Long10XAtom1000Usdc(t *testing.T) {
 
 	resp, _, _ := mk.GetMTPsForAddressWithPagination(ctx, addr[0], nil)
 	require.Equal(t, resp[0].Pnl, sdk.NewDec(1_380_312708))
+	require.Equal(t, resp[0].Fees, &types.Fees{
+		TotalFeesBaseCurrency:            math.ZeroInt(),
+		BorrowInterestFeesLiabilityAsset: math.ZeroInt(),
+		BorrowInterestFeesBaseCurrency:   math.ZeroInt(),
+		FundingFeesLiquidityAsset:        math.ZeroInt(),
+		FundingFeesBaseCurrency:          math.ZeroInt(),
+	})
 }
 
 func TestOpenLongConsolidate_Success(t *testing.T) {
