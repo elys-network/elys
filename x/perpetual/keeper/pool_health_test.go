@@ -5,7 +5,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (suite *PerpetualKeeperTestSuite) TestCheckPoolHealth() {
+func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 	suite.ResetSuite()
 	params := types.DefaultParams()
 	params.PoolOpenThreshold = sdk.OneDec()
@@ -59,7 +59,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckPoolHealth() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			err = suite.app.PerpetualKeeper.CheckPoolHealth(suite.ctx, 1)
+			err = suite.app.PerpetualKeeper.CheckLowPoolHealth(suite.ctx, 1)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

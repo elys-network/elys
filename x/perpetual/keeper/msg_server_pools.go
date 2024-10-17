@@ -31,11 +31,12 @@ func (k msgServer) EnablePool(goCtx context.Context, msg *types.MsgEnablePool) (
 	}
 
 	pool = types.NewPool(msg.PoolId)
-	err = pool.InitiatePool(ctx, &ammPool)
+	err = pool.InitiatePool(&ammPool)
 	if err != nil {
 		return nil, err
 	}
 
+	// TODO Should only one pool for an asset pair should be allowed. Need to think best to do at leverage lp module or here?
 	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {

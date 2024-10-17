@@ -119,7 +119,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		executionPrice = liabilitiesInCollateralTokenIn.Amount.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
 		mtp.Custody = custodyAmount
 	}
-	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(mtp)
+	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(*mtp)
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
 	mtp.TakeProfitPrice = req.TakeProfitPrice
 	mtp.OpenPrice, err = k.CalOpenPrice(ctx, mtp, ammPool, baseCurrency)
@@ -168,7 +168,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	} else {
 		// if position is long then:
 		// if collateral is not in base currency
-		if types.IsTakeProfitPriceInifite(mtp) || mtp.TakeProfitPrice.IsZero() {
+		if types.IsTakeProfitPriceInfinite(*mtp) || mtp.TakeProfitPrice.IsZero() {
 			estimatedPnLAmount = math.ZeroInt()
 		} else {
 			if req.Collateral.Denom != baseCurrency {

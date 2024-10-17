@@ -73,7 +73,7 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 
 }
 
-// need to make sure unpaid liability
+// need to make sure unpaid liability interest is paid
 func (k Keeper) CalcReturnAmount(mtp types.MTP, repayAmount math.Int, closingRatio sdk.Dec) (returnAmount math.Int, err error) {
 	// have is what user is trying to close
 	// For long, mtp.Custody is trading asset, unit of repay amount here is custody asset

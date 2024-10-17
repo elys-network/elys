@@ -1,5 +1,5 @@
 package types
 
-func IsTakeProfitPriceInifite(mtp *MTP) bool {
+func IsTakeProfitPriceInfinite(mtp MTP) bool {
 	return mtp.TakeProfitPrice.Equal(TakeProfitPriceDefault)
 }

@@ -47,7 +47,7 @@ func (k Keeper) OnPoolDisable(ctx sdk.Context, ammPool ammtypes.Pool) error {
 
 	for _, nonAmmPoolToken := range accountedPool.NonAmmPoolTokens {
 		if !nonAmmPoolToken.Amount.IsZero() {
-			return fmt.Errorf("accounted pool have non-zero non amm pool balance left")
+			return fmt.Errorf("all positions are not closed; accounted pool have non-zero non amm pool balance left")
 		}
 	}
 

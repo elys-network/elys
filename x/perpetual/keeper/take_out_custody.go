@@ -7,7 +7,7 @@ import (
 )
 
 func (k Keeper) TakeOutCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool, amount math.Int) error {
-	err := pool.UpdateCustody(ctx, mtp.CustodyAsset, amount, false, mtp.Position)
+	err := pool.UpdateCustody(mtp.CustodyAsset, amount, false, mtp.Position)
 	if err != nil {
 		return err
 	}

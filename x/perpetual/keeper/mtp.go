@@ -66,7 +66,7 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (t
 	return mtp, nil
 }
 
-func (k Keeper) DoesMTPExist(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) bool {
+func (k Keeper) CheckMTPExist(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) bool {
 	key := types.GetMTPKey(mtpAddress, id)
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(key)

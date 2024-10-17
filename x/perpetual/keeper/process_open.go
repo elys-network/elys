@@ -8,20 +8,20 @@ import (
 
 func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
 	// Fetch the pool associated with the given pool ID.
-	pool, found := k.OpenDefineAssetsChecker.GetPool(ctx, poolId)
+	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, mtp.TradingAsset)
+		return nil, errorsmod.Wrapf(types.ErrPoolDoesNotExist, "pool id %d", poolId)
 	}
 
 	// Check if the pool is enabled.
-	if !k.OpenDefineAssetsChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, errorsmod.Wrap(types.ErrMTPDisabled, mtp.TradingAsset)
+	if !k.IsPoolEnabled(ctx, poolId) || k.IsPoolClosed(ctx, poolId) {
+		return nil, errorsmod.Wrapf(types.ErrMTPDisabled, "pool id %d", poolId)
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
 	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
-		return nil, err
+		return nil, errorsmod.Wrapf(err, "amm pool id %d", poolId)
 	}
 
 	// Calculate the leveraged amount based on the collateral provided and the leverage.

@@ -133,7 +133,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	mtp.Custody = custodyAmount
 
 	// calculate mtp take profit custody, delta y_tp_c = delta x_l / take profit price (take profit custody = liabilities / take profit price)
-	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(mtp)
+	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(*mtp)
 
 	// calculate mtp take profit liabilities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
@@ -163,19 +163,19 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	}
 
 	// All liability has to be in liabilities asset
-	err = pool.UpdateLiabilities(ctx, mtp.LiabilitiesAsset, mtp.Liabilities, true, mtp.Position)
+	err = pool.UpdateLiabilities(mtp.LiabilitiesAsset, mtp.Liabilities, true, mtp.Position)
 	if err != nil {
 		return err
 	}
 
 	// All take profit liability has to be in liabilities asset
-	err = pool.UpdateTakeProfitLiabilities(ctx, mtp.LiabilitiesAsset, mtp.TakeProfitLiabilities, true, mtp.Position)
+	err = pool.UpdateTakeProfitLiabilities(mtp.LiabilitiesAsset, mtp.TakeProfitLiabilities, true, mtp.Position)
 	if err != nil {
 		return err
 	}
 
 	// All take profit custody has to be in custody asset
-	err = pool.UpdateTakeProfitCustody(ctx, mtp.CustodyAsset, mtp.TakeProfitCustody, true, mtp.Position)
+	err = pool.UpdateTakeProfitCustody(mtp.CustodyAsset, mtp.TakeProfitCustody, true, mtp.Position)
 	if err != nil {
 		return err
 	}
@@ -185,50 +185,8 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	return k.SetMTP(ctx, mtp)
 }
 
-func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) error {
-	pool.Health = k.CalculatePoolHealth(ctx, pool)
-	k.SetPool(ctx, *pool)
-
-	return nil
-}
-
-func (k Keeper) CalculatePoolHealthByPosition(ctx sdk.Context, pool *types.Pool, ammPool ammtypes.Pool, position types.Position) sdk.Dec {
-	poolAssets := pool.GetPoolAssets(position)
-	H := sdk.NewDec(1)
-	for _, asset := range *poolAssets {
-
-		ammBalance, err := ammPool.GetAmmPoolBalance(asset.AssetDenom)
-		if err != nil {
-			return sdk.ZeroDec()
-		}
-
-		balance := ammBalance.Sub(asset.Custody).ToLegacyDec()
-		liabilities := asset.Liabilities.ToLegacyDec()
-
-		if balance.Add(liabilities).IsZero() {
-			return sdk.ZeroDec()
-		}
-
-		mul := balance.Quo(balance.Add(liabilities))
-		H = H.Mul(mul)
-	}
-	return H
-}
-
-func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
-	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
-	if !found {
-		return sdk.ZeroDec()
-	}
-
-	H := k.CalculatePoolHealthByPosition(ctx, pool, ammPool, types.Position_LONG)
-	H = H.Mul(k.CalculatePoolHealthByPosition(ctx, pool, ammPool, types.Position_SHORT))
-
-	return H
-}
-
 func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) error {
-	err := pool.UpdateCustody(ctx, mtp.CustodyAsset, mtp.Custody, true, mtp.Position)
+	err := pool.UpdateCustody(mtp.CustodyAsset, mtp.Custody, true, mtp.Position)
 	if err != nil {
 		return nil
 	}
@@ -238,7 +196,7 @@ func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) 
 	return nil
 }
 
-func (k Keeper) BorrowInterestRateComputationByPosition(ctx sdk.Context, pool types.Pool, ammPool ammtypes.Pool, position types.Position) (sdk.Dec, error) {
+func (k Keeper) BorrowInterestRateComputationByPosition(pool types.Pool, ammPool ammtypes.Pool, position types.Position) (sdk.Dec, error) {
 	poolAssets := pool.GetPoolAssets(position)
 	targetBorrowInterestRate := sdk.OneDec()
 	for _, asset := range *poolAssets {
@@ -279,11 +237,11 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 	prevBorrowInterestRate := pool.BorrowInterestRate
 
 	targetBorrowInterestRate := healthGainFactor
-	targetBorrowInterestRateLong, err := k.BorrowInterestRateComputationByPosition(ctx, pool, ammPool, types.Position_LONG)
+	targetBorrowInterestRateLong, err := k.BorrowInterestRateComputationByPosition(pool, ammPool, types.Position_LONG)
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}
-	targetBorrowInterestRateShort, err := k.BorrowInterestRateComputationByPosition(ctx, pool, ammPool, types.Position_SHORT)
+	targetBorrowInterestRateShort, err := k.BorrowInterestRateComputationByPosition(pool, ammPool, types.Position_SHORT)
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}

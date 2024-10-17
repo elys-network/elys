@@ -23,7 +23,7 @@ func NewPool(poolId uint64) Pool {
 }
 
 // Get relevant pool asset array based on position direction
-func (p *Pool) GetPoolAssets(position Position) *[]PoolAsset {
+func (p Pool) GetPoolAssets(position Position) *[]PoolAsset {
 	if position == Position_LONG {
 		return &p.PoolAssetsLong
 	} else {
@@ -32,7 +32,7 @@ func (p *Pool) GetPoolAssets(position Position) *[]PoolAsset {
 }
 
 // Get relevant pool asset based on position direction and asset denom
-func (p *Pool) GetPoolAsset(position Position, assetDenom string) *PoolAsset {
+func (p Pool) GetPoolAsset(position Position, assetDenom string) *PoolAsset {
 	poolAssets := p.GetPoolAssets(position)
 	for i, asset := range *poolAssets {
 		if asset.AssetDenom == assetDenom {
@@ -43,7 +43,7 @@ func (p *Pool) GetPoolAsset(position Position, assetDenom string) *PoolAsset {
 }
 
 // Update the asset liabilities
-func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
+func (p *Pool) UpdateLiabilities(assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
@@ -59,7 +59,7 @@ func (p *Pool) UpdateLiabilities(ctx sdk.Context, assetDenom string, amount math
 }
 
 // Update the asset take profit liabilities
-func (p *Pool) UpdateTakeProfitLiabilities(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
+func (p *Pool) UpdateTakeProfitLiabilities(assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
@@ -75,7 +75,7 @@ func (p *Pool) UpdateTakeProfitLiabilities(ctx sdk.Context, assetDenom string, a
 }
 
 // Update the asset take profit custody
-func (p *Pool) UpdateTakeProfitCustody(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
+func (p *Pool) UpdateTakeProfitCustody(assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
@@ -91,7 +91,7 @@ func (p *Pool) UpdateTakeProfitCustody(ctx sdk.Context, assetDenom string, amoun
 }
 
 // Update the asset custody
-func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool, position Position) error {
+func (p *Pool) UpdateCustody(assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)
 	if poolAsset == nil {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
@@ -107,7 +107,7 @@ func (p *Pool) UpdateCustody(ctx sdk.Context, assetDenom string, amount math.Int
 }
 
 // Update the fees collected
-func (p *Pool) UpdateFeesCollected(ctx sdk.Context, assetDenom string, amount math.Int, isIncrease bool) error {
+func (p *Pool) UpdateFeesCollected(assetDenom string, amount math.Int, isIncrease bool) error {
 	if isIncrease {
 		for _, coin := range p.FeesCollected {
 			if coin.Denom == assetDenom {
@@ -129,7 +129,7 @@ func (p *Pool) UpdateFeesCollected(ctx sdk.Context, assetDenom string, amount ma
 }
 
 // Initialite pool asset according to its corresponding amm pool assets.
-func (p *Pool) InitiatePool(ctx sdk.Context, ammPool *ammtypes.Pool) error {
+func (p *Pool) InitiatePool(ammPool *ammtypes.Pool) error {
 	if ammPool == nil {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidType, "invalid amm pool")
 	}

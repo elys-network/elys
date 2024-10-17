@@ -70,12 +70,12 @@ func (_c *OpenChecker_CheckMaxOpenPositions_Call) RunAndReturn(run func(types.Co
 	return _c
 }
 
-// CheckPoolHealth provides a mock function with given fields: ctx, poolId
-func (_m *OpenChecker) CheckPoolHealth(ctx types.Context, poolId uint64) error {
+// CheckLowPoolHealth provides a mock function with given fields: ctx, poolId
+func (_m *OpenChecker) CheckLowPoolHealth(ctx types.Context, poolId uint64) error {
 	ret := _m.Called(ctx, poolId)
 
 	if len(ret) == 0 {
-		panic("no return value specified for CheckPoolHealth")
+		panic("no return value specified for CheckLowPoolHealth")
 	}
 
 	var r0 error
@@ -88,31 +88,31 @@ func (_m *OpenChecker) CheckPoolHealth(ctx types.Context, poolId uint64) error {
 	return r0
 }
 
-// OpenChecker_CheckPoolHealth_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckPoolHealth'
-type OpenChecker_CheckPoolHealth_Call struct {
+// OpenChecker_CheckLowPoolHealth_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckLowPoolHealth'
+type OpenChecker_CheckLowPoolHealth_Call struct {
 	*mock.Call
 }
 
-// CheckPoolHealth is a helper method to define mock.On call
+// CheckLowPoolHealth is a helper method to define mock.On call
 //   - ctx types.Context
 //   - poolId uint64
-func (_e *OpenChecker_Expecter) CheckPoolHealth(ctx interface{}, poolId interface{}) *OpenChecker_CheckPoolHealth_Call {
-	return &OpenChecker_CheckPoolHealth_Call{Call: _e.mock.On("CheckPoolHealth", ctx, poolId)}
+func (_e *OpenChecker_Expecter) CheckLowPoolHealth(ctx interface{}, poolId interface{}) *OpenChecker_CheckLowPoolHealth_Call {
+	return &OpenChecker_CheckLowPoolHealth_Call{Call: _e.mock.On("CheckLowPoolHealth", ctx, poolId)}
 }
 
-func (_c *OpenChecker_CheckPoolHealth_Call) Run(run func(ctx types.Context, poolId uint64)) *OpenChecker_CheckPoolHealth_Call {
+func (_c *OpenChecker_CheckLowPoolHealth_Call) Run(run func(ctx types.Context, poolId uint64)) *OpenChecker_CheckLowPoolHealth_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(uint64))
 	})
 	return _c
 }
 
-func (_c *OpenChecker_CheckPoolHealth_Call) Return(_a0 error) *OpenChecker_CheckPoolHealth_Call {
+func (_c *OpenChecker_CheckLowPoolHealth_Call) Return(_a0 error) *OpenChecker_CheckLowPoolHealth_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *OpenChecker_CheckPoolHealth_Call) RunAndReturn(run func(types.Context, uint64) error) *OpenChecker_CheckPoolHealth_Call {
+func (_c *OpenChecker_CheckLowPoolHealth_Call) RunAndReturn(run func(types.Context, uint64) error) *OpenChecker_CheckLowPoolHealth_Call {
 	_c.Call.Return(run)
 	return _c
 }

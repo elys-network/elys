@@ -9,6 +9,8 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	"github.com/stretchr/testify/require"
+	"testing"
 
 	// oracletypes "github.com/elys-network/elys/x/oracle/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -16,10 +18,8 @@ import (
 	// "github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	simapp "github.com/elys-network/elys/app"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/keeper"
-	"github.com/elys-network/elys/x/perpetual/types"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
@@ -204,7 +204,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 	suite.Require().NoError(err)
 
 	mtps = mk.GetAllMTPs(ctx)
-	require.Equal(t, len(mtps), 0)
+	suite.Require().Equal(len(mtps), 0)
 }
 
 func TestCheckAndCloseAtTakeProfit(t *testing.T) {
@@ -309,6 +309,7 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 		addr[0].String(),
 		types.Position_LONG,
 		sdk.NewDec(5),
+		1,
 		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		sdk.MustNewDecFromStr("8"),
@@ -349,7 +350,7 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 	require.NoError(t, err)
 
 	mtps = mk.GetAllMTPs(ctx)
-	suite.Require().Equal(len(mtps), 0)
+	require.Equal(t, len(mtps), 0)
 }
 
 func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {

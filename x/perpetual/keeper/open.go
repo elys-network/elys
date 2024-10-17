@@ -61,7 +61,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return nil, errorsmod.Wrap(types.ErrMTPDisabled, "pool is disabled or closed")
 	}
 
-	if err = k.CheckPoolHealth(ctx, poolId); err != nil {
+	if err = k.CheckLowPoolHealth(ctx, poolId); err != nil {
 		return nil, err
 	}
 
@@ -80,7 +80,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, baseCurrency)
 	}
 
-	if err = k.CheckPoolHealth(ctx, poolId); err != nil {
+	if err = k.CheckLowPoolHealth(ctx, poolId); err != nil {
 		return nil, err
 	}
 

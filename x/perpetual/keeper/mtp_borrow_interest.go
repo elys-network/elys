@@ -17,9 +17,8 @@ func (k Keeper) GetBorrowInterestAmount(ctx sdk.Context, mtp *types.MTP) math.In
 	}
 
 	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, mtp.AmmPoolId, mtp.TakeProfitBorrowFactor)
-	borrowInterestRateWithProfitFactor := borrowInterestRate.Mul(mtp.TakeProfitBorrowFactor)
 	totalLiability := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
-	borrowInterestPayment := totalLiability.ToLegacyDec().Mul(borrowInterestRateWithProfitFactor).TruncateInt()
+	borrowInterestPayment := totalLiability.ToLegacyDec().Mul(borrowInterestRate).TruncateInt()
 	minBorrowInterestAmount := k.GetParams(ctx).MinBorrowInterestAmount
 	return sdk.MaxInt(borrowInterestPayment, minBorrowInterestAmount)
 }
@@ -83,7 +82,7 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		k.EmitFundPayment(ctx, mtp, takeAmount, mtp.CustodyAsset, types.EventIncrementalPayFund)
 	}
 
-	err = pool.UpdateCustody(ctx, mtp.CustodyAsset, borrowInterestPaymentInCustody, false, mtp.Position)
+	err = pool.UpdateCustody(mtp.CustodyAsset, borrowInterestPaymentInCustody, false, mtp.Position)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}

@@ -26,8 +26,7 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		}
 	}
 
-	// owe amount is liability amount of the closing position
-	err := pool.UpdateLiabilities(ctx, mtp.LiabilitiesAsset, payingLiabilities, false, mtp.Position)
+	err := pool.UpdateLiabilities(mtp.LiabilitiesAsset, payingLiabilities, false, mtp.Position)
 	if err != nil {
 		return err
 	}
@@ -40,12 +39,12 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 	oldTakeProfitLiabilities := mtp.TakeProfitLiabilities
 	mtp.TakeProfitLiabilities = mtp.TakeProfitLiabilities.Sub(mtp.TakeProfitLiabilities.ToLegacyDec().Mul(closingRatio).TruncateInt())
 
-	err = pool.UpdateTakeProfitLiabilities(ctx, mtp.LiabilitiesAsset, oldTakeProfitLiabilities.Sub(mtp.TakeProfitLiabilities), false, mtp.Position)
+	err = pool.UpdateTakeProfitLiabilities(mtp.LiabilitiesAsset, oldTakeProfitLiabilities.Sub(mtp.TakeProfitLiabilities), false, mtp.Position)
 	if err != nil {
 		return err
 	}
 
-	err = pool.UpdateTakeProfitCustody(ctx, mtp.CustodyAsset, oldTakeProfitCustody.Sub(mtp.TakeProfitCustody), false, mtp.Position)
+	err = pool.UpdateTakeProfitCustody(mtp.CustodyAsset, oldTakeProfitCustody.Sub(mtp.TakeProfitCustody), false, mtp.Position)
 	if err != nil {
 		return err
 	}

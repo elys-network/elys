@@ -34,7 +34,7 @@ type PoolChecker interface {
 type OpenChecker interface {
 	CheckUserAuthorization(ctx sdk.Context, msg *MsgOpen) error
 	CheckMaxOpenPositions(ctx sdk.Context) error
-	CheckPoolHealth(ctx sdk.Context, poolId uint64) error
+	CheckLowPoolHealth(ctx sdk.Context, poolId uint64) error
 	OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *MsgOpen, baseCurrency string, isBroker bool) (*MTP, error)
 	UpdateOpenPrice(ctx sdk.Context, mtp *MTP, ammPool ammtypes.Pool, baseCurrency string) error
 	EmitOpenEvent(ctx sdk.Context, mtp *MTP)

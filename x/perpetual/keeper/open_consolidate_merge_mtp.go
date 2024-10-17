@@ -9,7 +9,7 @@ func (k Keeper) OpenConsolidateMergeMtp(ctx sdk.Context, poolId uint64, existing
 	// If Take Profit Price is allowed when adding a new position, the new price for the entire position should be calculated as a weighted Take Profit Price, weighted by the respective positions.
 	// If the previous position is 100 ATOM with a Take Profit Price of 10, and the new position is 50 ATOM with a Take Profit Price of 7, the weighted Take Profit Price should be calculated as:
 	// (100 * 10 + 50 * 7) / (100 + 50) = 9
-	if !types.IsTakeProfitPriceInifite(newMtp) {
+	if !types.IsTakeProfitPriceInfinite(*newMtp) {
 		existingCustodyAmt := existingMtp.Custody.ToLegacyDec()
 		newCustodyAmt := newMtp.Custody.ToLegacyDec()
 
@@ -24,12 +24,12 @@ func (k Keeper) OpenConsolidateMergeMtp(ctx sdk.Context, poolId uint64, existing
 	existingMtp.Custody = existingMtp.Custody.Add(newMtp.Custody)
 	existingMtp.Liabilities = existingMtp.Liabilities.Add(newMtp.Liabilities)
 	// Set existing MTP
-	if err := k.OpenDefineAssetsChecker.SetMTP(ctx, existingMtp); err != nil {
+	if err := k.SetMTP(ctx, existingMtp); err != nil {
 		return nil, err
 	}
 
 	// Destroy new MTP
-	if err := k.OpenDefineAssetsChecker.DestroyMTP(ctx, newMtp.GetAccountAddress(), newMtp.Id); err != nil {
+	if err := k.DestroyMTP(ctx, newMtp.GetAccountAddress(), newMtp.Id); err != nil {
 		return nil, err
 	}
 

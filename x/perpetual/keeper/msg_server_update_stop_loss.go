@@ -31,7 +31,10 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 	}
 
 	mtp.StopLossPrice = msg.Price
-	k.SetMTP(ctx, &mtp)
+	err = k.SetMTP(ctx, &mtp)
+	if err != nil {
+		return nil, err
+	}
 
 	event := sdk.NewEvent(types.EventOpen,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),

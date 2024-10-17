@@ -59,8 +59,8 @@ func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AssetPro
 		nil,
 		nil,
 		assetProfileKeeper,
-		parameterKeeper,
 		nil,
+		parameterKeeper,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

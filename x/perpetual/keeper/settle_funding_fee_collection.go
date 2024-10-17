@@ -42,7 +42,7 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 		}
 
 		// increase fees collected
-		err := pool.UpdateFeesCollected(ctx, mtp.CustodyAsset, takeAmountCustodyAmount, true)
+		err := pool.UpdateFeesCollected(mtp.CustodyAsset, takeAmountCustodyAmount, true)
 		if err != nil {
 			return err
 		}
@@ -54,7 +54,7 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 		mtp.FundingFeePaidCustody = mtp.FundingFeePaidCustody.Add(takeAmountCustodyAmount)
 
 		// update pool custody balance
-		err = pool.UpdateCustody(ctx, mtp.CustodyAsset, takeAmountCustodyAmount, false, mtp.Position)
+		err = pool.UpdateCustody(mtp.CustodyAsset, takeAmountCustodyAmount, false, mtp.Position)
 		if err != nil {
 			return err
 		}
@@ -66,7 +66,7 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 
 		// increase fees collected
 		// Note: fees is collected in liabilities asset
-		err := pool.UpdateFeesCollected(ctx, mtp.LiabilitiesAsset, takeAmountLiabilityAmount, true)
+		err := pool.UpdateFeesCollected(mtp.LiabilitiesAsset, takeAmountLiabilityAmount, true)
 		if err != nil {
 			return err
 		}
@@ -85,7 +85,7 @@ func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool
 		mtp.FundingFeePaidCustody = mtp.FundingFeePaidCustody.Add(custodyAmt)
 
 		// update pool custody balance
-		err = pool.UpdateCustody(ctx, mtp.CustodyAsset, custodyAmt, false, mtp.Position)
+		err = pool.UpdateCustody(mtp.CustodyAsset, custodyAmt, false, mtp.Position)
 		if err != nil {
 			return err
 		}

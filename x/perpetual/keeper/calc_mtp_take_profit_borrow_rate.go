@@ -6,7 +6,7 @@ import (
 )
 
 func (k Keeper) UpdateMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP) error {
-	takeProfitBorrowFactor, err := k.CalcMTPTakeProfitBorrowFactor(ctx, mtp)
+	takeProfitBorrowFactor, err := k.CalcMTPTakeProfitBorrowFactor(*mtp)
 	if err != nil {
 		return err
 	}
@@ -14,17 +14,17 @@ func (k Keeper) UpdateMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP)
 	return nil
 }
 
-func (k Keeper) CalcMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP) (sdk.Dec, error) {
+func (k Keeper) CalcMTPTakeProfitBorrowFactor(mtp types.MTP) (sdk.Dec, error) {
 	// Ensure mtp.Custody is not zero to avoid division by zero
 	if mtp.Custody.IsZero() {
 		return sdk.ZeroDec(), types.ErrZeroCustodyAmount
 	}
 
-	if types.IsTakeProfitPriceInifite(mtp) || mtp.TakeProfitPrice.IsZero() {
+	if types.IsTakeProfitPriceInfinite(mtp) || mtp.TakeProfitPrice.IsZero() {
 		return sdk.OneDec(), nil
 	}
 
-	// Calculate the borrow rate for this takeProfitCustody = 1 - (liabilites / (custody * take profit price))
+	// Calculate the borrow rate for this takeProfitCustody = 1 - (liabilities / (custody * take profit price))
 	takeProfitBorrowFactor := sdk.OneDec().Sub(mtp.Liabilities.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec().Mul(mtp.TakeProfitPrice)))
 
 	return takeProfitBorrowFactor, nil
