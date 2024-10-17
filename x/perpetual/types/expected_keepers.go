@@ -137,6 +137,7 @@ type AmmKeeper interface {
 		priceImpact sdk.Dec,
 		err error,
 	)
+	EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
