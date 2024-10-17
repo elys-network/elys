@@ -88,7 +88,7 @@ func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, p
 	poolCreator := addr[0]
 	ammPool := suite.SetAndGetAmmPool(poolCreator, poolId, useOracle, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, baseTokenAmount, assetAmount)
 	pool := types.NewPool(poolId)
-	err := pool.InitiatePool(suite.ctx, &ammPool)
+	err := pool.InitiatePool(&ammPool)
 	suite.Require().NoError(err)
 	pool.Enabled = true
 	suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)

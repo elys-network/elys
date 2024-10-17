@@ -286,6 +286,18 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 
 	pools := amm.GetAllPool(ctx)
 
+	msgServer := keeper.NewMsgServerImpl(*mk)
+	leverageLpPool := leveragelpmoduletypes.NewPool(poolId)
+	leverageLpPool.Enabled = true
+	leverageLpPool.Closed = false
+	app.LeveragelpKeeper.SetPool(ctx, leverageLpPool)
+	enablePoolMsg := types.MsgEnablePool{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		PoolId:    1,
+	}
+	_, err = msgServer.EnablePool(ctx, &enablePoolMsg)
+	require.NoError(t, err)
+
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
@@ -298,7 +310,10 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 	poolAddress := sdk.MustAccAddressFromBech32(pool.GetAddress())
 	require.NoError(t, err)
 
-	app.BankKeeper.SendCoins(ctx, addr[0], poolAddress, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000000))))
+	err = app.BankKeeper.SendCoins(ctx, addr[0], poolAddress, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000000))))
+	if err != nil {
+		return
+	}
 	// Balance check before create a perpetual position
 	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
 	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100000000000))

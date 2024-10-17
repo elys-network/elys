@@ -116,10 +116,10 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(9360892980)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600000000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.002903302158939339"),
-		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000001"),
-		FundingRate:        sdk.MustNewDecFromStr("0.00000000000000000"),
+		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
+		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        sdk.MustNewDecFromStr("0.196867461848192691"),
-		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.LegacyMustNewDecFromStr("0.0001").TruncateInt()), // Have to do this way, not ZeroDec because TruncateInt() changes structure even though value is same
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.ZeroInt()),
 		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
@@ -233,10 +233,10 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, types.NewParams().MinBorrowInterestAmount),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.002201335983550402"),
-		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000001"),
+		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        sdk.MustNewDecFromStr("0.197432460000000000"),
-		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.LegacyMustNewDecFromStr("0.0001").TruncateInt()), // Have to do this way, not ZeroDec because TruncateInt() changes structure even though value is same
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.ZeroInt()),
 		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
@@ -354,10 +354,10 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(819738735)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600_000_000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.048575000399137173"),
-		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000001"),
+		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        sdk.MustNewDecFromStr("0.053103606292294592"),
-		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.LegacyMustNewDecFromStr("0.0001").TruncateInt()), // Have to do this way, not ZeroDec because TruncateInt() changes structure even though value is same
+		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.ZeroInt()),
 		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
 	}, res)
 }
@@ -479,17 +479,17 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		PositionSize:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(500000000)),
-		OpenPrice:          sdk.MustNewDecFromStr("0.992492115046784997"),
+		OpenPrice:          sdk.MustNewDecFromStr("4.986803995499919708"),
 		TakeProfitPrice:    sdk.MustNewDecFromStr("2.000000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("1.218015004245964982"),
-		EstimatedPnl:       sdk.Coin{ptypes.BaseCurrency, sdk.NewInt(308850380975497176)},
+		LiquidationPrice:   sdk.MustNewDecFromStr("5.994077327717856315"),
+		EstimatedPnl:       sdk.Coin{ptypes.BaseCurrency, sdk.NewInt(59577156312850828)},
 		InterestAmount:     sdk.NewCoin(ptypes.ATOM, types.NewParams().MinBorrowInterestAmount),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
-		Slippage:           sdk.MustNewDecFromStr("0.021631215392556907"),
-		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000001"),
+		Slippage:           sdk.MustNewDecFromStr("0.005962222727097097"),
+		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("-0.023132603566610585"),
-		BorrowFee:          sdk.NewCoin(ptypes.ATOM, math.LegacyMustNewDecFromStr("0.0001").TruncateInt()), // Have to do this way, not ZeroDec because TruncateInt() changes structure even though value is same
+		PriceImpact:        sdk.MustNewDecFromStr("-0.007004991056599861"),
+		BorrowFee:          sdk.NewCoin(ptypes.ATOM, math.ZeroInt()),
 		FundingFee:         sdk.NewCoin(ptypes.ATOM, sdk.NewInt(0)),
 	}
 	require.Equal(t, expectedRes, res)

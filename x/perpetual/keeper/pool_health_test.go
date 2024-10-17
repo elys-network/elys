@@ -24,7 +24,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 		},
 		{
 			"Pool not enabled",
-			"pool is disabled or closed",
+			"pool (1) is disabled or closed",
 			func() {
 				pool := types.NewPool(1)
 				pool.Enabled = false
@@ -34,7 +34,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 		},
 		{
 			"Pool not closed",
-			"pool is disabled or closed",
+			"pool (1) is disabled or closed",
 			func() {
 				pool := types.NewPool(1)
 				pool.Enabled = true
@@ -45,7 +45,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 		// "Pool health is nil" case is not possible because Getter function always give 0 value of health
 		{
 			"Pool health is low",
-			"pool health too low to open new positions",
+			"pool (1) health too low to open new positions",
 			func() {
 				pool := types.NewPool(1)
 				pool.Enabled = true
