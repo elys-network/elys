@@ -9,31 +9,28 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 	m.keeper.DeleteAllFundingRate(ctx)
 	m.keeper.DeleteAllInterestRate(ctx)
 
-	// Update params
-	params := m.keeper.GetLegacyParams(ctx)
-
 	newParams := types.Params{
-		LeverageMax:                                    params.LeverageMax,
-		BorrowInterestRateMax:                          params.BorrowInterestRateMax,
-		BorrowInterestRateMin:                          params.BorrowInterestRateMin,
+		LeverageMax:                                    sdk.MustNewDecFromStr("25"),
+		BorrowInterestRateMax:                          sdk.NewDecWithPrec(27, 7), // 0.000002700000000000
+		BorrowInterestRateMin:                          sdk.NewDecWithPrec(3, 8),  // 0.000000030000000000
 		MinBorrowInterestAmount:                        sdk.ZeroInt(),
-		BorrowInterestRateIncrease:                     params.BorrowInterestRateIncrease,
-		BorrowInterestRateDecrease:                     params.BorrowInterestRateDecrease,
-		HealthGainFactor:                               params.HealthGainFactor,
-		EpochLength:                                    params.EpochLength,
-		MaxOpenPositions:                               params.MaxOpenPositions,
-		PoolOpenThreshold:                              params.PoolOpenThreshold,
-		ForceCloseFundPercentage:                       params.ForceCloseFundPercentage,
-		ForceCloseFundAddress:                          params.ForceCloseFundAddress,
-		IncrementalBorrowInterestPaymentFundPercentage: params.IncrementalBorrowInterestPaymentFundPercentage,
-		IncrementalBorrowInterestPaymentFundAddress:    params.IncrementalBorrowInterestPaymentFundAddress,
-		SafetyFactor:                                   params.SafetyFactor,
-		IncrementalBorrowInterestPaymentEnabled:        params.IncrementalBorrowInterestPaymentEnabled,
-		WhitelistingEnabled:                            params.WhitelistingEnabled,
-		InvariantCheckEpoch:                            params.InvariantCheckEpoch,
-		TakeProfitBorrowInterestRateMin:                params.TakeProfitBorrowInterestRateMin,
-		SwapFee:                                        params.SwapFee,
-		MaxLimitOrder:                                  params.MaxLimitOrder,
+		BorrowInterestRateIncrease:                     sdk.NewDecWithPrec(33, 10), // 0.000000003300000000
+		BorrowInterestRateDecrease:                     sdk.NewDecWithPrec(33, 10), // 0.000000003300000000
+		HealthGainFactor:                               sdk.NewDecWithPrec(22, 8),  // 0.000000220000000000
+		EpochLength:                                    1,
+		MaxOpenPositions:                               3000,
+		PoolOpenThreshold:                              sdk.MustNewDecFromStr("0.65"),
+		ForceCloseFundPercentage:                       sdk.MustNewDecFromStr("1"),
+		ForceCloseFundAddress:                          "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
+		IncrementalBorrowInterestPaymentFundPercentage: sdk.MustNewDecFromStr("0.1"),
+		IncrementalBorrowInterestPaymentFundAddress:    "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
+		SafetyFactor:                                   sdk.MustNewDecFromStr("1.05"),
+		IncrementalBorrowInterestPaymentEnabled:        true,
+		WhitelistingEnabled:                            false,
+		InvariantCheckEpoch:                            "day",
+		TakeProfitBorrowInterestRateMin:                sdk.MustNewDecFromStr("1"),
+		SwapFee:                                        sdk.MustNewDecFromStr("0.001"),
+		MaxLimitOrder:                                  500,
 		FixedFundingRate:                               sdk.NewDecWithPrec(30, 2), // set to 30%
 	}
 
