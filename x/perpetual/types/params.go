@@ -2,17 +2,16 @@ package types
 
 import (
 	"cosmossdk.io/math"
-	fmt "fmt"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
 
-var ZeroAddress = authtypes.NewModuleAddress("zero").String()
+var ZeroAddress = "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
 
 var (
 	KeyLeverageMax                                    = []byte("LeverageMax")
