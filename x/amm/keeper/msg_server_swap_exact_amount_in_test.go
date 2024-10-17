@@ -178,7 +178,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
 
-			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.SwapExactAmountIn(
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgSwapExactAmountIn{
@@ -204,7 +204,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 }
 
 func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
-	suite.SetupTest()
+	//suite.SetupTest()
 	suite.SetupStableCoinPrices()
 
 	senderInitBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}
@@ -272,7 +272,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 
 	cacheCtx, _ := suite.ctx.CacheContext()
-	msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
+	msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 	resp, err := msgServer.SwapExactAmountIn(
 		sdk.WrapSDKContext(cacheCtx),
 		&types.MsgSwapExactAmountIn{

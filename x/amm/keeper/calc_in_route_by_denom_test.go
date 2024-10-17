@@ -8,12 +8,12 @@ import (
 )
 
 func TestCalcInRouteByDenom(t *testing.T) {
-	app := simapp.InitElysTestApp(initChain)
+	app := simapp.InitElysTestApp(initChain, t)
 	ctx := app.BaseApp.NewContext(initChain)
 	k := app.AmmKeeper
 
 	// Setup mock pools and assets
-	SetupMockPools(&k, ctx)
+	SetupMockPools(k, ctx)
 
 	// Test direct pool route
 	route, err := k.CalcInRouteByDenom(ctx, "denom1", "denom2", "uusdc")

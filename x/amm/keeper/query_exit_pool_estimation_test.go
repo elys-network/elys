@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -11,12 +12,12 @@ import (
 )
 
 func TestExitPoolEstimation(t *testing.T) {
-	app := simapp.InitElysTestApp(initChain)
+	app := simapp.InitElysTestApp(initChain, t)
 	ctx := app.BaseApp.NewContext(initChain)
 	k := app.AmmKeeper
 
 	// Setup mock pools and assets
-	SetupMockPools(&k, ctx)
+	SetupMockPools(k, ctx)
 
 	// Try single coin exit pool on non-oracle pool (it's invalid)
 	resp, err := k.ExitPoolEstimation(ctx, &types.QueryExitPoolEstimationRequest{
