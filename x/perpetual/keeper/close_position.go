@@ -26,15 +26,21 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency
 	// This needs to be updated here to check user doesn't send more than required amount
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
 
-	borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
-	borrowInterestPaymentInCustody, _, err := k.EstimateSwapGivenOut(ctx, borrowInterestPaymentTokenIn, mtp.CustodyAsset, ammPool)
-	if err != nil {
-		return nil, sdk.ZeroInt(), err
-	}
-
-	maxAmountToCloseWhole := mtp.Custody.Sub(borrowInterestPaymentInCustody)
-	if msg.Amount.GT(maxAmountToCloseWhole) || msg.Amount.IsNegative() {
-		return nil, sdk.ZeroInt(), errorsmod.Wrap(types.ErrInvalidCloseSize, fmt.Sprintf("amount cannot be more than %s", maxAmountToCloseWhole.String()))
+	if mtp.Position == types.Position_LONG {
+		borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
+		borrowInterestPaymentInCustody, _, err := k.EstimateSwapGivenOut(ctx, borrowInterestPaymentTokenIn, mtp.CustodyAsset, ammPool)
+		if err != nil {
+			return nil, sdk.ZeroInt(), err
+		}
+		maxAmountToCloseWhole := mtp.Custody.Sub(borrowInterestPaymentInCustody)
+		if msg.Amount.GT(maxAmountToCloseWhole) || msg.Amount.IsNegative() {
+			return nil, sdk.ZeroInt(), errorsmod.Wrap(types.ErrInvalidCloseSize, fmt.Sprintf("amount cannot be more than %s", maxAmountToCloseWhole.String()))
+		}
+	} else {
+		maxAmountToCloseWhole := mtp.Liabilities
+		if msg.Amount.GT(maxAmountToCloseWhole) || msg.Amount.IsNegative() {
+			return nil, sdk.ZeroInt(), errorsmod.Wrap(types.ErrInvalidCloseSize, fmt.Sprintf("amount cannot be more than %s", maxAmountToCloseWhole.String()))
+		}
 	}
 
 	// Retrieve Pool
@@ -50,10 +56,14 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency
 
 	// Should be declared after SettleMTPBorrowInterestUnpaidLiability
 	closingRatio := msg.Amount.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())
-	// have is what user is trying to close
-	have := mtp.Custody.ToLegacyDec().Mul(closingRatio).TruncateInt()
+	if mtp.Position == types.Position_SHORT {
+		closingRatio = msg.Amount.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
+	}
+	// closingAmount is what user is trying to close
+	closingAmount := mtp.Custody.ToLegacyDec().Mul(closingRatio).TruncateInt()
+
 	// Take out custody
-	err = k.TakeOutCustody(ctx, mtp, &pool, have)
+	err = k.TakeOutCustody(ctx, mtp, &pool, closingAmount)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}

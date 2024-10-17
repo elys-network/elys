@@ -39,8 +39,6 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		return &types.QueryCloseEstimationResponse{}, err
 	}
 
-	params := k.GetParams(ctx)
-
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
 	unpaidInterestLiability := mtp.BorrowInterestUnpaidLiability
 	borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
@@ -49,6 +47,10 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		return &types.QueryCloseEstimationResponse{}, err
 	}
 	maxCloseAmount := mtp.Custody.Sub(borrowInterestPaymentInCustody)
+	if mtp.Position == types.Position_SHORT {
+		maxCloseAmount = mtp.Liabilities
+	}
+
 	closingRatio := math.LegacyOneDec()
 	if req.CloseAmount.IsPositive() && req.CloseAmount.LT(maxCloseAmount) {
 		closingRatio = req.CloseAmount.ToLegacyDec().Quo(maxCloseAmount.ToLegacyDec())
@@ -65,35 +67,20 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		return &types.QueryCloseEstimationResponse{}, err
 	}
 
-	liquidationPrice := math.LegacyZeroDec()
+	liquidationPrice := k.GetLiquidationPrice(ctx, mtp)
 	executionPrice := math.LegacyZeroDec()
-	oraclePrice := math.LegacyZeroDec()
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {
-		// liquidation_price = (safety_factor * liabilities) / custody
-		liquidationPrice = mtp.Liabilities.ToLegacyDec().Quo(params.SafetyFactor.Mul(mtp.Custody.ToLegacyDec()))
 		// executionPrice = payingLiabilities / repayAmount
 		executionPrice = payingLiabilities.ToLegacyDec().Quo(repayAmount.ToLegacyDec())
-		oracleTokenPrice, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.CustodyAsset)
-		if found {
-			oraclePrice = oracleTokenPrice.Price
-		}
 	}
 	if mtp.Position == types.Position_SHORT {
-		// liquidation_price =  Custody / (Liabilities * safety_factor)
-		liquidationPrice = mtp.Custody.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec().Mul(params.SafetyFactor))
 		// executionPrice = repayAmount / payingLiabilities
 		executionPrice = repayAmount.ToLegacyDec().Quo(payingLiabilities.ToLegacyDec())
-		oracleTokenPrice, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.LiabilitiesAsset)
-		if found {
-			oraclePrice = oracleTokenPrice.Price
-		}
 	}
 
-	priceImpact := math.LegacyZeroDec()
-	if !oraclePrice.IsZero() {
-		priceImpact = oraclePrice.Sub(executionPrice).Quo(oraclePrice)
-	}
+	tradingAssetPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+	priceImpact := tradingAssetPrice.Sub(executionPrice).Quo(tradingAssetPrice)
 
 	returnAmountAtClosingPrice := math.ZeroInt()
 	if req.ClosingPrice.IsPositive() {
@@ -118,14 +105,15 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		}
 	}
 
-	//positionSizeInTradingAsset := mtp.Custody
-	//if mtp.Position == types.Position_SHORT {
-	//	positionSizeInTradingAsset = mtp.Liabilities
-	//}
-
+	positionSize := mtp.Custody
+	positionAsset := mtp.CustodyAsset
+	if mtp.Position == types.Position_SHORT {
+		positionSize = mtp.Liabilities
+		positionAsset = mtp.LiabilitiesAsset
+	}
 	return &types.QueryCloseEstimationResponse{
 		Position:                      mtp.Position,
-		PositionSize:                  sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
+		PositionSize:                  sdk.NewCoin(positionAsset, positionSize),
 		Liabilities:                   sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
 		PriceImpact:                   priceImpact,
 		LiquidationPrice:              liquidationPrice,

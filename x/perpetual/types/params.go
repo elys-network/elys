@@ -52,7 +52,7 @@ func NewParams() Params {
 		BorrowInterestRateIncrease:                     math.LegacyMustNewDecFromStr("0.000000003300000000"),
 		BorrowInterestRateMax:                          math.LegacyMustNewDecFromStr("0.000002700000000000"),
 		BorrowInterestRateMin:                          math.LegacyMustNewDecFromStr("0.000000030000000000"),
-		MinBorrowInterestAmount:                        sdk.NewInt(5_000_000),
+		MinBorrowInterestAmount:                        sdk.NewInt(0),
 		ForceCloseFundAddress:                          authtypes.NewModuleAddress("zero").String(),
 		ForceCloseFundPercentage:                       sdk.OneDec(),
 		HealthGainFactor:                               math.LegacyMustNewDecFromStr("0.000000220000000000"),
@@ -65,6 +65,9 @@ func NewParams() Params {
 		SafetyFactor:                                   math.LegacyMustNewDecFromStr("1.050000000000000000"), // 5%
 		WhitelistingEnabled:                            false,
 		MaxLimitOrder:                                  (int64)(500),
+		MinimumLongTakeProfitPriceRatio:                math.LegacyMustNewDecFromStr("1.1"),
+		MaximumLongTakeProfitPriceRatio:                math.LegacyMustNewDecFromStr("11"),
+		MaximumShortTakeProfitPriceRatio:               math.LegacyMustNewDecFromStr("0.9"),
 	}
 }
 

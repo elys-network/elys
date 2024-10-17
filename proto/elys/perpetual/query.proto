@@ -131,7 +131,7 @@ message MtpAndPrice {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  Fees   fees                = 5;
+  Fees   fees = 5;
 }
 
 // ParamsRequest is request type for the Query/Params RPC method.
@@ -250,8 +250,6 @@ message QueryOpenEstimationResponse {
   string                   borrow_interest_rate = 13 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string                   funding_rate = 14 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string                   price_impact = 15 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin borrow_fee = 16 [(gogoproto.nullable) = false] ;
-  cosmos.base.v1beta1.Coin funding_fee = 17 [(gogoproto.nullable) = false] ;
 }
 
 message QueryGetAllToPayRequest {}

@@ -32,6 +32,20 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
+	params := k.GetParams(ctx)
+	tradingAssetPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, msg.TradingAsset)
+	ratio := msg.TakeProfitPrice.Quo(tradingAssetPrice)
+	if msg.Position == types.Position_LONG {
+		if ratio.LT(params.MinimumLongTakeProfitPriceRatio) || ratio.GT(params.MaximumLongTakeProfitPriceRatio) {
+			return nil, fmt.Errorf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String())
+		}
+	}
+	if msg.Position == types.Position_SHORT {
+		if ratio.GT(params.MaximumShortTakeProfitPriceRatio) {
+			return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short", params.MaximumShortTakeProfitPriceRatio.String())
+		}
+	}
+
 	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}

@@ -61,28 +61,6 @@ func (k Keeper) GetAllPools(ctx sdk.Context) (list []types.Pool) {
 	return
 }
 
-func (k Keeper) GetAllLegacyPools(ctx sdk.Context) (list []types.LegacyPool) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.PoolKeyPrefix)
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.LegacyPool
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-
-	return
-}
-
-// RemoveLegacyPool removes a pool from the store
-func (k Keeper) RemoveLegacyPool(ctx sdk.Context, index uint64) {
-	store := ctx.KVStore(k.storeKey)
-	key := types.GetPoolKey(index)
-	store.Delete(key)
-}
-
 func (k Keeper) SetBorrowRate(ctx sdk.Context, block uint64, pool uint64, interest types.InterestBlock) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestRatePrefix)
 	prev := types.GetInterestRateKey(block-1, pool)
@@ -130,7 +108,6 @@ func (k Keeper) GetAllBorrowRate(ctx sdk.Context) []types.InterestBlock {
 
 func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uint64, pool uint64, takeProfitBorrowFactor math.LegacyDec) math.LegacyDec {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestRatePrefix)
-	//startBlock := mtp.LastInterestCalcBlock
 	currentBlockKey := types.GetInterestRateKey(uint64(ctx.BlockHeight()), pool)
 	startBlockKey := types.GetInterestRateKey(startBlock, pool)
 

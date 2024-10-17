@@ -169,11 +169,11 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, r
 		}
 
 		k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
-		pnl, err = k.GetPnL(ctx, mtp, ammPool, baseCurrency)
+		pnl, err = k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
 		if err != nil {
 			return nil, err
 		}
-		liquidationPrice = k.GetLiquidationPrice(ctx, mtp, ammPool, baseCurrency)
+		liquidationPrice = k.GetLiquidationPrice(ctx, mtp)
 	}
 
 	info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
@@ -310,29 +310,36 @@ func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) 
 	return nil
 }
 
-// TODO might be incorrect, takeFundingFee is being reduced from custody rather than mtp.BorrowInterestUnpaidLiability
-func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.Int, error) {
-	// P&L = Custody (in USD) - Liability ( in USD) - Collateral ( in USD)
+func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency string, useTakeProfitPrice bool) (math.Int, error) {
+	// P&L = Custody (in USD) - Total Liability ( in USD) - Collateral ( in USD)
 
 	// Funding rate payment consideration
 	// get funding rate
 	fundingRate, _ := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
-	var takeAmountCustodyAmount sdk.Int
+	var fundingAmount sdk.Int
 	// if funding rate is zero, return
 	if fundingRate.IsZero() {
-		takeAmountCustodyAmount = sdk.ZeroInt()
+		fundingAmount = sdk.ZeroInt()
 	} else if (fundingRate.IsNegative() && mtp.Position == types.Position_LONG) || (fundingRate.IsPositive() && mtp.Position == types.Position_SHORT) {
-		takeAmountCustodyAmount = sdk.ZeroInt()
+		fundingAmount = sdk.ZeroInt()
 	} else {
 		// Calculate the take amount in custody asset
-		takeAmountCustodyAmount = types.CalcTakeAmount(mtp.Custody, fundingRate)
+		fundingAmount = types.CalcTakeAmount(mtp.Custody, fundingRate)
 	}
 
 	// Liability should include margin interest and funding fee accrued.
 	collateralAmt := mtp.Collateral
 
+	tradingAssetPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+	if useTakeProfitPrice {
+		tradingAssetPrice = mtp.TakeProfitPrice
+	}
+	if tradingAssetPrice.IsZero() {
+		return math.Int{}, fmt.Errorf("trading asset price is zero")
+	}
+
 	// in long it's in trading asset ,if short position, custody asset is already in base currency
-	custodyAmtAfterTake := mtp.Custody.Sub(takeAmountCustodyAmount)
+	custodyAmtAfterFunding := mtp.Custody.Sub(fundingAmount)
 
 	totalLiabilities := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 
@@ -345,13 +352,8 @@ func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, ba
 		// estimated_pnl = custody_amount - totalLiabilities * market_price - collateral_amount
 
 		// For short position, convert liabilities to base currency
-		totalLiabilitiesTokenOut := sdk.NewCoin(mtp.LiabilitiesAsset, totalLiabilities)
-		totalLiabilitiesInBaseCurrency, _, err := k.EstimateSwapGivenOut(ctx, totalLiabilitiesTokenOut, baseCurrency, ammPool)
-		if err != nil {
-			totalLiabilitiesInBaseCurrency = sdk.ZeroInt()
-		}
-
-		estimatedPnL = custodyAmtAfterTake.Sub(totalLiabilitiesInBaseCurrency).Sub(collateralAmt)
+		totalLiabilitiesInBaseCurrency := totalLiabilities.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+		estimatedPnL = custodyAmtAfterFunding.Sub(totalLiabilitiesInBaseCurrency).Sub(collateralAmt)
 	} else {
 		// Estimated PnL for long position:
 		// collateral asset can be base currency or trading asset, custody asset is in trading asset and liabilities is in base currency
@@ -359,77 +361,31 @@ func (k Keeper) GetPnL(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, ba
 			// estimated_pnl = (custody_amount - collateral_amount) * market_price - totalLiabilities
 
 			// For long position, convert both custody and collateral to base currency
-			custodyCollateralDiffTokenOut := sdk.NewCoin(mtp.CollateralAsset, sdk.MaxInt(custodyAmtAfterTake.Sub(collateralAmt), sdk.ZeroInt()))
-			custodyCollateralDiffInBaseCurrency, _, err := k.EstimateSwapGivenOut(ctx, custodyCollateralDiffTokenOut, baseCurrency, ammPool)
-			if err != nil {
-				custodyCollateralDiffInBaseCurrency = sdk.ZeroInt()
-			}
-
-			estimatedPnL = custodyCollateralDiffInBaseCurrency.Sub(totalLiabilities)
+			custodyAfterCollateralInBaseCurrecy := (custodyAmtAfterFunding.Sub(collateralAmt)).ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+			estimatedPnL = custodyAfterCollateralInBaseCurrecy.Sub(totalLiabilities)
 		} else {
 			// estimated_pnl = custody_amount * market_price - totalLiabilities - collateral_amount
 
 			// For long position, convert custody to base currency
-			custodyAmountOut := sdk.NewCoin(mtp.CustodyAsset, sdk.MaxInt(custodyAmtAfterTake, sdk.ZeroInt()))
-			custodyAmountOutInBaseCurrency, _, err := k.EstimateSwapGivenOut(ctx, custodyAmountOut, baseCurrency, ammPool)
-			if err != nil {
-				custodyAmountOutInBaseCurrency = sdk.ZeroInt()
-			}
-
-			estimatedPnL = custodyAmountOutInBaseCurrency.Sub(mtp.Liabilities).Sub(collateralAmt)
+			custodyAmountOutInBaseCurrency := custodyAmtAfterFunding.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+			estimatedPnL = custodyAmountOutInBaseCurrency.Sub(totalLiabilities).Sub(collateralAmt)
 		}
 	}
 
 	return estimatedPnL, nil
 }
 
-func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) sdk.Dec {
-	collateralAmountInBaseCurrency := mtp.Collateral
-	if mtp.CollateralAsset != baseCurrency {
-		amount, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral), baseCurrency, ammPool)
-		if err != nil {
-			return sdk.ZeroDec()
-		}
-		collateralAmountInBaseCurrency = amount
-	}
-
-	liabilitiesAmountInBaseCurrency := mtp.Liabilities
-	if mtp.LiabilitiesAsset != baseCurrency {
-		amount, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities), baseCurrency, ammPool)
-		if err != nil {
-			return sdk.ZeroDec()
-		}
-		liabilitiesAmountInBaseCurrency = amount
-	}
-
-	custodyAmountInTradingAsset := mtp.Custody
-	if mtp.CustodyAsset != mtp.TradingAsset {
-		amount, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.TradingAsset, ammPool)
-		if err != nil {
-			return sdk.ZeroDec()
-		}
-		custodyAmountInTradingAsset = amount
-	}
-
-	// open price = (collateral + liabilities) / custody
-	mtp.OpenPrice = math.LegacyNewDecFromBigInt(
-		collateralAmountInBaseCurrency.Add(liabilitiesAmountInBaseCurrency).BigInt(),
-	).Quo(
-		math.LegacyNewDecFromBigInt(custodyAmountInTradingAsset.BigInt()),
-	)
-
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) sdk.Dec {
+	liquidationPrice := math.LegacyZeroDec()
+	params := k.GetParams(ctx)
 	// calculate liquidation price
-	// liquidation_price = open_price_value - collateral_amount / custody_amount
-	liquidationPrice := mtp.OpenPrice.Sub(
-		sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.BigInt()).Quo(sdk.NewDecFromBigInt(mtp.Custody.BigInt())),
-	)
-
-	// if position is short then liquidation price is open price + collateral amount / (custody amount / open price)
+	if mtp.Position == types.Position_LONG {
+		// liquidation_price = (safety_factor * liabilities) / custody
+		liquidationPrice = mtp.Liabilities.ToLegacyDec().Quo(params.SafetyFactor.Mul(mtp.Custody.ToLegacyDec()))
+	}
 	if mtp.Position == types.Position_SHORT {
-		positionSizeInTradingAsset := sdk.NewDecFromBigInt(mtp.Custody.BigInt()).Quo(mtp.OpenPrice)
-		liquidationPrice = mtp.OpenPrice.Add(
-			sdk.NewDecFromBigInt(collateralAmountInBaseCurrency.BigInt()).Quo(positionSizeInTradingAsset),
-		)
+		// liquidation_price =  Custody / (Liabilities * safety_factor)
+		liquidationPrice = mtp.Custody.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec().Mul(params.SafetyFactor))
 	}
 
 	return liquidationPrice

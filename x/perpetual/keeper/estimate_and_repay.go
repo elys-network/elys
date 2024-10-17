@@ -75,18 +75,17 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 
 // need to make sure unpaid liability interest is paid
 func (k Keeper) CalcReturnAmount(mtp types.MTP, repayAmount math.Int, closingRatio sdk.Dec) (returnAmount math.Int, err error) {
-	// have is what user is trying to close
+	// closingAmount is what user is trying to close
 	// For long, mtp.Custody is trading asset, unit of repay amount here is custody asset
 	// For short mtp.Custody is base currency, unit of repay amount here is custody asset
-	have := mtp.Custody.ToLegacyDec().Mul(closingRatio).TruncateInt()
-	owe := repayAmount
+	closingAmount := mtp.Custody.ToLegacyDec().Mul(closingRatio).TruncateInt()
 
-	if have.LT(owe) {
+	if closingAmount.LT(repayAmount) {
 		// this case would mean bot liquidation failed as custody amount fall too low after interest was paid
 		returnAmount = sdk.ZeroInt()
 	} else {
 		// can afford both
-		returnAmount = have.Sub(owe)
+		returnAmount = closingAmount.Sub(repayAmount)
 	}
 	return returnAmount, nil
 }
