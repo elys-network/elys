@@ -3,6 +3,7 @@ package types
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/constants"
 	"gopkg.in/yaml.v2"
 )
 
@@ -37,7 +38,7 @@ func DefaultParams() Params {
 		sdk.NewDecWithPrec(5, 2),
 		sdk.NewDec(100),
 		sdk.OneInt(),
-		"elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
+		constants.ZeroAddress,
 		6307200,
 		86400,               // 1 day
 		sdk.NewInt(256),     //128*2
