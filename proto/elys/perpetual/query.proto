@@ -93,6 +93,30 @@ service Query {
   
   }
 }
+
+message Fees {
+  string total_fees_base_currency = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_interest_fees_liability_asset = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_interest_fees_base_currency = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string funding_fees_liquidity_asset = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string funding_fees_base_currency = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
 message MtpAndPrice {
   MTP    mtp                 = 1;
   string trading_asset_price = 2 [
@@ -111,6 +135,7 @@ message MtpAndPrice {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+  Fees   fees                = 6;
 }
 
 // ParamsRequest is request type for the Query/Params RPC method.
