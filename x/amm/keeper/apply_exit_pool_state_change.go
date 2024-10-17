@@ -34,9 +34,7 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 		return sdk.Coins{}, err
 	}
 
-	if err = k.SetPool(ctx, pool); err != nil {
-		return sdk.Coins{}, err
-	}
+	k.SetPool(ctx, pool)
 
 	types.EmitRemoveLiquidityEvent(ctx, exiter, pool.GetPoolId(), exitCoins)
 	if k.hooks != nil {
@@ -45,6 +43,5 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 			return sdk.Coins{}, err
 		}
 	}
-	k.RecordTotalLiquidityDecrease(ctx, exitCoins)
 	return exitCoins.Sub(exitFeeCoins...), nil
 }

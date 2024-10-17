@@ -5,45 +5,24 @@ import (
 	epochstypes "github.com/elys-network/elys/x/epochs/types"
 )
 
-// BeforeEpochStart performs a no-op
-func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
-	return nil
-}
-
-// AfterEpochEnd distributes vested tokens at the end of each epoch
-func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, _ int64) error {
-	params := k.GetParams(ctx)
-	if epochIdentifier == params.InvariantCheckEpoch {
-		// TODO: Need to revisit the current invariant check implementation
-		// err := k.InvariantCheck(ctx)
-		// if err != nil {
-		// 	ctx.Logger().Error("Perpetual: Invariant check failure", "err", err)
-		// 	return err
-		// }
-	}
-	return nil
-}
-
-// ___________________________________________________________________________________________________
-
-// Hooks wrapper struct for incentive keeper
-type Hooks struct {
+// EpochHooks wrapper struct for incentive keeper
+type EpochHooks struct {
 	k Keeper
 }
 
-var _ epochstypes.EpochHooks = Hooks{}
+var _ epochstypes.EpochHooks = EpochHooks{}
 
 // Return the wrapper struct
-func (k Keeper) Hooks() Hooks {
-	return Hooks{k}
+func (k Keeper) EpochHooks() EpochHooks {
+	return EpochHooks{k}
 }
 
 // BeforeEpochStart implements EpochHooks
-func (h Hooks) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
-	return h.k.BeforeEpochStart(ctx, epochIdentifier, epochNumber)
+func (h EpochHooks) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
+	return nil
 }
 
 // AfterEpochEnd implements EpochHooks
-func (h Hooks) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
-	return h.k.AfterEpochEnd(ctx, epochIdentifier, epochNumber)
+func (h EpochHooks) AfterEpochEnd(ctx sdk.Context, epochIdentifier string, epochNumber int64) error {
+	return nil
 }

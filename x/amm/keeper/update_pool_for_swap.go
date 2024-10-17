@@ -24,13 +24,10 @@ func (k Keeper) UpdatePoolForSwap(
 	tokensIn := sdk.Coins{tokenIn}
 	tokensOut := sdk.Coins{tokenOut}
 
-	err := k.SetPool(ctx, pool)
-	if err != nil {
-		return sdk.ZeroInt(), err
-	}
+	k.SetPool(ctx, pool)
 
 	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
-	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
+	err := k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
@@ -102,9 +99,18 @@ func (k Keeper) UpdatePoolForSwap(
 			return math.ZeroInt(), err
 		}
 	}
-	k.RecordTotalLiquidityIncrease(ctx, tokensIn)
-	k.RecordTotalLiquidityDecrease(ctx, tokensOut)
-	k.RecordTotalLiquidityDecrease(ctx, swapFeeCoins)
+	err = k.RecordTotalLiquidityIncrease(ctx, tokensIn)
+	if err != nil {
+		return math.Int{}, err
+	}
+	err = k.RecordTotalLiquidityDecrease(ctx, tokensOut)
+	if err != nil {
+		return math.Int{}, err
+	}
+	err = k.RecordTotalLiquidityDecrease(ctx, swapFeeCoins)
+	if err != nil {
+		return math.Int{}, err
+	}
 
 	return swapFeeOutCoins.AmountOf(tokenOut.Denom), nil
 }

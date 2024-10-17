@@ -30,7 +30,7 @@ func (k Keeper) CheckSamePositionAndConsolidate(ctx sdk.Context, m *types.MTP) e
 					return err
 				}
 
-				ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId, mtp.CustodyAsset)
+				ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId)
 				if err != nil {
 					return err
 				}

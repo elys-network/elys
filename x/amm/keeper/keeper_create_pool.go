@@ -71,7 +71,10 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 
 	// Increase liquidty amount
 	for _, asset := range msg.PoolAssets {
-		k.RecordTotalLiquidityIncrease(ctx, sdk.Coins{asset.Token})
+		err = k.RecordTotalLiquidityIncrease(ctx, sdk.Coins{asset.Token})
+		if err != nil {
+			return 0, err
+		}
 	}
 
 	// emitCreatePoolEvents(ctx, poolId, msg)
@@ -123,12 +126,13 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 		Display: poolShareDisplayDenom,
 	})
 
-	if err := k.SetPool(ctx, *pool); err != nil {
-		return err
-	}
+	k.SetPool(ctx, *pool)
 
 	if k.hooks != nil {
-		return k.hooks.AfterPoolCreated(ctx, sender, *pool)
+		err = k.hooks.AfterPoolCreated(ctx, sender, *pool)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

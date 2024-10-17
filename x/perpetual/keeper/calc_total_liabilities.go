@@ -31,12 +31,12 @@ func (k Keeper) CalcTotalLiabilities(
 
 		// Estimate swap and add to total liabilities
 		coin := sdk.NewCoin(asset.AssetDenom, asset.Liabilities)
-		ammPool, err := k.GetAmmPool(ctx, ammPoolId, asset.AssetDenom)
+		ammPool, err := k.GetAmmPool(ctx, ammPoolId)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
 
-		estimatedSwap, err := k.OpenDefineAssetsChecker.EstimateSwapGivenOut(ctx, coin, uusdcDenom, ammPool)
+		estimatedSwap, _, err := k.EstimateSwapGivenOut(ctx, coin, uusdcDenom, ammPool)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}

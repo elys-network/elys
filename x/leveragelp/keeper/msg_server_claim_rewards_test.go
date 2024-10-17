@@ -169,7 +169,7 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 			_, err := msgServer.ClaimRewards(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)

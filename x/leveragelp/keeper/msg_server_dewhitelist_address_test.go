@@ -12,7 +12,7 @@ import (
 func (suite *KeeperTestSuite) TestMsgServerDewhitelistAddress() {
 	suite.ResetSuite()
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
-	msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
+	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 	msg := &types.MsgWhitelist{
 		Authority:          authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		WhitelistedAddress: addresses[0].String(),

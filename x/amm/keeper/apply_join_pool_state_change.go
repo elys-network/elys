@@ -15,14 +15,14 @@ func (k Keeper) applyJoinPoolStateChange(ctx sdk.Context, pool types.Pool, joine
 		return err
 	}
 
-	if err := k.SetPool(ctx, pool); err != nil {
-		return err
-	}
+	k.SetPool(ctx, pool)
 
 	types.EmitAddLiquidityEvent(ctx, joiner, pool.GetPoolId(), joinCoins)
 	if k.hooks != nil {
-		return k.hooks.AfterJoinPool(ctx, joiner, pool, joinCoins, numShares)
+		err := k.hooks.AfterJoinPool(ctx, joiner, pool, joinCoins, numShares)
+		if err != nil {
+			return err
+		}
 	}
-	k.RecordTotalLiquidityIncrease(ctx, joinCoins)
 	return nil
 }
