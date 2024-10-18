@@ -15,6 +15,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/network"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/client/cli"
@@ -37,9 +38,9 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 			Mtp: &types.MTP{
 				Address:                        addr[i].String(),
 				CollateralAsset:                ptypes.BaseCurrency,
-				TradingAsset:                   "ATOM",
+				TradingAsset:                   ptypes.ATOM,
 				LiabilitiesAsset:               ptypes.BaseCurrency,
-				CustodyAsset:                   "ATOM",
+				CustodyAsset:                   ptypes.ATOM,
 				Collateral:                     sdk.NewInt(0),
 				Liabilities:                    sdk.NewInt(0),
 				BorrowInterestPaidCollateral:   sdk.NewInt(0),
@@ -63,6 +64,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 			},
 			TradingAssetPrice: sdk.ZeroDec(),
 			Pnl:               sdk.ZeroDec(),
+			UpdatedLeverage:   sdk.ZeroDec(),
 			LiquidationPrice:  sdk.ZeroDec(),
 			Fees: &types.Fees{
 				TotalFeesBaseCurrency:            sdk.NewInt(0),
@@ -85,9 +87,17 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	stateOracle := oracletypes.GenesisState{}
 	stateOracle.Prices = append(stateOracle.Prices, oracletypes.Price{
-		Asset:       "ATOM",
+		Asset:       ptypes.ATOM,
 		Price:       sdk.NewDec(4),
 		Source:      oracletypes.BAND,
+		Provider:    provider.String(),
+		Timestamp:   uint64(ctx.BlockTime().Unix()),
+		BlockHeight: uint64(ctx.BlockHeight()),
+	})
+	stateOracle.Prices = append(stateOracle.Prices, oracletypes.Price{
+		Asset:       "USDC",
+		Price:       sdk.NewDec(1),
+		Source:      "elys",
 		Provider:    provider.String(),
 		Timestamp:   uint64(ctx.BlockTime().Unix()),
 		BlockHeight: uint64(ctx.BlockHeight()),
@@ -95,15 +105,53 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	stateOracle.Params = oracletypes.DefaultParams()
 	stateOracle.PortId = "portid"
 	stateOracle.AssetInfos = append(stateOracle.AssetInfos, oracletypes.AssetInfo{
-		Denom:      "ATOM",
-		Display:    "ATOM",
+		Denom:      "uatom",
+		Display:    "uatom",
 		Decimal:    6,
-		BandTicker: "ATOM",
+		BandTicker: "uatom",
+	})
+	stateOracle.AssetInfos = append(stateOracle.AssetInfos, oracletypes.AssetInfo{
+		Denom:   ptypes.BaseCurrency,
+		Display: "USDC",
+		Decimal: 6,
 	})
 
 	bufO, err := cfg.Codec.MarshalJSON(&stateOracle)
 	require.NoError(t, err)
+
+	amm_state := ammtypes.GenesisState{}
+	pool := ammtypes.Pool{
+		PoolId:      uint64(1),
+		TotalWeight: sdk.NewInt(100),
+		PoolParams: ammtypes.PoolParams{
+			SwapFee:                     sdk.ZeroDec(),
+			ExitFee:                     sdk.ZeroDec(),
+			UseOracle:                   false,
+			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+			ExternalLiquidityRatio:      sdk.NewDec(1),
+			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+			ThresholdWeightDifference:   sdk.ZeroDec(),
+			FeeDenom:                    ptypes.BaseCurrency,
+		},
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000),
+				Weight: sdk.NewInt(50),
+			},
+			{
+				Token:  sdk.NewInt64Coin(ptypes.ATOM, 100_000_000),
+				Weight: sdk.NewInt(50),
+			},
+		},
+	}
+
+	amm_state.PoolList = append(amm_state.PoolList, pool)
+	buf1, err := cfg.Codec.MarshalJSON(&amm_state)
+	require.NoError(t, err)
+
 	cfg.GenesisState[oracletypes.ModuleName] = bufO
+	cfg.GenesisState[ammtypes.ModuleName] = buf1
 	return network.New(t, cfg), mtps
 }
 
@@ -111,7 +159,6 @@ func TestShowMTP(t *testing.T) {
 	net, objs := networkWithMTPObjects(t, 2)
 
 	ctx := net.Validators[0].ClientCtx
-
 	common := []string{
 		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}

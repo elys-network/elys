@@ -137,6 +137,7 @@ type AmmKeeper interface {
 		priceImpact sdk.Dec,
 		err error,
 	)
+	EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
@@ -165,6 +166,8 @@ type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val atypes.Entry, found bool)
 	// GetEntryByDenom returns a entry from its denom value
 	GetEntryByDenom(ctx sdk.Context, denom string) (val atypes.Entry, found bool)
+	// GetUsdcDenom returns value of usdc denom
+	GetUsdcDenom(ctx sdk.Context) (usdcDenom string, found bool)
 }
 
 type OracleKeeper interface {
