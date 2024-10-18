@@ -37,7 +37,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 
 	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
-		return &types.QueryCloseEstimationResponse{}, fmt.Errorf("perpetual pool %s not found", mtp.AmmPoolId)
+		return &types.QueryCloseEstimationResponse{}, fmt.Errorf("perpetual pool %d not found", mtp.AmmPoolId)
 	}
 
 	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId)
