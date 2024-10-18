@@ -31,7 +31,19 @@ type KeeperTestSuite struct {
 
 func (suite *KeeperTestSuite) SetupTest() {
 	t := suite.Suite.T()
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	//t.Parallel()
+=======
+	t.Parallel()
+>>>>>>> Stashed changes
+=======
+	t.Parallel()
+>>>>>>> Stashed changes
+=======
+	t.Parallel()
+>>>>>>> Stashed changes
 	app := simapp.InitElysTestApp(initChain, t)
 
 	suite.legacyAmino = app.LegacyAmino()
