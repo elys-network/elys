@@ -5,6 +5,16 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
+message LegacyParams {
+  option (gogoproto.goproto_stringer) = false;
+  
+  string pool_creation_fee = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  uint64 slippage_track_duration = 2; // default 1 week: 604,800
+}
+
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
