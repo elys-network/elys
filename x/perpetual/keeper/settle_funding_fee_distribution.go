@@ -6,7 +6,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) error {
+func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) error {
 	// account custody from long position
 	totalCustodyLong := sdk.ZeroInt()
 	for _, asset := range pool.PoolAssetsLong {
@@ -96,13 +96,5 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(custodyAmt)
 	}
 
-	// apply changes to mtp object
-	err := k.SetMTP(ctx, mtp)
-	if err != nil {
-		return err
-	}
-
-	// apply changes to pool object
-	k.SetPool(ctx, *pool)
 	return nil
 }

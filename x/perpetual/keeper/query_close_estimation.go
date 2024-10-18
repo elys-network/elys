@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -34,12 +35,21 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		return &types.QueryCloseEstimationResponse{}, err
 	}
 
+	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return &types.QueryCloseEstimationResponse{}, fmt.Errorf("perpetual pool %s not found", mtp.AmmPoolId)
+	}
+
 	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId)
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}
 
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
+	err = k.UpdateFundingFee(ctx, &mtp, &pool, ammPool)
+	if err != nil {
+		return nil, err
+	}
 	unpaidInterestLiability := mtp.BorrowInterestUnpaidLiability
 	borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
 	borrowInterestPaymentInCustody, _, err := k.EstimateSwapGivenOut(ctx, borrowInterestPaymentTokenIn, mtp.CustodyAsset, ammPool)
