@@ -10,7 +10,7 @@ import (
 )
 
 func TestGenesis(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),

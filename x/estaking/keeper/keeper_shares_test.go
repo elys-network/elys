@@ -10,9 +10,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// TODO: v0.50Upgrade - test with detail
 func TestCalcDelegationAmount(t *testing.T) {
 	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount(t)
 	ctx := app.BaseApp.NewContext(true)
+
+	simapp.SetStakingParam(app, ctx)
 
 	ek := app.EstakingKeeper
 	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(1000))

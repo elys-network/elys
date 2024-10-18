@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -17,7 +18,7 @@ import (
 )
 
 func TestUpdateStakersRewards(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	stakingKeeper := app.StakingKeeper
@@ -67,13 +68,13 @@ func TestUpdateStakersRewards(t *testing.T) {
 
 	distrAppModule := exdistr.NewAppModule(
 		app.AppCodec(), app.DistrKeeper, app.AccountKeeper,
-		app.CommitmentKeeper, &app.EstakingKeeper,
+		app.CommitmentKeeper, app.EstakingKeeper,
 		&app.AssetprofileKeeper,
 		authtypes.FeeCollectorName, app.GetSubspace(distrtypes.ModuleName))
 	distrAppModule.AllocateTokens(ctx)
 
 	// withdraw eden rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
+	msgServer := keeper.NewMsgServerImpl(*estakingKeeper)
 	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
 		DelegatorAddress: addr.String(),
 		ValidatorAddress: valAddr,

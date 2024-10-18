@@ -92,7 +92,7 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	commitment.Claimed = commitment.Claimed.Add(committed...)
 	app.CommitmentKeeper.SetCommitments(ctx, commitment)
 
-	msgServer := commkeeper.NewMsgServerImpl(commitmentKeeper)
+	msgServer := commkeeper.NewMsgServerImpl(*commitmentKeeper)
 	_, err = msgServer.CommitClaimedRewards(ctx, &ctypes.MsgCommitClaimedRewards{
 		Creator: genAccount.String(),
 		Amount:  math.NewInt(1000),

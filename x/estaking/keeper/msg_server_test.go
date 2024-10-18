@@ -2,8 +2,9 @@ package keeper_test
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -31,7 +32,7 @@ func TestMsgServer(t *testing.T) {
 }
 
 func TestWithdrawElysStakingRewards(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	bankKeeper := app.BankKeeper
@@ -66,7 +67,7 @@ func TestWithdrawElysStakingRewards(t *testing.T) {
 	require.Equal(t, uint64(4), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
 	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
+	msgServer := keeper.NewMsgServerImpl(*estakingKeeper)
 	res, err := msgServer.WithdrawElysStakingRewards(ctx, &types.MsgWithdrawElysStakingRewards{
 		DelegatorAddress: addr.String(),
 	})
@@ -75,7 +76,7 @@ func TestWithdrawElysStakingRewards(t *testing.T) {
 }
 
 func TestWithdrawReward_NormalValidator(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	bankKeeper := app.BankKeeper
@@ -110,7 +111,7 @@ func TestWithdrawReward_NormalValidator(t *testing.T) {
 	require.Equal(t, uint64(4), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
 	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
+	msgServer := keeper.NewMsgServerImpl(*estakingKeeper)
 	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
 		DelegatorAddress: addr.String(),
 		ValidatorAddress: valAddr.String(),
@@ -120,7 +121,7 @@ func TestWithdrawReward_NormalValidator(t *testing.T) {
 }
 
 func TestWithdrawReward_EdenValidator(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	bankKeeper := app.BankKeeper
@@ -147,8 +148,8 @@ func TestWithdrawReward_EdenValidator(t *testing.T) {
 		CommitEnabled:   true,
 		WithdrawEnabled: true,
 	})
-	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(app.CommitmentKeeper)
-	_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &commitmenttypes.MsgCommitClaimedRewards{
+	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(*app.CommitmentKeeper)
+	_, err := commitmentMsgServer.CommitClaimedRewards(ctx, &commitmenttypes.MsgCommitClaimedRewards{
 		Creator: addr.String(),
 		Denom:   ptypes.Eden,
 		Amount:  math.NewInt(1000_000),
@@ -174,7 +175,7 @@ func TestWithdrawReward_EdenValidator(t *testing.T) {
 	require.Equal(t, uint64(5), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
 	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
+	msgServer := keeper.NewMsgServerImpl(*estakingKeeper)
 	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
 		DelegatorAddress: addr.String(),
 		ValidatorAddress: estakingKeeper.GetParams(ctx).EdenCommitVal,
@@ -184,7 +185,7 @@ func TestWithdrawReward_EdenValidator(t *testing.T) {
 }
 
 func TestWithdrawReward_EdenBValidator(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	bankKeeper := app.BankKeeper
@@ -211,7 +212,7 @@ func TestWithdrawReward_EdenBValidator(t *testing.T) {
 		CommitEnabled:   true,
 		WithdrawEnabled: true,
 	})
-	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(app.CommitmentKeeper)
+	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(*app.CommitmentKeeper)
 	_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &commitmenttypes.MsgCommitClaimedRewards{
 		Creator: addr.String(),
 		Denom:   ptypes.EdenB,
@@ -238,7 +239,7 @@ func TestWithdrawReward_EdenBValidator(t *testing.T) {
 	require.Equal(t, uint64(5), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
 	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
+	msgServer := keeper.NewMsgServerImpl(*estakingKeeper)
 	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
 		DelegatorAddress: addr.String(),
 		ValidatorAddress: estakingKeeper.GetParams(ctx).EdenbCommitVal,
