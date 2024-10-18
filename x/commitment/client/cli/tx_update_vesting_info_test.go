@@ -37,6 +37,7 @@ func TestGovUpdateVestingInfo(t *testing.T) {
 		"--num-epochs=100",
 		"--vest-now-factor=1",
 		"--num-max-vestings=10",
+		"--expedited=true",
 		"--from=" + val.Address.String(),
 		"-y",
 	}

@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -15,7 +16,7 @@ import (
 )
 
 func TestEstakingExtendedFunctions(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	stakingKeeper := app.StakingKeeper
@@ -47,8 +48,8 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 		CommitEnabled:   true,
 		WithdrawEnabled: true,
 	})
-	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(app.CommitmentKeeper)
-	_, err = commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &commitmenttypes.MsgCommitClaimedRewards{
+	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(*app.CommitmentKeeper)
+	_, err = commitmentMsgServer.CommitClaimedRewards(ctx, &commitmenttypes.MsgCommitClaimedRewards{
 		Creator: addr.String(),
 		Denom:   ptypes.Eden,
 		Amount:  math.NewInt(1000_000),
@@ -68,13 +69,17 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 	require.NoError(t, err)
 	edenBValidator, err := sdk.ValAddressFromBech32(edenBVal.GetOperator())
 	require.NoError(t, err)
-	require.Equal(t, estakingKeeper.Validator(ctx, edenValidator), edenVal)
-	require.Equal(t, estakingKeeper.Validator(ctx, edenBValidator), edenBVal)
 
-	edenDel := estakingKeeper.Delegation(ctx, addr, edenValidator)
+	edenValidatorI, _ := estakingKeeper.Validator(ctx, edenValidator)
+	edenBValidatorI, _ := estakingKeeper.Validator(ctx, edenBValidator)
+
+	require.Equal(t, edenValidatorI, edenVal)
+	require.Equal(t, edenBValidatorI, edenBVal)
+
+	edenDel, _ := estakingKeeper.Delegation(ctx, addr, edenValidator)
 	require.Equal(t, edenDel.GetShares(), math.LegacyNewDec(1000_000))
 
-	edenBDel := estakingKeeper.Delegation(ctx, addr, edenBValidator)
+	edenBDel, _ := estakingKeeper.Delegation(ctx, addr, edenBValidator)
 	require.Nil(t, edenBDel)
 
 	numDelegations := int64(0)

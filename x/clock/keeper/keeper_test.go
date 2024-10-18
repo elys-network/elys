@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"github.com/stretchr/testify/suite"
 	"testing"
+
+	"github.com/stretchr/testify/suite"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -25,8 +26,8 @@ type IntegrationTestSuite struct {
 }
 
 func (s *IntegrationTestSuite) SetupTest() {
-	isCheckTx := false
-	s.app = app.InitElysTestApp(true)
+	isCheckTx := true
+	s.app = app.InitElysTestApp(true, s.T())
 	s.ctx = s.app.BaseApp.NewContext(isCheckTx)
 
 	queryHelper := baseapp.NewQueryServerTestHelper(s.ctx, s.app.InterfaceRegistry())

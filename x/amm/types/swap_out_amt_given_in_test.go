@@ -1,9 +1,11 @@
 package types_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
 	"time"
+
+	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -585,10 +587,10 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			},
 			useOracle:              false,
 			externalLiquidityRatio: sdkmath.LegacyNewDec(10),
-			thresholdWeightDiff:    sdk.NewDecWithPrec(20, 2),
+			thresholdWeightDiff:    math.LegacyNewDecWithPrec(20, 2),
 			tokenIn:                sdk.NewInt64Coin(ptypes.BaseCurrency, 0),
 			outTokenDenom:          "uusdt",
-			swapFee:                sdk.NewDecWithPrec(1, 2),
+			swapFee:                math.LegacyNewDecWithPrec(1, 2),
 			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
 			expTokenOut:            sdk.NewInt64Coin("uusdt", 0),
 			expErr:                 true,

@@ -176,7 +176,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 			suite.Require().NoError(err)
 
 			// execute function
-			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.JoinPool(
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgJoinPool{
