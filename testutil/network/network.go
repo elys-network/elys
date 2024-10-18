@@ -54,6 +54,9 @@ func New(t *testing.T, configs ...network.Config) *network.Network {
 // DefaultConfig will initialize config for the network with custom application,
 // genesis and single validator. All other parameters are inherited from cosmos-sdk/testutil/network.DefaultConfig
 func DefaultConfig(tempDirectory string) network.Config {
+
+	fmt.Println("EPA")
+
 	var (
 		encoding = app.MakeEncodingConfig()
 		chainId  = "elys-" + cometbftrand.NewRand().Str(6)
