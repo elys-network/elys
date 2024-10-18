@@ -22,7 +22,7 @@ var (
 	ErrMTPUnhealthy           = errorsmod.Register(ModuleName, 12, "mtp health would be too low for safety factor")
 	ErrInvalidCollateralAsset = errorsmod.Register(ModuleName, 13, "invalid collateral asset")
 	ErrInvalidBorrowingAsset  = errorsmod.Register(ModuleName, 14, "invalid borrowing asset")
-	ErrPoolDoesNotExist       = errorsmod.Register(ModuleName, 15, "pool does not exist")
+	ErrPoolDoesNotExist       = errorsmod.Register(ModuleName, 15, "perpetual pool does not exist")
 	ErrBalanceNotAvailable    = errorsmod.Register(ModuleName, 18, "user does not have enough balance of the required coin")
 	ErrAmountTooLow           = errorsmod.Register(ModuleName, 32, "Tx amount is too low")
 	ErrPerpetualDisabled      = errorsmod.Register(ModuleName, 33, "perpetual disabled pool")

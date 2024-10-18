@@ -7,12 +7,8 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MsgOpenResponse, error) {
+func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	poolId := existingMtp.AmmPoolId
-	if !k.OpenDefineAssetsChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, errorsmod.Wrap(types.ErrMTPDisabled, existingMtp.CustodyAsset)
-	}
-
 	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
 		return nil, err
@@ -20,7 +16,17 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, existingMtp)
 
-	existingMtp, err = k.OpenConsolidateMergeMtp(ctx, poolId, existingMtp, newMtp, baseCurrency)
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
+	}
+
+	err = k.SettleFunding(ctx, existingMtp, &pool, ammPool)
+	if err != nil {
+		return nil, errorsmod.Wrapf(err, "error handling funding fee")
+	}
+
+	existingMtp, err = k.OpenConsolidateMergeMtp(ctx, existingMtp, newMtp)
 	if err != nil {
 		return nil, err
 	}
@@ -34,6 +40,8 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	existingMtp.TakeProfitCustody = existingMtp.TakeProfitCustody.Add(newMtp.TakeProfitCustody)
 	existingMtp.TakeProfitLiabilities = existingMtp.TakeProfitLiabilities.Add(newMtp.TakeProfitLiabilities)
 
+	// no need to update TakeProfitCustody, TakeProfitLiabilities, Custody and Liabilities for pool as it was already in OpenDefineAssets
+
 	// Set existing MTP
 	if err = k.SetMTP(ctx, existingMtp); err != nil {
 		return nil, err
@@ -41,13 +49,9 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	k.EmitOpenEvent(ctx, existingMtp)
 
-	pool, found := k.GetPool(ctx, poolId)
-	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
-	}
-
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
+		// The pool value aboce was sent in pointer so its updated
 		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
 		if err != nil {
 			return nil, err

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -14,8 +15,8 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 	}
 
 	// Check if the pool is enabled.
-	if !k.IsPoolEnabled(ctx, poolId) || k.IsPoolClosed(ctx, poolId) {
-		return nil, errorsmod.Wrapf(types.ErrMTPDisabled, "pool id %d", poolId)
+	if !pool.IsEnabled() {
+		return nil, fmt.Errorf("disabled pool id %d", poolId)
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.

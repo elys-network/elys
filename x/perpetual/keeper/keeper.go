@@ -19,7 +19,6 @@ type (
 	Keeper struct {
 		types.AuthorizationChecker
 		types.PositionChecker
-		types.PoolChecker
 		types.OpenChecker
 		types.OpenDefineAssetsChecker
 		types.ClosePositionChecker
@@ -72,7 +71,6 @@ func NewKeeper(
 
 	keeper.AuthorizationChecker = keeper
 	keeper.PositionChecker = keeper
-	keeper.PoolChecker = keeper
 	keeper.OpenChecker = keeper
 	keeper.OpenDefineAssetsChecker = keeper
 	keeper.ClosePositionChecker = keeper

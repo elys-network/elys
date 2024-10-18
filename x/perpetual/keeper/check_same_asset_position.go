@@ -25,7 +25,7 @@ func (k Keeper) CheckSamePositionAndConsolidate(ctx sdk.Context, m *types.MTP) e
 		if mtp.Position == m.Position && mtp.CollateralAsset == m.CollateralAsset && mtp.CustodyAsset == m.TradingAsset {
 			if mtp.Id != m.Id {
 
-				_, err := k.OpenConsolidateMergeMtp(ctx, m.AmmPoolId, mtp, m, ptypes.BaseCurrency)
+				_, err := k.OpenConsolidateMergeMtp(ctx, mtp, m)
 				if err != nil {
 					return err
 				}

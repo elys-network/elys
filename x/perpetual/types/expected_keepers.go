@@ -22,14 +22,6 @@ type PositionChecker interface {
 	GetMaxOpenPositions(ctx sdk.Context) uint64
 }
 
-//go:generate mockery --srcpkg . --name PoolChecker --structname PoolChecker --filename pool_checker.go --with-expecter
-type PoolChecker interface {
-	GetPool(ctx sdk.Context, poolId uint64) (Pool, bool)
-	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
-	IsPoolClosed(ctx sdk.Context, poolId uint64) bool
-	GetPoolOpenThreshold(ctx sdk.Context) math.LegacyDec
-}
-
 //go:generate mockery --srcpkg . --name OpenChecker --structname OpenChecker --filename open_checker.go --with-expecter
 type OpenChecker interface {
 	CheckUserAuthorization(ctx sdk.Context, msg *MsgOpen) error

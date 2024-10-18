@@ -99,51 +99,6 @@ func (k Keeper) GetSafetyFactor(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).SafetyFactor
 }
 
-func (k Keeper) GetEnabledPools(ctx sdk.Context) []uint64 {
-	poolIds := make([]uint64, 0)
-	pools := k.GetAllPools(ctx)
-	for _, p := range pools {
-		if p.Enabled {
-			poolIds = append(poolIds, p.AmmPoolId)
-		}
-	}
-
-	return poolIds
-}
-
-func (k Keeper) SetEnabledPools(ctx sdk.Context, pools []uint64) {
-	for _, poolId := range pools {
-		pool, found := k.GetPool(ctx, poolId)
-		if !found {
-			pool = types.NewPool(poolId)
-			k.SetPool(ctx, pool)
-		}
-		pool.Enabled = true
-
-		k.SetPool(ctx, pool)
-	}
-}
-
-func (k Keeper) IsPoolEnabled(ctx sdk.Context, poolId uint64) bool {
-	pool, found := k.GetPool(ctx, poolId)
-	if !found {
-		pool = types.NewPool(poolId)
-		k.SetPool(ctx, pool)
-	}
-
-	return pool.Enabled
-}
-
-func (k Keeper) IsPoolClosed(ctx sdk.Context, poolId uint64) bool {
-	pool, found := k.GetPool(ctx, poolId)
-	if !found {
-		pool = types.NewPool(poolId)
-		k.SetPool(ctx, pool)
-	}
-
-	return pool.Closed
-}
-
 func (k Keeper) IsWhitelistingEnabled(ctx sdk.Context) bool {
 	return k.GetParams(ctx).WhitelistingEnabled
 }

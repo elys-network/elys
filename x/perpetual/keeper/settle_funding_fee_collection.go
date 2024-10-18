@@ -7,14 +7,14 @@ import (
 )
 
 // SettleFunding handles funding fee collection and distribution
-func (k Keeper) SettleFunding(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
+func (k Keeper) SettleFunding(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) error {
 
-	err := k.SettleFundingFeeCollection(ctx, mtp, pool, ammPool, baseCurrency)
+	err := k.SettleFundingFeeCollection(ctx, mtp, pool, ammPool)
 	if err != nil {
 		return err
 	}
 
-	err = k.SettleFundingFeeDistribution(ctx, mtp, pool, ammPool, baseCurrency)
+	err = k.SettleFundingFeeDistribution(ctx, mtp, pool, ammPool)
 	if err != nil {
 		return err
 	}
@@ -31,7 +31,7 @@ func (k Keeper) SettleFunding(ctx sdk.Context, mtp *types.MTP, pool *types.Pool,
 	return nil
 }
 
-func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
+func (k Keeper) SettleFundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) error {
 	// get funding rate
 	longRate, shortRate := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
 

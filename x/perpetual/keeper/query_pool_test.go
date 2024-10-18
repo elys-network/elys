@@ -36,7 +36,7 @@ func TestPools_ErrPoolDoesNotExist(t *testing.T) {
 	})
 
 	_, err := app.PerpetualKeeper.Pools(ctx, &types.QueryAllPoolRequest{})
-	assert.Equal(t, "rpc error: code = Internal desc = pool does not exist", err.Error())
+	assert.Equal(t, "rpc error: code = Internal desc = perpetual pool does not exist", err.Error())
 }
 
 func TestPools_Success(t *testing.T) {

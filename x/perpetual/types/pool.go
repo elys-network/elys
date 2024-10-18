@@ -150,3 +150,7 @@ func (p *Pool) InitiatePool(ammPool *ammtypes.Pool) error {
 
 	return nil
 }
+
+func (pool Pool) IsEnabled() bool {
+	return pool.Enabled && !pool.Closed
+}

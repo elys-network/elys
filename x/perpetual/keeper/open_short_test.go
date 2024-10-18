@@ -51,7 +51,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		},
 		{
 			"pool is disabled",
-			"perpetual not enabled for pool",
+			"disabled pool id 1",
 			false,
 			func() {
 				ammPool = suite.SetAndGetAmmPool(poolCreator, poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))

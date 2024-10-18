@@ -35,7 +35,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 		return errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", mtp.CollateralAsset))
 	}
 
-	err = k.SettleFunding(ctx, mtp, &pool, ammPool, baseCurrency)
+	err = k.SettleFunding(ctx, mtp, &pool, ammPool)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee: %s", mtp.CollateralAsset))
 	}

@@ -465,7 +465,7 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		Position:        types.Position_SHORT,
 		Leverage:        sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:    ptypes.ATOM,
-		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
+		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100_000_000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
 		TakeProfitPrice: tradingAssetPrice.QuoInt64(3),
 	})

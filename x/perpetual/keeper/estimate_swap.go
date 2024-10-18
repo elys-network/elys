@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -10,11 +9,6 @@ import (
 
 // Swap estimation using amm CalcOutAmtGivenIn function
 func (k Keeper) EstimateSwap(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool) (math.Int, math.LegacyDec, error) {
-	perpetualEnabled := k.IsPoolEnabled(ctx, ammPool.PoolId)
-	if !perpetualEnabled {
-		return math.ZeroInt(), math.LegacyZeroDec(), errorsmod.Wrap(types.ErrPerpetualDisabled, "Perpetual disabled pool")
-	}
-
 	swapFee := k.GetPerpetualSwapFee(ctx)
 	// Estimate swap
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
@@ -32,11 +26,6 @@ func (k Keeper) EstimateSwap(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDe
 
 // Swap estimation using amm CalcInAmtGivenOut function
 func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, math.LegacyDec, error) {
-	perpetualEnabled := k.IsPoolEnabled(ctx, ammPool.PoolId)
-	if !perpetualEnabled {
-		return sdk.ZeroInt(), math.LegacyZeroDec(), errorsmod.Wrap(types.ErrPerpetualDisabled, "Perpetual disabled pool")
-	}
-
 	perpetualSwapFee := k.GetPerpetualSwapFee(ctx)
 	tokensOut := sdk.Coins{tokenOutAmount}
 	// Estimate swap
