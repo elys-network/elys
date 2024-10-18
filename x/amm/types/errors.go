@@ -39,6 +39,7 @@ var (
 	ErrFeeShouldNotBeNegative           = errors.Register(ModuleName, 111, "fee should not be negative")
 	ErrInvalidShareAmountOut            = errors.Register(ModuleName, 112, "invalid share amount out")
 	ErrPoolAssetsMustBeTwo              = errors.Register(ModuleName, 113, "pool assets must be exactly two")
+	ErrOnlyUsdcPoolAllowed              = errors.Register(ModuleName, 114, "Only USDC paired pool allowed")
 )
 
 const (
