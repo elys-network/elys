@@ -166,6 +166,8 @@ type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val atypes.Entry, found bool)
 	// GetEntryByDenom returns a entry from its denom value
 	GetEntryByDenom(ctx sdk.Context, denom string) (val atypes.Entry, found bool)
+	// GetUsdcDenom returns value of usdc denom
+	GetUsdcDenom(ctx sdk.Context) (usdcDenom string, found bool)
 }
 
 type OracleKeeper interface {

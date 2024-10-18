@@ -9,11 +9,10 @@ import (
 )
 
 func (k Keeper) UpdatedLeverage(ctx sdk.Context, mtp types.MTP) (sdk.Dec, error) {
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return sdk.ZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
-	baseCurrency := entry.Denom
 	collateral_in_usdc := mtp.Collateral.ToLegacyDec()
 	if mtp.CollateralAsset != baseCurrency {
 		price := k.amm.EstimatePrice(ctx, mtp.CollateralAsset, baseCurrency)
