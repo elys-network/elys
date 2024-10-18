@@ -1,9 +1,11 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
+
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/app"
@@ -14,9 +16,9 @@ import (
 
 func TestGetParams(t *testing.T) {
 	// Create a test context and keeper
-	testapp := app.InitElysTestApp(true)
+	testapp := app.InitElysTestApp(true, t)
 
-	ctx := testapp.BaseApp.NewContext(false)
+	ctx := testapp.BaseApp.NewContext(true)
 	k := testapp.CommitmentKeeper
 	require.NotNil(t, k)
 
@@ -55,12 +57,11 @@ func TestEncodeDecodeParams(t *testing.T) {
 		VestingInfos:   vestingInfos,
 		TotalCommitted: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 10)},
 	}
-
-	encoded, err := types.ModuleCdc.MarshalJSON(&params)
+	encoded, err := codec.NewLegacyAmino().MarshalJSON(&params)
 	require.NoError(t, err)
 
 	var decoded types.Params
-	err = types.ModuleCdc.UnmarshalJSON(encoded, &decoded)
+	err = codec.NewLegacyAmino().UnmarshalJSON(encoded, &decoded)
 	require.NoError(t, err)
 
 	require.EqualValues(t, params, decoded)
@@ -68,9 +69,9 @@ func TestEncodeDecodeParams(t *testing.T) {
 
 func TestGetParamsNew(t *testing.T) {
 	// Create a test context and keeper
-	testapp := app.InitElysTestApp(true)
+	testapp := app.InitElysTestApp(true, t)
 
-	ctx := testapp.BaseApp.NewContext(false)
+	ctx := testapp.BaseApp.NewContext(true)
 	k := testapp.CommitmentKeeper
 	require.NotNil(t, k)
 
@@ -91,16 +92,16 @@ func TestGetParamsNew(t *testing.T) {
 	k.SetParams(ctx, params)
 
 	// Create a new context to test GetParams
-	newCtx := testapp.BaseApp.NewContext(false)
+	newCtx := testapp.BaseApp.NewContext(true)
 	p := k.GetParams(newCtx)
 	require.EqualValues(t, params, p)
 }
 
 func TestGetVestingInfo(t *testing.T) {
 	// Create a test context and keeper
-	testapp := app.InitElysTestApp(true)
+	testapp := app.InitElysTestApp(true, t)
 
-	ctx := testapp.BaseApp.NewContext(false)
+	ctx := testapp.BaseApp.NewContext(true)
 	k := testapp.CommitmentKeeper
 	require.NotNil(t, k)
 
