@@ -35,6 +35,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareOutAmount:   types.OneShare.Quo(sdk.NewInt(5)),
@@ -55,6 +56,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareOutAmount:   types.OneShare.Quo(sdk.NewInt(5)),
@@ -75,6 +77,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   sdk.NewInt(694444166666666666), // weight breaking fee - slippage enable
@@ -96,10 +99,11 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   sdk.NewInt(805987500000000000), // weight recovery direction - slippage enable
-			shareOutAmount:   sdk.NewInt(1002500000000000000), // weight recovery direction - slippage disable
+			shareOutAmount:   sdk.NewInt(1001000000000000000), // weight recovery direction - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -117,6 +121,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareOutAmount:   sdk.NewInt(2000000000000000000),
