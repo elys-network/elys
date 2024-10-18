@@ -8,6 +8,7 @@ import (
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
 const (
@@ -50,9 +51,29 @@ func setUpgradeHandler(app *ElysApp) {
 				}
 
 				// initiate accounted pools
-				pools := app.AmmKeeper.GetAllPool(ctx)
+				pools := app.AmmKeeper.GetAllLegacyPool(ctx)
 				for _, pool := range pools {
-					err := app.AccountedPoolKeeper.InitiateAccountedPool(ctx, pool)
+					newPool := ammtypes.Pool{
+						PoolId:  pool.PoolId,
+						Address: pool.Address,
+						PoolParams: ammtypes.PoolParams{
+							SwapFee:                     pool.PoolParams.SwapFee,
+							ExitFee:                     pool.PoolParams.ExitFee,
+							UseOracle:                   pool.PoolParams.UseOracle,
+							WeightBreakingFeeMultiplier: pool.PoolParams.WeightBreakingFeeMultiplier,
+							WeightBreakingFeeExponent:   pool.PoolParams.WeightBreakingFeeExponent,
+							ExternalLiquidityRatio:      pool.PoolParams.ExternalLiquidityRatio,
+							WeightRecoveryFeePortion:    pool.PoolParams.WeightRecoveryFeePortion,
+							ThresholdWeightDifference:   pool.PoolParams.ThresholdWeightDifference,
+							WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+							FeeDenom:                    pool.PoolParams.FeeDenom,
+						},
+						TotalShares:       pool.TotalShares,
+						PoolAssets:        pool.PoolAssets,
+						TotalWeight:       pool.TotalWeight,
+						RebalanceTreasury: pool.RebalanceTreasury,
+					}
+					err := app.AccountedPoolKeeper.InitiateAccountedPool(ctx, newPool)
 					if err != nil {
 						panic(err)
 					}
