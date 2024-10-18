@@ -66,10 +66,10 @@ func CmdUpdatePendingPerpetualOrder() *cobra.Command {
 
 func CmdCancelPerpetualOrders() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "cancel-perpetual-orders [ids.json]",
-		Short: "Cancel a pending-perpetual-orders by ids",
+		Use:     "cancel-perpetual-orders [ids.json]",
+		Short:   "Cancel a pending-perpetual-orders by ids",
 		Example: "elysd tx perpetual cancel-perpetual-orders ids.json --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000",
-		Args:  cobra.ExactArgs(1),
+		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ids, err := readPositionRequestJSON(args[0])
 			if err != nil {

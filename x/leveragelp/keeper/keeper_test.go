@@ -373,7 +373,7 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 		{
 			"amm pool shares is  0",
 			func() {
-				_ = app.AmmKeeper.SetPool(ctx, ammPool)
+				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
 			sdk.OneDec(),
 		},
@@ -381,7 +381,7 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 			"success",
 			func() {
 				ammPool.TotalShares = sdk.NewCoin("shares", totalShares)
-				_ = app.AmmKeeper.SetPool(ctx, ammPool)
+				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
 			(totalShares.Sub(leveragelpAmount)).ToLegacyDec().QuoInt(totalShares),
 		},

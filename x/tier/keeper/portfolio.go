@@ -205,7 +205,7 @@ func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (sd
 	for _, perpetual := range perpetuals {
 		totalAssets = totalAssets.Add(k.CalculateUSDValue(ctx, perpetual.GetTradingAsset(), perpetual.Custody))
 		totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.LiabilitiesAsset, perpetual.Liabilities))
-		totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.CollateralAsset, perpetual.BorrowInterestUnpaidCollateral))
+		totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.LiabilitiesAsset, perpetual.BorrowInterestUnpaidLiability))
 	}
 	netValue = totalAssets.Sub(totalLiability)
 	return totalAssets, totalLiability, netValue

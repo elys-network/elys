@@ -5,6 +5,7 @@ import (
 )
 
 type LeverageLpHooks interface {
+
 	// AfterLeverageLpPositionOpen is called after Open position.
 	AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk.AccAddress) error
 

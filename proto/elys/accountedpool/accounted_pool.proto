@@ -2,18 +2,19 @@ syntax = "proto3";
 package elys.accountedpool;
 
 option go_package = "github.com/elys-network/elys/x/accountedpool/types";
-import "elys/amm/pool_asset.proto"; 
-import "gogoproto/gogo.proto"; 
+import "elys/amm/pool_asset.proto";
+import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
 message AccountedPool {
-  uint64 pool_id = 1; 
-  cosmos.base.v1beta1.Coin total_shares = 2 [(gogoproto.nullable) = false]; 
-  repeated elys.amm.PoolAsset pool_assets = 3 [(gogoproto.nullable) = false]; 
+  uint64 pool_id = 1;
+  cosmos.base.v1beta1.Coin total_shares = 2 [(gogoproto.nullable) = false];
+  repeated elys.amm.PoolAsset pool_assets = 3 [(gogoproto.nullable) = false];
   string total_weight = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
+  repeated cosmos.base.v1beta1.Coin non_amm_pool_tokens = 5 [(gogoproto.nullable) = false];
 }
 

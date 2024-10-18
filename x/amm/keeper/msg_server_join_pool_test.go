@@ -172,8 +172,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				},
 				TotalWeight: sdk.ZeroInt(),
 			}
-			err = suite.app.AmmKeeper.SetPool(suite.ctx, pool)
-			suite.Require().NoError(err)
+			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 
 			// execute function
 			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)

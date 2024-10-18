@@ -132,7 +132,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		weightMsgDewhitelist,
 		perpetualsimulation.SimulateMsgDewhitelist(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
-	
 	var weightMsgClosePositions int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgClosePositions, &weightMsgClosePositions, nil,
 		func(_ *rand.Rand) {

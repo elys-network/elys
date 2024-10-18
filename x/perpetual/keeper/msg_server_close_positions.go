@@ -31,7 +31,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if !poolFound {
 			continue
 		}
-		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId, position.TradingAsset)
+		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId)
 		if poolErr != nil {
 			continue
 		}
@@ -56,12 +56,8 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if !poolFound {
 			continue
 		}
-		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId, position.TradingAsset)
-		if poolErr != nil {
-			continue
-		}
 
-		err = k.CheckAndCloseAtStopLoss(ctx, &position, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
+		err = k.CheckAndCloseAtStopLoss(ctx, &position, pool, baseCurrency.Denom)
 		if err != nil {
 			// Add log about error or not closed
 			closeLog = append(closeLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
@@ -81,12 +77,8 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if !poolFound {
 			continue
 		}
-		ammPool, poolErr := k.GetAmmPool(ctx, position.AmmPoolId, position.TradingAsset)
-		if poolErr != nil {
-			continue
-		}
 
-		err = k.CheckAndCloseAtTakeProfit(ctx, &position, pool, ammPool, baseCurrency.Denom, baseCurrency.Decimals)
+		err = k.CheckAndCloseAtTakeProfit(ctx, &position, pool, baseCurrency.Denom)
 		if err != nil {
 			// Add log about error or not closed
 			takeProfitLog = append(takeProfitLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))

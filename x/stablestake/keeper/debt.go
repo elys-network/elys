@@ -130,11 +130,11 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 		endInterestBlock := types.InterestBlock{}
 		k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
-		totalInterest := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
+		totalInterestRate := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
 		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
 
 		newInterest := borrowed.
-			Mul(totalInterest).
+			Mul(totalInterestRate).
 			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 			Quo(sdk.NewDec(numberOfBlocks)).
 			Quo(sdk.NewDec(86400 * 365)).

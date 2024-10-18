@@ -8,7 +8,7 @@ import (
 const (
 	TypeMsgCreatePendingSpotOrder = "create_pending_spot_order"
 	TypeMsgUpdatePendingSpotOrder = "update_pending_spot_order"
-	TypeMsgCancelSpotOrders = "cancel_pending_spot_order"
+	TypeMsgCancelSpotOrders       = "cancel_pending_spot_order"
 )
 
 var _ sdk.Msg = &MsgCreatePendingSpotOrder{}
@@ -105,8 +105,8 @@ var _ sdk.Msg = &MsgCancelSpotOrders{}
 
 func NewMsgCancelSpotOrders(creator string, id []uint64) *MsgCancelSpotOrders {
 	return &MsgCancelSpotOrders{
-		SpotOrderIds:      id,
-		Creator: creator,
+		SpotOrderIds: id,
+		Creator:      creator,
 	}
 }
 func (msg *MsgCancelSpotOrders) Route() string {

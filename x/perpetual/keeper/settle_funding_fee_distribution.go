@@ -6,7 +6,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
+func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) error {
 	// account custody from long position
 	totalCustodyLong := sdk.ZeroInt()
 	for _, asset := range pool.PoolAssetsLong {
@@ -44,13 +44,13 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		mtp.Custody = mtp.Custody.Add(fundingFeeAmount.TruncateInt())
 
 		// decrease fees collected
-		err := pool.UpdateFeesCollected(ctx, mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), false)
+		err := pool.UpdateFeesCollected(mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), false)
 		if err != nil {
 			return err
 		}
 
 		// update pool custody balance
-		err = pool.UpdateCustody(ctx, mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), true, mtp.Position)
+		err = pool.UpdateCustody(mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), true, mtp.Position)
 		if err != nil {
 			return err
 		}
@@ -74,12 +74,12 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		fundingFeeAmount := totalFund.Mul(fundingFeeShare)
 
 		// decrease fees collected
-		err := pool.UpdateFeesCollected(ctx, mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt(), false)
+		err := pool.UpdateFeesCollected(mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt(), false)
 		if err != nil {
 			return err
 		}
 
-		custodyAmt, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt()), mtp.CustodyAsset, ammPool)
+		custodyAmt, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt()), mtp.CustodyAsset, ammPool)
 		if err != nil {
 			return err
 		}
@@ -87,7 +87,7 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		mtp.Custody = mtp.Custody.Add(custodyAmt)
 
 		// update pool liability balance
-		err = pool.UpdateCustody(ctx, mtp.CustodyAsset, custodyAmt, true, mtp.Position)
+		err = pool.UpdateCustody(mtp.CustodyAsset, custodyAmt, true, mtp.Position)
 		if err != nil {
 			return err
 		}
@@ -95,5 +95,6 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		// add payment to total funding fee paid in custody asset
 		mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(custodyAmt)
 	}
+
 	return nil
 }

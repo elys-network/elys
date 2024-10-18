@@ -1,90 +1,101 @@
 package keeper_test
 
 import (
-	"testing"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
-	"github.com/elys-network/elys/x/perpetual/types/mocks"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestSuccessPoolAssetsLong_CalcTotalLiabilities(t *testing.T) {
-	mockChecker := new(mocks.OpenDefineAssetsChecker)
-	mockAmm := new(mocks.AmmKeeper)
-
-	ctx := sdk.Context{}
-
-	uusdcDenom := "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
-
-	pool := ammtypes.Pool{
-		PoolId: 2,
+func (suite PerpetualKeeperTestSuite) TestCalcTotalLiabilities() {
+	suite.SetupCoinPrices()
+	addr := suite.AddAccounts(1, nil)
+	var ammPool ammtypes.Pool
+	poolId := uint64(1)
+	poolAsset := types.PoolAsset{
+		Liabilities:           sdk.ZeroInt(),
+		Custody:               sdk.ZeroInt(),
+		TakeProfitLiabilities: sdk.ZeroInt(),
+		TakeProfitCustody:     sdk.ZeroInt(),
+		AssetDenom:            "",
 	}
-
-	mockAmm.On("GetPool", ctx, pool.PoolId).Return(pool, true)
-
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
-
-	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", sdk.NewInt(2000))
-	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(sdk.NewInt(1000), nil)
-
-	k.OpenDefineAssetsChecker = mockChecker
-
-	ammPoolId := uint64(2)
-	assets := []types.PoolAsset{
+	testCases := []struct {
+		name                 string
+		expectErrMsg         string
+		asset                string
+		prerequisiteFunction func()
+		postValidateFunction func(totalLiabilities sdk.Int)
+	}{
 		{
-			AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
-			Liabilities: sdk.NewInt(2000),
+			"success: liabilities is 0",
+			"",
+			ptypes.ATOM,
+			func() {
+			},
+			func(totalLiabilities sdk.Int) {
+				suite.Require().True(totalLiabilities.IsZero())
+			},
 		},
 		{
-			AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
-			Liabilities: sdk.NewInt(0),
-		},
-	}
-
-	got, err := k.CalcTotalLiabilities(ctx, assets, ammPoolId, uusdcDenom)
-
-	assert.NoError(t, err)
-	assert.Equal(t, got, sdk.NewInt(2000))
-}
-
-func TestSuccessPoolAssetsShort_CalcTotalLiabilities(t *testing.T) {
-	mockChecker := new(mocks.OpenDefineAssetsChecker)
-	mockAmm := new(mocks.AmmKeeper)
-
-	ctx := sdk.Context{}
-
-	uusdcDenom := "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65"
-
-	pool := ammtypes.Pool{
-		PoolId: 2,
-	}
-
-	mockAmm.On("GetPool", ctx, pool.PoolId).Return(pool, true)
-
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
-
-	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", sdk.NewInt(2000))
-	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(sdk.NewInt(1000), nil)
-
-	k.OpenDefineAssetsChecker = mockChecker
-
-	ammPoolId := uint64(2)
-	assets := []types.PoolAsset{
-		{
-			AssetDenom:  "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
-			Liabilities: sdk.NewInt(0),
+			"success: asset is uusdc",
+			"",
+			ptypes.BaseCurrency,
+			func() {
+				poolAsset.Liabilities = sdk.OneInt()
+			},
+			func(totalLiabilities sdk.Int) {
+				suite.Require().True(totalLiabilities.Equal(sdk.OneInt()))
+			},
 		},
 		{
-			AssetDenom:  "ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953",
-			Liabilities: sdk.NewInt(2000),
+			"amm pool not found",
+			"pool does not exist",
+			ptypes.ATOM,
+			func() {
+				poolAsset.Liabilities = sdk.OneInt()
+			},
+			func(totalLiabilities sdk.Int) {
+			},
+		},
+		{
+			"amm pool does not have enough funds",
+			"amount too low",
+			ptypes.ATOM,
+			func() {
+				amount := sdk.OneInt().MulRaw(1000_000)
+				ammPool = suite.SetAndGetAmmPool(addr[0], poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount, amount)
+				poolAsset.Liabilities = amount
+			},
+			func(totalLiabilities sdk.Int) {
+			},
+		},
+		{
+			"success swap",
+			"",
+			ptypes.ATOM,
+			func() {
+				poolAsset.Liabilities = sdk.OneInt().MulRaw(100)
+			},
+			func(totalLiabilities sdk.Int) {
+				uusdcAmount, _, err := suite.app.AmmKeeper.CalcInAmtGivenOut(suite.ctx, uint64(1), suite.app.OracleKeeper, &ammPool, sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, poolAsset.Liabilities)), ptypes.BaseCurrency, sdk.ZeroDec())
+				suite.Require().NoError(err)
+				suite.Require().True(totalLiabilities.Equal(uusdcAmount.Amount))
+			},
 		},
 	}
 
-	got, err := k.CalcTotalLiabilities(ctx, assets, ammPoolId, uusdcDenom)
-
-	assert.NoError(t, err)
-	assert.Equal(t, got, sdk.NewInt(1000))
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			poolAsset.AssetDenom = tc.asset
+			totalLiabilities, err := suite.app.PerpetualKeeper.CalcTotalLiabilities(suite.ctx, []types.PoolAsset{poolAsset}, poolId, "uusdc")
+			if tc.expectErrMsg != "" {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+			}
+			tc.postValidateFunction(totalLiabilities)
+		})
+	}
 }

@@ -8,7 +8,7 @@ import (
 const (
 	TypeMsgCreatePendingPerpetualOrder = "create_pending_perpetual_order"
 	TypeMsgUpdatePendingPerpetualOrder = "update_pending_perpetual_order"
-	TypeMsgCancelPerpetualOrders = "cancel_perpetual_order"
+	TypeMsgCancelPerpetualOrders       = "cancel_perpetual_order"
 )
 
 var _ sdk.Msg = &MsgCreatePendingPerpetualOrder{}
@@ -91,7 +91,7 @@ var _ sdk.Msg = &MsgCancelPerpetualOrders{}
 
 func NewMsgCancelPerpetualOrders(creator string, ids []uint64) *MsgCancelPerpetualOrders {
 	return &MsgCancelPerpetualOrders{
-		OrderIds:      ids,
+		OrderIds:     ids,
 		OwnerAddress: creator,
 	}
 }

@@ -10,7 +10,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	pools := k.GetAllPools(ctx)
 
 	for _, pool := range pools {
-		if k.IsPoolEnabled(ctx, pool.AmmPoolId) {
+		if pool.IsEnabled() {
 			rate, err := k.BorrowInterestRateComputation(ctx, pool)
 			if err != nil {
 				ctx.Logger().Error(err.Error())
