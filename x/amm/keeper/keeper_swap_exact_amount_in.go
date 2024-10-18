@@ -59,7 +59,7 @@ func (k Keeper) InternalSwapExactAmountIn(
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// Also emits a swap event and updates related liquidity metrics.
-	swapOutFee, err := k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, sdk.ZeroDec(), swapFee, weightBalanceBonus)
+	_, err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, sdk.ZeroDec(), swapFee, weightBalanceBonus)
 	if err != nil {
 		return math.Int{}, err
 	}
@@ -67,6 +67,5 @@ func (k Keeper) InternalSwapExactAmountIn(
 	// track slippage
 	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenOutCoin.Denom, slippageAmount.RoundInt()))
 
-	// Subtract swap out fee from the token out amount.
-	return tokenOutAmount.Sub(swapOutFee), nil
+	return tokenOutAmount, nil
 }
