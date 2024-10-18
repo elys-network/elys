@@ -5,6 +5,11 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 
+<<<<<<< Updated upstream
+	sdkmath "cosmossdk.io/math"
+
+=======
+>>>>>>> Stashed changes
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
