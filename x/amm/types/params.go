@@ -7,10 +7,11 @@ import (
 )
 
 // NewParams creates a new Params instance
-func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64) Params {
+func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64, enable bool) Params {
 	return Params{
 		PoolCreationFee:       poolCreationFee,
 		SlippageTrackDuration: slippageTrackDuration,
+		EnableUsdcPairedPoolOnly: enable,
 	}
 }
 
@@ -19,6 +20,7 @@ func DefaultParams() Params {
 	return NewParams(
 		math.NewInt(10_000_000), // 10 ELYS
 		86400*7,
+		true,
 	)
 }
 

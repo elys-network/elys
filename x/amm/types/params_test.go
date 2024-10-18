@@ -10,7 +10,7 @@ import (
 )
 
 func TestDefaultParams(t *testing.T) {
-	require.Equal(t, types.DefaultParams(), types.NewParams(math.NewInt(10_000_000), 86400*7))
+	require.Equal(t, types.DefaultParams(), types.NewParams(math.NewInt(10_000_000), 86400*7, true))
 	output, err := yaml.Marshal(types.DefaultParams())
 	require.NoError(t, err)
 	require.Equal(t, types.DefaultParams().String(), string(output))
