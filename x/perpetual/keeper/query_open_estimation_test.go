@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -26,7 +25,8 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
-
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	require.NoError(t, err)
 	// Generate 1 random account with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000000000))
 
@@ -36,7 +36,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 	// Mint 100000ATOM
 	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000000000000))}
 
-	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
@@ -99,7 +99,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
-		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
 	})
 	require.NoError(t, err)
 
@@ -107,20 +107,18 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		Position:           types.Position_LONG,
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
-		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
+		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100_000_000)),
 		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, types.NewParams().MinBorrowInterestAmount),
-		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(498049800)),
-		OpenPrice:          sdk.MustNewDecFromStr("1.003915672689759137"),
-		TakeProfitPrice:    sdk.MustNewDecFromStr("20.00000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("0.764888131573149818"),
-		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(9360892980)),
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(99_643_049)),
+		OpenPrice:          sdk.MustNewDecFromStr("5.017911485225627730"),
+		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
+		LiquidationPrice:   sdk.MustNewDecFromStr("3.823170655410002080"),
+		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(994_645_735)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600000000000)),
-		Slippage:           sdk.MustNewDecFromStr("0.002903302158939339"),
+		Slippage:           sdk.MustNewDecFromStr("0.002572074655759760"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("0.196867461848192691"),
-		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.ZeroInt()),
-		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		PriceImpact:        sdk.MustNewDecFromStr("-0.003582297045125546"),
 	}, res)
 }
 
@@ -132,7 +130,8 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
-
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	require.NoError(t, err)
 	// Set asset profile
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
 		BaseDenom: ptypes.BaseCurrency,
@@ -154,7 +153,7 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 	// Mint 100000ATOM
 	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000000000000))}
 
-	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
@@ -217,27 +216,25 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
-		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
 	})
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryOpenEstimationResponse{
 		Position:           types.Position_LONG,
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
-		Collateral:         sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
-		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(50000000)),
-		OpenPrice:          sdk.MustNewDecFromStr("1.002257820000000000"),
-		TakeProfitPrice:    sdk.MustNewDecFromStr("20.00000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("0.764350038095238095"),
-		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(659743983)),
+		Collateral:         sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10_000_000)),
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(50_000_000)),
+		OpenPrice:          sdk.MustNewDecFromStr("5.014308340000000000"),
+		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
+		LiquidationPrice:   sdk.MustNewDecFromStr("3.824815447619047619"),
+		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(399_197_189)),
 		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, types.NewParams().MinBorrowInterestAmount),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
-		Slippage:           sdk.MustNewDecFromStr("0.002201335983550402"),
+		Slippage:           sdk.MustNewDecFromStr("0.003001007041215876"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("0.197432460000000000"),
-		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.ZeroInt()),
-		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		PriceImpact:        sdk.MustNewDecFromStr("-0.004014055000000000"),
 	}, res)
 }
 
@@ -329,8 +326,9 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 
 	// check length of pools
 	require.Equal(t, len(pools), 1)
-
-	// call min collateral query
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	require.NoError(t, err)
+	// call min collateral query	tradingAssetPrice := app.OracleKeeper.GetAssetPriceFromDenom(ctx, ptypes.ATOM)
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
 		PoolId:          1,
 		Position:        types.Position_LONG,
@@ -338,27 +336,25 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1_000_000000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
-		TakeProfitPrice: sdk.MustNewDecFromStr("5.0"),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
 	})
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryOpenEstimationResponse{
 		Position:           types.Position_LONG,
 		Leverage:           sdk.MustNewDecFromStr("10.0"),
 		TradingAsset:       ptypes.ATOM,
-		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1_000_000000)),
-		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(2165087869)),
+		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1_000_000_000)),
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(2_165_087_869)),
 		OpenPrice:          sdk.MustNewDecFromStr("4.618750187085363047"),
-		TakeProfitPrice:    sdk.MustNewDecFromStr("5.000000000000000000"),
+		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
 		LiquidationPrice:   sdk.MustNewDecFromStr("3.958928731787454040"),
 		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, types.NewParams().MinBorrowInterestAmount),
-		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(819738735)),
+		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(18_514_207_234)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600_000_000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.048575000399137173"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("0.053103606292294592"),
-		BorrowFee:          sdk.NewCoin(ptypes.BaseCurrency, math.ZeroInt()),
-		FundingFee:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
+		PriceImpact:        sdk.MustNewDecFromStr("-0.052107104119672676"),
 	}, res)
 }
 
@@ -461,7 +457,8 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 
 	// check length of pools
 	require.Equal(t, len(pools), 1)
-
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	require.NoError(t, err)
 	// call min collateral query
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
 		PoolId:          1,
@@ -470,27 +467,25 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
-		TakeProfitPrice: sdk.MustNewDecFromStr("2.0"),
+		TakeProfitPrice: tradingAssetPrice.QuoInt64(3),
 	})
 	require.NoError(t, err)
 	expectedRes := &types.QueryOpenEstimationResponse{
 		Position:           types.Position_SHORT,
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
-		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-		PositionSize:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(500000000)),
-		OpenPrice:          sdk.MustNewDecFromStr("4.986803995499919708"),
-		TakeProfitPrice:    sdk.MustNewDecFromStr("2.000000000000000000"),
-		LiquidationPrice:   sdk.MustNewDecFromStr("5.994077327717856315"),
-		EstimatedPnl:       sdk.Coin{ptypes.BaseCurrency, sdk.NewInt(59577156312850828)},
+		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100_000_000)),
+		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(99_156_453)),
+		OpenPrice:          sdk.MustNewDecFromStr("5.966701582195563208"),
+		TakeProfitPrice:    tradingAssetPrice.QuoInt64(3),
+		LiquidationPrice:   sdk.MustNewDecFromStr("4.802415392878930335"),
+		EstimatedPnl:       sdk.Coin{ptypes.BaseCurrency, sdk.NewInt(234_739_246)},
 		InterestAmount:     sdk.NewCoin(ptypes.ATOM, types.NewParams().MinBorrowInterestAmount),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
-		Slippage:           sdk.MustNewDecFromStr("0.005962222727097097"),
+		Slippage:           sdk.MustNewDecFromStr("0.007442909656747147"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        sdk.MustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        sdk.MustNewDecFromStr("-0.007004991056599861"),
-		BorrowFee:          sdk.NewCoin(ptypes.ATOM, math.ZeroInt()),
-		FundingFee:         sdk.NewCoin(ptypes.ATOM, sdk.NewInt(0)),
+		PriceImpact:        sdk.MustNewDecFromStr("-0.008507232504575370"),
 	}
 	require.Equal(t, expectedRes, res)
 }
@@ -503,6 +498,9 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
+
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	require.NoError(t, err)
 
 	// Set asset profile
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
@@ -525,7 +523,7 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 	// Mint ATOM
 	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000000000000))}
 
-	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
@@ -587,7 +585,7 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 		TradingAsset:    ptypes.BaseCurrency,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
-		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
 	})
 
 	assert.Error(t, err)
@@ -600,7 +598,7 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.Eden, sdk.NewInt(10000000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
-		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(3),
 	})
 
 	assert.Error(t, err)
@@ -613,7 +611,7 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 		TradingAsset:    ptypes.BaseCurrency,
 		Collateral:      sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
-		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
+		TakeProfitPrice: tradingAssetPrice.QuoInt64(3),
 	})
 
 	assert.Error(t, err)
@@ -626,7 +624,7 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
-		TakeProfitPrice: sdk.MustNewDecFromStr("20.0"),
+		TakeProfitPrice: tradingAssetPrice.QuoInt64(3),
 	})
 
 	assert.Error(t, err)

@@ -1,6 +1,9 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
+	"github.com/cometbft/cometbft/crypto/ed25519"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -9,17 +12,11 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	"github.com/stretchr/testify/require"
-	"testing"
-
-	// oracletypes "github.com/elys-network/elys/x/oracle/types"
-	"github.com/elys-network/elys/x/perpetual/types"
-
-	// "github.com/cometbft/cometbft/crypto/ed25519"
-	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/keeper"
+	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/stretchr/testify/require"
+	"testing"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
@@ -348,7 +345,7 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 
 	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
 
-	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
+	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, ptypes.BaseCurrency)
 	require.Error(t, err)
 
 	// Set price above target price
@@ -361,7 +358,7 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 
-	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
+	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, ptypes.BaseCurrency)
 	require.NoError(t, err)
 
 	mtps = mk.GetAllMTPs(ctx)
@@ -477,6 +474,8 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	}
 	_, err = msgServer.EnablePool(ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	suite.Require().NoError(err)
 	// Create a perpetual position open msg
 	msg2 := types.NewMsgOpen(
 		addr[0].String(),
@@ -485,8 +484,8 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 		1,
 		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-		types.TakeProfitPriceDefault,
-		sdk.NewDec(2),
+		tradingAssetPrice.MulInt64(10),
+		tradingAssetPrice.Mul(math.LegacyMustNewDecFromStr("1.5")),
 	)
 	params := app.PerpetualKeeper.GetParams(ctx)
 	params.WhitelistingEnabled = true
@@ -510,7 +509,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	perpPool, _ := mk.GetPool(ctx, ammPool.PoolId)
 
-	err = mk.CheckAndCloseAtStopLoss(ctx, &mtp, perpPool, ammPool, ptypes.BaseCurrency, 6)
+	err = mk.CheckAndCloseAtStopLoss(ctx, &mtp, perpPool, ptypes.BaseCurrency)
 	suite.Require().NoError(err)
 
 	mtps = mk.GetAllMTPs(ctx)

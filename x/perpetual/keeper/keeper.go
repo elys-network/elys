@@ -108,8 +108,8 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	liabilitiesInCollateral := collateralAmount.ToLegacyDec().Mul(eta).TruncateInt()
 	liabilities := liabilitiesInCollateral
 	// If collateral asset is not base currency, should calculate liability in base currency with the given out.
-	// For LONG, Liability has to be in base currency
-	// For SHORT, Liability has to be in trading asset and CollateralAsset will be in base currency
+	// For LONG, Liability has to be in base currency, CollateralAsset can be trading asset or base currency
+	// For SHORT, Liability has to be in trading asset and CollateralAsset will be in base currency, so this if case only applies to LONG
 	if mtp.CollateralAsset != baseCurrency {
 		liabilitiesInCollateralTokenOut := sdk.NewCoin(mtp.CollateralAsset, liabilitiesInCollateral)
 		// Calculate base currency amount given atom out amount and we use it liabilty amount in base currency
@@ -119,7 +119,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		}
 	}
 
-	// If position is short, liabilities should be swapped to liabilities asset which is trading asset
+	// If position is short, CollateralAsset will be in base currency & liabilities should be in trading asset
 	if mtp.Position == types.Position_SHORT {
 		liabilitiesInCollateralTokenIn := sdk.NewCoin(baseCurrency, liabilities)
 		liabilities, _, err = k.EstimateSwap(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool)

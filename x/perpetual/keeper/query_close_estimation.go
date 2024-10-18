@@ -79,7 +79,10 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		executionPrice = repayAmount.ToLegacyDec().Quo(payingLiabilities.ToLegacyDec())
 	}
 
-	tradingAssetPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, mtp.TradingAsset)
+	if err != nil {
+		return nil, err
+	}
 	priceImpact := tradingAssetPrice.Sub(executionPrice).Quo(tradingAssetPrice)
 
 	returnAmountAtClosingPrice := math.ZeroInt()

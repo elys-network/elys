@@ -28,14 +28,6 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, status.Error(codes.NotFound, "pool not found")
 	}
 
-	tradingAssetPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, req.TradingAsset)
-	if req.Position == types.Position_LONG && req.TakeProfitPrice.LTE(tradingAssetPrice) {
-		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be less than equal to trading price for long")
-	}
-	if req.Position == types.Position_SHORT && req.TakeProfitPrice.GTE(tradingAssetPrice) {
-		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be greater than equal to trading price for short")
-	}
-
 	ammPool, err := k.GetAmmPool(ctx, req.PoolId)
 	if err != nil {
 		return nil, err
@@ -68,6 +60,17 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		}
 	default:
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, req.Position.String())
+	}
+
+	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, req.TradingAsset)
+	if err != nil {
+		return nil, err
+	}
+	if req.Position == types.Position_LONG && req.TakeProfitPrice.LTE(tradingAssetPrice) {
+		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be less than equal to trading price for long")
+	}
+	if req.Position == types.Position_SHORT && req.TakeProfitPrice.GTE(tradingAssetPrice) {
+		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be greater than equal to trading price for short")
 	}
 
 	// retrieve denom in decimals
@@ -104,6 +107,10 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 			if err != nil {
 				return nil, err
 			}
+
+			mtp.Liabilities = req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
+			// executionPrice = leveragedAmount / Custody
+			executionPrice = leveragedAmount.ToLegacyDec().Quo(custodyAmount.ToLegacyDec())
 		}
 		mtp.Custody = custodyAmount
 
@@ -115,21 +122,22 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 				return nil, err
 			}
 
-		} else {
-			mtp.Liabilities = req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
+			// executionPrice = (Liabilities in base currency) / Custody
+			executionPrice = mtp.Liabilities.ToLegacyDec().Quo(amountIn.ToLegacyDec())
 		}
-		// executionPrice = Liabilities / Custody
-		executionPrice = mtp.Liabilities.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())
 
 	}
 	//getting Liabilities
 	if req.Position == types.Position_SHORT {
-		// Collateral will be in base currency
-		liabilitiesInCollateralTokenIn := sdk.NewCoin(baseCurrency, req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt())
-		mtp.Liabilities, slippage, err = k.EstimateSwap(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, ammPool)
-		// executionPrice = liabilitiesInCollateral / Liabilities
-		executionPrice = liabilitiesInCollateralTokenIn.Amount.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
 		mtp.Custody = custodyAmount
+		// Collateral will be in base currency
+		custodyTokenIn := sdk.NewCoin(baseCurrency, mtp.Custody)
+		mtp.Liabilities, slippage, err = k.EstimateSwap(ctx, custodyTokenIn, mtp.LiabilitiesAsset, ammPool)
+		if err != nil {
+			return nil, err
+		}
+
+		executionPrice = mtp.Custody.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
 	}
 	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(*mtp)
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)

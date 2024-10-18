@@ -176,14 +176,9 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, r
 		liquidationPrice = k.GetLiquidationPrice(ctx, mtp)
 	}
 
-	info, found := k.oracleKeeper.GetAssetInfo(ctx, mtp.TradingAsset)
-	if !found {
-		return nil, fmt.Errorf("asset not found")
-	}
-	tradingAssetPrice, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
-	assetPrice := sdk.ZeroDec()
-	if found {
-		assetPrice = tradingAssetPrice.Price
+	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, mtp.TradingAsset)
+	if err != nil {
+		return nil, err
 	}
 
 	// TODO: replace custody amount with liability amount when fees are defined in terms of liability asset
@@ -193,14 +188,14 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, r
 	fundingFeesInBaseCurrency := mtp.FundingFeePaidCustody
 
 	if mtp.Position == types.Position_LONG {
-		totalFeesInBaseCurrency = totalFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
-		borrowInterestFeesInBaseCurrency = borrowInterestFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
-		fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(assetPrice).TruncateInt()
+		totalFeesInBaseCurrency = totalFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+		borrowInterestFeesInBaseCurrency = borrowInterestFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+		fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
 	}
 
 	return &types.MtpAndPrice{
 		Mtp:               &mtp,
-		TradingAssetPrice: assetPrice,
+		TradingAssetPrice: tradingAssetPrice,
 		Pnl:               pnl,
 		LiquidationPrice:  liquidationPrice,
 		Fees: &types.Fees{
@@ -330,7 +325,10 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	// Liability should include margin interest and funding fee accrued.
 	collateralAmt := mtp.Collateral
 
-	tradingAssetPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.TradingAsset)
+	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, mtp.TradingAsset)
+	if err != nil {
+		return math.Int{}, err
+	}
 	if useTakeProfitPrice {
 		tradingAssetPrice = mtp.TakeProfitPrice
 	}

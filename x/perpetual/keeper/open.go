@@ -33,16 +33,19 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 	}
 
 	params := k.GetParams(ctx)
-	tradingAssetPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, msg.TradingAsset)
+	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, msg.TradingAsset)
+	if err != nil {
+		return nil, err
+	}
 	ratio := msg.TakeProfitPrice.Quo(tradingAssetPrice)
 	if msg.Position == types.Position_LONG {
 		if ratio.LT(params.MinimumLongTakeProfitPriceRatio) || ratio.GT(params.MaximumLongTakeProfitPriceRatio) {
-			return nil, fmt.Errorf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String())
+			return nil, fmt.Errorf("take profit price should be between %s and %s times of current market price for long (current ratio: %s)", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String(), ratio.String())
 		}
 	}
 	if msg.Position == types.Position_SHORT {
 		if ratio.GT(params.MaximumShortTakeProfitPriceRatio) {
-			return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short", params.MaximumShortTakeProfitPriceRatio.String())
+			return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short (current ratio: %s)", params.MaximumShortTakeProfitPriceRatio.String(), ratio.String())
 		}
 	}
 

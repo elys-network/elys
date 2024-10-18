@@ -19,6 +19,8 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 	poolCreator := addr[0]
 	positionCreator := addr[1]
 	poolId := uint64(1)
+	tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPriceByDenom(suite.ctx, ptypes.ATOM)
+	suite.Require().NoError(err)
 	var ammPool ammtypes.Pool
 	msg := &types.MsgOpen{
 		Creator:         positionCreator.String(),
@@ -27,7 +29,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		PoolId:          poolId,
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-		TakeProfitPrice: sdk.ZeroDec(),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 		StopLossPrice:   sdk.ZeroDec(),
 	}
 	testCases := []struct {
