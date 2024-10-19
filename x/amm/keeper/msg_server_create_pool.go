@@ -34,7 +34,7 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 			}
 		}
 		if !usdc {
-			return nil, errorsmod.Wrapf(types.ErrOnlyUsdcPoolAllowed, "one of the asset must be", ptypes.BaseCurrency)
+			return nil, errorsmod.Wrapf(types.ErrOnlyUsdcPoolAllowed, "one of the asset must be %s", ptypes.BaseCurrency)
 		}
 	}
 

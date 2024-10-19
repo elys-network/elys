@@ -20,7 +20,7 @@ func DefaultParams() Params {
 	return NewParams(
 		math.NewInt(10_000_000), // 10 ELYS
 		86400*7,
-		true,
+		false,
 	)
 }
 
