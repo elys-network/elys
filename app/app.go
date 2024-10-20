@@ -836,7 +836,6 @@ func NewElysApp(
 		app.BankKeeper,
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
-		app.LeveragelpKeeper,
 		&app.ParameterKeeper,
 	)
 
@@ -1025,9 +1024,6 @@ func NewElysApp(
 		app.MasterchefKeeper,
 	)
 
-	// Need to do this otherwise app.PerpetualKeeper.LeverageLpKeeper will be nil
-	app.PerpetualKeeper.LeverageLpKeeper = app.LeveragelpKeeper
-
 	app.TierKeeper = *tiermodulekeeper.NewKeeper(
 		appCodec,
 		keys[tiermoduletypes.StoreKey],
@@ -1093,6 +1089,9 @@ func NewElysApp(
 	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.LeveragelpKeeper = app.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
+		// PerpetualKeeper.LeverageLpHooks() calling first because it needs to close all position before removing accounted pool
+		app.PerpetualKeeper.LeverageLpHooks(),
+		app.AccountedPoolKeeper.LeverageLpHooks(),
 		app.TierKeeper.LeverageLpHooks(),
 	))
 	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, *app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)

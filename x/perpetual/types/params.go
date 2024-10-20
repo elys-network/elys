@@ -47,21 +47,21 @@ func NewParams() Params {
 	return Params{
 		PerpetualSwapFee:                               math.LegacyMustNewDecFromStr("0.001"), // 0.1%
 		FixedFundingRate:                               math.LegacyMustNewDecFromStr("0.3"),   // 30%
-		TakeProfitBorrowInterestRateMin:                sdk.OneDec(),
+		TakeProfitBorrowInterestRateMin:                math.LegacyOneDec(),
 		BorrowInterestRateDecrease:                     math.LegacyMustNewDecFromStr("0.000000003300000000"),
 		BorrowInterestRateIncrease:                     math.LegacyMustNewDecFromStr("0.000000003300000000"),
 		BorrowInterestRateMax:                          math.LegacyMustNewDecFromStr("0.000002700000000000"),
 		BorrowInterestRateMin:                          math.LegacyMustNewDecFromStr("0.000000030000000000"),
-		MinBorrowInterestAmount:                        sdk.NewInt(0),
+		MinBorrowInterestAmount:                        math.ZeroInt(),
 		ForceCloseFundAddress:                          authtypes.NewModuleAddress("zero").String(),
-		ForceCloseFundPercentage:                       sdk.OneDec(),
+		ForceCloseFundPercentage:                       math.LegacyOneDec(),
 		HealthGainFactor:                               math.LegacyMustNewDecFromStr("0.000000220000000000"),
 		IncrementalBorrowInterestPaymentEnabled:        true,
 		IncrementalBorrowInterestPaymentFundAddress:    authtypes.NewModuleAddress("zero").String(),
 		IncrementalBorrowInterestPaymentFundPercentage: math.LegacyMustNewDecFromStr("0.1"),
 		LeverageMax:                                    math.LegacyNewDec(25),
 		MaxOpenPositions:                               (int64)(3000),
-		PoolOpenThreshold:                              sdk.MustNewDecFromStr("0.65"),
+		PoolOpenThreshold:                              math.LegacyMustNewDecFromStr("0.65"),
 		SafetyFactor:                                   math.LegacyMustNewDecFromStr("1.050000000000000000"), // 5%
 		WhitelistingEnabled:                            false,
 		MaxLimitOrder:                                  (int64)(500),

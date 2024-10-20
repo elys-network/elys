@@ -2,7 +2,6 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -12,11 +11,6 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrapf(types.ErrPoolDoesNotExist, "pool id %d", poolId)
-	}
-
-	// Check if the pool is enabled.
-	if !pool.IsEnabled() {
-		return nil, fmt.Errorf("disabled pool id %d", poolId)
 	}
 
 	// Fetch the corresponding AMM (Automated Market Maker) pool.
@@ -94,14 +88,14 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 	}
 
 	// Update the MTP health.
-	lr, err := k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
 	// Check if the MTP is unhealthy
 	safetyFactor := k.GetSafetyFactor(ctx)
-	if lr.LTE(safetyFactor) {
+	if mtp.MtpHealth.LTE(safetyFactor) {
 		return nil, types.ErrMTPUnhealthy
 	}
 

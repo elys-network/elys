@@ -55,8 +55,6 @@ func TestAccountedPoolUpdate(t *testing.T) {
 	perpetualPool := perpetualtypes.Pool{
 		AmmPoolId:          0,
 		Health:             sdk.NewDec(1),
-		Enabled:            true,
-		Closed:             false,
 		BorrowInterestRate: sdk.NewDec(1),
 		PoolAssetsLong: []perpetualtypes.PoolAsset{
 			{

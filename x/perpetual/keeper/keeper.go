@@ -33,7 +33,6 @@ type (
 		bankKeeper         types.BankKeeper
 		oracleKeeper       types.OracleKeeper
 		assetProfileKeeper types.AssetProfileKeeper
-		LeverageLpKeeper   types.LeverageLpKeeper // Need it to be exportable otherwise app.PerpetualKeeper.LeverageLpKeeper will be nil
 
 		hooks types.PerpetualHooks
 	}
@@ -48,7 +47,6 @@ func NewKeeper(
 	bk types.BankKeeper,
 	oracleKeeper types.OracleKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
-	leverageLpKeeper types.LeverageLpKeeper,
 	parameterKeeper *pkeeper.Keeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
@@ -65,7 +63,6 @@ func NewKeeper(
 		bankKeeper:         bk,
 		oracleKeeper:       oracleKeeper,
 		assetProfileKeeper: assetProfileKeeper,
-		LeverageLpKeeper:   leverageLpKeeper,
 		parameterKeeper:    parameterKeeper,
 	}
 

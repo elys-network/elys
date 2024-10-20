@@ -8,18 +8,29 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
-func NewPool(poolId uint64) Pool {
-	return Pool{
-		AmmPoolId:                            poolId,
-		Health:                               sdk.NewDec(100),
-		Enabled:                              true,
-		Closed:                               false,
-		BorrowInterestRate:                   sdk.MustNewDecFromStr("0.000000000000000001"),
+func NewPool(ammPool ammtypes.Pool) Pool {
+	p := Pool{
+		AmmPoolId:                            ammPool.PoolId,
+		Health:                               math.LegacyOneDec(),
+		BorrowInterestRate:                   math.LegacyZeroDec(),
 		PoolAssetsLong:                       []PoolAsset{},
 		PoolAssetsShort:                      []PoolAsset{},
 		LastHeightBorrowInterestRateComputed: 0,
-		FundingRate:                          sdk.ZeroDec(),
+		FundingRate:                          math.LegacyZeroDec(),
 	}
+
+	for _, asset := range ammPool.PoolAssets {
+		poolAsset := PoolAsset{
+			Liabilities: math.ZeroInt(),
+			Custody:     math.ZeroInt(),
+			AssetDenom:  asset.Token.Denom,
+		}
+
+		p.PoolAssetsLong = append(p.PoolAssetsLong, poolAsset)
+		p.PoolAssetsShort = append(p.PoolAssetsShort, poolAsset)
+	}
+
+	return p
 }
 
 // Get relevant pool asset array based on position direction
@@ -126,31 +137,4 @@ func (p *Pool) UpdateFeesCollected(assetDenom string, amount math.Int, isIncreas
 	p.FeesCollected = append(p.FeesCollected, sdk.NewCoin(assetDenom, amount))
 
 	return nil
-}
-
-// Initialite pool asset according to its corresponding amm pool assets.
-func (p *Pool) InitiatePool(ammPool *ammtypes.Pool) error {
-	if ammPool == nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidType, "invalid amm pool")
-	}
-
-	// Set pool Id
-	p.AmmPoolId = ammPool.PoolId
-
-	for _, asset := range ammPool.PoolAssets {
-		poolAsset := PoolAsset{
-			Liabilities: sdk.ZeroInt(),
-			Custody:     sdk.ZeroInt(),
-			AssetDenom:  asset.Token.Denom,
-		}
-
-		p.PoolAssetsLong = append(p.PoolAssetsLong, poolAsset)
-		p.PoolAssetsShort = append(p.PoolAssetsShort, poolAsset)
-	}
-
-	return nil
-}
-
-func (pool Pool) IsEnabled() bool {
-	return pool.Enabled && !pool.Closed
 }

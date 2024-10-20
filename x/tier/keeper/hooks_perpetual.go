@@ -18,14 +18,6 @@ func (k Keeper) PerpetualHooks() PerpetualHooks {
 	return PerpetualHooks{k}
 }
 
-func (h PerpetualHooks) AfterEnablingPool(ctx sdk.Context, pool ammtypes.Pool) error {
-	return nil
-}
-
-func (h PerpetualHooks) AfterDisablingPool(ctx sdk.Context, pool ammtypes.Pool) error {
-	return nil
-}
-
 func (h PerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, sender sdk.AccAddress) error {
 	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil

@@ -106,10 +106,10 @@ func (k Keeper) GetAllBorrowRate(ctx sdk.Context) []types.InterestBlock {
 	return interests
 }
 
-func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uint64, pool uint64, takeProfitBorrowFactor math.LegacyDec) math.LegacyDec {
+func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uint64, poolId uint64, takeProfitBorrowFactor math.LegacyDec) math.LegacyDec {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestRatePrefix)
-	currentBlockKey := types.GetInterestRateKey(uint64(ctx.BlockHeight()), pool)
-	startBlockKey := types.GetInterestRateKey(startBlock, pool)
+	currentBlockKey := types.GetInterestRateKey(uint64(ctx.BlockHeight()), poolId)
+	startBlockKey := types.GetInterestRateKey(startBlock, poolId)
 
 	blocksPerYear := sdk.NewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 
@@ -160,11 +160,12 @@ func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uin
 			return sdk.MaxDec(finalInterestRate.Mul(takeProfitBorrowFactor), k.GetParams(ctx).BorrowInterestRateMin)
 		}
 	}
-	params, found := k.GetPool(ctx, pool)
+	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.ZeroDec()
+		// this is handling case of future block
+		return math.LegacyZeroDec()
 	}
-	newInterest := params.BorrowInterestRate.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).Quo(blocksPerYear)
+	newInterest := pool.BorrowInterestRate.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).Quo(blocksPerYear)
 	return newInterest
 }
 

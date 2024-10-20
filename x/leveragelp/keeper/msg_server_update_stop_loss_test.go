@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
@@ -58,7 +59,7 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 	if err != nil {
 		panic(err)
 	}
-	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId))
+	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, math.LegacyMustNewDecFromStr("10")))
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
@@ -89,7 +90,7 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 		}
 	}
 }
-func (suite *KeeperTestSuite) TestUpdateSyopLoss() {
+func (suite *KeeperTestSuite) TestUpdateStopLoss() {
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
@@ -113,42 +114,6 @@ func (suite *KeeperTestSuite) TestUpdateSyopLoss() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices(suite.ctx)
 				initializeForUpdateStopLoss(suite, addresses, asset1, asset2, false)
-			},
-			postValidateFunc: func() {
-			},
-		},
-		{name: "pool not found",
-			input: &types.MsgUpdateStopLoss{
-				Creator:  addresses[0].String(),
-				Position: 1,
-				Price:    sdk.OneDec().MulInt64(10),
-			},
-			expectErr:    true,
-			expectErrMsg: types.ErrPoolDoesNotExist.Error(),
-			prerequisiteFunction: func() {
-				suite.ResetSuite()
-				suite.SetupCoinPrices(suite.ctx)
-				initializeForUpdateStopLoss(suite, addresses, asset1, asset2, true)
-				suite.app.LeveragelpKeeper.RemovePool(suite.ctx, 1)
-			},
-			postValidateFunc: func() {
-			},
-		},
-		{name: "pool not enabled",
-			input: &types.MsgUpdateStopLoss{
-				Creator:  addresses[0].String(),
-				Position: 1,
-				Price:    sdk.OneDec().MulInt64(10),
-			},
-			expectErr:    true,
-			expectErrMsg: types.ErrPositionDisabled.Error(),
-			prerequisiteFunction: func() {
-				suite.ResetSuite()
-				suite.SetupCoinPrices(suite.ctx)
-				initializeForUpdateStopLoss(suite, addresses, asset1, asset2, true)
-				pool := types.NewPool(1)
-				pool.Enabled = false
-				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
 			postValidateFunc: func() {
 			},

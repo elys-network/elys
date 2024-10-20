@@ -6,8 +6,6 @@ import (
 )
 
 type PerpetualHooks interface {
-	AfterEnablingPool(ctx sdk.Context, pool ammtypes.Pool) error
-	AfterDisablingPool(ctx sdk.Context, pool ammtypes.Pool) error
 	// AfterPerpetualPositionOpen is called after OpenLong or OpenShort position.
 	// This should be used to update pool health
 	AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
@@ -31,24 +29,6 @@ func NewMultiPerpetualHooks(hooks ...PerpetualHooks) MultiPerpetualHooks {
 	return hooks
 }
 
-func (h MultiPerpetualHooks) AfterEnablingPool(ctx sdk.Context, ammPool ammtypes.Pool) error {
-	for i := range h {
-		err := h[i].AfterEnablingPool(ctx, ammPool)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-func (h MultiPerpetualHooks) AfterDisablingPool(ctx sdk.Context, ammPool ammtypes.Pool) error {
-	for i := range h {
-		err := h[i].AfterDisablingPool(ctx, ammPool)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
 func (h MultiPerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error {
 	for i := range h {
 		err := h[i].AfterPerpetualPositionOpen(ctx, ammPool, perpetualPool, sender)

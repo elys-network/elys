@@ -1,20 +1,28 @@
 package cli_test
 
 import (
+	"bytes"
+	"context"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
+	"github.com/cosmos/gogoproto/proto"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"io"
 	"testing"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/testutil/network"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/perpetual/client/cli"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool) {
@@ -22,7 +30,18 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 	cfg := network.DefaultConfig()
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
-		pool := types.NewPool((uint64)(i))
+		ammPool := ammtypes.Pool{
+			PoolId: uint64(i),
+			PoolAssets: []ammtypes.PoolAsset{
+				{
+					Token: sdk.Coin{
+						Denom:  "testAsset",
+						Amount: sdk.NewInt(100),
+					},
+				},
+			},
+		}
+		pool := types.NewPool(ammPool)
 		nullify.Fill(&pool)
 		state.PoolList = append(state.PoolList, pool)
 	}
@@ -30,6 +49,80 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf
 	return network.New(t, cfg), state.PoolList
+}
+
+func (s *CLITestSuite) TestGetCmdQuerySendEnabled() {
+	cmd := cli.CmdShowPool()
+	cmd.SetOutput(io.Discard)
+
+	testCases := []struct {
+		name         string
+		ctxGen       func() client.Context
+		args         []string
+		expectResult proto.Message
+		expectErr    bool
+	}{
+		{
+			"valid query",
+			func() client.Context {
+				bz, _ := s.encCfg.Codec.Marshal(&types.QueryGetPoolResponse{
+					Pool: types.PoolResponse{},
+				})
+				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+					Value: bz,
+				})
+				return s.baseCtx.WithClient(c)
+			},
+			[]string{
+				"1",
+				fmt.Sprintf("--%s=json", flags.FlagOutput),
+			},
+			&types.QueryGetPoolResponse{},
+			false,
+		},
+		{
+			"invalid query",
+			func() client.Context {
+				bz, _ := s.encCfg.Codec.Marshal(&types.QueryGetPoolResponse{
+					Pool: types.PoolResponse{},
+				})
+				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+					Value: bz,
+				})
+				return s.baseCtx.WithClient(c)
+			},
+			[]string{
+				"-1",
+				fmt.Sprintf("--%s=json", flags.FlagOutput),
+			},
+			&types.QueryGetPoolResponse{},
+			true,
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		s.Run(tc.name, func() {
+			var outBuf bytes.Buffer
+
+			clientCtx := tc.ctxGen().WithOutput(&outBuf)
+			ctx := svrcmd.CreateExecuteContext(context.Background())
+
+			cmd.SetContext(ctx)
+			cmd.SetArgs(tc.args)
+
+			s.Require().NoError(client.SetCmdClientContextHandler(clientCtx, cmd))
+
+			err := cmd.Execute()
+			if tc.expectErr {
+				s.Require().Error(err)
+			} else {
+				s.Require().NoError(s.encCfg.Codec.UnmarshalJSON(outBuf.Bytes(), tc.expectResult))
+				s.Require().NoError(err)
+			}
+		})
+	}
 }
 
 func TestShowPool(t *testing.T) {
@@ -41,8 +134,6 @@ func TestShowPool(t *testing.T) {
 		objs[k].AmmPoolId = v.AmmPoolId
 		objs[k].BorrowInterestRate = v.BorrowInterestRate
 		objs[k].Health = v.Health
-		objs[k].Closed = v.Closed
-		objs[k].Enabled = v.Enabled
 		objs[k].FundingRate = v.FundingRate
 		objs[k].LastHeightBorrowInterestRateComputed = v.LastHeightBorrowInterestRateComputed
 		objs[k].PoolAssetsLong = v.PoolAssetsLong

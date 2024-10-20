@@ -62,7 +62,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, req.Position.String())
 	}
 
-	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, req.TradingAsset)
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, req.TradingAsset)
 	if err != nil {
 		return nil, err
 	}

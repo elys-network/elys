@@ -61,36 +61,26 @@ message MTP {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  // funding fee paid
-  string funding_fee_paid_collateral = 20 [
+  string funding_fee_paid_custody = 20 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string funding_fee_paid_custody = 21 [
+  string funding_fee_received_custody = 21 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  // funding fee received
-  string funding_fee_received_collateral = 22 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string funding_fee_received_custody = 23 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string open_price = 24 [
+  string open_price = 22 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string stop_loss_price = 25 [
+  string stop_loss_price = 23 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  uint64 last_interest_calc_time = 26;
-  uint64 last_interest_calc_block = 27;
-  uint64 last_funding_calc_time = 28;
-  uint64 last_funding_calc_block = 29;
+  uint64 last_interest_calc_time = 24;
+  uint64 last_interest_calc_block = 25;
+  uint64 last_funding_calc_time = 26;
+  uint64 last_funding_calc_block = 27;
 }
 
 message InterestBlock {
@@ -99,7 +89,7 @@ message InterestBlock {
     (gogoproto.nullable) = false
   ];
   int64 block_height = 2;
-    int64 block_time = 3;
+  int64 block_time = 3;
 }
 
 message FundingRateBlock {

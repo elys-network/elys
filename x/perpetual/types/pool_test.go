@@ -16,7 +16,18 @@ func TestPool_UpdateLiabilitiesValid(t *testing.T) {
 	// ctx := sdk.Context{} // mock or setup a context
 
 	// Define the perpetual pool with assets
-	pool := types.NewPool(1)
+	ammPool := ammtypes.Pool{
+		PoolId: 1,
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token: sdk.Coin{
+					Denom:  "testAsset",
+					Amount: sdk.NewInt(100),
+				},
+			},
+		},
+	}
+	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: sdk.NewInt(0),
@@ -43,7 +54,18 @@ func TestPool_UpdateLiabilitiesInvalid(t *testing.T) {
 	// ctx := sdk.Context{} // mock or setup a context
 
 	// Define the perpetual pool with assets
-	pool := types.NewPool(1)
+	ammPool := ammtypes.Pool{
+		PoolId: 1,
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token: sdk.Coin{
+					Denom:  "testAsset",
+					Amount: sdk.NewInt(100),
+				},
+			},
+		},
+	}
+	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: sdk.NewInt(0),
@@ -66,7 +88,18 @@ func TestPool_UpdateTakeProfitLiabilitiesValid(t *testing.T) {
 	// ctx := sdk.Context{} // mock or setup a context
 
 	// Define the perpetual pool with assets
-	pool := types.NewPool(1)
+	ammPool := ammtypes.Pool{
+		PoolId: 1,
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token: sdk.Coin{
+					Denom:  "testAsset",
+					Amount: sdk.NewInt(100),
+				},
+			},
+		},
+	}
+	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:           sdk.NewInt(0),
@@ -94,7 +127,18 @@ func TestPool_UpdateTakeProfitLiabilitiesInvalid(t *testing.T) {
 	// ctx := sdk.Context{} // mock or setup a context
 
 	// Define the perpetual pool with assets
-	pool := types.NewPool(1)
+	ammPool := ammtypes.Pool{
+		PoolId: 1,
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token: sdk.Coin{
+					Denom:  "testAsset",
+					Amount: sdk.NewInt(100),
+				},
+			},
+		},
+	}
+	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:           sdk.NewInt(0),
@@ -115,10 +159,20 @@ func TestPool_UpdateTakeProfitLiabilitiesInvalid(t *testing.T) {
 }
 
 func TestPool_UpdateTakeProfitCustodyValid(t *testing.T) {
-	//ctx := sdk.Context{} // mock or setup a context
 
 	// Define the perpetual pool with assets
-	pool := types.NewPool(1)
+	ammPool := ammtypes.Pool{
+		PoolId: 1,
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token: sdk.Coin{
+					Denom:  "testAsset",
+					Amount: sdk.NewInt(100),
+				},
+			},
+		},
+	}
+	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			TakeProfitCustody: sdk.NewInt(0),
@@ -145,7 +199,18 @@ func TestPool_UpdateTakeProfitCustodyInvalid(t *testing.T) {
 	// ctx := sdk.Context{} // mock or setup a context
 
 	// Define the perpetual pool with assets
-	pool := types.NewPool(1)
+	ammPool := ammtypes.Pool{
+		PoolId: 1,
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token: sdk.Coin{
+					Denom:  "testAsset",
+					Amount: sdk.NewInt(100),
+				},
+			},
+		},
+	}
+	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			TakeProfitCustody: sdk.NewInt(0),
@@ -168,7 +233,18 @@ func TestPool_UpdateCustodyValid(t *testing.T) {
 	// ctx := sdk.Context{} // mock or setup a context
 
 	// Define the perpetual pool with assets
-	pool := types.NewPool(1)
+	ammPool := ammtypes.Pool{
+		PoolId: 1,
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token: sdk.Coin{
+					Denom:  "testAsset",
+					Amount: sdk.NewInt(100),
+				},
+			},
+		},
+	}
+	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: sdk.NewInt(0),
@@ -195,7 +271,18 @@ func TestPool_UpdateCustodyInvalid(t *testing.T) {
 	// ctx := sdk.Context{} // mock or setup a context
 
 	// Define the perpetual pool with assets
-	pool := types.NewPool(1)
+	ammPool := ammtypes.Pool{
+		PoolId: 1,
+		PoolAssets: []ammtypes.PoolAsset{
+			{
+				Token: sdk.Coin{
+					Denom:  "testAsset",
+					Amount: sdk.NewInt(100),
+				},
+			},
+		},
+	}
+	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: sdk.NewInt(0),
@@ -230,23 +317,11 @@ func TestPool_InitiatePoolValid(t *testing.T) {
 		},
 	}
 	// Define the perpetual pool with assets
-	pool := types.NewPool(1)
-	err := pool.InitiatePool(&ammPool)
-
-	// Expect that there is no error
-	assert.Nil(t, err)
+	pool := types.NewPool(ammPool)
 
 	denom := "testAsset"
 	assert.Equal(t, pool.AmmPoolId, (uint64)(1))
 	assert.Equal(t, len(pool.PoolAssetsLong), 1)
 	assert.Equal(t, len(pool.PoolAssetsShort), 1)
 	assert.Equal(t, pool.PoolAssetsLong[0].AssetDenom, denom)
-}
-
-func TestPool_InitiatePoolInvalid(t *testing.T) {
-	// ctx := sdk.Context{} // mock or setup a context
-
-	pool := types.NewPool(1)
-	err := pool.InitiatePool(nil)
-	assert.True(t, errors.Is(err, errorsmod.Wrap(sdkerrors.ErrInvalidType, "invalid amm pool")))
 }

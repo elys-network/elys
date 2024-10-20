@@ -21,13 +21,9 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 	}
 
 	poolId := mtp.AmmPoolId
-	pool, found := k.GetPool(ctx, poolId)
+	_, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
-	}
-
-	if !pool.Enabled {
-		return nil, errorsmod.Wrap(types.ErrPerpetualDisabled, fmt.Sprintf("poolId: %d", poolId))
 	}
 
 	mtp.StopLossPrice = msg.Price

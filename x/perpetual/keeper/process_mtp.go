@@ -121,7 +121,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool ty
 		}
 	}()
 
-	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, mtp.TradingAsset)
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 	if err != nil {
 		return err
 	}
@@ -167,7 +167,7 @@ func (k Keeper) CheckAndCloseAtTakeProfit(ctx sdk.Context, mtp *types.MTP, pool 
 		}
 	}()
 
-	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, mtp.TradingAsset)
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 	if err != nil {
 		return err
 	}

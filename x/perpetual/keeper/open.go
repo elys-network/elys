@@ -33,7 +33,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 	}
 
 	params := k.GetParams(ctx)
-	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, msg.TradingAsset)
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, msg.TradingAsset)
 	if err != nil {
 		return nil, err
 	}
@@ -80,10 +80,6 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	if !pool.IsEnabled() {
-		return nil, fmt.Errorf("pool (%d) is disabled or closed", poolId)
-	}
-
 	if err = k.CheckLowPoolHealth(ctx, poolId); err != nil {
 		return nil, err
 	}
@@ -100,7 +96,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 	}
 
 	if existingMtp != nil {
-		return k.OpenConsolidate(ctx, existingMtp, mtp, msg)
+		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, baseCurrency)
 	}
 
 	if err = k.CheckLowPoolHealth(ctx, poolId); err != nil {

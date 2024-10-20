@@ -7,7 +7,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
+func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MsgOpenResponse, error) {
 	poolId := existingMtp.AmmPoolId
 	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
@@ -40,7 +40,18 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	existingMtp.TakeProfitCustody = existingMtp.TakeProfitCustody.Add(newMtp.TakeProfitCustody)
 	existingMtp.TakeProfitLiabilities = existingMtp.TakeProfitLiabilities.Add(newMtp.TakeProfitLiabilities)
 
-	// no need to update TakeProfitCustody, TakeProfitLiabilities, Custody and Liabilities for pool as it was already in OpenDefineAssets
+	// no need to update pool's TakeProfitCustody, TakeProfitLiabilities, Custody and Liabilities as it was already in OpenDefineAssets
+
+	existingMtp.MtpHealth, err = k.GetMTPHealth(ctx, *existingMtp, ammPool, baseCurrency)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if the MTP is unhealthy
+	safetyFactor := k.GetSafetyFactor(ctx)
+	if existingMtp.MtpHealth.LTE(safetyFactor) {
+		return nil, types.ErrMTPUnhealthy
+	}
 
 	// Set existing MTP
 	if err = k.SetMTP(ctx, existingMtp); err != nil {

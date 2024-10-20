@@ -21,8 +21,6 @@ service Msg {
   rpc UpdateStopLoss      (MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
   rpc ClosePositions      (MsgClosePositions) returns (MsgClosePositionsResponse);
   rpc UpdateTakeProfitPrice(MsgUpdateTakeProfitPrice) returns (MsgUpdateTakeProfitPriceResponse);
-  rpc EnablePool          (MsgEnablePool) returns (MsgEnablePoolResponse);
-  rpc DisablePool         (MsgDisablePool) returns (MsgDisablePoolResponse);
 }
 message MsgOpen {
   string                   creator = 1;
@@ -124,17 +122,3 @@ message MsgUpdateTakeProfitPrice {
 }
 
 message MsgUpdateTakeProfitPriceResponse {}
-
-message MsgEnablePool {
-  string  authority = 1;
-  uint64 poolId = 2;
-}
-
-message MsgEnablePoolResponse {}
-
-message MsgDisablePool {
-  string authority = 1;
-  uint64 poolId = 2;
-}
-
-message MsgDisablePoolResponse {}

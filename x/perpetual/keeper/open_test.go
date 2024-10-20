@@ -6,9 +6,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
@@ -19,7 +19,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 	poolCreator := addr[0]
 	positionCreator := addr[1]
 	poolId := uint64(1)
-	tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPriceByDenom(suite.ctx, ptypes.ATOM)
+	tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
 	suite.Require().NoError(err)
 	var ammPool ammtypes.Pool
 	msg := &types.MsgOpen{
@@ -66,51 +66,24 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			},
 		},
 		{
-			"pool not found",
-			types.ErrPoolDoesNotExist.Error(),
+			"amm pool not found",
+			"pool does not exist",
 			false,
 			func() {
 				for _, account := range addr {
 					suite.app.PerpetualKeeper.WhitelistAddress(suite.ctx, account)
 				}
-			},
-			func(mtp *types.MTP) {
-			},
-		},
-		{
-			"pool is disabled",
-			"pool (1) is disabled or closed",
-			false,
-			func() {
-				ammPool = suite.SetAndGetAmmPool(poolCreator, poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 
-				msgServer := keeper.NewMsgServerImpl(*suite.app.PerpetualKeeper)
-				leverageLpPool := leveragelpmoduletypes.NewPool(poolId)
-				leverageLpPool.Enabled = true
-				leverageLpPool.Closed = false
-				suite.app.LeveragelpKeeper.SetPool(suite.ctx, leverageLpPool)
-				enablePoolMsg := types.MsgEnablePool{
+				ammPool = suite.SetAndGetAmmPool(poolCreator, poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 					Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-					PoolId:    1,
+					Pool: leveragelpmoduletypes.AddPool{
+						poolId,
+						math.LegacyMustNewDecFromStr("10"),
+					},
 				}
-				_, err := msgServer.EnablePool(suite.ctx, &enablePoolMsg)
+				_, err = leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &enablePoolMsg)
 				suite.Require().NoError(err)
-				pool, _ := suite.app.PerpetualKeeper.GetPool(suite.ctx, poolId)
-				pool.Enabled = false
-				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
-			},
-			func(mtp *types.MTP) {
-			},
-		},
-		{
-			"amm pool not found",
-			"pool does not exist",
-			false,
-			func() {
-				pool, found := suite.app.PerpetualKeeper.GetPool(suite.ctx, 1)
-				suite.Require().True(found)
-				pool.Enabled = true
-				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 				suite.app.AmmKeeper.RemovePool(suite.ctx, ammPool.PoolId)
 			},
 			func(mtp *types.MTP) {

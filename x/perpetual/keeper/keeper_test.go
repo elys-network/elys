@@ -87,14 +87,11 @@ func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, p
 	suite.AddAccounts(len(addr), addr)
 	poolCreator := addr[0]
 	ammPool := suite.SetAndGetAmmPool(poolCreator, poolId, useOracle, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, baseTokenAmount, assetAmount)
-	pool := types.NewPool(poolId)
-	err := pool.InitiatePool(&ammPool)
-	suite.Require().NoError(err)
-	pool.Enabled = true
+	pool := types.NewPool(ammPool)
 	suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
 	params.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.12")
-	err = suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 	suite.Require().NoError(err)
 
 	return ammPool, pool

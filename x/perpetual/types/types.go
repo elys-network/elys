@@ -37,9 +37,7 @@ func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsse
 		AmmPoolId:                     poolId,
 		TakeProfitPrice:               takeProfitPrice,
 		TakeProfitBorrowFactor:        sdk.OneDec(),
-		FundingFeePaidCollateral:      sdk.ZeroInt(),
 		FundingFeePaidCustody:         sdk.ZeroInt(),
-		FundingFeeReceivedCollateral:  sdk.ZeroInt(),
 		FundingFeeReceivedCustody:     sdk.ZeroInt(),
 		OpenPrice:                     sdk.ZeroDec(),
 	}

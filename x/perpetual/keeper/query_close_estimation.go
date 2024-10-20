@@ -89,7 +89,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		executionPrice = repayAmount.ToLegacyDec().Quo(payingLiabilities.ToLegacyDec())
 	}
 
-	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, mtp.TradingAsset)
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 	if err != nil {
 		return nil, err
 	}

@@ -13,10 +13,6 @@ func (k Keeper) CheckLowPoolHealth(ctx sdk.Context, poolId uint64) error {
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "pool id %d", poolId)
 	}
 
-	if !pool.IsEnabled() {
-		return errorsmod.Wrapf(types.ErrMTPDisabled, "pool (%d) is disabled or closed", poolId)
-	}
-
 	if !pool.Health.IsNil() && pool.Health.LTE(k.GetPoolOpenThreshold(ctx)) {
 		return errorsmod.Wrapf(types.ErrInvalidPosition, "pool (%d) health too low to open new positions", poolId)
 	}

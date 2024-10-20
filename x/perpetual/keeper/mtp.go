@@ -176,7 +176,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, r
 		liquidationPrice = k.GetLiquidationPrice(ctx, mtp)
 	}
 
-	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, mtp.TradingAsset)
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 	if err != nil {
 		return nil, err
 	}
@@ -325,7 +325,7 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	// Liability should include margin interest and funding fee accrued.
 	collateralAmt := mtp.Collateral
 
-	tradingAssetPrice, err := k.GetAssetPriceByDenom(ctx, mtp.TradingAsset)
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 	if err != nil {
 		return math.Int{}, err
 	}

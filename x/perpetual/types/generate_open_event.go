@@ -26,9 +26,7 @@ func GenerateOpenEvent(mtp *MTP) sdk.Event {
 		sdk.NewAttribute("amm_pool_id", strconv.FormatInt(int64(mtp.AmmPoolId), 10)),
 		sdk.NewAttribute("take_profit_price", mtp.TakeProfitPrice.String()),
 		sdk.NewAttribute("take_profit_borrow_factor", mtp.TakeProfitBorrowFactor.String()),
-		sdk.NewAttribute("funding_fee_paid_collateral", mtp.FundingFeePaidCollateral.String()),
 		sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
-		sdk.NewAttribute("funding_fee_received_collateral", mtp.FundingFeeReceivedCollateral.String()),
 		sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
 		sdk.NewAttribute("open_price", mtp.OpenPrice.String()),
 	)

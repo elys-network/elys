@@ -30,9 +30,7 @@ func TestGenerateOpenEvent(t *testing.T) {
 		AmmPoolId:                     1,
 		TakeProfitPrice:               sdk.NewDec(10),
 		TakeProfitBorrowFactor:        sdk.OneDec(),
-		FundingFeePaidCollateral:      sdk.OneInt(),
 		FundingFeePaidCustody:         sdk.OneInt(),
-		FundingFeeReceivedCollateral:  sdk.OneInt(),
 		FundingFeeReceivedCustody:     sdk.OneInt(),
 		OpenPrice:                     sdk.NewDec(10),
 		StopLossPrice:                 sdk.NewDec(0),
@@ -62,9 +60,7 @@ func TestGenerateOpenEvent(t *testing.T) {
 	assert.Equal(t, strconv.FormatInt(int64(testMTP.AmmPoolId), 10), getAttributeValue(event, "amm_pool_id"))
 	assert.Equal(t, testMTP.TakeProfitPrice.String(), getAttributeValue(event, "take_profit_price"))
 	assert.Equal(t, testMTP.TakeProfitBorrowFactor.String(), getAttributeValue(event, "take_profit_borrow_factor"))
-	assert.Equal(t, testMTP.FundingFeePaidCollateral.String(), getAttributeValue(event, "funding_fee_paid_collateral"))
 	assert.Equal(t, testMTP.FundingFeePaidCustody.String(), getAttributeValue(event, "funding_fee_paid_custody"))
-	assert.Equal(t, testMTP.FundingFeeReceivedCollateral.String(), getAttributeValue(event, "funding_fee_received_collateral"))
 	assert.Equal(t, testMTP.FundingFeeReceivedCustody.String(), getAttributeValue(event, "funding_fee_received_custody"))
 	assert.Equal(t, testMTP.OpenPrice.String(), getAttributeValue(event, "open_price"))
 }

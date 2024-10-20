@@ -59,7 +59,6 @@ func PerpetualKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AssetPro
 		nil,
 		nil,
 		assetProfileKeeper,
-		nil,
 		parameterKeeper,
 	)
 

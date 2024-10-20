@@ -1,6 +1,11 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -25,7 +30,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
 	require.NoError(t, err)
 	// Generate 1 random account with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000000000))
@@ -88,8 +93,15 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
-	perpetualPool := types.NewPool(1)
-	mk.SetPool(ctx, perpetualPool)
+	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		Pool: leveragelpmoduletypes.AddPool{
+			poolId,
+			math.LegacyMustNewDecFromStr("10"),
+		},
+	}
+	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
+	require.NoError(t, err)
 
 	// call min collateral query
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
@@ -130,7 +142,7 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
 	require.NoError(t, err)
 	// Set asset profile
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
@@ -202,8 +214,15 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 
 	pools := amm.GetAllPool(ctx)
 
-	perpetualPool := types.NewPool(1)
-	mk.SetPool(ctx, perpetualPool)
+	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		Pool: leveragelpmoduletypes.AddPool{
+			poolId,
+			math.LegacyMustNewDecFromStr("10"),
+		},
+	}
+	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
+	require.NoError(t, err)
 
 	// check length of pools
 	require.Equal(t, len(pools), 1)
@@ -321,12 +340,19 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 
 	pools := amm.GetAllPool(ctx)
 
-	perpetualPool := types.NewPool(1)
-	mk.SetPool(ctx, perpetualPool)
+	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		Pool: leveragelpmoduletypes.AddPool{
+			poolId,
+			math.LegacyMustNewDecFromStr("10"),
+		},
+	}
+	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
+	require.NoError(t, err)
 
 	// check length of pools
 	require.Equal(t, len(pools), 1)
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
 	require.NoError(t, err)
 	// call min collateral query	tradingAssetPrice := app.OracleKeeper.GetAssetPriceFromDenom(ctx, ptypes.ATOM)
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
@@ -452,12 +478,19 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 
 	pools := amm.GetAllPool(ctx)
 
-	perpetualPool := types.NewPool(1)
-	mk.SetPool(ctx, perpetualPool)
+	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		Pool: leveragelpmoduletypes.AddPool{
+			poolId,
+			math.LegacyMustNewDecFromStr("10"),
+		},
+	}
+	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
+	require.NoError(t, err)
 
 	// check length of pools
 	require.Equal(t, len(pools), 1)
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
 	require.NoError(t, err)
 	// call min collateral query
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
@@ -499,7 +532,7 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
 
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
 	require.NoError(t, err)
 
 	// Set asset profile
@@ -572,8 +605,15 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 
 	pools := amm.GetAllPool(ctx)
 
-	perpetualPool := types.NewPool(1)
-	mk.SetPool(ctx, perpetualPool)
+	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		Pool: leveragelpmoduletypes.AddPool{
+			poolId,
+			math.LegacyMustNewDecFromStr("10"),
+		},
+	}
+	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
+	require.NoError(t, err)
 
 	// check length of pools
 	require.Equal(t, len(pools), 1)

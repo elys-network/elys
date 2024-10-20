@@ -19,7 +19,7 @@ import (
 
 func TestPools_InvalidRequest(t *testing.T) {
 	mockAmm := new(mocks.AmmKeeper)
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil, nil)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
 	ctx := sdk.Context{}
 	_, err := k.Pools(ctx, nil)
 

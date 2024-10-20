@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,7 +15,7 @@ import (
 func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 	items := make([]types.Pool, n)
 	for i := range items {
-		items[i] = types.NewPool((uint64)(i))
+		items[i] = types.NewPool((uint64)(i), math.LegacyMustNewDecFromStr("10"))
 
 		keeper.SetPool(ctx, items[i])
 	}

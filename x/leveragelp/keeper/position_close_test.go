@@ -21,8 +21,6 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	amount := int64(10_000_000)
 	pool := types.Pool{
 		AmmPoolId:         1,
-		Enabled:           true,
-		Closed:            false,
 		Health:            sdk.ZeroDec(),
 		LeveragedLpAmount: sdk.ZeroInt(),
 		LeverageMax:       sdk.OneDec().MulInt64(10),

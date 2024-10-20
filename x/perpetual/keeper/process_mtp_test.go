@@ -10,10 +10,10 @@ import (
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -187,9 +187,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 		AmmPoolId:                     uint64(1),
 		TakeProfitPrice:               types.TakeProfitPriceDefault,
 		TakeProfitBorrowFactor:        sdk.MustNewDecFromStr("1.0"),
-		FundingFeePaidCollateral:      sdk.NewInt(0),
 		FundingFeePaidCustody:         sdk.NewInt(0),
-		FundingFeeReceivedCollateral:  sdk.NewInt(0),
 		FundingFeeReceivedCustody:     sdk.NewInt(0),
 		OpenPrice:                     sdk.MustNewDecFromStr("1.027705727555914576"),
 		LastInterestCalcTime:          uint64(ctx.BlockTime().Unix()),
@@ -283,16 +281,14 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 
 	pools := amm.GetAllPool(ctx)
 
-	msgServer := keeper.NewMsgServerImpl(*mk)
-	leverageLpPool := leveragelpmoduletypes.NewPool(poolId)
-	leverageLpPool.Enabled = true
-	leverageLpPool.Closed = false
-	app.LeveragelpKeeper.SetPool(ctx, leverageLpPool)
-	enablePoolMsg := types.MsgEnablePool{
+	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		PoolId:    1,
+		Pool: leveragelpmoduletypes.AddPool{
+			poolId,
+			math.LegacyMustNewDecFromStr("10"),
+		},
 	}
-	_, err = msgServer.EnablePool(ctx, &enablePoolMsg)
+	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
 	require.NoError(t, err)
 
 	// check length of pools
@@ -369,7 +365,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	app := suite.app
 	ctx := suite.ctx
 
-	mk, amm, oracle, leverageLpKeeper := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper, app.LeveragelpKeeper
+	mk, amm, oracle, _ := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper, app.LeveragelpKeeper
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
@@ -463,18 +459,16 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	suite.Require().Equal(balances.AmountOf(ptypes.BaseCurrency), sdk.NewInt(100000000000))
 	suite.Require().Equal(balances.AmountOf(ptypes.ATOM), sdk.NewInt(10000000000))
 
-	msgServer := keeper.NewMsgServerImpl(*mk)
-	leverageLpPool := leveragelpmoduletypes.NewPool(1)
-	leverageLpPool.Enabled = true
-	leverageLpPool.Closed = false
-	leverageLpKeeper.SetPool(ctx, leverageLpPool)
-	enablePoolMsg := types.MsgEnablePool{
+	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		PoolId:    1,
+		Pool: leveragelpmoduletypes.AddPool{
+			poolId,
+			math.LegacyMustNewDecFromStr("10"),
+		},
 	}
-	_, err = msgServer.EnablePool(ctx, &enablePoolMsg)
+	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPriceByDenom(ctx, ptypes.ATOM)
+	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
 	suite.Require().NoError(err)
 	// Create a perpetual position open msg
 	msg2 := types.NewMsgOpen(

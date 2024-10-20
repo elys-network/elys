@@ -2,6 +2,7 @@ package cli_test
 
 import (
 	"fmt"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"testing"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
@@ -11,9 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/network"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -23,19 +22,15 @@ import (
 
 func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpAndPrice) {
 	t.Helper()
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	cfg := network.DefaultConfig()
 	state := types.GenesisState{}
 
 	mtps := make([]*types.MtpAndPrice, 0)
-	// Generate n random accounts with 1000000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, n, sdk.NewInt(1000000))
 
-	cfg := network.DefaultConfig()
 	for i := 0; i < n; i++ {
 		mtp := types.MtpAndPrice{
 			Mtp: &types.MTP{
-				Address:                       addr[i].String(),
+				Address:                       authtypes.NewModuleAddress("test").String(),
 				CollateralAsset:               ptypes.BaseCurrency,
 				TradingAsset:                  "ATOM",
 				LiabilitiesAsset:              ptypes.BaseCurrency,
@@ -53,9 +48,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 				AmmPoolId:                     (uint64)(i + 1),
 				TakeProfitPrice:               types.TakeProfitPriceDefault,
 				TakeProfitBorrowFactor:        sdk.OneDec(),
-				FundingFeePaidCollateral:      sdk.NewInt(0),
 				FundingFeePaidCustody:         sdk.NewInt(0),
-				FundingFeeReceivedCollateral:  sdk.NewInt(0),
 				FundingFeeReceivedCustody:     sdk.NewInt(0),
 				OpenPrice:                     sdk.NewDec(0),
 				StopLossPrice:                 sdk.NewDec(0),
@@ -84,22 +77,70 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	// Set oracle price and info
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	stateOracle := oracletypes.GenesisState{}
-	stateOracle.Prices = append(stateOracle.Prices, oracletypes.Price{
-		Asset:       "ATOM",
-		Price:       sdk.NewDec(4),
-		Source:      oracletypes.BAND,
-		Provider:    provider.String(),
-		Timestamp:   uint64(ctx.BlockTime().Unix()),
-		BlockHeight: uint64(ctx.BlockHeight()),
-	})
+	stateOracle.Prices = []oracletypes.Price{
+		{
+			Asset:       "ATOM",
+			Price:       sdk.NewDec(4),
+			Source:      oracletypes.BAND,
+			Provider:    provider.String(),
+			Timestamp:   uint64(1729430615),
+			BlockHeight: uint64(1),
+		},
+		{
+			Asset:       "ATOM",
+			Price:       sdk.NewDec(4),
+			Source:      oracletypes.ELYS,
+			Provider:    provider.String(),
+			Timestamp:   uint64(1729430615),
+			BlockHeight: uint64(1),
+		},
+		{
+			Asset:       "USDC",
+			Price:       sdk.NewDec(1),
+			Source:      oracletypes.BAND,
+			Provider:    provider.String(),
+			Timestamp:   uint64(1729430615),
+			BlockHeight: uint64(1),
+		},
+		{
+			Asset:       "USDC",
+			Price:       sdk.NewDec(1),
+			Source:      oracletypes.ELYS,
+			Provider:    provider.String(),
+			Timestamp:   uint64(1729430615),
+			BlockHeight: uint64(1),
+		},
+		{
+			Asset:       "BTC",
+			Price:       sdk.NewDec(60000),
+			Source:      oracletypes.ELYS,
+			Provider:    provider.String(),
+			Timestamp:   uint64(1729430615),
+			BlockHeight: uint64(1),
+		},
+	}
 	stateOracle.Params = oracletypes.DefaultParams()
 	stateOracle.PortId = "portid"
-	stateOracle.AssetInfos = append(stateOracle.AssetInfos, oracletypes.AssetInfo{
-		Denom:      "ATOM",
-		Display:    "ATOM",
-		Decimal:    6,
-		BandTicker: "ATOM",
-	})
+	stateOracle.AssetInfos = []oracletypes.AssetInfo{
+		{
+			Denom:      "ATOM",
+			Display:    "ATOM",
+			Decimal:    6,
+			BandTicker: "ATOM",
+		},
+		{
+			Denom:      "USDC",
+			Display:    "USDC",
+			Decimal:    6,
+			BandTicker: "USDC",
+		},
+		{
+			Denom:      "BTC",
+			Display:    "BTC",
+			Decimal:    6,
+			BandTicker: "BTC",
+		},
+	}
 
 	bufO, err := cfg.Codec.MarshalJSON(&stateOracle)
 	require.NoError(t, err)

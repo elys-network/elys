@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -10,7 +11,7 @@ import (
 // It's responsibility of outer function to update mtp.BorrowInterestUnpaidLiability using UpdateMTPBorrowInterestUnpaidLiability
 func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error) {
 	if mtp.Liabilities.IsZero() {
-		return sdk.ZeroDec(), nil
+		return math.LegacyMaxSortableDec, nil
 	}
 
 	// For long this unit is base currency, for short this is in trading asset
@@ -48,6 +49,7 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 		}
 	}
 
+	// health = custody / liabilities
 	lr := custodyAmtInBaseCurrency.ToLegacyDec().Quo(totalLiabilities.ToLegacyDec())
 	return lr, nil
 }
