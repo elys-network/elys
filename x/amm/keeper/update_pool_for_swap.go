@@ -63,7 +63,7 @@ func (k Keeper) UpdatePoolForSwap(
 	}
 	if swapFeeOutCoins.IsAllPositive() {
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
-		err = k.bankKeeper.SendCoins(ctx, recipient, rebalanceTreasury, swapFeeOutCoins)
+		err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, swapFeeOutCoins)
 		if err != nil {
 			return sdk.ZeroInt(), err
 		}
