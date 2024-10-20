@@ -16,11 +16,11 @@ func (k Keeper) GetBorrowInterestAmount(ctx sdk.Context, mtp *types.MTP) math.In
 		panic(err)
 	}
 
+	// This already gives a floor tested value for interest rate
 	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, mtp.AmmPoolId, mtp.TakeProfitBorrowFactor)
 	totalLiability := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 	borrowInterestPayment := totalLiability.ToLegacyDec().Mul(borrowInterestRate).TruncateInt()
-	minBorrowInterestAmount := k.GetParams(ctx).MinBorrowInterestAmount
-	return sdk.MaxInt(borrowInterestPayment, minBorrowInterestAmount)
+	return borrowInterestPayment
 }
 
 func (k Keeper) UpdateMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *types.MTP) {

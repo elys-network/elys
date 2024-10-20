@@ -20,65 +20,64 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string min_borrow_interest_amount = 4  [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string borrow_interest_rate_increase = 5 [
+  string borrow_interest_rate_increase = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string borrow_interest_rate_decrease = 6 [
+  string borrow_interest_rate_decrease = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string health_gain_factor = 7 [
+  string health_gain_factor = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 max_open_positions = 8;
-  string pool_open_threshold = 9 [
+  int64 max_open_positions = 7;
+  string pool_open_threshold = 8 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string force_close_fund_percentage = 10 [
+  string force_close_fund_percentage = 9 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string force_close_fund_address = 11;
-  string incremental_borrow_interest_payment_fund_percentage = 12 [
+  string force_close_fund_address = 10;
+  string incremental_borrow_interest_payment_fund_percentage = 11 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string incremental_borrow_interest_payment_fund_address = 13;
-  string safety_factor = 14 [
+  string incremental_borrow_interest_payment_fund_address = 12;
+  string safety_factor = 13 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  bool incremental_borrow_interest_payment_enabled = 15;
-  bool whitelisting_enabled = 16;
-  string take_profit_borrow_interest_rate_min = 17 [
+  bool incremental_borrow_interest_payment_enabled = 14;
+  bool whitelisting_enabled = 15;
+  string take_profit_borrow_interest_rate_min = 16 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string perpetual_swap_fee = 18 [
+  string perpetual_swap_fee = 17 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 max_limit_order = 19;
-  string fixed_funding_rate = 20 [
+  int64 max_limit_order = 18;
+  string fixed_funding_rate = 19 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string minimum_long_take_profit_price_ratio = 21 [
+  // minimum value for take_profit_price/current price for long, should be greater than 1
+  string minimum_long_take_profit_price_ratio = 20 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string maximum_long_take_profit_price_ratio = 22 [
+  // max value for take_profit_price/current price for long, should be greater than 1
+  string maximum_long_take_profit_price_ratio = 21 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string maximum_short_take_profit_price_ratio = 23 [
+  // max value for take_profit_price/current price for short, should be less than 1
+  string maximum_short_take_profit_price_ratio = 22 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];

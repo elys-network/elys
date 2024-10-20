@@ -52,7 +52,6 @@ func NewParams() Params {
 		BorrowInterestRateIncrease:                     math.LegacyMustNewDecFromStr("0.000000003300000000"),
 		BorrowInterestRateMax:                          math.LegacyMustNewDecFromStr("0.000002700000000000"),
 		BorrowInterestRateMin:                          math.LegacyMustNewDecFromStr("0.000000030000000000"),
-		MinBorrowInterestAmount:                        math.ZeroInt(),
 		ForceCloseFundAddress:                          authtypes.NewModuleAddress("zero").String(),
 		ForceCloseFundPercentage:                       math.LegacyOneDec(),
 		HealthGainFactor:                               math.LegacyMustNewDecFromStr("0.000000220000000000"),
@@ -97,7 +96,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyTakeProfitBorrowInterestRateMin, &p.TakeProfitBorrowInterestRateMin, validateTakeProfitBorrowInterestRateMin),
 		paramtypes.NewParamSetPair(KeyFundingFeeBaseRate, &p.FixedFundingRate, validateFixedFundingRate),
 		paramtypes.NewParamSetPair(KeySwapFee, &p.PerpetualSwapFee, validateSwapFee),
-		paramtypes.NewParamSetPair(KeyMinBorrowInterestAmount, &p.MinBorrowInterestAmount, validateMinBorrowInterestAmount),
 		paramtypes.NewParamSetPair(KeyMaxLimitOrder, &p.MaxLimitOrder, validateMaxLimitOrder),
 	}
 }
@@ -156,9 +154,6 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateSwapFee(p.PerpetualSwapFee); err != nil {
-		return err
-	}
-	if err := validateMinBorrowInterestAmount(p.MinBorrowInterestAmount); err != nil {
 		return err
 	}
 	if err := validateMaxLimitOrder(p.MaxLimitOrder); err != nil {
@@ -417,21 +412,6 @@ func validateSwapFee(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("swap fee must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateMinBorrowInterestAmount(i interface{}) error {
-	v, ok := i.(sdk.Int)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v.IsNil() {
-		return fmt.Errorf("MinBorrowInterestAmount must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("MinBorrowInterestAmount must be positive: %s", v)
 	}
 
 	return nil

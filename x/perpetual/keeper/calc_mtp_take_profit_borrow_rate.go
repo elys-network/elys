@@ -24,7 +24,7 @@ func (k Keeper) CalcMTPTakeProfitBorrowFactor(mtp types.MTP) (sdk.Dec, error) {
 		return sdk.OneDec(), nil
 	}
 
-	// Calculate the borrow rate for this takeProfitCustody = 1 - (liabilities / (custody * take profit price))
+	// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
 	takeProfitBorrowFactor := sdk.OneDec().Sub(mtp.Liabilities.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec().Mul(mtp.TakeProfitPrice)))
 
 	return takeProfitBorrowFactor, nil
