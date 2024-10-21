@@ -22,13 +22,16 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
+	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 // Initiate a new ElysApp object - Common function used by the following 2 functions.
@@ -133,14 +136,14 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, 
 	//////////////////////
 	balances := []banktypes.Balance{balance}
 	genesisState := NewDefaultGenesisState(app, app.AppCodec())
-	genAP := assetprofiletypes.DefaultGenesis()
-	genAP.EntryList = []assetprofiletypes.Entry{
+	genAP := atypes.DefaultGenesis()
+	genAP.EntryList = []atypes.Entry{
 		{
 			BaseDenom: ptypes.BaseCurrency,
 			Denom:     ptypes.BaseCurrency,
 		},
 	}
-	genesisState[assetprofiletypes.ModuleName] = app.AppCodec().MustMarshalJSON(genAP)
+	genesisState[atypes.ModuleName] = app.AppCodec().MustMarshalJSON(genAP)
 	genAccs := []authtypes.GenesisAccount{acc}
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
 	genesisState[authtypes.ModuleName] = app.AppCodec().MustMarshalJSON(authGenesis)
@@ -228,6 +231,22 @@ func SetStakingParam(app *ElysApp, ctx sdk.Context) error {
 		BondDenom:         "uelys",
 		MinCommissionRate: math.LegacyNewDec(0),
 	})
+}
+
+func SetPerpetualParams(app *ElysApp, ctx sdk.Context) {
+	app.PerpetualKeeper.SetParams(ctx, &perpetualtypes.DefaultGenesis().Params)
+}
+
+func SetMasterChefParams(app *ElysApp, ctx sdk.Context) {
+	app.MasterchefKeeper.SetParams(ctx, types.DefaultGenesis().Params)
+}
+
+func SetStableStake(app *ElysApp, ctx sdk.Context) {
+	app.StablestakeKeeper.SetParams(ctx, stablestaketypes.DefaultGenesis().Params)
+}
+
+func SetParameters(app *ElysApp, ctx sdk.Context) {
+	app.ParameterKeeper.SetParams(ctx, ptypes.DefaultGenesis().Params)
 }
 
 func SetupAssetProfile(app *ElysApp, ctx sdk.Context) {
