@@ -362,13 +362,14 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 }
 
 func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
+	suite.ResetSuite()
 	app := suite.app
 	ctx := suite.ctx
 
 	mk, amm, oracle, _ := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper, app.LeveragelpKeeper
 
 	// Setup coin prices
-	SetupStableCoinPrices(ctx, oracle)
+	suite.SetupCoinPrices()
 
 	// Set asset profile
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{

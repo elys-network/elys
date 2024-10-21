@@ -53,7 +53,7 @@ var (
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
-			price:   sdk.MustNewDecFromStr("6.0"),
+			price:   sdk.MustNewDecFromStr("5.0"),
 		},
 	}
 )
