@@ -27,8 +27,9 @@ func TestGenesisTestSuite(t *testing.T) {
 }
 
 func (suite *GenesisTestSuite) SetupTest() {
-	suite.app = app.InitElysTestApp(true)
-	suite.ctx = suite.app.BaseApp.NewContext(false)
+	t := suite.T()
+	suite.app = app.InitElysTestApp(true, t)
+	suite.ctx = suite.app.BaseApp.NewContext(true)
 }
 
 func (suite *GenesisTestSuite) TestClockInitGenesis() {

@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"errors"
+
+	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,7 +12,7 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (suite KeeperTestSuite) TestCheckUserAuthorization() {
+func (suite *KeeperTestSuite) TestCheckUserAuthorization() {
 	// Create an instance of Keeper with the mock checker
 	k := suite.app.LeveragelpKeeper
 	pk := ed25519.GenPrivKey().PubKey()
@@ -35,7 +36,7 @@ func (suite KeeperTestSuite) TestCheckUserAuthorization() {
 	suite.Require().NoError(err)
 }
 
-func (suite KeeperTestSuite) TestCheckSameAssets() {
+func (suite *KeeperTestSuite) TestCheckSameAssets() {
 	app := suite.app
 	k := app.LeveragelpKeeper
 	addr := simapp.AddTestAddrs(app, suite.ctx, 1, math.NewInt(1000000))
@@ -57,7 +58,7 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 	suite.Require().NotNil(position)
 }
 
-func (suite KeeperTestSuite) TestCheckPoolHealth() {
+func (suite *KeeperTestSuite) TestCheckPoolHealth() {
 	k := suite.app.LeveragelpKeeper
 	poolId := uint64(1)
 
@@ -93,7 +94,7 @@ func (suite KeeperTestSuite) TestCheckPoolHealth() {
 	suite.Require().NoError(err)
 }
 
-func (suite KeeperTestSuite) TestCheckMaxOpenPositions() {
+func (suite *KeeperTestSuite) TestCheckMaxOpenPositions() {
 	k := suite.app.LeveragelpKeeper
 
 	params := k.GetParams(suite.ctx)
@@ -107,16 +108,16 @@ func (suite KeeperTestSuite) TestCheckMaxOpenPositions() {
 
 	//  Expect an error about max open positions
 	k.SetOpenPositionCount(suite.ctx, 10)
-	err = k.CheckMaxOpenPositions(suite.ctx)
+	_ = k.CheckMaxOpenPositions(suite.ctx)
 	suite.Require().Error(types.ErrMaxOpenPositions)
 
 	// OpenPositionsExceedMax
 	k.SetOpenPositionCount(suite.ctx, 11)
-	err = k.CheckMaxOpenPositions(suite.ctx)
+	_ = k.CheckMaxOpenPositions(suite.ctx)
 	suite.Require().Error(types.ErrMaxOpenPositions)
 }
 
-func (suite KeeperTestSuite) TestGetAmmPool() {
+func (suite *KeeperTestSuite) TestGetAmmPool() {
 	k := suite.app.LeveragelpKeeper
 
 	poolId := uint64(42)

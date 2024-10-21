@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,9 +18,11 @@ import (
 )
 
 func TestLiquidVestWithExceed(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false)
+	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
@@ -34,7 +37,7 @@ func TestLiquidVestWithExceed(t *testing.T) {
 	require.NoError(t, err)
 
 	creator := addr[0]
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 	vestingInfos := []*types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,

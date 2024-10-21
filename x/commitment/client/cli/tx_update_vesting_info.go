@@ -135,7 +135,7 @@ func CmdUpdateVestingInfo() *cobra.Command {
 	cmd.Flags().String(FlagVestingDenom, "", "vesting-denom")
 	cmd.Flags().String(FlagEpochIdentifier, "", "epoch-identifier")
 	cmd.Flags().String(FlagNumEpochs, "", "num-epochs")
-	cmd.Flags().String(FlagExpedited, "", "expedited")
+	cmd.Flags().Bool(FlagExpedited, false, "expedited")
 	cmd.Flags().String(FlagVestNowFactor, "", "vest-now-factor")
 	cmd.Flags().String(FlagNumMaxVestings, "", "num-max-vestings")
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")

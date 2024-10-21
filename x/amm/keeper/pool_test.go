@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"strconv"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -77,10 +78,10 @@ func TestPoolGetAll(t *testing.T) {
 }
 
 func TestGetBestPoolWithDenoms(t *testing.T) {
-	app := simapp.InitElysTestApp(initChain)
+	app := simapp.InitElysTestApp(initChain, t)
 	ctx := app.BaseApp.NewContext(initChain)
 	keeper := app.AmmKeeper
-	items := createNPool(&keeper, ctx, 10)
+	items := createNPool(keeper, ctx, 10)
 
 	// Add assets to some pools for testing
 	for i, item := range items {

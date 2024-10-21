@@ -64,7 +64,7 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
 	}
-	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	if err != nil {
 		panic(err)
@@ -115,7 +115,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("100.0"),
 			},
 			true,
-			errorsmod.Wrap(types.ErrMaxOpenPositions, "cannot open new positions").Error(),
+			"cannot open new positions, open positions 0 - max positions 0: max open",
 			func() {
 				suite.DisableWhiteListing()
 				suite.SetMaxOpenPositions(0)
@@ -131,7 +131,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: types.ErrMaxOpenPositions.Wrapf("cannot open new positions").Error(),
+			expectErrMsg: "cannot open new positions, open positions 0 - max positions 0: max open",
 			prerequisiteFunction: func() {
 			},
 		},

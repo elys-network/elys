@@ -28,6 +28,7 @@ func TestEntryMsgServerUpdate(t *testing.T) {
 			request: &types.MsgUpdateEntry{
 				Authority: authority,
 				BaseDenom: strconv.Itoa(0),
+				Decimals:  6,
 			},
 		},
 		{
@@ -35,14 +36,16 @@ func TestEntryMsgServerUpdate(t *testing.T) {
 			request: &types.MsgUpdateEntry{
 				Authority: "B",
 				BaseDenom: strconv.Itoa(0),
+				Decimals:  6,
 			},
-			err: govtypes.ErrInvalidSigner,
+			err: sdkerrors.ErrInvalidAddress,
 		},
 		{
 			desc: "KeyNotFound",
 			request: &types.MsgUpdateEntry{
 				Authority: authority,
 				BaseDenom: strconv.Itoa(100000),
+				Decimals:  6,
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -52,7 +55,9 @@ func TestEntryMsgServerUpdate(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 			expected := &types.MsgAddEntry{
+				Creator:   authority,
 				BaseDenom: strconv.Itoa(0),
+				Decimals:  6,
 			}
 			_, err := srv.AddEntry(wctx, expected)
 			require.NoError(t, err)
@@ -93,7 +98,7 @@ func TestEntryMsgServerDelete(t *testing.T) {
 				Authority: "B",
 				BaseDenom: strconv.Itoa(0),
 			},
-			err: govtypes.ErrInvalidSigner,
+			err: sdkerrors.ErrInvalidAddress,
 		},
 		{
 			desc: "KeyNotFound",
@@ -107,13 +112,14 @@ func TestEntryMsgServerDelete(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.AssetprofileKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
 
-			_, err := srv.AddEntry(wctx, &types.MsgAddEntry{
+			_, err := srv.AddEntry(ctx, &types.MsgAddEntry{
+				Creator:   authority,
+				Decimals:  6,
 				BaseDenom: strconv.Itoa(0),
 			})
 			require.NoError(t, err)
-			_, err = srv.DeleteEntry(wctx, tc.request)
+			_, err = srv.DeleteEntry(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {

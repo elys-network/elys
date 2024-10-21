@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"time"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -13,17 +14,20 @@ import (
 
 func (suite *KeeperTestSuite) TestApplyExitPoolStateChange_WithdrawFromCommitmentModule() {
 	suite.SetupStableCoinPrices()
+	suite.SetupAssetProfile()
 
 	app := suite.app
 	amm, bk := app.AmmKeeper, app.BankKeeper
 	ctx := suite.ctx
 
+	err := simapp.SetStakingParam(app, ctx)
+	suite.Require().NoError(err)
 	// Generate 1 random account with 1000stake balanced
 	addrs := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Mint 100000USDC+100000USDT
 	coins := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)), sdk.NewCoin("uusdt", sdkmath.NewInt(100000)))
-	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, coins)
+	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, coins)
 	suite.Require().NoError(err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addrs[0], coins)
 	suite.Require().NoError(err)

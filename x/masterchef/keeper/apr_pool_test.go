@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -13,8 +14,12 @@ import (
 )
 
 func TestCalculatePoolAprs(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+
+	simapp.SetMasterChefParams(app, ctx)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
 
 	mk, amm, oracle := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -58,7 +63,7 @@ func TestCalculatePoolAprs(t *testing.T) {
 	}
 
 	// Create a Elys+USDC pool
-	msgServer := ammkeeper.NewMsgServerImpl(amm)
+	msgServer := ammkeeper.NewMsgServerImpl(*amm)
 	resp, err := msgServer.CreatePool(
 		sdk.WrapSDKContext(ctx),
 		&ammtypes.MsgCreatePool{

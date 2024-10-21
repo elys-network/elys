@@ -64,7 +64,7 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
 	}
-	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	if err != nil {
 		panic(err)
@@ -178,7 +178,7 @@ func (suite *KeeperTestSuite) TestUpdateSyopLoss() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 			_, err := msgServer.UpdateStopLoss(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)

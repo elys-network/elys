@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -16,7 +17,7 @@ import (
 )
 
 func TestQueryRewards(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	stakingKeeper := app.StakingKeeper
@@ -62,7 +63,7 @@ func TestQueryRewards(t *testing.T) {
 
 	distrAppModule := exdistr.NewAppModule(
 		app.AppCodec(), app.DistrKeeper, app.AccountKeeper,
-		app.CommitmentKeeper, &app.EstakingKeeper,
+		app.CommitmentKeeper, app.EstakingKeeper,
 		&app.AssetprofileKeeper,
 		authtypes.FeeCollectorName, app.GetSubspace(distrtypes.ModuleName))
 	distrAppModule.AllocateTokens(ctx)

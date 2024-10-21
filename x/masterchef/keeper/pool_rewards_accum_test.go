@@ -11,7 +11,7 @@ import (
 )
 
 func TestPoolRewardsAccum(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	now := time.Now()
@@ -72,7 +72,7 @@ func TestPoolRewardsAccum(t *testing.T) {
 }
 
 func TestAddPoolRewardsAccum(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 	k := app.MasterchefKeeper
 

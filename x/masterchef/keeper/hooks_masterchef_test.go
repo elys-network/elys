@@ -75,8 +75,15 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 }
 
 func TestHookMasterchef(t *testing.T) {
-	app, _, _ := simapp.InitElysTestAppWithGenAccount()
+	app, _, _ := simapp.InitElysTestAppWithGenAccount(t)
 	ctx := app.BaseApp.NewContext(true)
+
+	simapp.SetMasterChefParams(app, ctx)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
+	simapp.SetPerpetualParams(app, ctx)
+	simapp.SetStableStake(app, ctx)
+	simapp.SetParameters(app, ctx)
 
 	mk, amm, oracle := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -88,6 +95,7 @@ func TestHookMasterchef(t *testing.T) {
 	srv := tokenomicskeeper.NewMsgServerImpl(app.TokenomicsKeeper)
 
 	expected := &tokenomicstypes.MsgCreateTimeBasedInflation{
+		Description:      "Description",
 		Authority:        authority,
 		StartBlockHeight: uint64(1),
 		EndBlockHeight:   uint64(6307200),
@@ -100,11 +108,11 @@ func TestHookMasterchef(t *testing.T) {
 		},
 	}
 
-	wctx := sdk.WrapSDKContext(ctx)
-	_, err := srv.CreateTimeBasedInflation(wctx, expected)
+	_, err := srv.CreateTimeBasedInflation(ctx, expected)
 	require.NoError(t, err)
 
 	expected = &tokenomicstypes.MsgCreateTimeBasedInflation{
+		Description:      "Description",
 		Authority:        authority,
 		StartBlockHeight: uint64(6307201),
 		EndBlockHeight:   uint64(12614401),
@@ -116,7 +124,7 @@ func TestHookMasterchef(t *testing.T) {
 			TeamTokensVested:  9999999,
 		},
 	}
-	_, err = srv.CreateTimeBasedInflation(wctx, expected)
+	_, err = srv.CreateTimeBasedInflation(ctx, expected)
 	require.NoError(t, err)
 
 	// Generate 1 random account with 1000stake balanced
@@ -188,14 +196,14 @@ func TestHookMasterchef(t *testing.T) {
 	require.NoError(t, err)
 	// external reward distribute
 	masterchefSrv := masterchefkeeper.NewMsgServerImpl(app.MasterchefKeeper)
-	_, err = masterchefSrv.AddExternalRewardDenom(sdk.WrapSDKContext(ctx), &types.MsgAddExternalRewardDenom{
+	_, err = masterchefSrv.AddExternalRewardDenom(ctx, &types.MsgAddExternalRewardDenom{
 		Authority:   app.GovKeeper.GetAuthority(),
 		RewardDenom: "uatom",
 		MinAmount:   math.OneInt(),
 		Supported:   true,
 	})
 	require.NoError(t, err)
-	_, err = masterchefSrv.AddExternalIncentive(sdk.WrapSDKContext(ctx), &types.MsgAddExternalIncentive{
+	_, err = masterchefSrv.AddExternalIncentive(ctx, &types.MsgAddExternalIncentive{
 		Sender:         addr[0].String(),
 		RewardDenom:    "uatom",
 		PoolId:         pools[0].PoolId,
@@ -227,12 +235,12 @@ func TestHookMasterchef(t *testing.T) {
 	require.Equal(t, res.TotalRewards[0].Amount.String(), "4949505049")
 
 	// check rewards claimed
-	_, err = masterchefSrv.ClaimRewards(sdk.WrapSDKContext(ctx), &types.MsgClaimRewards{
+	_, err = masterchefSrv.ClaimRewards(ctx, &types.MsgClaimRewards{
 		Sender:  addr[0].String(),
 		PoolIds: []uint64{pools[0].PoolId},
 	})
 	require.NoError(t, err)
-	_, err = masterchefSrv.ClaimRewards(sdk.WrapSDKContext(ctx), &types.MsgClaimRewards{
+	_, err = masterchefSrv.ClaimRewards(ctx, &types.MsgClaimRewards{
 		Sender:  addr[1].String(),
 		PoolIds: []uint64{pools[0].PoolId},
 	})
@@ -279,12 +287,12 @@ func TestHookMasterchef(t *testing.T) {
 	require.Equal(t, res.TotalRewards[0].String(), "1999840012uatom")
 
 	// check rewards claimed
-	_, err = masterchefSrv.ClaimRewards(sdk.WrapSDKContext(ctx), &types.MsgClaimRewards{
+	_, err = masterchefSrv.ClaimRewards(ctx, &types.MsgClaimRewards{
 		Sender:  addr[0].String(),
 		PoolIds: []uint64{pools[0].PoolId},
 	})
 	require.NoError(t, err)
-	_, err = masterchefSrv.ClaimRewards(sdk.WrapSDKContext(ctx), &types.MsgClaimRewards{
+	_, err = masterchefSrv.ClaimRewards(ctx, &types.MsgClaimRewards{
 		Sender:  addr[1].String(),
 		PoolIds: []uint64{pools[0].PoolId},
 	})
@@ -305,6 +313,7 @@ func TestHookMasterchef(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, res.TotalRewards, 0)
 
-	pool, _ := mk.GetPoolInfo(ctx, pools[0].PoolId)
+	pool, found := mk.GetPoolInfo(ctx, pools[0].PoolId)
+	require.Equal(t, true, found)
 	require.Equal(t, pool.ExternalIncentiveApr.String(), "4204.799481351999973502")
 }
