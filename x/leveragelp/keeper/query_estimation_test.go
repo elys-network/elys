@@ -11,7 +11,7 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (suite KeeperTestSuite) TestQueryEstimation() {
+func (suite *KeeperTestSuite) TestQueryEstimation() {
 	k := suite.app.LeveragelpKeeper
 	suite.SetupCoinPrices(suite.ctx)
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())

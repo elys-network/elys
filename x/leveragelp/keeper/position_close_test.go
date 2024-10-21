@@ -13,7 +13,7 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position, math.LegacyDec, types.Pool) {
+func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position, math.LegacyDec, types.Pool) {
 	k := suite.app.LeveragelpKeeper
 	suite.SetupCoinPrices(suite.ctx)
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -99,7 +99,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	return position, leverage, pool
 }
 
-func (suite KeeperTestSuite) TestCloseLong() {
+func (suite *KeeperTestSuite) TestCloseLong() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
@@ -117,7 +117,7 @@ func (suite KeeperTestSuite) TestCloseLong() {
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
 
-func (suite KeeperTestSuite) TestForceCloseLong() {
+func (suite *KeeperTestSuite) TestForceCloseLong() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, leverage, pool := suite.OpenPosition(addr)
@@ -135,7 +135,7 @@ func (suite KeeperTestSuite) TestForceCloseLong() {
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
 
-func (suite KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
+func (suite *KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, leverage, pool := suite.OpenPosition(addr)
@@ -153,7 +153,7 @@ func (suite KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 	suite.Require().Greater(repayAmount.String(), repayAmountOut.String())
 }
 
-func (suite KeeperTestSuite) TestForceCloseLongPartial() {
+func (suite *KeeperTestSuite) TestForceCloseLongPartial() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, leverage, pool := suite.OpenPosition(addr)
@@ -175,7 +175,7 @@ func (suite KeeperTestSuite) TestForceCloseLongPartial() {
 	suite.Require().Equal(position.Collateral.Amount.Quo(math.NewInt(2)).String(), after.Collateral.Amount.String())
 }
 
-func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
+func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, _, _ := suite.OpenPosition(addr)
@@ -196,7 +196,7 @@ func (suite KeeperTestSuite) TestHealthDecreaseForInterest() {
 }
 
 // test positionHealth should be maxDec when liablities is zero
-func (suite KeeperTestSuite) TestPositionHealth() {
+func (suite *KeeperTestSuite) TestPositionHealth() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, _, _ := suite.OpenPosition(addr)

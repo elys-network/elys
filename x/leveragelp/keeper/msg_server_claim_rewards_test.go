@@ -95,7 +95,6 @@ func openPosition(suite *KeeperTestSuite, address sdk.AccAddress, collateralAmou
 	if err != nil {
 		panic(err)
 	}
-	return
 }
 
 func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
