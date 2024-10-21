@@ -116,10 +116,13 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 
 	// If position is short, CollateralAsset will be in base currency & liabilities should be in trading asset
 	if mtp.Position == types.Position_SHORT {
-		liabilitiesInCollateralTokenIn := sdk.NewCoin(baseCurrency, liabilities)
-		liabilities, _, err = k.EstimateSwap(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool)
-		if err != nil {
-			return err
+		// liabilities.IsZero() happens when we are consolidating with leverage 1 as eta = 0
+		if !liabilities.IsZero() {
+			liabilitiesInCollateralTokenIn := sdk.NewCoin(baseCurrency, liabilities)
+			liabilities, _, err = k.EstimateSwap(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool)
+			if err != nil {
+				return err
+			}
 		}
 	}
 

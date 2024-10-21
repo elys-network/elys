@@ -51,10 +51,13 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		return nil, err
 	}
 	unpaidInterestLiability := mtp.BorrowInterestUnpaidLiability
-	borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
-	borrowInterestPaymentInCustody, _, err := k.EstimateSwapGivenOut(ctx, borrowInterestPaymentTokenIn, mtp.CustodyAsset, ammPool)
-	if err != nil {
-		return &types.QueryCloseEstimationResponse{}, err
+	borrowInterestPaymentInCustody := math.ZeroInt()
+	if !mtp.BorrowInterestUnpaidLiability.IsZero() {
+		borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
+		borrowInterestPaymentInCustody, _, err = k.EstimateSwapGivenOut(ctx, borrowInterestPaymentTokenIn, mtp.CustodyAsset, ammPool)
+		if err != nil {
+			return &types.QueryCloseEstimationResponse{}, err
+		}
 	}
 	maxCloseAmount := mtp.Custody.Sub(borrowInterestPaymentInCustody)
 	if mtp.Position == types.Position_SHORT {

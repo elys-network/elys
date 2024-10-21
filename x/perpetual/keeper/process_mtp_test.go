@@ -479,7 +479,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
 		tradingAssetPrice.MulInt64(10),
-		tradingAssetPrice.Mul(math.LegacyMustNewDecFromStr("1.5")),
+		tradingAssetPrice.QuoInt64(2),
 	)
 	params := app.PerpetualKeeper.GetParams(ctx)
 	params.WhitelistingEnabled = true
@@ -488,6 +488,14 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	app.PerpetualKeeper.WhitelistAddress(ctx, sdk.MustAccAddressFromBech32(msg2.Creator))
 	_, err = mk.Open(ctx, msg2, false)
 	suite.Require().NoError(err)
+
+	oracle.SetPrice(ctx, oracletypes.Price{
+		Asset:     "ATOM",
+		Price:     tradingAssetPrice.QuoInt64(4),
+		Source:    "elys",
+		Provider:  authtypes.NewModuleAddress("provider").String(),
+		Timestamp: uint64(ctx.BlockTime().Unix() + 6),
+	})
 
 	mtps := mk.GetAllMTPs(ctx)
 	suite.Require().Equal(len(mtps), 1)

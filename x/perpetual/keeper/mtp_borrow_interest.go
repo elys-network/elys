@@ -3,7 +3,6 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -35,7 +34,8 @@ func (k Keeper) UpdateMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) (math.Int, error) {
 
 	if mtp.BorrowInterestUnpaidLiability.IsZero() {
-		return math.Int{}, fmt.Errorf("0 unpaid interest liability to settle")
+		// nothing to pay back
+		return math.ZeroInt(), nil
 	}
 
 	liabilityInterestTokenOut := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)

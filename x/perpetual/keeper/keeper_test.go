@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"sort"
@@ -301,7 +302,7 @@ func TestGetAllWhitelistedAddress(t *testing.T) {
 
 func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 	// prices set for USDT and USDC
-	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	provider := authtypes.NewModuleAddress("provider")
 	oracle.SetAssetInfo(ctx, oracletypes.AssetInfo{
 		Denom:   ptypes.BaseCurrency,
 		Display: "USDC",
