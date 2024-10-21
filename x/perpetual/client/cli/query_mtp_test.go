@@ -1,10 +1,11 @@
 package cli_test
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
+
+	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
@@ -23,10 +24,9 @@ import (
 
 func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpAndPrice) {
 	t.Helper()
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 	state := types.GenesisState{}
-
 	mtps := make([]*types.MtpAndPrice, 0)
 	// Generate n random accounts with 1000000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, n, math.NewInt(1000000))

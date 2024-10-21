@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -12,8 +13,9 @@ import (
 )
 
 func TestCheckSameAssetPosition_NewPosition(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
 
 	k := app.PerpetualKeeper
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))

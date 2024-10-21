@@ -3,10 +3,9 @@ package types_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestValidateMinBorrowInterestAmount(t *testing.T) {
@@ -26,14 +25,14 @@ func TestValidateMinBorrowInterestAmount(t *testing.T) {
 		{
 			name: "MinBorrowInterestAmount is nil",
 			setter: func() {
-				params.MinBorrowInterestAmount = sdk.Int{}
+				params.MinBorrowInterestAmount = math.Int{}
 			},
 			err: "MinBorrowInterestAmount must be not nil",
 		},
 		{
 			name: "MinBorrowInterestAmount is -ve",
 			setter: func() {
-				params.MinBorrowInterestAmount = sdk.OneInt().MulRaw(-100)
+				params.MinBorrowInterestAmount = math.OneInt().MulRaw(-100)
 			},
 			err: "MinBorrowInterestAmount must be positive",
 		},
@@ -68,7 +67,7 @@ func TestValidateMaxLimitOrder(t *testing.T) {
 		{
 			name: "MaxLimitOrder is nil",
 			setter: func() {
-				params.MaxLimitOrder = sdk.OneInt().MulRaw(-100).Int64()
+				params.MaxLimitOrder = math.OneInt().MulRaw(-100).Int64()
 			},
 			err: "MaxLimitOrder should not be -ve",
 		},

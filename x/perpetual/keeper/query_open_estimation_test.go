@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -16,7 +17,7 @@ import (
 )
 
 func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
@@ -121,7 +122,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 }
 
 func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
@@ -238,7 +239,7 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 }
 
 func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
@@ -355,7 +356,7 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 }
 
 func TestOpenEstimation_WrongAsset(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper

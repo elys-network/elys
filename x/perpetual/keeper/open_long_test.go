@@ -338,7 +338,7 @@ func TestOpenLong_Success(t *testing.T) {
 }
 
 func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
@@ -493,7 +493,7 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 }
 
 func TestOpenLong_ATOM_Collateral(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
@@ -722,7 +722,7 @@ func TestOpenLongConsolidate_Success(t *testing.T) {
 	custodyAmount = math.NewInt(99)
 	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
 
-	mtp = types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, sdk.MustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
+	mtp = types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
 	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(nil)
 
 	mockChecker.On("TakeInCustody", ctx, *mtp, &pool).Return(nil)

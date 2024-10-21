@@ -1,9 +1,10 @@
 package cli_test
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -18,7 +19,7 @@ import (
 
 func networkWithWhitelistedObjects(t *testing.T, n int) (*network.Network, []string) {
 	t.Helper()
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 	state := types.GenesisState{}
 

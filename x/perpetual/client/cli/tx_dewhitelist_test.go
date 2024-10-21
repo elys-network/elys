@@ -1,8 +1,9 @@
 package cli_test
 
 import (
-	"cosmossdk.io/math"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
@@ -16,7 +17,7 @@ func TestGovDeWhitelist(t *testing.T) {
 	ctx := net.Validators[0].ClientCtx
 	val := net.Validators[0]
 
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	basectx := app.BaseApp.NewContext(true)
 
 	// Generate n random accounts with 1000000stake balanced

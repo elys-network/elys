@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"errors"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -14,7 +15,7 @@ import (
 )
 
 func TestGetAmmPool_PoolNotFound(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	perpetual := app.PerpetualKeeper
@@ -28,7 +29,7 @@ func TestGetAmmPool_PoolNotFound(t *testing.T) {
 }
 
 func TestGetAmmPool_PoolFound(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	perpetual := app.PerpetualKeeper
