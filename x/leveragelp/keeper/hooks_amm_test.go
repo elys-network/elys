@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (suite KeeperTestSuite) TestCheckAmmPoolUsdcBalance() {
+func (suite *KeeperTestSuite) TestCheckAmmPoolUsdcBalance() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	_, _, pool := suite.OpenPosition(addr)
