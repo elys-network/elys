@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"time"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -10,7 +12,6 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
-	"time"
 )
 
 func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {
@@ -64,7 +65,7 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
 	}
-	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	if err != nil {
 		panic(err)

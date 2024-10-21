@@ -1,18 +1,23 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
 	"time"
+
+	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -61,11 +66,17 @@ type KeeperTestSuite struct {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	app := simapp.InitElysTestApp(initChain)
+	t := suite.T()
+	app := simapp.InitElysTestApp(initChain, t)
 
 	suite.legacyAmino = app.LegacyAmino()
 	suite.ctx = app.BaseApp.NewContext(initChain)
 	suite.app = app
+
+	suite.SetupAssetProfile(suite.ctx)
+	suite.SetStakingParam(suite.ctx)
+	suite.SetStableStakeParam(suite.ctx)
+	suite.SetLeverageParam(suite.ctx)
 }
 
 func (suite *KeeperTestSuite) ResetSuite() {
@@ -193,13 +204,64 @@ func (suite *KeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []string) {
 		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, "elys", uint64(ctx.BlockTime().Unix()))
 	}
 }
+func (suite *KeeperTestSuite) SetLeverageParam(ctx sdk.Context) error {
+
+	params := &types.DefaultGenesis().Params
+
+	suite.app.LeveragelpKeeper.SetParams(ctx, params)
+	return nil
+}
+
+func (suite *KeeperTestSuite) SetStakingParam(ctx sdk.Context) error {
+	return suite.app.StakingKeeper.SetParams(ctx, stakingtypes.Params{
+		UnbondingTime:     1209600,
+		MaxValidators:     60,
+		MaxEntries:        7,
+		HistoricalEntries: 10000,
+		BondDenom:         "uelys",
+		MinCommissionRate: math.LegacyNewDec(0),
+	})
+}
+
+func (suite *KeeperTestSuite) SetStableStakeParam(ctx sdk.Context) error {
+
+	params := stablestaketypes.DefaultParams()
+	suite.app.StablestakeKeeper.SetParams(ctx, params)
+	return nil
+}
+
+func (suite *KeeperTestSuite) SetupAssetProfile(ctx sdk.Context) {
+
+	suite.app.AssetprofileKeeper.SetEntry(ctx, atypes.Entry{
+		BaseDenom:                "uusdc",
+		Decimals:                 6,
+		Denom:                    "uusdc",
+		Path:                     "transfer/channel-12",
+		IbcChannelId:             "channel-12",
+		IbcCounterpartyChannelId: "channel-19",
+		DisplayName:              "USDC",
+		DisplaySymbol:            "uUSDC",
+		Network:                  "",
+		Address:                  "",
+		ExternalSymbol:           "uUSDC",
+		TransferLimit:            "",
+		Permissions:              []string{},
+		UnitDenom:                "uusdc",
+		IbcCounterpartyDenom:     "",
+		IbcCounterpartyChainId:   "",
+		Authority:                "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+		CommitEnabled:            true,
+		WithdrawEnabled:          true,
+	})
+}
 
 func TestGetAllWhitelistedAddress(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
 
+	simapp.SetStakingParam(app, ctx)
 	// Generate 2 random accounts with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(1000000))
 
@@ -227,10 +289,11 @@ func TestGetAllWhitelistedAddress(t *testing.T) {
 }
 
 func TestGetWhitelistedAddress(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
+	simapp.SetStakingParam(app, ctx)
 
 	// Generate 2 random accounts with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(1000000))

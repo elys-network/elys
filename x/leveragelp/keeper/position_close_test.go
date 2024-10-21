@@ -79,7 +79,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 
-	stableMsgServer := stablestakekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+	stableMsgServer := stablestakekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableMsgServer.Bond(sdk.WrapSDKContext(suite.ctx), &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  math.NewInt(amount * 10),
