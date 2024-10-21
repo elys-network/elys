@@ -34,7 +34,6 @@ message PoolAsset {
   string asset_denom =  7;
 }
 
-
 message LegacyPool {
   uint64 amm_pool_id = 1; 
   string health = 2 [
