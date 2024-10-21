@@ -40,7 +40,10 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
 	}
-	amm_pool, _ := k.amm.GetPool(ctx, msg.AmmPoolId)
+	amm_pool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
+	}
 	pool_leveragelp = pool.LeveragedLpAmount.ToLegacyDec().Quo(amm_pool.TotalShares.Amount.ToLegacyDec()).Mul(sdk.NewDec(100))
 
 	if pool_leveragelp.GTE(pool.MaxLeveragelpPercent) || borrowRatio.GTE(params.MaxLeveragePercent) {
