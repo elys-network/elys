@@ -72,15 +72,19 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 		}
 
 		// calculate funding fee amount
-		fundingFeeAmount := totalFund.Mul(fundingFeeShare)
+		fundingFeeAmount := totalFund.Mul(fundingFeeShare).TruncateInt()
 
+		// adding case for fundingFeeAmount being smaller tha 10^-18
+		if fundingFeeAmount.IsZero() {
+			return nil
+		}
 		// decrease fees collected
-		err := pool.UpdateFeesCollected(mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt(), false)
+		err := pool.UpdateFeesCollected(mtp.LiabilitiesAsset, fundingFeeAmount, false)
 		if err != nil {
 			return err
 		}
 
-		custodyAmt, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt()), mtp.CustodyAsset, ammPool)
+		custodyAmt, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, fundingFeeAmount), mtp.CustodyAsset, ammPool)
 		if err != nil {
 			return err
 		}

@@ -51,6 +51,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		return nil, err
 	}
 	unpaidInterestLiability := mtp.BorrowInterestUnpaidLiability
+	// adding case for mtp.BorrowInterestUnpaidLiability being smaller tha 10^-18
 	borrowInterestPaymentInCustody := math.ZeroInt()
 	if !mtp.BorrowInterestUnpaidLiability.IsZero() {
 		borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
