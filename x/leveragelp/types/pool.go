@@ -15,6 +15,7 @@ func NewPool(poolId uint64) Pool {
 		Closed:            false,
 		LeveragedLpAmount: sdk.ZeroInt(),
 		LeverageMax:       sdk.NewDec(10),
+		MaxLeveragelpPercent: sdk.NewDec(60),
 	}
 }
 
