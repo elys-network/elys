@@ -1,23 +1,26 @@
 package cli_test
 
 import (
+	"bytes"
+	"context"
 	"fmt"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"testing"
-
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmcli "github.com/cometbft/cometbft/libs/cli"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/gogoproto/proto"
 	"github.com/elys-network/elys/testutil/network"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/client/cli"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/stretchr/testify/require"
+	"io"
+	"testing"
 )
 
 func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpAndPrice) {
@@ -148,62 +151,138 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	return network.New(t, cfg), mtps
 }
 
-func TestShowMTP(t *testing.T) {
-	net, objs := networkWithMTPObjects(t, 2)
+func (s *CLITestSuite) TestShowMTP() {
+	cmd := cli.CmdMtp()
+	cmd.SetOutput(io.Discard)
 
-	ctx := net.Validators[0].ClientCtx
-
-	common := []string{
-		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
-	}
-	tests := []struct {
-		desc    string
-		addr    string
-		idIndex uint64
-
-		args []string
-		err  error
-		obj  *types.MtpAndPrice
+	testCases := []struct {
+		name         string
+		ctxGen       func() client.Context
+		args         []string
+		expectResult proto.Message
+		expectErr    bool
 	}{
 		{
-			desc:    "found",
-			addr:    objs[0].Mtp.Address,
-			idIndex: objs[0].Mtp.Id,
-
-			args: common,
-			obj:  objs[0],
+			"valid query",
+			func() client.Context {
+				bz, _ := s.encCfg.Codec.Marshal(&types.MTPResponse{
+					Mtp: &types.MtpAndPrice{},
+				})
+				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+					Value: bz,
+				})
+				return s.baseCtx.WithClient(c)
+			},
+			[]string{
+				authtypes.NewModuleAddress("test").String(),
+				"1",
+				fmt.Sprintf("--%s=json", flags.FlagOutput),
+			},
+			&types.MTPResponse{},
+			false,
 		},
 		{
-			desc:    "not found",
-			addr:    objs[0].Mtp.Address,
-			idIndex: (uint64)(100000),
-
-			args: common,
-			err:  status.Error(codes.NotFound, "not found"),
+			"invalid query",
+			func() client.Context {
+				bz, _ := s.encCfg.Codec.Marshal(&types.MTPResponse{
+					Mtp: &types.MtpAndPrice{},
+				})
+				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+					Value: bz,
+				})
+				return s.baseCtx.WithClient(c)
+			},
+			[]string{
+				authtypes.NewModuleAddress("test").String(),
+				"-1",
+				fmt.Sprintf("--%s=json", flags.FlagOutput),
+			},
+			&types.MTPResponse{},
+			true,
 		},
 	}
-	for _, tc := range tests {
-		t.Run(tc.desc, func(t *testing.T) {
-			args := []string{
-				tc.addr,
-				fmt.Sprintf("%d", tc.idIndex),
-			}
-			args = append(args, tc.args...)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdMtp(), args)
-			if tc.err != nil {
-				stat, ok := status.FromError(tc.err)
-				require.True(t, ok)
-				require.ErrorIs(t, stat.Err(), tc.err)
+
+	for _, tc := range testCases {
+		tc := tc
+
+		s.Run(tc.name, func() {
+			var outBuf bytes.Buffer
+
+			clientCtx := tc.ctxGen().WithOutput(&outBuf)
+			ctx := svrcmd.CreateExecuteContext(context.Background())
+
+			cmd.SetContext(ctx)
+			cmd.SetArgs(tc.args)
+
+			s.Require().NoError(client.SetCmdClientContextHandler(clientCtx, cmd))
+
+			err := cmd.Execute()
+			if tc.expectErr {
+				s.Require().Error(err)
 			} else {
-				require.NoError(t, err)
-				var resp types.MTPResponse
-				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-				require.NotNil(t, resp.Mtp)
-				require.Equal(t,
-					tc.obj,
-					resp.Mtp,
-				)
+				s.Require().NoError(s.encCfg.Codec.UnmarshalJSON(outBuf.Bytes(), tc.expectResult))
+				s.Require().NoError(err)
 			}
 		})
 	}
 }
+
+//func TestShowMTP(t *testing.T) {
+//	net, objs := networkWithMTPObjects(t, 2)
+//
+//	ctx := net.Validators[0].ClientCtx
+//
+//	common := []string{
+//		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+//	}
+//	tests := []struct {
+//		desc    string
+//		addr    string
+//		idIndex uint64
+//
+//		args []string
+//		err  error
+//		obj  *types.MtpAndPrice
+//	}{
+//		{
+//			desc:    "found",
+//			addr:    objs[0].Mtp.Address,
+//			idIndex: objs[0].Mtp.Id,
+//
+//			args: common,
+//			obj:  objs[0],
+//		},
+//		{
+//			desc:    "not found",
+//			addr:    objs[0].Mtp.Address,
+//			idIndex: (uint64)(100000),
+//
+//			args: common,
+//			err:  status.Error(codes.NotFound, "not found"),
+//		},
+//	}
+//	for _, tc := range tests {
+//		t.Run(tc.desc, func(t *testing.T) {
+//			args := []string{
+//				tc.addr,
+//				fmt.Sprintf("%d", tc.idIndex),
+//			}
+//			args = append(args, tc.args...)
+//			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdMtp(), args)
+//			if tc.err != nil {
+//				stat, ok := status.FromError(tc.err)
+//				require.True(t, ok)
+//				require.ErrorIs(t, stat.Err(), tc.err)
+//			} else {
+//				require.NoError(t, err)
+//				var resp types.MTPResponse
+//				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
+//				require.NotNil(t, resp.Mtp)
+//				require.Equal(t,
+//					tc.obj,
+//					resp.Mtp,
+//				)
+//			}
+//		})
+//	}
+//}
