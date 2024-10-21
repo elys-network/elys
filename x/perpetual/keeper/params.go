@@ -103,10 +103,6 @@ func (k Keeper) IsWhitelistingEnabled(ctx sdk.Context) bool {
 	return k.GetParams(ctx).WhitelistingEnabled
 }
 
-func (k Keeper) GetTakeProfitBorrowInterestRateMin(ctx sdk.Context) sdk.Dec {
-	return k.GetParams(ctx).TakeProfitBorrowInterestRateMin
-}
-
 func (k Keeper) GetPerpetualSwapFee(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).PerpetualSwapFee
 }

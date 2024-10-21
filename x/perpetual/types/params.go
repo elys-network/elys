@@ -47,7 +47,6 @@ func NewParams() Params {
 	return Params{
 		PerpetualSwapFee:                               math.LegacyMustNewDecFromStr("0.001"), // 0.1%
 		FixedFundingRate:                               math.LegacyMustNewDecFromStr("0.3"),   // 30%
-		TakeProfitBorrowInterestRateMin:                math.LegacyOneDec(),
 		BorrowInterestRateDecrease:                     math.LegacyMustNewDecFromStr("0.000000003300000000"),
 		BorrowInterestRateIncrease:                     math.LegacyMustNewDecFromStr("0.000000003300000000"),
 		BorrowInterestRateMax:                          math.LegacyMustNewDecFromStr("0.000002700000000000"),
@@ -93,7 +92,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeySafetyFactor, &p.SafetyFactor, validateSafetyFactor),
 		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentEnabled, &p.IncrementalBorrowInterestPaymentEnabled, validateIncrementalBorrowInterestPaymentEnabled),
 		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
-		paramtypes.NewParamSetPair(KeyTakeProfitBorrowInterestRateMin, &p.TakeProfitBorrowInterestRateMin, validateTakeProfitBorrowInterestRateMin),
 		paramtypes.NewParamSetPair(KeyFundingFeeBaseRate, &p.FixedFundingRate, validateFixedFundingRate),
 		paramtypes.NewParamSetPair(KeySwapFee, &p.PerpetualSwapFee, validateSwapFee),
 		paramtypes.NewParamSetPair(KeyMaxLimitOrder, &p.MaxLimitOrder, validateMaxLimitOrder),
@@ -145,9 +143,6 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateWhitelistingEnabled(p.WhitelistingEnabled); err != nil {
-		return err
-	}
-	if err := validateTakeProfitBorrowInterestRateMin(p.TakeProfitBorrowInterestRateMin); err != nil {
 		return err
 	}
 	if err := validateFixedFundingRate(p.FixedFundingRate); err != nil {
@@ -367,21 +362,6 @@ func validatePoolOpenThreshold(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("pool open threshold must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateTakeProfitBorrowInterestRateMin(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v.IsNil() {
-		return fmt.Errorf("take profit borrow interest rate min must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("take profit borrow interest rate min must be positive: %s", v)
 	}
 
 	return nil
