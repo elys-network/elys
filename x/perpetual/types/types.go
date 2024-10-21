@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
@@ -17,7 +18,7 @@ func GetPositionFromString(s string) Position {
 	}
 }
 
-func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsset string, position Position, takeProfitPrice sdk.Dec, poolId uint64) *MTP {
+func NewMTP(ctx sdk.Context, signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsset string, position Position, takeProfitPrice sdk.Dec, poolId uint64) *MTP {
 	return &MTP{
 		Address:                       signer,
 		CollateralAsset:               collateralAsset,
@@ -40,6 +41,11 @@ func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsse
 		FundingFeePaidCustody:         sdk.ZeroInt(),
 		FundingFeeReceivedCustody:     sdk.ZeroInt(),
 		OpenPrice:                     sdk.ZeroDec(),
+		StopLossPrice:                 math.LegacyZeroDec(),
+		LastInterestCalcTime:          uint64(ctx.BlockTime().Unix()),
+		LastInterestCalcBlock:         uint64(ctx.BlockHeight()),
+		LastFundingCalcTime:           uint64(ctx.BlockTime().Unix()),
+		LastFundingCalcBlock:          uint64(ctx.BlockHeight()),
 	}
 }
 

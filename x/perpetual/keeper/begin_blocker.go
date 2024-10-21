@@ -78,24 +78,20 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (sdk.Dec, s
 		totalLiabilitiesShort = totalLiabilitiesShort.Add(asset.Liabilities)
 	}
 
+	if totalCustodyLong.IsZero() || totalLiabilitiesShort.IsZero() {
+		return sdk.ZeroDec(), sdk.ZeroDec()
+	}
+
 	fixedRate := k.GetParams(ctx).FixedFundingRate
 	if totalCustodyLong.GT(totalLiabilitiesShort) {
 		// long is popular
 		// long pays short
-		if totalLiabilitiesShort.IsZero() {
-			return sdk.ZeroDec(), sdk.ZeroDec()
-		} else {
-			netLongRatio := (totalCustodyLong.Sub(totalLiabilitiesShort)).ToLegacyDec().Quo((totalCustodyLong.Add(totalLiabilitiesShort)).ToLegacyDec())
-			return netLongRatio.Mul(fixedRate), sdk.ZeroDec()
-		}
+		netLongRatio := (totalCustodyLong.Sub(totalLiabilitiesShort)).ToLegacyDec().Quo((totalCustodyLong.Add(totalLiabilitiesShort)).ToLegacyDec())
+		return netLongRatio.Mul(fixedRate), sdk.ZeroDec()
 	} else {
 		// short is popular
 		// short pays long
-		if totalCustodyLong.IsZero() {
-			return sdk.ZeroDec(), sdk.ZeroDec()
-		} else {
-			netShortRatio := (totalLiabilitiesShort.Sub(totalCustodyLong)).ToLegacyDec().Quo((totalCustodyLong.Add(totalLiabilitiesShort)).ToLegacyDec())
-			return sdk.ZeroDec(), netShortRatio.Mul(fixedRate)
-		}
+		netShortRatio := (totalLiabilitiesShort.Sub(totalCustodyLong)).ToLegacyDec().Quo((totalCustodyLong.Add(totalLiabilitiesShort)).ToLegacyDec())
+		return sdk.ZeroDec(), netShortRatio.Mul(fixedRate)
 	}
 }

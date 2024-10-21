@@ -218,10 +218,10 @@ func (k Keeper) GetAllFundingRate(ctx sdk.Context) []types.FundingRateBlock {
 	return fundings
 }
 
-func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uint64, pool uint64) (long sdk.Dec, short sdk.Dec) {
+func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uint64, poolId uint64) (long sdk.Dec, short sdk.Dec) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.FundingRatePrefix)
-	currentBlockKey := types.GetFundingRateKey(uint64(ctx.BlockHeight()), pool)
-	startBlockKey := types.GetFundingRateKey(startBlock, pool)
+	currentBlockKey := types.GetFundingRateKey(uint64(ctx.BlockHeight()), poolId)
+	startBlockKey := types.GetFundingRateKey(startBlock, poolId)
 
 	blocksPerYear := sdk.NewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 
@@ -272,16 +272,16 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 					Quo(blocksPerYear)
 		}
 	}
-	params, found := k.GetPool(ctx, pool)
+	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.ZeroDec(), sdk.ZeroDec()
+		panic("perpetual pool not found")
 	}
 
-	if params.BorrowInterestRate.IsPositive() {
-		return params.FundingRate.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+	if pool.BorrowInterestRate.IsPositive() {
+		return pool.FundingRate.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 			Quo(blocksPerYear), sdk.ZeroDec()
 	} else {
-		return sdk.ZeroDec(), params.FundingRate.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
+		return sdk.ZeroDec(), pool.FundingRate.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
 			Quo(blocksPerYear)
 	}
 }

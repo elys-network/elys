@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -27,13 +28,13 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 	if mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
 		if totalCustodyLong.IsZero() {
-			return types.ErrAmountTooLow
+			return fmt.Errorf("totalCustodyLong in FundingFeeDistribution cannot be zero")
 		}
-		fundingFeeShare = sdk.NewDecFromInt(mtp.Custody).Quo(sdk.NewDecFromInt(totalCustodyLong))
+		fundingFeeShare = mtp.Custody.ToLegacyDec().Quo(totalCustodyLong.ToLegacyDec())
 		totalFund = short
 
 		// if funding fee share is zero, skip mtp
-		if fundingFeeShare.IsZero() {
+		if fundingFeeShare.IsZero() || totalFund.IsZero() {
 			return nil
 		}
 
@@ -62,11 +63,11 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 		if totalLiabilitiesShort.IsZero() {
 			return types.ErrAmountTooLow
 		}
-		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(totalLiabilitiesShort))
+		fundingFeeShare = mtp.Liabilities.ToLegacyDec().Quo(totalLiabilitiesShort.ToLegacyDec())
 		totalFund = long
 
 		// if funding fee share is zero, skip mtp
-		if fundingFeeShare.IsZero() {
+		if fundingFeeShare.IsZero() || totalFund.IsZero() {
 			return nil
 		}
 

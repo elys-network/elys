@@ -84,7 +84,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		liabilitiesAsset = req.TradingAsset
 		custodyAsset = baseCurrency
 	}
-	mtp := types.NewMTP("", req.Collateral.Denom, req.TradingAsset, liabilitiesAsset, custodyAsset, req.Position, req.TakeProfitPrice, req.PoolId)
+	mtp := types.NewMTP(ctx, "", req.Collateral.Denom, req.TradingAsset, liabilitiesAsset, custodyAsset, req.Position, req.TakeProfitPrice, req.PoolId)
 
 	blocksPerYear := sdk.NewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 	avgBlockTime := blocksPerYear.Quo(math.LegacyNewDec(86400 * 365)).TruncateInt().Uint64()

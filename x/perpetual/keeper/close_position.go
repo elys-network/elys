@@ -42,19 +42,14 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency
 	}
 
 	if mtp.Position == types.Position_LONG {
-		borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
-		borrowInterestPaymentInCustody, _, err := k.EstimateSwapGivenOut(ctx, borrowInterestPaymentTokenIn, mtp.CustodyAsset, ammPool)
-		if err != nil {
-			return nil, math.ZeroInt(), err
-		}
-		maxAmountToCloseWhole := mtp.Custody.Sub(borrowInterestPaymentInCustody)
-		if msg.Amount.GT(maxAmountToCloseWhole) || msg.Amount.IsNegative() {
-			return nil, math.ZeroInt(), errorsmod.Wrap(types.ErrInvalidCloseSize, fmt.Sprintf("amount cannot be more than %s", maxAmountToCloseWhole.String()))
+		maxAmountToCloseWhole := mtp.Custody
+		if msg.Amount.GT(maxAmountToCloseWhole) {
+			return nil, math.ZeroInt(), errorsmod.Wrap(types.ErrInvalidCloseSize, fmt.Sprintf("amount cannot be more than %s", mtp.Custody.String()))
 		}
 	} else {
 		maxAmountToCloseWhole := mtp.Liabilities
-		if msg.Amount.GT(maxAmountToCloseWhole) || msg.Amount.IsNegative() {
-			return nil, math.ZeroInt(), errorsmod.Wrap(types.ErrInvalidCloseSize, fmt.Sprintf("amount cannot be more than %s", maxAmountToCloseWhole.String()))
+		if msg.Amount.GT(maxAmountToCloseWhole) {
+			return nil, math.ZeroInt(), errorsmod.Wrap(types.ErrInvalidCloseSize, fmt.Sprintf("amount cannot be more than %s", mtp.Custody.String()))
 		}
 	}
 
