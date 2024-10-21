@@ -180,23 +180,23 @@ func (p *Pool) JoinPool(
 
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
-	// we only allow
-	tokenInDenom := tokensIn[0].Denom
-	// target weight
-	targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenInDenom)
-	targetWeightOut := sdk.OneDec().Sub(targetWeightIn)
+	weightBreakingFee := sdk.ZeroDec()
+	if distanceDiff.IsPositive() {
+		// we only allow
+		tokenInDenom := tokensIn[0].Denom
+		// target weight
+		targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenInDenom)
+		targetWeightOut := sdk.OneDec().Sub(targetWeightIn)
 
-	// weight breaking fee as in Plasma pool
-	weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenInDenom)
-	weightOut := sdk.OneDec().Sub(weightIn)
-	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
-
-	// weight recovery reward = weight breaking fee * weight recovery fee portion
-	weightRecoveryReward := weightBreakingFee.Mul(p.PoolParams.WeightRecoveryFeePortion)
+		// weight breaking fee as in Plasma pool
+		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenInDenom)
+		weightOut := sdk.OneDec().Sub(weightIn)
+		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
+	}
 
 	weightBalanceBonus = weightBreakingFee.Neg()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
-		weightBalanceBonus = weightRecoveryReward
+		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
 	}
 
 	totalShares := p.GetTotalShares()
