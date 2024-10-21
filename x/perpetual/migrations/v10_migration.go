@@ -13,5 +13,8 @@ func (m Migrator) V10Migration(ctx sdk.Context) error {
 		return err
 	}
 
+	// using previous values
+	params.IncrementalBorrowInterestPaymentFundAddress = "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
+	params.ForceCloseFundAddress = "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
 	return nil
 }
