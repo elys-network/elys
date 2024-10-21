@@ -89,7 +89,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 			params.RedemptionRate = math.LegacyNewDec(1)
 			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
 
-			msgServer := keeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 			_, err = msgServer.Unbond(
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgUnbond{
