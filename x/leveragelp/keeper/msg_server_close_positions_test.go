@@ -299,7 +299,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			_ = tc.prerequisiteFunction()
-			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 			_, err := msgServer.ClosePositions(suite.ctx, tc.input)
 			suite.Require().NoError(err)
 			tc.postValidateFunction()

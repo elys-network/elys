@@ -23,37 +23,7 @@ message PoolAsset {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string asset_balance = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string block_borrow_interest = 6 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string asset_denom =  7;
-}
-
-message LegacyPool {
-  uint64 amm_pool_id = 1; 
-  string health = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  bool enabled = 3; 
-  bool closed = 4; 
-  string borrow_interest_rate = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  repeated PoolAsset pool_assets_long = 6 [(gogoproto.nullable) = false]; 
-  repeated PoolAsset pool_assets_short = 7 [(gogoproto.nullable) = false]; 
-  int64 last_height_borrow_interest_rate_computed = 8;
-  // funding rate, if positive longs pay shorts, if negative shorts pay longs
-  string funding_rate = 9 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
+  string asset_denom =  5;
 }
 
 message Pool {
@@ -62,19 +32,17 @@ message Pool {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  bool enabled = 3; 
-  bool closed = 4; 
-  string borrow_interest_rate = 5 [
+  string borrow_interest_rate = 3 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated PoolAsset pool_assets_long = 6 [(gogoproto.nullable) = false]; 
-  repeated PoolAsset pool_assets_short = 7 [(gogoproto.nullable) = false]; 
-  int64 last_height_borrow_interest_rate_computed = 8;
+  repeated PoolAsset pool_assets_long = 4 [(gogoproto.nullable) = false];
+  repeated PoolAsset pool_assets_short = 5 [(gogoproto.nullable) = false];
+  int64 last_height_borrow_interest_rate_computed = 6;
   // funding rate, if positive longs pay shorts, if negative shorts pay longs
-  string funding_rate = 9 [
+  string funding_rate = 7 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin fees_collected = 10 [(gogoproto.nullable) = false]; 
+  repeated cosmos.base.v1beta1.Coin fees_collected = 8 [(gogoproto.nullable) = false];
 }

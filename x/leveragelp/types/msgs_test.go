@@ -237,8 +237,6 @@ func TestMsgWhitelistAddress(t *testing.T) {
 func TestMsgAddPool(t *testing.T) {
 	addPool := types.AddPool{
 		AmmPoolId:   1,
-		Enabled:     false,
-		Closed:      false,
 		LeverageMax: sdk.OneDec().MulInt64(2),
 	}
 	msg := types.NewMsgAddPool(sample.AccAddress(), addPool)
@@ -308,53 +306,6 @@ func TestMsgRemovePool(t *testing.T) {
 	msg := types.NewMsgRemovePool(sample.AccAddress(), 1)
 	require.Equal(t, msg.Route(), types.RouterKey)
 	require.Equal(t, msg.Type(), types.TypeMsgRemovePool)
-	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Authority)})
-	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
-	msg.Authority = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
-
-	tests := []struct {
-		name   string
-		setter func()
-		errMsg string
-	}{
-		{
-			name: "success",
-			setter: func() {
-				msg.Authority = sample.AccAddress()
-			},
-			errMsg: "",
-		},
-		{
-			name: "invalid address",
-			setter: func() {
-				msg.Authority = "invalid_address"
-			},
-			errMsg: "invalid creator address",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.setter()
-			err := msg.ValidateBasic()
-			if tt.errMsg != "" {
-				require.ErrorContains(t, err, tt.errMsg)
-			} else {
-				require.NoError(t, err)
-			}
-		})
-	}
-}
-
-func TestMsgUpdatePool(t *testing.T) {
-	updatePool := types.UpdatePool{
-		PoolId:  1,
-		Enabled: false,
-		Closed:  false,
-	}
-	msg := types.NewMsgUpdatePool(sample.AccAddress(), updatePool)
-	require.Equal(t, msg.Route(), types.RouterKey)
-	require.Equal(t, msg.Type(), types.TypeMsgUpdatePool)
 	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Authority)})
 	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
 	msg.Authority = ""

@@ -5,23 +5,27 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) CalcMTPTakeProfitBorrowRate(ctx sdk.Context, mtp *types.MTP) (sdk.Dec, error) {
+func (k Keeper) UpdateMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP) error {
+	takeProfitBorrowFactor, err := k.CalcMTPTakeProfitBorrowFactor(*mtp)
+	if err != nil {
+		return err
+	}
+	mtp.TakeProfitBorrowFactor = takeProfitBorrowFactor
+	return nil
+}
+
+func (k Keeper) CalcMTPTakeProfitBorrowFactor(mtp types.MTP) (sdk.Dec, error) {
 	// Ensure mtp.Custody is not zero to avoid division by zero
 	if mtp.Custody.IsZero() {
-		return sdk.ZeroDec(), types.ErrAmountTooLow
+		return sdk.ZeroDec(), types.ErrZeroCustodyAmount
 	}
 
-	// Calculate the borrow rate for this takeProfitCustody
-	takeProfitBorrowRateInt := mtp.TakeProfitCustody.Quo(mtp.Custody)
+	if types.IsTakeProfitPriceInfinite(mtp) || mtp.TakeProfitPrice.IsZero() {
+		return sdk.OneDec(), nil
+	}
 
-	// Convert takeProfitBorrowRateInt from math.Int to sdk.Dec
-	takeProfitBorrowRateDec := sdk.NewDecFromInt(takeProfitBorrowRateInt)
+	// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
+	takeProfitBorrowFactor := sdk.OneDec().Sub(mtp.Liabilities.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec().Mul(mtp.TakeProfitPrice)))
 
-	// Get Perpetual Params
-	params := k.GetParams(ctx)
-
-	// Use TakeProfitBorrowInterestRateMin param as minimum take profit borrow rate
-	takeProfitBorrowRate := sdk.MaxDec(takeProfitBorrowRateDec, params.TakeProfitBorrowInterestRateMin)
-
-	return takeProfitBorrowRate, nil
+	return takeProfitBorrowFactor, nil
 }

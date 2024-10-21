@@ -30,36 +30,19 @@ func setUpgradeHandler(app *ElysApp) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
+				// Add any logic here to run when the chain is upgraded to the new version
+				allLeverageLpPools := app.LeveragelpKeeper.GetAllLegacyPools(ctx)
 
-				// delete all mtps
-				mtps := app.PerpetualKeeper.GetAllLegacyMTPs(ctx)
-				for _, mtp := range mtps {
-					app.PerpetualKeeper.DestroyMTP(ctx, sdk.MustAccAddressFromBech32(mtp.Address), mtp.Id)
-				}
-
-				// delete all perpetual pools
-				perpPools := app.PerpetualKeeper.GetAllLegacyPools(ctx)
-				for _, pool := range perpPools {
-					app.PerpetualKeeper.RemovePool(ctx, pool.AmmPoolId)
-				}
-
-				// delete all accounted pools
-				accountedPools := app.AccountedPoolKeeper.GetAllAccountedPool(ctx)
-				for _, pool := range accountedPools {
-					app.AccountedPoolKeeper.RemoveAccountedPool(ctx, pool.PoolId)
-				}
-
-				// initiate accounted pools
-				pools := app.AmmKeeper.GetAllPool(ctx)
-				for _, pool := range pools {
-					err := app.AccountedPoolKeeper.InitiateAccountedPool(ctx, pool)
+				for _, lp := range allLeverageLpPools {
+					ammPool, found := app.AmmKeeper.GetPool(ctx, lp.AmmPoolId)
+					if !found {
+						return nil, fmt.Errorf("could not find amm pool")
+					}
+					err := app.AccountedPoolKeeper.OnLeverageLpPoolEnable(ctx, ammPool)
 					if err != nil {
-						panic(err)
+						return nil, err
 					}
 				}
-
-				// Add any logic here to run when the chain is upgraded to the new version
-
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)

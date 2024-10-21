@@ -24,16 +24,18 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 		return errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit liabilities: %s", mtp.String()))
 	}
 	// calculate and update take profit borrow rate
-	mtp.TakeProfitBorrowRate, err = k.CalcMTPTakeProfitBorrowRate(ctx, mtp)
+	err = k.UpdateMTPTakeProfitBorrowFactor(ctx, mtp)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit borrow rate: %s", mtp.String()))
 	}
+
+	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, mtp)
 	// Handle Borrow Interest if within epoch position
-	if _, err := k.SettleBorrowInterest(ctx, mtp, &pool, ammPool); err != nil {
+	if _, err := k.SettleMTPBorrowInterestUnpaidLiability(ctx, mtp, &pool, ammPool); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling borrow interest payment: %s", mtp.CollateralAsset))
 	}
 
-	err = k.SettleFunding(ctx, mtp, &pool, ammPool, baseCurrency)
+	err = k.SettleFunding(ctx, mtp, &pool, ammPool)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error handling funding fee: %s", mtp.CollateralAsset))
 	}
@@ -48,6 +50,8 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 	if err != nil {
 		return err
 	}
+
+	k.SetPool(ctx, pool)
 
 	// check MTP health against threshold
 	safetyFactor := k.GetSafetyFactor(ctx)
@@ -68,7 +72,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 
 	oneToken := math.NewIntFromBigInt(math.LegacyNewDec(10).Power(uint64(custodyAssetDecimals)).TruncateInt().BigInt())
 
-	assetPrice, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, oneToken), baseCurrency, ammPool)
+	assetPrice, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, oneToken), baseCurrency, ammPool)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error estimating swap: %s", mtp.CustodyAsset))
 	}
@@ -108,7 +112,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 	return nil
 }
 
-func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string, baseCurrencyDecimal uint64) error {
+func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool types.Pool, baseCurrency string) error {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -117,27 +121,24 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool ty
 		}
 	}()
 
-	tradingAssetPrice, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.TradingAsset)
-	if !found {
-		return fmt.Errorf("asset price not found")
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	if err != nil {
+		return err
 	}
 
 	if mtp.Position == types.Position_LONG {
-		underStopLossPrice := !mtp.StopLossPrice.IsNil() && tradingAssetPrice.Price.LTE(mtp.StopLossPrice)
+		underStopLossPrice := !mtp.StopLossPrice.IsNil() && tradingAssetPrice.LTE(mtp.StopLossPrice)
 		if !underStopLossPrice {
 			return fmt.Errorf("mtp stop loss price is not <=  token price")
 		}
 	} else {
-		underStopLossPrice := !mtp.StopLossPrice.IsNil() && tradingAssetPrice.Price.GTE(mtp.StopLossPrice)
+		underStopLossPrice := !mtp.StopLossPrice.IsNil() && tradingAssetPrice.GTE(mtp.StopLossPrice)
 		if !underStopLossPrice {
 			return fmt.Errorf("mtp stop loss price is not =>  token price")
 		}
 	}
 
-	var (
-		repayAmount math.Int
-		err         error
-	)
+	var repayAmount math.Int
 	switch mtp.Position {
 	case types.Position_LONG:
 		repayAmount, err = k.ForceCloseLong(ctx, mtp, &pool, true, baseCurrency)
@@ -157,7 +158,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool ty
 	return nil
 }
 
-func (k Keeper) CheckAndCloseAtTakeProfit(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string, baseCurrencyDecimal uint64) error {
+func (k Keeper) CheckAndCloseAtTakeProfit(ctx sdk.Context, mtp *types.MTP, pool types.Pool, baseCurrency string) error {
 	defer func() {
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
@@ -166,25 +167,22 @@ func (k Keeper) CheckAndCloseAtTakeProfit(ctx sdk.Context, mtp *types.MTP, pool 
 		}
 	}()
 
-	tradingAssetPrice, found := k.oracleKeeper.GetAssetPrice(ctx, mtp.TradingAsset)
-	if !found {
-		return fmt.Errorf("asset price not found")
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	if err != nil {
+		return err
 	}
 
 	if mtp.Position == types.Position_LONG {
-		if !tradingAssetPrice.Price.GTE(mtp.TakeProfitPrice) {
+		if !tradingAssetPrice.GTE(mtp.TakeProfitPrice) {
 			return fmt.Errorf("mtp take profit price is not >=  token price")
 		}
 	} else {
-		if !tradingAssetPrice.Price.LTE(mtp.TakeProfitPrice) {
+		if !tradingAssetPrice.LTE(mtp.TakeProfitPrice) {
 			return fmt.Errorf("mtp take profit price is not <=  token price")
 		}
 	}
 
-	var (
-		repayAmount math.Int
-		err         error
-	)
+	var repayAmount math.Int
 	switch mtp.Position {
 	case types.Position_LONG:
 		repayAmount, err = k.ForceCloseLong(ctx, mtp, &pool, true, baseCurrency)

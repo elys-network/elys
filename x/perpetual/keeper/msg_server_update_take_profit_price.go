@@ -28,10 +28,6 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	if !pool.Enabled {
-		return nil, errorsmod.Wrap(types.ErrPerpetualDisabled, fmt.Sprintf("poolId: %d", poolId))
-	}
-
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
@@ -39,25 +35,42 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 	baseCurrency := entry.Denom
 
 	mtp.TakeProfitPrice = msg.Price
-	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(&mtp)
+	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(mtp)
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, &mtp, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
 	// All take profit liability has to be in liabilities asset
-	err = pool.UpdateTakeProfitLiabilities(ctx, mtp.LiabilitiesAsset, mtp.TakeProfitLiabilities, true, mtp.Position)
+	err = pool.UpdateTakeProfitLiabilities(mtp.LiabilitiesAsset, mtp.TakeProfitLiabilities, true, mtp.Position)
 	if err != nil {
 		return nil, err
 	}
 
 	// All take profit custody has to be in custody asset
-	err = pool.UpdateTakeProfitCustody(ctx, mtp.CustodyAsset, mtp.TakeProfitCustody, true, mtp.Position)
+	err = pool.UpdateTakeProfitCustody(mtp.CustodyAsset, mtp.TakeProfitCustody, true, mtp.Position)
 	if err != nil {
 		return nil, err
 	}
 
-	k.SetMTP(ctx, &mtp)
+	err = k.SetMTP(ctx, &mtp)
+	if err != nil {
+		return nil, err
+	}
+
+	k.SetPool(ctx, pool)
+
+	ammPool, err := k.GetAmmPool(ctx, poolId)
+	if err != nil {
+		return nil, err
+	}
+
+	if k.hooks != nil {
+		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	event := sdk.NewEvent(types.EventOpen,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),
