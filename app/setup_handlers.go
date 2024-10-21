@@ -31,7 +31,7 @@ func setUpgradeHandler(app *ElysApp) {
 
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
 				// Add any logic here to run when the chain is upgraded to the new version
-				allLeverageLpPools := app.LeveragelpKeeper.GetAllPools(ctx)
+				allLeverageLpPools := app.LeveragelpKeeper.GetAllLegacyPools(ctx)
 
 				for _, lp := range allLeverageLpPools {
 					ammPool, found := app.AmmKeeper.GetPool(ctx, lp.AmmPoolId)
