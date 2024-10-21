@@ -11,7 +11,7 @@ func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64, enable bo
 	return Params{
 		PoolCreationFee:       poolCreationFee,
 		SlippageTrackDuration: slippageTrackDuration,
-		EnableUsdcPairedPoolOnly: enable,
+		EnableBaseCurrencyPairedPoolOnly: enable,
 	}
 }
 

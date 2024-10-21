@@ -21,20 +21,20 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 	params := k.GetParams(ctx)
 
-	if params.EnableUsdcPairedPoolOnly {
+	if params.EnableBaseCurrencyPairedPoolOnly {
 		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 		if !found {
 			return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 		}
 
-		usdc := false
+		is_base_curency_paired_pool := false
 		for _, asset := range msg.PoolAssets {
 			if asset.Token.Denom == baseCurrency {
-				usdc = true
+				is_base_curency_paired_pool = true
 			}
 		}
-		if !usdc {
-			return nil, errorsmod.Wrapf(types.ErrOnlyUsdcPoolAllowed, "one of the asset must be %s", ptypes.BaseCurrency)
+		if !is_base_curency_paired_pool {
+			return nil, errorsmod.Wrapf(types.ErrOnlyBaseCurrencyPoolAllowed, "one of the asset must be %s", ptypes.BaseCurrency)
 		}
 	}
 

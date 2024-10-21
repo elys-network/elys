@@ -10,7 +10,7 @@ func (m Migrator) V5Migration(ctx sdk.Context) error {
 	m.keeper.SetParams(ctx, types.Params{
 		PoolCreationFee: math.NewInt(10_000_000),
 		SlippageTrackDuration: 86400*7,
-		EnableUsdcPairedPoolOnly: false,
+		EnableBaseCurrencyPairedPoolOnly: false,
 	})
 	return nil
 }

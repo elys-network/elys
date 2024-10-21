@@ -14,5 +14,5 @@ message Params {
     (gogoproto.nullable) = false
   ];
   uint64 slippage_track_duration = 2; // default 1 week: 604,800
-  bool enable_usdc_paired_pool_only = 3;
+  bool enable_base_currency_paired_pool_only = 3;
 }
