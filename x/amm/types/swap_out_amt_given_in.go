@@ -284,26 +284,24 @@ func (p *Pool) SwapOutAmtGivenIn(
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
-	// cut is valid when distance higher than original distance
-	weightBreakingFee := sdk.ZeroDec()
-	if distanceDiff.IsPositive() {
-		// old weight breaking fee implementation
-		// weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
+	// target weight
+	targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenIn.Denom)
+	targetWeightOut := NormalizedWeight(ctx, p.PoolAssets, tokenOutDenom)
 
-		// target weight
-		targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenIn.Denom)
-		targetWeightOut := NormalizedWeight(ctx, p.PoolAssets, tokenOutDenom)
+	// weight breaking fee as in Plasma pool
+	weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenIn.Denom)
+	weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOutDenom)
+	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
 
-		// weight breaking fee as in Plasma pool
-		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenIn.Denom)
-		weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOutDenom)
-		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams)
-	}
+	// weight recovery reward = weight breaking fee * weight recovery fee portion
+	weightRecoveryReward := weightBreakingFee.Mul(p.PoolParams.WeightRecoveryFeePortion)
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus = weightBreakingFee.Neg()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
-		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
+		weightBalanceBonus = weightRecoveryReward
+		// set weight breaking fee to zero if bonus is applied
+		weightBreakingFee = sdk.ZeroDec()
 	}
 
 	if swapFee.GTE(sdk.OneDec()) {
