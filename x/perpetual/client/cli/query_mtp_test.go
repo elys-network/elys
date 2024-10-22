@@ -28,6 +28,10 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	ctx := app.BaseApp.NewContext(true)
 	state := types.GenesisState{}
 	mtps := make([]*types.MtpAndPrice, 0)
+
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetPerpetualParams(app, ctx)
+
 	// Generate n random accounts with 1000000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, n, math.NewInt(1000000))
 
