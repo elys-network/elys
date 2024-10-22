@@ -13,9 +13,10 @@ var _ = strconv.Itoa(0)
 
 func CmdAprs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "aprs",
-		Short: "Query aprs",
-		Args:  cobra.ExactArgs(0),
+		Use:     "aprs",
+		Short:   "Query aprs",
+		Example: "elysd q masterchef aprs",
+		Args:    cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
