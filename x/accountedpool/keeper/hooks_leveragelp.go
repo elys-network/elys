@@ -14,7 +14,7 @@ func (k Keeper) OnLeverageLpPoolEnable(ctx sdk.Context, ammPool ammtypes.Pool) e
 	// Check if already exists
 	exists := k.PoolExists(ctx, poolId)
 	if exists {
-		return types.ErrPoolAlreadyExist
+		return nil
 	}
 
 	// Initiate pool
