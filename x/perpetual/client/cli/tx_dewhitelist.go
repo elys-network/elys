@@ -94,7 +94,7 @@ func CmdDewhitelist() *cobra.Command {
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-	cmd.Flags().String(FlagExpedited, "", "expedited")
+	cmd.Flags().Bool(FlagExpedited, false, "expedited")
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
 	_ = cmd.MarkFlagRequired(cli.FlagSummary)
 	_ = cmd.MarkFlagRequired(cli.FlagMetadata)

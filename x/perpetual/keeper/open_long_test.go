@@ -498,6 +498,9 @@ func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 func TestOpenLong_ATOM_Collateral(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetPerpetualParams(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
 

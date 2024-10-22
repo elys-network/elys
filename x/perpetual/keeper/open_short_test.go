@@ -327,6 +327,8 @@ func TestOpenShort_Success(t *testing.T) {
 func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetPerpetualParams(app, ctx)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -489,6 +491,9 @@ func TestOpenShort_BaseCurrency_Collateral(t *testing.T) {
 func TestOpenShort_ATOM_Collateral(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetPerpetualParams(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
 

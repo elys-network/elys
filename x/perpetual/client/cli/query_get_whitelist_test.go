@@ -23,6 +23,10 @@ func networkWithWhitelistedObjects(t *testing.T, n int) (*network.Network, []str
 	ctx := app.BaseApp.NewContext(true)
 	state := types.GenesisState{}
 
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetPerpetualParams(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
+
 	whitelistedAddrs := make([]string, 0)
 	// Generate n random accounts with 1000000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, n, math.NewInt(1000000))

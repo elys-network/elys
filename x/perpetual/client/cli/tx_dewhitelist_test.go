@@ -17,8 +17,12 @@ func TestGovDeWhitelist(t *testing.T) {
 	ctx := net.Validators[0].ClientCtx
 	val := net.Validators[0]
 
+	//GOOD EXAMPLE
 	app := simapp.InitElysTestApp(true, t)
 	basectx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, basectx)
+	simapp.SetPerpetualParams(app, basectx)
+	simapp.SetupAssetProfile(app, basectx)
 
 	// Generate n random accounts with 1000000stake balanced
 	addr := simapp.AddTestAddrs(app, basectx, 1, math.NewInt(1000000))
