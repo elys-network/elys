@@ -16,6 +16,17 @@ func (m Migrator) V13Migration(ctx sdk.Context) error {
 			LeverageMax:       legacyPool.LeverageMax,
 		}
 		m.keeper.SetPool(ctx, newPool)
+
+		ammPool, err := m.keeper.GetAmmPool(ctx, legacyPool.AmmPoolId)
+		if err != nil {
+			return err
+		}
+		if m.keeper.GetHooks() != nil {
+			err = m.keeper.GetHooks().AfterEnablingPool(ctx, ammPool)
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil
