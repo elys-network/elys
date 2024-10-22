@@ -40,6 +40,12 @@ func setUpgradeHandler(app *ElysApp) {
 					}
 					err := app.AccountedPoolKeeper.OnLeverageLpPoolEnable(ctx, ammPool)
 					if err != nil {
+						if err.Error() != "accounted pool already exist" {
+							return nil, err
+						}
+					}
+					err = app.PerpetualKeeper.OnLeverageLpEnablePool(ctx, ammPool)
+					if err != nil {
 						return nil, err
 					}
 				}

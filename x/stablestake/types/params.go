@@ -62,19 +62,19 @@ func NewParams(
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams(
-		"uusdc",                   // deposit denom
-		sdk.OneDec(),              // default redemption rate
-		1,                         // epoch length
-		sdk.NewDecWithPrec(15, 2), // 15% - default interest
-		sdk.NewDecWithPrec(17, 2), // 17% - max
-		sdk.NewDecWithPrec(12, 2), // 12% - min
-		sdk.NewDecWithPrec(1, 2),  // 1% - interest rate increase
-		sdk.NewDecWithPrec(1, 2),  // 1% - interest rate decrease
-		sdk.NewDec(1),             // health gain factor
-		sdk.NewInt(0),             // total value - 0
-		sdk.NewDec(70),            // default leverage percent of stablestake pool
-	)
+	return Params{
+		DepositDenom:         "uusdc",
+		RedemptionRate:       math.LegacyOneDec(),
+		EpochLength:          1,
+		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
+		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
+		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
+		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
+		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     math.LegacyOneDec(),
+		TotalValue:           math.ZeroInt(),
+		MaxLeveragePercent:   math.LegacyMustNewDecFromStr("0.7"),
+	}
 }
 
 // ParamSetPairs get the params.ParamSet
@@ -136,6 +136,11 @@ func (p Params) Validate() error {
 
 // String implements the Stringer interface.
 func (p Params) String() string {
+	out, _ := yaml.Marshal(p)
+	return string(out)
+}
+
+func (p LegacyParams) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
 }
