@@ -106,6 +106,12 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 func TestShowMTP(t *testing.T) {
 	net, objs := networkWithMTPObjects(t, 2)
 
+	app := simapp.InitElysTestApp(true, t)
+	cctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, cctx)
+	simapp.SetupAssetProfile(app, cctx)
+	simapp.SetPerpetualParams(app, cctx)
+
 	ctx := net.Validators[0].ClientCtx
 
 	common := []string{

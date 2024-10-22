@@ -254,7 +254,7 @@ func SetupAssetProfile(app *ElysApp, ctx sdk.Context) {
 	app.AssetprofileKeeper.SetEntry(ctx, atypes.Entry{
 		BaseDenom:                "uusdc",
 		Decimals:                 6,
-		Denom:                    "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
+		Denom:                    "uusdc",
 		Path:                     "transfer/channel-12",
 		IbcChannelId:             "channel-12",
 		IbcCounterpartyChannelId: "channel-19",

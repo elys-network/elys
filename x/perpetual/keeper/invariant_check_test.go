@@ -1,6 +1,5 @@
 package keeper_test
 
-/*
 import (
 	"errors"
 	"testing"
@@ -17,12 +16,12 @@ import (
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 )
 
-/*TODO: v0.50Upgrade - test with detail
 func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 	simapp.SetStakingParam(app, ctx)
 	simapp.SetupAssetProfile(app, ctx)
+	simapp.SetPerpetualParams(app, ctx)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -144,4 +143,3 @@ func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
 	// Need to fix invariant balance check function
 	require.Equal(t, err, errors.New("balance mismatch!"))
 }
-*/

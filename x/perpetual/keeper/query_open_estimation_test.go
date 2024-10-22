@@ -18,7 +18,6 @@ import (
 
 // TODO: v0.50Upgrade - test with detail
 func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
-	return
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 	simapp.SetStakingParam(app, ctx)
