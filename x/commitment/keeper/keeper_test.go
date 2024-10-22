@@ -5,6 +5,7 @@ import (
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -169,14 +170,21 @@ func TestKeeper_SubEdenEdenBOnModule_InsufficientClaimedTokens(t *testing.T) {
 
 	// Set up the commitments for the creator
 	commitments := types.Commitments{
-		Creator: creator.String(),
+		Creator: authtypes.NewModuleAddress(moduleName).String(),
 		CommittedTokens: []*types.CommittedTokens{
 			{
 				Denom:  ptypes.Eden,
 				Amount: sdk.NewInt(50),
 			},
+			{
+				Denom:  ptypes.EdenB,
+				Amount: sdk.NewInt(50),
+			},
 		},
-		Claimed: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdk.NewInt(150))},
+		Claimed: sdk.Coins{
+			sdk.NewCoin(ptypes.Eden, sdk.NewInt(150)),
+			sdk.NewCoin(ptypes.EdenB, sdk.NewInt(150)),
+		},
 	}
 	keeper.SetCommitments(ctx, commitments)
 
@@ -188,14 +196,12 @@ func TestKeeper_SubEdenEdenBOnModule_InsufficientClaimedTokens(t *testing.T) {
 			sdk.NewCoin(ptypes.EdenB, sdk.NewInt(50)),
 		),
 	)
-	require.Error(t, err)
+	require.NoError(t, err)
 
 	// Check the updated commitments
 	commitments = keeper.GetCommitments(ctx, creator)
 	assert.Equal(t,
-		sdk.NewCoins(
-			sdk.NewCoin(ptypes.Eden, sdk.NewInt(150)),
-		),
+		sdk.NewCoins(),
 		commitments.Claimed,
 	)
 }
