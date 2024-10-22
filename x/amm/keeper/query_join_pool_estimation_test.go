@@ -10,12 +10,12 @@ import (
 )
 
 func TestJoinPoolEstimation(t *testing.T) {
-	app := simapp.InitElysTestApp(initChain)
+	app := simapp.InitElysTestApp(initChain, t)
 	ctx := app.BaseApp.NewContext(initChain)
 	k := app.AmmKeeper
 
 	// Setup mock pools and assets
-	SetupMockPools(&k, ctx)
+	SetupMockPools(k, ctx)
 
 	// Test single coin join pool
 	resp, err := k.JoinPoolEstimation(ctx, &types.QueryJoinPoolEstimationRequest{

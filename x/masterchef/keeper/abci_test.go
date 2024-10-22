@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -19,7 +20,7 @@ import (
 )
 
 func TestABCI_EndBlocker(t *testing.T) {
-	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
+	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount(t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.MasterchefKeeper
@@ -46,6 +47,7 @@ func TestABCI_EndBlocker(t *testing.T) {
 	srv := tokenomicskeeper.NewMsgServerImpl(app.TokenomicsKeeper)
 
 	expected := &tokenomicstypes.MsgCreateTimeBasedInflation{
+		Description:      "description",
 		Authority:        authority,
 		StartBlockHeight: uint64(1),
 		EndBlockHeight:   uint64(6307200),
@@ -58,11 +60,11 @@ func TestABCI_EndBlocker(t *testing.T) {
 		},
 	}
 
-	wctx := sdk.WrapSDKContext(ctx)
-	_, err = srv.CreateTimeBasedInflation(wctx, expected)
+	_, err = srv.CreateTimeBasedInflation(ctx, expected)
 	require.NoError(t, err)
 
 	expected = &tokenomicstypes.MsgCreateTimeBasedInflation{
+		Description:      "description",
 		Authority:        authority,
 		StartBlockHeight: uint64(6307201),
 		EndBlockHeight:   uint64(12614401),
@@ -74,7 +76,7 @@ func TestABCI_EndBlocker(t *testing.T) {
 			TeamTokensVested:  9999999,
 		},
 	}
-	_, err = srv.CreateTimeBasedInflation(wctx, expected)
+	_, err = srv.CreateTimeBasedInflation(ctx, expected)
 	require.NoError(t, err)
 
 	// Set tokenomics params
@@ -102,8 +104,11 @@ func TestABCI_EndBlocker(t *testing.T) {
 }
 
 func TestCollectGasFees(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetMasterChefParams(app, ctx)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
 
 	mk, bk, amm, oracle := app.MasterchefKeeper, app.BankKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -187,10 +192,14 @@ func TestCollectGasFees(t *testing.T) {
 }
 
 func TestCollectDEXRevenue(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, bk, amm, oracle := app.MasterchefKeeper, app.BankKeeper, app.AmmKeeper, app.OracleKeeper
+
+	simapp.SetMasterChefParams(app, ctx)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
@@ -321,10 +330,14 @@ func TestCollectDEXRevenue(t *testing.T) {
 }
 
 func TestCollectPerpRevenue(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk, perp := app.MasterchefKeeper, app.PerpetualKeeper
+
+	simapp.SetMasterChefParams(app, ctx)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
 
 	// Generate 1 random account
 	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(1000000))

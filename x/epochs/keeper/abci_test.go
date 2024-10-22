@@ -12,8 +12,8 @@ import (
 )
 
 func TestEpochInfoChangesBeginBlockerAndInitGenesis(t *testing.T) {
-	app := app.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false)
+	app := app.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	var (
 		epochInfo types.EpochInfo
@@ -129,7 +129,7 @@ func TestEpochInfoChangesBeginBlockerAndInitGenesis(t *testing.T) {
 			ctx = ctx.WithBlockHeight(1).WithBlockTime(now)
 
 			// check init genesis
-			epochs.InitGenesis(ctx, app.EpochsKeeper, types.GenesisState{
+			epochs.InitGenesis(ctx, *app.EpochsKeeper, types.GenesisState{
 				Epochs: []types.EpochInfo{
 					{
 						Identifier:              "monthly",
@@ -157,8 +157,8 @@ func TestEpochInfoChangesBeginBlockerAndInitGenesis(t *testing.T) {
 }
 
 func TestEpochStartingOneMonthAfterInitGenesis(t *testing.T) {
-	app := app.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false)
+	app := app.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	// On init genesis, default epochs information is set
 	// To check init genesis again, should make it fresh status
@@ -173,7 +173,7 @@ func TestEpochStartingOneMonthAfterInitGenesis(t *testing.T) {
 	initialBlockHeight := int64(1)
 	ctx = ctx.WithBlockHeight(initialBlockHeight).WithBlockTime(now)
 
-	epochs.InitGenesis(ctx, app.EpochsKeeper, types.GenesisState{
+	epochs.InitGenesis(ctx, *app.EpochsKeeper, types.GenesisState{
 		Epochs: []types.EpochInfo{
 			{
 				Identifier:              "monthly",

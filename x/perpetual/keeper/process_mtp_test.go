@@ -16,8 +16,10 @@ import (
 )
 
 func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetPerpetualParams(app, ctx)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -196,8 +198,10 @@ func TestCheckAndLiquidateUnhealthyPosition(t *testing.T) {
 }
 
 func TestCheckAndLiquidateStopLossPosition(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetPerpetualParams(app, ctx)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
 

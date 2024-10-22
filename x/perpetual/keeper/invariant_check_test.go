@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -16,8 +17,11 @@ import (
 )
 
 func TestCheckBalanceInvariant_InvalidBalance(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
+	simapp.SetPerpetualParams(app, ctx)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
 

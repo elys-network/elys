@@ -107,7 +107,7 @@ func (suite *KeeperTestSuite) TestAdd_Pool() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 			_, err := msgServer.AddPool(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)

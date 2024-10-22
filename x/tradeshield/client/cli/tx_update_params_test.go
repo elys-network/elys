@@ -6,6 +6,7 @@ import (
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
 
+	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/network"
 	"github.com/elys-network/elys/x/tradeshield/client/cli"
 )
@@ -21,6 +22,12 @@ func TestGovUpdateParams(t *testing.T) {
 	net := setupNetwork(t)
 	ctx := net.Validators[0].ClientCtx
 	val := net.Validators[0]
+
+	app := simapp.InitElysTestApp(true, t)
+	basectx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, basectx)
+	simapp.SetPerpetualParams(app, basectx)
+	simapp.SetupAssetProfile(app, basectx)
 
 	// Use baseURL to make API HTTP requests or use val.RPCClient to make direct
 	// Tendermint RPC calls.

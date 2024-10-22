@@ -61,7 +61,7 @@ func (suite *KeeperTestSuite) TestGetRedemptionRate() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tc.senderInitBalance)
 			suite.Require().NoError(err)
 
-			msgServer := keeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 			_, err = msgServer.Bond(
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgBond{

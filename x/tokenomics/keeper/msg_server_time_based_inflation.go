@@ -11,6 +11,7 @@ import (
 )
 
 func (k msgServer) CreateTimeBasedInflation(goCtx context.Context, msg *types.MsgCreateTimeBasedInflation) (*types.MsgCreateTimeBasedInflationResponse, error) {
+
 	if err := msg.ValidateBasic(); err != nil {
 		return nil, err
 	}

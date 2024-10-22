@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	storetypes "cosmossdk.io/core/store"
 	"fmt"
+
+	storetypes "cosmossdk.io/core/store"
 
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
@@ -53,8 +54,12 @@ func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 }
 
 func (k Keeper) CheckMaxOpenPositions(ctx sdk.Context) error {
-	if k.GetOpenPositionCount(ctx) >= k.GetMaxOpenPositions(ctx) {
-		return errorsmod.Wrap(types.ErrMaxOpenPositions, "cannot open new positions")
+
+	openPositions := k.GetOpenPositionCount(ctx)
+	maxOpenPositions := k.GetMaxOpenPositions(ctx)
+
+	if openPositions >= maxOpenPositions {
+		return errorsmod.Wrap(types.ErrMaxOpenPositions, fmt.Sprintf("cannot open new positions, open positions %d - max positions %d", openPositions, maxOpenPositions))
 	}
 	return nil
 }

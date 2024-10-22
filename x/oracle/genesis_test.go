@@ -1,8 +1,9 @@
 package oracle_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/nullify"
@@ -52,7 +53,7 @@ func TestGenesis(t *testing.T) {
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
-	app := simapp.InitElysTestApp(initChain)
+	app := simapp.InitElysTestApp(initChain, t)
 	ctx := app.BaseApp.NewContext(initChain)
 	oracle.InitGenesis(ctx, app.OracleKeeper, genesisState)
 	got := oracle.ExportGenesis(ctx, app.OracleKeeper)

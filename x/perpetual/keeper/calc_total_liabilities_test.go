@@ -26,7 +26,9 @@ func TestSuccessPoolAssetsLong_CalcTotalLiabilities(t *testing.T) {
 
 	mockAmm.On("GetPool", ctx, pool.PoolId).Return(pool, true)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
+	k := keeper.NewKeeper(nil, nil,
+		"cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga",
+		mockAmm, nil, nil, nil, nil)
 
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", sdkmath.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(sdkmath.NewInt(1000), nil)
@@ -65,7 +67,7 @@ func TestSuccessPoolAssetsShort_CalcTotalLiabilities(t *testing.T) {
 
 	mockAmm.On("GetPool", ctx, pool.PoolId).Return(pool, true)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
 
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", sdkmath.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(sdkmath.NewInt(1000), nil)

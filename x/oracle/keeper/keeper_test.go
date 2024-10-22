@@ -24,7 +24,7 @@ type KeeperTestSuite struct {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	app := simapp.InitElysTestApp(initChain)
+	app := simapp.InitElysTestApp(initChain, suite.T())
 
 	suite.legacyAmino = app.LegacyAmino()
 	suite.ctx = app.BaseApp.NewContext(initChain)

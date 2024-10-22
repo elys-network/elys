@@ -1,10 +1,10 @@
 package keeper_test
 
 import (
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"strconv"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/elys-network/elys/x/oracle/keeper"
 	"github.com/elys-network/elys/x/oracle/types"
@@ -13,7 +13,6 @@ import (
 func (suite *KeeperTestSuite) TestPriceMsgServerCreate() {
 	k, ctx := suite.app.OracleKeeper, suite.ctx
 	srv := keeper.NewMsgServerImpl(k)
-	wctx := sdk.WrapSDKContext(ctx)
 	creator := authtypes.NewModuleAddress("A").String()
 	suite.app.OracleKeeper.SetPriceFeeder(ctx, types.PriceFeeder{
 		Feeder:   creator,
@@ -24,8 +23,9 @@ func (suite *KeeperTestSuite) TestPriceMsgServerCreate() {
 			Provider: creator,
 			Asset:    strconv.Itoa(i),
 			Source:   "elys",
+			Price:    math.LegacyOneDec(),
 		}
-		_, err := srv.FeedPrice(wctx, expected)
+		_, err := srv.FeedPrice(ctx, expected)
 		suite.Require().NoError(err)
 		rst, found := k.GetPrice(ctx, expected.Asset, expected.Source, uint64(ctx.BlockTime().Unix()))
 		suite.Require().True(found)

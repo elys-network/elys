@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
@@ -20,14 +21,14 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 		OwnerAddress:       "valid_address",
 		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 		Position:           types.PerpetualPosition_LONG,
-		TriggerPrice:       &types.OrderPrice{Rate: sdk.NewDec(1), BaseDenom: "base", QuoteDenom: "quote"},
-		Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
+		TriggerPrice:       &types.OrderPrice{Rate: math.LegacyNewDec(1), BaseDenom: "base", QuoteDenom: "quote"},
+		Collateral:         sdk.Coin{Denom: "denom", Amount: math.NewInt(10)},
 		TradingAsset:       "asset",
-		Leverage:           sdk.NewDec(int64(1)),
-		TakeProfitPrice:    sdk.NewDec(1),
+		Leverage:           math.LegacyNewDec(int64(1)),
+		TakeProfitPrice:    math.LegacyNewDec(1),
 		PositionId:         uint64(1),
 		Status:             types.Status_PENDING,
-		StopLossPrice:      sdk.NewDec(1),
+		StopLossPrice:      math.LegacyNewDec(1),
 	}
 
 	tests := []struct {

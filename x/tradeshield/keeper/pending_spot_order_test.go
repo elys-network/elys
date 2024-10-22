@@ -1,8 +1,10 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
@@ -152,7 +154,7 @@ func TestExecuteStopLossOrder(t *testing.T) {
 		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
 		DenomIn:   "base",
 		DenomOut:  "quote",
-		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Discount:  math.LegacyMustNewDecFromStr("0.1"),
 		Recipient: address.String(),
 	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
@@ -199,7 +201,7 @@ func TestExecuteLimitSellOrder(t *testing.T) {
 		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
 		DenomIn:   "base",
 		DenomOut:  "quote",
-		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Discount:  math.LegacyMustNewDecFromStr("0.1"),
 		Recipient: address.String(),
 	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
@@ -246,7 +248,7 @@ func TestExecuteLimitBuyOrder(t *testing.T) {
 		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
 		DenomIn:   "base",
 		DenomOut:  "quote",
-		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Discount:  math.LegacyMustNewDecFromStr("0.1"),
 		Recipient: address.String(),
 	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
@@ -291,7 +293,7 @@ func TestExecuteMarketBuyOrder(t *testing.T) {
 		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
 		DenomIn:   "base",
 		DenomOut:  "quote",
-		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Discount:  math.LegacyMustNewDecFromStr("0.1"),
 		Recipient: address.String(),
 	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 

@@ -10,7 +10,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func initializeForUpdatePool(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {
+func initializeForUpdatePool(suite *KeeperTestSuite, addresses []sdk.AccAddress) {
 	issueAmount := sdkmath.NewInt(10_000_000_000_000)
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
@@ -34,9 +34,7 @@ func (suite *KeeperTestSuite) TestUpdate_Pool() {
 	suite.ResetSuite()
 	suite.SetupCoinPrices(suite.ctx)
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
-	asset1 := ptypes.ATOM
-	asset2 := ptypes.BaseCurrency
-	initializeForUpdatePool(suite, addresses, asset1, asset2)
+	initializeForUpdatePool(suite, addresses)
 	testCases := []struct {
 		name                 string
 		input                *types.MsgUpdatePool
@@ -77,7 +75,7 @@ func (suite *KeeperTestSuite) TestUpdate_Pool() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 			_, err := msgServer.UpdatePool(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)

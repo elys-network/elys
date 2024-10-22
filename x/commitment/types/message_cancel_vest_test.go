@@ -3,7 +3,7 @@ package types
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -20,7 +20,7 @@ func TestMsgCancelVest_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgCancelVest{
 				Creator: "invalid_address",
-				Amount:  sdkmath.ZeroInt(),
+				Amount:  math.ZeroInt(),
 				Denom:   ptypes.Eden,
 			},
 			err: sdkerrors.ErrInvalidAddress,
@@ -29,7 +29,7 @@ func TestMsgCancelVest_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCancelVest{
 				Creator: sample.AccAddress(),
-				Amount:  sdkmath.ZeroInt(),
+				Amount:  math.ZeroInt(),
 				Denom:   ptypes.Eden,
 			},
 		},
@@ -37,7 +37,7 @@ func TestMsgCancelVest_ValidateBasic(t *testing.T) {
 			name: "invalid denom",
 			msg: MsgCancelVest{
 				Creator: sample.AccAddress(),
-				Amount:  sdkmath.ZeroInt(),
+				Amount:  math.ZeroInt(),
 				Denom:   "uusdc",
 			},
 			err: ErrInvalidDenom,

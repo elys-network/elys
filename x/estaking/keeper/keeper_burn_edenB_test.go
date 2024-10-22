@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -14,7 +15,7 @@ import (
 )
 
 func TestBurnEdenBFromElysUnstaked(t *testing.T) {
-	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount()
+	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount(t)
 	ctx := app.BaseApp.NewContext(true)
 
 	ek, sk := app.EstakingKeeper, app.StakingKeeper
@@ -60,7 +61,7 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 }
 
 func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
-	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
+	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount(t)
 	ctx := app.BaseApp.NewContext(true)
 
 	ek, commitmentKeeper := app.EstakingKeeper, app.CommitmentKeeper
@@ -91,7 +92,7 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	commitment.Claimed = commitment.Claimed.Add(committed...)
 	app.CommitmentKeeper.SetCommitments(ctx, commitment)
 
-	msgServer := commkeeper.NewMsgServerImpl(commitmentKeeper)
+	msgServer := commkeeper.NewMsgServerImpl(*commitmentKeeper)
 	_, err = msgServer.CommitClaimedRewards(ctx, &ctypes.MsgCommitClaimedRewards{
 		Creator: genAccount.String(),
 		Amount:  math.NewInt(1000),
