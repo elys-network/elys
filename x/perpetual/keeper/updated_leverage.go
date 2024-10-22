@@ -29,7 +29,7 @@ func (k Keeper) UpdatedLeverage(ctx sdk.Context, mtp types.MTP) (sdk.Dec, error)
 		denominator = custodyInUsdc.Sub(mtp.Liabilities.ToLegacyDec())
 	}
 	if denominator.IsZero() {
-		return sdk.ZeroDec(),  nil
+		return sdk.ZeroDec(), nil
 	}
 	effectiveLeverage := custodyInUsdc.Quo(denominator)
 

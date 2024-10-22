@@ -203,7 +203,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, r
 		TradingAssetPrice: tradingAssetPrice,
 		Pnl:               pnl,
 		LiquidationPrice:  liquidationPrice,
-		EffectiveLeverage:    effectiveLeverage,
+		EffectiveLeverage: effectiveLeverage,
 		Fees: &types.Fees{
 			TotalFeesBaseCurrency:            totalFeesInBaseCurrency,
 			BorrowInterestFeesLiabilityAsset: mtp.BorrowInterestPaidCustody,
