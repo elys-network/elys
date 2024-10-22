@@ -35,10 +35,8 @@ func (k Keeper) GetAllLegacyPools(ctx sdk.Context) (list []types.LegacyPool) {
 
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.LegacyPool
-		err := k.cdc.Unmarshal(iterator.Value(), &val)
-		if err == nil {
-			list = append(list, val)
-		}
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
 	}
 
 	return
