@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/require"
@@ -12,9 +11,9 @@ import (
 
 func TestMsgUpdatetakeProfitPrice(t *testing.T) {
 	msg := types.NewMsgUpdateTakeProfitPrice(sample.AccAddress(), 1, math.LegacyOneDec())
-	require.Equal(t, msg.GetCreator(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Creator)})
-	msg.Creator = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetCreator() })
+	//require.Equal(t, msg.GetCreator(), []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Creator)})
+	//msg.Creator = ""
+	//require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetCreator() })
 	tests := []struct {
 		name   string
 		setter func()

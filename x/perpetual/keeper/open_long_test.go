@@ -340,6 +340,9 @@ func TestOpenLong_Success(t *testing.T) {
 func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	//simapp.SetStableStake(app, ctx)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetPerpetualParams(app, ctx)
 
 	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
 
