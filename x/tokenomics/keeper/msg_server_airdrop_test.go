@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"strconv"
 	"testing"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -48,6 +49,8 @@ func TestAirdropMsgServerUpdate(t *testing.T) {
 			request: &types.MsgUpdateAirdrop{
 				Authority: authority,
 				Intent:    strconv.Itoa(0),
+				Amount:    200,
+				Expiry:    uint64(time.Now().Unix()),
 			},
 		},
 		{
@@ -55,14 +58,18 @@ func TestAirdropMsgServerUpdate(t *testing.T) {
 			request: &types.MsgUpdateAirdrop{
 				Authority: "B",
 				Intent:    strconv.Itoa(0),
+				Amount:    200,
+				Expiry:    uint64(time.Now().Unix()),
 			},
-			err: govtypes.ErrInvalidSigner,
+			err: sdkerrors.ErrInvalidAddress,
 		},
 		{
 			desc: "KeyNotFound",
 			request: &types.MsgUpdateAirdrop{
 				Authority: authority,
 				Intent:    strconv.Itoa(100000),
+				Amount:    200,
+				Expiry:    uint64(time.Now().Unix()),
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -70,7 +77,7 @@ func TestAirdropMsgServerUpdate(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.TokenomicsKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
+			wctx := ctx
 			expected := &types.MsgCreateAirdrop{
 				Authority: authority,
 				Intent:    strconv.Itoa(0),
@@ -114,7 +121,7 @@ func TestAirdropMsgServerDelete(t *testing.T) {
 				Authority: "B",
 				Intent:    strconv.Itoa(0),
 			},
-			err: govtypes.ErrInvalidSigner,
+			err: sdkerrors.ErrInvalidAddress,
 		},
 		{
 			desc: "KeyNotFound",
@@ -128,7 +135,7 @@ func TestAirdropMsgServerDelete(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.TokenomicsKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
+			wctx := ctx
 
 			_, err := srv.CreateAirdrop(wctx, &types.MsgCreateAirdrop{
 				Authority: authority,
