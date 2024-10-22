@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -9,24 +11,38 @@ import (
 )
 
 func (k Keeper) UpdatedLeverage(ctx sdk.Context, mtp types.MTP) (sdk.Dec, error) {
-	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return sdk.ZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
-	collateral_in_usdc := mtp.Collateral.ToLegacyDec()
-	if mtp.CollateralAsset != baseCurrency {
-		price := k.amm.EstimatePrice(ctx, mtp.CollateralAsset, baseCurrency)
-		collateral_in_usdc = mtp.Collateral.ToLegacyDec().Mul(price)
+	baseCurrency := entry.Denom
+
+	priceBaseCurrency := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	if priceBaseCurrency.IsZero() {
+		return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", baseCurrency)
 	}
-	liablites := mtp.Liabilities.ToLegacyDec()
+
+	custodyInUsdc := mtp.Custody.ToLegacyDec()
+	if mtp.CustodyAsset != baseCurrency {
+		priceCustodyAsset := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.CustodyAsset)
+		if priceBaseCurrency.IsZero() {
+			return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", mtp.CustodyAsset)
+		}
+		custodyInUsdc = mtp.Custody.ToLegacyDec().Mul(priceCustodyAsset.Quo(priceBaseCurrency))
+	}
+	denominator := custodyInUsdc.Sub(mtp.Liabilities.ToLegacyDec())
 	if mtp.LiabilitiesAsset != baseCurrency {
-		price := k.amm.EstimatePrice(ctx, mtp.LiabilitiesAsset, baseCurrency)
-		liablites = mtp.Liabilities.ToLegacyDec().Mul(price)
+		priceCustodyAsset := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.LiabilitiesAsset)
+		if priceBaseCurrency.IsZero() {
+			return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", mtp.LiabilitiesAsset)
+		}
+		custodyInUsdc = mtp.Custody.ToLegacyDec().Mul(priceCustodyAsset.Quo(priceBaseCurrency))
 	}
-	if collateral_in_usdc.IsZero() {
+	if denominator.IsZero() {
 		return sdk.ZeroDec(),  nil
 	}
-	updated_leverage := liablites.Quo(collateral_in_usdc).Add(sdk.OneDec())
+	effectiveLeverage := custodyInUsdc.Quo(denominator)
 
-	return updated_leverage, nil
+	return effectiveLeverage, nil
 }

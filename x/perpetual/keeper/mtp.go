@@ -193,7 +193,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, r
 		fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
 	}
 
-	updated_leverage, err := k.UpdatedLeverage(ctx, mtp)
+	effectiveLeverage, err := k.UpdatedLeverage(ctx, mtp)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +203,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, r
 		TradingAssetPrice: tradingAssetPrice,
 		Pnl:               pnl,
 		LiquidationPrice:  liquidationPrice,
-		UpdatedLeverage:    updated_leverage,
+		EffectiveLeverage:    effectiveLeverage,
 		Fees: &types.Fees{
 			TotalFeesBaseCurrency:            totalFeesInBaseCurrency,
 			BorrowInterestFeesLiabilityAsset: mtp.BorrowInterestPaidCustody,
