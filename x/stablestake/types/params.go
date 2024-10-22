@@ -23,7 +23,7 @@ var (
 	KeyInterestRateDecrease = []byte("InterestRateDecrease")
 	KeyHealthGainFactor     = []byte("HealthGainFactor")
 	KeyTotalValue           = []byte("TotalValue")
-	KeyMaxLeveragePercent   = []byte("MaxLeveragePercent")
+	KeyMaxLeverageRatio     = []byte("MaxLeverageRatio")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -56,25 +56,25 @@ func NewParams(
 		InterestRateDecrease: interestRateDecrease,
 		HealthGainFactor:     healthGainFactor,
 		TotalValue:           totalValue,
-		MaxLeveragePercent:   MaxLeveragePercent,
+		MaxLeverageRatio:     MaxLeveragePercent,
 	}
 }
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams(
-		"uusdc",                   // deposit denom
-		sdk.OneDec(),              // default redemption rate
-		1,                         // epoch length
-		sdk.NewDecWithPrec(15, 2), // 15% - default interest
-		sdk.NewDecWithPrec(17, 2), // 17% - max
-		sdk.NewDecWithPrec(12, 2), // 12% - min
-		sdk.NewDecWithPrec(1, 2),  // 1% - interest rate increase
-		sdk.NewDecWithPrec(1, 2),  // 1% - interest rate decrease
-		sdk.NewDec(1),             // health gain factor
-		sdk.NewInt(0),             // total value - 0
-		sdk.NewDec(70),            // default leverage percent of stablestake pool
-	)
+	return Params{
+		DepositDenom:         "uusdc",
+		RedemptionRate:       math.LegacyOneDec(),
+		EpochLength:          1,
+		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
+		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
+		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
+		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
+		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     math.LegacyOneDec(),
+		TotalValue:           math.ZeroInt(),
+		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+	}
 }
 
 // ParamSetPairs get the params.ParamSet
@@ -90,7 +90,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyHealthGainFactor, &p.HealthGainFactor, validateHealthGainFactor),
 		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
 		paramtypes.NewParamSetPair(KeyTotalValue, &p.TotalValue, validateTotalValue),
-		paramtypes.NewParamSetPair(KeyMaxLeveragePercent, &p.MaxLeveragePercent, validateMaxLeveragePercent),
+		paramtypes.NewParamSetPair(KeyMaxLeverageRatio, &p.MaxLeverageRatio, validateMaxLeverageRatio),
 	}
 }
 
@@ -127,7 +127,7 @@ func (p Params) Validate() error {
 	if err := validateTotalValue(p.TotalValue); err != nil {
 		return err
 	}
-	if err := validateMaxLeveragePercent(p.MaxLeveragePercent); err != nil {
+	if err := validateMaxLeverageRatio(p.MaxLeverageRatio); err != nil {
 		return err
 	}
 
@@ -136,6 +136,11 @@ func (p Params) Validate() error {
 
 // String implements the Stringer interface.
 func (p Params) String() string {
+	out, _ := yaml.Marshal(p)
+	return string(out)
+}
+
+func (p LegacyParams) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
 }
@@ -294,7 +299,7 @@ func validateTotalValue(i interface{}) error {
 	return nil
 }
 
-func validateMaxLeveragePercent(i interface{}) error {
+func validateMaxLeverageRatio(i interface{}) error {
 	v, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)

@@ -127,11 +127,15 @@ message MtpAndPrice {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string liquidation_price = 4 [
+  string effective_leverage = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  Fees   fees = 5;
+  string liquidation_price = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  Fees   fees = 6;
 }
 
 // ParamsRequest is request type for the Query/Params RPC method.
