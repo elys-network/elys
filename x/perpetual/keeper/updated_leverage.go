@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -18,26 +16,17 @@ func (k Keeper) UpdatedLeverage(ctx sdk.Context, mtp types.MTP) (sdk.Dec, error)
 	}
 	baseCurrency := entry.Denom
 
-	priceBaseCurrency := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-	if priceBaseCurrency.IsZero() {
-		return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", baseCurrency)
-	}
-
 	custodyInUsdc := mtp.Custody.ToLegacyDec()
 	if mtp.CustodyAsset != baseCurrency {
 		priceCustodyAsset := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.CustodyAsset)
-		if priceBaseCurrency.IsZero() {
-			return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", mtp.CustodyAsset)
-		}
-		custodyInUsdc = mtp.Custody.ToLegacyDec().Mul(priceCustodyAsset.Quo(priceBaseCurrency))
+		custodyInUsdc = mtp.Custody.ToLegacyDec().Mul(priceCustodyAsset)
 	}
-	denominator := custodyInUsdc.Sub(mtp.Liabilities.ToLegacyDec())
+	var denominator sdk.Dec
 	if mtp.LiabilitiesAsset != baseCurrency {
-		priceCustodyAsset := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.LiabilitiesAsset)
-		if priceBaseCurrency.IsZero() {
-			return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", mtp.LiabilitiesAsset)
-		}
-		custodyInUsdc = mtp.Custody.ToLegacyDec().Mul(priceCustodyAsset.Quo(priceBaseCurrency))
+		priceLiablitiesAsset := k.oracleKeeper.GetAssetPriceFromDenom(ctx, mtp.LiabilitiesAsset)
+		denominator = custodyInUsdc.Sub(mtp.Liabilities.ToLegacyDec().Mul(priceLiablitiesAsset))
+	} else {
+		denominator = custodyInUsdc.Sub(mtp.Liabilities.ToLegacyDec())
 	}
 	if denominator.IsZero() {
 		return sdk.ZeroDec(),  nil
