@@ -1,8 +1,9 @@
 package cli
 
 import (
-	"cosmossdk.io/math"
 	"errors"
+
+	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -183,7 +184,7 @@ func CmdUpdateParams() *cobra.Command {
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-	cmd.Flags().String(FlagExpedited, "", "expedited")
+	cmd.Flags().Bool(FlagExpedited, false, "expedited")
 	_ = cmd.MarkFlagRequired(FlagMarketOrderEnabled)
 	_ = cmd.MarkFlagRequired(FlagStakeEnabled)
 	_ = cmd.MarkFlagRequired(FlagProcessOrdersEnabled)

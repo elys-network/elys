@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
@@ -22,9 +23,9 @@ func TestPendingSpotOrderForAddress(t *testing.T) {
 		OrderPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+			Rate:       math.LegacyNewDec(1),
 		},
-		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
+		OrderAmount:      sdk.NewCoin("base", math.NewInt(1)),
 		OrderTargetDenom: "quote",
 		Status:           types.Status_PENDING,
 	}
