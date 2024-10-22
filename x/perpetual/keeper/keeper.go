@@ -17,13 +17,6 @@ import (
 
 type (
 	Keeper struct {
-		types.AuthorizationChecker
-		types.PositionChecker
-		types.OpenChecker
-		types.OpenDefineAssetsChecker
-		types.ClosePositionChecker
-		types.CloseEstimationChecker
-
 		cdc                codec.BinaryCodec
 		storeKey           storetypes.StoreKey
 		memKey             storetypes.StoreKey
@@ -65,13 +58,6 @@ func NewKeeper(
 		assetProfileKeeper: assetProfileKeeper,
 		parameterKeeper:    parameterKeeper,
 	}
-
-	keeper.AuthorizationChecker = keeper
-	keeper.PositionChecker = keeper
-	keeper.OpenChecker = keeper
-	keeper.OpenDefineAssetsChecker = keeper
-	keeper.ClosePositionChecker = keeper
-	keeper.CloseEstimationChecker = keeper
 
 	return keeper
 }

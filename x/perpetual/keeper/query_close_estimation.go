@@ -51,7 +51,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		return nil, err
 	}
 	unpaidInterestLiability := mtp.BorrowInterestUnpaidLiability
-	// adding case for mtp.BorrowInterestUnpaidLiability being smaller tha 10^-18
+	// adding case for mtp.BorrowInterestUnpaidLiability being smaller tha 10^-18, this happens when position is small so liabilities are small, and hardly any time has spend, so interests are small, so it leads to 0 value
 	borrowInterestPaymentInCustody := math.ZeroInt()
 	if !mtp.BorrowInterestUnpaidLiability.IsZero() {
 		borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
