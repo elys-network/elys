@@ -21,8 +21,6 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	amount := int64(10_000_000)
 	pool := types.Pool{
 		AmmPoolId:         1,
-		Enabled:           true,
-		Closed:            false,
 		Health:            sdk.ZeroDec(),
 		LeveragedLpAmount: sdk.ZeroInt(),
 		LeverageMax:       sdk.OneDec().MulInt64(10),
@@ -34,7 +32,7 @@ func (suite KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position,
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, poolAddr, poolInit)
 	suite.Require().NoError(err)
 
-	err = suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
+	suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
 		PoolId:            1,
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),

@@ -115,17 +115,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		},
 	)
 
-	var weightMsgUpdatePools int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePools, &weightMsgUpdatePools, nil,
-		func(_ *rand.Rand) {
-			weightMsgUpdatePools = defaultWeightMsgUpdatePools
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdatePools,
-		leveragelpsimulation.SimulateMsgUpdatePools(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
 	var weightMsgWhitelist int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWhitelist, &weightMsgWhitelist, nil,
 		func(_ *rand.Rand) {

@@ -25,10 +25,10 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		return sdk.ZeroInt(), types.ErrAmountTooLow
 	}
 
-	repayAmount := debt.GetTotalLiablities().Mul(lpAmount).Quo(position.LeveragedLpAmount)
+	ratio := lpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
+	repayAmount := debt.GetTotalLiablities().ToLegacyDec().Mul(ratio).TruncateInt()
 
 	// Set collateral to same % as reduction in LP position
-	ratio := lpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
 	collateralLeft := position.Collateral.Amount.Sub(position.Collateral.Amount.ToLegacyDec().Mul(ratio).TruncateInt())
 	position.Collateral.Amount = collateralLeft
 

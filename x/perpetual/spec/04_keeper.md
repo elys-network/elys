@@ -50,7 +50,7 @@ The `BeginBlocker` function is triggered at the beginning of each block. It perf
 
 ### Pool Health Verification
 
-`CheckPoolHealth` verifies the health of a pool, ensuring it is enabled and not closed, and that its health is above the minimum threshold.
+`CheckLowPoolHealth` verifies the health of a pool, ensuring it is enabled and not closed, and that its health is above the minimum threshold.
 
 ### Same Asset Position Check
 
