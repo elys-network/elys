@@ -33,7 +33,7 @@
   - For long position: If `tradingAssetPrice >= mtp.TakeProfitPrice` then trigger closePosition message.
   - For short position: If `tradingAssetPrice <= mtp.TakeProfitPrice` then trigger closePosition message.
 
-  - Note: only oracle pools are used by Perpetual, therefore the bot should always relying on the Oracle module for retrieving asset price.
+  - Note: only oracle pools are used by perpetual, therefore the bot should always rely on oracle module for retrieving asset price.
 
 ### closePositions function
 - `closePositions(liquidate: [](address, u64), stopLoss: [](address, u64))`
