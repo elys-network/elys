@@ -32,6 +32,7 @@ func networkWithWhitelistedObjects(t *testing.T, n int) (*network.Network, []str
 		whitelistedAddrs = append(whitelistedAddrs, addr[i].String())
 		state.AddressWhitelist = append(state.AddressWhitelist, addr[i].String())
 	}
+	state.Params = types.NewParams()
 
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)

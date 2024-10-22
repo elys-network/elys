@@ -2,10 +2,13 @@ package keeper_test
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
@@ -58,7 +61,6 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 	if err != nil {
 		panic(err)
 	}
-	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId))
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
@@ -73,6 +75,16 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 	if err != nil {
 		panic(err)
 	}
+
+	addPoolMsg := types.MsgAddPool{
+		Authority: authtypes.NewModuleAddress("gov").String(),
+		Pool: types.AddPool{
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+		},
+	}
+	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &addPoolMsg)
+	suite.Require().NoError(err)
 }
 
 func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
@@ -149,23 +161,6 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.SetMaxOpenPositions(3)
 			},
 		},
-		{name: "Pool not enabled",
-			input: &types.MsgOpen{
-				Creator:          addresses[0].String(),
-				CollateralAsset:  ptypes.BaseCurrency,
-				CollateralAmount: sdk.NewInt(1000),
-				AmmPoolId:        2,
-				Leverage:         sdk.MustNewDecFromStr("2.0"),
-				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
-			},
-			expectErr:    true,
-			expectErrMsg: "leveragelp not enabled for pool",
-			prerequisiteFunction: func() {
-				pool := types.NewPool(2)
-				pool.Enabled = false
-				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
-			},
-		},
 		{name: "base currency not found",
 			input: &types.MsgOpen{
 				Creator:          addresses[0].String(),
@@ -178,8 +173,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErr:    true,
 			expectErrMsg: "invalid pool id",
 			prerequisiteFunction: func() {
-				pool := types.NewPool(2)
-				pool.Enabled = true
+				pool := types.NewPool(2, math.LegacyMustNewDecFromStr("10"))
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 				suite.SetMaxOpenPositions(20)
@@ -200,22 +194,6 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.SetupCoinPrices(suite.ctx)
 			},
 		},
-		{"Pool Disabled",
-			&types.MsgOpen{
-				Creator:          addresses[0].String(),
-				CollateralAsset:  ptypes.BaseCurrency,
-				CollateralAmount: sdk.NewInt(1000),
-				AmmPoolId:        1,
-				Leverage:         sdk.MustNewDecFromStr("2.0"),
-				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
-			},
-			true,
-			types.ErrPositionDisabled.Wrapf("poolId: %d", 1).Error(),
-			func() {
-				suite.SetMaxOpenPositions(1000)
-				suite.DisablePool(1)
-			},
-		},
 		{"Collateral asset not equal to base currency",
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
@@ -228,7 +206,6 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			true,
 			types.ErrOnlyBaseCurrencyAllowed.Error(),
 			func() {
-				suite.EnablePool(1)
 				suite.SetPoolThreshold(sdk.MustNewDecFromStr("0.2"))
 			},
 		},

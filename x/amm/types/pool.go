@@ -24,6 +24,21 @@ func (p *Pool) addToPoolAssetBalances(coins sdk.Coins) error {
 	return nil
 }
 
+func (p *Pool) subtractFromPoolAssetBalances(coins sdk.Coins) error {
+	for _, coin := range coins {
+		i, poolAsset, err := p.GetPoolAssetAndIndex(coin.Denom)
+		if err != nil {
+			return err
+		}
+		poolAsset.Token.Amount = poolAsset.Token.Amount.Sub(coin.Amount)
+		if poolAsset.Token.Amount.IsNegative() {
+			return fmt.Errorf("poool asset balance becomes negative after subtraction (%s)", coin.String())
+		}
+		p.PoolAssets[i] = poolAsset
+	}
+	return nil
+}
+
 func (p Pool) parsePoolAssets(tokensA sdk.Coins, tokenBDenom string) (
 	tokenA sdk.Coin, Aasset PoolAsset, Basset PoolAsset, err error,
 ) {
@@ -143,12 +158,29 @@ func (p *Pool) AddTotalShares(amt math.Int) {
 	p.TotalShares.Amount = p.TotalShares.Amount.Add(amt)
 }
 
-func (p *Pool) IncreaseLiquidity(sharesOut math.Int, coinsIn sdk.Coins) {
+func (p *Pool) SubtractTotalShares(amt math.Int) {
+	p.TotalShares.Amount = p.TotalShares.Amount.Sub(amt)
+}
+
+func (p *Pool) IncreaseLiquidity(sharesAmt math.Int, coinsIn sdk.Coins) error {
 	err := p.addToPoolAssetBalances(coinsIn)
 	if err != nil {
-		panic(err)
+		return err
 	}
-	p.AddTotalShares(sharesOut)
+	p.AddTotalShares(sharesAmt)
+	return nil
+}
+
+func (p *Pool) DecreaseLiquidity(sharesAmt math.Int, coinsIn sdk.Coins) error {
+	err := p.subtractFromPoolAssetBalances(coinsIn)
+	if err != nil {
+		return err
+	}
+	p.SubtractTotalShares(sharesAmt)
+	if p.TotalShares.IsNegative() {
+		return fmt.Errorf("can't subtract %s, pool total shares going negative", sharesAmt.String())
+	}
+	return nil
 }
 
 func (p *Pool) UpdatePoolAssetBalance(coin sdk.Coin) error {
@@ -225,6 +257,17 @@ func (p Pool) GetPoolAssetAndIndex(denom string) (int, PoolAsset, error) {
 	}
 
 	return i, p.PoolAssets[i], nil
+}
+
+// Get balance of a denom
+func (p Pool) GetAmmPoolBalance(denom string) (math.Int, error) {
+	for _, asset := range p.PoolAssets {
+		if asset.Token.Denom == denom {
+			return asset.Token.Amount, nil
+		}
+	}
+
+	return sdk.ZeroInt(), ErrDenomNotFoundInPool
 }
 
 // getMaximalNoSwapLPAmount returns the coins(lp liquidity) needed to get the specified amount of shares in the pool.
