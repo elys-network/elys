@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
@@ -17,32 +18,34 @@ func GetPositionFromString(s string) Position {
 	}
 }
 
-func NewMTP(signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsset string, position Position, leverage, takeProfitPrice sdk.Dec, poolId uint64) *MTP {
+func NewMTP(ctx sdk.Context, signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsset string, position Position, takeProfitPrice sdk.Dec, poolId uint64) *MTP {
 	return &MTP{
-		Address:                        signer,
-		CollateralAsset:                collateralAsset,
-		TradingAsset:                   tradingAsset,
-		LiabilitiesAsset:               liabilitiesAsset,
-		CustodyAsset:                   custodyAsset,
-		Collateral:                     sdk.ZeroInt(),
-		Liabilities:                    sdk.ZeroInt(),
-		BorrowInterestPaidCollateral:   sdk.ZeroInt(),
-		BorrowInterestPaidCustody:      sdk.ZeroInt(),
-		BorrowInterestUnpaidCollateral: sdk.ZeroInt(),
-		Custody:                        sdk.ZeroInt(),
-		TakeProfitLiabilities:          sdk.ZeroInt(),
-		TakeProfitCustody:              sdk.ZeroInt(),
-		MtpHealth:                      sdk.ZeroDec(),
-		Position:                       position,
-		Id:                             0,
-		AmmPoolId:                      poolId,
-		TakeProfitPrice:                takeProfitPrice,
-		TakeProfitBorrowRate:           sdk.OneDec(),
-		FundingFeePaidCollateral:       sdk.ZeroInt(),
-		FundingFeePaidCustody:          sdk.ZeroInt(),
-		FundingFeeReceivedCollateral:   sdk.ZeroInt(),
-		FundingFeeReceivedCustody:      sdk.ZeroInt(),
-		OpenPrice:                      sdk.ZeroDec(),
+		Address:                       signer,
+		CollateralAsset:               collateralAsset,
+		TradingAsset:                  tradingAsset,
+		LiabilitiesAsset:              liabilitiesAsset,
+		CustodyAsset:                  custodyAsset,
+		Collateral:                    sdk.ZeroInt(),
+		Liabilities:                   sdk.ZeroInt(),
+		BorrowInterestPaidCustody:     sdk.ZeroInt(),
+		BorrowInterestUnpaidLiability: sdk.ZeroInt(),
+		Custody:                       sdk.ZeroInt(),
+		TakeProfitLiabilities:         sdk.ZeroInt(),
+		TakeProfitCustody:             sdk.ZeroInt(),
+		MtpHealth:                     sdk.ZeroDec(),
+		Position:                      position,
+		Id:                            0,
+		AmmPoolId:                     poolId,
+		TakeProfitPrice:               takeProfitPrice,
+		TakeProfitBorrowFactor:        sdk.OneDec(),
+		FundingFeePaidCustody:         sdk.ZeroInt(),
+		FundingFeeReceivedCustody:     sdk.ZeroInt(),
+		OpenPrice:                     sdk.ZeroDec(),
+		StopLossPrice:                 math.LegacyZeroDec(),
+		LastInterestCalcTime:          uint64(ctx.BlockTime().Unix()),
+		LastInterestCalcBlock:         uint64(ctx.BlockHeight()),
+		LastFundingCalcTime:           uint64(ctx.BlockTime().Unix()),
+		LastFundingCalcBlock:          uint64(ctx.BlockHeight()),
 	}
 }
 

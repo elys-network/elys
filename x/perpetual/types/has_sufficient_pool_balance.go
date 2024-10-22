@@ -7,7 +7,7 @@ import (
 
 // Check if amm pool has sufficcient balance
 func HasSufficientPoolBalance(ammPool ammtypes.Pool, assetDenom string, requiredAmount math.Int) bool {
-	balance, err := GetAmmPoolBalance(ammPool, assetDenom)
+	balance, err := ammPool.GetAmmPoolBalance(assetDenom)
 	if err != nil {
 		return false
 	}

@@ -24,6 +24,55 @@ func (_m *AmmKeeper) EXPECT() *AmmKeeper_Expecter {
 	return &AmmKeeper_Expecter{mock: &_m.Mock}
 }
 
+// AddToPoolBalance provides a mock function with given fields: ctx, pool, addShares, coins
+func (_m *AmmKeeper) AddToPoolBalance(ctx types.Context, pool *ammtypes.Pool, addShares math.Int, coins types.Coins) error {
+	ret := _m.Called(ctx, pool, addShares, coins)
+
+	if len(ret) == 0 {
+		panic("no return value specified for AddToPoolBalance")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, *ammtypes.Pool, math.Int, types.Coins) error); ok {
+		r0 = rf(ctx, pool, addShares, coins)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// AmmKeeper_AddToPoolBalance_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AddToPoolBalance'
+type AmmKeeper_AddToPoolBalance_Call struct {
+	*mock.Call
+}
+
+// AddToPoolBalance is a helper method to define mock.On call
+//   - ctx types.Context
+//   - pool *ammtypes.Pool
+//   - addShares math.Int
+//   - coins types.Coins
+func (_e *AmmKeeper_Expecter) AddToPoolBalance(ctx interface{}, pool interface{}, addShares interface{}, coins interface{}) *AmmKeeper_AddToPoolBalance_Call {
+	return &AmmKeeper_AddToPoolBalance_Call{Call: _e.mock.On("AddToPoolBalance", ctx, pool, addShares, coins)}
+}
+
+func (_c *AmmKeeper_AddToPoolBalance_Call) Run(run func(ctx types.Context, pool *ammtypes.Pool, addShares math.Int, coins types.Coins)) *AmmKeeper_AddToPoolBalance_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*ammtypes.Pool), args[2].(math.Int), args[3].(types.Coins))
+	})
+	return _c
+}
+
+func (_c *AmmKeeper_AddToPoolBalance_Call) Return(_a0 error) *AmmKeeper_AddToPoolBalance_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *AmmKeeper_AddToPoolBalance_Call) RunAndReturn(run func(types.Context, *ammtypes.Pool, math.Int, types.Coins) error) *AmmKeeper_AddToPoolBalance_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CalcInAmtGivenOut provides a mock function with given fields: ctx, poolId, oracle, snapshot, tokensOut, tokenInDenom, swapFee
 func (_m *AmmKeeper) CalcInAmtGivenOut(ctx types.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut types.Coins, tokenInDenom string, swapFee types.Dec) (types.Coin, types.Dec, error) {
 	ret := _m.Called(ctx, poolId, oracle, snapshot, tokensOut, tokenInDenom, swapFee)
@@ -580,6 +629,55 @@ func (_c *AmmKeeper_IterateLiquidityPools_Call) Return() *AmmKeeper_IterateLiqui
 }
 
 func (_c *AmmKeeper_IterateLiquidityPools_Call) RunAndReturn(run func(types.Context, func(ammtypes.Pool) bool)) *AmmKeeper_IterateLiquidityPools_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RemoveFromPoolBalance provides a mock function with given fields: ctx, pool, removeShares, coins
+func (_m *AmmKeeper) RemoveFromPoolBalance(ctx types.Context, pool *ammtypes.Pool, removeShares math.Int, coins types.Coins) error {
+	ret := _m.Called(ctx, pool, removeShares, coins)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RemoveFromPoolBalance")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Context, *ammtypes.Pool, math.Int, types.Coins) error); ok {
+		r0 = rf(ctx, pool, removeShares, coins)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// AmmKeeper_RemoveFromPoolBalance_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RemoveFromPoolBalance'
+type AmmKeeper_RemoveFromPoolBalance_Call struct {
+	*mock.Call
+}
+
+// RemoveFromPoolBalance is a helper method to define mock.On call
+//   - ctx types.Context
+//   - pool *ammtypes.Pool
+//   - removeShares math.Int
+//   - coins types.Coins
+func (_e *AmmKeeper_Expecter) RemoveFromPoolBalance(ctx interface{}, pool interface{}, removeShares interface{}, coins interface{}) *AmmKeeper_RemoveFromPoolBalance_Call {
+	return &AmmKeeper_RemoveFromPoolBalance_Call{Call: _e.mock.On("RemoveFromPoolBalance", ctx, pool, removeShares, coins)}
+}
+
+func (_c *AmmKeeper_RemoveFromPoolBalance_Call) Run(run func(ctx types.Context, pool *ammtypes.Pool, removeShares math.Int, coins types.Coins)) *AmmKeeper_RemoveFromPoolBalance_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(*ammtypes.Pool), args[2].(math.Int), args[3].(types.Coins))
+	})
+	return _c
+}
+
+func (_c *AmmKeeper_RemoveFromPoolBalance_Call) Return(_a0 error) *AmmKeeper_RemoveFromPoolBalance_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *AmmKeeper_RemoveFromPoolBalance_Call) RunAndReturn(run func(types.Context, *ammtypes.Pool, math.Int, types.Coins) error) *AmmKeeper_RemoveFromPoolBalance_Call {
 	_c.Call.Return(run)
 	return _c
 }

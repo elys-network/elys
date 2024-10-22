@@ -10,7 +10,6 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -91,12 +90,9 @@ func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address sdk.AccAddress) bool
 
 // Swap estimation using amm CalcInAmtGivenOut function
 func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error) {
-	pool, found := k.GetPool(ctx, ammPool.PoolId)
+	_, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
 		return math.Int{}, fmt.Errorf("pool %d not found", ammPool.PoolId)
-	}
-	if !pool.Enabled {
-		return sdk.ZeroInt(), errorsmod.Wrap(types.ErrLeveragelpDisabled, fmt.Sprintf("pool %d", ammPool.PoolId))
 	}
 
 	tokensOut := sdk.NewCoins(tokenOutAmount)

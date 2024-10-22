@@ -28,8 +28,8 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 			swapFee:           sdk.NewDecWithPrec(1, 2), // 1%
 			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOutMin:       sdk.ZeroInt(),
-			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9704),
-			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
+			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9802),
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009802)},
 			expPass:           true,
 		},
 		{

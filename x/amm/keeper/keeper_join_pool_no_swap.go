@@ -79,9 +79,14 @@ func (k Keeper) JoinPoolNoSwap(
 		}
 
 		err = k.applyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensIn)
-
-		// Increase liquidty amount
-		k.RecordTotalLiquidityIncrease(ctx, tokensIn)
+		if err != nil {
+			return nil, math.Int{}, err
+		}
+		// Increase liquidity amount
+		err = k.RecordTotalLiquidityIncrease(ctx, tokensIn)
+		if err != nil {
+			return nil, math.Int{}, err
+		}
 
 		return tokensIn, sharesOut, err
 	}
@@ -100,9 +105,15 @@ func (k Keeper) JoinPoolNoSwap(
 	}
 
 	err = k.applyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokenInMaxs)
+	if err != nil {
+		return nil, math.Int{}, err
+	}
 
-	// Increase liquidty amount
-	k.RecordTotalLiquidityIncrease(ctx, tokenInMaxs)
+	// Increase liquidity amount
+	err = k.RecordTotalLiquidityIncrease(ctx, tokenInMaxs)
+	if err != nil {
+		return nil, math.Int{}, err
+	}
 
 	return tokenInMaxs, sharesOut, err
 }

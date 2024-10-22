@@ -1,16 +1,21 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/leveragelp/keeper"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (suite *KeeperTestSuite) TestRemove_Pool() {
 	suite.ResetSuite()
 	suite.SetupCoinPrices(suite.ctx)
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
+	asset1 := ptypes.ATOM
+	asset2 := ptypes.BaseCurrency
+	initializeForOpen(suite, addresses, asset1, asset2)
 	testCases := []struct {
 		name                 string
 		input                *types.MsgRemovePool
@@ -36,7 +41,7 @@ func (suite *KeeperTestSuite) TestRemove_Pool() {
 			expectErr:    true,
 			expectErrMsg: "pool leverage amount is greater than zero",
 			prerequisiteFunction: func() {
-				pool := types.NewPool(1)
+				pool := types.NewPool(1, math.LegacyMustNewDecFromStr("10"))
 				pool.LeveragedLpAmount = sdk.OneInt()
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
@@ -49,7 +54,7 @@ func (suite *KeeperTestSuite) TestRemove_Pool() {
 			expectErr:    false,
 			expectErrMsg: "",
 			prerequisiteFunction: func() {
-				pool := types.NewPool(1)
+				pool := types.NewPool(1, math.LegacyMustNewDecFromStr("10"))
 				pool.LeveragedLpAmount = sdk.ZeroInt()
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 			},
@@ -59,7 +64,7 @@ func (suite *KeeperTestSuite) TestRemove_Pool() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 			_, err := msgServer.RemovePool(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
