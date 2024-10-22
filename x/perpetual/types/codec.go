@@ -15,6 +15,8 @@ import (
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgOpen{}, "perpetual/MsgOpen")
 	legacy.RegisterAminoMsg(cdc, &MsgClose{}, "perpetual/MsgClose")
+	legacy.RegisterAminoMsg(cdc, &MsgBrokerOpen{}, "perpetual/MsgBrokerOpen")
+	legacy.RegisterAminoMsg(cdc, &MsgBrokerClose{}, "perpetual/MsgBrokerClose")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "perpetual/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgWhitelist{}, "perpetual/MsgWhitelist")
 	legacy.RegisterAminoMsg(cdc, &MsgDewhitelist{}, "perpetual/MsgDewhitelist")
@@ -28,9 +30,12 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgOpen{},
 		&MsgClose{},
+		&MsgBrokerOpen{},
+		&MsgBrokerClose{},
 		&MsgUpdateParams{},
 		&MsgWhitelist{},
 		&MsgDewhitelist{},
+		&MsgClosePositions{},
 		&MsgUpdateStopLoss{},
 		&MsgUpdateTakeProfitPrice{},
 	)

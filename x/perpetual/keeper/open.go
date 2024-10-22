@@ -1,7 +1,10 @@
 package keeper
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -29,31 +32,71 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, msg.Position.String())
 	}
 
-	if err := k.OpenChecker.CheckUserAuthorization(ctx, msg); err != nil {
+	params := k.GetParams(ctx)
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, msg.TradingAsset)
+	if err != nil {
+		return nil, err
+	}
+	ratio := msg.TakeProfitPrice.Quo(tradingAssetPrice)
+	if msg.Position == types.Position_LONG {
+		if ratio.LT(params.MinimumLongTakeProfitPriceRatio) || ratio.GT(params.MaximumLongTakeProfitPriceRatio) {
+			return nil, fmt.Errorf("take profit price should be between %s and %s times of current market price for long (current ratio: %s)", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String(), ratio.String())
+		}
+		if msg.StopLossPrice.GTE(tradingAssetPrice) {
+			return nil, fmt.Errorf("stop loss price cannot be greater than equal to tradingAssetPrice for long")
+		}
+	}
+	if msg.Position == types.Position_SHORT {
+		if ratio.GT(params.MaximumShortTakeProfitPriceRatio) {
+			return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short (current ratio: %s)", params.MaximumShortTakeProfitPriceRatio.String(), ratio.String())
+		}
+		if msg.StopLossPrice.LTE(tradingAssetPrice) {
+			return nil, fmt.Errorf("stop loss price cannot be less than equal to tradingAssetPrice for short")
+		}
+	}
+
+	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
 
 	// check if existing mtp to consolidate
-	existingMtp := k.OpenChecker.CheckSameAssetPosition(ctx, msg)
+	existingMtp := k.CheckSameAssetPosition(ctx, msg)
 
-	if err := k.OpenChecker.CheckMaxOpenPositions(ctx); err != nil {
+	if existingMtp == nil && msg.Leverage.Equal(math.LegacyOneDec()) {
+		return nil, fmt.Errorf("cannot open new position with leverage 1")
+	}
+
+	if err := k.CheckMaxOpenPositions(ctx); err != nil {
 		return nil, err
 	}
 
+	poolId := msg.PoolId
 	// Get pool id, amm pool, and perpetual pool
-	poolId, ammPool, pool, err := k.OpenChecker.PreparePools(ctx, msg.Collateral.Denom, msg.TradingAsset)
+	ammPool, err := k.GetAmmPool(ctx, poolId)
 	if err != nil {
-		return nil, err
+		return nil, errorsmod.Wrapf(err, "amm pool not found for pool %d", poolId)
 	}
+
 	if !ammPool.PoolParams.UseOracle {
 		return nil, types.ErrPoolHasToBeOracle
 	}
 
-	if err := k.OpenChecker.CheckPoolHealth(ctx, poolId); err != nil {
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
+	}
+
+	if err = k.CheckLowPoolHealth(ctx, poolId); err != nil {
 		return nil, err
 	}
 
-	mtp, err := k.OpenChecker.OpenDefineAssets(ctx, poolId, msg, baseCurrency, isBroker)
+	mtp, err := k.OpenDefineAssets(ctx, poolId, msg, baseCurrency, isBroker)
+	if err != nil {
+		return nil, err
+	}
+
+	// calc and update open price
+	err = k.UpdateOpenPrice(ctx, mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
@@ -62,17 +105,21 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return k.OpenConsolidate(ctx, existingMtp, mtp, msg, baseCurrency)
 	}
 
-	// calc and update open price
-	err = k.OpenChecker.UpdateOpenPrice(ctx, mtp, ammPool, baseCurrency)
-	if err != nil {
+	if err = k.CheckLowPoolHealth(ctx, poolId); err != nil {
 		return nil, err
 	}
 
-	k.OpenChecker.EmitOpenEvent(ctx, mtp)
+	k.EmitOpenEvent(ctx, mtp)
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
-		err := k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, creator)
+		// pool values has been updated
+		pool, found = k.GetPool(ctx, poolId)
+		if !found {
+			return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
+		}
+
+		err = k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, creator)
 		if err != nil {
 			return nil, err
 		}

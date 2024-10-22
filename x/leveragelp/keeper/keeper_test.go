@@ -125,24 +125,6 @@ func (suite *KeeperTestSuite) SetSafetyFactor(value sdk.Dec) {
 	}
 }
 
-func (suite *KeeperTestSuite) EnablePool(poolId uint64) {
-	pool, found := suite.app.LeveragelpKeeper.GetPool(suite.ctx, poolId)
-	if !found {
-		panic("pool not found")
-	}
-	pool.Enabled = true
-	suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
-}
-
-func (suite *KeeperTestSuite) DisablePool(poolId uint64) {
-	pool, found := suite.app.LeveragelpKeeper.GetPool(suite.ctx, poolId)
-	if !found {
-		panic("pool not found")
-	}
-	pool.Enabled = false
-	suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
-}
-
 func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
 }
@@ -286,36 +268,6 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 			},
 		},
 		{
-			"pool not enabled",
-			sdk.NewCoin("uusdc", sdk.NewInt(100)),
-			"uusdc",
-			ammtypes.Pool{PoolId: 1},
-			true,
-			"pool 1: leveragelp disabled pool",
-			func() {
-				pool := types.NewPool(1)
-				pool.Enabled = false
-				leveragelp.SetPool(ctx, pool)
-			},
-			func() {
-			},
-		},
-		{
-			"amm pool not created",
-			sdk.NewCoin("uusdc", sdk.NewInt(100).MulRaw(1000_000_000_000)),
-			"uusdc",
-			ammtypes.Pool{PoolId: 1},
-			true,
-			"invalid pool",
-			func() {
-				pool := types.NewPool(1)
-				pool.Enabled = true
-				leveragelp.SetPool(ctx, pool)
-			},
-			func() {
-			},
-		},
-		{
 			"amm pool not found in transient store ",
 			sdk.NewCoin("uusdc", sdk.NewInt(100).MulRaw(1000_000_000_000)),
 			"uusdc",
@@ -373,7 +325,7 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 		{
 			"amm pool shares is  0",
 			func() {
-				_ = app.AmmKeeper.SetPool(ctx, ammPool)
+				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
 			sdk.OneDec(),
 		},
@@ -381,7 +333,7 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 			"success",
 			func() {
 				ammPool.TotalShares = sdk.NewCoin("shares", totalShares)
-				_ = app.AmmKeeper.SetPool(ctx, ammPool)
+				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
 			(totalShares.Sub(leveragelpAmount)).ToLegacyDec().QuoInt(totalShares),
 		},

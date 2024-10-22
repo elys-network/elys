@@ -68,7 +68,7 @@ func TestCancelPendingPerpertualOrders(t *testing.T) {
 	tmpFile, err := ioutil.TempFile("", "ids.json")
 	require.NoError(t, err)
 	defer os.Remove(tmpFile.Name())
-	
+
 	validIds := []uint64{}
 	validJson, err := json.Marshal(validIds)
 	require.NoError(t, err)

@@ -1,80 +1,47 @@
 package keeper_test
 
 import (
-	"errors"
-	"testing"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
-	"github.com/elys-network/elys/x/perpetual/types/mocks"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestCheckUserAuthorization_WhitelistingEnabledUserWhitelisted(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.AuthorizationChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		AuthorizationChecker: mockChecker,
-	}
-
-	ctx := sdk.Context{} // mock or setup a context
+func (suite *PerpetualKeeperTestSuite) TestCheckUserAuthorization() {
 	msg := &types.MsgOpen{Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5"}
 
-	// Mock behavior
-	mockChecker.On("IsWhitelistingEnabled", ctx).Return(true)
-	mockChecker.On("CheckIfWhitelisted", ctx, sdk.MustAccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")).Return(true)
-
-	err := k.CheckUserAuthorization(ctx, msg)
-
-	// Expect no error
-	assert.Nil(t, err)
-	mockChecker.AssertExpectations(t)
-}
-
-func TestCheckUserAuthorization_WhitelistingEnabledUserNotWhitelisted(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.AuthorizationChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		AuthorizationChecker: mockChecker,
+	testCases := []struct {
+		name                 string
+		expectErrMsg         string
+		prerequisiteFunction func()
+	}{
+		{
+			"user not whitelisted",
+			types.ErrUnauthorised.Error(),
+			func() {
+				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				params.WhitelistingEnabled = true
+				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+				suite.Require().NoError(err)
+			},
+		},
+		{
+			"success",
+			"",
+			func() {
+				suite.app.PerpetualKeeper.WhitelistAddress(suite.ctx, sdk.MustAccAddressFromBech32(msg.Creator))
+			},
+		},
 	}
 
-	ctx := sdk.Context{} // mock or setup a context
-	msg := &types.MsgOpen{Creator: "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5"}
-
-	// Mock behavior
-	mockChecker.On("IsWhitelistingEnabled", ctx).Return(true)
-	mockChecker.On("CheckIfWhitelisted", ctx, sdk.MustAccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")).Return(false)
-
-	err := k.CheckUserAuthorization(ctx, msg)
-
-	// Expect an unauthorized error
-	assert.True(t, errors.Is(err, types.ErrUnauthorised))
-	mockChecker.AssertExpectations(t)
-}
-
-func TestCheckUserAuthorization_WhitelistingDisabled(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.AuthorizationChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		AuthorizationChecker: mockChecker,
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			err := suite.app.PerpetualKeeper.CheckUserAuthorization(suite.ctx, msg)
+			if tc.expectErrMsg != "" {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+			}
+		})
 	}
-
-	ctx := sdk.Context{}                      // mock or setup a context
-	msg := &types.MsgOpen{Creator: "anyUser"} // Because whitelisting is off, user status doesn't matter.
-
-	// Mock behavior
-	mockChecker.On("IsWhitelistingEnabled", ctx).Return(false)
-
-	err := k.CheckUserAuthorization(ctx, msg)
-
-	// Expect no error
-	assert.Nil(t, err)
-	mockChecker.AssertExpectations(t)
 }

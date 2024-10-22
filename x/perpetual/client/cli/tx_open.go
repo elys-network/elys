@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -13,13 +14,13 @@ import (
 
 func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "open [position] [leverage] [trading-asset] [collateral] [stop-loss-price] [flags]",
+		Use:   "open [position] [leverage] [pool-id] [trading-asset] [collateral] [stop-loss-price] [flags]",
 		Short: "Open perpetual position",
 		Example: `Infinte profitability:
 elysd tx perpetual open long 5 uatom 100000000uusdc 100.0 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 Finite profitability:
 elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
-		Args: cobra.ExactArgs(5),
+		Args: cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -38,9 +39,14 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --f
 				return err
 			}
 
-			argTradingAsset := args[2]
+			argPoolId, err := strconv.ParseUint(args[2], 10, 64)
+			if err != nil {
+				return err
+			}
 
-			argCollateral, err := sdk.ParseCoinNormalized(args[3])
+			argTradingAsset := args[3]
+
+			argCollateral, err := sdk.ParseCoinNormalized(args[4])
 			if err != nil {
 				return err
 			}
@@ -50,7 +56,7 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --f
 				return err
 			}
 
-			stopLossPrice, err := sdk.NewDecFromStr(args[4])
+			stopLossPrice, err := sdk.NewDecFromStr(args[5])
 			if err != nil {
 				return err
 			}
@@ -62,16 +68,14 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --f
 					return errors.New("invalid take profit price")
 				}
 			} else {
-				takeProfitPrice, err = sdk.NewDecFromStr(types.TakeProfitPriceDefault)
-				if err != nil {
-					return errors.New("failed to set default take profit price")
-				}
+				takeProfitPrice = types.TakeProfitPriceDefault
 			}
 
 			msg := types.NewMsgOpen(
 				signer.String(),
 				argPosition,
 				argLeverage,
+				argPoolId,
 				argTradingAsset,
 				argCollateral,
 				takeProfitPrice,
