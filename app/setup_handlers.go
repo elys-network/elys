@@ -42,6 +42,10 @@ func setUpgradeHandler(app *ElysApp) {
 					if err != nil {
 						return nil, err
 					}
+					err = app.PerpetualKeeper.OnLeverageLpEnablePool(ctx, ammPool)
+					if err != nil {
+						return nil, err
+					}
 				}
 			}
 
