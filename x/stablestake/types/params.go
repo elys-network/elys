@@ -23,7 +23,7 @@ var (
 	KeyInterestRateDecrease = []byte("InterestRateDecrease")
 	KeyHealthGainFactor     = []byte("HealthGainFactor")
 	KeyTotalValue           = []byte("TotalValue")
-	KeyMaxLeveragePercent   = []byte("MaxLeveragePercent")
+	KeyMaxLeverageRatio     = []byte("MaxLeverageRatio")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -56,7 +56,7 @@ func NewParams(
 		InterestRateDecrease: interestRateDecrease,
 		HealthGainFactor:     healthGainFactor,
 		TotalValue:           totalValue,
-		MaxLeveragePercent:   MaxLeveragePercent,
+		MaxLeverageRatio:     MaxLeveragePercent,
 	}
 }
 
@@ -73,7 +73,7 @@ func DefaultParams() Params {
 		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
 		HealthGainFactor:     math.LegacyOneDec(),
 		TotalValue:           math.ZeroInt(),
-		MaxLeveragePercent:   math.LegacyMustNewDecFromStr("0.7"),
+		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
 	}
 }
 
@@ -90,7 +90,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyHealthGainFactor, &p.HealthGainFactor, validateHealthGainFactor),
 		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
 		paramtypes.NewParamSetPair(KeyTotalValue, &p.TotalValue, validateTotalValue),
-		paramtypes.NewParamSetPair(KeyMaxLeveragePercent, &p.MaxLeveragePercent, validateMaxLeveragePercent),
+		paramtypes.NewParamSetPair(KeyMaxLeverageRatio, &p.MaxLeverageRatio, validateMaxLeverageRatio),
 	}
 }
 
@@ -127,7 +127,7 @@ func (p Params) Validate() error {
 	if err := validateTotalValue(p.TotalValue); err != nil {
 		return err
 	}
-	if err := validateMaxLeveragePercent(p.MaxLeveragePercent); err != nil {
+	if err := validateMaxLeverageRatio(p.MaxLeverageRatio); err != nil {
 		return err
 	}
 
@@ -299,7 +299,7 @@ func validateTotalValue(i interface{}) error {
 	return nil
 }
 
-func validateMaxLeveragePercent(i interface{}) error {
+func validateMaxLeverageRatio(i interface{}) error {
 	v, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
