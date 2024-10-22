@@ -102,3 +102,72 @@ func TestLiquidVestWithExceed(t *testing.T) {
 	_, err = msgServer.VestLiquid(ctx, vestMsg)
 	require.Equal(t, err.Error(), errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("unable to send deposit tokens: %v", edenToken)).Error())
 }
+
+// TestKeeper_VestLiquid tests the VestLiquid function with invalid denom
+func TestKeeper_VestLiquidWithInvalidDenom(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+
+	// Mint 100ueden
+	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)))
+
+	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, edenToken)
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], edenToken)
+	require.NoError(t, err)
+
+	creator := addr[0]
+	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	vestingInfos := []*types.VestingInfo{
+		{
+			BaseDenom:      "invalid_denom",
+			VestingDenom:   ptypes.Elys,
+			NumBlocks:      10,
+			VestNowFactor:  sdk.NewInt(90),
+			NumMaxVestings: 10,
+		},
+	}
+
+	params := types.Params{
+		VestingInfos: vestingInfos,
+	}
+
+	keeper.SetParams(ctx, params)
+
+	// Create a vesting message
+	vestMsg := &types.MsgVestLiquid{
+		Creator: creator.String(),
+		Denom:   ptypes.Eden,
+		Amount:  sdk.NewInt(100),
+	}
+
+	// Set up the commitments for the creator
+	commitments := types.Commitments{
+		Creator: creator.String(),
+		CommittedTokens: []*types.CommittedTokens{
+			{
+				Denom:  ptypes.Eden,
+				Amount: sdk.NewInt(50),
+			},
+		},
+		Claimed: sdk.Coins{
+			{
+				Denom:  ptypes.Eden,
+				Amount: sdk.NewInt(150),
+			},
+		},
+	}
+	keeper.SetCommitments(ctx, commitments)
+
+	// Set assetprofile entry for denom
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true})
+
+	// Execute the Vest function
+	_, err = msgServer.VestLiquid(ctx, vestMsg)
+	require.Error(t, err)
+}
