@@ -16,8 +16,10 @@ func (k Keeper) Apr(goCtx context.Context, req *types.QueryAprRequest) (*types.Q
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Process the query
-	_ = ctx
+	apr, err := k.CalculateApr(ctx, req)
+	if err != nil {
+		return nil, err
+	}
 
-	return &types.QueryAprResponse{}, nil
+	return &types.QueryAprResponse{Apr: apr}, nil
 }
