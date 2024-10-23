@@ -41,23 +41,15 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency
 		return nil, math.ZeroInt(), errorsmod.Wrapf(err, "error handling funding fee")
 	}
 
-	if mtp.Position == types.Position_LONG {
-		maxAmountToCloseWhole := mtp.Custody
-		if msg.Amount.GT(maxAmountToCloseWhole) {
-			return nil, math.ZeroInt(), errorsmod.Wrap(types.ErrInvalidCloseSize, fmt.Sprintf("amount cannot be more than %s", mtp.Custody.String()))
-		}
-	} else {
-		maxAmountToCloseWhole := mtp.Liabilities
-		if msg.Amount.GT(maxAmountToCloseWhole) {
-			return nil, math.ZeroInt(), errorsmod.Wrap(types.ErrInvalidCloseSize, fmt.Sprintf("amount cannot be more than %s", mtp.Custody.String()))
-		}
-	}
-
-	// Should be declared after SettleMTPBorrowInterestUnpaidLiability
+	// Should be declared after SettleMTPBorrowInterestUnpaidLiability and settling funding
 	closingRatio := msg.Amount.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())
 	if mtp.Position == types.Position_SHORT {
 		closingRatio = msg.Amount.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
 	}
+	if closingRatio.GT(math.LegacyOneDec()) {
+		closingRatio = math.LegacyOneDec()
+	}
+
 	// closingAmount is what user is trying to close
 	closingAmount := mtp.Custody.ToLegacyDec().Mul(closingRatio).TruncateInt()
 
@@ -67,6 +59,8 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency
 		return nil, math.ZeroInt(), err
 	}
 
+	// it get sets in KV store in Repay function
+	mtp.Collateral = mtp.Collateral.ToLegacyDec().Mul(math.LegacyOneDec().Sub(closingRatio)).TruncateInt()
 	// Estimate swap and repay
 	repayAmt, err := k.EstimateAndRepay(ctx, &mtp, &pool, &ammPool, baseCurrency, closingRatio)
 	if err != nil {

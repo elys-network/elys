@@ -74,7 +74,7 @@ func createNPoolResponse(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.
 }
 
 func TestPoolGet(t *testing.T) {
-	keeper, ctx, _ := keepertest.PerpetualKeeper(t)
+	keeper, ctx := keepertest.PerpetualKeeper(t)
 	items := createNPool(keeper, ctx, 10)
 	for _, item := range items {
 		rst, found := keeper.GetPool(ctx,
@@ -89,7 +89,7 @@ func TestPoolGet(t *testing.T) {
 }
 
 func TestPoolRemove(t *testing.T) {
-	keeper, ctx, _ := keepertest.PerpetualKeeper(t)
+	keeper, ctx := keepertest.PerpetualKeeper(t)
 	items := createNPool(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemovePool(ctx,
@@ -103,7 +103,7 @@ func TestPoolRemove(t *testing.T) {
 }
 
 func TestPoolGetAll(t *testing.T) {
-	keeper, ctx, _ := keepertest.PerpetualKeeper(t)
+	keeper, ctx := keepertest.PerpetualKeeper(t)
 	items := createNPool(keeper, ctx, 10)
 	require.ElementsMatch(t,
 		nullify.Fill(items),

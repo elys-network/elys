@@ -50,7 +50,7 @@ func (msg *MsgClose) ValidateBasic() error {
 		return ErrInvalidAmount
 	}
 
-	if msg.Amount.IsNegative() {
+	if msg.Amount.IsNegative() || msg.Amount.IsZero() {
 		return ErrInvalidAmount
 	}
 	return nil
