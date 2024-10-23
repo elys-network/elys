@@ -206,27 +206,11 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErr:    true,
 			expectErrMsg: "leveragelp not enabled for pool",
 			prerequisiteFunction: func() {
-				pool := types.NewPool(2)
+				pool := types.NewPool(2, sdk.NewDec(60))
 				pool.Enabled = false
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 				amm_pool := ammtypes.Pool{PoolId: 2, TotalShares: sdk.Coin{Amount: sdk.NewInt(100)}}
 				suite.app.AmmKeeper.SetPool(suite.ctx, amm_pool)
-			},
-		},
-		{"Pool Disabled",
-			&types.MsgOpen{
-				Creator:          addresses[0].String(),
-				CollateralAsset:  ptypes.BaseCurrency,
-				CollateralAmount: sdk.NewInt(1000),
-				AmmPoolId:        1,
-				Leverage:         sdk.MustNewDecFromStr("2.0"),
-				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
-			},
-			true,
-			types.ErrPositionDisabled.Wrapf("poolId: %d", 1).Error(),
-			func() {
-				suite.SetMaxOpenPositions(1000)
-				suite.DisablePool(1)
 			},
 		},
 		{"Collateral asset not equal to base currency",

@@ -69,28 +69,6 @@ func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found b
 	return val, true
 }
 
-func (k Keeper) GetAllLegacyPools(ctx sdk.Context) []types.LegacyPool {
-	var pools []types.LegacyPool
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		var pool types.LegacyPool
-		bytesValue := iterator.Value()
-		err := k.cdc.Unmarshal(bytesValue, &pool)
-		if err == nil {
-			pools = append(pools, pool)
-		}
-	}
-	return pools
-}
-
 func (k Keeper) DeleteLegacyPool(ctx sdk.Context,  poolId uint64) error {
 	store := ctx.KVStore(k.storeKey)
 	key := types.PoolKey(poolId)
