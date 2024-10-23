@@ -33,17 +33,6 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	return params
 }
 
-func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.KeyPrefix(types.ParamsKey))
-	if bz == nil {
-		return params
-	}
-
-	k.cdc.MustUnmarshal(bz, &params)
-	return params
-}
-
 func (k Keeper) GetMaxLeverageParam(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).LeverageMax
 }
@@ -110,65 +99,12 @@ func (k Keeper) GetSafetyFactor(ctx sdk.Context) sdk.Dec {
 	return k.GetParams(ctx).SafetyFactor
 }
 
-func (k Keeper) GetEnabledPools(ctx sdk.Context) []uint64 {
-	poolIds := make([]uint64, 0)
-	pools := k.GetAllPools(ctx)
-	for _, p := range pools {
-		if p.Enabled {
-			poolIds = append(poolIds, p.AmmPoolId)
-		}
-	}
-
-	return poolIds
-}
-
-func (k Keeper) SetEnabledPools(ctx sdk.Context, pools []uint64) {
-	for _, poolId := range pools {
-		pool, found := k.GetPool(ctx, poolId)
-		if !found {
-			pool = types.NewPool(poolId)
-			k.SetPool(ctx, pool)
-		}
-		pool.Enabled = true
-
-		k.SetPool(ctx, pool)
-	}
-}
-
-func (k Keeper) IsPoolEnabled(ctx sdk.Context, poolId uint64) bool {
-	pool, found := k.GetPool(ctx, poolId)
-	if !found {
-		pool = types.NewPool(poolId)
-		k.SetPool(ctx, pool)
-	}
-
-	return pool.Enabled
-}
-
-func (k Keeper) IsPoolClosed(ctx sdk.Context, poolId uint64) bool {
-	pool, found := k.GetPool(ctx, poolId)
-	if !found {
-		pool = types.NewPool(poolId)
-		k.SetPool(ctx, pool)
-	}
-
-	return pool.Closed
-}
-
 func (k Keeper) IsWhitelistingEnabled(ctx sdk.Context) bool {
 	return k.GetParams(ctx).WhitelistingEnabled
 }
 
-func (k Keeper) GetTakeProfitBorrowInterestRateMin(ctx sdk.Context) sdk.Dec {
-	return k.GetParams(ctx).TakeProfitBorrowInterestRateMin
-}
-
-func (k Keeper) GetSwapFee(ctx sdk.Context) sdk.Dec {
-	return k.GetParams(ctx).SwapFee
-}
-
-func (k Keeper) GetEpochLength(ctx sdk.Context) int64 {
-	return k.GetParams(ctx).EpochLength
+func (k Keeper) GetPerpetualSwapFee(ctx sdk.Context) sdk.Dec {
+	return k.GetParams(ctx).PerpetualSwapFee
 }
 
 func (k Keeper) GetMaxLimitOrder(ctx sdk.Context) int64 {

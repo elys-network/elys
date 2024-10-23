@@ -6,20 +6,16 @@ import (
 )
 
 func (m Migrator) V13Migration(ctx sdk.Context) error {
-	pools := m.keeper.GetAllLegacyPools(ctx)
+	legacyPools := m.keeper.GetAllLegacyPools(ctx)
 
-	for _, pool := range pools {
-		new_pool := types.Pool{
-			AmmPoolId: pool.AmmPoolId,
-			Health: pool.Health,
-			Enabled: pool.Enabled,
-			Closed: pool.Closed,
-			LeveragedLpAmount: pool.LeveragedLpAmount,
-			LeverageMax: pool.LeverageMax,
-			MaxLeveragelpPercent: sdk.NewDec(60),
+	for _, legacyPool := range legacyPools {
+		newPool := types.Pool{
+			AmmPoolId:         legacyPool.AmmPoolId,
+			Health:            legacyPool.Health,
+			LeveragedLpAmount: legacyPool.LeveragedLpAmount,
+			LeverageMax:       legacyPool.LeverageMax,
 		}
-		m.keeper.SetPool(ctx, new_pool)
-		m.keeper.DeleteLegacyPool(ctx, pool.AmmPoolId)
+		m.keeper.SetPool(ctx, newPool)
 	}
 
 	return nil

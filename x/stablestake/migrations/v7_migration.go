@@ -6,9 +6,10 @@ import (
 )
 
 func (m Migrator) V7Migration(ctx sdk.Context) error {
-	oldParams := m.keeper.GetParams(ctx)
+	oldParams := m.keeper.GetLegacyParams(ctx)
 	params := types.DefaultParams()
 	params.TotalValue = oldParams.TotalValue
+	params.InterestRate = oldParams.InterestRate
 	m.keeper.SetParams(ctx, params)
 	return nil
 }

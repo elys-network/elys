@@ -32,7 +32,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
     currentHeight := ctx.BlockHeight()
     pools := k.GetAllPools(ctx)
     for _, pool := range pools {
-        ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId, "")
+        ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
         if err != nil {
             ctx.Logger().Error(errorsmod.Wrap(err, fmt.Sprintf("error getting amm pool: %d", pool.AmmPoolId)).Error())
             continue

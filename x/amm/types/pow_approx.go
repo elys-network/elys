@@ -57,6 +57,9 @@ func computeLn(x sdk.Dec) (result sdk.Dec, err error) {
 	if x.Equal(sdk.OneDec()) {
 		return sdk.ZeroDec(), nil
 	}
+	if x.Equal(twoDec) {
+		return ln2, nil
+	}
 
 	// To bring x is in the range [0.5, 2]
 	// we use ln(x) = k * ln(2) + ln(z), where z is in [0.5, 2]

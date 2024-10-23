@@ -2,10 +2,13 @@ package keeper_test
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
@@ -58,7 +61,6 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 	if err != nil {
 		panic(err)
 	}
-	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId))
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
@@ -73,6 +75,16 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 	if err != nil {
 		panic(err)
 	}
+
+	addPoolMsg := types.MsgAddPool{
+		Authority: authtypes.NewModuleAddress("gov").String(),
+		Pool: types.AddPool{
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+		},
+	}
+	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &addPoolMsg)
+	suite.Require().NoError(err)
 }
 
 func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
@@ -161,8 +173,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErr:    true,
 			expectErrMsg: "pool does not exis",
 			prerequisiteFunction: func() {
-				pool := types.NewPool(2)
-				pool.Enabled = true
+				pool := types.NewPool(2, math.LegacyMustNewDecFromStr("10"))
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 				suite.SetMaxOpenPositions(20)
@@ -230,7 +241,6 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			true,
 			types.ErrOnlyBaseCurrencyAllowed.Error(),
 			func() {
-				suite.EnablePool(1)
 				suite.SetPoolThreshold(sdk.MustNewDecFromStr("0.2"))
 			},
 		},

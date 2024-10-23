@@ -6,84 +6,6 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/elys-network/elys/x/perpetual/types";
 
 // Params defines the parameters for the module.
-message LegacyParams {
-  option (gogoproto.goproto_stringer) = false;
-  string leverage_max = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string borrow_interest_rate_max = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string borrow_interest_rate_min = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string min_borrow_interest_amount = 4  [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string borrow_interest_rate_increase = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string borrow_interest_rate_decrease = 6 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string health_gain_factor = 7 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  int64 epoch_length = 8;
-  int64 max_open_positions = 9;
-  string pool_open_threshold = 10 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string force_close_fund_percentage = 11 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string force_close_fund_address = 12;
-  string incremental_borrow_interest_payment_fund_percentage = 13 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string incremental_borrow_interest_payment_fund_address = 14;
-  string safety_factor = 15 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  bool incremental_borrow_interest_payment_enabled = 16;
-  bool whitelisting_enabled = 17;
-  string invariant_check_epoch = 18;
-  string take_profit_borrow_interest_rate_min = 19 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string funding_fee_base_rate = 20 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string funding_fee_max_rate = 21 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string funding_fee_min_rate = 22 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string funding_fee_collection_address = 23;
-  string swap_fee = 24 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  int64 max_limit_order = 25;
-}
-
-// Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
   string leverage_max = 1 [
@@ -98,56 +20,62 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string min_borrow_interest_amount = 4  [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string borrow_interest_rate_increase = 5 [
+  string borrow_interest_rate_increase = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string borrow_interest_rate_decrease = 6 [
+  string borrow_interest_rate_decrease = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string health_gain_factor = 7 [
+  string health_gain_factor = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 epoch_length = 8;
-  int64 max_open_positions = 9;
-  string pool_open_threshold = 10 [
+  int64 max_open_positions = 7;
+  string pool_open_threshold = 8 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string force_close_fund_percentage = 11 [
+  string force_close_fund_percentage = 9 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string force_close_fund_address = 12;
-  string incremental_borrow_interest_payment_fund_percentage = 13 [
+  string force_close_fund_address = 10;
+  string incremental_borrow_interest_payment_fund_percentage = 11 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string incremental_borrow_interest_payment_fund_address = 14;
-  string safety_factor = 15 [
+  string incremental_borrow_interest_payment_fund_address = 12;
+  string safety_factor = 13 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  bool incremental_borrow_interest_payment_enabled = 16;
-  bool whitelisting_enabled = 17;
-  string invariant_check_epoch = 18;
-  string take_profit_borrow_interest_rate_min = 19 [
+  bool incremental_borrow_interest_payment_enabled = 14;
+  bool whitelisting_enabled = 15;
+  string perpetual_swap_fee = 16 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string swap_fee = 20 [
+  int64 max_limit_order = 17;
+  string fixed_funding_rate = 18 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  int64 max_limit_order = 21;
-  string fixed_funding_rate = 22 [
+  // minimum value for take_profit_price/current price for long, should be greater than 1
+  string minimum_long_take_profit_price_ratio = 19 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+  // max value for take_profit_price/current price for long, should be greater than 1
+  string maximum_long_take_profit_price_ratio = 20 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  // max value for take_profit_price/current price for short, should be less than 1
+  string maximum_short_take_profit_price_ratio = 21 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  // No need for minimumShortTakeProfitPriceRatio as it will be 0, checked in validate message
 }

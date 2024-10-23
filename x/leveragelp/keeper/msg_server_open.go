@@ -31,8 +31,8 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	borrowed := params.TotalValue.Sub(balance.Amount)
 	borrowRatio := sdk.ZeroDec()
 	if params.TotalValue.GT(sdk.ZeroInt()) {
-		borrowRatio = sdk.NewDecFromInt(borrowed).Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
-			Quo(sdk.NewDecFromInt(params.TotalValue)).Mul(sdk.NewDec(100))
+		borrowRatio = borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
+			Quo(params.TotalValue.ToLegacyDec())
 	}
 
 	var pool_leveragelp sdk.Dec

@@ -18,7 +18,6 @@ service Msg {
   rpc ClaimRewards   (MsgClaimRewards) returns (MsgClaimRewardsResponse);
   rpc UpdateParams   (MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc AddPool       (MsgAddPool) returns (MsgAddPoolResponse);
-  rpc UpdatePool    (MsgUpdatePool) returns (MsgUpdatePoolResponse);
   rpc RemovePool    (MsgRemovePool) returns (MsgRemovePoolResponse);
   rpc Whitelist      (MsgWhitelist) returns (MsgWhitelistResponse);
   rpc Dewhitelist    (MsgDewhitelist) returns (MsgDewhitelistResponse);
@@ -63,19 +62,6 @@ message MsgUpdateParams {
 
 message MsgUpdateParamsResponse {}
 
-message UpdatePool {
-  uint64 pool_id = 1;
-  bool   enabled = 2;
-  bool   closed = 3;
-}
-
-message MsgUpdatePool {
-  string     authority = 1;
-  UpdatePool update_pool = 2;
-}
-
-message MsgUpdatePoolResponse {}
-
 message MsgWhitelist {
   string authority = 1;
   string whitelisted_address = 2;
@@ -100,9 +86,7 @@ message MsgUpdateStopLossResponse {}
 
 message AddPool {
   uint64 amm_pool_id = 1;
-  bool   enabled = 2;
-  bool   closed = 3;
-  string leverage_max = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string leverage_max = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message MsgAddPool {

@@ -52,7 +52,7 @@ func (k msgServer) CancelSpotOrders(goCtx context.Context, msg *types.MsgCancelS
 		if spotOrder.OwnerAddress != msg.Creator {
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 		}
-		
+
 		k.RemovePendingSpotOrder(ctx, spotOrderId)
 		types.EmitCloseSpotOrderEvent(ctx, spotOrder)
 	}

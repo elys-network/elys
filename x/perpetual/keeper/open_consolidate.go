@@ -2,45 +2,75 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
 func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp *types.MTP, msg *types.MsgOpen, baseCurrency string) (*types.MsgOpenResponse, error) {
 	poolId := existingMtp.AmmPoolId
-	pool, found := k.OpenDefineAssetsChecker.GetPool(ctx, poolId)
+	ammPool, err := k.GetAmmPool(ctx, poolId)
+	if err != nil {
+		return nil, err
+	}
+
+	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, existingMtp)
+
+	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, newMtp.CustodyAsset)
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	if !k.OpenDefineAssetsChecker.IsPoolEnabled(ctx, poolId) {
-		return nil, errorsmod.Wrap(types.ErrMTPDisabled, existingMtp.CustodyAsset)
+	err = k.SettleFunding(ctx, existingMtp, &pool, ammPool)
+	if err != nil {
+		return nil, errorsmod.Wrapf(err, "error handling funding fee")
 	}
 
-	ammPool, err := k.OpenDefineAssetsChecker.GetAmmPool(ctx, poolId, existingMtp.CustodyAsset)
+	existingMtp, err = k.OpenConsolidateMergeMtp(ctx, existingMtp, newMtp)
 	if err != nil {
 		return nil, err
 	}
 
-	existingMtp, err = k.OpenConsolidateMergeMtp(ctx, poolId, existingMtp, newMtp, baseCurrency)
+	consolidatedOpenPrice := (existingMtp.Custody.ToLegacyDec().Mul(existingMtp.OpenPrice).Add(newMtp.Custody.ToLegacyDec().Mul(newMtp.OpenPrice))).Quo(existingMtp.Custody.ToLegacyDec().Add(newMtp.Custody.ToLegacyDec()))
+	existingMtp.OpenPrice = consolidatedOpenPrice
+
+	consolidatedTakeProfitPrice := existingMtp.Custody.ToLegacyDec().Mul(existingMtp.TakeProfitPrice).Add(newMtp.Custody.ToLegacyDec().Mul(newMtp.TakeProfitPrice)).Quo(existingMtp.Custody.ToLegacyDec().Add(newMtp.Custody.ToLegacyDec()))
+	existingMtp.TakeProfitPrice = consolidatedTakeProfitPrice
+
+	existingMtp.TakeProfitCustody = existingMtp.TakeProfitCustody.Add(newMtp.TakeProfitCustody)
+	existingMtp.TakeProfitLiabilities = existingMtp.TakeProfitLiabilities.Add(newMtp.TakeProfitLiabilities)
+
+	// no need to update pool's TakeProfitCustody, TakeProfitLiabilities, Custody and Liabilities as it was already in OpenDefineAssets
+
+	existingMtp.MtpHealth, err = k.GetMTPHealth(ctx, *existingMtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
 
-	// calc and update open price
-	err = k.OpenDefineAssetsChecker.UpdateOpenPrice(ctx, existingMtp, ammPool, baseCurrency)
-	if err != nil {
+	// Check if the MTP is unhealthy
+	safetyFactor := k.GetSafetyFactor(ctx)
+	if existingMtp.MtpHealth.LTE(safetyFactor) {
+		return nil, errorsmod.Wrapf(types.ErrMTPUnhealthy, "(MtpHealth: %s)", existingMtp.MtpHealth.String())
+	}
+
+	// Set existing MTP
+	if err = k.SetMTP(ctx, existingMtp); err != nil {
 		return nil, err
 	}
 
-	k.OpenDefineAssetsChecker.EmitOpenEvent(ctx, existingMtp)
+	k.EmitOpenEvent(ctx, existingMtp)
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
-		err := k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
+		// The pool value aboce was sent in pointer so its updated
+		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	if err = k.CheckLowPoolHealth(ctx, poolId); err != nil {
+		return nil, err
 	}
 
 	return &types.MsgOpenResponse{

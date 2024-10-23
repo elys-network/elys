@@ -14,12 +14,10 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
-	"github.com/elys-network/elys/x/perpetual/types/mocks"
 )
 
 func TestPools_InvalidRequest(t *testing.T) {
-	mockAmm := new(mocks.AmmKeeper)
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, nil, nil)
+	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, nil, nil)
 	ctx := sdk.Context{}
 	_, err := k.Pools(ctx, nil)
 
@@ -36,7 +34,7 @@ func TestPools_ErrPoolDoesNotExist(t *testing.T) {
 	})
 
 	_, err := app.PerpetualKeeper.Pools(ctx, &types.QueryAllPoolRequest{})
-	assert.Equal(t, "rpc error: code = Internal desc = pool does not exist", err.Error())
+	assert.Equal(t, "rpc error: code = Internal desc = perpetual pool does not exist", err.Error())
 }
 
 func TestPools_Success(t *testing.T) {

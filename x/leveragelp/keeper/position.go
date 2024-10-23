@@ -287,37 +287,6 @@ func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.AccAddres
 	return &position, true
 }
 
-func (k Keeper) GetAllLegacyPositions(ctx sdk.Context) []types.LegacyPosition {
-	var positions []types.LegacyPosition
-	iterator := k.GetPositionIterator(ctx)
-	defer func(iterator sdk.Iterator) {
-		err := iterator.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(iterator)
-
-	for ; iterator.Valid(); iterator.Next() {
-		var position types.LegacyPosition
-		bytesValue := iterator.Value()
-		err := k.cdc.Unmarshal(bytesValue, &position)
-		if err == nil {
-			positions = append(positions, position)
-		}
-	}
-	return positions
-}
-
-func (k Keeper) DeleteLegacyPosition(ctx sdk.Context, positionAddress string, id uint64) error {
-	store := ctx.KVStore(k.storeKey)
-	key := types.GetPositionKey(sdk.MustAccAddressFromBech32(positionAddress), id)
-	if !store.Has(key) {
-		return types.ErrPositionDoesNotExist
-	}
-	store.Delete(key)
-	return nil
-}
-
 func (k Keeper) MigrateData(ctx sdk.Context) {
 	iterator := k.GetPositionIterator(ctx)
 	defer func(iterator sdk.Iterator) {
