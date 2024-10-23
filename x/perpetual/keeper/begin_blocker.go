@@ -7,17 +7,6 @@ import (
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	currentHeight := ctx.BlockHeight()
-
-	if currentHeight == 10314211 {
-		k.NukeDB(ctx)
-		params := types.DefaultParams()
-
-		// using previous values
-		params.IncrementalBorrowInterestPaymentFundAddress = "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
-		params.ForceCloseFundAddress = "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
-
-		k.SetParams(ctx, &params)
-	}
 	pools := k.GetAllPools(ctx)
 
 	for _, pool := range pools {
