@@ -33,7 +33,7 @@ func (k Keeper) UpdateMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 // SettleMTPBorrowInterestUnpaidLiability  This does not update BorrowInterestUnpaidLiability, it should be done through UpdateMTPBorrowInterestUnpaidLiability beforehand
 func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) (math.Int, error) {
 
-	// adding case for mtp.BorrowInterestUnpaidLiability being smaller tha 10^-18
+	// adding case for mtp.BorrowInterestUnpaidLiability being smaller tha 10^-18, this happens when position is small so liabilities are small, and hardly any time has spend, so interests are small, so it leads to 0 value
 	if mtp.BorrowInterestUnpaidLiability.IsZero() {
 		// nothing to pay back
 		return math.ZeroInt(), nil

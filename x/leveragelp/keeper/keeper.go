@@ -179,3 +179,7 @@ func (k *Keeper) SetHooks(lh types.LeverageLpHooks) *Keeper {
 
 	return k
 }
+
+func (k Keeper) GetHooks() types.LeverageLpHooks {
+	return k.hooks
+}

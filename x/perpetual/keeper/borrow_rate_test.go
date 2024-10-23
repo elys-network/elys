@@ -23,7 +23,7 @@ func createNBorrowRate(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.I
 
 	for i := range items {
 		items[i].InterestRate = sdk.NewDec(int64(i + 1)) // Start from 1 to avoid zero interest
-		items[i].BlockHeight = int64(i * 10)
+		items[i].BlockHeight = int64(i + 1)
 		items[i].BlockTime = int64(i)
 
 		curBlock++
@@ -33,18 +33,18 @@ func createNBorrowRate(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.I
 }
 
 func TestBorrowRateGet(t *testing.T) {
-	keeper, ctx, _ := keepertest.PerpetualKeeper(t)
+	keeper, ctx := keepertest.PerpetualKeeper(t)
 
 	_, lastBlock := createNBorrowRate(keeper, ctx, 10)
 	ctx = ctx.WithBlockHeight(lastBlock)
 
 	// 1st case: recent block
-	res := keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-2), uint64(ctx.BlockTime().Unix())-(86400*365), 1, math.LegacyOneDec())
-	require.Equal(t, math.LegacyMustNewDecFromStr("9.5"), res) // 19 * 1000 / 2
+	res := keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-1), uint64(ctx.BlockTime().Unix())-(86400*365), 1, math.LegacyOneDec())
+	require.Equal(t, math.LegacyMustNewDecFromStr("50.0"), res) // 19 * 1000 / 2
 
 	// 2nd case: older block
 	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-8), uint64(ctx.BlockTime().Unix())-(86400*365), 1, math.LegacyOneDec())
-	require.Equal(t, math.LegacyMustNewDecFromStr("6.5"), res) // 52 * 1000 / 8
+	require.Equal(t, math.LegacyMustNewDecFromStr("32.5"), res) // 52 * 1000 / 8
 
 	// 3rd case: future block (should return zero)
 	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()+10), uint64(ctx.BlockTime().Unix())-(86400*365), 1, math.LegacyOneDec())

@@ -17,13 +17,6 @@ import (
 
 type (
 	Keeper struct {
-		types.AuthorizationChecker
-		types.PositionChecker
-		types.OpenChecker
-		types.OpenDefineAssetsChecker
-		types.ClosePositionChecker
-		types.CloseEstimationChecker
-
 		cdc                codec.BinaryCodec
 		storeKey           storetypes.StoreKey
 		memKey             storetypes.StoreKey
@@ -66,13 +59,6 @@ func NewKeeper(
 		parameterKeeper:    parameterKeeper,
 	}
 
-	keeper.AuthorizationChecker = keeper
-	keeper.PositionChecker = keeper
-	keeper.OpenChecker = keeper
-	keeper.OpenDefineAssetsChecker = keeper
-	keeper.ClosePositionChecker = keeper
-	keeper.CloseEstimationChecker = keeper
-
 	return keeper
 }
 
@@ -106,11 +92,13 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	// For LONG, Liability has to be in base currency, CollateralAsset can be trading asset or base currency
 	// For SHORT, Liability has to be in trading asset and CollateralAsset will be in base currency, so this if case only applies to LONG
 	if mtp.CollateralAsset != baseCurrency {
-		liabilitiesInCollateralTokenOut := sdk.NewCoin(mtp.CollateralAsset, liabilitiesInCollateral)
-		// Calculate base currency amount given atom out amount and we use it liabilty amount in base currency
-		liabilities, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenOut, baseCurrency, *ammPool)
-		if err != nil {
-			return err
+		if !liabilities.IsZero() {
+			liabilitiesInCollateralTokenOut := sdk.NewCoin(mtp.CollateralAsset, liabilitiesInCollateral)
+			// Calculate base currency amount given atom out amount and we use it liabilty amount in base currency
+			liabilities, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenOut, baseCurrency, *ammPool)
+			if err != nil {
+				return err
+			}
 		}
 	}
 

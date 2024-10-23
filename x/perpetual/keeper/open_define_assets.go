@@ -8,7 +8,7 @@ import (
 
 func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
 	// Determine the maximum leverage available and compute the effective leverage to be used.
-	maxLeverage := k.OpenDefineAssetsChecker.GetMaxLeverageParam(ctx)
+	maxLeverage := k.GetMaxLeverageParam(ctx)
 	leverage := sdk.MinDec(msg.Leverage, maxLeverage)
 
 	// Calculate the eta value.
