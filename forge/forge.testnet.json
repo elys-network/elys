@@ -1,0 +1,22 @@
+{
+  "display": {
+    "name": "Elys Network",
+    "description": "Elys Network makes crypto simple with universal access to tokens from all ecosystems. Whether you're a novice or an experienced user, you can easily navigate the DeFi space through a complete set of features, all in one place. From spot trading and liquidity provision to leveraged LPs and derivatives trading, everything is available on one streamlined platform. Our Smart-Shielded Pools eliminate impermanent loss, while the ELYS token acts as a powerful reward generator, enhancing user benefits. You can use your preferred assets like Solana, Bitcoin, Ethereum, and Cosmos while enjoying a feature-rich ecosystem. Elys Network offers a fresh, innovative approach to DeFi, bringing everything you need into one seamless experience.",
+    "links": {
+      "logo": "https://github.com/elys-network/elys-brand-assets/blob/main/logos/token-logo/Logo1-Icon.png",
+      "discord": "https://discord.gg/elysnetwork",
+      "email": "team@elys.networkk",
+      "github": "https://github.com/elys-network",
+      "telegram": "https://t.me/ElysNetwork",
+      "twitter": "https://twitter.com/elys_network",
+      "website": "https://elys.network/",
+      "whitepaper": ""
+    },
+    "widget": {
+      "title": "Create your own space on the blockchain",
+      "description": "Create your profile, share your thoughts, and connect with friends on the blockchain.",
+      "buttonText": "Create your space",
+      "buttonUrl": "https://myspace.network/create"
+    }
+  }
+}
