@@ -48,7 +48,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			}
 
 			// Calculate
-			stakersEdenAmount := stkIncentive.EdenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear)).ToLegacyDec()
+			stakersEdenAmount := stkIncentive.EdenAmountPerYear.ToLegacyDec().Quo(sdk.NewInt(totalBlocksPerYear).ToLegacyDec())
 
 			// Maximum eden APR - 30% by default
 			stakersMaxEdenAmount := estakingParams.MaxEdenRewardAprStakers.
