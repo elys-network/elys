@@ -4,6 +4,7 @@ import (
 	"context"
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -91,7 +92,10 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	mtp.LastInterestCalcBlock = uint64(ctx.BlockHeight()) - 1
 	mtp.LastInterestCalcTime = uint64(ctx.BlockTime().Unix()) - avgBlockTime
 
+	fmt.Println("----------------------------------------------")
+	fmt.Println("LEVERAGE: ", req.Leverage.String())
 	leveragedAmount := req.Collateral.Amount.ToLegacyDec().Mul(req.Leverage).TruncateInt()
+	fmt.Println("leveragedAmount: ", leveragedAmount.String())
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
 	// SHORT: collateralAsset is always usdc, and custody has to be in usdc, so custodyAmount = leveragedAmount
 	custodyAmount := leveragedAmount
@@ -111,6 +115,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 			mtp.Liabilities = req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
 			// executionPrice = leveragedAmount / Custody
 			executionPrice = leveragedAmount.ToLegacyDec().Quo(custodyAmount.ToLegacyDec())
+			fmt.Println("LONG COLLATERAL IS BASE CURRENCY EstimateSwap CalcOutAmtGivenIn")
 		}
 		mtp.Custody = custodyAmount
 
@@ -124,6 +129,8 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 
 			// executionPrice = (Liabilities in base currency) / Custody
 			executionPrice = mtp.Liabilities.ToLegacyDec().Quo(amountIn.ToLegacyDec())
+
+			fmt.Println("LONG COLLATERAL IS NOT BASE CURRENCY EstimateSwapGivenOut CalcInAmtGivenOut")
 		}
 
 	}
@@ -138,7 +145,12 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		}
 
 		executionPrice = mtp.Custody.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
+
+		fmt.Println("SHORT EstimateSwap CalcOutAmtGivenIn")
 	}
+	fmt.Println("custodyAmount: ", custodyAmount.String())
+	fmt.Println("Liabilities: ", mtp.Liabilities.String())
+	fmt.Println("executionPrice: ", executionPrice.String())
 	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(*mtp)
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
 	mtp.TakeProfitPrice = req.TakeProfitPrice
@@ -147,11 +159,21 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, err
 	}
 
+	fmt.Println("TakeProfitCustody: ", mtp.TakeProfitCustody.String())
+	fmt.Println("TakeProfitLiabilities: ", mtp.TakeProfitLiabilities.String())
+	fmt.Println("TakeProfitPrice: ", mtp.TakeProfitPrice.String())
+	fmt.Println("OpenPrice: ", mtp.OpenPrice.String())
+
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, mtp)
 
 	liquidationPrice := k.GetLiquidationPrice(ctx, *mtp)
 	priceImpact := tradingAssetPrice.Sub(executionPrice).Quo(tradingAssetPrice)
 
+	fmt.Println("liquidationPrice: ", liquidationPrice.String())
+	fmt.Println("tradingAssetPrice: ", tradingAssetPrice.String())
+	fmt.Println("priceImpact: ", priceImpact.String())
+
+	fmt.Println("----------------------------------------------")
 	estimatedPnLAmount, err := k.GetEstimatedPnL(ctx, *mtp, baseCurrency, true)
 	if err != nil {
 		return nil, err
