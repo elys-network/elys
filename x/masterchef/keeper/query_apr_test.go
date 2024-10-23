@@ -187,3 +187,55 @@ func TestAprs(t *testing.T) {
 		})
 	}
 }
+
+func TestPoolRewards(t *testing.T) {
+	tests := []struct {
+		desc     string
+		request  *types.QueryPoolRewardsRequest
+		response *types.QueryPoolRewardsResponse
+		err      error
+	}{
+		{
+			desc: "valid request",
+			request: &types.QueryPoolRewardsRequest{
+				PoolIds: []uint64{1},
+			},
+			response: &types.QueryPoolRewardsResponse{
+				Pools: []types.PoolRewards{{
+					PoolId:      1,
+					RewardsUsd:  sdk.NewDec(420),
+					RewardCoins: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdk.NewInt(200)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(400))},
+					EdenForward: sdk.NewCoin(ptypes.Eden, sdk.NewInt(0)),
+				},
+				},
+			},
+			err: nil,
+		},
+		{
+			desc:    "invalid request",
+			request: nil,
+			err:     status.Error(codes.InvalidArgument, "invalid request"),
+		},
+	}
+
+	mk, ctx := SetupApp(t)
+
+	ctx.BlockTime()
+	mk.SetPoolRewardsAccum(ctx, types.PoolRewardsAccum{
+		PoolId: 1, BlockHeight: ctx.BlockHeight(),
+		DexReward: sdk.NewDec(100), EdenReward: sdk.NewDec(200),
+		Timestamp: uint64(ctx.BlockTime().Unix()), GasReward: sdk.NewDec(300),
+	})
+
+	for _, tc := range tests {
+		t.Run(tc.desc, func(t *testing.T) {
+			response, err := mk.PoolRewards(ctx, tc.request)
+			if tc.err != nil {
+				require.ErrorIs(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+				require.Equal(t, tc.response.String(), response.String())
+			}
+		})
+	}
+}
