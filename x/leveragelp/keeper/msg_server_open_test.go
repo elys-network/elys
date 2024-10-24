@@ -207,7 +207,6 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErrMsg: "denom does not exist in pool",
 			prerequisiteFunction: func() {
 				pool := types.NewPool(2, sdk.NewDec(60))
-				pool.Enabled = false
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 				amm_pool := ammtypes.Pool{PoolId: 2, TotalShares: sdk.Coin{Amount: sdk.NewInt(100)}}
 				suite.app.AmmKeeper.SetPool(suite.ctx, amm_pool)
