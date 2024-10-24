@@ -58,7 +58,7 @@ func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *typ
 			return nil, types.ErrInvalidPoolId
 		}
 
-		tvl, err := pool.TVL(ctx, k.oracleKeeper)
+		tvl, err := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
 			return nil, err
 		}

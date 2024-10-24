@@ -13,7 +13,7 @@ import (
 func (k Keeper) CalOpenPrice(ctx sdk.Context, mtp *types.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error) {
 	collateralAmountInBaseCurrency := mtp.Collateral
 	if mtp.CollateralAsset != baseCurrency && !mtp.Collateral.IsZero() {
-		C, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral), baseCurrency, ammPool)
+		C, _, err := k.EstimateSwapGivenIn(ctx, sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral), baseCurrency, ammPool)
 		if err != nil {
 			return math.LegacyDec{}, errors.Wrap(err, fmt.Sprintf("error estimating swap: %s %s", mtp.CollateralAsset, mtp.Collateral))
 		}
@@ -22,7 +22,7 @@ func (k Keeper) CalOpenPrice(ctx sdk.Context, mtp *types.MTP, ammPool ammtypes.P
 
 	liabilitiesAmountInBaseCurrency := mtp.Liabilities
 	if mtp.LiabilitiesAsset != baseCurrency && !mtp.Liabilities.IsZero() {
-		L, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities), baseCurrency, ammPool)
+		L, _, err := k.EstimateSwapGivenIn(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities), baseCurrency, ammPool)
 		if err != nil {
 			return math.LegacyDec{}, errors.Wrap(err, fmt.Sprintf("error estimating swap: %s %s", mtp.LiabilitiesAsset, mtp.Liabilities))
 		}
@@ -31,7 +31,7 @@ func (k Keeper) CalOpenPrice(ctx sdk.Context, mtp *types.MTP, ammPool ammtypes.P
 
 	custodyAmountInTradingAsset := mtp.Custody
 	if mtp.CustodyAsset != mtp.TradingAsset && !mtp.Custody.IsZero() {
-		C, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.TradingAsset, ammPool)
+		C, _, err := k.EstimateSwapGivenIn(ctx, sdk.NewCoin(mtp.CustodyAsset, mtp.Custody), mtp.TradingAsset, ammPool)
 		if err != nil {
 			return math.LegacyDec{}, errors.Wrap(err, fmt.Sprintf("error estimating swap: %s %s", mtp.CustodyAsset, mtp.Custody))
 		}

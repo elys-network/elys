@@ -29,7 +29,7 @@ func (k Keeper) CalculatePoolHealthByPosition(pool *types.Pool, ammPool ammtypes
 			return sdk.ZeroDec()
 		}
 
-		balance := ammBalance.Sub(asset.Custody).ToLegacyDec()
+		balance := ammBalance.ToLegacyDec()
 		liabilities := asset.Liabilities.ToLegacyDec()
 
 		if balance.Add(liabilities).IsZero() {

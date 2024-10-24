@@ -12,7 +12,7 @@ import (
 )
 
 func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool) types.PoolExtraInfo {
-	tvl, _ := pool.TVL(ctx, k.oracleKeeper)
+	tvl, _ := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	lpTokenPrice, _ := pool.LpTokenPrice(ctx, k.oracleKeeper)
 	return types.PoolExtraInfo{
 		Tvl:          tvl,

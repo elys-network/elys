@@ -22,7 +22,7 @@ func (k Keeper) CalcMTPTakeProfitLiability(ctx sdk.Context, mtp *types.MTP, base
 	takeProfitCustody := sdk.NewCoin(mtp.CustodyAsset, mtp.TakeProfitCustody)
 
 	// convert custody amount to base currency
-	takeProfitLiabilities, _, err := k.EstimateSwap(ctx, takeProfitCustody, baseCurrency, ammPool)
+	takeProfitLiabilities, _, err := k.EstimateSwapGivenIn(ctx, takeProfitCustody, baseCurrency, ammPool)
 	if err != nil {
 		return sdk.ZeroInt(), errorsmod.Wrapf(err, "unable to swap takeProfitCustody to baseCurrency for takeProfitLiabilities")
 	}

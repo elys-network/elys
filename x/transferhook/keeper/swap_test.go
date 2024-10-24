@@ -221,7 +221,7 @@ func (suite *KeeperTestSuite) TestSwapOnRecvPacket() {
 
 			pool := ammtypes.Pool{
 				PoolId:            1,
-				Address:           poolAddr.String(),
+				Address:           ammtypes.NewPoolAddress(uint64(1)).String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: ammtypes.PoolParams{
 					SwapFee:  sdk.ZeroDec(),

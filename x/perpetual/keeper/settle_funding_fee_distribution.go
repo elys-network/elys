@@ -84,7 +84,7 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 			return err
 		}
 
-		custodyAmt, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, fundingFeeAmount), mtp.CustodyAsset, ammPool)
+		custodyAmt, _, err := k.EstimateSwapGivenIn(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, fundingFeeAmount), mtp.CustodyAsset, ammPool)
 		if err != nil {
 			return err
 		}

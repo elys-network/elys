@@ -245,7 +245,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 
 			pool := types.Pool{
 				PoolId:            1,
-				Address:           poolAddr.String(),
+				Address:           types.NewPoolAddress(uint64(1)).String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
 					SwapFee:  sdk.ZeroDec(),
@@ -266,7 +266,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 			}
 			pool2 := types.Pool{
 				PoolId:            2,
-				Address:           poolAddr2.String(),
+				Address:           types.NewPoolAddress(uint64(2)).String(),
 				RebalanceTreasury: treasuryAddr2.String(),
 				PoolParams: types.PoolParams{
 					SwapFee:  sdk.ZeroDec(),

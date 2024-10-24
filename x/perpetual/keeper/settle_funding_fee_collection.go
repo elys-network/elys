@@ -49,7 +49,7 @@ func (k Keeper) FundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *type
 		// should be done in custody
 		// short -> usdc
 		// long -> custody
-		custodyAmt, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, takeAmountLiabilityAmount), mtp.CustodyAsset, ammPool)
+		custodyAmt, _, err := k.EstimateSwapGivenIn(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, takeAmountLiabilityAmount), mtp.CustodyAsset, ammPool)
 		if err != nil {
 			return err
 		}
