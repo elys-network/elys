@@ -10,10 +10,12 @@ func (m Migrator) V15Migration(ctx sdk.Context) error {
 
 	for _, legacyPool := range legacyPools {
 		newPool := types.Pool{
-			AmmPoolId:         legacyPool.AmmPoolId,
-			Health:            legacyPool.Health,
-			LeveragedLpAmount: legacyPool.LeveragedLpAmount,
-			LeverageMax:       legacyPool.LeverageMax,
+			AmmPoolId:            legacyPool.AmmPoolId,
+			Health:               legacyPool.Health,
+			Enabled:              legacyPool.Enabled,
+			Closed:               legacyPool.Closed,
+			LeveragedLpAmount:    legacyPool.LeveragedLpAmount,
+			LeverageMax:          legacyPool.LeverageMax,
 			MaxLeveragelpPercent: sdk.NewDec(60),
 		}
 		m.keeper.SetPool(ctx, newPool)
