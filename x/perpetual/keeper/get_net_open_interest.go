@@ -49,7 +49,7 @@ func (k Keeper) GetFundingPaymentRates(ctx sdk.Context, pool types.Pool) (long s
 		if !totalCustodyLong.IsZero() {
 			unpopular_rate = fundingRateShort.Mul(totalLiabilitiesShort.ToLegacyDec()).Quo(totalCustodyLong.ToLegacyDec())
 		}
-		return unpopular_rate, fundingRateShort.Neg()
+		return unpopular_rate.Neg(), fundingRateShort
 	} else {
 		// long will pay
 		// short will receive
@@ -57,6 +57,6 @@ func (k Keeper) GetFundingPaymentRates(ctx sdk.Context, pool types.Pool) (long s
 		if !totalLiabilitiesShort.IsZero() {
 			unpopular_rate = fundingRateLong.Mul(totalCustodyLong.ToLegacyDec()).Quo(totalLiabilitiesShort.ToLegacyDec())
 		}
-		return fundingRateLong.Neg(), unpopular_rate
+		return fundingRateLong, unpopular_rate.Neg()
 	}
 }
