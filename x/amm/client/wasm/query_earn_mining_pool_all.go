@@ -76,7 +76,8 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 	lpTokenPrice, _ := ammPool.LpTokenPrice(ctx, oq.oraclekeeper)
 
 	// Get rewards amount
-	rewardsUsd, rewardCoins := oq.incentiveKeeper.GetDailyRewardsAmountForPool(ctx, ammPool.PoolId)
+	// TODO: Remove wasmbindings, as of now this is not used by FE, so setting it to zero
+	rewardsUsd, rewardCoins := sdk.ZeroDec(), sdk.Coins{}
 
 	// Get pool ratio
 	poolRatio := CalculatePoolRatio(ctx, ammPool)

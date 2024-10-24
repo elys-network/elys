@@ -96,7 +96,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 	// Check if the MTP is unhealthy
 	safetyFactor := k.GetSafetyFactor(ctx)
 	if mtp.MtpHealth.LTE(safetyFactor) {
-		return nil, types.ErrMTPUnhealthy
+		return nil, errorsmod.Wrapf(types.ErrMTPUnhealthy, "(MtpHealth: %s)", mtp.MtpHealth.String())
 	}
 
 	// Set stop loss price
