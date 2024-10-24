@@ -10,10 +10,11 @@ import (
 
 func NewPool(poolId uint64, maxLeverage math.LegacyDec) Pool {
 	return Pool{
-		AmmPoolId:         poolId,
-		Health:            math.LegacyOneDec(),
-		LeveragedLpAmount: math.ZeroInt(),
-		LeverageMax:       maxLeverage,
+		AmmPoolId:            poolId,
+		Health:               sdk.NewDec(100),
+		LeveragedLpAmount:    sdk.ZeroInt(),
+		LeverageMax:          sdk.NewDec(10),
+		MaxLeveragelpPercent: sdk.NewDec(60),
 	}
 }
 

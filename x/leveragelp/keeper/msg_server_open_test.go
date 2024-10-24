@@ -17,7 +17,7 @@ import (
 
 func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {
 	fee := sdk.MustNewDecFromStr("0.0002")
-	issueAmount := sdk.NewInt(10_000_000_000_000)
+	issueAmount := sdk.NewInt(10_000_000_000_000_000)
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
 			sdk.NewCoin(ptypes.ATOM, issueAmount),
@@ -48,11 +48,11 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 		},
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  sdk.NewInt64Coin(asset1, 100_000_000),
+				Token:  sdk.NewInt64Coin(asset1, 100_000_000_000_000),
 				Weight: sdk.NewInt(50),
 			},
 			{
-				Token:  sdk.NewInt64Coin(asset2, 1000_000_000),
+				Token:  sdk.NewInt64Coin(asset2, 1000_000_000_000_000),
 				Weight: sdk.NewInt(50),
 			},
 		},
@@ -137,7 +137,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				Creator:          addresses[0].String(),
 				CollateralAsset:  ptypes.BaseCurrency,
 				CollateralAmount: sdk.NewInt(1000),
-				AmmPoolId:        10,
+				AmmPoolId:        1,
 				Leverage:         sdk.MustNewDecFromStr("2.0"),
 				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
 			},
@@ -171,7 +171,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: "invalid pool id",
+			expectErrMsg: "pool does not exis",
 			prerequisiteFunction: func() {
 				pool := types.NewPool(2, math.LegacyMustNewDecFromStr("10"))
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
@@ -189,9 +189,27 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: "invalid pool id",
+			expectErrMsg: "pool does not exis",
 			prerequisiteFunction: func() {
 				suite.SetupCoinPrices(suite.ctx)
+			},
+		},
+		{name: "Pool not enabled",
+			input: &types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdk.NewInt(1000),
+				AmmPoolId:        2,
+				Leverage:         sdk.MustNewDecFromStr("2.0"),
+				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
+			},
+			expectErr:    true,
+			expectErrMsg: "denom does not exist in pool",
+			prerequisiteFunction: func() {
+				pool := types.NewPool(2, sdk.NewDec(60))
+				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
+				amm_pool := ammtypes.Pool{PoolId: 2, TotalShares: sdk.Coin{Amount: sdk.NewInt(100)}}
+				suite.app.AmmKeeper.SetPool(suite.ctx, amm_pool)
 			},
 		},
 		{"Collateral asset not equal to base currency",
@@ -258,7 +276,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
 				CollateralAsset:  ptypes.BaseCurrency,
-				CollateralAmount: sdk.NewInt(1_000_000_000_000),
+				CollateralAmount: sdk.NewInt(1_000_000_000_000_000_000),
 				AmmPoolId:        1,
 				Leverage:         sdk.MustNewDecFromStr("2.0"),
 				StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
