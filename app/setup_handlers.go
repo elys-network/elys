@@ -8,7 +8,6 @@ import (
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
 const (
@@ -31,53 +30,6 @@ func setUpgradeHandler(app *ElysApp) {
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
-
-				// delete all mtps
-				mtps := app.PerpetualKeeper.GetAllLegacyMTPs(ctx)
-				for _, mtp := range mtps {
-					app.PerpetualKeeper.DestroyMTP(ctx, sdk.MustAccAddressFromBech32(mtp.Address), mtp.Id)
-				}
-
-				// delete all perpetual pools
-				perpPools := app.PerpetualKeeper.GetAllLegacyPools(ctx)
-				for _, pool := range perpPools {
-					app.PerpetualKeeper.RemovePool(ctx, pool.AmmPoolId)
-				}
-
-				// delete all accounted pools
-				accountedPools := app.AccountedPoolKeeper.GetAllAccountedPool(ctx)
-				for _, pool := range accountedPools {
-					app.AccountedPoolKeeper.RemoveAccountedPool(ctx, pool.PoolId)
-				}
-
-				// initiate accounted pools
-				pools := app.AmmKeeper.GetAllLegacyPool(ctx)
-				for _, pool := range pools {
-					newPool := ammtypes.Pool{
-						PoolId:  pool.PoolId,
-						Address: pool.Address,
-						PoolParams: ammtypes.PoolParams{
-							SwapFee:                     pool.PoolParams.SwapFee,
-							ExitFee:                     pool.PoolParams.ExitFee,
-							UseOracle:                   pool.PoolParams.UseOracle,
-							WeightBreakingFeeMultiplier: pool.PoolParams.WeightBreakingFeeMultiplier,
-							WeightBreakingFeeExponent:   pool.PoolParams.WeightBreakingFeeExponent,
-							ExternalLiquidityRatio:      pool.PoolParams.ExternalLiquidityRatio,
-							WeightRecoveryFeePortion:    pool.PoolParams.WeightRecoveryFeePortion,
-							ThresholdWeightDifference:   pool.PoolParams.ThresholdWeightDifference,
-							WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
-							FeeDenom:                    pool.PoolParams.FeeDenom,
-						},
-						TotalShares:       pool.TotalShares,
-						PoolAssets:        pool.PoolAssets,
-						TotalWeight:       pool.TotalWeight,
-						RebalanceTreasury: pool.RebalanceTreasury,
-					}
-					err := app.AccountedPoolKeeper.InitiateAccountedPool(ctx, newPool)
-					if err != nil {
-						panic(err)
-					}
-				}
 
 				// Add any logic here to run when the chain is upgraded to the new version
 			}
