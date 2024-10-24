@@ -185,11 +185,9 @@ func (p *Pool) JoinPool(
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
+
 	weightBreakingFee := sdk.ZeroDec()
 	if distanceDiff.IsPositive() {
-		// old weight breaking fee implementation
-		// weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
-
 		// we only allow
 		tokenInDenom := tokensIn[0].Denom
 		// target weight
@@ -199,7 +197,7 @@ func (p *Pool) JoinPool(
 		// weight breaking fee as in Plasma pool
 		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenInDenom)
 		weightOut := sdk.OneDec().Sub(weightIn)
-		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams)
+		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
 	}
 
 	weightBalanceBonus = weightBreakingFee.Neg()
