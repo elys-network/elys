@@ -30,6 +30,7 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 		pool := types.Pool{
 			PoolId:      uint64(i),
 			TotalWeight: sdk.NewInt(100),
+			Address:     types.NewPoolAddress(uint64(i)).String(),
 			PoolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),

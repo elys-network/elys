@@ -84,7 +84,7 @@ func (p *Pool) setInitialPoolParams(params PoolParams, sortedAssets []PoolAsset,
 	return nil
 }
 
-func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coins, swapFeeIn, swapFeeOut sdk.Dec, accPoolKeeper AccountedPoolKeeper) error {
+func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coins, swapFeeIn, swapFeeOut sdk.Dec) error {
 	// Fixed gas consumption per swap to prevent spam
 	ctx.GasMeter().ConsumeGas(BalancerGasFeeForSwap, "balancer swap computation")
 	// Also ensures that len(tokensIn) = 1 = len(tokensOut)
@@ -310,7 +310,7 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom)
 }
 
-func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec, error) {
+func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper) (sdk.Dec, error) {
 	// OracleAssetsTVL * TotalWeight / OracleAssetsWeight
 	// E.g. JUNO / USDT / USDC (30:30:30)
 	// TVL = USDC_USDT_liquidity * 90 / 60
@@ -326,7 +326,14 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec, error) 
 				return sdk.ZeroDec(), fmt.Errorf("token price not set: %s", asset.Token.Denom)
 			}
 		} else {
-			v := tokenPrice.Mul(sdk.NewDecFromInt(asset.Token.Amount))
+			amount := asset.Token.Amount
+			if p.PoolParams.UseOracle && accountedPoolKeeper != nil {
+				accountedPoolAmt := accountedPoolKeeper.GetAccountedBalance(ctx, p.PoolId, asset.Token.Denom)
+				if accountedPoolAmt.IsPositive() {
+					amount = accountedPoolAmt
+				}
+			}
+			v := amount.ToLegacyDec().Mul(tokenPrice)
 			oracleAssetsTVL = oracleAssetsTVL.Add(v)
 			oracleAssetsWeight = oracleAssetsWeight.Add(asset.Weight)
 		}
@@ -340,7 +347,7 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec, error) 
 }
 
 func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec, error) {
-	ammPoolTvl, err := p.TVL(ctx, oracleKeeper)
+	ammPoolTvl, err := p.TVL(ctx, oracleKeeper, nil)
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}
@@ -352,19 +359,17 @@ func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec
 	return lpTokenPrice, nil
 }
 
-func (pool Pool) Validate(poolId uint64) error {
-	if pool.GetPoolId() != poolId {
-		return errorsmod.Wrapf(ErrInvalidPool,
-			"Pool was attempted to be created with incorrect pool ID.")
-	}
+func (pool Pool) Validate() error {
 	address, err := sdk.AccAddressFromBech32(pool.GetAddress())
 	if err != nil {
-		return errorsmod.Wrapf(ErrInvalidPool,
-			"Pool was attempted to be created with invalid pool address.")
+		return errorsmod.Wrapf(ErrInvalidPool, "Pool was attempted to be created with invalid pool address.")
 	}
-	if !address.Equals(NewPoolAddress(poolId)) {
-		return errorsmod.Wrapf(ErrInvalidPool,
-			"Pool was attempted to be created with incorrect pool address.")
+	if !address.Equals(NewPoolAddress(pool.PoolId)) {
+		return errorsmod.Wrapf(ErrInvalidPool, "Pool was attempted to be created with incorrect pool address.")
+	}
+	if pool.PoolParams.UseOracle && len(pool.PoolAssets) != 2 {
+		// For more the 2 assets in oracle pool, all swap/join/exit functions needs to be updated
+		return errorsmod.Wrapf(ErrInvalidPool, "Oracle Pools can only have 2 assets")
 	}
 	return nil
 }

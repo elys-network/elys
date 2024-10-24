@@ -16,10 +16,12 @@ func TestGenesis(t *testing.T) {
 
 		PoolList: []types.Pool{
 			{
-				PoolId: 0,
+				PoolId:  0,
+				Address: types.NewPoolAddress(0).String(),
 			},
 			{
-				PoolId: 1,
+				PoolId:  1,
+				Address: types.NewPoolAddress(1).String(),
 			},
 		},
 		DenomLiquidityList: []types.DenomLiquidity{

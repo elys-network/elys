@@ -107,7 +107,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		// liabilities.IsZero() happens when we are consolidating with leverage 1 as eta = 0
 		if !liabilities.IsZero() {
 			liabilitiesInCollateralTokenIn := sdk.NewCoin(baseCurrency, liabilities)
-			liabilities, _, err = k.EstimateSwap(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool)
+			liabilities, _, err = k.EstimateSwapGivenIn(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool)
 			if err != nil {
 				return err
 			}

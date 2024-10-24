@@ -36,6 +36,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, status.Error(codes.InvalidArgument, "leverage must be greater than one")
 	}
 
+	// TODO use accounted pool balance
 	tradingAssetLiquidity, err := ammPool.GetAmmPoolBalance(req.TradingAsset)
 	if err != nil {
 		return nil, err
@@ -103,7 +104,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		//getting custody
 		if mtp.CollateralAsset == baseCurrency {
 			leveragedAmtTokenIn := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
-			custodyAmount, slippage, err = k.EstimateSwap(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool)
+			custodyAmount, slippage, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool)
 			if err != nil {
 				return nil, err
 			}
@@ -132,7 +133,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		mtp.Custody = custodyAmount
 		// Collateral will be in base currency
 		custodyTokenIn := sdk.NewCoin(baseCurrency, mtp.Custody)
-		mtp.Liabilities, slippage, err = k.EstimateSwap(ctx, custodyTokenIn, mtp.LiabilitiesAsset, ammPool)
+		mtp.Liabilities, slippage, err = k.EstimateSwapGivenIn(ctx, custodyTokenIn, mtp.LiabilitiesAsset, ammPool)
 		if err != nil {
 			return nil, err
 		}
