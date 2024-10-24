@@ -19,6 +19,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetAmmPool() {
 			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 			ThresholdWeightDifference:   sdk.ZeroDec(),
+			WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 			SwapFee:                     sdk.ZeroDec(),
 			ExitFee:                     sdk.ZeroDec(),
 			FeeDenom:                    ptypes.BaseCurrency,
