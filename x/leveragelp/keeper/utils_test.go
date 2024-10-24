@@ -67,7 +67,6 @@ func (suite KeeperTestSuite) TestCheckPoolHealth() {
 	// PoolDisabledOrClosed
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.Pool{
 		AmmPoolId: 1,
-		Enabled:   false,
 	})
 	err = k.CheckPoolHealth(suite.ctx, poolId)
 	suite.Require().Error(err)
@@ -75,8 +74,7 @@ func (suite KeeperTestSuite) TestCheckPoolHealth() {
 	// PoolHealthTooLow
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.Pool{
 		AmmPoolId: 1,
-		Enabled:   false,
-		Health:    sdk.NewDec(5),
+		Health:    sdk.NewDec(5).Quo(sdk.NewDec(100)),
 	})
 	err = k.CheckPoolHealth(suite.ctx, poolId)
 	suite.Require().Error(err)
@@ -84,9 +82,7 @@ func (suite KeeperTestSuite) TestCheckPoolHealth() {
 	// PoolIsHealthy
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.Pool{
 		AmmPoolId: 1,
-		Enabled:   true,
 		Health:    sdk.NewDec(15),
-		Closed:    false,
 	})
 	err = k.CheckPoolHealth(suite.ctx, poolId)
 	suite.Require().NoError(err)

@@ -140,10 +140,6 @@ import (
 	tokenomicsmodulekeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
 
-	incentivemodule "github.com/elys-network/elys/x/incentive"
-	incentivemodulekeeper "github.com/elys-network/elys/x/incentive/keeper"
-	incentivemoduletypes "github.com/elys-network/elys/x/incentive/types"
-
 	burnermodule "github.com/elys-network/elys/x/burner"
 	burnermodulekeeper "github.com/elys-network/elys/x/burner/keeper"
 	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
@@ -291,7 +287,6 @@ var (
 		oraclemodule.AppModuleBasic{},
 		commitmentmodule.AppModuleBasic{},
 		tokenomicsmodule.AppModuleBasic{},
-		incentivemodule.AppModuleBasic{},
 		burnermodule.AppModuleBasic{},
 		ammmodule.AppModuleBasic{},
 		parametermodule.AppModuleBasic{},
@@ -321,7 +316,6 @@ var (
 		ibctransfertypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 		commitmentmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 		burnermoduletypes.ModuleName:     {authtypes.Burner},
-		incentivemoduletypes.ModuleName:  nil,
 		ammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		wasmmoduletypes.ModuleName:       {authtypes.Burner},
 		stablestaketypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
@@ -396,11 +390,10 @@ type ElysApp struct {
 	OracleKeeper       oraclekeeper.Keeper
 	CommitmentKeeper   commitmentmodulekeeper.Keeper
 	TokenomicsKeeper   tokenomicsmodulekeeper.Keeper
-	IncentiveKeeper    incentivemodulekeeper.Keeper
 	BurnerKeeper       burnermodulekeeper.Keeper
 	AmmKeeper          ammmodulekeeper.Keeper
 	ParameterKeeper    parametermodulekeeper.Keeper
-	PerpetualKeeper    perpetualmodulekeeper.Keeper
+	PerpetualKeeper    *perpetualmodulekeeper.Keeper
 	TransferhookKeeper transferhookkeeper.Keeper
 	ContractKeeper     *wasmmodulekeeper.PermissionedKeeper
 	ClockKeeper        clockmodulekeeper.Keeper
@@ -409,7 +402,7 @@ type ElysApp struct {
 
 	StablestakeKeeper stablestakekeeper.Keeper
 
-	LeveragelpKeeper leveragelpmodulekeeper.Keeper
+	LeveragelpKeeper *leveragelpmodulekeeper.Keeper
 
 	MasterchefKeeper masterchefmodulekeeper.Keeper
 
@@ -485,7 +478,6 @@ func NewElysApp(
 		oracletypes.StoreKey,
 		commitmentmoduletypes.StoreKey,
 		tokenomicsmoduletypes.StoreKey,
-		incentivemoduletypes.StoreKey,
 		burnermoduletypes.StoreKey,
 		accountedpoolmoduletypes.StoreKey,
 		ammmoduletypes.StoreKey,
@@ -827,7 +819,7 @@ func NewElysApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	app.PerpetualKeeper = *perpetualmodulekeeper.NewKeeper(
+	app.PerpetualKeeper = perpetualmodulekeeper.NewKeeper(
 		appCodec,
 		keys[perpetualmoduletypes.StoreKey],
 		keys[perpetualmoduletypes.MemStoreKey],
@@ -855,31 +847,10 @@ func NewElysApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.PerpetualKeeper,
+		&app.EstakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	masterchefModule := masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper)
-
-	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
-		appCodec,
-		keys[incentivemoduletypes.StoreKey],
-		keys[incentivemoduletypes.MemStoreKey],
-		app.ParameterKeeper,
-		commitmentKeeper,
-		app.StakingKeeper,
-		app.AccountKeeper,
-		app.BankKeeper,
-		&app.AmmKeeper,
-		app.OracleKeeper,
-		app.AssetprofileKeeper,
-		app.AccountedPoolKeeper,
-		app.StablestakeKeeper,
-		app.TokenomicsKeeper,
-		&app.MasterchefKeeper,
-		&app.EstakingKeeper,
-		authtypes.FeeCollectorName,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	incentiveModule := incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper, app.EstakingKeeper, app.MasterchefKeeper, app.DistrKeeper, app.CommitmentKeeper)
 
 	app.BurnerKeeper = *burnermodulekeeper.NewKeeper(
 		appCodec,
@@ -916,9 +887,8 @@ func NewElysApp(
 			&app.ClockKeeper,
 			&app.CommitmentKeeper,
 			&app.EpochsKeeper,
-			&app.IncentiveKeeper,
-			&app.LeveragelpKeeper,
-			&app.PerpetualKeeper,
+			app.LeveragelpKeeper,
+			app.PerpetualKeeper,
 			&app.OracleKeeper,
 			&app.ParameterKeeper,
 			&app.StablestakeKeeper,
@@ -1010,7 +980,7 @@ func NewElysApp(
 	)
 	clockModule := clockmodule.NewAppModule(appCodec, app.ClockKeeper)
 
-	app.LeveragelpKeeper = *leveragelpmodulekeeper.NewKeeper(
+	app.LeveragelpKeeper = leveragelpmodulekeeper.NewKeeper(
 		appCodec,
 		keys[leveragelpmoduletypes.StoreKey],
 		keys[leveragelpmoduletypes.MemStoreKey],
@@ -1088,10 +1058,13 @@ func NewElysApp(
 	))
 	stablestakeModule := stablestake.NewAppModule(appCodec, app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper)
 
-	app.LeveragelpKeeper = *app.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
+	app.LeveragelpKeeper = app.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
+		// PerpetualKeeper.LeverageLpHooks() calling first because it needs to close all position before removing accounted pool
+		app.PerpetualKeeper.LeverageLpHooks(),
+		app.AccountedPoolKeeper.LeverageLpHooks(),
 		app.TierKeeper.LeverageLpHooks(),
 	))
-	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
+	leveragelpModule := leveragelpmodule.NewAppModule(appCodec, *app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
@@ -1109,18 +1082,10 @@ func NewElysApp(
 		),
 	)
 
-	app.PerpetualKeeper = *app.PerpetualKeeper.SetHooks(
-		perpetualmoduletypes.NewMultiPerpetualHooks(
-			// insert perpetual hooks receivers here
-			app.AccountedPoolKeeper.PerpetualHooks(),
-			app.TierKeeper.PerpetualHooks(),
-		),
-	)
-	perpetualModule := perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper)
-
 	app.AmmKeeper = *app.AmmKeeper.SetHooks(
 		ammmoduletypes.NewMultiAmmHooks(
 			// insert amm hooks receivers here
+			app.AccountedPoolKeeper.AmmHooks(),
 			app.PerpetualKeeper.AmmHooks(),
 			app.LeveragelpKeeper.AmmHooks(),
 			app.MasterchefKeeper.AmmHooks(),
@@ -1130,15 +1095,24 @@ func NewElysApp(
 	ammModule := ammmodule.NewAppModule(appCodec, app.AmmKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.EpochsKeeper = *app.EpochsKeeper.SetHooks(
-		epochsmodulekeeper.NewMultiEpochHooks(
+		epochsmoduletypes.NewMultiEpochHooks(
 			// insert epoch hooks receivers here
 			app.OracleKeeper.Hooks(),
 			app.CommitmentKeeper.Hooks(),
 			app.BurnerKeeper.Hooks(),
-			app.PerpetualKeeper.Hooks(),
+			app.PerpetualKeeper.EpochHooks(),
 		),
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
+
+	app.PerpetualKeeper = app.PerpetualKeeper.SetHooks(
+		perpetualmoduletypes.NewMultiPerpetualHooks(
+			// insert perpetual hooks receivers here
+			app.AccountedPoolKeeper.PerpetualHooks(),
+			app.TierKeeper.PerpetualHooks(),
+		),
+	)
+	perpetualModule := perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper)
 
 	/**** Module Options ****/
 
@@ -1179,7 +1153,6 @@ func NewElysApp(
 		oracleModule,
 		commitmentModule,
 		tokenomicsModule,
-		incentiveModule,
 		burnerModule,
 		ammModule,
 		parameterModule,
@@ -1208,7 +1181,6 @@ func NewElysApp(
 		epochsmoduletypes.ModuleName,
 		distrtypes.ModuleName,
 		stablestaketypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
@@ -1261,7 +1233,6 @@ func NewElysApp(
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
 		stablestaketypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -1305,7 +1276,6 @@ func NewElysApp(
 		distrtypes.ModuleName,
 		epochsmoduletypes.ModuleName,
 		stablestaketypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,

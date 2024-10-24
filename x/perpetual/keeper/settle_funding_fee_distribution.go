@@ -1,12 +1,13 @@
 package keeper
 
 import (
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
+func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) error {
 	// account custody from long position
 	totalCustodyLong := sdk.ZeroInt()
 	for _, asset := range pool.PoolAssetsLong {
@@ -27,13 +28,13 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 	if mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
 		if totalCustodyLong.IsZero() {
-			return types.ErrAmountTooLow
+			return fmt.Errorf("totalCustodyLong in FundingFeeDistribution cannot be zero")
 		}
-		fundingFeeShare = sdk.NewDecFromInt(mtp.Custody).Quo(sdk.NewDecFromInt(totalCustodyLong))
+		fundingFeeShare = mtp.Custody.ToLegacyDec().Quo(totalCustodyLong.ToLegacyDec())
 		totalFund = short
 
 		// if funding fee share is zero, skip mtp
-		if fundingFeeShare.IsZero() {
+		if fundingFeeShare.IsZero() || totalFund.IsZero() {
 			return nil
 		}
 
@@ -44,13 +45,13 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		mtp.Custody = mtp.Custody.Add(fundingFeeAmount.TruncateInt())
 
 		// decrease fees collected
-		err := pool.UpdateFeesCollected(ctx, mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), false)
+		err := pool.UpdateFeesCollected(mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), false)
 		if err != nil {
 			return err
 		}
 
 		// update pool custody balance
-		err = pool.UpdateCustody(ctx, mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), true, mtp.Position)
+		err = pool.UpdateCustody(mtp.CustodyAsset, fundingFeeAmount.TruncateInt(), true, mtp.Position)
 		if err != nil {
 			return err
 		}
@@ -62,24 +63,28 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		if totalLiabilitiesShort.IsZero() {
 			return types.ErrAmountTooLow
 		}
-		fundingFeeShare = sdk.NewDecFromInt(mtp.Liabilities).Quo(sdk.NewDecFromInt(totalLiabilitiesShort))
+		fundingFeeShare = mtp.Liabilities.ToLegacyDec().Quo(totalLiabilitiesShort.ToLegacyDec())
 		totalFund = long
 
 		// if funding fee share is zero, skip mtp
-		if fundingFeeShare.IsZero() {
+		if fundingFeeShare.IsZero() || totalFund.IsZero() {
 			return nil
 		}
 
 		// calculate funding fee amount
-		fundingFeeAmount := totalFund.Mul(fundingFeeShare)
+		fundingFeeAmount := totalFund.Mul(fundingFeeShare).TruncateInt()
 
+		// adding case for fundingFeeAmount being smaller tha 10^-18
+		if fundingFeeAmount.IsZero() {
+			return nil
+		}
 		// decrease fees collected
-		err := pool.UpdateFeesCollected(ctx, mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt(), false)
+		err := pool.UpdateFeesCollected(mtp.LiabilitiesAsset, fundingFeeAmount, false)
 		if err != nil {
 			return err
 		}
 
-		custodyAmt, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, fundingFeeAmount.TruncateInt()), mtp.CustodyAsset, ammPool)
+		custodyAmt, _, err := k.EstimateSwap(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, fundingFeeAmount), mtp.CustodyAsset, ammPool)
 		if err != nil {
 			return err
 		}
@@ -87,7 +92,7 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		mtp.Custody = mtp.Custody.Add(custodyAmt)
 
 		// update pool liability balance
-		err = pool.UpdateCustody(ctx, mtp.CustodyAsset, custodyAmt, true, mtp.Position)
+		err = pool.UpdateCustody(mtp.CustodyAsset, custodyAmt, true, mtp.Position)
 		if err != nil {
 			return err
 		}
@@ -95,5 +100,6 @@ func (k Keeper) SettleFundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, po
 		// add payment to total funding fee paid in custody asset
 		mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(custodyAmt)
 	}
+
 	return nil
 }

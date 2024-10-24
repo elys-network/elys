@@ -16,7 +16,7 @@ const (
 )
 
 // make sure to update these when you upgrade the version
-var NextVersion = "v0.48.0"
+var NextVersion = "v0.49.0"
 
 func SetupHandlers(app *ElysApp) {
 	setUpgradeHandler(app)
@@ -80,7 +80,6 @@ func setUpgradeHandler(app *ElysApp) {
 				}
 
 				// Add any logic here to run when the chain is upgraded to the new version
-
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
@@ -99,7 +98,7 @@ func loadUpgradeStore(app *ElysApp) {
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			// Added: []string{},
-			// Deleted: []string{},
+			Deleted: []string{"incentive_store"},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 

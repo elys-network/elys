@@ -1,17 +1,18 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
 // SetPool set a specific pool in the store from its index
-func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) error {
+func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
 	store.Set(types.PoolKey(pool.PoolId), b)
-	return nil
+	return
 }
 
 // GetPool returns a pool from its index
@@ -179,4 +180,24 @@ func (k Keeper) GetPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) (val type
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val
+}
+
+// AddToPoolBalance Used in perpetual balance changes
+func (k Keeper) AddToPoolBalance(ctx sdk.Context, pool *types.Pool, addShares math.Int, coins sdk.Coins) error {
+	err := pool.IncreaseLiquidity(addShares, coins)
+	if err != nil {
+		return err
+	}
+	k.SetPool(ctx, *pool)
+	return k.RecordTotalLiquidityIncrease(ctx, coins)
+}
+
+// RemoveFromPoolBalance Used in perpetual balance changes
+func (k Keeper) RemoveFromPoolBalance(ctx sdk.Context, pool *types.Pool, removeShares math.Int, coins sdk.Coins) error {
+	err := pool.DecreaseLiquidity(removeShares, coins)
+	if err != nil {
+		return err
+	}
+	k.SetPool(ctx, *pool)
+	return k.RecordTotalLiquidityDecrease(ctx, coins)
 }

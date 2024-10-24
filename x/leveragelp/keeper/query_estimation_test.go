@@ -21,8 +21,6 @@ func (suite KeeperTestSuite) TestQueryEstimation() {
 
 	pool := types.Pool{
 		AmmPoolId:         1,
-		Enabled:           true,
-		Closed:            false,
 		Health:            sdk.ZeroDec(),
 		LeveragedLpAmount: sdk.ZeroInt(),
 		LeverageMax:       sdk.OneDec().MulInt64(10),

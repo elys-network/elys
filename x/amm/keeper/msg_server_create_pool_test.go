@@ -11,18 +11,20 @@ import (
 
 func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 	for _, tc := range []struct {
-		desc              string
-		senderInitBalance sdk.Coins
-		poolParams        types.PoolParams
-		poolAssets        []types.PoolAsset
-		expSenderBalance  sdk.Coins
-		expTotalLiquidity sdk.Coins
-		expLpCommitment   sdk.Coin
-		expPass           bool
+		desc                             string
+		senderInitBalance                sdk.Coins
+		enableBaseCurrencyPairedPoolOnly bool
+		poolParams                       types.PoolParams
+		poolAssets                       []types.PoolAsset
+		expSenderBalance                 sdk.Coins
+		expTotalLiquidity                sdk.Coins
+		expLpCommitment                  sdk.Coin
+		expPass                          bool
 	}{
 		{
-			desc:              "zero tvl pool creation",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 11000000)},
+			desc:                             "zero tvl pool creation",
+			senderInitBalance:                sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 11000000)},
+			enableBaseCurrencyPairedPoolOnly: false,
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -50,8 +52,9 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 			expPass:          true,
 		},
 		{
-			desc:              "positive tvl pool creation",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			desc:                             "positive tvl pool creation",
+			senderInitBalance:                sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			enableBaseCurrencyPairedPoolOnly: false,
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -79,8 +82,9 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 			expPass:          true,
 		},
 		{
-			desc:              "not enough balance to create pool",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 10000000)},
+			desc:                             "not enough balance to create pool",
+			senderInitBalance:                sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 10000000)},
+			enableBaseCurrencyPairedPoolOnly: false,
 			poolParams: types.PoolParams{
 				SwapFee:                     sdk.ZeroDec(),
 				ExitFee:                     sdk.ZeroDec(),
@@ -107,6 +111,64 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 			expLpCommitment:  sdk.Coin{},
 			expPass:          false,
 		},
+		{
+			desc:                             "base currency paired pool creation without base currency",
+			senderInitBalance:                sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			enableBaseCurrencyPairedPoolOnly: true,
+			poolParams: types.PoolParams{
+				SwapFee:                     sdk.ZeroDec(),
+				ExitFee:                     sdk.ZeroDec(),
+				UseOracle:                   false,
+				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+				ExternalLiquidityRatio:      sdk.NewDec(1),
+				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   sdk.ZeroDec(),
+				FeeDenom:                    ptypes.BaseCurrency,
+			},
+			poolAssets: []types.PoolAsset{
+				{
+					Token:  sdk.NewInt64Coin(ptypes.Eden, 1000000),
+					Weight: sdk.OneInt(),
+				},
+				{
+					Token:  sdk.NewInt64Coin(ptypes.Elys, 1000000),
+					Weight: sdk.OneInt(),
+				},
+			},
+			expSenderBalance: sdk.Coins{},
+			expLpCommitment:  sdk.NewCoin("amm/pool/1", sdk.NewInt(2).Mul(types.OneShare)),
+			expPass:          false,
+		},
+		{
+			desc:                             "base currency paired pool creation with base currency",
+			senderInitBalance:                sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			enableBaseCurrencyPairedPoolOnly: true,
+			poolParams: types.PoolParams{
+				SwapFee:                     sdk.ZeroDec(),
+				ExitFee:                     sdk.ZeroDec(),
+				UseOracle:                   false,
+				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+				ExternalLiquidityRatio:      sdk.NewDec(1),
+				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   sdk.ZeroDec(),
+				FeeDenom:                    ptypes.BaseCurrency,
+			},
+			poolAssets: []types.PoolAsset{
+				{
+					Token:  sdk.NewInt64Coin(ptypes.Eden, 1000000),
+					Weight: sdk.OneInt(),
+				},
+				{
+					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000),
+					Weight: sdk.OneInt(),
+				},
+			},
+			expSenderBalance: sdk.Coins{},
+			expLpCommitment:  sdk.NewCoin("amm/pool/1", sdk.NewInt(2).Mul(types.OneShare)),
+			expPass:          true,
+		},
 	} {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
@@ -123,6 +185,12 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 
 			// execute function
 			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
+
+			// set params
+			params := suite.app.AmmKeeper.GetParams(suite.ctx)
+			params.EnableBaseCurrencyPairedPoolOnly = tc.enableBaseCurrencyPairedPoolOnly
+			suite.app.AmmKeeper.SetParams(suite.ctx, params)
+
 			resp, err := msgServer.CreatePool(
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgCreatePool{

@@ -129,7 +129,10 @@ func (p *Pool) JoinPool(
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
-		p.IncreaseLiquidity(numShares, tokensJoined)
+		err = p.IncreaseLiquidity(numShares, tokensJoined)
+		if err != nil {
+			return math.Int{}, math.LegacyDec{}, math.LegacyDec{}, err
+		}
 		return numShares, sdk.ZeroDec(), sdk.ZeroDec(), nil
 	}
 
@@ -152,7 +155,10 @@ func (p *Pool) JoinPool(
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
-		p.IncreaseLiquidity(numShares, tokensJoined)
+		err = p.IncreaseLiquidity(numShares, tokensJoined)
+		if err != nil {
+			return math.Int{}, math.LegacyDec{}, math.LegacyDec{}, err
+		}
 		return numShares, totalSlippage, sdk.ZeroDec(), nil
 	}
 
@@ -204,7 +210,10 @@ func (p *Pool) JoinPool(
 		Mul(joinValueWithoutSlippage).Quo(tvl).
 		Mul(sdk.OneDec().Add(weightBalanceBonus))
 	numShares = numSharesDec.RoundInt()
-	p.IncreaseLiquidity(numShares, tokensIn)
+	err = p.IncreaseLiquidity(numShares, tokensIn)
+	if err != nil {
+		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
+	}
 
 	// No slippage in oracle pool due to 1 hr lock
 	return numShares, sdk.ZeroDec(), weightBalanceBonus, nil

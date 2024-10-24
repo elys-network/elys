@@ -14,10 +14,26 @@
 ### Requirements:
 
 1. **Stop-Loss Trigger:**
-   - Trigger the `closePosition` function if the `custody` price reaches the stop-loss price.
-   - **Required Data:**
-     - `custody` price (obtained using the AMM module).
-     - Stop-loss price (present in the `Position` object).
+  - Trigger the `closePosition` function if the `TradingAsset` price reaches the stop-loss price.
+  - **Required Data:**
+    - `TradingAsset` price (obtained using the oracle module).
+    - Stop-loss price (present in the `Position` object).
+  - For long position: If `tradingAssetPrice <= mtp.StopLossPrice` then trigger closePosition message.
+  - For short position: If `tradingAssetPrice >= mtp.StopLossPrice` then trigger closePosition message.
+
+## Check Take-Profit Conditions
+
+### Requirements:
+
+1. **Take-Profit Trigger:**
+  - Trigger the `closePosition` function if the `tradingAsset` price reaches the take-profit price.
+  - **Required Data:**
+    - `TradingAsset` price (obtained using the oracle module).
+    - `TakeProfitPrice` price (present in the `Position` object).
+  - For long position: If `tradingAssetPrice >= mtp.TakeProfitPrice` then trigger closePosition message.
+  - For short position: If `tradingAssetPrice <= mtp.TakeProfitPrice` then trigger closePosition message.
+
+  - Note: only oracle pools are used by perpetual, therefore the bot should always rely on oracle module for retrieving asset price.
 
 ### closePositions function
 - `closePositions(liquidate: [](address, u64), stopLoss: [](address, u64))`

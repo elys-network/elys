@@ -37,8 +37,6 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 			pools = append(pools, types.PoolResponse{
 				AmmPoolId:                            pool.AmmPoolId,
 				Health:                               pool.Health,
-				Enabled:                              pool.Enabled,
-				Closed:                               pool.Closed,
 				BorrowInterestRate:                   pool.BorrowInterestRate,
 				PoolAssetsLong:                       pool.PoolAssetsLong,
 				PoolAssetsShort:                      pool.PoolAssetsShort,
@@ -74,8 +72,6 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 	pool := types.PoolResponse{
 		AmmPoolId:                            val.AmmPoolId,
 		Health:                               val.Health,
-		Enabled:                              val.Enabled,
-		Closed:                               val.Closed,
 		BorrowInterestRate:                   val.BorrowInterestRate,
 		PoolAssetsLong:                       val.PoolAssetsLong,
 		PoolAssetsShort:                      val.PoolAssetsShort,

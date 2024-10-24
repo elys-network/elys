@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -62,7 +63,7 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 			panic(err)
 		}
 
-		suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId))
+		suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, math.LegacyMustNewDecFromStr("10")))
 
 	}
 	msgBond := stabletypes.MsgBond{
@@ -169,7 +170,7 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			msgServer := keeper.NewMsgServerImpl(suite.app.LeveragelpKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 			_, err := msgServer.ClaimRewards(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)

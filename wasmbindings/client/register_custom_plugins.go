@@ -24,8 +24,6 @@ import (
 	epochskeeper "github.com/elys-network/elys/x/epochs/keeper"
 	estakingclientwasm "github.com/elys-network/elys/x/estaking/client/wasm"
 	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
-	incentiveclientwasm "github.com/elys-network/elys/x/incentive/client/wasm"
-	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpclientwasm "github.com/elys-network/elys/x/leveragelp/client/wasm"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	masterchefclientwasm "github.com/elys-network/elys/x/masterchef/client/wasm"
@@ -56,7 +54,6 @@ func RegisterCustomPlugins(
 	clock *clockkeeper.Keeper,
 	commitment *commitmentkeeper.Keeper,
 	epochs *epochskeeper.Keeper,
-	incentive *incentivekeeper.Keeper,
 	leveragelp *leveragelpkeeper.Keeper,
 	perpetual *perpetualkeeper.Keeper,
 	oracle *oraclekeeper.Keeper,
@@ -72,7 +69,7 @@ func RegisterCustomPlugins(
 	accountedpoolQuerier := accountedpoolclientwasm.NewQuerier(accountedpool)
 	accountedpoolMessenger := accountedpoolclientwasm.NewMessenger(accountedpool)
 
-	ammQuerier := ammclientwasm.NewQuerier(amm, bank, commitment, assetprofile, perpetual, incentive, oracle, leveragelp, accountedpool, stablestake, masterchef)
+	ammQuerier := ammclientwasm.NewQuerier(amm, bank, commitment, assetprofile, perpetual, oracle, leveragelp, accountedpool, stablestake, masterchef)
 	ammMessenger := ammclientwasm.NewMessenger(amm, parameter)
 
 	assetprofileQuerier := assetprofileclientwasm.NewQuerier(assetprofile)
@@ -92,9 +89,6 @@ func RegisterCustomPlugins(
 
 	epochsQuerier := epochsclientwasm.NewQuerier(epochs)
 	epochsMessenger := epochsclientwasm.NewMessenger(epochs)
-
-	incentiveQuerier := incentiveclientwasm.NewQuerier(incentive, staking)
-	incentiveMessenger := incentiveclientwasm.NewMessenger(incentive, staking, commitment, parameter)
 
 	leveragelpQuerier := leveragelpclientwasm.NewQuerier(leveragelp)
 	leveragelpMessenger := leveragelpclientwasm.NewMessenger(leveragelp, parameter)
@@ -135,7 +129,6 @@ func RegisterCustomPlugins(
 		clockQuerier,
 		commitmentQuerier,
 		epochsQuerier,
-		incentiveQuerier,
 		leveragelpQuerier,
 		perpetualQuerier,
 		oracleQuerier,
@@ -159,7 +152,6 @@ func RegisterCustomPlugins(
 		clock,
 		commitment,
 		epochs,
-		incentive,
 		leveragelp,
 		perpetual,
 		oracle,
@@ -186,7 +178,6 @@ func RegisterCustomPlugins(
 		clockMessenger,
 		commitmentMessenger,
 		epochsMessenger,
-		incentiveMessenger,
 		leveragelpMessenger,
 		perpetualMessenger,
 		oracleMessenger,
@@ -211,7 +202,6 @@ func RegisterCustomPlugins(
 			clock,
 			commitment,
 			epochs,
-			incentive,
 			leveragelp,
 			perpetual,
 			oracle,
