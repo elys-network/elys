@@ -7,6 +7,7 @@ import (
 )
 
 // GetNetOpenInterest calculates the net open interest for a given pool.
+// Note: Net open interest should always be in terms of trading asset
 func (k Keeper) GetNetOpenInterest(ctx sdk.Context, pool types.Pool) math.Int {
 	// account custody from long position
 	totalCustodyLong := sdk.ZeroInt()
