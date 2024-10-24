@@ -204,7 +204,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdk.MustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: "leveragelp not enabled for pool",
+			expectErrMsg: "denom does not exist in pool",
 			prerequisiteFunction: func() {
 				pool := types.NewPool(2, sdk.NewDec(60))
 				pool.Enabled = false
