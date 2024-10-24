@@ -2,18 +2,18 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
-	"github.com/elys-network/elys/x/incentive/types"
-	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
+	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
 func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk.Dec, error) {
-	masterchefParams := k.masterchef.GetParams(ctx)
-	estakingParams := k.estaking.GetParams(ctx)
+	masterchefParams := k.GetParams(ctx)
+	estakingParams := k.estakingKeeper.GetParams(ctx)
 
 	// If we don't have enough params
 	if estakingParams.StakeIncentives == nil || masterchefParams.LpIncentives == nil {
@@ -31,12 +31,12 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 
 	if query.Denom == ptypes.Eden {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {
-			return k.masterchef.CalculateStableStakeApr(ctx, &mastercheftypes.QueryStableStakeAprRequest{
+			return k.CalculateStableStakeApr(ctx, &types.QueryStableStakeAprRequest{
 				Denom: ptypes.Eden,
 			})
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
-			totalStakedSnapshot := k.estaking.TotalBondedTokens(ctx)
+			totalStakedSnapshot := k.estakingKeeper.TotalBondedTokens(ctx)
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {
@@ -48,7 +48,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			}
 
 			// Calculate
-			stakersEdenAmount := stkIncentive.EdenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear)).ToLegacyDec()
+			stakersEdenAmount := stkIncentive.EdenAmountPerYear.ToLegacyDec().Quo(sdk.NewInt(totalBlocksPerYear).ToLegacyDec())
 
 			// Maximum eden APR - 30% by default
 			stakersMaxEdenAmount := estakingParams.MaxEdenRewardAprStakers.
@@ -76,7 +76,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			return apr, nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
-			params := k.estaking.GetParams(ctx)
+			params := k.estakingKeeper.GetParams(ctx)
 			amount := params.DexRewardsStakers.Amount
 			if amount.IsZero() {
 				return sdk.ZeroDec(), nil
@@ -95,7 +95,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 			}
 
 			// Update total committed states
-			totalStakedSnapshot := k.estaking.TotalBondedTokens(ctx)
+			totalStakedSnapshot := k.estakingKeeper.TotalBondedTokens(ctx)
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {
@@ -120,4 +120,39 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (sdk
 	}
 
 	return sdk.ZeroDec(), nil
+}
+
+// Get total dex rewards amount from the specified pool
+func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (sdk.Dec, sdk.Coins) {
+	dailyDexRewardsTotal := math.LegacyZeroDec()
+	dailyGasRewardsTotal := math.LegacyZeroDec()
+	dailyEdenRewardsTotal := math.LegacyZeroDec()
+	firstAccum := k.FirstPoolRewardsAccum(ctx, poolId)
+	lastAccum := k.LastPoolRewardsAccum(ctx, poolId)
+	if lastAccum.Timestamp != 0 {
+		if firstAccum.Timestamp == lastAccum.Timestamp {
+			dailyDexRewardsTotal = lastAccum.DexReward
+			dailyGasRewardsTotal = lastAccum.GasReward
+			dailyEdenRewardsTotal = lastAccum.EdenReward
+		} else {
+			dailyDexRewardsTotal = lastAccum.DexReward.Sub(firstAccum.DexReward)
+			dailyGasRewardsTotal = lastAccum.GasReward.Sub(firstAccum.GasReward)
+			dailyEdenRewardsTotal = lastAccum.EdenReward.Sub(firstAccum.EdenReward)
+		}
+	}
+
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	if !found {
+		return sdk.ZeroDec(), sdk.Coins{}
+	}
+
+	rewardCoins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, dailyEdenRewardsTotal.RoundInt()))
+	rewardCoins = rewardCoins.Add(sdk.NewCoin(baseCurrency, dailyDexRewardsTotal.Add(dailyGasRewardsTotal).RoundInt()))
+
+	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+
+	totalRewardsUsd := usdcDenomPrice.Mul(dailyDexRewardsTotal.Add(dailyGasRewardsTotal)).
+		Add(edenDenomPrice.Mul(dailyEdenRewardsTotal))
+	return totalRewardsUsd, rewardCoins
 }

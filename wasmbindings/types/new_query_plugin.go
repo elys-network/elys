@@ -12,7 +12,6 @@ import (
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	epochskeeper "github.com/elys-network/elys/x/epochs/keeper"
 	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
-	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
@@ -36,7 +35,6 @@ func NewQueryPlugin(
 	clock *clockkeeper.Keeper,
 	commitment *commitmentkeeper.Keeper,
 	epochs *epochskeeper.Keeper,
-	incentive *incentivekeeper.Keeper,
 	leveragelp *leveragelpkeeper.Keeper,
 	perpetual *perpetualkeeper.Keeper,
 	oracle *oraclekeeper.Keeper,
@@ -60,7 +58,6 @@ func NewQueryPlugin(
 		clockKeeper:         clock,
 		commitmentKeeper:    commitment,
 		epochsKeeper:        epochs,
-		incentiveKeeper:     incentive,
 		leveragelpKeeper:    leveragelp,
 		stakingKeeper:       staking,
 		perpetualKeeper:     perpetual,
