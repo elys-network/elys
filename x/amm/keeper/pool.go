@@ -50,6 +50,22 @@ func (k Keeper) GetAllPool(ctx sdk.Context) (list []types.Pool) {
 	return
 }
 
+// GetAllLegacyPool returns all legacy pool
+func (k Keeper) GetAllLegacyPool(ctx sdk.Context) (list []types.LegacyPool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyPool
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
 // GetLatestPool retrieves the latest pool item from the list of pools
 func (k Keeper) GetLatestPool(ctx sdk.Context) (val types.Pool, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))

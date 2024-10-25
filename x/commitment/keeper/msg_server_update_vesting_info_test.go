@@ -83,3 +83,55 @@ func TestUpdateVestingInfo(t *testing.T) {
 	_, err := msgServer.UpdateVestingInfo(ctx, &msg)
 	require.NoError(t, err)
 }
+
+// TestKeeper_UpdateVestingInfo tests the UpdateVestingInfo function with wrong gov address
+func TestKeeper_UpdateVestingInfoWithWrongGovAddress(t *testing.T) {
+	app := app.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+
+	// Define the test data
+	signer := sdk.AccAddress(address.Module("test")).String()
+
+	// Call the UpdateVestingInfo function
+	msg := types.MsgUpdateVestingInfo{
+		Authority:      signer,
+		BaseDenom:      "test_denom",
+		VestingDenom:   "test_denom",
+		NumBlocks:      10,
+		VestNowFactor:  10,
+		NumMaxVestings: 10,
+	}
+	_, err := msgServer.UpdateVestingInfo(ctx, &msg)
+	require.Error(t, err)
+}
+
+// TestKeeper_UpdateVestingInfo tests the UpdateVestingInfo function with negative num blocks
+func TestKeeper_UpdateVestingInfoWithNegativeNumBlocks(t *testing.T) {
+	app := app.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+
+	govAddress := sdk.AccAddress(address.Module("gov"))
+
+	// Define the test data
+	signer := govAddress.String()
+
+	// Call the UpdateVestingInfo function
+	msg := types.MsgUpdateVestingInfo{
+		Authority:      signer,
+		BaseDenom:      "test_denom",
+		VestingDenom:   "test_denom",
+		NumBlocks:      -10,
+		VestNowFactor:  10,
+		NumMaxVestings: 10,
+	}
+	_, err := msgServer.UpdateVestingInfo(ctx, &msg)
+	require.Error(t, err)
+}

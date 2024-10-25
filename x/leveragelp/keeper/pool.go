@@ -54,3 +54,13 @@ func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found b
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
 }
+
+func (k Keeper) DeleteLegacyPool(ctx sdk.Context, poolId uint64) error {
+	store := ctx.KVStore(k.storeKey)
+	key := types.PoolKey(poolId)
+	if !store.Has(key) {
+		return types.ErrPositionDoesNotExist
+	}
+	store.Delete(key)
+	return nil
+}

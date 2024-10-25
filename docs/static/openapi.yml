@@ -38005,6 +38005,24 @@ paths:
                             type: string
                     total_weight:
                       type: string
+                    non_amm_pool_tokens:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
               pagination:
                 type: object
                 properties:
@@ -38166,6 +38184,23 @@ paths:
                           type: string
                   total_weight:
                     type: string
+                  non_amm_pool_tokens:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -38662,6 +38697,8 @@ paths:
                     type: string
                     format: uint64
                     title: 'default 1 week: 604,800'
+                  enable_base_currency_paired_pool_only:
+                    type: boolean
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -38722,6 +38759,8 @@ paths:
                         weight_recovery_fee_portion:
                           type: string
                         threshold_weight_difference:
+                          type: string
+                        weight_breaking_fee_portion:
                           type: string
                         fee_denom:
                           type: string
@@ -38918,6 +38957,8 @@ paths:
                       weight_recovery_fee_portion:
                         type: string
                       threshold_weight_difference:
+                        type: string
+                      weight_breaking_fee_portion:
                         type: string
                       fee_denom:
                         type: string
@@ -40673,242 +40714,6 @@ paths:
           type: string
       tags:
         - Query
-  /elys-network/elys/incentive/apr/{withdraw_type}/{denom}:
-    get:
-      summary: Calculate APR
-      operationId: ElysIncentiveApr
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              apr:
-                type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: withdraw_type
-          in: path
-          required: true
-          type: string
-          enum:
-            - ALL_PROGRAM
-            - USDC_PROGRAM
-            - ELYS_PROGRAM
-            - EDEN_PROGRAM
-            - EDENB_PROGRAM
-            - LP_MINING_PROGRAM
-        - name: denom
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /elys-network/elys/incentive/aprs:
-    get:
-      summary: Calculate APRs
-      operationId: ElysIncentiveAprs
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              usdc_apr_usdc:
-                type: string
-              eden_apr_usdc:
-                type: string
-              usdc_apr_edenb:
-                type: string
-              eden_apr_edenb:
-                type: string
-              usdc_apr_eden:
-                type: string
-              eden_apr_eden:
-                type: string
-              edenb_apr_eden:
-                type: string
-              usdc_apr_elys:
-                type: string
-              eden_apr_elys:
-                type: string
-              edenb_apr_elys:
-                type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /elys-network/elys/incentive/pool_rewards:
-    get:
-      summary: Queries PoolReward items
-      operationId: ElysIncentivePoolRewards
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              pools:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    pool_id:
-                      type: string
-                      format: uint64
-                    rewards_usd:
-                      type: string
-                    reward_coins:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    eden_forward:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pool_ids
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-            format: uint64
-          collectionFormat: multi
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
   /elys-network/elys/leveragelp/close_estimation:
     get:
       summary: Get estimated amount of return value closing a position
@@ -41238,10 +41043,6 @@ paths:
                     format: uint64
                   health:
                     type: string
-                  enabled:
-                    type: boolean
-                  closed:
-                    type: boolean
                   leveraged_lp_amount:
                     type: string
                   leverage_max:
@@ -41291,10 +41092,6 @@ paths:
                       format: uint64
                     health:
                       type: string
-                    enabled:
-                      type: boolean
-                    closed:
-                      type: boolean
                     leveraged_lp_amount:
                       type: string
                     leverage_max:
@@ -42226,6 +42023,104 @@ paths:
           type: boolean
       tags:
         - Query
+  /elys-network/elys/masterchef/apr/{withdraw_type}/{denom}:
+    get:
+      summary: Calculate APR
+      operationId: ElysMasterchefApr
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              apr:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: withdraw_type
+          in: path
+          required: true
+          type: string
+          enum:
+            - ALL_PROGRAM
+            - USDC_PROGRAM
+            - ELYS_PROGRAM
+            - EDEN_PROGRAM
+            - EDENB_PROGRAM
+            - LP_MINING_PROGRAM
+        - name: denom
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /elys-network/elys/masterchef/aprs:
+    get:
+      summary: Calculate APRs
+      operationId: ElysMasterchefAprs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              usdc_apr_usdc:
+                type: string
+              eden_apr_usdc:
+                type: string
+              usdc_apr_edenb:
+                type: string
+              eden_apr_edenb:
+                type: string
+              usdc_apr_eden:
+                type: string
+              eden_apr_eden:
+                type: string
+              edenb_apr_eden:
+                type: string
+              usdc_apr_elys:
+                type: string
+              eden_apr_elys:
+                type: string
+              edenb_apr_elys:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/masterchef/external_incentive:
     get:
       operationId: ElysMasterchefExternalIncentive
@@ -42659,6 +42554,144 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/masterchef/pool_rewards:
+    get:
+      summary: Queries PoolReward items
+      operationId: ElysMasterchefPoolRewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pools:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pool_id:
+                      type: string
+                      format: uint64
+                    rewards_usd:
+                      type: string
+                    reward_coins:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+                    eden_forward:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pool_ids
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+            format: uint64
+          collectionFormat: multi
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
   /elys-network/elys/masterchef/show_fee_info/{date}:
     get:
       summary: Queries a list of ShowFeeInfo items.
@@ -43074,10 +43107,10 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /elys-network/elys/oracle/price:
+  /elys-network/elys/oracle/price/{asset}:
     get:
-      summary: Queries a list of Price items.
-      operationId: ElysOraclePriceAll
+      summary: Queries a Price by asset.
+      operationId: ElysOraclePrice
       responses:
         '200':
           description: A successful response.
@@ -43085,52 +43118,22 @@ paths:
             type: object
             properties:
               price:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    asset:
-                      type: string
-                    price:
-                      type: string
-                    source:
-                      type: string
-                    provider:
-                      type: string
-                    timestamp:
-                      type: string
-                      format: uint64
-                    block_height:
-                      type: string
-                      format: uint64
-              pagination:
                 type: object
                 properties:
-                  next_key:
+                  asset:
                     type: string
-                    format: byte
-                    description: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently. It will be empty if
-                      there are no more results.
-                  total:
+                  price:
+                    type: string
+                  source:
+                    type: string
+                  provider:
+                    type: string
+                  timestamp:
                     type: string
                     format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
+                  block_height:
+                    type: string
+                    format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -43150,62 +43153,19 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
+        - name: asset
+          in: path
+          required: true
+          type: string
+        - name: source
           in: query
           required: false
           type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
+        - name: timestamp
           in: query
           required: false
           type: string
           format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
       tags:
         - Query
   /elys-network/elys/oracle/price_feeder:
@@ -43374,6 +43334,140 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/oracle/prices:
+    get:
+      summary: Queries a list of Price items.
+      operationId: ElysOraclePriceAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              price:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    asset:
+                      type: string
+                    price:
+                      type: string
+                    source:
+                      type: string
+                    provider:
+                      type: string
+                    timestamp:
+                      type: string
+                      format: uint64
+                    block_height:
+                      type: string
+                      format: uint64
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
   /elys/oracle/band_price_result/{request_id}:
     get:
       summary: BandPriceResult defines a rpc handler method for MsgRequestBandPrice.
@@ -43509,7 +43603,7 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /elys-network/elys/perpetual/close_estimation/{positionId}:
+  /elys-network/elys/perpetual/close-estimation/{position_id}:
     get:
       summary: Queries a list of CloseEstimation items.
       operationId: ElysPerpetualCloseEstimation
@@ -43521,7 +43615,12 @@ paths:
             properties:
               position:
                 type: string
-              positionSize:
+                enum:
+                  - UNSPECIFIED
+                  - LONG
+                  - SHORT
+                default: UNSPECIFIED
+              position_size:
                 type: object
                 properties:
                   denom:
@@ -43551,11 +43650,58 @@ paths:
                   method
 
                   signatures required by gogoproto.
-              priceImpact:
+              price_impact:
                 type: string
-              swapFee:
+              liquidation_price:
                 type: string
-              repayAmount:
+              max_close_amount:
+                type: string
+              borrow_interest_unpaid_liability:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              returning_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              paying_liabilities:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              return_amount_at_closing_price:
                 type: object
                 properties:
                   denom:
@@ -43589,11 +43735,23 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: positionId
+        - name: position_id
           in: path
           required: true
           type: string
           format: uint64
+        - name: address
+          in: query
+          required: false
+          type: string
+        - name: close_amount
+          in: query
+          required: false
+          type: string
+        - name: closing_price
+          in: query
+          required: false
+          type: string
       tags:
         - Query
   /elys-network/elys/perpetual/get_all_to_pay:
@@ -43709,11 +43867,9 @@ paths:
                         type: string
                       liabilities:
                         type: string
-                      borrow_interest_paid_collateral:
-                        type: string
                       borrow_interest_paid_custody:
                         type: string
-                      borrow_interest_unpaid_collateral:
+                      borrow_interest_unpaid_liability:
                         type: string
                       custody:
                         type: string
@@ -43721,11 +43877,6 @@ paths:
                         type: string
                       take_profit_custody:
                         type: string
-<<<<<<< HEAD
-=======
-                      leverage:
-                        type: string
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                       mtp_health:
                         type: string
                       position:
@@ -43741,22 +43892,12 @@ paths:
                       amm_pool_id:
                         type: string
                         format: uint64
-                      consolidate_leverage:
-                        type: string
-                      sum_collateral:
-                        type: string
                       take_profit_price:
                         type: string
-                      take_profit_borrow_rate:
+                      take_profit_borrow_factor:
                         type: string
-                      funding_fee_paid_collateral:
-                        type: string
-                        title: funding fee paid
                       funding_fee_paid_custody:
                         type: string
-                      funding_fee_received_collateral:
-                        type: string
-                        title: funding fee received
                       funding_fee_received_custody:
                         type: string
                       open_price:
@@ -43777,11 +43918,25 @@ paths:
                         format: uint64
                   trading_asset_price:
                     type: string
-<<<<<<< HEAD
                   pnl:
                     type: string
-=======
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
+                  effective_leverage:
+                    type: string
+                  liquidation_price:
+                    type: string
+                  fees:
+                    type: object
+                    properties:
+                      total_fees_base_currency:
+                        type: string
+                      borrow_interest_fees_liability_asset:
+                        type: string
+                      borrow_interest_fees_base_currency:
+                        type: string
+                      funding_fees_liquidity_asset:
+                        type: string
+                      funding_fees_base_currency:
+                        type: string
         default:
           description: An unexpected error response.
           schema:
@@ -43844,11 +43999,9 @@ paths:
                           type: string
                         liabilities:
                           type: string
-                        borrow_interest_paid_collateral:
-                          type: string
                         borrow_interest_paid_custody:
                           type: string
-                        borrow_interest_unpaid_collateral:
+                        borrow_interest_unpaid_liability:
                           type: string
                         custody:
                           type: string
@@ -43856,11 +44009,6 @@ paths:
                           type: string
                         take_profit_custody:
                           type: string
-<<<<<<< HEAD
-=======
-                        leverage:
-                          type: string
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                         mtp_health:
                           type: string
                         position:
@@ -43876,22 +44024,12 @@ paths:
                         amm_pool_id:
                           type: string
                           format: uint64
-                        consolidate_leverage:
-                          type: string
-                        sum_collateral:
-                          type: string
                         take_profit_price:
                           type: string
-                        take_profit_borrow_rate:
+                        take_profit_borrow_factor:
                           type: string
-                        funding_fee_paid_collateral:
-                          type: string
-                          title: funding fee paid
                         funding_fee_paid_custody:
                           type: string
-                        funding_fee_received_collateral:
-                          type: string
-                          title: funding fee received
                         funding_fee_received_custody:
                           type: string
                         open_price:
@@ -43912,11 +44050,25 @@ paths:
                           format: uint64
                     trading_asset_price:
                       type: string
-<<<<<<< HEAD
                     pnl:
                       type: string
-=======
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
+                    effective_leverage:
+                      type: string
+                    liquidation_price:
+                      type: string
+                    fees:
+                      type: object
+                      properties:
+                        total_fees_base_currency:
+                          type: string
+                        borrow_interest_fees_liability_asset:
+                          type: string
+                        borrow_interest_fees_base_currency:
+                          type: string
+                        funding_fees_liquidity_asset:
+                          type: string
+                        funding_fees_base_currency:
+                          type: string
               pagination:
                 type: object
                 properties:
@@ -44059,11 +44211,9 @@ paths:
                           type: string
                         liabilities:
                           type: string
-                        borrow_interest_paid_collateral:
-                          type: string
                         borrow_interest_paid_custody:
                           type: string
-                        borrow_interest_unpaid_collateral:
+                        borrow_interest_unpaid_liability:
                           type: string
                         custody:
                           type: string
@@ -44071,11 +44221,6 @@ paths:
                           type: string
                         take_profit_custody:
                           type: string
-<<<<<<< HEAD
-=======
-                        leverage:
-                          type: string
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                         mtp_health:
                           type: string
                         position:
@@ -44091,22 +44236,12 @@ paths:
                         amm_pool_id:
                           type: string
                           format: uint64
-                        consolidate_leverage:
-                          type: string
-                        sum_collateral:
-                          type: string
                         take_profit_price:
                           type: string
-                        take_profit_borrow_rate:
+                        take_profit_borrow_factor:
                           type: string
-                        funding_fee_paid_collateral:
-                          type: string
-                          title: funding fee paid
                         funding_fee_paid_custody:
                           type: string
-                        funding_fee_received_collateral:
-                          type: string
-                          title: funding fee received
                         funding_fee_received_custody:
                           type: string
                         open_price:
@@ -44127,6 +44262,25 @@ paths:
                           format: uint64
                     trading_asset_price:
                       type: string
+                    pnl:
+                      type: string
+                    effective_leverage:
+                      type: string
+                    liquidation_price:
+                      type: string
+                    fees:
+                      type: object
+                      properties:
+                        total_fees_base_currency:
+                          type: string
+                        borrow_interest_fees_liability_asset:
+                          type: string
+                        borrow_interest_fees_base_currency:
+                          type: string
+                        funding_fees_liquidity_asset:
+                          type: string
+                        funding_fees_base_currency:
+                          type: string
               pagination:
                 type: object
                 properties:
@@ -44273,7 +44427,20 @@ paths:
 
                   signatures required by gogoproto.
               interest_amount:
-                type: string
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
               position_size:
                 type: object
                 properties:
@@ -44289,10 +44456,6 @@ paths:
                   method
 
                   signatures required by gogoproto.
-              swap_fee:
-                type: string
-              discount:
-                type: string
               open_price:
                 type: string
               take_profit_price:
@@ -44300,9 +44463,20 @@ paths:
               liquidation_price:
                 type: string
               estimated_pnl:
-                type: string
-              estimated_pnl_denom:
-                type: string
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
               available_liquidity:
                 type: object
                 properties:
@@ -44320,44 +44494,12 @@ paths:
                   signatures required by gogoproto.
               slippage:
                 type: string
-              weight_balance_ratio:
-                type: string
               borrow_interest_rate:
                 type: string
               funding_rate:
                 type: string
               price_impact:
                 type: string
-              borrow_fee:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-              funding_fee:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -44410,6 +44552,11 @@ paths:
           in: query
           required: false
           type: string
+        - name: poolId
+          in: query
+          required: false
+          type: string
+          format: uint64
       tags:
         - Query
   /elys-network/elys/perpetual/params:
@@ -44432,17 +44579,12 @@ paths:
                     type: string
                   borrow_interest_rate_min:
                     type: string
-                  min_borrow_interest_amount:
-                    type: string
                   borrow_interest_rate_increase:
                     type: string
                   borrow_interest_rate_decrease:
                     type: string
                   health_gain_factor:
                     type: string
-                  epoch_length:
-                    type: string
-                    format: int64
                   max_open_positions:
                     type: string
                     format: int64
@@ -44462,23 +44604,31 @@ paths:
                     type: boolean
                   whitelisting_enabled:
                     type: boolean
-                  invariant_check_epoch:
-                    type: string
-                  take_profit_borrow_interest_rate_min:
-                    type: string
-                  funding_fee_base_rate:
-                    type: string
-                  funding_fee_max_rate:
-                    type: string
-                  funding_fee_min_rate:
-                    type: string
-                  funding_fee_collection_address:
-                    type: string
-                  swap_fee:
+                  perpetual_swap_fee:
                     type: string
                   max_limit_order:
                     type: string
                     format: int64
+                  fixed_funding_rate:
+                    type: string
+                  minimum_long_take_profit_price_ratio:
+                    type: string
+                    title: >-
+                      minimum value for take_profit_price/current price for
+                      long, should be greater than 1
+                  maximum_long_take_profit_price_ratio:
+                    type: string
+                    title: >-
+                      max value for take_profit_price/current price for long,
+                      should be greater than 1
+                  maximum_short_take_profit_price_ratio:
+                    type: string
+                    description: >-
+                      No need for minimumShortTakeProfitPriceRatio as it will be
+                      0, checked in validate message
+                    title: >-
+                      max value for take_profit_price/current price for short,
+                      should be less than 1
             description: ParamsResponse is response type for the Query/Params RPC method.
         default:
           description: An unexpected error response.
@@ -44518,10 +44668,6 @@ paths:
                     format: uint64
                   health:
                     type: string
-                  enabled:
-                    type: boolean
-                  closed:
-                    type: boolean
                   borrow_interest_rate:
                     type: string
                   pool_assets_long:
@@ -44537,10 +44683,6 @@ paths:
                           type: string
                         take_profit_custody:
                           type: string
-                        asset_balance:
-                          type: string
-                        block_borrow_interest:
-                          type: string
                         asset_denom:
                           type: string
                   pool_assets_short:
@@ -44555,10 +44697,6 @@ paths:
                         take_profit_liabilities:
                           type: string
                         take_profit_custody:
-                          type: string
-                        asset_balance:
-                          type: string
-                        block_borrow_interest:
                           type: string
                         asset_denom:
                           type: string
@@ -44618,10 +44756,6 @@ paths:
                       format: uint64
                     health:
                       type: string
-                    enabled:
-                      type: boolean
-                    closed:
-                      type: boolean
                     borrow_interest_rate:
                       type: string
                     pool_assets_long:
@@ -44637,10 +44771,6 @@ paths:
                             type: string
                           take_profit_custody:
                             type: string
-                          asset_balance:
-                            type: string
-                          block_borrow_interest:
-                            type: string
                           asset_denom:
                             type: string
                     pool_assets_short:
@@ -44655,10 +44785,6 @@ paths:
                           take_profit_liabilities:
                             type: string
                           take_profit_custody:
-                            type: string
-                          asset_balance:
-                            type: string
-                          block_borrow_interest:
                             type: string
                           asset_denom:
                             type: string
@@ -44809,11 +44935,9 @@ paths:
                           type: string
                         liabilities:
                           type: string
-                        borrow_interest_paid_collateral:
-                          type: string
                         borrow_interest_paid_custody:
                           type: string
-                        borrow_interest_unpaid_collateral:
+                        borrow_interest_unpaid_liability:
                           type: string
                         custody:
                           type: string
@@ -44821,11 +44945,6 @@ paths:
                           type: string
                         take_profit_custody:
                           type: string
-<<<<<<< HEAD
-=======
-                        leverage:
-                          type: string
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                         mtp_health:
                           type: string
                         position:
@@ -44841,22 +44960,12 @@ paths:
                         amm_pool_id:
                           type: string
                           format: uint64
-                        consolidate_leverage:
-                          type: string
-                        sum_collateral:
-                          type: string
                         take_profit_price:
                           type: string
-                        take_profit_borrow_rate:
+                        take_profit_borrow_factor:
                           type: string
-                        funding_fee_paid_collateral:
-                          type: string
-                          title: funding fee paid
                         funding_fee_paid_custody:
                           type: string
-                        funding_fee_received_collateral:
-                          type: string
-                          title: funding fee received
                         funding_fee_received_custody:
                           type: string
                         open_price:
@@ -44877,11 +44986,25 @@ paths:
                           format: uint64
                     trading_asset_price:
                       type: string
-<<<<<<< HEAD
                     pnl:
                       type: string
-=======
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
+                    effective_leverage:
+                      type: string
+                    liquidation_price:
+                      type: string
+                    fees:
+                      type: object
+                      properties:
+                        total_fees_base_currency:
+                          type: string
+                        borrow_interest_fees_liability_asset:
+                          type: string
+                        borrow_interest_fees_base_currency:
+                          type: string
+                        funding_fees_liquidity_asset:
+                          type: string
+                        funding_fees_base_currency:
+                          type: string
               pagination:
                 type: object
                 properties:
@@ -45215,6 +45338,8 @@ paths:
                   health_gain_factor:
                     type: string
                   total_value:
+                    type: string
+                  max_leverage_ratio:
                     type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
@@ -46419,9 +46544,31 @@ paths:
                       enum:
                         - PENDING
                         - EXECUTED
-                        - CANCLED
+                        - CANCELED
+                        - ALL
                       default: PENDING
                     stop_loss_price:
+                      type: string
+                    position_size:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    liquidation_price:
+                      type: string
+                    funding_rate:
+                      type: string
+                    borrow_interest_rate:
                       type: string
               pagination:
                 type: object
@@ -46601,9 +46748,31 @@ paths:
                     enum:
                       - PENDING
                       - EXECUTED
-                      - CANCLED
+                      - CANCELED
+                      - ALL
                     default: PENDING
                   stop_loss_price:
+                    type: string
+                  position_size:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  liquidation_price:
+                    type: string
+                  funding_rate:
+                    type: string
+                  borrow_interest_rate:
                     type: string
         default:
           description: An unexpected error response.
@@ -46640,6 +46809,98 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              pending_perpetual_orders:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    order_id:
+                      type: string
+                      format: uint64
+                    owner_address:
+                      type: string
+                    perpetual_order_type:
+                      type: string
+                      enum:
+                        - LIMITOPEN
+                        - LIMITCLOSE
+                        - MARKETOPEN
+                        - MARKETCLOSE
+                        - STOPLOSSPERP
+                      default: LIMITOPEN
+                      title: Perpetual Order
+                    position:
+                      type: string
+                      enum:
+                        - UNSPECIFIED
+                        - LONG
+                        - SHORT
+                      default: UNSPECIFIED
+                    trigger_price:
+                      type: object
+                      properties:
+                        base_denom:
+                          type: string
+                        quote_denom:
+                          type: string
+                        rate:
+                          type: string
+                    collateral:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    trading_asset:
+                      type: string
+                    leverage:
+                      type: string
+                    take_profit_price:
+                      type: string
+                    position_id:
+                      type: string
+                      format: uint64
+                    status:
+                      type: string
+                      enum:
+                        - PENDING
+                        - EXECUTED
+                        - CANCELED
+                        - ALL
+                      default: PENDING
+                    stop_loss_price:
+                      type: string
+                    position_size:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    liquidation_price:
+                      type: string
+                    funding_rate:
+                      type: string
+                    borrow_interest_rate:
+                      type: string
         default:
           description: An unexpected error response.
           schema:
@@ -46663,6 +46924,16 @@ paths:
           in: path
           required: true
           type: string
+        - name: status
+          in: query
+          required: false
+          type: string
+          enum:
+            - PENDING
+            - EXECUTED
+            - CANCELED
+            - ALL
+          default: PENDING
       tags:
         - Query
   /elys-network/elys/tradeshield/pending_spot_order:
@@ -46724,7 +46995,8 @@ paths:
                       enum:
                         - PENDING
                         - EXECUTED
-                        - CANCLED
+                        - CANCELED
+                        - ALL
                       default: PENDING
                     date:
                       type: object
@@ -46898,7 +47170,8 @@ paths:
                     enum:
                       - PENDING
                       - EXECUTED
-                      - CANCLED
+                      - CANCELED
+                      - ALL
                     default: PENDING
                   date:
                     type: object
@@ -46944,6 +47217,69 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              pending_spot_orders:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    order_type:
+                      type: string
+                      enum:
+                        - STOPLOSS
+                        - LIMITSELL
+                        - LIMITBUY
+                        - MARKETBUY
+                      default: STOPLOSS
+                      title: Spot order
+                    order_id:
+                      type: string
+                      format: uint64
+                    order_price:
+                      type: object
+                      properties:
+                        base_denom:
+                          type: string
+                        quote_denom:
+                          type: string
+                        rate:
+                          type: string
+                    order_amount:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    owner_address:
+                      type: string
+                    order_target_denom:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                        - PENDING
+                        - EXECUTED
+                        - CANCELED
+                        - ALL
+                      default: PENDING
+                    date:
+                      type: object
+                      properties:
+                        height:
+                          type: string
+                          format: uint64
+                        timestamp:
+                          type: string
+                          format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -46967,6 +47303,16 @@ paths:
           in: path
           required: true
           type: string
+        - name: status
+          in: query
+          required: false
+          type: string
+          enum:
+            - PENDING
+            - EXECUTED
+            - CANCELED
+            - ALL
+          default: PENDING
       tags:
         - Query
   /elys-network/elys/transferhook/params:
@@ -86268,6 +86614,20 @@ definitions:
               type: string
       total_weight:
         type: string
+      non_amm_pool_tokens:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   elys.accountedpool.QueryAllAccountedPoolResponse:
     type: object
     properties:
@@ -86318,6 +86678,23 @@ definitions:
                     type: string
             total_weight:
               type: string
+            non_amm_pool_tokens:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
       pagination:
         type: object
         properties:
@@ -86392,6 +86769,23 @@ definitions:
                   type: string
           total_weight:
             type: string
+          non_amm_pool_tokens:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
   elys.amm.PoolAsset:
     type: object
     properties:
@@ -86581,6 +86975,8 @@ definitions:
             type: string
           threshold_weight_difference:
             type: string
+          weight_breaking_fee_portion:
+            type: string
           fee_denom:
             type: string
             title: denom for fee collection
@@ -86616,6 +87012,8 @@ definitions:
         type: string
         format: uint64
         title: 'default 1 week: 604,800'
+      enable_base_currency_paired_pool_only:
+        type: boolean
     description: Params defines the parameters for the module.
   elys.amm.Pool:
     type: object
@@ -86643,6 +87041,8 @@ definitions:
           weight_recovery_fee_portion:
             type: string
           threshold_weight_difference:
+            type: string
+          weight_breaking_fee_portion:
             type: string
           fee_denom:
             type: string
@@ -86710,6 +87110,8 @@ definitions:
       weight_recovery_fee_portion:
         type: string
       threshold_weight_difference:
+        type: string
+      weight_breaking_fee_portion:
         type: string
       fee_denom:
         type: string
@@ -86783,6 +87185,8 @@ definitions:
                 weight_recovery_fee_portion:
                   type: string
                 threshold_weight_difference:
+                  type: string
+                weight_breaking_fee_portion:
                   type: string
                 fee_denom:
                   type: string
@@ -86935,6 +87339,8 @@ definitions:
                 type: string
               threshold_weight_difference:
                 type: string
+              weight_breaking_fee_portion:
+                type: string
               fee_denom:
                 type: string
                 title: denom for fee collection
@@ -87058,6 +87464,8 @@ definitions:
             type: string
             format: uint64
             title: 'default 1 week: 604,800'
+          enable_base_currency_paired_pool_only:
+            type: boolean
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.amm.QuerySlippageTrackAllResponse:
     type: object
@@ -88312,133 +88720,12 @@ definitions:
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
         description: total defines the sum of all the rewards.
-  elys.commitment.EarnType:
-    type: string
-    enum:
-      - ALL_PROGRAM
-      - USDC_PROGRAM
-      - ELYS_PROGRAM
-      - EDEN_PROGRAM
-      - EDENB_PROGRAM
-      - LP_MINING_PROGRAM
-    default: ALL_PROGRAM
-  elys.incentive.PoolRewards:
-    type: object
-    properties:
-      pool_id:
-        type: string
-        format: uint64
-      rewards_usd:
-        type: string
-      reward_coins:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-      eden_forward:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-  elys.incentive.QueryAprResponse:
-    type: object
-    properties:
-      apr:
-        type: string
-  elys.incentive.QueryAprsResponse:
-    type: object
-    properties:
-      usdc_apr_usdc:
-        type: string
-      eden_apr_usdc:
-        type: string
-      usdc_apr_edenb:
-        type: string
-      eden_apr_edenb:
-        type: string
-      usdc_apr_eden:
-        type: string
-      eden_apr_eden:
-        type: string
-      edenb_apr_eden:
-        type: string
-      usdc_apr_elys:
-        type: string
-      eden_apr_elys:
-        type: string
-      edenb_apr_elys:
-        type: string
-  elys.incentive.QueryPoolRewardsResponse:
-    type: object
-    properties:
-      pools:
-        type: array
-        items:
-          type: object
-          properties:
-            pool_id:
-              type: string
-              format: uint64
-            rewards_usd:
-              type: string
-            reward_coins:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            eden_forward:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
   elys.leveragelp.AddPool:
     type: object
     properties:
       amm_pool_id:
         type: string
         format: uint64
-      enabled:
-        type: boolean
-      closed:
-        type: boolean
       leverage_max:
         type: string
   elys.leveragelp.IsWhitelistedResponse:
@@ -88463,8 +88750,6 @@ definitions:
   elys.leveragelp.MsgRemovePoolResponse:
     type: object
   elys.leveragelp.MsgUpdateParamsResponse:
-    type: object
-  elys.leveragelp.MsgUpdatePoolResponse:
     type: object
   elys.leveragelp.MsgUpdateStopLossResponse:
     type: object
@@ -88530,10 +88815,6 @@ definitions:
         format: uint64
       health:
         type: string
-      enabled:
-        type: boolean
-      closed:
-        type: boolean
       leveraged_lp_amount:
         type: string
       leverage_max:
@@ -88913,10 +89194,6 @@ definitions:
               format: uint64
             health:
               type: string
-            enabled:
-              type: boolean
-            closed:
-              type: boolean
             leveraged_lp_amount:
               type: string
             leverage_max:
@@ -89000,10 +89277,6 @@ definitions:
             format: uint64
           health:
             type: string
-          enabled:
-            type: boolean
-          closed:
-            type: boolean
           leveraged_lp_amount:
             type: string
           leverage_max:
@@ -89135,16 +89408,6 @@ definitions:
       lifetime_position_count:
         type: string
         format: uint64
-  elys.leveragelp.UpdatePool:
-    type: object
-    properties:
-      pool_id:
-        type: string
-        format: uint64
-      enabled:
-        type: boolean
-      closed:
-        type: boolean
   elys.leveragelp.WhitelistResponse:
     type: object
     properties:
@@ -89178,6 +89441,16 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.commitment.EarnType:
+    type: string
+    enum:
+      - ALL_PROGRAM
+      - USDC_PROGRAM
+      - ELYS_PROGRAM
+      - EDEN_PROGRAM
+      - EDENB_PROGRAM
+      - LP_MINING_PROGRAM
+    default: ALL_PROGRAM
   elys.masterchef.ExternalIncentive:
     type: object
     properties:
@@ -89348,6 +89621,68 @@ definitions:
       last_updated_block:
         type: string
         format: uint64
+  elys.masterchef.PoolRewards:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      rewards_usd:
+        type: string
+      reward_coins:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      eden_forward:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+  elys.masterchef.QueryAprResponse:
+    type: object
+    properties:
+      apr:
+        type: string
+  elys.masterchef.QueryAprsResponse:
+    type: object
+    properties:
+      usdc_apr_usdc:
+        type: string
+      eden_apr_usdc:
+        type: string
+      usdc_apr_edenb:
+        type: string
+      eden_apr_edenb:
+        type: string
+      usdc_apr_eden:
+        type: string
+      eden_apr_eden:
+        type: string
+      edenb_apr_eden:
+        type: string
+      usdc_apr_elys:
+        type: string
+      eden_apr_elys:
+        type: string
+      edenb_apr_elys:
+        type: string
   elys.masterchef.QueryExternalIncentiveResponse:
     type: object
     properties:
@@ -89513,6 +89848,51 @@ definitions:
           last_updated_block:
             type: string
             format: uint64
+  elys.masterchef.QueryPoolRewardsResponse:
+    type: object
+    properties:
+      pools:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            rewards_usd:
+              type: string
+            reward_coins:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+            eden_forward:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
   elys.masterchef.QueryShowFeeInfoResponse:
     type: object
     properties:
@@ -90074,6 +90454,19 @@ definitions:
           wasm_max_proposal_wasm_size:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  elys.perpetual.Fees:
+    type: object
+    properties:
+      total_fees_base_currency:
+        type: string
+      borrow_interest_fees_liability_asset:
+        type: string
+      borrow_interest_fees_base_currency:
+        type: string
+      funding_fees_liquidity_asset:
+        type: string
+      funding_fees_base_currency:
+        type: string
   elys.perpetual.IsWhitelistedResponse:
     type: object
     properties:
@@ -90098,11 +90491,9 @@ definitions:
         type: string
       liabilities:
         type: string
-      borrow_interest_paid_collateral:
-        type: string
       borrow_interest_paid_custody:
         type: string
-      borrow_interest_unpaid_collateral:
+      borrow_interest_unpaid_liability:
         type: string
       custody:
         type: string
@@ -90125,22 +90516,12 @@ definitions:
       amm_pool_id:
         type: string
         format: uint64
-      consolidate_leverage:
-        type: string
-      sum_collateral:
-        type: string
       take_profit_price:
         type: string
-      take_profit_borrow_rate:
+      take_profit_borrow_factor:
         type: string
-      funding_fee_paid_collateral:
-        type: string
-        title: funding fee paid
       funding_fee_paid_custody:
         type: string
-      funding_fee_received_collateral:
-        type: string
-        title: funding fee received
       funding_fee_received_custody:
         type: string
       open_price:
@@ -90182,11 +90563,9 @@ definitions:
                 type: string
               liabilities:
                 type: string
-              borrow_interest_paid_collateral:
-                type: string
               borrow_interest_paid_custody:
                 type: string
-              borrow_interest_unpaid_collateral:
+              borrow_interest_unpaid_liability:
                 type: string
               custody:
                 type: string
@@ -90194,11 +90573,6 @@ definitions:
                 type: string
               take_profit_custody:
                 type: string
-<<<<<<< HEAD
-=======
-              leverage:
-                type: string
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
               mtp_health:
                 type: string
               position:
@@ -90214,22 +90588,12 @@ definitions:
               amm_pool_id:
                 type: string
                 format: uint64
-              consolidate_leverage:
-                type: string
-              sum_collateral:
-                type: string
               take_profit_price:
                 type: string
-              take_profit_borrow_rate:
+              take_profit_borrow_factor:
                 type: string
-              funding_fee_paid_collateral:
-                type: string
-                title: funding fee paid
               funding_fee_paid_custody:
                 type: string
-              funding_fee_received_collateral:
-                type: string
-                title: funding fee received
               funding_fee_received_custody:
                 type: string
               open_price:
@@ -90250,13 +90614,25 @@ definitions:
                 format: uint64
           trading_asset_price:
             type: string
-<<<<<<< HEAD
           pnl:
             type: string
-=======
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
-  elys.perpetual.MsgAddCollateralResponse:
-    type: object
+          effective_leverage:
+            type: string
+          liquidation_price:
+            type: string
+          fees:
+            type: object
+            properties:
+              total_fees_base_currency:
+                type: string
+              borrow_interest_fees_liability_asset:
+                type: string
+              borrow_interest_fees_base_currency:
+                type: string
+              funding_fees_liquidity_asset:
+                type: string
+              funding_fees_base_currency:
+                type: string
   elys.perpetual.MsgClosePositionsResponse:
     type: object
   elys.perpetual.MsgCloseResponse:
@@ -90303,11 +90679,9 @@ definitions:
             type: string
           liabilities:
             type: string
-          borrow_interest_paid_collateral:
-            type: string
           borrow_interest_paid_custody:
             type: string
-          borrow_interest_unpaid_collateral:
+          borrow_interest_unpaid_liability:
             type: string
           custody:
             type: string
@@ -90330,22 +90704,12 @@ definitions:
           amm_pool_id:
             type: string
             format: uint64
-          consolidate_leverage:
-            type: string
-          sum_collateral:
-            type: string
           take_profit_price:
             type: string
-          take_profit_borrow_rate:
+          take_profit_borrow_factor:
             type: string
-          funding_fee_paid_collateral:
-            type: string
-            title: funding fee paid
           funding_fee_paid_custody:
             type: string
-          funding_fee_received_collateral:
-            type: string
-            title: funding fee received
           funding_fee_received_custody:
             type: string
           open_price:
@@ -90366,11 +90730,25 @@ definitions:
             format: uint64
       trading_asset_price:
         type: string
-<<<<<<< HEAD
       pnl:
         type: string
-=======
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
+      effective_leverage:
+        type: string
+      liquidation_price:
+        type: string
+      fees:
+        type: object
+        properties:
+          total_fees_base_currency:
+            type: string
+          borrow_interest_fees_liability_asset:
+            type: string
+          borrow_interest_fees_base_currency:
+            type: string
+          funding_fees_liquidity_asset:
+            type: string
+          funding_fees_base_currency:
+            type: string
   elys.perpetual.Params:
     type: object
     properties:
@@ -90380,17 +90758,12 @@ definitions:
         type: string
       borrow_interest_rate_min:
         type: string
-      min_borrow_interest_amount:
-        type: string
       borrow_interest_rate_increase:
         type: string
       borrow_interest_rate_decrease:
         type: string
       health_gain_factor:
         type: string
-      epoch_length:
-        type: string
-        format: int64
       max_open_positions:
         type: string
         format: int64
@@ -90410,23 +90783,31 @@ definitions:
         type: boolean
       whitelisting_enabled:
         type: boolean
-      invariant_check_epoch:
-        type: string
-      take_profit_borrow_interest_rate_min:
-        type: string
-      funding_fee_base_rate:
-        type: string
-      funding_fee_max_rate:
-        type: string
-      funding_fee_min_rate:
-        type: string
-      funding_fee_collection_address:
-        type: string
-      swap_fee:
+      perpetual_swap_fee:
         type: string
       max_limit_order:
         type: string
         format: int64
+      fixed_funding_rate:
+        type: string
+      minimum_long_take_profit_price_ratio:
+        type: string
+        title: >-
+          minimum value for take_profit_price/current price for long, should be
+          greater than 1
+      maximum_long_take_profit_price_ratio:
+        type: string
+        title: >-
+          max value for take_profit_price/current price for long, should be
+          greater than 1
+      maximum_short_take_profit_price_ratio:
+        type: string
+        description: >-
+          No need for minimumShortTakeProfitPriceRatio as it will be 0, checked
+          in validate message
+        title: >-
+          max value for take_profit_price/current price for short, should be
+          less than 1
     description: Params defines the parameters for the module.
   elys.perpetual.ParamsResponse:
     type: object
@@ -90441,17 +90822,12 @@ definitions:
             type: string
           borrow_interest_rate_min:
             type: string
-          min_borrow_interest_amount:
-            type: string
           borrow_interest_rate_increase:
             type: string
           borrow_interest_rate_decrease:
             type: string
           health_gain_factor:
             type: string
-          epoch_length:
-            type: string
-            format: int64
           max_open_positions:
             type: string
             format: int64
@@ -90471,23 +90847,31 @@ definitions:
             type: boolean
           whitelisting_enabled:
             type: boolean
-          invariant_check_epoch:
-            type: string
-          take_profit_borrow_interest_rate_min:
-            type: string
-          funding_fee_base_rate:
-            type: string
-          funding_fee_max_rate:
-            type: string
-          funding_fee_min_rate:
-            type: string
-          funding_fee_collection_address:
-            type: string
-          swap_fee:
+          perpetual_swap_fee:
             type: string
           max_limit_order:
             type: string
             format: int64
+          fixed_funding_rate:
+            type: string
+          minimum_long_take_profit_price_ratio:
+            type: string
+            title: >-
+              minimum value for take_profit_price/current price for long, should
+              be greater than 1
+          maximum_long_take_profit_price_ratio:
+            type: string
+            title: >-
+              max value for take_profit_price/current price for long, should be
+              greater than 1
+          maximum_short_take_profit_price_ratio:
+            type: string
+            description: >-
+              No need for minimumShortTakeProfitPriceRatio as it will be 0,
+              checked in validate message
+            title: >-
+              max value for take_profit_price/current price for short, should be
+              less than 1
     description: ParamsResponse is response type for the Query/Params RPC method.
   elys.perpetual.PoolAsset:
     type: object
@@ -90500,10 +90884,6 @@ definitions:
         type: string
       take_profit_custody:
         type: string
-      asset_balance:
-        type: string
-      block_borrow_interest:
-        type: string
       asset_denom:
         type: string
   elys.perpetual.PoolResponse:
@@ -90514,10 +90894,6 @@ definitions:
         format: uint64
       health:
         type: string
-      enabled:
-        type: boolean
-      closed:
-        type: boolean
       borrow_interest_rate:
         type: string
       pool_assets_long:
@@ -90533,10 +90909,6 @@ definitions:
               type: string
             take_profit_custody:
               type: string
-            asset_balance:
-              type: string
-            block_borrow_interest:
-              type: string
             asset_denom:
               type: string
       pool_assets_short:
@@ -90551,10 +90923,6 @@ definitions:
             take_profit_liabilities:
               type: string
             take_profit_custody:
-              type: string
-            asset_balance:
-              type: string
-            block_borrow_interest:
               type: string
             asset_denom:
               type: string
@@ -90608,11 +90976,9 @@ definitions:
                   type: string
                 liabilities:
                   type: string
-                borrow_interest_paid_collateral:
-                  type: string
                 borrow_interest_paid_custody:
                   type: string
-                borrow_interest_unpaid_collateral:
+                borrow_interest_unpaid_liability:
                   type: string
                 custody:
                   type: string
@@ -90620,11 +90986,6 @@ definitions:
                   type: string
                 take_profit_custody:
                   type: string
-<<<<<<< HEAD
-=======
-                leverage:
-                  type: string
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                 mtp_health:
                   type: string
                 position:
@@ -90640,22 +91001,12 @@ definitions:
                 amm_pool_id:
                   type: string
                   format: uint64
-                consolidate_leverage:
-                  type: string
-                sum_collateral:
-                  type: string
                 take_profit_price:
                   type: string
-                take_profit_borrow_rate:
+                take_profit_borrow_factor:
                   type: string
-                funding_fee_paid_collateral:
-                  type: string
-                  title: funding fee paid
                 funding_fee_paid_custody:
                   type: string
-                funding_fee_received_collateral:
-                  type: string
-                  title: funding fee received
                 funding_fee_received_custody:
                   type: string
                 open_price:
@@ -90676,11 +91027,25 @@ definitions:
                   format: uint64
             trading_asset_price:
               type: string
-<<<<<<< HEAD
             pnl:
               type: string
-=======
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
+            effective_leverage:
+              type: string
+            liquidation_price:
+              type: string
+            fees:
+              type: object
+              properties:
+                total_fees_base_currency:
+                  type: string
+                borrow_interest_fees_liability_asset:
+                  type: string
+                borrow_interest_fees_base_currency:
+                  type: string
+                funding_fees_liquidity_asset:
+                  type: string
+                funding_fees_base_currency:
+                  type: string
       pagination:
         type: object
         properties:
@@ -90732,11 +91097,9 @@ definitions:
                   type: string
                 liabilities:
                   type: string
-                borrow_interest_paid_collateral:
-                  type: string
                 borrow_interest_paid_custody:
                   type: string
-                borrow_interest_unpaid_collateral:
+                borrow_interest_unpaid_liability:
                   type: string
                 custody:
                   type: string
@@ -90744,11 +91107,6 @@ definitions:
                   type: string
                 take_profit_custody:
                   type: string
-<<<<<<< HEAD
-=======
-                leverage:
-                  type: string
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                 mtp_health:
                   type: string
                 position:
@@ -90764,22 +91122,12 @@ definitions:
                 amm_pool_id:
                   type: string
                   format: uint64
-                consolidate_leverage:
-                  type: string
-                sum_collateral:
-                  type: string
                 take_profit_price:
                   type: string
-                take_profit_borrow_rate:
+                take_profit_borrow_factor:
                   type: string
-                funding_fee_paid_collateral:
-                  type: string
-                  title: funding fee paid
                 funding_fee_paid_custody:
                   type: string
-                funding_fee_received_collateral:
-                  type: string
-                  title: funding fee received
                 funding_fee_received_custody:
                   type: string
                 open_price:
@@ -90800,11 +91148,25 @@ definitions:
                   format: uint64
             trading_asset_price:
               type: string
-<<<<<<< HEAD
             pnl:
               type: string
-=======
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
+            effective_leverage:
+              type: string
+            liquidation_price:
+              type: string
+            fees:
+              type: object
+              properties:
+                total_fees_base_currency:
+                  type: string
+                borrow_interest_fees_liability_asset:
+                  type: string
+                borrow_interest_fees_base_currency:
+                  type: string
+                funding_fees_liquidity_asset:
+                  type: string
+                funding_fees_base_currency:
+                  type: string
       pagination:
         type: object
         properties:
@@ -90856,11 +91218,9 @@ definitions:
                   type: string
                 liabilities:
                   type: string
-                borrow_interest_paid_collateral:
-                  type: string
                 borrow_interest_paid_custody:
                   type: string
-                borrow_interest_unpaid_collateral:
+                borrow_interest_unpaid_liability:
                   type: string
                 custody:
                   type: string
@@ -90868,11 +91228,6 @@ definitions:
                   type: string
                 take_profit_custody:
                   type: string
-<<<<<<< HEAD
-=======
-                leverage:
-                  type: string
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
                 mtp_health:
                   type: string
                 position:
@@ -90888,22 +91243,12 @@ definitions:
                 amm_pool_id:
                   type: string
                   format: uint64
-                consolidate_leverage:
-                  type: string
-                sum_collateral:
-                  type: string
                 take_profit_price:
                   type: string
-                take_profit_borrow_rate:
+                take_profit_borrow_factor:
                   type: string
-                funding_fee_paid_collateral:
-                  type: string
-                  title: funding fee paid
                 funding_fee_paid_custody:
                   type: string
-                funding_fee_received_collateral:
-                  type: string
-                  title: funding fee received
                 funding_fee_received_custody:
                   type: string
                 open_price:
@@ -90924,11 +91269,25 @@ definitions:
                   format: uint64
             trading_asset_price:
               type: string
-<<<<<<< HEAD
             pnl:
               type: string
-=======
->>>>>>> e018c0a536b9b9e7692aff56a98cac02dadf7628
+            effective_leverage:
+              type: string
+            liquidation_price:
+              type: string
+            fees:
+              type: object
+              properties:
+                total_fees_base_currency:
+                  type: string
+                borrow_interest_fees_liability_asset:
+                  type: string
+                borrow_interest_fees_base_currency:
+                  type: string
+                funding_fees_liquidity_asset:
+                  type: string
+                funding_fees_base_currency:
+                  type: string
       pagination:
         type: object
         properties:
@@ -90968,10 +91327,6 @@ definitions:
               format: uint64
             health:
               type: string
-            enabled:
-              type: boolean
-            closed:
-              type: boolean
             borrow_interest_rate:
               type: string
             pool_assets_long:
@@ -90987,10 +91342,6 @@ definitions:
                     type: string
                   take_profit_custody:
                     type: string
-                  asset_balance:
-                    type: string
-                  block_borrow_interest:
-                    type: string
                   asset_denom:
                     type: string
             pool_assets_short:
@@ -91005,10 +91356,6 @@ definitions:
                   take_profit_liabilities:
                     type: string
                   take_profit_custody:
-                    type: string
-                  asset_balance:
-                    type: string
-                  block_borrow_interest:
                     type: string
                   asset_denom:
                     type: string
@@ -91053,7 +91400,12 @@ definitions:
     properties:
       position:
         type: string
-      positionSize:
+        enum:
+          - UNSPECIFIED
+          - LONG
+          - SHORT
+        default: UNSPECIFIED
+      position_size:
         type: object
         properties:
           denom:
@@ -91077,11 +91429,49 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      priceImpact:
+      price_impact:
         type: string
-      swapFee:
+      liquidation_price:
         type: string
-      repayAmount:
+      max_close_amount:
+        type: string
+      borrow_interest_unpaid_liability:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      returning_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      paying_liabilities:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      return_amount_at_closing_price:
         type: object
         properties:
           denom:
@@ -91121,10 +91511,6 @@ definitions:
             format: uint64
           health:
             type: string
-          enabled:
-            type: boolean
-          closed:
-            type: boolean
           borrow_interest_rate:
             type: string
           pool_assets_long:
@@ -91140,10 +91526,6 @@ definitions:
                   type: string
                 take_profit_custody:
                   type: string
-                asset_balance:
-                  type: string
-                block_borrow_interest:
-                  type: string
                 asset_denom:
                   type: string
           pool_assets_short:
@@ -91158,10 +91540,6 @@ definitions:
                 take_profit_liabilities:
                   type: string
                 take_profit_custody:
-                  type: string
-                asset_balance:
-                  type: string
-                block_borrow_interest:
                   type: string
                 asset_denom:
                   type: string
@@ -91202,7 +91580,17 @@ definitions:
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
       interest_amount:
-        type: string
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
       position_size:
         type: object
         properties:
@@ -91215,10 +91603,6 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      swap_fee:
-        type: string
-      discount:
-        type: string
       open_price:
         type: string
       take_profit_price:
@@ -91226,9 +91610,17 @@ definitions:
       liquidation_price:
         type: string
       estimated_pnl:
-        type: string
-      estimated_pnl_denom:
-        type: string
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
       available_liquidity:
         type: object
         properties:
@@ -91243,38 +91635,12 @@ definitions:
           signatures required by gogoproto.
       slippage:
         type: string
-      weight_balance_ratio:
-        type: string
       borrow_interest_rate:
         type: string
       funding_rate:
         type: string
       price_impact:
         type: string
-      borrow_fee:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      funding_fee:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
   elys.perpetual.StatusResponse:
     type: object
     properties:
@@ -91359,6 +91725,8 @@ definitions:
         type: string
       total_value:
         type: string
+      max_leverage_ratio:
+        type: string
     description: Params defines the parameters for the module.
   elys.stablestake.QueryBorrowRatioResponse:
     type: object
@@ -91399,6 +91767,8 @@ definitions:
           health_gain_factor:
             type: string
           total_value:
+            type: string
+          max_leverage_ratio:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.tier.MsgSetPortfolioResponse:
@@ -91844,6 +92214,10 @@ definitions:
       timestamp:
         type: string
         format: uint64
+  elys.tradeshield.MsgCancelPerpetualOrdersResponse:
+    type: object
+  elys.tradeshield.MsgCancelSpotOrdersResponse:
+    type: object
   elys.tradeshield.MsgCreatePendingPerpetualOrderResponse:
     type: object
     properties:
@@ -91856,10 +92230,6 @@ definitions:
       order_id:
         type: string
         format: uint64
-  elys.tradeshield.MsgCancelPerpetualOrdersResponse:
-    type: object
-  elys.tradeshield.MsgCancelSpotOrdersResponse:
-    type: object
   elys.tradeshield.MsgExecuteOrdersResponse:
     type: object
   elys.tradeshield.MsgUpdateParamsResponse:
@@ -91965,9 +92335,28 @@ definitions:
         enum:
           - PENDING
           - EXECUTED
-          - CANCLED
+          - CANCELED
+          - ALL
         default: PENDING
       stop_loss_price:
+        type: string
+      position_size:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      liquidation_price:
+        type: string
+      funding_rate:
+        type: string
+      borrow_interest_rate:
         type: string
   elys.tradeshield.PerpetualOrderType:
     type: string
@@ -92054,9 +92443,31 @@ definitions:
               enum:
                 - PENDING
                 - EXECUTED
-                - CANCLED
+                - CANCELED
+                - ALL
               default: PENDING
             stop_loss_price:
+              type: string
+            position_size:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            liquidation_price:
+              type: string
+            funding_rate:
+              type: string
+            borrow_interest_rate:
               type: string
       pagination:
         type: object
@@ -92137,7 +92548,8 @@ definitions:
               enum:
                 - PENDING
                 - EXECUTED
-                - CANCLED
+                - CANCELED
+                - ALL
               default: PENDING
             date:
               type: object
@@ -92240,9 +92652,31 @@ definitions:
             enum:
               - PENDING
               - EXECUTED
-              - CANCLED
+              - CANCELED
+              - ALL
             default: PENDING
           stop_loss_price:
+            type: string
+          position_size:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          liquidation_price:
+            type: string
+          funding_rate:
+            type: string
+          borrow_interest_rate:
             type: string
   elys.tradeshield.QueryGetPendingSpotOrderResponse:
     type: object
@@ -92295,7 +92729,8 @@ definitions:
             enum:
               - PENDING
               - EXECUTED
-              - CANCLED
+              - CANCELED
+              - ALL
             default: PENDING
           date:
             type: object
@@ -92340,8 +92775,163 @@ definitions:
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.tradeshield.QueryPendingPerpetualOrderForAddressResponse:
     type: object
+    properties:
+      pending_perpetual_orders:
+        type: array
+        items:
+          type: object
+          properties:
+            order_id:
+              type: string
+              format: uint64
+            owner_address:
+              type: string
+            perpetual_order_type:
+              type: string
+              enum:
+                - LIMITOPEN
+                - LIMITCLOSE
+                - MARKETOPEN
+                - MARKETCLOSE
+                - STOPLOSSPERP
+              default: LIMITOPEN
+              title: Perpetual Order
+            position:
+              type: string
+              enum:
+                - UNSPECIFIED
+                - LONG
+                - SHORT
+              default: UNSPECIFIED
+            trigger_price:
+              type: object
+              properties:
+                base_denom:
+                  type: string
+                quote_denom:
+                  type: string
+                rate:
+                  type: string
+            collateral:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            trading_asset:
+              type: string
+            leverage:
+              type: string
+            take_profit_price:
+              type: string
+            position_id:
+              type: string
+              format: uint64
+            status:
+              type: string
+              enum:
+                - PENDING
+                - EXECUTED
+                - CANCELED
+                - ALL
+              default: PENDING
+            stop_loss_price:
+              type: string
+            position_size:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            liquidation_price:
+              type: string
+            funding_rate:
+              type: string
+            borrow_interest_rate:
+              type: string
   elys.tradeshield.QueryPendingSpotOrderForAddressResponse:
     type: object
+    properties:
+      pending_spot_orders:
+        type: array
+        items:
+          type: object
+          properties:
+            order_type:
+              type: string
+              enum:
+                - STOPLOSS
+                - LIMITSELL
+                - LIMITBUY
+                - MARKETBUY
+              default: STOPLOSS
+              title: Spot order
+            order_id:
+              type: string
+              format: uint64
+            order_price:
+              type: object
+              properties:
+                base_denom:
+                  type: string
+                quote_denom:
+                  type: string
+                rate:
+                  type: string
+            order_amount:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            owner_address:
+              type: string
+            order_target_denom:
+              type: string
+            status:
+              type: string
+              enum:
+                - PENDING
+                - EXECUTED
+                - CANCELED
+                - ALL
+              default: PENDING
+            date:
+              type: object
+              properties:
+                height:
+                  type: string
+                  format: uint64
+                timestamp:
+                  type: string
+                  format: uint64
   elys.tradeshield.SpotOrder:
     type: object
     properties:
@@ -92387,7 +92977,8 @@ definitions:
         enum:
           - PENDING
           - EXECUTED
-          - CANCLED
+          - CANCELED
+          - ALL
         default: PENDING
       date:
         type: object
@@ -92412,7 +93003,8 @@ definitions:
     enum:
       - PENDING
       - EXECUTED
-      - CANCLED
+      - CANCELED
+      - ALL
     default: PENDING
   elys.transferhook.Params:
     type: object

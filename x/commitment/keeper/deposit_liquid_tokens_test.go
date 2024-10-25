@@ -13,6 +13,85 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// TestDepositLiquidTokensWithNoEntry tests the deposit of liquid tokens with no assetprofile entry
+func TestDepositLiquidTokensWithNoEntry(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+
+	// Mint 100ueden
+	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)))
+
+	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, edenToken)
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], edenToken)
+	require.NoError(t, err)
+
+	creator := addr[0]
+
+	// Set up the commitments for the creator
+	commitments := types.Commitments{
+		Creator: creator.String(),
+		CommittedTokens: []*types.CommittedTokens{
+			{
+				Denom:  ptypes.Eden,
+				Amount: sdk.NewInt(50),
+			},
+		},
+		Claimed: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdk.NewInt(150))},
+	}
+	keeper.SetCommitments(ctx, commitments)
+
+	// Deposit liquid eden to become claimed state
+	err = keeper.DepositLiquidTokensClaimed(ctx, ptypes.Eden, sdk.NewInt(100), creator)
+	require.Error(t, err)
+}
+
+// TestDepositLiquidTokensWithEntryDisabled tests the deposit of liquid tokens with assetprofile entry disabled
+func TestDepositLiquidTokensWithEntryDisabled(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+
+	// Mint 100ueden
+	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)))
+
+	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, edenToken)
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], edenToken)
+	require.NoError(t, err)
+
+	creator := addr[0]
+
+	// Set assetprofile entry for denom
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: false})
+
+	// Set up the commitments for the creator
+	commitments := types.Commitments{
+		Creator: creator.String(),
+		CommittedTokens: []*types.CommittedTokens{
+			{
+				Denom:  ptypes.Eden,
+				Amount: sdk.NewInt(50),
+			},
+		},
+		Claimed: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdk.NewInt(150))},
+	}
+	keeper.SetCommitments(ctx, commitments)
+
+	// Deposit liquid eden to become claimed state
+	err = keeper.DepositLiquidTokensClaimed(ctx, ptypes.Eden, sdk.NewInt(100), creator)
+	require.Error(t, err)
+}
+
 func TestDepositLiquidTokens(t *testing.T) {
 	app := simapp.InitElysTestApp(true)
 

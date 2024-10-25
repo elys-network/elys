@@ -27,7 +27,6 @@ func (k Keeper) UpdateMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 	mtp.BorrowInterestUnpaidLiability = mtp.BorrowInterestUnpaidLiability.Add(borrowInterestPaymentInt)
 	mtp.LastInterestCalcBlock = uint64(ctx.BlockHeight())
 	mtp.LastInterestCalcTime = uint64(ctx.BlockTime().Unix())
-	return
 }
 
 // SettleMTPBorrowInterestUnpaidLiability  This does not update BorrowInterestUnpaidLiability, it should be done through UpdateMTPBorrowInterestUnpaidLiability beforehand

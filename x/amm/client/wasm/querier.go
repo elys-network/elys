@@ -8,7 +8,6 @@ import (
 	"github.com/elys-network/elys/x/amm/keeper"
 	assetprofilekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
@@ -23,7 +22,6 @@ type Querier struct {
 	commitmentKeeper    *commitmentkeeper.Keeper
 	assetProfileKeeper  *assetprofilekeeper.Keeper
 	perpetualKeeper     *perpetualkeeper.Keeper
-	incentiveKeeper     *incentivekeeper.Keeper
 	oraclekeeper        *oraclekeeper.Keeper
 	leveragelpKeeper    *leveragelpkeeper.Keeper
 	accountedpoolKeeper *accountedpoolkeeper.Keeper
@@ -37,7 +35,6 @@ func NewQuerier(
 	commitmentKeeper *commitmentkeeper.Keeper,
 	assetProfileKeeper *assetprofilekeeper.Keeper,
 	perpetualKeeper *perpetualkeeper.Keeper,
-	incentiveKeeper *incentivekeeper.Keeper,
 	oraclekeeper *oraclekeeper.Keeper,
 	leveragelpKeeper *leveragelpkeeper.Keeper,
 	accountedpoolKeeper *accountedpoolkeeper.Keeper,
@@ -50,7 +47,6 @@ func NewQuerier(
 		commitmentKeeper:    commitmentKeeper,
 		assetProfileKeeper:  assetProfileKeeper,
 		perpetualKeeper:     perpetualKeeper,
-		incentiveKeeper:     incentiveKeeper,
 		oraclekeeper:        oraclekeeper,
 		leveragelpKeeper:    leveragelpKeeper,
 		accountedpoolKeeper: accountedpoolKeeper,

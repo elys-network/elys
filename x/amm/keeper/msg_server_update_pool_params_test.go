@@ -34,6 +34,7 @@ func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			updatedPoolParams: types.PoolParams{
@@ -45,6 +46,7 @@ func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    "feedenom",
 			},
 			poolAssets: []types.PoolAsset{
@@ -73,6 +75,7 @@ func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			updatedPoolParams: types.PoolParams{
@@ -84,6 +87,7 @@ func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{
@@ -112,6 +116,7 @@ func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{
