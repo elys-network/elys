@@ -27,6 +27,20 @@ func (k Keeper) GetAllPools(ctx sdk.Context) (list []types.Pool) {
 
 	return
 }
+func (k Keeper) GetAllLegacyPools(ctx sdk.Context) (list []types.LegacyPool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyPool
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
 
 // SetPool set a specific pool in the store from its index
 func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
