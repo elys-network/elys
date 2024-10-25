@@ -199,7 +199,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	return &types.MtpAndPrice{
 		Mtp:               &mtp,
 		TradingAssetPrice: tradingAssetPrice,
-		Pnl:               pnl,
+		Pnl:               sdk.NewCoin(baseCurrency, pnl),
 		LiquidationPrice:  liquidationPrice,
 		EffectiveLeverage: effectiveLeverage,
 		Fees: &types.Fees{
