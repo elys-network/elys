@@ -131,7 +131,10 @@ func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uin
 			Quo(sdk.NewDec(numberOfBlocks)).
 			Quo(blocksPerYear)
 
-		return sdk.MaxDec(finalInterestRate.Mul(takeProfitBorrowFactor), k.GetParams(ctx).BorrowInterestRateMin)
+		return sdk.MaxDec(
+			finalInterestRate.Mul(takeProfitBorrowFactor),
+			k.GetParams(ctx).BorrowInterestRateMin.Mul(sdk.NewDec(ctx.BlockTime().Unix()-int64(startTime))).Quo(blocksPerYear),
+		)
 	}
 
 	if !store.Has(startBlockKey) && store.Has(currentBlockKey) {
