@@ -126,7 +126,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		OpenPrice:          sdk.MustNewDecFromStr("5.017911485225627730"),
 		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
 		LiquidationPrice:   sdk.MustNewDecFromStr("3.823170655410002080"),
-		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(994_645_735)),
+		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(994_645_735)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600000000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.002572074655759760"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
@@ -248,7 +248,7 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		OpenPrice:          sdk.MustNewDecFromStr("5.014308340000000000"),
 		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
 		LiquidationPrice:   sdk.MustNewDecFromStr("3.824815447619047619"),
-		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(399_197_189)),
+		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(399_197_189)),
 		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)), // Need to increase block height to have non zero value
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.003001007041215876"),
