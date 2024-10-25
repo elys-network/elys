@@ -116,7 +116,10 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
 	}
 
-	entry, _ := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return nil, nil, status.Error(codes.NotFound, "base currency not found")
+	}
 	baseCurrency := entry.Denom
 
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {

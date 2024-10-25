@@ -26,7 +26,10 @@ func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPRes
 		return &types.MTPResponse{}, err
 	}
 
-	entry, _ := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return &types.MTPResponse{}, status.Error(codes.NotFound, "base currency not found")
+	}
 	baseCurrency := entry.Denom
 
 	mtpAndPrice, err := k.fillMTPData(ctx, mtp, nil, baseCurrency)
