@@ -193,7 +193,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, r
 		fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
 	}
 
-	effectiveLeverage, err := k.UpdatedLeverage(ctx, mtp)
+	effectiveLeverage, err := k.GetEffectiveLeverage(ctx, mtp)
 	if err != nil {
 		return nil, err
 	}
@@ -365,8 +365,8 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 			// estimated_pnl = (custody_amount - collateral_amount) * market_price - totalLiabilities
 
 			// For long position, convert both custody and collateral to base currency
-			custodyAfterCollateralInBaseCurrecy := (custodyAmtAfterFunding.Sub(collateralAmt)).ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
-			estimatedPnL = custodyAfterCollateralInBaseCurrecy.Sub(totalLiabilities)
+			custodyAfterCollateralInBaseCurrency := (custodyAmtAfterFunding.Sub(collateralAmt)).ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+			estimatedPnL = custodyAfterCollateralInBaseCurrency.Sub(totalLiabilities)
 		} else {
 			// estimated_pnl = custody_amount * market_price - totalLiabilities - collateral_amount
 

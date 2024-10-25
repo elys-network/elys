@@ -69,6 +69,19 @@ func (mtp MTP) Validate() error {
 	return nil
 }
 
+func (mtp *MTP) GetAndSetOpenPrice() {
+	openPrice := math.LegacyZeroDec()
+	// open price = (collateral + liabilities) / custody
+	if mtp.Position == Position_LONG {
+		openPrice = (mtp.Collateral.Add(mtp.Liabilities)).ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())
+	} else {
+		// open price = (custody - collateral) / liabilities
+		openPrice = (mtp.Custody.Sub(mtp.Collateral)).ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
+	}
+	mtp.OpenPrice = openPrice
+	return
+}
+
 func (mtp MTP) GetAccountAddress() sdk.AccAddress {
 	return sdk.MustAccAddressFromBech32(mtp.Address)
 }

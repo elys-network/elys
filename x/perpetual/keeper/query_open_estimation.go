@@ -97,7 +97,6 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	custodyAmount := leveragedAmount
 	slippage := math.LegacyZeroDec()
 	mtp.Collateral = req.Collateral.Amount
-	executionPrice := math.LegacyZeroDec()
 	eta := req.Leverage.Sub(math.LegacyOneDec())
 	if req.Position == types.Position_LONG {
 		//getting custody
@@ -109,8 +108,6 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 			}
 
 			mtp.Liabilities = req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
-			// executionPrice = leveragedAmount / Custody
-			executionPrice = leveragedAmount.ToLegacyDec().Quo(custodyAmount.ToLegacyDec())
 		}
 		mtp.Custody = custodyAmount
 
@@ -121,9 +118,6 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 			if err != nil {
 				return nil, err
 			}
-
-			// executionPrice = (Liabilities in base currency) / Custody
-			executionPrice = mtp.Liabilities.ToLegacyDec().Quo(amountIn.ToLegacyDec())
 		}
 
 	}
@@ -131,21 +125,18 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	if req.Position == types.Position_SHORT {
 		mtp.Custody = custodyAmount
 		// Collateral will be in base currency
-		custodyTokenIn := sdk.NewCoin(baseCurrency, mtp.Custody)
-		mtp.Liabilities, slippage, err = k.EstimateSwap(ctx, custodyTokenIn, mtp.LiabilitiesAsset, ammPool)
+		amountOut := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
+		tokenOut := sdk.NewCoin(baseCurrency, amountOut)
+		mtp.Liabilities, slippage, err = k.EstimateSwapGivenOut(ctx, tokenOut, mtp.LiabilitiesAsset, ammPool)
 		if err != nil {
 			return nil, err
 		}
-
-		executionPrice = mtp.Custody.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
 	}
 	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(*mtp)
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
 	mtp.TakeProfitPrice = req.TakeProfitPrice
-	mtp.OpenPrice, err = k.CalOpenPrice(ctx, mtp, ammPool, baseCurrency)
-	if err != nil {
-		return nil, err
-	}
+	mtp.GetAndSetOpenPrice()
+	executionPrice := mtp.OpenPrice
 
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, mtp)
 
@@ -182,11 +173,13 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		OpenPrice:          mtp.OpenPrice,
 		TakeProfitPrice:    req.TakeProfitPrice,
 		LiquidationPrice:   liquidationPrice,
-		EstimatedPnl:       sdk.Coin{mtp.CustodyAsset, estimatedPnLAmount},
+		EstimatedPnl:       sdk.Coin{baseCurrency, estimatedPnLAmount},
 		AvailableLiquidity: availableLiquidity,
 		Slippage:           slippage,
 		PriceImpact:        priceImpact,
 		BorrowInterestRate: borrowInterestRate,
 		FundingRate:        fundingRate,
+		Custody:            sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
+		Liabilities:        sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
 	}, nil
 }

@@ -254,6 +254,8 @@ message QueryOpenEstimationResponse {
   string                   borrow_interest_rate = 13 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string                   funding_rate = 14 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string                   price_impact = 15 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin custody = 16 [(gogoproto.nullable) = false] ;
+  cosmos.base.v1beta1.Coin liabilities = 17 [(gogoproto.nullable) = false] ;
 }
 
 message QueryGetAllToPayRequest {}
