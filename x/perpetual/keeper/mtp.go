@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"google.golang.org/grpc/codes"
@@ -117,11 +116,7 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
 	}
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	realTime := true
-	if !found {
-		realTime = false
-	}
+	entry, _ := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	baseCurrency := entry.Denom
 
 	pageRes, err := query.Paginate(mtpStore, pagination, func(key []byte, value []byte) error {
@@ -132,7 +127,7 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 			return nil
 		}
 
-		mtpAndPrice, err := k.fillMTPData(ctx, mtp, ammPoolId, realTime, baseCurrency)
+		mtpAndPrice, err := k.fillMTPData(ctx, mtp, ammPoolId, baseCurrency)
 		if err != nil {
 			return err
 		}
@@ -148,40 +143,32 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 	return mtps, pageRes, nil
 }
 
-func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, realTime bool, baseCurrency string) (*types.MtpAndPrice, error) {
-	var ammPool ammtypes.Pool
-	var poolFound bool
-	if ammPoolId != nil {
-		ammPool, poolFound = k.amm.GetPool(ctx, *ammPoolId)
-	} else {
-		ammPool, poolFound = k.amm.GetPool(ctx, mtp.AmmPoolId)
-	}
-	if !poolFound {
-		realTime = false
+func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, baseCurrency string) (*types.MtpAndPrice, error) {
+	ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return &types.MtpAndPrice{}, fmt.Errorf("amm pool %d not found", mtp.AmmPoolId)
 	}
 
 	pnl := math.ZeroInt()
 	liquidationPrice := sdk.ZeroDec()
-	if realTime {
-		pool, found := k.GetPool(ctx, mtp.AmmPoolId)
-		if !found {
-			return &types.MtpAndPrice{}, fmt.Errorf("perpetual pool %d not found", mtp.AmmPoolId)
-		}
-
-		// Update interest first and then calculate health
-		k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
-		k.UpdateFundingFee(ctx, &mtp, &pool, ammPool)
-
-		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-		if err == nil {
-			mtp.MtpHealth = mtpHealth
-		}
-		pnl, err = k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
-		if err != nil {
-			return nil, err
-		}
-		liquidationPrice = k.GetLiquidationPrice(ctx, mtp)
+	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return &types.MtpAndPrice{}, fmt.Errorf("perpetual pool %d not found", mtp.AmmPoolId)
 	}
+
+	// Update interest first and then calculate health
+	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
+	k.UpdateFundingFee(ctx, &mtp, &pool, ammPool)
+
+	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+	if err == nil {
+		mtp.MtpHealth = mtpHealth
+	}
+	pnl, err = k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
+	if err != nil {
+		return nil, err
+	}
+	liquidationPrice = k.GetLiquidationPrice(ctx, mtp)
 
 	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 	if err != nil {

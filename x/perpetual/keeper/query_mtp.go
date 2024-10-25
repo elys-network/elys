@@ -26,14 +26,10 @@ func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPRes
 		return &types.MTPResponse{}, err
 	}
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	realTime := true
-	if !found {
-		realTime = false
-	}
+	entry, _ := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	baseCurrency := entry.Denom
 
-	mtpAndPrice, err := k.fillMTPData(ctx, mtp, nil, realTime, baseCurrency)
+	mtpAndPrice, err := k.fillMTPData(ctx, mtp, nil, baseCurrency)
 	if err != nil {
 		return &types.MTPResponse{}, err
 	}
