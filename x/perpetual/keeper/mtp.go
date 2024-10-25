@@ -152,8 +152,6 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, b
 		return &types.MtpAndPrice{}, fmt.Errorf("amm pool %d not found", mtp.AmmPoolId)
 	}
 
-	pnl := math.ZeroInt()
-	liquidationPrice := sdk.ZeroDec()
 	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
 		return &types.MtpAndPrice{}, fmt.Errorf("perpetual pool %d not found", mtp.AmmPoolId)
@@ -161,17 +159,19 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, b
 
 	// Update interest first and then calculate health
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
+	// Show updated liability
+	mtp.Liabilities = mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 	k.UpdateFundingFee(ctx, &mtp, &pool, ammPool)
 
 	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 	if err == nil {
 		mtp.MtpHealth = mtpHealth
 	}
-	pnl, err = k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
+	pnl, err := k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
 	if err != nil {
 		return nil, err
 	}
-	liquidationPrice = k.GetLiquidationPrice(ctx, mtp)
+	liquidationPrice := k.GetLiquidationPrice(ctx, mtp)
 
 	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 	if err != nil {
