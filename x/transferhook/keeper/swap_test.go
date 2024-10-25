@@ -199,7 +199,7 @@ func (suite *KeeperTestSuite) TestSwapOnRecvPacket() {
 				AmmActive: tc.forwardingActive,
 			})
 			// bootstrap accounts
-			poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			poolAddr := ammtypes.NewPoolAddress(uint64(1))
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			poolCoins := sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 100000000), sdk.NewInt64Coin(usdcIbcDenom, 100000000)}.Sort()
 
@@ -221,7 +221,7 @@ func (suite *KeeperTestSuite) TestSwapOnRecvPacket() {
 
 			pool := ammtypes.Pool{
 				PoolId:            1,
-				Address:           ammtypes.NewPoolAddress(uint64(1)).String(),
+				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: ammtypes.PoolParams{
 					SwapFee:  sdk.ZeroDec(),

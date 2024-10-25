@@ -41,7 +41,7 @@ func (suite *KeeperTestSuite) TestCalcOutRouteSpotPrice() {
 	}
 	pool := types.Pool{
 		PoolId:            1,
-		Address:           types.NewPoolAddress(uint64(2)).String(),
+		Address:           types.NewPoolAddress(uint64(1)).String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
 			UseOracle:                   false,

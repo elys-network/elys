@@ -93,7 +93,7 @@ func (suite *TestSuite) TestPoolTVL() {
 			suite.ctx = suite.ctx.WithBlockTime(now)
 
 			// bootstrap accounts
-			poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			poolAddr := types.NewPoolAddress(uint64(1))
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 			// prices set for USDT and USDC
@@ -112,7 +112,7 @@ func (suite *TestSuite) TestPoolTVL() {
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdk.ZeroInt(),
 			}
-			tvl, err := pool.TVL(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper)
+			tvl, err := pool.TVL(suite.ctx, suite.app.OracleKeeper)
 			if tc.expError {
 				suite.Require().Error(err)
 			} else {

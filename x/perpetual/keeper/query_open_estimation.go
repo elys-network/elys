@@ -133,7 +133,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		mtp.Custody = custodyAmount
 		// Collateral will be in base currency
 		custodyTokenIn := sdk.NewCoin(baseCurrency, mtp.Custody)
-		mtp.Liabilities, slippage, err = k.EstimateSwapGivenIn(ctx, custodyTokenIn, mtp.LiabilitiesAsset, ammPool)
+		mtp.Liabilities, slippage, err = k.EstimateSwapGivenOut(ctx, custodyTokenIn, mtp.LiabilitiesAsset, ammPool)
 		if err != nil {
 			return nil, err
 		}
