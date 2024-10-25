@@ -95,8 +95,7 @@ func CalcExitPool(
 
 	// refundedShares = exitingShares * (1 - exit fee)
 	// with 0 exit fee optimization
-	var refundedShares sdk.Dec
-	refundedShares = sdk.NewDecFromInt(exitingShares)
+	refundedShares := sdk.NewDecFromInt(exitingShares)
 
 	shareOutRatio := refundedShares.QuoInt(totalShares.Amount)
 	// exitedCoins = shareOutRatio * pool liquidity
@@ -133,21 +132,15 @@ func CalcExitPool(
 
 		weightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 		distanceDiff := weightDistance.Sub(initialWeightDistance)
-		weightBreakingFee := sdk.ZeroDec()
-		if distanceDiff.IsPositive() {
-			// old weight breaking fee implementation
-			// weightBreakingFee = pool.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
 
-			// target weight
-			targetWeightOut := NormalizedWeight(ctx, pool.PoolAssets, tokenOutDenom)
-			targetWeightIn := sdk.OneDec().Sub(targetWeightOut)
+		// target weight
+		targetWeightOut := NormalizedWeight(ctx, pool.PoolAssets, tokenOutDenom)
+		targetWeightIn := sdk.OneDec().Sub(targetWeightOut)
 
-			// weight breaking fee as in Plasma pool
-			weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOutDenom)
-			weightIn := sdk.OneDec().Sub(weightOut)
-
-			weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, pool.PoolParams)
-		}
+		// weight breaking fee as in Plasma pool
+		weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOutDenom)
+		weightIn := sdk.OneDec().Sub(weightOut)
+		weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, pool.PoolParams, distanceDiff)
 
 		tokenOutAmount := oracleOutAmount.Mul(sdk.OneDec().Sub(weightBreakingFee)).RoundInt()
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBreakingFee.Neg(), nil

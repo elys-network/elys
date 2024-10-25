@@ -59,12 +59,17 @@ func ApplyDiscount(swapFee sdk.Dec, discount sdk.Dec) sdk.Dec {
 	return swapFee
 }
 
-func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut sdk.Dec, poolParams PoolParams) sdk.Dec {
+func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut sdk.Dec, poolParams PoolParams, distanceDiff sdk.Dec) sdk.Dec {
 	weightBreakingFee := sdk.ZeroDec()
 	if !weightOut.IsZero() && !weightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() && !poolParams.WeightBreakingFeeMultiplier.IsZero() {
 		// (45/55*60/40) ^ 2.5
-		weightBreakingFee = poolParams.WeightBreakingFeeMultiplier.
-			Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), poolParams.WeightBreakingFeeExponent))
+		if distanceDiff.IsPositive() {
+			weightBreakingFee = poolParams.WeightBreakingFeeMultiplier.
+				Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), poolParams.WeightBreakingFeeExponent))
+		} else {
+			weightBreakingFee = poolParams.WeightBreakingFeeMultiplier.
+				Mul(Pow(weightOut.Mul(targetWeightIn).Quo(weightIn).Quo(targetWeightOut), poolParams.WeightBreakingFeeExponent))
+		}
 
 		if weightBreakingFee.GT(sdk.NewDecWithPrec(99, 2)) {
 			weightBreakingFee = sdk.NewDecWithPrec(99, 2)
