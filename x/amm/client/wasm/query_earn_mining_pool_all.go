@@ -72,7 +72,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 		prams := oq.stablestakeKeeper.GetParams(ctx)
 		borrowApr = prams.InterestRate
 	}
-	tvl, _ := ammPool.TVL(ctx, oq.oraclekeeper, oq.accountedpoolKeeper)
+	tvl, _ := ammPool.TVL(ctx, oq.oraclekeeper)
 	lpTokenPrice, _ := ammPool.LpTokenPrice(ctx, oq.oraclekeeper)
 
 	// Get rewards amount

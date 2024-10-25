@@ -310,7 +310,7 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom)
 }
 
-func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper) (sdk.Dec, error) {
+func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec, error) {
 	// OracleAssetsTVL * TotalWeight / OracleAssetsWeight
 	// E.g. JUNO / USDT / USDC (30:30:30)
 	// TVL = USDC_USDT_liquidity * 90 / 60
@@ -327,12 +327,13 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 			}
 		} else {
 			amount := asset.Token.Amount
-			if p.PoolParams.UseOracle && accountedPoolKeeper != nil {
-				accountedPoolAmt := accountedPoolKeeper.GetAccountedBalance(ctx, p.PoolId, asset.Token.Denom)
-				if accountedPoolAmt.IsPositive() {
-					amount = accountedPoolAmt
-				}
-			}
+			// TODO
+			//if p.PoolParams.UseOracle && accountedPoolKeeper != nil {
+			//	accountedPoolAmt := accountedPoolKeeper.GetAccountedBalance(ctx, p.PoolId, asset.Token.Denom)
+			//	if accountedPoolAmt.IsPositive() {
+			//		amount = accountedPoolAmt
+			//	}
+			//}
 			v := amount.ToLegacyDec().Mul(tokenPrice)
 			oracleAssetsTVL = oracleAssetsTVL.Add(v)
 			oracleAssetsWeight = oracleAssetsWeight.Add(asset.Weight)
@@ -347,7 +348,7 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 }
 
 func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper) (sdk.Dec, error) {
-	ammPoolTvl, err := p.TVL(ctx, oracleKeeper, nil)
+	ammPoolTvl, err := p.TVL(ctx, oracleKeeper)
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}

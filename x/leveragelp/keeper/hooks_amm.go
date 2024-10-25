@@ -13,7 +13,7 @@ func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) 
 		return nil
 	}
 
-	tvl, err := ammPool.TVL(ctx, k.oracleKeeper, nil)
+	tvl, err := ammPool.TVL(ctx, k.oracleKeeper)
 	if err != nil {
 		return err
 	}

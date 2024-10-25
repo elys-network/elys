@@ -33,7 +33,7 @@ func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
 	}
 	ammPool, found := k.amm.GetPool(ctx, poolId)
 	if found {
-		tvl, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+		tvl, err := ammPool.TVL(ctx, k.oracleKeeper)
 		if err != nil {
 			return math.LegacyZeroDec()
 		}
@@ -602,7 +602,7 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
-		tvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+		tvl, err := p.TVL(ctx, k.oracleKeeper)
 		if err != nil {
 			return false
 		}

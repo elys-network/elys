@@ -84,7 +84,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 // - Records total liquidity increase
 // - Calls the AfterPoolCreated hook
 func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.AccAddress) (err error) {
-	tvl, err := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+	tvl, err := pool.TVL(ctx, k.oracleKeeper)
 	if err != nil {
 		return err
 	}

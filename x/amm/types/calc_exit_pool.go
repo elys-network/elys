@@ -10,7 +10,7 @@ import (
 )
 
 func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper, pool Pool, exitingShares math.Int, tokenOutDenom string) (sdk.Dec, error) {
-	tvl, err := pool.TVL(ctx, oracleKeeper, accPoolKeeper)
+	tvl, err := pool.TVL(ctx, oracleKeeper)
 	if err != nil {
 		return sdk.ZeroDec(), err
 	}

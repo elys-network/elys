@@ -146,7 +146,7 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			}
 			pool := types.Pool{
 				PoolId:            1,
-				Address:           poolAddr.String(),
+				Address:           types.NewPoolAddress(1).String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
 					SwapFee:                     sdk.ZeroDec(),
