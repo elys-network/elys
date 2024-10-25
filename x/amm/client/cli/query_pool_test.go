@@ -40,6 +40,7 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 		}

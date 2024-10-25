@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -183,7 +184,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		OpenPrice:          mtp.OpenPrice,
 		TakeProfitPrice:    req.TakeProfitPrice,
 		LiquidationPrice:   liquidationPrice,
-		EstimatedPnl:       sdk.Coin{mtp.CustodyAsset, estimatedPnLAmount},
+		EstimatedPnl:       sdk.NewCoin(baseCurrency, estimatedPnLAmount),
 		AvailableLiquidity: availableLiquidity,
 		Slippage:           slippage,
 		PriceImpact:        priceImpact,

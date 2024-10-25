@@ -38697,6 +38697,8 @@ paths:
                     type: string
                     format: uint64
                     title: 'default 1 week: 604,800'
+                  enable_base_currency_paired_pool_only:
+                    type: boolean
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -38757,6 +38759,8 @@ paths:
                         weight_recovery_fee_portion:
                           type: string
                         threshold_weight_difference:
+                          type: string
+                        weight_breaking_fee_portion:
                           type: string
                         fee_denom:
                           type: string
@@ -38953,6 +38957,8 @@ paths:
                       weight_recovery_fee_portion:
                         type: string
                       threshold_weight_difference:
+                        type: string
+                      weight_breaking_fee_portion:
                         type: string
                       fee_denom:
                         type: string
@@ -40708,242 +40714,6 @@ paths:
           type: string
       tags:
         - Query
-  /elys-network/elys/incentive/apr/{withdraw_type}/{denom}:
-    get:
-      summary: Calculate APR
-      operationId: ElysIncentiveApr
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              apr:
-                type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: withdraw_type
-          in: path
-          required: true
-          type: string
-          enum:
-            - ALL_PROGRAM
-            - USDC_PROGRAM
-            - ELYS_PROGRAM
-            - EDEN_PROGRAM
-            - EDENB_PROGRAM
-            - LP_MINING_PROGRAM
-        - name: denom
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /elys-network/elys/incentive/aprs:
-    get:
-      summary: Calculate APRs
-      operationId: ElysIncentiveAprs
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              usdc_apr_usdc:
-                type: string
-              eden_apr_usdc:
-                type: string
-              usdc_apr_edenb:
-                type: string
-              eden_apr_edenb:
-                type: string
-              usdc_apr_eden:
-                type: string
-              eden_apr_eden:
-                type: string
-              edenb_apr_eden:
-                type: string
-              usdc_apr_elys:
-                type: string
-              eden_apr_elys:
-                type: string
-              edenb_apr_elys:
-                type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /elys-network/elys/incentive/pool_rewards:
-    get:
-      summary: Queries PoolReward items
-      operationId: ElysIncentivePoolRewards
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              pools:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    pool_id:
-                      type: string
-                      format: uint64
-                    rewards_usd:
-                      type: string
-                    reward_coins:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          denom:
-                            type: string
-                          amount:
-                            type: string
-                        description: >-
-                          Coin defines a token with a denomination and an
-                          amount.
-
-
-                          NOTE: The amount field is an Int which implements the
-                          custom method
-
-                          signatures required by gogoproto.
-                    eden_forward:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pool_ids
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-            format: uint64
-          collectionFormat: multi
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
   /elys-network/elys/leveragelp/close_estimation:
     get:
       summary: Get estimated amount of return value closing a position
@@ -42253,15 +42023,18 @@ paths:
           type: boolean
       tags:
         - Query
-  /elys-network/elys/masterchef/apr:
+  /elys-network/elys/masterchef/apr/{withdraw_type}/{denom}:
     get:
-      summary: Queries a list of Apr items.
+      summary: Calculate APR
       operationId: ElysMasterchefApr
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
+            properties:
+              apr:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -42280,17 +42053,54 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      parameters:
+        - name: withdraw_type
+          in: path
+          required: true
+          type: string
+          enum:
+            - ALL_PROGRAM
+            - USDC_PROGRAM
+            - ELYS_PROGRAM
+            - EDEN_PROGRAM
+            - EDENB_PROGRAM
+            - LP_MINING_PROGRAM
+        - name: denom
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /elys-network/elys/masterchef/aprs:
     get:
-      summary: Queries a list of Aprs items.
+      summary: Calculate APRs
       operationId: ElysMasterchefAprs
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
+            properties:
+              usdc_apr_usdc:
+                type: string
+              eden_apr_usdc:
+                type: string
+              usdc_apr_edenb:
+                type: string
+              eden_apr_edenb:
+                type: string
+              usdc_apr_eden:
+                type: string
+              eden_apr_eden:
+                type: string
+              edenb_apr_eden:
+                type: string
+              usdc_apr_elys:
+                type: string
+              eden_apr_elys:
+                type: string
+              edenb_apr_elys:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -42746,13 +42556,57 @@ paths:
         - Query
   /elys-network/elys/masterchef/pool_rewards:
     get:
-      summary: Queries a list of PoolRewards items.
+      summary: Queries PoolReward items
       operationId: ElysMasterchefPoolRewards
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
+            properties:
+              pools:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pool_id:
+                      type: string
+                      format: uint64
+                    rewards_usd:
+                      type: string
+                    reward_coins:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
+
+
+                          NOTE: The amount field is an Int which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+                    eden_forward:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -42771,6 +42625,71 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      parameters:
+        - name: pool_ids
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+            format: uint64
+          collectionFormat: multi
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /elys-network/elys/masterchef/show_fee_info/{date}:
@@ -44001,6 +43920,8 @@ paths:
                     type: string
                   pnl:
                     type: string
+                  effective_leverage:
+                    type: string
                   liquidation_price:
                     type: string
                   fees:
@@ -44130,6 +44051,8 @@ paths:
                     trading_asset_price:
                       type: string
                     pnl:
+                      type: string
+                    effective_leverage:
                       type: string
                     liquidation_price:
                       type: string
@@ -44340,6 +44263,8 @@ paths:
                     trading_asset_price:
                       type: string
                     pnl:
+                      type: string
+                    effective_leverage:
                       type: string
                     liquidation_price:
                       type: string
@@ -45063,6 +44988,8 @@ paths:
                       type: string
                     pnl:
                       type: string
+                    effective_leverage:
+                      type: string
                     liquidation_price:
                       type: string
                     fees:
@@ -45412,7 +45339,7 @@ paths:
                     type: string
                   total_value:
                     type: string
-                  max_leverage_percent:
+                  max_leverage_ratio:
                     type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
@@ -87048,6 +86975,8 @@ definitions:
             type: string
           threshold_weight_difference:
             type: string
+          weight_breaking_fee_portion:
+            type: string
           fee_denom:
             type: string
             title: denom for fee collection
@@ -87083,6 +87012,8 @@ definitions:
         type: string
         format: uint64
         title: 'default 1 week: 604,800'
+      enable_base_currency_paired_pool_only:
+        type: boolean
     description: Params defines the parameters for the module.
   elys.amm.Pool:
     type: object
@@ -87110,6 +87041,8 @@ definitions:
           weight_recovery_fee_portion:
             type: string
           threshold_weight_difference:
+            type: string
+          weight_breaking_fee_portion:
             type: string
           fee_denom:
             type: string
@@ -87177,6 +87110,8 @@ definitions:
       weight_recovery_fee_portion:
         type: string
       threshold_weight_difference:
+        type: string
+      weight_breaking_fee_portion:
         type: string
       fee_denom:
         type: string
@@ -87250,6 +87185,8 @@ definitions:
                 weight_recovery_fee_portion:
                   type: string
                 threshold_weight_difference:
+                  type: string
+                weight_breaking_fee_portion:
                   type: string
                 fee_denom:
                   type: string
@@ -87402,6 +87339,8 @@ definitions:
                 type: string
               threshold_weight_difference:
                 type: string
+              weight_breaking_fee_portion:
+                type: string
               fee_denom:
                 type: string
                 title: denom for fee collection
@@ -87525,6 +87464,8 @@ definitions:
             type: string
             format: uint64
             title: 'default 1 week: 604,800'
+          enable_base_currency_paired_pool_only:
+            type: boolean
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.amm.QuerySlippageTrackAllResponse:
     type: object
@@ -88779,123 +88720,6 @@ definitions:
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
         description: total defines the sum of all the rewards.
-  elys.commitment.EarnType:
-    type: string
-    enum:
-      - ALL_PROGRAM
-      - USDC_PROGRAM
-      - ELYS_PROGRAM
-      - EDEN_PROGRAM
-      - EDENB_PROGRAM
-      - LP_MINING_PROGRAM
-    default: ALL_PROGRAM
-  elys.incentive.PoolRewards:
-    type: object
-    properties:
-      pool_id:
-        type: string
-        format: uint64
-      rewards_usd:
-        type: string
-      reward_coins:
-        type: array
-        items:
-          type: object
-          properties:
-            denom:
-              type: string
-            amount:
-              type: string
-          description: |-
-            Coin defines a token with a denomination and an amount.
-
-            NOTE: The amount field is an Int which implements the custom method
-            signatures required by gogoproto.
-      eden_forward:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-  elys.incentive.QueryAprResponse:
-    type: object
-    properties:
-      apr:
-        type: string
-  elys.incentive.QueryAprsResponse:
-    type: object
-    properties:
-      usdc_apr_usdc:
-        type: string
-      eden_apr_usdc:
-        type: string
-      usdc_apr_edenb:
-        type: string
-      eden_apr_edenb:
-        type: string
-      usdc_apr_eden:
-        type: string
-      eden_apr_eden:
-        type: string
-      edenb_apr_eden:
-        type: string
-      usdc_apr_elys:
-        type: string
-      eden_apr_elys:
-        type: string
-      edenb_apr_elys:
-        type: string
-  elys.incentive.QueryPoolRewardsResponse:
-    type: object
-    properties:
-      pools:
-        type: array
-        items:
-          type: object
-          properties:
-            pool_id:
-              type: string
-              format: uint64
-            rewards_usd:
-              type: string
-            reward_coins:
-              type: array
-              items:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
-            eden_forward:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
   elys.leveragelp.AddPool:
     type: object
     properties:
@@ -89617,6 +89441,16 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  elys.commitment.EarnType:
+    type: string
+    enum:
+      - ALL_PROGRAM
+      - USDC_PROGRAM
+      - ELYS_PROGRAM
+      - EDEN_PROGRAM
+      - EDENB_PROGRAM
+      - LP_MINING_PROGRAM
+    default: ALL_PROGRAM
   elys.masterchef.ExternalIncentive:
     type: object
     properties:
@@ -89787,10 +89621,68 @@ definitions:
       last_updated_block:
         type: string
         format: uint64
+  elys.masterchef.PoolRewards:
+    type: object
+    properties:
+      pool_id:
+        type: string
+        format: uint64
+      rewards_usd:
+        type: string
+      reward_coins:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      eden_forward:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.masterchef.QueryAprResponse:
     type: object
+    properties:
+      apr:
+        type: string
   elys.masterchef.QueryAprsResponse:
     type: object
+    properties:
+      usdc_apr_usdc:
+        type: string
+      eden_apr_usdc:
+        type: string
+      usdc_apr_edenb:
+        type: string
+      eden_apr_edenb:
+        type: string
+      usdc_apr_eden:
+        type: string
+      eden_apr_eden:
+        type: string
+      edenb_apr_eden:
+        type: string
+      usdc_apr_elys:
+        type: string
+      eden_apr_elys:
+        type: string
+      edenb_apr_elys:
+        type: string
   elys.masterchef.QueryExternalIncentiveResponse:
     type: object
     properties:
@@ -89958,6 +89850,49 @@ definitions:
             format: uint64
   elys.masterchef.QueryPoolRewardsResponse:
     type: object
+    properties:
+      pools:
+        type: array
+        items:
+          type: object
+          properties:
+            pool_id:
+              type: string
+              format: uint64
+            rewards_usd:
+              type: string
+            reward_coins:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+            eden_forward:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
   elys.masterchef.QueryShowFeeInfoResponse:
     type: object
     properties:
@@ -90681,6 +90616,8 @@ definitions:
             type: string
           pnl:
             type: string
+          effective_leverage:
+            type: string
           liquidation_price:
             type: string
           fees:
@@ -90794,6 +90731,8 @@ definitions:
       trading_asset_price:
         type: string
       pnl:
+        type: string
+      effective_leverage:
         type: string
       liquidation_price:
         type: string
@@ -91090,6 +91029,8 @@ definitions:
               type: string
             pnl:
               type: string
+            effective_leverage:
+              type: string
             liquidation_price:
               type: string
             fees:
@@ -91209,6 +91150,8 @@ definitions:
               type: string
             pnl:
               type: string
+            effective_leverage:
+              type: string
             liquidation_price:
               type: string
             fees:
@@ -91327,6 +91270,8 @@ definitions:
             trading_asset_price:
               type: string
             pnl:
+              type: string
+            effective_leverage:
               type: string
             liquidation_price:
               type: string
@@ -91780,7 +91725,7 @@ definitions:
         type: string
       total_value:
         type: string
-      max_leverage_percent:
+      max_leverage_ratio:
         type: string
     description: Params defines the parameters for the module.
   elys.stablestake.QueryBorrowRatioResponse:
@@ -91823,7 +91768,7 @@ definitions:
             type: string
           total_value:
             type: string
-          max_leverage_percent:
+          max_leverage_ratio:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   elys.tier.MsgSetPortfolioResponse:

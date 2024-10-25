@@ -1,12 +1,13 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -125,7 +126,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		OpenPrice:          sdk.MustNewDecFromStr("5.008234087746004083"),
 		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
 		LiquidationPrice:   sdk.MustNewDecFromStr("4.206916633706643430"),
-		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(997533835)),
+		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(997533835)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600000000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.000644750000000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
@@ -247,7 +248,7 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		OpenPrice:          sdk.MustNewDecFromStr("5.005824760000000000"),
 		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
 		LiquidationPrice:   sdk.MustNewDecFromStr("4.207362621000000000"),
-		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(399649399)),
+		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(399649399)),
 		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)), // Need to increase block height to have non zero value
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.000750691039603043"),
@@ -375,7 +376,7 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
 		LiquidationPrice:   sdk.MustNewDecFromStr("4.205481383314750031"),
 		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)), // Need to increase block height to have non zero value
-		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(19593877289)),
+		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(19593877289)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600_000_000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.012549973525000000"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),

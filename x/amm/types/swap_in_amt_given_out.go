@@ -119,27 +119,24 @@ func (p *Pool) SwapInAmtGivenOut(
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accPoolKeeper, newAssetPools)
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
-	// cut is valid when distance higher than original distance
-	weightBreakingFee := sdk.ZeroDec()
-	if distanceDiff.IsPositive() {
-		// old weight breaking fee implementation
-		// weightBreakingFee = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff)
+	// target weight
+	targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenInDenom)
+	targetWeightOut := GetDenomNormalizedWeight(p.PoolAssets, tokenOut.Denom)
 
-		// target weight
-		targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenInDenom)
-		targetWeightOut := GetDenomNormalizedWeight(p.PoolAssets, tokenOut.Denom)
+	// weight breaking fee as in Plasma pool
+	weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accPoolKeeper, newAssetPools, tokenInDenom)
+	weightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accPoolKeeper, newAssetPools, tokenOut.Denom)
+	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
 
-		// weight breaking fee as in Plasma pool
-		weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accPoolKeeper, newAssetPools, tokenInDenom)
-		weightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accPoolKeeper, newAssetPools, tokenOut.Denom)
-		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams)
-
-	}
+	// weight recovery reward = weight breaking fee * weight recovery fee portion
+	weightRecoveryReward := weightBreakingFee.Mul(p.PoolParams.WeightRecoveryFeePortion)
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus = weightBreakingFee.Neg()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
-		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
+		weightBalanceBonus = weightRecoveryReward
+		// set weight breaking fee to zero if bonus is applied
+		weightBreakingFee = sdk.ZeroDec()
 	}
 
 	if swapFee.GTE(sdk.OneDec()) {
