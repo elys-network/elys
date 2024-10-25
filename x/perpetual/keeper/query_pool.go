@@ -34,6 +34,7 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 		}
 
 		if ammPool.PoolParams.UseOracle {
+			longRate, shortRate := k.GetFundingPaymentRates(ctx, pool)
 			pools = append(pools, types.PoolResponse{
 				AmmPoolId:                            pool.AmmPoolId,
 				Health:                               pool.Health,
@@ -43,6 +44,8 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 				LastHeightBorrowInterestRateComputed: pool.LastHeightBorrowInterestRateComputed,
 				FundingRate:                          pool.FundingRate,
 				NetOpenInterest:                      k.GetNetOpenInterest(ctx, pool),
+				LongRate:                             longRate,
+				ShortRate:                            shortRate,
 			})
 		}
 
@@ -69,6 +72,8 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 
+	longRate, shortRate := k.GetFundingPaymentRates(ctx, val)
+
 	pool := types.PoolResponse{
 		AmmPoolId:                            val.AmmPoolId,
 		Health:                               val.Health,
@@ -78,6 +83,8 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 		LastHeightBorrowInterestRateComputed: val.LastHeightBorrowInterestRateComputed,
 		FundingRate:                          val.FundingRate,
 		NetOpenInterest:                      k.GetNetOpenInterest(ctx, val),
+		LongRate:                             longRate,
+		ShortRate:                            shortRate,
 	}
 
 	return &types.QueryGetPoolResponse{Pool: pool}, nil
