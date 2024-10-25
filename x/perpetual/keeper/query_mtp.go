@@ -32,7 +32,7 @@ func (k Keeper) MTP(goCtx context.Context, req *types.MTPRequest) (*types.MTPRes
 	}
 	baseCurrency := entry.Denom
 
-	mtpAndPrice, err := k.fillMTPData(ctx, mtp, nil, baseCurrency)
+	mtpAndPrice, err := k.fillMTPData(ctx, mtp, baseCurrency)
 	if err != nil {
 		return &types.MTPResponse{}, err
 	}
