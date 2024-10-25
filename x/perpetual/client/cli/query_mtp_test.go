@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
+	"testing"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -19,8 +22,6 @@ import (
 	"github.com/elys-network/elys/x/perpetual/client/cli"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/require"
-	"io"
-	"testing"
 )
 
 func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpAndPrice) {
@@ -57,7 +58,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 				StopLossPrice:                 sdk.NewDec(0),
 			},
 			TradingAssetPrice: sdk.ZeroDec(),
-			Pnl:               sdk.ZeroInt(),
+			Pnl:               sdk.NewCoin("USDC", sdk.NewInt(0)),
 			LiquidationPrice:  sdk.ZeroDec(),
 			Fees: &types.Fees{
 				TotalFeesBaseCurrency:            sdk.NewInt(0),

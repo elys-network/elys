@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"google.golang.org/grpc/codes"
@@ -118,9 +117,8 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 	}
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	realTime := true
 	if !found {
-		realTime = false
+		return nil, nil, status.Error(codes.NotFound, "base currency not found")
 	}
 	baseCurrency := entry.Denom
 
@@ -132,7 +130,7 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 			return nil
 		}
 
-		mtpAndPrice, err := k.fillMTPData(ctx, mtp, ammPoolId, realTime, baseCurrency)
+		mtpAndPrice, err := k.fillMTPData(ctx, mtp, baseCurrency)
 		if err != nil {
 			return err
 		}
@@ -148,33 +146,30 @@ func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, addre
 	return mtps, pageRes, nil
 }
 
-func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, realTime bool, baseCurrency string) (*types.MtpAndPrice, error) {
-	var ammPool ammtypes.Pool
-	var poolFound bool
-	if ammPoolId != nil {
-		ammPool, poolFound = k.amm.GetPool(ctx, *ammPoolId)
-	} else {
-		ammPool, poolFound = k.amm.GetPool(ctx, mtp.AmmPoolId)
-	}
-	if !poolFound {
-		realTime = false
+func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string) (*types.MtpAndPrice, error) {
+	ammPool, found := k.amm.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return &types.MtpAndPrice{}, fmt.Errorf("amm pool %d not found", mtp.AmmPoolId)
 	}
 
-	pnl := math.ZeroInt()
-	liquidationPrice := sdk.ZeroDec()
-	if realTime {
-		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
-		if err == nil {
-			mtp.MtpHealth = mtpHealth
-		}
-
-		k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
-		pnl, err = k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
-		if err != nil {
-			return nil, err
-		}
-		liquidationPrice = k.GetLiquidationPrice(ctx, mtp)
+	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return &types.MtpAndPrice{}, fmt.Errorf("perpetual pool %d not found", mtp.AmmPoolId)
 	}
+
+	// Update interest first and then calculate health
+	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
+	k.UpdateFundingFee(ctx, &mtp, &pool, ammPool)
+
+	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
+	if err == nil {
+		mtp.MtpHealth = mtpHealth
+	}
+	pnl, err := k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
+	if err != nil {
+		return nil, err
+	}
+	liquidationPrice := k.GetLiquidationPrice(ctx, mtp)
 
 	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 	if err != nil {
@@ -198,10 +193,13 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, r
 		return nil, err
 	}
 
+	// Show updated liability
+	mtp.Liabilities = mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
+
 	return &types.MtpAndPrice{
 		Mtp:               &mtp,
 		TradingAssetPrice: tradingAssetPrice,
-		Pnl:               pnl,
+		Pnl:               sdk.NewCoin(baseCurrency, pnl),
 		LiquidationPrice:  liquidationPrice,
 		EffectiveLeverage: effectiveLeverage,
 		Fees: &types.Fees{
@@ -313,21 +311,6 @@ func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) 
 
 func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency string, useTakeProfitPrice bool) (math.Int, error) {
 	// P&L = Custody (in USD) - Total Liability ( in USD) - Collateral ( in USD)
-
-	// Funding rate payment consideration
-	// get funding rate
-	fundingRate, _ := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
-	var fundingAmount sdk.Int
-	// if funding rate is zero, return
-	if fundingRate.IsZero() {
-		fundingAmount = sdk.ZeroInt()
-	} else if (fundingRate.IsNegative() && mtp.Position == types.Position_LONG) || (fundingRate.IsPositive() && mtp.Position == types.Position_SHORT) {
-		fundingAmount = sdk.ZeroInt()
-	} else {
-		// Calculate the take amount in custody asset
-		fundingAmount = types.CalcTakeAmount(mtp.Custody, fundingRate)
-	}
-
 	// Liability should include margin interest and funding fee accrued.
 	collateralAmt := mtp.Collateral
 
@@ -343,12 +326,12 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	}
 
 	// in long it's in trading asset ,if short position, custody asset is already in base currency
-	custodyAmtAfterFunding := mtp.Custody.Sub(fundingAmount)
+	custodyAmtAfterFunding := mtp.Custody
 
 	totalLiabilities := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 
 	// Calculate estimated PnL
-	estimatedPnL := sdk.ZeroInt()
+	var estimatedPnL sdk.Int
 
 	if mtp.Position == types.Position_SHORT {
 		// Estimated PnL for short position:
