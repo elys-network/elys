@@ -46,11 +46,11 @@ func ParamKeyTable() paramtypes.KeyTable {
 func NewParams() Params {
 	return Params{
 		PerpetualSwapFee:                               math.LegacyMustNewDecFromStr("0.001"), // 0.1%
-		FixedFundingRate:                               math.LegacyMustNewDecFromStr("0.3"),   // 30%
-		BorrowInterestRateDecrease:                     math.LegacyMustNewDecFromStr("0.000000003300000000"),
-		BorrowInterestRateIncrease:                     math.LegacyMustNewDecFromStr("0.000000003300000000"),
-		BorrowInterestRateMax:                          math.LegacyMustNewDecFromStr("0.000002700000000000"),
-		BorrowInterestRateMin:                          math.LegacyMustNewDecFromStr("0.000000030000000000"),
+		FixedFundingRate:                               math.LegacyMustNewDecFromStr("0.5"),   // 50%
+		BorrowInterestRateDecrease:                     math.LegacyMustNewDecFromStr("0.0003"),
+		BorrowInterestRateIncrease:                     math.LegacyMustNewDecFromStr("0.0003"),
+		BorrowInterestRateMax:                          math.LegacyMustNewDecFromStr("0.3"),
+		BorrowInterestRateMin:                          math.LegacyMustNewDecFromStr("0.1"),
 		ForceCloseFundAddress:                          authtypes.NewModuleAddress("zero").String(),
 		ForceCloseFundPercentage:                       math.LegacyOneDec(),
 		HealthGainFactor:                               math.LegacyMustNewDecFromStr("0.000000220000000000"),
@@ -63,9 +63,10 @@ func NewParams() Params {
 		SafetyFactor:                                   math.LegacyMustNewDecFromStr("1.050000000000000000"), // 5%
 		WhitelistingEnabled:                            false,
 		MaxLimitOrder:                                  (int64)(500),
-		MinimumLongTakeProfitPriceRatio:                math.LegacyMustNewDecFromStr("1.1"),
+		MinimumLongTakeProfitPriceRatio:                math.LegacyMustNewDecFromStr("1.02"),
 		MaximumLongTakeProfitPriceRatio:                math.LegacyMustNewDecFromStr("11"),
-		MaximumShortTakeProfitPriceRatio:               math.LegacyMustNewDecFromStr("0.9"),
+		MaximumShortTakeProfitPriceRatio:               math.LegacyMustNewDecFromStr("0.98"),
+		EnableTakeProfitCustodyLiabilities:             false,
 	}
 }
 

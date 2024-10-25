@@ -121,7 +121,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 			return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 		}
 
-		err = k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, creator)
+		err = k.hooks.AfterPerpetualPositionOpen(ctx, ammPool, pool, creator, params.EnableTakeProfitCustodyLiabilities)
 		if err != nil {
 			return nil, err
 		}

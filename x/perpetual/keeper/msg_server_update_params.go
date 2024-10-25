@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -22,5 +23,19 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 		return nil, err
 	}
 
+	if k.hooks != nil {
+		pools := k.GetAllPools(ctx)
+		for _, pool := range pools {
+			ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
+			if err != nil {
+				return nil, fmt.Errorf("amm pool %d not found", pool.AmmPoolId)
+			}
+
+			err = k.hooks.AfterParamsChange(ctx, ammPool, pool, msg.Params.EnableTakeProfitCustodyLiabilities)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
 	return &types.MsgUpdateParamsResponse{}, nil
 }
