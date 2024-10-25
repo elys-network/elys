@@ -1,12 +1,13 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -375,7 +376,7 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
 		LiquidationPrice:   sdk.MustNewDecFromStr("3.958928731787454040"),
 		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)), // Need to increase block height to have non zero value
-		EstimatedPnl:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(18_514_207_234)),
+		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(18_514_207_234)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600_000_000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.048575000399137173"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
