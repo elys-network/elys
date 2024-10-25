@@ -163,12 +163,19 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, ammPoolId *uint64, r
 	pnl := math.ZeroInt()
 	liquidationPrice := sdk.ZeroDec()
 	if realTime {
+		pool, found := k.GetPool(ctx, mtp.AmmPoolId)
+		if !found {
+			return &types.MtpAndPrice{}, fmt.Errorf("perpetual pool %d not found", mtp.AmmPoolId)
+		}
+
+		// Update interest first and then calculate health
+		k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
+		k.UpdateFundingFee(ctx, &mtp, &pool, ammPool)
+
 		mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 		if err == nil {
 			mtp.MtpHealth = mtpHealth
 		}
-
-		k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
 		pnl, err = k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
 		if err != nil {
 			return nil, err
@@ -313,21 +320,6 @@ func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) 
 
 func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency string, useTakeProfitPrice bool) (math.Int, error) {
 	// P&L = Custody (in USD) - Total Liability ( in USD) - Collateral ( in USD)
-
-	// Funding rate payment consideration
-	// get funding rate
-	fundingRate, _ := k.GetFundingRate(ctx, mtp.LastFundingCalcBlock, mtp.LastFundingCalcTime, mtp.AmmPoolId)
-	var fundingAmount sdk.Int
-	// if funding rate is zero, return
-	if fundingRate.IsZero() {
-		fundingAmount = sdk.ZeroInt()
-	} else if (fundingRate.IsNegative() && mtp.Position == types.Position_LONG) || (fundingRate.IsPositive() && mtp.Position == types.Position_SHORT) {
-		fundingAmount = sdk.ZeroInt()
-	} else {
-		// Calculate the take amount in custody asset
-		fundingAmount = types.CalcTakeAmount(mtp.Custody, fundingRate)
-	}
-
 	// Liability should include margin interest and funding fee accrued.
 	collateralAmt := mtp.Collateral
 
@@ -343,12 +335,12 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	}
 
 	// in long it's in trading asset ,if short position, custody asset is already in base currency
-	custodyAmtAfterFunding := mtp.Custody.Sub(fundingAmount)
+	custodyAmtAfterFunding := mtp.Custody
 
 	totalLiabilities := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 
 	// Calculate estimated PnL
-	estimatedPnL := sdk.ZeroInt()
+	var estimatedPnL sdk.Int
 
 	if mtp.Position == types.Position_SHORT {
 		// Estimated PnL for short position:
