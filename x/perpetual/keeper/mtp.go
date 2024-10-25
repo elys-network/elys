@@ -159,8 +159,6 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 
 	// Update interest first and then calculate health
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
-	// Show updated liability
-	mtp.Liabilities = mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 	k.UpdateFundingFee(ctx, &mtp, &pool, ammPool)
 
 	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
@@ -194,6 +192,9 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	if err != nil {
 		return nil, err
 	}
+
+	// Show updated liability
+	mtp.Liabilities = mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 
 	return &types.MtpAndPrice{
 		Mtp:               &mtp,
