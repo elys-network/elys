@@ -30,7 +30,7 @@ func solveConstantFunctionInvariant(
 	weightRatio := tokenWeightFixed.Quo(tokenWeightUnknown)
 
 	// Ensure tokenBalanceFixedAfter is not zero to avoid division by zero
-	if tokenBalanceFixedAfter.IsZero() {
+	if tokenBalanceFixedAfter.IsZero() || tokenBalanceFixedAfter.IsNegative() {
 		return sdk.ZeroDec(), ErrAmountTooLow
 	}
 

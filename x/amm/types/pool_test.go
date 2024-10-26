@@ -93,7 +93,7 @@ func (suite *TestSuite) TestPoolTVL() {
 			suite.ctx = suite.ctx.WithBlockTime(now)
 
 			// bootstrap accounts
-			poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			poolAddr := types.NewPoolAddress(uint64(1))
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 			// prices set for USDT and USDC

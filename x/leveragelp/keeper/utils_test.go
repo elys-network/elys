@@ -122,7 +122,8 @@ func (suite KeeperTestSuite) TestGetAmmPool() {
 
 	// PoolFound
 	suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
-		PoolId: poolId,
+		PoolId:  poolId,
+		Address: ammtypes.NewPoolAddress(poolId).String(),
 	})
 	_, err = k.GetAmmPool(suite.ctx, poolId)
 	suite.Require().NoError(err)

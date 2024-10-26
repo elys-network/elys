@@ -368,7 +368,7 @@ func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) sdk.Dec {
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {
 		// liquidation_price = (safety_factor * liabilities) / custody
-		liquidationPrice = mtp.Liabilities.ToLegacyDec().Quo(params.SafetyFactor.Mul(mtp.Custody.ToLegacyDec()))
+		liquidationPrice = params.SafetyFactor.Mul(mtp.Liabilities.ToLegacyDec()).Quo(mtp.Custody.ToLegacyDec())
 	}
 	if mtp.Position == types.Position_SHORT {
 		// liquidation_price =  Custody / (Liabilities * safety_factor)
