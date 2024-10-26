@@ -9,8 +9,8 @@ import (
 // NewParams creates a new Params instance
 func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64, enable bool) Params {
 	return Params{
-		PoolCreationFee:       poolCreationFee,
-		SlippageTrackDuration: slippageTrackDuration,
+		PoolCreationFee:                  poolCreationFee,
+		SlippageTrackDuration:            slippageTrackDuration,
 		EnableBaseCurrencyPairedPoolOnly: enable,
 	}
 }
