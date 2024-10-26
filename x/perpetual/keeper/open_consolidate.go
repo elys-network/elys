@@ -62,8 +62,9 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
-		// The pool value aboce was sent in pointer so its updated
-		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
+		params := k.GetParams(ctx)
+		// The pool value above was sent in pointer so its updated
+		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator, params.EnableTakeProfitCustodyLiabilities)
 		if err != nil {
 			return nil, err
 		}

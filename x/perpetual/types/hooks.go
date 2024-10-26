@@ -6,17 +6,18 @@ import (
 )
 
 type PerpetualHooks interface {
+	AfterParamsChange(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, EnableTakeProfitCustodyLiabilities bool) error
 	// AfterPerpetualPositionOpen is called after OpenLong or OpenShort position.
 	// This should be used to update pool health
-	AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
+	AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error
 
 	// AfterPerpetualPositionModified is called after a position gets modified.
 	// This should be used to update pool health
-	AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
+	AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error
 
 	// AfterPerpetualPositionClosed is called after a position gets closed.
 	// This should be used to update pool health
-	AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error
+	AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error
 }
 
 var _ PerpetualHooks = MultiPerpetualHooks{}
@@ -29,9 +30,9 @@ func NewMultiPerpetualHooks(hooks ...PerpetualHooks) MultiPerpetualHooks {
 	return hooks
 }
 
-func (h MultiPerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error {
+func (h MultiPerpetualHooks) AfterParamsChange(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, EnableTakeProfitCustodyLiabilities bool) error {
 	for i := range h {
-		err := h[i].AfterPerpetualPositionOpen(ctx, ammPool, perpetualPool, sender)
+		err := h[i].AfterParamsChange(ctx, ammPool, perpetualPool, EnableTakeProfitCustodyLiabilities)
 		if err != nil {
 			return err
 		}
@@ -39,9 +40,9 @@ func (h MultiPerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool
 	return nil
 }
 
-func (h MultiPerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error {
+func (h MultiPerpetualHooks) AfterPerpetualPositionOpen(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error {
 	for i := range h {
-		err := h[i].AfterPerpetualPositionModified(ctx, ammPool, perpetualPool, sender)
+		err := h[i].AfterPerpetualPositionOpen(ctx, ammPool, perpetualPool, sender, EnableTakeProfitCustodyLiabilities)
 		if err != nil {
 			return err
 		}
@@ -49,9 +50,19 @@ func (h MultiPerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, amm
 	return nil
 }
 
-func (h MultiPerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress) error {
+func (h MultiPerpetualHooks) AfterPerpetualPositionModified(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error {
 	for i := range h {
-		err := h[i].AfterPerpetualPositionClosed(ctx, ammPool, perpetualPool, sender)
+		err := h[i].AfterPerpetualPositionModified(ctx, ammPool, perpetualPool, sender, EnableTakeProfitCustodyLiabilities)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (h MultiPerpetualHooks) AfterPerpetualPositionClosed(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool Pool, sender sdk.AccAddress, EnableTakeProfitCustodyLiabilities bool) error {
+	for i := range h {
+		err := h[i].AfterPerpetualPositionClosed(ctx, ammPool, perpetualPool, sender, EnableTakeProfitCustodyLiabilities)
 		if err != nil {
 			return err
 		}
