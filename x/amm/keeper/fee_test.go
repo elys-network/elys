@@ -58,7 +58,7 @@ func (suite *KeeperTestSuite) TestOnCollectFee() {
 			suite.SetupTest()
 
 			// bootstrap accounts
-			poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			poolAddr := types.NewPoolAddress(uint64(1))
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			revenueAddr := types.NewPoolRevenueAddress(1)
 
@@ -155,7 +155,7 @@ func (suite *KeeperTestSuite) TestSwapFeesToRevenueToken() {
 			suite.SetupTest()
 
 			// bootstrap accounts
-			poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			poolAddr := types.NewPoolAddress(uint64(1))
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			revenueAddr := types.NewPoolRevenueAddress(1)
 

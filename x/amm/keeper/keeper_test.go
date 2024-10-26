@@ -84,7 +84,8 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 	// Create and set mock pools
 	pools := []types.Pool{
 		{
-			PoolId: 1,
+			PoolId:  1,
+			Address: types.NewPoolAddress(uint64(1)).String(),
 			PoolAssets: []types.PoolAsset{
 				{Token: sdk.NewCoin("denom1", sdk.NewInt(1000)), Weight: sdk.OneInt()},
 				{Token: sdk.NewCoin("denom2", sdk.NewInt(1000)), Weight: sdk.OneInt()},
@@ -96,7 +97,8 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			TotalShares: sdk.NewCoin(types.GetPoolShareDenom(1), types.OneShare),
 		},
 		{
-			PoolId: 2,
+			PoolId:  2,
+			Address: types.NewPoolAddress(uint64(2)).String(),
 			PoolAssets: []types.PoolAsset{
 				{Token: sdk.NewCoin("uusdc", sdk.NewInt(1000)), Weight: sdk.OneInt()},
 				{Token: sdk.NewCoin("denom1", sdk.NewInt(1000)), Weight: sdk.OneInt()},
@@ -108,7 +110,8 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			TotalShares: sdk.NewCoin(types.GetPoolShareDenom(2), types.OneShare),
 		},
 		{
-			PoolId: 3,
+			PoolId:  3,
+			Address: types.NewPoolAddress(uint64(3)).String(),
 			PoolAssets: []types.PoolAsset{
 				{Token: sdk.NewCoin("uusdc", sdk.NewInt(1000)), Weight: sdk.OneInt()},
 				{Token: sdk.NewCoin("denom3", sdk.NewInt(1000)), Weight: sdk.OneInt()},

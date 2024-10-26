@@ -171,7 +171,7 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			suite.SetupStableCoinPrices()
 
 			// execute function
-			weights, err := types.OraclePoolNormalizedWeights(suite.ctx, suite.app.OracleKeeper, tc.poolAssets)
+			weights, err := types.GetOraclePoolNormalizedWeights(suite.ctx, uint64(1), suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.poolAssets)
 			if tc.expError {
 				suite.Require().Error(err)
 			} else {
@@ -313,7 +313,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdk.ZeroInt(),
 			}
-			poolAssets, err := pool.NewPoolAssetsAfterSwap(tc.inCoins, tc.outCoins)
+			poolAssets, err := pool.NewPoolAssetsAfterSwap(suite.ctx, tc.inCoins, tc.outCoins, suite.app.AccountedPoolKeeper)
 			if tc.expErr {
 				suite.Require().Error(err)
 			} else {
@@ -413,7 +413,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdk.ZeroInt(),
 			}
-			distance := pool.WeightDistanceFromTarget(suite.ctx, suite.app.OracleKeeper, tc.poolAssets)
+			distance := pool.WeightDistanceFromTarget(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.poolAssets)
 			suite.Require().Equal(distance, tc.expDistance)
 		})
 	}

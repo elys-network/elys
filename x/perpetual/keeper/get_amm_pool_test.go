@@ -10,7 +10,7 @@ import (
 func (suite *PerpetualKeeperTestSuite) TestGetAmmPool() {
 	ammPool := ammtypes.Pool{
 		PoolId:            1,
-		Address:           "",
+		Address:           ammtypes.NewPoolAddress(1).String(),
 		RebalanceTreasury: "",
 		PoolParams: ammtypes.PoolParams{
 			UseOracle:                   false,

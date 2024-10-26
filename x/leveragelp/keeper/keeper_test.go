@@ -309,7 +309,7 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 		AmmPoolId:         1,
 		LeveragedLpAmount: leveragelpAmount,
 	}
-	ammPool := ammtypes.Pool{PoolId: 1}
+	ammPool := ammtypes.Pool{PoolId: 1, Address: ammtypes.NewPoolAddress(uint64(1)).String()}
 	totalShares := sdk.NewInt(100)
 
 	testCases := []struct {

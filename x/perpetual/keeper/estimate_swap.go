@@ -8,20 +8,20 @@ import (
 )
 
 // Swap estimation using amm CalcOutAmtGivenIn function
-func (k Keeper) EstimateSwap(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool) (math.Int, math.LegacyDec, error) {
+func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool) (math.Int, math.LegacyDec, error) {
 	swapFee := k.GetPerpetualSwapFee(ctx)
 	// Estimate swap
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
 	tokensIn := sdk.Coins{tokenInAmount}
-	swapResult, slippage, err := k.amm.CalcOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee)
+	tokenOut, slippage, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee)
 	if err != nil {
 		return sdk.ZeroInt(), math.LegacyZeroDec(), err
 	}
 
-	if swapResult.IsZero() {
+	if tokenOut.IsZero() {
 		return sdk.ZeroInt(), math.LegacyZeroDec(), types.ErrAmountTooLow
 	}
-	return swapResult.Amount, slippage, nil
+	return tokenOut.Amount, slippage, nil
 }
 
 // Swap estimation using amm CalcInAmtGivenOut function
@@ -30,13 +30,13 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	tokensOut := sdk.Coins{tokenOutAmount}
 	// Estimate swap
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
-	swapResult, slippage, err := k.amm.CalcInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, perpetualSwapFee)
+	tokenIn, slippage, _, _, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, perpetualSwapFee)
 	if err != nil {
 		return sdk.ZeroInt(), math.LegacyZeroDec(), err
 	}
 
-	if swapResult.IsZero() {
+	if tokenIn.IsZero() {
 		return sdk.ZeroInt(), math.LegacyZeroDec(), types.ErrAmountTooLow
 	}
-	return swapResult.Amount, slippage, nil
+	return tokenIn.Amount, slippage, nil
 }

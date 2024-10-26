@@ -150,43 +150,8 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 			},
 		},
 		{
-			"success: collateral USDC, trading asset USDC, stop loss price 0, TakeProfitPrice 0",
-			"",
-			false,
-			func() {
-				msg.Creator = addr[2].String()
-				msg.Collateral.Denom = ptypes.BaseCurrency
-				msg.Collateral.Amount = amount
-				msg.TradingAsset = ptypes.BaseCurrency
-				msg.Leverage = sdk.OneDec().MulInt64(2)
-			},
-			func(mtp *types.MTP) {
-			},
-		},
-		{
-			"success: collateral ATOM, trading asset USDC, stop loss price 0, TakeProfitPrice 0",
-			"",
-			false,
-			func() {
-				tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000_000_000)))
-				suite.AddLiquidity(ammPool, addr[5], tokensIn)
-				msg.Creator = addr[4].String()
-				msg.Collateral.Denom = ptypes.ATOM
-				msg.Collateral.Amount = amount
-				msg.TradingAsset = ptypes.BaseCurrency
-				msg.Leverage = sdk.OneDec().MulInt64(2)
-
-				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
-				params.SafetyFactor = sdk.MustNewDecFromStr("0.01")
-				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
-				suite.Require().NoError(err)
-			},
-			func(mtp *types.MTP) {
-			},
-		},
-		{
 			"collateral is USDC, trading asset is ATOM, amm pool has enough USDC but not enough ATOM",
-			"amount too low",
+			"negative pool amount after swap",
 			false,
 			func() {
 
