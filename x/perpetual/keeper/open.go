@@ -98,7 +98,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 	}
 
 	// calc and update open price
-	err = k.UpdateOpenPrice(ctx, mtp, ammPool, baseCurrency)
+	err = k.UpdateOpenPrice(ctx, mtp)
 	if err != nil {
 		return nil, err
 	}
