@@ -69,7 +69,7 @@ func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found b
 	return val, true
 }
 
-func (k Keeper) DeleteLegacyPool(ctx sdk.Context,  poolId uint64) error {
+func (k Keeper) DeleteLegacyPool(ctx sdk.Context, poolId uint64) error {
 	store := ctx.KVStore(k.storeKey)
 	key := types.PoolKey(poolId)
 	if !store.Has(key) {

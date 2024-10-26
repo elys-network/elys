@@ -51,17 +51,21 @@ func TestPools_Success(t *testing.T) {
 	})
 
 	app.AmmKeeper.SetPool(ctx, ammtypes.Pool{
-		PoolId: uint64(1),
+		PoolId:  uint64(1),
+		Address: ammtypes.NewPoolAddress(1).String(),
 		PoolParams: ammtypes.PoolParams{
 			UseOracle: true,
 		},
+		PoolAssets: make([]ammtypes.PoolAsset, 2),
 	})
 
 	app.AmmKeeper.SetPool(ctx, ammtypes.Pool{
-		PoolId: uint64(2),
+		PoolId:  uint64(2),
+		Address: ammtypes.NewPoolAddress(2).String(),
 		PoolParams: ammtypes.PoolParams{
 			UseOracle: false,
 		},
+		PoolAssets: make([]ammtypes.PoolAsset, 2),
 	})
 
 	response, err := app.PerpetualKeeper.Pools(ctx, &types.QueryAllPoolRequest{})

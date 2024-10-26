@@ -21,18 +21,15 @@ type LeverageLpKeeper interface {
 }
 
 type AmmKeeper interface {
-	// Get first pool id that contains all denoms in pool assets
-	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOracle bool) (pool ammtypes.Pool, found bool)
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
 	// Get all pools
 	GetAllPool(sdk.Context) []ammtypes.Pool
-	// IterateCommitments iterates over all Commitments and performs a callback.
-	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
+
 	GetPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
 
-	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (sdk.Coin, sdk.Dec, error)
-	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (tokenIn sdk.Coin, slippage sdk.Dec, err error)
+	SwapOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec) (tokenOut sdk.Coin, slippage sdk.Dec, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error)
+	SwapInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec) (tokenIn sdk.Coin, slippage, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error)
 
 	AddToPoolBalance(ctx sdk.Context, pool *ammtypes.Pool, addShares math.Int, coins sdk.Coins) error
 	RemoveFromPoolBalance(ctx sdk.Context, pool *ammtypes.Pool, removeShares math.Int, coins sdk.Coins) error
