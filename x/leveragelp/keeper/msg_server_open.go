@@ -35,7 +35,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 			Quo(params.TotalValue.ToLegacyDec())
 	}
 
-	var pool_leveragelp sdk.Dec
+	var poolLeveragelpRatio sdk.Dec
 	pool, found := k.GetPool(ctx, msg.AmmPoolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
@@ -44,9 +44,9 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
 	}
-	pool_leveragelp = pool.LeveragedLpAmount.ToLegacyDec().Quo(amm_pool.TotalShares.Amount.ToLegacyDec()).Mul(sdk.NewDec(100))
+	poolLeveragelpRatio = pool.LeveragedLpAmount.ToLegacyDec().Quo(amm_pool.TotalShares.Amount.ToLegacyDec())
 
-	if pool_leveragelp.GTE(pool.MaxLeveragelpPercent) || borrowRatio.GTE(params.MaxLeverageRatio) {
+	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) || borrowRatio.GTE(params.MaxLeverageRatio) {
 		return nil, errorsmod.Wrap(types.ErrMaxLeverageLpExists, "no new position can be open")
 	}
 

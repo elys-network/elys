@@ -66,7 +66,8 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 	}
 
 	if k.hooks != nil {
-		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator)
+		params := k.GetParams(ctx)
+		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator, params.EnableTakeProfitCustodyLiabilities)
 		if err != nil {
 			return nil, err
 		}

@@ -90,7 +90,7 @@ func TestAccountedPoolUpdate(t *testing.T) {
 		},
 	}
 	// Update accounted pool
-	err := apk.PerpetualUpdates(ctx, ammPool, perpetualPool)
+	err := apk.PerpetualUpdates(ctx, ammPool, perpetualPool, false)
 	require.NoError(t, err)
 
 	apool, found := apk.GetAccountedPool(ctx, (uint64)(0))
@@ -98,7 +98,7 @@ func TestAccountedPoolUpdate(t *testing.T) {
 	require.Equal(t, apool.PoolId, (uint64)(0))
 
 	usdcBalance := apk.GetAccountedBalance(ctx, (uint64)(0), ptypes.BaseCurrency)
-	require.Equal(t, usdcBalance, sdk.NewInt(1000+400-50+400-70+10-20))
+	require.Equal(t, usdcBalance, sdk.NewInt(1000+400-50+400-70))
 	atomBalance := apk.GetAccountedBalance(ctx, (uint64)(0), ptypes.ATOM)
 	require.Equal(t, atomBalance, sdk.NewInt(5000-50-50))
 }
