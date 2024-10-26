@@ -103,7 +103,7 @@ func CalcExitPool(
 	poolLiquidity := pool.GetTotalPoolLiquidity()
 
 	if pool.PoolParams.UseOracle && tokenOutDenom != "" {
-		initialWeightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, pool.PoolAssets)
+		initialWeightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, accountedPoolKeeper, pool.PoolAssets)
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
 		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom)
 		if err != nil {
@@ -117,9 +117,9 @@ func CalcExitPool(
 
 		oracleOutAmount := exitValueWithoutSlippage.Quo(tokenPrice)
 
-		newAssetPools, err := pool.NewPoolAssetsAfterSwap(
+		newAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
 			sdk.Coins{},
-			sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.RoundInt())},
+			sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.RoundInt())}, accountedPoolKeeper,
 		)
 		if err != nil {
 			return sdk.Coins{}, math.LegacyZeroDec(), err
@@ -130,15 +130,15 @@ func CalcExitPool(
 			}
 		}
 
-		weightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
+		weightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, accountedPoolKeeper, newAssetPools)
 		distanceDiff := weightDistance.Sub(initialWeightDistance)
 
 		// target weight
-		targetWeightOut := NormalizedWeight(ctx, pool.PoolAssets, tokenOutDenom)
+		targetWeightOut := GetDenomNormalizedWeight(pool.PoolAssets, tokenOutDenom)
 		targetWeightIn := sdk.OneDec().Sub(targetWeightOut)
 
 		// weight breaking fee as in Plasma pool
-		weightOut := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenOutDenom)
+		weightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedPoolKeeper, newAssetPools, tokenOutDenom)
 		weightIn := sdk.OneDec().Sub(weightOut)
 		weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, pool.PoolParams, distanceDiff)
 

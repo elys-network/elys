@@ -9,6 +9,10 @@ import (
 
 // SetPool set a specific pool in the store from its index
 func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
+	err := pool.Validate()
+	if err != nil {
+		panic(err)
+	}
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
 	store.Set(types.PoolKey(pool.PoolId), b)

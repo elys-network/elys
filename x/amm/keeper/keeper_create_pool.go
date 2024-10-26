@@ -43,10 +43,6 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 		return 0, err
 	}
 
-	if err := pool.Validate(poolId); err != nil {
-		return 0, err
-	}
-
 	address, err := sdk.AccAddressFromBech32(pool.GetAddress())
 	if err != nil {
 		return 0, fmt.Errorf("invalid pool address %s", pool.GetAddress())

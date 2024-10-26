@@ -14,7 +14,7 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	k := suite.app.LeveragelpKeeper
 	suite.SetupCoinPrices(suite.ctx)
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	poolAddr := ammtypes.NewPoolAddress(uint64(1))
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	pool := types.Pool{
 		AmmPoolId:         1,
