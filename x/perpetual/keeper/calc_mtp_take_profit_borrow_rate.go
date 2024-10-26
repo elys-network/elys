@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -20,12 +21,20 @@ func (k Keeper) CalcMTPTakeProfitBorrowFactor(mtp types.MTP) (sdk.Dec, error) {
 		return sdk.ZeroDec(), types.ErrZeroCustodyAmount
 	}
 
+	// infinite for long, 0 for short
 	if types.IsTakeProfitPriceInfinite(mtp) || mtp.TakeProfitPrice.IsZero() {
 		return sdk.OneDec(), nil
 	}
 
-	// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
-	takeProfitBorrowFactor := sdk.OneDec().Sub(mtp.Liabilities.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec().Mul(mtp.TakeProfitPrice)))
+	takeProfitBorrowFactor := math.LegacyOneDec()
+	if mtp.Position == types.Position_LONG {
+		// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
+		takeProfitBorrowFactor = sdk.OneDec().Sub(mtp.Liabilities.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec().Mul(mtp.TakeProfitPrice)))
+	} else {
+		// takeProfitBorrowFactor = 1 - ((liabilities  * take profit price) / custody)
+		takeProfitBorrowFactor = sdk.OneDec().Sub((mtp.Liabilities.ToLegacyDec().Mul(mtp.TakeProfitPrice)).Quo(mtp.Custody.ToLegacyDec()))
+
+	}
 
 	return takeProfitBorrowFactor, nil
 }
