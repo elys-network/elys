@@ -117,7 +117,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 	position.PositionHealth = h
 	k.SetPosition(ctx, position)
 
-	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper)
+	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	if err != nil {
 		return false, false, err
 	}

@@ -136,7 +136,7 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 			}
 		}
 
-		poolTvl, err := p.TVL(ctx, k.oracleKeeper)
+		poolTvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
 			poolTvl = sdk.ZeroDec()
 		}
