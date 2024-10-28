@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -58,5 +59,24 @@ func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) error {
 	pool.Health = k.CalculatePoolHealth(ctx, pool)
 	k.SetPool(ctx, *pool)
 
+	return nil
+}
+
+// CheckMinimumCustodyAmt Should be called after opening positions and when real pool balance changes
+func (k Keeper) CheckMinimumCustodyAmt(ctx sdk.Context, poolId uint64) error {
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "pool id %d", poolId)
+	}
+	ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
+	if err != nil {
+		return err
+	}
+	for _, ammPoolAsset := range ammPool.PoolAssets {
+		_, totalCustody, _, _ := pool.GetPerpetualPoolBalances(ammPoolAsset.Token.Denom)
+		if ammPoolAsset.Token.Amount.LT(totalCustody) {
+			return fmt.Errorf("real amm pool (id: %d) balance (%s) is less than total custody (%s)", poolId, ammPoolAsset.Token.String(), totalCustody.String())
+		}
+	}
 	return nil
 }

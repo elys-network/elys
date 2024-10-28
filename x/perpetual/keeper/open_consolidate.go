@@ -74,6 +74,11 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, err
 	}
 
+	err = k.CheckMinimumCustodyAmt(ctx, ammPool.PoolId)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.MsgOpenResponse{
 		Id: existingMtp.Id,
 	}, nil

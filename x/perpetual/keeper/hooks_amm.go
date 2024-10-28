@@ -45,6 +45,11 @@ func (h AmmHooks) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool 
 		return fmt.Errorf("perpetual pool health (%d) got too low", ammPool.PoolId)
 	}
 
+	err = h.k.CheckMinimumCustodyAmt(ctx, ammPool.PoolId)
+	if err != nil {
+		return err
+	}
+
 	return nil
 
 }
@@ -67,6 +72,11 @@ func (h AmmHooks) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool 
 		return fmt.Errorf("perpetual pool health (%d) got too low", ammPool.PoolId)
 	}
 
+	err = h.k.CheckMinimumCustodyAmt(ctx, ammPool.PoolId)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -86,6 +96,11 @@ func (h AmmHooks) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammt
 	params := h.k.GetParams(ctx)
 	if perpetualPool.Health.LT(params.PoolOpenThreshold) {
 		return fmt.Errorf("perpetual pool health (%d) got too low", ammPool.PoolId)
+	}
+
+	err = h.k.CheckMinimumCustodyAmt(ctx, ammPool.PoolId)
+	if err != nil {
+		return err
 	}
 
 	return nil
