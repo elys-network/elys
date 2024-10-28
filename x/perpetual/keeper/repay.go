@@ -11,16 +11,7 @@ import (
 func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, returnAmount math.Int, payingLiabilities math.Int, closingRatio sdk.Dec) error {
 	if returnAmount.IsPositive() {
 		returnCoins := sdk.NewCoins(sdk.NewCoin(mtp.CustodyAsset, returnAmount))
-		ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
-		if err != nil {
-			return err
-		}
-
-		err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, mtp.GetAccountAddress(), returnCoins)
-		if err != nil {
-			return err
-		}
-		err = k.amm.RemoveFromPoolBalance(ctx, ammPool, math.ZeroInt(), returnCoins)
+		err := k.SendFromAmmPool(ctx, ammPool, mtp.GetAccountAddress(), returnCoins)
 		if err != nil {
 			return err
 		}
@@ -31,7 +22,15 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		return err
 	}
 
-	mtp.Custody = mtp.Custody.Sub(mtp.Custody.ToLegacyDec().Mul(closingRatio).TruncateInt())
+	reducingCollateralAmt := closingRatio.Mul(mtp.Collateral.ToLegacyDec()).TruncateInt()
+	err = pool.UpdateCollateral(mtp.CollateralAsset, reducingCollateralAmt, false, mtp.Position)
+	if err != nil {
+		return err
+	}
+
+	// Custody = Custody * (1 - closingRatio)
+	mtp.Custody = mtp.Custody.ToLegacyDec().Mul(math.LegacyOneDec().Sub(closingRatio)).TruncateInt()
+	mtp.Collateral = mtp.Collateral.Sub(reducingCollateralAmt)
 
 	oldTakeProfitCustody := mtp.TakeProfitCustody
 	mtp.TakeProfitCustody = mtp.TakeProfitCustody.Sub(mtp.TakeProfitCustody.ToLegacyDec().Mul(closingRatio).TruncateInt())

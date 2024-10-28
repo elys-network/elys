@@ -57,19 +57,24 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		//}
 	}
 
-	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
+	if err = k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
 
 	// check if existing mtp to consolidate
 	existingMtp := k.CheckSameAssetPosition(ctx, msg)
 
-	if existingMtp == nil && msg.Leverage.Equal(math.LegacyOneDec()) {
-		return nil, fmt.Errorf("cannot open new position with leverage 1")
-	}
-
-	if err := k.CheckMaxOpenPositions(ctx); err != nil {
-		return nil, err
+	if existingMtp == nil {
+		if msg.Leverage.Equal(math.LegacyOneDec()) {
+			return nil, fmt.Errorf("cannot open new position with leverage 1")
+		}
+		// Check if max positions are exceeded as we are opening new position, not updating old position
+		if err = k.CheckMaxOpenPositions(ctx); err != nil {
+			return nil, err
+		}
+	} else if msg.Leverage.Equal(math.LegacyOneDec()) {
+		// Enforce collateral addition (for leverage 1) without modifying take profit price
+		msg.TakeProfitPrice = existingMtp.TakeProfitPrice
 	}
 
 	poolId := msg.PoolId
