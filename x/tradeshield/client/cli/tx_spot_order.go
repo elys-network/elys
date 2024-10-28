@@ -13,11 +13,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// TODO: Add message in other task
-func CmdCreatePendingSpotOrder() *cobra.Command {
+func CmdCreateSpotOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-pending-spot-order [order-type] [order-amount] [order-target-denom] [order-price]",
-		Short: "Create a new pending-spot-order",
+		Use:   "create-spot-order [order-type] [order-amount] [order-target-denom] [order-price]",
+		Short: "Create a new spot order",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
@@ -39,7 +38,7 @@ func CmdCreatePendingSpotOrder() *cobra.Command {
 				Rate:       sdk.MustNewDecFromStr(args[3]),
 			}
 
-			msg := types.NewMsgCreatePendingSpotOrder(addr, orderType, orderPrice, orderAmount, orderTargetDenom)
+			msg := types.NewMsgCreateSpotOrder(addr, orderType, orderPrice, orderAmount, orderTargetDenom)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -52,10 +51,10 @@ func CmdCreatePendingSpotOrder() *cobra.Command {
 	return cmd
 }
 
-func CmdUpdatePendingSpotOrder() *cobra.Command {
+func CmdUpdateSpotOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-pending-spot-order [id] [order]",
-		Short: "Update a pending-spot-order",
+		Use:   "update-spot-order [id] [order]",
+		Short: "Update a spot order",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			id, err := strconv.ParseUint(args[0], 10, 64)
@@ -69,7 +68,7 @@ func CmdUpdatePendingSpotOrder() *cobra.Command {
 			}
 
 			// TODO: Add order price definition in other task
-			msg := types.NewMsgUpdatePendingSpotOrder(clientCtx.GetFromAddress().String(), id, &types.OrderPrice{})
+			msg := types.NewMsgUpdateSpotOrder(clientCtx.GetFromAddress().String(), id, &types.OrderPrice{})
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -84,9 +83,9 @@ func CmdUpdatePendingSpotOrder() *cobra.Command {
 
 func CmdCancelSpotOrders() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "cancel-pending-spot-orders [ids.json]",
-		Short:   "Cancel pending-spot-orders",
-		Example: "elysd tx perpetual cancel-pending-spot-orders ids.json --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000",
+		Use:     "cancel-spot-orders [ids.json]",
+		Short:   "Cancel spot-orders",
+		Example: "elysd tx perpetual cancel-spot-orders ids.json --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ids, err := readPositionRequestJSON(args[0])

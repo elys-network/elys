@@ -30,10 +30,6 @@ func createNPendingPerpetualOrder(keeper *keeper.Keeper, ctx sdk.Context, n int)
 			PositionId:         uint64(i),
 			Status:             types.Status_PENDING,
 			StopLossPrice:      sdk.NewDec(1),
-			PositionSize:       sdk.NewCoin("denom", sdk.NewInt(10)),
-			LiquidationPrice:   sdk.NewDec(1),
-			FundingRate:        sdk.NewDec(1),
-			BorrowInterestRate: sdk.NewDec(1),
 		}
 		items[i].OrderId = keeper.AppendPendingPerpetualOrder(ctx, items[i])
 	}

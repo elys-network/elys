@@ -8,21 +8,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgCreatePendingPerpetualOrder_ValidateBasic(t *testing.T) {
+func TestMsgCreatePerpetualOpenOrder_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCreatePendingPerpetualOrder
+		msg  MsgCreatePerpetualOpenOrder
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCreatePendingPerpetualOrder{
+			msg: MsgCreatePerpetualOpenOrder{
 				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgCreatePendingPerpetualOrder{
+			msg: MsgCreatePerpetualOpenOrder{
 				OwnerAddress: sample.AccAddress(),
 			},
 		},
@@ -39,21 +39,52 @@ func TestMsgCreatePendingPerpetualOrder_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgUpdatePendingPerpetualOrder_ValidateBasic(t *testing.T) {
+func TestMsgCreatePerpetualCloseOrder_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgUpdatePendingPerpetualOrder
+		msg  MsgCreatePerpetualCloseOrder
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgUpdatePendingPerpetualOrder{
+			msg: MsgCreatePerpetualCloseOrder{
 				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgUpdatePendingPerpetualOrder{
+			msg: MsgCreatePerpetualCloseOrder{
+				OwnerAddress: sample.AccAddress(),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.msg.ValidateBasic()
+			if tt.err != nil {
+				require.ErrorIs(t, err, tt.err)
+				return
+			}
+			require.NoError(t, err)
+		})
+	}
+}
+
+func TestMsgUpdatePerpetualOrder_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name string
+		msg  MsgUpdatePerpetualOrder
+		err  error
+	}{
+		{
+			name: "invalid address",
+			msg: MsgUpdatePerpetualOrder{
+				OwnerAddress: "invalid_address",
+			},
+			err: sdkerrors.ErrInvalidAddress,
+		}, {
+			name: "valid address",
+			msg: MsgUpdatePerpetualOrder{
 				OwnerAddress: sample.AccAddress(),
 			},
 		},

@@ -8,7 +8,7 @@ import (
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
-func (k msgServer) CreatePendingSpotOrder(goCtx context.Context, msg *types.MsgCreatePendingSpotOrder) (*types.MsgCreatePendingSpotOrderResponse, error) {
+func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSpotOrder) (*types.MsgCreateSpotOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var pendingSpotOrder = types.SpotOrder{
@@ -24,15 +24,15 @@ func (k msgServer) CreatePendingSpotOrder(goCtx context.Context, msg *types.MsgC
 		pendingSpotOrder,
 	)
 
-	return &types.MsgCreatePendingSpotOrderResponse{
+	return &types.MsgCreateSpotOrderResponse{
 		OrderId: id,
 	}, nil
 }
 
-func (k msgServer) UpdatePendingSpotOrder(goCtx context.Context, msg *types.MsgUpdatePendingSpotOrder) (*types.MsgUpdatePendingSpotOrderResponse, error) {
+func (k msgServer) UpdateSpotOrder(goCtx context.Context, msg *types.MsgUpdateSpotOrder) (*types.MsgUpdateSpotOrderResponse, error) {
 	// _ := sdk.UnwrapSDKContext(goCtx)
 
-	return &types.MsgUpdatePendingSpotOrderResponse{}, nil
+	return &types.MsgUpdateSpotOrderResponse{}, nil
 }
 
 func (k msgServer) CancelSpotOrders(goCtx context.Context, msg *types.MsgCancelSpotOrders) (*types.MsgCancelSpotOrdersResponse, error) {

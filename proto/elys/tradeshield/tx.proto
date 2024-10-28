@@ -11,16 +11,19 @@ option go_package = "github.com/elys-network/elys/x/tradeshield/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreatePendingSpotOrder      (MsgCreatePendingSpotOrder     ) returns (MsgCreatePendingSpotOrderResponse     );
-  rpc UpdatePendingSpotOrder      (MsgUpdatePendingSpotOrder     ) returns (MsgUpdatePendingSpotOrderResponse     );
-  rpc CreatePendingPerpetualOrder (MsgCreatePendingPerpetualOrder) returns (MsgCreatePendingPerpetualOrderResponse);
-  rpc UpdatePendingPerpetualOrder (MsgUpdatePendingPerpetualOrder) returns (MsgUpdatePendingPerpetualOrderResponse);
+  rpc CreateSpotOrder      (MsgCreateSpotOrder     ) returns (MsgCreateSpotOrderResponse     );
+  rpc UpdateSpotOrder      (MsgUpdateSpotOrder     ) returns (MsgUpdateSpotOrderResponse     );
+  rpc CancelSpotOrders            (MsgCancelSpotOrders           ) returns (MsgCancelSpotOrdersResponse           );
+
+  rpc CreatePerpetualOpenOrder (MsgCreatePerpetualOpenOrder) returns (MsgCreatePerpetualOpenOrderResponse);
+  rpc CreatePerpetualCloseOrder (MsgCreatePerpetualCloseOrder) returns (MsgCreatePerpetualCloseOrderResponse);
+  rpc UpdatePerpetualOrder (MsgUpdatePerpetualOrder) returns (MsgUpdatePerpetualOrderResponse);
   rpc CancelPerpetualOrders       (MsgCancelPerpetualOrders      ) returns (MsgCancelPerpetualOrdersResponse      );
+  
   rpc UpdateParams                (MsgUpdateParams               ) returns (MsgUpdateParamsResponse               );
   rpc ExecuteOrders               (MsgExecuteOrders              ) returns (MsgExecuteOrdersResponse              );
-  rpc CancelSpotOrders            (MsgCancelSpotOrders           ) returns (MsgCancelSpotOrdersResponse           );
 }
-message MsgCreatePendingSpotOrder {
+message MsgCreateSpotOrder {
   SpotOrderType            order_type         = 1;
   OrderPrice               order_price        = 2;
   cosmos.base.v1beta1.Coin order_amount       = 3;
@@ -28,19 +31,19 @@ message MsgCreatePendingSpotOrder {
   string                   order_target_denom = 5;
 }
 
-message MsgCreatePendingSpotOrderResponse {
+message MsgCreateSpotOrderResponse {
   uint64 order_id = 1;
 }
 
-message MsgUpdatePendingSpotOrder {
+message MsgUpdateSpotOrder {
   string owner_address = 1;
   uint64 order_id      = 2;
   OrderPrice               order_price        = 3;
 }
 
-message MsgUpdatePendingSpotOrderResponse {}
+message MsgUpdateSpotOrderResponse {}
 
-message MsgCreatePendingPerpetualOrder {
+message MsgCreatePerpetualOpenOrder {
   PerpetualOrderType order_type = 1;
   OrderPrice trigger_price = 2;
   cosmos.base.v1beta1.Coin collateral = 3 [(gogoproto.nullable) = false];
@@ -61,17 +64,28 @@ message MsgCreatePendingPerpetualOrder {
   ];
 }
 
-message MsgCreatePendingPerpetualOrderResponse {
+message MsgCreatePerpetualOpenOrderResponse {
   uint64 order_id = 1;
 }
 
-message MsgUpdatePendingPerpetualOrder {
+message MsgCreatePerpetualCloseOrder {
+  PerpetualOrderType order_type = 1;
+  OrderPrice trigger_price = 2;
+  string owner_address = 3;
+  uint64 position_id = 4;
+}
+
+message MsgCreatePerpetualCloseOrderResponse {
+  uint64 order_id = 1;
+}
+
+message MsgUpdatePerpetualOrder {
   string owner_address = 1;
   uint64 order_id      = 2;
   OrderPrice order_price = 3;
 }
 
-message MsgUpdatePendingPerpetualOrderResponse {}
+message MsgUpdatePerpetualOrderResponse {}
 
 message MsgCancelPerpetualOrders {
   string owner_address = 1;

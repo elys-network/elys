@@ -50,9 +50,5 @@ func NewClosePerpetualOrderEvt(order PerpetualOrder) sdk.Event {
 		sdk.NewAttribute("position_id", strconv.FormatInt(int64(order.PositionId), 10)),
 		sdk.NewAttribute("status", order.Status.String()),
 		sdk.NewAttribute("stop_loss_price", order.StopLossPrice.String()),
-		sdk.NewAttribute("position_size", order.PositionSize.String()),
-		sdk.NewAttribute("liquidation_price", order.LiquidationPrice.String()),
-		sdk.NewAttribute("funding_rate", order.FundingRate.String()),
-		sdk.NewAttribute("borrow_interest_rate", order.BorrowInterestRate.String()),
 	)
 }

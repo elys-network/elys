@@ -9,8 +9,7 @@ import (
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
-// TODO: Complete message in another task
-func (k msgServer) CreatePendingPerpetualOrder(goCtx context.Context, msg *types.MsgCreatePendingPerpetualOrder) (*types.MsgCreatePendingPerpetualOrderResponse, error) {
+func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.MsgCreatePerpetualOpenOrder) (*types.MsgCreatePerpetualOpenOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var pendingPerpetualOrder = types.PerpetualOrder{
@@ -30,12 +29,32 @@ func (k msgServer) CreatePendingPerpetualOrder(goCtx context.Context, msg *types
 		pendingPerpetualOrder,
 	)
 
-	return &types.MsgCreatePendingPerpetualOrderResponse{
+	return &types.MsgCreatePerpetualOpenOrderResponse{
 		OrderId: id,
 	}, nil
 }
 
-func (k msgServer) UpdatePendingPerpetualOrder(goCtx context.Context, msg *types.MsgUpdatePendingPerpetualOrder) (*types.MsgUpdatePendingPerpetualOrderResponse, error) {
+func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.MsgCreatePerpetualCloseOrder) (*types.MsgCreatePerpetualCloseOrderResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	var pendingPerpetualOrder = types.PerpetualOrder{
+		PerpetualOrderType: msg.OrderType,
+		TriggerPrice:       msg.TriggerPrice,
+		OwnerAddress:       msg.OwnerAddress,
+		PositionId:         msg.PositionId,
+	}
+
+	id := k.AppendPendingPerpetualOrder(
+		ctx,
+		pendingPerpetualOrder,
+	)
+
+	return &types.MsgCreatePerpetualCloseOrderResponse{
+		OrderId: id,
+	}, nil
+}
+
+func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpdatePerpetualOrder) (*types.MsgUpdatePerpetualOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var pendingPerpetualOrder = types.PerpetualOrder{
@@ -55,7 +74,7 @@ func (k msgServer) UpdatePendingPerpetualOrder(goCtx context.Context, msg *types
 
 	k.SetPendingPerpetualOrder(ctx, pendingPerpetualOrder)
 
-	return &types.MsgUpdatePendingPerpetualOrderResponse{}, nil
+	return &types.MsgUpdatePerpetualOrderResponse{}, nil
 }
 
 func (k msgServer) CancelPerpetualOrders(goCtx context.Context, msg *types.MsgCancelPerpetualOrders) (*types.MsgCancelPerpetualOrdersResponse, error) {

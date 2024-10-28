@@ -23,23 +23,27 @@ var (
 )
 
 const (
-	opWeightMsgCreatePendingSpotOrder = "op_weight_msg_pending_spot_order"
+	opWeightMsgCreateSpotOrder = "op_weight_msg_spot_order"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgCreatePendingSpotOrder int = 100
+	defaultWeightMsgCreateSpotOrder int = 100
 
-	opWeightMsgUpdatePendingSpotOrder = "op_weight_msg_pending_spot_order"
+	opWeightMsgUpdateSpotOrder = "op_weight_msg_spot_order"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgUpdatePendingSpotOrder int = 100
+	defaultWeightMsgUpdateSpotOrder int = 100
 
-	opWeightMsgCreatePendingPerpetualOrder = "op_weight_msg_pending_perpetual_order"
+	opWeightMsgCreatePerpetualOpenOrder = "op_weight_msg_perpetual_order"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgCreatePendingPerpetualOrder int = 100
+	defaultWeightMsgCreatePerpetualOpenOrder int = 100
 
-	opWeightMsgUpdatePendingPerpetualOrder = "op_weight_msg_pending_perpetual_order"
+	opWeightMsgCreatePerpetualCloseOrder = "op_weight_msg_perpetual_order"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgUpdatePendingPerpetualOrder int = 100
+	defaultWeightMsgCreatePerpetualCloseOrder int = 100
 
-	opWeightMsgCancelPerpetualOrders = "op_weight_msg_pending_perpetual_order"
+	opWeightMsgUpdatePerpetualOrder = "op_weight_msg_perpetual_order"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdatePerpetualOrder int = 100
+
+	opWeightMsgCancelPerpetualOrders = "op_weight_msg_perpetual_order"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCancelPerpetualOrders int = 100
 
@@ -101,48 +105,59 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
-	var weightMsgCreatePendingSpotOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePendingSpotOrder, &weightMsgCreatePendingSpotOrder, nil,
+	var weightMsgCreateSpotOrder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateSpotOrder, &weightMsgCreateSpotOrder, nil,
 		func(_ *rand.Rand) {
-			weightMsgCreatePendingSpotOrder = defaultWeightMsgCreatePendingSpotOrder
+			weightMsgCreateSpotOrder = defaultWeightMsgCreateSpotOrder
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCreatePendingSpotOrder,
-		tradeshieldsimulation.SimulateMsgCreatePendingSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgCreateSpotOrder,
+		tradeshieldsimulation.SimulateMsgCreateSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgUpdatePendingSpotOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePendingSpotOrder, &weightMsgUpdatePendingSpotOrder, nil,
+	var weightMsgUpdateSpotOrder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateSpotOrder, &weightMsgUpdateSpotOrder, nil,
 		func(_ *rand.Rand) {
-			weightMsgUpdatePendingSpotOrder = defaultWeightMsgUpdatePendingSpotOrder
+			weightMsgUpdateSpotOrder = defaultWeightMsgUpdateSpotOrder
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdatePendingSpotOrder,
-		tradeshieldsimulation.SimulateMsgUpdatePendingSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgUpdateSpotOrder,
+		tradeshieldsimulation.SimulateMsgUpdateSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgCreatePendingPerpetualOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePendingPerpetualOrder, &weightMsgCreatePendingPerpetualOrder, nil,
+	var weightMsgCreatePerpetualOpenOrder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePerpetualOpenOrder, &weightMsgCreatePerpetualOpenOrder, nil,
 		func(_ *rand.Rand) {
-			weightMsgCreatePendingPerpetualOrder = defaultWeightMsgCreatePendingPerpetualOrder
+			weightMsgCreatePerpetualOpenOrder = defaultWeightMsgCreatePerpetualOpenOrder
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCreatePendingPerpetualOrder,
-		tradeshieldsimulation.SimulateMsgCreatePendingPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgCreatePerpetualOpenOrder,
+		tradeshieldsimulation.SimulateMsgCreatePerpetualOpenOrder(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgUpdatePendingPerpetualOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePendingPerpetualOrder, &weightMsgUpdatePendingPerpetualOrder, nil,
+	var weightMsgCreatePerpetualCloseOrder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePerpetualCloseOrder, &weightMsgCreatePerpetualCloseOrder, nil,
 		func(_ *rand.Rand) {
-			weightMsgUpdatePendingPerpetualOrder = defaultWeightMsgUpdatePendingPerpetualOrder
+			weightMsgCreatePerpetualCloseOrder = defaultWeightMsgCreatePerpetualCloseOrder
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdatePendingPerpetualOrder,
-		tradeshieldsimulation.SimulateMsgUpdatePendingPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgCreatePerpetualCloseOrder,
+		tradeshieldsimulation.SimulateMsgCreatePerpetualCloseOrder(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdatePerpetualOrder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePerpetualOrder, &weightMsgUpdatePerpetualOrder, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdatePerpetualOrder = defaultWeightMsgUpdatePerpetualOrder
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdatePerpetualOrder,
+		tradeshieldsimulation.SimulateMsgUpdatePerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgCancelPerpetualOrders int
@@ -187,34 +202,34 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
 		simulation.NewWeightedProposalMsg(
-			opWeightMsgCreatePendingSpotOrder,
-			defaultWeightMsgCreatePendingSpotOrder,
+			opWeightMsgCreateSpotOrder,
+			defaultWeightMsgCreateSpotOrder,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				tradeshieldsimulation.SimulateMsgCreatePendingSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper)
+				tradeshieldsimulation.SimulateMsgCreateSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),
 		simulation.NewWeightedProposalMsg(
-			opWeightMsgUpdatePendingSpotOrder,
-			defaultWeightMsgUpdatePendingSpotOrder,
+			opWeightMsgUpdateSpotOrder,
+			defaultWeightMsgUpdateSpotOrder,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				tradeshieldsimulation.SimulateMsgUpdatePendingSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper)
+				tradeshieldsimulation.SimulateMsgUpdateSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),
 		simulation.NewWeightedProposalMsg(
-			opWeightMsgCreatePendingPerpetualOrder,
-			defaultWeightMsgCreatePendingPerpetualOrder,
+			opWeightMsgCreatePerpetualOpenOrder,
+			defaultWeightMsgCreatePerpetualOpenOrder,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				tradeshieldsimulation.SimulateMsgCreatePendingPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper)
+				tradeshieldsimulation.SimulateMsgCreatePerpetualOpenOrder(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),
 		simulation.NewWeightedProposalMsg(
-			opWeightMsgUpdatePendingPerpetualOrder,
-			defaultWeightMsgUpdatePendingPerpetualOrder,
+			opWeightMsgUpdatePerpetualOrder,
+			defaultWeightMsgUpdatePerpetualOrder,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				tradeshieldsimulation.SimulateMsgUpdatePendingPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper)
+				tradeshieldsimulation.SimulateMsgUpdatePerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),

@@ -86,6 +86,19 @@ message LegacyPerpetualOrder {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ];
+    cosmos.base.v1beta1.Coin position_size = 13 [(gogoproto.nullable) = false];
+    string liquidation_price = 14 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+    string funding_rate = 15 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+    string borrow_interest_rate = 16 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
 }
 
 message PerpetualOrder {
@@ -110,16 +123,20 @@ message PerpetualOrder {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ];
-    cosmos.base.v1beta1.Coin position_size = 13 [(gogoproto.nullable) = false];
-    string liquidation_price = 14 [
+}
+
+message PerpetualOrderExtraInfo {
+    PerpetualOrder perpetual_order = 1;
+    cosmos.base.v1beta1.Coin position_size = 2 [(gogoproto.nullable) = false];
+    string liquidation_price = 3 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ];
-    string funding_rate = 15 [
+    string funding_rate = 4 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ];
-    string borrow_interest_rate = 16 [
+    string borrow_interest_rate = 5 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ];

@@ -8,21 +8,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgCreatePendingSpotOrder_ValidateBasic(t *testing.T) {
+func TestMsgCreateSpotOrder_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCreatePendingSpotOrder
+		msg  MsgCreateSpotOrder
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCreatePendingSpotOrder{
+			msg: MsgCreateSpotOrder{
 				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgCreatePendingSpotOrder{
+			msg: MsgCreateSpotOrder{
 				OwnerAddress: sample.AccAddress(),
 			},
 		},
@@ -39,21 +39,21 @@ func TestMsgCreatePendingSpotOrder_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgUpdatePendingSpotOrder_ValidateBasic(t *testing.T) {
+func TestMsgUpdateSpotOrder_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgUpdatePendingSpotOrder
+		msg  MsgUpdateSpotOrder
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgUpdatePendingSpotOrder{
+			msg: MsgUpdateSpotOrder{
 				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgUpdatePendingSpotOrder{
+			msg: MsgUpdateSpotOrder{
 				OwnerAddress: sample.AccAddress(),
 			},
 		},

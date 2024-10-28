@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
@@ -12,41 +13,67 @@ import (
 )
 
 func TestPendingPerpetualOrderForAddress(t *testing.T) {
-	k, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
+	k, ctx, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 
-	order := types.PerpetualOrder{
-		OrderId:            1,
-		OwnerAddress:       "valid_address",
-		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		Position:           types.PerpetualPosition_LONG,
-		TriggerPrice:       &types.OrderPrice{Rate: sdk.NewDec(1), BaseDenom: "base", QuoteDenom: "quote"},
-		Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
-		TradingAsset:       "asset",
-		Leverage:           sdk.NewDec(int64(1)),
-		TakeProfitPrice:    sdk.NewDec(1),
-		PositionId:         uint64(1),
-		Status:             types.Status_PENDING,
-		StopLossPrice:      sdk.NewDec(1),
+	ownerAddress := "valid_address"
+	ownerAddressAcc := sdk.AccAddress(ownerAddress)
+	positionId := uint64(1)
+	poolId := uint64(123)
+
+	perpetualKeeper.On("GetMTP", ctx, ownerAddressAcc, positionId).Return(perpetualtypes.MTP{
+		AmmPoolId: poolId,
+	}, nil)
+	perpetualKeeper.On("GetPool", ctx, poolId).Return(perpetualtypes.Pool{
+		FundingRate:        sdk.NewDec(1),
+		BorrowInterestRate: sdk.NewDec(1),
+	}, true)
+	perpetualKeeper.On("HandleCloseEstimation", ctx, &perpetualtypes.QueryCloseEstimationRequest{
+		Address:    ownerAddress,
+		PositionId: positionId,
+	}).Return(&perpetualtypes.QueryCloseEstimationResponse{
+		Position:         perpetualtypes.Position_LONG,
+		PositionSize:     sdk.NewCoin("denom", sdk.NewInt(10)),
+		PriceImpact:      sdk.NewDec(1),
+		LiquidationPrice: sdk.NewDec(1),
+	}, nil)
+
+	order := types.PerpetualOrderExtraInfo{
+		PerpetualOrder: &types.PerpetualOrder{
+			OrderId:            1,
+			OwnerAddress:       "valid_address",
+			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
+			Position:           types.PerpetualPosition_LONG,
+			TriggerPrice:       &types.OrderPrice{Rate: sdk.NewDec(1), BaseDenom: "base", QuoteDenom: "quote"},
+			Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
+			TradingAsset:       "asset",
+			Leverage:           sdk.NewDec(int64(1)),
+			TakeProfitPrice:    sdk.NewDec(1),
+			PositionId:         positionId,
+			Status:             types.Status_PENDING,
+			StopLossPrice:      sdk.NewDec(1),
+		},
 		PositionSize:       sdk.NewCoin("denom", sdk.NewInt(10)),
 		LiquidationPrice:   sdk.NewDec(1),
 		FundingRate:        sdk.NewDec(1),
 		BorrowInterestRate: sdk.NewDec(1),
 	}
 
-	order2 := types.PerpetualOrder{
-		OrderId:            2,
-		OwnerAddress:       "valid_address",
-		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		Position:           types.PerpetualPosition_LONG,
-		TriggerPrice:       &types.OrderPrice{Rate: sdk.NewDec(2), BaseDenom: "base", QuoteDenom: "quote"},
-		Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
-		TradingAsset:       "asset",
-		Leverage:           sdk.NewDec(int64(1)),
-		TakeProfitPrice:    sdk.NewDec(1),
-		PositionId:         uint64(1),
-		Status:             types.Status_EXECUTED,
-		StopLossPrice:      sdk.NewDec(1),
+	order2 := types.PerpetualOrderExtraInfo{
+		PerpetualOrder: &types.PerpetualOrder{
+			OrderId:            2,
+			OwnerAddress:       "valid_address",
+			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
+			Position:           types.PerpetualPosition_LONG,
+			TriggerPrice:       &types.OrderPrice{Rate: sdk.NewDec(2), BaseDenom: "base", QuoteDenom: "quote"},
+			Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
+			TradingAsset:       "asset",
+			Leverage:           sdk.NewDec(int64(1)),
+			TakeProfitPrice:    sdk.NewDec(1),
+			PositionId:         positionId,
+			Status:             types.Status_EXECUTED,
+			StopLossPrice:      sdk.NewDec(1),
+		},
 		PositionSize:       sdk.NewCoin("denom", sdk.NewInt(10)),
 		LiquidationPrice:   sdk.NewDec(1),
 		FundingRate:        sdk.NewDec(1),
@@ -66,7 +93,7 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 				Status:  types.Status_ALL,
 			},
 			response: &types.QueryPendingPerpetualOrderForAddressResponse{
-				PendingPerpetualOrders: []types.PerpetualOrder{order, order2},
+				PendingPerpetualOrders: []types.PerpetualOrderExtraInfo{order, order2},
 			},
 			err: nil,
 		},
@@ -77,7 +104,7 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 				Status:  types.Status_EXECUTED,
 			},
 			response: &types.QueryPendingPerpetualOrderForAddressResponse{
-				PendingPerpetualOrders: []types.PerpetualOrder{order2},
+				PendingPerpetualOrders: []types.PerpetualOrderExtraInfo{order2},
 			},
 			err: nil,
 		},
@@ -88,8 +115,8 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 		},
 	}
 
-	_ = k.AppendPendingPerpetualOrder(ctx, order)
-	_ = k.AppendPendingPerpetualOrder(ctx, order2)
+	_ = k.AppendPendingPerpetualOrder(ctx, *order.PerpetualOrder)
+	_ = k.AppendPendingPerpetualOrder(ctx, *order2.PerpetualOrder)
 
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {

@@ -6,17 +6,17 @@ import (
 )
 
 const (
-	TypeMsgCreatePendingSpotOrder = "create_pending_spot_order"
-	TypeMsgUpdatePendingSpotOrder = "update_pending_spot_order"
-	TypeMsgCancelSpotOrders       = "cancel_pending_spot_order"
+	TypeMsgCreateSpotOrder  = "create_spot_order"
+	TypeMsgUpdateSpotOrder  = "update_spot_order"
+	TypeMsgCancelSpotOrders = "cancel_spot_orders"
 )
 
-var _ sdk.Msg = &MsgCreatePendingSpotOrder{}
+var _ sdk.Msg = &MsgCreateSpotOrder{}
 
-func NewMsgCreatePendingSpotOrder(ownerAddress string, orderType SpotOrderType,
+func NewMsgCreateSpotOrder(ownerAddress string, orderType SpotOrderType,
 	orderPrice OrderPrice, orderAmount sdk.Coin,
-	orderTargetDenom string) *MsgCreatePendingSpotOrder {
-	return &MsgCreatePendingSpotOrder{
+	orderTargetDenom string) *MsgCreateSpotOrder {
+	return &MsgCreateSpotOrder{
 		OrderType:        orderType,
 		OrderPrice:       &orderPrice,
 		OrderAmount:      &orderAmount,
@@ -25,15 +25,15 @@ func NewMsgCreatePendingSpotOrder(ownerAddress string, orderType SpotOrderType,
 	}
 }
 
-func (msg *MsgCreatePendingSpotOrder) Route() string {
+func (msg *MsgCreateSpotOrder) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgCreatePendingSpotOrder) Type() string {
-	return TypeMsgCreatePendingSpotOrder
+func (msg *MsgCreateSpotOrder) Type() string {
+	return TypeMsgCreateSpotOrder
 }
 
-func (msg *MsgCreatePendingSpotOrder) GetSigners() []sdk.AccAddress {
+func (msg *MsgCreateSpotOrder) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		panic(err)
@@ -41,12 +41,12 @@ func (msg *MsgCreatePendingSpotOrder) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgCreatePendingSpotOrder) GetSignBytes() []byte {
+func (msg *MsgCreateSpotOrder) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgCreatePendingSpotOrder) ValidateBasic() error {
+func (msg *MsgCreateSpotOrder) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
@@ -54,25 +54,25 @@ func (msg *MsgCreatePendingSpotOrder) ValidateBasic() error {
 	return nil
 }
 
-var _ sdk.Msg = &MsgUpdatePendingSpotOrder{}
+var _ sdk.Msg = &MsgUpdateSpotOrder{}
 
-func NewMsgUpdatePendingSpotOrder(creator string, id uint64, orderPrice *OrderPrice) *MsgUpdatePendingSpotOrder {
-	return &MsgUpdatePendingSpotOrder{
+func NewMsgUpdateSpotOrder(creator string, id uint64, orderPrice *OrderPrice) *MsgUpdateSpotOrder {
+	return &MsgUpdateSpotOrder{
 		OrderId:      id,
 		OwnerAddress: creator,
 		OrderPrice:   orderPrice,
 	}
 }
 
-func (msg *MsgUpdatePendingSpotOrder) Route() string {
+func (msg *MsgUpdateSpotOrder) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgUpdatePendingSpotOrder) Type() string {
-	return TypeMsgUpdatePendingSpotOrder
+func (msg *MsgUpdateSpotOrder) Type() string {
+	return TypeMsgUpdateSpotOrder
 }
 
-func (msg *MsgUpdatePendingSpotOrder) GetSigners() []sdk.AccAddress {
+func (msg *MsgUpdateSpotOrder) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		panic(err)
@@ -80,12 +80,12 @@ func (msg *MsgUpdatePendingSpotOrder) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgUpdatePendingSpotOrder) GetSignBytes() []byte {
+func (msg *MsgUpdateSpotOrder) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgUpdatePendingSpotOrder) ValidateBasic() error {
+func (msg *MsgUpdateSpotOrder) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)

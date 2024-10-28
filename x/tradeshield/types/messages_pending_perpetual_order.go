@@ -6,14 +6,15 @@ import (
 )
 
 const (
-	TypeMsgCreatePendingPerpetualOrder = "create_pending_perpetual_order"
-	TypeMsgUpdatePendingPerpetualOrder = "update_pending_perpetual_order"
-	TypeMsgCancelPerpetualOrders       = "cancel_perpetual_order"
+	TypeMsgCreatePerpetualOpenOrder  = "create_perpetual_open_order"
+	TypeMsgCreatePerpetualCloseOrder = "create_perpetual_close_order"
+	TypeMsgUpdatePerpetualOrder      = "update_perpetual_order"
+	TypeMsgCancelPerpetualOrders     = "cancel_perpetual_orders"
 )
 
-var _ sdk.Msg = &MsgCreatePendingPerpetualOrder{}
+var _ sdk.Msg = &MsgCreatePerpetualOpenOrder{}
 
-func NewMsgCreatePendingPerpetualOrder(
+func NewMsgCreatePerpetualOpenOrder(
 	ownerAddress string,
 	orderType PerpetualOrderType,
 	triggerPrice OrderPrice,
@@ -23,8 +24,8 @@ func NewMsgCreatePendingPerpetualOrder(
 	leverage sdk.Dec,
 	takeProfitPrice sdk.Dec,
 	stopLossPrice sdk.Dec,
-) *MsgCreatePendingPerpetualOrder {
-	return &MsgCreatePendingPerpetualOrder{
+) *MsgCreatePerpetualOpenOrder {
+	return &MsgCreatePerpetualOpenOrder{
 		OrderType:       orderType,
 		TriggerPrice:    &triggerPrice,
 		Collateral:      collateral,
@@ -37,15 +38,15 @@ func NewMsgCreatePendingPerpetualOrder(
 	}
 }
 
-func (msg *MsgCreatePendingPerpetualOrder) Route() string {
+func (msg *MsgCreatePerpetualOpenOrder) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgCreatePendingPerpetualOrder) Type() string {
-	return TypeMsgCreatePendingPerpetualOrder
+func (msg *MsgCreatePerpetualOpenOrder) Type() string {
+	return TypeMsgCreatePerpetualOpenOrder
 }
 
-func (msg *MsgCreatePendingPerpetualOrder) GetSigners() []sdk.AccAddress {
+func (msg *MsgCreatePerpetualOpenOrder) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		panic(err)
@@ -53,12 +54,12 @@ func (msg *MsgCreatePendingPerpetualOrder) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgCreatePendingPerpetualOrder) GetSignBytes() []byte {
+func (msg *MsgCreatePerpetualOpenOrder) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgCreatePendingPerpetualOrder) ValidateBasic() error {
+func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
@@ -66,25 +67,31 @@ func (msg *MsgCreatePendingPerpetualOrder) ValidateBasic() error {
 	return nil
 }
 
-var _ sdk.Msg = &MsgUpdatePendingPerpetualOrder{}
+var _ sdk.Msg = &MsgCreatePerpetualOpenOrder{}
 
-func NewMsgUpdatePendingPerpetualOrder(creator string, id uint64, orderPrice *OrderPrice) *MsgUpdatePendingPerpetualOrder {
-	return &MsgUpdatePendingPerpetualOrder{
-		OrderId:      id,
-		OwnerAddress: creator,
-		OrderPrice:   orderPrice,
+func NewMsgCreatePerpetualCloseOrder(
+	ownerAddress string,
+	orderType PerpetualOrderType,
+	triggerPrice OrderPrice,
+	positionId uint64,
+) *MsgCreatePerpetualCloseOrder {
+	return &MsgCreatePerpetualCloseOrder{
+		OrderType:    orderType,
+		TriggerPrice: &triggerPrice,
+		OwnerAddress: ownerAddress,
+		PositionId:   positionId,
 	}
 }
 
-func (msg *MsgUpdatePendingPerpetualOrder) Route() string {
+func (msg *MsgCreatePerpetualCloseOrder) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgUpdatePendingPerpetualOrder) Type() string {
-	return TypeMsgUpdatePendingPerpetualOrder
+func (msg *MsgCreatePerpetualCloseOrder) Type() string {
+	return TypeMsgCreatePerpetualOpenOrder
 }
 
-func (msg *MsgUpdatePendingPerpetualOrder) GetSigners() []sdk.AccAddress {
+func (msg *MsgCreatePerpetualCloseOrder) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		panic(err)
@@ -92,12 +99,51 @@ func (msg *MsgUpdatePendingPerpetualOrder) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgUpdatePendingPerpetualOrder) GetSignBytes() []byte {
+func (msg *MsgCreatePerpetualCloseOrder) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgUpdatePendingPerpetualOrder) ValidateBasic() error {
+func (msg *MsgCreatePerpetualCloseOrder) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
+	}
+	return nil
+}
+
+var _ sdk.Msg = &MsgUpdatePerpetualOrder{}
+
+func NewMsgUpdatePerpetualOrder(creator string, id uint64, orderPrice *OrderPrice) *MsgUpdatePerpetualOrder {
+	return &MsgUpdatePerpetualOrder{
+		OrderId:      id,
+		OwnerAddress: creator,
+		OrderPrice:   orderPrice,
+	}
+}
+
+func (msg *MsgUpdatePerpetualOrder) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgUpdatePerpetualOrder) Type() string {
+	return TypeMsgUpdatePerpetualOrder
+}
+
+func (msg *MsgUpdatePerpetualOrder) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgUpdatePerpetualOrder) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgUpdatePerpetualOrder) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
