@@ -257,7 +257,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			// Step 1: Bootstrap accounts
 			// Create sender, pool, and treasury accounts
 			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-			poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			poolAddr := types.NewPoolAddress(1)
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 			// Step 2: Bootstrap balances
@@ -322,7 +322,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			// Calculate expected number of shares without weight balance bonus
 			totalShares := pool.TotalShares.Amount
 			joinValueWithoutSlippage, _ := pool.CalcJoinValueWithoutSlippage(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.senderInitBalance)
-			tvl, _ := pool.TVL(suite.ctx, suite.app.OracleKeeper)
+			tvl, _ := pool.TVL(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper)
 			expectedNumShares := totalShares.ToLegacyDec().
 				Mul(joinValueWithoutSlippage).Quo(tvl).RoundInt()
 
