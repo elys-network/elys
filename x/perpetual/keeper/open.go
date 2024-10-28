@@ -116,11 +116,6 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return nil, err
 	}
 
-	err = k.CheckMinimumCustodyAmt(ctx, ammPool.PoolId)
-	if err != nil {
-		return nil, err
-	}
-
 	k.EmitOpenEvent(ctx, mtp)
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
