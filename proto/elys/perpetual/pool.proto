@@ -24,6 +24,10 @@ message PoolAsset {
     (gogoproto.nullable) = false
   ];
   string asset_denom =  5;
+  string collateral = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message Pool {

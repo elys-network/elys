@@ -70,7 +70,15 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (sdk.Dec, s
 	// popular_rate = fixed_rate * abs(Custody-Liability) / (Custody+Liability)
 	totalCustodyLong := sdk.ZeroInt()
 	for _, asset := range pool.PoolAssetsLong {
-		totalCustodyLong = totalCustodyLong.Add(asset.Custody)
+		// We subtract asset.Collateral from totalCustodyLong because for long with collateral same as trading asset and user will
+		// be charged for that the collateral as well even though they have already given that amount to the pool.
+		// For LONG, asset.Custody will be 0 only for base currency but asset.Collateral won't be zero for base currency and trading asset
+		// We subtract asset.Collateral only when asset is trading asset and in that case asset.Custody won't be zero
+		// For base currency, asset.Collateral might not be 0 but asset.Custody will be 0 in LONG
+		// !asset.Custody.IsZero() ensures that asset is trading asset for LONG
+		if !asset.Custody.IsZero() {
+			totalCustodyLong = totalCustodyLong.Add(asset.Custody).Sub(asset.Collateral)
+		}
 	}
 
 	totalLiabilitiesShort := sdk.ZeroInt()
