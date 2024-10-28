@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"time"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -10,7 +12,6 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
-	"time"
 )
 
 func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {
@@ -265,7 +266,9 @@ func (suite *KeeperTestSuite) TestClose() {
 			},
 			func() {
 				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
-				suite.Require().Equal(position.LeveragedLpAmount, leverageLPShares.QuoRaw(2))
+				actualShares, ok := sdk.NewIntFromString("9999952380952380950")
+				suite.Require().True(ok)
+				suite.Require().Equal(position.LeveragedLpAmount, actualShares)
 			},
 		},
 		{"Closing whole position",

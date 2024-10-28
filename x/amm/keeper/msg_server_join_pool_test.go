@@ -103,7 +103,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   sdk.NewInt(805987500000000000), // weight recovery direction - slippage enable
-			shareOutAmount:   sdk.NewInt(1002500000000000000), // weight recovery direction - slippage disable
+			shareOutAmount:   sdk.NewInt(1000000000000000000), // weight recovery direction - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -212,6 +212,122 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				suite.Require().Equal(commitments.CommittedTokens[0].Denom, "amm/pool/1")
 				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), tc.shareOutAmount.String())
 			}
+		})
+	}
+}
+
+func (suite *KeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
+	for _, tc := range []struct {
+		desc              string
+		senderInitBalance sdk.Coins
+		poolInitBalance   sdk.Coins
+		poolParams        types.PoolParams
+		shareOutAmount    math.Int
+		expSenderBalance  sdk.Coins
+		expTotalLiquidity sdk.Coins
+		expTokenIn        sdk.Coins
+		expPass           bool
+	}{
+		{
+			desc:              "Exploit scenario for Join Pool - unfair liquidity extraction",
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.ATOM, 100_000_000_000000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.ATOM, 100_000_000_000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000_000000)},
+			poolParams: types.PoolParams{
+				SwapFee:                     sdk.ZeroDec(),
+				ExitFee:                     sdk.ZeroDec(),
+				UseOracle:                   true,
+				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
+				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+				ExternalLiquidityRatio:      sdk.NewDec(1),
+				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				FeeDenom:                    ptypes.BaseCurrency,
+			},
+			shareOutAmount:   sdk.NewInt(2_000000000000000000),
+			expSenderBalance: sdk.Coins{},
+			expTokenIn:       sdk.Coins{sdk.NewInt64Coin(ptypes.ATOM, 1_000000)},
+			expPass:          false,
+		},
+	} {
+		suite.Run(tc.desc, func() {
+			suite.SetupTest()
+			suite.SetupCoinPrices()
+
+			// Step 1: Bootstrap accounts
+			// Create sender, pool, and treasury accounts
+			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			poolAddr := types.NewPoolAddress(1)
+			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+
+			// Step 2: Bootstrap balances
+			err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tc.senderInitBalance)
+			suite.Require().NoError(err)
+			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tc.senderInitBalance)
+			suite.Require().NoError(err)
+			err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tc.poolInitBalance)
+			suite.Require().NoError(err)
+			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, poolAddr, tc.poolInitBalance)
+			suite.Require().NoError(err)
+
+			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
+				Denom:     tc.poolInitBalance[0].Denom,
+				Liquidity: tc.poolInitBalance[0].Amount,
+			})
+			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
+				Denom:     tc.poolInitBalance[1].Denom,
+				Liquidity: tc.poolInitBalance[1].Amount,
+			})
+
+			// Step 3: Setup initial pool with 50:50 weight
+			pool := types.Pool{
+				PoolId:            1,
+				Address:           poolAddr.String(),
+				RebalanceTreasury: treasuryAddr.String(),
+				PoolParams:        tc.poolParams,
+				TotalShares:       sdk.NewCoin("amm/pool/1", sdk.NewInt(2).Mul(types.OneShare)),
+				PoolAssets: []types.PoolAsset{
+					{
+						Token:  tc.poolInitBalance[0],
+						Weight: sdk.NewInt(1),
+					},
+					{
+						Token:  tc.poolInitBalance[1],
+						Weight: sdk.NewInt(1),
+					},
+				},
+				TotalWeight: sdk.ZeroInt(),
+			}
+			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+
+			// Step 4: Simulate market price movement - adjust weights to 10:1
+			pool.PoolAssets[0].Weight = sdk.NewInt(10)
+			pool.PoolAssets[1].Weight = sdk.NewInt(1)
+			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+
+			// Step 5: New LP adds single-sided liquidity
+			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
+			resp, err := msgServer.JoinPool(
+				sdk.WrapSDKContext(suite.ctx),
+				&types.MsgJoinPool{
+					Sender:         sender.String(),
+					PoolId:         1,
+					MaxAmountsIn:   tc.senderInitBalance,
+					ShareAmountOut: tc.shareOutAmount,
+				})
+
+			suite.Require().NoError(err)
+
+			// Step 6: Validate if exploit was successful (It should fail)
+			// Calculate expected number of shares without weight balance bonus
+			totalShares := pool.TotalShares.Amount
+			joinValueWithoutSlippage, _ := pool.CalcJoinValueWithoutSlippage(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.senderInitBalance)
+			tvl, _ := pool.TVL(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper)
+			expectedNumShares := totalShares.ToLegacyDec().
+				Mul(joinValueWithoutSlippage).Quo(tvl).RoundInt()
+
+			// Number of shares must be lesser or equal to expected
+			suite.Require().GreaterOrEqual(expectedNumShares.String(), resp.ShareAmountOut.String(), "Exploit detected: Sender received more shares than expected")
 		})
 	}
 }

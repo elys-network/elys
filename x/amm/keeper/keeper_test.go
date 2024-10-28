@@ -15,8 +15,39 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+type assetPriceInfo struct {
+	denom   string
+	display string
+	price   sdk.Dec
+}
+
 const (
 	initChain = true
+)
+
+var (
+	priceMap = map[string]assetPriceInfo{
+		"uusdc": {
+			denom:   ptypes.BaseCurrency,
+			display: "USDC",
+			price:   sdk.OneDec(),
+		},
+		"uusdt": {
+			denom:   "uusdt",
+			display: "USDT",
+			price:   sdk.OneDec(),
+		},
+		"uelys": {
+			denom:   ptypes.Elys,
+			display: "ELYS",
+			price:   sdk.MustNewDecFromStr("3.0"),
+		},
+		"uatom": {
+			denom:   ptypes.ATOM,
+			display: "ATOM",
+			price:   sdk.MustNewDecFromStr("1.0"),
+		},
+	}
 )
 
 type KeeperTestSuite struct {
@@ -78,6 +109,26 @@ func (suite *KeeperTestSuite) SetupStableCoinPrices() {
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
+}
+
+func (suite *KeeperTestSuite) SetupCoinPrices() {
+	// prices set for USDT and USDC
+	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+
+	for _, v := range priceMap {
+		suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+			Denom:   v.denom,
+			Display: v.display,
+			Decimal: 6,
+		})
+		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+			Asset:     v.display,
+			Price:     v.price,
+			Source:    "elys",
+			Provider:  provider.String(),
+			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
+		})
+	}
 }
 
 func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
