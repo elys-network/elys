@@ -318,7 +318,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 
 			suite.Require().NoError(err)
 
-			// Step 6: Validate if exploit was successful
+			// Step 6: Validate if exploit was successful (It should fail)
 			// Calculate expected number of shares without weight balance bonus
 			totalShares := pool.TotalShares.Amount
 			joinValueWithoutSlippage, _ := pool.CalcJoinValueWithoutSlippage(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.senderInitBalance)
