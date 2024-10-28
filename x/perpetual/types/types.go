@@ -71,16 +71,21 @@ func (mtp MTP) Validate() error {
 
 func (mtp *MTP) GetAndSetOpenPrice() {
 	openPrice := math.LegacyZeroDec()
-	// open price = (collateral + liabilities) / custody
 	if mtp.Position == Position_LONG {
 		if mtp.CollateralAsset == mtp.TradingAsset {
+			// open price = liabilities / (custody - collateral)
 			openPrice = mtp.Liabilities.ToLegacyDec().Quo(mtp.Custody.Sub(mtp.Collateral).ToLegacyDec())
 		} else {
+			// open price = (collateral + liabilities) / custody
 			openPrice = (mtp.Collateral.Add(mtp.Liabilities)).ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())
 		}
 	} else {
-		// open price = (custody - collateral) / liabilities
-		openPrice = (mtp.Custody.Sub(mtp.Collateral)).ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
+		if mtp.Liabilities.IsZero() {
+			mtp.OpenPrice = openPrice
+		} else {
+			// open price = (custody - collateral) / liabilities
+			openPrice = (mtp.Custody.Sub(mtp.Collateral)).ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
+		}
 	}
 	mtp.OpenPrice = openPrice
 	return

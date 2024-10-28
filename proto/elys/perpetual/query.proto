@@ -293,6 +293,15 @@ message PoolResponse {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+  cosmos.base.v1beta1.Coin totalLiabilities = 11 [ (gogoproto.nullable) = false ];
+  string total_long_open_interest = 12 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_short_open_interest = 13 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryCloseEstimationRequest {
@@ -313,4 +322,7 @@ message QueryCloseEstimationResponse {
   cosmos.base.v1beta1.Coin returning_amount = 8 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin paying_liabilities = 9 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin return_amount_at_closing_price = 10 [(gogoproto.nullable) = false];
+  string                   closing_price = 11 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin custody = 12 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin collateral = 13 [(gogoproto.nullable) = false];
 }

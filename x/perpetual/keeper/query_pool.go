@@ -33,6 +33,11 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 			return types.ErrPoolDoesNotExist
 		}
 
+		totalLiabilities, err := k.GetPoolTotalBaseCurrencyLiabilities(ctx, pool)
+		if err != nil {
+			return err
+		}
+
 		if ammPool.PoolParams.UseOracle {
 			longRate, shortRate := k.GetFundingPaymentRates(ctx, pool)
 			pools = append(pools, types.PoolResponse{
@@ -43,9 +48,12 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 				PoolAssetsShort:                      pool.PoolAssetsShort,
 				LastHeightBorrowInterestRateComputed: pool.LastHeightBorrowInterestRateComputed,
 				FundingRate:                          pool.FundingRate,
-				NetOpenInterest:                      k.GetNetOpenInterest(ctx, pool),
+				NetOpenInterest:                      pool.GetNetOpenInterest(),
 				LongRate:                             longRate,
 				ShortRate:                            shortRate,
+				TotalLiabilities:                     totalLiabilities,
+				TotalLongOpenInterest:                pool.GetTotalLongOpenInterest(),
+				TotalShortOpenInterest:               pool.GetTotalShortOpenInterest(),
 			})
 		}
 
@@ -74,6 +82,11 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 
 	longRate, shortRate := k.GetFundingPaymentRates(ctx, val)
 
+	totalLiabilities, err := k.GetPoolTotalBaseCurrencyLiabilities(ctx, val)
+	if err != nil {
+		return nil, err
+	}
+
 	pool := types.PoolResponse{
 		AmmPoolId:                            val.AmmPoolId,
 		Health:                               val.Health,
@@ -82,9 +95,12 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 		PoolAssetsShort:                      val.PoolAssetsShort,
 		LastHeightBorrowInterestRateComputed: val.LastHeightBorrowInterestRateComputed,
 		FundingRate:                          val.FundingRate,
-		NetOpenInterest:                      k.GetNetOpenInterest(ctx, val),
+		NetOpenInterest:                      val.GetNetOpenInterest(),
 		LongRate:                             longRate,
 		ShortRate:                            shortRate,
+		TotalLiabilities:                     totalLiabilities,
+		TotalLongOpenInterest:                val.GetTotalLongOpenInterest(),
+		TotalShortOpenInterest:               val.GetTotalShortOpenInterest(),
 	}
 
 	return &types.QueryGetPoolResponse{Pool: pool}, nil

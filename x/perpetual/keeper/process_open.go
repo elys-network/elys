@@ -82,11 +82,6 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 		return nil, err
 	}
 
-	// Take custody from the pool balance.
-	if err = k.TakeInCustody(ctx, *mtp, &pool); err != nil {
-		return nil, err
-	}
-
 	// Update the MTP health.
 	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {

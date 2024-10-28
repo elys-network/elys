@@ -8,17 +8,9 @@ import (
 )
 
 func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) error {
-	// account custody from long position
-	totalCustodyLong := sdk.ZeroInt()
-	for _, asset := range pool.PoolAssetsLong {
-		totalCustodyLong = totalCustodyLong.Add(asset.Custody)
-	}
 
-	// account custody from short position
-	totalLiabilitiesShort := sdk.ZeroInt()
-	for _, asset := range pool.PoolAssetsShort {
-		totalLiabilitiesShort = totalLiabilitiesShort.Add(asset.Liabilities)
-	}
+	totalLongOpenInterest := pool.GetTotalLongOpenInterest()
+	totalShortOpenInterest := pool.GetTotalShortOpenInterest()
 
 	// Total fund collected should be
 	long, short := k.GetFundingDistributionValue(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId)
@@ -27,10 +19,10 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 	var fundingFeeShare sdk.Dec
 	if mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
-		if totalCustodyLong.IsZero() {
+		if totalLongOpenInterest.IsZero() {
 			return fmt.Errorf("totalCustodyLong in FundingFeeDistribution cannot be zero")
 		}
-		fundingFeeShare = mtp.Custody.ToLegacyDec().Quo(totalCustodyLong.ToLegacyDec())
+		fundingFeeShare = mtp.Custody.ToLegacyDec().Quo(totalLongOpenInterest.ToLegacyDec())
 		totalFund = short
 
 		// if funding fee share is zero, skip mtp
@@ -60,10 +52,10 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 		mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.TruncateInt())
 	} else {
 		// Ensure liabilitiesShort is not zero to avoid division by zero
-		if totalLiabilitiesShort.IsZero() {
+		if totalShortOpenInterest.IsZero() {
 			return types.ErrAmountTooLow
 		}
-		fundingFeeShare = mtp.Liabilities.ToLegacyDec().Quo(totalLiabilitiesShort.ToLegacyDec())
+		fundingFeeShare = mtp.Liabilities.ToLegacyDec().Quo(totalShortOpenInterest.ToLegacyDec())
 		totalFund = long
 
 		// if funding fee share is zero, skip mtp

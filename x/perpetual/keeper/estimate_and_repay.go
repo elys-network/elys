@@ -25,16 +25,8 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 		return sdk.ZeroInt(), err
 	}
 
-	// update mtp health
-	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
-	if err != nil {
-		return math.ZeroInt(), err
-	}
-
-	mtp.Liabilities = mtp.Liabilities.Sub(payingLiabilities)
-
 	// Note: Long settlement is done in trading asset. And short settlement in usdc in Repay function
-	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio); err != nil {
+	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency); err != nil {
 		return sdk.ZeroInt(), err
 	}
 
