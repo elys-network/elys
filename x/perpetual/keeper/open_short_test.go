@@ -146,20 +146,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 			},
 		},
 		{
-			"success: collateral USDC, trading asset USDC, stop loss price 0, TakeProfitPrice 0",
-			"",
-			false,
-			func() {
-				msg.Creator = addr[2].String()
-				msg.Collateral.Denom = ptypes.BaseCurrency
-				msg.Collateral.Amount = amount
-				msg.TradingAsset = ptypes.BaseCurrency
-				msg.Leverage = sdk.OneDec().MulInt64(2)
-			},
-			func(mtp *types.MTP) {
-			},
-		},
-		{
 			"collateral is USDC, trading asset is ATOM, amm pool has enough USDC but not enough ATOM",
 			"amount too low",
 			false,

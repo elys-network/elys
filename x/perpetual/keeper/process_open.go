@@ -48,7 +48,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 		// If position is long, calculate custody amount in custody asset
 		if mtp.CollateralAsset == baseCurrency {
 			leveragedAmtTokenIn := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
-			custodyAmount, _, err = k.EstimateSwap(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool)
+			custodyAmount, _, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool)
 			if err != nil {
 				return nil, err
 			}

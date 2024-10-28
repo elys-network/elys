@@ -72,8 +72,8 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 		prams := oq.stablestakeKeeper.GetParams(ctx)
 		borrowApr = prams.InterestRate
 	}
-	tvl, _ := ammPool.TVL(ctx, oq.oraclekeeper)
-	lpTokenPrice, _ := ammPool.LpTokenPrice(ctx, oq.oraclekeeper)
+	tvl, _ := ammPool.TVL(ctx, oq.oraclekeeper, oq.accountedpoolKeeper)
+	lpTokenPrice, _ := ammPool.LpTokenPrice(ctx, oq.oraclekeeper, oq.accountedpoolKeeper)
 
 	// Get rewards amount
 	// TODO: Remove wasmbindings, as of now this is not used by FE, so setting it to zero

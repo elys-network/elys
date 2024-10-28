@@ -188,7 +188,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 		fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
 	}
 
-	effectiveLeverage, err := k.UpdatedLeverage(ctx, mtp)
+	effectiveLeverage, err := k.GetEffectiveLeverage(ctx, mtp)
 	if err != nil {
 		return nil, err
 	}
@@ -199,7 +199,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	return &types.MtpAndPrice{
 		Mtp:               &mtp,
 		TradingAssetPrice: tradingAssetPrice,
-		Pnl:               sdk.NewCoin(baseCurrency, pnl),
+		Pnl:               sdk.Coin{baseCurrency, pnl},
 		LiquidationPrice:  liquidationPrice,
 		EffectiveLeverage: effectiveLeverage,
 		Fees: &types.Fees{
@@ -348,8 +348,8 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 			// estimated_pnl = (custody_amount - collateral_amount) * market_price - totalLiabilities
 
 			// For long position, convert both custody and collateral to base currency
-			custodyAfterCollateralInBaseCurrecy := (custodyAmtAfterFunding.Sub(collateralAmt)).ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
-			estimatedPnL = custodyAfterCollateralInBaseCurrecy.Sub(totalLiabilities)
+			custodyAfterCollateralInBaseCurrency := (custodyAmtAfterFunding.Sub(collateralAmt)).ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+			estimatedPnL = custodyAfterCollateralInBaseCurrency.Sub(totalLiabilities)
 		} else {
 			// estimated_pnl = custody_amount * market_price - totalLiabilities - collateral_amount
 
@@ -368,7 +368,7 @@ func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) sdk.Dec {
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {
 		// liquidation_price = (safety_factor * liabilities) / custody
-		liquidationPrice = mtp.Liabilities.ToLegacyDec().Quo(params.SafetyFactor.Mul(mtp.Custody.ToLegacyDec()))
+		liquidationPrice = params.SafetyFactor.Mul(mtp.Liabilities.ToLegacyDec()).Quo(mtp.Custody.ToLegacyDec())
 	}
 	if mtp.Position == types.Position_SHORT {
 		// liquidation_price =  Custody / (Liabilities * safety_factor)

@@ -31,7 +31,7 @@ func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper Oracle
 
 	// Note: Disable slippage handling for oracle pool due to 1 hour lockup on oracle lp
 	// // weights := NormalizedWeights(p.PoolAssets)
-	// weights, err := OraclePoolNormalizedWeights(ctx, oracleKeeper, p.PoolAssets)
+	// weights, err := GetOraclePoolNormalizedWeights(ctx, oracleKeeper, p.PoolAssets)
 	// if err != nil {
 	// 	return sdk.ZeroDec(), err
 	// }
@@ -167,8 +167,8 @@ func (p *Pool) JoinPool(
 		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 
-	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, p.PoolAssets)
-	tvl, err := p.TVL(ctx, oracleKeeper)
+	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accountedPoolKeeper, p.PoolAssets)
+	tvl, err := p.TVL(ctx, oracleKeeper, accountedPoolKeeper)
 	if err != nil {
 		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
@@ -178,11 +178,11 @@ func (p *Pool) JoinPool(
 		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), ErrAmountTooLow
 	}
 
-	newAssetPools, err := p.NewPoolAssetsAfterSwap(tokensIn, sdk.Coins{})
+	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx, tokensIn, sdk.Coins{}, accountedPoolKeeper)
 	if err != nil {
 		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
-	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
+	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accountedPoolKeeper, newAssetPools)
 
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
@@ -191,11 +191,11 @@ func (p *Pool) JoinPool(
 		// we only allow
 		tokenInDenom := tokensIn[0].Denom
 		// target weight
-		targetWeightIn := NormalizedWeight(ctx, p.PoolAssets, tokenInDenom)
+		targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenInDenom)
 		targetWeightOut := sdk.OneDec().Sub(targetWeightIn)
 
 		// weight breaking fee as in Plasma pool
-		weightIn := OracleAssetWeight(ctx, oracleKeeper, newAssetPools, tokenInDenom)
+		weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedPoolKeeper, newAssetPools, tokenInDenom)
 		weightOut := sdk.OneDec().Sub(weightIn)
 		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
 	}

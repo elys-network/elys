@@ -107,7 +107,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		// liabilities.IsZero() happens when we are consolidating with leverage 1 as eta = 0
 		if !liabilities.IsZero() {
 			liabilitiesInCollateralTokenIn := sdk.NewCoin(baseCurrency, liabilities)
-			liabilities, _, err = k.EstimateSwap(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool)
+			liabilities, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool)
 			if err != nil {
 				return err
 			}
@@ -118,10 +118,10 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	mtp.Liabilities = liabilities
 	mtp.Custody = custodyAmount
 
-	// calculate mtp take profit custody, delta y_tp_c = delta x_l / take profit price (take profit custody = liabilities / take profit price)
+	// calculate mtp take profit custody, delta y_tp_c = delta x_l / take profit price (take profit custody = liabilities / take profit price: LONG, profit custody = liabilities * take profit price: SHORT)
 	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(*mtp)
 
-	// calculate mtp take profit liabilities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)
+	// calculate mtp take profit liabilities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price LONG, take profit custody / current price SHORT)
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
 	if err != nil {
 		return err

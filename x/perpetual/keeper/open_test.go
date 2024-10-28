@@ -176,7 +176,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		},
 		{
 			"collateral is USDC, trading asset is ATOM, amm pool has enough USDC but not enough ATOM",
-			"amount too low",
+			"negative pool amount after swap",
 			false,
 			func() {
 				suite.ResetAndSetSuite(addr, 1, true, amount.MulRaw(1000), sdk.NewInt(2))

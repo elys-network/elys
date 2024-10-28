@@ -992,6 +992,7 @@ func NewElysApp(
 		app.CommitmentKeeper,
 		app.AssetprofileKeeper,
 		app.MasterchefKeeper,
+		app.AccountedPoolKeeper,
 	)
 
 	app.TierKeeper = *tiermodulekeeper.NewKeeper(

@@ -78,4 +78,5 @@ message Params {
     (gogoproto.nullable) = false
   ];
   // No need for minimumShortTakeProfitPriceRatio as it will be 0, checked in validate message
+  bool enable_take_profit_custody_liabilities = 22;
 }

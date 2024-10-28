@@ -64,7 +64,7 @@ func (suite PerpetualKeeperTestSuite) TestCalcTotalLiabilities() {
 			func() {
 				amount := sdk.OneInt().MulRaw(1000_000)
 				ammPool = suite.SetAndGetAmmPool(addr[0], poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount, amount)
-				poolAsset.Liabilities = amount
+				poolAsset.Liabilities = amount.MulRaw(100)
 			},
 			func(totalLiabilities sdk.Int) {
 			},

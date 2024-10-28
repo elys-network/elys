@@ -18,18 +18,6 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	return
 }
 
-func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
-	store := ctx.KVStore(k.storeKey)
-
-	b := store.Get(types.ParamKeyPrefix)
-	if b == nil {
-		return
-	}
-
-	k.cdc.MustUnmarshal(b, &params)
-	return
-}
-
 // SetParams set the params
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	store := ctx.KVStore(k.storeKey)

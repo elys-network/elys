@@ -69,7 +69,8 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency
 
 	// EpochHooks after perpetual position closed
 	if k.hooks != nil {
-		err = k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, pool, creator)
+		params := k.GetParams(ctx)
+		err = k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, pool, creator, params.EnableTakeProfitCustodyLiabilities)
 		if err != nil {
 			return nil, math.Int{}, err
 		}

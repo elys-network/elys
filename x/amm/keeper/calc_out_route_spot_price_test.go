@@ -19,7 +19,6 @@ func (suite *KeeperTestSuite) TestCalcOutRouteSpotPrice() {
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	pool2Addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	treasury2Addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
@@ -42,7 +41,7 @@ func (suite *KeeperTestSuite) TestCalcOutRouteSpotPrice() {
 	}
 	pool := types.Pool{
 		PoolId:            1,
-		Address:           poolAddr.String(),
+		Address:           types.NewPoolAddress(uint64(1)).String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
 			UseOracle:                   false,
@@ -69,7 +68,7 @@ func (suite *KeeperTestSuite) TestCalcOutRouteSpotPrice() {
 	}
 	pool2 := types.Pool{
 		PoolId:            2,
-		Address:           pool2Addr.String(),
+		Address:           types.NewPoolAddress(uint64(2)).String(),
 		RebalanceTreasury: treasury2Addr.String(),
 		PoolParams: types.PoolParams{
 			SwapFee:  sdk.ZeroDec(),
