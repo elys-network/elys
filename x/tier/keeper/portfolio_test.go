@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"strconv"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -87,8 +88,9 @@ func TestPortfolioGetAll(t *testing.T) {
 }
 
 func TestGetPortfolioNative(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
 
 	_, _, oracle, tier, assetProfiler := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper, app.TierKeeper, app.AssetprofileKeeper
 
@@ -113,9 +115,11 @@ func TestGetPortfolioNative(t *testing.T) {
 	require.Equal(t, portfolio, math.LegacyNewDec(101000))
 }
 
+// TODO: v0.50Upgrade - test with detail
 func TestGetPortfolioAmm(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
 
 	_, amm, oracle, tier, assetProfiler := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper, app.TierKeeper, app.AssetprofileKeeper
 
@@ -159,9 +163,9 @@ func TestGetPortfolioAmm(t *testing.T) {
 	}
 
 	// Create a Elys+USDC pool
-	msgServer := ammkeeper.NewMsgServerImpl(amm)
+	msgServer := ammkeeper.NewMsgServerImpl(*amm)
 	resp, err := msgServer.CreatePool(
-		sdk.WrapSDKContext(ctx),
+		ctx,
 		&ammtypes.MsgCreatePool{
 			Sender:     addr[0].String(),
 			PoolParams: poolParams,
@@ -214,9 +218,12 @@ func TestPortfolioGetDiscount(t *testing.T) {
 	require.Equal(t, discount, uint64(0))
 }
 
+// TODO: v0.50Upgrade - test with detail
 func TestGetPortfolioPerpetual(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
 
 	perpetual, amm, oracle, tier, assetProfiler := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper, app.TierKeeper, app.AssetprofileKeeper
 
@@ -259,9 +266,9 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 	}
 
 	// Create a Elys+USDC pool
-	msgServer := ammkeeper.NewMsgServerImpl(amm)
+	msgServer := ammkeeper.NewMsgServerImpl(*amm)
 	resp, err := msgServer.CreatePool(
-		sdk.WrapSDKContext(ctx),
+		ctx,
 		&ammtypes.MsgCreatePool{
 			Sender:     addr[0].String(),
 			PoolParams: poolParams,

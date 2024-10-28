@@ -27,7 +27,7 @@ func TestPools_InvalidRequest(t *testing.T) {
 
 func TestPools_ErrPoolDoesNotExist(t *testing.T) {
 
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	app.PerpetualKeeper.SetPool(ctx, types.Pool{
@@ -40,7 +40,7 @@ func TestPools_ErrPoolDoesNotExist(t *testing.T) {
 
 func TestPools_Success(t *testing.T) {
 
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	app.PerpetualKeeper.SetPool(ctx, types.Pool{
@@ -72,8 +72,8 @@ func TestPools_Success(t *testing.T) {
 }
 
 func TestPooolQuerySingle(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	app.PerpetualKeeper.SetPool(ctx, types.Pool{
 		AmmPoolId: uint64(1),

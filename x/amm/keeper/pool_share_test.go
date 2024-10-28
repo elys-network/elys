@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -15,18 +16,20 @@ import (
 )
 
 func TestCommitMintedLPTokenToCommitmentModule(t *testing.T) {
-	app := simapp.InitElysTestApp(initChain)
+	app := simapp.InitElysTestApp(initChain, t)
 	ctx := app.BaseApp.NewContext(initChain)
 	amm, bk := app.AmmKeeper, app.BankKeeper
 
+	simapp.SetupAssetProfile(app, ctx)
 	// Create Pool
-
+	err := simapp.SetStakingParam(app, ctx)
+	require.NoError(t, err)
 	// Generate 1 random account with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 	transferAmt := sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100))
 
 	// Deposit 100elys to FeeCollectorName wallet
-	err := bk.SendCoinsFromAccountToModule(ctx, addr[0], authtypes.FeeCollectorName, sdk.NewCoins(transferAmt))
+	err = bk.SendCoinsFromAccountToModule(ctx, addr[0], authtypes.FeeCollectorName, sdk.NewCoins(transferAmt))
 	require.NoError(t, err)
 
 	// Create a pool

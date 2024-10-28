@@ -22,6 +22,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/app"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -53,6 +54,7 @@ func New(t *testing.T, configs ...network.Config) *network.Network {
 // DefaultConfig will initialize config for the network with custom application,
 // genesis and single validator. All other parameters are inherited from cosmos-sdk/testutil/network.DefaultConfig
 func DefaultConfig(tempDirectory string) network.Config {
+
 	var (
 		encoding = app.MakeEncodingConfig()
 		chainId  = "elys-" + cometbftrand.NewRand().Str(6)
@@ -79,6 +81,9 @@ func DefaultConfig(tempDirectory string) network.Config {
 		InterfaceRegistry: tempApplication.InterfaceRegistry(),
 		AccountRetriever:  authtypes.AccountRetriever{},
 		AppConstructor: func(val network.ValidatorI) servertypes.Application {
+
+			tempDirectory := tempDirectory + uuid.New().String()
+
 			return app.NewElysApp(
 				val.GetCtx().Logger, cosmosdb.NewMemDB(), nil, true,
 				map[int64]bool{},

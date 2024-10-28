@@ -54,12 +54,18 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 		},
 	} {
 		suite.Run(tc.desc, func() {
-			suite.SetupTest()
+			//suite.SetupTest()
 
 			// set asset profile
 			suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
 				BaseDenom: ptypes.Elys,
 				Denom:     ptypes.Elys,
+				Decimals:  6,
+			})
+
+			suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+				BaseDenom: ptypes.BaseCurrency,
+				Denom:     ptypes.BaseCurrency,
 				Decimals:  6,
 			})
 
@@ -145,9 +151,9 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
 
-			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.SwapByDenom(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgSwapByDenom{
 					Sender:    sender.String(),
 					Amount:    tc.tokenIn,

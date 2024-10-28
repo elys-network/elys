@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -10,6 +11,7 @@ import (
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/suite"
@@ -28,7 +30,9 @@ type KeeperTestSuite struct {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	app := simapp.InitElysTestApp(initChain)
+	t := suite.Suite.T()
+	//t.Parallel()
+	app := simapp.InitElysTestApp(initChain, t)
 
 	suite.legacyAmino = app.LegacyAmino()
 	suite.ctx = app.BaseApp.NewContext(initChain)
@@ -37,6 +41,37 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
+}
+
+func (suite *KeeperTestSuite) SetAmmParams() {
+	suite.app.AmmKeeper.SetParams(suite.ctx, types.Params{
+		PoolCreationFee:       sdkmath.NewInt(10000000),
+		SlippageTrackDuration: 604800,
+	})
+}
+
+func (suite *KeeperTestSuite) SetupAssetProfile() {
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, atypes.Entry{
+		BaseDenom:                "uusdc",
+		Decimals:                 6,
+		Denom:                    "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
+		Path:                     "transfer/channel-12",
+		IbcChannelId:             "channel-12",
+		IbcCounterpartyChannelId: "channel-19",
+		DisplayName:              "USDC",
+		DisplaySymbol:            "uUSDC",
+		Network:                  "",
+		Address:                  "",
+		ExternalSymbol:           "uUSDC",
+		TransferLimit:            "",
+		Permissions:              []string{},
+		UnitDenom:                "uusdc",
+		IbcCounterpartyDenom:     "",
+		IbcCounterpartyChainId:   "",
+		Authority:                "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+		CommitEnabled:            true,
+		WithdrawEnabled:          true,
+	})
 }
 
 func (suite *KeeperTestSuite) SetupStableCoinPrices() {

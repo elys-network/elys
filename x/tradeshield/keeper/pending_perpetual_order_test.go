@@ -1,9 +1,11 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"testing"
+
+	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
@@ -191,7 +193,7 @@ func TestExecuteLimitOpenOrder(t *testing.T) {
 		TriggerPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.MustNewDecFromStr("10"),
+			Rate:       math.LegacyMustNewDecFromStr("10"),
 		},
 		Position:        types.PerpetualPosition_LONG,
 		Collateral:      sdk.Coin{Denom: "base", Amount: sdkmath.NewInt(10)},

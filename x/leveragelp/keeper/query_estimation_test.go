@@ -11,7 +11,7 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (suite KeeperTestSuite) TestQueryEstimation() {
+func (suite *KeeperTestSuite) TestQueryEstimation() {
 	k := suite.app.LeveragelpKeeper
 	suite.SetupCoinPrices(suite.ctx)
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -26,8 +26,9 @@ func (suite KeeperTestSuite) TestQueryEstimation() {
 		Closed:            false,
 		Health:            sdkmath.LegacyZeroDec(),
 		LeveragedLpAmount: sdkmath.ZeroInt(),
-		LeverageMax:       sdk.OneDec().MulInt64(10),
+		LeverageMax:       sdkmath.LegacyOneDec().MulInt64(10),
 	}
+
 	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)}
 
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, poolInit)
@@ -44,9 +45,9 @@ func (suite KeeperTestSuite) TestQueryEstimation() {
 			ExitFee:                     sdkmath.LegacyZeroDec(),
 			UseOracle:                   true,
 			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
 			ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
-			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 			FeeDenom:                    "uusdc",
 		},
@@ -79,7 +80,7 @@ func (suite KeeperTestSuite) TestQueryEstimation() {
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 
-	stableMsgServer := stablestakekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+	stableMsgServer := stablestakekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableMsgServer.Bond(sdk.WrapSDKContext(suite.ctx), &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  sdkmath.NewInt(10000),

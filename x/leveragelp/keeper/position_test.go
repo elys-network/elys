@@ -13,11 +13,12 @@ import (
 )
 
 func TestSetGetPosition(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
 
+	simapp.SetStakingParam(app, ctx)
 	// Generate 2 random accounts with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
@@ -38,11 +39,11 @@ func TestSetGetPosition(t *testing.T) {
 }
 
 func TestSetLiquidation(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
-
+	simapp.SetStakingParam(app, ctx)
 	// Generate 2 random accounts with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
@@ -62,12 +63,12 @@ func TestSetLiquidation(t *testing.T) {
 }
 
 func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
 	stablestake := app.StablestakeKeeper
-
+	simapp.SetStakingParam(app, ctx)
 	// Generate 2 random accounts with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
@@ -145,11 +146,11 @@ func TestIteratePoolPosIdsLiquidationSorted(t *testing.T) {
 }
 
 func TestIteratePoolPosIdsStopLossSorted(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
-
+	simapp.SetStakingParam(app, ctx)
 	// Generate 2 random accounts with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 

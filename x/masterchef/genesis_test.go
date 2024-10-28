@@ -1,8 +1,9 @@
 package masterchef_test
 
 import (
-	simapp "github.com/elys-network/elys/app"
 	"testing"
+
+	simapp "github.com/elys-network/elys/app"
 
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/masterchef"
@@ -11,7 +12,7 @@ import (
 )
 
 func TestGenesis(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),

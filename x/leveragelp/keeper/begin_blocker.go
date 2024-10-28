@@ -1,9 +1,10 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"fmt"
 	"strconv"
+
+	errorsmod "cosmossdk.io/errors"
 
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -28,7 +29,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		pageReq.Offset = offset
 		positions, _, err := k.GetPositions(ctx, pageReq)
 		if err != nil {
-			ctx.Logger().Error(errorsmod.Wrap(err, fmt.Sprintf("error fetching paginated positions")).Error())
+			ctx.Logger().Error(errorsmod.Wrap(err, "error fetching paginated positions").Error())
 			return
 		}
 		if offset+uint64(params.NumberPerBlock) >= k.GetOpenPositionCount(ctx) {

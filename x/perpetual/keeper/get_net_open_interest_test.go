@@ -18,7 +18,7 @@ func TestNotFound_GetNetOpenInterest(t *testing.T) {
 	mockChecker := new(mocks.OpenDefineAssetsChecker)
 	mockAssetProfile := new(mocks.AssetProfileKeeper)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, mockAssetProfile, nil)
 	k.OpenDefineAssetsChecker = mockChecker
 
 	ctx := sdk.Context{}
@@ -46,7 +46,7 @@ func TestSuccess_GetNetOpenInterest(t *testing.T) {
 
 	mockAmm.On("GetPool", ctx, pool.PoolId).Return(pool, true)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, mockAssetProfile, nil)
 
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", math.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(math.NewInt(1000), nil)
@@ -97,7 +97,7 @@ func TestSuccess2_GetNetOpenInterest(t *testing.T) {
 
 	mockAmm.On("GetPool", ctx, pool.PoolId).Return(pool, true)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, mockAssetProfile, nil)
 
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", math.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(math.NewInt(1000), nil)
@@ -148,7 +148,7 @@ func TestErrorLongPoolNotFound_GetNetOpenInterest(t *testing.T) {
 
 	mockAmm.On("GetPool", ctx, pool.PoolId).Return(pool, false)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, mockAssetProfile, nil)
 
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", math.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(math.NewInt(1000), nil)
@@ -199,7 +199,7 @@ func TestErrorLongEstimateSwapGivenOut_GetNetOpenInterest(t *testing.T) {
 
 	mockAmm.On("GetPool", ctx, pool.PoolId).Return(pool, true)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, mockAssetProfile, nil)
 
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", math.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(math.NewInt(1000), types.ErrInvalidAmount)
@@ -250,7 +250,7 @@ func TestErrorShortPoolNotFound_GetNetOpenInterest(t *testing.T) {
 
 	mockAmm.On("GetPool", ctx, pool.PoolId).Return(pool, false)
 
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, mockAssetProfile, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", mockAmm, nil, nil, mockAssetProfile, nil)
 
 	coin := sdk.NewCoin("ibc/B4314D0E670CB43C88A5DCA09F76E5E812BD831CC2FEC6E434C9E5A9D1F57953", math.NewInt(2000))
 	mockChecker.On("EstimateSwapGivenOut", ctx, coin, uusdcDenom, pool).Return(math.NewInt(1000), nil)

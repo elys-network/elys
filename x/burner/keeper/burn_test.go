@@ -1,8 +1,10 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
+	"context"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -38,9 +40,9 @@ func TestBurnTokensForAllDenoms(t *testing.T) {
 		{"denom3", 0}, // zero balance should be ignored
 	}
 
-	bankKeeper.EXPECT().IterateAllDenomMetaData(ctx, mock.Anything).Run(func(ctx sdk.Context, callback func(metadata banktypes.Metadata) bool) {
-		callback(banktypes.Metadata{Base: balances[0].denom})
-		callback(banktypes.Metadata{Base: balances[1].denom})
+	bankKeeper.EXPECT().IterateAllDenomMetaData(ctx, mock.Anything).Run(func(ctx context.Context, cb func(metadata banktypes.Metadata) bool) {
+		cb(banktypes.Metadata{Base: balances[0].denom})
+		cb(banktypes.Metadata{Base: balances[1].denom})
 	}).Once()
 
 	bankKeeper.EXPECT().GetBalance(ctx, types.GetZeroAddress(), balances[0].denom).Return(sdk.NewCoin(balances[0].denom, math.NewInt(balances[0].amount))).Once()

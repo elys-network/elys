@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -16,9 +17,10 @@ import (
 )
 
 func TestSetGetMTP(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
+	simapp.SetStakingParam(app, ctx)
 	perpetual := app.PerpetualKeeper
 
 	// Generate 2 random accounts with 1000stake balanced
@@ -48,8 +50,9 @@ func TestSetGetMTP(t *testing.T) {
 }
 
 func TestGetAllWhitelistedAddress(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
 
 	perpetual := app.PerpetualKeeper
 

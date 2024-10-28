@@ -1,6 +1,8 @@
 package keepers
 
 import (
+	"os"
+
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	evidencekeeper "cosmossdk.io/x/evidence/keeper"
@@ -109,7 +111,6 @@ import (
 	"github.com/elys-network/elys/x/transferhook"
 	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
-	"os"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 

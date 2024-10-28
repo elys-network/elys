@@ -1,18 +1,22 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
 	"time"
+
+	"cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -20,7 +24,7 @@ import (
 type assetPriceInfo struct {
 	denom   string
 	display string
-	price   sdkmath.LegacyDec
+	price   math.LegacyDec
 }
 
 const (
@@ -32,22 +36,22 @@ var (
 		"uusdc": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   sdkmath.LegacyOneDec(),
+			price:   math.LegacyOneDec(),
 		},
 		"uusdt": {
 			denom:   "uusdt",
 			display: "USDT",
-			price:   sdkmath.LegacyOneDec(),
+			price:   math.LegacyOneDec(),
 		},
 		"uelys": {
 			denom:   ptypes.Elys,
 			display: "ELYS",
-			price:   sdkmath.LegacyMustNewDecFromStr("3.0"),
+			price:   math.LegacyMustNewDecFromStr("3.0"),
 		},
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
-			price:   sdkmath.LegacyMustNewDecFromStr("6.0"),
+			price:   math.LegacyMustNewDecFromStr("6.0"),
 		},
 	}
 )
@@ -61,11 +65,17 @@ type KeeperTestSuite struct {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	app := simapp.InitElysTestApp(initChain)
+	t := suite.T()
+	app := simapp.InitElysTestApp(initChain, t)
 
 	suite.legacyAmino = app.LegacyAmino()
 	suite.ctx = app.BaseApp.NewContext(initChain)
 	suite.app = app
+
+	suite.SetupAssetProfile(suite.ctx)
+	suite.SetStakingParam(suite.ctx)
+	suite.SetStableStakeParam(suite.ctx)
+	suite.SetLeverageParam(suite.ctx)
 }
 
 func (suite *KeeperTestSuite) ResetSuite() {
@@ -107,7 +117,7 @@ func (suite *KeeperTestSuite) SetMaxOpenPositions(value int64) {
 	}
 }
 
-func (suite *KeeperTestSuite) SetPoolThreshold(value sdkmath.LegacyDec) {
+func (suite *KeeperTestSuite) SetPoolThreshold(value math.LegacyDec) {
 	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
 	params.PoolOpenThreshold = value
 	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
@@ -116,7 +126,7 @@ func (suite *KeeperTestSuite) SetPoolThreshold(value sdkmath.LegacyDec) {
 	}
 }
 
-func (suite *KeeperTestSuite) SetSafetyFactor(value sdkmath.LegacyDec) {
+func (suite *KeeperTestSuite) SetSafetyFactor(value math.LegacyDec) {
 	params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
 	params.SafetyFactor = value
 	err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
@@ -193,15 +203,66 @@ func (suite *KeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []string) {
 		suite.app.OracleKeeper.RemovePrice(ctx, priceMap[v].display, "elys", uint64(ctx.BlockTime().Unix()))
 	}
 }
+func (suite *KeeperTestSuite) SetLeverageParam(ctx sdk.Context) error {
+
+	params := &types.DefaultGenesis().Params
+
+	suite.app.LeveragelpKeeper.SetParams(ctx, params)
+	return nil
+}
+
+func (suite *KeeperTestSuite) SetStakingParam(ctx sdk.Context) error {
+	return suite.app.StakingKeeper.SetParams(ctx, stakingtypes.Params{
+		UnbondingTime:     1209600,
+		MaxValidators:     60,
+		MaxEntries:        7,
+		HistoricalEntries: 10000,
+		BondDenom:         "uelys",
+		MinCommissionRate: math.LegacyNewDec(0),
+	})
+}
+
+func (suite *KeeperTestSuite) SetStableStakeParam(ctx sdk.Context) error {
+
+	params := stablestaketypes.DefaultParams()
+	suite.app.StablestakeKeeper.SetParams(ctx, params)
+	return nil
+}
+
+func (suite *KeeperTestSuite) SetupAssetProfile(ctx sdk.Context) {
+
+	suite.app.AssetprofileKeeper.SetEntry(ctx, atypes.Entry{
+		BaseDenom:                "uusdc",
+		Decimals:                 6,
+		Denom:                    "uusdc",
+		Path:                     "transfer/channel-12",
+		IbcChannelId:             "channel-12",
+		IbcCounterpartyChannelId: "channel-19",
+		DisplayName:              "USDC",
+		DisplaySymbol:            "uUSDC",
+		Network:                  "",
+		Address:                  "",
+		ExternalSymbol:           "uUSDC",
+		TransferLimit:            "",
+		Permissions:              []string{},
+		UnitDenom:                "uusdc",
+		IbcCounterpartyDenom:     "",
+		IbcCounterpartyChainId:   "",
+		Authority:                "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+		CommitEnabled:            true,
+		WithdrawEnabled:          true,
+	})
+}
 
 func TestGetAllWhitelistedAddress(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
 
+	simapp.SetStakingParam(app, ctx)
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
 	// Set whitelisted addresses
 	leveragelp.WhitelistAddress(ctx, addr[0])
@@ -227,13 +288,14 @@ func TestGetAllWhitelistedAddress(t *testing.T) {
 }
 
 func TestGetWhitelistedAddress(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	leveragelp := app.LeveragelpKeeper
+	simapp.SetStakingParam(app, ctx)
 
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
 	// Set whitelisted addresses
 	leveragelp.WhitelistAddress(ctx, addr[0])
@@ -276,7 +338,7 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 	}{
 		{
 			"pool not found",
-			sdk.NewCoin("uusdc", sdkmath.NewInt(100)),
+			sdk.NewCoin("uusdc", math.NewInt(100)),
 			"uusdc",
 			ammtypes.Pool{PoolId: 1},
 			true,
@@ -287,7 +349,7 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 		},
 		{
 			"pool not enabled",
-			sdk.NewCoin("uusdc", sdkmath.NewInt(100)),
+			sdk.NewCoin("uusdc", math.NewInt(100)),
 			"uusdc",
 			ammtypes.Pool{PoolId: 1},
 			true,
@@ -302,7 +364,7 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 		},
 		{
 			"amm pool not created",
-			sdk.NewCoin("uusdc", sdkmath.NewInt(100).MulRaw(1000_000_000_000)),
+			sdk.NewCoin("uusdc", math.NewInt(100).MulRaw(1000_000_000_000)),
 			"uusdc",
 			ammtypes.Pool{PoolId: 1},
 			true,
@@ -317,14 +379,14 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 		},
 		{
 			"amm pool not found in transient store ",
-			sdk.NewCoin("uusdc", sdkmath.NewInt(100).MulRaw(1000_000_000_000)),
+			sdk.NewCoin("uusdc", math.NewInt(100).MulRaw(1000_000_000_000)),
 			"uusdc",
 			ammtypes.Pool{PoolId: 1},
 			true,
 			"(uusdc) does not exist in the pool",
 			func() {
 				suite.SetupCoinPrices(suite.ctx)
-				addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
+				addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, math.NewInt(1000000))
 				asset1 := ptypes.ATOM
 				asset2 := ptypes.BaseCurrency
 				initializeForClose(suite, addresses, asset1, asset2)
@@ -352,30 +414,30 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 
 	leveragelp := app.LeveragelpKeeper
 
-	leveragelpAmount := sdkmath.NewInt(10)
+	leveragelpAmount := math.NewInt(10)
 	pool := &types.Pool{
 		AmmPoolId:         1,
 		LeveragedLpAmount: leveragelpAmount,
 	}
 	ammPool := ammtypes.Pool{PoolId: 1}
-	totalShares := sdkmath.NewInt(100)
+	totalShares := math.NewInt(100)
 
 	testCases := []struct {
 		name                 string
 		prerequisiteFunction func()
-		expectedValue        sdkmath.LegacyDec
+		expectedValue        math.LegacyDec
 	}{
 		{
 			"amm pool not found",
 			func() {},
-			sdkmath.LegacyZeroDec(),
+			math.LegacyZeroDec(),
 		},
 		{
 			"amm pool shares is  0",
 			func() {
 				_ = app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			sdkmath.LegacyOneDec(),
+			math.LegacyOneDec(),
 		},
 		{
 			"success",
