@@ -183,32 +183,34 @@ func (p *Pool) JoinPool(
 		return sdk.ZeroInt(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accountedPoolKeeper, newAssetPools)
-
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
-	weightBreakingFee := sdk.ZeroDec()
-	if distanceDiff.IsPositive() {
-		// we only allow
-		tokenInDenom := tokensIn[0].Denom
-		// target weight
-		targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenInDenom)
-		targetWeightOut := sdk.OneDec().Sub(targetWeightIn)
+	// we only allow
+	tokenInDenom := tokensIn[0].Denom
+	// target weight
+	targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenInDenom)
+	targetWeightOut := sdk.OneDec().Sub(targetWeightIn)
 
-		// weight breaking fee as in Plasma pool
-		weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedPoolKeeper, newAssetPools, tokenInDenom)
-		weightOut := sdk.OneDec().Sub(weightIn)
-		weightBreakingFee = GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
-	}
+	// weight breaking fee as in Plasma pool
+	weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedPoolKeeper, newAssetPools, tokenInDenom)
+	weightOut := sdk.OneDec().Sub(weightIn)
+	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
 
+	// weight recovery reward = weight breaking fee * weight recovery fee portion
+	weightRecoveryReward := weightBreakingFee.Mul(p.PoolParams.WeightRecoveryFeePortion)
+
+	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus = weightBreakingFee.Neg()
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
-		weightBalanceBonus = p.PoolParams.WeightBreakingFeeMultiplier.Mul(distanceDiff).Abs()
+		weightBalanceBonus = weightRecoveryReward
+		// set weight breaking fee to zero if bonus is applied
+		weightBreakingFee = sdk.ZeroDec()
 	}
 
 	totalShares := p.GetTotalShares()
 	numSharesDec := sdk.NewDecFromInt(totalShares.Amount).
 		Mul(joinValueWithoutSlippage).Quo(tvl).
-		Mul(sdk.OneDec().Add(weightBalanceBonus))
+		Mul(sdk.OneDec().Sub(weightBreakingFee))
 	numShares = numSharesDec.RoundInt()
 	err = p.IncreaseLiquidity(numShares, tokensIn)
 	if err != nil {

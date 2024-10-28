@@ -103,7 +103,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   sdk.NewInt(805987500000000000), // weight recovery direction - slippage enable
-			shareOutAmount:   sdk.NewInt(1002500000000000000), // weight recovery direction - slippage disable
+			shareOutAmount:   sdk.NewInt(1000000000000000000), // weight recovery direction - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -326,8 +326,8 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			expectedNumShares := totalShares.ToLegacyDec().
 				Mul(joinValueWithoutSlippage).Quo(tvl).RoundInt()
 
-			// Check if the number of shares received is higher than expected
-			suite.Require().Less(expectedNumShares.String(), resp.ShareAmountOut.String(), "Exploit detected: Sender received more shares than expected")
+			// Number of shares must be lesser or equal to expected
+			suite.Require().GreaterOrEqual(expectedNumShares.String(), resp.ShareAmountOut.String(), "Exploit detected: Sender received more shares than expected")
 		})
 	}
 }

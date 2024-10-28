@@ -67,7 +67,7 @@ func (k Keeper) JoinPoolNoSwap(
 		}
 
 		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
-		sharesOut, _, _, err = pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn)
+		sharesOut, _, weightBalanceBonus, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn)
 		if err != nil {
 			return nil, sdk.ZeroInt(), err
 		}
@@ -78,7 +78,7 @@ func (k Keeper) JoinPoolNoSwap(
 				shareOutAmount, sharesOut))
 		}
 
-		err = k.applyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensIn)
+		err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensIn, weightBalanceBonus)
 		if err != nil {
 			return nil, math.Int{}, err
 		}
@@ -93,7 +93,7 @@ func (k Keeper) JoinPoolNoSwap(
 
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
 	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
-	sharesOut, _, _, err = pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs)
+	sharesOut, _, weightBalanceBonus, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs)
 	if err != nil {
 		return nil, sdk.ZeroInt(), err
 	}
@@ -104,7 +104,7 @@ func (k Keeper) JoinPoolNoSwap(
 			shareOutAmount, sharesOut))
 	}
 
-	err = k.applyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokenInMaxs)
+	err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokenInMaxs, weightBalanceBonus)
 	if err != nil {
 		return nil, math.Int{}, err
 	}
