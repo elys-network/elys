@@ -37,11 +37,21 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.MsgCreatePerpetualCloseOrder) (*types.MsgCreatePerpetualCloseOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// check if the position owner address matches the msg owner address
+	position, err := k.perpetual.GetMTP(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), msg.PositionId)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("position %d not found", msg.PositionId))
+	}
+
 	var pendingPerpetualOrder = types.PerpetualOrder{
 		PerpetualOrderType: msg.OrderType,
-		TriggerPrice:       msg.TriggerPrice,
-		OwnerAddress:       msg.OwnerAddress,
-		PositionId:         msg.PositionId,
+		TriggerPrice: &types.OrderPrice{
+			BaseDenom:  position.CollateralAsset,
+			QuoteDenom: position.TradingAsset,
+			Rate:       msg.TriggerPrice.Rate,
+		},
+		OwnerAddress: position.Address,
+		PositionId:   position.Id,
 	}
 
 	id := k.AppendPendingPerpetualOrder(
