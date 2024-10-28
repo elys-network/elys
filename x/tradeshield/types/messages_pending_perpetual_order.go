@@ -13,9 +13,27 @@ const (
 
 var _ sdk.Msg = &MsgCreatePendingPerpetualOrder{}
 
-func NewMsgCreatePendingPerpetualOrder(creator string) *MsgCreatePendingPerpetualOrder {
+func NewMsgCreatePendingPerpetualOrder(
+	ownerAddress string,
+	orderType PerpetualOrderType,
+	triggerPrice OrderPrice,
+	collateral sdk.Coin,
+	tradingAsset string,
+	position PerpetualPosition,
+	leverage sdk.Dec,
+	takeProfitPrice sdk.Dec,
+	stopLossPrice sdk.Dec,
+) *MsgCreatePendingPerpetualOrder {
 	return &MsgCreatePendingPerpetualOrder{
-		OwnerAddress: creator,
+		OrderType:       orderType,
+		TriggerPrice:    &triggerPrice,
+		Collateral:      collateral,
+		OwnerAddress:    ownerAddress,
+		TradingAsset:    tradingAsset,
+		Position:        position,
+		Leverage:        leverage,
+		TakeProfitPrice: takeProfitPrice,
+		StopLossPrice:   stopLossPrice,
 	}
 }
 

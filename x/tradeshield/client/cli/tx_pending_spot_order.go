@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
 	"github.com/spf13/cobra"
 )
@@ -15,9 +16,9 @@ import (
 // TODO: Add message in other task
 func CmdCreatePendingSpotOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-pending-spot-order [order]",
+		Use:   "create-pending-spot-order [order-type] [order-amount] [order-target-denom] [order-price]",
 		Short: "Create a new pending-spot-order",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -25,7 +26,20 @@ func CmdCreatePendingSpotOrder() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCreatePendingSpotOrder(clientCtx.GetFromAddress().String())
+			addr := clientCtx.GetFromAddress().String()
+			orderType := types.GetSpotOrderTypeFromString(args[0])
+			orderAmount, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return err
+			}
+			orderTargetDenom := args[2]
+			orderPrice := types.OrderPrice{
+				BaseDenom:  orderAmount.Denom,
+				QuoteDenom: orderTargetDenom,
+				Rate:       sdk.MustNewDecFromStr(args[3]),
+			}
+
+			msg := types.NewMsgCreatePendingSpotOrder(addr, orderType, orderPrice, orderAmount, orderTargetDenom)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

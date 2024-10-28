@@ -13,23 +13,15 @@ const (
 
 var _ sdk.Msg = &MsgCreatePendingSpotOrder{}
 
-// func NewMsgCreatePendingSpotOrder(ownerAddress string, orderType SpotOrderType,
-// 	orderPrice OrderPrice, orderAmount sdk.Coin,
-// 	orderTargetDenom string, status Status, date Date) *MsgCreatePendingSpotOrder {
-// 	return &MsgCreatePendingSpotOrder{
-// 		OrderType:        orderType,
-// 		OrderPrice:       &orderPrice,
-// 		OrderAmount:      &orderAmount,
-// 		OwnerAddress:     ownerAddress,
-// 		OrderTargetDenom: orderTargetDenom,
-// 		Status:           status,
-// 		Date:             &date,
-// 	}
-// }
-
-func NewMsgCreatePendingSpotOrder(ownerAddress string) *MsgCreatePendingSpotOrder {
+func NewMsgCreatePendingSpotOrder(ownerAddress string, orderType SpotOrderType,
+	orderPrice OrderPrice, orderAmount sdk.Coin,
+	orderTargetDenom string) *MsgCreatePendingSpotOrder {
 	return &MsgCreatePendingSpotOrder{
-		OwnerAddress: ownerAddress,
+		OrderType:        orderType,
+		OrderPrice:       &orderPrice,
+		OrderAmount:      &orderAmount,
+		OwnerAddress:     ownerAddress,
+		OrderTargetDenom: orderTargetDenom,
 	}
 }
 
