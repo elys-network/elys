@@ -293,7 +293,7 @@ message PoolResponse {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin totalLiabilities = 11 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin total_liabilities = 11 [ (gogoproto.nullable) = false ];
   string total_long_open_interest = 12 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false

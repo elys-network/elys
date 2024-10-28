@@ -107,6 +107,7 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 	for _, poolAsset := range pool.PoolAssetsLong {
 		if poolAsset.AssetDenom != baseCurrency {
 			tradingAsset = poolAsset.AssetDenom
+			break
 		}
 	}
 
