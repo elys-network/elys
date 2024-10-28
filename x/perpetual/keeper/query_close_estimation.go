@@ -60,7 +60,9 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 			return &types.QueryCloseEstimationResponse{}, err
 		}
 	}
-	maxCloseAmount := mtp.Custody.Sub(borrowInterestPaymentInCustody)
+	mtp.Custody = mtp.Custody.Sub(borrowInterestPaymentInCustody)
+
+	maxCloseAmount := mtp.Custody
 	if mtp.Position == types.Position_SHORT {
 		maxCloseAmount = mtp.Liabilities
 	}
