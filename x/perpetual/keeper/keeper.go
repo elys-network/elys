@@ -133,17 +133,13 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	}
 	mtp.MtpHealth = h
 
-	ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+	collateralCoins := sdk.NewCoins(collateralCoin)
+	err = k.SendToAmmPool(ctx, senderAddress, ammPool, collateralCoins)
 	if err != nil {
 		return err
 	}
 
-	collateralCoins := sdk.NewCoins(collateralCoin)
-	err = k.bankKeeper.SendCoins(ctx, senderAddress, ammPoolAddr, collateralCoins)
-	if err != nil {
-		return err
-	}
-	err = k.amm.AddToPoolBalance(ctx, ammPool, math.ZeroInt(), collateralCoins)
+	err = pool.UpdateCollateral(mtp.CollateralAsset, mtp.Collateral, true, mtp.Position)
 	if err != nil {
 		return err
 	}
@@ -169,6 +165,42 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 	k.SetPool(ctx, *pool)
 
 	return k.SetMTP(ctx, mtp)
+}
+
+func (k Keeper) SendToAmmPool(ctx sdk.Context, senderAddress sdk.AccAddress, ammPool *ammtypes.Pool, coins sdk.Coins) error {
+	ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+	if err != nil {
+		return err
+	}
+
+	err = k.bankKeeper.SendCoins(ctx, senderAddress, ammPoolAddr, coins)
+	if err != nil {
+		return err
+	}
+	err = k.amm.AddToPoolBalance(ctx, ammPool, math.ZeroInt(), coins)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) SendFromAmmPool(ctx sdk.Context, ammPool *ammtypes.Pool, receiverAddress sdk.AccAddress, coins sdk.Coins) error {
+	ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+	if err != nil {
+		return err
+	}
+
+	err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, receiverAddress, coins)
+	if err != nil {
+		return err
+	}
+	err = k.amm.RemoveFromPoolBalance(ctx, ammPool, math.ZeroInt(), coins)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) error {
@@ -263,17 +295,9 @@ func (k Keeper) TakeFundPayment(ctx sdk.Context, amount math.Int, returnAsset st
 	if !takeAmount.IsZero() {
 		takeCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, takeAmount))
 
-		ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
+		err := k.SendFromAmmPool(ctx, ammPool, fundAddr, takeCoins)
 		if err != nil {
 			return sdk.ZeroInt(), err
-		}
-		err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, fundAddr, takeCoins)
-		if err != nil {
-			return sdk.ZeroInt(), err
-		}
-		err = k.amm.RemoveFromPoolBalance(ctx, ammPool, math.ZeroInt(), takeCoins)
-		if err != nil {
-			return math.ZeroInt(), err
 		}
 
 	}

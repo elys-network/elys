@@ -59,8 +59,6 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency
 		return nil, math.ZeroInt(), err
 	}
 
-	// it get sets in KV store in Repay function
-	mtp.Collateral = mtp.Collateral.ToLegacyDec().Mul(math.LegacyOneDec().Sub(closingRatio)).TruncateInt()
 	// Estimate swap and repay
 	repayAmt, err := k.EstimateAndRepay(ctx, &mtp, &pool, &ammPool, baseCurrency, closingRatio)
 	if err != nil {

@@ -69,6 +69,22 @@ func (p *Pool) UpdateLiabilities(assetDenom string, amount math.Int, isIncrease 
 	return nil
 }
 
+// Update the asset collateral
+func (p *Pool) UpdateCollateral(assetDenom string, amount math.Int, isIncrease bool, position Position) error {
+	poolAsset := p.GetPoolAsset(position, assetDenom)
+	if poolAsset == nil {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid asset denom")
+	}
+
+	if isIncrease {
+		poolAsset.Collateral = poolAsset.Collateral.Add(amount)
+	} else {
+		poolAsset.Collateral = poolAsset.Collateral.Sub(amount)
+	}
+
+	return nil
+}
+
 // Update the asset take profit liabilities
 func (p *Pool) UpdateTakeProfitLiabilities(assetDenom string, amount math.Int, isIncrease bool, position Position) error {
 	poolAsset := p.GetPoolAsset(position, assetDenom)

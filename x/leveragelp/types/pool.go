@@ -13,7 +13,7 @@ func NewPool(poolId uint64, maxLeverage math.LegacyDec) Pool {
 		AmmPoolId:          poolId,
 		Health:             sdk.NewDec(100),
 		LeveragedLpAmount:  sdk.ZeroInt(),
-		LeverageMax:        sdk.NewDec(10),
+		LeverageMax:        maxLeverage,
 		MaxLeveragelpRatio: sdk.MustNewDecFromStr("0.6"),
 	}
 }
