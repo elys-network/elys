@@ -139,13 +139,18 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		return err
 	}
 
-	err = pool.UpdateCollateral(mtp.CollateralAsset, mtp.Collateral, true, mtp.Position)
+	err = pool.UpdateCustody(mtp.CustodyAsset, mtp.Custody, true, mtp.Position)
 	if err != nil {
-		return err
+		return nil
 	}
 
 	// All liability has to be in liabilities asset
 	err = pool.UpdateLiabilities(mtp.LiabilitiesAsset, mtp.Liabilities, true, mtp.Position)
+	if err != nil {
+		return err
+	}
+
+	err = pool.UpdateCollateral(mtp.CollateralAsset, mtp.Collateral, true, mtp.Position)
 	if err != nil {
 		return err
 	}
@@ -199,17 +204,6 @@ func (k Keeper) SendFromAmmPool(ctx sdk.Context, ammPool *ammtypes.Pool, receive
 	if err != nil {
 		return err
 	}
-
-	return nil
-}
-
-func (k Keeper) TakeInCustody(ctx sdk.Context, mtp types.MTP, pool *types.Pool) error {
-	err := pool.UpdateCustody(mtp.CustodyAsset, mtp.Custody, true, mtp.Position)
-	if err != nil {
-		return nil
-	}
-
-	k.SetPool(ctx, *pool)
 
 	return nil
 }

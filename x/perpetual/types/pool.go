@@ -154,3 +154,40 @@ func (p *Pool) UpdateFeesCollected(assetDenom string, amount math.Int, isIncreas
 
 	return nil
 }
+
+func (pool Pool) GetTotalLongOpenInterest() math.Int {
+	totalLongOpenInterest := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssetsLong {
+		// We subtract asset.Collateral from totalCustodyLong because for long with collateral same as trading asset and user will
+		// be charged for that the collateral as well even though they have already given that amount to the pool.
+		// For LONG, asset.Custody will be 0 only for base currency but asset.Collateral won't be zero for base currency and trading asset
+		// We subtract asset.Collateral only when asset is trading asset and in that case asset.Custody won't be zero
+		// For base currency, asset.Collateral might not be 0 but asset.Custody will be 0 in LONG
+		// !asset.Custody.IsZero() ensures that asset is trading asset for LONG
+		if !asset.Custody.IsZero() {
+			totalLongOpenInterest = totalLongOpenInterest.Add(asset.Custody).Sub(asset.Collateral)
+		}
+	}
+
+	return totalLongOpenInterest
+}
+
+func (pool Pool) GetTotalShortOpenInterest() math.Int {
+	totalShortOpenInterest := sdk.ZeroInt()
+	for _, asset := range pool.PoolAssetsShort {
+		totalShortOpenInterest = totalShortOpenInterest.Add(asset.Liabilities)
+	}
+	return totalShortOpenInterest
+}
+
+// GetNetOpenInterest calculates the net open interest for a given pool.
+// Note: Net open interest should always be in terms of trading asset
+func (pool Pool) GetNetOpenInterest() math.Int {
+	totalLongOpenInterest := pool.GetTotalLongOpenInterest()
+	totalShortOpenInterest := pool.GetTotalShortOpenInterest()
+
+	// Net Open Interest = Long custody - Short Liabilities
+	netOpenInterest := totalLongOpenInterest.Sub(totalShortOpenInterest)
+
+	return netOpenInterest
+}

@@ -1,12 +1,12 @@
 package keeper_test
 
 import (
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -37,17 +37,34 @@ func TestPools_ErrPoolDoesNotExist(t *testing.T) {
 	assert.Equal(t, "rpc error: code = Internal desc = perpetual pool does not exist", err.Error())
 }
 
-func TestPools_Success(t *testing.T) {
-
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+func (suite *PerpetualKeeperTestSuite) TestPools_Success() {
+	suite.ResetSuite()
+	suite.SetupCoinPrices()
+	app := suite.app
+	ctx := suite.ctx
 
 	app.PerpetualKeeper.SetPool(ctx, types.Pool{
 		AmmPoolId: uint64(1),
+		PoolAssetsLong: []types.PoolAsset{
+			{
+				AssetDenom: ptypes.ATOM,
+			},
+			{
+				AssetDenom: ptypes.BaseCurrency,
+			},
+		},
 	})
 
 	app.PerpetualKeeper.SetPool(ctx, types.Pool{
 		AmmPoolId: uint64(2),
+		PoolAssetsLong: []types.PoolAsset{
+			{
+				AssetDenom: ptypes.ATOM,
+			},
+			{
+				AssetDenom: ptypes.BaseCurrency,
+			},
+		},
 	})
 
 	app.AmmKeeper.SetPool(ctx, ammtypes.Pool{
@@ -69,17 +86,27 @@ func TestPools_Success(t *testing.T) {
 	})
 
 	response, err := app.PerpetualKeeper.Pools(ctx, &types.QueryAllPoolRequest{})
-	assert.Nil(t, err)
-	assert.Len(t, response.Pool, 1)
+	suite.Require().NoError(err)
+	suite.Require().Len(response.Pool, 1)
 
 }
 
-func TestPooolQuerySingle(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+func (suite *PerpetualKeeperTestSuite) TestPooolQuerySingle() {
+	suite.ResetSuite()
+	suite.SetupCoinPrices()
+	app := suite.app
+	ctx := suite.ctx
 
 	app.PerpetualKeeper.SetPool(ctx, types.Pool{
 		AmmPoolId: uint64(1),
+		PoolAssetsLong: []types.PoolAsset{
+			{
+				AssetDenom: ptypes.ATOM,
+			},
+			{
+				AssetDenom: ptypes.BaseCurrency,
+			},
+		},
 	})
 
 	_, err := app.PerpetualKeeper.Pool(ctx, &types.QueryGetPoolRequest{
@@ -92,8 +119,8 @@ func TestPooolQuerySingle(t *testing.T) {
 
 	_, errInvalidRequest := app.PerpetualKeeper.Pool(ctx, nil)
 
-	assert.Nil(t, err)
-	assert.Error(t, errNotFound)
-	require.ErrorIs(t, status.Error(codes.InvalidArgument, "invalid request"), errInvalidRequest)
+	suite.Require().NoError(err)
+	suite.Require().Error(errNotFound)
+	suite.Require().ErrorIs(errInvalidRequest, status.Error(codes.InvalidArgument, "invalid request"))
 
 }

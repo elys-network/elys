@@ -14,11 +14,6 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, mtp *types.MTP, pool *types.Pool
 		return math.ZeroInt(), err
 	}
 
-	err = k.TakeOutCustody(ctx, *mtp, pool, mtp.Custody)
-	if err != nil {
-		return math.ZeroInt(), err
-	}
-
 	// Estimate swap and repay
 	repayAmt, err := k.EstimateAndRepay(ctx, mtp, pool, &ammPool, baseCurrency, math.LegacyOneDec())
 	if err != nil {

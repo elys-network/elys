@@ -50,15 +50,6 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency
 		closingRatio = math.LegacyOneDec()
 	}
 
-	// closingAmount is what user is trying to close
-	closingAmount := mtp.Custody.ToLegacyDec().Mul(closingRatio).TruncateInt()
-
-	// Take out custody
-	err = k.TakeOutCustody(ctx, mtp, &pool, closingAmount)
-	if err != nil {
-		return nil, math.ZeroInt(), err
-	}
-
 	// Estimate swap and repay
 	repayAmt, err := k.EstimateAndRepay(ctx, &mtp, &pool, &ammPool, baseCurrency, closingRatio)
 	if err != nil {
