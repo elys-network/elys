@@ -50,7 +50,7 @@ func loadUpgradeStore(app *ElysApp) {
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			// Added: []string{},
-			Deleted: []string{"incentive_store"},
+			//Deleted: []string{},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 
