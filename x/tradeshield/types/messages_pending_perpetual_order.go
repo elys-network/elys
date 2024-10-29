@@ -9,6 +9,7 @@ const (
 	TypeMsgCreatePerpetualOpenOrder  = "create_perpetual_open_order"
 	TypeMsgCreatePerpetualCloseOrder = "create_perpetual_close_order"
 	TypeMsgUpdatePerpetualOrder      = "update_perpetual_order"
+	TypeMsgCancelPerpetualOrder      = "cancel_perpetual_order"
 	TypeMsgCancelPerpetualOrders     = "cancel_perpetual_orders"
 )
 
@@ -24,6 +25,7 @@ func NewMsgCreatePerpetualOpenOrder(
 	leverage sdk.Dec,
 	takeProfitPrice sdk.Dec,
 	stopLossPrice sdk.Dec,
+	poolId uint64,
 ) *MsgCreatePerpetualOpenOrder {
 	return &MsgCreatePerpetualOpenOrder{
 		OrderType:       orderType,
@@ -35,6 +37,7 @@ func NewMsgCreatePerpetualOpenOrder(
 		Leverage:        leverage,
 		TakeProfitPrice: takeProfitPrice,
 		StopLossPrice:   stopLossPrice,
+		PoolId:          poolId,
 	}
 }
 
@@ -147,6 +150,44 @@ func (msg *MsgUpdatePerpetualOrder) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	return nil
+}
+
+var _ sdk.Msg = &MsgCancelPerpetualOrder{}
+
+func NewMsgCancelPerpetualOrder(ownerAddress string, orderId uint64) *MsgCancelPerpetualOrder {
+	return &MsgCancelPerpetualOrder{
+		OwnerAddress: ownerAddress,
+		OrderId:      orderId,
+	}
+}
+
+func (msg *MsgCancelPerpetualOrder) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgCancelPerpetualOrder) Type() string {
+	return TypeMsgCancelPerpetualOrder
+}
+
+func (msg *MsgCancelPerpetualOrder) GetSigners() []sdk.AccAddress {
+	ownerAddress, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{ownerAddress}
+}
+
+func (msg *MsgCancelPerpetualOrder) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgCancelPerpetualOrder) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid ownerAddress address (%s)", err)
 	}
 	return nil
 }

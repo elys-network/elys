@@ -8,6 +8,7 @@ import (
 const (
 	TypeMsgCreateSpotOrder  = "create_spot_order"
 	TypeMsgUpdateSpotOrder  = "update_spot_order"
+	TypeMsgCancelSpotOrder  = "cancel_spot_order"
 	TypeMsgCancelSpotOrders = "cancel_spot_orders"
 )
 
@@ -89,6 +90,44 @@ func (msg *MsgUpdateSpotOrder) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
+	}
+	return nil
+}
+
+var _ sdk.Msg = &MsgCancelSpotOrder{}
+
+func NewMsgCancelSpotOrder(ownerAddress string, orderId uint64) *MsgCancelSpotOrder {
+	return &MsgCancelSpotOrder{
+		OwnerAddress: ownerAddress,
+		OrderId:      orderId,
+	}
+}
+
+func (msg *MsgCancelSpotOrder) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgCancelSpotOrder) Type() string {
+	return TypeMsgCancelSpotOrder
+}
+
+func (msg *MsgCancelSpotOrder) GetSigners() []sdk.AccAddress {
+	ownerAddress, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{ownerAddress}
+}
+
+func (msg *MsgCancelSpotOrder) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgCancelSpotOrder) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid ownerAddress address (%s)", err)
 	}
 	return nil
 }

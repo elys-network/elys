@@ -12,6 +12,11 @@ import (
 func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.MsgCreatePerpetualOpenOrder) (*types.MsgCreatePerpetualOpenOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// only allow order type as limit or market open
+	if msg.OrderType != types.PerpetualOrderType_LIMITOPEN && msg.OrderType != types.PerpetualOrderType_MARKETOPEN {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid order type")
+	}
+
 	var pendingPerpetualOrder = types.PerpetualOrder{
 		PerpetualOrderType: msg.OrderType,
 		TriggerPrice:       msg.TriggerPrice,
@@ -22,12 +27,18 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		Leverage:           msg.Leverage,
 		TakeProfitPrice:    msg.TakeProfitPrice,
 		StopLossPrice:      msg.StopLossPrice,
+		PoolId:             msg.PoolId,
 	}
 
 	id := k.AppendPendingPerpetualOrder(
 		ctx,
 		pendingPerpetualOrder,
 	)
+
+	// if the order is market open, execute it immediately
+	if msg.OrderType == types.PerpetualOrderType_MARKETOPEN {
+		k.ExecuteMarketOpenOrder(ctx, pendingPerpetualOrder)
+	}
 
 	return &types.MsgCreatePerpetualOpenOrderResponse{
 		OrderId: id,
@@ -36,6 +47,11 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 
 func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.MsgCreatePerpetualCloseOrder) (*types.MsgCreatePerpetualCloseOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// only allow order type as limit or market close
+	if msg.OrderType != types.PerpetualOrderType_LIMITCLOSE && msg.OrderType != types.PerpetualOrderType_MARKETCLOSE {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid order type")
+	}
 
 	// check if the position owner address matches the msg owner address
 	position, err := k.perpetual.GetMTP(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), msg.PositionId)
@@ -58,6 +74,11 @@ func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.M
 		ctx,
 		pendingPerpetualOrder,
 	)
+
+	// if the order is market close, execute it immediately
+	if msg.OrderType == types.PerpetualOrderType_MARKETCLOSE {
+		k.ExecuteMarketCloseOrder(ctx, pendingPerpetualOrder)
+	}
 
 	return &types.MsgCreatePerpetualCloseOrderResponse{
 		OrderId: id,
@@ -87,28 +108,42 @@ func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpd
 	return &types.MsgUpdatePerpetualOrderResponse{}, nil
 }
 
-func (k msgServer) CancelPerpetualOrders(goCtx context.Context, msg *types.MsgCancelPerpetualOrders) (*types.MsgCancelPerpetualOrdersResponse, error) {
+func (k msgServer) CancelPerpetualOrder(goCtx context.Context, msg *types.MsgCancelPerpetualOrder) (*types.MsgCancelPerpetualOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// Checks that the element exists
+	val, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
+	if !found {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.OrderId))
+	}
+
+	// Checks if the msg creator is the same as the current owner
+	if msg.OwnerAddress != val.OwnerAddress {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	k.RemovePendingPerpetualOrder(ctx, msg.OrderId)
+	types.EmitClosePerpetualOrderEvent(ctx, val)
+
+	return &types.MsgCancelPerpetualOrderResponse{
+		OrderId: val.OrderId,
+	}, nil
+}
+
+func (k msgServer) CancelPerpetualOrders(goCtx context.Context, msg *types.MsgCancelPerpetualOrders) (*types.MsgCancelPerpetualOrdersResponse, error) {
 	if len(msg.OrderIds) == 0 {
 		return nil, types.ErrSizeZero
 	}
-	// loop through the spot orders and execute them
-	for _, OrderId := range msg.OrderIds {
-
-		// Checks that the element exists
-		val, found := k.GetPendingPerpetualOrder(ctx, OrderId)
-		if !found {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", OrderId))
+	// loop through the spot orders and cancel them
+	for _, orderId := range msg.OrderIds {
+		_, err := k.CancelPerpetualOrder(goCtx, &types.MsgCancelPerpetualOrder{
+			OwnerAddress: msg.OwnerAddress,
+			OrderId:      orderId,
+		})
+		if err != nil {
+			return nil, err
 		}
-
-		// Checks if the msg creator is the same as the current owner
-		if msg.OwnerAddress != val.OwnerAddress {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-		}
-
-		k.RemovePendingPerpetualOrder(ctx, OrderId)
-		types.EmitClosePerpetualOrderEvent(ctx, val)
 	}
+
 	return &types.MsgCancelPerpetualOrdersResponse{}, nil
 }

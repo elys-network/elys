@@ -303,6 +303,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 				Collateral:      order.Collateral,
 				TakeProfitPrice: order.TakeProfitPrice,
 				StopLossPrice:   order.StopLossPrice,
+				PoolId:          order.PoolId,
 			}, false)
 			if err != nil {
 				return err
@@ -320,6 +321,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 				Collateral:      order.Collateral,
 				TakeProfitPrice: order.TakeProfitPrice,
 				StopLossPrice:   order.StopLossPrice,
+				PoolId:          order.PoolId,
 			}, false)
 			if err != nil {
 				return err
@@ -399,6 +401,7 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 		Collateral:      order.Collateral,
 		TakeProfitPrice: order.TakeProfitPrice,
 		StopLossPrice:   order.StopLossPrice,
+		PoolId:          order.PoolId,
 	}, false)
 	if err != nil {
 		return err

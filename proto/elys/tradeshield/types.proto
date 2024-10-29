@@ -123,6 +123,7 @@ message PerpetualOrder {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable) = false
     ];
+    uint64 poolId = 13;
 }
 
 message PerpetualOrderExtraInfo {

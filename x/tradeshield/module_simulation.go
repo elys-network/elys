@@ -55,6 +55,14 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgExecuteOrders int = 100
 
+	opWeightMsgCancelSpotOrder = "op_weight_msg_cancel_spot_order"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCancelSpotOrder int = 100
+
+	opWeightMsgCancelPerpetualOrder = "op_weight_msg_cancel_perpetual_order"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCancelPerpetualOrder int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -193,6 +201,28 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		tradeshieldsimulation.SimulateMsgExecuteOrders(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
+	var weightMsgCancelSpotOrder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCancelSpotOrder, &weightMsgCancelSpotOrder, nil,
+		func(_ *rand.Rand) {
+			weightMsgCancelSpotOrder = defaultWeightMsgCancelSpotOrder
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCancelSpotOrder,
+		tradeshieldsimulation.SimulateMsgCancelSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgCancelPerpetualOrder int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCancelPerpetualOrder, &weightMsgCancelPerpetualOrder, nil,
+		func(_ *rand.Rand) {
+			weightMsgCancelPerpetualOrder = defaultWeightMsgCancelPerpetualOrder
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCancelPerpetualOrder,
+		tradeshieldsimulation.SimulateMsgCancelPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -254,6 +284,22 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			defaultWeightMsgExecuteOrders,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				tradeshieldsimulation.SimulateMsgExecuteOrders(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCancelSpotOrder,
+			defaultWeightMsgCancelSpotOrder,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				tradeshieldsimulation.SimulateMsgCancelSpotOrder(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCancelPerpetualOrder,
+			defaultWeightMsgCancelPerpetualOrder,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				tradeshieldsimulation.SimulateMsgCancelPerpetualOrder(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),

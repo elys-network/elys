@@ -32,11 +32,13 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(CmdCreateSpotOrder())
 	cmd.AddCommand(CmdUpdateSpotOrder())
+	cmd.AddCommand(CmdCancelSpotOrder())
 	cmd.AddCommand(CmdCancelSpotOrders())
 
 	cmd.AddCommand(CmdCreatePerpetualOpenOrder())
 	cmd.AddCommand(CmdCreatePerpetualCloseOrder())
 	cmd.AddCommand(CmdUpdatePerpetualOrder())
+	cmd.AddCommand(CmdCancelPerpetualOrder())
 	cmd.AddCommand(CmdCancelPerpetualOrders())
 
 	cmd.AddCommand(CmdUpdateParams())

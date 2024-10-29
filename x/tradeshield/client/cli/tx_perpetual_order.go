@@ -1,52 +1,114 @@
 package cli
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	perpcli "github.com/elys-network/elys/x/perpetual/client/cli"
 	perptypes "github.com/elys-network/elys/x/perpetual/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
+	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )
 
 func CmdCreatePerpetualOpenOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-perpetual-open-order [order-type] [position] [leverage] [trading-asset] [collateral] [trigger-price] [take-profit-price] [stop-loss-price]",
+		Use:   "create-perpetual-open-order [order-type] [position] [leverage] [pool-id] [trading-asset] [collateral] [trigger-price]",
 		Short: "Create a new perpetual open order",
-		Args:  cobra.ExactArgs(8),
+		Args:  cobra.ExactArgs(7),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			addr := clientCtx.GetFromAddress().String()
+			signer := clientCtx.GetFromAddress()
+			if signer == nil {
+				return errors.New("signer address is missing")
+			}
+
 			orderType := types.GetPerpetualOrderTypeFromString(args[0])
+
 			position := types.PerpetualPosition(perptypes.GetPositionFromString(args[1]))
-			leverage := sdk.MustNewDecFromStr(args[2])
-			tradingAsset := args[3]
-			collateral, err := sdk.ParseCoinNormalized(args[4])
+
+			leverage, err := sdk.NewDecFromStr(args[2])
 			if err != nil {
 				return err
 			}
+
+			poolId, err := strconv.ParseUint(args[3], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			tradingAsset := args[4]
+
+			collateral, err := sdk.ParseCoinNormalized(args[5])
+			if err != nil {
+				return err
+			}
+
 			triggerPrice := types.OrderPrice{
 				BaseDenom:  collateral.Denom,
 				QuoteDenom: tradingAsset,
-				Rate:       sdk.MustNewDecFromStr(args[5]),
+				Rate:       sdk.MustNewDecFromStr(args[6]),
 			}
-			takeProfitPrice := sdk.MustNewDecFromStr(args[6])
-			stopLossPrice := sdk.MustNewDecFromStr(args[7])
 
-			msg := types.NewMsgCreatePerpetualOpenOrder(addr, orderType, triggerPrice, collateral, tradingAsset, position, leverage, takeProfitPrice, stopLossPrice)
+			takeProfitPriceStr, err := cmd.Flags().GetString(perpcli.FlagTakeProfitPrice)
+			if err != nil {
+				return err
+			}
+
+			var takeProfitPrice sdk.Dec
+			if takeProfitPriceStr != perptypes.InfinitePriceString {
+				takeProfitPrice, err = sdk.NewDecFromStr(takeProfitPriceStr)
+				if err != nil {
+					return errors.New("invalid take profit price")
+				}
+			} else {
+				takeProfitPrice = perptypes.TakeProfitPriceDefault
+			}
+
+			stopLossPriceStr, err := cmd.Flags().GetString(perpcli.FlagStopLossPrice)
+			if err != nil {
+				return err
+			}
+
+			var stopLossPrice sdk.Dec
+			if stopLossPriceStr != perptypes.ZeroPriceString {
+				stopLossPrice, err = sdk.NewDecFromStr(stopLossPriceStr)
+				if err != nil {
+					return errors.New("invalid stop loss price")
+				}
+			} else {
+				stopLossPrice = perptypes.StopLossPriceDefault
+			}
+
+			msg := types.NewMsgCreatePerpetualOpenOrder(
+				signer.String(),
+				orderType,
+				triggerPrice,
+				collateral,
+				tradingAsset,
+				position,
+				leverage,
+				takeProfitPrice,
+				stopLossPrice,
+				poolId,
+			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
+
+	cmd.Flags().String(perpcli.FlagTakeProfitPrice, perptypes.InfinitePriceString, "Optional take profit price")
+	cmd.Flags().String(perpcli.FlagStopLossPrice, perptypes.ZeroPriceString, "Optional stop loss price")
 
 	flags.AddTxFlagsToCmd(cmd)
 
@@ -110,6 +172,38 @@ func CmdUpdatePerpetualOrder() *cobra.Command {
 
 			// TODO: Add order price definition in other task
 			msg := types.NewMsgUpdatePerpetualOrder(clientCtx.GetFromAddress().String(), id, &types.OrderPrice{})
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdCancelPerpetualOrder() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "cancel-perpetual-order [order-id]",
+		Short: "Broadcast message cancel-perpetual-order",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argOrderId, err := cast.ToUint64E(args[0])
+			if err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCancelPerpetualOrder(
+				clientCtx.GetFromAddress().String(),
+				argOrderId,
+			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

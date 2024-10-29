@@ -11,17 +11,17 @@ option go_package = "github.com/elys-network/elys/x/tradeshield/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreateSpotOrder      (MsgCreateSpotOrder     ) returns (MsgCreateSpotOrderResponse     );
-  rpc UpdateSpotOrder      (MsgUpdateSpotOrder     ) returns (MsgUpdateSpotOrderResponse     );
-  rpc CancelSpotOrders            (MsgCancelSpotOrders           ) returns (MsgCancelSpotOrdersResponse           );
-
-  rpc CreatePerpetualOpenOrder (MsgCreatePerpetualOpenOrder) returns (MsgCreatePerpetualOpenOrderResponse);
+  rpc CreateSpotOrder           (MsgCreateSpotOrder          ) returns (MsgCreateSpotOrderResponse          );
+  rpc UpdateSpotOrder           (MsgUpdateSpotOrder          ) returns (MsgUpdateSpotOrderResponse          );
+  rpc CancelSpotOrder           (MsgCancelSpotOrder          ) returns (MsgCancelSpotOrderResponse          );
+  rpc CancelSpotOrders          (MsgCancelSpotOrders         ) returns (MsgCancelSpotOrdersResponse         );
+  rpc CreatePerpetualOpenOrder  (MsgCreatePerpetualOpenOrder ) returns (MsgCreatePerpetualOpenOrderResponse );
   rpc CreatePerpetualCloseOrder (MsgCreatePerpetualCloseOrder) returns (MsgCreatePerpetualCloseOrderResponse);
-  rpc UpdatePerpetualOrder (MsgUpdatePerpetualOrder) returns (MsgUpdatePerpetualOrderResponse);
-  rpc CancelPerpetualOrders       (MsgCancelPerpetualOrders      ) returns (MsgCancelPerpetualOrdersResponse      );
-  
-  rpc UpdateParams                (MsgUpdateParams               ) returns (MsgUpdateParamsResponse               );
-  rpc ExecuteOrders               (MsgExecuteOrders              ) returns (MsgExecuteOrdersResponse              );
+  rpc UpdatePerpetualOrder      (MsgUpdatePerpetualOrder     ) returns (MsgUpdatePerpetualOrderResponse     );
+  rpc CancelPerpetualOrder      (MsgCancelPerpetualOrder     ) returns (MsgCancelPerpetualOrderResponse     );
+  rpc CancelPerpetualOrders     (MsgCancelPerpetualOrders    ) returns (MsgCancelPerpetualOrdersResponse    );
+  rpc UpdateParams              (MsgUpdateParams             ) returns (MsgUpdateParamsResponse             );
+  rpc ExecuteOrders             (MsgExecuteOrders            ) returns (MsgExecuteOrdersResponse            );
 }
 message MsgCreateSpotOrder {
   SpotOrderType            order_type         = 1;
@@ -36,32 +36,40 @@ message MsgCreateSpotOrderResponse {
 }
 
 message MsgUpdateSpotOrder {
-  string owner_address = 1;
-  uint64 order_id      = 2;
-  OrderPrice               order_price        = 3;
+  string     owner_address = 1;
+  uint64     order_id      = 2;
+  OrderPrice order_price   = 3;
 }
 
 message MsgUpdateSpotOrderResponse {}
 
+message MsgCancelSpotOrder {
+  string owner_address = 1;
+  uint64 order_id      = 2;
+}
+
+message MsgCancelSpotOrderResponse {
+  uint64 order_id = 1;
+}
+
+message MsgCancelSpotOrders {
+           string creator        = 1;
+  repeated uint64 spot_order_ids = 2;
+}
+
+message MsgCancelSpotOrdersResponse {}
+
 message MsgCreatePerpetualOpenOrder {
-  PerpetualOrderType order_type = 1;
-  OrderPrice trigger_price = 2;
-  cosmos.base.v1beta1.Coin collateral = 3 [(gogoproto.nullable) = false];
-  string owner_address = 4;
-  string trading_asset = 5;
-  PerpetualPosition position = 6;
-  string leverage = 7 [
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-  ];
-  string take_profit_price = 8 [
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-  ];
-  string stop_loss_price = 9 [
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-  ];
+  PerpetualOrderType       order_type        =  1;
+  OrderPrice               trigger_price     =  2;
+  cosmos.base.v1beta1.Coin collateral        =  3 [(gogoproto.nullable)   = false                                   ] ;
+  string                   owner_address     =  4;
+  string                   trading_asset     =  5;
+  PerpetualPosition        position          =  6;
+  string                   leverage          =  7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   take_profit_price =  8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   stop_loss_price   =  9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  uint64                   pool_id            = 10;
 }
 
 message MsgCreatePerpetualOpenOrderResponse {
@@ -69,10 +77,10 @@ message MsgCreatePerpetualOpenOrderResponse {
 }
 
 message MsgCreatePerpetualCloseOrder {
-  PerpetualOrderType order_type = 1;
-  OrderPrice trigger_price = 2;
-  string owner_address = 3;
-  uint64 position_id = 4;
+  PerpetualOrderType order_type    = 1;
+  OrderPrice         trigger_price = 2;
+  string             owner_address = 3;
+  uint64             position_id   = 4;
 }
 
 message MsgCreatePerpetualCloseOrderResponse {
@@ -80,16 +88,25 @@ message MsgCreatePerpetualCloseOrderResponse {
 }
 
 message MsgUpdatePerpetualOrder {
-  string owner_address = 1;
-  uint64 order_id      = 2;
-  OrderPrice order_price = 3;
+  string     owner_address = 1;
+  uint64     order_id      = 2;
+  OrderPrice order_price   = 3;
 }
 
 message MsgUpdatePerpetualOrderResponse {}
 
-message MsgCancelPerpetualOrders {
+message MsgCancelPerpetualOrder {
   string owner_address = 1;
-  repeated uint64 order_ids       = 2;
+  uint64 order_id      = 2;
+}
+
+message MsgCancelPerpetualOrderResponse {
+  uint64 order_id = 1;
+}
+
+message MsgCancelPerpetualOrders {
+           string owner_address = 1;
+  repeated uint64 order_ids     = 2;
 }
 
 message MsgCancelPerpetualOrdersResponse {}
@@ -106,18 +123,9 @@ message MsgUpdateParams {
 message MsgUpdateParamsResponse {}
 
 message MsgExecuteOrders {
-           string creator            = 1;
-  repeated uint64 spot_order_ids       = 2;
+           string creator             = 1;
+  repeated uint64 spot_order_ids      = 2;
   repeated uint64 perpetual_order_ids = 3;
 }
 
 message MsgExecuteOrdersResponse {}
-
-message MsgUpdateStopLossResponse {}
-
-message MsgCancelSpotOrders {
-           string creator              = 1;
-  repeated uint64 spot_order_ids       = 2;
-}
-
-message MsgCancelSpotOrdersResponse {}
