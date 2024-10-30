@@ -374,6 +374,42 @@ func (_c *PerpetualKeeper_Open_Call) RunAndReturn(run func(types.Context, *perpe
 	return _c
 }
 
+// GetAssetPrice provides a mock function with given fields: ctx, asset
+func (_m *PerpetualKeeper) GetAssetPrice(ctx types.Context, asset string) (types.Dec, error) {
+	ret := _m.Called(ctx, asset)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetMTP")
+	}
+
+	return ret.Get(0).(types.Dec), ret.Error(1)
+}
+
+type PerpetualKeeper_GetAssetPrice_Call struct {
+	*mock.Call
+}
+
+func (_e *PerpetualKeeper_Expecter) GetAssetPrice(ctx interface{}, req interface{}) *PerpetualKeeper_GetAssetPrice_Call {
+	return &PerpetualKeeper_GetAssetPrice_Call{Call: _e.mock.On("GetAssetPrice", ctx, req)}
+}
+
+func (_c *PerpetualKeeper_GetAssetPrice_Call) Run(run func(ctx types.Context, asset string)) *PerpetualKeeper_GetAssetPrice_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *PerpetualKeeper_GetAssetPrice_Call) Return(_a0 types.Dec, _a1 error) *PerpetualKeeper_GetAssetPrice_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *PerpetualKeeper_GetAssetPrice_Call) RunAndReturn(run func(types.Context, string) (types.Dec, error)) *PerpetualKeeper_GetAssetPrice_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewPerpetualKeeper creates a new instance of PerpetualKeeper. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewPerpetualKeeper(t interface {

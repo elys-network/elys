@@ -60,16 +60,15 @@ message MsgCancelSpotOrders {
 message MsgCancelSpotOrdersResponse {}
 
 message MsgCreatePerpetualOpenOrder {
-  PerpetualOrderType       order_type        =  1;
-  TriggerPrice             trigger_price     =  2;
-  cosmos.base.v1beta1.Coin collateral        =  3 [(gogoproto.nullable)   = false                                   ] ;
-  string                   owner_address     =  4;
-  string                   trading_asset     =  5;
-  PerpetualPosition        position          =  6;
-  string                   leverage          =  7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string                   take_profit_price =  8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string                   stop_loss_price   =  9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  uint64                   pool_id            = 10;
+  TriggerPrice             trigger_price     =  1;
+  cosmos.base.v1beta1.Coin collateral        =  2 [(gogoproto.nullable)   = false                                   ] ;
+  string                   owner_address     =  3;
+  string                   trading_asset     =  4;
+  PerpetualPosition        position          =  5;
+  string                   leverage          =  6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   take_profit_price =  7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   stop_loss_price   =  8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  uint64                   pool_id           =  9;
 }
 
 message MsgCreatePerpetualOpenOrderResponse {
@@ -77,10 +76,9 @@ message MsgCreatePerpetualOpenOrderResponse {
 }
 
 message MsgCreatePerpetualCloseOrder {
-  PerpetualOrderType order_type    = 1;
-  TriggerPrice         trigger_price = 2;
-  string             owner_address = 3;
-  uint64             position_id   = 4;
+  TriggerPrice       trigger_price = 1;
+  string             owner_address = 2;
+  uint64             position_id   = 3;
 }
 
 message MsgCreatePerpetualCloseOrderResponse {
@@ -90,7 +88,7 @@ message MsgCreatePerpetualCloseOrderResponse {
 message MsgUpdatePerpetualOrder {
   string     owner_address = 1;
   uint64     order_id      = 2;
-  TriggerPrice order_price   = 3;
+  TriggerPrice trigger_price   = 3;
 }
 
 message MsgUpdatePerpetualOrderResponse {}

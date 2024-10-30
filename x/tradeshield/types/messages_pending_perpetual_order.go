@@ -28,7 +28,6 @@ func NewMsgCreatePerpetualOpenOrder(
 	poolId uint64,
 ) *MsgCreatePerpetualOpenOrder {
 	return &MsgCreatePerpetualOpenOrder{
-		OrderType:       orderType,
 		TriggerPrice:    &triggerPrice,
 		Collateral:      collateral,
 		OwnerAddress:    ownerAddress,
@@ -79,7 +78,6 @@ func NewMsgCreatePerpetualCloseOrder(
 	positionId uint64,
 ) *MsgCreatePerpetualCloseOrder {
 	return &MsgCreatePerpetualCloseOrder{
-		OrderType:    orderType,
 		TriggerPrice: &triggerPrice,
 		OwnerAddress: ownerAddress,
 		PositionId:   positionId,
@@ -117,11 +115,11 @@ func (msg *MsgCreatePerpetualCloseOrder) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgUpdatePerpetualOrder{}
 
-func NewMsgUpdatePerpetualOrder(creator string, id uint64, orderPrice *TriggerPrice) *MsgUpdatePerpetualOrder {
+func NewMsgUpdatePerpetualOrder(creator string, id uint64, triggerPrice *TriggerPrice) *MsgUpdatePerpetualOrder {
 	return &MsgUpdatePerpetualOrder{
 		OrderId:      id,
 		OwnerAddress: creator,
-		OrderPrice:   orderPrice,
+		TriggerPrice: triggerPrice,
 	}
 }
 

@@ -21,10 +21,6 @@ func GetPerpetualOrderTypeFromString(s string) PerpetualOrderType {
 		return PerpetualOrderType_LIMITOPEN
 	case "limitclose":
 		return PerpetualOrderType_LIMITCLOSE
-	case "marketopen":
-		return PerpetualOrderType_MARKETOPEN
-	case "marketclose":
-		return PerpetualOrderType_MARKETCLOSE
 	case "stoploss":
 		return PerpetualOrderType_STOPLOSSPERP
 	default:

@@ -12,13 +12,8 @@ import (
 func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.MsgCreatePerpetualOpenOrder) (*types.MsgCreatePerpetualOpenOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// only allow order type as limit or market open
-	if msg.OrderType != types.PerpetualOrderType_LIMITOPEN && msg.OrderType != types.PerpetualOrderType_MARKETOPEN {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid order type")
-	}
-
 	var pendingPerpetualOrder = types.PerpetualOrder{
-		PerpetualOrderType: msg.OrderType,
+		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
 		TriggerPrice:       msg.TriggerPrice,
 		Collateral:         msg.Collateral,
 		OwnerAddress:       msg.OwnerAddress,
@@ -35,11 +30,6 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		pendingPerpetualOrder,
 	)
 
-	// if the order is market open, execute it immediately
-	if msg.OrderType == types.PerpetualOrderType_MARKETOPEN {
-		k.ExecuteMarketOpenOrder(ctx, pendingPerpetualOrder)
-	}
-
 	return &types.MsgCreatePerpetualOpenOrderResponse{
 		OrderId: id,
 	}, nil
@@ -48,10 +38,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.MsgCreatePerpetualCloseOrder) (*types.MsgCreatePerpetualCloseOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// only allow order type as limit or market close
-	if msg.OrderType != types.PerpetualOrderType_LIMITCLOSE && msg.OrderType != types.PerpetualOrderType_MARKETCLOSE {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid order type")
-	}
+	// only allow order type as limit close
 
 	// check if the position owner address matches the msg owner address
 	position, err := k.perpetual.GetMTP(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), msg.PositionId)
@@ -60,7 +47,7 @@ func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.M
 	}
 
 	var pendingPerpetualOrder = types.PerpetualOrder{
-		PerpetualOrderType: msg.OrderType,
+		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 		TriggerPrice: &types.TriggerPrice{
 			TradingAssetDenom: position.TradingAsset,
 			Rate:              msg.TriggerPrice.Rate,
@@ -73,11 +60,6 @@ func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.M
 		ctx,
 		pendingPerpetualOrder,
 	)
-
-	// if the order is market close, execute it immediately
-	if msg.OrderType == types.PerpetualOrderType_MARKETCLOSE {
-		k.ExecuteMarketCloseOrder(ctx, pendingPerpetualOrder)
-	}
 
 	return &types.MsgCreatePerpetualCloseOrderResponse{
 		OrderId: id,

@@ -59,11 +59,8 @@ message SpotOrder {
 enum PerpetualOrderType {
     LIMITOPEN = 0;
     LIMITCLOSE = 1;
-    
-    MARKETOPEN = 2;
-    MARKETCLOSE = 3;
 
-    STOPLOSSPERP = 4;
+    STOPLOSSPERP = 2;
 }
 
 enum PerpetualPosition {
