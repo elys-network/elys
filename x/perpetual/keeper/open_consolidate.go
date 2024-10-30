@@ -31,11 +31,13 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, err
 	}
 
-	consolidatedOpenPrice := (existingMtp.Custody.ToLegacyDec().Mul(existingMtp.OpenPrice).Add(newMtp.Custody.ToLegacyDec().Mul(newMtp.OpenPrice))).Quo(existingMtp.Custody.ToLegacyDec().Add(newMtp.Custody.ToLegacyDec()))
-	existingMtp.OpenPrice = consolidatedOpenPrice
+	if !newMtp.Liabilities.IsZero() {
+		consolidatedOpenPrice := (existingMtp.Custody.ToLegacyDec().Mul(existingMtp.OpenPrice).Add(newMtp.Custody.ToLegacyDec().Mul(newMtp.OpenPrice))).Quo(existingMtp.Custody.ToLegacyDec().Add(newMtp.Custody.ToLegacyDec()))
+		existingMtp.OpenPrice = consolidatedOpenPrice
 
-	consolidatedTakeProfitPrice := existingMtp.Custody.ToLegacyDec().Mul(existingMtp.TakeProfitPrice).Add(newMtp.Custody.ToLegacyDec().Mul(newMtp.TakeProfitPrice)).Quo(existingMtp.Custody.ToLegacyDec().Add(newMtp.Custody.ToLegacyDec()))
-	existingMtp.TakeProfitPrice = consolidatedTakeProfitPrice
+		consolidatedTakeProfitPrice := existingMtp.Custody.ToLegacyDec().Mul(existingMtp.TakeProfitPrice).Add(newMtp.Custody.ToLegacyDec().Mul(newMtp.TakeProfitPrice)).Quo(existingMtp.Custody.ToLegacyDec().Add(newMtp.Custody.ToLegacyDec()))
+		existingMtp.TakeProfitPrice = consolidatedTakeProfitPrice
+	}
 
 	existingMtp.TakeProfitCustody = existingMtp.TakeProfitCustody.Add(newMtp.TakeProfitCustody)
 	existingMtp.TakeProfitLiabilities = existingMtp.TakeProfitLiabilities.Add(newMtp.TakeProfitLiabilities)

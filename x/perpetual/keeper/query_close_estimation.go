@@ -60,7 +60,9 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 			return &types.QueryCloseEstimationResponse{}, err
 		}
 	}
-	maxCloseAmount := mtp.Custody.Sub(borrowInterestPaymentInCustody)
+	mtp.Custody = mtp.Custody.Sub(borrowInterestPaymentInCustody)
+
+	maxCloseAmount := mtp.Custody
 	if mtp.Position == types.Position_SHORT {
 		maxCloseAmount = mtp.Liabilities
 	}
@@ -76,10 +78,14 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 	}
 
 	// need to make sure mtp.Custody has been used to unpaid liability
-	returnAmount, err := k.CalcReturnAmount(mtp, repayAmount, sdk.OneDec())
+	returnAmount, err := k.CalcReturnAmount(mtp, repayAmount, closingRatio)
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}
+
+	mtp.Liabilities = mtp.Liabilities.Sub(payingLiabilities)
+	mtp.Custody = mtp.Custody.ToLegacyDec().Mul(math.LegacyOneDec().Sub(closingRatio)).TruncateInt()
+	mtp.Collateral = mtp.Collateral.ToLegacyDec().Mul(math.LegacyOneDec().Sub(closingRatio)).TruncateInt()
 
 	liquidationPrice := k.GetLiquidationPrice(ctx, mtp)
 	executionPrice := math.LegacyZeroDec()
@@ -132,9 +138,12 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		Position:                      mtp.Position,
 		PositionSize:                  sdk.NewCoin(positionAsset, positionSize),
 		Liabilities:                   sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
+		Custody:                       sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
+		Collateral:                    sdk.NewCoin(mtp.CollateralAsset, mtp.Collateral),
 		PriceImpact:                   priceImpact,
 		LiquidationPrice:              liquidationPrice,
 		MaxCloseAmount:                maxCloseAmount,
+		ClosingPrice:                  executionPrice,
 		BorrowInterestUnpaidLiability: sdk.NewCoin(mtp.LiabilitiesAsset, unpaidInterestLiability),
 		ReturningAmount:               sdk.NewCoin(mtp.CustodyAsset, returnAmount),
 		PayingLiabilities:             sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities),

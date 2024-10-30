@@ -2,9 +2,12 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
@@ -84,4 +87,39 @@ func (k Keeper) CheckMinimumCustodyAmt(ctx sdk.Context, poolId uint64) error {
 		}
 	}
 	return nil
+}
+
+func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.Pool) (sdk.Coin, error) {
+	// retrieve base currency denom
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return sdk.Coin{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
+
+	totalLiabilities := math.LegacyZeroDec()
+	for _, poolAsset := range pool.PoolAssetsLong {
+		// for long, liabilities will always be in base currency
+		totalLiabilities = totalLiabilities.Add(poolAsset.Liabilities.ToLegacyDec())
+	}
+
+	tradingAsset := ""
+	for _, poolAsset := range pool.PoolAssetsLong {
+		if poolAsset.AssetDenom != baseCurrency {
+			tradingAsset = poolAsset.AssetDenom
+			break
+		}
+	}
+
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, tradingAsset)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+
+	for _, poolAsset := range pool.PoolAssetsShort {
+		// For short liabilities will be in trading asset
+		baseCurrencyAmt := poolAsset.Liabilities.ToLegacyDec().Mul(tradingAssetPrice)
+		totalLiabilities = totalLiabilities.Add(baseCurrencyAmt)
+	}
+	return sdk.NewCoin(baseCurrency, totalLiabilities.TruncateInt()), nil
 }

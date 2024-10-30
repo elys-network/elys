@@ -8,7 +8,7 @@ import (
 )
 
 // Repay ammPool has to be pointer because RemoveFromPoolBalance updates pool assets
-func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, returnAmount math.Int, payingLiabilities math.Int, closingRatio sdk.Dec) error {
+func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, returnAmount math.Int, payingLiabilities math.Int, closingRatio sdk.Dec, baseCurrency string) error {
 	if returnAmount.IsPositive() {
 		returnCoins := sdk.NewCoins(sdk.NewCoin(mtp.CustodyAsset, returnAmount))
 		err := k.SendFromAmmPool(ctx, ammPool, mtp.GetAccountAddress(), returnCoins)
@@ -17,19 +17,12 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 		}
 	}
 
-	err := pool.UpdateLiabilities(mtp.LiabilitiesAsset, payingLiabilities, false, mtp.Position)
-	if err != nil {
-		return err
-	}
+	mtp.Liabilities = mtp.Liabilities.Sub(payingLiabilities)
+
+	closingCustodyAmount := mtp.Custody.ToLegacyDec().Mul(closingRatio).TruncateInt()
+	mtp.Custody = mtp.Custody.Sub(closingCustodyAmount)
 
 	reducingCollateralAmt := closingRatio.Mul(mtp.Collateral.ToLegacyDec()).TruncateInt()
-	err = pool.UpdateCollateral(mtp.CollateralAsset, reducingCollateralAmt, false, mtp.Position)
-	if err != nil {
-		return err
-	}
-
-	// Custody = Custody * (1 - closingRatio)
-	mtp.Custody = mtp.Custody.ToLegacyDec().Mul(math.LegacyOneDec().Sub(closingRatio)).TruncateInt()
 	mtp.Collateral = mtp.Collateral.Sub(reducingCollateralAmt)
 
 	oldTakeProfitCustody := mtp.TakeProfitCustody
@@ -37,6 +30,21 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 
 	oldTakeProfitLiabilities := mtp.TakeProfitLiabilities
 	mtp.TakeProfitLiabilities = mtp.TakeProfitLiabilities.Sub(mtp.TakeProfitLiabilities.ToLegacyDec().Mul(closingRatio).TruncateInt())
+
+	err := pool.UpdateCustody(mtp.CustodyAsset, closingCustodyAmount, false, mtp.Position)
+	if err != nil {
+		return err
+	}
+
+	err = pool.UpdateLiabilities(mtp.LiabilitiesAsset, payingLiabilities, false, mtp.Position)
+	if err != nil {
+		return err
+	}
+
+	err = pool.UpdateCollateral(mtp.CollateralAsset, reducingCollateralAmt, false, mtp.Position)
+	if err != nil {
+		return err
+	}
 
 	err = pool.UpdateTakeProfitLiabilities(mtp.LiabilitiesAsset, oldTakeProfitLiabilities.Sub(mtp.TakeProfitLiabilities), false, mtp.Position)
 	if err != nil {
@@ -55,6 +63,11 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 			return err
 		}
 	} else {
+		// update mtp health
+		mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
+		if err != nil {
+			return err
+		}
 		err = k.SetMTP(ctx, mtp)
 		if err != nil {
 			return err
