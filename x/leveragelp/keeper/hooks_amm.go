@@ -10,6 +10,7 @@ import (
 func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
 	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
+		// It is possible that this pool haven't been enabled
 		return nil
 	}
 

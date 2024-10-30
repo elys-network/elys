@@ -51,7 +51,8 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 			"pool does not exist",
 			false,
 			func() {
-				ammPool = suite.SetAndGetAmmPool(poolCreator, poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				ammPool = suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				poolId = ammPool.PoolId
 				enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 					Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 					Pool: leveragelpmoduletypes.AddPool{
@@ -155,7 +156,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 			false,
 			func() {
 
-				suite.ResetAndSetSuite(addr, poolId, true, amount.MulRaw(1000), sdk.NewInt(2))
+				suite.ResetAndSetSuite(addr, true, amount.MulRaw(1000), sdk.NewInt(2))
 
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				msg.Collateral.Amount = amount
