@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -56,24 +57,27 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 		},
 	}
 	poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, &msgCreatePool)
-	if err != nil {
-		panic(err)
+	suite.Require().NoError(err)
+	enablePoolMsg := types.MsgAddPool{
+		Authority: authtypes.NewModuleAddress("gov").String(),
+		Pool: types.AddPool{
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyNewDec(10),
+		},
 	}
-	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, math.LegacyMustNewDecFromStr("10")))
+	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
+	_, err = msgServer.AddPool(suite.ctx, &enablePoolMsg)
+	suite.Require().NoError(err)
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
 	}
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
-	if err != nil {
-		panic(err)
-	}
+	suite.Require().NoError(err)
 	msgBond.Creator = addresses[2].String()
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
-	if err != nil {
-		panic(err)
-	}
+	suite.Require().NoError(err)
 
 	if openPosition {
 		openMsg := &types.MsgOpen{

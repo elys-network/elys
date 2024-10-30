@@ -82,12 +82,12 @@ func (suite *PerpetualKeeperTestSuite) ResetSuite() {
 	suite.SetupTest()
 }
 
-func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, poolId uint64, useOracle bool, baseTokenAmount, assetAmount sdk.Int) (ammtypes.Pool, types.Pool) {
+func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, useOracle bool, baseTokenAmount, assetAmount sdk.Int) (ammtypes.Pool, types.Pool) {
 	suite.ResetSuite()
 	suite.SetupCoinPrices()
 	suite.AddAccounts(len(addr), addr)
 	poolCreator := addr[0]
-	ammPool := suite.SetAndGetAmmPool(poolCreator, poolId, useOracle, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, baseTokenAmount, assetAmount)
+	ammPool := suite.CreateNewAmmPool(poolCreator, useOracle, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, baseTokenAmount, assetAmount)
 	pool := types.NewPool(ammPool)
 	suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
@@ -184,7 +184,7 @@ func (suite *PerpetualKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress
 	return addresses
 }
 
-func (suite *PerpetualKeeperTestSuite) SetAndGetAmmPool(creator sdk.AccAddress, poolId uint64, useOracle bool, swapFee, exitFee sdk.Dec, asset2 string, baseTokenAmount, assetAmount sdk.Int) ammtypes.Pool {
+func (suite *PerpetualKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle bool, swapFee, exitFee sdk.Dec, asset2 string, baseTokenAmount, assetAmount sdk.Int) ammtypes.Pool {
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Token:  sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount),
@@ -198,30 +198,28 @@ func (suite *PerpetualKeeperTestSuite) SetAndGetAmmPool(creator sdk.AccAddress, 
 	sort.Slice(poolAssets, func(i, j int) bool {
 		return strings.Compare(poolAssets[i].Token.Denom, poolAssets[j].Token.Denom) <= 0
 	})
-	ammPool := ammtypes.Pool{
-		PoolId:            poolId,
-		Address:           ammtypes.NewPoolAddress(poolId).String(),
-		RebalanceTreasury: ammtypes.NewPoolRebalanceTreasury(poolId).String(),
-		PoolParams: ammtypes.PoolParams{
-			UseOracle:                   useOracle,
-			ExternalLiquidityRatio:      sdk.NewDec(2),
-			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdk.ZeroDec(),
-			SwapFee:                     swapFee,
-			ExitFee:                     exitFee,
-			FeeDenom:                    ptypes.BaseCurrency,
-		},
-		TotalShares: sdk.NewCoin("pool/1", sdk.NewInt(100)),
-		PoolAssets:  poolAssets,
-		TotalWeight: sdk.ZeroInt(),
+	poolParams := ammtypes.PoolParams{
+		UseOracle:                   useOracle,
+		ExternalLiquidityRatio:      sdk.NewDec(2),
+		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
+		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   sdk.ZeroDec(),
+		SwapFee:                     swapFee,
+		ExitFee:                     exitFee,
+		FeeDenom:                    ptypes.BaseCurrency,
 	}
 
-	suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
+	createPoolMsg := &ammtypes.MsgCreatePool{
+		Sender:     creator.String(),
+		PoolParams: &poolParams,
+		PoolAssets: poolAssets,
+	}
 
-	err := suite.app.BankKeeper.SendCoins(suite.ctx, creator, ammtypes.NewPoolAddress(poolId), sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount), sdk.NewCoin(asset2, assetAmount)))
+	poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, createPoolMsg)
 	suite.Require().NoError(err)
+	ammPool, _ := suite.app.AmmKeeper.GetPool(suite.ctx, poolId)
+
 	return ammPool
 }
 

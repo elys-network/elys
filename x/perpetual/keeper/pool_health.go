@@ -11,7 +11,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) CheckLowPoolHealth(ctx sdk.Context, poolId uint64) error {
+func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint64) error {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "pool id %d", poolId)
