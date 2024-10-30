@@ -52,10 +52,9 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 				return err
 			}
 
-			triggerPrice := types.OrderPrice{
-				BaseDenom:  collateral.Denom,
-				QuoteDenom: tradingAsset,
-				Rate:       sdk.MustNewDecFromStr(args[6]),
+			triggerPrice := types.TriggerPrice{
+				TradingAssetDenom: tradingAsset,
+				Rate:              sdk.MustNewDecFromStr(args[6]),
 			}
 
 			takeProfitPriceStr, err := cmd.Flags().GetString(perpcli.FlagTakeProfitPrice)
@@ -129,11 +128,10 @@ func CmdCreatePerpetualCloseOrder() *cobra.Command {
 			addr := clientCtx.GetFromAddress().String()
 			orderType := types.GetPerpetualOrderTypeFromString(args[0])
 
-			// base and quote denom will be filled by message handler
-			triggerPrice := types.OrderPrice{
-				BaseDenom:  "",
-				QuoteDenom: "",
-				Rate:       sdk.MustNewDecFromStr(args[1]),
+			// trading asset will be filled by message handler
+			triggerPrice := types.TriggerPrice{
+				TradingAssetDenom: "",
+				Rate:              sdk.MustNewDecFromStr(args[1]),
 			}
 
 			positionId, err := strconv.ParseUint(args[2], 10, 64)
@@ -171,7 +169,7 @@ func CmdUpdatePerpetualOrder() *cobra.Command {
 			}
 
 			// TODO: Add order price definition in other task
-			msg := types.NewMsgUpdatePerpetualOrder(clientCtx.GetFromAddress().String(), id, &types.OrderPrice{})
+			msg := types.NewMsgUpdatePerpetualOrder(clientCtx.GetFromAddress().String(), id, &types.TriggerPrice{})
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

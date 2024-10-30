@@ -61,7 +61,7 @@ message MsgCancelSpotOrdersResponse {}
 
 message MsgCreatePerpetualOpenOrder {
   PerpetualOrderType       order_type        =  1;
-  OrderPrice               trigger_price     =  2;
+  TriggerPrice             trigger_price     =  2;
   cosmos.base.v1beta1.Coin collateral        =  3 [(gogoproto.nullable)   = false                                   ] ;
   string                   owner_address     =  4;
   string                   trading_asset     =  5;
@@ -78,7 +78,7 @@ message MsgCreatePerpetualOpenOrderResponse {
 
 message MsgCreatePerpetualCloseOrder {
   PerpetualOrderType order_type    = 1;
-  OrderPrice         trigger_price = 2;
+  TriggerPrice         trigger_price = 2;
   string             owner_address = 3;
   uint64             position_id   = 4;
 }
@@ -90,7 +90,7 @@ message MsgCreatePerpetualCloseOrderResponse {
 message MsgUpdatePerpetualOrder {
   string     owner_address = 1;
   uint64     order_id      = 2;
-  OrderPrice order_price   = 3;
+  TriggerPrice order_price   = 3;
 }
 
 message MsgUpdatePerpetualOrderResponse {}

@@ -52,11 +52,10 @@ func GenPerpKey(order PerpetualOrder) (string, error) {
 		return "", errors.New("cannot generate a key on a market order")
 	}
 	if order.TriggerPrice != nil {
-		return fmt.Sprintf("%s\n%s\n%s\n%s",
+		return fmt.Sprintf("%s\n%s\n%s",
 			order.Position,
 			order.PerpetualOrderType,
-			order.TriggerPrice.BaseDenom,
-			order.TriggerPrice.QuoteDenom), nil
+			order.TriggerPrice.TradingAssetDenom), nil
 	}
 	return "", errors.New("trigger price not found")
 }

@@ -31,6 +31,14 @@ message OrderPrice {
     ];
 }
 
+message TriggerPrice {
+    string trading_asset_denom = 1;
+    string rate = 3 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
+}
+
 message Date {
     uint64 height = 1;
     uint64 timestamp = 2;
@@ -106,7 +114,7 @@ message PerpetualOrder {
     string owner_address = 2;
     PerpetualOrderType perpetual_order_type = 3;
     PerpetualPosition position = 4;
-    OrderPrice trigger_price = 5;
+    TriggerPrice trigger_price = 5;
     cosmos.base.v1beta1.Coin collateral = 6 [(gogoproto.nullable) = false];
     string trading_asset = 7;
     string leverage = 8 [

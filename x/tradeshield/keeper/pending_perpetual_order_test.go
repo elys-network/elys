@@ -22,7 +22,7 @@ func createNPendingPerpetualOrder(keeper *keeper.Keeper, ctx sdk.Context, n int)
 			OwnerAddress:       fmt.Sprintf("address%d", i),
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
-			TriggerPrice:       &types.OrderPrice{Rate: sdk.NewDec(1), BaseDenom: "base", QuoteDenom: "quote"},
+			TriggerPrice:       &types.TriggerPrice{Rate: sdk.NewDec(1), TradingAssetDenom: "base"},
 			Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
 			TradingAsset:       "asset",
 			Leverage:           sdk.NewDec(int64(i)),
@@ -83,11 +83,7 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		OwnerAddress:       "address",
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
-		},
+		TriggerPrice:       &types.TriggerPrice{Rate: sdk.NewDec(1), TradingAssetDenom: "base"},
 	})
 
 	order, _ := keeper.GetPendingPerpetualOrder(ctx, 1)
@@ -105,10 +101,9 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		OwnerAddress:       "address1",
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(20),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(20),
 		},
 	})
 
@@ -116,10 +111,9 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		OwnerAddress:       "address2",
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(5),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(5),
 		},
 	})
 
@@ -127,10 +121,9 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		OwnerAddress:       "address3",
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(25),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(25),
 		},
 	})
 
@@ -187,10 +180,9 @@ func TestExecuteLimitOpenOrder(t *testing.T) {
 		OwnerAddress:       address.String(),
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.MustNewDecFromStr("10"),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.MustNewDecFromStr("10"),
 		},
 		Position:        types.PerpetualPosition_LONG,
 		Collateral:      sdk.Coin{Denom: "base", Amount: sdk.NewInt(10)},
@@ -227,10 +219,9 @@ func TestExecuteLimitCloseOrder(t *testing.T) {
 		OwnerAddress:       address.String(),
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(0),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(0),
 		},
 		Position:   types.PerpetualPosition_LONG,
 		PositionId: 1,
@@ -265,10 +256,9 @@ func TestExecuteMarketOpenOrder(t *testing.T) {
 		OwnerAddress:       address.String(),
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_MARKETOPEN,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(1),
 		},
 		Position:        types.PerpetualPosition_LONG,
 		Collateral:      sdk.Coin{Denom: "base", Amount: sdk.NewInt(10)},
@@ -303,10 +293,9 @@ func TestExecuteMarketCloseOrder(t *testing.T) {
 		OwnerAddress:       address.String(),
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_MARKETCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(1),
 		},
 		Position:   types.PerpetualPosition_LONG,
 		PositionId: 1,
