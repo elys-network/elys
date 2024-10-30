@@ -70,22 +70,22 @@ func TestMsgUpdatePendingSpotOrder_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgDeletePendingSpotOrder_ValidateBasic(t *testing.T) {
+func TestMsgCancelSpotOrders_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgDeletePendingSpotOrder
+		msg  MsgCancelSpotOrders
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgDeletePendingSpotOrder{
-				OwnerAddress: "invalid_address",
+			msg: MsgCancelSpotOrders{
+				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgDeletePendingSpotOrder{
-				OwnerAddress: sample.AccAddress(),
+			msg: MsgCancelSpotOrders{
+				Creator: sample.AccAddress(),
 			},
 		},
 	}

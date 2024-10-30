@@ -121,7 +121,7 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 
 			// bootstrap accounts
 			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-			poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			poolAddr := types.NewPoolAddress(uint64(1))
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 			// bootstrap balances
@@ -147,7 +147,7 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			}
 			pool := types.Pool{
 				PoolId:            1,
-				Address:           poolAddr.String(),
+				Address:           types.NewPoolAddress(1).String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
 					SwapFee:                     sdkmath.LegacyZeroDec(),

@@ -78,8 +78,6 @@ func (suite *KeeperTestSuite) TestAdd_Pool() {
 				Authority: addresses[0].String(),
 				Pool: types.AddPool{
 					AmmPoolId:   1,
-					Enabled:     false,
-					Closed:      false,
 					LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
 				},
 			},
@@ -93,8 +91,6 @@ func (suite *KeeperTestSuite) TestAdd_Pool() {
 				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
 				Pool: types.AddPool{
 					AmmPoolId:   1,
-					Enabled:     false,
-					Closed:      false,
 					LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
 				},
 			},

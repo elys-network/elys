@@ -1,7 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/math"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,7 +17,37 @@ import (
 func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 	items := make([]types.Pool, n)
 	for i := range items {
-		items[i] = types.NewPool((uint64)(i))
+		poolId := uint64(i)
+		poolAssets := []ammtypes.PoolAsset{
+			{
+				Token:  sdk.NewCoin(ptypes.BaseCurrency, math.OneInt().MulRaw(1000_000)),
+				Weight: sdk.NewInt(10),
+			},
+			{
+				Token:  sdk.NewCoin(ptypes.ATOM, math.OneInt().MulRaw(1000_000)),
+				Weight: sdk.NewInt(10),
+			},
+		}
+		ammPool := ammtypes.Pool{
+			PoolId:            poolId,
+			Address:           ammtypes.NewPoolAddress(poolId).String(),
+			RebalanceTreasury: ammtypes.NewPoolRebalanceTreasury(poolId).String(),
+			PoolParams: ammtypes.PoolParams{
+				UseOracle:                   true,
+				ExternalLiquidityRatio:      sdk.NewDec(2),
+				WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
+				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   math.LegacyZeroDec(),
+				SwapFee:                     math.LegacyZeroDec(),
+				ExitFee:                     math.LegacyZeroDec(),
+				FeeDenom:                    ptypes.BaseCurrency,
+			},
+			TotalShares: sdk.NewCoin("pool/1", sdk.NewInt(100)),
+			PoolAssets:  poolAssets,
+			TotalWeight: sdk.ZeroInt(),
+		}
+		items[i] = types.NewPool(ammPool)
 
 		keeper.SetPool(ctx, items[i])
 	}
@@ -27,9 +59,7 @@ func createNPoolResponse(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.
 	for i := range items {
 		items[i] = types.PoolResponse{
 			AmmPoolId:                            uint64(i),
-			Health:                               sdkmath.LegacyNewDec(100),
-			Enabled:                              true,
-			Closed:                               false,
+			Health:                               sdkmath.LegacyNewDec(1),
 			BorrowInterestRate:                   sdkmath.LegacyMustNewDecFromStr("0.000000000000000001"),
 			PoolAssetsLong:                       []types.PoolAsset{},
 			PoolAssetsShort:                      []types.PoolAsset{},
@@ -37,14 +67,14 @@ func createNPoolResponse(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.
 			FundingRate:                          sdkmath.LegacyZeroDec(),
 			NetOpenInterest:                      sdkmath.ZeroInt(),
 		}
-
-		keeper.SetPool(ctx, types.NewPool(uint64(i)))
+		ammPool, _ := ammtypes.NewBalancerPool(uint64(i), ammtypes.PoolParams{}, []ammtypes.PoolAsset{}, ctx.BlockTime())
+		keeper.SetPool(ctx, types.NewPool(ammPool))
 	}
 	return items
 }
 
 func TestPoolGet(t *testing.T) {
-	keeper, ctx, _ := keepertest.PerpetualKeeper(t)
+	keeper, ctx := keepertest.PerpetualKeeper(t)
 	items := createNPool(keeper, ctx, 10)
 	for _, item := range items {
 		rst, found := keeper.GetPool(ctx,
@@ -59,7 +89,7 @@ func TestPoolGet(t *testing.T) {
 }
 
 func TestPoolRemove(t *testing.T) {
-	keeper, ctx, _ := keepertest.PerpetualKeeper(t)
+	keeper, ctx := keepertest.PerpetualKeeper(t)
 	items := createNPool(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemovePool(ctx,
@@ -73,7 +103,7 @@ func TestPoolRemove(t *testing.T) {
 }
 
 func TestPoolGetAll(t *testing.T) {
-	keeper, ctx, _ := keepertest.PerpetualKeeper(t)
+	keeper, ctx := keepertest.PerpetualKeeper(t)
 	items := createNPool(keeper, ctx, 10)
 	require.ElementsMatch(t,
 		nullify.Fill(items),

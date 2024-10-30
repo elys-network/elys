@@ -22,11 +22,6 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 		return errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", position.AmmPoolId))
 	}
 
-	// Check if the pool is enabled.
-	if !pool.Enabled {
-		return errorsmod.Wrap(types.ErrPositionDisabled, fmt.Sprintf("poolId: %d", position.AmmPoolId))
-	}
-
 	// Check if collateral is not more than borrowed
 	debtBefore := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 	maxAllowedCollateral := debtBefore.GetTotalLiablities()

@@ -44,10 +44,6 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 		return 0, err
 	}
 
-	if err := pool.Validate(poolId); err != nil {
-		return 0, err
-	}
-
 	address, err := sdk.AccAddressFromBech32(pool.GetAddress())
 	if err != nil {
 		return 0, fmt.Errorf("invalid pool address %s", pool.GetAddress())
@@ -72,7 +68,10 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 
 	// Increase liquidty amount
 	for _, asset := range msg.PoolAssets {
-		k.RecordTotalLiquidityIncrease(ctx, sdk.Coins{asset.Token})
+		err = k.RecordTotalLiquidityIncrease(ctx, sdk.Coins{asset.Token})
+		if err != nil {
+			return 0, err
+		}
 	}
 
 	// emitCreatePoolEvents(ctx, poolId, msg)
@@ -86,7 +85,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 // - Records total liquidity increase
 // - Calls the AfterPoolCreated hook
 func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.AccAddress) (err error) {
-	tvl, err := pool.TVL(ctx, k.oracleKeeper)
+	tvl, err := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	if err != nil {
 		return err
 	}
@@ -124,12 +123,13 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 		Display: poolShareDisplayDenom,
 	})
 
-	if err := k.SetPool(ctx, *pool); err != nil {
-		return err
-	}
+	k.SetPool(ctx, *pool)
 
 	if k.hooks != nil {
-		k.hooks.AfterPoolCreated(ctx, sender, *pool)
+		err = k.hooks.AfterPoolCreated(ctx, sender, *pool)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

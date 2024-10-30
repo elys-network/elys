@@ -9,6 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
+	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
 const (
@@ -16,7 +17,7 @@ const (
 )
 
 // make sure to update these when you upgrade the version
-var NextVersion = "v0.47.0"
+var NextVersion = "v0.49.0"
 
 func (app *ElysApp) setUpgradeHandler() {
 	app.UpgradeKeeper.SetUpgradeHandler(
@@ -28,11 +29,6 @@ func (app *ElysApp) setUpgradeHandler() {
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
 
 				// Add any logic here to run when the chain is upgraded to the new version
-
-				app.Logger().Info("Deleting proposals with ID < 280")
-				for i := uint64(1); i < 280; i++ {
-					_ = app.GovKeeper.Proposals.Remove(ctx, i)
-				}
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
@@ -55,7 +51,7 @@ func (app *ElysApp) setUpgradeStore() {
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			// Added: []string{},
-			// Deleted: []string{},
+			Deleted: []string{"incentive_store"},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 

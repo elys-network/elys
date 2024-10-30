@@ -1,44 +1,40 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	epochtypes "github.com/elys-network/elys/x/epochs/types"
 	"gopkg.in/yaml.v2"
 )
-
-var ZeroAddress = authtypes.NewModuleAddress("zero").String()
 
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		SwapFee:                                        sdkmath.LegacyNewDecWithPrec(1, 3), // 0.1%
-		FundingFeeCollectionAddress:                    ZeroAddress,
-		FundingFeeMinRate:                              sdkmath.LegacyNewDecWithPrec(-1, 3), // -0.1%
-		FundingFeeMaxRate:                              sdkmath.LegacyNewDecWithPrec(1, 3),  // 0.1%
-		FundingFeeBaseRate:                             sdkmath.LegacyNewDecWithPrec(3, 4),  // 0.03%
-		TakeProfitBorrowInterestRateMin:                sdkmath.LegacyOneDec(),
-		BorrowInterestRateDecrease:                     sdkmath.LegacyNewDecWithPrec(33, 10),
-		BorrowInterestRateIncrease:                     sdkmath.LegacyNewDecWithPrec(33, 10),
-		BorrowInterestRateMax:                          sdkmath.LegacyNewDecWithPrec(27, 7),
-		BorrowInterestRateMin:                          sdkmath.LegacyNewDecWithPrec(3, 8),
-		MinBorrowInterestAmount:                        sdkmath.NewInt(5_000_000),
-		EpochLength:                                    (int64)(1),
-		ForceCloseFundAddress:                          ZeroAddress,
-		ForceCloseFundPercentage:                       sdkmath.LegacyOneDec(),
-		HealthGainFactor:                               sdkmath.LegacyNewDecWithPrec(22, 8),
+		PerpetualSwapFee:                               math.LegacyMustNewDecFromStr("0.001"), // 0.1%
+		FixedFundingRate:                               math.LegacyMustNewDecFromStr("0.5"),   // 50%
+		BorrowInterestRateDecrease:                     math.LegacyMustNewDecFromStr("0.0003"),
+		BorrowInterestRateIncrease:                     math.LegacyMustNewDecFromStr("0.0003"),
+		BorrowInterestRateMax:                          math.LegacyMustNewDecFromStr("0.3"),
+		BorrowInterestRateMin:                          math.LegacyMustNewDecFromStr("0.1"),
+		ForceCloseFundAddress:                          authtypes.NewModuleAddress("zero").String(),
+		ForceCloseFundPercentage:                       math.LegacyOneDec(),
+		HealthGainFactor:                               math.LegacyMustNewDecFromStr("0.000000220000000000"),
 		IncrementalBorrowInterestPaymentEnabled:        true,
-		IncrementalBorrowInterestPaymentFundAddress:    ZeroAddress,
-		IncrementalBorrowInterestPaymentFundPercentage: sdkmath.LegacyNewDecWithPrec(35, 1), // 35%
-		InvariantCheckEpoch:                            epochtypes.DayEpochID,
-		LeverageMax:                                    sdkmath.LegacyNewDec(10),
-		MaxOpenPositions:                               (int64)(9999),
-		PoolOpenThreshold:                              sdkmath.LegacyOneDec(),
-		SafetyFactor:                                   sdkmath.LegacyMustNewDecFromStr("1.050000000000000000"), // 5%
+		IncrementalBorrowInterestPaymentFundAddress:    authtypes.NewModuleAddress("zero").String(),
+		IncrementalBorrowInterestPaymentFundPercentage: math.LegacyMustNewDecFromStr("0.1"),
+		LeverageMax:                                    math.LegacyNewDec(25),
+		MaxOpenPositions:                               (int64)(3000),
+		PoolOpenThreshold:                              math.LegacyMustNewDecFromStr("0.65"),
+		SafetyFactor:                                   math.LegacyMustNewDecFromStr("1.050000000000000000"), // 5%
 		WhitelistingEnabled:                            false,
 		MaxLimitOrder:                                  (int64)(500),
+		MinimumLongTakeProfitPriceRatio:                math.LegacyMustNewDecFromStr("1.02"),
+		MaximumLongTakeProfitPriceRatio:                math.LegacyMustNewDecFromStr("11"),
+		MaximumShortTakeProfitPriceRatio:               math.LegacyMustNewDecFromStr("0.98"),
+		EnableTakeProfitCustodyLiabilities:             false,
 	}
 }
 
@@ -67,10 +63,6 @@ func (p Params) Validate() error {
 	if err := validateHealthGainFactor(p.HealthGainFactor); err != nil {
 		return err
 	}
-	if err := validateEpochLength(p.EpochLength); err != nil {
-		return err
-	}
-
 	if err := validateMaxOpenPositions(p.MaxOpenPositions); err != nil {
 		return err
 	}
@@ -98,28 +90,10 @@ func (p Params) Validate() error {
 	if err := validateWhitelistingEnabled(p.WhitelistingEnabled); err != nil {
 		return err
 	}
-	if err := validateInvariantCheckEpoch(p.InvariantCheckEpoch); err != nil {
+	if err := validateFixedFundingRate(p.FixedFundingRate); err != nil {
 		return err
 	}
-	if err := validateTakeProfitBorrowInterestRateMin(p.TakeProfitBorrowInterestRateMin); err != nil {
-		return err
-	}
-	if err := validateFundingFeeBaseRate(p.FundingFeeBaseRate); err != nil {
-		return err
-	}
-	if err := validateFundingFeeMinRate(p.FundingFeeMinRate); err != nil {
-		return err
-	}
-	if err := validateFundingFeeMaxRate(p.FundingFeeMaxRate); err != nil {
-		return err
-	}
-	if err := validateFundingFeeCollectionAddress(p.FundingFeeCollectionAddress); err != nil {
-		return err
-	}
-	if err := validateSwapFee(p.SwapFee); err != nil {
-		return err
-	}
-	if err := validateMinBorrowInterestAmount(p.MinBorrowInterestAmount); err != nil {
+	if err := validateSwapFee(p.PerpetualSwapFee); err != nil {
 		return err
 	}
 	if err := validateMaxLimitOrder(p.MaxLimitOrder); err != nil {
@@ -130,11 +104,6 @@ func (p Params) Validate() error {
 
 // String implements the Stringer interface.
 func (p Params) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
-}
-
-func (p LegacyParams) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
 }
@@ -229,19 +198,6 @@ func validateHealthGainFactor(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("health gain factor must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateEpochLength(i interface{}) error {
-	v, ok := i.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v <= 0 {
-		return fmt.Errorf("epoch length should be positive: %d", v)
 	}
 
 	return nil
@@ -356,83 +312,16 @@ func validatePoolOpenThreshold(i interface{}) error {
 	return nil
 }
 
-func validateInvariantCheckEpoch(i interface{}) error {
-	epoch, ok := i.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if epoch != epochtypes.DayEpochID && epoch != epochtypes.WeekEpochID && epoch != epochtypes.HourEpochID {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateTakeProfitBorrowInterestRateMin(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+func validateFixedFundingRate(i interface{}) error {
+	v, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 	if v.IsNil() {
-		return fmt.Errorf("take profit borrow interest rate min must be not nil")
+		return fmt.Errorf("fixed funding fee must be not nil")
 	}
 	if v.IsNegative() {
-		return fmt.Errorf("take profit borrow interest rate min must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateFundingFeeBaseRate(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v.IsNil() {
-		return fmt.Errorf("funding fee base rate must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("funding fee base rate must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateFundingFeeMinRate(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v.IsNil() {
-		return fmt.Errorf("funding fee min rate must be not nil")
-	}
-	if v.IsPositive() {
-		return fmt.Errorf("funding fee min rate must be negative: %s", v)
-	}
-
-	return nil
-}
-
-func validateFundingFeeMaxRate(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v.IsNil() {
-		return fmt.Errorf("funding fee max rate must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("funding fee max rate must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateFundingFeeCollectionAddress(i interface{}) error {
-	_, ok := i.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		return fmt.Errorf("fixed funding fee must be positive: %s", v)
 	}
 
 	return nil
@@ -448,21 +337,6 @@ func validateSwapFee(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("swap fee must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateMinBorrowInterestAmount(i interface{}) error {
-	v, ok := i.(sdkmath.Int)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v.IsNil() {
-		return fmt.Errorf("MinBorrowInterestAmount must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("MinBorrowInterestAmount must be positive: %s", v)
 	}
 
 	return nil

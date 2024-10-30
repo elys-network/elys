@@ -15,7 +15,7 @@ func Pow(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) sdkmath.LegacyDec {
 	// (And would have to implement complex logarithms)
 	// We don't have a need for negative bases, so we don't include any such logic.
 	if !base.IsPositive() {
-		panic(fmt.Errorf("base must be greater than 0"))
+		panic(fmt.Errorf("base must be greater than 0, base: %s", base.String()))
 	}
 
 	// We will use an approximation algorithm to compute the power.

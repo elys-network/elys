@@ -174,7 +174,7 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			suite.SetupStableCoinPrices()
 
 			// execute function
-			weights, err := types.OraclePoolNormalizedWeights(suite.ctx, suite.app.OracleKeeper, tc.poolAssets)
+			weights, err := types.GetOraclePoolNormalizedWeights(suite.ctx, uint64(1), suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.poolAssets)
 			if tc.expError {
 				suite.Require().Error(err)
 			} else {
@@ -316,7 +316,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdkmath.ZeroInt(),
 			}
-			poolAssets, err := pool.NewPoolAssetsAfterSwap(tc.inCoins, tc.outCoins)
+			poolAssets, err := pool.NewPoolAssetsAfterSwap(suite.ctx, tc.inCoins, tc.outCoins, suite.app.AccountedPoolKeeper)
 			if tc.expErr {
 				suite.Require().Error(err)
 			} else {
@@ -416,7 +416,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdkmath.ZeroInt(),
 			}
-			distance := pool.WeightDistanceFromTarget(suite.ctx, suite.app.OracleKeeper, tc.poolAssets)
+			distance := pool.WeightDistanceFromTarget(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.poolAssets)
 			suite.Require().Equal(distance, tc.expDistance)
 		})
 	}
@@ -534,7 +534,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			outTokenDenom:          "uusdt",
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0.000009996061438555"),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0.000831847623764616"),
 			expTokenOut:            sdk.NewInt64Coin("uusdt", 99868706),
 			expErr:                 false,
 		},
@@ -621,6 +621,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 					ThresholdWeightDifference:   tc.thresholdWeightDiff,
 					WeightBreakingFeeMultiplier: sdkmath.LegacyNewDecWithPrec(2, 4),  // 0.02%
 					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(50, 2),           // 50%
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets:  tc.poolAssets,

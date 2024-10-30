@@ -1,28 +1,41 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) CalcMTPTakeProfitBorrowRate(ctx sdk.Context, mtp *types.MTP) (sdkmath.LegacyDec, error) {
+func (k Keeper) UpdateMTPTakeProfitBorrowFactor(ctx sdk.Context, mtp *types.MTP) error {
+	takeProfitBorrowFactor, err := k.CalcMTPTakeProfitBorrowFactor(*mtp)
+	if err != nil {
+		return err
+	}
+	mtp.TakeProfitBorrowFactor = takeProfitBorrowFactor
+	return nil
+}
+
+func (k Keeper) CalcMTPTakeProfitBorrowFactor(mtp types.MTP) (sdkmath.LegacyDec, error) {
 	// Ensure mtp.Custody is not zero to avoid division by zero
 	if mtp.Custody.IsZero() {
-		return sdkmath.LegacyZeroDec(), types.ErrAmountTooLow
+		return sdkmath.LegacyZeroDec(), types.ErrZeroCustodyAmount
 	}
 
-	// Calculate the borrow rate for this takeProfitCustody
-	takeProfitBorrowRateInt := mtp.TakeProfitCustody.Quo(mtp.Custody)
+	// infinite for long, 0 for short
+	if types.IsTakeProfitPriceInfinite(mtp) || mtp.TakeProfitPrice.IsZero() {
+		return sdk.OneDec(), nil
+	}
 
-	// Convert takeProfitBorrowRateInt from math.Int to sdkmath.LegacyDec
-	takeProfitBorrowRateDec := sdkmath.LegacyNewDecFromInt(takeProfitBorrowRateInt)
+	takeProfitBorrowFactor := math.LegacyOneDec()
+	if mtp.Position == types.Position_LONG {
+		// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
+		takeProfitBorrowFactor = sdk.OneDec().Sub(mtp.Liabilities.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec().Mul(mtp.TakeProfitPrice)))
+	} else {
+		// takeProfitBorrowFactor = 1 - ((liabilities  * take profit price) / custody)
+		takeProfitBorrowFactor = sdk.OneDec().Sub((mtp.Liabilities.ToLegacyDec().Mul(mtp.TakeProfitPrice)).Quo(mtp.Custody.ToLegacyDec()))
 
-	// Get Perpetual Params
-	params := k.GetParams(ctx)
+	}
 
-	// Use TakeProfitBorrowInterestRateMin param as minimum take profit borrow rate
-	takeProfitBorrowRate := sdkmath.LegacyMaxDec(takeProfitBorrowRateDec, params.TakeProfitBorrowInterestRateMin)
-
-	return takeProfitBorrowRate, nil
+	return takeProfitBorrowFactor, nil
 }

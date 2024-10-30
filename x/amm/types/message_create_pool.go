@@ -23,6 +23,10 @@ func (msg *MsgCreatePool) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 
+	if len(msg.PoolAssets) != 2 {
+		return ErrPoolAssetsMustBeTwo
+	}
+
 	if msg.PoolParams == nil {
 		return ErrPoolParamsShouldNotBeNil
 	}

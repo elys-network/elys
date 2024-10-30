@@ -37,6 +37,13 @@ func (k Keeper) DeleteLegacyParams(ctx sdk.Context) {
 	store.Delete([]byte(types.LegacyParamsKey))
 }
 
+// set legacy params
+func (k Keeper) SetLegacyParams(ctx sdk.Context, params types.Params) {
+	store := ctx.KVStore(k.storeKey)
+	b := k.cdc.MustMarshal(&params)
+	store.Set([]byte(types.LegacyParamsKey), b)
+}
+
 // SetParams set the params
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))

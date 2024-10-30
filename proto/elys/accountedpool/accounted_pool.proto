@@ -15,4 +15,5 @@ message AccountedPool {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  repeated cosmos.base.v1beta1.Coin non_amm_pool_tokens = 5 [(gogoproto.nullable) = false];
 }

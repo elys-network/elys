@@ -29,6 +29,7 @@ func TestOpenPosition(t *testing.T) {
 	args := []string{
 		"long",
 		"1.5",
+		"1",
 		"uatom",
 		"1000" + ptypes.BaseCurrency,
 		"100.0",

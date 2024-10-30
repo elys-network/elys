@@ -2,6 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"gopkg.in/yaml.v2"
 )
 
@@ -36,7 +37,7 @@ func DefaultParams() Params {
 		sdkmath.LegacyNewDecWithPrec(5, 2),
 		sdkmath.LegacyNewDec(100),
 		sdkmath.OneInt(),
-		"elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l",
+		authtypes.NewModuleAddress("zero").String(),
 		6307200,
 		86400,                   // 1 day
 		sdkmath.NewInt(256),     //128*2

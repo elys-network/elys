@@ -26,8 +26,6 @@ import (
 	epochstypes "github.com/elys-network/elys/x/epochs/types"
 	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
-	incentivekeeper "github.com/elys-network/elys/x/incentive/keeper"
-	incentivetypes "github.com/elys-network/elys/x/incentive/types"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
 	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
@@ -77,7 +75,6 @@ type QueryPlugin struct {
 	clockKeeper         *clockkeeper.Keeper
 	commitmentKeeper    *commitmentkeeper.Keeper
 	epochsKeeper        *epochskeeper.Keeper
-	incentiveKeeper     *incentivekeeper.Keeper
 	masterchefKeeper    *masterchefkeeper.Keeper
 	leveragelpKeeper    *leveragelpkeeper.Keeper
 	perpetualKeeper     *perpetualkeeper.Keeper
@@ -147,10 +144,6 @@ type ElysQuery struct {
 	// epochs queriers
 	EpochsEpochInfos   *epochstypes.QueryEpochsInfoRequest   `json:"epochs_epoch_infos,omitempty"`
 	EpochsCurrentEpoch *epochstypes.QueryCurrentEpochRequest `json:"epochs_current_epoch,omitempty"`
-
-	// incentive queriers
-	IncentiveApr  *incentivetypes.QueryAprRequest  `json:"incentive_apr,omitempty"`
-	IncentiveAprs *incentivetypes.QueryAprsRequest `json:"incentive_aprs,omitempty"`
 
 	// masterchef queriers
 	MasterchefParams            *mastercheftypes.QueryParamsRequest            `json:"masterchef_params,omitempty"`
@@ -239,7 +232,6 @@ type CustomMessenger struct {
 	clock            *clockkeeper.Keeper
 	commitment       *commitmentkeeper.Keeper
 	epochs           *epochskeeper.Keeper
-	incentive        *incentivekeeper.Keeper
 	masterchef       *masterchefkeeper.Keeper
 	estaking         *estakingkeeper.Keeper
 	leveragelp       *leveragelpkeeper.Keeper
@@ -283,10 +275,6 @@ type ElysMsg struct {
 
 	// epochs messages
 
-	// incentive messages
-	IncentiveBeginRedelegate           *incentivetypes.MsgBeginRedelegate           `json:"incentive_begin_redelegate,omitempty"`
-	IncentiveCancelUnbondingDelegation *incentivetypes.MsgCancelUnbondingDelegation `json:"incentive_cancel_unbonding_delegation"`
-
 	// masterchef messages
 	MasterchefClaimRewards *mastercheftypes.MsgClaimRewards `json:"masterchef_claim_rewards,omitempty"`
 
@@ -301,9 +289,8 @@ type ElysMsg struct {
 	LeveragelpUpdateStopLoss *leveragelptypes.MsgUpdateStopLoss `json:"leveragelp_update_stop_loss,omitempty"`
 
 	// perpetual messages
-	PerpetualOpen          *perpetualtypes.MsgBrokerOpen          `json:"perpetual_open,omitempty"`
-	PerpetualClose         *perpetualtypes.MsgBrokerClose         `json:"perpetual_close,omitempty"`
-	PerpetualAddCollateral *perpetualtypes.MsgBrokerAddCollateral `json:"perpetual_add_collateral,omitempty"`
+	PerpetualOpen  *perpetualtypes.MsgBrokerOpen  `json:"perpetual_open,omitempty"`
+	PerpetualClose *perpetualtypes.MsgBrokerClose `json:"perpetual_close,omitempty"`
 
 	// oracle messages
 	// parameter messages

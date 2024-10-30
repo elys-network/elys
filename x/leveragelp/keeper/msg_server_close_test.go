@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"time"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -60,7 +61,7 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 	if err != nil {
 		panic(err)
 	}
-	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId))
+	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, math.LegacyMustNewDecFromStr("10")))
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
@@ -266,7 +267,9 @@ func (suite *KeeperTestSuite) TestClose() {
 			},
 			func() {
 				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
-				suite.Require().Equal(position.LeveragedLpAmount, leverageLPShares.QuoRaw(2))
+				actualShares, ok := sdk.NewIntFromString("9999952380952380950")
+				suite.Require().True(ok)
+				suite.Require().Equal(position.LeveragedLpAmount, actualShares)
 			},
 		},
 		{"Closing whole position",

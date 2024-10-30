@@ -15,7 +15,6 @@ var (
 	_ sdk.Msg = &MsgUpdateParams{}
 	_ sdk.Msg = &MsgWhitelist{}
 	_ sdk.Msg = &MsgAddPool{}
-	_ sdk.Msg = &MsgUpdatePool{}
 	_ sdk.Msg = &MsgRemovePool{}
 	_ sdk.Msg = &MsgDewhitelist{}
 	_ sdk.Msg = &MsgClaimRewards{}
@@ -144,21 +143,6 @@ func NewMsgRemovePool(signer string, poolId uint64) *MsgRemovePool {
 		Authority: signer,
 		Id:        poolId,
 	}
-}
-
-func NewMsgUpdatePool(signer string, pool UpdatePool) *MsgUpdatePool {
-	return &MsgUpdatePool{
-		Authority:  signer,
-		UpdatePool: &pool,
-	}
-}
-
-func (msg *MsgUpdatePool) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-	}
-	return nil
 }
 
 func NewMsgDewhitelist(signer string, whitelistedAddress string) *MsgDewhitelist {

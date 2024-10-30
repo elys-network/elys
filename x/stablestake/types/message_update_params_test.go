@@ -30,6 +30,7 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
 					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
 					TotalValue:           sdkmath.NewInt(1000),
+					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 			err: sdkerrors.ErrInvalidAddress,
@@ -48,6 +49,7 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
 					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
 					TotalValue:           sdkmath.NewInt(1000),
+					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 		},

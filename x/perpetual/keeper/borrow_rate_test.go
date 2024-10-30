@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	"testing"
 
@@ -16,9 +17,15 @@ func createNBorrowRate(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.I
 	items := make([]types.InterestBlock, n)
 	ctx = ctx.WithBlockHeight(1000)
 	curBlock := ctx.BlockHeight()
+
+	params := keeper.GetParams(ctx)
+	params.FixedFundingRate = sdk.NewDec(0)
+	keeper.SetParams(ctx, &params)
+
 	for i := range items {
 		items[i].InterestRate = sdkmath.LegacyNewDec(int64(i + 1)) // Start from 1 to avoid zero interest
-		items[i].BlockHeight = int64(i * 10)
+		items[i].BlockHeight = int64(i + 1)
+		items[i].BlockTime = int64(i)
 
 		curBlock++
 		keeper.SetBorrowRate(ctx, uint64(curBlock), 1, items[i]) // Assuming pool ID 1
@@ -27,23 +34,24 @@ func createNBorrowRate(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.I
 }
 
 func TestBorrowRateGet(t *testing.T) {
-	keeper, ctx, _ := keepertest.PerpetualKeeper(t)
+	keeper, ctx := keepertest.PerpetualKeeper(t)
+
 	_, lastBlock := createNBorrowRate(keeper, ctx, 10)
 	ctx = ctx.WithBlockHeight(lastBlock)
 
 	// 1st case: recent block
-	res := keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-2), 1, sdkmath.LegacyNewDec(1000))
-	require.Equal(t, sdkmath.LegacyNewDec(19000), res) // 19 * 1000
+	res := keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-1), uint64(ctx.BlockTime().Unix())-(86400*365), 1, math.LegacyOneDec())
+	require.Equal(t, math.LegacyMustNewDecFromStr("50.0"), res) // 19 * 1000 / 2
 
 	// 2nd case: older block
-	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-8), 1, sdkmath.LegacyNewDec(1000))
-	require.Equal(t, sdkmath.LegacyNewDec(52000), res) // 52 * 1000
+	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-8), uint64(ctx.BlockTime().Unix())-(86400*365), 1, math.LegacyOneDec())
+	require.Equal(t, math.LegacyMustNewDecFromStr("32.5"), res) // 52 * 1000 / 8
 
 	// 3rd case: future block (should return zero)
-	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()+10), 1, sdkmath.LegacyNewDec(1000))
-	require.Equal(t, sdkmath.LegacyZeroDec(), res)
+	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()+10), uint64(ctx.BlockTime().Unix())-(86400*365), 1, math.LegacyOneDec())
+	require.Equal(t, math.LegacyZeroDec(), res)
 
 	// 4th case: non-existent pool
-	res = keeper.GetBorrowRate(ctx, uint64(ctx.BlockHeight()-2), 2, sdkmath.LegacyNewDec(1000))
-	require.Equal(t, sdkmath.LegacyZeroDec(), res)
+	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-2), uint64(ctx.BlockTime().Unix())-(86400*365), 2, math.LegacyOneDec())
+	require.Equal(t, math.LegacyZeroDec(), res)
 }

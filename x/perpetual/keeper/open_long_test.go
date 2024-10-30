@@ -1,747 +1,184 @@
 package keeper_test
 
 import (
-	"errors"
-	"testing"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	"github.com/elys-network/elys/x/perpetual/keeper"
-	"github.com/elys-network/elys/x/perpetual/types"
-	"github.com/elys-network/elys/x/perpetual/types/mocks"
-	"github.com/stretchr/testify/assert"
-
-	simapp "github.com/elys-network/elys/app"
+	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/stretchr/testify/require"
+	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func TestOpenLong_PoolNotFound(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.OpenDefineAssetsChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		OpenDefineAssetsChecker: mockChecker,
-	}
-
-	var (
-		ctx = sdk.Context{} // Mock or setup a context
-		msg = &types.MsgOpen{
-			Leverage:     math.LegacyNewDec(10),
-			TradingAsset: "bbb",
-			Collateral:   sdk.NewCoin("aaa", math.NewInt(1)),
-			Position:     types.Position_LONG,
-		}
-		poolId = uint64(42)
-	)
-
-	// Mock behavior
-	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage).Once()
-	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, false).Once()
-
-	_, err := k.OpenDefineAssets(ctx, poolId, msg, ptypes.BaseCurrency, false)
-
-	// Expect an error about the pool not existing
-	assert.True(t, errors.Is(err, types.ErrPoolDoesNotExist))
-	mockChecker.AssertExpectations(t)
-}
-
-func TestOpenLong_PoolDisabled(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.OpenDefineAssetsChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		OpenDefineAssetsChecker: mockChecker,
-	}
-
-	var (
-		ctx = sdk.Context{} // Mock or setup a context
-		msg = &types.MsgOpen{
-			Leverage:     math.LegacyNewDec(10),
-			TradingAsset: "bbb",
-			Collateral:   sdk.NewCoin("aaa", math.NewInt(1)),
-			Position:     types.Position_LONG,
-		}
-		poolId = uint64(42)
-	)
-
-	// Mock behaviors
-	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, poolId).Return(types.Pool{}, true)
-	mockChecker.On("IsPoolEnabled", ctx, poolId).Return(false)
-
-	_, err := k.OpenDefineAssets(ctx, poolId, msg, ptypes.BaseCurrency, false)
-
-	// Expect an error about the pool being disabled
-	assert.True(t, errors.Is(err, types.ErrMTPDisabled))
-	mockChecker.AssertExpectations(t)
-}
-
-func TestOpenLong_InsufficientAmmPoolBalanceForCustody(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.OpenDefineAssetsChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		OpenDefineAssetsChecker: mockChecker,
-	}
-
-	var (
-		ctx = sdk.Context{} // Mock or setup a context
-		msg = &types.MsgOpen{
-			Creator:      "",
-			Leverage:     math.LegacyNewDec(10),
-			Position:     types.Position_LONG,
-			TradingAsset: "uatom",
-			Collateral:   sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-		}
-		ammPool = ammtypes.Pool{
-			PoolId: uint64(42),
-			PoolAssets: []ammtypes.PoolAsset{
-				{
-					Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000)),
-					Weight: math.NewInt(50),
-				},
-				{
-					Token:  sdk.NewCoin("uatom", math.NewInt(10)),
-					Weight: math.NewInt(50),
-				},
-			},
-		}
-		pool = types.Pool{
-			AmmPoolId: ammPool.PoolId,
-		}
-	)
-	// Mock behaviors
-	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
-	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
-	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil)
-
-	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
-	custodyAmount := math.NewInt(99)
-
-	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
-
-	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
-
-	// Expect an error about custody amount being too high
-	assert.True(t, errors.Is(err, types.ErrCustodyTooHigh))
-	mockChecker.AssertExpectations(t)
-}
-
-func TestOpenLong_ErrorsDuringOperations(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.OpenDefineAssetsChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		OpenDefineAssetsChecker: mockChecker,
-	}
-
-	var (
-		ctx = sdk.Context{} // Mock or setup a context
-		msg = &types.MsgOpen{
-			Creator:         "",
-			Leverage:        math.LegacyNewDec(10),
-			Position:        types.Position_LONG,
-			TradingAsset:    "uatom",
-			Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-			TakeProfitPrice: math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
-		}
-		ammPool = ammtypes.Pool{
-			PoolId: uint64(42),
-			PoolAssets: []ammtypes.PoolAsset{
-				{
-					Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000)),
-					Weight: math.NewInt(50),
-				},
-				{
-					Token:  sdk.NewCoin("uatom", math.NewInt(10000)),
-					Weight: math.NewInt(50),
-				},
-			},
-		}
-		pool = types.Pool{
-			AmmPoolId: ammPool.PoolId,
-		}
-	)
-
-	// Mock behaviors
-	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
-	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
-	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil)
-
-	eta := math.LegacyNewDec(9)
-
-	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
-	custodyAmount := math.NewInt(99)
-
-	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
-
-	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
-
-	borrowError := errors.New("borrow error")
-	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(borrowError)
-
-	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
-
-	// Expect the borrow error
-	assert.True(t, errors.Is(err, borrowError))
-	mockChecker.AssertExpectations(t)
-}
-
-func TestOpenLong_LeverageRatioLessThanSafetyFactor(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.OpenDefineAssetsChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		OpenDefineAssetsChecker: mockChecker,
-	}
-
-	var (
-		ctx = sdk.Context{} // Mock or setup a context
-		msg = &types.MsgOpen{
-			Creator:         "",
-			Leverage:        math.LegacyNewDec(10),
-			Position:        types.Position_LONG,
-			TradingAsset:    "uatom",
-			Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-			TakeProfitPrice: math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
-		}
-		ammPool = ammtypes.Pool{
-			PoolId: uint64(42),
-			PoolAssets: []ammtypes.PoolAsset{
-				{
-					Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000)),
-					Weight: math.NewInt(50),
-				},
-				{
-					Token:  sdk.NewCoin("uatom", math.NewInt(10000)),
-					Weight: math.NewInt(50),
-				},
-			},
-		}
-		pool = types.Pool{
-			AmmPoolId: ammPool.PoolId,
-		}
-	)
-
-	// Mock behaviors
-	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
-	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
-	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil)
-
-	eta := math.LegacyNewDec(9)
-
-	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
-	custodyAmount := math.NewInt(99)
-
-	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
-
-	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
-
-	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(nil)
-	mockChecker.On("UpdatePoolHealth", ctx, &pool).Return(nil)
-	mockChecker.On("TakeInCustody", ctx, *mtp, &pool).Return(nil)
-
-	lr := math.LegacyNewDec(50)
-
-	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
-	mockChecker.On("GetSafetyFactor", ctx).Return(math.LegacyNewDec(100))
-
-	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
-
-	// Expect an error indicating MTP is unhealthy
-	assert.True(t, errors.Is(err, types.ErrMTPUnhealthy))
-	mockChecker.AssertExpectations(t)
-}
-
-func TestOpenLong_Success(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.OpenDefineAssetsChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		OpenDefineAssetsChecker: mockChecker,
-	}
-
-	var (
-		ctx = sdk.Context{} // Mock or setup a context
-		msg = &types.MsgOpen{
-			Creator:         "",
-			Leverage:        math.LegacyNewDec(10),
-			Position:        types.Position_LONG,
-			TradingAsset:    "uatom",
-			Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-			TakeProfitPrice: math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
-		}
-		ammPool = ammtypes.Pool{
-			PoolId: uint64(42),
-			PoolAssets: []ammtypes.PoolAsset{
-				{
-					Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000)),
-					Weight: math.NewInt(50),
-				},
-				{
-					Token:  sdk.NewCoin("uatom", math.NewInt(10000)),
-					Weight: math.NewInt(50),
-				},
-			},
-		}
-		pool = types.Pool{
-			AmmPoolId: ammPool.PoolId,
-		}
-	)
-
-	// Mock behaviors
-	mockChecker.On("GetMaxLeverageParam", ctx).Return(msg.Leverage)
-	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
-	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
-	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil)
-
-	eta := math.LegacyNewDec(9)
-
-	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
-	custodyAmount := math.NewInt(99)
-
-	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
-
-	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
-
-	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(nil)
-	mockChecker.On("UpdatePoolHealth", ctx, &pool).Return(nil)
-	mockChecker.On("TakeInCustody", ctx, *mtp, &pool).Return(nil)
-
-	lr := math.LegacyNewDec(50)
-
-	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
-
-	safetyFactor := math.LegacyNewDec(10)
-
-	mockChecker.On("GetSafetyFactor", ctx).Return(safetyFactor)
-
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
-	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
-
-	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
-	// Expect no error
-	assert.Nil(t, err)
-	mockChecker.AssertExpectations(t)
-}
-
-func TestOpenLong_BaseCurrency_Collateral(t *testing.T) {
-	app := simapp.InitElysTestApp(true, t)
-	ctx := app.BaseApp.NewContext(true)
-	//simapp.SetStableStake(app, ctx)
-	simapp.SetStakingParam(app, ctx)
-	simapp.SetPerpetualParams(app, ctx)
-
-	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
-
-	// Setup coin prices
-	SetupStableCoinPrices(ctx, oracle)
-
-	// Set asset profile
-	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom: ptypes.BaseCurrency,
-		Denom:     ptypes.BaseCurrency,
-		Decimals:  6,
-	})
-	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom: ptypes.ATOM,
-		Denom:     ptypes.ATOM,
-		Decimals:  6,
-	})
-
-	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(1000000000000))
-
-	// Create a pool
-	// Mint 100000USDC
-	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(200000000000))}
-	// Mint 100000ATOM
-	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, math.NewInt(200000000000))}
-
-	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
-	require.NoError(t, err)
-
-	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, atomToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], atomToken)
-	require.NoError(t, err)
-
-	poolAssets := []ammtypes.PoolAsset{
-		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
-		},
-		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000000)),
-		},
-	}
-
-	argSwapFee := math.LegacyMustNewDecFromStr("0.0")
-	argExitFee := math.LegacyMustNewDecFromStr("0.0")
-
-	poolParams := &ammtypes.PoolParams{
-		UseOracle:                   true,
-		ExternalLiquidityRatio:      math.LegacyNewDec(2),
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		SwapFee:                     argSwapFee,
-		ExitFee:                     argExitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
-	}
-
-	msg := ammtypes.NewMsgCreatePool(
-		addr[0].String(),
-		poolParams,
-		poolAssets,
-	)
-
-	// Create a ATOM+USDC pool
-	poolId, err := amm.CreatePool(ctx, msg)
-	require.NoError(t, err)
-	require.Equal(t, poolId, uint64(1))
-
-	pools := amm.GetAllPool(ctx)
-
-	// check length of pools
-	require.Equal(t, len(pools), 1)
-
-	// check block height
-	require.Equal(t, int64(0), ctx.BlockHeight())
-
-	pool, found := amm.GetPool(ctx, poolId)
-	require.Equal(t, found, true)
-
-	poolAddress := sdk.MustAccAddressFromBech32(pool.GetAddress())
-	require.NoError(t, err)
-
-	// Balance check before create a perpetual position
-	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), math.NewInt(100000000000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), math.NewInt(10000000000))
-
-	// Create a perpetual position open msg
-	msg2 := types.NewMsgOpen(
-		addr[0].String(),
-		types.Position_LONG,
-		math.LegacyNewDec(5),
-		ptypes.ATOM,
-		sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000)),
-		math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
-		math.LegacyNewDec(100),
-	)
-
-	_, err = mk.Open(ctx, msg2, false)
-	require.NoError(t, err)
-
-	mtps := mk.GetAllMTPs(ctx)
-	require.Equal(t, len(mtps), 1)
-
-	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), math.NewInt(100100000000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), math.NewInt(10000000000))
-
-	_, found = mk.OpenDefineAssetsChecker.GetPool(ctx, pool.PoolId)
-	require.Equal(t, found, true)
-
-	err = mk.InvariantCheck(ctx)
-	require.Equal(t, err, nil)
-
-	mtp := mtps[0]
-
-	// Check MTP
-	require.Equal(t, types.MTP{
-		Address:                        addr[0].String(),
-		CollateralAsset:                "uusdc",
-		TradingAsset:                   "uatom",
-		LiabilitiesAsset:               "uusdc",
-		CustodyAsset:                   "uatom",
-		Collateral:                     math.NewInt(100000000),
-		Liabilities:                    math.NewInt(400000000),
-		BorrowInterestPaidCollateral:   math.NewInt(0),
-		BorrowInterestPaidCustody:      math.NewInt(0),
-		BorrowInterestUnpaidCollateral: math.NewInt(0),
-		Custody:                        math.NewInt(486520593),
-		TakeProfitLiabilities:          math.NewInt(473929244),
-		TakeProfitCustody:              math.NewInt(486520593),
-		MtpHealth:                      math.LegacyMustNewDecFromStr("1.234567958024691358"),
-		Position:                       types.Position_LONG,
-		Id:                             uint64(1),
-		AmmPoolId:                      uint64(1),
-		TakeProfitPrice:                math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
-		TakeProfitBorrowRate:           math.LegacyMustNewDecFromStr("1.0"),
-		FundingFeePaidCollateral:       math.NewInt(0),
-		FundingFeePaidCustody:          math.NewInt(0),
-		FundingFeeReceivedCollateral:   math.NewInt(0),
-		FundingFeeReceivedCustody:      math.NewInt(0),
-		OpenPrice:                      math.LegacyMustNewDecFromStr("1.027705727555914576"),
-		StopLossPrice:                  math.LegacyNewDec(100),
-	}, mtp)
-}
-
-func TestOpenLong_ATOM_Collateral(t *testing.T) {
-	app := simapp.InitElysTestApp(true, t)
-	ctx := app.BaseApp.NewContext(true)
-	simapp.SetStakingParam(app, ctx)
-	simapp.SetPerpetualParams(app, ctx)
-	simapp.SetupAssetProfile(app, ctx)
-
-	mk, amm, oracle := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper
-
-	// Setup coin prices
-	SetupStableCoinPrices(ctx, oracle)
-
-	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(1000000000000))
-
-	// Create a pool
-	// Mint 100000USDC
-	usdcToken := []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000000))}
-	// Mint 100000ATOM
-	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, math.NewInt(100000000000))}
-
-	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
-	require.NoError(t, err)
-
-	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, atomToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], atomToken)
-	require.NoError(t, err)
-
-	poolAssets := []ammtypes.PoolAsset{
-		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, math.NewInt(1000000000)),
-		},
-		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000000)),
-		},
-	}
-
-	argSwapFee := math.LegacyMustNewDecFromStr("0.0")
-	argExitFee := math.LegacyMustNewDecFromStr("0.0")
-
-	poolParams := &ammtypes.PoolParams{
-		UseOracle:                   true,
-		ExternalLiquidityRatio:      math.LegacyNewDec(2),
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		SwapFee:                     argSwapFee,
-		ExitFee:                     argExitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
-	}
-
-	msg := ammtypes.NewMsgCreatePool(
-		addr[0].String(),
-		poolParams,
-		poolAssets,
-	)
-
-	// Create a ATOM+USDC pool
-	poolId, err := amm.CreatePool(ctx, msg)
-	require.NoError(t, err)
-	require.Equal(t, poolId, uint64(1))
-
-	pools := amm.GetAllPool(ctx)
-
-	// check length of pools
-	require.Equal(t, len(pools), 1)
-
-	// check block height
-	require.Equal(t, int64(0), ctx.BlockHeight())
-
-	pool, found := amm.GetPool(ctx, poolId)
-	require.Equal(t, found, true)
-
-	poolAddress := sdk.MustAccAddressFromBech32(pool.GetAddress())
-	require.NoError(t, err)
-
-	// Balance check before create a perpetual position
-	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), math.NewInt(10000000000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), math.NewInt(1000000000))
-
-	// Create a perpetual position open msg
-	msg2 := types.NewMsgOpen(
-		addr[0].String(),
-		types.Position_LONG,
-		math.LegacyNewDec(5),
-		ptypes.ATOM,
-		sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000)),
-		math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
-		math.LegacyNewDec(100),
-	)
-
-	_, err = mk.Open(ctx, msg2, false)
-	require.NoError(t, err)
-
-	mtps := mk.GetAllMTPs(ctx)
-	require.Equal(t, len(mtps), 1)
-
-	balances = app.BankKeeper.GetAllBalances(ctx, poolAddress)
-	require.Equal(t, balances.AmountOf(ptypes.BaseCurrency), math.NewInt(10000000000))
-	require.Equal(t, balances.AmountOf(ptypes.ATOM), math.NewInt(1010000000))
-
-	_, found = mk.OpenDefineAssetsChecker.GetPool(ctx, pool.PoolId)
-	require.Equal(t, found, true)
-
-	err = mk.InvariantCheck(ctx)
-	require.Equal(t, err, nil)
-
-	mtp := mtps[0]
-
-	// Check MTP
-	require.Equal(t, types.MTP{
-		Address:                        addr[0].String(),
-		CollateralAsset:                "uatom",
-		TradingAsset:                   "uatom",
-		LiabilitiesAsset:               "uusdc",
-		CustodyAsset:                   "uatom",
-		Collateral:                     math.NewInt(10000000),
-		Liabilities:                    math.NewInt(40905431),
-		BorrowInterestPaidCollateral:   math.NewInt(0),
-		BorrowInterestPaidCustody:      math.NewInt(0),
-		BorrowInterestUnpaidCollateral: math.NewInt(0),
-		Custody:                        math.NewInt(50000000),
-		TakeProfitLiabilities:          math.NewInt(48671331),
-		TakeProfitCustody:              math.NewInt(50000000),
-		MtpHealth:                      math.LegacyMustNewDecFromStr("1.119902772759909084"),
-		Position:                       types.Position_LONG,
-		Id:                             uint64(1),
-		AmmPoolId:                      uint64(1),
-		TakeProfitPrice:                math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
-		TakeProfitBorrowRate:           math.LegacyMustNewDecFromStr("1.0"),
-		FundingFeePaidCollateral:       math.NewInt(0),
-		FundingFeePaidCustody:          math.NewInt(0),
-		FundingFeeReceivedCollateral:   math.NewInt(0),
-		FundingFeeReceivedCustody:      math.NewInt(0),
-		OpenPrice:                      math.LegacyMustNewDecFromStr("1.017016260000000000"),
-		StopLossPrice:                  math.LegacyNewDec(100),
-	}, mtp)
-}
-
-func TestOpenLongConsolidate_Success(t *testing.T) {
-	// Setup the mock checker
-	mockChecker := new(mocks.OpenDefineAssetsChecker)
-
-	// Create an instance of Keeper with the mock checker
-	k := keeper.Keeper{
-		OpenDefineAssetsChecker: mockChecker,
-	}
-
-	var (
-		ctx = sdk.Context{} // Mock or setup a context
-		msg = &types.MsgOpen{
-			Creator:         "",
-			Leverage:        math.LegacyNewDec(10),
-			Position:        types.Position_LONG,
-			TradingAsset:    "uatom",
-			Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-			TakeProfitPrice: math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
-		}
-		ammPool = ammtypes.Pool{
-			PoolId: uint64(42),
-			PoolAssets: []ammtypes.PoolAsset{
-				{
-					Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000)),
-					Weight: math.NewInt(50),
-				},
-				{
-					Token:  sdk.NewCoin("uatom", math.NewInt(10000000)),
-					Weight: math.NewInt(50),
-				},
-			},
-		}
-		pool = types.Pool{
-			AmmPoolId: ammPool.PoolId,
-		}
-	)
-
-	// Mock behaviors
-	mockChecker.On("GetMaxLeverageParam", ctx).Return(math.LegacyNewDec(50))
-	mockChecker.On("GetPool", ctx, ammPool.PoolId).Return(pool, true)
-	mockChecker.On("IsPoolEnabled", ctx, ammPool.PoolId).Return(true)
-	mockChecker.On("GetAmmPool", ctx, ammPool.PoolId, msg.TradingAsset).Return(ammPool, nil)
-
-	eta := math.LegacyNewDec(9)
-
-	leveragedAmtTokenIn := sdk.NewCoin(msg.Collateral.Denom, math.NewInt(10000))
-	custodyAmount := math.NewInt(99)
-
-	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
-
-	mtp := types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
-
-	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(nil)
-	mockChecker.On("UpdatePoolHealth", ctx, &pool).Return(nil)
-	mockChecker.On("TakeInCustody", ctx, *mtp, &pool).Return(nil)
-
-	lr := math.LegacyNewDec(50)
-
-	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
-
-	safetyFactor := math.LegacyNewDec(10)
-
-	mockChecker.On("GetSafetyFactor", ctx).Return(safetyFactor)
-
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
-	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
-
-	_, err := k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
-	// Expect no error
-	assert.Nil(t, err)
-	mockChecker.AssertExpectations(t)
-
-	msg = &types.MsgOpen{
-		Creator:         "",
-		Leverage:        math.LegacyNewDec(12),
+func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
+	suite.SetupCoinPrices()
+	addr := suite.AddAccounts(10, nil)
+	amount := sdk.NewInt(1000)
+	poolCreator := addr[0]
+	positionCreator := addr[1]
+	poolId := uint64(1)
+	var ammPool ammtypes.Pool
+	msg := &types.MsgOpen{
+		Creator:         positionCreator.String(),
+		Leverage:        math.LegacyNewDec(2),
 		Position:        types.Position_LONG,
-		TradingAsset:    "uatom",
-		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-		TakeProfitPrice: math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault),
+		PoolId:          poolId,
+		TradingAsset:    ptypes.ATOM,
+		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
+		TakeProfitPrice: sdk.ZeroDec(),
+		StopLossPrice:   sdk.ZeroDec(),
+	}
+	testCases := []struct {
+		name                 string
+		expectErrMsg         string
+		isBroker             bool
+		prerequisiteFunction func()
+		postValidateFunction func(mtp *types.MTP)
+	}{
+		{
+			"pool not found",
+			types.ErrPoolDoesNotExist.Error(),
+			false,
+			func() {
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"amm pool not found",
+			"pool does not exist",
+			false,
+			func() {
+				ammPool = suite.SetAndGetAmmPool(poolCreator, poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
+					Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+					Pool: leveragelpmoduletypes.AddPool{
+						poolId,
+						math.LegacyMustNewDecFromStr("10"),
+					},
+				}
+				_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &enablePoolMsg)
+				suite.Require().NoError(err)
+
+				suite.app.AmmKeeper.RemovePool(suite.ctx, ammPool.PoolId)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"collateral asset neither base currency nor present in the pool",
+			"(uelys) does not exist in the pool",
+			false,
+			func() {
+				suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
+				msg.Collateral.Denom = ptypes.Elys
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"collateral is same as trading asset but pool doesn't have enough depth",
+			"borrowed amount is higher than pool depth",
+			false,
+			func() {
+				msg.Collateral.Denom = ptypes.ATOM
+				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				params.BorrowInterestRateMin = sdk.ZeroDec()
+				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+				suite.Require().NoError(err)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"collateral amount is too high",
+			"borrowed amount is higher than pool depth",
+			false,
+			func() {
+				msg.Collateral.Denom = ptypes.BaseCurrency
+				msg.Collateral.Amount = msg.Collateral.Amount.MulRaw(1000_000_000)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"Borrow fails: lack of funds",
+			"user does not have enough balance of the required coin",
+			false,
+			func() {
+				msg.Collateral.Amount = msg.Collateral.Amount.QuoRaw(1000_000_000)
+				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
+				params.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.12")
+				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+				suite.Require().NoError(err)
+				err = suite.app.BankKeeper.SendCoinsFromAccountToModule(suite.ctx, positionCreator, govtypes.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
+				suite.Require().NoError(err)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"success: collateral USDC, trading asset ATOM, stop loss price 0, TakeProfitPrice 0",
+			"",
+			false,
+			func() {
+				err := suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, govtypes.ModuleName, positionCreator, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
+				suite.Require().NoError(err)
+				msg.Collateral.Denom = ptypes.BaseCurrency
+				msg.Collateral.Amount = amount
+				msg.TradingAsset = ptypes.ATOM
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"success: collateral ATOM, trading asset ATOM, stop loss price 0, TakeProfitPrice 0",
+			"",
+			false,
+			func() {
+				tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000_000_000)))
+				suite.AddLiquidity(ammPool, addr[3], tokensIn)
+				msg.Creator = addr[2].String()
+				msg.Collateral.Denom = ptypes.ATOM
+				msg.Collateral.Amount = amount
+				msg.TradingAsset = ptypes.ATOM
+				msg.Leverage = sdk.OneDec().MulInt64(2)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"collateral is USDC, trading asset is ATOM, amm pool has enough USDC but not enough ATOM",
+			"negative pool amount after swap",
+			false,
+			func() {
+
+				suite.ResetAndSetSuite(addr, poolId, true, amount.MulRaw(1000), sdk.NewInt(2))
+
+				msg.Collateral.Denom = ptypes.BaseCurrency
+				msg.Collateral.Amount = amount
+				msg.TradingAsset = ptypes.ATOM
+			},
+			func(mtp *types.MTP) {
+			},
+		},
 	}
 
-	eta = math.LegacyNewDec(11)
-
-	leveragedAmtTokenIn = sdk.NewCoin(msg.Collateral.Denom, math.NewInt(12000))
-	custodyAmount = math.NewInt(99)
-	mockChecker.On("EstimateSwap", ctx, leveragedAmtTokenIn, msg.TradingAsset, ammPool).Return(custodyAmount, nil)
-
-	mtp = types.NewMTP(msg.Creator, msg.Collateral.Denom, msg.TradingAsset, msg.Collateral.Denom, msg.TradingAsset, msg.Position, msg.Leverage, math.LegacyMustNewDecFromStr(types.TakeProfitPriceDefault), ammPool.PoolId)
-	mockChecker.On("Borrow", ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, ptypes.BaseCurrency, false).Return(nil)
-
-	mockChecker.On("TakeInCustody", ctx, *mtp, &pool).Return(nil)
-
-	lr = math.LegacyNewDec(50)
-
-	mockChecker.On("GetMTPHealth", ctx, *mtp, ammPool, ptypes.BaseCurrency).Return(lr, nil)
-
-	mockChecker.On("CalcMTPConsolidateCollateral", ctx, mtp, ptypes.BaseCurrency).Return(nil)
-	mockChecker.On("SetMTP", ctx, mtp).Return(nil)
-
-	_, err = k.OpenDefineAssets(ctx, ammPool.PoolId, msg, ptypes.BaseCurrency, false)
-	// Expect no error
-	assert.Nil(t, err)
-	mockChecker.AssertExpectations(t)
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			err := msg.ValidateBasic()
+			suite.Require().NoError(err)
+			mtp, err := suite.app.PerpetualKeeper.OpenDefineAssets(suite.ctx, poolId, msg, ptypes.BaseCurrency, tc.isBroker)
+			if tc.expectErrMsg != "" {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg)
+			} else {
+				suite.Require().NoError(err)
+			}
+			tc.postValidateFunction(mtp)
+		})
+	}
 }

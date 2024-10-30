@@ -8,14 +8,13 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
-func NewPool(poolId uint64) Pool {
+func NewPool(poolId uint64, maxLeverage sdkmath.LegacyDec) Pool {
 	return Pool{
-		AmmPoolId:         poolId,
-		Health:            sdkmath.LegacyNewDec(100),
-		Enabled:           true,
-		Closed:            false,
-		LeveragedLpAmount: sdkmath.ZeroInt(),
-		LeverageMax:       sdkmath.LegacyNewDec(10),
+		AmmPoolId:          poolId,
+		Health:             sdkmath.LegacyNewDec(100),
+		LeveragedLpAmount:  sdkmath.ZeroInt(),
+		LeverageMax:        maxLeverage,
+		MaxLeveragelpRatio: sdkmath.MustNewDecFromStr("0.6"),
 	}
 }
 

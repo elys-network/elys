@@ -8,11 +8,12 @@ import (
 
 var _ sdk.Msg = &MsgClosePositions{}
 
-func NewMsgClosePositions(creator string, liquidate []*PositionRequest, stopLoss []*PositionRequest) *MsgClosePositions {
+func NewMsgClosePositions(creator string, liquidate []*PositionRequest, stopLoss []*PositionRequest, takeProfit []*PositionRequest) *MsgClosePositions {
 	return &MsgClosePositions{
-		Creator:   creator,
-		Liquidate: liquidate,
-		StopLoss:  stopLoss,
+		Creator:    creator,
+		Liquidate:  liquidate,
+		StopLoss:   stopLoss,
+		TakeProfit: takeProfit,
 	}
 }
 func (msg *MsgClosePositions) ValidateBasic() error {

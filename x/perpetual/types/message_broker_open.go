@@ -40,8 +40,8 @@ func (msg *MsgBrokerOpen) ValidateBasic() error {
 		return ErrInvalidLeverage
 	}
 
-	if msg.Leverage.IsNegative() {
-		return ErrInvalidLeverage
+	if msg.Leverage.LT(sdk.OneDec()) {
+		return errorsmod.Wrapf(ErrInvalidLeverage, "leverage (%s) cannot be <= 1", msg.Leverage.String())
 	}
 
 	if len(msg.TradingAsset) == 0 {
@@ -49,11 +49,11 @@ func (msg *MsgBrokerOpen) ValidateBasic() error {
 	}
 
 	if msg.TakeProfitPrice.IsNil() {
-		return ErrInvalidTakeProfitPriceIsNegative
+		return ErrInvalidTakeProfitPrice
 	}
 
 	if msg.TakeProfitPrice.IsNegative() {
-		return ErrInvalidTakeProfitPriceIsNegative
+		return ErrInvalidTakeProfitPrice
 	}
 
 	return nil

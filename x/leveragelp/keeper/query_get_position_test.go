@@ -15,15 +15,13 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 	k := suite.app.LeveragelpKeeper
 	suite.SetupCoinPrices(suite.ctx)
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	poolAddr := ammtypes.NewPoolAddress(uint64(1))
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	params := stablestaketypes.DefaultParams()
 	suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
 
 	pool := types.Pool{
 		AmmPoolId:         1,
-		Enabled:           true,
-		Closed:            false,
 		Health:            sdkmath.LegacyZeroDec(),
 		LeveragedLpAmount: sdkmath.ZeroInt(),
 		LeverageMax:       sdkmath.LegacyOneDec().MulInt64(10),

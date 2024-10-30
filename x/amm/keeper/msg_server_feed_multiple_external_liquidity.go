@@ -62,7 +62,7 @@ func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *typ
 			return nil, types.ErrInvalidPoolId
 		}
 
-		tvl, err := pool.TVL(ctx, k.oracleKeeper)
+		tvl, err := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
 			return nil, err
 		}
@@ -93,10 +93,7 @@ func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *typ
 		}
 
 		pool.PoolParams.ExternalLiquidityRatio = elRatio
-		err = k.SetPool(ctx, pool)
-		if err != nil {
-			return nil, err
-		}
+		k.SetPool(ctx, pool)
 	}
 
 	return &types.MsgFeedMultipleExternalLiquidityResponse{}, nil

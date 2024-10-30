@@ -1,54 +1,60 @@
 package keeper
 
 import (
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool, returnAmount sdkmath.Int, amount sdkmath.Int) (err error) {
+// Repay ammPool has to be pointer because RemoveFromPoolBalance updates pool assets
+func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, returnAmount math.Int, payingLiabilities math.Int, closingRatio sdk.Dec, baseCurrency string) error {
 	if returnAmount.IsPositive() {
-		returnCoin := sdk.NewCoin(mtp.CollateralAsset, sdkmath.NewIntFromBigInt(returnAmount.BigInt()))
-		returnCoins := sdk.NewCoins(returnCoin)
-		addr, err := sdk.AccAddressFromBech32(mtp.Address)
-		if err != nil {
-			return err
-		}
-
-		ammPoolAddr, err := sdk.AccAddressFromBech32(ammPool.Address)
-		if err != nil {
-			return err
-		}
-
-		err = k.bankKeeper.SendCoins(ctx, ammPoolAddr, addr, returnCoins)
+		returnCoins := sdk.NewCoins(sdk.NewCoin(mtp.CustodyAsset, returnAmount))
+		err := k.SendFromAmmPool(ctx, ammPool, mtp.GetAccountAddress(), returnCoins)
 		if err != nil {
 			return err
 		}
 	}
 
-	err = pool.UpdateBalance(ctx, mtp.CollateralAsset, returnAmount, false, mtp.Position)
+	mtp.Liabilities = mtp.Liabilities.Sub(payingLiabilities)
+
+	closingCustodyAmount := mtp.Custody.ToLegacyDec().Mul(closingRatio).TruncateInt()
+	mtp.Custody = mtp.Custody.Sub(closingCustodyAmount)
+
+	reducingCollateralAmt := closingRatio.Mul(mtp.Collateral.ToLegacyDec()).TruncateInt()
+	mtp.Collateral = mtp.Collateral.Sub(reducingCollateralAmt)
+
+	oldTakeProfitCustody := mtp.TakeProfitCustody
+	mtp.TakeProfitCustody = mtp.TakeProfitCustody.Sub(mtp.TakeProfitCustody.ToLegacyDec().Mul(closingRatio).TruncateInt())
+
+	oldTakeProfitLiabilities := mtp.TakeProfitLiabilities
+	mtp.TakeProfitLiabilities = mtp.TakeProfitLiabilities.Sub(mtp.TakeProfitLiabilities.ToLegacyDec().Mul(closingRatio).TruncateInt())
+
+	err := pool.UpdateCustody(mtp.CustodyAsset, closingCustodyAmount, false, mtp.Position)
 	if err != nil {
 		return err
 	}
 
-	// long position
-	err = pool.UpdateLiabilities(ctx, mtp.LiabilitiesAsset, mtp.Liabilities, false, mtp.Position)
+	err = pool.UpdateLiabilities(mtp.LiabilitiesAsset, payingLiabilities, false, mtp.Position)
 	if err != nil {
 		return err
 	}
 
-	err = pool.UpdateTakeProfitLiabilities(ctx, mtp.LiabilitiesAsset, mtp.TakeProfitLiabilities, false, mtp.Position)
+	err = pool.UpdateCollateral(mtp.CollateralAsset, reducingCollateralAmt, false, mtp.Position)
 	if err != nil {
 		return err
 	}
 
-	err = pool.UpdateTakeProfitCustody(ctx, mtp.CustodyAsset, mtp.TakeProfitCustody, false, mtp.Position)
+	err = pool.UpdateTakeProfitLiabilities(mtp.LiabilitiesAsset, oldTakeProfitLiabilities.Sub(mtp.TakeProfitLiabilities), false, mtp.Position)
 	if err != nil {
 		return err
 	}
 
-	mtp.Custody = mtp.Custody.Sub(amount)
+	err = pool.UpdateTakeProfitCustody(mtp.CustodyAsset, oldTakeProfitCustody.Sub(mtp.TakeProfitCustody), false, mtp.Position)
+	if err != nil {
+		return err
+	}
+
 	// This is for accounting purposes, mtp.Custody gets reduced by borrowInterestPaymentCustody and funding fee. so msg.Amount is greater than mtp.Custody here. So if it's negative it should be closed
 	if mtp.Custody.IsZero() || mtp.Custody.IsNegative() {
 		err = k.DestroyMTP(ctx, mtp.GetAccountAddress(), mtp.Id)
@@ -56,6 +62,11 @@ func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool
 			return err
 		}
 	} else {
+		// update mtp health
+		mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
+		if err != nil {
+			return err
+		}
 		err = k.SetMTP(ctx, mtp)
 		if err != nil {
 			return err

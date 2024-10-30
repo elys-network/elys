@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
@@ -10,11 +11,15 @@ import (
 )
 
 // SetPool set a specific pool in the store from its index
-func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) error {
+func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
+	err := pool.Validate()
+	if err != nil {
+		panic(err)
+	}
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
 	store.Set(types.PoolKey(pool.PoolId), b)
-	return nil
+	return
 }
 
 // GetPool returns a pool from its index
@@ -45,6 +50,22 @@ func (k Keeper) GetAllPool(ctx sdk.Context) (list []types.Pool) {
 
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Pool
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
+// GetAllLegacyPool returns all legacy pool
+func (k Keeper) GetAllLegacyPool(ctx sdk.Context) (list []types.LegacyPool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PoolKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyPool
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
@@ -119,7 +140,7 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 			}
 		}
 
-		poolTvl, err := p.TVL(ctx, k.oracleKeeper)
+		poolTvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
 			poolTvl = sdkmath.LegacyZeroDec()
 		}
@@ -167,4 +188,24 @@ func (k Keeper) GetPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) (val type
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val
+}
+
+// AddToPoolBalance Used in perpetual balance changes
+func (k Keeper) AddToPoolBalance(ctx sdk.Context, pool *types.Pool, addShares math.Int, coins sdk.Coins) error {
+	err := pool.IncreaseLiquidity(addShares, coins)
+	if err != nil {
+		return err
+	}
+	k.SetPool(ctx, *pool)
+	return k.RecordTotalLiquidityIncrease(ctx, coins)
+}
+
+// RemoveFromPoolBalance Used in perpetual balance changes
+func (k Keeper) RemoveFromPoolBalance(ctx sdk.Context, pool *types.Pool, removeShares math.Int, coins sdk.Coins) error {
+	err := pool.DecreaseLiquidity(removeShares, coins)
+	if err != nil {
+		return err
+	}
+	k.SetPool(ctx, *pool)
+	return k.RecordTotalLiquidityDecrease(ctx, coins)
 }

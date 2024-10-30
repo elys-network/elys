@@ -22,6 +22,19 @@ func (k Keeper) SetCommitments(ctx sdk.Context, commitments types.Commitments) {
 	store.Set(key, b)
 }
 
+// SetLegacyCommitments set a specific commitments in the store from its index
+func (k Keeper) SetLegacyCommitments(ctx sdk.Context, commitments types.Commitments) {
+	if !k.HasLegacyCommitments(ctx, commitments.Creator) {
+		params := k.GetParams(ctx)
+		params.NumberOfCommitments++
+		k.SetParams(ctx, params)
+	}
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
+	key := types.LegacyCommitmentsKey(commitments.Creator)
+	b := k.cdc.MustMarshal(&commitments)
+	store.Set(key, b)
+}
+
 // GetAllCommitments returns all commitments
 func (k Keeper) GetAllCommitments(ctx sdk.Context) (list []*types.Commitments) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
@@ -39,11 +52,13 @@ func (k Keeper) GetAllCommitments(ctx sdk.Context) (list []*types.Commitments) {
 }
 
 // remove after migration
-func (k Keeper) GetAllLegacyCommitments(ctx sdk.Context) (list []*types.Commitments) {
+func (k Keeper) GetAllLegacyCommitments(ctx sdk.Context) []*types.Commitments {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
+
+	list := []*types.Commitments{}
 
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Commitments
@@ -51,7 +66,7 @@ func (k Keeper) GetAllLegacyCommitments(ctx sdk.Context) (list []*types.Commitme
 		list = append(list, &val)
 	}
 
-	return
+	return list
 }
 
 // GetCommitments returns a commitments from its index
@@ -161,7 +176,7 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom str
 	}
 	err := commitments.SubClaimed(sdk.NewCoin(denom, claimedRemovalAmount))
 	if err != nil {
-		return err
+		return err // never happens
 	}
 
 	amount = amount.Sub(claimedRemovalAmount)
@@ -177,9 +192,11 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom str
 		return nil
 	}
 
-	err = k.hooks.BeforeEdenBCommitChange(ctx, creator)
-	if err != nil {
-		return err
+	if k.hooks != nil {
+		err = k.hooks.BeforeEdenBCommitChange(ctx, creator)
+		if err != nil {
+			return err
+		}
 	}
 
 	// Subtract the amount from the committed balance
@@ -190,9 +207,12 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom str
 
 	k.SetCommitments(ctx, commitments)
 
-	err = k.hooks.CommitmentChanged(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
-	if err != nil {
-		return err
+	if k.hooks != nil {
+		err = k.hooks.CommitmentChanged(ctx, creator, sdk.Coins{sdk.NewCoin(denom, amount)})
+		if err != nil {
+			return err
+		}
 	}
+
 	return nil
 }

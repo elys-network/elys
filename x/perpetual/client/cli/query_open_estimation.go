@@ -3,6 +3,7 @@ package cli
 import (
 	sdkmath "cosmossdk.io/math"
 	"errors"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -13,10 +14,10 @@ import (
 
 func CmdOpenEstimation() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "open-estimation [position] [leverage] [trading-asset] [collateral]",
+		Use:     "open-estimation [position] [leverage] [trading-asset] [collateral] [pool-id]",
 		Short:   "Query open-estimation",
 		Example: "elysd q perpetual open-estimation long 5 uatom 100000000uusdc",
-		Args:    cobra.ExactArgs(4),
+		Args:    cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqPosition := types.GetPositionFromString(args[0])
 
@@ -28,6 +29,11 @@ func CmdOpenEstimation() *cobra.Command {
 			reqTradingAsset := args[2]
 
 			reqCollateral, err := sdk.ParseCoinNormalized(args[3])
+			if err != nil {
+				return err
+			}
+
+			reqPoolId, err := strconv.ParseUint(args[4], 10, 64)
 			if err != nil {
 				return err
 			}
@@ -53,10 +59,7 @@ func CmdOpenEstimation() *cobra.Command {
 					return errors.New("invalid take profit price")
 				}
 			} else {
-				takeProfitPrice, err = sdkmath.LegacyNewDecFromStr(types.TakeProfitPriceDefault)
-				if err != nil {
-					return errors.New("failed to set default take profit price")
-				}
+				takeProfitPrice = types.TakeProfitPriceDefault
 			}
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -73,6 +76,7 @@ func CmdOpenEstimation() *cobra.Command {
 				Collateral:      reqCollateral,
 				Discount:        discount,
 				TakeProfitPrice: takeProfitPrice,
+				PoolId:          reqPoolId,
 			}
 
 			res, err := queryClient.OpenEstimation(cmd.Context(), params)

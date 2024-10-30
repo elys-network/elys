@@ -7,28 +7,6 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-// Creating a commitment object for a delegator if one does not exist:
-func (k Keeper) BeforeDelegationCreated(ctx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return nil
-}
-
-// Updating portfolio on delegation changes
-func (k Keeper) AfterDelegationModified(goCtx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	k.RetrieveAllPortfolio(ctx, delAddr)
-	return nil
-}
-
-func (k Keeper) BeforeDelegationRemoved(ctx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return nil
-}
-
-func (k Keeper) BeforeDelegationSharesModified(ctx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return nil
-}
-
-// ________________________________________________________________________________________
-
 // StakingHooks wrapper struct for slashing keeper
 type StakingHooks struct {
 	k Keeper
@@ -75,21 +53,22 @@ func (h StakingHooks) AfterValidatorBeginUnbonding(ctx context.Context, consAddr
 
 // Must be called when a delegation is created
 func (h StakingHooks) BeforeDelegationCreated(ctx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return h.k.BeforeDelegationCreated(ctx, delAddr, valAddr)
+	return nil
 }
 
 // Must be called when a delegation's shares are modified
 func (h StakingHooks) BeforeDelegationSharesModified(ctx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return h.k.BeforeDelegationSharesModified(ctx, delAddr, valAddr)
+	return nil
 }
 
 // Must be called when a delegation is removed
 func (h StakingHooks) BeforeDelegationRemoved(ctx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return h.k.BeforeDelegationRemoved(ctx, delAddr, valAddr)
+	return nil
 }
 
 func (h StakingHooks) AfterDelegationModified(ctx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	return h.k.AfterDelegationModified(ctx, delAddr, valAddr)
+	h.k.RetrieveAllPortfolio(ctx, delAddr)
+	return nil
 }
 
 func (h StakingHooks) BeforeValidatorSlashed(ctx context.Context, valAddr sdk.ValAddress, fraction sdkmath.LegacyDec) error {

@@ -30,10 +30,6 @@ The `BeginBlocker` function is triggered at the beginning of each block. It perf
 
 `CalcMinCollateral` calculates the minimum collateral required to open a position based on leverage and the trading asset's price.
 
-### Consolidating Collateral
-
-`CalcMTPConsolidateCollateral` consolidates an MTP's collateral into the base currency, ensuring accurate position valuation.
-
 ### Borrow Interest Liabilities Calculation
 
 `CalcMTPBorrowInterestLiabilities` computes the interest liabilities for an MTP, including unpaid borrow interest and new interest accrued within the current epoch.
@@ -54,7 +50,7 @@ The `BeginBlocker` function is triggered at the beginning of each block. It perf
 
 ### Pool Health Verification
 
-`CheckPoolHealth` verifies the health of a pool, ensuring it is enabled and not closed, and that its health is above the minimum threshold.
+`CheckLowPoolHealth` verifies the health of a pool, ensuring it is enabled and not closed, and that its health is above the minimum threshold.
 
 ### Same Asset Position Check
 

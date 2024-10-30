@@ -12,7 +12,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -21,16 +20,17 @@ import (
 
 type (
 	Keeper struct {
-		cdc                codec.BinaryCodec
-		storeService       store.KVStoreService
-		authority          string
-		amm                types.AmmKeeper
-		bankKeeper         types.BankKeeper
-		oracleKeeper       ammtypes.OracleKeeper
-		stableKeeper       types.StableStakeKeeper
-		commKeeper         types.CommitmentKeeper
-		assetProfileKeeper types.AssetProfileKeeper
-		masterchefKeeper   types.MasterchefKeeper
+		cdc                 codec.BinaryCodec
+		storeService        store.KVStoreService
+		authority           string
+		amm                 types.AmmKeeper
+		bankKeeper          types.BankKeeper
+		oracleKeeper        ammtypes.OracleKeeper
+		stableKeeper        types.StableStakeKeeper
+		commKeeper          types.CommitmentKeeper
+		assetProfileKeeper  types.AssetProfileKeeper
+		masterchefKeeper    types.MasterchefKeeper
+		accountedPoolKeeper types.AccountedPoolKeeper
 
 		hooks types.LeverageLpHooks
 	}
@@ -47,6 +47,7 @@ func NewKeeper(
 	commitmentKeeper types.CommitmentKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	masterchefKeeper types.MasterchefKeeper,
+	accountedPoolKeeper types.AccountedPoolKeeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -54,16 +55,17 @@ func NewKeeper(
 	}
 
 	keeper := &Keeper{
-		cdc:                cdc,
-		storeService:       storeService,
-		authority:          authority,
-		amm:                amm,
-		bankKeeper:         bk,
-		oracleKeeper:       oracleKeeper,
-		stableKeeper:       stableKeeper,
-		commKeeper:         commitmentKeeper,
-		assetProfileKeeper: assetProfileKeeper,
-		masterchefKeeper:   masterchefKeeper,
+		cdc:                 cdc,
+		storeService:        storeService,
+		authority:           authority,
+		amm:                 amm,
+		bankKeeper:          bk,
+		oracleKeeper:        oracleKeeper,
+		stableKeeper:        stableKeeper,
+		commKeeper:          commitmentKeeper,
+		assetProfileKeeper:  assetProfileKeeper,
+		masterchefKeeper:    masterchefKeeper,
+		accountedPoolKeeper: accountedPoolKeeper,
 	}
 
 	return keeper
@@ -90,12 +92,9 @@ func (k Keeper) CheckIfWhitelisted(ctx sdk.Context, address sdk.AccAddress) bool
 
 // Swap estimation using amm CalcInAmtGivenOut function
 func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, error) {
-	pool, found := k.GetPool(ctx, ammPool.PoolId)
+	_, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
 		return math.Int{}, fmt.Errorf("pool %d not found", ammPool.PoolId)
-	}
-	if !pool.Enabled {
-		return math.ZeroInt(), errorsmod.Wrap(types.ErrLeveragelpDisabled, fmt.Sprintf("pool %d", ammPool.PoolId))
 	}
 
 	tokensOut := sdk.NewCoins(tokenOutAmount)
@@ -181,4 +180,8 @@ func (k *Keeper) SetHooks(lh types.LeverageLpHooks) *Keeper {
 	k.hooks = lh
 
 	return k
+}
+
+func (k Keeper) GetHooks() types.LeverageLpHooks {
+	return k.hooks
 }

@@ -7,6 +7,8 @@ import (
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
+
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
@@ -25,6 +27,7 @@ type (
 		authKeeper          types.AccountKeeper
 		bankKeeper          types.BankKeeper
 		perpetualKeeper     types.PeperpetualKeeper
+		estakingKeeper      *estakingkeeper.Keeper
 
 		authority string // gov module addresss
 	}
@@ -44,6 +47,7 @@ func NewKeeper(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	perpetualKeeper types.PeperpetualKeeper,
+	estakingKeeper *estakingkeeper.Keeper,
 	authority string,
 ) *Keeper {
 	return &Keeper{
@@ -60,6 +64,7 @@ func NewKeeper(
 		authKeeper:          ak,
 		bankKeeper:          bk,
 		perpetualKeeper:     perpetualKeeper,
+		estakingKeeper:      estakingKeeper,
 		authority:           authority,
 	}
 }

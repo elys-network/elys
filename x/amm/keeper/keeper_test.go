@@ -17,8 +17,39 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+type assetPriceInfo struct {
+	denom   string
+	display string
+	price   sdk.Dec
+}
+
 const (
 	initChain = true
+)
+
+var (
+	priceMap = map[string]assetPriceInfo{
+		"uusdc": {
+			denom:   ptypes.BaseCurrency,
+			display: "USDC",
+			price:   sdk.OneDec(),
+		},
+		"uusdt": {
+			denom:   "uusdt",
+			display: "USDT",
+			price:   sdk.OneDec(),
+		},
+		"uelys": {
+			denom:   ptypes.Elys,
+			display: "ELYS",
+			price:   sdk.MustNewDecFromStr("3.0"),
+		},
+		"uatom": {
+			denom:   ptypes.ATOM,
+			display: "ATOM",
+			price:   sdk.MustNewDecFromStr("1.0"),
+		},
+	}
 )
 
 type KeeperTestSuite struct {
@@ -115,11 +146,32 @@ func (suite *KeeperTestSuite) SetupStableCoinPrices() {
 	})
 }
 
+func (suite *KeeperTestSuite) SetupCoinPrices() {
+	// prices set for USDT and USDC
+	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+
+	for _, v := range priceMap {
+		suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+			Denom:   v.denom,
+			Display: v.display,
+			Decimal: 6,
+		})
+		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+			Asset:     v.display,
+			Price:     v.price,
+			Source:    "elys",
+			Provider:  provider.String(),
+			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
+		})
+	}
+}
+
 func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 	// Create and set mock pools
 	pools := []types.Pool{
 		{
-			PoolId: 1,
+			PoolId:  1,
+			Address: types.NewPoolAddress(uint64(1)).String(),
 			PoolAssets: []types.PoolAsset{
 				{Token: sdk.NewCoin("denom1", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
 				{Token: sdk.NewCoin("denom2", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
@@ -131,7 +183,8 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			TotalShares: sdk.NewCoin(types.GetPoolShareDenom(1), types.OneShare),
 		},
 		{
-			PoolId: 2,
+			PoolId:  2,
+			Address: types.NewPoolAddress(uint64(2)).String(),
 			PoolAssets: []types.PoolAsset{
 				{Token: sdk.NewCoin("uusdc", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
 				{Token: sdk.NewCoin("denom1", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
@@ -143,7 +196,8 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			TotalShares: sdk.NewCoin(types.GetPoolShareDenom(2), types.OneShare),
 		},
 		{
-			PoolId: 3,
+			PoolId:  3,
+			Address: types.NewPoolAddress(uint64(3)).String(),
 			PoolAssets: []types.PoolAsset{
 				{Token: sdk.NewCoin("uusdc", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
 				{Token: sdk.NewCoin("denom3", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},

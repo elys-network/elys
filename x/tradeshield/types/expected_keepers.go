@@ -41,6 +41,9 @@ type TierKeeper interface {
 //go:generate mockery --srcpkg . --name PerpetualKeeper --structname PerpetualKeeper --filename perpetual_keeper.go --with-expecter
 type PerpetualKeeper interface {
 	Open(ctx sdk.Context, msg *perpetualtypes.MsgOpen, isBroker bool) (*perpetualtypes.MsgOpenResponse, error)
-
 	Close(ctx sdk.Context, msg *perpetualtypes.MsgClose) (*perpetualtypes.MsgCloseResponse, error)
+	GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (perpetualtypes.MTP, error)
+	GetPool(ctx sdk.Context, poolId uint64) (val perpetualtypes.Pool, found bool)
+	HandleOpenEstimation(ctx sdk.Context, req *perpetualtypes.QueryOpenEstimationRequest) (*perpetualtypes.QueryOpenEstimationResponse, error)
+	HandleCloseEstimation(ctx sdk.Context, req *perpetualtypes.QueryCloseEstimationRequest) (res *perpetualtypes.QueryCloseEstimationResponse, err error)
 }

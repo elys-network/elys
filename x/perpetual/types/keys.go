@@ -23,8 +23,11 @@ const (
 const MaxPageLimit = 100
 
 const (
-	InfinitePriceString    = "infinite"
-	TakeProfitPriceDefault = "10000000000000000000000000000000000000000" // 10^40
+	InfinitePriceString = "infinite"
+)
+
+var (
+	TakeProfitPriceDefault = sdk.MustNewDecFromStr("10000000000000000000000000000000000000000") // 10^40
 )
 
 var (
@@ -67,10 +70,6 @@ func GetMTPKey(addr sdk.AccAddress, id uint64) []byte {
 	return append(MTPPrefix, append(address.MustLengthPrefix(addr), sdk.Uint64ToBigEndian(id)...)...)
 }
 
-func GetLegacyMTPKey(address string, id uint64) []byte {
-	return append(MTPPrefix, append([]byte(address), sdk.Uint64ToBigEndian(id)...)...)
-}
-
 func GetMTPPrefixForAddress(addr sdk.AccAddress) []byte {
 	return append(MTPPrefix, address.MustLengthPrefix(addr)...)
 }
@@ -78,22 +77,6 @@ func GetMTPPrefixForAddress(addr sdk.AccAddress) []byte {
 func GetPoolKey(index uint64) []byte {
 	key := PoolKeyPrefix
 	return append(key, sdk.Uint64ToBigEndian(index)...)
-}
-
-func legacyPoolKey(index uint64) []byte {
-	var key []byte
-
-	indexBytes := make([]byte, 8)
-	binary.LittleEndian.PutUint64(indexBytes, index)
-	key = append(key, indexBytes...)
-	key = append(key, []byte("/")...)
-
-	return key
-}
-
-func GetLegacyPoolKey(index uint64) []byte {
-	key := KeyPrefix(LegacyPoolKeyPrefix)
-	return append(key, legacyPoolKey(index)...)
 }
 
 func GetInterestRateKey(block uint64, pool uint64) []byte {

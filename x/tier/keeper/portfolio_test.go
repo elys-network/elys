@@ -188,7 +188,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, portfolio, math.LegacyNewDec(100100))
+	require.Equal(t, math.LegacyNewDec(100100), portfolio)
 }
 
 func TestPortfolioGetDiscount(t *testing.T) {
@@ -279,18 +279,17 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 	require.Equal(t, resp.PoolID, uint64(1))
 
 	err = perpetual.SetMTP(ctx, &perpetualtypes.MTP{
-		Address:                        addr[0].String(),
-		CollateralAsset:                ptypes.BaseCurrency,
-		CustodyAsset:                   ptypes.Elys,
-		Collateral:                     math.NewInt(0),
-		Liabilities:                    math.NewInt(0),
-		BorrowInterestPaidCollateral:   math.NewInt(0),
-		BorrowInterestPaidCustody:      math.NewInt(0),
-		BorrowInterestUnpaidCollateral: math.NewInt(0),
-		Custody:                        math.NewInt(10000),
-		MtpHealth:                      math.LegacyNewDec(0),
-		Position:                       perpetualtypes.Position_LONG,
-		Id:                             0,
+		Address:                       addr[0].String(),
+		CollateralAsset:               ptypes.BaseCurrency,
+		CustodyAsset:                  ptypes.Elys,
+		Collateral:                    math.NewInt(0),
+		Liabilities:                   math.NewInt(0),
+		BorrowInterestUnpaidLiability: math.NewInt(0),
+		BorrowInterestPaidCustody:     math.NewInt(0),
+		Custody:                       math.NewInt(10000),
+		MtpHealth:                     math.LegacyNewDec(0),
+		Position:                      perpetualtypes.Position_LONG,
+		Id:                            0,
 	})
 	require.NoError(t, err)
 
@@ -298,7 +297,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, portfolio, math.LegacyNewDec(10099100))
+	require.Equal(t, math.LegacyNewDec(10099100), portfolio)
 }
 
 // TODO

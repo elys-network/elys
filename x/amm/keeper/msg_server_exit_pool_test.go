@@ -36,6 +36,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount:    types.OneShare.Quo(sdkmath.NewInt(5)),
@@ -56,6 +57,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount:    types.OneShare.Quo(sdkmath.NewInt(5)),
@@ -76,6 +78,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyNewDecWithPrec(2, 1),  // 20%
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2),           // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),
@@ -97,13 +100,14 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyNewDecWithPrec(2, 1),  // 20%
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2),           // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),
 			tokenOutDenom: ptypes.BaseCurrency,
-			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000)},
+			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 86881)},
 			// expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)}, // slippage enabled
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000)}, // slippage disabled
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 86881)}, // slippage disabled
 			expPass:          true,
 		},
 	} {

@@ -6,8 +6,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-var _ sdk.Msg = &MsgCreatePendingPerpetualOrder{}
-
 func NewMsgCreatePendingPerpetualOrder(creator string) *MsgCreatePendingPerpetualOrder {
 	return &MsgCreatePendingPerpetualOrder{
 		OwnerAddress: creator,
@@ -40,16 +38,16 @@ func (msg *MsgUpdatePendingPerpetualOrder) ValidateBasic() error {
 	return nil
 }
 
-var _ sdk.Msg = &MsgDeletePendingPerpetualOrder{}
+var _ sdk.Msg = &MsgCancelPerpetualOrders{}
 
-func NewMsgDeletePendingPerpetualOrder(creator string, id uint64) *MsgDeletePendingPerpetualOrder {
-	return &MsgDeletePendingPerpetualOrder{
-		OrderId:      id,
+func NewMsgCancelPerpetualOrders(creator string, ids []uint64) *MsgCancelPerpetualOrders {
+	return &MsgCancelPerpetualOrders{
+		OrderIds:     ids,
 		OwnerAddress: creator,
 	}
 }
 
-func (msg *MsgDeletePendingPerpetualOrder) ValidateBasic() error {
+func (msg *MsgCancelPerpetualOrders) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)

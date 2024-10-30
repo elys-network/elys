@@ -55,7 +55,7 @@ func (k Keeper) InternalSwapExactAmountOut(
 		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
-	swapOutFee, err := k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, math.LegacyZeroDec(), weightBalanceBonus)
+	_, err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, math.LegacyZeroDec(), weightBalanceBonus)
 	if err != nil {
 		return math.Int{}, err
 	}
@@ -63,6 +63,5 @@ func (k Keeper) InternalSwapExactAmountOut(
 	// track slippage
 	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, slippageAmount.RoundInt()))
 
-	// Subtract swap out fee from the token out amount.
-	return tokenInAmount.Sub(swapOutFee), nil
+	return tokenInAmount, nil
 }

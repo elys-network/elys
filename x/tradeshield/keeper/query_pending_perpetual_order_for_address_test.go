@@ -29,6 +29,29 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 		PositionId:         uint64(1),
 		Status:             types.Status_PENDING,
 		StopLossPrice:      math.LegacyNewDec(1),
+		PositionSize:       sdk.NewCoin("denom", math.NewInt(10)),
+		LiquidationPrice:   math.LegacyNewDec(1),
+		FundingRate:        math.LegacyNewDec(1),
+		BorrowInterestRate: math.LegacyNewDec(1),
+	}
+
+	order2 := types.PerpetualOrder{
+		OrderId:            2,
+		OwnerAddress:       "valid_address",
+		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
+		Position:           types.PerpetualPosition_LONG,
+		TriggerPrice:       &types.OrderPrice{Rate: math.LegacyNewDec(2), BaseDenom: "base", QuoteDenom: "quote"},
+		Collateral:         sdk.Coin{Denom: "denom", Amount: math.NewInt(10)},
+		TradingAsset:       "asset",
+		Leverage:           math.LegacyNewDec(int64(1)),
+		TakeProfitPrice:    math.LegacyNewDec(1),
+		PositionId:         uint64(1),
+		Status:             types.Status_EXECUTED,
+		StopLossPrice:      math.LegacyNewDec(1),
+		PositionSize:       sdk.NewCoin("denom", math.NewInt(10)),
+		LiquidationPrice:   math.LegacyNewDec(1),
+		FundingRate:        math.LegacyNewDec(1),
+		BorrowInterestRate: math.LegacyNewDec(1),
 	}
 
 	tests := []struct {
@@ -41,9 +64,21 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 			desc: "valid request",
 			request: &types.QueryPendingPerpetualOrderForAddressRequest{
 				Address: "valid_address",
+				Status:  types.Status_ALL,
 			},
 			response: &types.QueryPendingPerpetualOrderForAddressResponse{
-				PendingPerpetualOrders: []types.PerpetualOrder{order},
+				PendingPerpetualOrders: []types.PerpetualOrder{order, order2},
+			},
+			err: nil,
+		},
+		{
+			desc: "valid request",
+			request: &types.QueryPendingPerpetualOrderForAddressRequest{
+				Address: "valid_address",
+				Status:  types.Status_EXECUTED,
+			},
+			response: &types.QueryPendingPerpetualOrderForAddressResponse{
+				PendingPerpetualOrders: []types.PerpetualOrder{order2},
 			},
 			err: nil,
 		},
@@ -54,11 +89,11 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 		},
 	}
 
+	_ = k.AppendPendingPerpetualOrder(ctx, order)
+	_ = k.AppendPendingPerpetualOrder(ctx, order2)
+
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
-
-			_ = k.AppendPendingPerpetualOrder(ctx, order)
-
 			response, err := k.PendingPerpetualOrderForAddress(wctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)

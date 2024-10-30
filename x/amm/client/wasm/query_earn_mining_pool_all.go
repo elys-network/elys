@@ -73,18 +73,19 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 		prams := oq.stablestakeKeeper.GetParams(ctx)
 		borrowApr = prams.InterestRate
 	}
-	tvl, _ := ammPool.TVL(ctx, oq.oraclekeeper)
-	lpTokenPrice, _ := ammPool.LpTokenPrice(ctx, oq.oraclekeeper)
+	tvl, _ := ammPool.TVL(ctx, oq.oraclekeeper, oq.accountedpoolKeeper)
+	lpTokenPrice, _ := ammPool.LpTokenPrice(ctx, oq.oraclekeeper, oq.accountedpoolKeeper)
 
 	// Get rewards amount
-	rewardsUsd, rewardCoins := oq.incentiveKeeper.GetDailyRewardsAmountForPool(ctx, ammPool.PoolId)
+	// TODO: Remove wasmbindings, as of now this is not used by FE, so setting it to zero
+	rewardsUsd, rewardCoins := sdk.ZeroDec(), sdk.Coins{}
 
 	// Get pool ratio
 	poolRatio := CalculatePoolRatio(ctx, ammPool)
 
 	leverageLpPool, found := oq.leveragelpKeeper.GetPool(ctx, ammPool.PoolId)
 	if found {
-		isLeverageLpEnabled = leverageLpPool.Enabled
+		isLeverageLpEnabled = true
 		leverageLpPercent = leverageLpPool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec()).Mul(sdkmath.LegacyNewDec(100))
 	}
 

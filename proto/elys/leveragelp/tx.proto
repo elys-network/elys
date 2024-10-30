@@ -21,8 +21,7 @@ service Msg {
   rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc AddPool(MsgAddPool) returns (MsgAddPoolResponse);
-  rpc UpdatePool(MsgUpdatePool) returns (MsgUpdatePoolResponse);
-  rpc RemovePool(MsgRemovePool) returns (MsgRemovePoolResponse);
+  rpc  RemovePool(MsgRemovePool) returns (MsgRemovePoolResponse);
   rpc Whitelist(MsgWhitelist) returns (MsgWhitelistResponse);
   rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
   rpc UpdateStopLoss(MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
@@ -31,7 +30,7 @@ service Msg {
 message MsgOpen {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "leveragelp/MsgOpen";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string collateral_asset = 2;
   string collateral_amount = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
@@ -53,7 +52,7 @@ message MsgOpenResponse {}
 message MsgClose {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "leveragelp/MsgClose";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   uint64 id = 2;
   string lp_amount = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
@@ -66,7 +65,7 @@ message MsgCloseResponse {}
 message MsgClaimRewards {
   option (cosmos.msg.v1.signer) = "sender";
   option (amino.name) = "leveragelp/MsgClaimRewards";
-  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   repeated uint64 ids = 2;
 }
 
@@ -77,7 +76,7 @@ message MsgUpdateParams {
   option (amino.name) = "leveragelp/MsgUpdateParams";
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // NOTE: All parameters must be supplied.
   Params params = 2;
@@ -85,25 +84,10 @@ message MsgUpdateParams {
 
 message MsgUpdateParamsResponse {}
 
-message UpdatePool {
-  uint64 pool_id = 1;
-  bool enabled = 2;
-  bool closed = 3;
-}
-
-message MsgUpdatePool {
-  option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "leveragelp/MsgUpdatePool";
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  UpdatePool update_pool = 2;
-}
-
-message MsgUpdatePoolResponse {}
-
 message MsgWhitelist {
   option (cosmos.msg.v1.signer) = "authority";
   option (amino.name) = "leveragelp/MsgWhitelist";
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string whitelisted_address = 2;
 }
 
@@ -112,7 +96,7 @@ message MsgWhitelistResponse {}
 message MsgDewhitelist {
   option (cosmos.msg.v1.signer) = "authority";
   option (amino.name) = "leveragelp/MsgDewhitelist";
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string whitelisted_address = 2;
 }
 
@@ -121,7 +105,7 @@ message MsgDewhitelistResponse {}
 message MsgUpdateStopLoss {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "leveragelp/MsgUpdateStopLoss";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   uint64 position = 2;
   string price = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -133,9 +117,7 @@ message MsgUpdateStopLossResponse {}
 
 message AddPool {
   uint64 amm_pool_id = 1;
-  bool enabled = 2;
-  bool closed = 3;
-  string leverage_max = 4 [
+  string leverage_max = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -144,8 +126,8 @@ message AddPool {
 message MsgAddPool {
   option (cosmos.msg.v1.signer) = "authority";
   option (amino.name) = "leveragelp/MsgAddPool";
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  AddPool pool = 2 [ (gogoproto.nullable) = false ];
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  AddPool pool = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgAddPoolResponse {}
@@ -153,7 +135,7 @@ message MsgAddPoolResponse {}
 message MsgRemovePool {
   option (cosmos.msg.v1.signer) = "authority";
   option (amino.name) = "leveragelp/MsgRemovePool";
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   uint64 id = 2;
 }
 
@@ -162,7 +144,7 @@ message MsgRemovePoolResponse {}
 message MsgClosePositions {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "leveragelp/MsgClosePositions";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   repeated PositionRequest liquidate = 2;
   repeated PositionRequest stop_loss = 3;
 }

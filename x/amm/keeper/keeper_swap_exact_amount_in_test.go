@@ -76,13 +76,13 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 			swapFeeOut:          sdkmath.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uusda", 10000),
 			tokenOutMin:         sdkmath.ZeroInt(),
-			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 9704),
+			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 9802),
 			weightBalanceBonus:  sdkmath.LegacyZeroDec(),
 			isOraclePool:        false,
 			useNewRecipient:     false,
-			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009802)},
 			expRecipientBalance: sdk.Coins{},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990198)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990100)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
 		},
@@ -189,7 +189,7 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 			// bootstrap accounts
 			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			recipient := sender
-			poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			poolAddr := types.NewPoolAddress(uint64(1))
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 			if tc.useNewRecipient {
 				recipient = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())

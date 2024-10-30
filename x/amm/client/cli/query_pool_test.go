@@ -30,6 +30,7 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 		pool := types.Pool{
 			PoolId:      uint64(i),
 			TotalWeight: sdkmath.NewInt(100),
+			Address:     types.NewPoolAddress(uint64(i)).String(),
 			PoolParams: types.PoolParams{
 				SwapFee:                     sdkmath.LegacyZeroDec(),
 				ExitFee:                     sdkmath.LegacyZeroDec(),
@@ -39,6 +40,7 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
+				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 		}

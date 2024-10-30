@@ -86,7 +86,7 @@ func SimulateMsgUpdatePendingSpotOrder(
 	}
 }
 
-func SimulateMsgDeletePendingSpotOrder(
+func SimulateMsgCancelSpotOrders(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,

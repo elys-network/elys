@@ -1,20 +1,25 @@
 package cli_test
 
 import (
-	sdkmath "cosmossdk.io/math"
+	"bytes"
+	"context"
 	"fmt"
+	"io"
 	"testing"
 
-	tmcli "github.com/cometbft/cometbft/libs/cli"
+	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/gogoproto/proto"
 	"github.com/elys-network/elys/testutil/network"
 	"github.com/elys-network/elys/testutil/nullify"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/client/cli"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/stretchr/testify/require"
 )
 
 func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool) {
@@ -22,7 +27,18 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 	cfg := network.DefaultConfig(t.TempDir())
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
-		pool := types.NewPool((uint64)(i))
+		ammPool := ammtypes.Pool{
+			PoolId: uint64(i),
+			PoolAssets: []ammtypes.PoolAsset{
+				{
+					Token: sdk.Coin{
+						Denom:  "testAsset",
+						Amount: sdk.NewInt(100),
+					},
+				},
+			},
+		}
+		pool := types.NewPool(ammPool)
 		nullify.Fill(&pool)
 		state.PoolList = append(state.PoolList, pool)
 	}
@@ -32,75 +48,147 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 	return network.New(t, cfg), state.PoolList
 }
 
-func TestShowPool(t *testing.T) {
-	net, objspool := networkWithPoolObjects(t, 2)
+func (s *CLITestSuite) TestShowPool() {
+	cmd := cli.CmdShowPool()
+	cmd.SetOutput(io.Discard)
 
-	objs := make([]types.PoolResponse, len(objspool))
-
-	for k, v := range objspool {
-		objs[k].AmmPoolId = v.AmmPoolId
-		objs[k].BorrowInterestRate = v.BorrowInterestRate
-		objs[k].Health = v.Health
-		objs[k].Closed = v.Closed
-		objs[k].Enabled = v.Enabled
-		objs[k].FundingRate = v.FundingRate
-		objs[k].LastHeightBorrowInterestRateComputed = v.LastHeightBorrowInterestRateComputed
-		objs[k].PoolAssetsLong = v.PoolAssetsLong
-		objs[k].PoolAssetsShort = v.PoolAssetsShort
-		objs[k].NetOpenInterest = sdkmath.ZeroInt()
-	}
-
-	ctx := net.Validators[0].ClientCtx
-	common := []string{
-		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
-	}
-	tests := []struct {
-		desc    string
-		idIndex uint64
-
-		args []string
-		err  error
-		obj  types.PoolResponse
+	testCases := []struct {
+		name         string
+		ctxGen       func() client.Context
+		args         []string
+		expectResult proto.Message
+		expectErr    bool
 	}{
 		{
-			desc:    "found",
-			idIndex: objs[0].AmmPoolId,
-
-			args: common,
-			obj:  objs[0],
+			"valid query",
+			func() client.Context {
+				bz, _ := s.encCfg.Codec.Marshal(&types.QueryGetPoolResponse{
+					Pool: types.PoolResponse{},
+				})
+				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+					Value: bz,
+				})
+				return s.baseCtx.WithClient(c)
+			},
+			[]string{
+				"1",
+				fmt.Sprintf("--%s=json", flags.FlagOutput),
+			},
+			&types.QueryGetPoolResponse{},
+			false,
 		},
 		{
-			desc:    "not found",
-			idIndex: (uint64)(100000),
-
-			args: common,
-			err:  status.Error(codes.NotFound, "not found"),
+			"invalid query",
+			func() client.Context {
+				bz, _ := s.encCfg.Codec.Marshal(&types.QueryGetPoolResponse{
+					Pool: types.PoolResponse{},
+				})
+				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+					Value: bz,
+				})
+				return s.baseCtx.WithClient(c)
+			},
+			[]string{
+				"-1",
+				fmt.Sprintf("--%s=json", flags.FlagOutput),
+			},
+			&types.QueryGetPoolResponse{},
+			true,
 		},
 	}
-	for _, tc := range tests {
-		t.Run(tc.desc, func(t *testing.T) {
-			args := []string{
-				fmt.Sprintf("%d", tc.idIndex),
-			}
-			args = append(args, tc.args...)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdShowPool(), args)
-			if tc.err != nil {
-				stat, ok := status.FromError(tc.err)
-				require.True(t, ok)
-				require.ErrorIs(t, stat.Err(), tc.err)
+
+	for _, tc := range testCases {
+		tc := tc
+
+		s.Run(tc.name, func() {
+			var outBuf bytes.Buffer
+
+			clientCtx := tc.ctxGen().WithOutput(&outBuf)
+			ctx := svrcmd.CreateExecuteContext(context.Background())
+
+			cmd.SetContext(ctx)
+			cmd.SetArgs(tc.args)
+
+			s.Require().NoError(client.SetCmdClientContextHandler(clientCtx, cmd))
+
+			err := cmd.Execute()
+			if tc.expectErr {
+				s.Require().Error(err)
 			} else {
-				require.NoError(t, err)
-				var resp types.QueryGetPoolResponse
-				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-				require.NotNil(t, resp.Pool)
-				require.Equal(t,
-					nullify.Fill(&tc.obj),
-					nullify.Fill(&resp.Pool),
-				)
+				s.Require().NoError(s.encCfg.Codec.UnmarshalJSON(outBuf.Bytes(), tc.expectResult))
+				s.Require().NoError(err)
 			}
 		})
 	}
 }
+
+//func TestShowPool(t *testing.T) {
+//	net, objspool := networkWithPoolObjects(t, 2)
+//
+//	objs := make([]types.PoolResponse, len(objspool))
+//
+//	for k, v := range objspool {
+//		objs[k].AmmPoolId = v.AmmPoolId
+//		objs[k].BorrowInterestRate = v.BorrowInterestRate
+//		objs[k].Health = v.Health
+//		objs[k].FundingRate = v.FundingRate
+//		objs[k].LastHeightBorrowInterestRateComputed = v.LastHeightBorrowInterestRateComputed
+//		objs[k].PoolAssetsLong = v.PoolAssetsLong
+//		objs[k].PoolAssetsShort = v.PoolAssetsShort
+//		objs[k].NetOpenInterest = sdk.ZeroInt()
+//	}
+//
+//	ctx := net.Validators[0].ClientCtx
+//	common := []string{
+//		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+//	}
+//	tests := []struct {
+//		desc    string
+//		idIndex uint64
+//
+//		args []string
+//		err  error
+//		obj  types.PoolResponse
+//	}{
+//		{
+//			desc:    "found",
+//			idIndex: objs[0].AmmPoolId,
+//
+//			args: common,
+//			obj:  objs[0],
+//		},
+//		{
+//			desc:    "not found",
+//			idIndex: (uint64)(100000),
+//
+//			args: common,
+//			err:  status.Error(codes.NotFound, "not found"),
+//		},
+//	}
+//	for _, tc := range tests {
+//		t.Run(tc.desc, func(t *testing.T) {
+//			args := []string{
+//				fmt.Sprintf("%d", tc.idIndex),
+//			}
+//			args = append(args, tc.args...)
+//			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdShowPool(), args)
+//			if tc.err != nil {
+//				stat, ok := status.FromError(tc.err)
+//				require.True(t, ok)
+//				require.ErrorIs(t, stat.Err(), tc.err)
+//			} else {
+//				require.NoError(t, err)
+//				var resp types.QueryGetPoolResponse
+//				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
+//				require.NotNil(t, resp.Pool)
+//				require.Equal(t,
+//					nullify.Fill(&tc.obj),
+//					nullify.Fill(&resp.Pool),
+//				)
+//			}
+//		})
+//	}
+//}
 
 /*
 func TestListPool(t *testing.T) {

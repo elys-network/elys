@@ -60,12 +60,17 @@ func ApplyDiscount(swapFee sdkmath.LegacyDec, discount sdkmath.LegacyDec) sdkmat
 	return swapFee
 }
 
-func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut sdkmath.LegacyDec, poolParams PoolParams) sdkmath.LegacyDec {
+func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut sdkmath.LegacyDec, poolParams PoolParams, distanceDiff sdk.Dec) sdkmath.LegacyDec {
 	weightBreakingFee := sdkmath.LegacyZeroDec()
 	if !weightOut.IsZero() && !weightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() && !poolParams.WeightBreakingFeeMultiplier.IsZero() {
 		// (45/55*60/40) ^ 2.5
-		weightBreakingFee = poolParams.WeightBreakingFeeMultiplier.
-			Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), poolParams.WeightBreakingFeeExponent))
+		if distanceDiff.IsPositive() {
+			weightBreakingFee = poolParams.WeightBreakingFeeMultiplier.
+				Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), poolParams.WeightBreakingFeeExponent))
+		} else {
+			weightBreakingFee = poolParams.WeightBreakingFeeMultiplier.
+				Mul(Pow(weightOut.Mul(targetWeightIn).Quo(weightIn).Quo(targetWeightOut), poolParams.WeightBreakingFeeExponent))
+		}
 
 		if weightBreakingFee.GT(sdkmath.LegacyNewDecWithPrec(99, 2)) {
 			weightBreakingFee = sdkmath.LegacyNewDecWithPrec(99, 2)

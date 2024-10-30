@@ -144,3 +144,41 @@ func TestGetVestingInfo(t *testing.T) {
 	require.Equal(t, "test", vestingInfo.BaseDenom)
 	require.Equal(t, "test_vesting", vestingInfo.VestingDenom)
 }
+
+// TestKeeper_GetLegacyParams tests the GetLegacyParams and DeleteLegacyParams functions
+func TestKeeper_GetLegacyParams(t *testing.T) {
+	// Create a test context and keeper
+	testapp := app.InitElysTestApp(true)
+
+	ctx := testapp.BaseApp.NewContext(false, tmproto.Header{})
+	k := testapp.CommitmentKeeper
+	require.NotNil(t, k)
+
+	vestingInfos := []*types.VestingInfo{
+		{
+			BaseDenom:      ptypes.Eden,
+			VestingDenom:   ptypes.Elys,
+			NumBlocks:      10,
+			VestNowFactor:  sdk.NewInt(90),
+			NumMaxVestings: 10,
+		},
+	}
+
+	params := types.Params{
+		VestingInfos: vestingInfos,
+	}
+
+	// Set the params
+	k.SetLegacyParams(ctx, params)
+
+	// Get the legacy params
+	legacyParams := k.GetLegacyParams(ctx)
+	require.EqualValues(t, params, legacyParams)
+
+	// Delete the legacy params
+	k.DeleteLegacyParams(ctx)
+
+	// Get the legacy params
+	legacyParams = k.GetLegacyParams(ctx)
+	require.EqualValues(t, types.Params{}, legacyParams)
+}

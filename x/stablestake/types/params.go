@@ -19,6 +19,7 @@ func NewParams(
 	interestRateDecrease math.LegacyDec,
 	healthGainFactor math.LegacyDec,
 	totalValue math.Int,
+	MaxLeveragePercent sdk.Dec,
 ) Params {
 	return Params{
 		DepositDenom:         depositDenom,
@@ -31,23 +32,25 @@ func NewParams(
 		InterestRateDecrease: interestRateDecrease,
 		HealthGainFactor:     healthGainFactor,
 		TotalValue:           totalValue,
+		MaxLeverageRatio:     MaxLeveragePercent,
 	}
 }
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams(
-		"uusdc",                          // deposit denom
-		math.LegacyOneDec(),              // default redemption rate
-		1,                                // epoch length
-		math.LegacyNewDecWithPrec(15, 2), // 15% - default interest
-		math.LegacyNewDecWithPrec(17, 2), // 17% - max
-		math.LegacyNewDecWithPrec(12, 2), // 12% - min
-		math.LegacyNewDecWithPrec(1, 2),  // 1% - interest rate increase
-		math.LegacyNewDecWithPrec(1, 2),  // 1% - interest rate decrease
-		math.LegacyNewDec(1),             // health gain factor
-		math.NewInt(0),                   // total value - 0
-	)
+	return Params{
+		DepositDenom:         "uusdc",
+		RedemptionRate:       math.LegacyOneDec(),
+		EpochLength:          1,
+		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
+		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
+		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
+		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
+		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     math.LegacyOneDec(),
+		TotalValue:           math.ZeroInt(),
+		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+	}
 }
 
 // Validate validates the set of params
@@ -83,12 +86,20 @@ func (p Params) Validate() error {
 	if err := validateTotalValue(p.TotalValue); err != nil {
 		return err
 	}
+	if err := validateMaxLeverageRatio(p.MaxLeverageRatio); err != nil {
+		return err
+	}
 
 	return nil
 }
 
 // String implements the Stringer interface.
 func (p Params) String() string {
+	out, _ := yaml.Marshal(p)
+	return string(out)
+}
+
+func (p LegacyParams) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
 }
@@ -242,6 +253,22 @@ func validateTotalValue(i interface{}) error {
 	}
 	if v.IsNegative() {
 		return fmt.Errorf("total value must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateMaxLeverageRatio(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("max leverage percent must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("max leverage percent must be positive: %s", v)
 	}
 
 	return nil

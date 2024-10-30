@@ -24,7 +24,7 @@ func (k msgServer) BrokerOpen(goCtx context.Context, msg *types.MsgBrokerOpen) (
 		return nil, errors.Wrap(types.ErrUnauthorised, "creator must be broker address")
 	}
 
-	msgOpen := types.NewMsgOpen(msg.Owner, msg.Position, msg.Leverage, msg.TradingAsset, msg.Collateral, msg.TakeProfitPrice, msg.StopLossPrice)
+	msgOpen := types.NewMsgOpen(msg.Owner, msg.Position, msg.Leverage, msg.PoolId, msg.TradingAsset, msg.Collateral, msg.TakeProfitPrice, msg.StopLossPrice)
 
 	return k.Keeper.Open(ctx, msgOpen, true)
 }

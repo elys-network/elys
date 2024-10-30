@@ -214,8 +214,6 @@ func TestMsgWhitelistAddress(t *testing.T) {
 func TestMsgAddPool(t *testing.T) {
 	addPool := types.AddPool{
 		AmmPoolId:   1,
-		Enabled:     false,
-		Closed:      false,
 		LeverageMax: sdkmath.LegacyOneDec().MulInt64(2),
 	}
 	msg := types.NewMsgAddPool(sample.AccAddress(), addPool)

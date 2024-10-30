@@ -30,6 +30,20 @@ func TestPendingSpotOrderForAddress(t *testing.T) {
 		Status:           types.Status_PENDING,
 	}
 
+	order2 := types.SpotOrder{
+		OrderId:      2,
+		OwnerAddress: "valid_address",
+		OrderType:    types.SpotOrderType_LIMITBUY,
+		OrderPrice: &types.OrderPrice{
+			BaseDenom:  "base",
+			QuoteDenom: "quote",
+			Rate:       sdk.NewDec(1),
+		},
+		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
+		OrderTargetDenom: "quote",
+		Status:           types.Status_EXECUTED,
+	}
+
 	tests := []struct {
 		desc     string
 		request  *types.QueryPendingSpotOrderForAddressRequest
@@ -40,6 +54,18 @@ func TestPendingSpotOrderForAddress(t *testing.T) {
 			desc: "valid request",
 			request: &types.QueryPendingSpotOrderForAddressRequest{
 				Address: "valid_address",
+				Status:  types.Status_ALL,
+			},
+			response: &types.QueryPendingSpotOrderForAddressResponse{
+				PendingSpotOrders: []types.SpotOrder{order, order2},
+			},
+			err: nil,
+		},
+		{
+			desc: "valid request",
+			request: &types.QueryPendingSpotOrderForAddressRequest{
+				Address: "valid_address",
+				Status:  types.Status_PENDING,
 			},
 			response: &types.QueryPendingSpotOrderForAddressResponse{
 				PendingSpotOrders: []types.SpotOrder{order},
@@ -53,24 +79,11 @@ func TestPendingSpotOrderForAddress(t *testing.T) {
 		},
 	}
 
+	_ = k.AppendPendingSpotOrder(ctx, order)
+	_ = k.AppendPendingSpotOrder(ctx, order2)
+
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
-			// order := types.PerpetualOrder{
-			// 	OrderId:            0,
-			// 	OwnerAddress:       fmt.Sprintf("address%d", 1),
-			// 	PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-			// 	Position:           types.PerpetualPosition_LONG,
-			// 	TriggerPrice:       &types.OrderPrice{Rate: sdk.NewDec(1), BaseDenom: "base", QuoteDenom: "quote"},
-			// 	Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
-			// 	TradingAsset:       "asset",
-			// 	Leverage:           sdk.NewDec(int64(1)),
-			// 	TakeProfitPrice:    sdk.NewDec(1),
-			// 	PositionId:         uint64(1),
-			// 	Status:             types.Status_PENDING,
-			// 	StopLossPrice:      sdk.NewDec(1),
-			// }
-			// _ = k.AppendPendingPerpetualOrder(ctx, order)
-			_ = k.AppendPendingSpotOrder(ctx, order)
 
 			response, err := k.PendingSpotOrderForAddress(wctx, tc.request)
 			if tc.err != nil {

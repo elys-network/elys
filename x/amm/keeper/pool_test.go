@@ -20,6 +20,7 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 	items := make([]types.Pool, n)
 	for i := range items {
 		items[i].PoolId = uint64(i)
+		items[i].Address = types.NewPoolAddress(uint64(i)).String()
 		items[i].TotalWeight = sdkmath.NewInt(100)
 		items[i].TotalShares = sdk.NewCoin(types.GetPoolShareDenom(uint64(i)), types.OneShare)
 		items[i].PoolParams = types.PoolParams{
@@ -31,6 +32,7 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 			ExternalLiquidityRatio:      sdkmath.LegacyZeroDec(),
 			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
+			WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
 			FeeDenom:                    ptypes.BaseCurrency,
 		}
 

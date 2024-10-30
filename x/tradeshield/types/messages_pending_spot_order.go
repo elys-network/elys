@@ -54,17 +54,17 @@ func (msg *MsgUpdatePendingSpotOrder) ValidateBasic() error {
 	return nil
 }
 
-var _ sdk.Msg = &MsgDeletePendingSpotOrder{}
+var _ sdk.Msg = &MsgCancelSpotOrders{}
 
-func NewMsgDeletePendingSpotOrder(creator string, id uint64) *MsgDeletePendingSpotOrder {
-	return &MsgDeletePendingSpotOrder{
-		OrderId:      id,
-		OwnerAddress: creator,
+func NewMsgCancelSpotOrders(creator string, id []uint64) *MsgCancelSpotOrders {
+	return &MsgCancelSpotOrders{
+		SpotOrderIds: id,
+		Creator:      creator,
 	}
 }
 
-func (msg *MsgDeletePendingSpotOrder) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.OwnerAddress)
+func (msg *MsgCancelSpotOrders) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}

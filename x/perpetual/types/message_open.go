@@ -9,7 +9,7 @@ import (
 
 var _ sdk.Msg = &MsgOpen{}
 
-func NewMsgOpen(creator string, position Position, leverage sdkmath.LegacyDec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdkmath.LegacyDec, stopLossPrice sdkmath.LegacyDec) *MsgOpen {
+func NewMsgOpen(creator string, position Position, leverage sdkmath.LegacyDec, poolId uint64, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdkmath.LegacyDec, stopLossPrice sdkmath.LegacyDec) *MsgOpen {
 	return &MsgOpen{
 		Creator:         creator,
 		Position:        position,
@@ -18,6 +18,7 @@ func NewMsgOpen(creator string, position Position, leverage sdkmath.LegacyDec, t
 		Collateral:      collateral,
 		TakeProfitPrice: takeProfitPrice,
 		StopLossPrice:   stopLossPrice,
+		PoolId:          poolId,
 	}
 }
 
@@ -35,8 +36,8 @@ func (msg *MsgOpen) ValidateBasic() error {
 		return ErrInvalidLeverage
 	}
 
-	if msg.Leverage.IsNegative() {
-		return ErrInvalidLeverage
+	if msg.Leverage.LT(sdk.OneDec()) {
+		return errorsmod.Wrapf(ErrInvalidLeverage, "leverage (%s) cannot be < 1", msg.Leverage.String())
 	}
 
 	if len(msg.TradingAsset) == 0 {
@@ -44,12 +45,18 @@ func (msg *MsgOpen) ValidateBasic() error {
 	}
 
 	if msg.TakeProfitPrice.IsNil() {
-		return ErrInvalidTakeProfitPriceIsNegative
+		return errorsmod.Wrapf(ErrInvalidTakeProfitPrice, "takeProfitPrice cannot be nil")
 	}
 
 	if msg.TakeProfitPrice.IsNegative() {
-		return ErrInvalidTakeProfitPriceIsNegative
+		return errorsmod.Wrapf(ErrInvalidTakeProfitPrice, "takeProfitPrice cannot be negative")
+	}
+	if msg.StopLossPrice.IsNil() {
+		return errorsmod.Wrapf(ErrInvalidPrice, "stopLossPrice cannot be nil")
 	}
 
+	if msg.StopLossPrice.IsNegative() {
+		return errorsmod.Wrapf(ErrInvalidPrice, "stopLossPrice cannot be negative")
+	}
 	return nil
 }

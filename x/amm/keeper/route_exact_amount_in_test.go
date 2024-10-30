@@ -67,10 +67,10 @@ func (suite *KeeperTestSuite) TestRouteExactAmountIn() {
 			swapFeeOut:          sdkmath.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOutMin:         sdkmath.ZeroInt(),
-			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 9704),
+			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 9802),
 			weightBalanceBonus:  sdkmath.LegacyZeroDec(),
-			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990198)},
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009802)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990100)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
 		},
@@ -128,7 +128,7 @@ func (suite *KeeperTestSuite) TestRouteExactAmountIn() {
 
 			// bootstrap accounts
 			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-			poolAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			poolAddr := types.NewPoolAddress(uint64(1))
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 			// bootstrap balances

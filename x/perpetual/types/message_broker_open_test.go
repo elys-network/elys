@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,10 +17,10 @@ func TestNewMsgBrokerOpen(t *testing.T) {
 	got := NewMsgBrokerOpen(
 		accAdress,
 		Position_LONG,
-		sdkmath.LegacyNewDec(200),
+		math.LegacyNewDec(200),
 		"uatom",
-		sdk.NewCoin("uusdc", sdkmath.NewInt(2000)),
-		sdkmath.LegacyNewDec(100),
+		sdk.NewCoin("uusdc", sdk.NewInt(2000)),
+		math.LegacyNewDec(100),
 		owner,
 		sdkmath.LegacyZeroDec(),
 	)
@@ -28,10 +28,10 @@ func TestNewMsgBrokerOpen(t *testing.T) {
 	want := &MsgBrokerOpen{
 		Creator:         accAdress,
 		Position:        Position_LONG,
-		Leverage:        sdkmath.LegacyNewDec(200),
+		Leverage:        math.LegacyNewDec(200),
 		TradingAsset:    "uatom",
-		Collateral:      sdk.NewCoin("uusdc", sdkmath.NewInt(2000)),
-		TakeProfitPrice: sdkmath.LegacyNewDec(100),
+		Collateral:      sdk.NewCoin("uusdc", sdk.NewInt(2000)),
+		TakeProfitPrice: math.LegacyNewDec(100),
 		Owner:           owner,
 		StopLossPrice:   sdkmath.LegacyZeroDec(),
 	}
@@ -90,7 +90,7 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 				Owner:        sample.AccAddress(),
 				Position:     Position_LONG,
 				TradingAsset: "uatom",
-				Leverage:     sdkmath.LegacyNewDec(-200),
+				Leverage:     math.LegacyNewDec(-200),
 			},
 			want: ErrInvalidLeverage,
 		},
@@ -101,7 +101,7 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 				Owner:        sample.AccAddress(),
 				Position:     Position_LONG,
 				TradingAsset: "",
-				Leverage:     sdkmath.LegacyNewDec(200),
+				Leverage:     math.LegacyNewDec(200),
 			},
 			want: ErrTradingAssetIsEmpty,
 		},
@@ -112,9 +112,9 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 				Owner:        sample.AccAddress(),
 				Position:     Position_SHORT,
 				TradingAsset: "uatom",
-				Leverage:     sdkmath.LegacyNewDec(200),
+				Leverage:     math.LegacyNewDec(200),
 			},
-			want: ErrInvalidTakeProfitPriceIsNegative,
+			want: ErrInvalidTakeProfitPrice,
 		},
 		{
 			title: "take profit price is negative",
@@ -123,10 +123,10 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 				Owner:           sample.AccAddress(),
 				Position:        Position_SHORT,
 				TradingAsset:    "uatom",
-				TakeProfitPrice: sdkmath.LegacyNewDec(-10),
-				Leverage:        sdkmath.LegacyNewDec(200),
+				TakeProfitPrice: math.LegacyNewDec(-10),
+				Leverage:        math.LegacyNewDec(200),
 			},
-			want: ErrInvalidTakeProfitPriceIsNegative,
+			want: ErrInvalidTakeProfitPrice,
 		},
 		{
 			title: "successful",
@@ -135,8 +135,8 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 				Owner:           sample.AccAddress(),
 				Position:        Position_LONG,
 				TradingAsset:    "uatom",
-				TakeProfitPrice: sdkmath.LegacyNewDec(10),
-				Leverage:        sdkmath.LegacyNewDec(200),
+				TakeProfitPrice: math.LegacyNewDec(10),
+				Leverage:        math.LegacyNewDec(200),
 			},
 			want: nil,
 		},

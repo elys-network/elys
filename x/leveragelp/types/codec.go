@@ -13,7 +13,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgClose{}, "leveragelp/MsgClose")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "leveragelp/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgAddPool{}, "leveragelp/MsgAddPool")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdatePool{}, "leveragelp/MsgUpdatePool")
 	legacy.RegisterAminoMsg(cdc, &MsgRemovePool{}, "leveragelp/MsgRemovePool")
 	legacy.RegisterAminoMsg(cdc, &MsgWhitelist{}, "leveragelp/MsgWhitelist")
 	legacy.RegisterAminoMsg(cdc, &MsgDewhitelist{}, "leveragelp/MsgDewhitelist")
@@ -30,7 +29,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgClose{},
 		&MsgUpdateParams{},
 		&MsgAddPool{},
-		&MsgUpdatePool{},
 		&MsgRemovePool{},
 		&MsgWhitelist{},
 		&MsgDewhitelist{},

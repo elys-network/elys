@@ -124,7 +124,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			inTokenDenom:           ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0.000010009437463773"),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0.000831185594279234"),
 			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 100134830),
 			expErr:                 false,
 		},
@@ -211,6 +211,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 					ThresholdWeightDifference:   tc.thresholdWeightDiff,
 					WeightBreakingFeeMultiplier: sdkmath.LegacyNewDecWithPrec(2, 4),  // 0.02%
 					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(50, 2),           // 50%
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets:  tc.poolAssets,
