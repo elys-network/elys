@@ -3,6 +3,7 @@ package types
 import (
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
@@ -23,7 +24,15 @@ func TestMsgCreatePerpetualOpenOrder_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgCreatePerpetualOpenOrder{
-				OwnerAddress: sample.AccAddress(),
+				OwnerAddress:    sample.AccAddress(),
+				TriggerPrice:    &TriggerPrice{Rate: sdk.NewDec(100), TradingAssetDenom: "base"},
+				Collateral:      sdk.NewCoin("token", sdk.NewInt(1000)),
+				TradingAsset:    "asset",
+				Position:        PerpetualPosition_LONG,
+				Leverage:        sdk.NewDec(2),
+				TakeProfitPrice: sdk.NewDec(150),
+				StopLossPrice:   sdk.NewDec(90),
+				PoolId:          1,
 			},
 		},
 	}
@@ -55,6 +64,8 @@ func TestMsgCreatePerpetualCloseOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCreatePerpetualCloseOrder{
 				OwnerAddress: sample.AccAddress(),
+				TriggerPrice: &TriggerPrice{Rate: sdk.NewDec(100), TradingAssetDenom: "base"},
+				PositionId:   1,
 			},
 		},
 	}
@@ -86,6 +97,8 @@ func TestMsgUpdatePerpetualOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgUpdatePerpetualOrder{
 				OwnerAddress: sample.AccAddress(),
+				TriggerPrice: &TriggerPrice{Rate: sdk.NewDec(100), TradingAssetDenom: "base"},
+				OrderId:      1,
 			},
 		},
 	}
@@ -117,6 +130,7 @@ func TestMsgCancelPerpetualOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCancelPerpetualOrder{
 				OwnerAddress: sample.AccAddress(),
+				OrderId:      1,
 			},
 		},
 	}
@@ -148,6 +162,7 @@ func TestMsgCancelPerpetualOrders_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCancelPerpetualOrders{
 				OwnerAddress: sample.AccAddress(),
+				OrderIds:     []uint64{1},
 			},
 		},
 	}
