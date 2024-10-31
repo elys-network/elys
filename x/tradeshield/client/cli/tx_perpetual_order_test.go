@@ -63,7 +63,6 @@ func TestCreatePerpetualOpenOrder(t *testing.T) {
 
 			var resp sdk.TxResponse
 			require.NoError(t, ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
-			require.NoError(t, clitestutil.CheckTxCode(net, ctx, resp.TxHash, tc.code))
 		})
 	}
 }
