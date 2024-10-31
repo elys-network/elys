@@ -22,7 +22,7 @@ func createNPendingPerpetualOrder(keeper *keeper.Keeper, ctx sdk.Context, n int)
 			OwnerAddress:       fmt.Sprintf("address%d", i),
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
-			TriggerPrice:       &types.OrderPrice{Rate: sdk.NewDec(1), BaseDenom: "base", QuoteDenom: "quote"},
+			TriggerPrice:       &types.TriggerPrice{Rate: sdk.NewDec(1), TradingAssetDenom: "base"},
 			Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
 			TradingAsset:       "asset",
 			Leverage:           sdk.NewDec(int64(i)),
@@ -30,10 +30,6 @@ func createNPendingPerpetualOrder(keeper *keeper.Keeper, ctx sdk.Context, n int)
 			PositionId:         uint64(i),
 			Status:             types.Status_PENDING,
 			StopLossPrice:      sdk.NewDec(1),
-			PositionSize:       sdk.NewCoin("denom", sdk.NewInt(10)),
-			LiquidationPrice:   sdk.NewDec(1),
-			FundingRate:        sdk.NewDec(1),
-			BorrowInterestRate: sdk.NewDec(1),
 		}
 		items[i].OrderId = keeper.AppendPendingPerpetualOrder(ctx, items[i])
 	}
@@ -87,11 +83,7 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		OwnerAddress:       "address",
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
-		},
+		TriggerPrice:       &types.TriggerPrice{Rate: sdk.NewDec(1), TradingAssetDenom: "base"},
 	})
 
 	order, _ := keeper.GetPendingPerpetualOrder(ctx, 1)
@@ -109,10 +101,9 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		OwnerAddress:       "address1",
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(20),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(20),
 		},
 	})
 
@@ -120,10 +111,9 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		OwnerAddress:       "address2",
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(5),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(5),
 		},
 	})
 
@@ -131,10 +121,9 @@ func TestSortedPerpetualOrder(t *testing.T) {
 		OwnerAddress:       "address3",
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(25),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(25),
 		},
 	})
 
@@ -171,12 +160,12 @@ func TestSortedPerpetualOrder(t *testing.T) {
 
 // TestExecuteLimitOpenOrder
 func TestExecuteLimitOpenOrder(t *testing.T) {
-	keeper, ctx, _, tierKeeper, perpetualKeeper := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
 
 	address := sdk.AccAddress([]byte("address"))
+	// Set up the mock to expect the GetAssetPrice call and specify the return values
+	perpetualKeeper.On("GetAssetPrice", ctx, "quote").Return(sdk.OneDec(), nil)
 
-	tierKeeper.On("CalculateUSDValue", ctx, "base", sdk.NewInt(1)).Return(sdk.NewDec(1))
-	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdk.NewInt(1)).Return(sdk.NewDec(1))
 	perpetualKeeper.On("Open", ctx, &perpetualtypes.MsgOpen{
 		Creator:         address.String(),
 		Position:        perpetualtypes.Position_LONG,
@@ -191,10 +180,9 @@ func TestExecuteLimitOpenOrder(t *testing.T) {
 		OwnerAddress:       address.String(),
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.MustNewDecFromStr("10"),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.MustNewDecFromStr("10"),
 		},
 		Position:        types.PerpetualPosition_LONG,
 		Collateral:      sdk.Coin{Denom: "base", Amount: sdk.NewInt(10)},
@@ -215,12 +203,12 @@ func TestExecuteLimitOpenOrder(t *testing.T) {
 
 // TestExecuteLimitCloseOrder
 func TestExecuteLimitCloseOrder(t *testing.T) {
-	keeper, ctx, _, tierKeeper, perpetualKeeper := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
 
 	address := sdk.AccAddress([]byte("address"))
 
-	tierKeeper.On("CalculateUSDValue", ctx, "base", sdk.NewInt(1)).Return(sdk.NewDec(1))
-	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdk.NewInt(1)).Return(sdk.NewDec(1))
+	// Set up the mock to expect the GetAssetPrice call and specify the return values
+	perpetualKeeper.On("GetAssetPrice", ctx, "quote").Return(sdk.OneDec(), nil)
 	perpetualKeeper.On("Close", ctx, &perpetualtypes.MsgClose{
 		Creator: address.String(),
 		Id:      1,
@@ -231,13 +219,13 @@ func TestExecuteLimitCloseOrder(t *testing.T) {
 		OwnerAddress:       address.String(),
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(0),
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(0),
 		},
-		Position:   types.PerpetualPosition_LONG,
-		PositionId: 1,
+		TradingAsset: "quote",
+		Position:     types.PerpetualPosition_LONG,
+		PositionId:   1,
 	})
 
 	order, _ := keeper.GetPendingPerpetualOrder(ctx, 1)
@@ -268,11 +256,10 @@ func TestExecuteMarketOpenOrder(t *testing.T) {
 	keeper.AppendPendingPerpetualOrder(ctx, types.PerpetualOrder{
 		OwnerAddress:       address.String(),
 		OrderId:            0,
-		PerpetualOrderType: types.PerpetualOrderType_MARKETOPEN,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(1),
 		},
 		Position:        types.PerpetualPosition_LONG,
 		Collateral:      sdk.Coin{Denom: "base", Amount: sdk.NewInt(10)},
@@ -306,11 +293,10 @@ func TestExecuteMarketCloseOrder(t *testing.T) {
 	keeper.AppendPendingPerpetualOrder(ctx, types.PerpetualOrder{
 		OwnerAddress:       address.String(),
 		OrderId:            0,
-		PerpetualOrderType: types.PerpetualOrderType_MARKETCLOSE,
-		TriggerPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
+		TriggerPrice: &types.TriggerPrice{
+			TradingAssetDenom: "base",
+			Rate:              sdk.NewDec(1),
 		},
 		Position:   types.PerpetualPosition_LONG,
 		PositionId: 1,

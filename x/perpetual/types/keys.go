@@ -30,10 +30,12 @@ const MaxPageLimit = 100
 
 const (
 	InfinitePriceString = "infinite"
+	ZeroPriceString     = "zero"
 )
 
 var (
 	TakeProfitPriceDefault = sdk.MustNewDecFromStr("10000000000000000000000000000000000000000") // 10^40
+	StopLossPriceDefault   = sdk.ZeroDec()
 )
 
 var (

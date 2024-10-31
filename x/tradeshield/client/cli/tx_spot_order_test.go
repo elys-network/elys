@@ -20,7 +20,7 @@ func TestCancelSpotOrders(t *testing.T) {
 	require.NoError(t, err)
 	defer os.Remove(tmpFile.Name())
 
-	validIds := []uint64{}
+	validIds := []uint64{1}
 	validJson, err := json.Marshal(validIds)
 	require.NoError(t, err)
 	_, err = tmpFile.Write(validJson)

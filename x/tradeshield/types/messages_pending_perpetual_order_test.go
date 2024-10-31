@@ -3,27 +3,36 @@ package types
 import (
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgCreatePendingPerpetualOrder_ValidateBasic(t *testing.T) {
+func TestMsgCreatePerpetualOpenOrder_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCreatePendingPerpetualOrder
+		msg  MsgCreatePerpetualOpenOrder
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCreatePendingPerpetualOrder{
+			msg: MsgCreatePerpetualOpenOrder{
 				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgCreatePendingPerpetualOrder{
-				OwnerAddress: sample.AccAddress(),
+			msg: MsgCreatePerpetualOpenOrder{
+				OwnerAddress:    sample.AccAddress(),
+				TriggerPrice:    &TriggerPrice{Rate: sdk.NewDec(100), TradingAssetDenom: "base"},
+				Collateral:      sdk.NewCoin("token", sdk.NewInt(1000)),
+				TradingAsset:    "asset",
+				Position:        PerpetualPosition_LONG,
+				Leverage:        sdk.NewDec(2),
+				TakeProfitPrice: sdk.NewDec(150),
+				StopLossPrice:   sdk.NewDec(90),
+				PoolId:          1,
 			},
 		},
 	}
@@ -39,22 +48,89 @@ func TestMsgCreatePendingPerpetualOrder_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgUpdatePendingPerpetualOrder_ValidateBasic(t *testing.T) {
+func TestMsgCreatePerpetualCloseOrder_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgUpdatePendingPerpetualOrder
+		msg  MsgCreatePerpetualCloseOrder
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgUpdatePendingPerpetualOrder{
+			msg: MsgCreatePerpetualCloseOrder{
 				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgUpdatePendingPerpetualOrder{
+			msg: MsgCreatePerpetualCloseOrder{
 				OwnerAddress: sample.AccAddress(),
+				TriggerPrice: &TriggerPrice{Rate: sdk.NewDec(100), TradingAssetDenom: "base"},
+				PositionId:   1,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.msg.ValidateBasic()
+			if tt.err != nil {
+				require.ErrorIs(t, err, tt.err)
+				return
+			}
+			require.NoError(t, err)
+		})
+	}
+}
+
+func TestMsgUpdatePerpetualOrder_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name string
+		msg  MsgUpdatePerpetualOrder
+		err  error
+	}{
+		{
+			name: "invalid address",
+			msg: MsgUpdatePerpetualOrder{
+				OwnerAddress: "invalid_address",
+			},
+			err: sdkerrors.ErrInvalidAddress,
+		}, {
+			name: "valid address",
+			msg: MsgUpdatePerpetualOrder{
+				OwnerAddress: sample.AccAddress(),
+				TriggerPrice: &TriggerPrice{Rate: sdk.NewDec(100), TradingAssetDenom: "base"},
+				OrderId:      1,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.msg.ValidateBasic()
+			if tt.err != nil {
+				require.ErrorIs(t, err, tt.err)
+				return
+			}
+			require.NoError(t, err)
+		})
+	}
+}
+
+func TestMsgCancelPerpetualOrder_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name string
+		msg  MsgCancelPerpetualOrder
+		err  error
+	}{
+		{
+			name: "invalid address",
+			msg: MsgCancelPerpetualOrder{
+				OwnerAddress: "invalid_address",
+			},
+			err: sdkerrors.ErrInvalidAddress,
+		}, {
+			name: "valid address",
+			msg: MsgCancelPerpetualOrder{
+				OwnerAddress: sample.AccAddress(),
+				OrderId:      1,
 			},
 		},
 	}
@@ -86,6 +162,7 @@ func TestMsgCancelPerpetualOrders_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCancelPerpetualOrders{
 				OwnerAddress: sample.AccAddress(),
+				OrderIds:     []uint64{1},
 			},
 		},
 	}
