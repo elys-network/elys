@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/elys-network/elys/x/leveragelp/keeper"
 	"time"
 
 	"cosmossdk.io/math"
@@ -57,9 +59,17 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 		},
 	}
 	poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, &msgCreatePool)
-	if err != nil {
-		panic(err)
+	suite.Require().NoError(err)
+	enablePoolMsg := types.MsgAddPool{
+		Authority: authtypes.NewModuleAddress("gov").String(),
+		Pool: types.AddPool{
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyNewDec(10),
+		},
 	}
+	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
+	_, err = msgServer.AddPool(suite.ctx, &enablePoolMsg)
+	suite.Require().NoError(err)
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, math.LegacyMustNewDecFromStr("10")))
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
@@ -266,7 +276,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			},
 			func() {
 				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
-				actualShares, ok := sdk.NewIntFromString("9999952380952380950")
+				actualShares, ok := sdk.NewIntFromString("9995950947287941390")
 				suite.Require().True(ok)
 				suite.Require().Equal(position.LeveragedLpAmount, actualShares)
 			},

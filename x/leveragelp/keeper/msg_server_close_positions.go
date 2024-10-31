@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	errorsmod "cosmossdk.io/errors"
 	"fmt"
 	"strings"
 
@@ -34,6 +35,20 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 			// Add log about error or not liquidated
 			liqLog = append(liqLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
 		}
+
+		if k.hooks != nil {
+			// ammPool will have updated values for opening position
+			found := false
+			ammPool, found = k.amm.GetPool(ctx, position.AmmPoolId)
+			if !found {
+				return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", position.AmmPoolId))
+			}
+			err = k.hooks.AfterLeverageLpPositionClose(ctx, position.GetOwnerAddress(), ammPool)
+			if err != nil {
+				return nil, err
+			}
+		}
+
 	}
 
 	// Handle stop loss
@@ -57,12 +72,18 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 			// Add log about error or not closed
 			closeLog = append(closeLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
 		}
-	}
 
-	if k.hooks != nil {
-		err := k.hooks.AfterLeverageLpPositionClose(ctx, sdk.MustAccAddressFromBech32(msg.Creator))
-		if err != nil {
-			return nil, err
+		if k.hooks != nil {
+			// ammPool will have updated values for opening position
+			found := false
+			ammPool, found = k.amm.GetPool(ctx, position.AmmPoolId)
+			if !found {
+				return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", position.AmmPoolId))
+			}
+			err = k.hooks.AfterLeverageLpPositionClose(ctx, position.GetOwnerAddress(), ammPool)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 

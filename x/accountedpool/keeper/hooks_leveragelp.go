@@ -76,14 +76,14 @@ func (h LeverageLpHooks) AfterDisablingPool(ctx sdk.Context, ammPool ammtypes.Po
 	return h.k.OnLeverageLpPoolDisable(ctx, ammPool)
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk.AccAddress) error {
+func (h LeverageLpHooks) AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) error {
 	return nil
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, sender sdk.AccAddress) error {
+func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) error {
 	return nil
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, sender sdk.AccAddress) error {
+func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) error {
 	return nil
 }
