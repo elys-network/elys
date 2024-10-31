@@ -3,6 +3,7 @@ package types
 import (
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
@@ -24,6 +25,14 @@ func TestMsgCreateSpotOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCreateSpotOrder{
 				OwnerAddress: sample.AccAddress(),
+				OrderPrice: &OrderPrice{
+					BaseDenom:  "base_denom",
+					QuoteDenom: "quote_denom",
+					Rate:       sdk.OneDec(),
+				},
+				OrderType:        SpotOrderType_LIMITBUY,
+				OrderAmount:      &sdk.Coin{Denom: "base", Amount: sdk.OneInt()},
+				OrderTargetDenom: "base_denom",
 			},
 		},
 	}
@@ -55,6 +64,12 @@ func TestMsgUpdateSpotOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgUpdateSpotOrder{
 				OwnerAddress: sample.AccAddress(),
+				OrderId:      1,
+				OrderPrice: &OrderPrice{
+					BaseDenom:  "base_denom",
+					QuoteDenom: "quote_denom",
+					Rate:       sdk.OneDec(),
+				},
 			},
 		},
 	}
@@ -116,7 +131,8 @@ func TestMsgCancelSpotOrders_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgCancelSpotOrders{
-				Creator: sample.AccAddress(),
+				Creator:      sample.AccAddress(),
+				SpotOrderIds: []uint64{1},
 			},
 		},
 	}
