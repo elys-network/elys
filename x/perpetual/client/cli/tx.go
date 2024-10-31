@@ -12,6 +12,7 @@ import (
 const (
 	FlagDiscount        = "discount"
 	FlagTakeProfitPrice = "take-profit"
+	FlagStopLossPrice   = "stop-loss"
 )
 
 // GetTxCmd returns the transaction commands for this module

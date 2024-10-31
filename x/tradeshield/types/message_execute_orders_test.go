@@ -23,7 +23,9 @@ func TestMsgExecuteOrders_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgExecuteOrders{
-				Creator: sample.AccAddress(),
+				Creator:           sample.AccAddress(),
+				SpotOrderIds:      []uint64{1},
+				PerpetualOrderIds: []uint64{1},
 			},
 		},
 	}

@@ -13,27 +13,35 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgCreatePendingSpotOrder{}, "tradeshield/CreatePendingSpotOrder")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdatePendingSpotOrder{}, "tradeshield/UpdatePendingSpotOrder")
-	legacy.RegisterAminoMsg(cdc, &MsgCreatePendingPerpetualOrder{}, "tradeshield/CreatePendingPerpetualOrder")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdatePendingPerpetualOrder{}, "tradeshield/UpdatePendingPerpetualOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateSpotOrder{}, "tradeshield/CreateSpotOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateSpotOrder{}, "tradeshield/UpdateSpotOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelSpotOrder{}, "tradeshield/CancelSpotOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelSpotOrders{}, "tradeshield/CancelSpotOrders")
+
+	legacy.RegisterAminoMsg(cdc, &MsgCreatePerpetualOpenOrder{}, "tradeshield/CreatePerpetualOpenOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgCreatePerpetualCloseOrder{}, "tradeshield/CreatePerpetualCloseOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePerpetualOrder{}, "tradeshield/UpdatePerpetualOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelPerpetualOrder{}, "tradeshield/CancelPerpetualOrder")
 	legacy.RegisterAminoMsg(cdc, &MsgCancelPerpetualOrders{}, "tradeshield/CancelPerpetualOrders")
+
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "tradeshield/UpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgExecuteOrders{}, "tradeshield/ExecuteOrders")
-	legacy.RegisterAminoMsg(cdc, &MsgCancelSpotOrders{}, "tradeshield/CancelSpotOrders")
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreatePendingSpotOrder{},
-		&MsgUpdatePendingSpotOrder{},
+		&MsgCreateSpotOrder{},
+		&MsgUpdateSpotOrder{},
+		&MsgCancelSpotOrder{},
 		&MsgCancelSpotOrders{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreatePendingPerpetualOrder{},
-		&MsgUpdatePendingPerpetualOrder{},
+
+		&MsgCreatePerpetualOpenOrder{},
+		&MsgCreatePerpetualCloseOrder{},
+		&MsgUpdatePerpetualOrder{},
+		&MsgCancelPerpetualOrder{},
 		&MsgCancelPerpetualOrders{},
+
 		&MsgUpdateParams{},
 		&MsgExecuteOrders{},
 	)
