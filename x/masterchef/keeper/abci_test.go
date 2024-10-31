@@ -10,6 +10,7 @@ import (
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	perptypes "github.com/elys-network/elys/x/perpetual/types"
 
@@ -344,4 +345,152 @@ func TestCollectPerpRevenue(t *testing.T) {
 
 	// It should be 1950=3000*0.65 usdc
 	require.Equal(t, fees, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdk.NewInt(1800))})
+}
+
+func TestExternalRewardsDistribution(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+
+	mk, bk, amm, oracle := app.MasterchefKeeper, app.BankKeeper, app.AmmKeeper, app.OracleKeeper
+
+	// Setup coin prices
+	SetupStableCoinPrices(ctx, oracle)
+
+	// Generate 1 random account with 1000stake balanced
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+
+	// Create 2 pools
+
+	// #######################
+	// ####### POOL 1 ########
+	// Mint 100000USDC
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
+
+	err := bk.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
+	require.NoError(t, err)
+	err = bk.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
+	require.NoError(t, err)
+
+	poolAssets := []ammtypes.PoolAsset{
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
+		},
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+		},
+	}
+
+	argSwapFee := sdk.MustNewDecFromStr("0.1")
+	argExitFee := sdk.MustNewDecFromStr("0.1")
+
+	poolParams := &ammtypes.PoolParams{
+		SwapFee: argSwapFee,
+		ExitFee: argExitFee,
+	}
+
+	msg := ammtypes.NewMsgCreatePool(
+		addr[0].String(),
+		poolParams,
+		poolAssets,
+	)
+
+	// Create a Elys+USDC pool
+	poolId, err := amm.CreatePool(ctx, msg)
+	require.NoError(t, err)
+	require.Equal(t, poolId, uint64(1))
+
+	// ####### POOL 2 ########
+	// ATOM+USDC pool
+	// Mint uusdc
+	usdcToken = sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(200000)))
+
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[1], usdcToken)
+	require.NoError(t, err)
+
+	// Mint uatom
+	atomToken := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(200000)))
+	err = bk.MintCoins(ctx, ammtypes.ModuleName, atomToken)
+	require.NoError(t, err)
+	err = bk.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[1], atomToken)
+	require.NoError(t, err)
+
+	poolAssets2 := []ammtypes.PoolAsset{
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(150000)),
+		},
+		{
+			Weight: sdk.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+		},
+	}
+
+	msg = ammtypes.NewMsgCreatePool(
+		addr[1].String(),
+		poolParams,
+		poolAssets2,
+	)
+
+	// Create a ATOM+USDC pool
+	poolId, err = amm.CreatePool(ctx, msg)
+	require.NoError(t, err)
+	require.Equal(t, poolId, uint64(2))
+
+	pools := amm.GetAllPool(ctx)
+
+	// check length of pools
+	require.Equal(t, len(pools), 2)
+
+	externalIncentive := types.ExternalIncentive{
+		Id:             0,
+		RewardDenom:    "reward1",
+		PoolId:         1,
+		FromBlock:      ctx.BlockHeight() - 1,
+		ToBlock:        ctx.BlockHeight() + 101,
+		AmountPerBlock: sdk.OneInt(),
+		Apr:            sdk.ZeroDec(),
+	}
+
+	mk.SetExternalIncentive(ctx, externalIncentive)
+
+	_, found := mk.GetPoolRewardInfo(ctx, externalIncentive.PoolId, externalIncentive.RewardDenom)
+	require.False(t, found)
+
+	mk.ProcessExternalRewardsDistribution(ctx)
+
+	pool, found := mk.GetPoolInfo(ctx, externalIncentive.PoolId)
+	require.True(t, found)
+	require.Equal(t, pool.ExternalRewardDenoms, []string{"reward1"})
+
+	rewardInfo, found := mk.GetPoolRewardInfo(ctx, externalIncentive.PoolId, externalIncentive.RewardDenom)
+	require.True(t, found)
+	require.Equal(t, rewardInfo.RewardDenom, externalIncentive.RewardDenom)
+	require.Equal(t, rewardInfo.PoolAccRewardPerShare, sdk.MustNewDecFromStr("0.000099900099900099"))
+
+	// Test multiple external incentives
+	externalIncentive2 := types.ExternalIncentive{
+		Id:             0,
+		RewardDenom:    "reward2",
+		PoolId:         1,
+		FromBlock:      ctx.BlockHeight() - 1,
+		ToBlock:        ctx.BlockHeight() + 101,
+		AmountPerBlock: sdk.OneInt(),
+		Apr:            sdk.ZeroDec(),
+	}
+	mk.SetExternalIncentive(ctx, externalIncentive2)
+
+	mk.ProcessExternalRewardsDistribution(ctx)
+
+	pool, found = mk.GetPoolInfo(ctx, externalIncentive.PoolId)
+	require.True(t, found)
+	require.Equal(t, pool.ExternalRewardDenoms, []string{"reward1", "reward2"})
+
+	rewardInfo, found = mk.GetPoolRewardInfo(ctx, externalIncentive2.PoolId, externalIncentive2.RewardDenom)
+	require.True(t, found)
+	require.Equal(t, rewardInfo.RewardDenom, externalIncentive2.RewardDenom)
+	require.Equal(t, rewardInfo.PoolAccRewardPerShare, sdk.MustNewDecFromStr("0.000099900099900099"))
 }
