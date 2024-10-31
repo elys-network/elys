@@ -101,6 +101,7 @@ func TestMsgCancelSpotOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCancelSpotOrder{
 				OwnerAddress: sample.AccAddress(),
+				OrderId:      1,
 			},
 		},
 	}
