@@ -210,6 +210,25 @@ func simulationModules(
 		ibc.NewAppModule(app.IBCKeeper),
 		transfer.NewAppModule(app.TransferKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
+
+		epochsmodule.NewAppModule(appCodec, *app.EpochsKeeper),
+		assetprofilemodule.NewAppModule(appCodec, app.AssetprofileKeeper, app.AccountKeeper, app.BankKeeper),
+		oraclemodule.NewAppModule(appCodec, app.OracleKeeper, app.AccountKeeper, app.BankKeeper),
+		commitmentmodule.NewAppModule(appCodec, *app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper),
+		tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper),
+		burnermodule.NewAppModule(appCodec, app.BurnerKeeper, app.AccountKeeper, app.BankKeeper),
+		ammmodule.NewAppModule(appCodec, *app.AmmKeeper, app.AccountKeeper, app.BankKeeper),
+		parametermodule.NewAppModule(appCodec, app.ParameterKeeper, app.AccountKeeper, app.BankKeeper),
+		stablestake.NewAppModule(appCodec, *app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper),
+		accountedpoolmodule.NewAppModule(appCodec, app.AccountedPoolKeeper, app.AccountKeeper, app.BankKeeper),
+		//transferhook.NewAppModule(appCodec, app.TransferhookKeeper),
+		//clockmodule.NewAppModule(appCodec, app.ClockKeeper),
+		leveragelpmodule.NewAppModule(appCodec, *app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper),
+		masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper),
+		estakingmodule.NewAppModule(appCodec, *app.EstakingKeeper, app.AccountKeeper, app.BankKeeper),
+		perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper),
+		tiermodule.NewAppModule(appCodec, app.TierKeeper, app.AccountKeeper, app.BankKeeper),
+		tradeshieldmodule.NewAppModule(appCodec, app.TradeshieldKeeper, app.AccountKeeper, app.BankKeeper),
 	}
 }
 
@@ -344,7 +363,6 @@ func orderInitBlockers() []string {
 		stablestaketypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
-		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
@@ -373,5 +391,8 @@ func orderInitBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+		// crisis needs to be last so that the genesis state is consistent
+		// when it checks invariants
+		crisistypes.ModuleName,
 	}
 }

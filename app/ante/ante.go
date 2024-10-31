@@ -16,27 +16,21 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	if options.AccountKeeper == nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "account keeper is required for AnteHandler")
 	}
-
 	if options.BankKeeper == nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "bank keeper is required for AnteHandler")
 	}
-
 	if options.SignModeHandler == nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "sign mode handler is required for AnteHandler")
 	}
-
 	if options.WasmConfig == nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "wasm config is required for AnteHandler")
 	}
-
 	if options.FeegrantKeeper == nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "feegrant keeper is required for AnteHandler")
 	}
-
 	if options.IBCKeeper == nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "IBC keeper is required for AnteHandler")
 	}
-
 	if options.StakingKeeper == nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrNotFound, "staking param store is required for AnteHandler")
 	}
