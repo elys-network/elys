@@ -135,7 +135,7 @@ func (s *CLITestSuite) TestShowPool() {
 //		objs[k].LastHeightBorrowInterestRateComputed = v.LastHeightBorrowInterestRateComputed
 //		objs[k].PoolAssetsLong = v.PoolAssetsLong
 //		objs[k].PoolAssetsShort = v.PoolAssetsShort
-//		objs[k].NetOpenInterest = sdk.ZeroInt()
+//		objs[k].NetOpenInterest = math.ZeroInt()
 //	}
 //
 //	ctx := net.Validators[0].ClientCtx

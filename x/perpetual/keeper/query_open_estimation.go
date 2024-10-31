@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	sdkmath "cosmossdk.io/math"
-
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -89,7 +87,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	}
 	mtp := types.NewMTP(ctx, "", req.Collateral.Denom, req.TradingAsset, liabilitiesAsset, custodyAsset, req.Position, req.TakeProfitPrice, req.PoolId)
 
-	blocksPerYear := sdk.NewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
+	blocksPerYear := math.LegacyNewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 	avgBlockTime := blocksPerYear.Quo(math.LegacyNewDec(86400 * 365)).TruncateInt().Uint64()
 	mtp.LastInterestCalcBlock = uint64(ctx.BlockHeight()) - 1
 	mtp.LastInterestCalcTime = uint64(ctx.BlockTime().Unix()) - avgBlockTime

@@ -70,21 +70,21 @@ message QueryParamsRequest {}
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryBandPriceRequest {int64 request_id = 1;}
+message QueryBandPriceRequest { int64 request_id = 1; }
 
-message QueryBandPriceResponse {BandPriceResult result = 1;}
+message QueryBandPriceResponse { BandPriceResult result = 1; }
 
 message QueryLastBandRequestIdRequest {}
 
-message QueryLastBandRequestIdResponse {int64 request_id = 1;}
+message QueryLastBandRequestIdResponse { int64 request_id = 1; }
 
-message QueryGetAssetInfoRequest {string denom = 1;}
+message QueryGetAssetInfoRequest { string denom = 1; }
 
 message QueryGetAssetInfoResponse {
-  AssetInfo asset_info = 1 [(gogoproto.nullable) = false];
+  AssetInfo asset_info = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllAssetInfoRequest {
@@ -92,7 +92,7 @@ message QueryAllAssetInfoRequest {
 }
 
 message QueryAllAssetInfoResponse {
-  repeated AssetInfo asset_info = 1 [(gogoproto.nullable) = false];
+  repeated AssetInfo asset_info = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -103,7 +103,7 @@ message QueryGetPriceRequest {
 }
 
 message QueryGetPriceResponse {
-  Price price = 1 [(gogoproto.nullable) = false];
+  Price price = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllPriceRequest {
@@ -111,16 +111,16 @@ message QueryAllPriceRequest {
 }
 
 message QueryAllPriceResponse {
-  repeated Price price = 1 [(gogoproto.nullable) = false];
+  repeated Price price = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryGetPriceFeederRequest {
-  string feeder = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string feeder = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message QueryGetPriceFeederResponse {
-  PriceFeeder price_feeder = 1 [(gogoproto.nullable) = false];
+  PriceFeeder price_feeder = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllPriceFeederRequest {
@@ -128,7 +128,7 @@ message QueryAllPriceFeederRequest {
 }
 
 message QueryAllPriceFeederResponse {
-  repeated PriceFeeder price_feeder = 1 [(gogoproto.nullable) = false];
+  repeated PriceFeeder price_feeder = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

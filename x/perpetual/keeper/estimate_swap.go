@@ -15,11 +15,11 @@ func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tok
 	tokensIn := sdk.Coins{tokenInAmount}
 	tokenOut, slippage, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee)
 	if err != nil {
-		return sdkmath.ZeroInt(), math.LegacyZeroDec(), err
+		return math.ZeroInt(), math.LegacyZeroDec(), err
 	}
 
 	if tokenOut.IsZero() {
-		return sdkmath.ZeroInt(), math.LegacyZeroDec(), types.ErrAmountTooLow
+		return math.ZeroInt(), math.LegacyZeroDec(), types.ErrAmountTooLow
 	}
 	return tokenOut.Amount, slippage, nil
 }
@@ -32,11 +32,11 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
 	tokenIn, slippage, _, _, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, perpetualSwapFee)
 	if err != nil {
-		return sdk.ZeroInt(), math.LegacyZeroDec(), err
+		return math.ZeroInt(), math.LegacyZeroDec(), err
 	}
 
 	if tokenIn.IsZero() {
-		return sdk.ZeroInt(), math.LegacyZeroDec(), types.ErrAmountTooLow
+		return math.ZeroInt(), math.LegacyZeroDec(), types.ErrAmountTooLow
 	}
 	return tokenIn.Amount, slippage, nil
 }

@@ -101,15 +101,15 @@ func (k Keeper) UpdatePoolForSwap(
 	}
 	err = k.RecordTotalLiquidityIncrease(ctx, tokensIn)
 	if err != nil {
-		return math.Int{}, err
+		return sdkmath.Int{}, err
 	}
 	err = k.RecordTotalLiquidityDecrease(ctx, tokensOut)
 	if err != nil {
-		return math.Int{}, err
+		return sdkmath.Int{}, err
 	}
 	err = k.RecordTotalLiquidityDecrease(ctx, swapFeeCoins)
 	if err != nil {
-		return math.Int{}, err
+		return sdkmath.Int{}, err
 	}
 
 	return swapFeeOutCoins.AmountOf(tokenOut.Denom), nil

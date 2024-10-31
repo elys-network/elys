@@ -1,10 +1,6 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"sort"
 	"strings"
 	"testing"
@@ -14,9 +10,11 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -28,7 +26,7 @@ import (
 type assetPriceInfo struct {
 	denom   string
 	display string
-	price   sdk.Dec
+	price   math.LegacyDec
 }
 
 const (
@@ -186,7 +184,7 @@ func (suite *PerpetualKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress
 	return addresses
 }
 
-func (suite *PerpetualKeeperTestSuite) SetAndGetAmmPool(creator sdk.AccAddress, poolId uint64, useOracle bool, swapFee, exitFee sdk.Dec, asset2 string, baseTokenAmount, assetAmount sdk.Int) ammtypes.Pool {
+func (suite *PerpetualKeeperTestSuite) SetAndGetAmmPool(creator sdk.AccAddress, poolId uint64, useOracle bool, swapFee, exitFee math.LegacyDec, asset2 string, baseTokenAmount, assetAmount sdk.Int) ammtypes.Pool {
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Token:  sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount),
@@ -208,8 +206,8 @@ func (suite *PerpetualKeeperTestSuite) SetAndGetAmmPool(creator sdk.AccAddress, 
 			UseOracle:                   useOracle,
 			ExternalLiquidityRatio:      sdk.NewDec(2),
 			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+			WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+			WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 			ThresholdWeightDifference:   sdk.ZeroDec(),
 			SwapFee:                     swapFee,
 			ExitFee:                     exitFee,
@@ -217,7 +215,7 @@ func (suite *PerpetualKeeperTestSuite) SetAndGetAmmPool(creator sdk.AccAddress, 
 		},
 		TotalShares: sdk.NewCoin("pool/1", sdk.NewInt(100)),
 		PoolAssets:  poolAssets,
-		TotalWeight: sdk.ZeroInt(),
+		TotalWeight: math.ZeroInt(),
 	}
 
 	suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)

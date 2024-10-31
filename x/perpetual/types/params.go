@@ -3,9 +3,6 @@ package types
 import (
 	"cosmossdk.io/math"
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"gopkg.in/yaml.v2"
 )
@@ -109,7 +106,7 @@ func (p Params) String() string {
 }
 
 func validateLeverageMax(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -124,7 +121,7 @@ func validateLeverageMax(i interface{}) error {
 }
 
 func validateBorrowInterestRateMax(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -140,7 +137,7 @@ func validateBorrowInterestRateMax(i interface{}) error {
 }
 
 func validateBorrowInterestRateMin(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -156,7 +153,7 @@ func validateBorrowInterestRateMin(i interface{}) error {
 }
 
 func validateBorrowInterestRateIncrease(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -172,7 +169,7 @@ func validateBorrowInterestRateIncrease(i interface{}) error {
 }
 
 func validateBorrowInterestRateDecrease(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -188,7 +185,7 @@ func validateBorrowInterestRateDecrease(i interface{}) error {
 }
 
 func validateHealthGainFactor(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -213,7 +210,7 @@ func validateMaxOpenPositions(i interface{}) error {
 }
 
 func validateForceCloseFundPercentage(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -238,7 +235,7 @@ func validateForceCloseFundAddress(i interface{}) error {
 }
 
 func validateIncrementalBorrowInterestPaymentFundPercentage(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -263,7 +260,7 @@ func validateIncrementalBorrowInterestPaymentFundAddress(i interface{}) error {
 }
 
 func validateSafetyFactor(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -297,7 +294,7 @@ func validateWhitelistingEnabled(i interface{}) error {
 }
 
 func validatePoolOpenThreshold(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -313,7 +310,7 @@ func validatePoolOpenThreshold(i interface{}) error {
 }
 
 func validateFixedFundingRate(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -328,7 +325,7 @@ func validateFixedFundingRate(i interface{}) error {
 }
 
 func validateSwapFee(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

@@ -55,46 +55,6 @@ func TestKeeper_GetAllCommitments(t *testing.T) {
 	assert.Equal(t, commitments, retrievedCommitments)
 }
 
-// TestKeeper_GetAllLegacyCommitments tests the GetAllLegacyCommitments function
-func TestKeeper_GetAllLegacyCommitments(t *testing.T) {
-	keeper, ctx := keepertest.CommitmentKeeper(t)
-
-	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	commitments := []*types.Commitments{
-		{
-			Creator: addr1.String(),
-		},
-	}
-	// Set the commitments
-	for _, commitment := range commitments {
-		keeper.SetLegacyCommitments(ctx, *commitment)
-	}
-
-	// Test GetAllLegacyCommitments
-	retrievedCommitments := keeper.GetAllLegacyCommitments(ctx)
-	assert.Equal(t, commitments, retrievedCommitments)
-}
-
-// TestKeeper_DeleteLegacyCommitments tests the DeleteLegacyCommitments function
-func TestKeeper_DeleteLegacyCommitments(t *testing.T) {
-	keeper, ctx := keepertest.CommitmentKeeper(t)
-
-	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	commitments := types.Commitments{
-		Creator: addr.String(),
-	}
-
-	// Set the commitments
-	keeper.SetLegacyCommitments(ctx, commitments)
-
-	// Test DeleteLegacyCommitments
-	keeper.DeleteLegacyCommitments(ctx, addr.String())
-
-	// Test that commitments are removed
-	found := keeper.HasLegacyCommitments(ctx, addr.String())
-	assert.False(t, found)
-}
-
 // TestKeeper_IterateCommitments tests the IterateCommitments function
 func TestKeeper_IterateCommitments(t *testing.T) {
 	keeper, ctx := keepertest.CommitmentKeeper(t)

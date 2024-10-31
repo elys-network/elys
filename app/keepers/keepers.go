@@ -2,6 +2,7 @@ package keepers
 
 import (
 	"os"
+	"path/filepath"
 
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
@@ -87,8 +88,6 @@ import (
 	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
 	estakingmodulekeeper "github.com/elys-network/elys/x/estaking/keeper"
 	estakingmoduletypes "github.com/elys-network/elys/x/estaking/types"
-	incentivemodulekeeper "github.com/elys-network/elys/x/incentive/keeper"
-	incentivemoduletypes "github.com/elys-network/elys/x/incentive/types"
 	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	masterchefmodulekeeper "github.com/elys-network/elys/x/masterchef/keeper"
@@ -160,7 +159,6 @@ type AppKeepers struct {
 	OracleKeeper        oraclekeeper.Keeper
 	CommitmentKeeper    *commitmentmodulekeeper.Keeper
 	TokenomicsKeeper    tokenomicsmodulekeeper.Keeper
-	IncentiveKeeper     incentivemodulekeeper.Keeper
 	BurnerKeeper        burnermodulekeeper.Keeper
 	AmmKeeper           *ammmodulekeeper.Keeper
 	ParameterKeeper     parametermodulekeeper.Keeper
@@ -279,6 +277,16 @@ func NewAppKeeper(
 		logger,
 	)
 
+	app.CrisisKeeper = crisiskeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[crisistypes.StoreKey]),
+		invCheckPeriod,
+		app.BankKeeper,
+		authtypes.FeeCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper.AddressCodec(),
+	)
+
 	app.AuthzKeeper = authzkeeper.NewKeeper(
 		runtime.NewKVStoreService(app.keys[authzkeeper.StoreKey]),
 		appCodec,
@@ -292,13 +300,6 @@ func NewAppKeeper(
 		app.AccountKeeper,
 	)
 
-	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[assetprofilemoduletypes.StoreKey]),
-		&app.TransferKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
 	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
@@ -309,10 +310,16 @@ func NewAppKeeper(
 		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	)
 
+	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[assetprofilemoduletypes.StoreKey]),
+		&app.TransferKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	app.CommitmentKeeper = commitmentmodulekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[commitmentmoduletypes.StoreKey]),
-
 		app.BankKeeper,
 		app.StakingKeeper,
 		app.AssetprofileKeeper,
@@ -346,17 +353,11 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	app.CrisisKeeper = crisiskeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[crisistypes.StoreKey]),
-		invCheckPeriod,
-		app.BankKeeper,
-		authtypes.FeeCollectorName,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.AccountKeeper.AddressCodec(),
-	)
-
 	groupConfig := group.DefaultConfig()
+	/*
+		Example of setting group params:
+		groupConfig.MaxMetadataLen = 1000
+	*/
 	app.GroupKeeper = groupkeeper.NewKeeper(
 		app.keys[group.StoreKey],
 		appCodec,
@@ -532,26 +533,7 @@ func NewAppKeeper(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.PerpetualKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
-	app.IncentiveKeeper = *incentivemodulekeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[incentivemoduletypes.StoreKey]),
-		app.ParameterKeeper,
-		app.CommitmentKeeper,
-		app.StakingKeeper,
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.AmmKeeper,
-		app.OracleKeeper,
-		app.AssetprofileKeeper,
-		app.AccountedPoolKeeper,
-		app.StablestakeKeeper,
-		app.TokenomicsKeeper,
-		&app.MasterchefKeeper,
 		app.EstakingKeeper,
-		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -562,7 +544,7 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	wasmDir := homePath
+	wasmDir := filepath.Join(homePath, "wasm")
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
 	if err != nil {
 		panic("error while reading wasm config: " + err.Error())
@@ -580,7 +562,6 @@ func NewAppKeeper(
 			&app.ClockKeeper,
 			app.CommitmentKeeper,
 			app.EpochsKeeper,
-			&app.IncentiveKeeper,
 			app.LeveragelpKeeper,
 			app.PerpetualKeeper,
 			&app.OracleKeeper,
@@ -621,6 +602,7 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[transferhooktypes.StoreKey]),
 		*app.AmmKeeper)
+
 	// Configure the hooks keeper
 	hooksKeeper := ibchookskeeper.NewKeeper(
 		app.keys[ibchookstypes.StoreKey],
@@ -686,6 +668,7 @@ func NewAppKeeper(
 		app.CommitmentKeeper,
 		app.AssetprofileKeeper,
 		app.MasterchefKeeper,
+		app.AccountedPoolKeeper,
 	)
 
 	app.TierKeeper = *tiermodulekeeper.NewKeeper(
@@ -757,12 +740,17 @@ func NewAppKeeper(
 
 	app.IBCKeeper.SetRouter(ibcRouter)
 
+	// register hooks after all modules have been initialized
+
 	app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
 		app.MasterchefKeeper.StableStakeHooks(),
 		app.TierKeeper.StableStakeHooks(),
 	))
 
 	app.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
+		// PerpetualKeeper.LeverageLpHooks() calling first because it needs to close all position before removing accounted pool
+		app.PerpetualKeeper.LeverageLpHooks(),
+		app.AccountedPoolKeeper.LeverageLpHooks(),
 		app.TierKeeper.LeverageLpHooks(),
 	))
 
@@ -784,6 +772,7 @@ func NewAppKeeper(
 	app.AmmKeeper.SetHooks(
 		ammmoduletypes.NewMultiAmmHooks(
 			// insert amm hooks receivers here
+			app.AccountedPoolKeeper.AmmHooks(),
 			app.PerpetualKeeper.AmmHooks(),
 			app.LeveragelpKeeper.AmmHooks(),
 			app.MasterchefKeeper.AmmHooks(),
@@ -792,12 +781,12 @@ func NewAppKeeper(
 	)
 
 	app.EpochsKeeper = app.EpochsKeeper.SetHooks(
-		epochsmodulekeeper.NewMultiEpochHooks(
+		epochsmoduletypes.NewMultiEpochHooks(
 			// insert epoch hooks receivers here
 			app.OracleKeeper.Hooks(),
 			app.CommitmentKeeper.Hooks(),
 			app.BurnerKeeper.Hooks(),
-			app.PerpetualKeeper.Hooks(),
+			app.PerpetualKeeper.EpochHooks(),
 		),
 	)
 

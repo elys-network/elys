@@ -35,7 +35,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{
@@ -65,7 +65,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{
@@ -95,7 +95,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{
@@ -117,15 +117,15 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 			senderInitBalance:                sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			enableBaseCurrencyPairedPoolOnly: true,
 			poolParams: types.PoolParams{
-				SwapFee:                     sdk.ZeroDec(),
-				ExitFee:                     sdk.ZeroDec(),
+				SwapFee:                     sdkmath.LegacyZeroDec(),
+				ExitFee:                     sdkmath.LegacyZeroDec(),
 				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
-				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdk.ZeroDec(),
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
+				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{
@@ -147,15 +147,15 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 			senderInitBalance:                sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			enableBaseCurrencyPairedPoolOnly: true,
 			poolParams: types.PoolParams{
-				SwapFee:                     sdk.ZeroDec(),
-				ExitFee:                     sdk.ZeroDec(),
+				SwapFee:                     sdkmath.LegacyZeroDec(),
+				ExitFee:                     sdkmath.LegacyZeroDec(),
 				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
 				ExternalLiquidityRatio:      sdk.NewDec(1),
-				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdk.ZeroDec(),
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
+				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{

@@ -36,7 +36,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount:    types.OneShare.Quo(sdkmath.NewInt(5)),
@@ -57,7 +57,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount:    types.OneShare.Quo(sdkmath.NewInt(5)),
@@ -78,7 +78,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyNewDecWithPrec(2, 1),  // 20%
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2),           // 50%
+				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),
@@ -100,7 +100,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyNewDecWithPrec(2, 1),  // 20%
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2),           // 50%
+				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),

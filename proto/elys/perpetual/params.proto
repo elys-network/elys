@@ -62,21 +62,25 @@ message Params {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  // minimum value for take_profit_price/current price for long, should be greater than 1
+  // minimum value for take_profit_price/current price for long, should be
+  // greater than 1
   string minimum_long_take_profit_price_ratio = 19 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  // max value for take_profit_price/current price for long, should be greater than 1
+  // max value for take_profit_price/current price for long, should be greater
+  // than 1
   string maximum_long_take_profit_price_ratio = 20 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  // max value for take_profit_price/current price for short, should be less than 1
+  // max value for take_profit_price/current price for short, should be less
+  // than 1
   string maximum_short_take_profit_price_ratio = 21 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  // No need for minimumShortTakeProfitPriceRatio as it will be 0, checked in validate message
+  // No need for minimumShortTakeProfitPriceRatio as it will be 0, checked in
+  // validate message
   bool enable_take_profit_custody_liabilities = 22;
 }

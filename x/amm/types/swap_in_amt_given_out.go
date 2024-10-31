@@ -1,9 +1,9 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -137,7 +137,7 @@ func (p *Pool) SwapInAmtGivenOut(
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = weightRecoveryReward
 		// set weight breaking fee to zero if bonus is applied
-		weightBreakingFee = sdk.ZeroDec()
+		weightBreakingFee = sdkmath.LegacyZeroDec()
 	}
 
 	if swapFee.GTE(sdkmath.LegacyOneDec()) {

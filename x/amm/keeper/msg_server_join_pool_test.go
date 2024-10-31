@@ -35,7 +35,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ExternalLiquidityRatio:      math.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareOutAmount:   types.OneShare.Quo(math.NewInt(5)),
@@ -56,7 +56,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ExternalLiquidityRatio:      math.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareOutAmount:   types.OneShare.Quo(math.NewInt(5)),
@@ -77,7 +77,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ExternalLiquidityRatio:      math.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyNewDecWithPrec(2, 1),  // 20%
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2),        // 50%
+				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   math.NewInt(694444166666666666), // weight breaking fee - slippage enable
@@ -99,7 +99,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ExternalLiquidityRatio:      math.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyNewDecWithPrec(2, 1),  // 20%
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2),        // 50%
+				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   math.NewInt(805987500000000000), // weight recovery direction - slippage enable
@@ -121,7 +121,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				ExternalLiquidityRatio:      math.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyNewDecWithPrec(2, 1),  // 20%
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2),        // 50%
+				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 			shareOutAmount:   math.NewInt(2000000000000000000),
@@ -233,18 +233,18 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.ATOM, 100_000_000_000000)},
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.ATOM, 100_000_000_000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000_000000)},
 			poolParams: types.PoolParams{
-				SwapFee:                     sdk.ZeroDec(),
-				ExitFee:                     sdk.ZeroDec(),
+				SwapFee:                     math.LegacyZeroDec(),
+				ExitFee:                     math.LegacyZeroDec(),
 				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
-				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
-				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				WeightBreakingFeeMultiplier: math.LegacyNewDecWithPrec(1, 2),  // 0.01
+				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+				ExternalLiquidityRatio:      math.LegacyNewDec(1),
+				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   math.LegacyNewDecWithPrec(2, 1),  // 20%
+				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
-			shareOutAmount:   sdk.NewInt(2_000000000000000000),
+			shareOutAmount:   math.NewInt(2_000000000000000000),
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin(ptypes.ATOM, 1_000000)},
 			expPass:          false,
@@ -285,24 +285,24 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams:        tc.poolParams,
-				TotalShares:       sdk.NewCoin("amm/pool/1", sdk.NewInt(2).Mul(types.OneShare)),
+				TotalShares:       sdk.NewCoin("amm/pool/1", math.NewInt(2).Mul(types.OneShare)),
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  tc.poolInitBalance[0],
-						Weight: sdk.NewInt(1),
+						Weight: math.NewInt(1),
 					},
 					{
 						Token:  tc.poolInitBalance[1],
-						Weight: sdk.NewInt(1),
+						Weight: math.NewInt(1),
 					},
 				},
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: math.ZeroInt(),
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 
 			// Step 4: Simulate market price movement - adjust weights to 10:1
-			pool.PoolAssets[0].Weight = sdk.NewInt(10)
-			pool.PoolAssets[1].Weight = sdk.NewInt(1)
+			pool.PoolAssets[0].Weight = math.NewInt(10)
+			pool.PoolAssets[1].Weight = math.NewInt(1)
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 
 			// Step 5: New LP adds single-sided liquidity

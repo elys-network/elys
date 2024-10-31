@@ -267,12 +267,12 @@ func (k Keeper) IterateBondedValidatorsByPower(ctx sdk.Context, fn func(index in
 	k.Keeper.IterateBondedValidatorsByPower(ctx, fn)
 }
 
-func (k Keeper) Slash(ctx context.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor math.LegacyDec) (math.Int, error) {
-	return k.Keeper.Slash(ctx, consAddr, infractionHeight, power, slashFactor)
+func (k Keeper) Slash(goCtx context.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor math.LegacyDec) (math.Int, error) {
+	return k.Keeper.Slash(goCtx, consAddr, infractionHeight, power, slashFactor)
 }
 
-func (k Keeper) SlashWithInfractionReason(ctx context.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor math.LegacyDec, infraction stakingtypes.Infraction) (math.Int, error) {
-	return k.Keeper.SlashWithInfractionReason(ctx, consAddr, infractionHeight, power, slashFactor, infraction)
+func (k Keeper) SlashWithInfractionReason(goCtx context.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor math.LegacyDec, infraction stakingtypes.Infraction) (math.Int, error) {
+	return k.Keeper.SlashWithInfractionReason(goCtx, consAddr, infractionHeight, power, slashFactor, infraction)
 }
 
 func (k Keeper) WithdrawEdenBReward(ctx sdk.Context, addr sdk.AccAddress) error {

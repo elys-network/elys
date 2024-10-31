@@ -31,7 +31,6 @@ import (
 	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
 	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
 	estakingmoduletypes "github.com/elys-network/elys/x/estaking/types"
-	incentivemoduletypes "github.com/elys-network/elys/x/incentive/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
@@ -75,7 +74,6 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		oracletypes.StoreKey,
 		commitmentmoduletypes.StoreKey,
 		tokenomicsmoduletypes.StoreKey,
-		incentivemoduletypes.StoreKey,
 		burnermoduletypes.StoreKey,
 		accountedpoolmoduletypes.StoreKey,
 		ammmoduletypes.StoreKey,
@@ -89,7 +87,6 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		estakingmoduletypes.StoreKey,
 		tiermoduletypes.StoreKey,
 		tradeshieldmoduletypes.StoreKey,
-		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 
 	// Define transient store keys

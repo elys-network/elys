@@ -2,7 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
-	fmt "fmt"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -60,7 +60,7 @@ func ApplyDiscount(swapFee sdkmath.LegacyDec, discount sdkmath.LegacyDec) sdkmat
 	return swapFee
 }
 
-func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut sdkmath.LegacyDec, poolParams PoolParams, distanceDiff sdk.Dec) sdkmath.LegacyDec {
+func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut sdkmath.LegacyDec, poolParams PoolParams, distanceDiff sdkmath.LegacyDec) sdkmath.LegacyDec {
 	weightBreakingFee := sdkmath.LegacyZeroDec()
 	if !weightOut.IsZero() && !weightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() && !poolParams.WeightBreakingFeeMultiplier.IsZero() {
 		// (45/55*60/40) ^ 2.5

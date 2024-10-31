@@ -40,7 +40,7 @@ message SpotOrder {
   SpotOrderType order_type = 1;
   uint64 order_id = 2;
   OrderPrice order_price = 3;
-  cosmos.base.v1beta1.Coin order_amount = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin order_amount = 4 [ (gogoproto.nullable) = false ];
   string owner_address = 5;
   string order_target_denom = 6;
   Status status = 7;
@@ -70,20 +70,20 @@ message LegacyPerpetualOrder {
   PerpetualOrderType perpetual_order_type = 3;
   PerpetualPosition position = 4;
   OrderPrice trigger_price = 5;
-  cosmos.base.v1beta1.Coin collateral = 6 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin collateral = 6 [ (gogoproto.nullable) = false ];
   string trading_asset = 7;
   string leverage = 8 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string take_profit_price = 9 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   uint64 position_id = 10;
   Status status = 11;
   string stop_loss_price = 12 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 }
@@ -94,7 +94,7 @@ message PerpetualOrder {
   PerpetualOrderType perpetual_order_type = 3;
   PerpetualPosition position = 4;
   OrderPrice trigger_price = 5;
-  cosmos.base.v1beta1.Coin collateral = 6 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin collateral = 6 [ (gogoproto.nullable) = false ];
   string trading_asset = 7;
   string leverage = 8 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -110,17 +110,17 @@ message PerpetualOrder {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin position_size = 13 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin position_size = 13 [ (gogoproto.nullable) = false ];
   string liquidation_price = 14 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string funding_rate = 15 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string borrow_interest_rate = 16 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 }

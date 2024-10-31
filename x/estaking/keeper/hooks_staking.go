@@ -42,33 +42,33 @@ func (k Keeper) StakingHooks() StakingHooks {
 
 // staking StakingHooks
 // Must be called when a validator is created
-func (h StakingHooks) AfterValidatorCreated(ctx context.Context, valAddr sdk.ValAddress) error {
+func (h StakingHooks) AfterValidatorCreated(goCtx context.Context, valAddr sdk.ValAddress) error {
 	return nil
 }
 
 // staking StakingHooks
 // Must be called when a validator is created
-func (h StakingHooks) AfterUnbondingInitiated(ctx context.Context, id uint64) error {
+func (h StakingHooks) AfterUnbondingInitiated(goCtx context.Context, id uint64) error {
 	return nil
 }
 
 // Must be called when a validator's state changes
-func (h StakingHooks) BeforeValidatorModified(ctx context.Context, valAddr sdk.ValAddress) error {
+func (h StakingHooks) BeforeValidatorModified(goCtx context.Context, valAddr sdk.ValAddress) error {
 	return nil
 }
 
 // Must be called when a validator is deleted
-func (h StakingHooks) AfterValidatorRemoved(ctx context.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
+func (h StakingHooks) AfterValidatorRemoved(goCtx context.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
 	return nil
 }
 
 // Must be called when a validator is bonded
-func (h StakingHooks) AfterValidatorBonded(ctx context.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
+func (h StakingHooks) AfterValidatorBonded(goCtx context.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
 	return nil
 }
 
 // Must be called when a validator begins unbonding
-func (h StakingHooks) AfterValidatorBeginUnbonding(ctx context.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
+func (h StakingHooks) AfterValidatorBeginUnbonding(goCtx context.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
 	return nil
 }
 
@@ -95,6 +95,6 @@ func (h StakingHooks) AfterDelegationModified(goCtx context.Context, delAddr sdk
 	return h.k.AfterDelegationModified(ctx, delAddr, valAddr)
 }
 
-func (h StakingHooks) BeforeValidatorSlashed(ctx context.Context, valAddr sdk.ValAddress, fraction sdkmath.LegacyDec) error {
+func (h StakingHooks) BeforeValidatorSlashed(goCtx context.Context, valAddr sdk.ValAddress, fraction sdkmath.LegacyDec) error {
 	return nil
 }

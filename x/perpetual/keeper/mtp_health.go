@@ -9,7 +9,7 @@ import (
 
 // GetMTPHealth Health = custody / liabilities
 // It's responsibility of outer function to update mtp.BorrowInterestUnpaidLiability using UpdateMTPBorrowInterestUnpaidLiability
-func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (sdk.Dec, error) {
+func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error) {
 	if mtp.Liabilities.IsZero() {
 		return math.LegacyMaxSortableDec, nil
 	}
@@ -23,11 +23,11 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 		var err error
 		totalLiabilities, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesTokenOut, baseCurrency, ammPool)
 		if err != nil {
-			return sdk.ZeroDec(), err
+			return math.LegacyZeroDec(), err
 		}
 
 		if totalLiabilities.IsZero() {
-			return sdk.ZeroDec(), nil
+			return math.LegacyZeroDec(), nil
 		}
 	}
 
@@ -37,7 +37,7 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 	custodyAmtInBaseCurrency := mtp.Custody
 
 	if !custodyAmtInBaseCurrency.IsPositive() {
-		return sdk.ZeroDec(), nil
+		return math.LegacyZeroDec(), nil
 	}
 
 	if mtp.Position == types.Position_LONG {
@@ -45,7 +45,7 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 		var err error
 		custodyAmtInBaseCurrency, _, err = k.EstimateSwapGivenOut(ctx, custodyAmtTokenOut, baseCurrency, ammPool)
 		if err != nil {
-			return sdk.ZeroDec(), err
+			return math.LegacyZeroDec(), err
 		}
 	}
 

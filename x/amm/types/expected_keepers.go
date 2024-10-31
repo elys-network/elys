@@ -12,21 +12,21 @@ import (
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
 	NewAccount(context.Context, sdk.AccountI) sdk.AccountI
-	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
-	SetAccount(ctx context.Context, acc sdk.AccountI)
+	GetAccount(goCtx context.Context, addr sdk.AccAddress) sdk.AccountI
+	SetAccount(goCtx context.Context, acc sdk.AccountI)
 	// Methods imported from account should be defined here
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
-	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
-	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
-	MintCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
-	BurnCoins(ctx context.Context, name string, amt sdk.Coins) error
-	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
-	SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
-	SetDenomMetaData(ctx context.Context, denomMetaData banktypes.Metadata)
-	SendCoins(ctx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+	GetBalance(goCtx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	SpendableCoins(goCtx context.Context, addr sdk.AccAddress) sdk.Coins
+	MintCoins(goCtx context.Context, moduleName string, amt sdk.Coins) error
+	BurnCoins(goCtx context.Context, name string, amt sdk.Coins) error
+	SendCoinsFromModuleToAccount(goCtx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromAccountToModule(goCtx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+	SetDenomMetaData(goCtx context.Context, denomMetaData banktypes.Metadata)
+	SendCoins(goCtx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 	// Methods imported from bank should be defined here
 }
 

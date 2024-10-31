@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -19,7 +20,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetAmmPool() {
 			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
 			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-			WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+			WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 			SwapFee:                     sdkmath.LegacyZeroDec(),
 			ExitFee:                     sdk.ZeroDec(),
 			FeeDenom:                    ptypes.BaseCurrency,

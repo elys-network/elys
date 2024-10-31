@@ -2,14 +2,10 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	gomath "math"
-
-	"cosmossdk.io/math"
-	"cosmossdk.io/store/prefix"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -102,8 +98,8 @@ func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 
 func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, address sdk.AccAddress, ammPoolId *uint64) ([]*types.MtpAndPrice, *query.PageResponse, error) {
 	var mtps []*types.MtpAndPrice
-	store := ctx.KVStore(k.storeKey)
-	var mtpStore sdk.KVStore
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	var mtpStore storetypes.KVStore
 
 	if address != nil {
 		mtpStore = prefix.NewStore(store, types.GetMTPPrefixForAddress(address))
@@ -336,7 +332,7 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	totalLiabilities := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 
 	// Calculate estimated PnL
-	var estimatedPnL sdk.Int
+	var estimatedPnL math.Int
 
 	if mtp.Position == types.Position_SHORT {
 		// Estimated PnL for short position:
@@ -367,7 +363,7 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	return estimatedPnL, nil
 }
 
-func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) sdk.Dec {
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) math.LegacyDec {
 	liquidationPrice := math.LegacyZeroDec()
 	params := k.GetParams(ctx)
 	// calculate liquidation price

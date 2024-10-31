@@ -146,7 +146,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgCancelPerpetualOrders int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCancelPerpetualOrders, &weightMsgCancelPerpetualOrders, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCancelPerpetualOrders, &weightMsgCancelPerpetualOrders, nil,
 		func(_ *rand.Rand) {
 			weightMsgCancelPerpetualOrders = defaultWeightMsgCancelPerpetualOrders
 		},

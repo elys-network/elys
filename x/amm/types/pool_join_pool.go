@@ -204,7 +204,7 @@ func (p *Pool) JoinPool(
 	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = weightRecoveryReward
 		// set weight breaking fee to zero if bonus is applied
-		weightBreakingFee = sdk.ZeroDec()
+		weightBreakingFee = sdkmath.LegacyZeroDec()
 	}
 
 	totalShares := p.GetTotalShares()
@@ -214,7 +214,7 @@ func (p *Pool) JoinPool(
 	numShares = numSharesDec.RoundInt()
 	err = p.IncreaseLiquidity(numShares, tokensIn)
 	if err != nil {
-		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
+		return sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
 	// No slippage in oracle pool due to 1 hr lock

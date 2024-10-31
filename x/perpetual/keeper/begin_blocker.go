@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -41,8 +41,8 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		totalShortOpenInterest := pool.GetTotalShortOpenInterest()
 
 		blocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
-		fundingAmountLong := types.CalcTakeAmount(totalLongOpenInterest, fundingRateLong).ToLegacyDec().Quo(sdk.NewDec(blocksPerYear))
-		fundingAmountShort := types.CalcTakeAmount(totalShortOpenInterest, fundingRateShort).ToLegacyDec().Quo(sdk.NewDec(blocksPerYear))
+		fundingAmountLong := types.CalcTakeAmount(totalLongOpenInterest, fundingRateLong).ToLegacyDec().Quo(math.LegacyNewDec(blocksPerYear))
+		fundingAmountShort := types.CalcTakeAmount(totalShortOpenInterest, fundingRateShort).ToLegacyDec().Quo(math.LegacyNewDec(blocksPerYear))
 
 		k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
 			BlockHeight:        ctx.BlockHeight(),
@@ -56,7 +56,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (sdk.Dec, sdk.Dec) {
+func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (math.LegacyDec, math.LegacyDec) {
 	// Custody amount for long is trading asset -
 	// Liability amount for short is trading asset
 	// popular_rate = fixed_rate * abs(Custody-Liability) / (Custody+Liability)
@@ -64,7 +64,7 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (sdk.Dec, s
 	totalShortOpenInterest := pool.GetTotalShortOpenInterest()
 
 	if totalLongOpenInterest.IsZero() || totalShortOpenInterest.IsZero() {
-		return sdk.ZeroDec(), sdk.ZeroDec()
+		return math.LegacyZeroDec(), math.LegacyZeroDec()
 	}
 
 	fixedRate := k.GetParams(ctx).FixedFundingRate
@@ -72,11 +72,11 @@ func (k Keeper) ComputeFundingRate(ctx sdk.Context, pool types.Pool) (sdk.Dec, s
 		// long is popular
 		// long pays short
 		netLongRatio := (totalLongOpenInterest.Sub(totalShortOpenInterest)).ToLegacyDec().Quo((totalLongOpenInterest.Add(totalShortOpenInterest)).ToLegacyDec())
-		return netLongRatio.Mul(fixedRate), sdk.ZeroDec()
+		return netLongRatio.Mul(fixedRate), math.LegacyZeroDec()
 	} else {
 		// short is popular
 		// short pays long
 		netShortRatio := (totalShortOpenInterest.Sub(totalLongOpenInterest)).ToLegacyDec().Quo((totalLongOpenInterest.Add(totalShortOpenInterest)).ToLegacyDec())
-		return sdk.ZeroDec(), netShortRatio.Mul(fixedRate)
+		return math.LegacyZeroDec(), netShortRatio.Mul(fixedRate)
 	}
 }

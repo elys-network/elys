@@ -33,7 +33,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgWhitelist{},
 		&MsgDewhitelist{},
 		&MsgClosePositions{},
-		&MsgBrokerAddCollateral{},
 		&MsgClosePositions{},
 		&MsgUpdateStopLoss{},
 		&MsgUpdateTakeProfitPrice{},

@@ -1,8 +1,6 @@
 package keeper_test
 
 import (
-	"testing"
-
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -16,10 +14,10 @@ func (suite PerpetualKeeperTestSuite) TestCalcTotalLiabilities() {
 	var ammPool ammtypes.Pool
 	poolId := uint64(1)
 	poolAsset := types.PoolAsset{
-		Liabilities:           sdk.ZeroInt(),
-		Custody:               sdk.ZeroInt(),
-		TakeProfitLiabilities: sdk.ZeroInt(),
-		TakeProfitCustody:     sdk.ZeroInt(),
+		Liabilities:           sdkmath.ZeroInt(),
+		Custody:               sdkmath.ZeroInt(),
+		TakeProfitLiabilities: sdkmath.ZeroInt(),
+		TakeProfitCustody:     sdkmath.ZeroInt(),
 		AssetDenom:            "",
 	}
 	testCases := []struct {
@@ -27,7 +25,7 @@ func (suite PerpetualKeeperTestSuite) TestCalcTotalLiabilities() {
 		expectErrMsg         string
 		asset                string
 		prerequisiteFunction func()
-		postValidateFunction func(totalLiabilities sdk.Int)
+		postValidateFunction func(totalLiabilities sdkmath.Int)
 	}{
 		{
 			"success: liabilities is 0",
@@ -35,7 +33,7 @@ func (suite PerpetualKeeperTestSuite) TestCalcTotalLiabilities() {
 			ptypes.ATOM,
 			func() {
 			},
-			func(totalLiabilities sdk.Int) {
+			func(totalLiabilities sdkmath.Int) {
 				suite.Require().True(totalLiabilities.IsZero())
 			},
 		},
@@ -44,10 +42,10 @@ func (suite PerpetualKeeperTestSuite) TestCalcTotalLiabilities() {
 			"",
 			ptypes.BaseCurrency,
 			func() {
-				poolAsset.Liabilities = sdk.OneInt()
+				poolAsset.Liabilities = sdkmath.OneInt()
 			},
-			func(totalLiabilities sdk.Int) {
-				suite.Require().True(totalLiabilities.Equal(sdk.OneInt()))
+			func(totalLiabilities sdkmath.Int) {
+				suite.Require().True(totalLiabilities.Equal(sdkmath.OneInt()))
 			},
 		},
 		{
@@ -55,9 +53,9 @@ func (suite PerpetualKeeperTestSuite) TestCalcTotalLiabilities() {
 			"pool does not exist",
 			ptypes.ATOM,
 			func() {
-				poolAsset.Liabilities = sdk.OneInt()
+				poolAsset.Liabilities = sdkmath.OneInt()
 			},
-			func(totalLiabilities sdk.Int) {
+			func(totalLiabilities sdkmath.Int) {
 			},
 		},
 		{
@@ -65,11 +63,11 @@ func (suite PerpetualKeeperTestSuite) TestCalcTotalLiabilities() {
 			"amount too low",
 			ptypes.ATOM,
 			func() {
-				amount := sdk.OneInt().MulRaw(1000_000)
-				ammPool = suite.SetAndGetAmmPool(addr[0], poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount, amount)
+				amount := sdkmath.OneInt().MulRaw(1000_000)
+				ammPool = suite.SetAndGetAmmPool(addr[0], poolId, true, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ptypes.ATOM, amount, amount)
 				poolAsset.Liabilities = amount.MulRaw(100)
 			},
-			func(totalLiabilities sdk.Int) {
+			func(totalLiabilities sdkmath.Int) {
 			},
 		},
 		{
@@ -77,10 +75,10 @@ func (suite PerpetualKeeperTestSuite) TestCalcTotalLiabilities() {
 			"",
 			ptypes.ATOM,
 			func() {
-				poolAsset.Liabilities = sdk.OneInt().MulRaw(100)
+				poolAsset.Liabilities = sdkmath.OneInt().MulRaw(100)
 			},
-			func(totalLiabilities sdk.Int) {
-				uusdcAmount, _, err := suite.app.AmmKeeper.CalcInAmtGivenOut(suite.ctx, uint64(1), suite.app.OracleKeeper, &ammPool, sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, poolAsset.Liabilities)), ptypes.BaseCurrency, sdk.ZeroDec())
+			func(totalLiabilities sdkmath.Int) {
+				uusdcAmount, _, err := suite.app.AmmKeeper.CalcInAmtGivenOut(suite.ctx, uint64(1), suite.app.OracleKeeper, &ammPool, sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, poolAsset.Liabilities)), ptypes.BaseCurrency, sdkmath.LegacyZeroDec())
 				suite.Require().NoError(err)
 				suite.Require().True(totalLiabilities.Equal(uusdcAmount.Amount))
 			},

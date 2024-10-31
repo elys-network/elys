@@ -44,7 +44,7 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		return math.Int{}, errorsmod.Wrapf(err, "unable to swap BorrowInterestUnpaidLiability to custody asset (%s)", liabilityInterestTokenOut.String())
 	}
 	// here we are paying the interests so unpaid borrow interest reset to 0
-	mtp.BorrowInterestUnpaidLiability = sdk.ZeroInt()
+	mtp.BorrowInterestUnpaidLiability = math.ZeroInt()
 
 	// edge case, not enough custody to cover payment
 	// TODO This should not happen, bot should close the position beforehand
@@ -56,7 +56,7 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		unpaidInterestCustodyTokenOut := sdk.NewCoin(mtp.CustodyAsset, unpaidInterestCustody)
 		unpaidInterestLiabilities, _, err := k.EstimateSwapGivenOut(ctx, unpaidInterestCustodyTokenOut, mtp.LiabilitiesAsset, ammPool)
 		if err != nil {
-			return sdk.ZeroInt(), err
+			return math.ZeroInt(), err
 		}
 		mtp.BorrowInterestUnpaidLiability = unpaidInterestLiabilities
 
@@ -74,7 +74,7 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 	fundAddr := k.GetIncrementalBorrowInterestPaymentFundAddress(ctx)
 	takeAmount, err := k.TakeFundPayment(ctx, borrowInterestPaymentInCustody, mtp.CustodyAsset, takePercentage, fundAddr, &ammPool)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return math.ZeroInt(), err
 	}
 	actualBorrowInterestPaymentCustody := borrowInterestPaymentInCustody.Sub(takeAmount)
 
@@ -84,7 +84,7 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 
 	err = pool.UpdateCustody(mtp.CustodyAsset, borrowInterestPaymentInCustody, false, mtp.Position)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return math.ZeroInt(), err
 	}
 
 	return actualBorrowInterestPaymentCustody, nil

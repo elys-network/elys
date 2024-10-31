@@ -621,7 +621,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 					ThresholdWeightDifference:   tc.thresholdWeightDiff,
 					WeightBreakingFeeMultiplier: sdkmath.LegacyNewDecWithPrec(2, 4),  // 0.02%
 					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(50, 2),           // 50%
+					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets:  tc.poolAssets,

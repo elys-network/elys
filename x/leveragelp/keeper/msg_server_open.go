@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -32,13 +33,13 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
 	borrowed := params.TotalValue.Sub(balance.Amount)
-	borrowRatio := sdk.ZeroDec()
-	if params.TotalValue.GT(sdk.ZeroInt()) {
+	borrowRatio := sdkmath.LegacyZeroDec()
+	if params.TotalValue.GT(sdkmath.ZeroInt()) {
 		borrowRatio = borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
 			Quo(params.TotalValue.ToLegacyDec())
 	}
 
-	var poolLeveragelpRatio sdk.Dec
+	var poolLeveragelpRatio sdkmath.LegacyDec
 	pool, found := k.GetPool(ctx, msg.AmmPoolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))

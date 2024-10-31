@@ -36,7 +36,7 @@ func TestVestNowDisabled(t *testing.T) {
 	// Test scenario: VestNow should fail
 	msg := &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(3000),
+		Amount:  sdkmath.NewInt(3000),
 		Denom:   denom,
 	}
 
@@ -67,7 +67,7 @@ func TestVestNowInvalidDenom(t *testing.T) {
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.ZeroInt(),
+			VestNowFactor:  sdkmath.ZeroInt(),
 			NumMaxVestings: 10,
 		},
 	}
@@ -81,7 +81,7 @@ func TestVestNowInvalidDenom(t *testing.T) {
 	// Test scenario: VestNow should fail
 	msg := &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(3000),
+		Amount:  sdkmath.NewInt(3000),
 		Denom:   denom,
 	}
 
@@ -106,15 +106,15 @@ func TestVestNowInvalidAmount(t *testing.T) {
 	// Define the test data
 	creator := creatorAddr.String()
 	denom := ptypes.Eden
-	initialClaimed := sdk.NewInt(5000)
-	initialCommitted := sdk.NewInt(10000)
+	initialClaimed := sdkmath.NewInt(5000)
+	initialCommitted := sdkmath.NewInt(10000)
 
 	vestingInfos := []*types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.ZeroInt(),
+			VestNowFactor:  sdkmath.ZeroInt(),
 			NumMaxVestings: 10,
 		},
 	}
@@ -147,7 +147,7 @@ func TestVestNowInvalidAmount(t *testing.T) {
 	// Test scenario: VestNow should fail
 	msg := &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(3000),
+		Amount:  sdkmath.NewInt(3000),
 		Denom:   denom,
 	}
 

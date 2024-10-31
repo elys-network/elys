@@ -79,8 +79,6 @@ import (
 	estakingmodule "github.com/elys-network/elys/x/estaking"
 	exdistr "github.com/elys-network/elys/x/estaking/modules/distribution"
 	exstaking "github.com/elys-network/elys/x/estaking/modules/staking"
-	incentivemodule "github.com/elys-network/elys/x/incentive"
-	incentivemoduletypes "github.com/elys-network/elys/x/incentive/types"
 	leveragelpmodule "github.com/elys-network/elys/x/leveragelp"
 	masterchefmodule "github.com/elys-network/elys/x/masterchef"
 	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
@@ -111,11 +109,9 @@ var maccPerms = map[string][]string{
 
 	commitmentmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	burnermoduletypes.ModuleName:     {authtypes.Burner},
-	incentivemoduletypes.ModuleName:  nil,
 	ammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 	stablestaketypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 	masterchefmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-	// this line is used by starport scaffolding # stargate/app/maccPerms
 }
 
 func appModules(
@@ -159,7 +155,6 @@ func appModules(
 		oraclemodule.NewAppModule(appCodec, app.OracleKeeper, app.AccountKeeper, app.BankKeeper),
 		commitmentmodule.NewAppModule(appCodec, *app.CommitmentKeeper, app.AccountKeeper, app.BankKeeper),
 		tokenomicsmodule.NewAppModule(appCodec, app.TokenomicsKeeper, app.AccountKeeper, app.BankKeeper),
-		incentivemodule.NewAppModule(appCodec, app.IncentiveKeeper, *app.EstakingKeeper, app.MasterchefKeeper, app.DistrKeeper, *app.CommitmentKeeper),
 		burnermodule.NewAppModule(appCodec, app.BurnerKeeper, app.AccountKeeper, app.BankKeeper),
 		ammmodule.NewAppModule(appCodec, *app.AmmKeeper, app.AccountKeeper, app.BankKeeper),
 		parametermodule.NewAppModule(appCodec, app.ParameterKeeper, app.AccountKeeper, app.BankKeeper),
@@ -170,7 +165,7 @@ func appModules(
 		leveragelpmodule.NewAppModule(appCodec, *app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper),
 		masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper),
 		estakingmodule.NewAppModule(appCodec, *app.EstakingKeeper, app.AccountKeeper, app.BankKeeper),
-		perpetualmodule.NewAppModule(appCodec, *app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper),
+		perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper),
 		tiermodule.NewAppModule(appCodec, app.TierKeeper, app.AccountKeeper, app.BankKeeper),
 		tradeshieldmodule.NewAppModule(appCodec, app.TradeshieldKeeper, app.AccountKeeper, app.BankKeeper),
 	}
@@ -237,7 +232,6 @@ func orderBeginBlockers() []string {
 		epochsmoduletypes.ModuleName,
 		distrtypes.ModuleName,
 		stablestaketypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
@@ -300,7 +294,6 @@ func orderEndBlockers() []string {
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
 		stablestaketypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		slashingtypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -349,7 +342,6 @@ func orderInitBlockers() []string {
 		govtypes.ModuleName,
 		epochsmoduletypes.ModuleName,
 		stablestaketypes.ModuleName,
-		incentivemoduletypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
 		crisistypes.ModuleName,

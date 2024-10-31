@@ -62,7 +62,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, eta sdk.Dec, baseCurrency string, isBroker bool) error {
+func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, eta math.LegacyDec, baseCurrency string, isBroker bool) error {
 	senderAddress, err := sdk.AccAddressFromBech32(mtp.Address)
 	if err != nil {
 		return err
@@ -204,7 +204,7 @@ func (k Keeper) SendFromAmmPool(ctx sdk.Context, ammPool *ammtypes.Pool, receive
 	return nil
 }
 
-func (k Keeper) BorrowInterestRateComputationByPosition(pool types.Pool, ammPool ammtypes.Pool, position types.Position) (sdk.Dec, error) {
+func (k Keeper) BorrowInterestRateComputationByPosition(pool types.Pool, ammPool ammtypes.Pool, position types.Position) (math.LegacyDec, error) {
 	poolAssets := pool.GetPoolAssets(position)
 	targetBorrowInterestRate := math.LegacyOneDec()
 	for _, asset := range *poolAssets {
@@ -279,7 +279,7 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 	return newBorrowInterestRate, nil
 }
 
-func (k Keeper) TakeFundPayment(ctx sdk.Context, amount math.Int, returnAsset string, takePercentage sdk.Dec, fundAddr sdk.AccAddress, ammPool *ammtypes.Pool) (math.Int, error) {
+func (k Keeper) TakeFundPayment(ctx sdk.Context, amount math.Int, returnAsset string, takePercentage math.LegacyDec, fundAddr sdk.AccAddress, ammPool *ammtypes.Pool) (math.Int, error) {
 	takeAmount := amount.ToLegacyDec().Mul(takePercentage).TruncateInt()
 
 	if !takeAmount.IsZero() {
@@ -303,32 +303,4 @@ func (k *Keeper) SetHooks(gh types.PerpetualHooks) *Keeper {
 	k.hooks = gh
 
 	return k
-}
-
-func (k Keeper) NukeDB(ctx sdk.Context) {
-	// delete all mtps
-	store := ctx.KVStore(k.storeKey)
-	mtpIterator := sdk.KVStorePrefixIterator(store, types.MTPPrefix)
-	defer mtpIterator.Close()
-
-	for ; mtpIterator.Valid(); mtpIterator.Next() {
-		store.Delete(mtpIterator.Key())
-	}
-
-	// delete all pools
-	poolIterator := sdk.KVStorePrefixIterator(store, types.PoolKeyPrefix)
-	defer poolIterator.Close()
-	for ; poolIterator.Valid(); poolIterator.Next() {
-		store.Delete(poolIterator.Key())
-	}
-
-	k.SetMTPCount(ctx, 0)
-	k.SetOpenMTPCount(ctx, 0)
-
-	k.DeleteAllFundingRate(ctx)
-	k.DeleteAllInterestRate(ctx)
-
-	store.Delete(types.KeyPrefix(types.ParamsKey))
-
-	return
 }

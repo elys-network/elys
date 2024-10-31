@@ -40,7 +40,7 @@ func (msg *MsgBrokerOpen) ValidateBasic() error {
 		return ErrInvalidLeverage
 	}
 
-	if msg.Leverage.LT(sdk.OneDec()) {
+	if msg.Leverage.LT(sdkmath.LegacyOneDec()) {
 		return errorsmod.Wrapf(ErrInvalidLeverage, "leverage (%s) cannot be <= 1", msg.Leverage.String())
 	}
 

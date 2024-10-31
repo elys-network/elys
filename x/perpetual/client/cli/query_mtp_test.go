@@ -57,9 +57,9 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 				OpenPrice:                     math.LegacyNewDec(0),
 				StopLossPrice:                 math.LegacyNewDec(0),
 			},
-			TradingAssetPrice: sdk.ZeroDec(),
+			TradingAssetPrice: math.LegacyZeroDec(),
 			Pnl:               sdk.NewCoin("USDC", math.NewInt(0)),
-			LiquidationPrice:  sdk.ZeroDec(),
+			LiquidationPrice:  math.LegacyZeroDec(),
 			Fees: &types.Fees{
 				TotalFeesBaseCurrency:            math.NewInt(0),
 				BorrowInterestFeesLiabilityAsset: math.NewInt(0),

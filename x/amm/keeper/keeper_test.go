@@ -20,7 +20,7 @@ import (
 type assetPriceInfo struct {
 	denom   string
 	display string
-	price   sdk.Dec
+	price   sdkmath.LegacyDec
 }
 
 const (

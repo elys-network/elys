@@ -27,7 +27,7 @@ message MTP {
     (gogoproto.nullable) = false
   ];
   string borrow_interest_paid_custody = 8 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   string borrow_interest_unpaid_liability = 9 [
@@ -62,7 +62,7 @@ message MTP {
     (gogoproto.nullable) = false
   ];
   string funding_fee_paid_custody = 19 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   string funding_fee_received_custody = 20 [
@@ -94,20 +94,20 @@ message InterestBlock {
 
 message FundingRateBlock {
   string funding_rate_long = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string funding_rate_short = 2 [
 
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string funding_amount_short = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string funding_amount_long = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   int64 block_height = 5;
@@ -124,7 +124,7 @@ message ToPay {
   uint64 id = 4;
 }
 
-message WhiteList {repeated string validator_list = 1;}
+message WhiteList { repeated string validator_list = 1; }
 
 message PositionRequest {
   string address = 1;

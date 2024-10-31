@@ -15,7 +15,7 @@ func (k Keeper) ForceCloseShort(ctx sdk.Context, mtp *types.MTP, pool *types.Poo
 	}
 
 	// Estimate swap and repay
-	repayAmt, err := k.EstimateAndRepay(ctx, mtp, pool, &ammPool, baseCurrency, sdk.OneDec())
+	repayAmt, err := k.EstimateAndRepay(ctx, mtp, pool, &ammPool, baseCurrency, math.LegacyOneDec())
 	if err != nil {
 		return math.ZeroInt(), err
 	}

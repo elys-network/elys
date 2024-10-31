@@ -9,7 +9,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, sdkmath.Int, error) {
+func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, math.Int, error) {
 	// Retrieve MTP
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	mtp, err := k.GetMTP(ctx, creator, msg.Id)

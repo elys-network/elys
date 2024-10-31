@@ -12,7 +12,7 @@ import (
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
-	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
+	GetAccount(goCtx context.Context, addr sdk.AccAddress) sdk.AccountI
 	// Methods imported from account should be defined here
 }
 
@@ -38,18 +38,18 @@ type AmmKeeper interface {
 //
 //go:generate mockery --srcpkg . --name BankKeeper --structname BankKeeper --filename bank_keeper.go --with-expecter
 type BankKeeper interface {
-	GetAllBalances(ctx context.Context, addr sdk.AccAddress) sdk.Coins
-	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	GetAllBalances(goCtx context.Context, addr sdk.AccAddress) sdk.Coins
+	GetBalance(goCtx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
 
-	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
+	SpendableCoins(goCtx context.Context, addr sdk.AccAddress) sdk.Coins
 
-	SendCoinsFromModuleToModule(ctx context.Context, senderModule string, recipientModule string, amt sdk.Coins) error
-	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
-	SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
-	SendCoins(ctx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromModuleToModule(goCtx context.Context, senderModule string, recipientModule string, amt sdk.Coins) error
+	SendCoinsFromModuleToAccount(goCtx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromAccountToModule(goCtx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+	SendCoins(goCtx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 
 	BlockedAddr(addr sdk.AccAddress) bool
-	HasBalance(ctx context.Context, addr sdk.AccAddress, amt sdk.Coin) bool
+	HasBalance(goCtx context.Context, addr sdk.AccAddress, amt sdk.Coin) bool
 }
 
 // StableStakeKeeper defines the expected interface needed on stablestake
@@ -82,5 +82,5 @@ type MasterchefKeeper interface {
 }
 
 type AccountedPoolKeeper interface {
-	GetAccountedBalance(sdk.Context, uint64, string) math.Int
+	GetAccountedBalance(sdk.Context, uint64, string) sdkmath.Int
 }

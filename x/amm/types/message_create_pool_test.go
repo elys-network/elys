@@ -40,14 +40,14 @@ func TestMsgCreatePool_ValidateBasic(t *testing.T) {
 			msg: types.MsgCreatePool{
 				Sender: sample.AccAddress(),
 				PoolParams: &types.PoolParams{
-					SwapFee:                     sdk.ZeroDec(),
-					ExitFee:                     sdk.ZeroDec(),
+					SwapFee:                     sdkmath.LegacyZeroDec(),
+					ExitFee:                     sdkmath.LegacyZeroDec(),
 					UseOracle:                   false,
-					WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
+					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
 					ExternalLiquidityRatio:      sdk.NewDec(1),
-					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdk.ZeroDec(),
+					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 					FeeDenom:                    ptypes.BaseCurrency,
 				},
 				PoolAssets: []types.PoolAsset{

@@ -19,7 +19,7 @@ func NewParams(
 	interestRateDecrease math.LegacyDec,
 	healthGainFactor math.LegacyDec,
 	totalValue math.Int,
-	MaxLeveragePercent sdk.Dec,
+	MaxLeveragePercent math.LegacyDec,
 ) Params {
 	return Params{
 		DepositDenom:         depositDenom,
@@ -259,7 +259,7 @@ func validateTotalValue(i interface{}) error {
 }
 
 func validateMaxLeverageRatio(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

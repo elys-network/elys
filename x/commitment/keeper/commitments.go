@@ -22,19 +22,6 @@ func (k Keeper) SetCommitments(ctx sdk.Context, commitments types.Commitments) {
 	store.Set(key, b)
 }
 
-// SetLegacyCommitments set a specific commitments in the store from its index
-func (k Keeper) SetLegacyCommitments(ctx sdk.Context, commitments types.Commitments) {
-	if !k.HasLegacyCommitments(ctx, commitments.Creator) {
-		params := k.GetParams(ctx)
-		params.NumberOfCommitments++
-		k.SetParams(ctx, params)
-	}
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
-	key := types.LegacyCommitmentsKey(commitments.Creator)
-	b := k.cdc.MustMarshal(&commitments)
-	store.Set(key, b)
-}
-
 // GetAllCommitments returns all commitments
 func (k Keeper) GetAllCommitments(ctx sdk.Context) (list []*types.Commitments) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
