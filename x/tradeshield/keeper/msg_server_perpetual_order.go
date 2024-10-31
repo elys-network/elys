@@ -51,14 +51,6 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		return nil, err
 	}
 
-	// return &types.PerpetualOrderExtraInfo{
-	// 	PerpetualOrder:     &order,
-	// 	PositionSize:       res.PositionSize,
-	// 	LiquidationPrice:   res.LiquidationPrice,
-	// 	FundingRate:        res.FundingRate,
-	// 	BorrowInterestRate: res.BorrowInterestRate,
-	// }, nil
-
 	return &types.MsgCreatePerpetualOpenOrderResponse{
 		OrderId: id,
 	}, nil
