@@ -58,14 +58,29 @@ func (msg *MsgCreateSpotOrder) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be nil")
 	}
 
+	// Validate order price
+	if msg.OrderPrice.Rate.IsNegative() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be negative")
+	}
+
+	err = sdk.ValidateDenom(msg.OrderPrice.BaseDenom)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid base asset denom (%s)", err)
+	}
+
+	err = sdk.ValidateDenom(msg.OrderPrice.QuoteDenom)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid quote asset denom (%s)", err)
+	}
+
 	// Validate order amount
 	if !msg.OrderAmount.IsValid() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid order amount")
 	}
 
-	// Validate order target denom
-	if msg.OrderTargetDenom == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "order target denom cannot be empty")
+	err = sdk.ValidateDenom(msg.OrderTargetDenom)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order target asset denom (%s)", err)
 	}
 	return nil
 }
