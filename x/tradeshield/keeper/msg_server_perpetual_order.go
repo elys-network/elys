@@ -6,11 +6,18 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
 func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.MsgCreatePerpetualOpenOrder) (*types.MsgCreatePerpetualOpenOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Verify if perpetual pool exists
+	_, found := k.perpetual.GetPool(ctx, msg.PoolId)
+	if !found {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("pool %d not found", msg.PoolId))
+	}
 
 	var pendingPerpetualOrder = types.PerpetualOrder{
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
@@ -23,12 +30,34 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		TakeProfitPrice:    msg.TakeProfitPrice,
 		StopLossPrice:      msg.StopLossPrice,
 		PoolId:             msg.PoolId,
+		PositionId:         0,
 	}
 
 	id := k.AppendPendingPerpetualOrder(
 		ctx,
 		pendingPerpetualOrder,
 	)
+
+	// Verify if order is valid before saving
+	_, err := k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
+		Position:        perpetualtypes.Position(msg.Position),
+		Leverage:        msg.Leverage,
+		TradingAsset:    msg.TradingAsset,
+		Collateral:      msg.Collateral,
+		TakeProfitPrice: msg.TakeProfitPrice,
+		PoolId:          msg.PoolId,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// return &types.PerpetualOrderExtraInfo{
+	// 	PerpetualOrder:     &order,
+	// 	PositionSize:       res.PositionSize,
+	// 	LiquidationPrice:   res.LiquidationPrice,
+	// 	FundingRate:        res.FundingRate,
+	// 	BorrowInterestRate: res.BorrowInterestRate,
+	// }, nil
 
 	return &types.MsgCreatePerpetualOpenOrderResponse{
 		OrderId: id,
@@ -37,8 +66,6 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 
 func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.MsgCreatePerpetualCloseOrder) (*types.MsgCreatePerpetualCloseOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// only allow order type as limit close
 
 	// check if the position owner address matches the msg owner address
 	position, err := k.perpetual.GetMTP(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), msg.PositionId)

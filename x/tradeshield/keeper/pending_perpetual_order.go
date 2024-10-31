@@ -440,6 +440,7 @@ func (k Keeper) ConstructPerpetualOrderExtraInfo(ctx sdk.Context, order types.Pe
 			TradingAsset:    order.TradingAsset,
 			Collateral:      order.Collateral,
 			TakeProfitPrice: order.TakeProfitPrice,
+			PoolId:          order.PoolId,
 		})
 		if err != nil {
 			return nil, err
