@@ -52,6 +52,21 @@ func (msg *MsgCreateSpotOrder) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	// Validate order price
+	if msg.OrderPrice == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be nil")
+	}
+
+	// Validate order amount
+	if !msg.OrderAmount.IsValid() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid order amount")
+	}
+
+	// Validate order target denom
+	if msg.OrderTargetDenom == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "order target denom cannot be empty")
+	}
 	return nil
 }
 
@@ -91,6 +106,16 @@ func (msg *MsgUpdateSpotOrder) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
+
+	// Validate order price
+	if msg.OrderPrice == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be nil")
+	}
+
+	// Validate order ID
+	if msg.OrderId == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be 0")
+	}
 	return nil
 }
 
@@ -129,6 +154,12 @@ func (msg *MsgCancelSpotOrder) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid ownerAddress address (%s)", err)
 	}
+
+	// Validate order ID
+	if msg.OrderId == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be 0")
+	}
+
 	return nil
 }
 
@@ -165,6 +196,16 @@ func (msg *MsgCancelSpotOrders) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
+	}
+
+	// Validate SpotOrderIds
+	if len(msg.SpotOrderIds) == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "spot order IDs cannot be empty")
+	}
+	for _, id := range msg.SpotOrderIds {
+		if id == 0 {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
+		}
 	}
 	return nil
 }

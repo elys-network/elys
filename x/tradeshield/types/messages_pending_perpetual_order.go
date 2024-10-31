@@ -66,6 +66,42 @@ func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
+
+	// Validate trigger price
+	if msg.TriggerPrice == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "trigger price cannot be nil")
+	}
+
+	// Validate collateral
+	if !msg.Collateral.IsValid() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid collateral")
+	}
+
+	// Validate trading asset
+	if msg.TradingAsset == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "trading asset cannot be empty")
+	}
+
+	// Validate leverage
+	if msg.Leverage.IsNil() || msg.Leverage.IsNegative() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "leverage cannot be nil or negative")
+	}
+
+	// Validate take profit price
+	if msg.TakeProfitPrice.IsNegative() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "take profit price cannot be negative")
+	}
+
+	// Validate stop loss price
+	if msg.StopLossPrice.IsNegative() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "stop loss price cannot be negative")
+	}
+
+	// Validate pool ID
+	if msg.PoolId == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pool ID cannot be zero")
+	}
+
 	return nil
 }
 
@@ -149,6 +185,16 @@ func (msg *MsgUpdatePerpetualOrder) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	// Validate trigger price
+	if msg.TriggerPrice == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "trigger price cannot be nil")
+	}
+
+	// Validate Order ID
+	if msg.OrderId == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Order ID cannot be zero")
+	}
 	return nil
 }
 
@@ -187,6 +233,10 @@ func (msg *MsgCancelPerpetualOrder) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid ownerAddress address (%s)", err)
 	}
+	// Validate order ID
+	if msg.OrderId == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be 0")
+	}
 	return nil
 }
 
@@ -224,5 +274,16 @@ func (msg *MsgCancelPerpetualOrders) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
+
+	// Validate SpotOrderIds
+	if len(msg.OrderIds) == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "spot order IDs cannot be empty")
+	}
+	for _, id := range msg.OrderIds {
+		if id == 0 {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
+		}
+	}
+
 	return nil
 }

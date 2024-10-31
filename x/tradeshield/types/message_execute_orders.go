@@ -43,5 +43,26 @@ func (msg *MsgExecuteOrders) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	// Validate SpotOrderIds
+	if len(msg.SpotOrderIds) == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "spot order IDs cannot be empty")
+	}
+	for _, id := range msg.SpotOrderIds {
+		if id == 0 {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
+		}
+	}
+
+	// Validate PerpetualOrderIds
+	if len(msg.PerpetualOrderIds) == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "perpetual order IDs cannot be empty")
+	}
+	for _, id := range msg.PerpetualOrderIds {
+		if id == 0 {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "perpetual order ID cannot be zero")
+		}
+	}
+
 	return nil
 }
