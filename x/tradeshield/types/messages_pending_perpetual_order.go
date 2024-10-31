@@ -17,7 +17,6 @@ var _ sdk.Msg = &MsgCreatePerpetualOpenOrder{}
 
 func NewMsgCreatePerpetualOpenOrder(
 	ownerAddress string,
-	orderType PerpetualOrderType,
 	triggerPrice TriggerPrice,
 	collateral sdk.Coin,
 	tradingAsset string,
@@ -119,7 +118,6 @@ var _ sdk.Msg = &MsgCreatePerpetualOpenOrder{}
 
 func NewMsgCreatePerpetualCloseOrder(
 	ownerAddress string,
-	orderType PerpetualOrderType,
 	triggerPrice TriggerPrice,
 	positionId uint64,
 ) *MsgCreatePerpetualCloseOrder {
