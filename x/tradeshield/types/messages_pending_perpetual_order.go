@@ -72,14 +72,24 @@ func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "trigger price cannot be nil")
 	}
 
+	// Validate trigger price
+	if msg.TriggerPrice.Rate.IsNegative() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "trigger price cannot be negative")
+	}
+
+	err = sdk.ValidateDenom(msg.TriggerPrice.TradingAssetDenom)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid trading asset denom (%s)", err)
+	}
+
 	// Validate collateral
 	if !msg.Collateral.IsValid() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid collateral")
 	}
 
-	// Validate trading asset
-	if msg.TradingAsset == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "trading asset cannot be empty")
+	err = sdk.ValidateDenom(msg.TradingAsset)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid trading asset denom (%s)", err)
 	}
 
 	// Validate leverage
@@ -146,6 +156,26 @@ func (msg *MsgCreatePerpetualCloseOrder) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
+
+	// Validate trigger price
+	if msg.TriggerPrice == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "trigger price cannot be nil")
+	}
+
+	// Validate trigger price
+	if msg.TriggerPrice.Rate.IsNegative() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "trigger price cannot be negative")
+	}
+
+	err = sdk.ValidateDenom(msg.TriggerPrice.TradingAssetDenom)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid trading asset denom (%s)", err)
+	}
+
+	// Validate PositionId
+	if msg.PositionId == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "position ID cannot be zero")
+	}
 	return nil
 }
 
@@ -189,6 +219,16 @@ func (msg *MsgUpdatePerpetualOrder) ValidateBasic() error {
 	// Validate trigger price
 	if msg.TriggerPrice == nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "trigger price cannot be nil")
+	}
+
+	// Validate trigger price
+	if msg.TriggerPrice.Rate.IsNegative() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "trigger price cannot be negative")
+	}
+
+	err = sdk.ValidateDenom(msg.TriggerPrice.TradingAssetDenom)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid trading asset denom (%s)", err)
 	}
 
 	// Validate Order ID
