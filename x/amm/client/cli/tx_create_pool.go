@@ -17,7 +17,6 @@ const (
 	FlagUseOracle                   = "use-oracle"
 	FlagWeightBreakingFeeMultiplier = "weight-breaking-fee-multiplier"
 	FlagWeightBreakingFeeExponent   = "weight-breaking-fee-exponent"
-	FlagExternalLiquidityRatio      = "extern-liquidity-ratio"
 	FlagWeightRecoveryFeePortion    = "weight-recovery-fee"
 	FlagThresholdWeightDifference   = "threshold-weight-diff"
 	FlagFeeDenom                    = "fee-denom"
@@ -54,9 +53,12 @@ func CmdCreatePool() *cobra.Command {
 					return errors.New("deposit tokens and token weights should have same denom order")
 				}
 
+				// External liquidity ratio initially is set to 1, this value can be changed by feeder only with relevant orderbook liquidity
+				// Setting this ratio to 1 is equivalent to considering only amm liquidity when making swaps
 				poolAssets = append(poolAssets, types.PoolAsset{
-					Weight: argWeights[i].Amount,
-					Token:  argInitialDeposit[i],
+					Weight:                 argWeights[i].Amount,
+					Token:                  argInitialDeposit[i],
+					ExternalLiquidityRatio: sdk.OneDec(),
 				})
 			}
 
@@ -85,11 +87,6 @@ func CmdCreatePool() *cobra.Command {
 				return err
 			}
 
-			externalLiquidityRatioStr, err := cmd.Flags().GetString(FlagExternalLiquidityRatio)
-			if err != nil {
-				return err
-			}
-
 			weightRecoveryFeePortionStr, err := cmd.Flags().GetString(FlagWeightRecoveryFeePortion)
 			if err != nil {
 				return err
@@ -111,7 +108,6 @@ func CmdCreatePool() *cobra.Command {
 				UseOracle:                   useOracle,
 				WeightBreakingFeeMultiplier: sdk.MustNewDecFromStr(weightBreakingFeeMultiplierStr),
 				WeightBreakingFeeExponent:   sdk.MustNewDecFromStr(weightBreakingFeeExponentStr),
-				ExternalLiquidityRatio:      sdk.MustNewDecFromStr(externalLiquidityRatioStr),
 				WeightRecoveryFeePortion:    sdk.MustNewDecFromStr(weightRecoveryFeePortionStr),
 				ThresholdWeightDifference:   sdk.MustNewDecFromStr(thresholdWeightDifferenceStr),
 				FeeDenom:                    feeDenom,
@@ -136,7 +132,6 @@ func CmdCreatePool() *cobra.Command {
 	cmd.Flags().Bool(FlagUseOracle, false, "flag to be an oracle pool or non-oracle pool")
 	cmd.Flags().String(FlagWeightBreakingFeeMultiplier, "0.00", "weight breaking fee multiplier")
 	cmd.Flags().String(FlagWeightBreakingFeeExponent, "2.50", "weight breaking fee exponent")
-	cmd.Flags().String(FlagExternalLiquidityRatio, "0.00", "external liquidity ratio - valid for oracle pools")
 	cmd.Flags().String(FlagWeightRecoveryFeePortion, "0.10", "weight recovery fee portion")
 	cmd.Flags().String(FlagThresholdWeightDifference, "0.00", "threshold weight difference - valid for oracle pool")
 	cmd.Flags().String(FlagFeeDenom, "", "fee denom")

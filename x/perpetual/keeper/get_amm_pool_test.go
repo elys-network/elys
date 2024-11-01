@@ -14,7 +14,6 @@ func (suite *PerpetualKeeperTestSuite) TestGetAmmPool() {
 		RebalanceTreasury: "",
 		PoolParams: ammtypes.PoolParams{
 			UseOracle:                   false,
-			ExternalLiquidityRatio:      sdk.NewDec(2),
 			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%

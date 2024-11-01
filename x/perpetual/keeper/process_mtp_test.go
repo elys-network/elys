@@ -76,7 +76,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
@@ -259,7 +258,6 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
@@ -421,7 +419,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%

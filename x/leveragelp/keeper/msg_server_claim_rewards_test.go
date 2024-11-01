@@ -42,7 +42,6 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 			UseOracle:                   true,
 			WeightBreakingFeeMultiplier: fee,
 			WeightBreakingFeeExponent:   fee,
-			ExternalLiquidityRatio:      fee,
 			WeightRecoveryFeePortion:    fee,
 			ThresholdWeightDifference:   fee,
 			FeeDenom:                    ptypes.Elys,

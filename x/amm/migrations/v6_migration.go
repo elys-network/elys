@@ -13,9 +13,19 @@ func (m Migrator) V6Migration(ctx sdk.Context) error {
 			newPoolAssets = append(newPoolAssets, types.PoolAsset{Token: poolAsset.Token, Weight: poolAsset.Weight, ExternalLiquidityRatio: sdk.OneDec()})
 		}
 		newPool := types.Pool{
-			PoolId:            pool.PoolId,
-			Address:           pool.Address,
-			PoolParams:        pool.PoolParams,
+			PoolId:  pool.PoolId,
+			Address: pool.Address,
+			PoolParams: types.PoolParams{
+				SwapFee:                     pool.PoolParams.SwapFee,
+				ExitFee:                     pool.PoolParams.ExitFee,
+				UseOracle:                   pool.PoolParams.UseOracle,
+				WeightBreakingFeeMultiplier: pool.PoolParams.WeightBreakingFeeMultiplier,
+				WeightBreakingFeeExponent:   pool.PoolParams.WeightBreakingFeeExponent,
+				WeightRecoveryFeePortion:    pool.PoolParams.WeightRecoveryFeePortion,
+				ThresholdWeightDifference:   pool.PoolParams.ThresholdWeightDifference,
+				WeightBreakingFeePortion:    pool.PoolParams.WeightBreakingFeePortion,
+				FeeDenom:                    pool.PoolParams.FeeDenom,
+			},
 			TotalShares:       pool.TotalShares,
 			PoolAssets:        newPoolAssets,
 			TotalWeight:       pool.TotalWeight,

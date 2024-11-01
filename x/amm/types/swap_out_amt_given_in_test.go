@@ -624,7 +624,6 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 				PoolParams: types.PoolParams{
 					SwapFee:                     sdk.ZeroDec(),
 					UseOracle:                   tc.useOracle,
-					ExternalLiquidityRatio:      tc.externalLiquidityRatio,
 					ThresholdWeightDifference:   tc.thresholdWeightDiff,
 					WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(2, 4),  // 0.02%
 					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5

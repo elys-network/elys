@@ -222,7 +222,6 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
 					UseOracle:                   tc.isOraclePool,
-					ExternalLiquidityRatio:      sdk.NewDec(2),
 					WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%

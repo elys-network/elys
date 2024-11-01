@@ -251,10 +251,9 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
-			SwapFee:                swapFee,
-			FeeDenom:               ptypes.BaseCurrency,
-			UseOracle:              true,
-			ExternalLiquidityRatio: sdk.NewDec(10), // 2x
+			SwapFee:   swapFee,
+			FeeDenom:  ptypes.BaseCurrency,
+			UseOracle: true,
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []types.PoolAsset{

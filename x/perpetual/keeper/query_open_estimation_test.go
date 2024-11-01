@@ -70,7 +70,6 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
@@ -198,7 +197,6 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
@@ -328,7 +326,6 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
@@ -470,7 +467,6 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
@@ -599,7 +595,6 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%

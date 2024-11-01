@@ -11,7 +11,7 @@ import "cosmos_proto/cosmos.proto";
 message LegacyPool {
   uint64 pool_id = 1; 
   string address = 2; 
-  PoolParams pool_params = 3 [(gogoproto.nullable) = false]; 
+  LegacyPoolParams pool_params = 3 [(gogoproto.nullable) = false]; 
   cosmos.base.v1beta1.Coin total_shares = 4 [(gogoproto.nullable) = false]; 
   repeated LegacyPoolAsset pool_assets = 5 [(gogoproto.nullable) = false]; 
   string total_weight = 6 [
