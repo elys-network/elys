@@ -12,7 +12,7 @@ import (
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
-func SimulateMsgCreatePendingSpotOrder(
+func SimulateMsgCreatePerpetualOpenOrder(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -21,7 +21,7 @@ func SimulateMsgCreatePendingSpotOrder(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
-		msg := &types.MsgCreatePendingSpotOrder{
+		msg := &types.MsgCreatePerpetualOpenOrder{
 			OwnerAddress: simAccount.Address.String(),
 		}
 
@@ -42,32 +42,18 @@ func SimulateMsgCreatePendingSpotOrder(
 	}
 }
 
-func SimulateMsgUpdatePendingSpotOrder(
+func SimulateMsgCreatePerpetualCloseOrder(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		var (
-			simAccount          = simtypes.Account{}
-			pendingSpotOrder    = types.SpotOrder{}
-			msg                 = &types.MsgUpdatePendingSpotOrder{}
-			allPendingSpotOrder = k.GetAllPendingSpotOrder(ctx)
-			found               = false
-		)
-		for _, obj := range allPendingSpotOrder {
-			simAccount, found = FindAccount(accs, obj.OwnerAddress)
-			if found {
-				pendingSpotOrder = obj
-				break
-			}
+		simAccount, _ := simtypes.RandomAcc(r, accs)
+
+		msg := &types.MsgCreatePerpetualCloseOrder{
+			OwnerAddress: simAccount.Address.String(),
 		}
-		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePendingSpotOrder{}), "pendingSpotOrder owner not found"), nil, nil
-		}
-		msg.OwnerAddress = simAccount.Address.String()
-		msg.OrderId = pendingSpotOrder.OrderId
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -86,7 +72,7 @@ func SimulateMsgUpdatePendingSpotOrder(
 	}
 }
 
-func SimulateMsgCancelSpotOrders(
+func SimulateMsgUpdatePerpetualOrder(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -94,24 +80,68 @@ func SimulateMsgCancelSpotOrders(
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		var (
-			simAccount          = simtypes.Account{}
-			pendingSpotOrder    = types.SpotOrder{}
-			msg                 = &types.MsgUpdatePendingSpotOrder{}
-			allPendingSpotOrder = k.GetAllPendingSpotOrder(ctx)
-			found               = false
+			simAccount               = simtypes.Account{}
+			pendingPerpetualOrder    = types.PerpetualOrder{}
+			msg                      = &types.MsgUpdatePerpetualOrder{}
+			allPendingPerpetualOrder = k.GetAllPendingPerpetualOrder(ctx)
+			found                    = false
 		)
-		for _, obj := range allPendingSpotOrder {
+		for _, obj := range allPendingPerpetualOrder {
 			simAccount, found = FindAccount(accs, obj.OwnerAddress)
 			if found {
-				pendingSpotOrder = obj
+				pendingPerpetualOrder = obj
 				break
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePendingSpotOrder{}), "pendingSpotOrder owner not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePerpetualOrder{}), "pendingPerpetualOrder owner not found"), nil, nil
 		}
 		msg.OwnerAddress = simAccount.Address.String()
-		msg.OrderId = pendingSpotOrder.OrderId
+		msg.OrderId = pendingPerpetualOrder.OrderId
+
+		txCtx := simulation.OperationInput{
+			R:               r,
+			App:             app,
+			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
+			Cdc:             nil,
+			Msg:             msg,
+			Context:         ctx,
+			SimAccount:      simAccount,
+			ModuleName:      types.ModuleName,
+			CoinsSpentInMsg: sdk.NewCoins(),
+			AccountKeeper:   ak,
+			Bankkeeper:      bk,
+		}
+		return simulation.GenAndDeliverTxWithRandFees(txCtx)
+	}
+}
+
+func SimulateMsgCancelPerpetualOrders(
+	ak types.AccountKeeper,
+	bk types.BankKeeper,
+	k keeper.Keeper,
+) simtypes.Operation {
+	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
+	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
+		var (
+			simAccount               = simtypes.Account{}
+			pendingPerpetualOrder    = types.PerpetualOrder{}
+			msg                      = &types.MsgUpdatePerpetualOrder{}
+			allPendingPerpetualOrder = k.GetAllPendingPerpetualOrder(ctx)
+			found                    = false
+		)
+		for _, obj := range allPendingPerpetualOrder {
+			simAccount, found = FindAccount(accs, obj.OwnerAddress)
+			if found {
+				pendingPerpetualOrder = obj
+				break
+			}
+		}
+		if !found {
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePerpetualOrder{}), "pendingPerpetualOrder owner not found"), nil, nil
+		}
+		msg.OwnerAddress = simAccount.Address.String()
+		msg.OrderId = pendingPerpetualOrder.OrderId
 
 		txCtx := simulation.OperationInput{
 			R:               r,

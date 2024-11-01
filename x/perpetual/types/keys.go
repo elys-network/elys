@@ -25,10 +25,12 @@ const MaxPageLimit = 100
 
 const (
 	InfinitePriceString = "infinite"
+	ZeroPriceString     = "zero"
 )
 
 var (
 	TakeProfitPriceDefault = math.LegacyMustNewDecFromStr("10000000000000000000000000000000000000000") // 10^40
+	StopLossPriceDefault   = math.LegacyZeroDec()
 )
 
 var (

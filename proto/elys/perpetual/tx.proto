@@ -46,7 +46,7 @@ message MsgOpen {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 poolId = 8;
+  uint64 pool_id = 8;
 }
 
 message MsgBrokerOpen {
@@ -69,7 +69,7 @@ message MsgBrokerOpen {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 poolId = 9;
+  uint64 pool_id = 9;
 }
 
 message MsgOpenResponse { uint64 id = 1; }

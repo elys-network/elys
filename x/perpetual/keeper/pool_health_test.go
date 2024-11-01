@@ -15,7 +15,8 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 	addr := suite.AddAccounts(10, nil)
 	amount := sdk.NewInt(1000)
 	poolCreator := addr[0]
-	ammPool := suite.SetAndGetAmmPool(poolCreator, 1, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	suite.SetupCoinPrices()
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	testCases := []struct {
 		name                 string
 		expectErrMsg         string
@@ -42,7 +43,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
-			err = suite.app.PerpetualKeeper.CheckLowPoolHealth(suite.ctx, 1)
+			err = suite.app.PerpetualKeeper.CheckLowPoolHealthAndMinimumCustody(suite.ctx, 1)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

@@ -75,7 +75,10 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Sub(lpAmount)
 	if position.LeveragedLpAmount.IsZero() {
 		// As we have already exited the pool, we need to delete the position
-		k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, positionOwner)
+		err = k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, positionOwner)
+		if err != nil {
+			return math.Int{}, err
+		}
 		err = k.DestroyPosition(ctx, positionOwner, position.Id)
 		if err != nil {
 			return math.ZeroInt(), err

@@ -1,11 +1,14 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"github.com/elys-network/elys/x/leveragelp/keeper"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
@@ -17,12 +20,6 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	poolAddr := ammtypes.NewPoolAddress(uint64(1))
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	pool := types.Pool{
-		AmmPoolId:         1,
-		Health:            sdkmath.LegacyZeroDec(),
-		LeveragedLpAmount: sdkmath.ZeroInt(),
-		LeverageMax:       sdkmath.LegacyOneDec().MulInt64(10),
-	}
 	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", 100000), sdk.NewInt64Coin("uusdt", 100000)}
 
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, poolInit)
@@ -58,7 +55,17 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 		},
 		TotalWeight: sdkmath.NewInt(20),
 	})
-	k.SetPool(suite.ctx, pool)
+	suite.Require().NoError(err)
+	enablePoolMsg := types.MsgAddPool{
+		Authority: authtypes.NewModuleAddress("gov").String(),
+		Pool: types.AddPool{
+			AmmPoolId:   1,
+			LeverageMax: math.LegacyNewDec(10),
+		},
+	}
+	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
+	_, err = msgServer.AddPool(suite.ctx, &enablePoolMsg)
+	suite.Require().NoError(err)
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     "uusdc",
 		Liquidity: sdkmath.NewInt(100000),

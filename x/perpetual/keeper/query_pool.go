@@ -34,12 +34,13 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 			return types.ErrPoolDoesNotExist
 		}
 
-		totalLiabilities, err := k.GetPoolTotalBaseCurrencyLiabilities(ctx, pool)
-		if err != nil {
-			return err
-		}
-
+		// TODO remove this if condition. All pools in perpetual must use oracle.
 		if ammPool.PoolParams.UseOracle {
+			totalLiabilities, err := k.GetPoolTotalBaseCurrencyLiabilities(ctx, pool)
+			if err != nil {
+				return err
+			}
+
 			longRate, shortRate := k.GetFundingPaymentRates(ctx, pool)
 			pools = append(pools, types.PoolResponse{
 				AmmPoolId:                            pool.AmmPoolId,

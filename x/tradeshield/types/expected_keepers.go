@@ -46,4 +46,5 @@ type PerpetualKeeper interface {
 	GetPool(ctx sdk.Context, poolId uint64) (val perpetualtypes.Pool, found bool)
 	HandleOpenEstimation(ctx sdk.Context, req *perpetualtypes.QueryOpenEstimationRequest) (*perpetualtypes.QueryOpenEstimationResponse, error)
 	HandleCloseEstimation(ctx sdk.Context, req *perpetualtypes.QueryCloseEstimationRequest) (res *perpetualtypes.QueryCloseEstimationResponse, err error)
+	GetAssetPrice(ctx sdk.Context, asset string) (sdkmath.LegacyDec, error)
 }

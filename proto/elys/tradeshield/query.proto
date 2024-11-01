@@ -86,7 +86,8 @@ message QueryAllPendingSpotOrderResponse {
 message QueryGetPendingPerpetualOrderRequest { uint64 id = 1; }
 
 message QueryGetPendingPerpetualOrderResponse {
-  PerpetualOrder pending_perpetual_order = 1 [ (gogoproto.nullable) = false ];
+  PerpetualOrderExtraInfo pending_perpetual_order = 1
+      [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllPendingPerpetualOrderRequest {
@@ -94,7 +95,7 @@ message QueryAllPendingPerpetualOrderRequest {
 }
 
 message QueryAllPendingPerpetualOrderResponse {
-  repeated PerpetualOrder pending_perpetual_order = 1
+  repeated PerpetualOrderExtraInfo pending_perpetual_order = 1
       [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
@@ -105,7 +106,7 @@ message QueryPendingPerpetualOrderForAddressRequest {
 }
 
 message QueryPendingPerpetualOrderForAddressResponse {
-  repeated PerpetualOrder pending_perpetual_orders = 1
+  repeated PerpetualOrderExtraInfo pending_perpetual_orders = 1
       [ (gogoproto.nullable) = false ];
 }
 

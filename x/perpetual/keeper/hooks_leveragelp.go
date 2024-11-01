@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
@@ -40,14 +41,56 @@ func (h LeverageLpHooks) AfterDisablingPool(ctx sdk.Context, ammPool ammtypes.Po
 	return h.k.OnLeverageLpDisablePool(ctx, ammPool)
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk.AccAddress) error {
+func (h LeverageLpHooks) AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) error {
+	perpetualPool, found := h.k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		return fmt.Errorf("perpetual pool (id: %d) not found", ammPool.PoolId)
+	}
+
+	err := h.k.UpdatePoolHealth(ctx, &perpetualPool)
+	if err != nil {
+		return err
+	}
+
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, sender sdk.AccAddress) error {
+func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) error {
+	perpetualPool, found := h.k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		return fmt.Errorf("perpetual pool (id: %d) not found", ammPool.PoolId)
+	}
+
+	err := h.k.UpdatePoolHealth(ctx, &perpetualPool)
+	if err != nil {
+		return err
+	}
+
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, sender sdk.AccAddress) error {
+func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) error {
+	perpetualPool, found := h.k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		return fmt.Errorf("perpetual pool (id: %d) not found", ammPool.PoolId)
+	}
+
+	err := h.k.UpdatePoolHealth(ctx, &perpetualPool)
+	if err != nil {
+		return err
+	}
+
+	err = h.k.CheckLowPoolHealthAndMinimumCustody(ctx, ammPool.PoolId)
+	if err != nil {
+		return err
+	}
 	return nil
 }

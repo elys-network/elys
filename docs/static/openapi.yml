@@ -41047,6 +41047,8 @@ paths:
                     type: string
                   leverage_max:
                     type: string
+                  max_leveragelp_ratio:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -41095,6 +41097,8 @@ paths:
                     leveraged_lp_amount:
                       type: string
                     leverage_max:
+                      type: string
+                    max_leveragelp_ratio:
                       type: string
               pagination:
                 type: object
@@ -43919,7 +43923,20 @@ paths:
                   trading_asset_price:
                     type: string
                   pnl:
-                    type: string
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
                   effective_leverage:
                     type: string
                   liquidation_price:
@@ -44051,7 +44068,20 @@ paths:
                     trading_asset_price:
                       type: string
                     pnl:
-                      type: string
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
                     effective_leverage:
                       type: string
                     liquidation_price:
@@ -44263,7 +44293,20 @@ paths:
                     trading_asset_price:
                       type: string
                     pnl:
-                      type: string
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
                     effective_leverage:
                       type: string
                     liquidation_price:
@@ -44500,6 +44543,36 @@ paths:
                 type: string
               price_impact:
                 type: string
+              custody:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              liabilities:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -44623,12 +44696,14 @@ paths:
                       should be greater than 1
                   maximum_short_take_profit_price_ratio:
                     type: string
-                    description: >-
-                      No need for minimumShortTakeProfitPriceRatio as it will be
-                      0, checked in validate message
                     title: >-
                       max value for take_profit_price/current price for short,
                       should be less than 1
+                  enable_take_profit_custody_liabilities:
+                    type: boolean
+                    title: >-
+                      No need for minimumShortTakeProfitPriceRatio as it will be
+                      0, checked in validate message
             description: ParamsResponse is response type for the Query/Params RPC method.
         default:
           description: An unexpected error response.
@@ -44685,6 +44760,8 @@ paths:
                           type: string
                         asset_denom:
                           type: string
+                        collateral:
+                          type: string
                   pool_assets_short:
                     type: array
                     items:
@@ -44700,6 +44777,8 @@ paths:
                           type: string
                         asset_denom:
                           type: string
+                        collateral:
+                          type: string
                   last_height_borrow_interest_rate_computed:
                     type: string
                     format: int64
@@ -44709,6 +44788,13 @@ paths:
                       funding rate, if positive longs pay shorts, if negative
                       shorts pay longs
                   net_open_interest:
+                    type: string
+                  long_rate:
+                    type: string
+                    title: |-
+                      Rate at which long pays/receive from short
+                      if negative longs pay, if positive long receives
+                  short_rate:
                     type: string
         default:
           description: An unexpected error response.
@@ -44773,6 +44859,8 @@ paths:
                             type: string
                           asset_denom:
                             type: string
+                          collateral:
+                            type: string
                     pool_assets_short:
                       type: array
                       items:
@@ -44788,6 +44876,8 @@ paths:
                             type: string
                           asset_denom:
                             type: string
+                          collateral:
+                            type: string
                     last_height_borrow_interest_rate_computed:
                       type: string
                       format: int64
@@ -44797,6 +44887,13 @@ paths:
                         funding rate, if positive longs pay shorts, if negative
                         shorts pay longs
                     net_open_interest:
+                      type: string
+                    long_rate:
+                      type: string
+                      title: |-
+                        Rate at which long pays/receive from short
+                        if negative longs pay, if positive long receives
+                    short_rate:
                       type: string
               pagination:
                 type: object
@@ -44987,7 +45084,20 @@ paths:
                     trading_asset_price:
                       type: string
                     pnl:
-                      type: string
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
                     effective_leverage:
                       type: string
                     liquidation_price:
@@ -46484,71 +46594,78 @@ paths:
                 items:
                   type: object
                   properties:
-                    order_id:
-                      type: string
-                      format: uint64
-                    owner_address:
-                      type: string
-                    perpetual_order_type:
-                      type: string
-                      enum:
-                        - LIMITOPEN
-                        - LIMITCLOSE
-                        - MARKETOPEN
-                        - MARKETCLOSE
-                        - STOPLOSSPERP
-                      default: LIMITOPEN
-                      title: Perpetual Order
-                    position:
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - LONG
-                        - SHORT
-                      default: UNSPECIFIED
-                    trigger_price:
+                    perpetual_order:
                       type: object
                       properties:
-                        base_denom:
+                        order_id:
                           type: string
-                        quote_denom:
+                          format: uint64
+                        owner_address:
                           type: string
-                        rate:
+                        perpetual_order_type:
                           type: string
-                    collateral:
-                      type: object
-                      properties:
-                        denom:
+                          enum:
+                            - LIMITOPEN
+                            - LIMITCLOSE
+                            - MARKETOPEN
+                            - MARKETCLOSE
+                            - STOPLOSSPERP
+                          default: LIMITOPEN
+                          title: Perpetual Order
+                        position:
                           type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
+                          enum:
+                            - UNSPECIFIED
+                            - LONG
+                            - SHORT
+                          default: UNSPECIFIED
+                        trigger_price:
+                          type: object
+                          properties:
+                            base_denom:
+                              type: string
+                            quote_denom:
+                              type: string
+                            rate:
+                              type: string
+                        collateral:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
 
 
-                        NOTE: The amount field is an Int which implements the
-                        custom method
+                            NOTE: The amount field is an Int which implements
+                            the custom method
 
-                        signatures required by gogoproto.
-                    trading_asset:
-                      type: string
-                    leverage:
-                      type: string
-                    take_profit_price:
-                      type: string
-                    position_id:
-                      type: string
-                      format: uint64
-                    status:
-                      type: string
-                      enum:
-                        - PENDING
-                        - EXECUTED
-                        - CANCELED
-                        - ALL
-                      default: PENDING
-                    stop_loss_price:
-                      type: string
+                            signatures required by gogoproto.
+                        trading_asset:
+                          type: string
+                        leverage:
+                          type: string
+                        take_profit_price:
+                          type: string
+                        position_id:
+                          type: string
+                          format: uint64
+                        status:
+                          type: string
+                          enum:
+                            - PENDING
+                            - EXECUTED
+                            - CANCELED
+                            - ALL
+                          default: PENDING
+                        stop_loss_price:
+                          type: string
+                        poolId:
+                          type: string
+                          format: uint64
                     position_size:
                       type: object
                       properties:
@@ -46688,71 +46805,78 @@ paths:
               pending_perpetual_order:
                 type: object
                 properties:
-                  order_id:
-                    type: string
-                    format: uint64
-                  owner_address:
-                    type: string
-                  perpetual_order_type:
-                    type: string
-                    enum:
-                      - LIMITOPEN
-                      - LIMITCLOSE
-                      - MARKETOPEN
-                      - MARKETCLOSE
-                      - STOPLOSSPERP
-                    default: LIMITOPEN
-                    title: Perpetual Order
-                  position:
-                    type: string
-                    enum:
-                      - UNSPECIFIED
-                      - LONG
-                      - SHORT
-                    default: UNSPECIFIED
-                  trigger_price:
+                  perpetual_order:
                     type: object
                     properties:
-                      base_denom:
+                      order_id:
                         type: string
-                      quote_denom:
+                        format: uint64
+                      owner_address:
                         type: string
-                      rate:
+                      perpetual_order_type:
                         type: string
-                  collateral:
-                    type: object
-                    properties:
-                      denom:
+                        enum:
+                          - LIMITOPEN
+                          - LIMITCLOSE
+                          - MARKETOPEN
+                          - MARKETCLOSE
+                          - STOPLOSSPERP
+                        default: LIMITOPEN
+                        title: Perpetual Order
+                      position:
                         type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
+                        enum:
+                          - UNSPECIFIED
+                          - LONG
+                          - SHORT
+                        default: UNSPECIFIED
+                      trigger_price:
+                        type: object
+                        properties:
+                          base_denom:
+                            type: string
+                          quote_denom:
+                            type: string
+                          rate:
+                            type: string
+                      collateral:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          Coin defines a token with a denomination and an
+                          amount.
 
 
-                      NOTE: The amount field is an Int which implements the
-                      custom method
+                          NOTE: The amount field is an Int which implements the
+                          custom method
 
-                      signatures required by gogoproto.
-                  trading_asset:
-                    type: string
-                  leverage:
-                    type: string
-                  take_profit_price:
-                    type: string
-                  position_id:
-                    type: string
-                    format: uint64
-                  status:
-                    type: string
-                    enum:
-                      - PENDING
-                      - EXECUTED
-                      - CANCELED
-                      - ALL
-                    default: PENDING
-                  stop_loss_price:
-                    type: string
+                          signatures required by gogoproto.
+                      trading_asset:
+                        type: string
+                      leverage:
+                        type: string
+                      take_profit_price:
+                        type: string
+                      position_id:
+                        type: string
+                        format: uint64
+                      status:
+                        type: string
+                        enum:
+                          - PENDING
+                          - EXECUTED
+                          - CANCELED
+                          - ALL
+                        default: PENDING
+                      stop_loss_price:
+                        type: string
+                      poolId:
+                        type: string
+                        format: uint64
                   position_size:
                     type: object
                     properties:
@@ -46815,71 +46939,78 @@ paths:
                 items:
                   type: object
                   properties:
-                    order_id:
-                      type: string
-                      format: uint64
-                    owner_address:
-                      type: string
-                    perpetual_order_type:
-                      type: string
-                      enum:
-                        - LIMITOPEN
-                        - LIMITCLOSE
-                        - MARKETOPEN
-                        - MARKETCLOSE
-                        - STOPLOSSPERP
-                      default: LIMITOPEN
-                      title: Perpetual Order
-                    position:
-                      type: string
-                      enum:
-                        - UNSPECIFIED
-                        - LONG
-                        - SHORT
-                      default: UNSPECIFIED
-                    trigger_price:
+                    perpetual_order:
                       type: object
                       properties:
-                        base_denom:
+                        order_id:
                           type: string
-                        quote_denom:
+                          format: uint64
+                        owner_address:
                           type: string
-                        rate:
+                        perpetual_order_type:
                           type: string
-                    collateral:
-                      type: object
-                      properties:
-                        denom:
+                          enum:
+                            - LIMITOPEN
+                            - LIMITCLOSE
+                            - MARKETOPEN
+                            - MARKETCLOSE
+                            - STOPLOSSPERP
+                          default: LIMITOPEN
+                          title: Perpetual Order
+                        position:
                           type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
+                          enum:
+                            - UNSPECIFIED
+                            - LONG
+                            - SHORT
+                          default: UNSPECIFIED
+                        trigger_price:
+                          type: object
+                          properties:
+                            base_denom:
+                              type: string
+                            quote_denom:
+                              type: string
+                            rate:
+                              type: string
+                        collateral:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
 
 
-                        NOTE: The amount field is an Int which implements the
-                        custom method
+                            NOTE: The amount field is an Int which implements
+                            the custom method
 
-                        signatures required by gogoproto.
-                    trading_asset:
-                      type: string
-                    leverage:
-                      type: string
-                    take_profit_price:
-                      type: string
-                    position_id:
-                      type: string
-                      format: uint64
-                    status:
-                      type: string
-                      enum:
-                        - PENDING
-                        - EXECUTED
-                        - CANCELED
-                        - ALL
-                      default: PENDING
-                    stop_loss_price:
-                      type: string
+                            signatures required by gogoproto.
+                        trading_asset:
+                          type: string
+                        leverage:
+                          type: string
+                        take_profit_price:
+                          type: string
+                        position_id:
+                          type: string
+                          format: uint64
+                        status:
+                          type: string
+                          enum:
+                            - PENDING
+                            - EXECUTED
+                            - CANCELED
+                            - ALL
+                          default: PENDING
+                        stop_loss_price:
+                          type: string
+                        poolId:
+                          type: string
+                          format: uint64
                     position_size:
                       type: object
                       properties:
@@ -88819,6 +88950,8 @@ definitions:
         type: string
       leverage_max:
         type: string
+      max_leveragelp_ratio:
+        type: string
   elys.leveragelp.Position:
     type: object
     properties:
@@ -89198,6 +89331,8 @@ definitions:
               type: string
             leverage_max:
               type: string
+            max_leveragelp_ratio:
+              type: string
       pagination:
         type: object
         properties:
@@ -89280,6 +89415,8 @@ definitions:
           leveraged_lp_amount:
             type: string
           leverage_max:
+            type: string
+          max_leveragelp_ratio:
             type: string
   elys.leveragelp.QueryLiquidationPriceResponse:
     type: object
@@ -90615,7 +90752,20 @@ definitions:
           trading_asset_price:
             type: string
           pnl:
-            type: string
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
           effective_leverage:
             type: string
           liquidation_price:
@@ -90731,7 +90881,17 @@ definitions:
       trading_asset_price:
         type: string
       pnl:
-        type: string
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
       effective_leverage:
         type: string
       liquidation_price:
@@ -90802,12 +90962,14 @@ definitions:
           greater than 1
       maximum_short_take_profit_price_ratio:
         type: string
-        description: >-
-          No need for minimumShortTakeProfitPriceRatio as it will be 0, checked
-          in validate message
         title: >-
           max value for take_profit_price/current price for short, should be
           less than 1
+      enable_take_profit_custody_liabilities:
+        type: boolean
+        title: >-
+          No need for minimumShortTakeProfitPriceRatio as it will be 0, checked
+          in validate message
     description: Params defines the parameters for the module.
   elys.perpetual.ParamsResponse:
     type: object
@@ -90866,12 +91028,14 @@ definitions:
               greater than 1
           maximum_short_take_profit_price_ratio:
             type: string
-            description: >-
-              No need for minimumShortTakeProfitPriceRatio as it will be 0,
-              checked in validate message
             title: >-
               max value for take_profit_price/current price for short, should be
               less than 1
+          enable_take_profit_custody_liabilities:
+            type: boolean
+            title: >-
+              No need for minimumShortTakeProfitPriceRatio as it will be 0,
+              checked in validate message
     description: ParamsResponse is response type for the Query/Params RPC method.
   elys.perpetual.PoolAsset:
     type: object
@@ -90885,6 +91049,8 @@ definitions:
       take_profit_custody:
         type: string
       asset_denom:
+        type: string
+      collateral:
         type: string
   elys.perpetual.PoolResponse:
     type: object
@@ -90911,6 +91077,8 @@ definitions:
               type: string
             asset_denom:
               type: string
+            collateral:
+              type: string
       pool_assets_short:
         type: array
         items:
@@ -90926,6 +91094,8 @@ definitions:
               type: string
             asset_denom:
               type: string
+            collateral:
+              type: string
       last_height_borrow_interest_rate_computed:
         type: string
         format: int64
@@ -90935,6 +91105,13 @@ definitions:
           funding rate, if positive longs pay shorts, if negative shorts pay
           longs
       net_open_interest:
+        type: string
+      long_rate:
+        type: string
+        title: |-
+          Rate at which long pays/receive from short
+          if negative longs pay, if positive long receives
+      short_rate:
         type: string
   elys.perpetual.Position:
     type: string
@@ -91028,7 +91205,20 @@ definitions:
             trading_asset_price:
               type: string
             pnl:
-              type: string
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
             effective_leverage:
               type: string
             liquidation_price:
@@ -91149,7 +91339,20 @@ definitions:
             trading_asset_price:
               type: string
             pnl:
-              type: string
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
             effective_leverage:
               type: string
             liquidation_price:
@@ -91270,7 +91473,20 @@ definitions:
             trading_asset_price:
               type: string
             pnl:
-              type: string
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
             effective_leverage:
               type: string
             liquidation_price:
@@ -91344,6 +91560,8 @@ definitions:
                     type: string
                   asset_denom:
                     type: string
+                  collateral:
+                    type: string
             pool_assets_short:
               type: array
               items:
@@ -91359,6 +91577,8 @@ definitions:
                     type: string
                   asset_denom:
                     type: string
+                  collateral:
+                    type: string
             last_height_borrow_interest_rate_computed:
               type: string
               format: int64
@@ -91368,6 +91588,13 @@ definitions:
                 funding rate, if positive longs pay shorts, if negative shorts
                 pay longs
             net_open_interest:
+              type: string
+            long_rate:
+              type: string
+              title: |-
+                Rate at which long pays/receive from short
+                if negative longs pay, if positive long receives
+            short_rate:
               type: string
       pagination:
         type: object
@@ -91528,6 +91755,8 @@ definitions:
                   type: string
                 asset_denom:
                   type: string
+                collateral:
+                  type: string
           pool_assets_short:
             type: array
             items:
@@ -91543,6 +91772,8 @@ definitions:
                   type: string
                 asset_denom:
                   type: string
+                collateral:
+                  type: string
           last_height_borrow_interest_rate_computed:
             type: string
             format: int64
@@ -91552,6 +91783,13 @@ definitions:
               funding rate, if positive longs pay shorts, if negative shorts pay
               longs
           net_open_interest:
+            type: string
+          long_rate:
+            type: string
+            title: |-
+              Rate at which long pays/receive from short
+              if negative longs pay, if positive long receives
+          short_rate:
             type: string
   elys.perpetual.QueryOpenEstimationResponse:
     type: object
@@ -91641,6 +91879,30 @@ definitions:
         type: string
       price_impact:
         type: string
+      custody:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      liabilities:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.perpetual.StatusResponse:
     type: object
     properties:
@@ -92214,17 +92476,35 @@ definitions:
       timestamp:
         type: string
         format: uint64
+  elys.tradeshield.MsgCancelPerpetualOrderResponse:
+    type: object
+    properties:
+      orderId:
+        type: string
+        format: uint64
   elys.tradeshield.MsgCancelPerpetualOrdersResponse:
     type: object
+  elys.tradeshield.MsgCancelSpotOrderResponse:
+    type: object
+    properties:
+      orderId:
+        type: string
+        format: uint64
   elys.tradeshield.MsgCancelSpotOrdersResponse:
     type: object
-  elys.tradeshield.MsgCreatePendingPerpetualOrderResponse:
+  elys.tradeshield.MsgCreatePerpetualCloseOrderResponse:
     type: object
     properties:
       order_id:
         type: string
         format: uint64
-  elys.tradeshield.MsgCreatePendingSpotOrderResponse:
+  elys.tradeshield.MsgCreatePerpetualOpenOrderResponse:
+    type: object
+    properties:
+      order_id:
+        type: string
+        format: uint64
+  elys.tradeshield.MsgCreateSpotOrderResponse:
     type: object
     properties:
       order_id:
@@ -92234,9 +92514,9 @@ definitions:
     type: object
   elys.tradeshield.MsgUpdateParamsResponse:
     type: object
-  elys.tradeshield.MsgUpdatePendingPerpetualOrderResponse:
+  elys.tradeshield.MsgUpdatePerpetualOrderResponse:
     type: object
-  elys.tradeshield.MsgUpdatePendingSpotOrderResponse:
+  elys.tradeshield.MsgUpdateSpotOrderResponse:
     type: object
   elys.tradeshield.OrderPrice:
     type: object
@@ -92340,6 +92620,83 @@ definitions:
         default: PENDING
       stop_loss_price:
         type: string
+      poolId:
+        type: string
+        format: uint64
+  elys.tradeshield.PerpetualOrderExtraInfo:
+    type: object
+    properties:
+      perpetual_order:
+        type: object
+        properties:
+          order_id:
+            type: string
+            format: uint64
+          owner_address:
+            type: string
+          perpetual_order_type:
+            type: string
+            enum:
+              - LIMITOPEN
+              - LIMITCLOSE
+              - MARKETOPEN
+              - MARKETCLOSE
+              - STOPLOSSPERP
+            default: LIMITOPEN
+            title: Perpetual Order
+          position:
+            type: string
+            enum:
+              - UNSPECIFIED
+              - LONG
+              - SHORT
+            default: UNSPECIFIED
+          trigger_price:
+            type: object
+            properties:
+              base_denom:
+                type: string
+              quote_denom:
+                type: string
+              rate:
+                type: string
+          collateral:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          trading_asset:
+            type: string
+          leverage:
+            type: string
+          take_profit_price:
+            type: string
+          position_id:
+            type: string
+            format: uint64
+          status:
+            type: string
+            enum:
+              - PENDING
+              - EXECUTED
+              - CANCELED
+              - ALL
+            default: PENDING
+          stop_loss_price:
+            type: string
+          poolId:
+            type: string
+            format: uint64
       position_size:
         type: object
         properties:
@@ -92383,71 +92740,77 @@ definitions:
         items:
           type: object
           properties:
-            order_id:
-              type: string
-              format: uint64
-            owner_address:
-              type: string
-            perpetual_order_type:
-              type: string
-              enum:
-                - LIMITOPEN
-                - LIMITCLOSE
-                - MARKETOPEN
-                - MARKETCLOSE
-                - STOPLOSSPERP
-              default: LIMITOPEN
-              title: Perpetual Order
-            position:
-              type: string
-              enum:
-                - UNSPECIFIED
-                - LONG
-                - SHORT
-              default: UNSPECIFIED
-            trigger_price:
+            perpetual_order:
               type: object
               properties:
-                base_denom:
+                order_id:
                   type: string
-                quote_denom:
+                  format: uint64
+                owner_address:
                   type: string
-                rate:
+                perpetual_order_type:
                   type: string
-            collateral:
-              type: object
-              properties:
-                denom:
+                  enum:
+                    - LIMITOPEN
+                    - LIMITCLOSE
+                    - MARKETOPEN
+                    - MARKETCLOSE
+                    - STOPLOSSPERP
+                  default: LIMITOPEN
+                  title: Perpetual Order
+                position:
                   type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
+                  enum:
+                    - UNSPECIFIED
+                    - LONG
+                    - SHORT
+                  default: UNSPECIFIED
+                trigger_price:
+                  type: object
+                  properties:
+                    base_denom:
+                      type: string
+                    quote_denom:
+                      type: string
+                    rate:
+                      type: string
+                collateral:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
 
 
-                NOTE: The amount field is an Int which implements the custom
-                method
+                    NOTE: The amount field is an Int which implements the custom
+                    method
 
-                signatures required by gogoproto.
-            trading_asset:
-              type: string
-            leverage:
-              type: string
-            take_profit_price:
-              type: string
-            position_id:
-              type: string
-              format: uint64
-            status:
-              type: string
-              enum:
-                - PENDING
-                - EXECUTED
-                - CANCELED
-                - ALL
-              default: PENDING
-            stop_loss_price:
-              type: string
+                    signatures required by gogoproto.
+                trading_asset:
+                  type: string
+                leverage:
+                  type: string
+                take_profit_price:
+                  type: string
+                position_id:
+                  type: string
+                  format: uint64
+                status:
+                  type: string
+                  enum:
+                    - PENDING
+                    - EXECUTED
+                    - CANCELED
+                    - ALL
+                  default: PENDING
+                stop_loss_price:
+                  type: string
+                poolId:
+                  type: string
+                  format: uint64
             position_size:
               type: object
               properties:
@@ -92592,71 +92955,77 @@ definitions:
       pending_perpetual_order:
         type: object
         properties:
-          order_id:
-            type: string
-            format: uint64
-          owner_address:
-            type: string
-          perpetual_order_type:
-            type: string
-            enum:
-              - LIMITOPEN
-              - LIMITCLOSE
-              - MARKETOPEN
-              - MARKETCLOSE
-              - STOPLOSSPERP
-            default: LIMITOPEN
-            title: Perpetual Order
-          position:
-            type: string
-            enum:
-              - UNSPECIFIED
-              - LONG
-              - SHORT
-            default: UNSPECIFIED
-          trigger_price:
+          perpetual_order:
             type: object
             properties:
-              base_denom:
+              order_id:
                 type: string
-              quote_denom:
+                format: uint64
+              owner_address:
                 type: string
-              rate:
+              perpetual_order_type:
                 type: string
-          collateral:
-            type: object
-            properties:
-              denom:
+                enum:
+                  - LIMITOPEN
+                  - LIMITCLOSE
+                  - MARKETOPEN
+                  - MARKETCLOSE
+                  - STOPLOSSPERP
+                default: LIMITOPEN
+                title: Perpetual Order
+              position:
                 type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
+                enum:
+                  - UNSPECIFIED
+                  - LONG
+                  - SHORT
+                default: UNSPECIFIED
+              trigger_price:
+                type: object
+                properties:
+                  base_denom:
+                    type: string
+                  quote_denom:
+                    type: string
+                  rate:
+                    type: string
+              collateral:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
 
 
-              NOTE: The amount field is an Int which implements the custom
-              method
+                  NOTE: The amount field is an Int which implements the custom
+                  method
 
-              signatures required by gogoproto.
-          trading_asset:
-            type: string
-          leverage:
-            type: string
-          take_profit_price:
-            type: string
-          position_id:
-            type: string
-            format: uint64
-          status:
-            type: string
-            enum:
-              - PENDING
-              - EXECUTED
-              - CANCELED
-              - ALL
-            default: PENDING
-          stop_loss_price:
-            type: string
+                  signatures required by gogoproto.
+              trading_asset:
+                type: string
+              leverage:
+                type: string
+              take_profit_price:
+                type: string
+              position_id:
+                type: string
+                format: uint64
+              status:
+                type: string
+                enum:
+                  - PENDING
+                  - EXECUTED
+                  - CANCELED
+                  - ALL
+                default: PENDING
+              stop_loss_price:
+                type: string
+              poolId:
+                type: string
+                format: uint64
           position_size:
             type: object
             properties:
@@ -92781,71 +93150,77 @@ definitions:
         items:
           type: object
           properties:
-            order_id:
-              type: string
-              format: uint64
-            owner_address:
-              type: string
-            perpetual_order_type:
-              type: string
-              enum:
-                - LIMITOPEN
-                - LIMITCLOSE
-                - MARKETOPEN
-                - MARKETCLOSE
-                - STOPLOSSPERP
-              default: LIMITOPEN
-              title: Perpetual Order
-            position:
-              type: string
-              enum:
-                - UNSPECIFIED
-                - LONG
-                - SHORT
-              default: UNSPECIFIED
-            trigger_price:
+            perpetual_order:
               type: object
               properties:
-                base_denom:
+                order_id:
                   type: string
-                quote_denom:
+                  format: uint64
+                owner_address:
                   type: string
-                rate:
+                perpetual_order_type:
                   type: string
-            collateral:
-              type: object
-              properties:
-                denom:
+                  enum:
+                    - LIMITOPEN
+                    - LIMITCLOSE
+                    - MARKETOPEN
+                    - MARKETCLOSE
+                    - STOPLOSSPERP
+                  default: LIMITOPEN
+                  title: Perpetual Order
+                position:
                   type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
+                  enum:
+                    - UNSPECIFIED
+                    - LONG
+                    - SHORT
+                  default: UNSPECIFIED
+                trigger_price:
+                  type: object
+                  properties:
+                    base_denom:
+                      type: string
+                    quote_denom:
+                      type: string
+                    rate:
+                      type: string
+                collateral:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
 
 
-                NOTE: The amount field is an Int which implements the custom
-                method
+                    NOTE: The amount field is an Int which implements the custom
+                    method
 
-                signatures required by gogoproto.
-            trading_asset:
-              type: string
-            leverage:
-              type: string
-            take_profit_price:
-              type: string
-            position_id:
-              type: string
-              format: uint64
-            status:
-              type: string
-              enum:
-                - PENDING
-                - EXECUTED
-                - CANCELED
-                - ALL
-              default: PENDING
-            stop_loss_price:
-              type: string
+                    signatures required by gogoproto.
+                trading_asset:
+                  type: string
+                leverage:
+                  type: string
+                take_profit_price:
+                  type: string
+                position_id:
+                  type: string
+                  format: uint64
+                status:
+                  type: string
+                  enum:
+                    - PENDING
+                    - EXECUTED
+                    - CANCELED
+                    - ALL
+                  default: PENDING
+                stop_loss_price:
+                  type: string
+                poolId:
+                  type: string
+                  format: uint64
             position_size:
               type: object
               properties:

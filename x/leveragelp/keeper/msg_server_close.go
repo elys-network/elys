@@ -24,7 +24,11 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 	}
 
 	if k.hooks != nil {
-		err := k.hooks.AfterLeverageLpPositionClose(ctx, sdk.MustAccAddressFromBech32(msg.Creator))
+		ammPool, err := k.GetAmmPool(ctx, closedPosition.AmmPoolId)
+		if err != nil {
+			return nil, err
+		}
+		err = k.hooks.AfterLeverageLpPositionClose(ctx, sdk.MustAccAddressFromBech32(msg.Creator), ammPool)
 		if err != nil {
 			return nil, err
 		}

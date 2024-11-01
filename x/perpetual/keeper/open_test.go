@@ -75,7 +75,8 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 					suite.app.PerpetualKeeper.WhitelistAddress(suite.ctx, account)
 				}
 
-				ammPool = suite.SetAndGetAmmPool(poolCreator, poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				ammPool = suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				poolId = ammPool.PoolId
 				enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 					Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 					Pool: leveragelpmoduletypes.AddPool{
@@ -180,7 +181,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			"negative pool amount after swap",
 			false,
 			func() {
-				suite.ResetAndSetSuite(addr, 1, true, amount.MulRaw(1000), sdk.NewInt(2))
+				suite.ResetAndSetSuite(addr, true, amount.MulRaw(1000), sdk.NewInt(2))
 
 				msg.Creator = positionCreator.String()
 				msg.Collateral.Denom = ptypes.BaseCurrency

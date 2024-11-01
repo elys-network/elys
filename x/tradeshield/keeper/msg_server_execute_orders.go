@@ -63,12 +63,6 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 		case types.PerpetualOrderType_LIMITCLOSE:
 			// execute the limit close order
 			err = k.ExecuteLimitCloseOrder(ctx, perpetualOrder)
-		case types.PerpetualOrderType_MARKETOPEN:
-			// execute the market open order
-			err = k.ExecuteMarketOpenOrder(ctx, perpetualOrder)
-		case types.PerpetualOrderType_MARKETCLOSE:
-			// execute the market close order
-			err = k.ExecuteMarketCloseOrder(ctx, perpetualOrder)
 		}
 
 		// return the error if any

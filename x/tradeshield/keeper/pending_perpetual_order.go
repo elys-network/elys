@@ -272,7 +272,7 @@ func (k Keeper) RemovePerpetualSortedOrder(ctx sdk.Context, orderID uint64) erro
 
 // ExecuteLimitOpenOrder executes a limit open order
 func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.TriggerPrice.BaseDenom, order.TriggerPrice.QuoteDenom)
+	marketPrice, err := k.perpetual.GetAssetPrice(ctx, order.TradingAsset)
 	if err != nil {
 		return err
 	}
@@ -290,6 +290,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 				Collateral:      order.Collateral,
 				TakeProfitPrice: order.TakeProfitPrice,
 				StopLossPrice:   order.StopLossPrice,
+				PoolId:          order.PoolId,
 			}, false)
 			if err != nil {
 				return err
@@ -307,6 +308,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 				Collateral:      order.Collateral,
 				TakeProfitPrice: order.TakeProfitPrice,
 				StopLossPrice:   order.StopLossPrice,
+				PoolId:          order.PoolId,
 			}, false)
 			if err != nil {
 				return err
@@ -329,7 +331,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 
 // ExecuteLimitCloseOrder executes a limit close order
 func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.TriggerPrice.BaseDenom, order.TriggerPrice.QuoteDenom)
+	marketPrice, err := k.perpetual.GetAssetPrice(ctx, order.TradingAsset)
 	if err != nil {
 		return err
 	}
@@ -386,6 +388,7 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 		Collateral:      order.Collateral,
 		TakeProfitPrice: order.TakeProfitPrice,
 		StopLossPrice:   order.StopLossPrice,
+		PoolId:          order.PoolId,
 	}, false)
 	if err != nil {
 		return err
@@ -414,8 +417,8 @@ func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOr
 	return nil
 }
 
-// FillUpExtraPerpetualOrderInfo fills up the extra information of the perpetual order
-func (k Keeper) FillUpExtraPerpetualOrderInfo(ctx sdk.Context, order *types.PerpetualOrder) error {
+// ConstructPerpetualOrderExtraInfo fills up the extra information of the perpetual order and returns it
+func (k Keeper) ConstructPerpetualOrderExtraInfo(ctx sdk.Context, order types.PerpetualOrder) (*types.PerpetualOrderExtraInfo, error) {
 	// If position id not set then estimate the info values
 	if order.PositionId == 0 {
 		res, err := k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
@@ -424,28 +427,30 @@ func (k Keeper) FillUpExtraPerpetualOrderInfo(ctx sdk.Context, order *types.Perp
 			TradingAsset:    order.TradingAsset,
 			Collateral:      order.Collateral,
 			TakeProfitPrice: order.TakeProfitPrice,
+			PoolId:          order.PoolId,
 		})
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		order.PositionSize = res.PositionSize
-		order.LiquidationPrice = res.LiquidationPrice
-		order.FundingRate = res.FundingRate
-		order.BorrowInterestRate = res.BorrowInterestRate
-
-		return nil
+		return &types.PerpetualOrderExtraInfo{
+			PerpetualOrder:     &order,
+			PositionSize:       res.PositionSize,
+			LiquidationPrice:   res.LiquidationPrice,
+			FundingRate:        res.FundingRate,
+			BorrowInterestRate: res.BorrowInterestRate,
+		}, nil
 	}
 
 	// otherwise retrieve the position info from existing position
 	mtp, err := k.perpetual.GetMTP(ctx, sdk.AccAddress(order.OwnerAddress), order.PositionId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	pool, found := k.perpetual.GetPool(ctx, mtp.AmmPoolId)
 	if !found {
-		return perpetualtypes.ErrPoolDoesNotExist
+		return nil, perpetualtypes.ErrPoolDoesNotExist
 	}
 
 	res, err := k.perpetual.HandleCloseEstimation(ctx, &perpetualtypes.QueryCloseEstimationRequest{
@@ -453,13 +458,14 @@ func (k Keeper) FillUpExtraPerpetualOrderInfo(ctx sdk.Context, order *types.Perp
 		PositionId: order.PositionId,
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	order.PositionSize = res.PositionSize
-	order.LiquidationPrice = res.LiquidationPrice
-	order.FundingRate = pool.FundingRate
-	order.BorrowInterestRate = pool.BorrowInterestRate
-
-	return nil
+	return &types.PerpetualOrderExtraInfo{
+		PerpetualOrder:     &order,
+		PositionSize:       res.PositionSize,
+		LiquidationPrice:   res.LiquidationPrice,
+		FundingRate:        pool.FundingRate,
+		BorrowInterestRate: pool.BorrowInterestRate,
+	}, nil
 }

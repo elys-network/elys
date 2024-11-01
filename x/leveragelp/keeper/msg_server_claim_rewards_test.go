@@ -5,6 +5,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -60,11 +61,17 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 	}
 	if createAmmPool {
 		poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, &msgCreatePool)
-		if err != nil {
-			panic(err)
+		suite.Require().NoError(err)
+		enablePoolMsg := types.MsgAddPool{
+			Authority: authtypes.NewModuleAddress("gov").String(),
+			Pool: types.AddPool{
+				AmmPoolId:   poolId,
+				LeverageMax: math.LegacyNewDec(10),
+			},
 		}
-
-		suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, math.LegacyMustNewDecFromStr("10")))
+		msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
+		_, err = msgServer.AddPool(suite.ctx, &enablePoolMsg)
+		suite.Require().NoError(err)
 
 	}
 	msgBond := stabletypes.MsgBond{

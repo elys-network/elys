@@ -25,17 +25,17 @@ func (h LeverageLpHooks) AfterDisablingPool(_ sdk.Context, _ ammtypes.Pool) erro
 	return nil
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk.AccAddress) error {
+func (h LeverageLpHooks) AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk.AccAddress, _ ammtypes.Pool) error {
 	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, sender sdk.AccAddress) error {
+func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, sender sdk.AccAddress, _ ammtypes.Pool) error {
 	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, sender sdk.AccAddress) error {
+func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, sender sdk.AccAddress, _ ammtypes.Pool) error {
 	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }

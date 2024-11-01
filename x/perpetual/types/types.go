@@ -75,7 +75,10 @@ func (mtp *MTP) GetAndSetOpenPrice() {
 	if mtp.Position == Position_LONG {
 		if mtp.CollateralAsset == mtp.TradingAsset {
 			// open price = liabilities / (custody - collateral)
-			openPrice = mtp.Liabilities.ToLegacyDec().Quo(mtp.Custody.Sub(mtp.Collateral).ToLegacyDec())
+			denominator := mtp.Custody.Sub(mtp.Collateral).ToLegacyDec()
+			if !denominator.IsZero() {
+				openPrice = mtp.Liabilities.ToLegacyDec().Quo(denominator)
+			}
 		} else {
 			// open price = (collateral + liabilities) / custody
 			openPrice = (mtp.Collateral.Add(mtp.Liabilities)).ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())

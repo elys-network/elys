@@ -44,7 +44,12 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 	}
 
 	if k.hooks != nil {
-		err := k.hooks.AfterLeverageLpPositionOpenConsolidate(ctx, sdk.MustAccAddressFromBech32(msg.Creator))
+		// ammPool will have updated values for opening position
+		ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
+		if !found {
+			return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
+		}
+		err = k.hooks.AfterLeverageLpPositionOpenConsolidate(ctx, sdk.MustAccAddressFromBech32(msg.Creator), ammPool)
 		if err != nil {
 			return nil, err
 		}
