@@ -49,6 +49,13 @@ func (suite *KeeperTestSuite) TestGetExternalLiquidityRatio() {
 		Decimals:    6,
 		DisplayName: "USDC",
 	})
+	// set asset profile
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   "asset2denom",
+		Denom:       "asset2denom",
+		Decimals:    6,
+		DisplayName: "asset2",
+	})
 	tests := []struct {
 		name            string
 		pool            types.Pool
@@ -118,6 +125,25 @@ func (suite *KeeperTestSuite) TestGetExternalLiquidityRatio() {
 			expectedError:  fmt.Errorf("asset profile not found for denom"),
 		},
 		{
+			name: "missing asset price",
+			pool: types.Pool{
+				PoolAssets: []types.PoolAsset{
+					{
+						Token: sdk.NewCoin("asset2denom", sdk.NewInt(1000)),
+					},
+				},
+			},
+			amountDepthInfo: []types.AssetAmountDepth{
+				{
+					Asset:  "asset2",
+					Amount: sdk.NewDec(500),
+					Depth:  sdk.MustNewDecFromStr("0.5"),
+				},
+			},
+			expectedResult: nil,
+			expectedError:  fmt.Errorf("asset price not set: asset2"),
+		},
+		{
 			name: "division by zero",
 			pool: types.Pool{
 				PoolAssets: []types.PoolAsset{
@@ -147,6 +173,48 @@ func (suite *KeeperTestSuite) TestGetExternalLiquidityRatio() {
 			},
 			expectedResult: nil,
 			expectedError:  types.ErrAmountTooLow,
+		},
+		{
+			name: "liquidity ratio is zero",
+			pool: types.Pool{
+				PoolAssets: []types.PoolAsset{
+					{
+						Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
+						Weight:                 sdk.NewInt(50),
+						ExternalLiquidityRatio: sdk.NewDec(1),
+					},
+					{
+						Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000)),
+						Weight:                 sdk.NewInt(50),
+						ExternalLiquidityRatio: sdk.NewDec(1),
+					},
+				},
+			},
+			amountDepthInfo: []types.AssetAmountDepth{
+				{
+					Asset:  "USDC",
+					Amount: sdk.NewDec(1000000000),
+					Depth:  sdk.MustNewDecFromStr("0"),
+				},
+				{
+					Asset:  "ATOM",
+					Amount: sdk.NewDec(1000000000),
+					Depth:  sdk.MustNewDecFromStr("0.5"),
+				},
+			},
+			expectedResult: []types.PoolAsset{
+				{
+					Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
+					Weight:                 sdk.NewInt(50),
+					ExternalLiquidityRatio: sdk.MustNewDecFromStr("34.142135623730950558"),
+				},
+				{
+					Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000)),
+					Weight:                 sdk.NewInt(50),
+					ExternalLiquidityRatio: sdk.MustNewDecFromStr("34.142135623730950558"),
+				},
+			},
+			expectedError: types.ErrAmountTooLow,
 		},
 	}
 
