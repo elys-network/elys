@@ -37,7 +37,6 @@ func TestCreatePerpetualOpenOrder(t *testing.T) {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
-				"limitopen",                     // order type
 				"long",                          // position
 				"10",                            // leverage
 				"1",                             // pool id
