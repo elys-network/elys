@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/testutil/sample"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -104,6 +105,64 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerClose_HandleLiquidateErrors(
 				Id:      2000,
 			},
 		},
+	})
+	suite.Require().Nil(err)
+
+}
+
+func (suite *PerpetualKeeperTestSuite) TestMsgServerClose_HandleLiquidateCheck() {
+	k := suite.app.PerpetualKeeper
+	ctx := suite.ctx
+	msg := keeper.NewMsgServerImpl(*k)
+
+	firstPool := uint64(1)
+
+	suite.SetPerpetualPool(firstPool)
+
+	amount := math.NewInt(400)
+
+	addr := suite.AddAccounts(1, nil)
+	firstPositionCreator := addr[0]
+
+	suite.app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
+		BaseDenom: ptypes.ATOM,
+		Denom:     ptypes.ATOM,
+		Decimals:  6,
+	})
+
+	tradingAssetPrice, err := k.GetAssetPrice(suite.ctx, ptypes.ATOM)
+	suite.Require().NoError(err)
+
+	firstOpenPositionMsg := &types.MsgOpen{
+		Creator:         firstPositionCreator.String(),
+		Leverage:        math.LegacyNewDec(5),
+		Position:        types.Position_LONG,
+		PoolId:          firstPool,
+		TradingAsset:    ptypes.ATOM,
+		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+		StopLossPrice:   sdk.ZeroDec(),
+	}
+
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	suite.Require().NoError(err)
+
+	_, err = msg.ClosePositions(ctx, &types.MsgClosePositions{
+		Creator: sample.AccAddress(),
+		Liquidate: []*types.PositionRequest{
+			{
+				Address: firstPositionCreator.String(),
+				Id:      firstPosition.Id,
+			},
+		},
+		StopLoss: []*types.PositionRequest{{
+			Address: firstPositionCreator.String(),
+			Id:      firstPosition.Id,
+		}},
+		TakeProfit: []*types.PositionRequest{{
+			Address: firstPositionCreator.String(),
+			Id:      firstPosition.Id,
+		}},
 	})
 	suite.Require().Nil(err)
 
