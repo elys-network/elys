@@ -136,20 +136,6 @@ func (k Keeper) GetAllPendingSpotOrder(ctx sdk.Context) (list []types.SpotOrder)
 	return
 }
 
-// DeleteAllPendingPerpetualOrder returns all pendingPerpetualOrder
-func (k Keeper) DeleteAllPendingPerpetualOrder(ctx sdk.Context) (list []types.PerpetualOrder) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		store.Delete(iterator.Key())
-	}
-
-	return
-}
-
 // GetPendingSpotOrderIDBytes returns the byte representation of the ID
 func GetPendingSpotOrderIDBytes(id uint64) []byte {
 	bz := make([]byte, 8)
