@@ -6,6 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
@@ -15,7 +16,11 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 
 	for i, asset := range updatedAssets {
 		for _, el := range amountDepthInfo {
-			if asset.Token.Denom == el.Asset {
+			entry, found := k.assetProfileKeeper.GetEntry(ctx, asset.Token.Denom)
+			if !found {
+				return nil, assetprofiletypes.ErrAssetProfileNotFound
+			}
+			if entry.DisplayName == el.Asset {
 				price, found := k.oracleKeeper.GetAssetPrice(ctx, el.Asset)
 				if !found {
 					return nil, fmt.Errorf("asset price not set: %s", el.Asset)
@@ -75,7 +80,7 @@ func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *typ
 			return nil, types.ErrInvalidPoolId
 		}
 
-		// Set external liquidity ratio for each of the asset separately
+		// Get external liquidity ratio for each of the asset separately
 		poolAssets, err := k.GetExternalLiquidityRatio(ctx, pool, el.AmountDepthInfo)
 		if err != nil {
 			return nil, err
