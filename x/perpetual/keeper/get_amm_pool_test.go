@@ -27,12 +27,14 @@ func (suite *PerpetualKeeperTestSuite) TestGetAmmPool() {
 		TotalShares: sdk.NewCoin("pool/1", sdk.NewInt(100)),
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
-				Weight: sdk.NewInt(10),
+				Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+				Weight:                 sdk.NewInt(10),
+				ExternalLiquidityRatio: sdk.NewDec(2),
 			},
 			{
-				Token:  sdk.NewCoin("borrowAsset", sdk.NewInt(10000)),
-				Weight: sdk.NewInt(10),
+				Token:                  sdk.NewCoin("borrowAsset", sdk.NewInt(10000)),
+				Weight:                 sdk.NewInt(10),
+				ExternalLiquidityRatio: sdk.NewDec(2),
 			},
 		},
 		TotalWeight: sdk.ZeroInt(),

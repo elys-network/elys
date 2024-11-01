@@ -54,12 +54,14 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600000000000)),
+			Weight:                 sdk.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
+			Weight:                 sdk.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 	}
 
@@ -180,12 +182,14 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
+			Weight:                 sdk.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
+			Weight:                 sdk.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 	}
 
@@ -308,12 +312,14 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600_000_000000)),
+			Weight:                 sdk.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600_000_000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100_000_000000)),
+			Weight:                 sdk.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100_000_000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 	}
 
@@ -448,12 +454,14 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
+			Weight:                 sdk.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
+			Weight:                 sdk.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 	}
 

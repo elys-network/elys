@@ -233,12 +233,14 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{
 					{
-						Token:  tc.poolInitBalance[0],
-						Weight: sdk.NewInt(10),
+						Token:                  tc.poolInitBalance[0],
+						Weight:                 sdk.NewInt(10),
+						ExternalLiquidityRatio: sdk.NewDec(2),
 					},
 					{
-						Token:  tc.poolInitBalance[1],
-						Weight: sdk.NewInt(10),
+						Token:                  tc.poolInitBalance[1],
+						Weight:                 sdk.NewInt(10),
+						ExternalLiquidityRatio: sdk.NewDec(2),
 					},
 				},
 				TotalWeight: sdk.ZeroInt(),
