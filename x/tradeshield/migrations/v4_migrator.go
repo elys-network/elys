@@ -10,6 +10,8 @@ func (m Migrator) V4Migration(ctx sdk.Context) error {
 	for _, order := range orders {
 		m.keeper.RemovePendingPerpetualOrder(ctx, order.OrderId)
 	}
+	m.keeper.DeleteAllPendingPerpetualOrder(ctx)
+	m.keeper.DeleteAllPendingSpotOrder(ctx)
 
 	return nil
 }
