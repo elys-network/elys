@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,6 +19,8 @@ func (k msgServer) BrokerClose(goCtx context.Context, msg *types.MsgBrokerClose)
 
 	// fail if msg.Creator is not broker address
 	if msg.Creator != k.parameterKeeper.GetParams(ctx).BrokerAddress {
+		params := k.parameterKeeper.GetParams(ctx)
+		fmt.Println(params)
 		return nil, errors.Wrap(types.ErrUnauthorised, "creator must be broker address")
 	}
 
