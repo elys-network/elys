@@ -38,10 +38,6 @@ func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper
 			return oraclePoolWeights, fmt.Errorf("price for token not set: %s", asset.Token.Denom)
 		}
 		amount := asset.Token.Amount
-		// accountedPoolAmt := accountedPoolKeeper.GetAccountedBalance(ctx, poolId, asset.Token.Denom)
-		// if accountedPoolAmt.IsPositive() {
-		// 	amount = accountedPoolAmt
-		// }
 		weight := amount.ToLegacyDec().Mul(tokenPrice)
 		oraclePoolWeights = append(oraclePoolWeights, AssetWeight{
 			Asset:  asset.Token.Denom,
@@ -306,10 +302,15 @@ func (p *Pool) SwapOutAmtGivenIn(
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus = weightBreakingFee.Neg()
-	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
-		weightBalanceBonus = weightRecoveryReward
-		// set weight breaking fee to zero if bonus is applied
+
+	// If swap is improving weight, set weight breaking fee to zero
+	if distanceDiff.IsNegative() {
 		weightBreakingFee = sdk.ZeroDec()
+
+		// set weight breaking fee to zero if bonus is applied
+		if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) {
+			weightBalanceBonus = weightRecoveryReward
+		}
 	}
 
 	if swapFee.GTE(sdk.OneDec()) {
