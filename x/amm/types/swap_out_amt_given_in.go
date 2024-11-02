@@ -92,7 +92,7 @@ func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeepe
 	if err != nil {
 		return sdk.ZeroDec()
 	}
-	targetWeights := NormalizedWeights(p.PoolAssets)
+	targetWeights := NormalizedWeights(poolAssets)
 
 	distanceSum := sdk.ZeroDec()
 	for i := range poolAssets {
@@ -330,16 +330,15 @@ func (p *Pool) SwapOutAmtGivenIn(
 
 // TODO: Ideally we should have a single DS for accounted pool to avoid confusion
 // Task has been added
-func (p *Pool) GetAccountedBalance(ctx sdk.Context, accountedPoolKeeper AccountedPoolKeeper, poolAssets []PoolAsset) []PoolAsset {
-	updatedAssets := make([]PoolAsset, len(poolAssets))
-	copy(updatedAssets, poolAssets)
-	for i, asset := range updatedAssets {
-		accountedPoolAmt := accountedPoolKeeper.GetAccountedBalance(ctx, p.PoolId, asset.Token.Denom)
-		if accountedPoolAmt.IsPositive() && p.PoolParams.UseOracle {
-			asset.Token.Amount = accountedPoolAmt
+func (p *Pool) GetAccountedBalance(ctx sdk.Context, accountedPoolKeeper AccountedPoolKeeper, poolAssets []PoolAsset) (updatedAssets []PoolAsset) {
+	for _, asset := range poolAssets {
+		if p.PoolParams.UseOracle {
+			accountedPoolAmt := accountedPoolKeeper.GetAccountedBalance(ctx, p.PoolId, asset.Token.Denom)
+			if accountedPoolAmt.IsPositive() {
+				asset.Token.Amount = accountedPoolAmt
+			}
 		}
-		updatedAssets[i] = asset
+		updatedAssets = append(updatedAssets, asset)
 	}
-
 	return updatedAssets
 }
