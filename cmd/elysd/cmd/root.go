@@ -142,6 +142,14 @@ func NewRootCmd() *cobra.Command {
 	}
 
 	initRootCmd(rootCmd, tempApplication.ModuleBasics, tempApplication.AppCodec(), tempApplication.InterfaceRegistry(), tempApplication.GetTxConfig())
+
+	autoCliOpts := tempApplication.AutoCliOpts()
+	autoCliOpts.ClientCtx = initClientCtx
+
+	if err := autoCliOpts.EnhanceRootCommand(rootCmd); err != nil {
+		panic(err)
+	}
+
 	overwriteFlagDefaults(rootCmd, map[string]string{
 		flags.FlagChainID:        strings.ReplaceAll(app.Name, "-", ""),
 		flags.FlagKeyringBackend: "test",
