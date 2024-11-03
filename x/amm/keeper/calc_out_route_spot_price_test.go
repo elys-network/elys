@@ -45,7 +45,6 @@ func (suite *KeeperTestSuite) TestCalcOutRouteSpotPrice() {
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
 			UseOracle:                   false,
-			ExternalLiquidityRatio:      sdk.NewDec(2),
 			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%

@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
+	"time"
+
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/leveragelp/keeper"
-	"time"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -42,7 +43,6 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 			UseOracle:                   true,
 			WeightBreakingFeeMultiplier: fee,
 			WeightBreakingFeeExponent:   fee,
-			ExternalLiquidityRatio:      fee,
 			WeightRecoveryFeePortion:    fee,
 			ThresholdWeightDifference:   fee,
 			FeeDenom:                    ptypes.Elys,
