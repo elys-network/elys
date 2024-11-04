@@ -101,8 +101,8 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			poolId,
-			math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -228,8 +228,8 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			poolId,
-			math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -357,8 +357,8 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			poolId,
-			math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -501,8 +501,8 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			poolId,
-			math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
@@ -632,8 +632,8 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			poolId,
-			math.LegacyMustNewDecFromStr("10"),
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
