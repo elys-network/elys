@@ -9,8 +9,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgBrokerOpen = "broker_open"
-
 func NewMsgBrokerOpen(creator string, position Position, leverage sdkmath.LegacyDec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdkmath.LegacyDec, owner string, stopLossPrice sdkmath.LegacyDec, poolId uint64) *MsgBrokerOpen {
 	return &MsgBrokerOpen{
 		Creator:         creator,

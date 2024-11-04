@@ -8,8 +8,6 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-const TypeMsgCancelVest = "cancel_vest"
-
 var _ sdk.Msg = &MsgCancelVest{}
 
 func NewMsgCancelVest(creator string, amount math.Int, denom string) *MsgCancelVest {
