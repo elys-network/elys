@@ -2,6 +2,7 @@ package types_test
 
 import (
 	sdkmath "cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -45,15 +46,15 @@ func TestMsgCreatePool_ValidateBasic(t *testing.T) {
 					UseOracle:                   false,
 					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					ExternalLiquidityRatio:      sdk.NewDec(1),
+					ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 					FeeDenom:                    ptypes.BaseCurrency,
 				},
 				PoolAssets: []types.PoolAsset{
 					{
-						Token:  sdk.NewCoin("uatom", sdk.NewInt(10000000)),
-						Weight: sdk.NewInt(10),
+						Token:  sdk.NewCoin("uatom", sdkmath.NewInt(10000000)),
+						Weight: sdkmath.NewInt(10),
 					},
 				},
 			},
@@ -76,12 +77,12 @@ func TestMsgCreatePool_ValidateBasic(t *testing.T) {
 				},
 				PoolAssets: []types.PoolAsset{
 					{
-						Token:  sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-						Weight: sdk.NewInt(10),
+						Token:  sdk.NewCoin("uusdc", sdkmath.NewInt(10000000)),
+						Weight: sdkmath.NewInt(10),
 					},
 					{
-						Token:  sdk.NewCoin("uatom", sdk.NewInt(10000000)),
-						Weight: sdk.NewInt(10),
+						Token:  sdk.NewCoin("uatom", sdkmath.NewInt(10000000)),
+						Weight: sdkmath.NewInt(10),
 					},
 				},
 			},

@@ -32,22 +32,27 @@ var (
 		"uusdc": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   sdk.OneDec(),
+			price:   sdkmath.LegacyOneDec(),
 		},
 		"uusdt": {
 			denom:   "uusdt",
 			display: "USDT",
-			price:   sdk.OneDec(),
+			price:   sdkmath.LegacyOneDec(),
+		},
+		"USDC": {
+			denom:   ptypes.BaseCurrency,
+			display: "USDC",
+			price:   sdkmath.LegacyOneDec(),
 		},
 		"uelys": {
 			denom:   ptypes.Elys,
 			display: "ELYS",
-			price:   sdk.MustNewDecFromStr("3.0"),
+			price:   sdkmath.LegacyMustNewDecFromStr("3.0"),
 		},
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
-			price:   sdk.MustNewDecFromStr("1.0"),
+			price:   sdkmath.LegacyMustNewDecFromStr("1.0"),
 		},
 	}
 )
@@ -61,9 +66,8 @@ type KeeperTestSuite struct {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	t := suite.Suite.T()
 	//t.Parallel()
-	app := simapp.InitElysTestApp(initChain, t)
+	app := simapp.InitElysTestApp(initChain, suite.Suite.T())
 
 	suite.legacyAmino = app.LegacyAmino()
 	suite.ctx = app.BaseApp.NewContext(initChain)

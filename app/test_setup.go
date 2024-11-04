@@ -98,22 +98,26 @@ func InitElysTestAppWithGenAccount(t *testing.T) (*ElysApp, sdk.AccAddress, sdk.
 		panic(err)
 	}
 
-	app.InitChain(
+	_, err = app.InitChain(
 		&abci.RequestInitChain{
 			Validators:      []abci.ValidatorUpdate{},
 			ConsensusParams: simtestutil.DefaultConsensusParams,
 			AppStateBytes:   stateBytes,
 		},
 	)
+	if err != nil {
+		panic(err)
+	}
 
 	// commit genesis changes
-	app.Commit()
-	//app.BeginBlocker(abci.RequestBeginBlock{Header: tmproto.Header{
-	//	Height:             app.LastBlockHeight() + 1,
-	//	AppHash:            app.LastCommitID().Hash,
-	//	ValidatorsHash:     valSet.Hash(),
-	//	NextValidatorsHash: valSet.Hash(),
-	//}})
+	_, err = app.Commit()
+	if err != nil {
+		panic(err)
+	}
+	//_, err = app.BeginBlocker()
+	//if err != nil {
+	//	return nil, nil, nil
+	//}
 
 	return app, genAcount, valAddress
 }

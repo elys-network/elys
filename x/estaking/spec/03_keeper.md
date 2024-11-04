@@ -102,7 +102,7 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
         QuoInt64(totalBlocksPerYear).
         RoundInt()
 
-    params.DexRewardsStakers.NumBlocks = sdk.OneInt()
+    params.DexRewardsStakers.NumBlocks = sdkmath.OneInt()
     params.DexRewardsStakers.Amount = dexRevenueStakersAmount
     k.SetParams(ctx, params)
 

@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -16,7 +15,7 @@ import (
 func (suite *PerpetualKeeperTestSuite) TestOpen() {
 	suite.SetupCoinPrices()
 	addr := suite.AddAccounts(10, nil)
-	amount := sdk.NewInt(1000)
+	amount := math.NewInt(1000)
 	poolCreator := addr[0]
 	positionCreator := addr[1]
 	poolId := uint64(1)
@@ -31,7 +30,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 	testCases := []struct {
 		name                 string
@@ -75,7 +74,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 					suite.app.PerpetualKeeper.WhitelistAddress(suite.ctx, account)
 				}
 
-				ammPool = suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				ammPool = suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 				poolId = ammPool.PoolId
 				enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 					Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -109,7 +108,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			func() {
 				msg.Collateral.Denom = ptypes.ATOM
 				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
-				params.BorrowInterestRateMin = sdk.ZeroDec()
+				params.BorrowInterestRateMin = math.LegacyZeroDec()
 				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 				suite.Require().NoError(err)
 			},
@@ -134,11 +133,11 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			func() {
 				msg.Collateral.Amount = amount
 				msg.Leverage = math.LegacyMustNewDecFromStr("1.2")
-				tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000_000_000)))
+				tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, math.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000_000)))
 				suite.AddLiquidity(ammPool, addr[3], tokensIn)
 				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
-				params.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.12")
-				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
+				params.BorrowInterestRateMin = math.LegacyMustNewDecFromStr("0.12")
+				err = suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 				suite.Require().NoError(err)
 				err = suite.app.BankKeeper.SendCoinsFromAccountToModule(suite.ctx, positionCreator, govtypes.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
 				suite.Require().NoError(err)
@@ -165,13 +164,13 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			"",
 			false,
 			func() {
-				tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000_000_000)))
+				tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, math.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000_000)))
 				suite.AddLiquidity(ammPool, addr[3], tokensIn)
 				msg.Creator = addr[2].String()
 				msg.Collateral.Denom = ptypes.ATOM
 				msg.Collateral.Amount = amount
 				msg.TradingAsset = ptypes.ATOM
-				msg.Leverage = sdk.OneDec().MulInt64(2)
+				msg.Leverage = math.LegacyOneDec().MulInt64(2)
 			},
 			func(mtp *types.MTP) {
 			},
@@ -181,7 +180,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			"negative pool amount after swap",
 			false,
 			func() {
-				suite.ResetAndSetSuite(addr, true, amount.MulRaw(1000), sdk.NewInt(2))
+				suite.ResetAndSetSuite(addr, true, amount.MulRaw(1000), math.NewInt(2))
 
 				msg.Creator = positionCreator.String()
 				msg.Collateral.Denom = ptypes.BaseCurrency

@@ -361,8 +361,8 @@ func TestCollectPerpRevenue(t *testing.T) {
 }
 
 func TestExternalRewardsDistribution(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	mk, bk, amm, oracle := app.MasterchefKeeper, app.BankKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -370,14 +370,14 @@ func TestExternalRewardsDistribution(t *testing.T) {
 	SetupStableCoinPrices(ctx, oracle)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(1000000))
 
 	// Create 2 pools
 
 	// #######################
 	// ####### POOL 1 ########
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)))
 
 	err := bk.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -386,17 +386,17 @@ func TestExternalRewardsDistribution(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100000)),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),
 		},
 	}
 
-	argSwapFee := sdk.MustNewDecFromStr("0.1")
-	argExitFee := sdk.MustNewDecFromStr("0.1")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.1")
+	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.1")
 
 	poolParams := &ammtypes.PoolParams{
 		SwapFee: argSwapFee,
@@ -417,7 +417,7 @@ func TestExternalRewardsDistribution(t *testing.T) {
 	// ####### POOL 2 ########
 	// ATOM+USDC pool
 	// Mint uusdc
-	usdcToken = sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(200000)))
+	usdcToken = sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(200000)))
 
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -425,7 +425,7 @@ func TestExternalRewardsDistribution(t *testing.T) {
 	require.NoError(t, err)
 
 	// Mint uatom
-	atomToken := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(200000)))
+	atomToken := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(200000)))
 	err = bk.MintCoins(ctx, ammtypes.ModuleName, atomToken)
 	require.NoError(t, err)
 	err = bk.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[1], atomToken)
@@ -433,12 +433,12 @@ func TestExternalRewardsDistribution(t *testing.T) {
 
 	poolAssets2 := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(150000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(150000)),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),
 		},
 	}
 
@@ -464,8 +464,8 @@ func TestExternalRewardsDistribution(t *testing.T) {
 		PoolId:         1,
 		FromBlock:      ctx.BlockHeight() - 1,
 		ToBlock:        ctx.BlockHeight() + 101,
-		AmountPerBlock: sdk.OneInt(),
-		Apr:            sdk.ZeroDec(),
+		AmountPerBlock: sdkmath.OneInt(),
+		Apr:            sdkmath.LegacyZeroDec(),
 	}
 
 	mk.SetExternalIncentive(ctx, externalIncentive)
@@ -482,7 +482,7 @@ func TestExternalRewardsDistribution(t *testing.T) {
 	rewardInfo, found := mk.GetPoolRewardInfo(ctx, externalIncentive.PoolId, externalIncentive.RewardDenom)
 	require.True(t, found)
 	require.Equal(t, rewardInfo.RewardDenom, externalIncentive.RewardDenom)
-	require.Equal(t, rewardInfo.PoolAccRewardPerShare, sdk.MustNewDecFromStr("0.000099900099900099"))
+	require.Equal(t, rewardInfo.PoolAccRewardPerShare, sdkmath.LegacyMustNewDecFromStr("0.000099900099900099"))
 
 	// Test multiple external incentives
 	externalIncentive2 := types.ExternalIncentive{
@@ -491,8 +491,8 @@ func TestExternalRewardsDistribution(t *testing.T) {
 		PoolId:         1,
 		FromBlock:      ctx.BlockHeight() - 1,
 		ToBlock:        ctx.BlockHeight() + 101,
-		AmountPerBlock: sdk.OneInt(),
-		Apr:            sdk.ZeroDec(),
+		AmountPerBlock: sdkmath.OneInt(),
+		Apr:            sdkmath.LegacyZeroDec(),
 	}
 	mk.SetExternalIncentive(ctx, externalIncentive2)
 
@@ -505,5 +505,5 @@ func TestExternalRewardsDistribution(t *testing.T) {
 	rewardInfo, found = mk.GetPoolRewardInfo(ctx, externalIncentive2.PoolId, externalIncentive2.RewardDenom)
 	require.True(t, found)
 	require.Equal(t, rewardInfo.RewardDenom, externalIncentive2.RewardDenom)
-	require.Equal(t, rewardInfo.PoolAccRewardPerShare, sdk.MustNewDecFromStr("0.000099900099900099"))
+	require.Equal(t, rewardInfo.PoolAccRewardPerShare, sdkmath.LegacyMustNewDecFromStr("0.000099900099900099"))
 }

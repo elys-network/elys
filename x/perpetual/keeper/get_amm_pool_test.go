@@ -22,10 +22,10 @@ func (suite *PerpetualKeeperTestSuite) TestGetAmmPool() {
 			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 			WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 			SwapFee:                     sdkmath.LegacyZeroDec(),
-			ExitFee:                     sdk.ZeroDec(),
+			ExitFee:                     sdkmath.LegacyZeroDec(),
 			FeeDenom:                    ptypes.BaseCurrency,
 		},
-		TotalShares: sdk.NewCoin("pool/1", sdk.NewInt(100)),
+		TotalShares: sdk.NewCoin("pool/1", sdkmath.NewInt(100)),
 		PoolAssets: []ammtypes.PoolAsset{
 			{
 				Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),

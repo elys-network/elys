@@ -94,7 +94,7 @@ func TestAccountedPoolUpdate(t *testing.T) {
 		},
 	}
 	// Update accounted pool
-	err := apk.PerpetualUpdates(ctx, ammPool, perpetualPool, false)
+	err = apk.PerpetualUpdates(ctx, ammPool, perpetualPool, false)
 	require.NoError(t, err)
 
 	apool, found := apk.GetAccountedPool(ctx, (uint64)(0))

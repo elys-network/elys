@@ -193,7 +193,7 @@ func TestUSDCExternalIncentive(t *testing.T) {
 	_, err = masterchefSrv.AddExternalRewardDenom(sdk.WrapSDKContext(ctx), &types.MsgAddExternalRewardDenom{
 		Authority:   app.GovKeeper.GetAuthority(),
 		RewardDenom: ptypes.BaseCurrency,
-		MinAmount:   sdk.OneInt(),
+		MinAmount:   sdkmath.OneInt(),
 		Supported:   true,
 	})
 	require.NoError(t, err)
@@ -209,7 +209,7 @@ func TestUSDCExternalIncentive(t *testing.T) {
 
 	// Fill in pool revenue wallet
 	revenueAddress1 := ammtypes.NewPoolRevenueAddress(1)
-	usdcRevToken1 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
+	usdcRevToken1 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)))
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcRevToken1)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, revenueAddress1, usdcRevToken1)

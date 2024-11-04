@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	sdkmath "cosmossdk.io/math"
+	"fmt"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -122,7 +123,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				UseOracle:                   false,
 				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
+				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
@@ -131,15 +132,15 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.Eden, 1000000),
-					Weight: sdk.OneInt(),
+					Weight: sdkmath.OneInt(),
 				},
 				{
 					Token:  sdk.NewInt64Coin(ptypes.Elys, 1000000),
-					Weight: sdk.OneInt(),
+					Weight: sdkmath.OneInt(),
 				},
 			},
 			expSenderBalance: sdk.Coins{},
-			expLpCommitment:  sdk.NewCoin("amm/pool/1", sdk.NewInt(2).Mul(types.OneShare)),
+			expLpCommitment:  sdk.NewCoin("amm/pool/1", sdkmath.NewInt(2).Mul(types.OneShare)),
 			expPass:          false,
 		},
 		{
@@ -152,7 +153,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 				UseOracle:                   false,
 				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
+				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
@@ -161,23 +162,25 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.Eden, 1000000),
-					Weight: sdk.OneInt(),
+					Weight: sdkmath.OneInt(),
 				},
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000),
-					Weight: sdk.OneInt(),
+					Weight: sdkmath.OneInt(),
 				},
 			},
 			expSenderBalance: sdk.Coins{},
-			expLpCommitment:  sdk.NewCoin("amm/pool/1", sdk.NewInt(2).Mul(types.OneShare)),
+			expLpCommitment:  sdk.NewCoin("amm/pool/1", sdkmath.NewInt(2).Mul(types.OneShare)),
 			expPass:          true,
 		},
 	} {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
 			suite.SetupStableCoinPrices()
-			suite.SetupAssetProfile()
-			suite.SetAmmParams()
+
+			a := suite.app.OracleKeeper.GetAllAssetInfo(suite.ctx)
+			fmt.Println(a)
+			fmt.Println(suite.app.OracleKeeper.GetAllEn(suite.ctx))
 
 			// bootstrap accounts
 			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -195,6 +198,7 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 			params := suite.app.AmmKeeper.GetParams(suite.ctx)
 			params.EnableBaseCurrencyPairedPoolOnly = tc.enableBaseCurrencyPairedPoolOnly
 			suite.app.AmmKeeper.SetParams(suite.ctx, params)
+
 			resp, err := msgServer.CreatePool(
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgCreatePool{
