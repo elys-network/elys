@@ -25,16 +25,62 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type PoolAsset struct {
+type LegacyPoolAsset struct {
 	Token  types.Coin                             `protobuf:"bytes,1,opt,name=token,proto3" json:"token"`
 	Weight github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=weight,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"weight"`
+}
+
+func (m *LegacyPoolAsset) Reset()         { *m = LegacyPoolAsset{} }
+func (m *LegacyPoolAsset) String() string { return proto.CompactTextString(m) }
+func (*LegacyPoolAsset) ProtoMessage()    {}
+func (*LegacyPoolAsset) Descriptor() ([]byte, []int) {
+	return fileDescriptor_152994f419c8cb00, []int{0}
+}
+func (m *LegacyPoolAsset) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *LegacyPoolAsset) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LegacyPoolAsset.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *LegacyPoolAsset) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LegacyPoolAsset.Merge(m, src)
+}
+func (m *LegacyPoolAsset) XXX_Size() int {
+	return m.Size()
+}
+func (m *LegacyPoolAsset) XXX_DiscardUnknown() {
+	xxx_messageInfo_LegacyPoolAsset.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LegacyPoolAsset proto.InternalMessageInfo
+
+func (m *LegacyPoolAsset) GetToken() types.Coin {
+	if m != nil {
+		return m.Token
+	}
+	return types.Coin{}
+}
+
+type PoolAsset struct {
+	Token                  types.Coin                             `protobuf:"bytes,1,opt,name=token,proto3" json:"token"`
+	Weight                 github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=weight,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"weight"`
+	ExternalLiquidityRatio github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=external_liquidity_ratio,json=externalLiquidityRatio,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"external_liquidity_ratio"`
 }
 
 func (m *PoolAsset) Reset()         { *m = PoolAsset{} }
 func (m *PoolAsset) String() string { return proto.CompactTextString(m) }
 func (*PoolAsset) ProtoMessage()    {}
 func (*PoolAsset) Descriptor() ([]byte, []int) {
-	return fileDescriptor_152994f419c8cb00, []int{0}
+	return fileDescriptor_152994f419c8cb00, []int{1}
 }
 func (m *PoolAsset) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -71,30 +117,77 @@ func (m *PoolAsset) GetToken() types.Coin {
 }
 
 func init() {
+	proto.RegisterType((*LegacyPoolAsset)(nil), "elys.amm.LegacyPoolAsset")
 	proto.RegisterType((*PoolAsset)(nil), "elys.amm.PoolAsset")
 }
 
 func init() { proto.RegisterFile("elys/amm/pool_asset.proto", fileDescriptor_152994f419c8cb00) }
 
 var fileDescriptor_152994f419c8cb00 = []byte{
-	// 263 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x4c, 0x90, 0xbd, 0x4e, 0xc3, 0x30,
-	0x14, 0x85, 0x63, 0x04, 0x15, 0x0d, 0x5b, 0xc4, 0xd0, 0x76, 0x70, 0x2b, 0x06, 0x94, 0xa5, 0xbe,
-	0x2a, 0x88, 0x07, 0x20, 0x48, 0x48, 0x6c, 0xa8, 0x23, 0x0b, 0x4a, 0x82, 0x95, 0x46, 0x89, 0x7d,
-	0xa3, 0xfa, 0x42, 0xe9, 0x2b, 0x30, 0xf1, 0x58, 0x1d, 0x3b, 0x22, 0x86, 0x0a, 0x25, 0x2f, 0x82,
-	0x6c, 0x67, 0xe8, 0xe4, 0x9f, 0xcf, 0xdf, 0x91, 0xcf, 0x0d, 0xc7, 0xb2, 0xde, 0x1a, 0x48, 0x95,
-	0x82, 0x06, 0xb1, 0x7e, 0x4d, 0x8d, 0x91, 0x24, 0x9a, 0x35, 0x12, 0x46, 0xe7, 0x16, 0x89, 0x54,
-	0xa9, 0xc9, 0x65, 0x81, 0x05, 0xba, 0x4b, 0xb0, 0x3b, 0xcf, 0x27, 0x3c, 0x47, 0xa3, 0xd0, 0x40,
-	0x96, 0x1a, 0x09, 0x1f, 0x8b, 0x4c, 0x52, 0xba, 0x80, 0x1c, 0x4b, 0xed, 0xf9, 0xd5, 0x17, 0x0b,
-	0x87, 0xcf, 0x88, 0xf5, 0xbd, 0xcd, 0x8c, 0xee, 0xc2, 0x33, 0xc2, 0x4a, 0xea, 0x11, 0x9b, 0xb1,
-	0xf8, 0xe2, 0x66, 0x2c, 0xbc, 0x2d, 0xac, 0x2d, 0x7a, 0x5b, 0x3c, 0x60, 0xa9, 0x93, 0xd3, 0xdd,
-	0x61, 0x1a, 0x2c, 0xfd, 0xeb, 0xe8, 0x31, 0x1c, 0x6c, 0x64, 0x59, 0xac, 0x68, 0x74, 0x32, 0x63,
-	0xf1, 0x30, 0x11, 0x16, 0xfe, 0x1e, 0xa6, 0xd7, 0x45, 0x49, 0xab, 0xf7, 0x4c, 0xe4, 0xa8, 0xa0,
-	0xff, 0x87, 0x5f, 0xe6, 0xe6, 0xad, 0x02, 0xda, 0x36, 0xd2, 0x88, 0x27, 0x4d, 0xcb, 0xde, 0x4e,
-	0x92, 0x5d, 0xcb, 0xd9, 0xbe, 0xe5, 0xec, 0xaf, 0xe5, 0xec, 0xbb, 0xe3, 0xc1, 0xbe, 0xe3, 0xc1,
-	0x4f, 0xc7, 0x83, 0x97, 0xf8, 0x28, 0xc9, 0x36, 0x9e, 0x6b, 0x49, 0x1b, 0x5c, 0x57, 0xee, 0x00,
-	0x9f, 0x6e, 0x36, 0x2e, 0x2f, 0x1b, 0xb8, 0x5e, 0xb7, 0xff, 0x01, 0x00, 0x00, 0xff, 0xff, 0xda,
-	0x83, 0xf5, 0xa2, 0x34, 0x01, 0x00, 0x00,
+	// 318 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0xd2, 0x4d, 0x4a, 0xc3, 0x40,
+	0x14, 0x07, 0xf0, 0x8c, 0x1f, 0xc5, 0xc6, 0x85, 0x10, 0x44, 0xd2, 0x2e, 0xa6, 0xa5, 0x0b, 0xe9,
+	0xa6, 0x33, 0x54, 0xf1, 0x00, 0x46, 0x11, 0x84, 0x2e, 0x24, 0x4b, 0x37, 0x65, 0x92, 0x0e, 0xe9,
+	0xd0, 0x64, 0x5e, 0xcd, 0xbc, 0xda, 0xe6, 0x16, 0x3d, 0x56, 0x97, 0x5d, 0x8a, 0x8b, 0x22, 0xed,
+	0x15, 0x3c, 0x80, 0x4c, 0xd2, 0x82, 0x5b, 0x77, 0xae, 0xe6, 0xe3, 0x3f, 0xf3, 0xe3, 0xc1, 0x7b,
+	0x6e, 0x43, 0xa6, 0x85, 0xe1, 0x22, 0xcb, 0xf8, 0x14, 0x20, 0x1d, 0x0a, 0x63, 0x24, 0xb2, 0x69,
+	0x0e, 0x08, 0xde, 0x99, 0x8d, 0x98, 0xc8, 0xb2, 0xe6, 0x65, 0x02, 0x09, 0x94, 0x97, 0xdc, 0xee,
+	0xaa, 0xbc, 0x49, 0x63, 0x30, 0x19, 0x18, 0x1e, 0x09, 0x23, 0xf9, 0x7b, 0x3f, 0x92, 0x28, 0xfa,
+	0x3c, 0x06, 0xa5, 0xab, 0xbc, 0xb3, 0x24, 0xee, 0xc5, 0x40, 0x26, 0x22, 0x2e, 0x5e, 0x00, 0xd2,
+	0x7b, 0x2b, 0x7b, 0x77, 0xee, 0x29, 0xc2, 0x44, 0x6a, 0x9f, 0xb4, 0x49, 0xf7, 0xfc, 0xa6, 0xc1,
+	0x2a, 0x83, 0x59, 0x83, 0xed, 0x0d, 0xf6, 0x00, 0x4a, 0x07, 0x27, 0xab, 0x4d, 0xcb, 0x09, 0xab,
+	0xd7, 0xde, 0x93, 0x5b, 0x9b, 0x4b, 0x95, 0x8c, 0xd1, 0x3f, 0x6a, 0x93, 0x6e, 0x3d, 0x60, 0x36,
+	0xfc, 0xdc, 0xb4, 0xae, 0x13, 0x85, 0xe3, 0x59, 0xc4, 0x62, 0xc8, 0xf8, 0xbe, 0x9a, 0x6a, 0xe9,
+	0x99, 0xd1, 0x84, 0x63, 0x31, 0x95, 0x86, 0x3d, 0x6b, 0x0c, 0xf7, 0xbf, 0x3b, 0xdf, 0xc4, 0xad,
+	0xff, 0x97, 0x62, 0xbc, 0xb1, 0xeb, 0xcb, 0x05, 0xca, 0x5c, 0x8b, 0x74, 0x98, 0xaa, 0xb7, 0x99,
+	0x1a, 0x29, 0x2c, 0x86, 0xb9, 0x40, 0x05, 0xfe, 0xf1, 0x9f, 0xe5, 0x47, 0x19, 0x87, 0x57, 0x07,
+	0x6f, 0x70, 0xe0, 0x42, 0xab, 0x05, 0xc1, 0x6a, 0x4b, 0xc9, 0x7a, 0x4b, 0xc9, 0xd7, 0x96, 0x92,
+	0xe5, 0x8e, 0x3a, 0xeb, 0x1d, 0x75, 0x3e, 0x76, 0xd4, 0x79, 0xed, 0xfe, 0x92, 0x6d, 0xbb, 0x7b,
+	0x5a, 0xe2, 0x1c, 0xf2, 0x49, 0x79, 0xe0, 0x8b, 0x72, 0x30, 0x4a, 0x3f, 0xaa, 0x95, 0x4d, 0xbd,
+	0xfd, 0x09, 0x00, 0x00, 0xff, 0xff, 0x4a, 0x84, 0x69, 0xb3, 0x31, 0x02, 0x00, 0x00,
+}
+
+func (m *LegacyPoolAsset) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LegacyPoolAsset) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LegacyPoolAsset) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.Weight.Size()
+		i -= size
+		if _, err := m.Weight.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPoolAsset(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	{
+		size, err := m.Token.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintPoolAsset(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
 }
 
 func (m *PoolAsset) Marshal() (dAtA []byte, err error) {
@@ -117,6 +210,16 @@ func (m *PoolAsset) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	{
+		size := m.ExternalLiquidityRatio.Size()
+		i -= size
+		if _, err := m.ExternalLiquidityRatio.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPoolAsset(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
 	{
 		size := m.Weight.Size()
 		i -= size
@@ -151,7 +254,7 @@ func encodeVarintPoolAsset(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *PoolAsset) Size() (n int) {
+func (m *LegacyPoolAsset) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -164,11 +267,143 @@ func (m *PoolAsset) Size() (n int) {
 	return n
 }
 
+func (m *PoolAsset) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Token.Size()
+	n += 1 + l + sovPoolAsset(uint64(l))
+	l = m.Weight.Size()
+	n += 1 + l + sovPoolAsset(uint64(l))
+	l = m.ExternalLiquidityRatio.Size()
+	n += 1 + l + sovPoolAsset(uint64(l))
+	return n
+}
+
 func sovPoolAsset(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozPoolAsset(x uint64) (n int) {
 	return sovPoolAsset(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *LegacyPoolAsset) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPoolAsset
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LegacyPoolAsset: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LegacyPoolAsset: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Token", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPoolAsset
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPoolAsset
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPoolAsset
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Token.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Weight", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPoolAsset
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPoolAsset
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPoolAsset
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Weight.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPoolAsset(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPoolAsset
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *PoolAsset) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -263,6 +498,40 @@ func (m *PoolAsset) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Weight.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExternalLiquidityRatio", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPoolAsset
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPoolAsset
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPoolAsset
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ExternalLiquidityRatio.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

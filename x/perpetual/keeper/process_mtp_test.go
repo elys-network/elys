@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -16,7 +18,6 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
@@ -75,7 +76,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
@@ -258,7 +258,6 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
@@ -404,12 +403,14 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
+			Weight:                 sdk.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
+			Weight:                 sdk.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 	}
 
@@ -418,7 +419,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdk.NewDec(2),
 		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%

@@ -217,6 +217,20 @@ func (k Keeper) GetAllSortedSpotOrder(ctx sdk.Context) (list [][]uint64, err err
 	return
 }
 
+// DeleteAllPendingSpotOrder deleted all pendingSpotOrder
+func (k Keeper) DeleteAllPendingSpotOrder(ctx sdk.Context) (list []types.SpotOrder) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingSpotOrderKey)
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		store.Delete(iterator.Key())
+	}
+
+	return
+}
+
 // RemoveSortedOrder removes an order from the sorted order list.
 func (k Keeper) RemoveSpotSortedOrder(ctx sdk.Context, orderID uint64) error {
 	order, found := k.GetPendingSpotOrder(ctx, orderID)

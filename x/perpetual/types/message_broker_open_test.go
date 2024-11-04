@@ -1,7 +1,10 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"fmt"
+	"github.com/stretchr/testify/require"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -135,7 +138,7 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 				TradingAsset: "",
 				Leverage:     math.LegacyNewDec(200),
 			},
-			want: ErrTradingAssetIsEmpty,
+			want: ErrInvalidTradingAsset,
 		},
 		{
 			title: "take profit price is nil",
@@ -161,14 +164,66 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 			want: ErrInvalidTakeProfitPrice,
 		},
 		{
+			title: "stop loss price is nil",
+			msg: MsgBrokerOpen{
+				Creator:         sample.AccAddress(),
+				Owner:           sample.AccAddress(),
+				Position:        Position_SHORT,
+				TradingAsset:    "uatom",
+				Leverage:        math.LegacyNewDec(200),
+				TakeProfitPrice: math.LegacyNewDec(10),
+			},
+			want: errorsmod.Wrapf(ErrInvalidPrice, "stopLossPrice cannot be nil"),
+		},
+		{
+			title: "stop loss price is negative",
+			msg: MsgBrokerOpen{
+				Creator:         sample.AccAddress(),
+				Owner:           sample.AccAddress(),
+				Position:        Position_SHORT,
+				TradingAsset:    "uatom",
+				TakeProfitPrice: math.LegacyNewDec(10),
+				Leverage:        math.LegacyNewDec(200),
+				StopLossPrice:   math.LegacyNewDec(-10),
+			},
+			want: errorsmod.Wrapf(ErrInvalidPrice, "stopLossPrice cannot be negative"),
+		},
+		{
+			title: "take profit price is greater than stop loss price for short",
+			msg: MsgBrokerOpen{
+				Creator:         sample.AccAddress(),
+				Owner:           sample.AccAddress(),
+				Position:        Position_SHORT,
+				TradingAsset:    "uatom",
+				TakeProfitPrice: math.LegacyNewDec(110),
+				Leverage:        math.LegacyNewDec(200),
+				StopLossPrice:   math.LegacyNewDec(100),
+			},
+			want: fmt.Errorf("TakeProfitPrice cannot be >= StopLossPrice for SHORT"),
+		},
+		{
+			title: "take profit price is less than stop loss price for long",
+			msg: MsgBrokerOpen{
+				Creator:         sample.AccAddress(),
+				Owner:           sample.AccAddress(),
+				Position:        Position_LONG,
+				TradingAsset:    "uatom",
+				TakeProfitPrice: math.LegacyNewDec(90),
+				Leverage:        math.LegacyNewDec(200),
+				StopLossPrice:   math.LegacyNewDec(100),
+			},
+			want: fmt.Errorf("TakeProfitPrice cannot be <= StopLossPrice for LONG"),
+		},
+		{
 			title: "successful",
 			msg: MsgBrokerOpen{
 				Creator:         sample.AccAddress(),
 				Owner:           sample.AccAddress(),
 				Position:        Position_LONG,
 				TradingAsset:    "uatom",
-				TakeProfitPrice: math.LegacyNewDec(10),
+				TakeProfitPrice: math.LegacyNewDec(300),
 				Leverage:        math.LegacyNewDec(200),
+				StopLossPrice:   math.LegacyNewDec(100),
 			},
 			want: nil,
 		},
@@ -179,7 +234,7 @@ func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {
 			got := test.msg.ValidateBasic()
 
 			if got != nil {
-				assert.ErrorIs(t, got, test.want)
+				require.Error(t, got, test.want)
 			} else {
 				assert.Equal(t, test.want, got)
 			}

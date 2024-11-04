@@ -17,7 +17,7 @@ func (k Keeper) PendingPerpetualOrderAll(goCtx context.Context, req *types.Query
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var pendingPerpetualOrders []types.PerpetualOrder
+	var pendingPerpetualOrdersExtraInfo []types.PerpetualOrderExtraInfo
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	store := ctx.KVStore(k.storeKey)
@@ -29,11 +29,12 @@ func (k Keeper) PendingPerpetualOrderAll(goCtx context.Context, req *types.Query
 			return err
 		}
 
-		if err := k.FillUpExtraPerpetualOrderInfo(ctx, &pendingPerpetualOrder); err != nil {
+		pendingPerpetualOrderExtraInfo, err := k.ConstructPerpetualOrderExtraInfo(ctx, pendingPerpetualOrder)
+		if err != nil {
 			return err
 		}
 
-		pendingPerpetualOrders = append(pendingPerpetualOrders, pendingPerpetualOrder)
+		pendingPerpetualOrdersExtraInfo = append(pendingPerpetualOrdersExtraInfo, *pendingPerpetualOrderExtraInfo)
 		return nil
 	})
 
@@ -41,7 +42,7 @@ func (k Keeper) PendingPerpetualOrderAll(goCtx context.Context, req *types.Query
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.QueryAllPendingPerpetualOrderResponse{PendingPerpetualOrder: pendingPerpetualOrders, Pagination: pageRes}, nil
+	return &types.QueryAllPendingPerpetualOrderResponse{PendingPerpetualOrder: pendingPerpetualOrdersExtraInfo, Pagination: pageRes}, nil
 }
 
 func (k Keeper) PendingPerpetualOrder(goCtx context.Context, req *types.QueryGetPendingPerpetualOrderRequest) (*types.QueryGetPendingPerpetualOrderResponse, error) {
@@ -55,9 +56,10 @@ func (k Keeper) PendingPerpetualOrder(goCtx context.Context, req *types.QueryGet
 		return nil, sdkerrors.ErrKeyNotFound
 	}
 
-	if err := k.FillUpExtraPerpetualOrderInfo(ctx, &pendingPerpetualOrder); err != nil {
+	pendingPerpetualOrderExtraInfo, err := k.ConstructPerpetualOrderExtraInfo(ctx, pendingPerpetualOrder)
+	if err != nil {
 		return nil, err
 	}
 
-	return &types.QueryGetPendingPerpetualOrderResponse{PendingPerpetualOrder: pendingPerpetualOrder}, nil
+	return &types.QueryGetPendingPerpetualOrderResponse{PendingPerpetualOrder: *pendingPerpetualOrderExtraInfo}, nil
 }

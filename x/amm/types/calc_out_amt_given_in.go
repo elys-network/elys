@@ -45,7 +45,7 @@ func (p Pool) CalcOutAmtGivenIn(
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
 		}
-		oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, p.PoolId, oracle, accountedPool, []PoolAsset{poolAssetIn, poolAssetOut})
+		oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, p.PoolId, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
 		}

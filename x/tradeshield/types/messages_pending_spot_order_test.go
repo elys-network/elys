@@ -3,27 +3,36 @@ package types
 import (
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgCreatePendingSpotOrder_ValidateBasic(t *testing.T) {
+func TestMsgCreateSpotOrder_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCreatePendingSpotOrder
+		msg  MsgCreateSpotOrder
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCreatePendingSpotOrder{
+			msg: MsgCreateSpotOrder{
 				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgCreatePendingSpotOrder{
+			msg: MsgCreateSpotOrder{
 				OwnerAddress: sample.AccAddress(),
+				OrderPrice: &OrderPrice{
+					BaseDenom:  "base_denom",
+					QuoteDenom: "quote_denom",
+					Rate:       sdk.OneDec(),
+				},
+				OrderType:        SpotOrderType_LIMITBUY,
+				OrderAmount:      &sdk.Coin{Denom: "base", Amount: sdk.OneInt()},
+				OrderTargetDenom: "base_denom",
 			},
 		},
 	}
@@ -39,22 +48,60 @@ func TestMsgCreatePendingSpotOrder_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgUpdatePendingSpotOrder_ValidateBasic(t *testing.T) {
+func TestMsgUpdateSpotOrder_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgUpdatePendingSpotOrder
+		msg  MsgUpdateSpotOrder
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgUpdatePendingSpotOrder{
+			msg: MsgUpdateSpotOrder{
 				OwnerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgUpdatePendingSpotOrder{
+			msg: MsgUpdateSpotOrder{
 				OwnerAddress: sample.AccAddress(),
+				OrderId:      1,
+				OrderPrice: &OrderPrice{
+					BaseDenom:  "base_denom",
+					QuoteDenom: "quote_denom",
+					Rate:       sdk.OneDec(),
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.msg.ValidateBasic()
+			if tt.err != nil {
+				require.ErrorIs(t, err, tt.err)
+				return
+			}
+			require.NoError(t, err)
+		})
+	}
+}
+
+func TestMsgCancelSpotOrder_ValidateBasic(t *testing.T) {
+	tests := []struct {
+		name string
+		msg  MsgCancelSpotOrder
+		err  error
+	}{
+		{
+			name: "invalid address",
+			msg: MsgCancelSpotOrder{
+				OwnerAddress: "invalid_address",
+			},
+			err: sdkerrors.ErrInvalidAddress,
+		}, {
+			name: "valid address",
+			msg: MsgCancelSpotOrder{
+				OwnerAddress: sample.AccAddress(),
+				OrderId:      1,
 			},
 		},
 	}
@@ -85,7 +132,8 @@ func TestMsgCancelSpotOrders_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgCancelSpotOrders{
-				Creator: sample.AccAddress(),
+				Creator:      sample.AccAddress(),
+				SpotOrderIds: []uint64{1},
 			},
 		},
 	}

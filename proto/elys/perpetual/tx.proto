@@ -33,7 +33,7 @@ message MsgOpen {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  uint64 poolId = 8;
+  uint64 pool_id = 8;
 }
 
 message MsgBrokerOpen {
@@ -48,7 +48,7 @@ message MsgBrokerOpen {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  uint64 poolId = 9;
+  uint64 pool_id = 9;
 }
 
 message MsgOpenResponse {

@@ -14,13 +14,13 @@ import (
 
 func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "open [position] [leverage] [pool-id] [trading-asset] [collateral] [stop-loss-price] [flags]",
+		Use:   "open [position] [leverage] [pool-id] [trading-asset] [collateral] [flags]",
 		Short: "Open perpetual position",
 		Example: `Infinte profitability:
 elysd tx perpetual open long 5 uatom 100000000uusdc 100.0 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 Finite profitability:
-elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
-		Args: cobra.ExactArgs(6),
+elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --stop-loss 10 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args: cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -56,11 +56,6 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --f
 				return err
 			}
 
-			stopLossPrice, err := sdk.NewDecFromStr(args[5])
-			if err != nil {
-				return err
-			}
-
 			var takeProfitPrice sdk.Dec
 			if takeProfitPriceStr != types.InfinitePriceString {
 				takeProfitPrice, err = sdk.NewDecFromStr(takeProfitPriceStr)
@@ -69,6 +64,21 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --f
 				}
 			} else {
 				takeProfitPrice = types.TakeProfitPriceDefault
+			}
+
+			stopLossPriceStr, err := cmd.Flags().GetString(FlagStopLossPrice)
+			if err != nil {
+				return err
+			}
+
+			var stopLossPrice sdk.Dec
+			if stopLossPriceStr != types.ZeroPriceString {
+				stopLossPrice, err = sdk.NewDecFromStr(stopLossPriceStr)
+				if err != nil {
+					return errors.New("invalid stop loss price")
+				}
+			} else {
+				stopLossPrice = types.StopLossPriceDefault
 			}
 
 			msg := types.NewMsgOpen(
@@ -90,6 +100,7 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --f
 	}
 
 	cmd.Flags().String(FlagTakeProfitPrice, types.InfinitePriceString, "Optional take profit price")
+	cmd.Flags().String(FlagStopLossPrice, types.ZeroPriceString, "Optional stop loss price")
 
 	flags.AddTxFlagsToCmd(cmd)
 

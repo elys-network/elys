@@ -103,3 +103,56 @@ func TestCommitClaimedRewardsWithEdenB(t *testing.T) {
 	assert.Equal(t, denom, commitments.CommittedTokens[0].Denom, "Incorrect denom")
 	assert.Equal(t, commitAmount, commitments.CommittedTokens[0].Amount, "Incorrect amount")
 }
+
+// TestCommitClaimedRewardsWithInvalidDenom tests the CommitClaimedRewards function with an invalid denom
+func TestCommitClaimedRewardsWithInvalidDenom(t *testing.T) {
+	app := app.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	keeper := app.CommitmentKeeper
+
+	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+
+	// Create a new account
+	creator := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String()
+
+	// Create a commit claimed rewards message with an invalid denom
+	msg := types.MsgCommitClaimedRewards{
+		Creator: creator,
+		Amount:  sdk.NewInt(100),
+		Denom:   "invalid",
+	}
+
+	// Execute the CommitClaimedRewards function
+	_, err := msgServer.CommitClaimedRewards(ctx, &msg)
+	require.Error(t, err, "should throw an error when using an invalid denom")
+	require.True(t, assetprofiletypes.ErrAssetProfileNotFound.Is(err), "error should be asset profile not found")
+}
+
+// TestCommitClaimedRewardsWithEdenDisabled tests the CommitClaimedRewards function with Eden disabled
+func TestCommitClaimedRewardsWithEdenDisabled(t *testing.T) {
+	app := app.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	keeper := app.CommitmentKeeper
+
+	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+
+	// Create a new account
+	creator := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String()
+
+	// Set assetprofile entry for denom
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: false})
+
+	// Create a commit claimed rewards message with Eden
+	msg := types.MsgCommitClaimedRewards{
+		Creator: creator,
+		Amount:  sdk.NewInt(100),
+		Denom:   ptypes.Eden,
+	}
+
+	// Execute the CommitClaimedRewards function
+	_, err := msgServer.CommitClaimedRewards(ctx, &msg)
+	require.Error(t, err, "should throw an error when Eden is disabled")
+	require.True(t, types.ErrCommitDisabled.Is(err), "error should be commit disabled")
+}

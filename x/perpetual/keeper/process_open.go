@@ -6,7 +6,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, eta sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
+func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
@@ -20,7 +20,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 	}
 
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
-	leveragedAmount := collateralAmountDec.Mul(leverage).TruncateInt()
+	leveragedAmount := collateralAmountDec.Mul(proxyLeverage).TruncateInt()
 
 	// Calculate custody amount
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
@@ -72,7 +72,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, leverage sdk.Dec, e
 	}
 
 	// Borrow the asset the user wants to long.
-	err = k.Borrow(ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, eta, baseCurrency, isBroker)
+	err = k.Borrow(ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, proxyLeverage, baseCurrency, isBroker)
 	if err != nil {
 		return nil, err
 	}

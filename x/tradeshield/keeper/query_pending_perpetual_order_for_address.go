@@ -16,12 +16,23 @@ func (k Keeper) PendingPerpetualOrderForAddress(goCtx context.Context, req *type
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	res, _, err := k.GetPendingPerpetualOrdersForAddress(ctx, req.Address, &req.Status, nil)
+	pendingPerpetualOrders, _, err := k.GetPendingPerpetualOrdersForAddress(ctx, req.Address, &req.Status, nil)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
+	var pendingPerpetualOrdersExtraInfo []types.PerpetualOrderExtraInfo
+
+	for _, perpetualOrder := range pendingPerpetualOrders {
+		pendingPerpetualOrderExtraInfo, err := k.ConstructPerpetualOrderExtraInfo(ctx, perpetualOrder)
+		if err != nil {
+			return nil, err
+		}
+
+		pendingPerpetualOrdersExtraInfo = append(pendingPerpetualOrdersExtraInfo, *pendingPerpetualOrderExtraInfo)
+	}
+
 	return &types.QueryPendingPerpetualOrderForAddressResponse{
-		PendingPerpetualOrders: res,
+		PendingPerpetualOrders: pendingPerpetualOrdersExtraInfo,
 	}, nil
 }
