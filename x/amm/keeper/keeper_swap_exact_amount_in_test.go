@@ -234,12 +234,12 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 					{
 						Token:                  tc.poolInitBalance[0],
 						Weight:                 sdkmath.NewInt(10),
-						ExternalLiquidityRatio: sdk.NewDec(2),
+						ExternalLiquidityRatio: sdkmath.LegacyNewDec(2),
 					},
 					{
 						Token:                  tc.poolInitBalance[1],
 						Weight:                 sdkmath.NewInt(10),
-						ExternalLiquidityRatio: sdk.NewDec(2),
+						ExternalLiquidityRatio: sdkmath.LegacyNewDec(2),
 					},
 				},
 				TotalWeight: sdkmath.ZeroInt(),
