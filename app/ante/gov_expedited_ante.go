@@ -10,7 +10,7 @@ import (
 var expeditedPropDecoratorEnabled = true
 
 // SetExpeditedProposalsEnabled toggles the expedited proposals decorator on/off.
-// Should only be used in testing - this is to allow simtests to pass.
+// Should only be used in testing - It ensures that simtests tests pass.
 func SetExpeditedProposalsEnabled(val bool) {
 	expeditedPropDecoratorEnabled = val
 }
