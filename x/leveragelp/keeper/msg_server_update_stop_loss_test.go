@@ -40,7 +40,6 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 			UseOracle:                   true,
 			WeightBreakingFeeMultiplier: fee,
 			WeightBreakingFeeExponent:   fee,
-			ExternalLiquidityRatio:      fee,
 			WeightRecoveryFeePortion:    fee,
 			ThresholdWeightDifference:   fee,
 			FeeDenom:                    ptypes.Elys,

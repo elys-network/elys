@@ -33,7 +33,6 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				UseOracle:                   false,
 				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
 				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
@@ -54,7 +53,6 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				UseOracle:                   false,
 				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.ZeroDec(),
 				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
@@ -75,7 +73,6 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				UseOracle:                   true,
 				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
 				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
@@ -97,7 +94,6 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				UseOracle:                   true,
 				WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdk.NewDec(1),
 				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdk.NewDecWithPrec(2, 1),  // 20%
 				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%

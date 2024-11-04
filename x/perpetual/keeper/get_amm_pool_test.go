@@ -14,7 +14,6 @@ func (suite *PerpetualKeeperTestSuite) TestGetAmmPool() {
 		RebalanceTreasury: "",
 		PoolParams: ammtypes.PoolParams{
 			UseOracle:                   false,
-			ExternalLiquidityRatio:      sdk.NewDec(2),
 			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
 			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
 			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
@@ -27,12 +26,14 @@ func (suite *PerpetualKeeperTestSuite) TestGetAmmPool() {
 		TotalShares: sdk.NewCoin("pool/1", sdk.NewInt(100)),
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
-				Weight: sdk.NewInt(10),
+				Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+				Weight:                 sdk.NewInt(10),
+				ExternalLiquidityRatio: sdk.NewDec(2),
 			},
 			{
-				Token:  sdk.NewCoin("borrowAsset", sdk.NewInt(10000)),
-				Weight: sdk.NewInt(10),
+				Token:                  sdk.NewCoin("borrowAsset", sdk.NewInt(10000)),
+				Weight:                 sdk.NewInt(10),
+				ExternalLiquidityRatio: sdk.NewDec(2),
 			},
 		},
 		TotalWeight: sdk.ZeroInt(),
