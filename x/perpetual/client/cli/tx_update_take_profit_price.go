@@ -14,7 +14,7 @@ import (
 
 func CmdUpdateTakeProfitPrice() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-take-profit-price [id] [amount]",
+		Use:   "update-take-profit-price [amount] [id]",
 		Short: "Broadcast message update-take-profit-price",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
