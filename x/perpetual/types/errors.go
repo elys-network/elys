@@ -31,7 +31,7 @@ var (
 	ErrInvalidCloseSize       = errorsmod.Register(ModuleName, 36, "invalid close size")
 	ErrCalcMinCollateral      = errorsmod.Register(ModuleName, 37, "error calculating min collateral")
 	ErrInvalidTakeProfitPrice = errorsmod.Register(ModuleName, 38, "error invalid profit price ")
-	ErrTradingAssetIsEmpty    = errorsmod.Register(ModuleName, 39, "error trading asset is empty")
+	ErrInvalidTradingAsset    = errorsmod.Register(ModuleName, 39, "invalid trading asset")
 	ErrInvalidAmount          = errorsmod.Register(ModuleName, 40, "invalid amount")
 	ErrInvalidPrice           = errorsmod.Register(ModuleName, 41, "error invalid price ")
 	ErrPoolHasToBeOracle      = errorsmod.Register(ModuleName, 42, "pool has to be oracle enabled")

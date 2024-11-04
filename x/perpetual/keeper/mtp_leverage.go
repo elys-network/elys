@@ -26,6 +26,8 @@ func (k Keeper) GetEffectiveLeverage(ctx sdk.Context, mtp types.MTP) (math.Legac
 		liabilitiesInCustodyAsset := mtp.Liabilities.ToLegacyDec().Mul(tradingAssetPrice)
 		denominator := mtp.Custody.ToLegacyDec().Sub(liabilitiesInCustodyAsset)
 		effectiveLeverage := mtp.Custody.ToLegacyDec().Quo(denominator)
+		// We subtract here 1 because we added 1 while opening position for shorts
+		effectiveLeverage = effectiveLeverage.Sub(math.LegacyOneDec())
 		return effectiveLeverage, nil
 	}
 }

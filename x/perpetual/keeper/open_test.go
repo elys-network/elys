@@ -29,7 +29,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		PoolId:          poolId,
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(8),
 		StopLossPrice:   sdk.ZeroDec(),
 	}
 	testCases := []struct {
@@ -146,15 +146,42 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			},
 		},
 		{
-			"success: collateral USDC, trading asset ATOM, stop loss price 0, TakeProfitPrice 0",
-			"",
+			"stop loss price is greater than current asset price for long",
+			"stop loss price cannot be greater than equal to tradingAssetPrice for long",
 			false,
 			func() {
-				err := suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, govtypes.ModuleName, positionCreator, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
+				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, govtypes.ModuleName, positionCreator, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
 				suite.Require().NoError(err)
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				msg.Collateral.Amount = amount
 				msg.TradingAsset = ptypes.ATOM
+
+				msg.Position = types.Position_LONG
+				msg.StopLossPrice = math.LegacyOneDec().MulInt64(7)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"stop loss price is less than current asset price for short",
+			"stop loss price cannot be less than equal to tradingAssetPrice for short",
+			false,
+			func() {
+				msg.Position = types.Position_SHORT
+				msg.StopLossPrice = math.LegacyOneDec().MulInt64(3)
+				msg.TakeProfitPrice = math.LegacyOneDec().MulInt64(2)
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"success: collateral USDC, trading asset ATOM, stop loss price 0, TakeProfitPrice 0",
+			"",
+			false,
+			func() {
+				msg.Position = types.Position_LONG
+				msg.StopLossPrice = math.LegacyZeroDec()
+				msg.TakeProfitPrice = math.LegacyOneDec().MulInt64(8)
 			},
 			func(mtp *types.MTP) {
 			},
