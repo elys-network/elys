@@ -27,7 +27,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenLong() {
 		PoolId:          poolId,
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-		TakeProfitPrice: sdk.ZeroDec(),
+		TakeProfitPrice: math.LegacyOneDec().MulInt64(6),
 		StopLossPrice:   sdk.ZeroDec(),
 	}
 	testCases := []struct {

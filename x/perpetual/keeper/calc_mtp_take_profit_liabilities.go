@@ -26,13 +26,13 @@ func (k Keeper) CalcMTPTakeProfitLiability(ctx sdk.Context, mtp *types.MTP, base
 		// convert custody amount to base currency, takeProfitCustody is in trading asset, so convert to liabilities asset which is usdc
 		takeProfitLiabilities, _, err = k.EstimateSwapGivenIn(ctx, takeProfitCustody, baseCurrency, ammPool)
 		if err != nil {
-			return sdk.ZeroInt(), errorsmod.Wrapf(err, "unable to swap takeProfitCustody to baseCurrency for takeProfitLiabilities")
+			return sdk.ZeroInt(), errorsmod.Wrapf(err, "unable to swap takeProfitCustody (%s) to baseCurrency for takeProfitLiabilities", takeProfitCustody.String())
 		}
 	} else {
 		//  takeProfitCustody is in base currency, so convert to liabilities asset which is trading asset
 		takeProfitLiabilities, _, err = k.EstimateSwapGivenIn(ctx, takeProfitCustody, mtp.LiabilitiesAsset, ammPool)
 		if err != nil {
-			return sdk.ZeroInt(), errorsmod.Wrapf(err, "unable to swap takeProfitCustody to LiabilitiesAsset for takeProfitLiabilities")
+			return sdk.ZeroInt(), errorsmod.Wrapf(err, "unable to swap takeProfitCustody (%s) to LiabilitiesAsset for takeProfitLiabilities", takeProfitCustody.String())
 		}
 	}
 
