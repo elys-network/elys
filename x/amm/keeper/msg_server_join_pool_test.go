@@ -32,7 +32,6 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				UseOracle:                   false,
 				WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      math.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyZeroDec(),
 				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%
@@ -53,7 +52,6 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				UseOracle:                   false,
 				WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      math.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyZeroDec(),
 				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%
@@ -74,7 +72,6 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				UseOracle:                   true,
 				WeightBreakingFeeMultiplier: math.LegacyNewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      math.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyNewDecWithPrec(2, 1),  // 20%
 				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%
@@ -96,7 +93,6 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				UseOracle:                   true,
 				WeightBreakingFeeMultiplier: math.LegacyNewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      math.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyNewDecWithPrec(2, 1),  // 20%
 				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%
@@ -118,7 +114,6 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 				UseOracle:                   true,
 				WeightBreakingFeeMultiplier: math.LegacyNewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      math.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyNewDecWithPrec(2, 1),  // 20%
 				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%
@@ -238,7 +233,6 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 				UseOracle:                   true,
 				WeightBreakingFeeMultiplier: math.LegacyNewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      math.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyNewDecWithPrec(2, 1),  // 20%
 				WeightBreakingFeePortion:    math.LegacyNewDecWithPrec(50, 2), // 50%

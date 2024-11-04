@@ -58,7 +58,6 @@ func SetupApp(t *testing.T) (keeper.Keeper, sdk.Context) {
 		UseOracle:                   false,
 		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		ExternalLiquidityRatio:      math.LegacyOneDec(),
 		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 		ThresholdWeightDifference:   math.LegacyZeroDec(),
 		FeeDenom:                    "",

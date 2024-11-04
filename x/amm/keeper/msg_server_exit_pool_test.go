@@ -33,7 +33,6 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				UseOracle:                   false,
 				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
@@ -54,7 +53,6 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				UseOracle:                   false,
 				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
@@ -75,7 +73,6 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				UseOracle:                   true,
 				WeightBreakingFeeMultiplier: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyNewDecWithPrec(2, 1),  // 20%
 				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
@@ -97,7 +94,6 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				UseOracle:                   true,
 				WeightBreakingFeeMultiplier: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
 				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   sdkmath.LegacyNewDecWithPrec(2, 1),  // 20%
 				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%

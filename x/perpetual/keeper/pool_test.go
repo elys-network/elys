@@ -1,10 +1,11 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
@@ -34,7 +35,6 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 			RebalanceTreasury: ammtypes.NewPoolRebalanceTreasury(poolId).String(),
 			PoolParams: ammtypes.PoolParams{
 				UseOracle:                   true,
-				ExternalLiquidityRatio:      math.LegacyNewDec(2),
 				WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
 				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%

@@ -57,12 +57,14 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, math.NewInt(600000000000)),
+			Weight:                 math.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.ATOM, math.NewInt(600000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000000)),
+			Weight:                 math.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 	}
 
@@ -71,7 +73,6 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      math.LegacyNewDec(2),
 		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
@@ -186,12 +187,14 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
+			Weight:                 math.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000000)),
+			Weight:                 math.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 	}
 
@@ -200,7 +203,6 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      math.LegacyNewDec(2),
 		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
@@ -314,12 +316,14 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, math.NewInt(600_000_000000)),
+			Weight:                 math.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.ATOM, math.NewInt(600_000_000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100_000_000000)),
+			Weight:                 math.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100_000_000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 	}
 
@@ -328,7 +332,6 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      math.LegacyNewDec(2),
 		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
@@ -457,12 +460,14 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
+			Weight:                 math.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 		{
-			Weight: math.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000000)),
+			Weight:                 math.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 	}
 
@@ -471,7 +476,6 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      math.LegacyNewDec(2),
 		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
@@ -603,7 +607,6 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      math.LegacyNewDec(2),
 		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%

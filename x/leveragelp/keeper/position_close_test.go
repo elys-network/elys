@@ -42,7 +42,6 @@ func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position
 			UseOracle:                   true,
 			WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 			WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-			ExternalLiquidityRatio:      math.LegacyNewDec(1),
 			WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 			ThresholdWeightDifference:   math.LegacyZeroDec(),
 			FeeDenom:                    "uusdc",

@@ -7,13 +7,14 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
+
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
 	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -186,12 +187,14 @@ func (suite *PerpetualKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress
 func (suite *PerpetualKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle bool, swapFee, exitFee math.LegacyDec, asset2 string, baseTokenAmount, assetAmount math.Int) ammtypes.Pool {
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount),
-			Weight: math.NewInt(10),
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount),
+			Weight:                 math.NewInt(10),
+			ExternalLiquidityRatio: math.LegacyNewDec(2),
 		},
 		{
-			Token:  sdk.NewCoin(asset2, assetAmount),
-			Weight: math.NewInt(10),
+			Token:                  sdk.NewCoin(asset2, assetAmount),
+			Weight:                 math.NewInt(10),
+			ExternalLiquidityRatio: math.LegacyNewDec(2),
 		},
 	}
 	sort.Slice(poolAssets, func(i, j int) bool {
@@ -199,7 +202,6 @@ func (suite *PerpetualKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, 
 	})
 	poolParams := ammtypes.PoolParams{
 		UseOracle:                   useOracle,
-		ExternalLiquidityRatio:      math.LegacyNewDec(2),
 		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%

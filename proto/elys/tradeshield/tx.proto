@@ -18,12 +18,18 @@ service Msg {
   rpc CreateSpotOrder(MsgCreateSpotOrder) returns (MsgCreateSpotOrderResponse);
   rpc UpdateSpotOrder(MsgUpdateSpotOrder) returns (MsgUpdateSpotOrderResponse);
   rpc CancelSpotOrder(MsgCancelSpotOrder) returns (MsgCancelSpotOrderResponse);
-  rpc CancelSpotOrders(MsgCancelSpotOrders) returns (MsgCancelSpotOrdersResponse);
-  rpc CreatePerpetualOpenOrder(MsgCreatePerpetualOpenOrder) returns (MsgCreatePerpetualOpenOrderResponse);
-  rpc CreatePerpetualCloseOrder(MsgCreatePerpetualCloseOrder) returns (MsgCreatePerpetualCloseOrderResponse);
-  rpc UpdatePerpetualOrder(MsgUpdatePerpetualOrder) returns (MsgUpdatePerpetualOrderResponse);
-  rpc CancelPerpetualOrder(MsgCancelPerpetualOrder) returns (MsgCancelPerpetualOrderResponse);
-  rpc CancelPerpetualOrders(MsgCancelPerpetualOrders) returns (MsgCancelPerpetualOrdersResponse);
+  rpc CancelSpotOrders(MsgCancelSpotOrders)
+      returns (MsgCancelSpotOrdersResponse);
+  rpc CreatePerpetualOpenOrder(MsgCreatePerpetualOpenOrder)
+      returns (MsgCreatePerpetualOpenOrderResponse);
+  rpc CreatePerpetualCloseOrder(MsgCreatePerpetualCloseOrder)
+      returns (MsgCreatePerpetualCloseOrderResponse);
+  rpc UpdatePerpetualOrder(MsgUpdatePerpetualOrder)
+      returns (MsgUpdatePerpetualOrderResponse);
+  rpc CancelPerpetualOrder(MsgCancelPerpetualOrder)
+      returns (MsgCancelPerpetualOrderResponse);
+  rpc CancelPerpetualOrders(MsgCancelPerpetualOrders)
+      returns (MsgCancelPerpetualOrdersResponse);
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc ExecuteOrders(MsgExecuteOrders) returns (MsgExecuteOrdersResponse);
 }

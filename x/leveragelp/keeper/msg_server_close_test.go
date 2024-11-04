@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
+	"time"
+
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/leveragelp/keeper"
-	"time"
 
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
@@ -43,7 +44,6 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 			UseOracle:                   true,
 			WeightBreakingFeeMultiplier: fee,
 			WeightBreakingFeeExponent:   fee,
-			ExternalLiquidityRatio:      fee,
 			WeightRecoveryFeePortion:    fee,
 			ThresholdWeightDifference:   fee,
 			FeeDenom:                    ptypes.Elys,
@@ -277,7 +277,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			},
 			func() {
 				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
-				actualShares, ok := sdk.NewIntFromString("9995950947287941390")
+				actualShares, ok := sdk.NewIntFromString("9999952380952380950")
 				suite.Require().True(ok)
 				suite.Require().Equal(position.LeveragedLpAmount, actualShares)
 			},

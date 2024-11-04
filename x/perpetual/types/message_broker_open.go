@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -33,7 +35,7 @@ func (msg *MsgBrokerOpen) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 
-	if msg.Position.String() != "LONG" && msg.Position.String() != "SHORT" {
+	if msg.Position != Position_LONG && msg.Position != Position_SHORT {
 		return errorsmod.Wrap(ErrInvalidPosition, msg.Position.String())
 	}
 
@@ -41,20 +43,34 @@ func (msg *MsgBrokerOpen) ValidateBasic() error {
 		return ErrInvalidLeverage
 	}
 
-	if msg.Leverage.LT(sdkmath.LegacyOneDec()) {
-		return errorsmod.Wrapf(ErrInvalidLeverage, "leverage (%s) cannot be <= 1", msg.Leverage.String())
+	if !(msg.Leverage.GT(sdkmath.LegacyOneDec()) || msg.Leverage.IsZero()) {
+		return errorsmod.Wrapf(ErrInvalidLeverage, "leverage (%s) can only be 0 (to add collateral) or > 1 to open positions", msg.Leverage.String())
 	}
 
-	if len(msg.TradingAsset) == 0 {
-		return ErrTradingAssetIsEmpty
+	if err = sdk.ValidateDenom(msg.TradingAsset); err != nil {
+		return errorsmod.Wrapf(ErrInvalidTradingAsset, err.Error())
 	}
 
 	if msg.TakeProfitPrice.IsNil() {
-		return ErrInvalidTakeProfitPrice
+		return errorsmod.Wrapf(ErrInvalidTakeProfitPrice, "takeProfitPrice cannot be nil")
 	}
 
 	if msg.TakeProfitPrice.IsNegative() {
-		return ErrInvalidTakeProfitPrice
+		return errorsmod.Wrapf(ErrInvalidTakeProfitPrice, "takeProfitPrice cannot be negative")
+	}
+	if msg.StopLossPrice.IsNil() {
+		return errorsmod.Wrapf(ErrInvalidPrice, "stopLossPrice cannot be nil")
+	}
+
+	if msg.StopLossPrice.IsNegative() {
+		return errorsmod.Wrapf(ErrInvalidPrice, "stopLossPrice cannot be negative")
+	}
+
+	if msg.Position == Position_LONG && !msg.StopLossPrice.IsZero() && msg.TakeProfitPrice.LTE(msg.StopLossPrice) {
+		return fmt.Errorf("TakeProfitPrice cannot be <= StopLossPrice for LONG")
+	}
+	if msg.Position == Position_SHORT && !msg.StopLossPrice.IsZero() && msg.TakeProfitPrice.GTE(msg.StopLossPrice) {
+		return fmt.Errorf("TakeProfitPrice cannot be >= StopLossPrice for SHORT")
 	}
 
 	return nil

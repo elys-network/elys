@@ -27,7 +27,6 @@ func TestMsgUpdatePoolParams_ValidateBasic(t *testing.T) {
 					UseOracle:                   false,
 					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 					FeeDenom:                    ptypes.BaseCurrency,
@@ -44,7 +43,6 @@ func TestMsgUpdatePoolParams_ValidateBasic(t *testing.T) {
 					UseOracle:                   false,
 					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					ExternalLiquidityRatio:      sdkmath.LegacyNewDec(1),
 					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
 					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 					FeeDenom:                    ptypes.BaseCurrency,
