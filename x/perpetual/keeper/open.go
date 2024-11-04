@@ -45,10 +45,17 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		if !msg.StopLossPrice.IsZero() && msg.StopLossPrice.GTE(tradingAssetPrice) {
 			return nil, fmt.Errorf("stop loss price cannot be greater than equal to tradingAssetPrice for long (Stop loss: %s, asset price: %s)", msg.StopLossPrice.String(), tradingAssetPrice.String())
 		}
+		if msg.TakeProfitPrice.IsZero() {
+			// when adding collateral (i.e. msg.leverage = 0), we override msg.TakeProfitPrice to existingMtp.TakeProfitPrice below
+			msg.TakeProfitPrice = types.TakeProfitPriceDefault
+		}
 	}
 	if msg.Position == types.Position_SHORT {
 		if ratio.GT(params.MaximumShortTakeProfitPriceRatio) {
 			return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short (current ratio: %s)", params.MaximumShortTakeProfitPriceRatio.String(), ratio.String())
+		}
+		if msg.StopLossPrice.IsZero() {
+			msg.StopLossPrice = types.MaxShortStopLossPrice
 		}
 		if !msg.StopLossPrice.IsZero() && msg.StopLossPrice.LTE(tradingAssetPrice) {
 			return nil, fmt.Errorf("stop loss price cannot be less than equal to tradingAssetPrice for short (Stop loss: %s, asset price: %s)", msg.StopLossPrice.String(), tradingAssetPrice.String())
@@ -63,14 +70,16 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 	existingMtp := k.CheckSameAssetPosition(ctx, msg)
 
 	if existingMtp == nil {
-		if msg.Leverage.Equal(math.LegacyOneDec()) {
-			return nil, fmt.Errorf("cannot open new position with leverage 1")
+		// opening new position
+		if msg.Leverage.LTE(math.LegacyOneDec()) {
+			return nil, fmt.Errorf("cannot open new position with leverage <= 1")
 		}
 		// Check if max positions are exceeded as we are opening new position, not updating old position
 		if err = k.CheckMaxOpenPositions(ctx); err != nil {
 			return nil, err
 		}
-	} else if msg.Leverage.Equal(math.LegacyOneDec()) {
+	} else if msg.Leverage.Equal(math.LegacyZeroDec()) {
+		// adding collateral to existing position (when leverage > 1, we leave the case for modifying old position)
 		// Enforce collateral addition (for leverage 1) without modifying take profit price
 		msg.TakeProfitPrice = existingMtp.TakeProfitPrice
 	}
