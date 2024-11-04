@@ -26,6 +26,7 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdOpen())
+	cmd.AddCommand(CmdBrokerOpen())
 	cmd.AddCommand(CmdClose())
 	cmd.AddCommand(CmdUpdateParams())
 	cmd.AddCommand(CmdWhitelist())
