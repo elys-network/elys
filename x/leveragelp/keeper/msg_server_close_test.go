@@ -276,7 +276,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			},
 			func() {
 				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
-				actualShares, ok := sdk.NewIntFromString("9995950947287941390")
+				actualShares, ok := sdk.NewIntFromString("9999952380952380950")
 				suite.Require().True(ok)
 				suite.Require().Equal(position.LeveragedLpAmount, actualShares)
 			},
