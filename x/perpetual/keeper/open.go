@@ -45,10 +45,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		if !msg.StopLossPrice.IsZero() && msg.StopLossPrice.GTE(tradingAssetPrice) {
 			return nil, fmt.Errorf("stop loss price cannot be greater than equal to tradingAssetPrice for long (Stop loss: %s, asset price: %s)", msg.StopLossPrice.String(), tradingAssetPrice.String())
 		}
-		if msg.TakeProfitPrice.IsZero() {
-			// when adding collateral (i.e. msg.leverage = 0), we override msg.TakeProfitPrice to existingMtp.TakeProfitPrice below
-			msg.TakeProfitPrice = types.TakeProfitPriceDefault
-		}
+		// no need to override msg.TakeProfitPrice as the above ratio check it
 	}
 	if msg.Position == types.Position_SHORT {
 		if ratio.GT(params.MaximumShortTakeProfitPriceRatio) {
