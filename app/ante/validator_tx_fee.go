@@ -33,7 +33,6 @@ func CheckTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx) (sdk.Coins,
 		msgs := tx.GetMsgs()
 		if len(msgs) == 1 {
 			msgType := strings.ToLower(sdk.MsgTypeURL(msgs[0]))
-			sdk.MsgTypeURL(&oracletypes.MsgFeedPrice{})
 			if strings.Contains(msgType, sdk.MsgTypeURL(&oracletypes.MsgFeedPrice{})) || strings.Contains(msgType, sdk.MsgTypeURL(&oracletypes.MsgFeedMultiplePrices{})) {
 				// set the minimum gas price to 0 ELYS if the message is a feed price
 				minGasPrice := sdk.DecCoin{
