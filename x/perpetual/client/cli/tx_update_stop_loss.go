@@ -14,7 +14,7 @@ import (
 
 func CmdUpdateStopLoss() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-stop-loss [id] [amount]",
+		Use:   "update-stop-loss [amount] [id]",
 		Short: "Broadcast message update-stop-loss",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
