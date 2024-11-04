@@ -30,8 +30,6 @@ func (suite *PerpetualKeeperTestSuite) TestForceCloseShort_Successful() {
 
 	ctx := suite.ctx
 	k := suite.app.PerpetualKeeper
-	poolId := uint64(1)
-
 	//prices
 
 	suite.SetupCoinPrices()
@@ -42,11 +40,11 @@ func (suite *PerpetualKeeperTestSuite) TestForceCloseShort_Successful() {
 
 	amount := sdk.NewInt(1000)
 
-	ammPool := suite.SetAndGetAmmPool(poolCreator, poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
+			AmmPoolId:   ammPool.PoolId,
 			LeverageMax: math.LegacyMustNewDecFromStr("10"),
 		},
 	}
@@ -58,9 +56,9 @@ func (suite *PerpetualKeeperTestSuite) TestForceCloseShort_Successful() {
 
 	openPositionMsg := &types.MsgOpen{
 		Creator:         positionCreator.String(),
-		Leverage:        math.LegacyNewDec(5),
+		Leverage:        math.LegacyNewDec(2),
 		Position:        types.Position_SHORT,
-		PoolId:          poolId,
+		PoolId:          ammPool.PoolId,
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),

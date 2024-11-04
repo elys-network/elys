@@ -15,14 +15,13 @@ func (suite *PerpetualKeeperTestSuite) TestBeginBlocker() {
 
 	addr := suite.AddAccounts(1, nil)
 	amount := sdk.NewInt(1000)
-	poolId := uint64(1)
 
 	poolCreator := addr[0]
-	_ = suite.SetAndGetAmmPool(poolCreator, poolId, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
-			AmmPoolId:   poolId,
+			AmmPoolId:   ammPool.PoolId,
 			LeverageMax: math.LegacyMustNewDecFromStr("10"),
 		},
 	}
