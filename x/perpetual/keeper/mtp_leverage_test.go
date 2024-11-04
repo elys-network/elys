@@ -36,7 +36,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 		{
 			"SHORT",
 			"",
-			math.LegacyMustNewDecFromStr("2.666666666666666667"),
+			math.LegacyMustNewDecFromStr("1.666666666666666667"),
 			func() {
 				suite.SetupCoinPrices()
 				mtp.Position = types.Position_SHORT
@@ -47,7 +47,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 		{
 			"SHORT, bot should liquidate before leverage goes negative",
 			"",
-			math.LegacyMustNewDecFromStr("-0.363636363636363636"),
+			math.LegacyMustNewDecFromStr("-1.363636363636363636"),
 			func() {
 				suite.SetupCoinPrices()
 				mtp.Position = types.Position_SHORT

@@ -30,7 +30,7 @@ func NormalizedWeights(poolAssets []PoolAsset) (poolWeights []AssetWeight) {
 	return poolWeights
 }
 
-func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, poolAssets []PoolAsset) ([]AssetWeight, error) {
+func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper OracleKeeper, poolAssets []PoolAsset) ([]AssetWeight, error) {
 	oraclePoolWeights := []AssetWeight{}
 	totalWeight := sdkmath.LegacyZeroDec()
 	for _, asset := range poolAssets {
@@ -39,10 +39,6 @@ func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper
 			return oraclePoolWeights, fmt.Errorf("price for token not set: %s", asset.Token.Denom)
 		}
 		amount := asset.Token.Amount
-		accountedPoolAmt := accountedPoolKeeper.GetAccountedBalance(ctx, poolId, asset.Token.Denom)
-		if accountedPoolAmt.IsPositive() {
-			amount = accountedPoolAmt
-		}
 		weight := amount.ToLegacyDec().Mul(tokenPrice)
 		oraclePoolWeights = append(oraclePoolWeights, AssetWeight{
 			Asset:  asset.Token.Denom,
@@ -60,27 +56,21 @@ func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper
 	return oraclePoolWeights, nil
 }
 
-func (p Pool) NewPoolAssetsAfterSwap(ctx sdk.Context, inCoins sdk.Coins, outCoins sdk.Coins, accountedPoolKeeper AccountedPoolKeeper) (poolAssets []PoolAsset, err error) {
-
-	for _, asset := range p.PoolAssets {
+func (p Pool) NewPoolAssetsAfterSwap(ctx sdk.Context, inCoins sdk.Coins, outCoins sdk.Coins, poolAssets []PoolAsset) ([]PoolAsset, error) {
+	updatedAssets := []PoolAsset{}
+	for _, asset := range poolAssets {
 		denom := asset.Token.Denom
 		beforeAmount := asset.Token.Amount
-		if p.PoolParams.UseOracle {
-			accountedPoolAmt := accountedPoolKeeper.GetAccountedBalance(ctx, p.PoolId, asset.Token.Denom)
-			if accountedPoolAmt.IsPositive() {
-				beforeAmount = accountedPoolAmt
-			}
-		}
 		amountAfterSwap := beforeAmount.Add(inCoins.AmountOf(denom)).Sub(outCoins.AmountOf(denom))
 		if amountAfterSwap.IsNegative() {
 			return poolAssets, fmt.Errorf("negative pool amount after swap")
 		}
-		poolAssets = append(poolAssets, PoolAsset{
+		updatedAssets = append(updatedAssets, PoolAsset{
 			Token:  sdk.NewCoin(denom, amountAfterSwap),
 			Weight: asset.Weight,
 		})
 	}
-	return
+	return updatedAssets, nil
 }
 
 func (p Pool) StackedRatioFromSnapshot(ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool) sdkmath.LegacyDec {
@@ -98,12 +88,12 @@ func (p Pool) StackedRatioFromSnapshot(ctx sdk.Context, oracleKeeper OracleKeepe
 	return stackedRatio
 }
 
-func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, poolAssets []PoolAsset) sdkmath.LegacyDec {
-	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, p.PoolId, oracleKeeper, accountedPoolKeeper, poolAssets)
+func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset) sdkmath.LegacyDec {
+	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, p.PoolId, oracleKeeper, poolAssets)
 	if err != nil {
 		return sdkmath.LegacyZeroDec()
 	}
-	targetWeights := NormalizedWeights(p.PoolAssets)
+	targetWeights := NormalizedWeights(poolAssets)
 
 	distanceSum := sdkmath.LegacyZeroDec()
 	for i := range poolAssets {
@@ -117,8 +107,8 @@ func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeepe
 	return distanceSum.Quo(sdkmath.LegacyNewDec(int64(len(p.PoolAssets))))
 }
 
-func GetDenomOracleAssetWeight(ctx sdk.Context, poolId uint64, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, poolAssets []PoolAsset, denom string) sdkmath.LegacyDec {
-	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, poolId, oracleKeeper, accountedPoolKeeper, poolAssets)
+func GetDenomOracleAssetWeight(ctx sdk.Context, poolId uint64, oracleKeeper OracleKeeper, poolAssets []PoolAsset, denom string) sdkmath.LegacyDec {
+	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, poolId, oracleKeeper, poolAssets)
 	if err != nil {
 		return sdkmath.LegacyZeroDec()
 	}
@@ -216,7 +206,8 @@ func (p *Pool) SwapOutAmtGivenIn(
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
 
-	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accPoolKeeper, p.PoolAssets)
+	accountedAssets := p.GetAccountedBalance(ctx, accPoolKeeper, p.PoolAssets)
+	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accountedAssets)
 
 	// out amount is calculated in this formula
 	// balancer slippage amount = Max(oracleOutAmount-balancerOutAmount, 0)
@@ -294,21 +285,22 @@ func (p *Pool) SwapOutAmtGivenIn(
 	// calculate weight distance difference to calculate bonus/cut on the operation
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
 		tokensIn,
-		sdk.Coins{sdk.NewCoin(tokenOutDenom, outAmountAfterSlippage.TruncateInt())}, accPoolKeeper,
+		sdk.Coins{sdk.NewCoin(tokenOutDenom, outAmountAfterSlippage.TruncateInt())}, accountedAssets,
 	)
 	if err != nil {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
-	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accPoolKeeper, newAssetPools)
+	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
 	// target weight
-	targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenIn.Denom)
-	targetWeightOut := GetDenomNormalizedWeight(p.PoolAssets, tokenOutDenom)
+	// Asset weight remains same in new pool assets as in original pool assets
+	targetWeightIn := GetDenomNormalizedWeight(newAssetPools, tokenIn.Denom)
+	targetWeightOut := GetDenomNormalizedWeight(newAssetPools, tokenOutDenom)
 
 	// weight breaking fee as in Plasma pool
-	weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accPoolKeeper, newAssetPools, tokenIn.Denom)
-	weightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accPoolKeeper, newAssetPools, tokenOutDenom)
+	weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenIn.Denom)
+	weightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenOutDenom)
 	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
 
 	// weight recovery reward = weight breaking fee * weight recovery fee portion
@@ -316,10 +308,15 @@ func (p *Pool) SwapOutAmtGivenIn(
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus = weightBreakingFee.Neg()
-	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
-		weightBalanceBonus = weightRecoveryReward
-		// set weight breaking fee to zero if bonus is applied
+
+	// If swap is improving weight, set weight breaking fee to zero
+	if distanceDiff.IsNegative() {
 		weightBreakingFee = sdkmath.LegacyZeroDec()
+
+		// set weight breaking fee to zero if bonus is applied
+		if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) {
+			weightBalanceBonus = weightRecoveryReward
+		}
 	}
 
 	if swapFee.GTE(sdkmath.LegacyOneDec()) {
@@ -335,4 +332,20 @@ func (p *Pool) SwapOutAmtGivenIn(
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	return oracleOutCoin, slippage, slippageAmount, weightBalanceBonus, nil
+}
+
+// TODO: Ideally we should have a single DS for accounted pool to avoid confusion
+// Or refactor/improve amm pool to use accounted pool
+// Task has been added
+func (p *Pool) GetAccountedBalance(ctx sdk.Context, accountedPoolKeeper AccountedPoolKeeper, poolAssets []PoolAsset) (updatedAssets []PoolAsset) {
+	for _, asset := range poolAssets {
+		if p.PoolParams.UseOracle {
+			accountedPoolAmt := accountedPoolKeeper.GetAccountedBalance(ctx, p.PoolId, asset.Token.Denom)
+			if accountedPoolAmt.IsPositive() {
+				asset.Token.Amount = accountedPoolAmt
+			}
+		}
+		updatedAssets = append(updatedAssets, asset)
+	}
+	return updatedAssets
 }
