@@ -5,5 +5,6 @@ import (
 )
 
 func (m Migrator) V5Migration(ctx sdk.Context) error {
+
 	return nil
 }

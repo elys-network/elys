@@ -222,7 +222,6 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
 					UseOracle:                   tc.isOraclePool,
-					ExternalLiquidityRatio:      sdkmath.LegacyNewDec(2),
 					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
 					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
@@ -233,12 +232,14 @@ func (suite *KeeperTestSuite) TestSwapExactAmountIn() {
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{
 					{
-						Token:  tc.poolInitBalance[0],
-						Weight: sdkmath.NewInt(10),
+						Token:                  tc.poolInitBalance[0],
+						Weight:                 sdkmath.NewInt(10),
+						ExternalLiquidityRatio: sdk.NewDec(2),
 					},
 					{
-						Token:  tc.poolInitBalance[1],
-						Weight: sdkmath.NewInt(10),
+						Token:                  tc.poolInitBalance[1],
+						Weight:                 sdkmath.NewInt(10),
+						ExternalLiquidityRatio: sdk.NewDec(2),
 					},
 				},
 				TotalWeight: sdkmath.ZeroInt(),

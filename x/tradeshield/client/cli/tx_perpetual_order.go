@@ -18,9 +18,9 @@ import (
 
 func CmdCreatePerpetualOpenOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-perpetual-open-order [order-type] [position] [leverage] [pool-id] [trading-asset] [collateral] [trigger-price]",
+		Use:   "create-perpetual-open-order [position] [leverage] [pool-id] [trading-asset] [collateral] [trigger-price]",
 		Short: "Create a new perpetual open order",
-		Args:  cobra.ExactArgs(7),
+		Args:  cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -32,28 +32,28 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			position := types.PerpetualPosition(perptypes.GetPositionFromString(args[1]))
+			position := types.PerpetualPosition(perptypes.GetPositionFromString(args[0]))
 
-			leverage, err := math.LegacyNewDecFromStr(args[2])
+			leverage, err := math.LegacyNewDecFromStr(args[1])
 			if err != nil {
 				return err
 			}
 
-			poolId, err := strconv.ParseUint(args[3], 10, 64)
+			poolId, err := strconv.ParseUint(args[2], 10, 64)
 			if err != nil {
 				return err
 			}
 
-			tradingAsset := args[4]
+			tradingAsset := args[3]
 
-			collateral, err := sdk.ParseCoinNormalized(args[5])
+			collateral, err := sdk.ParseCoinNormalized(args[4])
 			if err != nil {
 				return err
 			}
 
 			triggerPrice := types.TriggerPrice{
 				TradingAssetDenom: tradingAsset,
-				Rate:              math.LegacyMustNewDecFromStr(args[6]),
+				Rate:              math.LegacyMustNewDecFromStr(args[5]),
 			}
 
 			takeProfitPriceStr, err := cmd.Flags().GetString(perpcli.FlagTakeProfitPrice)
@@ -114,9 +114,9 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 
 func CmdCreatePerpetualCloseOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-perpetual-close-order [order-type] [trigger-price] [position-id]",
+		Use:   "create-perpetual-close-order [trigger-price] [position-id]",
 		Short: "Create a new perpetual close order",
-		Args:  cobra.ExactArgs(8),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -128,10 +128,10 @@ func CmdCreatePerpetualCloseOrder() *cobra.Command {
 			// trading asset will be filled by message handler
 			triggerPrice := types.TriggerPrice{
 				TradingAssetDenom: "",
-				Rate:              math.LegacyMustNewDecFromStr(args[1]),
+				Rate:              math.LegacyMustNewDecFromStr(args[0]),
 			}
 
-			positionId, err := strconv.ParseUint(args[2], 10, 64)
+			positionId, err := strconv.ParseUint(args[1], 10, 64)
 			if err != nil {
 				return err
 			}

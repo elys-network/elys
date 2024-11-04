@@ -251,20 +251,21 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
-			SwapFee:                swapFee,
-			FeeDenom:               ptypes.BaseCurrency,
-			UseOracle:              true,
-			ExternalLiquidityRatio: sdkmath.LegacyNewDec(10), // 2x
+			SwapFee:   swapFee,
+			FeeDenom:  ptypes.BaseCurrency,
+			UseOracle: true,
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []types.PoolAsset{
 			{
-				Token:  poolCoins[0],
-				Weight: sdkmath.NewInt(10),
+				Token:                  poolCoins[0],
+				Weight:                 sdkmath.NewInt(10),
+				ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 			},
 			{
-				Token:  poolCoins[1],
-				Weight: sdkmath.NewInt(10),
+				Token:                  poolCoins[1],
+				Weight:                 sdkmath.NewInt(10),
+				ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 			},
 		},
 		TotalWeight: sdkmath.ZeroInt(),

@@ -373,3 +373,12 @@ func (pool Pool) Validate() error {
 	}
 	return nil
 }
+
+func (pool Pool) GetAssetExternalLiquidityRatio(asset string) (sdkmath.LegacyDec, error) {
+	for _, poolAsset := range pool.PoolAssets {
+		if poolAsset.Token.Denom == asset {
+			return poolAsset.ExternalLiquidityRatio, nil
+		}
+	}
+	return sdkmath.LegacyZeroDec(), fmt.Errorf("asset not found in the pool")
+}

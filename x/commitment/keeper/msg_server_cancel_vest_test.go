@@ -85,3 +85,63 @@ func TestCancelVest(t *testing.T) {
 	require.Error(t, err, "should throw an error when trying to cancel more tokens than available")
 	require.True(t, types.ErrInsufficientVestingTokens.Is(err), "error should be insufficient vesting tokens")
 }
+
+// TestCancelVestIncorrectDenom tests the CancelVest function with an incorrect denom
+func TestCancelVestIncorrectDenom(t *testing.T) {
+	app := app.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+
+	// Create a new account
+	creator, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
+	acc := app.AccountKeeper.GetAccount(ctx, creator)
+	if acc == nil {
+		acc = app.AccountKeeper.NewAccountWithAddress(ctx, creator)
+		app.AccountKeeper.SetAccount(ctx, acc)
+	}
+	// Create a cancel vesting message
+	cancelVestMsg := &types.MsgCancelVest{
+		Creator: creator.String(),
+		Denom:   "incorrect",
+		Amount:  sdk.NewInt(25),
+	}
+
+	// Execute the CancelVest function
+	_, err := msgServer.CancelVest(ctx, cancelVestMsg)
+	require.Error(t, err, "should throw an error when trying to cancel tokens with an incorrect denom")
+	require.True(t, types.ErrInvalidDenom.Is(err), "error should be invalid denom")
+}
+
+// TestCancelVestNoVestingInfo tests the CancelVest function with no vesting info
+func TestCancelVestNoVestingInfo(t *testing.T) {
+	app := app.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+
+	// Create a new account
+	creator, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
+	acc := app.AccountKeeper.GetAccount(ctx, creator)
+	if acc == nil {
+		acc = app.AccountKeeper.NewAccountWithAddress(ctx, creator)
+		app.AccountKeeper.SetAccount(ctx, acc)
+	}
+	// Create a cancel vesting message
+	cancelVestMsg := &types.MsgCancelVest{
+		Creator: creator.String(),
+		Denom:   ptypes.Eden,
+		Amount:  sdk.NewInt(25),
+	}
+
+	// Execute the CancelVest function
+	_, err := msgServer.CancelVest(ctx, cancelVestMsg)
+	require.Error(t, err, "should throw an error when trying to cancel tokens with no vesting info")
+	require.True(t, types.ErrInvalidDenom.Is(err), "error should be invalid denom")
+}

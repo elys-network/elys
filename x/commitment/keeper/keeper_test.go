@@ -205,3 +205,252 @@ func TestKeeper_SubEdenEdenBOnModule_InsufficientClaimedTokens(t *testing.T) {
 		commitments.Claimed,
 	)
 }
+
+// TestKeeper_Logger tests the Logger function
+func TestKeeper_Logger(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	logger := app.Logger()
+
+	keeper.Logger(ctx).Info("test")
+	logger.Info("test")
+}
+
+// TestKeeper_BankKeeper tests the BankKeeper function
+func TestKeeper_BankKeeper(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	keeper := app.CommitmentKeeper
+
+	assert.NotNil(t, keeper.BankKeeper())
+}
+
+// TestKeeper_SetHooks_Panic tests the SetHooks function with a nil argument
+func TestKeeper_SetHooks_Panic(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	keeper := app.CommitmentKeeper
+
+	assert.Panics(t, func() {
+		keeper.SetHooks(nil)
+	})
+}
+
+// TestKeeper_MintCoins tests the MintCoins function
+func TestKeeper_MintCoins(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+
+	// Mint 100ueden and uelys
+	tokens := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)), sdk.NewCoin(ptypes.Elys, sdk.NewInt(1000000)))
+
+	err := keeper.MintCoins(ctx, types.ModuleName, tokens)
+	require.NoError(t, err)
+
+	// Check the updated commitments
+	commitments := keeper.GetCommitments(ctx, addr[0])
+	assert.Equal(t, sdk.NewCoins(), commitments.Claimed)
+}
+
+// TestKeeper_MintCoins_EmptyAmount tests the MintCoins function with an empty amount
+func TestKeeper_MintCoins_EmptyAmount(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	// Mint 0ueden
+	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(0)))
+
+	err := keeper.MintCoins(ctx, types.ModuleName, edenToken)
+	require.NoError(t, err)
+}
+
+// TestKeeper_BurnCoins tests the BurnCoins function
+func TestKeeper_BurnCoins(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+
+	// Mint 100ueden and uelys
+	tokens := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)), sdk.NewCoin(ptypes.Elys, sdk.NewInt(1000000)))
+
+	err := keeper.MintCoins(ctx, types.ModuleName, tokens)
+	require.NoError(t, err)
+
+	// Burn 50ueden and uelys
+	tokens = sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(50)), sdk.NewCoin(ptypes.Elys, sdk.NewInt(500000)))
+
+	err = keeper.BurnCoins(ctx, types.ModuleName, tokens)
+	require.NoError(t, err)
+
+	// Check the updated commitments
+	commitments := keeper.GetCommitments(ctx, addr[0])
+	assert.Equal(t, sdk.NewCoins(), commitments.Claimed)
+}
+
+// TestKeeper_BurnCoins tests the BurnCoins function with empty amount
+func TestKeeper_BurnCoins_EmptyAmount(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+
+	// Mint 100ueden and uelys
+	tokens := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)), sdk.NewCoin(ptypes.Elys, sdk.NewInt(1000000)))
+
+	err := keeper.MintCoins(ctx, types.ModuleName, tokens)
+	require.NoError(t, err)
+
+	// Burn 50ueden and uelys
+	tokens = sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(50)))
+
+	err = keeper.BurnCoins(ctx, types.ModuleName, tokens)
+	require.NoError(t, err)
+
+	// Check the updated commitments
+	commitments := keeper.GetCommitments(ctx, addr[0])
+	assert.Equal(t, sdk.NewCoins(), commitments.Claimed)
+}
+
+// TestKeeper_SendCoinsFromModuleToModule tests the SendCoinsFromModuleToModule function
+func TestKeeper_SendCoinsFromModuleToModule(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+
+	// Mint 100ueden and uelys
+	tokens := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)), sdk.NewCoin(ptypes.Elys, sdk.NewInt(1000000)))
+
+	err := keeper.MintCoins(ctx, types.ModuleName, tokens)
+	require.NoError(t, err)
+
+	// Send 50ueden and uelys from module to module
+	tokens = sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(50)), sdk.NewCoin(ptypes.Elys, sdk.NewInt(500000)))
+
+	err = keeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.ModuleName, tokens)
+	require.NoError(t, err)
+
+	// Check the updated commitments
+	commitments := keeper.GetCommitments(ctx, addr[0])
+	assert.Equal(t, sdk.NewCoins(), commitments.Claimed)
+}
+
+// TestKeeper_SendCoinsFromModuleToModule_EmptyAmount tests the SendCoinsFromModuleToModule function with empty amount
+func TestKeeper_SendCoinsFromModuleToModule_EmptyAmount(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+
+	// Mint 100ueden and uelys
+	tokens := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)), sdk.NewCoin(ptypes.Elys, sdk.NewInt(1000000)))
+
+	err := keeper.MintCoins(ctx, types.ModuleName, tokens)
+	require.NoError(t, err)
+
+	// Send 50ueden and uelys from module to module
+	tokens = sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(50)))
+
+	err = keeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.ModuleName, tokens)
+	require.NoError(t, err)
+
+	// Check the updated commitments
+	commitments := keeper.GetCommitments(ctx, addr[0])
+	assert.Equal(t, sdk.NewCoins(), commitments.Claimed)
+}
+
+// TestKeeper_SendCoinsFromModuleToAccount tests the SendCoinsFromModuleToAccount function
+func TestKeeper_SendCoinsFromModuleToAccount(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+
+	// Mint 100ueden and uelys
+	tokens := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)), sdk.NewCoin(ptypes.Elys, sdk.NewInt(1000000)))
+
+	err := keeper.MintCoins(ctx, types.ModuleName, tokens)
+	require.NoError(t, err)
+
+	// Send 50ueden and uelys from module to account
+	tokens = sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(50)), sdk.NewCoin(ptypes.Elys, sdk.NewInt(500000)))
+
+	err = keeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], tokens)
+	require.NoError(t, err)
+
+	// Check the updated commitments
+	commitments := keeper.GetCommitments(ctx, addr[0])
+	assert.Equal(t, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(50))), commitments.Claimed)
+}
+
+// TestKeeper_SendCoinsFromModuleToAccount_EmptyAmount tests the SendCoinsFromModuleToAccount function with empty amount
+func TestKeeper_SendCoinsFromModuleToAccount_EmptyAmount(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+
+	// Mint 100ueden and uelys
+	tokens := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)), sdk.NewCoin(ptypes.Elys, sdk.NewInt(1000000)))
+
+	err := keeper.MintCoins(ctx, types.ModuleName, tokens)
+	require.NoError(t, err)
+
+	// Send 50ueden and uelys from module to account
+	tokens = sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(50)))
+
+	err = keeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], tokens)
+	require.NoError(t, err)
+
+	// Check the updated commitments
+	commitments := keeper.GetCommitments(ctx, addr[0])
+	assert.Equal(t, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(50))), commitments.Claimed)
+}
+
+// TestKeeper_SendCoinsFromAccountToModule tests the SendCoinsFromAccountToModule function
+func TestKeeper_SendCoinsFromAccountToModule(t *testing.T) {
+	app := simapp.InitElysTestApp(true)
+
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+
+	// Send 50uelys from account to module
+	tokens := sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdk.NewInt(50)))
+
+	err := keeper.SendCoinsFromAccountToModule(ctx, addr[0], types.ModuleName, tokens)
+	require.NoError(t, err)
+}

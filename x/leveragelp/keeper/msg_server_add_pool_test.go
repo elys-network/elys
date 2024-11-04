@@ -37,7 +37,6 @@ func initializeForAddPool(suite *KeeperTestSuite, addresses []sdk.AccAddress, as
 			UseOracle:                   true,
 			WeightBreakingFeeMultiplier: fee,
 			WeightBreakingFeeExponent:   fee,
-			ExternalLiquidityRatio:      fee,
 			WeightRecoveryFeePortion:    fee,
 			ThresholdWeightDifference:   fee,
 			FeeDenom:                    ptypes.Elys,

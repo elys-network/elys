@@ -89,12 +89,16 @@ func (p *Pool) SwapInAmtGivenOut(
 	// actualSlippageAmount = balancer slippage(resizedAmount)
 	oracleInAmount := sdkmath.LegacyNewDecFromInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
 
-	// Ensure p.PoolParams.ExternalLiquidityRatio is not zero to avoid division by zero
-	if p.PoolParams.ExternalLiquidityRatio.IsZero() {
+	externalLiquidityRatio, err := p.GetAssetExternalLiquidityRatio(tokenOut.Denom)
+	if err != nil {
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+	}
+	// Ensure externalLiquidityRatio is not zero to avoid division by zero
+	if externalLiquidityRatio.IsZero() {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
 	}
 
-	resizedAmount := sdkmath.LegacyNewDecFromInt(tokenOut.Amount).Quo(p.PoolParams.ExternalLiquidityRatio).RoundInt()
+	resizedAmount := sdkmath.LegacyNewDecFromInt(tokenOut.Amount).Quo(externalLiquidityRatio).RoundInt()
 	slippageAmount, err = p.CalcGivenOutSlippage(
 		ctx,
 		oracleKeeper,

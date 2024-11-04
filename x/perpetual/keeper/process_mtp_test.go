@@ -1,7 +1,8 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
+	sdkmath "testing"
+
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -15,7 +16,6 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
@@ -74,7 +74,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdkmath.LegacyNewDec(2),
 		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
@@ -259,7 +258,6 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdkmath.LegacyNewDec(2),
 		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
@@ -405,12 +403,14 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdkmath.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(10000000000)),
+			Weight:                 sdkmath.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(10000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 		{
-			Weight: sdkmath.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000000)),
+			Weight:                 sdkmath.NewInt(50),
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000000)),
+			ExternalLiquidityRatio: sdk.NewDec(2),
 		},
 	}
 
@@ -419,7 +419,6 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	poolParams := &ammtypes.PoolParams{
 		UseOracle:                   true,
-		ExternalLiquidityRatio:      sdkmath.LegacyNewDec(2),
 		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
 		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%

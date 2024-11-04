@@ -156,7 +156,6 @@ func TestGetPortfolioAmm(t *testing.T) {
 		UseOracle:                   false,
 		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		ExternalLiquidityRatio:      math.LegacyOneDec(),
 		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 		ThresholdWeightDifference:   math.LegacyZeroDec(),
 		FeeDenom:                    "",
@@ -259,7 +258,6 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 		UseOracle:                   false,
 		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
 		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		ExternalLiquidityRatio:      math.LegacyOneDec(),
 		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 		ThresholdWeightDifference:   math.LegacyZeroDec(),
 		FeeDenom:                    "",

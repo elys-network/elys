@@ -46,7 +46,6 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
 			UseOracle:                   false,
-			ExternalLiquidityRatio:      sdkmath.LegacyNewDec(2),
 			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
 			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
 			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
