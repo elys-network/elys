@@ -56,7 +56,7 @@ func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper
 }
 
 func (p Pool) NewPoolAssetsAfterSwap(ctx sdk.Context, inCoins sdk.Coins, outCoins sdk.Coins, poolAssets []PoolAsset) ([]PoolAsset, error) {
-
+	updatedAssets := []PoolAsset{}
 	for _, asset := range poolAssets {
 		denom := asset.Token.Denom
 		beforeAmount := asset.Token.Amount
@@ -64,12 +64,12 @@ func (p Pool) NewPoolAssetsAfterSwap(ctx sdk.Context, inCoins sdk.Coins, outCoin
 		if amountAfterSwap.IsNegative() {
 			return poolAssets, fmt.Errorf("negative pool amount after swap")
 		}
-		poolAssets = append(poolAssets, PoolAsset{
+		updatedAssets = append(updatedAssets, PoolAsset{
 			Token:  sdk.NewCoin(denom, amountAfterSwap),
 			Weight: asset.Weight,
 		})
 	}
-	return poolAssets, nil
+	return updatedAssets, nil
 }
 
 func (p Pool) StackedRatioFromSnapshot(ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool) sdk.Dec {
