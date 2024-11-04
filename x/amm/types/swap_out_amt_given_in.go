@@ -206,7 +206,6 @@ func (p *Pool) SwapOutAmtGivenIn(
 	}
 
 	accountedAssets := p.GetAccountedBalance(ctx, accPoolKeeper, p.PoolAssets)
-
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accountedAssets)
 
 	// out amount is calculated in this formula
@@ -289,8 +288,9 @@ func (p *Pool) SwapOutAmtGivenIn(
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
 	// target weight
-	targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenIn.Denom)
-	targetWeightOut := GetDenomNormalizedWeight(p.PoolAssets, tokenOutDenom)
+	// Asset weight remains same in new pool assets as in original pool assets
+	targetWeightIn := GetDenomNormalizedWeight(newAssetPools, tokenIn.Denom)
+	targetWeightOut := GetDenomNormalizedWeight(newAssetPools, tokenOutDenom)
 
 	// weight breaking fee as in Plasma pool
 	weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenIn.Denom)
@@ -329,6 +329,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 }
 
 // TODO: Ideally we should have a single DS for accounted pool to avoid confusion
+// Or refactor/improve amm pool to use accounted pool
 // Task has been added
 func (p *Pool) GetAccountedBalance(ctx sdk.Context, accountedPoolKeeper AccountedPoolKeeper, poolAssets []PoolAsset) (updatedAssets []PoolAsset) {
 	for _, asset := range poolAssets {

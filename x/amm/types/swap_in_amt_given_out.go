@@ -121,8 +121,9 @@ func (p *Pool) SwapInAmtGivenOut(
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
 	// target weight
-	targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenInDenom)
-	targetWeightOut := GetDenomNormalizedWeight(p.PoolAssets, tokenOut.Denom)
+	// Asset weight remains same in new pool assets as in original pool assets
+	targetWeightIn := GetDenomNormalizedWeight(newAssetPools, tokenInDenom)
+	targetWeightOut := GetDenomNormalizedWeight(newAssetPools, tokenOut.Denom)
 
 	// weight breaking fee as in Plasma pool
 	weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenInDenom)
