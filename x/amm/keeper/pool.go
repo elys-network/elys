@@ -172,7 +172,6 @@ func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types
 }
 
 // GetPoolSnapshotOrSet returns a pool snapshot or set the snapshot
-// Note: It overwrites the pool amount to accounted pool balance
 func (k Keeper) GetPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) (val types.Pool) {
 	store := prefix.NewStore(ctx.KVStore(k.transientStoreKey), types.KeyPrefix(types.PoolKeyPrefix))
 
@@ -184,7 +183,6 @@ func (k Keeper) GetPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) (val type
 	}
 
 	k.cdc.MustUnmarshal(b, &val)
-
 	return val
 }
 
