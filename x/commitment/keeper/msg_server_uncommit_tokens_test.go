@@ -72,19 +72,19 @@ func TestUncommitTokens(t *testing.T) {
 
 // TestUncommitTokensDenomNotFound tests the UncommitTokens function when the asset profile entry for the denom is not found
 func TestUncommitTokensDenomNotFound(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(false)
 
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
 	// Generate 1 random account with 1000000uelys balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Define the test data
 	creator := addr[0].String()
 	denom := "testdenom"
-	uncommitAmount := sdk.NewInt(100)
+	uncommitAmount := sdkmath.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed & committed tokens
 	committedTokens := types.CommittedTokens{
@@ -106,19 +106,19 @@ func TestUncommitTokensDenomNotFound(t *testing.T) {
 
 // TestUncommitTokensWithdrawDisabled tests the UncommitTokens function when the withdraw is disabled for the denom
 func TestUncommitTokensWithdrawDisabled(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
 	// Generate 1 random account with 1000000uelys balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Define the test data
 	creator := addr[0].String()
 	denom := "testdenom"
-	uncommitAmount := sdk.NewInt(100)
+	uncommitAmount := sdkmath.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed & committed tokens
 	committedTokens := types.CommittedTokens{
@@ -143,19 +143,19 @@ func TestUncommitTokensWithdrawDisabled(t *testing.T) {
 
 // TestUncommitTokensEdenBTriggersHookError tests the UncommitTokens function when the denom is EdenB and the hook returns an error
 func TestUncommitTokensEdenBTriggersHookError(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
 	// Generate 1 random account with 1000000uelys balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Define the test data
 	creator := addr[0].String()
 	denom := ptypes.EdenB
-	uncommitAmount := sdk.NewInt(100)
+	uncommitAmount := sdkmath.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed & committed tokens
 	committedTokens := types.CommittedTokens{
@@ -180,19 +180,19 @@ func TestUncommitTokensEdenBTriggersHookError(t *testing.T) {
 
 // TestMsgServerUncommitTokensNoDelegationError tests the UncommitTokens function in the keeper through the MsgServer triggers error
 func TestMsgServerUncommitTokensNoDelegationError(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
 	// Generate 1 random account with 1000000uelys balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Define the test data
 	creator := addr[0].String()
 	denom := ptypes.Eden
-	uncommitAmount := sdk.NewInt(100)
+	uncommitAmount := sdkmath.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed & committed tokens
 	committedTokens := types.CommittedTokens{
@@ -211,7 +211,7 @@ func TestMsgServerUncommitTokensNoDelegationError(t *testing.T) {
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: denom, CommitEnabled: true, WithdrawEnabled: true})
 
 	// Set up the MsgServer
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Call the UncommitTokens function through the MsgServer
 	_, err := msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), &types.MsgUncommitTokens{
@@ -224,19 +224,19 @@ func TestMsgServerUncommitTokensNoDelegationError(t *testing.T) {
 
 // TestMsgServerUncommitTokensUnsupportedUncommitTokenError tests the UncommitTokens function in the keeper through the MsgServer triggers error
 func TestMsgServerUncommitTokensUnsupportedUncommitTokenError(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
 	// Generate 1 random account with 1000000uelys balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Define the test data
 	creator := addr[0].String()
 	denom := "testdenom"
-	uncommitAmount := sdk.NewInt(100)
+	uncommitAmount := sdkmath.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed & committed tokens
 	committedTokens := types.CommittedTokens{
@@ -252,7 +252,7 @@ func TestMsgServerUncommitTokensUnsupportedUncommitTokenError(t *testing.T) {
 	keeper.SetCommitments(ctx, initialCommitments)
 
 	// Set up the MsgServer
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Call the UncommitTokens function through the MsgServer
 	_, err := msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), &types.MsgUncommitTokens{
@@ -265,20 +265,20 @@ func TestMsgServerUncommitTokensUnsupportedUncommitTokenError(t *testing.T) {
 
 // TestMsgServerUncommitTokensInvalidAddressError tests the UncommitTokens function in the keeper through the MsgServer triggers error
 func TestMsgServerUncommitTokensInvalidAddressError(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
 	// Set up the MsgServer
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Call the UncommitTokens function through the MsgServer
 	_, err := msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), &types.MsgUncommitTokens{
 		Creator: "invalid_address",
 		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(100),
+		Amount:  sdkmath.NewInt(100),
 	})
 	require.Error(t, err)
 }

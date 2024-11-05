@@ -34,7 +34,7 @@ func CmdCancelVest() *cobra.Command {
 				argAmount,
 				argDenom,
 			)
-			if err := msg.ValidateBasic(); err != nil {
+			if err = msg.ValidateBasic(); err != nil {
 				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
