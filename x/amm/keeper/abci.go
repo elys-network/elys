@@ -17,7 +17,7 @@ func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) sdk.Dec {
 	if !found {
 		return sdk.ZeroDec()
 	}
-	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 	return pool.StackedRatioFromSnapshot(ctx, k.oracleKeeper, &snapshot)
 }
 
