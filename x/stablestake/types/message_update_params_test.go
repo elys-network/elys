@@ -54,6 +54,206 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "invalid deposit denom",
+			msg: MsgUpdateParams{
+				Authority: sample.AccAddress(),
+				Params: &Params{
+					DepositDenom:         "",
+					RedemptionRate:       sdk.NewDecWithPrec(20, 1), // 2.0
+					EpochLength:          1000,
+					InterestRate:         sdk.NewDecWithPrec(3, 2), // 0.03
+					InterestRateMax:      sdk.NewDecWithPrec(5, 2), // 0.05
+					InterestRateMin:      sdk.NewDecWithPrec(1, 2), // 0.01
+					InterestRateIncrease: sdk.NewDecWithPrec(2, 2), // 0.02
+					InterestRateDecrease: sdk.NewDecWithPrec(1, 2), // 0.01
+					HealthGainFactor:     sdk.NewDecWithPrec(1, 1), // 0.1
+					TotalValue:           sdk.NewInt(1000),
+					MaxLeverageRatio:     sdk.MustNewDecFromStr("0.7"),
+				},
+			},
+			err: ErrInvalidParams,
+		},
+		{
+			name: "negative redemption rate",
+			msg: MsgUpdateParams{
+				Authority: sample.AccAddress(),
+				Params: &Params{
+					DepositDenom:         "stake",
+					RedemptionRate:       sdk.NewDecWithPrec(-20, 1), // -2.0
+					EpochLength:          1000,
+					InterestRate:         sdk.NewDecWithPrec(3, 2), // 0.03
+					InterestRateMax:      sdk.NewDecWithPrec(5, 2), // 0.05
+					InterestRateMin:      sdk.NewDecWithPrec(1, 2), // 0.01
+					InterestRateIncrease: sdk.NewDecWithPrec(2, 2), // 0.02
+					InterestRateDecrease: sdk.NewDecWithPrec(1, 2), // 0.01
+					HealthGainFactor:     sdk.NewDecWithPrec(1, 1), // 0.1
+					TotalValue:           sdk.NewInt(1000),
+					MaxLeverageRatio:     sdk.MustNewDecFromStr("0.7"),
+				},
+			},
+			err: ErrInvalidParams,
+		},
+		{
+			name: "negative epoch length",
+			msg: MsgUpdateParams{
+				Authority: sample.AccAddress(),
+				Params: &Params{
+					DepositDenom:         "stake",
+					RedemptionRate:       sdk.NewDecWithPrec(20, 1), // 2.0
+					EpochLength:          -1000,
+					InterestRate:         sdk.NewDecWithPrec(3, 2), // 0.03
+					InterestRateMax:      sdk.NewDecWithPrec(5, 2), // 0.05
+					InterestRateMin:      sdk.NewDecWithPrec(1, 2), // 0.01
+					InterestRateIncrease: sdk.NewDecWithPrec(2, 2), // 0.02
+					InterestRateDecrease: sdk.NewDecWithPrec(1, 2), // 0.01
+					HealthGainFactor:     sdk.NewDecWithPrec(1, 1), // 0.1
+					TotalValue:           sdk.NewInt(1000),
+					MaxLeverageRatio:     sdk.MustNewDecFromStr("0.7"),
+				},
+			},
+			err: ErrInvalidParams,
+		},
+		{
+			name: "negative interest rate",
+			msg: MsgUpdateParams{
+				Authority: sample.AccAddress(),
+				Params: &Params{
+					DepositDenom:         "stake",
+					RedemptionRate:       sdk.NewDecWithPrec(20, 1), // 2.0
+					EpochLength:          1000,
+					InterestRate:         sdk.NewDecWithPrec(-3, 2), // -0.03
+					InterestRateMax:      sdk.NewDecWithPrec(5, 2),  // 0.05
+					InterestRateMin:      sdk.NewDecWithPrec(1, 2),  // 0.01
+					InterestRateIncrease: sdk.NewDecWithPrec(2, 2),  // 0.02
+					InterestRateDecrease: sdk.NewDecWithPrec(1, 2),  // 0.01
+					HealthGainFactor:     sdk.NewDecWithPrec(1, 1),  // 0.1
+					TotalValue:           sdk.NewInt(1000),
+					MaxLeverageRatio:     sdk.MustNewDecFromStr("0.7"),
+				},
+			},
+			err: ErrInvalidParams,
+		},
+		{
+			name: "negative interest rate min",
+			msg: MsgUpdateParams{
+				Authority: sample.AccAddress(),
+				Params: &Params{
+					DepositDenom:         "stake",
+					RedemptionRate:       sdk.NewDecWithPrec(20, 1), // 2.0
+					EpochLength:          1000,
+					InterestRate:         sdk.NewDecWithPrec(3, 2),  // 0.03
+					InterestRateMax:      sdk.NewDecWithPrec(5, 2),  // 0.05
+					InterestRateMin:      sdk.NewDecWithPrec(-1, 2), // -0.01
+					InterestRateIncrease: sdk.NewDecWithPrec(2, 2),  // 0.02
+					InterestRateDecrease: sdk.NewDecWithPrec(1, 2),  // 0.01
+					HealthGainFactor:     sdk.NewDecWithPrec(1, 1),  // 0.1
+					TotalValue:           sdk.NewInt(1000),
+					MaxLeverageRatio:     sdk.MustNewDecFromStr("0.7"),
+				},
+			},
+			err: ErrInvalidParams,
+		},
+		{
+			name: "negative interest rate increase",
+			msg: MsgUpdateParams{
+				Authority: sample.AccAddress(),
+				Params: &Params{
+					DepositDenom:         "stake",
+					RedemptionRate:       sdk.NewDecWithPrec(20, 1), // 2.0
+					EpochLength:          1000,
+					InterestRate:         sdk.NewDecWithPrec(3, 2),  // 0.03
+					InterestRateMax:      sdk.NewDecWithPrec(5, 2),  // 0.05
+					InterestRateMin:      sdk.NewDecWithPrec(1, 2),  // 0.01
+					InterestRateIncrease: sdk.NewDecWithPrec(-2, 2), // -0.02
+					InterestRateDecrease: sdk.NewDecWithPrec(1, 2),  // 0.01
+					HealthGainFactor:     sdk.NewDecWithPrec(1, 1),  // 0.1
+					TotalValue:           sdk.NewInt(1000),
+					MaxLeverageRatio:     sdk.MustNewDecFromStr("0.7"),
+				},
+			},
+			err: ErrInvalidParams,
+		},
+		{
+			name: "negative interest rate decrease",
+			msg: MsgUpdateParams{
+				Authority: sample.AccAddress(),
+				Params: &Params{
+					DepositDenom:         "stake",
+					RedemptionRate:       sdk.NewDecWithPrec(20, 1), // 2.0
+					EpochLength:          1000,
+					InterestRate:         sdk.NewDecWithPrec(3, 2),  // 0.03
+					InterestRateMax:      sdk.NewDecWithPrec(5, 2),  // 0.05
+					InterestRateMin:      sdk.NewDecWithPrec(1, 2),  // 0.01
+					InterestRateIncrease: sdk.NewDecWithPrec(2, 2),  // 0.02
+					InterestRateDecrease: sdk.NewDecWithPrec(-1, 2), // -0.01
+					HealthGainFactor:     sdk.NewDecWithPrec(1, 1),  // 0.1
+					TotalValue:           sdk.NewInt(1000),
+					MaxLeverageRatio:     sdk.MustNewDecFromStr("0.7"),
+				},
+			},
+			err: ErrInvalidParams,
+		},
+		{
+			name: "negative health gain factor",
+			msg: MsgUpdateParams{
+				Authority: sample.AccAddress(),
+				Params: &Params{
+					DepositDenom:         "stake",
+					RedemptionRate:       sdk.NewDecWithPrec(20, 1), // 2.0
+					EpochLength:          1000,
+					InterestRate:         sdk.NewDecWithPrec(3, 2),  // 0.03
+					InterestRateMax:      sdk.NewDecWithPrec(5, 2),  // 0.05
+					InterestRateMin:      sdk.NewDecWithPrec(1, 2),  // 0.01
+					InterestRateIncrease: sdk.NewDecWithPrec(2, 2),  // 0.02
+					InterestRateDecrease: sdk.NewDecWithPrec(1, 2),  // 0.01
+					HealthGainFactor:     sdk.NewDecWithPrec(-1, 1), // -0.1
+					TotalValue:           sdk.NewInt(1000),
+					MaxLeverageRatio:     sdk.MustNewDecFromStr("0.7"),
+				},
+			},
+			err: ErrInvalidParams,
+		},
+		{
+			name: "negative total value",
+			msg: MsgUpdateParams{
+				Authority: sample.AccAddress(),
+				Params: &Params{
+					DepositDenom:         "stake",
+					RedemptionRate:       sdk.NewDecWithPrec(20, 1), // 2.0
+					EpochLength:          1000,
+					InterestRate:         sdk.NewDecWithPrec(3, 2), // 0.03
+					InterestRateMax:      sdk.NewDecWithPrec(5, 2), // 0.05
+					InterestRateMin:      sdk.NewDecWithPrec(1, 2), // 0.01
+					InterestRateIncrease: sdk.NewDecWithPrec(2, 2), // 0.02
+					InterestRateDecrease: sdk.NewDecWithPrec(1, 2), // 0.01
+					HealthGainFactor:     sdk.NewDecWithPrec(1, 1), // 0.1
+					TotalValue:           sdk.NewInt(-1000),
+					MaxLeverageRatio:     sdk.MustNewDecFromStr("0.7"),
+				},
+			},
+			err: ErrInvalidParams,
+		},
+		{
+			name: "negative max leverage ratio",
+			msg: MsgUpdateParams{
+				Authority: sample.AccAddress(),
+				Params: &Params{
+					DepositDenom:         "stake",
+					RedemptionRate:       sdk.NewDecWithPrec(20, 1), // 2.0
+					EpochLength:          1000,
+					InterestRate:         sdk.NewDecWithPrec(3, 2), // 0.03
+					InterestRateMax:      sdk.NewDecWithPrec(5, 2), // 0.05
+					InterestRateMin:      sdk.NewDecWithPrec(1, 2), // 0.01
+					InterestRateIncrease: sdk.NewDecWithPrec(2, 2), // 0.02
+					InterestRateDecrease: sdk.NewDecWithPrec(1, 2), // 0.01
+					HealthGainFactor:     sdk.NewDecWithPrec(1, 1), // 0.1
+					TotalValue:           sdk.NewInt(1000),
+					MaxLeverageRatio:     sdk.MustNewDecFromStr("-0.7"),
+				},
+			},
+			err: ErrInvalidParams,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
