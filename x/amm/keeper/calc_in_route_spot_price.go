@@ -112,6 +112,11 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		if err != nil {
 			return sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), err
 		}
+		// Use accounted pool balance
+		accAmount := k.accountedPoolKeeper.GetAccountedBalance(ctx, pool.PoolId, poolAsset.Token.Denom)
+		if accAmount.IsPositive() {
+			poolAsset.Token.Amount = accAmount
+		}
 		availableLiquidity = poolAsset.Token
 		weightBalance = weightBalance.Add(weightBalanceBonus)
 		slippage = slippage.Add(swapSlippage)
