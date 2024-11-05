@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -64,4 +65,54 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+}
+
+func TestNewMsgUpdateParams(t *testing.T) {
+
+	accAdress := sample.AccAddress()
+
+	params := DefaultParams()
+	got := NewMsgUpdateParams(
+		accAdress,
+		&params,
+	)
+
+	want := &MsgUpdateParams{
+		Authority: accAdress,
+		Params:    &params,
+	}
+
+	assert.Equal(t, want, got)
+}
+
+func TestMsgUpdateParams_Route(t *testing.T) {
+	msg := MsgUpdateParams{}
+	assert.Equal(t, "stablestake", msg.Route())
+}
+
+func TestMsgUpdateParams_Type(t *testing.T) {
+	msg := MsgUpdateParams{}
+	assert.Equal(t, "update_params", msg.Type())
+}
+
+func TestMsgUpdateParams_GetSigners(t *testing.T) {
+	accAdress := sample.AccAddress()
+	msg := MsgUpdateParams{Authority: accAdress}
+
+	creator, err := sdk.AccAddressFromBech32(accAdress)
+	if err != nil {
+		panic(err)
+	}
+
+	assert.Equal(t, []sdk.AccAddress{creator}, msg.GetSigners())
+}
+
+func TestMsgUpdateParams_GetSignBytes(t *testing.T) {
+	accAdress := sample.AccAddress()
+	msg := MsgUpdateParams{Authority: accAdress}
+
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	b := sdk.MustSortJSON(bz)
+
+	assert.Equal(t, b, msg.GetSignBytes())
 }
