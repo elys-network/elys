@@ -317,7 +317,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
-		snapshot := k.amm.GetPoolSnapshotOrSet(ctx, pool)
+		snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		tokenOutCoin, _, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, baseCurrency, sdk.ZeroDec())
 		if err != nil {
 			continue
