@@ -27,7 +27,6 @@ func (suite *KeeperTestSuite) TestBorrowRatio() {
 					DepositDenom: "token",
 				}
 				k.SetParams(ctx, params)
-				//moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 				// bootstrap balances
 				err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.NewCoins(sdk.NewCoin("token", sdk.NewInt(500))))
 				suite.Require().NoError(err)
