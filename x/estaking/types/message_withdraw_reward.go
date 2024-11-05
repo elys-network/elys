@@ -14,7 +14,7 @@ func (msg *MsgWithdrawReward) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid delegator address (%s)", err)
 	}
 
-	_, err = sdk.AccAddressFromBech32(msg.ValidatorAddress)
+	_, err = sdk.ValAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid validator address (%s)", err)
 	}

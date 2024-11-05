@@ -175,7 +175,8 @@ func (suite *KeeperTestSuite) TestMsgServerCreatePool() {
 
 			a := suite.app.OracleKeeper.GetAllAssetInfo(suite.ctx)
 			fmt.Println(a)
-			//fmt.Println(suite.app.OracleKeeper.GetAllEn(suite.ctx))
+			b := suite.app.AssetprofileKeeper.GetAllEntry(suite.ctx)
+			fmt.Println(b)
 
 			// bootstrap accounts
 			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())

@@ -27,7 +27,7 @@ import (
 
 func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpAndPrice) {
 	t.Helper()
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig("./")
 	state := types.GenesisState{}
 	mtps := make([]*types.MtpAndPrice, 0)
 
@@ -169,7 +169,7 @@ func (s *CLITestSuite) TestShowMTP() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.MTPResponse{
 					Mtp: &types.MtpAndPrice{},
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)
@@ -188,7 +188,7 @@ func (s *CLITestSuite) TestShowMTP() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.MTPResponse{
 					Mtp: &types.MtpAndPrice{},
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)

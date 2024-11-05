@@ -18,7 +18,8 @@ func TestCalculatePoolAprs(t *testing.T) {
 	ctx := app.BaseApp.NewContext(true)
 
 	simapp.SetMasterChefParams(app, ctx)
-	simapp.SetStakingParam(app, ctx)
+	err := simapp.SetStakingParam(app, ctx)
+	require.NoError(t, err)
 	simapp.SetupAssetProfile(app, ctx)
 
 	mk, amm, oracle := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper
@@ -32,7 +33,7 @@ func TestCalculatePoolAprs(t *testing.T) {
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
 	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
-	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
 	require.NoError(t, err)
@@ -83,7 +84,7 @@ func TestCalculatePoolAprs(t *testing.T) {
 
 	// When passing empty array
 	aprs := mk.CalculatePoolAprs(ctx, []uint64{})
-	require.Len(t, aprs, 1)
+	require.Len(t, aprs, 2) // setting it 2 because PoolId = math.MaxInt16 gets initiated in EndBlock
 	require.Equal(t, aprs[0].TotalApr.String(), "0.030000000000000000")
 
 	// When passing specific id

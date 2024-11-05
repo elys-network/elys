@@ -1,7 +1,8 @@
 package keeper_test
 
 import (
-	sdkmath "testing"
+	sdkmath "cosmossdk.io/math"
+	"testing"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -405,12 +406,12 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 		{
 			Weight:                 sdkmath.NewInt(50),
 			Token:                  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(10000000000)),
-			ExternalLiquidityRatio: sdk.NewDec(2),
+			ExternalLiquidityRatio: sdkmath.LegacyNewDec(2),
 		},
 		{
 			Weight:                 sdkmath.NewInt(50),
 			Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000000)),
-			ExternalLiquidityRatio: sdk.NewDec(2),
+			ExternalLiquidityRatio: sdkmath.LegacyNewDec(2),
 		},
 	}
 

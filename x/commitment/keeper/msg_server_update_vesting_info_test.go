@@ -86,12 +86,12 @@ func TestUpdateVestingInfo(t *testing.T) {
 
 // TestKeeper_UpdateVestingInfo tests the UpdateVestingInfo function with wrong gov address
 func TestKeeper_UpdateVestingInfoWithWrongGovAddress(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Define the test data
 	signer := sdk.AccAddress(address.Module("test")).String()
@@ -111,12 +111,12 @@ func TestKeeper_UpdateVestingInfoWithWrongGovAddress(t *testing.T) {
 
 // TestKeeper_UpdateVestingInfo tests the UpdateVestingInfo function with negative num blocks
 func TestKeeper_UpdateVestingInfoWithNegativeNumBlocks(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	govAddress := sdk.AccAddress(address.Module("gov"))
 

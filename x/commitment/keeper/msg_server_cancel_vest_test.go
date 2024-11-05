@@ -88,13 +88,13 @@ func TestCancelVest(t *testing.T) {
 
 // TestCancelVestIncorrectDenom tests the CancelVest function with an incorrect denom
 func TestCancelVestIncorrectDenom(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Create a new account
 	creator, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
@@ -107,7 +107,7 @@ func TestCancelVestIncorrectDenom(t *testing.T) {
 	cancelVestMsg := &types.MsgCancelVest{
 		Creator: creator.String(),
 		Denom:   "incorrect",
-		Amount:  sdk.NewInt(25),
+		Amount:  sdkmath.NewInt(25),
 	}
 
 	// Execute the CancelVest function
@@ -118,13 +118,13 @@ func TestCancelVestIncorrectDenom(t *testing.T) {
 
 // TestCancelVestNoVestingInfo tests the CancelVest function with no vesting info
 func TestCancelVestNoVestingInfo(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Create a new account
 	creator, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
@@ -137,7 +137,7 @@ func TestCancelVestNoVestingInfo(t *testing.T) {
 	cancelVestMsg := &types.MsgCancelVest{
 		Creator: creator.String(),
 		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(25),
+		Amount:  sdkmath.NewInt(25),
 	}
 
 	// Execute the CancelVest function

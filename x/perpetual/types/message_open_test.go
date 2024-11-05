@@ -22,7 +22,7 @@ func TestNewMsgOpen(t *testing.T) {
 		math.LegacyNewDec(200),
 		1,
 		"uatom",
-		sdk.NewCoin("uusdc", sdk.NewInt(2000)),
+		sdk.NewCoin("uusdc", math.NewInt(2000)),
 		math.LegacyNewDec(100),
 		math.LegacyNewDec(0),
 	)
@@ -33,7 +33,7 @@ func TestNewMsgOpen(t *testing.T) {
 		Leverage:        math.LegacyNewDec(200),
 		PoolId:          1,
 		TradingAsset:    "uatom",
-		Collateral:      sdk.NewCoin("uusdc", sdk.NewInt(2000)),
+		Collateral:      sdk.NewCoin("uusdc", math.NewInt(2000)),
 		TakeProfitPrice: math.LegacyNewDec(100),
 		StopLossPrice:   math.LegacyNewDec(0),
 	}

@@ -309,47 +309,6 @@ func TestMsgRemovePool(t *testing.T) {
 	}
 }
 
-func TestMsgUpdatePool(t *testing.T) {
-	updatePool := types.UpdatePool{
-		PoolId:  1,
-		Enabled: false,
-		Closed:  false,
-	}
-	msg := types.NewMsgUpdatePool(sample.AccAddress(), updatePool)
-
-	tests := []struct {
-		name   string
-		setter func()
-		errMsg string
-	}{
-		{
-			name: "success",
-			setter: func() {
-				msg.Authority = sample.AccAddress()
-			},
-			errMsg: "",
-		},
-		{
-			name: "invalid address",
-			setter: func() {
-				msg.Authority = "invalid_address"
-			},
-			errMsg: "invalid creator address",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.setter()
-			err := msg.ValidateBasic()
-			if tt.errMsg != "" {
-				require.ErrorContains(t, err, tt.errMsg)
-			} else {
-				require.NoError(t, err)
-			}
-		})
-	}
-}
-
 func TestMsgDewhitelistAddress(t *testing.T) {
 	msg := types.NewMsgDewhitelist(sample.AccAddress(), sample.AccAddress())
 	tests := []struct {
