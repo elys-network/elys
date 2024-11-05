@@ -183,6 +183,14 @@ func (k Keeper) GetPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) (val type
 	}
 
 	k.cdc.MustUnmarshal(b, &val)
+
+	// Update the pool snapshot with accounted pool balance
+	for i, asset := range val.PoolAssets {
+		accAmount := k.accountedPoolKeeper.GetAccountedBalance(ctx, pool.PoolId, asset.Token.Denom)
+		if accAmount.IsPositive() {
+			val.PoolAssets[i].Token.Amount = accAmount
+		}
+	}
 	return val
 }
 
