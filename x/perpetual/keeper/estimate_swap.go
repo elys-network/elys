@@ -11,7 +11,7 @@ import (
 func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool) (math.Int, math.LegacyDec, error) {
 	swapFee := k.GetPerpetualSwapFee(ctx)
 	// Estimate swap
-	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
+	snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, ammPool)
 	tokensIn := sdk.Coins{tokenInAmount}
 	tokenOut, slippage, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee)
 	if err != nil {
@@ -29,7 +29,7 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	perpetualSwapFee := k.GetPerpetualSwapFee(ctx)
 	tokensOut := sdk.Coins{tokenOutAmount}
 	// Estimate swap
-	snapshot := k.amm.GetPoolSnapshotOrSet(ctx, ammPool)
+	snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, ammPool)
 	tokenIn, slippage, _, _, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, perpetualSwapFee)
 	if err != nil {
 		return sdk.ZeroInt(), math.LegacyZeroDec(), err

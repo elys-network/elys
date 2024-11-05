@@ -26,17 +26,6 @@ func (p Pool) CalcInAmtGivenOut(
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
 		}
-		// accounted pool balance
-		acountedPoolAssetOutAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetIn.Token.Denom)
-		if acountedPoolAssetOutAmt.IsPositive() {
-			poolAssetIn.Token.Amount = acountedPoolAssetOutAmt
-		}
-
-		// accounted pool balance
-		acountedPoolAssetOutAmt = accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetOut.Token.Denom)
-		if acountedPoolAssetOutAmt.IsPositive() {
-			poolAssetOut.Token.Amount = acountedPoolAssetOutAmt
-		}
 		oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, p.PoolId, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
 		if err != nil {
 			return sdk.Coin{}, sdk.ZeroDec(), err
