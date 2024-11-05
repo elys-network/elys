@@ -33,6 +33,15 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 			redemptionRate: sdk.NewDec(10),
 			expectedError:  nil,
 		},
+		{
+			name:           "delete old data",
+			epochLength:    2,
+			epochPosition:  1,
+			interestRate:   sdk.NewDec(5),
+			redemptionRate: sdk.NewDec(10),
+			expectedError:  nil,
+			blockHeight:    95768100,
+		},
 	}
 
 	for _, tt := range tests {
