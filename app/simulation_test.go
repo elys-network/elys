@@ -3,6 +3,7 @@ package app_test
 import (
 	"encoding/json"
 	"fmt"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"math/rand"
 	"os"
 	"runtime/debug"
@@ -13,15 +14,11 @@ import (
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	evidencetypes "cosmossdk.io/x/evidence/types"
-	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	simulationtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
@@ -95,9 +92,10 @@ func BenchmarkSimulation(b *testing.B) {
 		db,
 		nil,
 		true,
-		wasmtypes.EnableAllProposals,
+		map[int64]bool{},
+		dir,
 		appOptions,
-		[]wasm.Option{},
+		[]wasmkeeper.Option{},
 	)
 	require.Equal(b, app.Name, bApp.Name())
 
@@ -109,7 +107,7 @@ func BenchmarkSimulation(b *testing.B) {
 		simtestutil.AppStateFn(
 			bApp.AppCodec(),
 			bApp.SimulationManager(),
-			app.NewDefaultGenesisState(bApp.AppCodec()),
+			app.NewDefaultGenesisState(bApp, bApp.AppCodec()),
 		),
 		simulationtypes.RandomAccounts,
 		simtestutil.SimulationOperations(bApp, bApp.AppCodec(), config),
@@ -162,16 +160,22 @@ func TestAppStateDeterminism(t *testing.T) {
 			chainID := fmt.Sprintf("chain-id-%d-%d", i, j)
 			config.ChainID = chainID
 
-			db := dbm.NewMemDB()
+			db, dir, logger, _, err := simtestutil.SetupSimulation(
+				config,
+				"leveldb-bApp-sim",
+				"Simulation",
+				simcli.FlagVerboseValue,
+				simcli.FlagEnabledValue,
+			)
 			bApp := app.NewElysApp(
 				logger,
 				db,
 				nil,
 				true,
+				map[int64]bool{},
+				dir,
 				appOptions,
-				[]wasm.Option{},
-				fauxMerkleModeOpt,
-				baseapp.SetChainID(chainID),
+				[]wasmkeeper.Option{},
 			)
 
 			fmt.Printf(
@@ -179,14 +183,14 @@ func TestAppStateDeterminism(t *testing.T) {
 				config.Seed, i+1, numSeeds, j+1, numTimesToRunPerSeed,
 			)
 
-			_, _, err := simulation.SimulateFromSeed(
+			_, _, err = simulation.SimulateFromSeed(
 				t,
 				os.Stdout,
 				bApp.BaseApp,
 				simtestutil.AppStateFn(
 					bApp.AppCodec(),
 					bApp.SimulationManager(),
-					app.NewDefaultGenesisState(bApp.AppCodec()),
+					app.NewDefaultGenesisState(bApp, bApp.AppCodec()),
 				),
 				simulationtypes.RandomAccounts,
 				simtestutil.SimulationOperations(bApp, bApp.AppCodec(), config),
@@ -243,10 +247,10 @@ func TestAppImportExport(t *testing.T) {
 		db,
 		nil,
 		true,
-		wasmtypes.EnableAllProposals,
+		map[int64]bool{},
+		dir,
 		appOptions,
-		[]wasm.Option{},
-		baseapp.SetChainID(config.ChainID),
+		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 
@@ -258,7 +262,7 @@ func TestAppImportExport(t *testing.T) {
 		simtestutil.AppStateFn(
 			bApp.AppCodec(),
 			bApp.SimulationManager(),
-			app.NewDefaultGenesisState(bApp.AppCodec()),
+			app.NewDefaultGenesisState(bApp, bApp.AppCodec()),
 		),
 		simulationtypes.RandomAccounts,
 		simtestutil.SimulationOperations(bApp, bApp.AppCodec(), config),
@@ -302,10 +306,10 @@ func TestAppImportExport(t *testing.T) {
 		newDB,
 		nil,
 		true,
-		wasmtypes.EnableAllProposals,
+		map[int64]bool{},
+		newDir,
 		appOptions,
-		[]wasm.Option{},
-		baseapp.SetChainID(config.ChainID),
+		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 
@@ -355,7 +359,7 @@ func TestAppImportExport(t *testing.T) {
 		storeA := ctxA.KVStore(skp.A)
 		storeB := ctxB.KVStore(skp.B)
 
-		failedKVAs, failedKVBs := sdk.DiffKVStores(storeA, storeB, skp.Prefixes)
+		failedKVAs, failedKVBs := simtestutil.DiffKVStores(storeA, storeB, skp.Prefixes)
 		require.Equal(t, len(failedKVAs), len(failedKVBs), "unequal sets of key-values to compare")
 
 		fmt.Printf("compared %d different key/value pairs between %s and %s\n", len(failedKVAs), skp.A, skp.B)
@@ -393,11 +397,10 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		db,
 		nil,
 		true,
-		wasmtypes.EnableAllProposals,
+		map[int64]bool{},
+		dir,
 		appOptions,
-		[]wasm.Option{},
-		fauxMerkleModeOpt,
-		baseapp.SetChainID(config.ChainID),
+		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 
@@ -409,7 +412,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		simtestutil.AppStateFn(
 			bApp.AppCodec(),
 			bApp.SimulationManager(),
-			app.NewDefaultGenesisState(bApp.AppCodec()),
+			app.NewDefaultGenesisState(bApp, bApp.AppCodec()),
 		),
 		simulationtypes.RandomAccounts,
 		simtestutil.SimulationOperations(bApp, bApp.AppCodec(), config),
@@ -458,15 +461,14 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		newDB,
 		nil,
 		true,
-		wasmtypes.EnableAllProposals,
+		map[int64]bool{},
+		dir,
 		appOptions,
-		[]wasm.Option{},
-		fauxMerkleModeOpt,
-		baseapp.SetChainID(config.ChainID),
+		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 
-	newApp.InitChain(abci.RequestInitChain{
+	newApp.InitChain(&abci.RequestInitChain{
 		ChainId:       config.ChainID,
 		AppStateBytes: exported.AppState,
 	})
@@ -478,7 +480,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		simtestutil.AppStateFn(
 			bApp.AppCodec(),
 			bApp.SimulationManager(),
-			app.NewDefaultGenesisState(bApp.AppCodec()),
+			app.NewDefaultGenesisState(bApp, bApp.AppCodec()),
 		),
 		simulationtypes.RandomAccounts,
 		simtestutil.SimulationOperations(newApp, newApp.AppCodec(), config),
