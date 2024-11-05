@@ -31,6 +31,7 @@ const (
 var (
 	TakeProfitPriceDefault = math.LegacyMustNewDecFromStr("10000000000000000000000000000000000000000") // 10^40
 	StopLossPriceDefault   = math.LegacyZeroDec()
+	MaxShortStopLossPrice  = math.LegacyMustNewDecFromStr("10000000000000000000000000000000000000000") // 10^40
 )
 
 var (
