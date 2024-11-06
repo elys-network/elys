@@ -11,6 +11,7 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	ctypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -57,6 +58,53 @@ func (suite *EstakingKeeperTestSuite) AddTestCommitment(committed sdk.Coins) {
 	}
 
 	suite.app.CommitmentKeeper.SetCommitments(suite.ctx, commitment)
+}
+
+// Add testing claimed
+func (suite *EstakingKeeperTestSuite) AddTestClaimed(committed sdk.Coins) {
+	commitment := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, suite.genAccount)
+	commitment.Claimed = commitment.Claimed.Add(committed...)
+	suite.app.CommitmentKeeper.SetCommitments(suite.ctx, commitment)
+}
+
+// Set asset profile
+func (suite *EstakingKeeperTestSuite) SetAssetProfile() {
+	// Set assetprofile entry for denom
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
+}
+
+// Prepare unclaimed tokens
+func (suite *EstakingKeeperTestSuite) PrepareUnclaimedTokens() sdk.Coins {
+	unclaimed := sdk.Coins{}
+	unclaimed = unclaimed.Add(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
+	unclaimed = unclaimed.Add(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(20000)))
+
+	// Mint coins
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, commitmenttypes.ModuleName, unclaimed)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, commitmenttypes.ModuleName, suite.genAccount, unclaimed)
+	suite.Require().NoError(err)
+
+	return unclaimed
+}
+
+// Prepare committed tokens
+func (suite *EstakingKeeperTestSuite) PrepareCommittedTokens() sdk.Coins {
+	committed := sdk.Coins{}
+	committed = committed.Add(sdk.NewCoin(ptypes.Eden, sdk.NewInt(10000)))
+	committed = committed.Add(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(5000)))
+
+	// Mint coins
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, ctypes.ModuleName, committed)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ctypes.ModuleName, suite.genAccount, committed)
+	suite.Require().NoError(err)
+
+	commitment := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, suite.genAccount)
+	commitment.Claimed = commitment.Claimed.Add(committed...)
+	suite.app.CommitmentKeeper.SetCommitments(suite.ctx, commitment)
+
+	return committed
 }
 
 func TestEstakingExtendedFunctions(t *testing.T) {

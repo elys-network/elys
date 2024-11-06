@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -17,35 +16,9 @@ func (suite *EstakingKeeperTestSuite) TestBurnEdenBFromElysUnstaked() {
 		{
 			"burn EdenB from Elys unstaked",
 			func() {
-				var committed sdk.Coins
-				var unclaimed sdk.Coins
-
-				// Prepare unclaimed tokens
-				uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000))
-				uedenBToken := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(20000))
-				unclaimed = unclaimed.Add(uedenToken, uedenBToken)
-
-				// Mint coins
-				err := suite.app.BankKeeper.MintCoins(suite.ctx, ctypes.ModuleName, unclaimed)
-				suite.Require().NoError(err)
-				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ctypes.ModuleName, suite.genAccount, unclaimed)
-				suite.Require().NoError(err)
-
-				// Prepare committed tokens
-				uedenToken = sdk.NewCoin(ptypes.Eden, sdk.NewInt(10000))
-				uedenBToken = sdk.NewCoin(ptypes.EdenB, sdk.NewInt(5000))
-				committed = committed.Add(uedenToken, uedenBToken)
-
-				// Mint coins
-				err = suite.app.BankKeeper.MintCoins(suite.ctx, ctypes.ModuleName, committed)
-				suite.Require().NoError(err)
-				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ctypes.ModuleName, suite.genAccount, committed)
-				suite.Require().NoError(err)
-
-				// Add testing commitment
+				_ = suite.PrepareUnclaimedTokens()
+				committed := suite.PrepareCommittedTokens()
 				suite.AddTestCommitment(committed)
-
-				// Take elys staked snapshot
 				suite.app.EstakingKeeper.TakeDelegationSnapshot(suite.ctx, suite.genAccount)
 			},
 			func() {},
@@ -78,31 +51,10 @@ func (suite *EstakingKeeperTestSuite) TestBurnEdenBFromEdenUncommitted() {
 		{
 			"burn EdenB from Eden uncommitted",
 			func() {
-				var committed sdk.Coins
-				var unclaimed sdk.Coins
-
-				// Prepare unclaimed tokens
-				uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000))
-				uedenBToken := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(20000))
-				unclaimed = unclaimed.Add(uedenToken, uedenBToken)
-
-				// Mint coins
-				err := suite.app.BankKeeper.MintCoins(suite.ctx, ctypes.ModuleName, unclaimed)
-				suite.Require().NoError(err)
-				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ctypes.ModuleName, suite.genAccount, unclaimed)
-				suite.Require().NoError(err)
-
-				// Prepare committed tokens
-				uedenToken = sdk.NewCoin(ptypes.Eden, sdk.NewInt(10000))
-				uedenBToken = sdk.NewCoin(ptypes.EdenB, sdk.NewInt(5000))
-				committed = committed.Add(uedenToken, uedenBToken)
-
-				// Set assetprofile entry for denom
-				suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
-
-				commitment := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, suite.genAccount)
-				commitment.Claimed = commitment.Claimed.Add(committed...)
-				suite.app.CommitmentKeeper.SetCommitments(suite.ctx, commitment)
+				suite.PrepareUnclaimedTokens()
+				committed := suite.PrepareCommittedTokens()
+				suite.AddTestClaimed(committed)
+				suite.SetAssetProfile()
 			},
 			func() {},
 		},
