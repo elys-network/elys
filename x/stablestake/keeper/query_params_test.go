@@ -1,21 +1,42 @@
 package keeper_test
 
 import (
-	"testing"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	testkeeper "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/stablestake/types"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
-func TestParamsQuery(t *testing.T) {
-	keeper, ctx := testkeeper.StablestakeKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
-	params := types.DefaultParams()
-	keeper.SetParams(ctx, params)
+func (suite *KeeperTestSuite) TestParams() {
+	tests := []struct {
+		name          string
+		req           *types.QueryParamsRequest
+		expectedError error
+		expectedResp  *types.QueryParamsResponse
+	}{
+		{
+			name:          "valid request",
+			req:           &types.QueryParamsRequest{},
+			expectedError: nil,
+			expectedResp:  &types.QueryParamsResponse{Params: types.DefaultParams()},
+		},
+		{
+			name:          "invalid request",
+			req:           nil,
+			expectedError: status.Error(codes.InvalidArgument, "invalid request"),
+			expectedResp:  nil,
+		},
+	}
 
-	response, err := keeper.Params(wctx, &types.QueryParamsRequest{})
-	require.NoError(t, err)
-	require.Equal(t, &types.QueryParamsResponse{Params: params}, response)
+	for _, tt := range tests {
+		suite.Run(tt.name, func() {
+			resp, err := suite.app.StablestakeKeeper.Params(suite.ctx, tt.req)
+			if tt.expectedError != nil {
+				require.ErrorIs(suite.T(), err, tt.expectedError)
+			} else {
+				require.NoError(suite.T(), err)
+				require.Equal(suite.T(), tt.expectedResp, resp)
+			}
+		})
+	}
 }

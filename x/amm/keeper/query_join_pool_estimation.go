@@ -50,7 +50,7 @@ func (k Keeper) JoinPoolEst(
 			}
 		}
 
-		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		cacheCtx, _ := ctx.CacheContext()
 		sharesOut, slippage, weightBalanceBonus, err = pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn)
 		if err != nil {
@@ -61,7 +61,7 @@ func (k Keeper) JoinPoolEst(
 	}
 
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
-	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 	cacheCtx, _ := ctx.CacheContext()
 	sharesOut, slippage, weightBalanceBonus, err = pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs)
 	if err != nil {

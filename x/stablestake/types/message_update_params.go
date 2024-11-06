@@ -22,7 +22,7 @@ func (msg *MsgUpdateParams) ValidateBasic() error {
 	}
 	err = msg.Params.Validate()
 	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid params (%s)", err)
+		return errorsmod.Wrapf(ErrInvalidParams, "invalid params (%s)", err)
 	}
 	return nil
 }

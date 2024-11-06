@@ -43,4 +43,11 @@ func TestInterestGet(t *testing.T) {
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1000)
 	res = keeper.GetInterest(ctx, uint64(ctx.BlockHeight()-20), uint64(ctx.BlockTime().Unix()-1), sdkmath.LegacyNewDec(86400*365))
 	require.Equal(t, res.Int64(), int64(0))
+
+	all := keeper.GetAllInterest(ctx)
+	require.Equal(t, len(all), 10)
+
+	keeper.DeleteInterest(ctx, ctx.BlockHeight()-1)
+	all = keeper.GetAllInterest(ctx)
+	require.Equal(t, len(all), 10)
 }

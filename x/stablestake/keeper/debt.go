@@ -253,38 +253,3 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) err
 	}
 	return nil
 }
-
-func (k Keeper) DeleteAllInterest(ctx sdk.Context) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
-	iterator := storetypes.KVStorePrefixIterator(store, nil)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		store.Delete(iterator.Key())
-	}
-}
-
-func (k Keeper) AccountInterest(ctx sdk.Context) []types.Debt {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	params := k.GetParams(ctx)
-
-	iterator := storetypes.KVStorePrefixIterator(store, types.DebtPrefixKey)
-	defer iterator.Close()
-
-	debts := []types.Debt{}
-	for ; iterator.Valid(); iterator.Next() {
-		debt := types.Debt{}
-		k.cdc.MustUnmarshal(iterator.Value(), &debt)
-
-		// Set to 17% (as it couldn't be more over period of ~6 months)
-		// Note: These interest values were inflated due to a migration issue
-		val := sdkmath.LegacyNewDecFromInt(debt.Borrowed).Mul(sdkmath.LegacyNewDecWithPrec(17, 2))
-		if debt.InterestStacked.GT(val.TruncateInt()) {
-			sub := debt.InterestStacked.Sub(val.TruncateInt())
-			params.TotalValue = params.TotalValue.Sub(sub)
-			debt.InterestStacked = val.TruncateInt()
-		}
-	}
-	k.SetParams(ctx, params)
-	return debts
-}
