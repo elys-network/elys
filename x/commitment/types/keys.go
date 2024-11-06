@@ -22,6 +22,8 @@ const (
 	LegacyCommitmentsKeyPrefix = "Commitments/value/"
 )
 
+const MaxPageLimit = 100
+
 var (
 	CommitmentsKeyPrefix = []byte{0x01}
 	ParamsKey            = []byte{0x02}

@@ -1,0 +1,14 @@
+syntax = "proto3";
+package elys.tier;
+
+option go_package = "github.com/elys-network/elys/x/tier/types";
+
+message UserData {
+    string user = 1;
+    repeated Pool pool = 2;
+}
+
+message Pool{
+    string pool = 1;
+    string value = 2;
+}

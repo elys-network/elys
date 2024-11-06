@@ -7,6 +7,7 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/tier/params.proto";
 import "elys/tier/portfolio.proto";
+import "elys/tier/userdata.proto";
 
 option go_package = "github.com/elys-network/elys/x/tier/types";
 
@@ -82,7 +83,12 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/tier/staked/{user}";
   
   }
-
+  
+  // Queries a list of GetUsersPoolData items.
+  rpc GetUsersPoolData (QueryGetUsersPoolDataRequest) returns (QueryGetUsersPoolDataResponse) {
+    option (google.api.http).get = "/elys-network/elys/tier/get_users_pool_data";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -126,7 +132,7 @@ message QueryLeverageLpTotalRequest {
 }
 
 message QueryLeverageLpTotalResponse {
-  string total_value = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string total_value   = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string total_borrows = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
@@ -151,7 +157,7 @@ message QueryPerpetualRequest {
 }
 
 message QueryPerpetualResponse {
-  string total_value = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string total_value   = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string total_borrows = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
@@ -177,8 +183,8 @@ message QueryGetConsolidatedPriceRequest {
 }
 
 message QueryGetConsolidatedPriceResponse {
-  string amm_price = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string oracle_price = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string amm_price        = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string oracle_price     = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string oracle_price_dec = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
@@ -187,9 +193,18 @@ message QueryStakedRequest {
 }
 
 message QueryStakedResponse {
-  string commitments = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string delegations = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string unbondings = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string commitments  = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string delegations  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string unbondings   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string total_vested = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+message QueryGetUsersPoolDataRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryGetUsersPoolDataResponse {
+  repeated UserData users = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
