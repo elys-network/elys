@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	simapp "github.com/elys-network/elys/app"
@@ -12,7 +13,51 @@ import (
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 )
+
+const (
+	initChain = true
+)
+
+type EstakingKeeperTestSuite struct {
+	suite.Suite
+
+	legacyAmino *codec.LegacyAmino
+	ctx         sdk.Context
+	app         *simapp.ElysApp
+	genAccount  sdk.AccAddress
+	valAddr     sdk.ValAddress
+}
+
+func (k *EstakingKeeperTestSuite) SetupTest() {
+	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount()
+
+	k.legacyAmino = app.LegacyAmino()
+	k.ctx = app.BaseApp.NewContext(initChain, tmproto.Header{})
+	k.app = app
+	k.genAccount = genAccount
+	k.valAddr = valAddr
+}
+
+func TestKeeperSuite(t *testing.T) {
+	suite.Run(t, new(EstakingKeeperTestSuite))
+}
+
+func (suite *EstakingKeeperTestSuite) ResetSuite() {
+	suite.SetupTest()
+}
+
+// Add testing commitments
+func (suite *EstakingKeeperTestSuite) AddTestCommitment(committed sdk.Coins) {
+	commitment := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, suite.genAccount)
+
+	for _, c := range committed {
+		commitment.AddCommittedTokens(c.Denom, c.Amount, uint64(suite.ctx.BlockTime().Unix()))
+	}
+
+	suite.app.CommitmentKeeper.SetCommitments(suite.ctx, commitment)
+}
 
 func TestEstakingExtendedFunctions(t *testing.T) {
 	app := simapp.InitElysTestApp(true)

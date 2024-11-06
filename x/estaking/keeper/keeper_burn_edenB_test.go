@@ -13,50 +13,65 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestBurnEdenBFromElysUnstaked(t *testing.T) {
-	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount()
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+func (suite *EstakingKeeperTestSuite) TestBurnEdenBFromElysUnstaked(t *testing.T) {
+	testCases := []struct {
+		name                 string
+		prerequisiteFunction func()
+		postValidateFunction func()
+	}{
+		{
+			"burn EdenB from Elys unstaked",
+			func() {
+				var committed sdk.Coins
+				var unclaimed sdk.Coins
 
-	ek, sk := app.EstakingKeeper, app.StakingKeeper
+				// Prepare unclaimed tokens
+				uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000))
+				uedenBToken := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(20000))
+				unclaimed = unclaimed.Add(uedenToken, uedenBToken)
 
-	var committed sdk.Coins
-	var unclaimed sdk.Coins
+				// Mint coins
+				err := suite.app.BankKeeper.MintCoins(suite.ctx, ctypes.ModuleName, unclaimed)
+				suite.Require().NoError(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ctypes.ModuleName, suite.genAccount, unclaimed)
+				suite.Require().NoError(err)
 
-	// Prepare unclaimed tokens
-	uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000))
-	uedenBToken := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(20000))
-	unclaimed = unclaimed.Add(uedenToken, uedenBToken)
+				// Prepare committed tokens
+				uedenToken = sdk.NewCoin(ptypes.Eden, sdk.NewInt(10000))
+				uedenBToken = sdk.NewCoin(ptypes.EdenB, sdk.NewInt(5000))
+				committed = committed.Add(uedenToken, uedenBToken)
 
-	// Mint coins
-	err := app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, unclaimed)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, genAccount, unclaimed)
-	require.NoError(t, err)
+				// Mint coins
+				err = suite.app.BankKeeper.MintCoins(suite.ctx, ctypes.ModuleName, committed)
+				suite.Require().NoError(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ctypes.ModuleName, suite.genAccount, committed)
+				suite.Require().NoError(err)
 
-	// Prepare committed tokens
-	uedenToken = sdk.NewCoin(ptypes.Eden, sdk.NewInt(10000))
-	uedenBToken = sdk.NewCoin(ptypes.EdenB, sdk.NewInt(5000))
-	committed = committed.Add(uedenToken, uedenBToken)
+				// Add testing commitment
+				suite.AddTestCommitment(committed)
 
-	// Mint coins
-	err = app.BankKeeper.MintCoins(ctx, ctypes.ModuleName, committed)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ctypes.ModuleName, genAccount, committed)
-	require.NoError(t, err)
+				// Take elys staked snapshot
+				suite.app.EstakingKeeper.TakeDelegationSnapshot(suite.ctx, suite.genAccount)
+			},
+			func() {},
+		},
+	}
 
-	// Add testing commitment
-	simapp.AddTestCommitment(app, ctx, genAccount, committed)
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
 
-	// Take elys staked snapshot
-	ek.TakeDelegationSnapshot(ctx, genAccount)
+			// burn amount = 100000 (unbonded amt) / (1000000 (elys staked) + 10000 (Eden committed)) * (20000 EdenB + 5000 EdenB committed)
+			unbondAmt, err := suite.app.StakingKeeper.Unbond(suite.ctx, suite.genAccount, suite.valAddr, sdk.NewDecWithPrec(10, 2))
+			suite.Require().Equal(unbondAmt, sdk.NewInt(100000))
+			suite.Require().NoError(err)
 
-	// burn amount = 100000 (unbonded amt) / (1000000 (elys staked) + 10000 (Eden committed)) * (20000 EdenB + 5000 EdenB committed)
-	unbondAmt, err := sk.Unbond(ctx, genAccount, valAddr, sdk.NewDecWithPrec(10, 2))
-	require.Equal(t, unbondAmt, sdk.NewInt(100000))
-	require.NoError(t, err)
+			// Process EdenB burn operation
+			suite.app.EstakingKeeper.EndBlocker(suite.ctx)
 
-	// Process EdenB burn operation
-	ek.EndBlocker(ctx)
+			tc.postValidateFunction()
+		})
+	}
 }
 
 func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
