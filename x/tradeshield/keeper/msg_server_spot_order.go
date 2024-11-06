@@ -12,11 +12,13 @@ func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSp
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var pendingSpotOrder = types.SpotOrder{
-		OrderType:    msg.OrderType,
-		OrderId:      uint64(0),
-		OrderPrice:   msg.OrderPrice,
-		OrderAmount:  *msg.OrderAmount,
-		OwnerAddress: msg.OwnerAddress,
+		OrderType:        msg.OrderType,
+		OrderId:          uint64(0),
+		OrderPrice:       msg.OrderPrice,
+		OrderAmount:      *msg.OrderAmount,
+		OwnerAddress:     msg.OwnerAddress,
+		OrderTargetDenom: msg.OrderTargetDenom,
+		Date:             &types.Date{Height: uint64(ctx.BlockHeight()), Timestamp: uint64(ctx.BlockTime().Unix())},
 	}
 
 	id := k.AppendPendingSpotOrder(
