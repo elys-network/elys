@@ -6,11 +6,10 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	stypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	simapp "github.com/elys-network/elys/app"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
-	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	aptypes "github.com/elys-network/elys/x/assetprofile/types"
+	ckeeper "github.com/elys-network/elys/x/commitment/keeper"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
@@ -70,7 +69,7 @@ func (suite *EstakingKeeperTestSuite) AddTestClaimed(committed sdk.Coins) {
 // Set asset profile
 func (suite *EstakingKeeperTestSuite) SetAssetProfile() {
 	// Set assetprofile entry for denom
-	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, aptypes.Entry{BaseDenom: ptypes.Eden, CommitEnabled: true, WithdrawEnabled: true})
 }
 
 // Prepare unclaimed tokens
@@ -80,9 +79,9 @@ func (suite *EstakingKeeperTestSuite) PrepareUnclaimedTokens() sdk.Coins {
 	unclaimed = unclaimed.Add(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(20000)))
 
 	// Mint coins
-	err := suite.app.BankKeeper.MintCoins(suite.ctx, commitmenttypes.ModuleName, unclaimed)
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, ctypes.ModuleName, unclaimed)
 	suite.Require().NoError(err)
-	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, commitmenttypes.ModuleName, suite.genAccount, unclaimed)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ctypes.ModuleName, suite.genAccount, unclaimed)
 	suite.Require().NoError(err)
 
 	return unclaimed
@@ -129,15 +128,15 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 	commitments := app.CommitmentKeeper.GetCommitments(ctx, addr)
 	commitments.AddClaimed(sdk.NewInt64Coin(ptypes.Eden, 1000_000))
 	app.CommitmentKeeper.SetCommitments(ctx, commitments)
-	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
+	app.AssetprofileKeeper.SetEntry(ctx, aptypes.Entry{
 		BaseDenom:       ptypes.Eden,
 		Denom:           ptypes.Eden,
 		Decimals:        6,
 		CommitEnabled:   true,
 		WithdrawEnabled: true,
 	})
-	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(app.CommitmentKeeper)
-	_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &commitmenttypes.MsgCommitClaimedRewards{
+	commitmentMsgServer := ckeeper.NewMsgServerImpl(app.CommitmentKeeper)
+	_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &ctypes.MsgCommitClaimedRewards{
 		Creator: addr.String(),
 		Denom:   ptypes.Eden,
 		Amount:  sdk.NewInt(1000_000),
@@ -163,14 +162,14 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 	require.Nil(t, edenBDel)
 
 	numDelegations := int64(0)
-	estakingKeeper.IterateDelegations(ctx, addr, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
+	estakingKeeper.IterateDelegations(ctx, addr, func(index int64, delegation stypes.DelegationI) (stop bool) {
 		numDelegations++
 		return false
 	})
 	require.Equal(t, numDelegations, int64(2))
 
 	numBondedValidators := int64(0)
-	estakingKeeper.IterateBondedValidatorsByPower(ctx, func(index int64, delegation stakingtypes.ValidatorI) (stop bool) {
+	estakingKeeper.IterateBondedValidatorsByPower(ctx, func(index int64, delegation stypes.ValidatorI) (stop bool) {
 		numBondedValidators++
 		return false
 	})
