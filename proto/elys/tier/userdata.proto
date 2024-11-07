@@ -1,14 +1,21 @@
 syntax = "proto3";
 package elys.tier;
 
+import "gogoproto/gogo.proto";
+
 option go_package = "github.com/elys-network/elys/x/tier/types";
 
 message UserData {
     string user = 1;
-    repeated Pool pool = 2;
+    repeated Pool pools = 2;
 }
 
 message Pool{
-    string pool = 1;
-    string value = 2;
+    string pool_id = 1;
+    string pool = 2;
+    string fiat_value = 3;
+    string amount = 4 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.nullable) = false
+    ];
 }

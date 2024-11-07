@@ -5,6 +5,8 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
@@ -23,8 +25,8 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type UserData struct {
-	User string  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
-	Pool []*Pool `protobuf:"bytes,2,rep,name=pool,proto3" json:"pool,omitempty"`
+	User  string  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	Pools []*Pool `protobuf:"bytes,2,rep,name=pools,proto3" json:"pools,omitempty"`
 }
 
 func (m *UserData) Reset()         { *m = UserData{} }
@@ -67,16 +69,18 @@ func (m *UserData) GetUser() string {
 	return ""
 }
 
-func (m *UserData) GetPool() []*Pool {
+func (m *UserData) GetPools() []*Pool {
 	if m != nil {
-		return m.Pool
+		return m.Pools
 	}
 	return nil
 }
 
 type Pool struct {
-	Pool  string `protobuf:"bytes,1,opt,name=pool,proto3" json:"pool,omitempty"`
-	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	PoolId    string                                 `protobuf:"bytes,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	Pool      string                                 `protobuf:"bytes,2,opt,name=pool,proto3" json:"pool,omitempty"`
+	FiatValue string                                 `protobuf:"bytes,3,opt,name=fiat_value,json=fiatValue,proto3" json:"fiat_value,omitempty"`
+	Amount    github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
 }
 
 func (m *Pool) Reset()         { *m = Pool{} }
@@ -112,6 +116,13 @@ func (m *Pool) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Pool proto.InternalMessageInfo
 
+func (m *Pool) GetPoolId() string {
+	if m != nil {
+		return m.PoolId
+	}
+	return ""
+}
+
 func (m *Pool) GetPool() string {
 	if m != nil {
 		return m.Pool
@@ -119,9 +130,9 @@ func (m *Pool) GetPool() string {
 	return ""
 }
 
-func (m *Pool) GetValue() string {
+func (m *Pool) GetFiatValue() string {
 	if m != nil {
-		return m.Value
+		return m.FiatValue
 	}
 	return ""
 }
@@ -134,20 +145,26 @@ func init() {
 func init() { proto.RegisterFile("elys/tier/userdata.proto", fileDescriptor_604a2627f200671e) }
 
 var fileDescriptor_604a2627f200671e = []byte{
-	// 206 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x48, 0xcd, 0xa9, 0x2c,
-	0xd6, 0x2f, 0xc9, 0x4c, 0x2d, 0xd2, 0x2f, 0x2d, 0x4e, 0x2d, 0x4a, 0x49, 0x2c, 0x49, 0xd4, 0x2b,
-	0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x04, 0xc9, 0xe8, 0x81, 0x64, 0x94, 0x9c, 0xb9, 0x38, 0x42,
-	0x8b, 0x53, 0x8b, 0x5c, 0x12, 0x4b, 0x12, 0x85, 0x84, 0xb8, 0x58, 0x40, 0x0a, 0x25, 0x18, 0x15,
-	0x18, 0x35, 0x38, 0x83, 0xc0, 0x6c, 0x21, 0x65, 0x2e, 0x96, 0x82, 0xfc, 0xfc, 0x1c, 0x09, 0x26,
-	0x05, 0x66, 0x0d, 0x6e, 0x23, 0x7e, 0x3d, 0xb8, 0x4e, 0xbd, 0x80, 0xfc, 0xfc, 0x9c, 0x20, 0xb0,
-	0xa4, 0x92, 0x01, 0x17, 0x0b, 0x88, 0x07, 0x32, 0x00, 0xac, 0x18, 0x6a, 0x00, 0x88, 0x2d, 0x24,
-	0xc2, 0xc5, 0x5a, 0x96, 0x98, 0x53, 0x9a, 0x2a, 0xc1, 0x04, 0x16, 0x84, 0x70, 0x9c, 0x9c, 0x4f,
-	0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1, 0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18,
-	0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58, 0x8e, 0x21, 0x4a, 0x33, 0x3d, 0xb3, 0x24, 0xa3, 0x34,
-	0x49, 0x2f, 0x39, 0x3f, 0x57, 0x1f, 0x64, 0x99, 0x6e, 0x5e, 0x6a, 0x49, 0x79, 0x7e, 0x51, 0x36,
-	0x98, 0xa3, 0x5f, 0x01, 0xf1, 0x4f, 0x49, 0x65, 0x41, 0x6a, 0x71, 0x12, 0x1b, 0xd8, 0x37, 0xc6,
-	0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x58, 0xca, 0x04, 0xd8, 0xe9, 0x00, 0x00, 0x00,
+	// 293 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x4c, 0x90, 0xcb, 0x4a, 0x33, 0x31,
+	0x14, 0xc7, 0x27, 0x6d, 0xbf, 0x7e, 0x36, 0x2e, 0x84, 0x20, 0x18, 0x04, 0xd3, 0x52, 0x50, 0xea,
+	0xa2, 0x09, 0xe8, 0x1b, 0xd4, 0x0b, 0x74, 0x27, 0x05, 0x5d, 0xb8, 0x29, 0x69, 0x27, 0xd6, 0xa1,
+	0xd3, 0x39, 0xc3, 0x24, 0xa3, 0xf6, 0x2d, 0x5c, 0xfb, 0x44, 0x5d, 0x76, 0x29, 0x2e, 0x8a, 0xcc,
+	0xbc, 0x88, 0x9c, 0xcc, 0x20, 0xae, 0xf2, 0xbf, 0xe4, 0xfc, 0xe0, 0x1c, 0xca, 0x4d, 0xbc, 0xb6,
+	0xca, 0x45, 0x26, 0x53, 0xb9, 0x35, 0x59, 0xa8, 0x9d, 0x96, 0x69, 0x06, 0x0e, 0x58, 0x07, 0x1b,
+	0x89, 0xcd, 0xf1, 0xe1, 0x02, 0x16, 0xe0, 0x53, 0x85, 0xaa, 0xfa, 0xd0, 0xbf, 0xa1, 0x7b, 0xf7,
+	0xd6, 0x64, 0xd7, 0xda, 0x69, 0xc6, 0x68, 0x0b, 0xc7, 0x39, 0xe9, 0x91, 0x41, 0x67, 0xe2, 0x35,
+	0x3b, 0xa5, 0xff, 0x52, 0x80, 0xd8, 0xf2, 0x46, 0xaf, 0x39, 0xd8, 0xbf, 0x38, 0x90, 0xbf, 0x40,
+	0x79, 0x07, 0x10, 0x4f, 0xaa, 0xb6, 0xff, 0x41, 0x68, 0x0b, 0x3d, 0x3b, 0xa2, 0xff, 0x31, 0x99,
+	0x46, 0x61, 0x8d, 0x69, 0xa3, 0x1d, 0x87, 0x08, 0x47, 0xc5, 0x1b, 0x15, 0x1c, 0x35, 0x3b, 0xa1,
+	0xf4, 0x29, 0xd2, 0x6e, 0xfa, 0xa2, 0xe3, 0xdc, 0xf0, 0xa6, 0x6f, 0x3a, 0x98, 0x3c, 0x60, 0xc0,
+	0x6e, 0x69, 0x5b, 0xaf, 0x20, 0x4f, 0x1c, 0x6f, 0x61, 0x35, 0x92, 0x9b, 0x5d, 0x37, 0xf8, 0xda,
+	0x75, 0xcf, 0x16, 0x91, 0x7b, 0xce, 0x67, 0x72, 0x0e, 0x2b, 0x35, 0x07, 0xbb, 0x02, 0x5b, 0x3f,
+	0x43, 0x1b, 0x2e, 0x95, 0x5b, 0xa7, 0xc6, 0xca, 0x71, 0xe2, 0x26, 0xf5, 0xf4, 0xe8, 0x6a, 0x53,
+	0x08, 0xb2, 0x2d, 0x04, 0xf9, 0x2e, 0x04, 0x79, 0x2f, 0x45, 0xb0, 0x2d, 0x45, 0xf0, 0x59, 0x8a,
+	0xe0, 0xf1, 0xfc, 0x0f, 0x09, 0x17, 0x1b, 0x26, 0xc6, 0xbd, 0x42, 0xb6, 0xf4, 0x46, 0xbd, 0x55,
+	0x27, 0xf5, 0xc0, 0x59, 0xdb, 0xdf, 0xeb, 0xf2, 0x27, 0x00, 0x00, 0xff, 0xff, 0x66, 0xcf, 0x30,
+	0x55, 0x6c, 0x01, 0x00, 0x00,
 }
 
 func (m *UserData) Marshal() (dAtA []byte, err error) {
@@ -170,10 +187,10 @@ func (m *UserData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Pool) > 0 {
-		for iNdEx := len(m.Pool) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.Pools) > 0 {
+		for iNdEx := len(m.Pools) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.Pool[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.Pools[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -214,17 +231,34 @@ func (m *Pool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Value) > 0 {
-		i -= len(m.Value)
-		copy(dAtA[i:], m.Value)
-		i = encodeVarintUserdata(dAtA, i, uint64(len(m.Value)))
+	{
+		size := m.Amount.Size()
+		i -= size
+		if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintUserdata(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	if len(m.FiatValue) > 0 {
+		i -= len(m.FiatValue)
+		copy(dAtA[i:], m.FiatValue)
+		i = encodeVarintUserdata(dAtA, i, uint64(len(m.FiatValue)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Pool) > 0 {
 		i -= len(m.Pool)
 		copy(dAtA[i:], m.Pool)
 		i = encodeVarintUserdata(dAtA, i, uint64(len(m.Pool)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.PoolId) > 0 {
+		i -= len(m.PoolId)
+		copy(dAtA[i:], m.PoolId)
+		i = encodeVarintUserdata(dAtA, i, uint64(len(m.PoolId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -252,8 +286,8 @@ func (m *UserData) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovUserdata(uint64(l))
 	}
-	if len(m.Pool) > 0 {
-		for _, e := range m.Pool {
+	if len(m.Pools) > 0 {
+		for _, e := range m.Pools {
 			l = e.Size()
 			n += 1 + l + sovUserdata(uint64(l))
 		}
@@ -267,14 +301,20 @@ func (m *Pool) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.PoolId)
+	if l > 0 {
+		n += 1 + l + sovUserdata(uint64(l))
+	}
 	l = len(m.Pool)
 	if l > 0 {
 		n += 1 + l + sovUserdata(uint64(l))
 	}
-	l = len(m.Value)
+	l = len(m.FiatValue)
 	if l > 0 {
 		n += 1 + l + sovUserdata(uint64(l))
 	}
+	l = m.Amount.Size()
+	n += 1 + l + sovUserdata(uint64(l))
 	return n
 }
 
@@ -347,7 +387,7 @@ func (m *UserData) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pool", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Pools", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -374,8 +414,8 @@ func (m *UserData) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Pool = append(m.Pool, &Pool{})
-			if err := m.Pool[len(m.Pool)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Pools = append(m.Pools, &Pool{})
+			if err := m.Pools[len(m.Pools)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -431,6 +471,38 @@ func (m *Pool) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowUserdata
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthUserdata
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthUserdata
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PoolId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Pool", wireType)
 			}
 			var stringLen uint64
@@ -461,9 +533,9 @@ func (m *Pool) Unmarshal(dAtA []byte) error {
 			}
 			m.Pool = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field FiatValue", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -491,7 +563,41 @@ func (m *Pool) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Value = string(dAtA[iNdEx:postIndex])
+			m.FiatValue = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowUserdata
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthUserdata
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthUserdata
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
