@@ -12,8 +12,5 @@ func (k Keeper) CheckSameAssetPosition(ctx sdk.Context, msg *types.MsgOpen) *typ
 			return mtp
 		}
 	}
-	// Short : Trading asset, collateral as base
-	// Long : Trading asset, collateral as base
-	// Long : Trading asset, collateral as Trading
 	return nil
 }
