@@ -33,13 +33,25 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		PositionId:         0,
 	}
 
+	// Verify if user doesn't have a position in the same pool
+	// Should not create a order for a position where the user already has a position in the same pool
+	mtps, _, err := k.perpetual.GetMTPsForAddressWithPagination(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), nil)
+	if err != nil {
+		return nil, err
+	}
+	for _, mtp := range mtps {
+		if mtp.Mtp.AmmPoolId == msg.PoolId {
+			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "user already has a position in the same pool")
+		}
+	}
+
 	id := k.AppendPendingPerpetualOrder(
 		ctx,
 		pendingPerpetualOrder,
 	)
 
 	// Verify if order is valid before saving
-	_, err := k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
+	_, err = k.perpetual.HandleOpenEstimation(ctx, &perpetualtypes.QueryOpenEstimationRequest{
 		Position:        perpetualtypes.Position(msg.Position),
 		Leverage:        msg.Leverage,
 		TradingAsset:    msg.TradingAsset,
