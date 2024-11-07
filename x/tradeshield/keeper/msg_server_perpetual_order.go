@@ -57,53 +57,52 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 }
 
 func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.MsgCreatePerpetualCloseOrder) (*types.MsgCreatePerpetualCloseOrderResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+	// Disable for v1
+	return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "disabled for v1")
+	// ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// check if the position owner address matches the msg owner address
-	position, err := k.perpetual.GetMTP(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), msg.PositionId)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("position %d not found", msg.PositionId))
-	}
+	// // check if the position owner address matches the msg owner address
+	// position, err := k.perpetual.GetMTP(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), msg.PositionId)
+	// if err != nil {
+	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("position %d not found", msg.PositionId))
+	// }
 
-	var pendingPerpetualOrder = types.PerpetualOrder{
-		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.TriggerPrice{
-			TradingAssetDenom: position.TradingAsset,
-			Rate:              msg.TriggerPrice.Rate,
-		},
-		OwnerAddress: position.Address,
-		PositionId:   position.Id,
-	}
+	// var pendingPerpetualOrder = types.PerpetualOrder{
+	// 	PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
+	// 	TriggerPrice: &types.TriggerPrice{
+	// 		TradingAssetDenom: position.TradingAsset,
+	// 		Rate:              msg.TriggerPrice.Rate,
+	// 	},
+	// 	OwnerAddress: position.Address,
+	// 	PositionId:   position.Id,
+	// }
 
-	id := k.AppendPendingPerpetualOrder(
-		ctx,
-		pendingPerpetualOrder,
-	)
+	// id := k.AppendPendingPerpetualOrder(
+	// 	ctx,
+	// 	pendingPerpetualOrder,
+	// )
 
-	return &types.MsgCreatePerpetualCloseOrderResponse{
-		OrderId: id,
-	}, nil
+	// return &types.MsgCreatePerpetualCloseOrderResponse{
+	// 	OrderId: id,
+	// }, nil
 }
 
 func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpdatePerpetualOrder) (*types.MsgUpdatePerpetualOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	var pendingPerpetualOrder = types.PerpetualOrder{
-		OwnerAddress: msg.OwnerAddress,
-	}
-
 	// Checks that the element exists
-	val, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
+	order, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
 	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.OrderId))
 	}
 
 	// Checks if the msg creator is the same as the current owner
-	if msg.OwnerAddress != val.OwnerAddress {
+	if msg.OwnerAddress != order.OwnerAddress {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	k.SetPendingPerpetualOrder(ctx, pendingPerpetualOrder)
+	order.TriggerPrice = msg.TriggerPrice
+	k.SetPendingPerpetualOrder(ctx, order)
 
 	return &types.MsgUpdatePerpetualOrderResponse{}, nil
 }
@@ -112,21 +111,21 @@ func (k msgServer) CancelPerpetualOrder(goCtx context.Context, msg *types.MsgCan
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	val, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
+	order, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.OrderId))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("order %d doesn't exist", msg.OrderId))
 	}
 
 	// Checks if the msg creator is the same as the current owner
-	if msg.OwnerAddress != val.OwnerAddress {
+	if msg.OwnerAddress != order.OwnerAddress {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	k.RemovePendingPerpetualOrder(ctx, msg.OrderId)
-	types.EmitClosePerpetualOrderEvent(ctx, val)
+	types.EmitCancelPerpetualOrderEvent(ctx, order)
 
 	return &types.MsgCancelPerpetualOrderResponse{
-		OrderId: val.OrderId,
+		OrderId: order.OrderId,
 	}, nil
 }
 
