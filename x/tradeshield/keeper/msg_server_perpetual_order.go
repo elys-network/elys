@@ -31,6 +31,22 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		StopLossPrice:      msg.StopLossPrice,
 		PoolId:             msg.PoolId,
 		PositionId:         0,
+		Status:             types.Status_PENDING,
+	}
+
+	// Verify if user hasn't created a order for same pool with pending status
+	// Note: A user can have either
+	// at most one pending order for a pool
+	// or a position in the pool
+	pendingStatus := types.Status_PENDING
+	orders, _, err := k.GetPendingPerpetualOrdersForAddress(ctx, msg.OwnerAddress, &pendingStatus, nil)
+	if err != nil {
+		return nil, err
+	}
+	for _, order := range orders {
+		if order.PoolId == msg.PoolId {
+			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "user already has a order for the same pool")
+		}
 	}
 
 	// Verify if user doesn't have a position in the same pool
