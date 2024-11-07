@@ -13,19 +13,19 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgCreateSpotOrder{}, "tradeshield/CreateSpotOrder")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateSpotOrder{}, "tradeshield/UpdateSpotOrder")
-	legacy.RegisterAminoMsg(cdc, &MsgCancelSpotOrder{}, "tradeshield/CancelSpotOrder")
-	legacy.RegisterAminoMsg(cdc, &MsgCancelSpotOrders{}, "tradeshield/CancelSpotOrders")
+	legacy.RegisterAminoMsg(cdc, &MsgCreateSpotOrder{}, "tradeshield/MsgCreateSpotOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateSpotOrder{}, "tradeshield/MsgUpdateSpotOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelSpotOrder{}, "tradeshield/MsgCancelSpotOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelSpotOrders{}, "tradeshield/MsgCancelSpotOrders")
 
-	legacy.RegisterAminoMsg(cdc, &MsgCreatePerpetualOpenOrder{}, "tradeshield/CreatePerpetualOpenOrder")
-	legacy.RegisterAminoMsg(cdc, &MsgCreatePerpetualCloseOrder{}, "tradeshield/CreatePerpetualCloseOrder")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdatePerpetualOrder{}, "tradeshield/UpdatePerpetualOrder")
-	legacy.RegisterAminoMsg(cdc, &MsgCancelPerpetualOrder{}, "tradeshield/CancelPerpetualOrder")
-	legacy.RegisterAminoMsg(cdc, &MsgCancelPerpetualOrders{}, "tradeshield/CancelPerpetualOrders")
+	legacy.RegisterAminoMsg(cdc, &MsgCreatePerpetualOpenOrder{}, "tradeshield/MsgCreatePerpetualOpenOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgCreatePerpetualCloseOrder{}, "tradeshield/MsgCreatePerpetualCloseOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePerpetualOrder{}, "tradeshield/MsgUpdatePerpetualOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelPerpetualOrder{}, "tradeshield/MsgCancelPerpetualOrder")
+	legacy.RegisterAminoMsg(cdc, &MsgCancelPerpetualOrders{}, "tradeshield/MsgCancelPerpetualOrders")
 
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "tradeshield/UpdateParams")
-	legacy.RegisterAminoMsg(cdc, &MsgExecuteOrders{}, "tradeshield/ExecuteOrders")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "tradeshield/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgExecuteOrders{}, "tradeshield/MsgExecuteOrders")
 	// this line is used by starport scaffolding # 2
 }
 

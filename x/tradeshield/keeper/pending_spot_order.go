@@ -196,7 +196,7 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) err
 	}
 
 	// Swap the order amount with the target denom
-	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -205,6 +205,9 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) err
 		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
 	})
+	if err != nil {
+		return err
+	}
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
@@ -231,7 +234,7 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) er
 	}
 
 	// Swap the order amount with the target denom
-	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -240,6 +243,9 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) er
 		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
 	})
+	if err != nil {
+		return err
+	}
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
@@ -266,7 +272,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) err
 	}
 
 	// Swap the order amount with the target denom
-	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -275,6 +281,9 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) err
 		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
 	})
+	if err != nil {
+		return err
+	}
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
@@ -291,7 +300,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) er
 	}
 
 	// Swap the order amount with the target denom
-	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -300,9 +309,9 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) er
 		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdk.ZeroInt()),
 	})
-
-	// Remove the order from the pending order list
-	k.RemovePendingSpotOrder(ctx, order.OrderId)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
