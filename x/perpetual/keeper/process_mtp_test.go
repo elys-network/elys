@@ -160,7 +160,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 
 	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
 
-	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
+	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency)
 	suite.Require().NoError(err)
 
 	// Set borrow interest rate to 100% to test liquidation
@@ -195,7 +195,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 		StopLossPrice:                 sdk.ZeroDec(),
 	}, mtp)
 
-	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency, 6)
+	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency)
 	suite.Require().NoError(err)
 
 	mtps = mk.GetAllMTPs(ctx)

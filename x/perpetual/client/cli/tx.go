@@ -13,6 +13,7 @@ const (
 	FlagDiscount        = "discount"
 	FlagTakeProfitPrice = "take-profit"
 	FlagStopLossPrice   = "stop-loss"
+	FlagLimitPrice      = "limit-profit"
 )
 
 // GetTxCmd returns the transaction commands for this module

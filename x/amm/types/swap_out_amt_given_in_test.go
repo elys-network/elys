@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 	"time"
 
@@ -633,7 +634,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdk.ZeroInt(),
 			}
-			tokenOut, _, _, weightBonus, err := pool.SwapOutAmtGivenIn(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenIn}, tc.outTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper)
+			tokenOut, _, _, weightBonus, err := pool.SwapOutAmtGivenIn(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenIn}, tc.outTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, math.LegacyOneDec())
 			if tc.expErr {
 				suite.Require().Error(err)
 				suite.Require().EqualError(err, "amount too low")

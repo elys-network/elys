@@ -122,11 +122,11 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		Leverage:           sdk.MustNewDecFromStr("5.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100_000_000)),
-		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)), // Need to increase block height to have non zero value
+		HourlyInterestRate: math.LegacyZeroDec(),
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(99_835_589)),
 		OpenPrice:          sdk.MustNewDecFromStr("5.008234087746004083"),
 		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
-		LiquidationPrice:   sdk.MustNewDecFromStr("4.206916633706643430"),
+		LiquidationPrice:   sdk.MustNewDecFromStr("4.106751951951723348"),
 		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(997_533_835)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600000000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.000644750000000000"),
@@ -135,6 +135,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		PriceImpact:        sdk.MustNewDecFromStr("-0.001646817549200817"),
 		Custody:            sdk.NewCoin(ptypes.ATOM, sdk.NewInt(99_835_589)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(400_000_000)),
+		WeightBreakingFee:  math.LegacyZeroDec(),
 	}, res)
 }
 
@@ -251,9 +252,9 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(50_000_000)),
 		OpenPrice:          sdk.MustNewDecFromStr("5.008765025000000000"),
 		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
-		LiquidationPrice:   sdk.MustNewDecFromStr("4.207362621000000000"),
+		LiquidationPrice:   sdk.MustNewDecFromStr("4.107187320500000000"),
 		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(399649399)),
-		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)), // Need to increase block height to have non zero value
+		HourlyInterestRate: math.LegacyZeroDec(),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.000750691039603043"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
@@ -261,6 +262,7 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		PriceImpact:        sdk.MustNewDecFromStr("-0.001753005000000000"),
 		Custody:            sdk.NewCoin(ptypes.ATOM, sdk.NewInt(50_000_000)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(200_350_601)),
+		WeightBreakingFee:  math.LegacyZeroDec(),
 	}, res)
 }
 
@@ -381,8 +383,8 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(2247067372)),
 		OpenPrice:          sdk.MustNewDecFromStr("4.450244850068518551"),
 		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
-		LiquidationPrice:   sdk.MustNewDecFromStr("4.205481383314750031"),
-		InterestAmount:     sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(0)), // Need to increase block height to have non zero value
+		LiquidationPrice:   sdk.MustNewDecFromStr("4.105350874188208363"),
+		HourlyInterestRate: math.LegacyZeroDec(),
 		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(19593877289)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(600_000_000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.012549973525000000"),
@@ -391,6 +393,7 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		PriceImpact:        sdk.MustNewDecFromStr("-0.013723200471188736"),
 		Custody:            sdk.NewCoin(ptypes.ATOM, sdk.NewInt(2_247_067_372)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(9000000000)),
+		WeightBreakingFee:  math.LegacyZeroDec(),
 	}, res)
 }
 
@@ -507,7 +510,7 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
 		PoolId:          1,
 		Position:        types.Position_SHORT,
-		Leverage:        sdk.MustNewDecFromStr("5.0"),
+		Leverage:        sdk.MustNewDecFromStr("4.0"),
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100_000_000)),
 		Discount:        sdk.MustNewDecFromStr("0.0"),
@@ -516,15 +519,15 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 	require.NoError(t, err)
 	expectedRes := &types.QueryOpenEstimationResponse{
 		Position:           types.Position_SHORT,
-		Leverage:           sdk.MustNewDecFromStr("5.0"),
+		Leverage:           sdk.MustNewDecFromStr("4.0"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100_000_000)),
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(80200521)),
 		OpenPrice:          sdk.MustNewDecFromStr("4.987498771984286735"),
 		TakeProfitPrice:    tradingAssetPrice.QuoInt64(3),
-		LiquidationPrice:   sdk.MustNewDecFromStr("5.937498538076531828"),
+		LiquidationPrice:   sdk.MustNewDecFromStr("6.082315575590593580"),
 		EstimatedPnl:       sdk.Coin{ptypes.BaseCurrency, sdk.NewInt(266332466)},
-		InterestAmount:     sdk.NewCoin(ptypes.ATOM, math.NewInt(0)), // Need to increase block height to have non zero value
+		HourlyInterestRate: math.LegacyZeroDec(),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10000000000)),
 		Slippage:           sdk.MustNewDecFromStr("0.001501753843447532"),
 		BorrowInterestRate: sdk.MustNewDecFromStr("0.000000000000000000"),
@@ -532,6 +535,7 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		PriceImpact:        sdk.MustNewDecFromStr("0.002500245603142653"),
 		Custody:            sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(500000000)),
 		Liabilities:        sdk.NewCoin(ptypes.ATOM, sdk.NewInt(80_200_521)),
+		WeightBreakingFee:  math.LegacyZeroDec(),
 	}
 	require.Equal(t, expectedRes, res)
 }

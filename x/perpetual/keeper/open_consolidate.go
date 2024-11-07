@@ -55,6 +55,12 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, errorsmod.Wrapf(types.ErrMTPUnhealthy, "(MtpHealth: %s)", existingMtp.MtpHealth.String())
 	}
 
+	stopLossPrice := msg.StopLossPrice
+	if msg.StopLossPrice.IsNil() || msg.StopLossPrice.IsZero() {
+		stopLossPrice = k.GetLiquidationPrice(ctx, *existingMtp)
+	}
+	existingMtp.StopLossPrice = stopLossPrice
+
 	// Set existing MTP
 	if err = k.SetMTP(ctx, existingMtp); err != nil {
 		return nil, err

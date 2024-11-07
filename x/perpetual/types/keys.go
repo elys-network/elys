@@ -36,7 +36,6 @@ const (
 var (
 	TakeProfitPriceDefault = sdk.MustNewDecFromStr("10000000000000000000000000000000000000000") // 10^40
 	StopLossPriceDefault   = sdk.ZeroDec()
-	MaxShortStopLossPrice  = sdk.MustNewDecFromStr("10000000000000000000000000000000000000000") // 10^40
 )
 
 var (

@@ -12,17 +12,17 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string, baseCurrencyDecimal uint64) error {
+func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool ammtypes.Pool, baseCurrency string) error {
 	var err error
 
 	// update mtp take profit liabilities
 	// calculate mtp take profit liabilities, delta x_tp_l = delta y_tp_c * current price (take profit liabilities = take profit custody * current price)
-	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
+	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, *mtp)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit liabilities: %s", mtp.String()))
 	}
 	// calculate and update take profit borrow rate
-	err = k.UpdateMTPTakeProfitBorrowFactor(ctx, mtp)
+	err = mtp.UpdateMTPTakeProfitBorrowFactor()
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("error calculating mtp take profit borrow rate: %s", mtp.String()))
 	}

@@ -23,6 +23,7 @@ func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetu
 		}
 		totalLiabilities, totalCustody, totalTakeProfitCustody, totalTakeProfitLiabilities := perpetualPool.GetPerpetualPoolBalances(asset.Token.Denom)
 		accountedPoolAmt := ammBalance.Add(totalLiabilities).Sub(totalCustody)
+		// if this is enabled then we need to consider impact of weight balance bonus of swap while calculating takeProfitLiabilities
 		if EnableTakeProfitCustodyLiabilities {
 			accountedPoolAmt = accountedPoolAmt.Add(totalTakeProfitCustody).Sub(totalTakeProfitLiabilities)
 		}

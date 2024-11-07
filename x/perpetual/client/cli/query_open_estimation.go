@@ -15,7 +15,7 @@ func CmdOpenEstimation() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "open-estimation [position] [leverage] [trading-asset] [collateral] [pool-id]",
 		Short:   "Query open-estimation",
-		Example: "elysd q perpetual open-estimation long 5 uatom 100000000uusdc",
+		Example: "elysd q perpetual open-estimation long 5 uatom 100000000uusdc 1",
 		Args:    cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqPosition := types.GetPositionFromString(args[0])
@@ -61,6 +61,16 @@ func CmdOpenEstimation() *cobra.Command {
 				takeProfitPrice = types.TakeProfitPriceDefault
 			}
 
+			limitPriceStr, err := cmd.Flags().GetString(FlagLimitPrice)
+			if err != nil {
+				return err
+			}
+
+			limitPrice, err := sdk.NewDecFromStr(limitPriceStr)
+			if err != nil {
+				return errors.New("invalid limit price")
+			}
+
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
@@ -76,6 +86,7 @@ func CmdOpenEstimation() *cobra.Command {
 				Discount:        discount,
 				TakeProfitPrice: takeProfitPrice,
 				PoolId:          reqPoolId,
+				LimitPrice:      limitPrice,
 			}
 
 			res, err := queryClient.OpenEstimation(cmd.Context(), params)
@@ -89,8 +100,8 @@ func CmdOpenEstimation() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagDiscount, "0.0", "discount to apply to the swap fee")
 	cmd.Flags().String(FlagTakeProfitPrice, types.InfinitePriceString, "Optional take profit price")
+	cmd.Flags().String(FlagLimitPrice, "0.0", "limit price, default 0 which calculates at market price")
 
 	return cmd
 }

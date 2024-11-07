@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -45,9 +46,10 @@ func (p Pool) CalcGivenOutSlippage(
 }
 
 // SwapInAmtGivenOut is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
+// weightBreakingFeePerpetualFactor should be 1 if perpetual is not the one calling this function
 func (p *Pool) SwapInAmtGivenOut(
 	ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool,
-	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec, accPoolKeeper AccountedPoolKeeper) (
+	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec, accPoolKeeper AccountedPoolKeeper, weightBreakingFeePerpetualFactor math.LegacyDec) (
 	tokenIn sdk.Coin, slippage, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error,
 ) {
 	// early return with balancer swap if normal amm pool
@@ -134,6 +136,8 @@ func (p *Pool) SwapInAmtGivenOut(
 	weightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenOut.Denom)
 	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
 
+	// weightBreakingFeePerpetualFactor is 1 if not send by perpetual
+	weightBreakingFee = weightBreakingFee.Mul(weightBreakingFeePerpetualFactor)
 	// weight recovery reward = weight breaking fee * weight recovery fee portion
 	weightRecoveryReward := weightBreakingFee.Mul(p.PoolParams.WeightRecoveryFeePortion)
 
