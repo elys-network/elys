@@ -94,7 +94,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
 		// Estimate swap
-		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		cacheCtx, _ := ctx.CacheContext()
 		tokenOut, swapSlippage, _, weightBalanceBonus, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee)
 		if err != nil {
@@ -112,6 +112,11 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		_, poolAsset, err := pool.GetPoolAssetAndIndex(tokenOutDenom)
 		if err != nil {
 			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		}
+		// Use accounted pool balance
+		accAmount := k.accountedPoolKeeper.GetAccountedBalance(ctx, pool.PoolId, poolAsset.Token.Denom)
+		if accAmount.IsPositive() {
+			poolAsset.Token.Amount = accAmount
 		}
 		availableLiquidity = poolAsset.Token
 		weightBalance = weightBalance.Add(weightBalanceBonus)
@@ -139,7 +144,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		}
 
 		// Estimate swap
-		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, &snapshot, tokenInDenom, tokenOutDenom, k.accountedPoolKeeper)
 		if err != nil {
 			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err

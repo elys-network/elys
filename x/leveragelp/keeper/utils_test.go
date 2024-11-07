@@ -76,7 +76,7 @@ func (suite *KeeperTestSuite) TestCheckPoolHealth() {
 	// PoolHealthTooLow
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.Pool{
 		AmmPoolId: 1,
-		Health:    math.LegacyNewDec(5).Quo(sdk.NewDec(100)),
+		Health:    math.LegacyNewDec(5).Quo(math.LegacyNewDec(100)),
 	})
 	err = k.CheckPoolHealth(suite.ctx, poolId)
 	suite.Require().Error(err)

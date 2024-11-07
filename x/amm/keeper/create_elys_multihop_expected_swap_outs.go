@@ -28,7 +28,7 @@ func (k Keeper) createElysMultihopExpectedSwapOuts(
 			actualSwapFee = cumulativeRouteSwapFee.Mul(swapFee.Quo(sumOfSwapFees))
 		}
 
-		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		tokenIn, _, err := pool.CalcInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.NewCoins(tokenOut), route.TokenInDenom, actualSwapFee, k.accountedPoolKeeper)
 		if err != nil {
 			return nil, err

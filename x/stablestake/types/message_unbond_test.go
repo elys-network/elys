@@ -6,6 +6,7 @@ import (
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -56,4 +57,22 @@ func TestMsgUnbond_ValidateBasic(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+}
+
+func TestNewMsgUnbond(t *testing.T) {
+
+	accAdress := sample.AccAddress()
+	amount := math.NewInt(200)
+
+	got := NewMsgUnbond(
+		accAdress,
+		amount,
+	)
+
+	want := &MsgUnbond{
+		Creator: accAdress,
+		Amount:  amount,
+	}
+
+	assert.Equal(t, want, got)
 }

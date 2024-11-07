@@ -1,15 +1,16 @@
 package keeper_test
 
 import (
-	"testing"
-
 	"cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	simapp "github.com/elys-network/elys/app"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	"testing"
+
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	simapp "github.com/elys-network/elys/app"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -38,6 +39,31 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
+}
+
+// TestKeeper_Logger tests the Logger function
+func TestKeeper_Logger(t *testing.T) {
+	app := simapp.InitElysTestApp(true, t)
+
+	ctx := app.BaseApp.NewContext(false)
+	// Create a test context and keeper
+	keeper := app.StablestakeKeeper
+
+	logger := app.Logger()
+
+	keeper.Logger(ctx).Info("test")
+	logger.Info("test")
+}
+
+// TestKeeper_SetHooks_Panic tests the SetHooks function with a nil argument
+func TestKeeper_SetHooks_Panic(t *testing.T) {
+	app := simapp.InitElysTestApp(true, t)
+
+	keeper := app.StablestakeKeeper
+
+	assert.Panics(t, func() {
+		keeper.SetHooks(nil)
+	})
 }
 
 func (suite *KeeperTestSuite) SetStakingParam() error {

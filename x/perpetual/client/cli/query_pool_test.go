@@ -3,6 +3,7 @@ package cli_test
 import (
 	"bytes"
 	"context"
+	"cosmossdk.io/math"
 	"fmt"
 	"io"
 	"testing"
@@ -33,7 +34,7 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 				{
 					Token: sdk.Coin{
 						Denom:  "testAsset",
-						Amount: sdk.NewInt(100),
+						Amount: math.NewInt(100),
 					},
 				},
 			},
@@ -65,7 +66,7 @@ func (s *CLITestSuite) TestShowPool() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.QueryGetPoolResponse{
 					Pool: types.PoolResponse{},
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)
@@ -83,7 +84,7 @@ func (s *CLITestSuite) TestShowPool() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.QueryGetPoolResponse{
 					Pool: types.PoolResponse{},
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)

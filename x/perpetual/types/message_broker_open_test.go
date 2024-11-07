@@ -22,10 +22,11 @@ func TestNewMsgBrokerOpen(t *testing.T) {
 		Position_LONG,
 		math.LegacyNewDec(200),
 		"uatom",
-		sdk.NewCoin("uusdc", sdk.NewInt(2000)),
+		sdk.NewCoin("uusdc", math.NewInt(2000)),
 		math.LegacyNewDec(100),
 		owner,
-		sdkmath.LegacyZeroDec(),
+		math.LegacyZeroDec(),
+		1,
 	)
 
 	want := &MsgBrokerOpen{
@@ -33,10 +34,11 @@ func TestNewMsgBrokerOpen(t *testing.T) {
 		Position:        Position_LONG,
 		Leverage:        math.LegacyNewDec(200),
 		TradingAsset:    "uatom",
-		Collateral:      sdk.NewCoin("uusdc", sdk.NewInt(2000)),
+		Collateral:      sdk.NewCoin("uusdc", math.NewInt(2000)),
 		TakeProfitPrice: math.LegacyNewDec(100),
 		Owner:           owner,
-		StopLossPrice:   sdkmath.LegacyZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
+		PoolId:          1,
 	}
 
 	assert.Equal(t, want, got)

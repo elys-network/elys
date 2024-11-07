@@ -6,6 +6,7 @@ import (
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -56,4 +57,22 @@ func TestMsgBond_ValidateBasic(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+}
+
+func TestNewMsgBond(t *testing.T) {
+
+	accAdress := sample.AccAddress()
+	amount := math.NewInt(200)
+
+	got := NewMsgBond(
+		accAdress,
+		amount,
+	)
+
+	want := &MsgBond{
+		Creator: accAdress,
+		Amount:  amount,
+	}
+
+	assert.Equal(t, want, got)
 }

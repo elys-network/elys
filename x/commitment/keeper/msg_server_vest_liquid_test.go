@@ -107,16 +107,16 @@ func TestLiquidVestWithExceed(t *testing.T) {
 
 // TestKeeper_VestLiquid tests the VestLiquid function with invalid denom
 func TestKeeper_VestLiquidWithInvalidDenom(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Mint 100ueden
-	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)))
+	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(100)))
 
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, edenToken)
 	require.NoError(t, err)
@@ -124,13 +124,13 @@ func TestKeeper_VestLiquidWithInvalidDenom(t *testing.T) {
 	require.NoError(t, err)
 
 	creator := addr[0]
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 	vestingInfos := []*types.VestingInfo{
 		{
 			BaseDenom:      "invalid_denom",
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 	}
@@ -145,7 +145,7 @@ func TestKeeper_VestLiquidWithInvalidDenom(t *testing.T) {
 	vestMsg := &types.MsgVestLiquid{
 		Creator: creator.String(),
 		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(100),
+		Amount:  sdkmath.NewInt(100),
 	}
 
 	// Set up the commitments for the creator
@@ -154,13 +154,13 @@ func TestKeeper_VestLiquidWithInvalidDenom(t *testing.T) {
 		CommittedTokens: []*types.CommittedTokens{
 			{
 				Denom:  ptypes.Eden,
-				Amount: sdk.NewInt(50),
+				Amount: sdkmath.NewInt(50),
 			},
 		},
 		Claimed: sdk.Coins{
 			{
 				Denom:  ptypes.Eden,
-				Amount: sdk.NewInt(150),
+				Amount: sdkmath.NewInt(150),
 			},
 		},
 	}

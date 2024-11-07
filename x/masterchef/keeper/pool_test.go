@@ -65,11 +65,11 @@ func TestPool(t *testing.T) {
 		require.Equal(t, info, pool)
 	}
 	poolStored := app.MasterchefKeeper.GetAllPoolInfos(ctx)
-	require.Len(t, poolStored, 3)
+	require.Len(t, poolStored, 4) // setting it 4 because PoolId = math.MaxInt16 gets initiated in EndBlock
 
 	app.MasterchefKeeper.RemovePoolInfo(ctx, pools[0].PoolId)
 	poolStored = app.MasterchefKeeper.GetAllPoolInfos(ctx)
-	require.Len(t, poolStored, 2)
+	require.Len(t, poolStored, 3) // setting it 3 because PoolId = math.MaxInt16 gets initiated in EndBlock
 }
 
 func TestUpdatePoolMultipliers(t *testing.T) {

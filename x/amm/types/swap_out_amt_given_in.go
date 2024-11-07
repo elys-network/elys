@@ -312,6 +312,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 	// If swap is improving weight, set weight breaking fee to zero
 	if distanceDiff.IsNegative() {
 		weightBreakingFee = sdkmath.LegacyZeroDec()
+		weightBalanceBonus = sdkmath.LegacyZeroDec()
 
 		// set weight breaking fee to zero if bonus is applied
 		if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) {

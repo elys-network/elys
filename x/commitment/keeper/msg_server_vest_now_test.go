@@ -17,16 +17,16 @@ import (
 
 // TestKeeper_VestNow tests the VestNow function with VestNowEnabled set to false
 func TestVestNowDisabled(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
 	// Disable VestNow for test
 	commitmentkeeper.VestNowEnabled = false
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 	creatorAddr, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
 
 	// Define the test data
@@ -46,16 +46,16 @@ func TestVestNowDisabled(t *testing.T) {
 
 // TestKeeper_VestNow tests the VestNow function with invalid denom
 func TestVestNowInvalidDenom(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
 	// Enable VestNow for test
 	commitmentkeeper.VestNowEnabled = true
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 	creatorAddr, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
 
 	// Define the test data
@@ -91,16 +91,16 @@ func TestVestNowInvalidDenom(t *testing.T) {
 
 // TestKeeper_VestNow tests the VestNow function with vest now factor set to zero
 func TestVestNowInvalidAmount(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
 	// Enable VestNow for test
 	commitmentkeeper.VestNowEnabled = true
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 	creatorAddr, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
 
 	// Define the test data

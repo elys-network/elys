@@ -26,7 +26,7 @@ type AmmKeeper interface {
 	JoinPoolEst(ctx sdk.Context, poolId uint64, tokenInMaxs sdk.Coins) (tokensIn sdk.Coins, sharesOut sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, err error)
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
-	GetPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
+	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
 
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdkmath.LegacyDec) (sdk.Coin, sdkmath.LegacyDec, error)
 	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec) (tokenIn sdk.Coin, slippage sdkmath.LegacyDec, err error)

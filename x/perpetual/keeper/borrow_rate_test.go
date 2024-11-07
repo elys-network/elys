@@ -19,7 +19,7 @@ func createNBorrowRate(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.I
 	curBlock := ctx.BlockHeight()
 
 	params := keeper.GetParams(ctx)
-	params.FixedFundingRate = sdk.NewDec(0)
+	params.FixedFundingRate = sdkmath.LegacyNewDec(0)
 	keeper.SetParams(ctx, &params)
 
 	for i := range items {

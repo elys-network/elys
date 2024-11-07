@@ -95,7 +95,7 @@ func TestPool_UpdateTakeProfitLiabilitiesValid(t *testing.T) {
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
-					Amount: sdk.NewInt(100),
+					Amount: math.NewInt(100),
 				},
 			},
 		},
@@ -134,7 +134,7 @@ func TestPool_UpdateTakeProfitLiabilitiesInvalid(t *testing.T) {
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
-					Amount: sdk.NewInt(100),
+					Amount: math.NewInt(100),
 				},
 			},
 		},
@@ -168,7 +168,7 @@ func TestPool_UpdateTakeProfitCustodyValid(t *testing.T) {
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
-					Amount: sdk.NewInt(100),
+					Amount: math.NewInt(100),
 				},
 			},
 		},
@@ -176,8 +176,8 @@ func TestPool_UpdateTakeProfitCustodyValid(t *testing.T) {
 	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			TakeProfitCustody: sdk.NewInt(0),
-			Custody:           sdk.NewInt(0),
+			TakeProfitCustody: math.NewInt(0),
+			Custody:           math.NewInt(0),
 			AssetDenom:        "testAsset",
 		},
 	}
@@ -206,7 +206,7 @@ func TestPool_UpdateTakeProfitCustodyInvalid(t *testing.T) {
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
-					Amount: sdk.NewInt(100),
+					Amount: math.NewInt(100),
 				},
 			},
 		},
@@ -214,8 +214,8 @@ func TestPool_UpdateTakeProfitCustodyInvalid(t *testing.T) {
 	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			TakeProfitCustody: sdk.NewInt(0),
-			Custody:           sdk.NewInt(0),
+			TakeProfitCustody: math.NewInt(0),
+			Custody:           math.NewInt(0),
 			AssetDenom:        "testAsset",
 		},
 	}
@@ -240,7 +240,7 @@ func TestPool_UpdateCustodyValid(t *testing.T) {
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
-					Amount: sdk.NewInt(100),
+					Amount: math.NewInt(100),
 				},
 			},
 		},
@@ -248,8 +248,8 @@ func TestPool_UpdateCustodyValid(t *testing.T) {
 	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			Liabilities: sdk.NewInt(0),
-			Custody:     sdk.NewInt(0),
+			Liabilities: math.NewInt(0),
+			Custody:     math.NewInt(0),
 			AssetDenom:  "testAsset",
 		},
 	}
@@ -278,7 +278,7 @@ func TestPool_UpdateCustodyInvalid(t *testing.T) {
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
-					Amount: sdk.NewInt(100),
+					Amount: math.NewInt(100),
 				},
 			},
 		},
@@ -286,8 +286,8 @@ func TestPool_UpdateCustodyInvalid(t *testing.T) {
 	pool := types.NewPool(ammPool)
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
-			Liabilities: sdk.NewInt(0),
-			Custody:     sdk.NewInt(0),
+			Liabilities: math.NewInt(0),
+			Custody:     math.NewInt(0),
 			AssetDenom:  "testAsset",
 		},
 	}

@@ -89,7 +89,7 @@ func Test_Commitments_IsEmpty(t *testing.T) {
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/1",
-		Amount:  sdk.NewInt(100),
+		Amount:  math.NewInt(100),
 		Lockups: nil,
 	})
 
@@ -103,8 +103,8 @@ func Test_Commitments_IsEmpty(t *testing.T) {
 	commitments.Claimed = nil
 	commitments.VestingTokens = append(commitments.VestingTokens, &types.VestingTokens{
 		Denom:                "lp/1",
-		TotalAmount:          sdk.NewInt(100),
-		ClaimedAmount:        sdk.NewInt(0),
+		TotalAmount:          math.NewInt(100),
+		ClaimedAmount:        math.NewInt(0),
 		NumBlocks:            100,
 		StartBlock:           0,
 		VestStartedTimestamp: 0,
@@ -123,19 +123,19 @@ func Test_Commitments_GetCommittedAmountForDenom(t *testing.T) {
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/1",
-		Amount:  sdk.NewInt(100),
+		Amount:  math.NewInt(100),
 		Lockups: nil,
 	})
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/2",
-		Amount:  sdk.NewInt(200),
+		Amount:  math.NewInt(200),
 		Lockups: nil,
 	})
 
-	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/1"), sdk.NewInt(100))
-	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/2"), sdk.NewInt(200))
-	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/3"), sdk.NewInt(0))
+	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/1"), math.NewInt(100))
+	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/2"), math.NewInt(200))
+	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/3"), math.NewInt(0))
 }
 
 // Test_Commitments_GetCommittedLockUpsForDenom tests the GetCommittedLockUpsForDenom method of the Commitments type
@@ -148,20 +148,20 @@ func Test_Commitments_GetCommittedLockUpsForDenom(t *testing.T) {
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/1",
-		Amount:  sdk.NewInt(100),
+		Amount:  math.NewInt(100),
 		Lockups: nil,
 	})
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:  "lp/2",
-		Amount: sdk.NewInt(200),
+		Amount: math.NewInt(200),
 		Lockups: []types.Lockup{
 			{
-				Amount:          sdk.NewInt(100),
+				Amount:          math.NewInt(100),
 				UnlockTimestamp: 100,
 			},
 			{
-				Amount:          sdk.NewInt(200),
+				Amount:          math.NewInt(200),
 				UnlockTimestamp: 200,
 			},
 		},
@@ -183,13 +183,13 @@ func Test_Commitments_GetCommittedLockUpsForDenomNil(t *testing.T) {
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/1",
-		Amount:  sdk.NewInt(100),
+		Amount:  math.NewInt(100),
 		Lockups: nil,
 	})
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/2",
-		Amount:  sdk.NewInt(200),
+		Amount:  math.NewInt(200),
 		Lockups: nil,
 	})
 
@@ -209,20 +209,20 @@ func Test_Commitments_CommittedTokensLocked(t *testing.T) {
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/1",
-		Amount:  sdk.NewInt(100),
+		Amount:  math.NewInt(100),
 		Lockups: nil,
 	})
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:  "lp/2",
-		Amount: sdk.NewInt(200),
+		Amount: math.NewInt(200),
 		Lockups: []types.Lockup{
 			{
-				Amount:          sdk.NewInt(100),
+				Amount:          math.NewInt(100),
 				UnlockTimestamp: 100,
 			},
 			{
-				Amount:          sdk.NewInt(200),
+				Amount:          math.NewInt(200),
 				UnlockTimestamp: 200,
 			},
 		},

@@ -37,9 +37,9 @@ func TestPendingSpotOrderForAddress(t *testing.T) {
 		OrderPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+			Rate:       math.LegacyNewDec(1),
 		},
-		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
+		OrderAmount:      sdk.NewCoin("base", math.NewInt(1)),
 		OrderTargetDenom: "quote",
 		Status:           types.Status_EXECUTED,
 	}

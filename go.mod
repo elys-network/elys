@@ -20,7 +20,7 @@ require (
 	github.com/CosmWasm/wasmvm/v2 v2.1.3
 	github.com/bandprotocol/bandchain-packet v0.0.2
 	github.com/cometbft/cometbft v0.38.12 // not using v0.38.11 due to vulnerabiltiy https://osv.dev/vulnerability/GHSA-g5xx-c4hv-9ccc https://osv.dev/vulnerability/GO-2024-3112
-	github.com/cometbft/cometbft-db v0.12.0
+	github.com/cometbft/cometbft-db v0.12.0 // indirect
 	github.com/cosmos/cosmos-db v1.0.2
 	github.com/cosmos/cosmos-sdk v0.50.9
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
@@ -52,6 +52,7 @@ require (
 	github.com/bufbuild/buf v1.15.1
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0-20240904212233-8cb681e31589
+	github.com/gogo/protobuf v1.3.2
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3
 	golang.org/x/tools v0.22.0
@@ -133,7 +134,6 @@ require (
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/gofrs/uuid/v5 v5.0.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
-	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.2.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect

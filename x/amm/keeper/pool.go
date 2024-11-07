@@ -190,6 +190,23 @@ func (k Keeper) GetPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) (val type
 	return val
 }
 
+// Gets the pool snapshot and updates the pool balance with accounted pool balance
+func (k Keeper) GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) (val types.Pool) {
+	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+	poolAssets := []types.PoolAsset{}
+	// Update the pool snapshot with accounted pool balance
+	for _, asset := range snapshot.PoolAssets {
+		accAmount := k.accountedPoolKeeper.GetAccountedBalance(ctx, pool.PoolId, asset.Token.Denom)
+		if accAmount.IsPositive() {
+			asset.Token.Amount = accAmount
+		}
+		poolAssets = append(poolAssets, asset)
+	}
+	snapshot.PoolAssets = poolAssets
+
+	return snapshot
+}
+
 // AddToPoolBalance Used in perpetual balance changes
 func (k Keeper) AddToPoolBalance(ctx sdk.Context, pool *types.Pool, addShares math.Int, coins sdk.Coins) error {
 	err := pool.IncreaseLiquidity(addShares, coins)

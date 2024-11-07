@@ -2,14 +2,15 @@ package app
 
 import (
 	"encoding/json"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"testing"
 	"time"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
+	"github.com/CosmWasm/wasmd/x/wasm"
 	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/cometbft/cometbft/crypto/secp256k1"
-	tmtypes "github.com/cometbft/cometbft/types"
+	cmttypes "github.com/cometbft/cometbft/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -17,19 +18,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/testutil/mock"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-
-	"github.com/CosmWasm/wasmd/x/wasm"
-	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
@@ -39,7 +37,7 @@ func InitiateNewElysApp(t *testing.T, opts ...wasm.Option) *ElysApp {
 	db := dbm.NewMemDB()
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[flags.FlagHome] = DefaultNodeHome
-	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
+	appOptions[server.FlagInvCheckPeriod] = 5
 	nodeHome := ""
 	appOptions[flags.FlagHome] = nodeHome // ensure unique folder
 	appOptions[server.FlagInvCheckPeriod] = 1
@@ -61,28 +59,34 @@ func InitiateNewElysApp(t *testing.T, opts ...wasm.Option) *ElysApp {
 func InitElysTestApp(initChain bool, t *testing.T) *ElysApp {
 	app := InitiateNewElysApp(t)
 	if initChain {
-		genesisState, _, _, _ := GenesisStateWithValSet(app)
+		genesisState, valSet, _, _ := GenesisStateWithValSet(app)
 		stateBytes, err := json.MarshalIndent(genesisState, "", " ")
 		if err != nil {
 			panic(err)
 		}
 
-		app.InitChain(
-			&abci.RequestInitChain{
-				Validators:      []abci.ValidatorUpdate{},
-				ConsensusParams: simtestutil.DefaultConsensusParams,
-				AppStateBytes:   stateBytes,
-			},
-		)
+		_, err = app.InitChain(&abci.RequestInitChain{
+			Validators:      []abci.ValidatorUpdate{},
+			ConsensusParams: simtestutil.DefaultConsensusParams,
+			AppStateBytes:   stateBytes,
+		})
+		if err != nil {
+			panic(err)
+		}
 
 		// commit genesis changes
-		app.Commit()
-		//app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{
-		//	Height:             app.LastBlockHeight() + 1,
-		//	AppHash:            app.LastCommitID().Hash,
-		//	ValidatorsHash:     valSet.Hash(),
-		//	NextValidatorsHash: valSet.Hash(),
-		//}})
+		_, err = app.FinalizeBlock(&abci.RequestFinalizeBlock{
+			Height:             app.LastBlockHeight() + 1,
+			Hash:               app.LastCommitID().Hash,
+			NextValidatorsHash: valSet.Hash(),
+		})
+		if err != nil {
+			panic(err)
+		}
+		_, err = app.BeginBlocker(app.BaseApp.NewContext(initChain))
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	return app
@@ -92,7 +96,7 @@ func InitElysTestApp(initChain bool, t *testing.T) *ElysApp {
 func InitElysTestAppWithGenAccount(t *testing.T) (*ElysApp, sdk.AccAddress, sdk.ValAddress) {
 	app := InitiateNewElysApp(t)
 
-	genesisState, _, genAcount, valAddress := GenesisStateWithValSet(app)
+	genesisState, valSet, genAcount, valAddress := GenesisStateWithValSet(app)
 	stateBytes, err := json.MarshalIndent(genesisState, "", " ")
 	if err != nil {
 		panic(err)
@@ -110,23 +114,27 @@ func InitElysTestAppWithGenAccount(t *testing.T) (*ElysApp, sdk.AccAddress, sdk.
 	}
 
 	// commit genesis changes
-	_, err = app.Commit()
+	_, err = app.FinalizeBlock(&abci.RequestFinalizeBlock{
+		Height:             app.LastBlockHeight() + 1,
+		Hash:               app.LastCommitID().Hash,
+		NextValidatorsHash: valSet.Hash(),
+	})
 	if err != nil {
 		panic(err)
 	}
-	//_, err = app.BeginBlocker()
-	//if err != nil {
-	//	return nil, nil, nil
-	//}
+	_, err = app.BeginBlocker(app.BaseApp.NewContext(true))
+	if err != nil {
+		panic(err)
+	}
 
 	return app, genAcount, valAddress
 }
 
-func GenesisStateWithValSet(app *ElysApp) (GenesisState, *tmtypes.ValidatorSet, sdk.AccAddress, sdk.ValAddress) {
+func GenesisStateWithValSet(app *ElysApp) (GenesisState, *cmttypes.ValidatorSet, sdk.AccAddress, sdk.ValAddress) {
 	privVal := mock.NewPV()
 	pubKey, _ := privVal.GetPubKey()
-	validator := tmtypes.NewValidator(pubKey, 1)
-	valSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{validator})
+	validator := cmttypes.NewValidator(pubKey, 1)
+	valSet := cmttypes.NewValidatorSet([]*cmttypes.Validator{validator})
 
 	// generate genesis account
 	senderPrivKey := secp256k1.GenPrivKey()

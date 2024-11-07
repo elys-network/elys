@@ -12,9 +12,9 @@ func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
 	msg := &types.MsgOpen{
 		Creator:       addr[0].String(),
 		Position:      types.Position_LONG,
-		Leverage:      sdkmath.LegacyNewDec(1),
+		Leverage:      math.LegacyNewDec(1),
 		TradingAsset:  ptypes.ATOM,
-		Collateral:    sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100)),
+		Collateral:    sdk.NewCoin(ptypes.ATOM, math.NewInt(100)),
 		StopLossPrice: math.LegacyZeroDec(),
 	}
 
@@ -53,7 +53,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckSameAssetPosition() {
 			"mtp found",
 			true,
 			func() {
-				msg.Collateral = sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100))
+				msg.Collateral = sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100))
 			},
 		},
 	}
