@@ -75,20 +75,30 @@ func (k Keeper) UpdatePoolForSwap(
 
 	swapFeeCoins := swapFeeInCoins.Add(swapFeeOutCoins...)
 
-	// calculate treasury amount to send as bonus
-	rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
-	treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
-	bonusTokenAmount := sdk.NewDecFromInt(tokenOut.Amount).Mul(weightBalanceBonus).RoundInt()
-	if treasuryTokenAmount.LT(bonusTokenAmount) {
-		bonusTokenAmount = treasuryTokenAmount
-	}
+	if weightBalanceBonus.IsPositive() {
+		rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+		bonusTokenAmount := sdk.NewDecFromInt(tokenOut.Amount).Mul(weightBalanceBonus).RoundInt()
 
-	// send bonus tokens to recipient if positive
-	if weightBalanceBonus.IsPositive() && bonusTokenAmount.IsPositive() {
+		// send bonusTokenAmount from pool addr to treasury addr
 		bonusToken := sdk.NewCoin(tokenOut.Denom, bonusTokenAmount)
-		err = k.bankKeeper.SendCoins(ctx, rebalanceTreasuryAddr, recipient, sdk.Coins{bonusToken})
+		err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasuryAddr, sdk.Coins{bonusToken})
 		if err != nil {
 			return sdk.ZeroInt(), err
+		}
+
+		// calculate treasury amount to send as bonus
+		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
+		if treasuryTokenAmount.LT(bonusTokenAmount) {
+			bonusTokenAmount = treasuryTokenAmount
+		}
+
+		// send bonus tokens to recipient if positive
+		if bonusTokenAmount.IsPositive() {
+			bonusToken := sdk.NewCoin(tokenOut.Denom, bonusTokenAmount)
+			err = k.bankKeeper.SendCoins(ctx, rebalanceTreasuryAddr, recipient, sdk.Coins{bonusToken})
+			if err != nil {
+				return sdk.ZeroInt(), err
+			}
 		}
 	}
 
