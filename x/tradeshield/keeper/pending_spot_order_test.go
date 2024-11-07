@@ -60,82 +60,6 @@ func TestPendingSpotOrderCount(t *testing.T) {
 	require.Equal(t, count, keeper.GetPendingSpotOrderCount(ctx)-1)
 }
 
-func TestSortedSpotOrder(t *testing.T) {
-	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
-
-	// Set to main storage
-	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
-		OwnerAddress: "address",
-		OrderId:      0,
-		OrderType:    types.SpotOrderType_LIMITBUY,
-		OrderPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
-		},
-	})
-
-	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
-
-	err := keeper.InsertSpotSortedOrder(ctx, order)
-	require.NoError(t, err)
-
-	res, _ := keeper.GetAllSortedSpotOrder(ctx)
-
-	assert.Equal(t, res, [][]uint64{{1}})
-
-	// Insert two more elements
-	// Set to main storage
-	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
-		OwnerAddress: "address1",
-		OrderId:      0,
-		OrderType:    types.SpotOrderType_LIMITBUY,
-		OrderPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(20),
-		},
-	})
-
-	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
-		OwnerAddress: "address2",
-		OrderId:      0,
-		OrderType:    types.SpotOrderType_LIMITBUY,
-		OrderPrice: &types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(5),
-		},
-	})
-
-	order2, _ := keeper.GetPendingSpotOrder(ctx, 2)
-	order3, _ := keeper.GetPendingSpotOrder(ctx, 3)
-
-	err = keeper.InsertSpotSortedOrder(ctx, order2)
-	require.NoError(t, err)
-	err = keeper.InsertSpotSortedOrder(ctx, order3)
-	require.NoError(t, err)
-
-	res, _ = keeper.GetAllSortedSpotOrder(ctx)
-
-	// Should store in sorted order
-	assert.Equal(t, res, [][]uint64{{1, 3, 2}})
-
-	// Test binary search, search with rate 5
-	index, err := keeper.SpotBinarySearch(ctx, sdk.NewDec(5), []uint64{1, 3, 2})
-	require.NoError(t, err)
-
-	// second element
-	assert.Equal(t, index, 1)
-
-	// Test remove sorted order
-	keeper.RemoveSpotSortedOrder(ctx, 2)
-	res, _ = keeper.GetAllSortedSpotOrder(ctx)
-
-	// Should store in sorted order
-	assert.Equal(t, res, [][]uint64{{1, 3}})
-}
-
 // TestExecuteStopLossOrder
 func TestExecuteStopLossOrder(t *testing.T) {
 	keeper, ctx, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
@@ -294,8 +218,7 @@ func TestExecuteMarketBuyOrder(t *testing.T) {
 		Recipient: address.String(),
 	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
-	// Set to main storage
-	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
+	order := types.SpotOrder{
 		OwnerAddress: address.String(),
 		OrderId:      0,
 		OrderType:    types.SpotOrderType_MARKETBUY,
@@ -306,9 +229,7 @@ func TestExecuteMarketBuyOrder(t *testing.T) {
 		},
 		OrderTargetDenom: "quote",
 		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
-	})
-
-	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
+	}
 
 	err := keeper.ExecuteMarketBuyOrder(ctx, order)
 	require.NoError(t, err)

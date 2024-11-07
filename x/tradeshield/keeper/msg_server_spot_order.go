@@ -21,15 +21,19 @@ func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSp
 		Date:             &types.Date{Height: uint64(ctx.BlockHeight()), Timestamp: uint64(ctx.BlockTime().Unix())},
 	}
 
+	// if the order is market buy, execute it immediately
+	if msg.OrderType == types.SpotOrderType_MARKETBUY {
+		err := k.ExecuteMarketBuyOrder(ctx, pendingSpotOrder)
+		if err != nil {
+			return nil, err
+		}
+		return &types.MsgCreateSpotOrderResponse{}, nil
+	}
+
 	id := k.AppendPendingSpotOrder(
 		ctx,
 		pendingSpotOrder,
 	)
-
-	// if the order is market buy, execute it immediately
-	if msg.OrderType == types.SpotOrderType_MARKETBUY {
-		k.ExecuteMarketBuyOrder(ctx, pendingSpotOrder)
-	}
 
 	return &types.MsgCreateSpotOrderResponse{
 		OrderId: id,

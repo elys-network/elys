@@ -12,6 +12,5 @@ func (k Keeper) CheckSameAssetPosition(ctx sdk.Context, msg *types.MsgOpen) *typ
 			return mtp
 		}
 	}
-
 	return nil
 }
