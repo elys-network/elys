@@ -1,0 +1,37 @@
+{
+
+"messages": [
+    {
+     "@type": "/elys.perpetual.MsgUpdateParams",
+     "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+     "params": {
+        "leverage_max": "20.000000000000000000",
+        "borrow_interest_rate_max": "0.400000000000000000",
+        "borrow_interest_rate_min": "0.200000000000000000",
+        "borrow_interest_rate_increase": "0.000400000000000000",
+        "borrow_interest_rate_decrease": "0.000400000000000000",
+        "health_gain_factor": "0.000000230000000000",
+        "max_open_positions": "5000",
+        "pool_open_threshold": "0.550000000000000000",
+        "force_close_fund_percentage": "1.000000000000000000",
+        "force_close_fund_address": "elys1lyv5uulea9zeudzsagg2z7wd7aa2lf54gchedz",
+        "incremental_borrow_interest_payment_fund_percentage": "0.100000000000000000",
+        "incremental_borrow_interest_payment_fund_address": "elys1lyv5uulea9zeudzsagg2z7wd7aa2lf54gchedz",
+        "safety_factor": "1.050000000000000000",
+        "incremental_borrow_interest_payment_enabled": true,
+        "whitelisting_enabled": false      ,
+        "perpetual_swap_fee": "0.001000000000000000",
+        "max_limit_order": "500",
+        "fixed_funding_rate": "0.500000000000000000",
+        "minimum_long_take_profit_price_ratio": "1.020000000000000000",
+        "maximum_long_take_profit_price_ratio": "11.000000000000000000",
+        "maximum_short_take_profit_price_ratio": "0.980000000000000000",
+        "enable_take_profit_custody_liabilities": false
+     }
+    }
+   ],
+   "metadata": "ipfs://CID",
+   "deposit": "10000000stake",
+   "title": "update params",
+   "summary": "asdasd"
+  }

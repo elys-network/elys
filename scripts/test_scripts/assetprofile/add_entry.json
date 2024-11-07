@@ -1,0 +1,29 @@
+{
+    "messages": [
+        {
+            "@type": "/elys.assetprofile.MsgAddEntry",
+            "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+            "address": "",
+            "baseDenom": "udummy",
+            "decimals": "18",
+            "denom": "udummy",
+            "displayName": "DUM",
+            "displaySymbol": "",
+            "externalSymbol": "",
+            "ibcChannelId": "",
+            "ibcCounterpartyChainId": "",
+            "ibcCounterpartyChannelId": "",
+            "ibcCounterpartyDenom": "",
+            "network": "",
+            "path": "",
+            "permissions": [],
+            "transferLimit": "",
+            "unitDenom": "",
+            "commit_enabled": true
+        }
+    ],
+    "metadata": "ipfs://CID",
+    "deposit": "10000000stake",
+    "title": "add entry",
+    "summary": "asdasd"
+}
