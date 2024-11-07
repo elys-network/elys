@@ -1,0 +1,37 @@
+{
+    "messages": [
+     {
+      "@type": "/elys.masterchef.MsgUpdateParams",
+      "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+      "params": {
+        "lp_incentives": {
+            "eden_amount_per_year": "100000000000000",
+            "blocks_distributed": 1000000
+        },
+        "reward_portion_for_lps": "0.600000000000000000",
+        "reward_portion_for_stakers": "0.250000000000000000",
+        "max_eden_reward_apr_lps": "0.500000000000000000",
+        "supported_reward_denoms": [
+            {
+                "denom": "uatom",
+                "min_amount": "1"
+            },
+            {
+                "denom": "ujuno",
+                "min_amount": "10"
+            },
+            {
+                "denom": "uosmo",
+                "min_amount": "1"
+            }
+        ],
+        "protocol_revenue_address": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3"
+      }
+     }
+    ],
+    "metadata": "ipfs://CID",
+   
+    "deposit": "10000000stake",
+    "title": "MsgUpdateParams",
+    "summary": "asdasd"
+}

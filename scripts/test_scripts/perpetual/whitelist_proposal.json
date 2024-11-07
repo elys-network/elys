@@ -1,0 +1,14 @@
+{
+    "messages": [
+     {
+      "@type": "/elys.perpetual.MsgWhitelist",
+      "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+      "whitelisted_address": "elys1679c7fc2sxedkjwfu24qmdax9e86fx6tdqmlj5"
+     }
+    ],
+    "metadata": "ipfs://CID",
+   
+    "deposit": "10000000stake",
+    "title": "Whitelist",
+    "summary": "asdasd"
+}

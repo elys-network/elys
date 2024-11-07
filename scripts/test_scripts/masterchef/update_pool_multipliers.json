@@ -1,0 +1,23 @@
+{
+    "messages": [
+     {
+      "@type": "/elys.masterchef.MsgUpdatePoolMultipliers",
+      "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+      "pool_multipliers": [
+            {
+                "pool_id": 1,
+                "multiplier": "1.200000000000000000"
+            },
+            {
+                "pool_id": 2,
+                "multiplier": "1.300000000000000000"
+            }
+        ]
+     }
+    ],
+    "metadata": "ipfs://CID",
+   
+    "deposit": "10000000stake",
+    "title": "MsgUpdatePoolMultipliers",
+    "summary": "asdasd"
+}
