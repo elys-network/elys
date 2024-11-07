@@ -238,7 +238,7 @@ message QueryOpenEstimationRequest {
 
 message QueryOpenEstimationResponse {
   Position position = 1;
-  string   leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   effective_leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string   trading_asset = 3;
   cosmos.base.v1beta1.Coin collateral = 4 [(gogoproto.nullable) = false] ;
   string hourly_interest_rate = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];

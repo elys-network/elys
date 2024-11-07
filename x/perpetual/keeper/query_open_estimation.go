@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -188,9 +187,14 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		positionAsset = mtp.LiabilitiesAsset
 	}
 
+	effectiveLeverage, err := k.GetEffectiveLeverage(ctx, *mtp)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.QueryOpenEstimationResponse{
 		Position:           req.Position,
-		Leverage:           req.Leverage,
+		EffectiveLeverage:  effectiveLeverage,
 		TradingAsset:       req.TradingAsset,
 		Collateral:         req.Collateral,
 		HourlyInterestRate: hourlyInterestRate,

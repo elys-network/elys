@@ -1,6 +1,7 @@
 package cli
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"errors"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -17,7 +18,8 @@ const (
 	FlagUseOracle                   = "use-oracle"
 	FlagWeightBreakingFeeMultiplier = "weight-breaking-fee-multiplier"
 	FlagWeightBreakingFeeExponent   = "weight-breaking-fee-exponent"
-	FlagWeightRecoveryFeePortion    = "weight-recovery-fee"
+	FlagWeightRecoveryFeePortion    = "weight-recovery-fee-portion"
+	FlagWeightBreakingFeePortion    = "weight-breaking-fee-portion"
 	FlagThresholdWeightDifference   = "threshold-weight-diff"
 	FlagFeeDenom                    = "fee-denom"
 )
@@ -92,6 +94,11 @@ func CmdCreatePool() *cobra.Command {
 				return err
 			}
 
+			weightBreakingFeePortionStr, err := cmd.Flags().GetString(FlagWeightBreakingFeePortion)
+			if err != nil {
+				return err
+			}
+
 			thresholdWeightDifferenceStr, err := cmd.Flags().GetString(FlagThresholdWeightDifference)
 			if err != nil {
 				return err
@@ -109,6 +116,7 @@ func CmdCreatePool() *cobra.Command {
 				WeightBreakingFeeMultiplier: sdk.MustNewDecFromStr(weightBreakingFeeMultiplierStr),
 				WeightBreakingFeeExponent:   sdk.MustNewDecFromStr(weightBreakingFeeExponentStr),
 				WeightRecoveryFeePortion:    sdk.MustNewDecFromStr(weightRecoveryFeePortionStr),
+				WeightBreakingFeePortion:    sdkmath.LegacyMustNewDecFromStr(weightBreakingFeePortionStr),
 				ThresholdWeightDifference:   sdk.MustNewDecFromStr(thresholdWeightDifferenceStr),
 				FeeDenom:                    feeDenom,
 			}
@@ -133,6 +141,7 @@ func CmdCreatePool() *cobra.Command {
 	cmd.Flags().String(FlagWeightBreakingFeeMultiplier, "0.00", "weight breaking fee multiplier")
 	cmd.Flags().String(FlagWeightBreakingFeeExponent, "2.50", "weight breaking fee exponent")
 	cmd.Flags().String(FlagWeightRecoveryFeePortion, "0.10", "weight recovery fee portion")
+	cmd.Flags().String(FlagWeightBreakingFeePortion, "0.10", "weight breaking fee portion")
 	cmd.Flags().String(FlagThresholdWeightDifference, "0.00", "threshold weight difference - valid for oracle pool")
 	cmd.Flags().String(FlagFeeDenom, "", "fee denom")
 

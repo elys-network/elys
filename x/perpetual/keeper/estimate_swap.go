@@ -11,6 +11,9 @@ import (
 )
 
 func getWeightBreakingFee(weightBalanceBonus math.LegacyDec) math.LegacyDec {
+	// when weightBalanceBonus is 0, then breaking fee is also 0
+	// when it's > 0, then breaking fee is still 0
+	// when it's < 0, breaking fee is it's negative
 	if weightBalanceBonus.IsNegative() {
 		return weightBalanceBonus.Neg()
 	} else {

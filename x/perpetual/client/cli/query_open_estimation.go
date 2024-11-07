@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
 	"errors"
 	"strconv"
 
@@ -33,15 +34,6 @@ func CmdOpenEstimation() *cobra.Command {
 			}
 
 			reqPoolId, err := strconv.ParseUint(args[4], 10, 64)
-			if err != nil {
-				return err
-			}
-
-			discountStr, err := cmd.Flags().GetString(FlagDiscount)
-			if err != nil {
-				return err
-			}
-			discount, err := sdk.NewDecFromStr(discountStr)
 			if err != nil {
 				return err
 			}
@@ -83,10 +75,10 @@ func CmdOpenEstimation() *cobra.Command {
 				Leverage:        reqLeverage,
 				TradingAsset:    reqTradingAsset,
 				Collateral:      reqCollateral,
-				Discount:        discount,
 				TakeProfitPrice: takeProfitPrice,
 				PoolId:          reqPoolId,
 				LimitPrice:      limitPrice,
+				Discount:        math.LegacyZeroDec(), // not being used
 			}
 
 			res, err := queryClient.OpenEstimation(cmd.Context(), params)
