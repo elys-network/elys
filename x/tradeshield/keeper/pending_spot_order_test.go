@@ -218,8 +218,7 @@ func TestExecuteMarketBuyOrder(t *testing.T) {
 		Recipient: address.String(),
 	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
-	// Set to main storage
-	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
+	order := types.SpotOrder{
 		OwnerAddress: address.String(),
 		OrderId:      0,
 		OrderType:    types.SpotOrderType_MARKETBUY,
@@ -230,9 +229,7 @@ func TestExecuteMarketBuyOrder(t *testing.T) {
 		},
 		OrderTargetDenom: "quote",
 		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
-	})
-
-	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
+	}
 
 	err := keeper.ExecuteMarketBuyOrder(ctx, order)
 	require.NoError(t, err)
