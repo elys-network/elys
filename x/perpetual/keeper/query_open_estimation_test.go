@@ -119,7 +119,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 
 	require.Equal(t, &types.QueryOpenEstimationResponse{
 		Position:           types.Position_LONG,
-		Leverage:           sdk.MustNewDecFromStr("5.0"),
+		EffectiveLeverage:  sdk.MustNewDecFromStr("5.033154750282434265"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100_000_000)),
 		HourlyInterestRate: math.LegacyZeroDec(),
@@ -246,7 +246,7 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryOpenEstimationResponse{
 		Position:           types.Position_LONG,
-		Leverage:           sdk.MustNewDecFromStr("5.0"),
+		EffectiveLeverage:  sdk.MustNewDecFromStr("5.035307678145308466"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.ATOM, sdk.NewInt(10_000_000)),
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(50_000_000)),
@@ -377,7 +377,7 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryOpenEstimationResponse{
 		Position:           types.Position_LONG,
-		Leverage:           sdk.MustNewDecFromStr("10.0"),
+		EffectiveLeverage:  sdk.MustNewDecFromStr("11.409127722426274478"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1_000_000_000)),
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(2247067372)),
@@ -519,7 +519,7 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 	require.NoError(t, err)
 	expectedRes := &types.QueryOpenEstimationResponse{
 		Position:           types.Position_SHORT,
-		Leverage:           sdk.MustNewDecFromStr("4.0"),
+		EffectiveLeverage:  sdk.MustNewDecFromStr("4.050637948604607222"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100_000_000)),
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, sdk.NewInt(80200521)),
