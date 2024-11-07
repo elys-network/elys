@@ -57,9 +57,10 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 		case types.PerpetualOrderType_LIMITOPEN:
 			// execute the limit open order
 			err = k.ExecuteLimitOpenOrder(ctx, perpetualOrder)
-		case types.PerpetualOrderType_LIMITCLOSE:
-			// execute the limit close order
-			err = k.ExecuteLimitCloseOrder(ctx, perpetualOrder)
+			// Disable for v1
+			// case types.PerpetualOrderType_LIMITCLOSE:
+			// 	// execute the limit close order
+			// 	err = k.ExecuteLimitCloseOrder(ctx, perpetualOrder)
 		}
 
 		// return the error if any
