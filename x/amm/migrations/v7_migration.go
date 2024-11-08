@@ -16,10 +16,10 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		if err := utils.CreateModuleAccount(ctx, m.keeper.GetAccountKeeper(), newPoolAddress, poolAccountModuleName); err != nil {
 			panic(fmt.Errorf("error creating new pool account for %d: %w", pool.PoolId, err))
 		}
-
+		poolAccAddress := sdk.MustAccAddressFromBech32(pool.Address)
 		// Bank: Transfer funds from prevPoolAddress to new newPoolAddress
-		prevPoolAddressBalances := m.keeper.GetBankKeeper().GetAllBalances(ctx, sdk.AccAddress(pool.Address))
-		m.keeper.GetBankKeeper().SendCoins(ctx.Context(), sdk.AccAddress(pool.GetAddress()), newPoolAddress, prevPoolAddressBalances)
+		prevPoolAddressBalances := m.keeper.GetBankKeeper().GetAllBalances(ctx, poolAccAddress)
+		m.keeper.GetBankKeeper().SendCoins(ctx, poolAccAddress, newPoolAddress, prevPoolAddressBalances)
 
 		// AssetProfile: Update authority in assetprofile entry
 		poolBaseDenom := types.GetPoolShareDenom(pool.PoolId)
@@ -33,8 +33,6 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		entry.Authority = newPoolAddress.String()
 		m.keeper.GetAssetProfileKeeper().SetEntry(ctx, entry)
 
-		oldPoolAccount := m.keeper.GetAccountKeeper().GetAccount(ctx.Context(), sdk.AccAddress(pool.Address))
-		m.keeper.GetAccountKeeper().RemoveAccount(ctx.Context(), oldPoolAccount)
 		pool.Address = newPoolAddress.String()
 
 		m.keeper.SetPool(ctx, pool)
