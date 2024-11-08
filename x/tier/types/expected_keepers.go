@@ -43,6 +43,7 @@ type OracleKeeper interface {
 type CommitmentKeeper interface {
 	GetCommitments(ctx sdk.Context, creator sdk.AccAddress) commitmenttypes.Commitments
 	CommitmentVestingInfo(goCtx context.Context, req *commitmenttypes.QueryCommitmentVestingInfoRequest) (*commitmenttypes.QueryCommitmentVestingInfoResponse, error)
+	GetAllCommitmentsWithPagination(ctx sdk.Context, pagination *query.PageRequest) ([]*commitmenttypes.Commitments, *query.PageResponse, error)
 }
 
 type PerpetualKeeper interface {
