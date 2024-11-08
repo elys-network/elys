@@ -48,6 +48,7 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 
 		m.keeper.GetBankKeeper().SetDenomMetaData(ctx, metadata)
 	}
+	ctx.Logger().Info("V7 Migration Finished")
 
 	return nil
 }

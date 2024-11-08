@@ -9,7 +9,7 @@ import (
 
 func NewPoolAddress(poolId uint64) sdk.AccAddress {
 	poolIdModuleName := GetPoolIdModuleName(poolId)
-	return address.Module(poolIdModuleName, []byte(""))
+	return address.Module(poolIdModuleName)
 }
 
 func GetPoolIdModuleName(poolId uint64) string {
