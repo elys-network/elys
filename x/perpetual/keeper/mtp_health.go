@@ -21,7 +21,7 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 	if mtp.Position == types.Position_SHORT {
 		liabilitiesTokenOut := sdk.NewCoin(mtp.LiabilitiesAsset, totalLiabilities)
 		var err error
-		totalLiabilities, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesTokenOut, baseCurrency, ammPool)
+		totalLiabilities, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesTokenOut, baseCurrency, ammPool)
 		if err != nil {
 			return sdk.ZeroDec(), err
 		}
@@ -43,7 +43,7 @@ func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Po
 	if mtp.Position == types.Position_LONG {
 		custodyAmtTokenOut := sdk.NewCoin(mtp.CustodyAsset, custodyAmtInBaseCurrency)
 		var err error
-		custodyAmtInBaseCurrency, _, err = k.EstimateSwapGivenOut(ctx, custodyAmtTokenOut, baseCurrency, ammPool)
+		custodyAmtInBaseCurrency, _, _, err = k.EstimateSwapGivenOut(ctx, custodyAmtTokenOut, baseCurrency, ammPool)
 		if err != nil {
 			return sdk.ZeroDec(), err
 		}

@@ -4,7 +4,6 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/testutil/sample"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -82,13 +81,13 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_ErrAssetPro
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
 	suite.Require().NoError(err)
 
-	suite.app.AssetprofileKeeper.RemoveEntry(ctx, ptypes.BaseCurrency)
+	suite.app.OracleKeeper.RemoveAssetInfo(ctx, ptypes.ATOM)
 	_, err = msg.UpdateTakeProfitPrice(ctx, &types.MsgUpdateTakeProfitPrice{
 		Creator: firstPositionCreator.String(),
 		Id:      firstPosition.Id,
 		Price:   math.LegacyMustNewDecFromStr("0.98"),
 	})
-	suite.Require().ErrorIs(err, assetprofiletypes.ErrAssetProfileNotFound)
+	suite.Require().ErrorContains(err, "asset price uatom not found")
 }
 
 func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_Successful() {

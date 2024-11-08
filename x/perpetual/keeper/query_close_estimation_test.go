@@ -22,10 +22,9 @@ func (suite *PerpetualKeeperTestSuite) TestQueryCloseEstimation_CloseAmountIsNeg
 	ctx := suite.ctx
 
 	_, err := k.CloseEstimation(ctx, &types.QueryCloseEstimationRequest{
-		Address:      sample.AccAddress(),
-		PositionId:   0,
-		CloseAmount:  math.NewInt(-200),
-		ClosingPrice: math.LegacyOneDec(),
+		Address:     sample.AccAddress(),
+		PositionId:  0,
+		CloseAmount: math.NewInt(-200),
 	})
 
 	suite.Require().ErrorContains(err, "invalid close_amount")
@@ -36,10 +35,9 @@ func (suite *PerpetualKeeperTestSuite) TestQueryCloseEstimation_ErrAccAddressFro
 	ctx := suite.ctx
 
 	_, err := k.CloseEstimation(ctx, &types.QueryCloseEstimationRequest{
-		Address:      "error",
-		PositionId:   0,
-		CloseAmount:  math.NewInt(200),
-		ClosingPrice: math.LegacyOneDec(),
+		Address:     "error",
+		PositionId:  0,
+		CloseAmount: math.NewInt(200),
 	})
 
 	suite.Require().ErrorContains(err, "invalid bech32 string length 5")
@@ -50,10 +48,9 @@ func (suite *PerpetualKeeperTestSuite) TestQueryCloseEstimation_ErrorGetMTP() {
 	ctx := suite.ctx
 
 	_, err := k.CloseEstimation(ctx, &types.QueryCloseEstimationRequest{
-		Address:      sample.AccAddress(),
-		PositionId:   1,
-		CloseAmount:  math.NewInt(200),
-		ClosingPrice: math.LegacyOneDec(),
+		Address:     sample.AccAddress(),
+		PositionId:  1,
+		CloseAmount: math.NewInt(200),
 	})
 
 	suite.Require().ErrorContains(err, "mtp not found")
@@ -101,10 +98,9 @@ func (suite *PerpetualKeeperTestSuite) TestQueryCloseEstimation_ErrorGetPerpetua
 	suite.app.PerpetualKeeper.RemovePool(ctx, firstPool)
 
 	_, err = k.CloseEstimation(ctx, &types.QueryCloseEstimationRequest{
-		Address:      firstPositionCreator.String(),
-		PositionId:   openResponse.Id,
-		CloseAmount:  math.NewInt(200),
-		ClosingPrice: math.LegacyOneDec(),
+		Address:     firstPositionCreator.String(),
+		PositionId:  openResponse.Id,
+		CloseAmount: math.NewInt(200),
 	})
 
 	suite.Require().ErrorContains(err, "perpetual pool 1 not found")
@@ -150,10 +146,9 @@ func (suite *PerpetualKeeperTestSuite) TestQueryCloseEstimation_Successful() {
 	suite.Require().NoError(err)
 
 	_, err = k.CloseEstimation(ctx, &types.QueryCloseEstimationRequest{
-		Address:      firstPositionCreator.String(),
-		PositionId:   openResponse.Id,
-		CloseAmount:  math.NewInt(200),
-		ClosingPrice: math.LegacyOneDec(),
+		Address:     firstPositionCreator.String(),
+		PositionId:  openResponse.Id,
+		CloseAmount: math.NewInt(200),
 	})
 
 	suite.Require().Nil(err)
