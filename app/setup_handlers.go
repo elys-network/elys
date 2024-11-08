@@ -3,6 +3,10 @@ package app
 import (
 	"context"
 	"fmt"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"time"
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
@@ -12,11 +16,13 @@ import (
 )
 
 const (
-	LocalNetVersion = "v999.999.999"
+	LocalNetVersion    = "v999.999.999"
+	NewMaxAgeNumBlocks = int64(1_000_000)      // 1.5s blocks * 1_000_000 = 1.5M seconds > 2 weeks
+	NewMaxAgeDuration  = time.Second * 1209600 // 2 weeks
 )
 
 // make sure to update these when you upgrade the version
-var NextVersion = "v0.49.0"
+var NextVersion = "v0.50.0"
 
 func (app *ElysApp) setUpgradeHandler() {
 	app.UpgradeKeeper.SetUpgradeHandler(
@@ -28,6 +34,24 @@ func (app *ElysApp) setUpgradeHandler() {
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
 
 				// Add any logic here to run when the chain is upgraded to the new version
+				// Update consensus params in order to safely enable comet pruning
+				consensusParams, err := app.ConsensusParamsKeeper.Params(ctx, nil)
+				if err != nil {
+					return nil, err
+				}
+				consensusParams.Params.Evidence.MaxAgeNumBlocks = NewMaxAgeNumBlocks
+				consensusParams.Params.Evidence.MaxAgeDuration = NewMaxAgeDuration
+				msg := consensusparamtypes.MsgUpdateParams{
+					Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+					Block:     consensusParams.Params.Block,
+					Evidence:  consensusParams.Params.Evidence,
+					Validator: consensusParams.Params.Validator,
+					Abci:      consensusParams.Params.Abci,
+				}
+				_, err = app.ConsensusParamsKeeper.UpdateParams(ctx, &msg)
+				if err != nil {
+					return nil, err
+				}
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)

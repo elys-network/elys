@@ -51,9 +51,6 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		if ratio.GT(params.MaximumShortTakeProfitPriceRatio) {
 			return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short (current ratio: %s)", params.MaximumShortTakeProfitPriceRatio.String(), ratio.String())
 		}
-		if msg.StopLossPrice.IsZero() {
-			msg.StopLossPrice = types.MaxShortStopLossPrice
-		}
 		if !msg.StopLossPrice.IsZero() && msg.StopLossPrice.LTE(tradingAssetPrice) {
 			return nil, fmt.Errorf("stop loss price cannot be less than equal to tradingAssetPrice for short (Stop loss: %s, asset price: %s)", msg.StopLossPrice.String(), tradingAssetPrice.String())
 		}

@@ -16,7 +16,7 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 		return math.Int{}, fmt.Errorf("invalid closing ratio (%s)", closingRatio.String())
 	}
 
-	repayAmount, payingLiabilities, err := k.CalcRepayAmount(ctx, mtp, ammPool, closingRatio)
+	repayAmount, payingLiabilities, _, _, err := k.CalcRepayAmount(ctx, mtp, ammPool, closingRatio)
 	if err != nil {
 		return math.ZeroInt(), err
 	}
@@ -34,7 +34,7 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 }
 
 // CalcRepayAmount repay amount is in custody asset for liabilities with closing ratio
-func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (repayAmount math.Int, payingLiabilities math.Int, err error) {
+func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (repayAmount, payingLiabilities math.Int, slippage, weightBreakingFee math.LegacyDec, err error) {
 	// init repay amount
 	// For long this will be in trading asset (custody asset is trading asset)
 	// For short this will be in USDC (custody asset is USDC)
@@ -47,21 +47,21 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 
 	if mtp.Position == types.Position_LONG {
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
-		repayAmount, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool)
+		repayAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool)
 		if err != nil {
-			return math.ZeroInt(), math.ZeroInt(), err
+			return math.ZeroInt(), math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
 	}
 	if mtp.Position == types.Position_SHORT {
 		// if position is short, repay in custody asset which is base currency
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
-		repayAmount, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool)
+		repayAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool)
 		if err != nil {
-			return math.ZeroInt(), math.ZeroInt(), err
+			return math.ZeroInt(), math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
 	}
 
-	return repayAmount, payingLiabilities, nil
+	return
 
 }
 

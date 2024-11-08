@@ -1,42 +1,62 @@
 package keeper
 
 import (
+	"fmt"
+
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
+func getWeightBreakingFee(weightBalanceBonus math.LegacyDec) math.LegacyDec {
+	// when weightBalanceBonus is 0, then breaking fee is also 0
+	// when it's > 0, then breaking fee is still 0
+	// when it's < 0, breaking fee is it's negative
+	if weightBalanceBonus.IsNegative() {
+		return weightBalanceBonus.Neg()
+	} else {
+		return math.LegacyZeroDec()
+	}
+}
+
 // Swap estimation using amm CalcOutAmtGivenIn function
-func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool) (math.Int, math.LegacyDec, error) {
-	swapFee := k.GetPerpetualSwapFee(ctx)
+func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool) (math.Int, math.LegacyDec, math.LegacyDec, error) {
+	if tokenInAmount.IsZero() {
+		return math.Int{}, math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("tokenInAmount is zero for EstimateSwapGivenIn")
+	}
+	params := k.GetParams(ctx)
 	// Estimate swap
 	snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, ammPool)
 	tokensIn := sdk.Coins{tokenInAmount}
-	tokenOut, slippage, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee)
+	tokenOut, slippage, _, weightBalanceBonus, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, params.PerpetualSwapFee, params.WeightBreakingFeeFactor)
 	if err != nil {
-		return math.ZeroInt(), math.LegacyZeroDec(), err
+		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
 	}
 
 	if tokenOut.IsZero() {
-		return math.ZeroInt(), math.LegacyZeroDec(), types.ErrAmountTooLow
+		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrAmountTooLow, "tokenOut is zero for swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
 	}
-	return tokenOut.Amount, slippage, nil
+	return tokenOut.Amount, slippage, getWeightBreakingFee(weightBalanceBonus), nil
 }
 
 // Swap estimation using amm CalcInAmtGivenOut function
-func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, math.LegacyDec, error) {
-	perpetualSwapFee := k.GetPerpetualSwapFee(ctx)
+func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, math.LegacyDec, math.LegacyDec, error) {
+	if tokenOutAmount.IsZero() {
+		return math.Int{}, math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("tokenOutAmount is zero for EstimateSwapGivenOut")
+	}
+	params := k.GetParams(ctx)
 	tokensOut := sdk.Coins{tokenOutAmount}
 	// Estimate swap
 	snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, ammPool)
-	tokenIn, slippage, _, _, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, perpetualSwapFee)
+	tokenIn, slippage, _, weightBalanceBonus, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, params.PerpetualSwapFee, params.WeightBreakingFeeFactor)
 	if err != nil {
-		return math.ZeroInt(), math.LegacyZeroDec(), err
+		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
 	}
 
 	if tokenIn.IsZero() {
-		return math.ZeroInt(), math.LegacyZeroDec(), types.ErrAmountTooLow
+		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrAmountTooLow, "tokenIn is zero for swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
 	}
-	return tokenIn.Amount, slippage, nil
+	return tokenIn.Amount, slippage, getWeightBreakingFee(weightBalanceBonus), nil
 }
