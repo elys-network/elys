@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -14,12 +15,14 @@ type AccountKeeper interface {
 	NewAccount(context.Context, sdk.AccountI) sdk.AccountI
 	GetAccount(goCtx context.Context, addr sdk.AccAddress) sdk.AccountI
 	SetAccount(goCtx context.Context, acc sdk.AccountI)
+	RemoveAccount(goCtx context.Context, acc sdk.AccountI)
 	// Methods imported from account should be defined here
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
 	GetBalance(goCtx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	GetAllBalances(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 	SpendableCoins(goCtx context.Context, addr sdk.AccAddress) sdk.Coins
 	MintCoins(goCtx context.Context, moduleName string, amt sdk.Coins) error
 	BurnCoins(goCtx context.Context, name string, amt sdk.Coins) error
@@ -27,6 +30,7 @@ type BankKeeper interface {
 	SendCoinsFromAccountToModule(goCtx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	SetDenomMetaData(goCtx context.Context, denomMetaData banktypes.Metadata)
 	SendCoins(goCtx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+	GetDenomMetaData(ctx context.Context, denom string) (banktypes.Metadata, bool)
 	// Methods imported from bank should be defined here
 }
 
