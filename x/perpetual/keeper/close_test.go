@@ -27,13 +27,13 @@ func (suite *PerpetualKeeperTestSuite) TestClose_ErrorGetEntry() {
 	suite.SetupCoinPrices()
 
 	addr := suite.AddAccounts(2, nil)
-	amount := sdk.NewInt(1000)
+	amount := math.NewInt(1000)
 	positionCreator := addr[1]
 	tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
 	suite.Require().NoError(err)
 
 	poolCreator := addr[0]
-	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
@@ -51,7 +51,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose_ErrorGetEntry() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
@@ -72,13 +72,13 @@ func (suite *PerpetualKeeperTestSuite) TestClose_Short() {
 	suite.SetupCoinPrices()
 
 	addr := suite.AddAccounts(2, nil)
-	amount := sdk.NewInt(1000)
+	amount := math.NewInt(1000)
 	positionCreator := addr[1]
 	//tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
 	//suite.Require().NoError(err)
 
 	poolCreator := addr[0]
-	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
@@ -96,7 +96,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose_Short() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
@@ -115,25 +115,25 @@ func (suite *PerpetualKeeperTestSuite) TestClose_Long() {
 
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     ptypes.Elys,
-		Liquidity: sdk.NewInt(2000000),
+		Liquidity: math.NewInt(2000000),
 	})
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     ptypes.BaseCurrency,
-		Liquidity: sdk.NewInt(1000000),
+		Liquidity: math.NewInt(1000000),
 	})
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     ptypes.ATOM,
-		Liquidity: sdk.NewInt(1000000),
+		Liquidity: math.NewInt(1000000),
 	})
 
 	addr := suite.AddAccounts(3, nil)
-	amount := sdk.NewInt(1000)
+	amount := math.NewInt(1000)
 	positionCreator := addr[1]
 	tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
 	suite.Require().NoError(err)
 
 	poolCreator := addr[0]
-	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
@@ -151,10 +151,10 @@ func (suite *PerpetualKeeperTestSuite) TestClose_Long() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, sdk.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000_000_000)))
+	tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, math.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000_000)))
 	suite.AddLiquidity(ammPool, addr[2], tokensIn)
 	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
 	suite.Require().NoError(err)
@@ -171,11 +171,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose_Short_NotEnoughLiquidity() {
 	suite.SetupCoinPrices()
 
 	addr := suite.AddAccounts(2, nil)
-	amount := sdk.NewInt(1000)
+	amount := math.NewInt(1000)
 	positionCreator := addr[1]
 
 	poolCreator := addr[0]
-	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
@@ -193,7 +193,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose_Short_NotEnoughLiquidity() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
@@ -201,7 +201,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose_Short_NotEnoughLiquidity() {
 
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     ptypes.BaseCurrency,
-		Liquidity: sdk.NewInt(0),
+		Liquidity: math.NewInt(0),
 	})
 
 	_, err = suite.app.PerpetualKeeper.Close(suite.ctx, &types.MsgClose{
