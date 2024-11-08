@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 	"strings"
 
 	"cosmossdk.io/errors"
@@ -14,16 +15,17 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-/*
-"pool": "ATOM/USDC",
-"value": "2.013869980978454599" //USDC
-"poolId"://
-"fiat_value":
-*/
+type detailPool struct {
+	Title string
+	Pool  ammtypes.Pool
+}
+
 func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsersPoolDataRequest) (*types.QueryGetUsersPoolDataResponse, error) {
+
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
@@ -43,6 +45,8 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 
 	usersData := []*types.UserData{}
 
+	pools := map[uint64]detailPool{}
+
 	for _, user := range listCommitments {
 
 		u := types.UserData{
@@ -59,27 +63,50 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 					FiatValue: fiatValue.String(),
 					Amount:    commitment.Amount,
 				})
+
+				continue
 			}
 
 			if strings.HasPrefix(commitment.Denom, "amm/pool") {
 
 				poolId, err := GetPoolIdFromShareDenom(commitment.Denom)
-
 				if err != nil {
 					continue
 				}
 
-				pool, found := k.amm.GetPool(ctx, poolId)
-				if !found {
-					continue
+				poolTitle := ""
+				var pool ammtypes.Pool
+				if p, ok := pools[poolId]; ok {
+					poolTitle = p.Title
+					pool = p.Pool
+				} else {
+					pool, found = k.amm.GetPool(ctx, poolId)
+					if !found {
+						continue
+					}
+
+					for _, asset := range pool.PoolAssets {
+						entry, found := k.assetProfileKeeper.GetEntryByDenom(ctx, asset.Token.Denom)
+						if !found {
+							continue
+						}
+						poolTitle += entry.DisplayName
+					}
+
+					pools[poolId] = detailPool{
+						Title: poolTitle,
+						Pool:  pool,
+					}
 				}
 
 				info := k.amm.PoolExtraInfo(ctx, pool)
 				fiatValue := commitment.Amount.ToLegacyDec().Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare)
 
+				poolID := strconv.FormatUint(pool.PoolId, 10)
+
 				u.Pools = append(u.Pools, &types.Pool{
-					Pool:      commitment.Denom,
-					PoolId:    string(pool.PoolId),
+					Pool:      poolTitle,
+					PoolId:    poolID,
 					FiatValue: fiatValue.String(),
 					Amount:    commitment.Amount,
 				})
