@@ -4,7 +4,6 @@ import (
 	"cosmossdk.io/math"
 	"time"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
