@@ -158,8 +158,8 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	}
 	hourlyInterestRate := math.LegacyZeroDec()
 	blocksPerYear := sdk.NewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
-	avgBlockTime := blocksPerYear.Quo(math.LegacyNewDec(86400 * 365)).TruncateInt().Uint64() // in seconds
-	startBlock := ctx.BlockHeight() - int64(3600/avgBlockTime)                               // block height 1 hour ago
+	blocksPerSecond := blocksPerYear.Quo(math.LegacyNewDec(86400 * 365))                        // in seconds
+	startBlock := ctx.BlockHeight() - math.LegacyNewDec(3600).Mul(blocksPerSecond).RoundInt64() // block height 1 hour ago
 	if startBlock > 0 {
 		hourlyInterestRate = k.GetBorrowInterestRate(ctx, uint64(startBlock), uint64(ctx.BlockTime().Unix()-3600), req.PoolId, mtp.TakeProfitBorrowFactor)
 	}
