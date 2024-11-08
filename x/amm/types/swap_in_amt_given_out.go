@@ -113,7 +113,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		return sdk.Coin{}, sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
 	}
 	inAmountAfterSlippage := oracleInAmount.Add(slippageAmount)
-	slippage = slippageAmount.Quo(inAmountAfterSlippage)
+	slippage = slippageAmount.Quo(oracleInAmount)
 
 	// calculate weight distance difference to calculate bonus/cut on the operation
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
