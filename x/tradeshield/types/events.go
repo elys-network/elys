@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	TypeEvtCloseSpotOrder      = "close_spot_order"
-	TypeEvtClosePerpetualOrder = "close_perpetual_order"
+	TypeEvtCloseSpotOrder       = "close_spot_order"
+	TypeEvtCancelPerpetualOrder = "cancel_perpetual_order"
 )
 
 func EmitCloseSpotOrderEvent(ctx sdk.Context, order SpotOrder) {
@@ -30,14 +30,14 @@ func NewCloseSpotOrderEvt(order SpotOrder) sdk.Event {
 	)
 }
 
-func EmitClosePerpetualOrderEvent(ctx sdk.Context, order PerpetualOrder) {
+func EmitCancelPerpetualOrderEvent(ctx sdk.Context, order PerpetualOrder) {
 	ctx.EventManager().EmitEvents(sdk.Events{
-		NewClosePerpetualOrderEvt(order),
+		NewCancelPerpetualOrderEvt(order),
 	})
 }
 
-func NewClosePerpetualOrderEvt(order PerpetualOrder) sdk.Event {
-	return sdk.NewEvent(TypeEvtCloseSpotOrder,
+func NewCancelPerpetualOrderEvt(order PerpetualOrder) sdk.Event {
+	return sdk.NewEvent(TypeEvtCancelPerpetualOrder,
 		sdk.NewAttribute("order_type", order.PerpetualOrderType.String()),
 		sdk.NewAttribute("owner_address", order.OwnerAddress),
 		sdk.NewAttribute("id", strconv.FormatInt(int64(order.OrderId), 10)),

@@ -4,7 +4,6 @@ import (
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	"encoding/binary"
-	"errors"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"math"
 
@@ -148,59 +147,6 @@ func GetPendingSpotOrderIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
-func (k Keeper) SpotBinarySearch(ctx sdk.Context, orderPrice sdkmath.LegacyDec, orders []uint64) (int, error) {
-	low, high := 0, len(orders)
-	for low < high {
-		mid := (low + high) / 2
-		// Get order price
-		order, found := k.GetPendingSpotOrder(ctx, orders[mid])
-		if !found {
-			return 0, types.ErrSpotOrderNotFound
-		}
-		if order.OrderPrice.Rate.LT(orderPrice) {
-			low = mid + 1
-		} else {
-			high = mid
-		}
-	}
-	return low, nil
-}
-
-func (k Keeper) InsertSpotSortedOrder(ctx sdk.Context, newOrder types.SpotOrder) error {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.SortedSpotOrderKey)
-
-	key, err := types.GenSpotKey(newOrder)
-	if err != nil {
-		return err
-	}
-	bz := store.Get([]byte(key))
-
-	var orderIds []uint64
-	if bz != nil {
-		orderIds, err = types.DecodeUint64Slice(bz)
-		if err != nil {
-			return err
-		}
-	}
-
-	index, err := k.SpotBinarySearch(ctx, newOrder.OrderPrice.Rate, orderIds)
-	if err != nil {
-		return err
-	}
-
-	if len(orderIds) <= index {
-		orderIds = append(orderIds, newOrder.OrderId)
-	} else {
-		orderIds = append(orderIds[:index+1], orderIds[index:]...)
-		orderIds[index] = newOrder.OrderId
-	}
-
-	bz = types.EncodeUint64Slice(orderIds)
-
-	store.Set([]byte(key), bz)
-	return nil
-}
-
 // GetAllPendingSpotOrder returns all pendingSpotOrder
 func (k Keeper) GetAllSortedSpotOrder(ctx sdk.Context) (list [][]uint64, err error) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.SortedSpotOrderKey)
@@ -234,57 +180,6 @@ func (k Keeper) DeleteAllPendingSpotOrder(ctx sdk.Context) (list []types.SpotOrd
 	return
 }
 
-// RemoveSortedOrder removes an order from the sorted order list.
-func (k Keeper) RemoveSpotSortedOrder(ctx sdk.Context, orderID uint64) error {
-	order, found := k.GetPendingSpotOrder(ctx, orderID)
-	if !found {
-		return types.ErrSpotOrderNotFound
-	}
-
-	// Generate the key for the order
-	key, err := types.GenSpotKey(order)
-	if err != nil {
-		return err
-	}
-
-	// Load the sorted order IDs using the key
-	sortedStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.SortedSpotOrderKey)
-	bz := sortedStore.Get([]byte(key))
-
-	if bz == nil {
-		return errors.New("sorted order IDs not found")
-	}
-
-	orderIds, err := types.DecodeUint64Slice(bz)
-	if err != nil {
-		return err
-	}
-
-	// Find the index of the order ID in the sorted order list
-	index, err := k.SpotBinarySearch(ctx, order.OrderPrice.Rate, orderIds)
-	if err != nil {
-		return err
-	}
-
-	sizeOfVec := len(orderIds)
-	for index < sizeOfVec && orderIds[index] != orderID {
-		index++
-	}
-
-	if index >= sizeOfVec {
-		return errors.New("order ID not found in sorted order list")
-	}
-
-	// Remove the order ID from the list
-	orderIds = append(orderIds[:index], orderIds[index+1:]...)
-
-	// Save the updated list back to storage
-	encodedOrderIds := types.EncodeUint64Slice(orderIds)
-
-	sortedStore.Set([]byte(key), encodedOrderIds)
-	return nil
-}
-
 // ExecuteStopLossSpotOrder executes a stop loss order
 func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) error {
 	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
@@ -304,7 +199,7 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) err
 	}
 
 	// Swap the order amount with the target denom
-	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -313,6 +208,9 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) err
 		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
+	if err != nil {
+		return err
+	}
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
@@ -339,7 +237,7 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) er
 	}
 
 	// Swap the order amount with the target denom
-	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -348,6 +246,9 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) er
 		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
+	if err != nil {
+		return err
+	}
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
@@ -374,7 +275,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) err
 	}
 
 	// Swap the order amount with the target denom
-	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -383,6 +284,9 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) err
 		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
+	if err != nil {
+		return err
+	}
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
@@ -399,7 +303,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) er
 	}
 
 	// Swap the order amount with the target denom
-	k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -408,9 +312,9 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) er
 		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
-
-	// Remove the order from the pending order list
-	k.RemovePendingSpotOrder(ctx, order.OrderId)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

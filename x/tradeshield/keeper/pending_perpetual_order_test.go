@@ -13,7 +13,6 @@ import (
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	"github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -76,89 +75,6 @@ func TestPendingPerpetualOrderCount(t *testing.T) {
 	items := createNPendingPerpetualOrder(keeper, ctx, 10)
 	count := uint64(len(items))
 	require.Equal(t, count, keeper.GetPendingPerpetualOrderCount(ctx)-1)
-}
-
-func TestSortedPerpetualOrder(t *testing.T) {
-	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
-
-	// Set to main storage
-	keeper.AppendPendingPerpetualOrder(ctx, types.PerpetualOrder{
-		OwnerAddress:       "address",
-		OrderId:            0,
-		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice:       &types.TriggerPrice{Rate: sdkmath.LegacyNewDec(1), TradingAssetDenom: "base"},
-	})
-
-	order, _ := keeper.GetPendingPerpetualOrder(ctx, 1)
-
-	err := keeper.InsertPerptualSortedOrder(ctx, order)
-	require.NoError(t, err)
-
-	res, _ := keeper.GetAllSortedPerpetualOrder(ctx)
-
-	assert.Equal(t, res, [][]uint64{{1}})
-
-	// Insert two more elements
-	// Set to main storage
-	keeper.AppendPendingPerpetualOrder(ctx, types.PerpetualOrder{
-		OwnerAddress:       "address1",
-		OrderId:            0,
-		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.TriggerPrice{
-			TradingAssetDenom: "base",
-			Rate:              sdkmath.LegacyNewDec(20),
-		},
-	})
-
-	keeper.AppendPendingPerpetualOrder(ctx, types.PerpetualOrder{
-		OwnerAddress:       "address2",
-		OrderId:            0,
-		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.TriggerPrice{
-			TradingAssetDenom: "base",
-			Rate:              sdkmath.LegacyNewDec(5),
-		},
-	})
-
-	keeper.AppendPendingPerpetualOrder(ctx, types.PerpetualOrder{
-		OwnerAddress:       "address3",
-		OrderId:            0,
-		PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-		TriggerPrice: &types.TriggerPrice{
-			TradingAssetDenom: "base",
-			Rate:              sdkmath.LegacyNewDec(25),
-		},
-	})
-
-	order2, _ := keeper.GetPendingPerpetualOrder(ctx, 2)
-	order3, _ := keeper.GetPendingPerpetualOrder(ctx, 3)
-	order4, _ := keeper.GetPendingPerpetualOrder(ctx, 4)
-
-	err = keeper.InsertPerptualSortedOrder(ctx, order2)
-	require.NoError(t, err)
-	err = keeper.InsertPerptualSortedOrder(ctx, order3)
-	require.NoError(t, err)
-	err = keeper.InsertPerptualSortedOrder(ctx, order4)
-	require.NoError(t, err)
-
-	res, _ = keeper.GetAllSortedPerpetualOrder(ctx)
-
-	// Should store in sorted order
-	assert.Equal(t, res, [][]uint64{{1, 3, 2, 4}})
-
-	// Test binary search, search with rate 5
-	index, err := keeper.PerpetualBinarySearch(ctx, sdkmath.LegacyNewDec(5), []uint64{1, 3, 2, 4})
-	require.NoError(t, err)
-
-	// second element
-	assert.Equal(t, index, 1)
-
-	// Test remove sorted order
-	keeper.RemovePerpetualSortedOrder(ctx, 2)
-	res, _ = keeper.GetAllSortedPerpetualOrder(ctx)
-
-	// Should store in sorted order
-	assert.Equal(t, res, [][]uint64{{1, 3, 4}})
 }
 
 // TestExecuteLimitOpenOrder
