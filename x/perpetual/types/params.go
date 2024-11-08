@@ -10,12 +10,12 @@ import (
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		PerpetualSwapFee:                               math.LegacyMustNewDecFromStr("0.001"), // 0.1%
-		FixedFundingRate:                               math.LegacyMustNewDecFromStr("0.5"),   // 50%
 		BorrowInterestRateDecrease:                     math.LegacyMustNewDecFromStr("0.0003"),
 		BorrowInterestRateIncrease:                     math.LegacyMustNewDecFromStr("0.0003"),
 		BorrowInterestRateMax:                          math.LegacyMustNewDecFromStr("0.3"),
 		BorrowInterestRateMin:                          math.LegacyMustNewDecFromStr("0.1"),
+		EnableTakeProfitCustodyLiabilities:             false,
+		FixedFundingRate:                               math.LegacyMustNewDecFromStr("0.5"), // 50%
 		ForceCloseFundAddress:                          authtypes.NewModuleAddress("zero").String(),
 		ForceCloseFundPercentage:                       math.LegacyOneDec(),
 		HealthGainFactor:                               math.LegacyMustNewDecFromStr("0.000000220000000000"),
@@ -23,15 +23,16 @@ func NewParams() Params {
 		IncrementalBorrowInterestPaymentFundAddress:    authtypes.NewModuleAddress("zero").String(),
 		IncrementalBorrowInterestPaymentFundPercentage: math.LegacyMustNewDecFromStr("0.1"),
 		LeverageMax:                                    math.LegacyNewDec(25),
-		MaxOpenPositions:                               (int64)(3000),
-		PoolOpenThreshold:                              math.LegacyMustNewDecFromStr("0.65"),
-		SafetyFactor:                                   math.LegacyMustNewDecFromStr("1.050000000000000000"), // 5%
-		WhitelistingEnabled:                            false,
-		MaxLimitOrder:                                  (int64)(500),
-		MinimumLongTakeProfitPriceRatio:                math.LegacyMustNewDecFromStr("1.02"),
+		MaxLimitOrder:                                  (int64)(100000),
+		MaxOpenPositions:                               (int64)(100000),
 		MaximumLongTakeProfitPriceRatio:                math.LegacyMustNewDecFromStr("11"),
 		MaximumShortTakeProfitPriceRatio:               math.LegacyMustNewDecFromStr("0.98"),
-		EnableTakeProfitCustodyLiabilities:             false,
+		MinimumLongTakeProfitPriceRatio:                math.LegacyMustNewDecFromStr("1.02"),
+		PerpetualSwapFee:                               math.LegacyMustNewDecFromStr("0.001"), // 0.1%
+		PoolOpenThreshold:                              math.LegacyMustNewDecFromStr("0.65"),
+		SafetyFactor:                                   math.LegacyMustNewDecFromStr("1.025000000000000000"),
+		WeightBreakingFeeFactor:                        math.LegacyMustNewDecFromStr("0.5"),
+		WhitelistingEnabled:                            false,
 	}
 }
 
@@ -94,6 +95,9 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateMaxLimitOrder(p.MaxLimitOrder); err != nil {
+		return err
+	}
+	if err := validateWeightBreakingFeeFactor(p.WeightBreakingFeeFactor); err != nil {
 		return err
 	}
 	return nil
@@ -347,5 +351,20 @@ func validateMaxLimitOrder(i interface{}) error {
 	if v < 0 {
 		return fmt.Errorf("MaxLimitOrder should not be -ve: %d", v)
 	}
+	return nil
+}
+
+func validateWeightBreakingFeeFactor(i interface{}) error {
+	v, ok := i.(math.LegacyDec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if v.IsNil() {
+		return fmt.Errorf("WeightBreakingFeeFactor must be not nil")
+	}
+	if v.IsNegative() {
+		return fmt.Errorf("WeightBreakingFeeFactor must be positive: %s", v)
+	}
+
 	return nil
 }

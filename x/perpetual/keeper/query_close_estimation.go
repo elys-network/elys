@@ -51,14 +51,14 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		return nil, err
 	}
 	unpaidInterestLiability := mtp.BorrowInterestUnpaidLiability
-	// adding case for mtp.BorrowInterestUnpaidLiability being smaller tha 10^-18, this happens when position is small so liabilities are small, and hardly any time has spend, so interests are small, so it leads to 0 value
-	borrowInterestPaymentInCustody := math.ZeroInt()
-	if !mtp.BorrowInterestUnpaidLiability.IsZero() {
-		borrowInterestPaymentTokenIn := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
-		borrowInterestPaymentInCustody, _, err = k.EstimateSwapGivenOut(ctx, borrowInterestPaymentTokenIn, mtp.CustodyAsset, ammPool)
-		if err != nil {
-			return &types.QueryCloseEstimationResponse{}, err
-		}
+
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	if err != nil {
+		return nil, err
+	}
+	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice)
+	if err != nil {
+		return nil, err
 	}
 	mtp.Custody = mtp.Custody.Sub(borrowInterestPaymentInCustody)
 
@@ -72,7 +72,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		closingRatio = req.CloseAmount.ToLegacyDec().Quo(maxCloseAmount.ToLegacyDec())
 	}
 
-	repayAmount, payingLiabilities, err := k.CalcRepayAmount(ctx, &mtp, &ammPool, closingRatio)
+	repayAmount, payingLiabilities, slippage, weightBreakingFee, err := k.CalcRepayAmount(ctx, &mtp, &ammPool, closingRatio)
 	if err != nil {
 		return &types.QueryCloseEstimationResponse{}, err
 	}
@@ -99,34 +99,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		executionPrice = repayAmount.ToLegacyDec().Quo(payingLiabilities.ToLegacyDec())
 	}
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
-	if err != nil {
-		return nil, err
-	}
 	priceImpact := tradingAssetPrice.Sub(executionPrice).Quo(tradingAssetPrice)
-
-	returnAmountAtClosingPrice := math.ZeroInt()
-	if req.ClosingPrice.IsPositive() {
-		if mtp.Position == types.Position_LONG {
-			borrowInterestPaymentInCustodyAtClosingPrice := unpaidInterestLiability.ToLegacyDec().Quo(req.ClosingPrice).TruncateInt()
-			custodyAfterInterests := mtp.Custody.Sub(borrowInterestPaymentInCustodyAtClosingPrice)
-			repayAmountAtClosingPrice := payingLiabilities.ToLegacyDec().Quo(req.ClosingPrice).TruncateInt()
-			custodyAfterRepayAtClosingPrice := custodyAfterInterests.Sub(repayAmountAtClosingPrice)
-			if custodyAfterRepayAtClosingPrice.IsPositive() {
-				returnAmountAtClosingPrice = custodyAfterRepayAtClosingPrice
-			}
-		}
-		if mtp.Position == types.Position_SHORT {
-			// For short, liability is in trading asset, eg ATOM, custody is base currency eg USDC
-			borrowInterestPaymentInCustodyAtClosingPrice := unpaidInterestLiability.ToLegacyDec().Mul(req.ClosingPrice).TruncateInt()
-			custodyAfterInterests := mtp.Custody.Sub(borrowInterestPaymentInCustodyAtClosingPrice)
-			repayAmountAtClosingPrice := payingLiabilities.ToLegacyDec().Mul(req.ClosingPrice).TruncateInt()
-			custodyAfterRepayAtClosingPrice := custodyAfterInterests.Sub(repayAmountAtClosingPrice)
-			if custodyAfterRepayAtClosingPrice.IsPositive() {
-				returnAmountAtClosingPrice = custodyAfterRepayAtClosingPrice
-			}
-		}
-	}
 
 	positionSize := mtp.Custody
 	positionAsset := mtp.CustodyAsset
@@ -147,6 +120,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		BorrowInterestUnpaidLiability: sdk.NewCoin(mtp.LiabilitiesAsset, unpaidInterestLiability),
 		ReturningAmount:               sdk.NewCoin(mtp.CustodyAsset, returnAmount),
 		PayingLiabilities:             sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities),
-		ReturnAmountAtClosingPrice:    sdk.NewCoin(mtp.CustodyAsset, returnAmountAtClosingPrice),
+		WeightBreakingFee:             weightBreakingFee,
+		Slippage:                      slippage,
 	}, nil
 }

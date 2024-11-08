@@ -38003,6 +38003,8 @@ paths:
                               signatures required by gogoproto.
                           weight:
                             type: string
+                          external_liquidity_ratio:
+                            type: string
                     total_weight:
                       type: string
                     non_amm_pool_tokens:
@@ -38181,6 +38183,8 @@ paths:
 
                             signatures required by gogoproto.
                         weight:
+                          type: string
+                        external_liquidity_ratio:
                           type: string
                   total_weight:
                     type: string
@@ -38754,8 +38758,6 @@ paths:
                           type: string
                         weight_breaking_fee_exponent:
                           type: string
-                        external_liquidity_ratio:
-                          type: string
                         weight_recovery_fee_portion:
                           type: string
                         threshold_weight_difference:
@@ -38802,6 +38804,8 @@ paths:
 
                               signatures required by gogoproto.
                           weight:
+                            type: string
+                          external_liquidity_ratio:
                             type: string
                     total_weight:
                       type: string
@@ -38952,8 +38956,6 @@ paths:
                         type: string
                       weight_breaking_fee_exponent:
                         type: string
-                      external_liquidity_ratio:
-                        type: string
                       weight_recovery_fee_portion:
                         type: string
                       threshold_weight_difference:
@@ -39000,6 +39002,8 @@ paths:
 
                             signatures required by gogoproto.
                         weight:
+                          type: string
+                        external_liquidity_ratio:
                           type: string
                   total_weight:
                     type: string
@@ -40126,6 +40130,137 @@ paths:
           in: path
           required: true
           type: string
+      tags:
+        - Query
+  /elys-network/elys/commitment/list_commitments:
+    get:
+      summary: Queries a list of ListCommitments items.
+      operationId: ElysCommitmentListCommitments
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              users:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user:
+                      type: string
+                    pool:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          pool:
+                            type: string
+                          value:
+                            type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
       tags:
         - Query
   /elys-network/elys/commitment/number_of_commitments:
@@ -43720,6 +43855,38 @@ paths:
                   method
 
                   signatures required by gogoproto.
+              closing_price:
+                type: string
+              custody:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              collateral:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -44796,6 +44963,25 @@ paths:
                       if negative longs pay, if positive long receives
                   short_rate:
                     type: string
+                  total_liabilities:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  total_long_open_interest:
+                    type: string
+                  total_short_open_interest:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -44894,6 +45080,25 @@ paths:
                         Rate at which long pays/receive from short
                         if negative longs pay, if positive long receives
                     short_rate:
+                      type: string
+                    total_liabilities:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    total_long_open_interest:
+                      type: string
+                    total_short_open_interest:
                       type: string
               pagination:
                 type: object
@@ -45796,6 +46001,35 @@ paths:
           type: string
       tags:
         - Query
+  /elys-network/elys/tier/get_users_pool_data:
+    get:
+      summary: Queries a list of GetUsersPoolData items.
+      operationId: ElysTierGetUsersPoolData
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /elys-network/elys/tier/leverage_lp_total/{user}:
     get:
       summary: Queries a list of LeverageLpTotal items.
@@ -46607,8 +46841,6 @@ paths:
                           enum:
                             - LIMITOPEN
                             - LIMITCLOSE
-                            - MARKETOPEN
-                            - MARKETCLOSE
                             - STOPLOSSPERP
                           default: LIMITOPEN
                           title: Perpetual Order
@@ -46622,9 +46854,7 @@ paths:
                         trigger_price:
                           type: object
                           properties:
-                            base_denom:
-                              type: string
-                            quote_denom:
+                            trading_asset_denom:
                               type: string
                             rate:
                               type: string
@@ -46818,8 +47048,6 @@ paths:
                         enum:
                           - LIMITOPEN
                           - LIMITCLOSE
-                          - MARKETOPEN
-                          - MARKETCLOSE
                           - STOPLOSSPERP
                         default: LIMITOPEN
                         title: Perpetual Order
@@ -46833,9 +47061,7 @@ paths:
                       trigger_price:
                         type: object
                         properties:
-                          base_denom:
-                            type: string
-                          quote_denom:
+                          trading_asset_denom:
                             type: string
                           rate:
                             type: string
@@ -46952,8 +47178,6 @@ paths:
                           enum:
                             - LIMITOPEN
                             - LIMITCLOSE
-                            - MARKETOPEN
-                            - MARKETCLOSE
                             - STOPLOSSPERP
                           default: LIMITOPEN
                           title: Perpetual Order
@@ -46967,9 +47191,7 @@ paths:
                         trigger_price:
                           type: object
                           properties:
-                            base_denom:
-                              type: string
-                            quote_denom:
+                            trading_asset_denom:
                               type: string
                             rate:
                               type: string
@@ -86743,6 +86965,8 @@ definitions:
                 signatures required by gogoproto.
             weight:
               type: string
+            external_liquidity_ratio:
+              type: string
       total_weight:
         type: string
       non_amm_pool_tokens:
@@ -86806,6 +87030,8 @@ definitions:
 
                       signatures required by gogoproto.
                   weight:
+                    type: string
+                  external_liquidity_ratio:
                     type: string
             total_weight:
               type: string
@@ -86898,6 +87124,8 @@ definitions:
                     signatures required by gogoproto.
                 weight:
                   type: string
+                external_liquidity_ratio:
+                  type: string
           total_weight:
             type: string
           non_amm_pool_tokens:
@@ -86933,6 +87161,8 @@ definitions:
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
       weight:
+        type: string
+      external_liquidity_ratio:
         type: string
   elys.amm.AssetAmountDepth:
     type: object
@@ -87100,8 +87330,6 @@ definitions:
             type: string
           weight_breaking_fee_exponent:
             type: string
-          external_liquidity_ratio:
-            type: string
           weight_recovery_fee_portion:
             type: string
           threshold_weight_difference:
@@ -87167,8 +87395,6 @@ definitions:
             type: string
           weight_breaking_fee_exponent:
             type: string
-          external_liquidity_ratio:
-            type: string
           weight_recovery_fee_portion:
             type: string
           threshold_weight_difference:
@@ -87212,6 +87438,8 @@ definitions:
                 signatures required by gogoproto.
             weight:
               type: string
+            external_liquidity_ratio:
+              type: string
       total_weight:
         type: string
       rebalance_treasury:
@@ -87235,8 +87463,6 @@ definitions:
       weight_breaking_fee_multiplier:
         type: string
       weight_breaking_fee_exponent:
-        type: string
-      external_liquidity_ratio:
         type: string
       weight_recovery_fee_portion:
         type: string
@@ -87311,8 +87537,6 @@ definitions:
                   type: string
                 weight_breaking_fee_exponent:
                   type: string
-                external_liquidity_ratio:
-                  type: string
                 weight_recovery_fee_portion:
                   type: string
                 threshold_weight_difference:
@@ -87358,6 +87582,8 @@ definitions:
 
                       signatures required by gogoproto.
                   weight:
+                    type: string
+                  external_liquidity_ratio:
                     type: string
             total_weight:
               type: string
@@ -87464,8 +87690,6 @@ definitions:
                 type: string
               weight_breaking_fee_exponent:
                 type: string
-              external_liquidity_ratio:
-                type: string
               weight_recovery_fee_portion:
                 type: string
               threshold_weight_difference:
@@ -87511,6 +87735,8 @@ definitions:
 
                     signatures required by gogoproto.
                 weight:
+                  type: string
+                external_liquidity_ratio:
                   type: string
           total_weight:
             type: string
@@ -88283,6 +88509,13 @@ definitions:
         type: string
         format: uint64
     description: Params defines the parameters for the module.
+  elys.commitment.Pool:
+    type: object
+    properties:
+      pool:
+        type: string
+      value:
+        type: string
   elys.commitment.QueryCommitmentVestingInfoResponse:
     type: object
     properties:
@@ -88337,6 +88570,51 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+  elys.commitment.QueryListCommitmentsResponse:
+    type: object
+    properties:
+      users:
+        type: array
+        items:
+          type: object
+          properties:
+            user:
+              type: string
+            pool:
+              type: array
+              items:
+                type: object
+                properties:
+                  pool:
+                    type: string
+                  value:
+                    type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
   elys.commitment.QueryNumberOfCommitmentsResponse:
     type: object
     properties:
@@ -88453,6 +88731,20 @@ definitions:
                   type: string
                   format: int64
         description: GenesisState defines the commitment module's genesis state.
+  elys.commitment.UserData:
+    type: object
+    properties:
+      user:
+        type: string
+      pool:
+        type: array
+        items:
+          type: object
+          properties:
+            pool:
+              type: string
+            value:
+              type: string
   elys.commitment.VestingDetails:
     type: object
     properties:
@@ -91113,6 +91405,22 @@ definitions:
           if negative longs pay, if positive long receives
       short_rate:
         type: string
+      total_liabilities:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      total_long_open_interest:
+        type: string
+      total_short_open_interest:
+        type: string
   elys.perpetual.Position:
     type: string
     enum:
@@ -91596,6 +91904,25 @@ definitions:
                 if negative longs pay, if positive long receives
             short_rate:
               type: string
+            total_liabilities:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            total_long_open_interest:
+              type: string
+            total_short_open_interest:
+              type: string
       pagination:
         type: object
         properties:
@@ -91710,6 +92037,32 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      closing_price:
+        type: string
+      custody:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      collateral:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   elys.perpetual.QueryGetAllToPayResponse:
     type: object
     properties:
@@ -91790,6 +92143,25 @@ definitions:
               Rate at which long pays/receive from short
               if negative longs pay, if positive long receives
           short_rate:
+            type: string
+          total_liabilities:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          total_long_open_interest:
+            type: string
+          total_short_open_interest:
             type: string
   elys.perpetual.QueryOpenEstimationResponse:
     type: object
@@ -92115,6 +92487,8 @@ definitions:
     properties:
       total_portfolio:
         type: string
+  elys.tier.QueryGetUsersPoolDataResponse:
+    type: object
   elys.tier.QueryLeverageLpTotalResponse:
     type: object
     properties:
@@ -92479,7 +92853,7 @@ definitions:
   elys.tradeshield.MsgCancelPerpetualOrderResponse:
     type: object
     properties:
-      orderId:
+      order_id:
         type: string
         format: uint64
   elys.tradeshield.MsgCancelPerpetualOrdersResponse:
@@ -92487,7 +92861,7 @@ definitions:
   elys.tradeshield.MsgCancelSpotOrderResponse:
     type: object
     properties:
-      orderId:
+      order_id:
         type: string
         format: uint64
   elys.tradeshield.MsgCancelSpotOrdersResponse:
@@ -92568,8 +92942,6 @@ definitions:
         enum:
           - LIMITOPEN
           - LIMITCLOSE
-          - MARKETOPEN
-          - MARKETCLOSE
           - STOPLOSSPERP
         default: LIMITOPEN
         title: Perpetual Order
@@ -92583,9 +92955,7 @@ definitions:
       trigger_price:
         type: object
         properties:
-          base_denom:
-            type: string
-          quote_denom:
+          trading_asset_denom:
             type: string
           rate:
             type: string
@@ -92639,8 +93009,6 @@ definitions:
             enum:
               - LIMITOPEN
               - LIMITCLOSE
-              - MARKETOPEN
-              - MARKETCLOSE
               - STOPLOSSPERP
             default: LIMITOPEN
             title: Perpetual Order
@@ -92654,9 +93022,7 @@ definitions:
           trigger_price:
             type: object
             properties:
-              base_denom:
-                type: string
-              quote_denom:
+              trading_asset_denom:
                 type: string
               rate:
                 type: string
@@ -92720,8 +93086,6 @@ definitions:
     enum:
       - LIMITOPEN
       - LIMITCLOSE
-      - MARKETOPEN
-      - MARKETCLOSE
       - STOPLOSSPERP
     default: LIMITOPEN
     title: Perpetual Order
@@ -92753,8 +93117,6 @@ definitions:
                   enum:
                     - LIMITOPEN
                     - LIMITCLOSE
-                    - MARKETOPEN
-                    - MARKETCLOSE
                     - STOPLOSSPERP
                   default: LIMITOPEN
                   title: Perpetual Order
@@ -92768,9 +93130,7 @@ definitions:
                 trigger_price:
                   type: object
                   properties:
-                    base_denom:
-                      type: string
-                    quote_denom:
+                    trading_asset_denom:
                       type: string
                     rate:
                       type: string
@@ -92968,8 +93328,6 @@ definitions:
                 enum:
                   - LIMITOPEN
                   - LIMITCLOSE
-                  - MARKETOPEN
-                  - MARKETCLOSE
                   - STOPLOSSPERP
                 default: LIMITOPEN
                 title: Perpetual Order
@@ -92983,9 +93341,7 @@ definitions:
               trigger_price:
                 type: object
                 properties:
-                  base_denom:
-                    type: string
-                  quote_denom:
+                  trading_asset_denom:
                     type: string
                   rate:
                     type: string
@@ -93163,8 +93519,6 @@ definitions:
                   enum:
                     - LIMITOPEN
                     - LIMITCLOSE
-                    - MARKETOPEN
-                    - MARKETCLOSE
                     - STOPLOSSPERP
                   default: LIMITOPEN
                   title: Perpetual Order
@@ -93178,9 +93532,7 @@ definitions:
                 trigger_price:
                   type: object
                   properties:
-                    base_denom:
-                      type: string
-                    quote_denom:
+                    trading_asset_denom:
                       type: string
                     rate:
                       type: string
@@ -93381,6 +93733,13 @@ definitions:
       - CANCELED
       - ALL
     default: PENDING
+  elys.tradeshield.TriggerPrice:
+    type: object
+    properties:
+      trading_asset_denom:
+        type: string
+      rate:
+        type: string
   elys.transferhook.Params:
     type: object
     properties:

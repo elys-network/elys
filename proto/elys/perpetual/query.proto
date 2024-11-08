@@ -238,17 +238,24 @@ message QueryOpenEstimationRequest {
     (gogoproto.nullable) = false
   ];
   uint64 poolId = 7;
+  string limit_price = 8 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryOpenEstimationResponse {
   Position position = 1;
-  string leverage = 2 [
+  string effective_leverage = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string trading_asset = 3;
   cosmos.base.v1beta1.Coin collateral = 4 [ (gogoproto.nullable) = false ];
-  cosmos.base.v1beta1.Coin interest_amount = 5 [ (gogoproto.nullable) = false ];
+  string hourly_interest_rate = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
   cosmos.base.v1beta1.Coin position_size = 6 [ (gogoproto.nullable) = false ];
   string open_price = 7 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -283,6 +290,14 @@ message QueryOpenEstimationResponse {
   ];
   cosmos.base.v1beta1.Coin custody = 16 [ (gogoproto.nullable) = false ];
   cosmos.base.v1beta1.Coin liabilities = 17 [ (gogoproto.nullable) = false ];
+  string limit_price = 18 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string weight_breaking_fee = 19 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryGetAllToPayRequest {}
@@ -340,10 +355,6 @@ message QueryCloseEstimationRequest {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string closing_price = 4 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
 }
 
 message QueryCloseEstimationResponse {
@@ -368,12 +379,19 @@ message QueryCloseEstimationResponse {
       [ (gogoproto.nullable) = false ];
   cosmos.base.v1beta1.Coin paying_liabilities = 9
       [ (gogoproto.nullable) = false ];
-  cosmos.base.v1beta1.Coin return_amount_at_closing_price = 10
-      [ (gogoproto.nullable) = false ];
-  string closing_price = 11 [
+
+  string closing_price = 10 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin custody = 12 [ (gogoproto.nullable) = false ];
-  cosmos.base.v1beta1.Coin collateral = 13 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin custody = 11 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin collateral = 12 [ (gogoproto.nullable) = false ];
+  string weight_breaking_fee = 13 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string slippage = 14 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

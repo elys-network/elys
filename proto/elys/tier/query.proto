@@ -7,6 +7,7 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/tier/params.proto";
 import "elys/tier/portfolio.proto";
+import "elys/tier/userdata.proto";
 
 option go_package = "github.com/elys-network/elys/x/tier/types";
 
@@ -82,6 +83,13 @@ service Query {
   // Queries a list of Staked items.
   rpc Staked(QueryStakedRequest) returns (QueryStakedResponse) {
     option (google.api.http).get = "/elys-network/elys/tier/staked/{user}";
+  }
+
+  // Queries a list of GetUsersPoolData items.
+  rpc GetUsersPoolData(QueryGetUsersPoolDataRequest)
+      returns (QueryGetUsersPoolDataResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tier/get_users_pool_data";
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -216,4 +224,13 @@ message QueryStakedResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+}
+
+message QueryGetUsersPoolDataRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryGetUsersPoolDataResponse {
+  repeated UserData users = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

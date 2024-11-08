@@ -96,8 +96,8 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			weightBalanceBonus:  sdkmath.LegacyNewDecWithPrec(3, 1), // 30% bonus
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1013000)},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
-			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 997000)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 987000)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
 		},
 		{
@@ -110,9 +110,9 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			weightBalanceBonus:  sdkmath.LegacyNewDecWithPrec(3, 1), // 30% bonus
-			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010100)},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
-			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000)},
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1013000)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 987000)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100)},
 			expPass:             true,
 		},
 	} {
@@ -180,28 +180,28 @@ func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
 
 				// check pool balance increase/decrease
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, poolAddr)
-				suite.Require().Equal(balances.String(), tc.expPoolBalance.String())
+				suite.Require().Equal(tc.expPoolBalance.String(), balances.String())
 
 				// check balance change on sender
 				balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, sender)
-				suite.Require().Equal(balances.String(), tc.expSenderBalance.String())
+				suite.Require().Equal(tc.expSenderBalance.String(), balances.String())
 
 				// check balance change on treasury
 				balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, treasuryAddr)
-				suite.Require().Equal(balances.String(), tc.expTreasuryBalance.String())
+				suite.Require().Equal(tc.expTreasuryBalance.String(), balances.String())
 
 				// check pool object change
 				savedPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, pool.PoolId)
 				suite.Require().True(found)
-				suite.Require().Equal(savedPool.PoolParams.SwapFee, pool.PoolParams.SwapFee)
+				suite.Require().Equal(pool.PoolParams.SwapFee, savedPool.PoolParams.SwapFee)
 
 				// check total liquidity change (increase + decrease)
 				liquidity, found := suite.app.AmmKeeper.GetDenomLiquidity(suite.ctx, tc.tokenIn.Denom)
 				suite.Require().True(found)
-				suite.Require().Equal(liquidity.Liquidity, tc.expPoolBalance.AmountOf(tc.tokenIn.Denom))
+				suite.Require().Equal(tc.expPoolBalance.AmountOf(tc.tokenIn.Denom), liquidity.Liquidity)
 				liquidity, found = suite.app.AmmKeeper.GetDenomLiquidity(suite.ctx, tc.tokenOut.Denom)
 				suite.Require().True(found)
-				suite.Require().Equal(liquidity.Liquidity, tc.expPoolBalance.AmountOf(tc.tokenOut.Denom))
+				suite.Require().Equal(tc.expPoolBalance.AmountOf(tc.tokenOut.Denom), liquidity.Liquidity)
 			}
 		})
 	}

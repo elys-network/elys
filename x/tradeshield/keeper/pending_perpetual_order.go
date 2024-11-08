@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"encoding/binary"
-	"errors"
 	"math"
 
 	sdkmath "cosmossdk.io/math"
@@ -177,59 +176,6 @@ func GetPendingPerpetualOrderIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
-func (k Keeper) PerpetualBinarySearch(ctx sdk.Context, orderPrice sdkmath.LegacyDec, orders []uint64) (int, error) {
-	low, high := 0, len(orders)
-	for low < high {
-		mid := (low + high) / 2
-		// Get order price
-		order, found := k.GetPendingPerpetualOrder(ctx, orders[mid])
-		if !found {
-			return 0, types.ErrPerpetualOrderNotFound
-		}
-		if order.TriggerPrice.Rate.LT(orderPrice) {
-			low = mid + 1
-		} else {
-			high = mid
-		}
-	}
-	return low, nil
-}
-
-func (k Keeper) InsertPerptualSortedOrder(ctx sdk.Context, newOrder types.PerpetualOrder) error {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.SortedPerpetualOrderKey)
-
-	key, err := types.GenPerpKey(newOrder)
-	if err != nil {
-		return err
-	}
-	bz := store.Get([]byte(key))
-
-	var orderIds []uint64
-	if bz != nil {
-		orderIds, err = types.DecodeUint64Slice(bz)
-		if err != nil {
-			return err
-		}
-	}
-
-	index, err := k.PerpetualBinarySearch(ctx, newOrder.TriggerPrice.Rate, orderIds)
-	if err != nil {
-		return err
-	}
-
-	if len(orderIds) <= index {
-		orderIds = append(orderIds, newOrder.OrderId)
-	} else {
-		orderIds = append(orderIds[:index+1], orderIds[index:]...)
-		orderIds[index] = newOrder.OrderId
-	}
-
-	bz = types.EncodeUint64Slice(orderIds)
-
-	store.Set([]byte(key), bz)
-	return nil
-}
-
 func (k Keeper) GetAllSortedPerpetualOrder(ctx sdk.Context) (list [][]uint64, err error) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.SortedPerpetualOrderKey)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
@@ -246,57 +192,6 @@ func (k Keeper) GetAllSortedPerpetualOrder(ctx sdk.Context) (list [][]uint64, er
 	}
 
 	return
-}
-
-// RemoveSortedOrder removes an order from the sorted order list.
-func (k Keeper) RemovePerpetualSortedOrder(ctx sdk.Context, orderID uint64) error {
-	order, found := k.GetPendingPerpetualOrder(ctx, orderID)
-	if !found {
-		return types.ErrPerpetualOrderNotFound
-	}
-
-	// Generate the key for the order
-	key, err := types.GenPerpKey(order)
-	if err != nil {
-		return err
-	}
-
-	// Load the sorted order IDs using the key
-	sortedStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.SortedPerpetualOrderKey)
-	bz := sortedStore.Get([]byte(key))
-
-	if bz == nil {
-		return errors.New("sorted order IDs not found")
-	}
-
-	orderIds, err := types.DecodeUint64Slice(bz)
-	if err != nil {
-		return err
-	}
-
-	// Find the index of the order ID in the sorted order list
-	index, err := k.PerpetualBinarySearch(ctx, order.TriggerPrice.Rate, orderIds)
-	if err != nil {
-		return err
-	}
-
-	sizeOfVec := len(orderIds)
-	for index < sizeOfVec && orderIds[index] != orderID {
-		index++
-	}
-
-	if index >= sizeOfVec {
-		return errors.New("order ID not found in sorted order list")
-	}
-
-	// Remove the order ID from the list
-	orderIds = append(orderIds[:index], orderIds[index+1:]...)
-
-	// Save the updated list back to storage
-	encodedOrderIds := types.EncodeUint64Slice(orderIds)
-
-	sortedStore.Set([]byte(key), encodedOrderIds)
-	return nil
 }
 
 // ExecuteLimitOpenOrder executes a limit open order

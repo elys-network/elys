@@ -102,6 +102,7 @@ type AmmKeeper interface {
 		tokensIn sdk.Coins,
 		tokenOutDenom string,
 		swapFee math.LegacyDec,
+		weightBreakingFeePerpetualFactor math.LegacyDec,
 	) (tokenOut sdk.Coin, slippage, slippageAmount math.LegacyDec, weightBalanceBonus math.LegacyDec, err error)
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec) (sdk.Coin, math.LegacyDec, error)
 	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec

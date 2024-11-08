@@ -4,8 +4,8 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 func GetPositionFromString(s string) Position {
@@ -99,14 +99,17 @@ func (mtp MTP) GetAccountAddress() sdk.AccAddress {
 	return sdk.MustAccAddressFromBech32(mtp.Address)
 }
 
-// Generate a new perpetual collateral wallet per position
-func NewPerpetualCollateralAddress(positionId uint64) sdk.AccAddress {
-	key := append([]byte("perpetual_collateral"), sdk.Uint64ToBigEndian(positionId)...)
-	return address.Module(ModuleName, key)
-}
-
-// Generate a new perpetual custody wallet per position
-func NewPerpetualCustodyAddress(positionId uint64) sdk.AccAddress {
-	key := append([]byte("perpetual_custody"), sdk.Uint64ToBigEndian(positionId)...)
-	return address.Module(ModuleName, key)
+func (mtp MTP) GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice math.LegacyDec) (math.Int, error) {
+	borrowInterestPaymentInCustody := math.ZeroInt()
+	if mtp.Position == Position_LONG {
+		if tradingAssetPrice.IsZero() {
+			return math.ZeroInt(), fmt.Errorf("trading asset price is zero")
+		}
+		// liabilities are in usdc, custody is in trading asset
+		borrowInterestPaymentInCustody = mtp.BorrowInterestUnpaidLiability.ToLegacyDec().Quo(tradingAssetPrice).TruncateInt()
+	} else {
+		// liabilities are in trading asset, custody is in usdc
+		borrowInterestPaymentInCustody = mtp.BorrowInterestUnpaidLiability.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+	}
+	return borrowInterestPaymentInCustody, nil
 }

@@ -83,4 +83,17 @@ message Params {
   // No need for minimumShortTakeProfitPriceRatio as it will be 0, checked in
   // validate message
   bool enable_take_profit_custody_liabilities = 22;
+  // We create this and send this value to estimate swap ONLY when opening and
+  // closing the position Ideally this value is set to half. When trader open a
+  // position if they receive a weight balance bonus (which is half of weight
+  // breaking fee, ideally) then while closing position they are charged weight
+  // breaking fee. So we just directly apply half weight breaking fee on
+  // perpetual swaps Question: does each need to have separate value of this
+  // because PoolParams.WeightRecoveryFeePortion can be different Also, if
+  // trader has no bonus only fee, then overall we are only applying the fee
+  // half time
+  string weight_breaking_fee_factor = 23 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

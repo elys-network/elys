@@ -79,6 +79,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", req.Collateral.Denom)
 	}
+	useLimitPrice := !req.LimitPrice.IsNil() && !req.LimitPrice.IsZero()
 	custodyAsset := req.TradingAsset
 	liabilitiesAsset := baseCurrency
 	if req.Position == types.Position_SHORT {
@@ -87,59 +88,81 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	}
 	mtp := types.NewMTP(ctx, "", req.Collateral.Denom, req.TradingAsset, liabilitiesAsset, custodyAsset, req.Position, req.TakeProfitPrice, req.PoolId)
 
-	blocksPerYear := math.LegacyNewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
-	avgBlockTime := blocksPerYear.Quo(math.LegacyNewDec(86400 * 365)).TruncateInt().Uint64()
-	mtp.LastInterestCalcBlock = uint64(ctx.BlockHeight()) - 1
-	mtp.LastInterestCalcTime = uint64(ctx.BlockTime().Unix()) - avgBlockTime
-
-	leveragedAmount := req.Collateral.Amount.ToLegacyDec().Mul(req.Leverage).TruncateInt()
+	proxyLeverage := req.Leverage
+	if req.Position == types.Position_SHORT {
+		proxyLeverage = req.Leverage.Add(math.LegacyOneDec())
+	}
+	leveragedAmount := req.Collateral.Amount.ToLegacyDec().Mul(proxyLeverage).TruncateInt()
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
 	// SHORT: collateralAsset is always usdc, and custody has to be in usdc, so custodyAmount = leveragedAmount
 	custodyAmount := leveragedAmount
 	slippage := math.LegacyZeroDec()
 	mtp.Collateral = req.Collateral.Amount
-	eta := req.Leverage.Sub(math.LegacyOneDec())
+	eta := proxyLeverage.Sub(math.LegacyOneDec())
+	liabilities := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
+	weightBreakingFee := math.LegacyZeroDec()
 	if req.Position == types.Position_LONG {
 		//getting custody
 		if mtp.CollateralAsset == baseCurrency {
 			leveragedAmtTokenIn := sdk.NewCoin(mtp.CollateralAsset, leveragedAmount)
-			custodyAmount, slippage, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool)
+			custodyAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenIn(ctx, leveragedAmtTokenIn, mtp.CustodyAsset, ammPool)
 			if err != nil {
 				return nil, err
 			}
-
-			mtp.Liabilities = req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
+			if useLimitPrice {
+				// leveragedAmount is collateral asset which is base currency, custodyAmount has to be in trading asset
+				custodyAmount = leveragedAmount.ToLegacyDec().Quo(req.LimitPrice).TruncateInt()
+			}
 		}
-		mtp.Custody = custodyAmount
 
 		//getting Liabilities
 		if mtp.CollateralAsset != baseCurrency {
 			amountIn := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
-			mtp.Liabilities, slippage, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.Collateral.Denom, amountIn), baseCurrency, ammPool)
+			liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.Collateral.Denom, amountIn), baseCurrency, ammPool)
 			if err != nil {
 				return nil, err
+			}
+			if useLimitPrice {
+				// liabilities needs to be in base currency
+				liabilities = amountIn.ToLegacyDec().Mul(req.LimitPrice).TruncateInt()
 			}
 		}
 
 	}
 	//getting Liabilities
 	if req.Position == types.Position_SHORT {
-		mtp.Custody = custodyAmount
 		// Collateral will be in base currency
 		amountOut := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
 		tokenOut := sdk.NewCoin(baseCurrency, amountOut)
-		mtp.Liabilities, slippage, err = k.EstimateSwapGivenOut(ctx, tokenOut, mtp.LiabilitiesAsset, ammPool)
+		liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, tokenOut, mtp.LiabilitiesAsset, ammPool)
 		if err != nil {
 			return nil, err
 		}
+		if useLimitPrice {
+			// liabilities needs to be in trading asset
+			liabilities = amountOut.ToLegacyDec().Quo(req.LimitPrice).TruncateInt()
+		}
 	}
+	mtp.Liabilities = liabilities
+	mtp.Custody = custodyAmount
+
 	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(*mtp)
-	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp, baseCurrency)
+	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, *mtp)
 	mtp.TakeProfitPrice = req.TakeProfitPrice
 	mtp.GetAndSetOpenPrice()
 	executionPrice := mtp.OpenPrice
 
-	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, mtp)
+	err = mtp.UpdateMTPTakeProfitBorrowFactor()
+	if err != nil {
+		return nil, err
+	}
+	hourlyInterestRate := math.LegacyZeroDec()
+	blocksPerYear := math.LegacyNewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
+	blocksPerSecond := blocksPerYear.Quo(math.LegacyNewDec(86400 * 365))                        // in seconds
+	startBlock := ctx.BlockHeight() - math.LegacyNewDec(3600).Mul(blocksPerSecond).RoundInt64() // block height 1 hour ago
+	if startBlock > 0 {
+		hourlyInterestRate = k.GetBorrowInterestRate(ctx, uint64(startBlock), uint64(ctx.BlockTime().Unix()-3600), req.PoolId, mtp.TakeProfitBorrowFactor)
+	}
 
 	liquidationPrice := k.GetLiquidationPrice(ctx, *mtp)
 	priceImpact := tradingAssetPrice.Sub(executionPrice).Quo(tradingAssetPrice)
@@ -164,17 +187,22 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		positionAsset = mtp.LiabilitiesAsset
 	}
 
+	effectiveLeverage, err := k.GetEffectiveLeverage(ctx, *mtp)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.QueryOpenEstimationResponse{
 		Position:           req.Position,
-		Leverage:           req.Leverage,
+		EffectiveLeverage:  effectiveLeverage,
 		TradingAsset:       req.TradingAsset,
 		Collateral:         req.Collateral,
-		InterestAmount:     sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability),
+		HourlyInterestRate: hourlyInterestRate,
 		PositionSize:       sdk.NewCoin(positionAsset, positionSize),
 		OpenPrice:          mtp.OpenPrice,
 		TakeProfitPrice:    req.TakeProfitPrice,
 		LiquidationPrice:   liquidationPrice,
-		EstimatedPnl:       sdk.Coin{baseCurrency, estimatedPnLAmount},
+		EstimatedPnl:       sdk.Coin{Denom: baseCurrency, Amount: estimatedPnLAmount},
 		AvailableLiquidity: availableLiquidity,
 		Slippage:           slippage,
 		PriceImpact:        priceImpact,
@@ -182,5 +210,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		FundingRate:        fundingRate,
 		Custody:            sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
 		Liabilities:        sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
+		LimitPrice:         req.LimitPrice,
+		WeightBreakingFee:  weightBreakingFee,
 	}, nil
 }
