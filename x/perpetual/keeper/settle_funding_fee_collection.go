@@ -46,13 +46,16 @@ func (k Keeper) FundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *type
 			return err
 		}
 
-		// should be done in custody
-		// short -> usdc
-		// long -> custody
-		custodyAmt, _, err := k.EstimateSwapGivenIn(ctx, sdk.NewCoin(mtp.LiabilitiesAsset, takeAmountLiabilityAmount), mtp.CustodyAsset, ammPool)
+		tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 		if err != nil {
 			return err
 		}
+
+		// should be done in custody
+		// short -> usdc
+		// long -> custody
+		// For short, takeAmountLiabilityAmount is in trading asset, need to convert to custody asset which is in usdc
+		custodyAmt := takeAmountLiabilityAmount.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
 
 		// update mtp custody
 		mtp.Custody = mtp.Custody.Sub(custodyAmt)

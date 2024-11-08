@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -10,7 +9,7 @@ import (
 
 func (k Keeper) GetBorrowInterestAmount(ctx sdk.Context, mtp *types.MTP) math.Int {
 
-	err := k.UpdateMTPTakeProfitBorrowFactor(ctx, mtp)
+	err := mtp.UpdateMTPTakeProfitBorrowFactor()
 	if err != nil {
 		panic(err)
 	}
@@ -38,11 +37,16 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		return math.ZeroInt(), nil
 	}
 
-	liabilityInterestTokenOut := sdk.NewCoin(mtp.LiabilitiesAsset, mtp.BorrowInterestUnpaidLiability)
-	borrowInterestPaymentInCustody, _, err := k.EstimateSwapGivenOut(ctx, liabilityInterestTokenOut, mtp.CustodyAsset, ammPool)
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 	if err != nil {
-		return math.Int{}, errorsmod.Wrapf(err, "unable to swap BorrowInterestUnpaidLiability to custody asset (%s)", liabilityInterestTokenOut.String())
+		return math.ZeroInt(), err
 	}
+
+	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice)
+	if err != nil {
+		return math.ZeroInt(), err
+	}
+
 	// here we are paying the interests so unpaid borrow interest reset to 0
 	mtp.BorrowInterestUnpaidLiability = sdk.ZeroInt()
 
@@ -53,10 +57,13 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		// TODO Do we need to keep this swap? as health will already be 0 as custody will be 0
 		// TODO Doing this swap to update back mtp.BorrowInterestUnpaidLiability again as there aren't enough custody
 		unpaidInterestCustody := borrowInterestPaymentInCustody.Sub(mtp.Custody)
-		unpaidInterestCustodyTokenOut := sdk.NewCoin(mtp.CustodyAsset, unpaidInterestCustody)
-		unpaidInterestLiabilities, _, err := k.EstimateSwapGivenOut(ctx, unpaidInterestCustodyTokenOut, mtp.LiabilitiesAsset, ammPool)
-		if err != nil {
-			return sdk.ZeroInt(), err
+		unpaidInterestLiabilities := math.ZeroInt()
+		if mtp.Position == types.Position_LONG {
+			// custody is in trading asset, liabilities needs to be in usdc,
+			unpaidInterestLiabilities = unpaidInterestCustody.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+		} else {
+			// custody is in usdc, liabilities needs to be in trading asset,
+			borrowInterestPaymentInCustody = unpaidInterestCustody.ToLegacyDec().Quo(tradingAssetPrice).TruncateInt()
 		}
 		mtp.BorrowInterestUnpaidLiability = unpaidInterestLiabilities
 

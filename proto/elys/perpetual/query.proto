@@ -233,14 +233,15 @@ message QueryOpenEstimationRequest {
   string discount = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string take_profit_price = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   uint64 poolId = 7;
+  string limit_price = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message QueryOpenEstimationResponse {
   Position position = 1;
-  string   leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string   effective_leverage = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string   trading_asset = 3;
   cosmos.base.v1beta1.Coin collateral = 4 [(gogoproto.nullable) = false] ;
-  cosmos.base.v1beta1.Coin   interest_amount = 5 [(gogoproto.nullable) = false];
+  string hourly_interest_rate = 5 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin position_size = 6 [(gogoproto.nullable) = false] ;
   string   open_price = 7 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   string   take_profit_price = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
@@ -253,6 +254,8 @@ message QueryOpenEstimationResponse {
   string                   price_impact = 15 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin custody = 16 [(gogoproto.nullable) = false] ;
   cosmos.base.v1beta1.Coin liabilities = 17 [(gogoproto.nullable) = false] ;
+  string limit_price = 18 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string weight_breaking_fee = 19 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message QueryGetAllToPayRequest {}
@@ -293,7 +296,7 @@ message PoolResponse {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin total_liabilities = 11 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin total_liabilities = 11 [(gogoproto.nullable) = false];
   string total_long_open_interest = 12 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
@@ -308,7 +311,6 @@ message QueryCloseEstimationRequest {
   string address = 1;
   uint64 position_id = 2;
   string close_amount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string closing_price = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 message QueryCloseEstimationResponse {
@@ -321,8 +323,9 @@ message QueryCloseEstimationResponse {
   cosmos.base.v1beta1.Coin borrow_interest_unpaid_liability = 7 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin returning_amount = 8 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin paying_liabilities = 9 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin return_amount_at_closing_price = 10 [(gogoproto.nullable) = false];
-  string                   closing_price = 11 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin custody = 12 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin collateral = 13 [(gogoproto.nullable) = false];
+  string                   closing_price = 10 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin custody = 11 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin collateral = 12 [(gogoproto.nullable) = false];
+  string                   weight_breaking_fee = 13 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string                   slippage = 14 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }

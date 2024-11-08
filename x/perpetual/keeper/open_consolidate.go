@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"fmt"
+
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -54,6 +55,12 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	if existingMtp.MtpHealth.LTE(safetyFactor) {
 		return nil, errorsmod.Wrapf(types.ErrMTPUnhealthy, "(MtpHealth: %s)", existingMtp.MtpHealth.String())
 	}
+
+	stopLossPrice := msg.StopLossPrice
+	if msg.StopLossPrice.IsNil() || msg.StopLossPrice.IsZero() {
+		stopLossPrice = k.GetLiquidationPrice(ctx, *existingMtp)
+	}
+	existingMtp.StopLossPrice = stopLossPrice
 
 	// Set existing MTP
 	if err = k.SetMTP(ctx, existingMtp); err != nil {

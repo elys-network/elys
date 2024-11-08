@@ -6,7 +6,7 @@ import (
 
 func (m Migrator) V5Migration(ctx sdk.Context) error {
 
-	m.keeper.DeleteAllInterest(ctx)
+	//m.keeper.DeleteAllInterest(ctx)
 
 	return nil
 }

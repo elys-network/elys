@@ -13,4 +13,5 @@ var (
 	ErrRedemptionRateIsZero = errorsmod.Register(ModuleName, 3, "redemption rate is zero")
 	ErrNegativeBorrowed     = errorsmod.Register(ModuleName, 4, "negative borrowed amount")
 	ErrMaxBorrowAmount      = errorsmod.Register(ModuleName, 5, "cannot borrow more than 90% of total stablestake pool.")
+	ErrInvalidParams        = errorsmod.Register(ModuleName, 6, "invalid params")
 )
