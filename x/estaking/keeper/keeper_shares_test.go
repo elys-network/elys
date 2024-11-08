@@ -1,26 +1,59 @@
 package keeper_test
 
 import (
-	"testing"
-
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
-	"github.com/stretchr/testify/require"
 )
 
-func TestCalcDelegationAmount(t *testing.T) {
-	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+func (suite *EstakingKeeperTestSuite) TestKeeperShares() {
+	testCases := []struct {
+		name                 string
+		prerequisiteFunction func() (addr sdk.AccAddress)
+		postValidateFunction func(addr sdk.AccAddress)
+	}{
+		{
+			"calc delegation amount",
+			func() (addr sdk.AccAddress) {
+				suite.ResetSuite()
 
-	ek := app.EstakingKeeper
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000))
+				addr = suite.AddAccounts(1, nil)[0]
 
-	// Check with non-delegator
-	delegatedAmount := ek.CalcDelegationAmount(ctx, addr[0])
-	require.Equal(t, delegatedAmount, sdk.ZeroInt())
+				return addr
+			},
+			func(addr sdk.AccAddress) {
+				// Check with non-delegator
+				delegatedAmount := suite.app.EstakingKeeper.CalcDelegationAmount(suite.ctx, addr)
+				suite.Require().Equal(delegatedAmount, sdk.ZeroInt())
 
-	// Check with genesis account (delegator)
-	delegatedAmount = ek.CalcDelegationAmount(ctx, genAccount)
-	require.Equal(t, delegatedAmount, sdk.DefaultPowerReduction)
+				// Check with genesis account (delegator)
+				delegatedAmount = suite.app.EstakingKeeper.CalcDelegationAmount(suite.ctx, suite.genAccount)
+				suite.Require().Equal(delegatedAmount, sdk.DefaultPowerReduction)
+			},
+		},
+		{
+			"calc bonded delegation amount",
+			func() (addr sdk.AccAddress) {
+				suite.ResetSuite()
+
+				addr = suite.AddAccounts(1, nil)[0]
+
+				return addr
+			},
+			func(addr sdk.AccAddress) {
+				// Check with non-delegator
+				delegatedAmount := suite.app.EstakingKeeper.CalcBondedDelegationAmount(suite.ctx, addr)
+				suite.Require().Equal(delegatedAmount, sdk.ZeroInt())
+
+				// Check with genesis account (delegator)
+				delegatedAmount = suite.app.EstakingKeeper.CalcBondedDelegationAmount(suite.ctx, suite.genAccount)
+				suite.Require().Equal(delegatedAmount, sdk.DefaultPowerReduction)
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			addr := tc.prerequisiteFunction()
+			tc.postValidateFunction(addr)
+		})
+	}
 }

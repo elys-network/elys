@@ -1,248 +1,327 @@
 package keeper_test
 
 import (
-	"context"
-	"testing"
-
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	simapp "github.com/elys-network/elys/app"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/estaking/keeper"
 	"github.com/elys-network/elys/x/estaking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/stretchr/testify/require"
 )
 
-func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
-	k, ctx, _, _ := keepertest.EstakingKeeper(t)
-	return keeper.NewMsgServerImpl(*k), sdk.WrapSDKContext(ctx)
-}
+func (suite *EstakingKeeperTestSuite) TestMsgServer() {
+	testCases := []struct {
+		name                 string
+		prerequisiteFunction func()
+		postValidateFunction func()
+	}{
+		{
+			"new msg server impl",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				msgServer := keeper.NewMsgServerImpl(suite.app.EstakingKeeper)
 
-func TestMsgServer(t *testing.T) {
-	ms, ctx := setupMsgServer(t)
-	require.NotNil(t, ms)
-	require.NotNil(t, ctx)
-}
+				suite.Require().NotNil(msgServer)
+				suite.Require().NotNil(suite.ctx)
+			},
+		},
+		{
+			"withdraw elys staking rewards",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				// create validator with 50% commission
+				validators := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				suite.Require().True(len(validators) > 0)
+				valAddr := validators[0].GetOperator()
+				delegations := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().True(len(delegations) > 0)
+				addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
-func TestWithdrawElysStakingRewards(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+				// next block
+				ctx := suite.ctx.WithBlockHeight(suite.ctx.BlockHeight() + 1)
 
-	bankKeeper := app.BankKeeper
-	stakingKeeper := app.StakingKeeper
-	distrKeeper := app.DistrKeeper
-	estakingKeeper := app.EstakingKeeper
+				// allocate some rewards
+				initial := sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction)
+				tokens := sdk.DecCoins{sdk.NewDecCoin(sdk.DefaultBondDenom, initial)}
 
-	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
-	require.True(t, len(validators) > 0)
-	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
-	require.True(t, len(delegations) > 0)
-	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
+				initialCoins := sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, initial)}
+				err := suite.app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initialCoins)
+				suite.Require().Nil(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, disttypes.ModuleName, initialCoins)
+				suite.Require().Nil(err)
 
-	// next block
-	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+				suite.app.DistrKeeper.AllocateTokensToValidator(ctx, validators[0], tokens)
 
-	// allocate some rewards
-	initial := sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction)
-	tokens := sdk.DecCoins{sdk.NewDecCoin(sdk.DefaultBondDenom, initial)}
+				// historical count should be 4 (initial + latest for delegation)
+				suite.Require().Equal(uint64(4), suite.app.DistrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
-	initialCoins := sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, initial)}
-	err := bankKeeper.MintCoins(ctx, minttypes.ModuleName, initialCoins)
-	require.Nil(t, err)
-	err = bankKeeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, disttypes.ModuleName, initialCoins)
-	require.Nil(t, err)
+				// withdraw single rewards
+				msgServer := keeper.NewMsgServerImpl(suite.app.EstakingKeeper)
+				res, err := msgServer.WithdrawElysStakingRewards(ctx, &types.MsgWithdrawElysStakingRewards{
+					DelegatorAddress: addr.String(),
+				})
+				suite.Require().Nil(err)
+				suite.Require().NotEmpty(res.Amount.String())
+			},
+		},
+		{
+			"withdraw reward normal validator",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				// create validator with 50% commission
+				validators := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				suite.Require().True(len(validators) > 0)
+				valAddr := validators[0].GetOperator()
+				delegations := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().True(len(delegations) > 0)
+				addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
-	distrKeeper.AllocateTokensToValidator(ctx, validators[0], tokens)
+				// next block
+				ctx := suite.ctx.WithBlockHeight(suite.ctx.BlockHeight() + 1)
 
-	// historical count should be 4 (initial + latest for delegation)
-	require.Equal(t, uint64(4), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
+				// allocate some rewards
+				initial := sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction)
+				tokens := sdk.DecCoins{sdk.NewDecCoin(sdk.DefaultBondDenom, initial)}
 
-	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
-	res, err := msgServer.WithdrawElysStakingRewards(ctx, &types.MsgWithdrawElysStakingRewards{
-		DelegatorAddress: addr.String(),
-	})
-	require.Nil(t, err)
-	require.NotEmpty(t, res.Amount.String())
-}
+				initialCoins := sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, initial)}
+				err := suite.app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initialCoins)
+				suite.Require().Nil(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, disttypes.ModuleName, initialCoins)
+				suite.Require().Nil(err)
 
-func TestWithdrawReward_NormalValidator(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+				suite.app.DistrKeeper.AllocateTokensToValidator(ctx, validators[0], tokens)
 
-	bankKeeper := app.BankKeeper
-	stakingKeeper := app.StakingKeeper
-	distrKeeper := app.DistrKeeper
-	estakingKeeper := app.EstakingKeeper
+				// historical count should be 4 (initial + latest for delegation)
+				suite.Require().Equal(uint64(4), suite.app.DistrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
-	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
-	require.True(t, len(validators) > 0)
-	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
-	require.True(t, len(delegations) > 0)
-	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
+				// withdraw single rewards
+				msgServer := keeper.NewMsgServerImpl(suite.app.EstakingKeeper)
+				res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
+					DelegatorAddress: addr.String(),
+					ValidatorAddress: valAddr.String(),
+				})
+				suite.Require().Nil(err)
+				suite.Require().NotEmpty(res.Amount.String())
+			},
+		},
+		{
+			"withdraw reward eden validator",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				// create validator with 50% commission
+				validators := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				suite.Require().True(len(validators) > 0)
+				valAddr := validators[0].GetOperator()
+				delegations := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().True(len(delegations) > 0)
+				addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
-	// next block
-	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+				// set commitments
+				commitments := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, addr)
+				commitments.AddClaimed(sdk.NewInt64Coin(ptypes.Eden, 1000_000))
+				suite.app.CommitmentKeeper.SetCommitments(suite.ctx, commitments)
+				suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+					BaseDenom:       ptypes.Eden,
+					Denom:           ptypes.Eden,
+					Decimals:        6,
+					CommitEnabled:   true,
+					WithdrawEnabled: true,
+				})
+				commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(suite.app.CommitmentKeeper)
+				_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(suite.ctx), &commitmenttypes.MsgCommitClaimedRewards{
+					Creator: addr.String(),
+					Denom:   ptypes.Eden,
+					Amount:  sdk.NewInt(1000_000),
+				})
+				suite.Require().Nil(err)
 
-	// allocate some rewards
-	initial := sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction)
-	tokens := sdk.DecCoins{sdk.NewDecCoin(sdk.DefaultBondDenom, initial)}
+				// next block
+				ctx := suite.ctx.WithBlockHeight(suite.ctx.BlockHeight() + 1)
 
-	initialCoins := sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, initial)}
-	err := bankKeeper.MintCoins(ctx, minttypes.ModuleName, initialCoins)
-	require.Nil(t, err)
-	err = bankKeeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, disttypes.ModuleName, initialCoins)
-	require.Nil(t, err)
+				// allocate some rewards
+				initial := sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction)
+				tokens := sdk.DecCoins{sdk.NewDecCoin(sdk.DefaultBondDenom, initial)}
 
-	distrKeeper.AllocateTokensToValidator(ctx, validators[0], tokens)
+				initialCoins := sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, initial)}
+				err = suite.app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initialCoins)
+				suite.Require().Nil(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, disttypes.ModuleName, initialCoins)
+				suite.Require().Nil(err)
 
-	// historical count should be 4 (initial + latest for delegation)
-	require.Equal(t, uint64(4), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
+				suite.app.DistrKeeper.AllocateTokensToValidator(ctx, validators[0], tokens)
 
-	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
-	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
-		DelegatorAddress: addr.String(),
-		ValidatorAddress: valAddr.String(),
-	})
-	require.Nil(t, err)
-	require.NotEmpty(t, res.Amount.String())
-}
+				// historical count should be 5 (initial + latest for delegation)
+				suite.Require().Equal(uint64(5), suite.app.DistrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
-func TestWithdrawReward_EdenValidator(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+				// withdraw single rewards
+				msgServer := keeper.NewMsgServerImpl(suite.app.EstakingKeeper)
+				res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
+					DelegatorAddress: addr.String(),
+					ValidatorAddress: suite.app.EstakingKeeper.GetParams(ctx).EdenCommitVal,
+				})
+				suite.Require().Nil(err)
+				suite.Require().NotEmpty(res.Amount.String())
+			},
+		},
+		{
+			"withdraw reward eden b validator",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				// create validator with 50% commission
+				validators := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				suite.Require().True(len(validators) > 0)
+				valAddr := validators[0].GetOperator()
+				delegations := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().True(len(delegations) > 0)
+				addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
-	bankKeeper := app.BankKeeper
-	stakingKeeper := app.StakingKeeper
-	distrKeeper := app.DistrKeeper
-	estakingKeeper := app.EstakingKeeper
+				// set commitments
+				commitments := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, addr)
+				commitments.AddClaimed(sdk.NewInt64Coin(ptypes.EdenB, 1000_000))
+				suite.app.CommitmentKeeper.SetCommitments(suite.ctx, commitments)
+				suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+					BaseDenom:       ptypes.EdenB,
+					Denom:           ptypes.EdenB,
+					Decimals:        6,
+					CommitEnabled:   true,
+					WithdrawEnabled: true,
+				})
+				commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(suite.app.CommitmentKeeper)
+				_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(suite.ctx), &commitmenttypes.MsgCommitClaimedRewards{
+					Creator: addr.String(),
+					Denom:   ptypes.EdenB,
+					Amount:  sdk.NewInt(1000_000),
+				})
+				suite.Require().Nil(err)
 
-	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
-	require.True(t, len(validators) > 0)
-	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
-	require.True(t, len(delegations) > 0)
-	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
+				// next block
+				ctx := suite.ctx.WithBlockHeight(suite.ctx.BlockHeight() + 1)
 
-	// set commitments
-	commitments := app.CommitmentKeeper.GetCommitments(ctx, addr)
-	commitments.AddClaimed(sdk.NewInt64Coin(ptypes.Eden, 1000_000))
-	app.CommitmentKeeper.SetCommitments(ctx, commitments)
-	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom:       ptypes.Eden,
-		Denom:           ptypes.Eden,
-		Decimals:        6,
-		CommitEnabled:   true,
-		WithdrawEnabled: true,
-	})
-	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(app.CommitmentKeeper)
-	_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &commitmenttypes.MsgCommitClaimedRewards{
-		Creator: addr.String(),
-		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(1000_000),
-	})
-	require.Nil(t, err)
+				// allocate some rewards
+				initial := sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction)
+				tokens := sdk.DecCoins{sdk.NewDecCoin(sdk.DefaultBondDenom, initial)}
 
-	// next block
-	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+				initialCoins := sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, initial)}
+				err = suite.app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initialCoins)
+				suite.Require().Nil(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, disttypes.ModuleName, initialCoins)
+				suite.Require().Nil(err)
 
-	// allocate some rewards
-	initial := sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction)
-	tokens := sdk.DecCoins{sdk.NewDecCoin(sdk.DefaultBondDenom, initial)}
+				suite.app.DistrKeeper.AllocateTokensToValidator(ctx, validators[0], tokens)
 
-	initialCoins := sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, initial)}
-	err = bankKeeper.MintCoins(ctx, minttypes.ModuleName, initialCoins)
-	require.Nil(t, err)
-	err = bankKeeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, disttypes.ModuleName, initialCoins)
-	require.Nil(t, err)
+				// historical count should be 5 (initial + latest for delegation)
+				suite.Require().Equal(uint64(5), suite.app.DistrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
-	distrKeeper.AllocateTokensToValidator(ctx, validators[0], tokens)
+				// withdraw single rewards
+				msgServer := keeper.NewMsgServerImpl(suite.app.EstakingKeeper)
+				res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
+					DelegatorAddress: addr.String(),
+					ValidatorAddress: suite.app.EstakingKeeper.GetParams(ctx).EdenbCommitVal,
+				})
+				suite.Require().Nil(err)
+				suite.Require().NotEmpty(res.Amount.String())
+			},
+		},
+		{
+			"update params",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				msgServer := keeper.NewMsgServerImpl(suite.app.EstakingKeeper)
 
-	// historical count should be 5 (initial + latest for delegation)
-	require.Equal(t, uint64(5), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
+				params := suite.app.EstakingKeeper.GetParams(suite.ctx)
+				params.EdenCommitVal = "eden"
+				msg := &types.MsgUpdateParams{
+					Authority: suite.app.GovKeeper.GetAuthority(),
+					Params:    params,
+				}
 
-	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
-	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
-		DelegatorAddress: addr.String(),
-		ValidatorAddress: estakingKeeper.GetParams(ctx).EdenCommitVal,
-	})
-	require.Nil(t, err)
-	require.NotEmpty(t, res.Amount.String())
-}
+				res, err := msgServer.UpdateParams(suite.ctx, msg)
+				suite.Require().Nil(err)
+				suite.Require().NotNil(res)
+			},
+		},
+		{
+			"update params invalid authority",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				msgServer := keeper.NewMsgServerImpl(suite.app.EstakingKeeper)
 
-func TestWithdrawReward_EdenBValidator(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+				params := suite.app.EstakingKeeper.GetParams(suite.ctx)
+				params.EdenCommitVal = "eden"
+				msg := &types.MsgUpdateParams{
+					Authority: "invalid",
+					Params:    params,
+				}
 
-	bankKeeper := app.BankKeeper
-	stakingKeeper := app.StakingKeeper
-	distrKeeper := app.DistrKeeper
-	estakingKeeper := app.EstakingKeeper
+				res, err := msgServer.UpdateParams(suite.ctx, msg)
+				suite.Require().NotNil(err)
+				suite.Require().Nil(res)
+			},
+		},
+		{
+			"withdraw all rewards",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				// create validator with 50% commission
+				validators := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				suite.Require().True(len(validators) > 0)
+				valAddr := validators[0].GetOperator()
+				delegations := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().True(len(delegations) > 0)
+				addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
-	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
-	require.True(t, len(validators) > 0)
-	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
-	require.True(t, len(delegations) > 0)
-	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
+				// next block
+				ctx := suite.ctx.WithBlockHeight(suite.ctx.BlockHeight() + 1)
 
-	// set commitments
-	commitments := app.CommitmentKeeper.GetCommitments(ctx, addr)
-	commitments.AddClaimed(sdk.NewInt64Coin(ptypes.EdenB, 1000_000))
-	app.CommitmentKeeper.SetCommitments(ctx, commitments)
-	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom:       ptypes.EdenB,
-		Denom:           ptypes.EdenB,
-		Decimals:        6,
-		CommitEnabled:   true,
-		WithdrawEnabled: true,
-	})
-	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(app.CommitmentKeeper)
-	_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &commitmenttypes.MsgCommitClaimedRewards{
-		Creator: addr.String(),
-		Denom:   ptypes.EdenB,
-		Amount:  sdk.NewInt(1000_000),
-	})
-	require.Nil(t, err)
+				// allocate some rewards
+				initial := sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction)
+				tokens := sdk.DecCoins{sdk.NewDecCoin(sdk.DefaultBondDenom, initial)}
 
-	// next block
-	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+				initialCoins := sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, initial)}
+				err := suite.app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initialCoins)
+				suite.Require().Nil(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, disttypes.ModuleName, initialCoins)
+				suite.Require().Nil(err)
 
-	// allocate some rewards
-	initial := sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction)
-	tokens := sdk.DecCoins{sdk.NewDecCoin(sdk.DefaultBondDenom, initial)}
+				suite.app.DistrKeeper.AllocateTokensToValidator(ctx, validators[0], tokens)
 
-	initialCoins := sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, initial)}
-	err = bankKeeper.MintCoins(ctx, minttypes.ModuleName, initialCoins)
-	require.Nil(t, err)
-	err = bankKeeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, disttypes.ModuleName, initialCoins)
-	require.Nil(t, err)
+				// historical count should be 4 (initial + latest for delegation)
+				suite.Require().Equal(uint64(4), suite.app.DistrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
-	distrKeeper.AllocateTokensToValidator(ctx, validators[0], tokens)
+				// withdraw all rewards
+				msgServer := keeper.NewMsgServerImpl(suite.app.EstakingKeeper)
+				res, err := msgServer.WithdrawAllRewards(ctx, &types.MsgWithdrawAllRewards{
+					DelegatorAddress: addr.String(),
+				})
+				suite.Require().Nil(err)
+				suite.Require().NotNil(res)
+			},
+		},
+	}
 
-	// historical count should be 5 (initial + latest for delegation)
-	require.Equal(t, uint64(5), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
-
-	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
-	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
-		DelegatorAddress: addr.String(),
-		ValidatorAddress: estakingKeeper.GetParams(ctx).EdenbCommitVal,
-	})
-	require.Nil(t, err)
-	require.NotEmpty(t, res.Amount.String())
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			tc.postValidateFunction()
+		})
+	}
 }

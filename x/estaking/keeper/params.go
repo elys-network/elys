@@ -36,3 +36,10 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	b := k.cdc.MustMarshal(&params)
 	store.Set(types.ParamsKeyPrefix, b)
 }
+
+// SetLegacyParams set the params
+func (k Keeper) SetLegacyParams(ctx sdk.Context, params types.LegacyParams) {
+	store := ctx.KVStore(k.storeKey)
+	b := k.cdc.MustMarshal(&params)
+	store.Set(types.ParamsKeyPrefix, b)
+}

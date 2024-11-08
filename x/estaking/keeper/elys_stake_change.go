@@ -24,6 +24,12 @@ func (k Keeper) RemoveElysStakeChange(ctx sdk.Context, address sdk.AccAddress) {
 	store.Delete(key)
 }
 
+func (k Keeper) SetLegacyElysStakeChange(ctx sdk.Context, addr sdk.AccAddress) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyElysStakeChangeKeyPrefix))
+	key := types.GetElysStakeChangeKey(addr)
+	store.Set(key, addr)
+}
+
 func (k Keeper) DeleteLegacyElysStakeChange(ctx sdk.Context, address sdk.AccAddress) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyElysStakeChangeKeyPrefix))
 	store.Delete([]byte(address))
