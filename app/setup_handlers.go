@@ -18,7 +18,7 @@ const (
 )
 
 // make sure to update these when you upgrade the version
-var NextVersion = "v0.49.0"
+var NextVersion = "v0.49.4"
 
 func SetupHandlers(app *ElysApp) {
 	setUpgradeHandler(app)
