@@ -16,7 +16,7 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 
 	for i, asset := range updatedAssets {
 		for _, el := range amountDepthInfo {
-			entry, found := k.assetProfileKeeper.GetEntry(ctx, asset.Token.Denom)
+			entry, found := k.assetProfileKeeper.GetEntryByDenom(ctx, asset.Token.Denom)
 			if !found {
 				return nil, assetprofiletypes.ErrAssetProfileNotFound
 			}

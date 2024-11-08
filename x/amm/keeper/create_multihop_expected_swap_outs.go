@@ -26,7 +26,7 @@ func (k Keeper) createMultihopExpectedSwapOuts(
 			return nil, types.ErrInvalidPoolId
 		}
 
-		snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
+		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		tokenIn, _, err := pool.CalcInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.NewCoins(tokenOut), route.TokenInDenom, pool.GetPoolParams().SwapFee, k.accountedPoolKeeper)
 		if err != nil {
 			return nil, err

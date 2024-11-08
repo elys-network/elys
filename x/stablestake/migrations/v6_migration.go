@@ -6,7 +6,7 @@ import (
 
 func (m Migrator) V6Migration(ctx sdk.Context) error {
 
-	m.keeper.AccountInterest(ctx)
+	//m.keeper.AccountInterest(ctx)
 
 	return nil
 }

@@ -259,6 +259,24 @@ component_management:
       name: stablestake_queries
       paths:
         - ./x/stablestake/**/*query*
+    #perpetual
+    - component_id: module_perpetual_transactions
+      name: perpetual_transactions
+      paths:
+        - ./x/perpetual/**/msg_server*
+    - component_id: module_perpetual_lifecycle
+      name: perpetual_lifecycle
+      paths:
+        - ./x/perpetual/**/abci*
+        - ./x/perpetual/**/*blocker*
+    - component_id: module_perpetual_keeper
+      name: perpetual_keeper
+      paths:
+        - ./x/perpetual/**/keeper*
+    - component_id: module_perpetual_queries
+      name: perpetual_queries
+      paths:
+        - ./x/perpetual/**/*query*
     # tier
     - component_id: module_tier_transactions
       name: tier_transactions

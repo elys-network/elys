@@ -8,8 +8,11 @@ import (
 
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -225,6 +228,34 @@ func (suite *PerpetualKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, 
 	return ammPool
 }
 
+func (suite *PerpetualKeeperTestSuite) SetPerpetualPool(poolId uint64) (types.Pool, sdk.AccAddress, ammtypes.Pool) {
+	ctx := suite.ctx
+	k := suite.app.PerpetualKeeper
+	//prices
+	suite.SetupCoinPrices()
+	//accounts
+	accounts := suite.AddAccounts(2, nil)
+	poolCreator := accounts[0]
+
+	amount := sdk.NewInt(100000000000)
+
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		Pool: leveragelpmoduletypes.AddPool{
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+		},
+	}
+	_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
+	suite.Require().NoError(err)
+
+	pool := types.NewPool(ammPool)
+	k.SetPool(ctx, pool)
+
+	return pool, poolCreator, ammPool
+}
+
 func (suite *PerpetualKeeperTestSuite) AddLiquidity(ammPool ammtypes.Pool, provider sdk.AccAddress, tokensIn sdk.Coins) {
 	numShares, _, err := ammPool.CalcJoinPoolNoSwapShares(tokensIn)
 	suite.Require().NoError(err)
@@ -232,7 +263,9 @@ func (suite *PerpetualKeeperTestSuite) AddLiquidity(ammPool ammtypes.Pool, provi
 	suite.Require().NoError(err)
 	err = suite.app.AmmKeeper.MintPoolShareToAccount(suite.ctx, ammPool, provider, numShares)
 	suite.Require().NoError(err)
-	ammPool.IncreaseLiquidity(numShares, tokensIn)
+	//IncreaseDenomLiquidity
+	err = ammPool.IncreaseLiquidity(numShares, tokensIn)
+	suite.Require().NoError(err)
 	suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
 
 }

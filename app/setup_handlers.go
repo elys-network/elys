@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"time"
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,7 +12,9 @@ import (
 )
 
 const (
-	LocalNetVersion = "v999.999.999"
+	LocalNetVersion    = "v999.999.999"
+	NewMaxAgeNumBlocks = int64(1_000_000)      // 1.5s blocks * 1_000_000 = 1.5M seconds > 2 weeks
+	NewMaxAgeDuration  = time.Second * 1209600 // 2 weeks
 )
 
 // make sure to update these when you upgrade the version
@@ -32,6 +35,14 @@ func setUpgradeHandler(app *ElysApp) {
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
 
 				// Add any logic here to run when the chain is upgraded to the new version
+				// Update consensus params in order to safely enable comet pruning
+				consensusParams, err := app.ConsensusParamsKeeper.Get(ctx)
+				if err != nil {
+					return nil, err
+				}
+				consensusParams.Evidence.MaxAgeNumBlocks = NewMaxAgeNumBlocks
+				consensusParams.Evidence.MaxAgeDuration = NewMaxAgeDuration
+				app.ConsensusParamsKeeper.Set(ctx, consensusParams)
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
