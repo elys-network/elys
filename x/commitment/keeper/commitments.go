@@ -1,10 +1,15 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/x/commitment/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // SetCommitments set a specific commitments in the store from its index
@@ -47,6 +52,34 @@ func (k Keeper) GetAllCommitments(ctx sdk.Context) (list []*types.Commitments) {
 	}
 
 	return
+}
+
+func (k Keeper) GetAllCommitmentsWithPagination(ctx sdk.Context, pagination *query.PageRequest) ([]*types.Commitments, *query.PageResponse, error) {
+	var listCommitments []*types.Commitments
+	store := ctx.KVStore(k.storeKey)
+
+	if pagination == nil {
+		pagination = &query.PageRequest{
+			Limit: types.MaxPageLimit,
+		}
+	}
+
+	if pagination.Limit > types.MaxPageLimit {
+		return nil, nil, status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit))
+	}
+
+	pageRes, err := query.Paginate(store, pagination, func(key []byte, value []byte) error {
+		var commitments types.Commitments
+		k.cdc.MustUnmarshal(value, &commitments)
+		listCommitments = append(listCommitments, &commitments)
+		return nil
+	})
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return listCommitments, pageRes, nil
 }
 
 // remove after migration
