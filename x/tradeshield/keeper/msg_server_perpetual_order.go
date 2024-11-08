@@ -51,7 +51,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		if order.PoolId == msg.PoolId && order.Position == msg.Position &&
 			order.Collateral.Denom == msg.Collateral.Denom &&
 			order.TradingAsset == msg.TradingAsset {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "user already has a order for the same pool")
+			return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "user already has a order for the same pool")
 		}
 	}
 
@@ -63,7 +63,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 	}
 	for _, mtp := range mtps {
 		if mtp.Mtp.AmmPoolId == msg.PoolId && mtp.Mtp.Position == perpetualtypes.Position(msg.Position) && mtp.Mtp.CollateralAsset == msg.Collateral.Denom && mtp.Mtp.TradingAsset == msg.TradingAsset {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "user already has a position in the same pool")
+			return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "user already has a position in the same pool")
 		}
 	}
 
