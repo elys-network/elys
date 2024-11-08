@@ -8,9 +8,14 @@ import (
 )
 
 func NewPoolAddress(poolId uint64) sdk.AccAddress {
+	poolIdModuleName := GetPoolIdModuleName(poolId)
+	return address.Module(poolIdModuleName, []byte(""))
+}
+
+func GetPoolIdModuleName(poolId uint64) string {
 	poolIdStr := strconv.FormatUint(poolId, 10)
 	poolIdModuleName := ModuleName + "/pool/account/" + poolIdStr
-	return address.Module(poolIdModuleName, []byte(""))
+	return poolIdModuleName
 }
 
 func NewPoolRebalanceTreasury(poolId uint64) sdk.AccAddress {

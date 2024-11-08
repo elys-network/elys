@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"strconv"
 
 	sdkmath "cosmossdk.io/math"
 
@@ -52,7 +51,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 	}
 
 	// create and save the pool's module account to the account keeper
-	poolAccountModuleName := "amm/pool/account/" + strconv.FormatUint(pool.PoolId, 10)
+	poolAccountModuleName := types.GetPoolIdModuleName(pool.PoolId)
 	if err := utils.CreateModuleAccount(ctx, k.accountKeeper, address, poolAccountModuleName); err != nil {
 		return 0, fmt.Errorf("creating pool module account for id %d: %w", poolId, err)
 	}

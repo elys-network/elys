@@ -2,7 +2,6 @@ package migrations
 
 import (
 	"fmt"
-	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -13,7 +12,7 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 	pools := m.keeper.GetAllPool(ctx)
 	for _, pool := range pools {
 		newPoolAddress := types.NewPoolAddress(pool.PoolId)
-		poolAccountModuleName := "amm/pool/account/" + strconv.FormatUint(pool.PoolId, 10)
+		poolAccountModuleName := types.GetPoolIdModuleName(pool.PoolId)
 		if err := utils.CreateModuleAccount(ctx, m.keeper.GetAccountKeeper(), newPoolAddress, poolAccountModuleName); err != nil {
 			panic(fmt.Errorf("error creating new pool account for %d: %w", pool.PoolId, err))
 		}
