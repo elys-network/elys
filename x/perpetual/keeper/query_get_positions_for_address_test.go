@@ -36,7 +36,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsForAddress_ErrPageSi
 	_, err := k.GetPositionsForAddress(ctx, &types.PositionsForAddressRequest{
 		Address: sample.AccAddress(),
 		Pagination: &query.PageRequest{
-			Limit: 200,
+			Limit: 12000,
 		},
 	})
 
