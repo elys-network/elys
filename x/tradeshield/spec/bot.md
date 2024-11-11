@@ -16,9 +16,8 @@
 
   - `PerpetualOrder` object contains both `trigger_price` and `perpetual_order_type`.
   - `market_price` can be retrieved from the oracle module.
-  - If `perpetual_order_type` is `LIMITOPEN` and `market_price` is less than or equal to `trigger_price` then trigger `executeOrders` function.
-  - If `perpetual_order_type` is `LIMITCLOSE` and `market_price` is greater than or equal to `trigger_price` then trigger `executeOrders` function.
-  - If `perpetual_order_type` is `STOPLOSSPERP` and `market_price` is less than or equal to `trigger_price` then trigger `executeOrders` function.
+  - For `LONG` positions: If `perpetual_order_type` is `LIMITOPEN` and `market_price` is less than or equal to `trigger_price` then trigger `executeOrders` function.
+  - For `SHORT` positions: If `perpetual_order_type` is `LIMITOPEN` and `market_price` is greater than or equal to `trigger_price` then trigger `executeOrders` function.
 
 ### executeOrders function
 - `executeOrders(spot_order_ids: []u64, perpetual_order_ids: []u64)`
