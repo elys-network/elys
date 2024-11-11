@@ -133,19 +133,25 @@ func (am AppModule) AllocateTokens(ctx sdk.Context) {
 	// Note: to prevent negative coin amount issue when invariant's broken,
 	// calculation of total bonded tokens manually through iteration
 	sumOfValTokens := math.ZeroInt()
-	am.estakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
+	err = am.estakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
 		sumOfValTokens = sumOfValTokens.Add(validator.GetTokens())
 		return false
 	})
+	if err != nil {
+		panic(err)
+	}
 
-	totalBondedTokens := am.estakingKeeper.TotalBondedTokens(ctx)
+	totalBondedTokens, err := am.estakingKeeper.TotalBondedTokens(ctx)
+	if err != nil {
+		panic(err)
+	}
 	if !totalBondedTokens.Equal(sumOfValTokens) {
 		ctx.Logger().Error("invariant broken", "sumOfValTokens", sumOfValTokens.String(), "totalBondedTokens", totalBondedTokens.String())
 	}
 
 	sumOfValTokensDec := math.LegacyNewDecFromInt(sumOfValTokens)
 	// allocate tokens proportionally to representatives voting power
-	am.estakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
+	err = am.estakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
 		// we get this validator's percentage of the total power by dividing their tokens by the total bonded tokens
 		powerFraction := math.LegacyNewDecFromInt(validator.GetTokens()).QuoTruncate(sumOfValTokensDec)
 		// we truncate here again, which means that the reward will be slightly lower than it should be
@@ -157,6 +163,9 @@ func (am AppModule) AllocateTokens(ctx sdk.Context) {
 		remaining = remaining.Sub(reward)
 		return false
 	})
+	if err != nil {
+		panic(err)
+	}
 
 	// temporary workaround to keep CanWithdrawInvariant happy
 	feePool, err := am.keeper.FeePool.Get(ctx)

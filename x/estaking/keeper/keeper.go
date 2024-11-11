@@ -85,15 +85,16 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) TotalBondedTokens(ctx sdk.Context) math.Int {
+func (k Keeper) TotalBondedTokens(goCtx context.Context) (math.Int, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	bondedTokens, err := k.Keeper.TotalBondedTokens(ctx)
 	if err != nil {
-		panic(err)
+		return math.Int{}, err
 	}
 	edenValidator := k.GetEdenValidator(ctx)
 	edenBValidator := k.GetEdenBValidator(ctx)
 	bondedTokens = bondedTokens.Add(edenValidator.GetTokens()).Add(edenBValidator.GetTokens())
-	return bondedTokens
+	return bondedTokens, nil
 }
 
 func (k Keeper) GetEdenValidator(ctx sdk.Context) stakingtypes.ValidatorI {
@@ -246,23 +247,24 @@ func (k Keeper) IterateDelegations(goCtx context.Context, delegator sdk.AccAddre
 }
 
 // iterate through the bonded validator set and perform the provided function
-func (k Keeper) IterateBondedValidatorsByPower(ctx sdk.Context, fn func(index int64, validator stakingtypes.ValidatorI) (stop bool)) {
+func (k Keeper) IterateBondedValidatorsByPower(goCtx context.Context, fn func(index int64, validator stakingtypes.ValidatorI) (stop bool)) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	commParams := k.commKeeper.GetParams(ctx)
 
 	if commParams.TotalCommitted.AmountOf(ptypes.Eden).IsPositive() {
 		edenValidator := k.GetEdenValidator(ctx)
 		if stop := fn(0, edenValidator); stop {
-			return
+			return nil
 		}
 	}
 
 	if commParams.TotalCommitted.AmountOf(ptypes.EdenB).IsPositive() {
 		edenBValidator := k.GetEdenBValidator(ctx)
 		if stop := fn(0, edenBValidator); stop {
-			return
+			return nil
 		}
 	}
-	k.Keeper.IterateBondedValidatorsByPower(ctx, fn)
+	return k.Keeper.IterateBondedValidatorsByPower(ctx, fn)
 }
 
 func (k Keeper) Slash(goCtx context.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor math.LegacyDec) (math.Int, error) {

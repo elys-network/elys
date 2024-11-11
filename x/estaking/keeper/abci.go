@@ -118,7 +118,10 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	stakersEdenAmount := edenAmountPerYear.Quo(math.NewInt(totalBlocksPerYear))
 
 	// Maximum eden APR - 30% by default
-	totalElysEdenEdenBStake := k.TotalBondedTokens(ctx)
+	totalElysEdenEdenBStake, err := k.TotalBondedTokens(ctx)
+	if err != nil {
+		return err
+	}
 
 	stakersMaxEdenAmount := params.MaxEdenRewardAprStakers.
 		MulInt(totalElysEdenEdenBStake).

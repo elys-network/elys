@@ -79,13 +79,21 @@ func (k Keeper) Invariant(goCtx context.Context, req *types.QueryInvariantReques
 
 	valTokensSum := math.ZeroInt()
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	k.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
+	err := k.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
 		valTokensSum = valTokensSum.Add(validator.GetTokens())
 		return false
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	totalBondedTokens, err := k.TotalBondedTokens(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.QueryInvariantResponse{
-		TotalBonded:              k.TotalBondedTokens(ctx),
+		TotalBonded:              totalBondedTokens,
 		BondedValidatorTokensSum: valTokensSum,
 	}, nil
 }

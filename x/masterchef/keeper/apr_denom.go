@@ -36,7 +36,10 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			})
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
-			totalStakedSnapshot := k.estakingKeeper.TotalBondedTokens(ctx)
+			totalStakedSnapshot, err := k.estakingKeeper.TotalBondedTokens(ctx)
+			if err != nil {
+				return math.LegacyZeroDec(), err
+			}
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {
@@ -95,7 +98,10 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			}
 
 			// Update total committed states
-			totalStakedSnapshot := k.estakingKeeper.TotalBondedTokens(ctx)
+			totalStakedSnapshot, err := k.estakingKeeper.TotalBondedTokens(ctx)
+			if err != nil {
+				return math.LegacyZeroDec(), err
+			}
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {

@@ -34,7 +34,8 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 	require.True(t, len(delegations) > 0)
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
-	totalBonded := estakingKeeper.TotalBondedTokens(ctx)
+	totalBonded, err := estakingKeeper.TotalBondedTokens(ctx)
+	require.Nil(t, err)
 	require.Equal(t, totalBonded.String(), "1000000")
 
 	// set commitments
@@ -56,7 +57,8 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 	})
 	require.Nil(t, err)
 
-	totalBonded = estakingKeeper.TotalBondedTokens(ctx)
+	totalBonded, err = estakingKeeper.TotalBondedTokens(ctx)
+	require.Nil(t, err)
 	require.Equal(t, totalBonded.String(), "2000000")
 
 	edenVal := estakingKeeper.GetEdenValidator(ctx)
@@ -83,16 +85,18 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 	require.Nil(t, edenBDel)
 
 	numDelegations := int64(0)
-	estakingKeeper.IterateDelegations(ctx, addr, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
+	err = estakingKeeper.IterateDelegations(ctx, addr, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
 		numDelegations++
 		return false
 	})
+	require.NoError(t, err)
 	require.Equal(t, numDelegations, int64(2))
 
 	numBondedValidators := int64(0)
-	estakingKeeper.IterateBondedValidatorsByPower(ctx, func(index int64, delegation stakingtypes.ValidatorI) (stop bool) {
+	err = estakingKeeper.IterateBondedValidatorsByPower(ctx, func(index int64, delegation stakingtypes.ValidatorI) (stop bool) {
 		numBondedValidators++
 		return false
 	})
+	require.NoError(t, err)
 	require.Equal(t, numBondedValidators, int64(2))
 }

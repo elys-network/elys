@@ -2,6 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -27,6 +28,7 @@ func TestMsgUncommitTokens_ValidateBasic(t *testing.T) {
 			msg: MsgUncommitTokens{
 				Creator: sample.AccAddress(),
 				Amount:  sdkmath.ZeroInt(),
+				Denom:   ptypes.ATOM,
 			},
 		},
 	}

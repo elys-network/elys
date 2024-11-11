@@ -71,6 +71,8 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v8/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
+	//ccvconsumerkeeper "github.com/cosmos/interchain-security/v6/x/ccv/consumer/keeper"
+	//ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	wasmbindingsclient "github.com/elys-network/elys/wasmbindings/client"
 	accountedpoolmodulekeeper "github.com/elys-network/elys/x/accountedpool/keeper"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
@@ -145,6 +147,8 @@ type AppKeepers struct {
 	IBCFeeKeeper   ibcfeekeeper.Keeper
 	IBCHooksKeeper *ibchookskeeper.Keeper
 
+	//ConsumerKeeper ccvconsumerkeeper.Keeper
+
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
@@ -152,10 +156,11 @@ type AppKeepers struct {
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
+	ScopedOracleKeeper        capabilitykeeper.ScopedKeeper
+	//ScopedCCVConsumerKeeper   capabilitykeeper.ScopedKeeper
 
 	EpochsKeeper        *epochsmodulekeeper.Keeper
 	AssetprofileKeeper  assetprofilemodulekeeper.Keeper
-	ScopedOracleKeeper  capabilitykeeper.ScopedKeeper
 	OracleKeeper        oraclekeeper.Keeper
 	CommitmentKeeper    *commitmentmodulekeeper.Keeper
 	TokenomicsKeeper    tokenomicsmodulekeeper.Keeper
@@ -253,9 +258,9 @@ func NewAppKeeper(
 	app.ScopedICAHostKeeper = app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
 	app.ScopedICAControllerKeeper = app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 	app.ScopedTransferKeeper = app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
-	//app.ScopedICSproviderkeeper = app.CapabilityKeeper.ScopeToModule(providertypes.ModuleName)
 	app.ScopedWasmKeeper = app.CapabilityKeeper.ScopeToModule(wasmtypes.ModuleName)
 	app.ScopedOracleKeeper = app.CapabilityKeeper.ScopeToModule(oracletypes.ModuleName)
+	//app.ScopedCCVConsumerKeeper = app.CapabilityKeeper.ScopeToModule(ccvconsumertypes.ModuleName)
 
 	// Add normal keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
@@ -375,6 +380,12 @@ func NewAppKeeper(
 		bApp,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+
+	//app.ConsumerKeeper = ccvconsumerkeeper.NewNonZeroKeeper(
+	//	appCodec,
+	//	app.keys[ccvconsumertypes.StoreKey],
+	//	app.GetSubspace(ccvconsumertypes.ModuleName),
+	//)
 
 	// UpgradeKeeper must be created before IBCKeeper
 	app.IBCKeeper = ibckeeper.NewKeeper(
@@ -603,6 +614,30 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[transferhooktypes.StoreKey]),
 		*app.AmmKeeper)
 
+	//app.ConsumerKeeper = ccvconsumerkeeper.NewKeeper(
+	//	appCodec,
+	//	app.keys[ccvconsumertypes.StoreKey],
+	//	app.GetSubspace(ccvconsumertypes.ModuleName),
+	//	app.ScopedCCVConsumerKeeper,
+	//	app.IBCKeeper.ChannelKeeper,
+	//	app.IBCKeeper.PortKeeper,
+	//	app.IBCKeeper.ConnectionKeeper,
+	//	app.IBCKeeper.ClientKeeper,
+	//	app.SlashingKeeper,
+	//	app.BankKeeper,
+	//	app.AccountKeeper,
+	//	app.TransferKeeper,
+	//	app.IBCKeeper,
+	//	authtypes.FeeCollectorName,
+	//	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	//	app.StakingKeeper.ValidatorAddressCodec(),
+	//	app.StakingKeeper.ConsensusAddressCodec(),
+	//)
+	//app.ConsumerKeeper.SetStandaloneStakingKeeper(app.EstakingKeeper)
+	//
+	//// register slashing module StakingHooks to the consumer keeper
+	//app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
+
 	// Configure the hooks keeper
 	hooksKeeper := ibchookskeeper.NewKeeper(
 		app.keys[ibchookstypes.StoreKey],
@@ -828,6 +863,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName).WithKeyTable(ibctransfertypes.ParamKeyTable())
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
 	paramsKeeper.Subspace(icahosttypes.SubModuleName).WithKeyTable(icahosttypes.ParamKeyTable())
+	//paramsKeeper.Subspace(ccvconsumertypes.ModuleName)
 	paramsKeeper.Subspace(wasmtypes.ModuleName)
 
 	// Can be removed as we are not using param subspace anymore anywhere
