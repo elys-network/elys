@@ -25,6 +25,9 @@ func (msg *MsgStake) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
+	if err = sdk.ValidateDenom(msg.Asset); err != nil {
+		return err
+	}
 	if msg.Asset == paramtypes.Elys {
 		_, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
 		if err != nil {

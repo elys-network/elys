@@ -32,7 +32,7 @@ func (k Keeper) ApplySwapRequest(ctx sdk.Context, msg sdk.Msg) error {
 		if err != nil {
 			recipient = sender
 		}
-		_, _, _, err = k.RouteExactAmountIn(ctx, sender, recipient, msg.Routes, msg.TokenIn, sdkmath.Int(msg.TokenOutMinAmount), msg.Discount)
+		_, _, _, err = k.RouteExactAmountIn(ctx, sender, recipient, msg.Routes, msg.TokenIn, msg.TokenOutMinAmount, msg.Discount)
 		if err != nil {
 			return err
 		}

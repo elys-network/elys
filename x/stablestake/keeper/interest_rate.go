@@ -25,8 +25,8 @@ func (k Keeper) InterestRateComputation(ctx sdk.Context) sdkmath.LegacyDec {
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 	borrowed := params.TotalValue.Sub(balance.Amount)
 	targetInterestRate := healthGainFactor.
-		Mul(sdkmath.LegacyNewDecFromInt(borrowed)).
-		Quo(sdkmath.LegacyNewDecFromInt(params.TotalValue))
+		Mul(borrowed.ToLegacyDec()).
+		Quo(params.TotalValue.ToLegacyDec())
 
 	interestRateChange := targetInterestRate.Sub(prevInterestRate)
 	interestRate := prevInterestRate

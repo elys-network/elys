@@ -72,10 +72,12 @@ message QueryNumberOfCommitmentsRequest {}
 
 message QueryNumberOfCommitmentsResponse { int64 number = 1; }
 
-message QueryCommittedTokensLockedRequest { string address = 1; }
+message QueryCommittedTokensLockedRequest {
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
 
 message QueryCommittedTokensLockedResponse {
-  string address = 1;
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated cosmos.base.v1beta1.Coin locked_committed = 2 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
@@ -86,7 +88,9 @@ message QueryCommittedTokensLockedResponse {
   ];
 }
 
-message QueryCommitmentVestingInfoRequest { string address = 1; }
+message QueryCommitmentVestingInfoRequest {
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
 
 message QueryCommitmentVestingInfoResponse {
   string total = 1 [

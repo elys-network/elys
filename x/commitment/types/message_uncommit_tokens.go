@@ -23,6 +23,10 @@ func (msg MsgUncommitTokens) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address: %v", err)
 	}
 
+	if err = sdk.ValidateDenom(msg.Denom); err != nil {
+		return err
+	}
+
 	if msg.Amount.IsNil() {
 		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be nil")
 	}

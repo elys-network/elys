@@ -40,7 +40,7 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryRewardsRequest) (
 				panic(err)
 			}
 			val, err := k.Validator(ctx, valAddr)
-			if err != nil {
+			if val == nil || err != nil {
 				return false
 			}
 			endingPeriod, err := k.distrKeeper.IncrementValidatorPeriod(ctx, val)

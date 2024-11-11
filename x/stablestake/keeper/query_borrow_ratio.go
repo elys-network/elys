@@ -26,8 +26,7 @@ func (k Keeper) BorrowRatio(goCtx context.Context, req *types.QueryBorrowRatioRe
 	borrowed := params.TotalValue.Sub(balance.Amount)
 	borrowRatio := sdkmath.LegacyZeroDec()
 	if params.TotalValue.GT(sdkmath.ZeroInt()) {
-		borrowRatio = sdkmath.LegacyNewDecFromInt(borrowed).
-			Quo(sdkmath.LegacyNewDecFromInt(params.TotalValue))
+		borrowRatio = borrowed.ToLegacyDec().Quo(params.TotalValue.ToLegacyDec())
 	}
 
 	return &types.QueryBorrowRatioResponse{

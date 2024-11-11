@@ -74,10 +74,9 @@ func (k Keeper) GetAllLegacyPool(ctx sdk.Context) (list []types.LegacyPool) {
 }
 
 // GetLatestPool retrieves the latest pool item from the list of pools
-// TODO Validate if it works correctly, iterator function changed with v0.50.9
 func (k Keeper) GetLatestPool(ctx sdk.Context) (val types.Pool, found bool) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
-	iterator := store.ReverseIterator(nil, nil)
+	iterator := storetypes.KVStoreReversePrefixIterator(store, []byte{})
 	defer iterator.Close()
 
 	if !iterator.Valid() {

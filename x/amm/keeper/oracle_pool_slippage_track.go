@@ -38,7 +38,7 @@ func (k Keeper) DeleteSlippageTrack(ctx sdk.Context, track types.OraclePoolSlipp
 func (k Keeper) AllSlippageTracks(ctx sdk.Context) []types.OraclePoolSlippageTrack {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), []byte(types.OraclePoolSlippageTrackPrefix))
 
-	iterator := storetypes.KVStorePrefixIterator(store, nil)
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 
 	tracks := []types.OraclePoolSlippageTrack{}
@@ -51,11 +51,10 @@ func (k Keeper) AllSlippageTracks(ctx sdk.Context) []types.OraclePoolSlippageTra
 	return tracks
 }
 
-// TODO Validate if it works correctly, iterator function changed with v0.50.9
 func (k Keeper) GetLastSlippageTrack(ctx sdk.Context, poolId uint64) types.OraclePoolSlippageTrack {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), []byte(types.OraclePoolSlippageTrackPrefix))
 
-	iterator := store.ReverseIterator(sdk.Uint64ToBigEndian(poolId), nil)
+	iterator := storetypes.KVStoreReversePrefixIterator(store, sdk.Uint64ToBigEndian(poolId))
 	defer iterator.Close()
 
 	track := types.OraclePoolSlippageTrack{}

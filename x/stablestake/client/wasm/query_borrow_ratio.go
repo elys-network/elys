@@ -1,7 +1,6 @@
 package wasm
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"encoding/json"
 
 	errorsmod "cosmossdk.io/errors"
@@ -16,7 +15,7 @@ func (oq *Querier) queryBorrowRatio(ctx sdk.Context, query *types.QueryBorrowRat
 	}
 
 	resp := types.BalanceBorrowed{
-		UsdAmount:  sdkmath.LegacyNewDecFromInt(res.TotalBorrow),
+		UsdAmount:  res.TotalBorrow.ToLegacyDec(),
 		Percentage: res.BorrowRatio,
 	}
 

@@ -115,12 +115,11 @@ func TestGetPortfolioNative(t *testing.T) {
 	require.Equal(t, portfolio, math.LegacyNewDec(101000))
 }
 
-// TODO: v0.50Upgrade - test with detail
 func TestGetPortfolioAmm(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
-	simapp.SetStakingParam(app, ctx)
-
+	err := simapp.SetStakingParam(app, ctx)
+	require.NoError(t, err)
 	_, amm, oracle, tier, assetProfiler := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper, app.TierKeeper, app.AssetprofileKeeper
 
 	// Setup coin prices
@@ -132,7 +131,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
 	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
-	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
 	require.NoError(t, err)
@@ -217,11 +216,11 @@ func TestPortfolioGetDiscount(t *testing.T) {
 	require.Equal(t, discount, uint64(0))
 }
 
-// TODO: v0.50Upgrade - test with detail
 func TestGetPortfolioPerpetual(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
-	simapp.SetStakingParam(app, ctx)
+	err := simapp.SetStakingParam(app, ctx)
+	require.NoError(t, err)
 	simapp.SetupAssetProfile(app, ctx)
 
 	perpetual, amm, oracle, tier, assetProfiler := app.PerpetualKeeper, app.AmmKeeper, app.OracleKeeper, app.TierKeeper, app.AssetprofileKeeper
@@ -234,7 +233,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 
 	// Create a pool
 	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 1000000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 10000000))
-	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
 	require.NoError(t, err)

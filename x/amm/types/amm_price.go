@@ -22,8 +22,8 @@ func (p *Pool) GetTokenARate(
 			return sdkmath.LegacyZeroDec(), err
 		}
 		return CalculateTokenARate(
-			sdkmath.LegacyNewDecFromInt(Aasset.Token.Amount), sdkmath.LegacyNewDecFromInt(Aasset.Weight),
-			sdkmath.LegacyNewDecFromInt(Basset.Token.Amount), sdkmath.LegacyNewDecFromInt(Basset.Weight),
+			Aasset.Token.Amount.ToLegacyDec(), Aasset.Weight.ToLegacyDec(),
+			Basset.Token.Amount.ToLegacyDec(), Basset.Weight.ToLegacyDec(),
 		), nil
 	}
 

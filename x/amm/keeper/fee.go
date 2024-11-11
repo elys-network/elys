@@ -11,7 +11,7 @@ import (
 func PortionCoins(coins sdk.Coins, portion sdkmath.LegacyDec) sdk.Coins {
 	portionCoins := sdk.Coins{}
 	for _, coin := range coins {
-		portionAmount := sdkmath.LegacyNewDecFromInt(coin.Amount).Mul(portion).RoundInt()
+		portionAmount := coin.Amount.ToLegacyDec().Mul(portion).RoundInt()
 		portionCoins = portionCoins.Add(sdk.NewCoin(
 			coin.Denom, portionAmount,
 		))

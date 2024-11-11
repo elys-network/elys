@@ -66,12 +66,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 
 // EndBlock delegates the EndBlock call to the underlying x/staking module,
 func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	updates, err := am.keeper.BlockValidatorUpdates(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return updates, nil
+	return am.keeper.BlockValidatorUpdates(goCtx)
 }
 
 // BeginBlock returns the begin blocker for the staking module.

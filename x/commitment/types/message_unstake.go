@@ -33,6 +33,10 @@ func (msg *MsgUnstake) ValidateBasic() error {
 		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative")
 	}
 
+	if err = sdk.ValidateDenom(msg.Asset); err != nil {
+		return err
+	}
+
 	if msg.Asset == paramtypes.Elys {
 		_, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
 		if err != nil {

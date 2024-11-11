@@ -332,7 +332,7 @@ func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.
 	if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
 		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	}
-	return sdkmath.LegacyNewDecFromInt(amount).Mul(tokenPrice)
+	return amount.ToLegacyDec().Mul(tokenPrice)
 }
 
 // SetPortfolio set a specific portfolio in the store from its index

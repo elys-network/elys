@@ -22,7 +22,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TODO: v0.50Upgrade - test with detail
 func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)

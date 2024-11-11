@@ -33,7 +33,7 @@ func (min MinCommissionDecorator) getValidator(ctx sdk.Context, bech32ValAddr st
 
 	val, err := min.sk.GetValidator(ctx, valAddr)
 	if err != nil {
-		return stakingtypes.Validator{}, errorsmod.Register("ante", 12, "validator does not exist")
+		return stakingtypes.Validator{}, errorsmod.Wrapf(err, "validator not found in ante MinCommissionDecorator")
 	}
 
 	return val, nil
@@ -55,7 +55,7 @@ func (min MinCommissionDecorator) getTotalDelegatedTokens(ctx sdk.Context) sdkma
 
 // Returns the projected voting power as a percentage (not a fraction)
 func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk.Context, delegateAmount sdkmath.LegacyDec) sdkmath.LegacyDec {
-	totalDelegatedTokens := sdkmath.LegacyNewDecFromInt(min.getTotalDelegatedTokens(ctx))
+	totalDelegatedTokens := min.getTotalDelegatedTokens(ctx).ToLegacyDec()
 	// If I am the first validator, then accept 100% voting power
 	if totalDelegatedTokens.LTE(sdkmath.LegacyZeroDec()) {
 		return sdkmath.LegacyZeroDec()
@@ -74,8 +74,8 @@ func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk
 
 // Returns the projected voting power as a percentage (not a fraction)
 func (min MinCommissionDecorator) CalculateDelegateProjectedVotingPower(ctx sdk.Context, validator stakingtypes.ValidatorI, delegateAmount sdkmath.LegacyDec) sdkmath.LegacyDec {
-	validatorTokens := sdkmath.LegacyNewDecFromInt(validator.GetTokens())
-	totalDelegatedTokens := sdkmath.LegacyNewDecFromInt(min.getTotalDelegatedTokens(ctx))
+	validatorTokens := validator.GetTokens().ToLegacyDec()
+	totalDelegatedTokens := min.getTotalDelegatedTokens(ctx).ToLegacyDec()
 
 	projectedTotalDelegatedTokens := totalDelegatedTokens.Add(delegateAmount)
 	projectedValidatorTokens := validatorTokens.Add(delegateAmount)
@@ -90,8 +90,8 @@ func (min MinCommissionDecorator) CalculateDelegateProjectedVotingPower(ctx sdk.
 
 // Returns the projected voting power as a percentage (not a fraction)
 func (min MinCommissionDecorator) CalculateRedelegateProjectedVotingPower(ctx sdk.Context, validator stakingtypes.ValidatorI, delegateAmount sdkmath.LegacyDec) sdkmath.LegacyDec {
-	validatorTokens := sdkmath.LegacyNewDecFromInt(validator.GetTokens())
-	projectedTotalDelegatedTokens := sdkmath.LegacyNewDecFromInt(min.getTotalDelegatedTokens(ctx)) // no additional delegated tokens
+	validatorTokens := validator.GetTokens().ToLegacyDec()
+	projectedTotalDelegatedTokens := min.getTotalDelegatedTokens(ctx).ToLegacyDec() // no additional delegated tokens
 
 	projectedValidatorTokens := validatorTokens.Add(delegateAmount)
 
@@ -122,7 +122,7 @@ func (min MinCommissionDecorator) AnteHandle(
 			if msg.Commission.Rate.LT(minCommissionRate) {
 				return errorsmod.Wrap(sdkerrors.ErrUnauthorized, "commission can't be lower than 5%")
 			}
-			projectedVotingPower := min.CalculateValidatorProjectedVotingPower(ctx, sdkmath.LegacyNewDecFromInt(msg.Value.Amount))
+			projectedVotingPower := min.CalculateValidatorProjectedVotingPower(ctx, msg.Value.Amount.ToLegacyDec())
 			if projectedVotingPower.GT(maxVotingPower) {
 				return errorsmod.Wrapf(
 					sdkerrors.ErrInvalidRequest,
@@ -143,7 +143,7 @@ func (min MinCommissionDecorator) AnteHandle(
 				return err
 			}
 
-			projectedVotingPower := min.CalculateDelegateProjectedVotingPower(ctx, val, sdkmath.LegacyNewDecFromInt(msg.Amount.Amount))
+			projectedVotingPower := min.CalculateDelegateProjectedVotingPower(ctx, val, msg.Amount.Amount.ToLegacyDec())
 			if projectedVotingPower.GT(maxVotingPower) {
 				return errorsmod.Wrapf(
 					sdkerrors.ErrInvalidRequest,
@@ -161,7 +161,7 @@ func (min MinCommissionDecorator) AnteHandle(
 				// Since this is a self redelegation, no additional tokens are delegated to this validator hence delegateAmount = 0
 				delegateAmount = sdkmath.LegacyZeroDec()
 			} else {
-				delegateAmount = sdkmath.LegacyNewDecFromInt(msg.Amount.Amount)
+				delegateAmount = msg.Amount.Amount.ToLegacyDec()
 			}
 
 			projectedVotingPower := min.CalculateRedelegateProjectedVotingPower(ctx, dstVal, delegateAmount)

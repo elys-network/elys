@@ -33,7 +33,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	if redemptionRate.IsZero() {
 		redemptionRate = sdkmath.LegacyOneDec()
 	}
-	shareAmount := sdkmath.LegacyNewDecFromInt(depositCoin.Amount).Quo(redemptionRate).RoundInt()
+	shareAmount := depositCoin.Amount.ToLegacyDec().Quo(redemptionRate).RoundInt()
 	shareCoins := sdk.NewCoins(sdk.NewCoin(shareDenom, shareAmount))
 
 	err = k.bk.MintCoins(ctx, types.ModuleName, shareCoins)

@@ -75,7 +75,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 				yearlyIncentiveRewardsTotal := externalIncentive.AmountPerBlock.
 					Mul(math.NewInt(totalBlocksPerYear))
 
-				apr := math.LegacyNewDecFromInt(yearlyIncentiveRewardsTotal).
+				apr := yearlyIncentiveRewardsTotal.ToLegacyDec().
 					Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
 					Quo(tvl)
 				externalIncentive.Apr = apr

@@ -7,7 +7,7 @@ func CalcTakeAmount(custodyAmount sdkmath.Int, fundingRate sdkmath.LegacyDec) sd
 	absoluteFundingRate := fundingRate.Abs()
 
 	// Calculate the take amount
-	takeAmountValue := sdkmath.LegacyNewDecFromInt(custodyAmount).Mul(absoluteFundingRate).TruncateInt()
+	takeAmountValue := custodyAmount.ToLegacyDec().Mul(absoluteFundingRate).TruncateInt()
 
 	return takeAmountValue
 }

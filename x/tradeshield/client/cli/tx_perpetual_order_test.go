@@ -18,7 +18,6 @@ import (
 	"github.com/elys-network/elys/x/tradeshield/client/cli"
 )
 
-// TODO: v0.50Upgrade - test with detail
 func TestCreatePerpetualOpenOrder(t *testing.T) {
 	net := network.New(t)
 	val := net.Validators[0]

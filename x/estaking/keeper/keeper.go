@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -14,7 +13,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/elys-network/elys/x/estaking/types"
@@ -313,9 +311,6 @@ func (k Keeper) DelegationRewards(ctx sdk.Context, delegatorAddress string, vali
 	if err != nil {
 		return nil, err
 	}
-	if val == nil {
-		return nil, errorsmod.Wrap(distrtypes.ErrNoValidatorExists, validatorAddress)
-	}
 
 	delAddr, err := sdk.AccAddressFromBech32(delegatorAddress)
 	if err != nil {
@@ -325,9 +320,6 @@ func (k Keeper) DelegationRewards(ctx sdk.Context, delegatorAddress string, vali
 	del, err := k.Delegation(ctx, delAddr, valAddr)
 	if err != nil {
 		return nil, err
-	}
-	if del == nil {
-		return nil, distrtypes.ErrNoDelegationExists
 	}
 
 	endingPeriod, err := k.distrKeeper.IncrementValidatorPeriod(ctx, val)

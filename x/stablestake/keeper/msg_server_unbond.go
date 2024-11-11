@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	sdkmath "cosmossdk.io/math"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
@@ -38,7 +36,7 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 		return nil, err
 	}
 
-	redemptionAmount := sdkmath.LegacyNewDecFromInt(shareCoin.Amount).Mul(redemptionRate).RoundInt()
+	redemptionAmount := shareCoin.Amount.ToLegacyDec().Mul(redemptionRate).RoundInt()
 
 	depositDenom := k.GetDepositDenom(ctx)
 	redemptionCoin := sdk.NewCoin(depositDenom, redemptionAmount)

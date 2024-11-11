@@ -61,7 +61,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			// For Eden reward Apr for elys staking
 			apr := stakersEdenAmount.
 				Mul(math.LegacyNewDec(totalBlocksPerYear)).
-				Quo(math.LegacyNewDecFromInt(totalStakedSnapshot))
+				Quo(totalStakedSnapshot.ToLegacyDec())
 
 			return apr, nil
 		}
