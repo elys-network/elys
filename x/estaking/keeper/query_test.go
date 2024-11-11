@@ -3,7 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -16,17 +17,17 @@ import (
 )
 
 func TestQueryRewards(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	stakingKeeper := app.StakingKeeper
 	estakingKeeper := app.EstakingKeeper
 
 	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
+	validators, _ := stakingKeeper.GetAllValidators(ctx)
 	require.True(t, len(validators) > 0)
-	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
+	valAddr, _ := sdk.ValAddressFromBech32(validators[0].GetOperator())
+	delegations, _ := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
 	require.True(t, len(delegations) > 0)
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
@@ -50,10 +51,10 @@ func TestQueryRewards(t *testing.T) {
 
 	params := estakingKeeper.GetParams(ctx)
 	params.StakeIncentives = &types.IncentiveInfo{
-		EdenAmountPerYear: sdk.NewInt(1000_000_000_000_000),
+		EdenAmountPerYear: math.NewInt(1000_000_000_000_000),
 		BlocksDistributed: 1,
 	}
-	params.MaxEdenRewardAprStakers = sdk.NewDec(1000_000)
+	params.MaxEdenRewardAprStakers = math.LegacyNewDec(1000_000)
 	estakingKeeper.SetParams(ctx, params)
 
 	// update staker rewards
@@ -62,7 +63,7 @@ func TestQueryRewards(t *testing.T) {
 
 	distrAppModule := exdistr.NewAppModule(
 		app.AppCodec(), app.DistrKeeper, app.AccountKeeper,
-		app.CommitmentKeeper, &app.EstakingKeeper,
+		app.CommitmentKeeper, app.EstakingKeeper,
 		&app.AssetprofileKeeper,
 		authtypes.FeeCollectorName, app.GetSubspace(distrtypes.ModuleName))
 	distrAppModule.AllocateTokens(ctx)

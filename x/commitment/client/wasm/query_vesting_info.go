@@ -1,6 +1,7 @@
 package wasm
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"encoding/json"
 	"fmt"
 
@@ -23,7 +24,7 @@ func (oq *Querier) queryVestingInfo(ctx sdk.Context, query *commitmenttypes.Quer
 
 	edenDenomPrice := oq.ammKeeper.GetEdenDenomPrice(ctx, baseCurrency)
 
-	totalVesting := sdk.ZeroInt()
+	totalVesting := sdkmath.ZeroInt()
 	vestingDetails := make([]commitmenttypes.VestingDetail, 0)
 	for i, vesting := range vestingTokens {
 		vestingDetail := commitmenttypes.VestingDetail{

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -56,7 +57,7 @@ func (k Keeper) UserRewardInfo(goCtx context.Context, req *types.QueryUserReward
 }
 
 func (k Keeper) UserPoolPendingReward(ctx sdk.Context, user sdk.AccAddress, poolId uint64) sdk.Coins {
-	k.AfterWithdraw(ctx, poolId, user, sdk.ZeroInt())
+	k.AfterWithdraw(ctx, poolId, user, sdkmath.ZeroInt())
 
 	poolRewards := sdk.NewCoins()
 	for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {

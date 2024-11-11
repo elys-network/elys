@@ -6,20 +6,26 @@ import (
 	"math"
 
 	errorsmod "cosmossdk.io/errors"
-	cosmos_sdk_math "cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 )
 
 func (oq *Querier) queryUnStakedPositions(ctx sdk.Context, query *commitmenttypes.QueryValidatorsRequest) ([]byte, error) {
-	totalBonded := oq.stakingKeeper.TotalBondedTokens(ctx)
+	totalBonded, err := oq.stakingKeeper.TotalBondedTokens(ctx)
+	if err != nil {
+		return nil, err
+	}
 	delegatorAddr, err := sdk.AccAddressFromBech32(query.DelegatorAddress)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "invalid delegator address")
 	}
 
-	unbonding_delegations := oq.stakingKeeper.GetUnbondingDelegations(ctx, delegatorAddr, math.MaxInt16)
+	unbonding_delegations, err := oq.stakingKeeper.GetUnbondingDelegations(ctx, delegatorAddr, math.MaxInt16)
+	if err != nil {
+		return nil, err
+	}
 
 	unstakedPositionsCW := oq.BuildUnStakedPositionResponseCW(ctx, unbonding_delegations, totalBonded, query.DelegatorAddress)
 	res := commitmenttypes.QueryUnstakedPositionResponse{
@@ -34,8 +40,8 @@ func (oq *Querier) queryUnStakedPositions(ctx sdk.Context, query *commitmenttype
 	return responseBytes, nil
 }
 
-func (oq *Querier) BuildUnStakedPositionResponseCW(ctx sdk.Context, unbondingDelegations []stakingtypes.UnbondingDelegation, totalBonded cosmos_sdk_math.Int, delegatorAddress string) []commitmenttypes.UnstakedPosition {
-	edenDenomPrice := sdk.ZeroDec()
+func (oq *Querier) BuildUnStakedPositionResponseCW(ctx sdk.Context, unbondingDelegations []stakingtypes.UnbondingDelegation, totalBonded sdkmath.Int, delegatorAddress string) []commitmenttypes.UnstakedPosition {
+	edenDenomPrice := sdkmath.LegacyZeroDec()
 	baseCurrency, found := oq.assetKeeper.GetUsdcDenom(ctx)
 	if found {
 		edenDenomPrice = oq.ammKeeper.GetEdenDenomPrice(ctx, baseCurrency)
@@ -54,8 +60,12 @@ func (oq *Querier) BuildUnStakedPositionResponseCW(ctx sdk.Context, unbondingDel
 			}
 
 			// Get validator
-			val := oq.stakingKeeper.Validator(ctx, valAddress).(stakingtypes.Validator)
-			votingPower := sdk.NewDecFromInt(val.GetBondedTokens()).QuoInt(totalBonded).MulInt(sdk.NewInt(100))
+			validator, err := oq.stakingKeeper.Validator(ctx, valAddress)
+			if err != nil {
+				continue
+			}
+			val := validator.(stakingtypes.Validator)
+			votingPower := sdkmath.LegacyNewDecFromInt(val.GetBondedTokens()).QuoInt(totalBonded).MulInt(sdkmath.NewInt(100))
 
 			website := val.Description.Website
 			if len(website) < 1 {

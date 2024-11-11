@@ -15,7 +15,7 @@ func (oq *Querier) queryBorrowRatio(ctx sdk.Context, query *types.QueryBorrowRat
 	}
 
 	resp := types.BalanceBorrowed{
-		UsdAmount:  sdk.NewDecFromInt(res.TotalBorrow),
+		UsdAmount:  res.TotalBorrow.ToLegacyDec(),
 		Percentage: res.BorrowRatio,
 	}
 

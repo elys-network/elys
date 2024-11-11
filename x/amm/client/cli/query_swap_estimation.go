@@ -1,6 +1,7 @@
 package cli
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"errors"
 	"strconv"
 
@@ -44,7 +45,7 @@ func CmdSwapEstimation() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			discount, err := sdk.NewDecFromStr(discountStr)
+			discount, err := sdkmath.LegacyNewDecFromStr(discountStr)
 			if err != nil {
 				return err
 			}

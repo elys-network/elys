@@ -4,7 +4,10 @@ import (
 	"encoding/binary"
 	"math"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
@@ -13,7 +16,7 @@ import (
 
 // GetPendingPerpetualOrderCount get the total number of pendingPerpetualOrder
 func (k Keeper) GetPendingPerpetualOrderCount(ctx sdk.Context) uint64 {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), []byte{})
 	byteKey := types.PendingPerpetualOrderCountKey
 	bz := store.Get(byteKey)
 
@@ -29,7 +32,7 @@ func (k Keeper) GetPendingPerpetualOrderCount(ctx sdk.Context) uint64 {
 
 // SetPendingPerpetualOrderCount set the total number of pendingPerpetualOrder
 func (k Keeper) SetPendingPerpetualOrderCount(ctx sdk.Context, count uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), []byte{})
 	byteKey := types.PendingPerpetualOrderCountKey
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, count)
@@ -52,7 +55,7 @@ func (k Keeper) AppendPendingPerpetualOrder(
 	// Set the ID of the appended value
 	pendingPerpetualOrder.OrderId = count
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingPerpetualOrderKey)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
 	appendedValue := k.cdc.MustMarshal(&pendingPerpetualOrder)
 	store.Set(GetPendingPerpetualOrderIDBytes(pendingPerpetualOrder.OrderId), appendedValue)
 
@@ -64,14 +67,14 @@ func (k Keeper) AppendPendingPerpetualOrder(
 
 // SetPendingPerpetualOrder set a specific pendingPerpetualOrder in the store
 func (k Keeper) SetPendingPerpetualOrder(ctx sdk.Context, pendingPerpetualOrder types.PerpetualOrder) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingPerpetualOrderKey)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
 	b := k.cdc.MustMarshal(&pendingPerpetualOrder)
 	store.Set(GetPendingPerpetualOrderIDBytes(pendingPerpetualOrder.OrderId), b)
 }
 
 // GetPendingPerpetualOrder returns a pendingPerpetualOrder from its id
 func (k Keeper) GetPendingPerpetualOrder(ctx sdk.Context, id uint64) (val types.PerpetualOrder, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingPerpetualOrderKey)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
 	b := store.Get(GetPendingPerpetualOrderIDBytes(id))
 	if b == nil {
 		return val, false
@@ -83,7 +86,7 @@ func (k Keeper) GetPendingPerpetualOrder(ctx sdk.Context, id uint64) (val types.
 func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address string, status *types.Status, pagination *query.PageRequest) ([]types.PerpetualOrder, *query.PageResponse, error) {
 	var orders []types.PerpetualOrder
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	orderStore := prefix.NewStore(store, types.PendingPerpetualOrderKey)
 
 	if pagination == nil {
@@ -112,14 +115,14 @@ func (k Keeper) GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address str
 
 // RemovePendingPerpetualOrder removes a pendingPerpetualOrder from the store
 func (k Keeper) RemovePendingPerpetualOrder(ctx sdk.Context, id uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingPerpetualOrderKey)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
 	store.Delete(GetPendingPerpetualOrderIDBytes(id))
 }
 
 // GetAllPendingPerpetualOrder returns all pendingPerpetualOrder
 func (k Keeper) GetAllPendingPerpetualOrder(ctx sdk.Context) (list []types.PerpetualOrder) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingPerpetualOrderKey)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -134,8 +137,8 @@ func (k Keeper) GetAllPendingPerpetualOrder(ctx sdk.Context) (list []types.Perpe
 
 // DeleteAllPendingPerpetualOrder returns all pendingPerpetualOrder
 func (k Keeper) DeleteAllPendingPerpetualOrder(ctx sdk.Context) (list []types.PerpetualOrder) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingPerpetualOrderKey)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -146,10 +149,9 @@ func (k Keeper) DeleteAllPendingPerpetualOrder(ctx sdk.Context) (list []types.Pe
 	return
 }
 
-// GetAllPendingPerpetualOrder returns all legacy pendingPerpetualOrder
 func (k Keeper) GetAllLegacyPendingPerpetualOrder(ctx sdk.Context) (list []types.LegacyPerpetualOrder) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingPerpetualOrderKey)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -175,8 +177,8 @@ func GetPendingPerpetualOrderIDFromBytes(bz []byte) uint64 {
 }
 
 func (k Keeper) GetAllSortedPerpetualOrder(ctx sdk.Context) (list [][]uint64, err error) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SortedPerpetualOrderKey)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.SortedPerpetualOrderKey)
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -266,7 +268,7 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 			_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
 				Creator: order.OwnerAddress,
 				Id:      order.PositionId,
-				Amount:  sdk.ZeroInt(),
+				Amount:  sdkmath.ZeroInt(),
 			})
 			if err != nil {
 				return err
@@ -279,7 +281,7 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 			_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
 				Creator: order.OwnerAddress,
 				Id:      order.PositionId,
-				Amount:  sdk.ZeroInt(),
+				Amount:  sdkmath.ZeroInt(),
 			})
 			if err != nil {
 				return err
@@ -327,7 +329,7 @@ func (k Keeper) ExecuteMarketCloseOrder(ctx sdk.Context, order types.PerpetualOr
 	_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
 		Creator: order.OwnerAddress,
 		Id:      order.PositionId,
-		Amount:  sdk.ZeroInt(),
+		Amount:  sdkmath.ZeroInt(),
 	})
 	if err != nil {
 		return err

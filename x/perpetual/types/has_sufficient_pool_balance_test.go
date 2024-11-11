@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,14 +17,14 @@ func TestHasSufficientPoolBalance_SufficientBalance(t *testing.T) {
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
-					Amount: sdk.NewInt(100),
+					Amount: math.NewInt(100),
 				},
 			},
 		},
 	}
 
 	borrowAsset := "testAsset"
-	requiredAmount := sdk.NewInt(50)
+	requiredAmount := math.NewInt(50)
 
 	// Run the function
 	hasBalance := types.HasSufficientPoolBalance(ammPool, borrowAsset, requiredAmount)
@@ -39,14 +40,14 @@ func TestHasSufficientPoolBalance_InsufficientBalance(t *testing.T) {
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
-					Amount: sdk.NewInt(100),
+					Amount: math.NewInt(100),
 				},
 			},
 		},
 	}
 
 	borrowAsset := "testAsset"
-	requiredAmount := sdk.NewInt(150)
+	requiredAmount := math.NewInt(150)
 
 	// Run the function
 	hasBalance := types.HasSufficientPoolBalance(ammPool, borrowAsset, requiredAmount)

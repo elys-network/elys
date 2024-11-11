@@ -1,14 +1,16 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/burner/types"
 )
 
 // SetHistory set a specific history in the store from its index
 func (k Keeper) SetHistory(ctx sdk.Context, history types.History) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.HistoryKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.HistoryKeyPrefix))
 	b := k.cdc.MustMarshal(&history)
 	store.Set(types.HistoryKey(
 		history.Timestamp,
@@ -22,7 +24,7 @@ func (k Keeper) GetHistory(
 	timestamp string,
 	denom string,
 ) (val types.History, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.HistoryKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.HistoryKeyPrefix))
 
 	b := store.Get(types.HistoryKey(
 		timestamp,
@@ -42,7 +44,7 @@ func (k Keeper) RemoveHistory(
 	timestamp string,
 	denom string,
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.HistoryKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.HistoryKeyPrefix))
 	store.Delete(types.HistoryKey(
 		timestamp,
 		denom,
@@ -51,8 +53,8 @@ func (k Keeper) RemoveHistory(
 
 // GetAllHistory returns all history
 func (k Keeper) GetAllHistory(ctx sdk.Context) (list []types.History) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.HistoryKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.HistoryKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

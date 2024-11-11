@@ -27,7 +27,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_Successful() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
@@ -95,7 +95,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_BaseCurrencyNotFound() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
@@ -130,7 +130,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_ErrFillMTPData() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)

@@ -4,32 +4,8 @@ import (
 	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
-
-var (
-	KeyBandEpoch         = []byte("BandEpoch")
-	KeyClientID          = []byte("ClientID")
-	KeyOracleScriptID    = []byte("OracleScriptID")
-	KeyMultiplier        = []byte("Multiplier")
-	KeyBandChannelSource = []byte("BandChannelSource")
-	KeyAskCount          = []byte("AskCount")
-	KeyMinCount          = []byte("MinCount")
-	KeyFeeLimit          = []byte("FeeLimit")
-	KeyPrepareGas        = []byte("PrepareGas")
-	KeyExecuteGas        = []byte("ExecuteGas")
-	KeyModuleAdmin       = []byte("ModuleAdmin")
-	KeyPriceExpiryTime   = []byte("PriceExpiryTime")
-	KeyLifeTimeInBlocks  = []byte("LifeTimeInBlocks")
-)
-
-var _ paramtypes.ParamSet = (*Params)(nil)
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 // NewParams creates a new Params instance
 func NewParams(
@@ -76,24 +52,6 @@ func DefaultParams() Params {
 		86400, // 1 day old data
 		1,     // 1 block old data
 	)
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyBandEpoch, &p.BandEpoch, validateBandEpoch),
-		paramtypes.NewParamSetPair(KeyClientID, &p.ClientID, validateClientID),
-		paramtypes.NewParamSetPair(KeyOracleScriptID, &p.OracleScriptID, validateOracleScriptID),
-		paramtypes.NewParamSetPair(KeyMultiplier, &p.Multiplier, validateMultiplier),
-		paramtypes.NewParamSetPair(KeyBandChannelSource, &p.BandChannelSource, validateChannel),
-		paramtypes.NewParamSetPair(KeyAskCount, &p.AskCount, validateCount),
-		paramtypes.NewParamSetPair(KeyMinCount, &p.MinCount, validateCount),
-		paramtypes.NewParamSetPair(KeyFeeLimit, &p.FeeLimit, validateFeeLimit),
-		paramtypes.NewParamSetPair(KeyPrepareGas, &p.PrepareGas, validateGas),
-		paramtypes.NewParamSetPair(KeyExecuteGas, &p.ExecuteGas, validateGas),
-		paramtypes.NewParamSetPair(KeyPriceExpiryTime, &p.PriceExpiryTime, validatePriceExpiryTime),
-		paramtypes.NewParamSetPair(KeyLifeTimeInBlocks, &p.LifeTimeInBlocks, validateLifeTimeInBlocks),
-	}
 }
 
 // Validate validates the set of params

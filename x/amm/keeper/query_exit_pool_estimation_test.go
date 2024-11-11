@@ -3,7 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/amm/types"
@@ -11,17 +12,17 @@ import (
 )
 
 func TestExitPoolEstimation(t *testing.T) {
-	app := simapp.InitElysTestApp(initChain)
-	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
+	app := simapp.InitElysTestApp(initChain, t)
+	ctx := app.BaseApp.NewContext(initChain)
 	k := app.AmmKeeper
 
 	// Setup mock pools and assets
-	SetupMockPools(&k, ctx)
+	SetupMockPools(k, ctx)
 
 	// Try single coin exit pool on non-oracle pool (it's invalid)
 	resp, err := k.ExitPoolEstimation(ctx, &types.QueryExitPoolEstimationRequest{
 		PoolId:        1,
-		ShareAmountIn: types.OneShare.Quo(sdk.NewInt(10)),
+		ShareAmountIn: types.OneShare.Quo(sdkmath.NewInt(10)),
 		TokenOutDenom: "denom2",
 	})
 	require.NoError(t, err)
@@ -30,7 +31,7 @@ func TestExitPoolEstimation(t *testing.T) {
 	// Test multiple coins exit pool
 	resp, err = k.ExitPoolEstimation(ctx, &types.QueryExitPoolEstimationRequest{
 		PoolId:        1,
-		ShareAmountIn: types.OneShare.Quo(sdk.NewInt(10)),
+		ShareAmountIn: types.OneShare.Quo(sdkmath.NewInt(10)),
 		TokenOutDenom: "denom2",
 	})
 	require.NoError(t, err)

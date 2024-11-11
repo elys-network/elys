@@ -6,10 +6,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	TypeMsgUpdateGenesisInflation = "update_genesis_inflation"
-)
-
 var _ sdk.Msg = &MsgUpdateGenesisInflation{}
 
 func NewMsgUpdateGenesisInflation(authority string, inflation InflationEntry, seedVesting uint64, strategicSalesVesting uint64) *MsgUpdateGenesisInflation {
@@ -19,27 +15,6 @@ func NewMsgUpdateGenesisInflation(authority string, inflation InflationEntry, se
 		SeedVesting:           seedVesting,
 		StrategicSalesVesting: strategicSalesVesting,
 	}
-}
-
-func (msg *MsgUpdateGenesisInflation) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUpdateGenesisInflation) Type() string {
-	return TypeMsgUpdateGenesisInflation
-}
-
-func (msg *MsgUpdateGenesisInflation) GetSigners() []sdk.AccAddress {
-	authority, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{authority}
-}
-
-func (msg *MsgUpdateGenesisInflation) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUpdateGenesisInflation) ValidateBasic() error {

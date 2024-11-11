@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
@@ -9,19 +10,19 @@ func (suite *KeeperTestSuite) TestGRPCQueryPrice() {
 	prices := []types.Price{
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(1),
+			Price:     sdkmath.LegacyNewDec(1),
 			Source:    "elys",
 			Timestamp: 100000,
 		},
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(2),
+			Price:     sdkmath.LegacyNewDec(2),
 			Source:    "band",
 			Timestamp: 100000,
 		},
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(3),
+			Price:     sdkmath.LegacyNewDec(3),
 			Source:    "band",
 			Timestamp: 110000,
 		},

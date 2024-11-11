@@ -13,7 +13,7 @@ import (
 
 func networkWithPendingSpotOrderObjects(t *testing.T, n int) (*network.Network, []types.SpotOrder) {
 	t.Helper()
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig(t.TempDir())
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
 		pendingSpotOrder := types.SpotOrder{

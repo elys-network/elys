@@ -20,7 +20,7 @@ func (k Keeper) AfterPoolCreated(ctx sdk.Context, sender sdk.AccAddress, poolId 
 		// reward wallet address
 		RewardWallet: ammtypes.NewPoolRevenueAddress(poolId).String(),
 		// multiplier for lp rewards
-		Multiplier: sdk.NewDec(1),
+		Multiplier: math.LegacyNewDec(1),
 		// Eden APR, updated at every distribution
 		EdenApr: math.LegacyZeroDec(),
 		// Dex APR, updated at every distribution

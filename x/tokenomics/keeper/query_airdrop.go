@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/x/tokenomics/types"
@@ -19,7 +20,7 @@ func (k Keeper) AirdropAll(goCtx context.Context, req *types.QueryAllAirdropRequ
 	var airdrops []types.Airdrop
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	airdropStore := prefix.NewStore(store, types.KeyPrefix(types.AirdropKeyPrefix))
 
 	pageRes, err := query.Paginate(airdropStore, req.Pagination, func(key []byte, value []byte) error {

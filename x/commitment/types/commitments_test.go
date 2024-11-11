@@ -1,11 +1,13 @@
 package types_test
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 	"time"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/stretchr/testify/require"
 )
@@ -17,10 +19,10 @@ func TestCommitments_AddCommittedTokens(t *testing.T) {
 		VestingTokens:   []*types.VestingTokens{},
 	}
 
-	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 100)
-	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 150)
-	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 200)
-	commitments.AddCommittedTokens("lp/2", sdk.NewInt(100), 100)
+	commitments.AddCommittedTokens("lp/1", math.NewInt(100), 100)
+	commitments.AddCommittedTokens("lp/1", math.NewInt(100), 150)
+	commitments.AddCommittedTokens("lp/1", math.NewInt(100), 200)
+	commitments.AddCommittedTokens("lp/2", math.NewInt(100), 100)
 
 	require.Len(t, commitments.CommittedTokens, 2)
 	require.Len(t, commitments.CommittedTokens[0].Lockups, 3)
@@ -28,9 +30,9 @@ func TestCommitments_AddCommittedTokens(t *testing.T) {
 	require.Equal(t, commitments.CommittedTokens[0].Lockups[0].UnlockTimestamp, uint64(100))
 	require.Len(t, commitments.CommittedTokens[1].Lockups, 1)
 
-	commitments.AddCommittedTokens("lp/3", sdk.NewInt(1000), 100)
-	commitments.AddCommittedTokens("lp/3", sdk.NewInt(2000), 120)
-	commitments.AddCommittedTokens("lp/3", sdk.NewInt(3000), 130)
+	commitments.AddCommittedTokens("lp/3", math.NewInt(1000), 100)
+	commitments.AddCommittedTokens("lp/3", math.NewInt(2000), 120)
+	commitments.AddCommittedTokens("lp/3", math.NewInt(3000), 130)
 
 	require.Equal(t, commitments.CommittedTokens[2].Lockups[0].Amount.String(), "1000")
 	require.Equal(t, commitments.CommittedTokens[2].Lockups[1].Amount.String(), "2000")
@@ -45,18 +47,18 @@ func TestCommitments_WithdrawCommitedTokens(t *testing.T) {
 		VestingTokens:   []*types.VestingTokens{},
 	}
 
-	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 100)
-	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 150)
-	commitments.AddCommittedTokens("lp/1", sdk.NewInt(100), 200)
-	commitments.AddCommittedTokens("lp/2", sdk.NewInt(100), 100)
+	commitments.AddCommittedTokens("lp/1", math.NewInt(100), 100)
+	commitments.AddCommittedTokens("lp/1", math.NewInt(100), 150)
+	commitments.AddCommittedTokens("lp/1", math.NewInt(100), 200)
+	commitments.AddCommittedTokens("lp/2", math.NewInt(100), 100)
 
-	err := commitments.DeductFromCommitted("lp/1", sdk.NewInt(100), 100, false)
+	err := commitments.DeductFromCommitted("lp/1", math.NewInt(100), 100, false)
 	require.NoError(t, err)
 
-	err = commitments.DeductFromCommitted("lp/1", sdk.NewInt(100), 100, false)
+	err = commitments.DeductFromCommitted("lp/1", math.NewInt(100), 100, false)
 	require.Error(t, err)
 
-	err = commitments.DeductFromCommitted("lp/2", sdk.NewInt(200), 100, false)
+	err = commitments.DeductFromCommitted("lp/2", math.NewInt(200), 100, false)
 	require.Error(t, err)
 }
 
@@ -67,11 +69,11 @@ func TestLockupAmount_WithdrawCommited(t *testing.T) {
 		VestingTokens:   []*types.VestingTokens{},
 	}
 
-	commitments.AddCommittedTokens("lp/1", sdk.NewInt(1000), 1)
-	commitments.AddCommittedTokens("lp/1", sdk.NewInt(5000), 2)
-	commitments.AddCommittedTokens("lp/1", sdk.NewInt(3000), 4)
+	commitments.AddCommittedTokens("lp/1", math.NewInt(1000), 1)
+	commitments.AddCommittedTokens("lp/1", math.NewInt(5000), 2)
+	commitments.AddCommittedTokens("lp/1", math.NewInt(3000), 4)
 
-	err := commitments.DeductFromCommitted("lp/1", sdk.NewInt(9000), 3, false)
+	err := commitments.DeductFromCommitted("lp/1", math.NewInt(9000), 3, false)
 	require.Error(t, err)
 }
 
@@ -87,7 +89,7 @@ func Test_Commitments_IsEmpty(t *testing.T) {
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/1",
-		Amount:  sdk.NewInt(100),
+		Amount:  math.NewInt(100),
 		Lockups: nil,
 	})
 
@@ -101,8 +103,8 @@ func Test_Commitments_IsEmpty(t *testing.T) {
 	commitments.Claimed = nil
 	commitments.VestingTokens = append(commitments.VestingTokens, &types.VestingTokens{
 		Denom:                "lp/1",
-		TotalAmount:          sdk.NewInt(100),
-		ClaimedAmount:        sdk.NewInt(0),
+		TotalAmount:          math.NewInt(100),
+		ClaimedAmount:        math.NewInt(0),
 		NumBlocks:            100,
 		StartBlock:           0,
 		VestStartedTimestamp: 0,
@@ -121,19 +123,19 @@ func Test_Commitments_GetCommittedAmountForDenom(t *testing.T) {
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/1",
-		Amount:  sdk.NewInt(100),
+		Amount:  math.NewInt(100),
 		Lockups: nil,
 	})
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/2",
-		Amount:  sdk.NewInt(200),
+		Amount:  math.NewInt(200),
 		Lockups: nil,
 	})
 
-	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/1"), sdk.NewInt(100))
-	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/2"), sdk.NewInt(200))
-	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/3"), sdk.NewInt(0))
+	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/1"), math.NewInt(100))
+	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/2"), math.NewInt(200))
+	require.Equal(t, commitments.GetCommittedAmountForDenom("lp/3"), math.NewInt(0))
 }
 
 // Test_Commitments_GetCommittedLockUpsForDenom tests the GetCommittedLockUpsForDenom method of the Commitments type
@@ -146,20 +148,20 @@ func Test_Commitments_GetCommittedLockUpsForDenom(t *testing.T) {
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/1",
-		Amount:  sdk.NewInt(100),
+		Amount:  math.NewInt(100),
 		Lockups: nil,
 	})
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:  "lp/2",
-		Amount: sdk.NewInt(200),
+		Amount: math.NewInt(200),
 		Lockups: []types.Lockup{
 			{
-				Amount:          sdk.NewInt(100),
+				Amount:          math.NewInt(100),
 				UnlockTimestamp: 100,
 			},
 			{
-				Amount:          sdk.NewInt(200),
+				Amount:          math.NewInt(200),
 				UnlockTimestamp: 200,
 			},
 		},
@@ -181,13 +183,13 @@ func Test_Commitments_GetCommittedLockUpsForDenomNil(t *testing.T) {
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/1",
-		Amount:  sdk.NewInt(100),
+		Amount:  math.NewInt(100),
 		Lockups: nil,
 	})
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/2",
-		Amount:  sdk.NewInt(200),
+		Amount:  math.NewInt(200),
 		Lockups: nil,
 	})
 
@@ -207,20 +209,20 @@ func Test_Commitments_CommittedTokensLocked(t *testing.T) {
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:   "lp/1",
-		Amount:  sdk.NewInt(100),
+		Amount:  math.NewInt(100),
 		Lockups: nil,
 	})
 
 	commitments.CommittedTokens = append(commitments.CommittedTokens, &types.CommittedTokens{
 		Denom:  "lp/2",
-		Amount: sdk.NewInt(200),
+		Amount: math.NewInt(200),
 		Lockups: []types.Lockup{
 			{
-				Amount:          sdk.NewInt(100),
+				Amount:          math.NewInt(100),
 				UnlockTimestamp: 100,
 			},
 			{
-				Amount:          sdk.NewInt(200),
+				Amount:          math.NewInt(200),
 				UnlockTimestamp: 200,
 			},
 		},

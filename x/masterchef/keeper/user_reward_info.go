@@ -1,19 +1,21 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
 func (k Keeper) SetUserRewardInfo(ctx sdk.Context, userReward types.UserRewardInfo) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	b := k.cdc.MustMarshal(&userReward)
 	key := types.GetUserRewardInfoKey(userReward.GetUserAccount(), userReward.GetPoolId(), userReward.GetRewardDenom())
 	store.Set(key, b)
 }
 
 func (k Keeper) GetUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId uint64, rewardDenom string) (val types.UserRewardInfo, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetUserRewardInfoKey(user, poolId, rewardDenom)
 	b := store.Get(key)
 	if b == nil {
@@ -25,14 +27,14 @@ func (k Keeper) GetUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId u
 }
 
 func (k Keeper) RemoveUserRewardInfo(ctx sdk.Context, user sdk.AccAddress, poolId uint64, rewardDenom string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetUserRewardInfoKey(user, poolId, rewardDenom)
 	store.Delete(key)
 }
 
 func (k Keeper) GetAllUserRewardInfos(ctx sdk.Context) (list []types.UserRewardInfo) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
 
 	defer iterator.Close()
 

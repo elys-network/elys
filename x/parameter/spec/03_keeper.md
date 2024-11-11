@@ -14,7 +14,7 @@ The `GetParams` function retrieves the current parameters from the store.
 
 ```go
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     b := store.Get([]byte(types.ParamsKey))
     if b == nil {
         return
@@ -30,7 +30,7 @@ The `SetParams` function sets the parameters in the store.
 
 ```go
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     b := k.cdc.MustMarshal(&params)
     store.Set([]byte(types.ParamsKey), b)
 }
@@ -42,7 +42,7 @@ The `GetLegacyParams` function retrieves the legacy parameters from the store.
 
 ```go
 func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     b := store.Get([]byte(types.ParamsKey))
     if b == nil {
         return

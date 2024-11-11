@@ -1,0 +1,16 @@
+{
+    "messages": [
+     {
+      "@type": "/elys.burner.MsgUpdateParams",
+      "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+      "params": {
+          "epoch_identifier": "epoch_identifier"
+      }
+     }
+    ],
+    "metadata": "ipfs://CID",
+   
+    "deposit": "10000000stake",
+    "title": "MsgUpdateParams",
+    "summary": "asdasd"
+}

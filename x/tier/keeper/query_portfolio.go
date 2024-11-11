@@ -2,7 +2,8 @@ package keeper
 
 import (
 	"context"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -19,7 +20,7 @@ func (k Keeper) PortfolioAll(goCtx context.Context, req *types.QueryAllPortfolio
 	var portfolios []types.Portfolio
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	portfolioStore := prefix.NewStore(store, types.PortfolioKeyPrefix)
 
 	pageRes, err := query.Paginate(portfolioStore, req.Pagination, func(key []byte, value []byte) error {

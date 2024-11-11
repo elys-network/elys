@@ -4,7 +4,8 @@ import (
 	"cosmossdk.io/math"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -16,25 +17,28 @@ import (
 )
 
 func TestAccountedPoolUpdate(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	apk := app.AccountedPoolKeeper
 
+	err := simapp.SetStakingParam(app, ctx)
+	require.NoError(t, err)
+
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Initiate pool
 	ammPool := ammtypes.Pool{
 		PoolId:      0,
 		Address:     addr[0].String(),
 		PoolParams:  ammtypes.PoolParams{},
-		TotalShares: sdk.NewCoin("lp-token", sdk.NewInt(100)),
+		TotalShares: sdk.NewCoin("lp-token", sdkmath.NewInt(100)),
 		PoolAssets: []ammtypes.PoolAsset{
-			{Token: sdk.NewCoin(ptypes.ATOM, sdk.NewInt(5000))},
-			{Token: sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(1000))},
+			{Token: sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(5000))},
+			{Token: sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(1000))},
 		},
-		TotalWeight:       sdk.NewInt(100),
+		TotalWeight:       sdkmath.NewInt(100),
 		RebalanceTreasury: addr[0].String(),
 	}
 	// Initiate pool
@@ -54,19 +58,19 @@ func TestAccountedPoolUpdate(t *testing.T) {
 
 	perpetualPool := perpetualtypes.Pool{
 		AmmPoolId:          0,
-		Health:             sdk.NewDec(1),
-		BorrowInterestRate: sdk.NewDec(1),
+		Health:             sdkmath.LegacyNewDec(1),
+		BorrowInterestRate: sdkmath.LegacyNewDec(1),
 		PoolAssetsLong: []perpetualtypes.PoolAsset{
 			{
-				Liabilities:           sdk.NewInt(400),
-				Custody:               sdk.NewInt(50),
+				Liabilities:           math.NewInt(400),
+				Custody:               math.NewInt(50),
 				TakeProfitCustody:     math.NewInt(10),
 				TakeProfitLiabilities: math.NewInt(20),
 				AssetDenom:            ptypes.BaseCurrency,
 			},
 			{
-				Liabilities:           sdk.NewInt(0),
-				Custody:               sdk.NewInt(50),
+				Liabilities:           math.NewInt(0),
+				Custody:               math.NewInt(50),
 				TakeProfitCustody:     math.ZeroInt(),
 				TakeProfitLiabilities: math.ZeroInt(),
 				AssetDenom:            ptypes.ATOM,
@@ -74,15 +78,15 @@ func TestAccountedPoolUpdate(t *testing.T) {
 		},
 		PoolAssetsShort: []perpetualtypes.PoolAsset{
 			{
-				Liabilities:           sdk.NewInt(400),
-				Custody:               sdk.NewInt(70),
+				Liabilities:           math.NewInt(400),
+				Custody:               math.NewInt(70),
 				TakeProfitCustody:     math.ZeroInt(),
 				TakeProfitLiabilities: math.ZeroInt(),
 				AssetDenom:            ptypes.BaseCurrency,
 			},
 			{
-				Liabilities:           sdk.NewInt(0),
-				Custody:               sdk.NewInt(50),
+				Liabilities:           math.NewInt(0),
+				Custody:               math.NewInt(50),
 				TakeProfitCustody:     math.ZeroInt(),
 				TakeProfitLiabilities: math.ZeroInt(),
 				AssetDenom:            ptypes.ATOM,
@@ -90,7 +94,7 @@ func TestAccountedPoolUpdate(t *testing.T) {
 		},
 	}
 	// Update accounted pool
-	err := apk.PerpetualUpdates(ctx, ammPool, perpetualPool, false)
+	err = apk.PerpetualUpdates(ctx, ammPool, perpetualPool, false)
 	require.NoError(t, err)
 
 	apool, found := apk.GetAccountedPool(ctx, (uint64)(0))
@@ -98,7 +102,7 @@ func TestAccountedPoolUpdate(t *testing.T) {
 	require.Equal(t, apool.PoolId, (uint64)(0))
 
 	usdcBalance := apk.GetAccountedBalance(ctx, (uint64)(0), ptypes.BaseCurrency)
-	require.Equal(t, usdcBalance, sdk.NewInt(1000+400-50+400-70))
+	require.Equal(t, usdcBalance, sdkmath.NewInt(1000+400-50+400-70))
 	atomBalance := apk.GetAccountedBalance(ctx, (uint64)(0), ptypes.ATOM)
-	require.Equal(t, atomBalance, sdk.NewInt(5000-50-50))
+	require.Equal(t, atomBalance, sdkmath.NewInt(5000-50-50))
 }

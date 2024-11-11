@@ -17,7 +17,7 @@ import (
 
 func networkWithGenesisInflationObjects(t *testing.T) (*network.Network, types.GenesisInflation) {
 	t.Helper()
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig(t.TempDir())
 	state := types.GenesisState{}
 	require.NoError(t, cfg.Codec.UnmarshalJSON(cfg.GenesisState[types.ModuleName], &state))
 

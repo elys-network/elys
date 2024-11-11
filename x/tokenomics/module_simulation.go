@@ -4,7 +4,6 @@ import (
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
@@ -102,14 +101,14 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 }
 
 // RegisterStoreDecoder registers a decoder
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {}
 
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgCreateAirdrop int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateAirdrop, &weightMsgCreateAirdrop, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreateAirdrop, &weightMsgCreateAirdrop, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreateAirdrop = defaultWeightMsgCreateAirdrop
 		},
@@ -120,7 +119,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdateAirdrop int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateAirdrop, &weightMsgUpdateAirdrop, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdateAirdrop, &weightMsgUpdateAirdrop, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdateAirdrop = defaultWeightMsgUpdateAirdrop
 		},
@@ -131,7 +130,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgDeleteAirdrop int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteAirdrop, &weightMsgDeleteAirdrop, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgDeleteAirdrop, &weightMsgDeleteAirdrop, nil,
 		func(_ *rand.Rand) {
 			weightMsgDeleteAirdrop = defaultWeightMsgDeleteAirdrop
 		},
@@ -142,14 +141,14 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgCreateGenesisInflation int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateGenesisInflation, &weightMsgCreateGenesisInflation, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreateGenesisInflation, &weightMsgCreateGenesisInflation, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreateGenesisInflation = defaultWeightMsgCreateGenesisInflation
 		},
 	)
 
 	var weightMsgUpdateGenesisInflation int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateGenesisInflation, &weightMsgUpdateGenesisInflation, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdateGenesisInflation, &weightMsgUpdateGenesisInflation, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdateGenesisInflation = defaultWeightMsgUpdateGenesisInflation
 		},
@@ -160,14 +159,14 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgDeleteGenesisInflation int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteGenesisInflation, &weightMsgDeleteGenesisInflation, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgDeleteGenesisInflation, &weightMsgDeleteGenesisInflation, nil,
 		func(_ *rand.Rand) {
 			weightMsgDeleteGenesisInflation = defaultWeightMsgDeleteGenesisInflation
 		},
 	)
 
 	var weightMsgCreateTimeBasedInflation int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateTimeBasedInflation, &weightMsgCreateTimeBasedInflation, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreateTimeBasedInflation, &weightMsgCreateTimeBasedInflation, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreateTimeBasedInflation = defaultWeightMsgCreateTimeBasedInflation
 		},
@@ -178,7 +177,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdateTimeBasedInflation int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateTimeBasedInflation, &weightMsgUpdateTimeBasedInflation, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdateTimeBasedInflation, &weightMsgUpdateTimeBasedInflation, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdateTimeBasedInflation = defaultWeightMsgUpdateTimeBasedInflation
 		},
@@ -189,7 +188,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgDeleteTimeBasedInflation int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteTimeBasedInflation, &weightMsgDeleteTimeBasedInflation, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgDeleteTimeBasedInflation, &weightMsgDeleteTimeBasedInflation, nil,
 		func(_ *rand.Rand) {
 			weightMsgDeleteTimeBasedInflation = defaultWeightMsgDeleteTimeBasedInflation
 		},

@@ -8,6 +8,9 @@ import (
 )
 
 func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimRewards) (*types.MsgClaimRewardsResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 

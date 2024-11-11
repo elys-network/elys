@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"strconv"
 	"testing"
 
@@ -17,23 +18,23 @@ func TestGenerateOpenEvent(t *testing.T) {
 		TradingAsset:                  "uatom",
 		LiabilitiesAsset:              "uusdc",
 		CustodyAsset:                  "uatom",
-		Collateral:                    sdk.OneInt(),
-		Liabilities:                   sdk.OneInt(),
-		BorrowInterestPaidCustody:     sdk.OneInt(),
-		BorrowInterestUnpaidLiability: sdk.OneInt(),
-		Custody:                       sdk.OneInt(),
-		TakeProfitLiabilities:         sdk.OneInt(),
-		TakeProfitCustody:             sdk.OneInt(),
-		MtpHealth:                     sdk.ZeroDec(),
+		Collateral:                    sdkmath.OneInt(),
+		Liabilities:                   sdkmath.OneInt(),
+		BorrowInterestPaidCustody:     sdkmath.OneInt(),
+		BorrowInterestUnpaidLiability: sdkmath.OneInt(),
+		Custody:                       sdkmath.OneInt(),
+		TakeProfitLiabilities:         sdkmath.OneInt(),
+		TakeProfitCustody:             sdkmath.OneInt(),
+		MtpHealth:                     sdkmath.LegacyZeroDec(),
 		Position:                      types.Position_LONG,
 		Id:                            1,
 		AmmPoolId:                     1,
-		TakeProfitPrice:               sdk.NewDec(10),
-		TakeProfitBorrowFactor:        sdk.OneDec(),
-		FundingFeePaidCustody:         sdk.OneInt(),
-		FundingFeeReceivedCustody:     sdk.OneInt(),
-		OpenPrice:                     sdk.NewDec(10),
-		StopLossPrice:                 sdk.NewDec(0),
+		TakeProfitPrice:               sdkmath.LegacyNewDec(10),
+		TakeProfitBorrowFactor:        sdkmath.LegacyOneDec(),
+		FundingFeePaidCustody:         sdkmath.OneInt(),
+		FundingFeeReceivedCustody:     sdkmath.OneInt(),
+		OpenPrice:                     sdkmath.LegacyNewDec(10),
+		StopLossPrice:                 sdkmath.LegacyNewDec(0),
 	}
 
 	event := types.GenerateOpenEvent(&testMTP)

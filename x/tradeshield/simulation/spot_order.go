@@ -31,7 +31,6 @@ func SimulateMsgCreateSpotOrder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -65,7 +64,7 @@ func SimulateMsgUpdateSpotOrder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingSpotOrder owner not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateSpotOrder{}), "pendingSpotOrder owner not found"), nil, nil
 		}
 		msg.OwnerAddress = simAccount.Address.String()
 		msg.OrderId = pendingSpotOrder.OrderId
@@ -76,7 +75,6 @@ func SimulateMsgUpdateSpotOrder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -110,7 +108,7 @@ func SimulateMsgCancelSpotOrders(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingSpotOrder owner not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateSpotOrder{}), "pendingSpotOrder owner not found"), nil, nil
 		}
 		msg.OwnerAddress = simAccount.Address.String()
 		msg.OrderId = pendingSpotOrder.OrderId
@@ -121,7 +119,6 @@ func SimulateMsgCancelSpotOrders(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,

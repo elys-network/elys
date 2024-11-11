@@ -17,13 +17,13 @@ func SimulateMsgBond(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgBond{
-			Creator: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgBond{
+		//	Creator: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the Stake simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "Stake simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgBond{}), "Stake simulation not implemented"), nil, nil
 	}
 }

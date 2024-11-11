@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"strconv"
 	"testing"
 
@@ -16,7 +17,7 @@ func createNDenomLiquidity(keeper *keeper.Keeper, ctx sdk.Context, n int) []type
 	items := make([]types.DenomLiquidity, n)
 	for i := range items {
 		items[i].Denom = strconv.Itoa(i)
-		items[i].Liquidity = sdk.ZeroInt()
+		items[i].Liquidity = sdkmath.ZeroInt()
 
 		keeper.SetDenomLiquidity(ctx, items[i])
 	}

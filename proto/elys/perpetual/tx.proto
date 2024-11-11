@@ -8,76 +8,109 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "elys/perpetual/params.proto";
 import "elys/perpetual/types.proto";
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc Open                (MsgOpen) returns (MsgOpenResponse);
-  rpc BrokerOpen          (MsgBrokerOpen) returns (MsgOpenResponse);
-  rpc Close               (MsgClose) returns (MsgCloseResponse);
-  rpc BrokerClose         (MsgBrokerClose) returns (MsgCloseResponse);
-  rpc UpdateParams        (MsgUpdateParams) returns (MsgUpdateParamsResponse);
-  rpc Whitelist           (MsgWhitelist) returns (MsgWhitelistResponse);
-  rpc Dewhitelist         (MsgDewhitelist) returns (MsgDewhitelistResponse);
-  rpc UpdateStopLoss      (MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
-  rpc ClosePositions      (MsgClosePositions) returns (MsgClosePositionsResponse);
-  rpc UpdateTakeProfitPrice(MsgUpdateTakeProfitPrice) returns (MsgUpdateTakeProfitPriceResponse);
+  option (cosmos.msg.v1.service) = true;
+  rpc Open(MsgOpen) returns (MsgOpenResponse);
+  rpc BrokerOpen(MsgBrokerOpen) returns (MsgOpenResponse);
+  rpc Close(MsgClose) returns (MsgCloseResponse);
+  rpc BrokerClose(MsgBrokerClose) returns (MsgCloseResponse);
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  rpc Whitelist(MsgWhitelist) returns (MsgWhitelistResponse);
+  rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
+  rpc UpdateStopLoss(MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
+  rpc ClosePositions(MsgClosePositions) returns (MsgClosePositionsResponse);
+  rpc UpdateTakeProfitPrice(MsgUpdateTakeProfitPrice)
+      returns (MsgUpdateTakeProfitPriceResponse);
 }
 message MsgOpen {
-  string                   creator = 1;
-  Position                 position = 2;
-  string                   leverage = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string                   trading_asset = 4;
-  cosmos.base.v1beta1.Coin collateral = 5 [(gogoproto.nullable) = false] ;
-  string                   take_profit_price = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgOpen";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  Position position = 2;
+  string leverage = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string trading_asset = 4;
+  cosmos.base.v1beta1.Coin collateral = 5 [ (gogoproto.nullable) = false ];
+  string take_profit_price = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
   string stop_loss_price = 7 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   uint64 pool_id = 8;
 }
 
 message MsgBrokerOpen {
-  string                   creator = 1;
-  Position                 position = 2;
-  string                   leverage = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string                   trading_asset = 4;
-  cosmos.base.v1beta1.Coin collateral = 5 [(gogoproto.nullable) = false] ;
-  string                   take_profit_price = 6 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string                   owner = 7;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgBrokerOpen";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  Position position = 2;
+  string leverage = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string trading_asset = 4;
+  cosmos.base.v1beta1.Coin collateral = 5 [ (gogoproto.nullable) = false ];
+  string take_profit_price = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string owner = 7;
   string stop_loss_price = 8 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   uint64 pool_id = 9;
 }
 
-message MsgOpenResponse {
-  uint64 id = 1;
-}
+message MsgOpenResponse { uint64 id = 1; }
 
 message MsgClose {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgClose";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
-  string amount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgBrokerClose {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgBrokerClose";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
-  string amount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
   string owner = 4;
 }
 
 message MsgCloseResponse {
   uint64 id = 1;
-  string amount = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgUpdateParams {
-
-  // authority is the address that controls the module (defaults to x/gov unless overwritten).
-  string authority = 1;
-
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "perpetual/MsgUpdateParams";
+  // authority is the address that controls the module (defaults to x/gov unless
+  // overwritten).
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   // NOTE: All parameters must be supplied.
   Params params = 2;
 }
@@ -85,21 +118,27 @@ message MsgUpdateParams {
 message MsgUpdateParamsResponse {}
 
 message MsgWhitelist {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "perpetual/MsgWhitelist";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string whitelisted_address = 2;
 }
 
 message MsgWhitelistResponse {}
 
 message MsgDewhitelist {
-  string authority = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "perpetual/MsgDewhitelist";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string whitelisted_address = 2;
 }
 
 message MsgDewhitelistResponse {}
 
 message MsgClosePositions {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgClosePositions";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated PositionRequest liquidate = 2;
   repeated PositionRequest stop_loss = 3;
   repeated PositionRequest take_profit = 4;
@@ -108,17 +147,27 @@ message MsgClosePositions {
 message MsgClosePositionsResponse {}
 
 message MsgUpdateStopLoss {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgUpdateStopLoss";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
-  string price = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string price = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgUpdateStopLossResponse {}
 
 message MsgUpdateTakeProfitPrice {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "perpetual/MsgUpdateTakeProfitPrice";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
-  string price = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string price = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgUpdateTakeProfitPriceResponse {}

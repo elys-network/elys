@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	errorsmod "cosmossdk.io/errors"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,12 +12,15 @@ import (
 )
 
 func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.MsgCreatePerpetualOpenOrder) (*types.MsgCreatePerpetualOpenOrderResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Verify if perpetual pool exists
 	_, found := k.perpetual.GetPool(ctx, msg.PoolId)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("pool %d not found", msg.PoolId))
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("pool %d not found", msg.PoolId))
 	}
 
 	var pendingPerpetualOrder = types.PerpetualOrder{
@@ -47,7 +51,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		if order.PoolId == msg.PoolId && order.Position == msg.Position &&
 			order.Collateral.Denom == msg.Collateral.Denom &&
 			order.TradingAsset == msg.TradingAsset {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "user already has a order for the same pool")
+			return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "user already has a order for the same pool")
 		}
 	}
 
@@ -59,7 +63,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 	}
 	for _, mtp := range mtps {
 		if mtp.Mtp.AmmPoolId == msg.PoolId && mtp.Mtp.Position == perpetualtypes.Position(msg.Position) && mtp.Mtp.CollateralAsset == msg.Collateral.Denom && mtp.Mtp.TradingAsset == msg.TradingAsset {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "user already has a position in the same pool")
+			return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "user already has a position in the same pool")
 		}
 	}
 
@@ -88,13 +92,13 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 
 func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.MsgCreatePerpetualCloseOrder) (*types.MsgCreatePerpetualCloseOrderResponse, error) {
 	// Disable for v1
-	return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "disabled for v1")
+	return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "disabled for v1")
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// // check if the position owner address matches the msg owner address
 	// position, err := k.perpetual.GetMTP(ctx, sdk.MustAccAddressFromBech32(msg.OwnerAddress), msg.PositionId)
 	// if err != nil {
-	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("position %d not found", msg.PositionId))
+	// 	return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("position %d not found", msg.PositionId))
 	// }
 
 	// var pendingPerpetualOrder = types.PerpetualOrder{
@@ -118,17 +122,20 @@ func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.M
 }
 
 func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpdatePerpetualOrder) (*types.MsgUpdatePerpetualOrderResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
 	order, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.OrderId))
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.OrderId))
 	}
 
 	// Checks if the msg creator is the same as the current owner
 	if msg.OwnerAddress != order.OwnerAddress {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	order.TriggerPrice = msg.TriggerPrice
@@ -138,17 +145,20 @@ func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpd
 }
 
 func (k msgServer) CancelPerpetualOrder(goCtx context.Context, msg *types.MsgCancelPerpetualOrder) (*types.MsgCancelPerpetualOrderResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
 	order, found := k.GetPendingPerpetualOrder(ctx, msg.OrderId)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("order %d doesn't exist", msg.OrderId))
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("order %d doesn't exist", msg.OrderId))
 	}
 
 	// Checks if the msg creator is the same as the current owner
 	if msg.OwnerAddress != order.OwnerAddress {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	k.RemovePendingPerpetualOrder(ctx, msg.OrderId)
@@ -160,6 +170,9 @@ func (k msgServer) CancelPerpetualOrder(goCtx context.Context, msg *types.MsgCan
 }
 
 func (k msgServer) CancelPerpetualOrders(goCtx context.Context, msg *types.MsgCancelPerpetualOrders) (*types.MsgCancelPerpetualOrdersResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	if len(msg.OrderIds) == 0 {
 		return nil, types.ErrSizeZero
 	}

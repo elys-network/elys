@@ -7,34 +7,15 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 const MinimumContractGasLimit = uint64(100_000)
-
-var (
-	KeyContractAddressesIdentifier = []byte("ContractAddresses")
-	KeyContractGasLimitIdentifier  = []byte("ContractGasLimit")
-)
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 // DefaultParams returns default parameters
 func DefaultParams() Params {
 	return Params{
 		ContractAddresses: []string(nil),
 		ContractGasLimit:  1_000_000_000, // 1 billion
-	}
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyContractAddressesIdentifier, &p.ContractAddresses, validateContractAddressesIdentifier),
-		paramtypes.NewParamSetPair(KeyContractGasLimitIdentifier, &p.ContractGasLimit, validateContractGasLimitIdentifier),
 	}
 }
 

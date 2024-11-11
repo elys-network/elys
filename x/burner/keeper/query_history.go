@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/x/burner/types"
@@ -19,7 +20,7 @@ func (k Keeper) HistoryAll(goCtx context.Context, req *types.QueryAllHistoryRequ
 	var historys []types.History
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	historyStore := prefix.NewStore(store, types.KeyPrefix(types.HistoryKeyPrefix))
 
 	pageRes, err := query.Paginate(historyStore, req.Pagination, func(key []byte, value []byte) error {

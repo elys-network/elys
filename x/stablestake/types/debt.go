@@ -1,8 +1,11 @@
 package types
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	sdkmath "cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
 
-func (debt Debt) GetTotalLiablities() sdk.Int {
+func (debt Debt) GetTotalLiablities() sdkmath.Int {
 	return debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid)
 }
 

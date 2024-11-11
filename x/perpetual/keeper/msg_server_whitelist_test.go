@@ -19,7 +19,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerWhileList() {
 		msg := keeper.NewMsgServerImpl(*suite.app.PerpetualKeeper)
 		_, err := msg.Whitelist(suite.ctx, &types.MsgWhitelist{
 			Authority:          sample.AccAddress(),
-			WhitelistedAddress: "",
+			WhitelistedAddress: sample.AccAddress(),
 		})
 		suite.Require().ErrorIs(err, govtypes.ErrInvalidSigner)
 	})

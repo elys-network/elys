@@ -24,7 +24,7 @@ func (k Keeper) InternalSwapExactAmountIn(
 	tokenIn sdk.Coin,
 	tokenOutDenom string,
 	tokenOutMinAmount math.Int,
-	swapFee sdk.Dec,
+	swapFee math.LegacyDec,
 ) (tokenOutAmount math.Int, err error) {
 	if tokenIn.Denom == tokenOutDenom {
 		return math.Int{}, errors.New("cannot trade the same denomination in and out")
@@ -59,7 +59,7 @@ func (k Keeper) InternalSwapExactAmountIn(
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// Also emits a swap event and updates related liquidity metrics.
-	_, err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, sdk.ZeroDec(), swapFee, weightBalanceBonus)
+	_, err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, math.LegacyZeroDec(), swapFee, weightBalanceBonus)
 	if err != nil {
 		return math.Int{}, err
 	}

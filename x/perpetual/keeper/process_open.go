@@ -2,11 +2,12 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage sdk.Dec, collateralAmountDec sdk.Dec, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
+func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage sdkmath.LegacyDec, collateralAmountDec sdkmath.LegacyDec, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {

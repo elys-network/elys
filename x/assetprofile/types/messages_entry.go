@@ -6,12 +6,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	TypeMsgCreateEntry = "create_entry"
-	TypeMsgUpdateEntry = "update_entry"
-	TypeMsgDeleteEntry = "delete_entry"
-)
-
 var _ sdk.Msg = &MsgUpdateEntry{}
 
 func NewMsgUpdateEntry(
@@ -54,27 +48,6 @@ func NewMsgUpdateEntry(
 	}
 }
 
-func (msg *MsgUpdateEntry) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUpdateEntry) Type() string {
-	return TypeMsgUpdateEntry
-}
-
-func (msg *MsgUpdateEntry) GetSigners() []sdk.AccAddress {
-	authority, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{authority}
-}
-
-func (msg *MsgUpdateEntry) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
 func (msg *MsgUpdateEntry) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
@@ -101,27 +74,6 @@ func NewMsgDeleteEntry(
 		Authority: authority,
 		BaseDenom: baseDenom,
 	}
-}
-
-func (msg *MsgDeleteEntry) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgDeleteEntry) Type() string {
-	return TypeMsgDeleteEntry
-}
-
-func (msg *MsgDeleteEntry) GetSigners() []sdk.AccAddress {
-	authority, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{authority}
-}
-
-func (msg *MsgDeleteEntry) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgDeleteEntry) ValidateBasic() error {

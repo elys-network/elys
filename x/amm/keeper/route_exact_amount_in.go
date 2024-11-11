@@ -17,12 +17,12 @@ func (k Keeper) RouteExactAmountIn(
 	routes []types.SwapAmountInRoute,
 	tokenIn sdk.Coin,
 	tokenOutMinAmount math.Int,
-	discount sdk.Dec,
-) (tokenOutAmount math.Int, totalDiscountedSwapFee sdk.Dec, discountOut sdk.Dec, err error) {
-	isMultiHopRouted, routeSwapFee, sumOfSwapFees := false, sdk.Dec{}, sdk.Dec{}
+	discount math.LegacyDec,
+) (tokenOutAmount math.Int, totalDiscountedSwapFee math.LegacyDec, discountOut math.LegacyDec, err error) {
+	isMultiHopRouted, routeSwapFee, sumOfSwapFees := false, math.LegacyDec{}, math.LegacyDec{}
 	route := types.SwapAmountInRoutes(routes)
 	if err := route.Validate(); err != nil {
-		return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+		return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
 
 	// In this loop, we check if:
@@ -39,12 +39,12 @@ func (k Keeper) RouteExactAmountIn(
 		isMultiHopRouted = true
 		routeSwapFee, sumOfSwapFees, err = k.getElysRoutedMultihopTotalSwapFee(ctx, route)
 		if err != nil {
-			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+			return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
 	}
 
 	// Initialize the total discounted swap fee
-	totalDiscountedSwapFee = sdk.ZeroDec()
+	totalDiscountedSwapFee = math.LegacyZeroDec()
 
 	for i, route := range routes {
 		// recipient is the same as the sender until the last pool
@@ -63,7 +63,7 @@ func (k Keeper) RouteExactAmountIn(
 		// Execute the expected swap on the current routed pool
 		pool, poolExists := k.GetPool(ctx, route.PoolId)
 		if !poolExists {
-			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), types.ErrInvalidPoolId
+			return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), types.ErrInvalidPoolId
 		}
 
 		// // check if pool is active, if not error
@@ -82,10 +82,10 @@ func (k Keeper) RouteExactAmountIn(
 		// Apply discount to swap fee if applicable
 		brokerAddress := k.parameterKeeper.GetParams(ctx).BrokerAddress
 		if discount.IsNil() {
-			discount = sdk.ZeroDec()
+			discount = math.LegacyZeroDec()
 		}
 		if discount.IsPositive() && sender.String() != brokerAddress {
-			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), errorsmod.Wrapf(types.ErrInvalidDiscount, "discount %s is positive and signer address %s is not broker address %s", discount, sender, brokerAddress)
+			return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrInvalidDiscount, "discount %s is positive and signer address %s is not broker address %s", discount, sender, brokerAddress)
 		}
 		swapFee = types.ApplyDiscount(swapFee, discount)
 
@@ -95,7 +95,7 @@ func (k Keeper) RouteExactAmountIn(
 		tokenOutAmount, err = k.InternalSwapExactAmountIn(ctx, sender, actualRecipient, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee)
 		if err != nil {
 			ctx.Logger().Error(err.Error())
-			return math.Int{}, sdk.ZeroDec(), sdk.ZeroDec(), err
+			return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
 
 		// Chain output of current pool as the input for the next routed pool

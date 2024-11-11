@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	simapp "github.com/elys-network/elys/app"
@@ -15,23 +16,25 @@ import (
 )
 
 func TestCommitMintedLPTokenToCommitmentModule(t *testing.T) {
-	app := simapp.InitElysTestApp(initChain)
-	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
+	app := simapp.InitElysTestApp(initChain, t)
+	ctx := app.BaseApp.NewContext(initChain)
 	amm, bk := app.AmmKeeper, app.BankKeeper
 
+	simapp.SetupAssetProfile(app, ctx)
 	// Create Pool
-
+	err := simapp.SetStakingParam(app, ctx)
+	require.NoError(t, err)
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
-	transferAmt := sdk.NewCoin(ptypes.Elys, sdk.NewInt(100))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
+	transferAmt := sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100))
 
 	// Deposit 100elys to FeeCollectorName wallet
-	err := bk.SendCoinsFromAccountToModule(ctx, addr[0], authtypes.FeeCollectorName, sdk.NewCoins(transferAmt))
+	err = bk.SendCoinsFromAccountToModule(ctx, addr[0], authtypes.FeeCollectorName, sdk.NewCoins(transferAmt))
 	require.NoError(t, err)
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)))
 
 	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, usdcToken)
 	require.NoError(t, err)
@@ -41,20 +44,20 @@ func TestCommitMintedLPTokenToCommitmentModule(t *testing.T) {
 	var poolAssets []atypes.PoolAsset
 	// Elys
 	poolAssets = append(poolAssets, atypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(100000)),
+		Weight: sdkmath.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100000)),
 	})
 
 	// USDC
 	poolAssets = append(poolAssets, atypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
+		Weight: sdkmath.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),
 	})
 
-	argSwapFee, err := sdk.NewDecFromStr("0.1")
+	argSwapFee, err := sdkmath.LegacyNewDecFromStr("0.1")
 	require.NoError(t, err)
 
-	argExitFee, err := sdk.NewDecFromStr("0.1")
+	argExitFee, err := sdkmath.LegacyNewDecFromStr("0.1")
 	require.NoError(t, err)
 
 	poolParams := &atypes.PoolParams{

@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	"github.com/elys-network/elys/x/estaking/types"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
@@ -13,11 +13,11 @@ func TestDefaultParams(t *testing.T) {
 		StakeIncentives:         nil,
 		EdenCommitVal:           "",
 		EdenbCommitVal:          "",
-		MaxEdenRewardAprStakers: sdk.NewDecWithPrec(3, 1), // 30%
-		EdenBoostApr:            sdk.OneDec(),
+		MaxEdenRewardAprStakers: sdkmath.LegacyNewDecWithPrec(3, 1), // 30%
+		EdenBoostApr:            sdkmath.LegacyOneDec(),
 		DexRewardsStakers: types.DexRewardsTracker{
 			NumBlocks: 1,
-			Amount:    sdk.ZeroDec(),
+			Amount:    sdkmath.LegacyZeroDec(),
 		},
 	}
 	require.Equal(t, types.DefaultParams(), params)
@@ -62,7 +62,7 @@ func TestRewardPortionForLps(t *testing.T) {
 				params.EdenbCommitVal = "cosmosvaloper18ruzecmqj9pv8ac0gvkgryuc7u004te9rh7w5s"
 				params.StakeIncentives = &types.IncentiveInfo{
 					BlocksDistributed: -1,
-					EdenAmountPerYear: sdk.ZeroInt(),
+					EdenAmountPerYear: sdkmath.ZeroInt(),
 				}
 			},
 			err: "StakeIncentives blocks distributed must be >= 0",
@@ -77,52 +77,52 @@ func TestRewardPortionForLps(t *testing.T) {
 		{
 			name: "MaxEdenRewardAprStakers is nil",
 			setter: func() {
-				params.StakeIncentives.EdenAmountPerYear = sdk.OneInt()
-				params.MaxEdenRewardAprStakers = sdk.Dec{}
+				params.StakeIncentives.EdenAmountPerYear = sdkmath.OneInt()
+				params.MaxEdenRewardAprStakers = sdkmath.LegacyDec{}
 			},
 			err: "MaxEdenRewardAprStakers must not be nil",
 		},
 		{
 			name: "MaxEdenRewardAprStakers is -ve",
 			setter: func() {
-				params.MaxEdenRewardAprStakers = sdk.OneDec().MulInt64(-1)
+				params.MaxEdenRewardAprStakers = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			err: "MaxEdenRewardAprStakers cannot be negative",
 		},
 		{
 			name: "EdenBoostApr is nil",
 			setter: func() {
-				params.MaxEdenRewardAprStakers = sdk.OneDec()
-				params.EdenBoostApr = sdk.Dec{}
+				params.MaxEdenRewardAprStakers = sdkmath.LegacyOneDec()
+				params.EdenBoostApr = sdkmath.LegacyDec{}
 			},
 			err: "EdenBoostApr must not be nil",
 		},
 		{
 			name: "EdenBoostApr is -ve",
 			setter: func() {
-				params.EdenBoostApr = sdk.OneDec().MulInt64(-1)
+				params.EdenBoostApr = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			err: "EdenBoostApr cannot be negative",
 		},
 		{
 			name: "DexRewardsStakers DexRewardsStakers is nil",
 			setter: func() {
-				params.EdenBoostApr = sdk.OneDec()
-				params.DexRewardsStakers.Amount = sdk.Dec{}
+				params.EdenBoostApr = sdkmath.LegacyOneDec()
+				params.DexRewardsStakers.Amount = sdkmath.LegacyDec{}
 			},
 			err: "DexRewardsStakers amount must not be nil",
 		},
 		{
 			name: "DexRewardsStakers DexRewardsStakers is -ve",
 			setter: func() {
-				params.DexRewardsStakers.Amount = sdk.OneDec().MulInt64(-1)
+				params.DexRewardsStakers.Amount = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			err: "DexRewardsStakers amount cannot be -ve",
 		},
 		{
 			name: "DexRewardsStakers NumBlocks is -ve",
 			setter: func() {
-				params.DexRewardsStakers.Amount = sdk.OneDec()
+				params.DexRewardsStakers.Amount = sdkmath.LegacyOneDec()
 				params.DexRewardsStakers.NumBlocks = -1
 			},
 			err: "DexRewardsStakers NumBlocks cannot be -ve",

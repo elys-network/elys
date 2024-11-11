@@ -1,22 +1,23 @@
 package types
 
 import (
+	"context"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	query "github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
+	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
 	// Methods imported from account should be defined here
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 	// Methods imported from bank should be defined here
 }
 
@@ -31,9 +32,9 @@ type AmmKeeper interface {
 //
 //go:generate mockery --srcpkg . --name TierKeeper --structname TierKeeper --filename tier_keeper.go --with-expecter
 type TierKeeper interface {
-	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdk.Dec, tier string, discount uint64)
+	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, tier string, discount uint64)
 
-	CalculateUSDValue(ctx sdk.Context, denom string, amount sdk.Int) sdk.Dec
+	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec
 }
 
 // PerpetualKeeper defines the expected interface needed to open and close perpetual positions
@@ -46,6 +47,6 @@ type PerpetualKeeper interface {
 	GetPool(ctx sdk.Context, poolId uint64) (val perpetualtypes.Pool, found bool)
 	HandleOpenEstimation(ctx sdk.Context, req *perpetualtypes.QueryOpenEstimationRequest) (*perpetualtypes.QueryOpenEstimationResponse, error)
 	HandleCloseEstimation(ctx sdk.Context, req *perpetualtypes.QueryCloseEstimationRequest) (res *perpetualtypes.QueryCloseEstimationResponse, err error)
-	GetAssetPrice(ctx sdk.Context, asset string) (sdk.Dec, error)
+	GetAssetPrice(ctx sdk.Context, asset string) (sdkmath.LegacyDec, error)
 	GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*perpetualtypes.MtpAndPrice, *query.PageResponse, error)
 }

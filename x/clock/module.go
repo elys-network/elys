@@ -2,13 +2,12 @@ package clock
 
 import (
 	"context"
+	"cosmossdk.io/core/appmodule"
 	"encoding/json"
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
-
-	abci "github.com/cometbft/cometbft/abci/types"
 
 	errorsmod "cosmossdk.io/errors"
 
@@ -31,9 +30,16 @@ const (
 )
 
 var (
-	_ module.AppModuleBasic   = AppModuleBasic{}
-	_ module.AppModuleGenesis = AppModule{}
-	_ module.AppModule        = AppModule{}
+	_ module.AppModuleBasic = AppModule{}
+	//_ module.AppModuleSimulation = AppModule{}
+	_ module.HasGenesis          = AppModule{}
+	_ module.HasServices         = AppModule{}
+	_ module.HasConsensusVersion = AppModule{}
+	_ module.HasInvariants       = AppModule{}
+
+	_ appmodule.AppModule       = AppModule{}
+	_ appmodule.HasBeginBlocker = AppModule{}
+	_ appmodule.HasEndBlocker   = AppModule{}
 )
 
 // AppModuleBasic defines the basic application module used by the wasm module.
@@ -107,11 +113,11 @@ func NewAppModule(
 	}
 }
 
-func (a AppModule) InitGenesis(ctx sdk.Context, marshaler codec.JSONCodec, message json.RawMessage) []abci.ValidatorUpdate {
+func (a AppModule) InitGenesis(ctx sdk.Context, marshaler codec.JSONCodec, message json.RawMessage) {
 	var genesisState types.GenesisState
 	marshaler.MustUnmarshalJSON(message, &genesisState)
 	_ = a.keeper.SetParams(ctx, genesisState.Params)
-	return nil
+	return
 }
 
 func (a AppModule) ExportGenesis(ctx sdk.Context, marshaler codec.JSONCodec) json.RawMessage {
@@ -123,19 +129,17 @@ func (a AppModule) ExportGenesis(ctx sdk.Context, marshaler codec.JSONCodec) jso
 func (a AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {
 }
 
-func (a AppModule) QuerierRoute() string {
-	return types.QuerierRoute
-}
-
 func (a AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(a.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(a.keeper))
 }
 
-func (a AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {
+func (a AppModule) BeginBlock(_ context.Context) error {
+	return nil
 }
 
-func (a AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+func (a AppModule) EndBlock(goCtx context.Context) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	EndBlocker(ctx, a.keeper)
 	return nil
 }
@@ -147,3 +151,7 @@ func (a AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Vali
 func (a AppModule) ConsensusVersion() uint64 {
 	return ConsensusVersion
 }
+
+func (am AppModule) IsOnePerModuleType() {}
+
+func (am AppModule) IsAppModule() {}

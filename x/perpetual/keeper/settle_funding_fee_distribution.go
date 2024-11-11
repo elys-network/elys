@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -14,9 +15,9 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 
 	// Total fund collected should be
 	long, short := k.GetFundingDistributionValue(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId)
-	var totalFund sdk.Dec
+	var totalFund sdkmath.LegacyDec
 	// calc funding fee share
-	var fundingFeeShare sdk.Dec
+	var fundingFeeShare sdkmath.LegacyDec
 	if mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
 		if totalLongOpenInterest.IsZero() {

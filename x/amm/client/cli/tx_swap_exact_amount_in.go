@@ -44,7 +44,7 @@ func CmdSwapExactAmountIn() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			discount, err := sdk.NewDecFromStr(discountStr)
+			discount, err := math.LegacyNewDecFromStr(discountStr)
 			if err != nil {
 				return err
 			}

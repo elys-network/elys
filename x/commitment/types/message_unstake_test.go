@@ -1,6 +1,7 @@
 package types
 
 import (
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -26,6 +27,7 @@ func TestMsgUnstake_ValidateBasic(t *testing.T) {
 			msg: MsgUnstake{
 				Creator: sample.AccAddress(),
 				Amount:  math.NewInt(200),
+				Asset:   ptypes.ATOM,
 			},
 		},
 	}

@@ -7,8 +7,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgBrokerClose = "broker_close"
-
 func NewMsgBrokerClose(creator string, id uint64, amount math.Int, owner string) *MsgBrokerClose {
 	return &MsgBrokerClose{
 		Creator: creator,
@@ -16,27 +14,6 @@ func NewMsgBrokerClose(creator string, id uint64, amount math.Int, owner string)
 		Amount:  amount,
 		Owner:   owner,
 	}
-}
-
-func (msg *MsgBrokerClose) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgBrokerClose) Type() string {
-	return TypeMsgBrokerClose
-}
-
-func (msg *MsgBrokerClose) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgBrokerClose) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgBrokerClose) ValidateBasic() error {

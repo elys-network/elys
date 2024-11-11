@@ -25,13 +25,16 @@ func NewMsgServerImpl(k Keeper) types.MsgServer {
 	}
 }
 
-func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
-	if k.authority != req.Authority {
-		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, req.Authority)
+func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
+	if k.authority != msg.Authority {
+		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if err := k.SetParams(ctx, req.Params); err != nil {
+	if err := k.SetParams(ctx, msg.Params); err != nil {
 		return nil, err
 	}
 

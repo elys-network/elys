@@ -1,12 +1,12 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
 	"errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/spf13/cobra"
 )
@@ -28,7 +28,7 @@ func CmdExitPoolEstimation() *cobra.Command {
 				return err
 			}
 
-			shareAmountIn, ok := sdk.NewIntFromString(args[1])
+			shareAmountIn, ok := math.NewIntFromString(args[1])
 			if !ok {
 				return errors.New("invalid share in amount")
 			}

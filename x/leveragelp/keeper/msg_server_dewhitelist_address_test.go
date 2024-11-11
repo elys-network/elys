@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	simapp "github.com/elys-network/elys/app"
@@ -11,7 +11,7 @@ import (
 
 func (suite *KeeperTestSuite) TestMsgServerDewhitelistAddress() {
 	suite.ResetSuite()
-	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 	msg := &types.MsgWhitelist{
 		Authority:          authtypes.NewModuleAddress(govtypes.ModuleName).String(),
