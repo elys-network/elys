@@ -37,8 +37,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtxconfig "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
+	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -187,25 +190,23 @@ func initRootCmd(rootCmd *cobra.Command,
 		snapshot.Cmd(ac.newApp),
 	)
 
+	// TODO cmds already present through genutil module, can be removed. Kept for github workflows
+	gentxModule := basicManager[genutiltypes.ModuleName].(genutil.AppModuleBasic)
+	rootCmd.AddCommand(
+		genutilcli.GenTxCmd(basicManager, txConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome, txConfig.SigningContext().ValidatorAddressCodec()),
+		genutilcli.CollectGenTxsCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome, gentxModule.GenTxValidator, txConfig.SigningContext().ValidatorAddressCodec()),
+		genutilcli.AddGenesisAccountCmd(app.DefaultNodeHome, txConfig.SigningContext().AddressCodec()),
+	)
+
 	server.AddCommands(rootCmd, app.DefaultNodeHome, ac.newApp, ac.appExport, addModuleInitFlags)
 
 	// add keybase, auxiliary RPC, query, and tx child commands
 	rootCmd.AddCommand(
 		server.StatusCommand(),
-		genesisCommand(txConfig, basicManager),
 		queryCommand(basicManager),
 		txCommand(basicManager),
 		keys.Commands(),
 	)
-}
-
-func genesisCommand(txConfig client.TxConfig, basicManager module.BasicManager, cmds ...*cobra.Command) *cobra.Command {
-	cmd := genutilcli.GenesisCoreCommand(txConfig, basicManager, app.DefaultNodeHome)
-
-	for _, subCmd := range cmds {
-		cmd.AddCommand(subCmd)
-	}
-	return cmd
 }
 
 // queryCommand returns the sub-command to send queries to the app
