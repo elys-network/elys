@@ -6,7 +6,8 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	wasmmodule "github.com/CosmWasm/wasmd/x/wasm"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	m "github.com/cosmos/cosmos-sdk/types/module"
@@ -43,7 +44,7 @@ func (app *ElysApp) setUpgradeHandler() {
 				// and delete them
 				// TODO: Delete wasm code after deleting wasm module store
 				// Retrieve the wasm module store key
-				storeKey := app.GetMemKey(wasmmodule.StoreKey)
+				storeKey := app.GetMemKey(wasmtypes.StoreKey)
 				store := ctx.KVStore(storeKey)
 
 				iterator := store.Iterator(nil, nil)
