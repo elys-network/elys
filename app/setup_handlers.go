@@ -6,7 +6,9 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	wasmmodule "github.com/CosmWasm/wasmd/x/wasm"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
@@ -36,6 +38,20 @@ func (app *ElysApp) setUpgradeHandler() {
 				}
 				consensusParams.Block.MaxBytes = NewMaxBytes
 				app.ConsensusParamsKeeper.ParamsStore.Set(ctx, consensusParams)
+
+				// Retrieve the wasm module store key
+				storeKey := app.GetMemKey(wasmmodule.StoreKey)
+
+				// Retrieve the wasm module store
+				store := ctx.KVStore(storeKey)
+
+				// Iterate over all the keys in the wasm module store
+				// and delete them
+				iterator := store.Iterator(nil, nil)
+				defer iterator.Close()
+				for ; iterator.Valid(); iterator.Next() {
+					store.Delete(iterator.Key())
+				}
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
@@ -58,7 +74,7 @@ func (app *ElysApp) setUpgradeStore() {
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			// Added: []string{},
-			//Deleted: []string{},
+			Deleted: []string{"clock"},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 
