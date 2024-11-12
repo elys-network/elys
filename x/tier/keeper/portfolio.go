@@ -213,13 +213,13 @@ func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdkma
 	return totalValue
 }
 
-func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (sdk.Dec, sdk.Dec, sdk.Dec) {
-	totalAssets := sdk.NewDec(0)
-	totalLiability := sdk.NewDec(0)
-	var netValue sdk.Dec
+func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (sdkmath.LegacyDec, sdkmath.LegacyDec, sdkmath.LegacyDec) {
+	totalAssets := sdkmath.LegacyNewDec(0)
+	totalLiability := sdkmath.LegacyNewDec(0)
+	var netValue sdkmath.LegacyDec
 	perpetuals, _, err := k.perpetual.GetMTPsForAddressWithPagination(ctx, user, nil)
 	if err != nil {
-		return sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()
+		return sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0)
 	}
 	for _, perpetual := range perpetuals {
 		if perpetual.Mtp.Position == perpetualtypes.Position_LONG {
