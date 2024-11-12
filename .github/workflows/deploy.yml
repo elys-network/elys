@@ -122,14 +122,12 @@ jobs:
           height=$($ELYSD status --node $NODE | extract_and_calc_upgrade_height)
           # create proposal
           txhash=$(
-            $ELYSD tx gov submit-legacy-proposal software-upgrade \
-             ${{env.VERSION}} \
-              --deposit=10000000uelys \
-              --upgrade-height=$height \
-              --title="${{env.VERSION}}" \
-              --description="Elys Network version ${{env.VERSION}} released. Focuses on enhancements and codebase improvements." \
-              --upgrade-info="{\"binaries\":{\"linux/amd64\":\"https://snapshots.elys.network/releases/${{env.NAME_WITH_VERSION}}.tar.gz\"}}" \
-              --no-validate \
+            $ELYSD software-upgrade-tx \
+              ${{env.VERSION}} \
+              $height \
+              10000000uelys \
+              "Elys Network version ${{env.VERSION}} released. Focuses on enhancements and codebase improvements." \
+              "{\"binaries\":{\"linux/amd64\":\"https://snapshots.elys.network/releases/${{env.NAME_WITH_VERSION}}.tar.gz\"}}" \
               --from=mallorca \
               $OPTIONS | extract_txhash
           )             
