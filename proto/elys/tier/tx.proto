@@ -3,18 +3,23 @@ syntax = "proto3";
 package elys.tier;
 
 import "elys/tier/portfolio.proto";
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/tier/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc SetPortfolio    (MsgSetPortfolio) returns (MsgSetPortfolioResponse);
+  option (cosmos.msg.v1.service) = true;
+  rpc SetPortfolio(MsgSetPortfolio) returns (MsgSetPortfolioResponse);
 }
 
 message MsgSetPortfolio {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "tier/MsgSetPortfolio";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string user = 2;
 }
 
 message MsgSetPortfolioResponse {}
-

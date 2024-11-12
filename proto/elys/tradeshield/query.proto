@@ -12,43 +12,50 @@ option go_package = "github.com/elys-network/elys/x/tradeshield/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
+
   // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/tradeshield/params";
-  
   }
-  
+
   // Queries a list of PendingSpotOrder items.
-  rpc PendingSpotOrder    (QueryGetPendingSpotOrderRequest) returns (QueryGetPendingSpotOrderResponse) {
-    option (google.api.http).get = "/elys-network/elys/tradeshield/pending_spot_order/{id}";
-  
+  rpc PendingSpotOrder(QueryGetPendingSpotOrderRequest)
+      returns (QueryGetPendingSpotOrderResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tradeshield/pending_spot_order/{id}";
   }
-  rpc PendingSpotOrderAll (QueryAllPendingSpotOrderRequest) returns (QueryAllPendingSpotOrderResponse) {
-    option (google.api.http).get = "/elys-network/elys/tradeshield/pending_spot_order";
-  
+  rpc PendingSpotOrderAll(QueryAllPendingSpotOrderRequest)
+      returns (QueryAllPendingSpotOrderResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tradeshield/pending_spot_order";
   }
-  
+
   // Queries a list of PendingPerpetualOrder items.
-  rpc PendingPerpetualOrder    (QueryGetPendingPerpetualOrderRequest) returns (QueryGetPendingPerpetualOrderResponse) {
-    option (google.api.http).get = "/elys-network/elys/tradeshield/pending_perpetual_order/{id}";
-  
+  rpc PendingPerpetualOrder(QueryGetPendingPerpetualOrderRequest)
+      returns (QueryGetPendingPerpetualOrderResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tradeshield/pending_perpetual_order/{id}";
   }
-  rpc PendingPerpetualOrderAll (QueryAllPendingPerpetualOrderRequest) returns (QueryAllPendingPerpetualOrderResponse) {
-    option (google.api.http).get = "/elys-network/elys/tradeshield/pending_perpetual_order";
-  
+  rpc PendingPerpetualOrderAll(QueryAllPendingPerpetualOrderRequest)
+      returns (QueryAllPendingPerpetualOrderResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tradeshield/pending_perpetual_order";
   }
-  
+
   // Queries a list of PendingPerpetualOrderForAddress items.
-  rpc PendingPerpetualOrderForAddress (QueryPendingPerpetualOrderForAddressRequest) returns (QueryPendingPerpetualOrderForAddressResponse) {
-    option (google.api.http).get = "/elys-network/elys/tradeshield/pending_perpetual_order_for_address/{address}";
-  
+  rpc PendingPerpetualOrderForAddress(
+      QueryPendingPerpetualOrderForAddressRequest)
+      returns (QueryPendingPerpetualOrderForAddressResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tradeshield/pending_perpetual_order_for_address/"
+        "{address}";
   }
-  
+
   // Queries a list of PendingSpotOrderForAddress items.
-  rpc PendingSpotOrderForAddress (QueryPendingSpotOrderForAddressRequest) returns (QueryPendingSpotOrderForAddressResponse) {
-    option (google.api.http).get = "/elys-network/elys/tradeshield/pending_spot_order_for_address/{address}";
-  
+  rpc PendingSpotOrderForAddress(QueryPendingSpotOrderForAddressRequest)
+      returns (QueryPendingSpotOrderForAddressResponse) {
+    option (google.api.http).get = "/elys-network/elys/tradeshield/"
+                                   "pending_spot_order_for_address/{address}";
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -56,17 +63,15 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  
+
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryGetPendingSpotOrderRequest {
-  uint64 id = 1;
-}
+message QueryGetPendingSpotOrderRequest { uint64 id = 1; }
 
 message QueryGetPendingSpotOrderResponse {
-  SpotOrder pending_spot_order = 1 [(gogoproto.nullable) = false];
+  SpotOrder pending_spot_order = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllPendingSpotOrderRequest {
@@ -74,16 +79,15 @@ message QueryAllPendingSpotOrderRequest {
 }
 
 message QueryAllPendingSpotOrderResponse {
-  repeated SpotOrder                              pending_spot_order = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination         = 2;
+  repeated SpotOrder pending_spot_order = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message QueryGetPendingPerpetualOrderRequest {
-  uint64 id = 1;
-}
+message QueryGetPendingPerpetualOrderRequest { uint64 id = 1; }
 
 message QueryGetPendingPerpetualOrderResponse {
-  PerpetualOrderExtraInfo pending_perpetual_order = 1 [(gogoproto.nullable) = false];
+  PerpetualOrderExtraInfo pending_perpetual_order = 1
+      [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllPendingPerpetualOrderRequest {
@@ -91,8 +95,9 @@ message QueryAllPendingPerpetualOrderRequest {
 }
 
 message QueryAllPendingPerpetualOrderResponse {
-  repeated PerpetualOrderExtraInfo                         pending_perpetual_order = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination              = 2;
+  repeated PerpetualOrderExtraInfo pending_perpetual_order = 1
+      [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryPendingPerpetualOrderForAddressRequest {
@@ -101,7 +106,8 @@ message QueryPendingPerpetualOrderForAddressRequest {
 }
 
 message QueryPendingPerpetualOrderForAddressResponse {
-  repeated PerpetualOrderExtraInfo                         pending_perpetual_orders = 1 [(gogoproto.nullable) = false];
+  repeated PerpetualOrderExtraInfo pending_perpetual_orders = 1
+      [ (gogoproto.nullable) = false ];
 }
 
 message QueryPendingSpotOrderForAddressRequest {
@@ -110,6 +116,5 @@ message QueryPendingSpotOrderForAddressRequest {
 }
 
 message QueryPendingSpotOrderForAddressResponse {
-  repeated SpotOrder                              pending_spot_orders = 1 [(gogoproto.nullable) = false];
+  repeated SpotOrder pending_spot_orders = 1 [ (gogoproto.nullable) = false ];
 }
-

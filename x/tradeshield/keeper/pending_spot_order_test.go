@@ -3,6 +3,9 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/testutil/nullify"
@@ -66,16 +69,16 @@ func TestExecuteStopLossOrder(t *testing.T) {
 
 	address := sdk.AccAddress([]byte("address"))
 
-	tierKeeper.On("CalculateUSDValue", ctx, "base", sdk.NewInt(1)).Return(sdk.NewDec(1))
-	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdk.NewInt(1)).Return(sdk.NewDec(1))
-	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdk.NewDec(10), "tier", uint64(10))
+	tierKeeper.On("CalculateUSDValue", ctx, "base", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
+	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), "tier", uint64(10))
 	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    address.String(),
-		Amount:    sdk.NewCoin("base", sdk.NewInt(1)),
-		MinAmount: sdk.NewCoin("quote", sdk.ZeroInt()),
+		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
+		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
 		DenomIn:   "base",
 		DenomOut:  "quote",
-		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Discount:  math.LegacyMustNewDecFromStr("0.1"),
 		Recipient: address.String(),
 	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
@@ -87,10 +90,10 @@ func TestExecuteStopLossOrder(t *testing.T) {
 		OrderPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+			Rate:       sdkmath.LegacyNewDec(1),
 		},
 		OrderTargetDenom: "quote",
-		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
+		OrderAmount:      sdk.NewCoin("base", sdkmath.NewInt(1)),
 	})
 
 	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
@@ -113,16 +116,16 @@ func TestExecuteLimitSellOrder(t *testing.T) {
 
 	address := sdk.AccAddress([]byte("address"))
 
-	tierKeeper.On("CalculateUSDValue", ctx, "base", sdk.NewInt(1)).Return(sdk.NewDec(1))
-	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdk.NewInt(1)).Return(sdk.NewDec(1))
-	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdk.NewDec(10), "tier", uint64(10))
+	tierKeeper.On("CalculateUSDValue", ctx, "base", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
+	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), "tier", uint64(10))
 	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    address.String(),
-		Amount:    sdk.NewCoin("base", sdk.NewInt(1)),
-		MinAmount: sdk.NewCoin("quote", sdk.ZeroInt()),
+		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
+		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
 		DenomIn:   "base",
 		DenomOut:  "quote",
-		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Discount:  math.LegacyMustNewDecFromStr("0.1"),
 		Recipient: address.String(),
 	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
@@ -134,10 +137,10 @@ func TestExecuteLimitSellOrder(t *testing.T) {
 		OrderPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+			Rate:       sdkmath.LegacyNewDec(1),
 		},
 		OrderTargetDenom: "quote",
-		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
+		OrderAmount:      sdk.NewCoin("base", sdkmath.NewInt(1)),
 	})
 
 	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
@@ -160,16 +163,16 @@ func TestExecuteLimitBuyOrder(t *testing.T) {
 
 	address := sdk.AccAddress([]byte("address"))
 
-	tierKeeper.On("CalculateUSDValue", ctx, "base", sdk.NewInt(1)).Return(sdk.NewDec(1))
-	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdk.NewInt(1)).Return(sdk.NewDec(1))
-	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdk.NewDec(10), "tier", uint64(10))
+	tierKeeper.On("CalculateUSDValue", ctx, "base", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
+	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), "tier", uint64(10))
 	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    address.String(),
-		Amount:    sdk.NewCoin("base", sdk.NewInt(1)),
-		MinAmount: sdk.NewCoin("quote", sdk.ZeroInt()),
+		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
+		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
 		DenomIn:   "base",
 		DenomOut:  "quote",
-		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Discount:  math.LegacyMustNewDecFromStr("0.1"),
 		Recipient: address.String(),
 	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
@@ -181,10 +184,10 @@ func TestExecuteLimitBuyOrder(t *testing.T) {
 		OrderPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+			Rate:       sdkmath.LegacyNewDec(1),
 		},
 		OrderTargetDenom: "quote",
-		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
+		OrderAmount:      sdk.NewCoin("base", sdkmath.NewInt(1)),
 	})
 
 	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
@@ -207,14 +210,14 @@ func TestExecuteMarketBuyOrder(t *testing.T) {
 
 	address := sdk.AccAddress([]byte("address"))
 
-	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdk.NewDec(10), "tier", uint64(10))
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), "tier", uint64(10))
 	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    address.String(),
-		Amount:    sdk.NewCoin("base", sdk.NewInt(1)),
-		MinAmount: sdk.NewCoin("quote", sdk.ZeroInt()),
+		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
+		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
 		DenomIn:   "base",
 		DenomOut:  "quote",
-		Discount:  sdk.MustNewDecFromStr("0.1"),
+		Discount:  math.LegacyMustNewDecFromStr("0.1"),
 		Recipient: address.String(),
 	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
 
@@ -225,10 +228,10 @@ func TestExecuteMarketBuyOrder(t *testing.T) {
 		OrderPrice: &types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
-			Rate:       sdk.NewDec(1),
+			Rate:       sdkmath.LegacyNewDec(1),
 		},
 		OrderTargetDenom: "quote",
-		OrderAmount:      sdk.NewCoin("base", sdk.NewInt(1)),
+		OrderAmount:      sdk.NewCoin("base", sdkmath.NewInt(1)),
 	}
 
 	err := keeper.ExecuteMarketBuyOrder(ctx, order)

@@ -4,10 +4,11 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
@@ -19,8 +20,8 @@ import (
 )
 
 func TestExternalIncentive(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	externalIncentives := []types.ExternalIncentive{
 		{
@@ -29,8 +30,8 @@ func TestExternalIncentive(t *testing.T) {
 			PoolId:         1,
 			FromBlock:      0,
 			ToBlock:        100,
-			AmountPerBlock: sdk.OneInt(),
-			Apr:            sdk.ZeroDec(),
+			AmountPerBlock: sdkmath.OneInt(),
+			Apr:            sdkmath.LegacyZeroDec(),
 		},
 		{
 			Id:             1,
@@ -38,8 +39,8 @@ func TestExternalIncentive(t *testing.T) {
 			PoolId:         1,
 			FromBlock:      0,
 			ToBlock:        100,
-			AmountPerBlock: sdk.OneInt(),
-			Apr:            sdk.ZeroDec(),
+			AmountPerBlock: sdkmath.OneInt(),
+			Apr:            sdkmath.LegacyZeroDec(),
 		},
 		{
 			Id:             2,
@@ -47,8 +48,8 @@ func TestExternalIncentive(t *testing.T) {
 			PoolId:         2,
 			FromBlock:      0,
 			ToBlock:        100,
-			AmountPerBlock: sdk.OneInt(),
-			Apr:            sdk.ZeroDec(),
+			AmountPerBlock: sdkmath.OneInt(),
+			Apr:            sdkmath.LegacyZeroDec(),
 		},
 	}
 	for _, externalIncentive := range externalIncentives {
@@ -69,8 +70,8 @@ func TestExternalIncentive(t *testing.T) {
 
 // Test USDC reward as external and via dex collection
 func TestUSDCExternalIncentive(t *testing.T) {
-	app, _, _ := simapp.InitElysTestAppWithGenAccount()
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app, _, _ := simapp.InitElysTestAppWithGenAccount(t)
+	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper
 
@@ -92,6 +93,7 @@ func TestUSDCExternalIncentive(t *testing.T) {
 			StrategicReserve:  9999999,
 			TeamTokensVested:  9999999,
 		},
+		Description: "Description",
 	}
 
 	wctx := sdk.WrapSDKContext(ctx)
@@ -109,43 +111,44 @@ func TestUSDCExternalIncentive(t *testing.T) {
 			StrategicReserve:  9999999,
 			TeamTokensVested:  9999999,
 		},
+		Description: "Description",
 	}
 	_, err = srv.CreateTimeBasedInflation(wctx, expected)
 	require.NoError(t, err)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(10000000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(10000000000))
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000000)))
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000000000)))
 
-	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken.MulInt(sdk.NewInt(2)))
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken.MulInt(sdkmath.NewInt(2)))
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[1], usdcToken)
 	require.NoError(t, err)
 
-	usdcToken = sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000000)))
-	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken.MulInt(sdk.NewInt(2)))
+	usdcToken = sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000000)))
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken.MulInt(sdkmath.NewInt(2)))
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(10000000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(10000000)),
 		},
 		{
-			Weight: sdk.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000)),
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000000)),
 		},
 	}
 
-	argSwapFee := sdk.MustNewDecFromStr("0.0")
-	argExitFee := sdk.MustNewDecFromStr("0.0")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.0")
+	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.0")
 
 	poolParams := &ammtypes.PoolParams{
 		SwapFee: argSwapFee,
@@ -176,7 +179,7 @@ func TestUSDCExternalIncentive(t *testing.T) {
 	t.Log(mk.GetPoolTotalCommit(ctx, pools[0].PoolId))
 	require.Equal(t, mk.GetPoolTotalCommit(ctx, pools[0].PoolId).String(), "10002000000000000000000000")
 	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[0]).String(), "10000000000000000000000000")
-	_, _, err = amm.JoinPoolNoSwap(ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdk.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000000))))
+	_, _, err = amm.JoinPoolNoSwap(ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000000))))
 	require.NoError(t, err)
 	require.Equal(t, mk.GetPoolTotalCommit(ctx, pools[0].PoolId).String(), "20002000000000000000000000")
 	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[1]), share)
@@ -191,7 +194,7 @@ func TestUSDCExternalIncentive(t *testing.T) {
 	_, err = masterchefSrv.AddExternalRewardDenom(sdk.WrapSDKContext(ctx), &types.MsgAddExternalRewardDenom{
 		Authority:   app.GovKeeper.GetAuthority(),
 		RewardDenom: ptypes.BaseCurrency,
-		MinAmount:   sdk.OneInt(),
+		MinAmount:   sdkmath.OneInt(),
 		Supported:   true,
 	})
 	require.NoError(t, err)
@@ -207,7 +210,7 @@ func TestUSDCExternalIncentive(t *testing.T) {
 
 	// Fill in pool revenue wallet
 	revenueAddress1 := ammtypes.NewPoolRevenueAddress(1)
-	usdcRevToken1 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000)))
+	usdcRevToken1 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)))
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcRevToken1)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, revenueAddress1, usdcRevToken1)
@@ -249,7 +252,7 @@ func TestUSDCExternalIncentive(t *testing.T) {
 	require.NoError(t, err)
 
 	curUSDCBal := app.BankKeeper.GetBalance(ctx, addr[1], ptypes.BaseCurrency)
-	amount, _ := sdk.NewIntFromString("4949545046")
+	amount, _ := sdkmath.NewIntFromString("4949545046")
 	require.Equal(t, curUSDCBal.Amount.String(), prevUSDCBal.Amount.Add(amount).String())
 
 	// no pending rewards

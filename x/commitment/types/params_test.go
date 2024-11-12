@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/stretchr/testify/require"
@@ -25,7 +26,7 @@ func TestParamsValidation(t *testing.T) {
 			"uusdc",
 			"uatom",
 			12,
-			sdk.OneInt(),
+			sdkmath.OneInt(),
 			123,
 		},
 	}
@@ -77,21 +78,21 @@ func TestParamsValidation(t *testing.T) {
 			name: "VestNowFactor is nil",
 			setter: func() {
 				params.VestingInfos[0].NumBlocks = 10
-				params.VestingInfos[0].VestNowFactor = sdk.Int{}
+				params.VestingInfos[0].VestNowFactor = sdkmath.Int{}
 			},
 			err: "vesting now factor cannot be nil",
 		},
 		{
 			name: "VestNowFactor is < 1",
 			setter: func() {
-				params.VestingInfos[0].VestNowFactor = sdk.ZeroInt()
+				params.VestingInfos[0].VestNowFactor = sdkmath.ZeroInt()
 			},
 			err: "vesting now factor must be positive",
 		},
 		{
 			name: "params.VestingInfos contains nil",
 			setter: func() {
-				params.VestingInfos[0].VestNowFactor = sdk.OneInt()
+				params.VestingInfos[0].VestNowFactor = sdkmath.OneInt()
 				params.VestingInfos = append(params.VestingInfos, nil)
 			},
 			err: "vesting info cannot be nil",
@@ -100,7 +101,7 @@ func TestParamsValidation(t *testing.T) {
 			name: "TotalCommitted is invalid",
 			setter: func() {
 				params.VestingInfos = vestingInfos
-				params.TotalCommitted = sdk.Coins{sdk.Coin{"@@@@", sdk.OneInt()}}
+				params.TotalCommitted = sdk.Coins{sdk.Coin{"@@@@", sdkmath.OneInt()}}
 			},
 			err: "invalid denom",
 		},

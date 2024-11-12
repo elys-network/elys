@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -22,7 +23,7 @@ func (suite *EstakingKeeperTestSuite) TestKeeperShares() {
 			func(addr sdk.AccAddress) {
 				// Check with non-delegator
 				delegatedAmount := suite.app.EstakingKeeper.CalcDelegationAmount(suite.ctx, addr)
-				suite.Require().Equal(delegatedAmount, sdk.ZeroInt())
+				suite.Require().Equal(delegatedAmount, math.ZeroInt())
 
 				// Check with genesis account (delegator)
 				delegatedAmount = suite.app.EstakingKeeper.CalcDelegationAmount(suite.ctx, suite.genAccount)
@@ -41,7 +42,7 @@ func (suite *EstakingKeeperTestSuite) TestKeeperShares() {
 			func(addr sdk.AccAddress) {
 				// Check with non-delegator
 				delegatedAmount := suite.app.EstakingKeeper.CalcBondedDelegationAmount(suite.ctx, addr)
-				suite.Require().Equal(delegatedAmount, sdk.ZeroInt())
+				suite.Require().Equal(delegatedAmount, math.ZeroInt())
 
 				// Check with genesis account (delegator)
 				delegatedAmount = suite.app.EstakingKeeper.CalcBondedDelegationAmount(suite.ctx, suite.genAccount)

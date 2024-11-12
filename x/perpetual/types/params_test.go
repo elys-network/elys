@@ -3,10 +3,9 @@ package types_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestValidateMaxLimitOrder(t *testing.T) {
@@ -26,7 +25,7 @@ func TestValidateMaxLimitOrder(t *testing.T) {
 		{
 			name: "MaxLimitOrder is nil",
 			setter: func() {
-				params.MaxLimitOrder = sdk.OneInt().MulRaw(-100).Int64()
+				params.MaxLimitOrder = math.OneInt().MulRaw(-100).Int64()
 			},
 			err: "MaxLimitOrder should not be -ve",
 		},

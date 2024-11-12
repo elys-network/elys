@@ -1,7 +1,8 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -36,7 +37,7 @@ func (k Keeper) DeleteSwapExactAmountInRequest(ctx sdk.Context, msg *types.MsgSw
 // GetAllSwapExactAmountInRequests returns all SwapExactAmountIn requests
 func (k Keeper) GetAllSwapExactAmountInRequests(ctx sdk.Context) (list []types.MsgSwapExactAmountIn) {
 	store := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.KeyPrefix(types.TSwapExactAmountInKey))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -51,7 +52,7 @@ func (k Keeper) GetAllSwapExactAmountInRequests(ctx sdk.Context) (list []types.M
 
 func (k Keeper) GetFirstSwapExactAmountInRequest(ctx sdk.Context, sprefix []byte) (*types.MsgSwapExactAmountIn, uint64) {
 	store := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.KeyPrefix(types.TSwapExactAmountInKey))
-	iterator := sdk.KVStorePrefixIterator(store, sprefix)
+	iterator := storetypes.KVStorePrefixIterator(store, sprefix)
 
 	defer iterator.Close()
 	if !iterator.Valid() {
@@ -79,7 +80,7 @@ func (k Keeper) DeleteSwapExactAmountOutRequest(ctx sdk.Context, msg *types.MsgS
 // GetAllSwapExactAmountOutRequests returns all SwapExactAmountOut requests
 func (k Keeper) GetAllSwapExactAmountOutRequests(ctx sdk.Context) (list []types.MsgSwapExactAmountOut) {
 	store := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.KeyPrefix(types.TSwapExactAmountOutKey))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -94,7 +95,7 @@ func (k Keeper) GetAllSwapExactAmountOutRequests(ctx sdk.Context) (list []types.
 
 func (k Keeper) GetFirstSwapExactAmountOutRequest(ctx sdk.Context, sprefix []byte) (*types.MsgSwapExactAmountOut, uint64) {
 	store := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.KeyPrefix(types.TSwapExactAmountOutKey))
-	iterator := sdk.KVStorePrefixIterator(store, sprefix)
+	iterator := storetypes.KVStorePrefixIterator(store, sprefix)
 
 	defer iterator.Close()
 	if !iterator.Valid() {

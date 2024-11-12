@@ -1,9 +1,9 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (c Commitments) IsEmpty() bool {
@@ -25,7 +25,7 @@ func (c *Commitments) GetCommittedAmountForDenom(denom string) math.Int {
 			return token.Amount
 		}
 	}
-	return sdk.NewInt(0)
+	return math.NewInt(0)
 }
 
 func (c *Commitments) GetCommittedLockUpsForDenom(denom string) []Lockup {
@@ -69,7 +69,7 @@ func (c Commitments) CommittedTokensLocked(ctx sdk.Context) (sdk.Coins, sdk.Coin
 	totalLocked := sdk.Coins{}
 	totalCommitted := sdk.Coins{}
 	for _, token := range c.CommittedTokens {
-		lockedAmount := sdk.ZeroInt()
+		lockedAmount := math.ZeroInt()
 		for _, lockup := range token.Lockups {
 			if lockup.UnlockTimestamp > uint64(ctx.BlockTime().Unix()) {
 				lockedAmount = lockedAmount.Add(lockup.Amount)
@@ -90,7 +90,7 @@ func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTim
 			}
 
 			newLockups := []Lockup{}
-			lockedAmount := sdk.ZeroInt()
+			lockedAmount := math.ZeroInt()
 			for _, lockup := range token.Lockups {
 				if lockup.UnlockTimestamp > currTime && !isLiquidation {
 					newLockups = append(newLockups, lockup)
@@ -99,7 +99,7 @@ func (c *Commitments) DeductFromCommitted(denom string, amount math.Int, currTim
 			}
 			c.CommittedTokens[i].Lockups = newLockups
 			if lockedAmount.GT(c.CommittedTokens[i].Amount) {
-				return errors.Wrapf(ErrInsufficientWithdrawableTokens, "amount: %s denom: %s", amount, denom)
+				return errorsmod.Wrapf(ErrInsufficientWithdrawableTokens, "amount: %s denom: %s", amount, denom)
 			}
 			if c.CommittedTokens[i].Amount.IsZero() {
 				c.CommittedTokens = append(c.CommittedTokens[:i], c.CommittedTokens[i+1:]...)
@@ -116,7 +116,7 @@ func (c *Commitments) GetClaimedForDenom(denom string) math.Int {
 			return token.Amount
 		}
 	}
-	return sdk.ZeroInt()
+	return math.ZeroInt()
 }
 
 func (c *Commitments) AddClaimed(amount sdk.Coin) {
@@ -140,5 +140,5 @@ func (vesting *VestingTokens) VestedSoFar(ctx sdk.Context) math.Int {
 	if totalBlocks > vesting.NumBlocks {
 		totalBlocks = vesting.NumBlocks
 	}
-	return vesting.TotalAmount.Mul(sdk.NewInt(totalBlocks)).Quo(sdk.NewInt(vesting.NumBlocks))
+	return vesting.TotalAmount.Mul(math.NewInt(totalBlocks)).Quo(math.NewInt(vesting.NumBlocks))
 }

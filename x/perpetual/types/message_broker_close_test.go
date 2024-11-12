@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/assert"
@@ -31,38 +30,6 @@ func TestNewMsgBrokerClose(t *testing.T) {
 	}
 
 	assert.Equal(t, want, got)
-}
-
-func TestMsgBrokerClose_Route(t *testing.T) {
-	msg := MsgBrokerClose{}
-	assert.Equal(t, "perpetual", msg.Route())
-}
-
-func TestMsgBrokerClose_Type(t *testing.T) {
-	msg := MsgBrokerClose{}
-	assert.Equal(t, "broker_close", msg.Type())
-}
-
-func TestMsgBrokerClose_GetSigners(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgBrokerClose{Creator: accAdress}
-
-	creator, err := sdk.AccAddressFromBech32(accAdress)
-	if err != nil {
-		panic(err)
-	}
-
-	assert.Equal(t, []sdk.AccAddress{creator}, msg.GetSigners())
-}
-
-func TestMsgBrokerClose_GetSignBytes(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgBrokerClose{Creator: accAdress}
-
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	b := sdk.MustSortJSON(bz)
-
-	assert.Equal(t, b, msg.GetSignBytes())
 }
 
 func TestMsgBrokerClose_ValidateBasic(t *testing.T) {

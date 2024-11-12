@@ -1,21 +1,24 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
 // SetPrice set a specific price in the store from its index
 func (k Keeper) SetPrice(ctx sdk.Context, price types.Price) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	b := k.cdc.MustMarshal(&price)
 	store.Set(types.PriceKey(price.Asset, price.Source, price.Timestamp), b)
 }
 
 // GetPrice returns a price from its index
 func (k Keeper) GetPrice(ctx sdk.Context, asset, source string, timestamp uint64) (val types.Price, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(types.PriceKey(asset, source, timestamp))
 	if b == nil {
@@ -27,8 +30,8 @@ func (k Keeper) GetPrice(ctx sdk.Context, asset, source string, timestamp uint64
 }
 
 func (k Keeper) GetLatestPriceFromAssetAndSource(ctx sdk.Context, asset, source string) (val types.Price, found bool) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStoreReversePrefixIterator(store, types.PriceKeyPrefixAssetAndSource(asset, source))
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStoreReversePrefixIterator(store, types.PriceKeyPrefixAssetAndSource(asset, source))
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -41,8 +44,8 @@ func (k Keeper) GetLatestPriceFromAssetAndSource(ctx sdk.Context, asset, source 
 }
 
 func (k Keeper) GetLatestPriceFromAnySource(ctx sdk.Context, asset string) (val types.Price, found bool) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStoreReversePrefixIterator(store, types.PriceKeyPrefixAsset(asset))
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStoreReversePrefixIterator(store, types.PriceKeyPrefixAsset(asset))
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -56,14 +59,14 @@ func (k Keeper) GetLatestPriceFromAnySource(ctx sdk.Context, asset string) (val 
 
 // RemovePrice removes a price from the store
 func (k Keeper) RemovePrice(ctx sdk.Context, asset, source string, timestamp uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.PriceKey(asset, source, timestamp))
 }
 
 // GetAllPrice returns all price
 func (k Keeper) GetAllPrice(ctx sdk.Context) (list []types.Price) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PriceKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -78,8 +81,8 @@ func (k Keeper) GetAllPrice(ctx sdk.Context) (list []types.Price) {
 
 // MigrateAllLegacyPrices migrates all legacy prices
 func (k Keeper) MigrateAllLegacyPrices(ctx sdk.Context) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PriceKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -116,22 +119,22 @@ func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (types.Price, bool)
 	return k.GetLatestPriceFromAnySource(ctx, asset)
 }
 
-func Pow10(decimal uint64) (value sdk.Dec) {
-	value = sdk.NewDec(1)
+func Pow10(decimal uint64) (value sdkmath.LegacyDec) {
+	value = sdkmath.LegacyNewDec(1)
 	for i := 0; i < int(decimal); i++ {
-		value = value.Mul(sdk.NewDec(10))
+		value = value.Mul(sdkmath.LegacyNewDec(10))
 	}
 	return
 }
 
-func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec {
+func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec {
 	info, found := k.GetAssetInfo(ctx, denom)
 	if !found {
-		return sdk.ZeroDec()
+		return sdkmath.LegacyZeroDec()
 	}
 	price, found := k.GetAssetPrice(ctx, info.Display)
 	if !found {
-		return sdk.ZeroDec()
+		return sdkmath.LegacyZeroDec()
 	}
 	return price.Price.Quo(Pow10(info.Decimal))
 }

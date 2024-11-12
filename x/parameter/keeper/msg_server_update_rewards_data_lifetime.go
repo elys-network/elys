@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -10,13 +11,16 @@ import (
 )
 
 func (k msgServer) UpdateRewardsDataLifetime(goCtx context.Context, msg *types.MsgUpdateRewardsDataLifetime) (*types.MsgUpdateRewardsDataLifetimeResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Creator {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
 	}
 
-	rewardsDataLifetime, ok := sdk.NewIntFromString(msg.RewardsDataLifetime)
+	rewardsDataLifetime, ok := sdkmath.NewIntFromString(msg.RewardsDataLifetime)
 	if !ok {
 		return nil, errorsmod.Wrapf(types.ErrInvalidRewardsDataLifecycle, "invalid data in rewards_data_lifecycle")
 	}

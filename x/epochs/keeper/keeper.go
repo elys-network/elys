@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/x/epochs/types"
@@ -13,16 +13,16 @@ import (
 
 // Keeper of this module maintains collections of epochs and hooks.
 type Keeper struct {
-	cdc      codec.Codec
-	storeKey storetypes.StoreKey
-	hooks    types.EpochHooks
+	cdc          codec.Codec
+	storeService store.KVStoreService
+	hooks        types.EpochHooks
 }
 
 // NewKeeper returns a new instance of epochs Keeper
-func NewKeeper(cdc codec.Codec, storeKey storetypes.StoreKey) *Keeper {
+func NewKeeper(cdc codec.Codec, storeService store.KVStoreService) *Keeper {
 	return &Keeper{
-		cdc:      cdc,
-		storeKey: storeKey,
+		cdc:          cdc,
+		storeService: storeService,
 	}
 }
 

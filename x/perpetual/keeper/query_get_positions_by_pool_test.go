@@ -23,7 +23,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsByPool_Err() {
 
 	_, err := k.GetPositionsByPool(ctx, &types.PositionsByPoolRequest{
 		AmmPoolId:  uint64(2),
-		Pagination: &query.PageRequest{Limit: 200},
+		Pagination: &query.PageRequest{Limit: 12000},
 	})
 
 	suite.Require().ErrorContains(err, "page size greater than max")
@@ -49,7 +49,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsByPool_Successful() 
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	secondOpenPositionMsg := &types.MsgOpen{
@@ -60,7 +60,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsByPool_Successful() 
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	_, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)

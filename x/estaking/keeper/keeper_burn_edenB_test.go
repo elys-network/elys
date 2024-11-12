@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	commkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
@@ -30,8 +31,8 @@ func (suite *EstakingKeeperTestSuite) TestBurnEdenBFromElysUnstaked() {
 			tc.prerequisiteFunction()
 
 			// burn amount = 100000 (unbonded amt) / (1000000 (elys staked) + 10000 (Eden committed)) * (20000 EdenB + 5000 EdenB committed)
-			unbondAmt, err := suite.app.StakingKeeper.Unbond(suite.ctx, suite.genAccount, suite.valAddr, sdk.NewDecWithPrec(10, 2))
-			suite.Require().Equal(unbondAmt, sdk.NewInt(100000))
+			unbondAmt, err := suite.app.StakingKeeper.Unbond(suite.ctx, suite.genAccount, suite.valAddr, math.LegacyNewDecWithPrec(10, 2))
+			suite.Require().Equal(unbondAmt, math.NewInt(100000))
 			suite.Require().NoError(err)
 
 			// Process EdenB burn operation
@@ -66,11 +67,11 @@ func (suite *EstakingKeeperTestSuite) TestBurnEdenBFromEdenUncommitted() {
 			// Track Elys staked amount
 			suite.app.EstakingKeeper.EndBlocker(suite.ctx)
 
-			msgServer := commkeeper.NewMsgServerImpl(suite.app.CommitmentKeeper)
+			msgServer := commkeeper.NewMsgServerImpl(*suite.app.CommitmentKeeper)
 
 			_, err := msgServer.CommitClaimedRewards(suite.ctx, &ctypes.MsgCommitClaimedRewards{
 				Creator: suite.genAccount.String(),
-				Amount:  sdk.NewInt(1000),
+				Amount:  math.NewInt(1000),
 				Denom:   ptypes.Eden,
 			})
 			suite.Require().NoError(err)
@@ -78,7 +79,7 @@ func (suite *EstakingKeeperTestSuite) TestBurnEdenBFromEdenUncommitted() {
 			// Uncommit tokens
 			_, err = msgServer.UncommitTokens(sdk.WrapSDKContext(suite.ctx), &ctypes.MsgUncommitTokens{
 				Creator: suite.genAccount.String(),
-				Amount:  sdk.NewInt(1000),
+				Amount:  math.NewInt(1000),
 				Denom:   ptypes.Eden,
 			})
 			suite.Require().NoError(err)

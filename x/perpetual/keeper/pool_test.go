@@ -22,11 +22,11 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 		poolAssets := []ammtypes.PoolAsset{
 			{
 				Token:  sdk.NewCoin(ptypes.BaseCurrency, math.OneInt().MulRaw(1000_000)),
-				Weight: sdk.NewInt(10),
+				Weight: math.NewInt(10),
 			},
 			{
 				Token:  sdk.NewCoin(ptypes.ATOM, math.OneInt().MulRaw(1000_000)),
-				Weight: sdk.NewInt(10),
+				Weight: math.NewInt(10),
 			},
 		}
 		ammPool := ammtypes.Pool{
@@ -36,16 +36,16 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 			PoolParams: ammtypes.PoolParams{
 				UseOracle:                   true,
 				WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
+				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
 				ThresholdWeightDifference:   math.LegacyZeroDec(),
 				SwapFee:                     math.LegacyZeroDec(),
 				ExitFee:                     math.LegacyZeroDec(),
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
-			TotalShares: sdk.NewCoin("pool/1", sdk.NewInt(100)),
+			TotalShares: sdk.NewCoin("pool/1", math.NewInt(100)),
 			PoolAssets:  poolAssets,
-			TotalWeight: sdk.ZeroInt(),
+			TotalWeight: math.ZeroInt(),
 		}
 		items[i] = types.NewPool(ammPool)
 
@@ -59,13 +59,13 @@ func createNPoolResponse(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.
 	for i := range items {
 		items[i] = types.PoolResponse{
 			AmmPoolId:                            uint64(i),
-			Health:                               sdk.NewDec(1),
-			BorrowInterestRate:                   sdk.MustNewDecFromStr("0.000000000000000001"),
+			Health:                               math.LegacyNewDec(1),
+			BorrowInterestRate:                   math.LegacyMustNewDecFromStr("0.000000000000000001"),
 			PoolAssetsLong:                       []types.PoolAsset{},
 			PoolAssetsShort:                      []types.PoolAsset{},
 			LastHeightBorrowInterestRateComputed: 0,
-			FundingRate:                          sdk.ZeroDec(),
-			NetOpenInterest:                      sdk.ZeroInt(),
+			FundingRate:                          math.LegacyZeroDec(),
+			NetOpenInterest:                      math.ZeroInt(),
 		}
 		ammPool, _ := ammtypes.NewBalancerPool(uint64(i), ammtypes.PoolParams{}, []ammtypes.PoolAsset{}, ctx.BlockTime())
 		keeper.SetPool(ctx, types.NewPool(ammPool))

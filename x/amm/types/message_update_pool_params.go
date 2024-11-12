@@ -2,11 +2,10 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
-
-const TypeMsgUpdatePoolParams = "update_pool_params"
 
 var _ sdk.Msg = &MsgUpdatePoolParams{}
 
@@ -16,27 +15,6 @@ func NewMsgUpdatePoolParams(authority string, poolId uint64, poolParams *PoolPar
 		PoolId:     poolId,
 		PoolParams: poolParams,
 	}
-}
-
-func (msg *MsgUpdatePoolParams) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUpdatePoolParams) Type() string {
-	return TypeMsgUpdatePoolParams
-}
-
-func (msg *MsgUpdatePoolParams) GetSigners() []sdk.AccAddress {
-	authority, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{authority}
-}
-
-func (msg *MsgUpdatePoolParams) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUpdatePoolParams) ValidateBasic() error {
@@ -53,7 +31,7 @@ func (msg *MsgUpdatePoolParams) ValidateBasic() error {
 		return ErrFeeShouldNotBeNegative
 	}
 
-	if msg.PoolParams.SwapFee.GT(sdk.NewDecWithPrec(2, 2)) { // >2%
+	if msg.PoolParams.SwapFee.GT(sdkmath.LegacyNewDecWithPrec(2, 2)) { // >2%
 		return ErrSwapFeeShouldNotExceedTwoPercent
 	}
 
@@ -61,7 +39,7 @@ func (msg *MsgUpdatePoolParams) ValidateBasic() error {
 		return ErrFeeShouldNotBeNegative
 	}
 
-	if msg.PoolParams.ExitFee.GT(sdk.NewDecWithPrec(2, 2)) { // >2%
+	if msg.PoolParams.ExitFee.GT(sdkmath.LegacyNewDecWithPrec(2, 2)) { // >2%
 		return ErrExitFeeShouldNotExceedTwoPercent
 	}
 

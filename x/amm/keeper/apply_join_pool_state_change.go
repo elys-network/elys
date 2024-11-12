@@ -12,7 +12,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	joiner sdk.AccAddress,
 	numShares math.Int,
 	joinCoins sdk.Coins,
-	weightBalanceBonus sdk.Dec,
+	weightBalanceBonus math.LegacyDec,
 ) error {
 	if err := k.bankKeeper.SendCoins(ctx, joiner, sdk.MustAccAddressFromBech32(pool.GetAddress()), joinCoins); err != nil {
 		return err

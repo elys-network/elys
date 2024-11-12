@@ -3,13 +3,15 @@ package keeper_test
 import (
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
+
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
+	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/suite"
@@ -18,7 +20,7 @@ import (
 type assetPriceInfo struct {
 	denom   string
 	display string
-	price   sdk.Dec
+	price   sdkmath.LegacyDec
 }
 
 const (
@@ -30,22 +32,27 @@ var (
 		"uusdc": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   sdk.OneDec(),
+			price:   sdkmath.LegacyOneDec(),
 		},
 		"uusdt": {
 			denom:   "uusdt",
 			display: "USDT",
-			price:   sdk.OneDec(),
+			price:   sdkmath.LegacyOneDec(),
+		},
+		"USDC": {
+			denom:   ptypes.BaseCurrency,
+			display: "USDC",
+			price:   sdkmath.LegacyOneDec(),
 		},
 		"uelys": {
 			denom:   ptypes.Elys,
 			display: "ELYS",
-			price:   sdk.MustNewDecFromStr("3.0"),
+			price:   sdkmath.LegacyMustNewDecFromStr("3.0"),
 		},
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
-			price:   sdk.MustNewDecFromStr("1.0"),
+			price:   sdkmath.LegacyMustNewDecFromStr("1.0"),
 		},
 	}
 )
@@ -59,15 +66,47 @@ type KeeperTestSuite struct {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	app := simapp.InitElysTestApp(initChain)
+	//t.Parallel()
+	app := simapp.InitElysTestApp(initChain, suite.Suite.T())
 
 	suite.legacyAmino = app.LegacyAmino()
-	suite.ctx = app.BaseApp.NewContext(initChain, tmproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(initChain)
 	suite.app = app
 }
 
 func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
+}
+
+func (suite *KeeperTestSuite) SetAmmParams() {
+	suite.app.AmmKeeper.SetParams(suite.ctx, types.Params{
+		PoolCreationFee:       sdkmath.NewInt(10000000),
+		SlippageTrackDuration: 604800,
+	})
+}
+
+func (suite *KeeperTestSuite) SetupAssetProfile() {
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, atypes.Entry{
+		BaseDenom:                "uusdc",
+		Decimals:                 6,
+		Denom:                    "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
+		Path:                     "transfer/channel-12",
+		IbcChannelId:             "channel-12",
+		IbcCounterpartyChannelId: "channel-19",
+		DisplayName:              "USDC",
+		DisplaySymbol:            "uUSDC",
+		Network:                  "",
+		Address:                  "",
+		ExternalSymbol:           "uUSDC",
+		TransferLimit:            "",
+		Permissions:              []string{},
+		UnitDenom:                "uusdc",
+		IbcCounterpartyDenom:     "",
+		IbcCounterpartyChainId:   "",
+		Authority:                "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+		CommitEnabled:            true,
+		WithdrawEnabled:          true,
+	})
 }
 
 func (suite *KeeperTestSuite) SetupStableCoinPrices() {
@@ -90,21 +129,21 @@ func (suite *KeeperTestSuite) SetupStableCoinPrices() {
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDC",
-		Price:     sdk.NewDec(1),
+		Price:     sdkmath.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDT",
-		Price:     sdk.NewDec(1),
+		Price:     sdkmath.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDA",
-		Price:     sdk.NewDec(1),
+		Price:     sdkmath.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
@@ -138,10 +177,10 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			PoolId:  1,
 			Address: types.NewPoolAddress(uint64(1)).String(),
 			PoolAssets: []types.PoolAsset{
-				{Token: sdk.NewCoin("denom1", sdk.NewInt(1000)), Weight: sdk.OneInt()},
-				{Token: sdk.NewCoin("denom2", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+				{Token: sdk.NewCoin("denom1", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
+				{Token: sdk.NewCoin("denom2", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
 			},
-			TotalWeight: sdk.NewInt(2),
+			TotalWeight: sdkmath.NewInt(2),
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},
@@ -151,10 +190,10 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			PoolId:  2,
 			Address: types.NewPoolAddress(uint64(2)).String(),
 			PoolAssets: []types.PoolAsset{
-				{Token: sdk.NewCoin("uusdc", sdk.NewInt(1000)), Weight: sdk.OneInt()},
-				{Token: sdk.NewCoin("denom1", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+				{Token: sdk.NewCoin("uusdc", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
+				{Token: sdk.NewCoin("denom1", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
 			},
-			TotalWeight: sdk.NewInt(2),
+			TotalWeight: sdkmath.NewInt(2),
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},
@@ -164,10 +203,10 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			PoolId:  3,
 			Address: types.NewPoolAddress(uint64(3)).String(),
 			PoolAssets: []types.PoolAsset{
-				{Token: sdk.NewCoin("uusdc", sdk.NewInt(1000)), Weight: sdk.OneInt()},
-				{Token: sdk.NewCoin("denom3", sdk.NewInt(1000)), Weight: sdk.OneInt()},
+				{Token: sdk.NewCoin("uusdc", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
+				{Token: sdk.NewCoin("denom3", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
 			},
-			TotalWeight: sdk.NewInt(2),
+			TotalWeight: sdkmath.NewInt(2),
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},

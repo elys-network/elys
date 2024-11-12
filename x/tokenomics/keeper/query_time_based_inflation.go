@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/x/tokenomics/types"
@@ -19,7 +20,7 @@ func (k Keeper) TimeBasedInflationAll(goCtx context.Context, req *types.QueryAll
 	var timeBasedInflations []types.TimeBasedInflation
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	timeBasedInflationStore := prefix.NewStore(store, types.KeyPrefix(types.TimeBasedInflationKeyPrefix))
 
 	pageRes, err := query.Paginate(timeBasedInflationStore, req.Pagination, func(key []byte, value []byte) error {

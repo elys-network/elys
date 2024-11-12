@@ -3,34 +3,34 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
+
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/masterchef/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestPoolRewardInfo(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	poolRewardInfos := []types.PoolRewardInfo{
 		{
 			PoolId:                1,
 			RewardDenom:           "reward1",
-			PoolAccRewardPerShare: sdk.OneDec(),
+			PoolAccRewardPerShare: sdkmath.LegacyOneDec(),
 			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		},
 		{
 			PoolId:                1,
 			RewardDenom:           "reward2",
-			PoolAccRewardPerShare: sdk.OneDec(),
+			PoolAccRewardPerShare: sdkmath.LegacyOneDec(),
 			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		},
 		{
 			PoolId:                2,
 			RewardDenom:           "reward2",
-			PoolAccRewardPerShare: sdk.OneDec(),
+			PoolAccRewardPerShare: sdkmath.LegacyOneDec(),
 			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		},
 	}

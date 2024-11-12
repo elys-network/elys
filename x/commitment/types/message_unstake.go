@@ -8,8 +8,6 @@ import (
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-const TypeMsgUnstake = "unstake"
-
 var _ sdk.Msg = &MsgUnstake{}
 
 func NewMsgUnstake(creator string, amount math.Int, asset string, validatorAddress string) *MsgUnstake {
@@ -19,27 +17,6 @@ func NewMsgUnstake(creator string, amount math.Int, asset string, validatorAddre
 		Asset:            asset,
 		ValidatorAddress: validatorAddress,
 	}
-}
-
-func (msg *MsgUnstake) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUnstake) Type() string {
-	return TypeMsgUnstake
-}
-
-func (msg *MsgUnstake) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgUnstake) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUnstake) ValidateBasic() error {
@@ -54,6 +31,10 @@ func (msg *MsgUnstake) ValidateBasic() error {
 
 	if msg.Amount.IsNegative() {
 		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative")
+	}
+
+	if err = sdk.ValidateDenom(msg.Asset); err != nil {
+		return err
 	}
 
 	if msg.Asset == paramtypes.Elys {

@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
 	"github.com/elys-network/elys/x/estaking/types"
 )
 
@@ -34,18 +34,18 @@ func (suite *EstakingKeeperTestSuite) TestParams() {
 			func() {
 				legacyParams := types.LegacyParams{
 					StakeIncentives: &types.LegacyIncentiveInfo{
-						EdenAmountPerYear:      sdk.NewInt(0),
-						DistributionStartBlock: sdk.NewInt(0),
-						TotalBlocksPerYear:     sdk.NewInt(0),
-						BlocksDistributed:      sdk.NewInt(0),
+						EdenAmountPerYear:      math.NewInt(0),
+						DistributionStartBlock: math.NewInt(0),
+						TotalBlocksPerYear:     math.NewInt(0),
+						BlocksDistributed:      math.NewInt(0),
 					},
 					EdenCommitVal:           "",
 					EdenbCommitVal:          "",
-					MaxEdenRewardAprStakers: sdk.NewDec(0),
-					EdenBoostApr:            sdk.NewDec(0),
+					MaxEdenRewardAprStakers: math.LegacyNewDec(0),
+					EdenBoostApr:            math.LegacyNewDec(0),
 					DexRewardsStakers: types.LegacyDexRewardsTracker{
-						NumBlocks: sdk.NewInt(0),
-						Amount:    sdk.NewDec(0),
+						NumBlocks: math.NewInt(0),
+						Amount:    math.LegacyNewDec(0),
 					},
 				}
 

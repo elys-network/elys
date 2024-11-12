@@ -1,8 +1,8 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -19,72 +19,72 @@ func TestPowApprox(t *testing.T) {
 	testCases := []struct {
 		expectPanic    bool
 		expectErr      bool
-		base           sdk.Dec
-		exp            sdk.Dec
-		expectedResult sdk.Dec
+		base           sdkmath.LegacyDec
+		exp            sdkmath.LegacyDec
+		expectedResult sdkmath.LegacyDec
 	}{
 		{
 			// medium base, small exp
-			base:           sdk.MustNewDecFromStr("0.8"),
-			exp:            sdk.MustNewDecFromStr("0.32"),
-			expectedResult: sdk.MustNewDecFromStr("0.93108385"),
+			base:           sdkmath.LegacyMustNewDecFromStr("0.8"),
+			exp:            sdkmath.LegacyMustNewDecFromStr("0.32"),
+			expectedResult: sdkmath.LegacyMustNewDecFromStr("0.93108385"),
 		},
 		{
 			// zero exp
-			base:           sdk.MustNewDecFromStr("0.8"),
-			exp:            sdk.ZeroDec(),
-			expectedResult: sdk.OneDec(),
+			base:           sdkmath.LegacyMustNewDecFromStr("0.8"),
+			exp:            sdkmath.LegacyZeroDec(),
+			expectedResult: sdkmath.LegacyOneDec(),
 		},
 		{
 			// zero base, this should panic
-			base:        sdk.ZeroDec(),
-			exp:         sdk.OneDec(),
+			base:        sdkmath.LegacyZeroDec(),
+			exp:         sdkmath.LegacyOneDec(),
 			expectPanic: false,
 			expectErr:   true,
 		},
 		{
 			// large base, small exp
-			base:           sdk.MustNewDecFromStr("1.9999"),
-			exp:            sdk.MustNewDecFromStr("0.23"),
-			expectedResult: sdk.MustNewDecFromStr("1.172821461"),
+			base:           sdkmath.LegacyMustNewDecFromStr("1.9999"),
+			exp:            sdkmath.LegacyMustNewDecFromStr("0.23"),
+			expectedResult: sdkmath.LegacyMustNewDecFromStr("1.172821461"),
 		},
 		{
 			// large base, large integer exp
-			base:           sdk.MustNewDecFromStr("1.777"),
-			exp:            sdk.MustNewDecFromStr("20"),
-			expectedResult: sdk.MustNewDecFromStr("98570.862372081602"),
+			base:           sdkmath.LegacyMustNewDecFromStr("1.777"),
+			exp:            sdkmath.LegacyMustNewDecFromStr("20"),
+			expectedResult: sdkmath.LegacyMustNewDecFromStr("98570.862372081602"),
 		},
 		{
 			// medium base, large exp, high precision
-			base:           sdk.MustNewDecFromStr("1.556"),
-			exp:            sdk.MustNewDecFromStr("0.9123"),
-			expectedResult: sdk.MustNewDecFromStr("1.4968226674708064"),
+			base:           sdkmath.LegacyMustNewDecFromStr("1.556"),
+			exp:            sdkmath.LegacyMustNewDecFromStr("0.9123"),
+			expectedResult: sdkmath.LegacyMustNewDecFromStr("1.4968226674708064"),
 		},
 		{
 			// high base, large exp, high precision
-			base:           sdk.MustNewDecFromStr("1.886"),
-			exp:            sdk.MustNewDecFromStr("1.9123"),
-			expectedResult: sdk.MustNewDecFromStr("3.364483251631"),
+			base:           sdkmath.LegacyMustNewDecFromStr("1.886"),
+			exp:            sdkmath.LegacyMustNewDecFromStr("1.9123"),
+			expectedResult: sdkmath.LegacyMustNewDecFromStr("3.364483251631"),
 		},
 		{
 			// base equal one
-			base:           sdk.MustNewDecFromStr("1"),
-			exp:            sdk.MustNewDecFromStr("123"),
-			expectedResult: sdk.OneDec(),
+			base:           sdkmath.LegacyMustNewDecFromStr("1"),
+			exp:            sdkmath.LegacyMustNewDecFromStr("123"),
+			expectedResult: sdkmath.LegacyOneDec(),
 		},
 		{
 			// base close to 2
 
-			base: sdk.MustNewDecFromStr("1.999999999999999999"),
-			exp:  sdk.SmallestDec(),
+			base: sdkmath.LegacyMustNewDecFromStr("1.999999999999999999"),
+			exp:  sdkmath.LegacySmallestDec(),
 			// In Python: 1.000000000000000000693147181
-			expectedResult: sdk.OneDec(),
+			expectedResult: sdkmath.LegacyOneDec(),
 		},
 		{
 			// base close to 2 and hitting iteration bound
 
-			base: sdk.MustNewDecFromStr("1.999999999999999999"),
-			exp:  sdk.MustNewDecFromStr("0.1"),
+			base: sdkmath.LegacyMustNewDecFromStr("1.999999999999999999"),
+			exp:  sdkmath.LegacyMustNewDecFromStr("0.1"),
 
 			// In Python: 1.071773462536293164
 
@@ -93,10 +93,10 @@ func TestPowApprox(t *testing.T) {
 		{
 			// base close to 2 under iteration limit
 
-			base: sdk.MustNewDecFromStr("1.99999"),
-			exp:  sdk.MustNewDecFromStr("0.1"),
+			base: sdkmath.LegacyMustNewDecFromStr("1.99999"),
+			exp:  sdkmath.LegacyMustNewDecFromStr("0.1"),
 
-			// expectedResult: sdk.MustNewDecFromStr("1.071772926648356147"),
+			// expectedResult: sdkmath.LegacyMustNewDecFromStr("1.071772926648356147"),
 
 			// In Python: 1.071772926648356147102864087
 
@@ -105,11 +105,11 @@ func TestPowApprox(t *testing.T) {
 		{
 			// base close to 2 under iteration limit
 
-			base: sdk.MustNewDecFromStr("1.9999"),
-			exp:  sdk.MustNewDecFromStr("0.1"),
+			base: sdkmath.LegacyMustNewDecFromStr("1.9999"),
+			exp:  sdkmath.LegacyMustNewDecFromStr("0.1"),
 
 			// In Python: 1.071768103548402149880477100
-			expectedResult: sdk.MustNewDecFromStr("1.071768103548402149"),
+			expectedResult: sdkmath.LegacyMustNewDecFromStr("1.071768103548402149"),
 		},
 	}
 

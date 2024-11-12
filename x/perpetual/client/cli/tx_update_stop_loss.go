@@ -8,18 +8,17 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/spf13/cobra"
 )
 
 func CmdUpdateStopLoss() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-stop-loss [id] [amount]",
+		Use:   "update-stop-loss [amount] [id]",
 		Short: "Broadcast message update-stop-loss",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argPrice, err := sdk.NewDecFromStr(args[0])
+			argPrice, err := math.LegacyNewDecFromStr(args[0])
 			if err != nil {
 				return errors.New("invalid stoploss amount")
 			}

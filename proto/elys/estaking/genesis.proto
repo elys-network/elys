@@ -9,6 +9,6 @@ option go_package = "github.com/elys-network/elys/x/estaking/types";
 
 // GenesisState defines the estaking module's genesis state.
 message GenesisState {
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
   repeated ElysStaked staking_snapshots = 2 [ (gogoproto.nullable) = false ];
 }

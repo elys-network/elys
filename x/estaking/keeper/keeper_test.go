@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -32,10 +32,10 @@ type EstakingKeeperTestSuite struct {
 }
 
 func (k *EstakingKeeperTestSuite) SetupTest() {
-	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount()
+	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount(k.T())
 
 	k.legacyAmino = app.LegacyAmino()
-	k.ctx = app.BaseApp.NewContext(initChain, tmproto.Header{})
+	k.ctx = app.BaseApp.NewContext(initChain)
 	k.app = app
 	k.genAccount = genAccount
 	k.valAddr = valAddr
@@ -89,8 +89,8 @@ func (suite *EstakingKeeperTestSuite) SetAssetProfile() {
 // Prepare unclaimed tokens
 func (suite *EstakingKeeperTestSuite) PrepareUnclaimedTokens() sdk.Coins {
 	unclaimed := sdk.Coins{}
-	unclaimed = unclaimed.Add(sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000)))
-	unclaimed = unclaimed.Add(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(20000)))
+	unclaimed = unclaimed.Add(sdk.NewCoin(ptypes.Eden, math.NewInt(2000)))
+	unclaimed = unclaimed.Add(sdk.NewCoin(ptypes.EdenB, math.NewInt(20000)))
 
 	// Mint coins
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, ctypes.ModuleName, unclaimed)
@@ -104,8 +104,8 @@ func (suite *EstakingKeeperTestSuite) PrepareUnclaimedTokens() sdk.Coins {
 // Prepare committed tokens
 func (suite *EstakingKeeperTestSuite) PrepareCommittedTokens() sdk.Coins {
 	committed := sdk.Coins{}
-	committed = committed.Add(sdk.NewCoin(ptypes.Eden, sdk.NewInt(10000)))
-	committed = committed.Add(sdk.NewCoin(ptypes.EdenB, sdk.NewInt(5000)))
+	committed = committed.Add(sdk.NewCoin(ptypes.Eden, math.NewInt(10000)))
+	committed = committed.Add(sdk.NewCoin(ptypes.EdenB, math.NewInt(5000)))
 
 	// Mint coins
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, ctypes.ModuleName, committed)
@@ -120,8 +120,8 @@ func (suite *EstakingKeeperTestSuite) PrepareCommittedTokens() sdk.Coins {
 	return committed
 }
 
-func (suite *EstakingKeeperTestSuite) GetAccountIssueAmount() sdk.Int {
-	return sdk.NewInt(10_000_000_000_000)
+func (suite *EstakingKeeperTestSuite) GetAccountIssueAmount() math.Int {
+	return math.NewInt(10_000_000_000_000)
 }
 
 func (suite *EstakingKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress) []sdk.AccAddress {
@@ -153,14 +153,21 @@ func (suite *EstakingKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress)
 
 func (suite *EstakingKeeperTestSuite) TestEstakingExtendedFunctions() {
 	// create validator with 50% commission
-	validators := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+	validators, err := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+	suite.Require().Nil(err)
 	suite.Require().True(len(validators) > 0)
 	valAddr := validators[0].GetOperator()
-	delegations := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+
+	operatorAddr, err := sdk.ValAddressFromBech32(valAddr)
+	suite.Require().Nil(err)
+
+	delegations, err := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, operatorAddr)
+
 	suite.Require().True(len(delegations) > 0)
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
-	totalBonded := suite.app.EstakingKeeper.TotalBondedTokens(suite.ctx)
+	totalBonded, err := suite.app.EstakingKeeper.TotalBondedTokens(suite.ctx)
+	suite.Require().Nil(err)
 	suite.Require().Equal(totalBonded.String(), "1000000")
 
 	// set commitments
@@ -170,15 +177,16 @@ func (suite *EstakingKeeperTestSuite) TestEstakingExtendedFunctions() {
 
 	suite.SetAssetProfile()
 
-	commitmentMsgServer := ckeeper.NewMsgServerImpl(suite.app.CommitmentKeeper)
-	_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(suite.ctx), &ctypes.MsgCommitClaimedRewards{
+	commitmentMsgServer := ckeeper.NewMsgServerImpl(*suite.app.CommitmentKeeper)
+	_, err = commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(suite.ctx), &ctypes.MsgCommitClaimedRewards{
 		Creator: addr.String(),
 		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(1000_000),
+		Amount:  math.NewInt(1000_000),
 	})
 	suite.Require().Nil(err)
 
-	totalBonded = suite.app.EstakingKeeper.TotalBondedTokens(suite.ctx)
+	totalBonded, err = suite.app.EstakingKeeper.TotalBondedTokens(suite.ctx)
+	suite.Require().Nil(err)
 	suite.Require().Equal(totalBonded.String(), "2000000")
 
 	edenVal := suite.app.EstakingKeeper.GetEdenValidator(suite.ctx)
@@ -187,13 +195,24 @@ func (suite *EstakingKeeperTestSuite) TestEstakingExtendedFunctions() {
 	edenBVal := suite.app.EstakingKeeper.GetEdenBValidator(suite.ctx)
 	suite.Require().Equal(edenBVal.GetMoniker(), "EdenBValidator")
 
-	suite.Require().Equal(suite.app.EstakingKeeper.Validator(suite.ctx, edenVal.GetOperator()), edenVal)
-	suite.Require().Equal(suite.app.EstakingKeeper.Validator(suite.ctx, edenBVal.GetOperator()), edenBVal)
+	operatorValAddr, err := sdk.ValAddressFromBech32(edenVal.GetOperator())
+	suite.Require().Nil(err)
 
-	edenDel := suite.app.EstakingKeeper.Delegation(suite.ctx, addr, edenVal.GetOperator())
-	suite.Require().Equal(edenDel.GetShares(), sdk.NewDec(1000_000))
+	operatorBValAddr, err := sdk.ValAddressFromBech32(edenBVal.GetOperator())
+	suite.Require().Nil(err)
 
-	edenBDel := suite.app.EstakingKeeper.Delegation(suite.ctx, addr, edenBVal.GetOperator())
+	validator, err := suite.app.EstakingKeeper.Validator(suite.ctx, operatorValAddr)
+	suite.Require().Nil(err)
+	suite.Require().Equal(validator, edenVal)
+	validator, err = suite.app.EstakingKeeper.Validator(suite.ctx, operatorBValAddr)
+	suite.Require().Equal(validator, edenBVal)
+
+	edenDel, err := suite.app.EstakingKeeper.Delegation(suite.ctx, addr, operatorValAddr)
+	suite.Require().Nil(err)
+	suite.Require().Equal(edenDel.GetShares(), math.LegacyNewDec(1000_000))
+
+	edenBDel, err := suite.app.EstakingKeeper.Delegation(suite.ctx, addr, operatorBValAddr)
+	suite.Require().Nil(err)
 	suite.Require().Nil(edenBDel)
 
 	numDelegations := int64(0)
@@ -221,10 +240,10 @@ func (suite *EstakingKeeperTestSuite) TestEstakingExtendedFunctions() {
 	// test Slash
 	edenValConsAddr, err := edenVal.GetConsAddr()
 	suite.Require().Nil(err)
-	suite.app.EstakingKeeper.Slash(suite.ctx, edenValConsAddr, 0, 0, sdk.NewDecWithPrec(5, 1))
+	suite.app.EstakingKeeper.Slash(suite.ctx, edenValConsAddr, 0, 0, math.LegacyNewDecWithPrec(5, 1))
 
 	// test SlashWithInfractionReason
-	suite.app.EstakingKeeper.SlashWithInfractionReason(suite.ctx, edenValConsAddr, 0, 0, sdk.NewDecWithPrec(5, 1), stakingtypes.Infraction_INFRACTION_UNSPECIFIED)
+	suite.app.EstakingKeeper.SlashWithInfractionReason(suite.ctx, edenValConsAddr, 0, 0, math.LegacyNewDecWithPrec(5, 1), stakingtypes.Infraction_INFRACTION_UNSPECIFIED)
 
 	// test WithdrawEdenBReward
 	err = suite.app.EstakingKeeper.WithdrawEdenBReward(suite.ctx, addr)
@@ -235,7 +254,7 @@ func (suite *EstakingKeeperTestSuite) TestEstakingExtendedFunctions() {
 	suite.Require().Nil(err)
 
 	// test DelegationRewards
-	rewards, err := suite.app.EstakingKeeper.DelegationRewards(suite.ctx, edenDel.GetDelegatorAddr().String(), valAddr.String())
+	rewards, err := suite.app.EstakingKeeper.DelegationRewards(suite.ctx, edenDel.GetDelegatorAddr(), valAddr)
 	suite.Require().Nil(err)
 	suite.Require().Nil(rewards)
 

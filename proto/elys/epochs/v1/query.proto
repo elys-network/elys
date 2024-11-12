@@ -6,7 +6,7 @@ import "elys/epochs/v1/genesis.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
-option go_package = 	"github.com/elys-network/elys/x/epochs/types";
+option go_package = "github.com/elys-network/elys/x/epochs/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -15,7 +15,8 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/epochs/v1/epochs";
   }
   // CurrentEpoch provide current epoch of specified identifier
-  rpc CurrentEpoch(QueryCurrentEpochRequest) returns (QueryCurrentEpochResponse) {
+  rpc CurrentEpoch(QueryCurrentEpochRequest)
+      returns (QueryCurrentEpochResponse) {
     option (google.api.http).get = "/elys-network/elys/epochs/v1/current_epoch";
   }
 }
@@ -31,7 +32,7 @@ message QueryEpochsInfoRequest {
 // method.
 message QueryEpochsInfoResponse {
   // epochs is a slice of all EpochInfos
-  repeated EpochInfo epochs = 1 [(gogoproto.nullable) = false];
+  repeated EpochInfo epochs = 1 [ (gogoproto.nullable) = false ];
   // pagination defines an optional pagination for the request.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

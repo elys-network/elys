@@ -30,7 +30,7 @@ func SimulateMsgCreateTimeBasedInflation(
 
 		_, found := k.GetTimeBasedInflation(ctx, msg.StartBlockHeight, msg.EndBlockHeight)
 		if found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "TimeBasedInflation already exist"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgCreateTimeBasedInflation{}), "TimeBasedInflation already exist"), nil, nil
 		}
 
 		txCtx := simulation.OperationInput{
@@ -39,7 +39,6 @@ func SimulateMsgCreateTimeBasedInflation(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -73,7 +72,7 @@ func SimulateMsgUpdateTimeBasedInflation(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "timeBasedInflation authority not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateTimeBasedInflation{}), "timeBasedInflation authority not found"), nil, nil
 		}
 		msg.Authority = simAccount.Address.String()
 
@@ -86,7 +85,6 @@ func SimulateMsgUpdateTimeBasedInflation(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -120,7 +118,7 @@ func SimulateMsgDeleteTimeBasedInflation(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "timeBasedInflation authority not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateTimeBasedInflation{}), "timeBasedInflation authority not found"), nil, nil
 		}
 		msg.Authority = simAccount.Address.String()
 
@@ -133,7 +131,6 @@ func SimulateMsgDeleteTimeBasedInflation(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,

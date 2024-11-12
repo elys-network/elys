@@ -4,15 +4,14 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	types "github.com/elys-network/elys/x/perpetual/types"
+	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCalculateFundingRate(t *testing.T) {
-	baseRate := sdk.NewDecWithPrec(3, 4) // 0.03%
-	maxRate := sdk.NewDecWithPrec(1, 3)  // 0.1%
-	minRate := sdk.NewDecWithPrec(-1, 3) // -0.1%
+	baseRate := math.LegacyNewDecWithPrec(3, 4) // 0.03%
+	maxRate := math.LegacyNewDecWithPrec(1, 3)  // 0.1%
+	minRate := math.LegacyNewDecWithPrec(-1, 3) // -0.1%
 
 	// Test cases
 	tests := []struct {
@@ -23,38 +22,38 @@ func TestCalculateFundingRate(t *testing.T) {
 	}{
 		{
 			name:         "Longs More Leveraged",
-			longAmount:   sdk.NewInt(1000000),
-			shortAmount:  sdk.NewInt(500000),
+			longAmount:   math.NewInt(1000000),
+			shortAmount:  math.NewInt(500000),
 			expectedRate: "0.000600000000000000",
 		},
 		{
 			name:         "Shorts More Leveraged",
-			longAmount:   sdk.NewInt(500000),
-			shortAmount:  sdk.NewInt(1000000),
+			longAmount:   math.NewInt(500000),
+			shortAmount:  math.NewInt(1000000),
 			expectedRate: "-0.000600000000000000",
 		},
 		{
 			name:         "Balanced Leveraging",
-			longAmount:   sdk.NewInt(750000),
-			shortAmount:  sdk.NewInt(750000),
+			longAmount:   math.NewInt(750000),
+			shortAmount:  math.NewInt(750000),
 			expectedRate: "0.000300000000000000",
 		},
 		{
 			name:         "Extreme Long Leverage",
-			longAmount:   sdk.NewInt(2000000),
-			shortAmount:  sdk.NewInt(500000),
+			longAmount:   math.NewInt(2000000),
+			shortAmount:  math.NewInt(500000),
 			expectedRate: "0.001000000000000000", // Capped at maxRate
 		},
 		{
 			name:         "Zero Short Amount",
-			longAmount:   sdk.NewInt(1000000),
-			shortAmount:  sdk.NewInt(0),
+			longAmount:   math.NewInt(1000000),
+			shortAmount:  math.NewInt(0),
 			expectedRate: "0.001000000000000000", // maxRate when short amount is zero
 		},
 		{
 			name:         "Zero Long Amount",
-			longAmount:   sdk.NewInt(0),
-			shortAmount:  sdk.NewInt(1000000),
+			longAmount:   math.NewInt(0),
+			shortAmount:  math.NewInt(1000000),
 			expectedRate: "0.001000000000000000", // maxRate when long amount is zero
 		},
 	}

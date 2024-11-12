@@ -1,0 +1,25 @@
+{
+    "messages": [
+     {
+      "@type": "/elys.amm.MsgUpdatePoolParams",
+      "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+      "pool_id": 4,
+      "pool_params": {
+         "swap_fee": "0.000001000000000000",
+         "exit_fee": "0.000001000000000000",
+         "use_oracle": true,
+         "weight_breaking_fee_multiplier": "0.000001000000000000",
+         "weight_breaking_fee_exponent": "2.500000000000000000",
+         "weight_recovery_fee_portion": "0.200000000000000000",
+         "threshold_weight_difference": "0.000001000000000000",
+         "weight_breaking_fee_portion": "0.000001000000000000",
+         "fee_denom": "uusdc"
+        }
+     }
+    ],
+    "metadata": "ipfs://CID",
+   
+    "deposit": "10000000stake",
+    "title": "MsgUpdatePoolParams",
+    "summary": "asdasd"
+}

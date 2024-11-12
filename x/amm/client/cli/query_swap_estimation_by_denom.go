@@ -1,6 +1,7 @@
 package cli
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -26,7 +27,7 @@ func CmdSwapEstimationByDenom() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			discount, err := sdk.NewDecFromStr(discountStr)
+			discount, err := sdkmath.LegacyNewDecFromStr(discountStr)
 			if err != nil {
 				return err
 			}

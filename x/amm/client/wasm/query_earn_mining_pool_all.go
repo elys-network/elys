@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -32,7 +33,7 @@ func (oq *Querier) checkFilterType(ctx sdk.Context, ammPool *types.Pool, filterT
 // Calculate the amm pool ratio
 func CalculatePoolRatio(ctx sdk.Context, pool *types.Pool) string {
 	weightString := ""
-	totalWeight := sdk.ZeroInt()
+	totalWeight := sdkmath.ZeroInt()
 	for _, asset := range pool.PoolAssets {
 		totalWeight = totalWeight.Add(asset.Weight)
 	}
@@ -42,7 +43,7 @@ func CalculatePoolRatio(ctx sdk.Context, pool *types.Pool) string {
 	}
 
 	for _, asset := range pool.PoolAssets {
-		weight := sdk.NewDecFromInt(asset.Weight).QuoInt(totalWeight).MulInt(sdk.NewInt(100)).TruncateInt64()
+		weight := sdkmath.LegacyNewDecFromInt(asset.Weight).QuoInt(totalWeight).MulInt(sdkmath.NewInt(100)).TruncateInt64()
 		weightString = fmt.Sprintf("%s : %d", weightString, weight)
 	}
 
@@ -57,10 +58,10 @@ func CalculatePoolRatio(ctx sdk.Context, pool *types.Pool) string {
 
 // Generate earn pool struct
 func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filterType types.FilterType) types.EarnPool {
-	rewardsApr := sdk.ZeroDec()
-	borrowApr := sdk.ZeroDec()
-	leverageLpPercent := sdk.ZeroDec()
-	perpetualPercent := sdk.ZeroDec()
+	rewardsApr := sdkmath.LegacyZeroDec()
+	borrowApr := sdkmath.LegacyZeroDec()
+	leverageLpPercent := sdkmath.LegacyZeroDec()
+	perpetualPercent := sdkmath.LegacyZeroDec()
 	isLeverageLpEnabled := false
 
 	poolInfo, found := oq.masterchefKeeper.GetPoolInfo(ctx, ammPool.PoolId)
@@ -77,7 +78,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 
 	// Get rewards amount
 	// TODO: Remove wasmbindings, as of now this is not used by FE, so setting it to zero
-	rewardsUsd, rewardCoins := sdk.ZeroDec(), sdk.Coins{}
+	rewardsUsd, rewardCoins := sdkmath.LegacyZeroDec(), sdk.Coins{}
 
 	// Get pool ratio
 	poolRatio := CalculatePoolRatio(ctx, ammPool)
@@ -85,7 +86,7 @@ func (oq *Querier) generateEarnPool(ctx sdk.Context, ammPool *types.Pool, filter
 	leverageLpPool, found := oq.leveragelpKeeper.GetPool(ctx, ammPool.PoolId)
 	if found {
 		isLeverageLpEnabled = true
-		leverageLpPercent = leverageLpPool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec()).Mul(sdk.NewDec(100))
+		leverageLpPercent = leverageLpPool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec()).Mul(sdkmath.LegacyNewDec(100))
 	}
 
 	perpetualPool, found := oq.perpetualKeeper.GetPool(ctx, ammPool.PoolId)

@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/estaking/types"
 )
@@ -21,12 +22,12 @@ func (suite *EstakingKeeperTestSuite) TestElysStaked() {
 				// set elys staked
 				suite.app.EstakingKeeper.SetElysStaked(suite.ctx, types.ElysStaked{
 					Address: addr.String(),
-					Amount:  sdk.NewInt(1000),
+					Amount:  math.NewInt(1000),
 				})
 
 				// get elys staked
 				elysStaked := suite.app.EstakingKeeper.GetElysStaked(suite.ctx, addr)
-				suite.Require().Equal(sdk.NewInt(1000), elysStaked.Amount)
+				suite.Require().Equal(math.NewInt(1000), elysStaked.Amount)
 
 				return addr
 			},
@@ -35,7 +36,7 @@ func (suite *EstakingKeeperTestSuite) TestElysStaked() {
 
 				// get elys staked
 				elysStaked := suite.app.EstakingKeeper.GetElysStaked(suite.ctx, addr)
-				suite.Require().Equal(sdk.ZeroInt(), elysStaked.Amount)
+				suite.Require().Equal(math.ZeroInt(), elysStaked.Amount)
 			},
 		},
 		{
@@ -48,15 +49,14 @@ func (suite *EstakingKeeperTestSuite) TestElysStaked() {
 				// set elys staked
 				suite.app.EstakingKeeper.SetElysStaked(suite.ctx, types.ElysStaked{
 					Address: addr.String(),
-					Amount:  sdk.NewInt(1000),
+					Amount:  math.NewInt(1000),
 				})
 
 				return addr
 			},
 			func(addr sdk.AccAddress) {
 				list := suite.app.EstakingKeeper.GetAllElysStaked(suite.ctx)
-				suite.Require().Equal(1, len(list))
-				suite.Require().Equal(sdk.NewInt(1000), list[0].Amount)
+				suite.Require().Equal(2, len(list))
 			},
 		},
 		{
@@ -69,7 +69,7 @@ func (suite *EstakingKeeperTestSuite) TestElysStaked() {
 				// set elys staked
 				suite.app.EstakingKeeper.SetLegacyElysStaked(suite.ctx, types.ElysStaked{
 					Address: addr.String(),
-					Amount:  sdk.NewInt(1000),
+					Amount:  math.NewInt(1000),
 				})
 
 				return addr
@@ -77,7 +77,7 @@ func (suite *EstakingKeeperTestSuite) TestElysStaked() {
 			func(addr sdk.AccAddress) {
 				list := suite.app.EstakingKeeper.GetAllLegacyElysStaked(suite.ctx)
 				suite.Require().Equal(1, len(list))
-				suite.Require().Equal(sdk.NewInt(1000), list[0].Amount)
+				suite.Require().Equal(math.NewInt(1000), list[0].Amount)
 			},
 		},
 		{

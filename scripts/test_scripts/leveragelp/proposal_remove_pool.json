@@ -1,0 +1,14 @@
+{
+    "title": "remove pool",
+    "summary": "remove pool",
+    "messages": [
+        {
+            "@type": "/elys.leveragelp.MsgRemovePool",
+            "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+            "id": 1
+        }
+    ],
+    "deposit": "10000000stake",
+    "metadata": "ipfs://CID"
+}
+  

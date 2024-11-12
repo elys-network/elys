@@ -8,6 +8,6 @@ option go_package = "github.com/elys-network/elys/x/burner/types";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  
+
   string epoch_identifier = 1;
 }

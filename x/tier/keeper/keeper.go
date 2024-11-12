@@ -1,23 +1,19 @@
 package keeper
 
 import (
+	"cosmossdk.io/core/store"
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-
 	"github.com/elys-network/elys/x/tier/types"
 )
 
 type (
 	Keeper struct {
 		cdc                codec.BinaryCodec
-		storeKey           storetypes.StoreKey
-		memKey             storetypes.StoreKey
-		paramstore         paramtypes.Subspace
+		storeService       store.KVStoreService
 		bankKeeper         types.BankKeeper
 		oracleKeeper       types.OracleKeeper
 		assetProfileKeeper types.AssetProfileKeeper
@@ -34,9 +30,7 @@ type (
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
-	ps paramtypes.Subspace,
+	storeService store.KVStoreService,
 	bankKeeper types.BankKeeper,
 	oracleKeeper types.OracleKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
@@ -49,16 +43,10 @@ func NewKeeper(
 	leveragelp types.LeverageLpKeeper,
 	stablestakeKeeper types.StablestakeKeeper,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
 
 	return &Keeper{
 		cdc:                cdc,
-		storeKey:           storeKey,
-		memKey:             memKey,
-		paramstore:         ps,
+		storeService:       storeService,
 		bankKeeper:         bankKeeper,
 		oracleKeeper:       oracleKeeper,
 		assetProfileKeeper: assetProfileKeeper,

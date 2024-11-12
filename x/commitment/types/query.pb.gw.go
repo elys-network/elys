@@ -497,15 +497,15 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "commitment", "params"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "commitment", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_ShowCommitments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "commitment", "show_commitments", "creator"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_ShowCommitments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "commitment", "show_commitments", "creator"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_CommittedTokensLocked_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "commitment", "committed_tokens_locked", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_CommittedTokensLocked_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "commitment", "committed_tokens_locked", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_NumberOfCommitments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "commitment", "number_of_commitments"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_NumberOfCommitments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "commitment", "number_of_commitments"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_CommitmentVestingInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "commitment", "commitment_vesting_info", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_CommitmentVestingInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "commitment", "commitment_vesting_info", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

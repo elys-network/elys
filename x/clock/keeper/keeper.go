@@ -1,18 +1,18 @@
 package keeper
 
 import (
+	"cosmossdk.io/core/store"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/elys-network/elys/x/clock/types"
 )
 
 // Keeper of the clock store
 type Keeper struct {
-	storeKey storetypes.StoreKey
-	cdc      codec.BinaryCodec
+	storeService store.KVStoreService
+	cdc          codec.BinaryCodec
 
 	contractKeeper wasmkeeper.PermissionedKeeper
 
@@ -20,20 +20,15 @@ type Keeper struct {
 }
 
 func NewKeeper(
-	key storetypes.StoreKey,
+	storeService store.KVStoreService,
 	cdc codec.BinaryCodec,
-	ps paramtypes.Subspace,
 	contractKeeper wasmkeeper.PermissionedKeeper,
 	authority string,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
 
 	return &Keeper{
 		cdc:            cdc,
-		storeKey:       key,
+		storeService:   storeService,
 		contractKeeper: contractKeeper,
 		authority:      authority,
 	}
@@ -50,7 +45,7 @@ func (k Keeper) SetParams(ctx sdk.Context, p types.Params) error {
 		return err
 	}
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := k.cdc.MustMarshal(&p)
 	store.Set(types.ParamsKey, bz)
 
@@ -59,7 +54,7 @@ func (k Keeper) SetParams(ctx sdk.Context, p types.Params) error {
 
 // GetParams returns the current x/clock module parameters.
 func (k Keeper) GetParams(ctx sdk.Context) (p types.Params) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.ParamsKey)
 	if bz == nil {
 		return p

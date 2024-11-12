@@ -22,7 +22,7 @@ func (k Keeper) InternalSwapExactAmountOut(
 	tokenInDenom string,
 	tokenInMaxAmount math.Int,
 	tokenOut sdk.Coin,
-	swapFee sdk.Dec,
+	swapFee math.LegacyDec,
 ) (tokenInAmount math.Int, err error) {
 	if tokenInDenom == tokenOut.Denom {
 		return math.Int{}, errors.New("cannot trade the same denomination in and out")
@@ -47,7 +47,7 @@ func (k Keeper) InternalSwapExactAmountOut(
 	}
 	tokenInAmount = tokenIn.Amount
 
-	if tokenInAmount.LTE(sdk.ZeroInt()) {
+	if tokenInAmount.LTE(math.ZeroInt()) {
 		return math.Int{}, errorsmod.Wrapf(types.ErrInvalidMathApprox, "token amount is zero or negative")
 	}
 
@@ -55,7 +55,7 @@ func (k Keeper) InternalSwapExactAmountOut(
 		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
-	_, err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, sdk.ZeroDec(), weightBalanceBonus)
+	_, err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, math.LegacyZeroDec(), weightBalanceBonus)
 	if err != nil {
 		return math.Int{}, err
 	}

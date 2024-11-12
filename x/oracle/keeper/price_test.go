@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,8 +15,8 @@ func createNPrice(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Price {
 	for i := range items {
 		items[i].Provider = strconv.Itoa(i)
 		items[i].Asset = "asset" + strconv.Itoa(i)
-		items[i].Price = sdk.NewDec(1)
-		items[i].Price = sdk.NewDec(1)
+		items[i].Price = sdkmath.LegacyNewDec(1)
+		items[i].Price = sdkmath.LegacyNewDec(1)
 		items[i].Source = "elys"
 		items[i].Timestamp = uint64(i)
 
@@ -60,19 +61,19 @@ func (suite *KeeperTestSuite) TestGetLatestPriceFromAssetAndSource() {
 	prices := []types.Price{
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(1),
+			Price:     sdkmath.LegacyNewDec(1),
 			Source:    "elys",
 			Timestamp: 100000,
 		},
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(2),
+			Price:     sdkmath.LegacyNewDec(2),
 			Source:    "band",
 			Timestamp: 100000,
 		},
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(3),
+			Price:     sdkmath.LegacyNewDec(3),
 			Source:    "band",
 			Timestamp: 110000,
 		},
@@ -92,19 +93,19 @@ func (suite *KeeperTestSuite) TestGetLatestPriceFromAnySource() {
 	prices := []types.Price{
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(1),
+			Price:     sdkmath.LegacyNewDec(1),
 			Source:    "elys",
 			Timestamp: 100000,
 		},
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(2),
+			Price:     sdkmath.LegacyNewDec(2),
 			Source:    "band",
 			Timestamp: 100000,
 		},
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(3),
+			Price:     sdkmath.LegacyNewDec(3),
 			Source:    "band",
 			Timestamp: 110000,
 		},

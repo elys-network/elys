@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -25,10 +26,14 @@ func (suite *EstakingKeeperTestSuite) TestAbci() {
 				suite.SetAssetProfile()
 
 				// create validator with 50% commission
-				validators := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				validators, err := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				suite.Require().Nil(err)
 				suite.Require().True(len(validators) > 0)
-				valAddr = validators[0].GetOperator()
-				delegations := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				valAddr, err = sdk.ValAddressFromBech32(validators[0].GetOperator())
+				suite.Require().Nil(err)
+
+				delegations, err := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().Nil(err)
 				suite.Require().True(len(delegations) > 0)
 				addr = sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
@@ -37,10 +42,10 @@ func (suite *EstakingKeeperTestSuite) TestAbci() {
 
 				params := suite.app.EstakingKeeper.GetParams(suite.ctx)
 				params.StakeIncentives = &types.IncentiveInfo{
-					EdenAmountPerYear: sdk.NewInt(1000_000_000_000_000),
+					EdenAmountPerYear: math.NewInt(1000_000_000_000_000),
 					BlocksDistributed: 1,
 				}
-				params.MaxEdenRewardAprStakers = sdk.NewDec(1000_000)
+				params.MaxEdenRewardAprStakers = math.LegacyNewDec(1000_000)
 				suite.app.EstakingKeeper.SetParams(suite.ctx, params)
 
 				return addr, valAddr
@@ -52,13 +57,13 @@ func (suite *EstakingKeeperTestSuite) TestAbci() {
 
 				distrAppModule := exdistr.NewAppModule(
 					suite.app.AppCodec(), suite.app.DistrKeeper, suite.app.AccountKeeper,
-					suite.app.CommitmentKeeper, &suite.app.EstakingKeeper,
+					suite.app.CommitmentKeeper, suite.app.EstakingKeeper,
 					&suite.app.AssetprofileKeeper,
 					authtypes.FeeCollectorName, suite.app.GetSubspace(distrtypes.ModuleName))
 				distrAppModule.AllocateTokens(suite.ctx)
 
 				// withdraw eden rewards
-				msgServer := keeper.NewMsgServerImpl(suite.app.EstakingKeeper)
+				msgServer := keeper.NewMsgServerImpl(*suite.app.EstakingKeeper)
 				res, err := msgServer.WithdrawReward(suite.ctx, &types.MsgWithdrawReward{
 					DelegatorAddress: addr.String(),
 					ValidatorAddress: valAddr.String(),
@@ -90,10 +95,14 @@ func (suite *EstakingKeeperTestSuite) TestAbci() {
 				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
 
 				// create validator with 50% commission
-				validators := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				validators, err := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				suite.Require().Nil(err)
 				suite.Require().True(len(validators) > 0)
-				valAddr = validators[0].GetOperator()
-				delegations := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				valAddr, err = sdk.ValAddressFromBech32(validators[0].GetOperator())
+				suite.Require().Nil(err)
+
+				delegations, err := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().Nil(err)
 				suite.Require().True(len(delegations) > 0)
 				addr = sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
@@ -102,10 +111,10 @@ func (suite *EstakingKeeperTestSuite) TestAbci() {
 
 				params := suite.app.EstakingKeeper.GetParams(suite.ctx)
 				params.StakeIncentives = &types.IncentiveInfo{
-					EdenAmountPerYear: sdk.NewInt(1000_000_000_000_000),
+					EdenAmountPerYear: math.NewInt(1000_000_000_000_000),
 					BlocksDistributed: 1,
 				}
-				params.MaxEdenRewardAprStakers = sdk.NewDec(1000_000)
+				params.MaxEdenRewardAprStakers = math.LegacyNewDec(1000_000)
 				suite.app.EstakingKeeper.SetParams(suite.ctx, params)
 
 				return addr, valAddr

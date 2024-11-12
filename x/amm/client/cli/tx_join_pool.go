@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -25,7 +26,7 @@ func CmdJoinPool() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			shareAmountOut, ok := sdk.NewIntFromString(args[2])
+			shareAmountOut, ok := math.NewIntFromString(args[2])
 			if !ok {
 				return err
 			}

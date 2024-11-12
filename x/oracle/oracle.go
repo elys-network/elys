@@ -2,11 +2,12 @@ package oracle
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	"github.com/bandprotocol/bandchain-packet/obi"
 	"github.com/bandprotocol/bandchain-packet/packet"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
+	channeltypes "github.com/cosmos/ibc-go/v8/modules/core/04-channel/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
@@ -46,7 +47,7 @@ func (im IBCModule) handleOraclePacket(
 		for index, symbol := range request.Symbols {
 			im.keeper.SetPrice(ctx, types.Price{
 				Asset:       symbol,
-				Price:       sdk.NewDecWithPrec(int64(BandPriceResult.Rates[index]), int64(params.Multiplier)),
+				Price:       sdkmath.LegacyNewDecWithPrec(int64(BandPriceResult.Rates[index]), int64(params.Multiplier)),
 				Source:      types.BAND,
 				Provider:    "automation",
 				Timestamp:   uint64(ctx.BlockTime().Unix()),

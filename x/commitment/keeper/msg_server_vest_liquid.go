@@ -9,6 +9,9 @@ import (
 
 // VestLiquid converts user's balance to vesting to be utilized for normal tokens vesting like ATOM vesting
 func (k msgServer) VestLiquid(goCtx context.Context, msg *types.MsgVestLiquid) (*types.MsgVestLiquidResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if err := k.DepositLiquidTokensClaimed(ctx, msg.Denom, msg.Amount, creator); err != nil {

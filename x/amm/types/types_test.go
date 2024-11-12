@@ -3,11 +3,11 @@ package types_test
 import (
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
+
 	"github.com/stretchr/testify/suite"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -29,10 +29,11 @@ type TestSuite struct {
 }
 
 func (suite *TestSuite) SetupTest() {
-	app := simapp.InitElysTestApp(initChain)
+	t := suite.Suite.T()
+	app := simapp.InitElysTestApp(initChain, t)
 
 	suite.legacyAmino = app.LegacyAmino()
-	suite.ctx = app.BaseApp.NewContext(initChain, tmproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(initChain)
 	suite.app = app
 }
 
@@ -51,14 +52,14 @@ func (suite *TestSuite) SetupStableCoinPrices() {
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDC",
-		Price:     sdk.NewDec(1),
+		Price:     sdkmath.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDT",
-		Price:     sdk.NewDec(1),
+		Price:     sdkmath.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),

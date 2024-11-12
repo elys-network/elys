@@ -13,81 +13,83 @@ option go_package = "github.com/elys-network/elys/x/tier/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
+
   // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/membershiptier/params";
-  
   }
-  
+
   // Queries a list of Portfolio items.
-  rpc Portfolio    (QueryGetPortfolioRequest) returns (QueryGetPortfolioResponse) {
-    option (google.api.http).get = "/elys-network/elys/membershiptier/portfolio/{user}";
-  
+  rpc Portfolio(QueryGetPortfolioRequest) returns (QueryGetPortfolioResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/membershiptier/portfolio/{user}";
   }
-  rpc PortfolioAll (QueryAllPortfolioRequest) returns (QueryAllPortfolioResponse) {
-    option (google.api.http).get = "/elys-network/elys/membershiptier/portfolio";
-  
+  rpc PortfolioAll(QueryAllPortfolioRequest)
+      returns (QueryAllPortfolioResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/membershiptier/portfolio";
   }
-  
+
   // Queries a list of CalculateDiscount items.
-  rpc CalculateDiscount (QueryCalculateDiscountRequest) returns (QueryCalculateDiscountResponse) {
-    option (google.api.http).get = "/elys-network/elys/membershiptier/calculate_discount/{user}";
-  
+  rpc CalculateDiscount(QueryCalculateDiscountRequest)
+      returns (QueryCalculateDiscountResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/membershiptier/calculate_discount/{user}";
   }
-  
+
   // Queries a list of LeverageLpTotal items.
-  rpc LeverageLpTotal (QueryLeverageLpTotalRequest) returns (QueryLeverageLpTotalResponse) {
-    option (google.api.http).get = "/elys-network/elys/tier/leverage_lp_total/{user}";
-  
+  rpc LeverageLpTotal(QueryLeverageLpTotalRequest)
+      returns (QueryLeverageLpTotalResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tier/leverage_lp_total/{user}";
   }
-  
+
   // Queries a list of RewardsTotal items.
-  rpc RewardsTotal (QueryRewardsTotalRequest) returns (QueryRewardsTotalResponse) {
-    option (google.api.http).get = "/elys-network/elys/tier/rewards_total/{user}";
-  
+  rpc RewardsTotal(QueryRewardsTotalRequest)
+      returns (QueryRewardsTotalResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tier/rewards_total/{user}";
   }
-  
+
   // Queries a list of StakedPool items.
-  rpc StakedPool (QueryStakedPoolRequest) returns (QueryStakedPoolResponse) {
+  rpc StakedPool(QueryStakedPoolRequest) returns (QueryStakedPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/tier/staked_pool/{user}";
-  
   }
-  
+
   // Queries a list of Perpetual items.
-  rpc Perpetual (QueryPerpetualRequest) returns (QueryPerpetualResponse) {
+  rpc Perpetual(QueryPerpetualRequest) returns (QueryPerpetualResponse) {
     option (google.api.http).get = "/elys-network/elys/tier/perpetual/{user}";
-  
   }
-  
+
   // Queries a list of LiquidTotal items.
-  rpc LiquidTotal (QueryLiquidTotalRequest) returns (QueryLiquidTotalResponse) {
-    option (google.api.http).get = "/elys-network/elys/tier/liquid_total/{user}";
-  
+  rpc LiquidTotal(QueryLiquidTotalRequest) returns (QueryLiquidTotalResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tier/liquid_total/{user}";
   }
-  
+
   // Queries a list of GetAmmPrice items.
-  rpc GetAmmPrice (QueryGetAmmPriceRequest) returns (QueryGetAmmPriceResponse) {
-    option (google.api.http).get = "/elys-network/elys/tier/get_amm_price/{denom}/{decimal}";
-  
+  rpc GetAmmPrice(QueryGetAmmPriceRequest) returns (QueryGetAmmPriceResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tier/get_amm_price/{denom}/{decimal}";
   }
-  
+
   // Queries a list of GetConsolidatedPrice items.
-  rpc GetConsolidatedPrice (QueryGetConsolidatedPriceRequest) returns (QueryGetConsolidatedPriceResponse) {
-    option (google.api.http).get = "/elys-network/elys/tier/get_consolidated_price/{denom}";
-  
+  rpc GetConsolidatedPrice(QueryGetConsolidatedPriceRequest)
+      returns (QueryGetConsolidatedPriceResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tier/get_consolidated_price/{denom}";
   }
-  
+
   // Queries a list of Staked items.
-  rpc Staked (QueryStakedRequest) returns (QueryStakedResponse) {
+  rpc Staked(QueryStakedRequest) returns (QueryStakedResponse) {
     option (google.api.http).get = "/elys-network/elys/tier/staked/{user}";
-  
   }
-  
+
   // Queries a list of GetUsersPoolData items.
-  rpc GetUsersPoolData (QueryGetUsersPoolDataRequest) returns (QueryGetUsersPoolDataResponse) {
-    option (google.api.http).get = "/elys-network/elys/tier/get_users_pool_data";
-  
+  rpc GetUsersPoolData(QueryGetUsersPoolDataRequest)
+      returns (QueryGetUsersPoolDataResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tier/get_users_pool_data";
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -95,108 +97,133 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  
+
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryGetPortfolioRequest {
-  string user = 1;
-}
+message QueryGetPortfolioRequest { string user = 1; }
 
-message QueryGetPortfolioResponse {
-  string total_portfolio = 1;
-}
+message QueryGetPortfolioResponse { string total_portfolio = 1; }
 
 message QueryAllPortfolioRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 message QueryAllPortfolioResponse {
-  repeated Portfolio                              portfolio  = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated Portfolio portfolio = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message QueryCalculateDiscountRequest {
-  string user = 1;
-}
+message QueryCalculateDiscountRequest { string user = 1; }
 
 message QueryCalculateDiscountResponse {
-  string discount  = 1;
-  string tier      = 2;
+  string discount = 1;
+  string tier = 2;
   string portfolio = 3;
 }
 
-message QueryLeverageLpTotalRequest {
-  string user = 1;
-}
+message QueryLeverageLpTotalRequest { string user = 1; }
 
 message QueryLeverageLpTotalResponse {
-  string total_value   = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string total_borrows = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string total_value = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string total_borrows = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message QueryRewardsTotalRequest {
-  string user = 1;
-}
+message QueryRewardsTotalRequest { string user = 1; }
 
 message QueryRewardsTotalResponse {
-  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string total = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message QueryStakedPoolRequest {
-  string user = 1;
-}
+message QueryStakedPoolRequest { string user = 1; }
 
 message QueryStakedPoolResponse {
-  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string total = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message QueryPerpetualRequest {
-  string user = 1;
-}
+message QueryPerpetualRequest { string user = 1; }
 
 message QueryPerpetualResponse {
-  string total_value   = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string total_borrows = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string total_value = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string total_borrows = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message QueryLiquidTotalRequest {
-  string user = 1;
-}
+message QueryLiquidTotalRequest { string user = 1; }
 
 message QueryLiquidTotalResponse {
-  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string total = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryGetAmmPriceRequest {
-  string denom   = 1;
-  int32  decimal = 2;
+  string denom = 1;
+  int32 decimal = 2;
 }
 
 message QueryGetAmmPriceResponse {
-  string total = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string total = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message QueryGetConsolidatedPriceRequest {
-  string denom = 1;
-}
+message QueryGetConsolidatedPriceRequest { string denom = 1; }
 
 message QueryGetConsolidatedPriceResponse {
-  string amm_price        = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string oracle_price     = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string oracle_price_dec = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string amm_price = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string oracle_price = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string oracle_price_dec = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message QueryStakedRequest {
-  string user = 1;
-}
+message QueryStakedRequest { string user = 1; }
 
 message QueryStakedResponse {
-  string commitments  = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string delegations  = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string unbondings   = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string total_vested = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string commitments = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string delegations = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string unbondings = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string total_vested = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryGetUsersPoolDataRequest {
@@ -207,4 +234,3 @@ message QueryGetUsersPoolDataResponse {
   repeated UserData users = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
-

@@ -10,6 +10,9 @@ import (
 )
 
 func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
@@ -21,6 +24,9 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 }
 
 func (k msgServer) RemoveAssetInfo(goCtx context.Context, msg *types.MsgRemoveAssetInfo) (*types.MsgRemoveAssetInfoResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
@@ -31,6 +37,9 @@ func (k msgServer) RemoveAssetInfo(goCtx context.Context, msg *types.MsgRemoveAs
 }
 
 func (k msgServer) AddPriceFeeders(goCtx context.Context, msg *types.MsgAddPriceFeeders) (*types.MsgAddPriceFeedersResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
@@ -46,6 +55,9 @@ func (k msgServer) AddPriceFeeders(goCtx context.Context, msg *types.MsgAddPrice
 }
 
 func (k msgServer) RemovePriceFeeders(goCtx context.Context, msg *types.MsgRemovePriceFeeders) (*types.MsgRemovePriceFeedersResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)

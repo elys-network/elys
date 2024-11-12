@@ -1,13 +1,13 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
 	"errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/spf13/cobra"
 )
@@ -33,7 +33,7 @@ func CmdClose() *cobra.Command {
 				return errors.New("invalid mtp id")
 			}
 
-			argAmount, ok := sdk.NewIntFromString(args[1])
+			argAmount, ok := math.NewIntFromString(args[1])
 			if !ok {
 				return errors.New("invalid amount")
 			}

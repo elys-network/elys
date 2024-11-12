@@ -17,13 +17,13 @@ func SimulateMsgWhitelist(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgWhitelist{
-			Authority: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgWhitelist{
+		//	Authority: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the Whitelist simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "Whitelist simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgWhitelist{}), "Whitelist simulation not implemented"), nil, nil
 	}
 }

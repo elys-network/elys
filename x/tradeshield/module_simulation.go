@@ -102,7 +102,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 }
 
 // RegisterStoreDecoder registers a decoder.
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {}
 
 // ProposalContents doesn't return any content functions for governance proposals.
 func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalContent {
@@ -114,7 +114,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgCreateSpotOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateSpotOrder, &weightMsgCreateSpotOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreateSpotOrder, &weightMsgCreateSpotOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreateSpotOrder = defaultWeightMsgCreateSpotOrder
 		},
@@ -125,7 +125,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdateSpotOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateSpotOrder, &weightMsgUpdateSpotOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdateSpotOrder, &weightMsgUpdateSpotOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdateSpotOrder = defaultWeightMsgUpdateSpotOrder
 		},
@@ -136,7 +136,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgCreatePerpetualOpenOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePerpetualOpenOrder, &weightMsgCreatePerpetualOpenOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreatePerpetualOpenOrder, &weightMsgCreatePerpetualOpenOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreatePerpetualOpenOrder = defaultWeightMsgCreatePerpetualOpenOrder
 		},
@@ -147,7 +147,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgCreatePerpetualCloseOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreatePerpetualCloseOrder, &weightMsgCreatePerpetualCloseOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreatePerpetualCloseOrder, &weightMsgCreatePerpetualCloseOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreatePerpetualCloseOrder = defaultWeightMsgCreatePerpetualCloseOrder
 		},
@@ -158,7 +158,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdatePerpetualOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdatePerpetualOrder, &weightMsgUpdatePerpetualOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdatePerpetualOrder, &weightMsgUpdatePerpetualOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdatePerpetualOrder = defaultWeightMsgUpdatePerpetualOrder
 		},
@@ -169,7 +169,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgCancelPerpetualOrders int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCancelPerpetualOrders, &weightMsgCancelPerpetualOrders, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCancelPerpetualOrders, &weightMsgCancelPerpetualOrders, nil,
 		func(_ *rand.Rand) {
 			weightMsgCancelPerpetualOrders = defaultWeightMsgCancelPerpetualOrders
 		},
@@ -180,7 +180,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdateParams int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateParams, &weightMsgUpdateParams, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdateParams, &weightMsgUpdateParams, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdateParams = defaultWeightMsgUpdateParams
 		},
@@ -191,7 +191,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgExecuteOrders int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgExecuteOrders, &weightMsgExecuteOrders, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgExecuteOrders, &weightMsgExecuteOrders, nil,
 		func(_ *rand.Rand) {
 			weightMsgExecuteOrders = defaultWeightMsgExecuteOrders
 		},
@@ -202,7 +202,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgCancelSpotOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCancelSpotOrder, &weightMsgCancelSpotOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCancelSpotOrder, &weightMsgCancelSpotOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgCancelSpotOrder = defaultWeightMsgCancelSpotOrder
 		},
@@ -213,7 +213,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgCancelPerpetualOrder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCancelPerpetualOrder, &weightMsgCancelPerpetualOrder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCancelPerpetualOrder, &weightMsgCancelPerpetualOrder, nil,
 		func(_ *rand.Rand) {
 			weightMsgCancelPerpetualOrder = defaultWeightMsgCancelPerpetualOrder
 		},

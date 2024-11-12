@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
@@ -25,17 +26,17 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 		AmmPoolId: poolId,
 	}, nil)
 	perpetualKeeper.On("GetPool", ctx, poolId).Return(perpetualtypes.Pool{
-		FundingRate:        sdk.NewDec(1),
-		BorrowInterestRate: sdk.NewDec(1),
+		FundingRate:        math.LegacyNewDec(1),
+		BorrowInterestRate: math.LegacyNewDec(1),
 	}, true)
 	perpetualKeeper.On("HandleCloseEstimation", ctx, &perpetualtypes.QueryCloseEstimationRequest{
 		Address:    ownerAddress,
 		PositionId: positionId,
 	}).Return(&perpetualtypes.QueryCloseEstimationResponse{
 		Position:         perpetualtypes.Position_LONG,
-		PositionSize:     sdk.NewCoin("denom", sdk.NewInt(10)),
-		PriceImpact:      sdk.NewDec(1),
-		LiquidationPrice: sdk.NewDec(1),
+		PositionSize:     sdk.NewCoin("denom", math.NewInt(10)),
+		PriceImpact:      math.LegacyNewDec(1),
+		LiquidationPrice: math.LegacyNewDec(1),
 	}, nil)
 
 	order := types.PerpetualOrderExtraInfo{
@@ -44,19 +45,19 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 			OwnerAddress:       "valid_address",
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
-			TriggerPrice:       &types.TriggerPrice{Rate: sdk.NewDec(1), TradingAssetDenom: "base"},
-			Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
+			TriggerPrice:       &types.TriggerPrice{Rate: math.LegacyNewDec(1), TradingAssetDenom: "base"},
+			Collateral:         sdk.Coin{Denom: "denom", Amount: math.NewInt(10)},
 			TradingAsset:       "asset",
-			Leverage:           sdk.NewDec(int64(1)),
-			TakeProfitPrice:    sdk.NewDec(1),
+			Leverage:           math.LegacyNewDec(int64(1)),
+			TakeProfitPrice:    math.LegacyNewDec(1),
 			PositionId:         positionId,
 			Status:             types.Status_PENDING,
-			StopLossPrice:      sdk.NewDec(1),
+			StopLossPrice:      math.LegacyNewDec(1),
 		},
-		PositionSize:       sdk.NewCoin("denom", sdk.NewInt(10)),
-		LiquidationPrice:   sdk.NewDec(1),
-		FundingRate:        sdk.NewDec(1),
-		BorrowInterestRate: sdk.NewDec(1),
+		PositionSize:       sdk.NewCoin("denom", math.NewInt(10)),
+		LiquidationPrice:   math.LegacyNewDec(1),
+		FundingRate:        math.LegacyNewDec(1),
+		BorrowInterestRate: math.LegacyNewDec(1),
 	}
 
 	order2 := types.PerpetualOrderExtraInfo{
@@ -65,19 +66,19 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 			OwnerAddress:       "valid_address",
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
-			TriggerPrice:       &types.TriggerPrice{Rate: sdk.NewDec(2), TradingAssetDenom: "base"},
-			Collateral:         sdk.Coin{Denom: "denom", Amount: sdk.NewInt(10)},
+			TriggerPrice:       &types.TriggerPrice{Rate: math.LegacyNewDec(2), TradingAssetDenom: "base"},
+			Collateral:         sdk.Coin{Denom: "denom", Amount: math.NewInt(10)},
 			TradingAsset:       "asset",
-			Leverage:           sdk.NewDec(int64(1)),
-			TakeProfitPrice:    sdk.NewDec(1),
+			Leverage:           math.LegacyNewDec(int64(1)),
+			TakeProfitPrice:    math.LegacyNewDec(1),
 			PositionId:         positionId,
 			Status:             types.Status_EXECUTED,
-			StopLossPrice:      sdk.NewDec(1),
+			StopLossPrice:      math.LegacyNewDec(1),
 		},
-		PositionSize:       sdk.NewCoin("denom", sdk.NewInt(10)),
-		LiquidationPrice:   sdk.NewDec(1),
-		FundingRate:        sdk.NewDec(1),
-		BorrowInterestRate: sdk.NewDec(1),
+		PositionSize:       sdk.NewCoin("denom", math.NewInt(10)),
+		LiquidationPrice:   math.LegacyNewDec(1),
+		FundingRate:        math.LegacyNewDec(1),
+		BorrowInterestRate: math.LegacyNewDec(1),
 	}
 
 	tests := []struct {

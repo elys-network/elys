@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -23,10 +24,14 @@ func (suite *EstakingKeeperTestSuite) TestQuery() {
 			},
 			func() {
 				// create validator with 50% commission
-				validators := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				validators, err := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				suite.Require().Nil(err)
 				suite.Require().True(len(validators) > 0)
-				valAddr := validators[0].GetOperator()
-				delegations := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				valAddr, err := sdk.ValAddressFromBech32(validators[0].GetOperator())
+				suite.Require().Nil(err)
+
+				delegations, err := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().Nil(err)
 				suite.Require().True(len(delegations) > 0)
 				addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
@@ -50,19 +55,19 @@ func (suite *EstakingKeeperTestSuite) TestQuery() {
 
 				params := suite.app.EstakingKeeper.GetParams(ctx)
 				params.StakeIncentives = &types.IncentiveInfo{
-					EdenAmountPerYear: sdk.NewInt(1000_000_000_000_000),
+					EdenAmountPerYear: math.NewInt(1000_000_000_000_000),
 					BlocksDistributed: 1,
 				}
-				params.MaxEdenRewardAprStakers = sdk.NewDec(1000_000)
+				params.MaxEdenRewardAprStakers = math.LegacyNewDec(1000_000)
 				suite.app.EstakingKeeper.SetParams(ctx, params)
 
 				// update staker rewards
-				err := suite.app.EstakingKeeper.UpdateStakersRewards(ctx)
+				err = suite.app.EstakingKeeper.UpdateStakersRewards(ctx)
 				suite.Require().Nil(err)
 
 				distrAppModule := exdistr.NewAppModule(
 					suite.app.AppCodec(), suite.app.DistrKeeper, suite.app.AccountKeeper,
-					suite.app.CommitmentKeeper, &suite.app.EstakingKeeper,
+					suite.app.CommitmentKeeper, suite.app.EstakingKeeper,
 					&suite.app.AssetprofileKeeper,
 					authtypes.FeeCollectorName, suite.app.GetSubspace(distrtypes.ModuleName))
 				distrAppModule.AllocateTokens(ctx)
@@ -82,10 +87,14 @@ func (suite *EstakingKeeperTestSuite) TestQuery() {
 			},
 			func() {
 				// create validator with 50% commission
-				validators := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				validators, err := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				suite.Require().Nil(err)
 				suite.Require().True(len(validators) > 0)
-				valAddr := validators[0].GetOperator()
-				delegations := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				valAddr, err := sdk.ValAddressFromBech32(validators[0].GetOperator())
+				suite.Require().Nil(err)
+
+				delegations, err := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().Nil(err)
 				suite.Require().True(len(delegations) > 0)
 
 				suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
@@ -108,19 +117,19 @@ func (suite *EstakingKeeperTestSuite) TestQuery() {
 
 				params := suite.app.EstakingKeeper.GetParams(ctx)
 				params.StakeIncentives = &types.IncentiveInfo{
-					EdenAmountPerYear: sdk.NewInt(1000_000_000_000_000),
+					EdenAmountPerYear: math.NewInt(1000_000_000_000_000),
 					BlocksDistributed: 1,
 				}
-				params.MaxEdenRewardAprStakers = sdk.NewDec(1000_000)
+				params.MaxEdenRewardAprStakers = math.LegacyNewDec(1000_000)
 				suite.app.EstakingKeeper.SetParams(ctx, params)
 
 				// update staker rewards
-				err := suite.app.EstakingKeeper.UpdateStakersRewards(ctx)
+				err = suite.app.EstakingKeeper.UpdateStakersRewards(ctx)
 				suite.Require().Nil(err)
 
 				distrAppModule := exdistr.NewAppModule(
 					suite.app.AppCodec(), suite.app.DistrKeeper, suite.app.AccountKeeper,
-					suite.app.CommitmentKeeper, &suite.app.EstakingKeeper,
+					suite.app.CommitmentKeeper, suite.app.EstakingKeeper,
 					&suite.app.AssetprofileKeeper,
 					authtypes.FeeCollectorName, suite.app.GetSubspace(distrtypes.ModuleName))
 				distrAppModule.AllocateTokens(ctx)
