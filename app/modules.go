@@ -38,7 +38,6 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
 	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
-	clockmoduletypes "github.com/elys-network/elys/x/clock/types"
 	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
 	estakingmoduletypes "github.com/elys-network/elys/x/estaking/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
@@ -72,7 +71,6 @@ import (
 	assetprofilemodule "github.com/elys-network/elys/x/assetprofile"
 	burnermodule "github.com/elys-network/elys/x/burner"
 	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
-	clockmodule "github.com/elys-network/elys/x/clock"
 	commitmentmodule "github.com/elys-network/elys/x/commitment"
 	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
 	epochsmodule "github.com/elys-network/elys/x/epochs"
@@ -161,7 +159,6 @@ func appModules(
 		stablestake.NewAppModule(appCodec, *app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper),
 		accountedpoolmodule.NewAppModule(appCodec, app.AccountedPoolKeeper, app.AccountKeeper, app.BankKeeper),
 		transferhook.NewAppModule(appCodec, app.TransferhookKeeper),
-		clockmodule.NewAppModule(appCodec, app.ClockKeeper),
 		leveragelpmodule.NewAppModule(appCodec, *app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper),
 		masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper),
 		estakingmodule.NewAppModule(appCodec, *app.EstakingKeeper, app.AccountKeeper, app.BankKeeper),
@@ -279,7 +276,6 @@ func orderBeginBlockers() []string {
 		wasm.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
-		clockmoduletypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
@@ -303,7 +299,6 @@ func orderEndBlockers() []string {
 		stakingtypes.ModuleName,
 		// Note: epochs' endblock should be "real" end of epochs, we keep epochs endblock at the end
 		epochsmoduletypes.ModuleName,
-		clockmoduletypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
@@ -385,7 +380,6 @@ func orderInitBlockers() []string {
 		wasm.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
-		clockmoduletypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,

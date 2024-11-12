@@ -71,9 +71,9 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v8/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
+
 	//ccvconsumerkeeper "github.com/cosmos/interchain-security/v6/x/ccv/consumer/keeper"
 	//ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
-	wasmbindingsclient "github.com/elys-network/elys/wasmbindings/client"
 	accountedpoolmodulekeeper "github.com/elys-network/elys/x/accountedpool/keeper"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
 	ammmodulekeeper "github.com/elys-network/elys/x/amm/keeper"
@@ -82,8 +82,6 @@ import (
 	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 	burnermodulekeeper "github.com/elys-network/elys/x/burner/keeper"
 	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
-	clockmodulekeeper "github.com/elys-network/elys/x/clock/keeper"
-	clockmoduletypes "github.com/elys-network/elys/x/clock/types"
 	commitmentmodulekeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
 	epochsmodulekeeper "github.com/elys-network/elys/x/epochs/keeper"
@@ -170,7 +168,6 @@ type AppKeepers struct {
 	PerpetualKeeper     *perpetualmodulekeeper.Keeper
 	TransferhookKeeper  transferhookkeeper.Keeper
 	ContractKeeper      *wasmmodulekeeper.PermissionedKeeper
-	ClockKeeper         clockmodulekeeper.Keeper
 	AccountedPoolKeeper accountedpoolmodulekeeper.Keeper
 	StablestakeKeeper   *stablestakekeeper.Keeper
 	LeveragelpKeeper    *leveragelpmodulekeeper.Keeper
@@ -561,33 +558,6 @@ func NewAppKeeper(
 		panic("error while reading wasm config: " + err.Error())
 	}
 
-	bankKeeper := app.BankKeeper.(bankkeeper.BaseKeeper)
-	wasmOpts = append(
-		wasmbindingsclient.RegisterCustomPlugins(
-			&app.AccountedPoolKeeper,
-			app.AmmKeeper,
-			&app.AssetprofileKeeper,
-			&app.AccountKeeper,
-			&bankKeeper,
-			&app.BurnerKeeper,
-			&app.ClockKeeper,
-			app.CommitmentKeeper,
-			app.EpochsKeeper,
-			app.LeveragelpKeeper,
-			app.PerpetualKeeper,
-			&app.OracleKeeper,
-			&app.ParameterKeeper,
-			app.StablestakeKeeper,
-			app.StakingKeeper,
-			&app.TokenomicsKeeper,
-			&app.TransferhookKeeper,
-			&app.MasterchefKeeper,
-			app.EstakingKeeper,
-			&app.TierKeeper,
-		),
-		wasmOpts...,
-	)
-
 	app.WasmKeeper = wasmkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[wasmtypes.StoreKey]),
@@ -684,13 +654,6 @@ func NewAppKeeper(
 	//}
 
 	app.GovKeeper.SetLegacyRouter(govRouter)
-
-	app.ClockKeeper = *clockmodulekeeper.NewKeeper(
-		runtime.NewKVStoreService(app.keys[clockmoduletypes.StoreKey]),
-		appCodec,
-		*app.ContractKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
 
 	app.LeveragelpKeeper = leveragelpmodulekeeper.NewKeeper(
 		appCodec,
@@ -874,7 +837,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
 	paramsKeeper.Subspace(perpetualmoduletypes.ModuleName)
 	paramsKeeper.Subspace(transferhooktypes.ModuleName)
-	paramsKeeper.Subspace(clockmoduletypes.ModuleName)
 	paramsKeeper.Subspace(stablestaketypes.ModuleName)
 	paramsKeeper.Subspace(leveragelpmoduletypes.ModuleName)
 	paramsKeeper.Subspace(masterchefmoduletypes.ModuleName)
