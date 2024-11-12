@@ -55,6 +55,14 @@ func (k Keeper) GetAllElysStaked(ctx sdk.Context) (list []types.ElysStaked) {
 	return
 }
 
+// SetLegacyElysStaked set a specific elysStaked in the store from its index
+func (k Keeper) SetLegacyElysStaked(ctx sdk.Context, elysStaked types.ElysStaked) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyElysStakedKeyPrefix))
+	b := k.cdc.MustMarshal(&elysStaked)
+	key := types.GetElysStakedKey(elysStaked.GetAccountAddress())
+	store.Set(key, b)
+}
+
 // remove after migration
 func (k Keeper) GetAllLegacyElysStaked(ctx sdk.Context) (list []types.ElysStaked) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyElysStakedKeyPrefix))
