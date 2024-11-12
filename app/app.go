@@ -1,9 +1,14 @@
 package app
 
 import (
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"cosmossdk.io/client/v2/autocli"
 	"cosmossdk.io/core/appmodule"
-	"fmt"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
@@ -12,10 +17,6 @@ import (
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/elys-network/elys/app/keepers"
 	"github.com/spf13/cast"
-	"io"
-	"os"
-	"path/filepath"
-	"strings"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmos "github.com/cometbft/cometbft/libs/os"
@@ -55,6 +56,7 @@ import (
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/elys-network/elys/app/ante"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
