@@ -30,12 +30,12 @@ func (app *ElysApp) setUpgradeHandler() {
 
 				// Add any logic here to run when the chain is upgraded to the new version
 				// Update consensus params in order to safely enable comet pruning
-				consensusParams, err := app.ConsensusParamsKeeper.Get(ctx)
+				consensusParams, err := app.ConsensusParamsKeeper.ParamsStore.Get(ctx)
 				if err != nil {
 					return nil, err
 				}
 				consensusParams.Block.MaxBytes = NewMaxBytes
-				app.ConsensusParamsKeeper.Set(ctx, consensusParams)
+				app.ConsensusParamsKeeper.ParamsStore.Set(ctx, consensusParams)
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
