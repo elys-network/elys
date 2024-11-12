@@ -198,6 +198,9 @@ func initRootCmd(rootCmd *cobra.Command,
 		genutilcli.AddGenesisAccountCmd(app.DefaultNodeHome, txConfig.SigningContext().AddressCodec()),
 	)
 
+	// Adding cmd to make GitHub workflows upgrades work
+	rootCmd.AddCommand(SoftwareUpgradeTxCmd())
+
 	server.AddCommands(rootCmd, app.DefaultNodeHome, ac.newApp, ac.appExport, addModuleInitFlags)
 
 	// add keybase, auxiliary RPC, query, and tx child commands

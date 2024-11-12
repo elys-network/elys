@@ -59,14 +59,12 @@ jobs:
 
           # create proposal
           txhash=$(
-            $ELYSD tx gov submit-legacy-proposal software-upgrade \
+            $ELYSD software-upgrade-tx \
               ${{ github.ref_name }} \
-              --deposit=10000000uelys \
-              --upgrade-height=$height \
-              --title="${{ github.ref_name }}" \
-              --description="Elys Network ${{ github.ref_name }} released. Focuses on enhancements and codebase improvements." \
-              --upgrade-info="{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${{ github.ref_name }}/elysd-${{ github.ref_name }}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
-              --no-validate \
+              $height \
+              10000000uelys \
+              "Elys Network ${{ github.ref_name }} released. Focuses on enhancements and codebase improvements." \
+              "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${{ github.ref_name }}/elysd-${{ github.ref_name }}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
               --from=key_1 \
               $OPTIONS | extract_txhash
           )
