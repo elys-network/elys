@@ -23,7 +23,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsByPool_Err() {
 
 	_, err := k.GetPositionsByPool(ctx, &types.PositionsByPoolRequest{
 		AmmPoolId:  uint64(2),
-		Pagination: &query.PageRequest{Limit: 200},
+		Pagination: &query.PageRequest{Limit: 12000},
 	})
 
 	suite.Require().ErrorContains(err, "page size greater than max")

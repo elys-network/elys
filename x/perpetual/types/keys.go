@@ -21,7 +21,7 @@ const (
 	LegacyPoolKeyPrefix = "Pool/value/"
 )
 
-const MaxPageLimit = 100
+const MaxPageLimit = 10000
 
 const (
 	InfinitePriceString = "infinite"

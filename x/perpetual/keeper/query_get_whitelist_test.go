@@ -22,7 +22,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetWhiteList_ErrPageSize() {
 
 	_, err := k.GetWhitelist(ctx, &types.WhitelistRequest{
 		Pagination: &query.PageRequest{
-			Limit: 200,
+			Limit: 12000,
 		},
 	})
 
