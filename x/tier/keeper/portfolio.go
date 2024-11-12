@@ -1,15 +1,16 @@
 package keeper
 
 import (
+	"math"
+	"strconv"
+	"strings"
+	"time"
+
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"math"
-	"strconv"
-	"strings"
-	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -17,6 +18,7 @@ import (
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tier/types"
@@ -214,12 +216,19 @@ func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdkma
 func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (sdkmath.LegacyDec, sdkmath.LegacyDec, sdkmath.LegacyDec) {
 	totalAssets := sdkmath.LegacyNewDec(0)
 	totalLiability := sdkmath.LegacyNewDec(0)
-	netValue := sdkmath.LegacyNewDec(0)
-	perpetuals := k.perpetual.GetAllMTPsForAddress(ctx, user)
+	var netValue sdkmath.LegacyDec
+	perpetuals, _, err := k.perpetual.GetMTPsForAddressWithPagination(ctx, user, nil)
+	if err != nil {
+		return sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0)
+	}
 	for _, perpetual := range perpetuals {
-		totalAssets = totalAssets.Add(k.CalculateUSDValue(ctx, perpetual.GetTradingAsset(), perpetual.Custody))
-		totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.LiabilitiesAsset, perpetual.Liabilities))
-		totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.LiabilitiesAsset, perpetual.BorrowInterestUnpaidLiability))
+		if perpetual.Mtp.Position == perpetualtypes.Position_LONG {
+			totalAssets = totalAssets.Add(k.CalculateUSDValue(ctx, perpetual.Mtp.GetTradingAsset(), perpetual.Mtp.Custody))
+			totalLiability = totalLiability.Add(sdkmath.LegacyDec(perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability)))
+		} else {
+			totalAssets = totalAssets.Add(perpetual.Mtp.Custody.ToLegacyDec())
+			totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.Mtp.LiabilitiesAsset, perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability)))
+		}
 	}
 	netValue = totalAssets.Sub(totalLiability)
 	return totalAssets, totalLiability, netValue
@@ -366,8 +375,6 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_p
 		totalPort, found := k.GetPortfolio(ctx, user, d.Format("2006-01-02"))
 		if found && totalPort.LT(minTotal) {
 			minTotal = totalPort
-		} else if !found {
-			minTotal = sdkmath.LegacyNewDec(0)
 		}
 	}
 
