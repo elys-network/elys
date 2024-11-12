@@ -1,6 +1,7 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
@@ -13,11 +14,11 @@ func NewPosition(signer string, collateral sdk.Coin, poolId uint64) *Position {
 	return &Position{
 		Address:           signer,
 		Collateral:        collateral,
-		Liabilities:       sdk.ZeroInt(),
-		PositionHealth:    sdk.ZeroDec(),
+		Liabilities:       sdkmath.ZeroInt(),
+		PositionHealth:    sdkmath.LegacyZeroDec(),
 		AmmPoolId:         poolId,
-		LeveragedLpAmount: sdk.ZeroInt(),
-		StopLossPrice:     sdk.ZeroDec(),
+		LeveragedLpAmount: sdkmath.ZeroInt(),
+		StopLossPrice:     sdkmath.LegacyZeroDec(),
 	}
 }
 

@@ -11,7 +11,7 @@ func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 	// Find a pool that can convert tokenIn to usdc
 	pool, found := k.GetBestPoolWithDenoms(ctx, []string{tokenInDenom, baseCurrency}, false)
 	if !found {
-		return sdk.ZeroDec()
+		return math.LegacyZeroDec()
 	}
 
 	// Executes the swap in the pool and stores the output. Updates pool assets but
@@ -20,7 +20,7 @@ func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 
 	rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, &snapshot, tokenInDenom, baseCurrency, k.accountedPoolKeeper)
 	if err != nil {
-		return sdk.ZeroDec()
+		return math.LegacyZeroDec()
 	}
 
 	return rate
@@ -30,7 +30,7 @@ func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.Leg
 	// Calc ueden / uusdc rate
 	edenUsdcRate := k.EstimatePrice(ctx, ptypes.Elys, baseCurrency)
 	if edenUsdcRate.IsZero() {
-		edenUsdcRate = sdk.OneDec()
+		edenUsdcRate = math.LegacyOneDec()
 	}
 	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 	if usdcDenomPrice.IsZero() {
@@ -39,7 +39,7 @@ func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.Leg
 		if found {
 			usdcDecimal = int64(usdcEntry.Decimals)
 		}
-		usdcDenomPrice = sdk.NewDecWithPrec(1, usdcDecimal)
+		usdcDenomPrice = math.LegacyNewDecWithPrec(1, usdcDecimal)
 	}
 	return edenUsdcRate.Mul(usdcDenomPrice)
 }
@@ -59,7 +59,7 @@ func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 		if found {
 			usdcDecimal = int64(usdcEntry.Decimals)
 		}
-		usdcDenomPrice = sdk.NewDecWithPrec(1, usdcDecimal)
+		usdcDenomPrice = math.LegacyNewDecWithPrec(1, usdcDecimal)
 	}
 	return tokenUsdcRate.Mul(usdcDenomPrice)
 }

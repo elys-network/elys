@@ -6,23 +6,32 @@ import (
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
-	cosmos_sdk_math "cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 )
 
 func (oq *Querier) queryAllValidators(ctx sdk.Context, query *commitmenttypes.QueryValidatorsRequest) ([]byte, error) {
-	totalBonded := oq.stakingKeeper.TotalBondedTokens(ctx)
+	totalBonded, err := oq.stakingKeeper.TotalBondedTokens(ctx)
+	if err != nil {
+		return nil, err
+	}
 	delegatorAddr, err := sdk.AccAddressFromBech32(query.DelegatorAddress)
-
-	allValidators := oq.stakingKeeper.GetAllValidators(ctx)
-	validators := make([]stakingtypes.Validator, 0)
-	if err == nil {
-		validators = oq.stakingKeeper.GetDelegatorValidators(ctx, delegatorAddr, math.MaxInt16)
+	if err != nil {
+		return nil, err
+	}
+	allValidators, err := oq.stakingKeeper.GetAllValidators(ctx)
+	if err != nil {
+		return nil, err
 	}
 
-	validatorsCW := oq.BuildAllValidatorsResponseCW(ctx, allValidators, validators, totalBonded, query.DelegatorAddress)
+	validators, err := oq.stakingKeeper.GetDelegatorValidators(ctx, delegatorAddr, math.MaxInt16)
+	if err != nil {
+		return nil, err
+	}
+
+	validatorsCW := oq.BuildAllValidatorsResponseCW(ctx, allValidators, validators.Validators, totalBonded, query.DelegatorAddress)
 	res := commitmenttypes.QueryDelegatorValidatorsResponse{
 		Validators: validatorsCW,
 	}
@@ -35,7 +44,7 @@ func (oq *Querier) queryAllValidators(ctx sdk.Context, query *commitmenttypes.Qu
 	return responseBytes, nil
 }
 
-func (oq *Querier) BuildAllValidatorsResponseCW(ctx sdk.Context, allValidators []stakingtypes.Validator, validators []stakingtypes.Validator, totalBonded cosmos_sdk_math.Int, delegatorAddress string) []commitmenttypes.ValidatorDetail {
+func (oq *Querier) BuildAllValidatorsResponseCW(ctx sdk.Context, allValidators []stakingtypes.Validator, validators []stakingtypes.Validator, totalBonded sdkmath.Int, delegatorAddress string) []commitmenttypes.ValidatorDetail {
 	var validatorsCW []commitmenttypes.ValidatorDetail
 	for _, validator := range allValidators {
 		isDelegated := false
@@ -51,8 +60,8 @@ func (oq *Querier) BuildAllValidatorsResponseCW(ctx sdk.Context, allValidators [
 		validatorCW.Address = validator.OperatorAddress
 		validatorCW.Name = validator.Description.Moniker
 		validatorCW.Staked = commitmenttypes.BalanceAvailable{
-			Amount:    sdk.ZeroInt(),
-			UsdAmount: sdk.ZeroDec(),
+			Amount:    sdkmath.ZeroInt(),
+			UsdAmount: sdkmath.LegacyZeroDec(),
 		}
 		validatorCW.Commission = validator.GetCommission()
 		validatorCW.Jailed = strconv.FormatBool(validator.Jailed)
@@ -76,7 +85,7 @@ func (oq *Querier) BuildAllValidatorsResponseCW(ctx sdk.Context, allValidators [
 			validatorCW.Staked.UsdAmount = tokens
 		}
 
-		votingPower := sdk.NewDecFromInt(validator.Tokens).QuoInt(totalBonded).MulInt(sdk.NewInt(100))
+		votingPower := sdkmath.LegacyNewDecFromInt(validator.Tokens).QuoInt(totalBonded).MulInt(sdkmath.NewInt(100))
 		validatorCW.VotingPower = votingPower
 
 		validatorsCW = append(validatorsCW, validatorCW)

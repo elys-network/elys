@@ -26,7 +26,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate_ErrPoolDoesNotExist()
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
@@ -48,7 +48,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate_ErrPoolDoesNotExist()
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
-		StopLossPrice:   sdk.ZeroDec()}
+		StopLossPrice:   math.LegacyZeroDec()}
 
 	_, err = k.OpenConsolidate(
 		ctx,
@@ -80,7 +80,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate_ErrMTPUnhealthy() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
@@ -100,7 +100,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate_ErrMTPUnhealthy() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
-		StopLossPrice:   sdk.ZeroDec()}
+		StopLossPrice:   math.LegacyZeroDec()}
 
 	params := k.GetParams(ctx)
 	params.SafetyFactor = math.LegacyMustNewDecFromStr("1.30")
@@ -136,7 +136,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate_Successful() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
@@ -156,7 +156,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate_Successful() {
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
-		StopLossPrice:   sdk.ZeroDec()}
+		StopLossPrice:   math.LegacyZeroDec()}
 
 	resp, err := k.OpenConsolidate(
 		ctx,

@@ -1,9 +1,9 @@
 package types
 
 import (
+	"context"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
@@ -11,7 +11,7 @@ import (
 )
 
 type AccountKeeper interface {
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
+	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
 	// Methods imported from account should be defined here
 }
 
@@ -28,26 +28,26 @@ type AmmKeeper interface {
 
 	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
 
-	SwapOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdk.Dec, weightBreakingFeePerpetualFactor math.LegacyDec) (tokenOut sdk.Coin, slippage sdk.Dec, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error)
-	SwapInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec, weightBreakingFeePerpetualFactor math.LegacyDec) (tokenIn sdk.Coin, slippage, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error)
+	SwapOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec, weightBreakingFeePerpetualFactor math.LegacyDec) (tokenOut sdk.Coin, slippage math.LegacyDec, slippageAmount math.LegacyDec, weightBalanceBonus math.LegacyDec, err error)
+	SwapInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee math.LegacyDec, weightBreakingFeePerpetualFactor math.LegacyDec) (tokenIn sdk.Coin, slippage, slippageAmount math.LegacyDec, weightBalanceBonus math.LegacyDec, err error)
 
 	AddToPoolBalance(ctx sdk.Context, pool *ammtypes.Pool, addShares math.Int, coins sdk.Coins) error
 	RemoveFromPoolBalance(ctx sdk.Context, pool *ammtypes.Pool, removeShares math.Int, coins sdk.Coins) error
 }
 
 type BankKeeper interface {
-	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	GetAllBalances(ctx context.Context, addr sdk.AccAddress) sdk.Coins
+	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
 
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 
-	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule string, recipientModule string, amt sdk.Coins) error
-	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
-	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
-	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromModuleToModule(ctx context.Context, senderModule string, recipientModule string, amt sdk.Coins) error
+	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+	SendCoins(ctx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 
 	BlockedAddr(addr sdk.AccAddress) bool
-	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool
+	HasBalance(ctx context.Context, addr sdk.AccAddress, amt sdk.Coin) bool
 }
 
 type AssetProfileKeeper interface {
@@ -59,7 +59,7 @@ type AssetProfileKeeper interface {
 
 type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) math.LegacyDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }

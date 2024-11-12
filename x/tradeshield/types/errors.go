@@ -2,9 +2,7 @@ package types
 
 // DONTCOVER
 
-import (
-	"cosmossdk.io/errors"
-)
+import "cosmossdk.io/errors"
 
 // x/tradeshield module sentinel errors
 var (

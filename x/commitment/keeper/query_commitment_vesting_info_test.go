@@ -1,10 +1,9 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/elys-network/elys/app"
@@ -16,13 +15,13 @@ import (
 
 // TestKeeper_CommitmentVestingInfo tests the CommitmentVestingInfo method
 func TestKeeper_CommitmentVestingInfo(t *testing.T) {
-	app := app.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := app.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.CommitmentKeeper
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000000000))
 
 	// Define the test data
 	creator := addr[0]
@@ -33,8 +32,8 @@ func TestKeeper_CommitmentVestingInfo(t *testing.T) {
 		VestingTokens: []*types.VestingTokens{
 			{
 				Denom:                ptypes.Eden,
-				TotalAmount:          sdk.NewInt(100),
-				ClaimedAmount:        sdk.NewInt(50),
+				TotalAmount:          sdkmath.NewInt(100),
+				ClaimedAmount:        sdkmath.NewInt(50),
 				NumBlocks:            10,
 				StartBlock:           1,
 				VestStartedTimestamp: 1,
@@ -51,13 +50,13 @@ func TestKeeper_CommitmentVestingInfo(t *testing.T) {
 	require.NotNil(t, actualRes)
 
 	expectedRes := &types.QueryCommitmentVestingInfoResponse{
-		Total: sdk.NewInt(50),
+		Total: sdkmath.NewInt(50),
 		VestingDetails: []types.VestingDetails{
 			{
 				Id:              "0",
-				TotalVesting:    sdk.NewInt(100),
-				Claimed:         sdk.NewInt(50),
-				VestedSoFar:     sdk.NewInt(-10),
+				TotalVesting:    sdkmath.NewInt(100),
+				Claimed:         sdkmath.NewInt(50),
+				VestedSoFar:     sdkmath.NewInt(-10),
 				RemainingBlocks: 11,
 			},
 		},
@@ -68,8 +67,8 @@ func TestKeeper_CommitmentVestingInfo(t *testing.T) {
 
 // TestKeeper_CommitmentVestingInfoNilRequest tests the CommitmentVestingInfo method with nil request
 func TestKeeper_CommitmentVestingInfoNilRequest(t *testing.T) {
-	app := app.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := app.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.CommitmentKeeper
 

@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"fmt"
 
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
@@ -12,23 +13,23 @@ import (
 )
 
 func (suite *KeeperTestSuite) TestLiquidityRatioFromPriceDepth() {
-	depth := sdk.NewDecWithPrec(1, 2) // 1%
+	depth := sdkmath.LegacyNewDecWithPrec(1, 2) // 1%
 	suite.Require().Equal("0.005012562893380045", keeper.LiquidityRatioFromPriceDepth(depth).String())
-	depth = sdk.NewDecWithPrec(2, 2) // 2%
+	depth = sdkmath.LegacyNewDecWithPrec(2, 2) // 2%
 	suite.Require().Equal("0.010050506338833466", keeper.LiquidityRatioFromPriceDepth(depth).String())
-	depth = sdk.NewDecWithPrec(5, 2) // 5%
+	depth = sdkmath.LegacyNewDecWithPrec(5, 2) // 5%
 	suite.Require().Equal("0.025320565519103609", keeper.LiquidityRatioFromPriceDepth(depth).String())
-	depth = sdk.NewDecWithPrec(10, 2) // 10%
+	depth = sdkmath.LegacyNewDecWithPrec(10, 2) // 10%
 	suite.Require().Equal("0.051316701949486200", keeper.LiquidityRatioFromPriceDepth(depth).String())
-	depth = sdk.NewDecWithPrec(30, 2) // 30%
+	depth = sdkmath.LegacyNewDecWithPrec(30, 2) // 30%
 	suite.Require().Equal("0.163339973465924452", keeper.LiquidityRatioFromPriceDepth(depth).String())
-	depth = sdk.NewDecWithPrec(50, 2) // 50%
+	depth = sdkmath.LegacyNewDecWithPrec(50, 2) // 50%
 	suite.Require().Equal("0.292893218813452475", keeper.LiquidityRatioFromPriceDepth(depth).String())
-	depth = sdk.NewDecWithPrec(70, 2) // 70%
+	depth = sdkmath.LegacyNewDecWithPrec(70, 2) // 70%
 	suite.Require().Equal("0.452277442494833886", keeper.LiquidityRatioFromPriceDepth(depth).String())
-	depth = sdk.NewDecWithPrec(90, 2) // 90%
+	depth = sdkmath.LegacyNewDecWithPrec(90, 2) // 90%
 	suite.Require().Equal("0.683772233983162067", keeper.LiquidityRatioFromPriceDepth(depth).String())
-	depth = sdk.NewDecWithPrec(100, 2) // 100%
+	depth = sdkmath.LegacyNewDecWithPrec(100, 2) // 100%
 	suite.Require().Equal("1.000000000000000000", keeper.LiquidityRatioFromPriceDepth(depth).String())
 }
 
@@ -68,39 +69,39 @@ func (suite *KeeperTestSuite) TestGetExternalLiquidityRatio() {
 			pool: types.Pool{
 				PoolAssets: []types.PoolAsset{
 					{
-						Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-						Weight:                 sdk.NewInt(50),
-						ExternalLiquidityRatio: sdk.NewDec(1),
+						Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
+						Weight:                 sdkmath.NewInt(50),
+						ExternalLiquidityRatio: sdkmath.LegacyNewDec(1),
 					},
 					{
-						Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000)),
-						Weight:                 sdk.NewInt(50),
-						ExternalLiquidityRatio: sdk.NewDec(1),
+						Token:                  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(100000000)),
+						Weight:                 sdkmath.NewInt(50),
+						ExternalLiquidityRatio: sdkmath.LegacyNewDec(1),
 					},
 				},
 			},
 			amountDepthInfo: []types.AssetAmountDepth{
 				{
 					Asset:  "USDC",
-					Amount: sdk.NewDec(1000000000),
-					Depth:  sdk.MustNewDecFromStr("0.5"),
+					Amount: sdkmath.LegacyNewDec(1000000000),
+					Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				},
 				{
 					Asset:  "ATOM",
-					Amount: sdk.NewDec(1000000000),
-					Depth:  sdk.MustNewDecFromStr("0.5"),
+					Amount: sdkmath.LegacyNewDec(1000000000),
+					Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				},
 			},
 			expectedResult: []types.PoolAsset{
 				{
-					Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.MustNewDecFromStr("34.142135623730950558"),
+					Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyMustNewDecFromStr("34.142135623730950558"),
 				},
 				{
-					Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000)),
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.MustNewDecFromStr("34.142135623730950558"),
+					Token:                  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(100000000)),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyMustNewDecFromStr("34.142135623730950558"),
 				},
 			},
 			expectedError: nil,
@@ -110,15 +111,15 @@ func (suite *KeeperTestSuite) TestGetExternalLiquidityRatio() {
 			pool: types.Pool{
 				PoolAssets: []types.PoolAsset{
 					{
-						Token: sdk.NewCoin("asset1", sdk.NewInt(1000)),
+						Token: sdk.NewCoin("asset1", sdkmath.NewInt(1000)),
 					},
 				},
 			},
 			amountDepthInfo: []types.AssetAmountDepth{
 				{
 					Asset:  "asset1",
-					Amount: sdk.NewDec(500),
-					Depth:  sdk.MustNewDecFromStr("0.5"),
+					Amount: sdkmath.LegacyNewDec(500),
+					Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				},
 			},
 			expectedResult: nil,
@@ -129,15 +130,15 @@ func (suite *KeeperTestSuite) TestGetExternalLiquidityRatio() {
 			pool: types.Pool{
 				PoolAssets: []types.PoolAsset{
 					{
-						Token: sdk.NewCoin("asset2denom", sdk.NewInt(1000)),
+						Token: sdk.NewCoin("asset2denom", sdkmath.NewInt(1000)),
 					},
 				},
 			},
 			amountDepthInfo: []types.AssetAmountDepth{
 				{
 					Asset:  "asset2",
-					Amount: sdk.NewDec(500),
-					Depth:  sdk.MustNewDecFromStr("0.5"),
+					Amount: sdkmath.LegacyNewDec(500),
+					Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				},
 			},
 			expectedResult: nil,
@@ -148,27 +149,27 @@ func (suite *KeeperTestSuite) TestGetExternalLiquidityRatio() {
 			pool: types.Pool{
 				PoolAssets: []types.PoolAsset{
 					{
-						Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(0)),
-						Weight:                 sdk.NewInt(50),
-						ExternalLiquidityRatio: sdk.NewDec(1),
+						Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(0)),
+						Weight:                 sdkmath.NewInt(50),
+						ExternalLiquidityRatio: sdkmath.LegacyNewDec(1),
 					},
 					{
-						Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000)),
-						Weight:                 sdk.NewInt(50),
-						ExternalLiquidityRatio: sdk.NewDec(1),
+						Token:                  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(100000000)),
+						Weight:                 sdkmath.NewInt(50),
+						ExternalLiquidityRatio: sdkmath.LegacyNewDec(1),
 					},
 				},
 			},
 			amountDepthInfo: []types.AssetAmountDepth{
 				{
 					Asset:  "USDC",
-					Amount: sdk.NewDec(1000000000),
-					Depth:  sdk.MustNewDecFromStr("0.5"),
+					Amount: sdkmath.LegacyNewDec(1000000000),
+					Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				},
 				{
 					Asset:  "ATOM",
-					Amount: sdk.NewDec(1000000000),
-					Depth:  sdk.MustNewDecFromStr("0.5"),
+					Amount: sdkmath.LegacyNewDec(1000000000),
+					Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				},
 			},
 			expectedResult: nil,
@@ -179,39 +180,39 @@ func (suite *KeeperTestSuite) TestGetExternalLiquidityRatio() {
 			pool: types.Pool{
 				PoolAssets: []types.PoolAsset{
 					{
-						Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-						Weight:                 sdk.NewInt(50),
-						ExternalLiquidityRatio: sdk.NewDec(1),
+						Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
+						Weight:                 sdkmath.NewInt(50),
+						ExternalLiquidityRatio: sdkmath.LegacyNewDec(1),
 					},
 					{
-						Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000)),
-						Weight:                 sdk.NewInt(50),
-						ExternalLiquidityRatio: sdk.NewDec(1),
+						Token:                  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(100000000)),
+						Weight:                 sdkmath.NewInt(50),
+						ExternalLiquidityRatio: sdkmath.LegacyNewDec(1),
 					},
 				},
 			},
 			amountDepthInfo: []types.AssetAmountDepth{
 				{
 					Asset:  "USDC",
-					Amount: sdk.NewDec(1000000000),
-					Depth:  sdk.MustNewDecFromStr("0"),
+					Amount: sdkmath.LegacyNewDec(1000000000),
+					Depth:  sdkmath.LegacyMustNewDecFromStr("0"),
 				},
 				{
 					Asset:  "ATOM",
-					Amount: sdk.NewDec(1000000000),
-					Depth:  sdk.MustNewDecFromStr("0.5"),
+					Amount: sdkmath.LegacyNewDec(1000000000),
+					Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				},
 			},
 			expectedResult: []types.PoolAsset{
 				{
-					Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100000000)),
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.MustNewDecFromStr("34.142135623730950558"),
+					Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyMustNewDecFromStr("34.142135623730950558"),
 				},
 				{
-					Token:                  sdk.NewCoin(ptypes.ATOM, sdk.NewInt(100000000)),
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.MustNewDecFromStr("34.142135623730950558"),
+					Token:                  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(100000000)),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyMustNewDecFromStr("34.142135623730950558"),
 				},
 			},
 			expectedError: types.ErrAmountTooLow,

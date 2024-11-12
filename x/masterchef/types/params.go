@@ -1,6 +1,7 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,9 +13,9 @@ import (
 // NewParams creates a new Params instance
 func NewParams(
 	lpIncentives *IncentiveInfo,
-	rewardPortionForLps sdk.Dec,
-	rewardPortionForStakers sdk.Dec,
-	maxEdenRewardAprLps sdk.Dec,
+	rewardPortionForLps sdkmath.LegacyDec,
+	rewardPortionForStakers sdkmath.LegacyDec,
+	maxEdenRewardAprLps sdkmath.LegacyDec,
 	protocolRevenueAddress string,
 ) Params {
 	return Params{
@@ -31,9 +32,9 @@ func NewParams(
 func DefaultParams() Params {
 	return NewParams(
 		nil,
-		sdk.NewDecWithPrec(60, 2),
-		sdk.NewDecWithPrec(25, 2),
-		sdk.NewDecWithPrec(5, 1),
+		sdkmath.LegacyNewDecWithPrec(60, 2),
+		sdkmath.LegacyNewDecWithPrec(25, 2),
+		sdkmath.LegacyNewDecWithPrec(5, 1),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 }
@@ -80,7 +81,7 @@ func (p LegacyParams) String() string {
 }
 
 func validateRewardPortionForLps(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -91,7 +92,7 @@ func validateRewardPortionForLps(i interface{}) error {
 	if v.IsNegative() {
 		return fmt.Errorf("reward percent for lp must be positive: %s", v)
 	}
-	if v.GT(sdk.OneDec()) {
+	if v.GT(sdkmath.LegacyOneDec()) {
 		return fmt.Errorf("reward percent for lp too large: %s", v)
 	}
 
@@ -99,7 +100,7 @@ func validateRewardPortionForLps(i interface{}) error {
 }
 
 func validateRewardPortionForStakers(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -110,7 +111,7 @@ func validateRewardPortionForStakers(i interface{}) error {
 	if v.IsNegative() {
 		return fmt.Errorf("reward percent for stakers must be positive: %s", v)
 	}
-	if v.GT(sdk.OneDec()) {
+	if v.GT(sdkmath.LegacyOneDec()) {
 		return fmt.Errorf("reward percent for stakers too large: %s", v)
 	}
 
@@ -124,7 +125,7 @@ func validateLPIncentives(i interface{}) error {
 	}
 
 	// not checking for nil as LPIncentives nil is allowed in abci.go
-	if vv != nil && vv.EdenAmountPerYear.LTE(sdk.ZeroInt()) {
+	if vv != nil && vv.EdenAmountPerYear.LTE(sdkmath.ZeroInt()) {
 		return fmt.Errorf("invalid eden amount per year: %v", vv)
 	}
 
@@ -136,7 +137,7 @@ func validateLPIncentives(i interface{}) error {
 }
 
 func validateMaxEdenRewardAprLps(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

@@ -1,0 +1,21 @@
+{
+    "title": "Update leveragelp params",
+    "summary": "Update params of leveragelp module",
+    "messages": [
+        {
+            "@type": "/elys.leveragelp.MsgUpdateParams",
+            "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+            "params": {
+              "leverage_max": "10.0",
+              "max_open_positions": "9999",
+              "pool_open_threshold": "0.200000000000000000",
+              "safety_factor": "1.100000000000000000",
+              "whitelisting_enabled": false,
+              "epoch_length": "1"
+            }
+        }
+    ],
+    "deposit": "10000000stake",
+    "metadata": "ipfs://CID"
+}
+  

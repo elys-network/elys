@@ -16,7 +16,7 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amoun
 			return err
 		}
 
-		del := k.Delegation(ctx, creator, edenValAddr)
+		del, _ := k.Delegation(ctx, creator, edenValAddr)
 		if del == nil {
 			err = k.Keeper.Hooks().BeforeDelegationRemoved(ctx, creator, edenValAddr)
 			if err != nil {
@@ -36,7 +36,7 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amoun
 			return err
 		}
 
-		del := k.Delegation(ctx, creator, edenBValAddr)
+		del, _ := k.Delegation(ctx, creator, edenBValAddr)
 		if del == nil {
 			err = k.Keeper.Hooks().BeforeDelegationRemoved(ctx, creator, edenBValAddr)
 			if err != nil {
@@ -90,7 +90,7 @@ func (k Keeper) BeforeEdenCommitChange(ctx sdk.Context, addr sdk.AccAddress) err
 		return err
 	}
 
-	del := k.Delegation(ctx, addr, edenValAddr)
+	del, _ := k.Delegation(ctx, addr, edenValAddr)
 	if del == nil {
 		err = k.Keeper.Hooks().BeforeDelegationCreated(ctx, addr, edenValAddr)
 		if err != nil {
@@ -112,7 +112,7 @@ func (k Keeper) BeforeEdenBCommitChange(ctx sdk.Context, addr sdk.AccAddress) er
 		return err
 	}
 
-	del := k.Delegation(ctx, addr, edenBValAddr)
+	del, _ := k.Delegation(ctx, addr, edenBValAddr)
 	if del == nil {
 		err = k.Keeper.Hooks().BeforeDelegationCreated(ctx, addr, edenBValAddr)
 		if err != nil {

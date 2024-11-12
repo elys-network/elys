@@ -5,22 +5,28 @@ import (
 	"math"
 
 	errorsmod "cosmossdk.io/errors"
-	cosmos_sdk_math "cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 )
 
 func (oq *Querier) queryDelegatorValidators(ctx sdk.Context, query *commitmenttypes.QueryValidatorsRequest) ([]byte, error) {
-	totalBonded := oq.stakingKeeper.TotalBondedTokens(ctx)
+	totalBonded, err := oq.stakingKeeper.TotalBondedTokens(ctx)
+	if err != nil {
+		return nil, err
+	}
 	delegatorAddr, err := sdk.AccAddressFromBech32(query.DelegatorAddress)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "invalid delegator address")
 	}
 
-	validators := oq.stakingKeeper.GetDelegatorValidators(ctx, delegatorAddr, math.MaxInt16)
+	validators, err := oq.stakingKeeper.GetDelegatorValidators(ctx, delegatorAddr, math.MaxInt16)
+	if err != nil {
+		return nil, err
+	}
 
-	validatorsCW := oq.BuildDelegatorValidatorsResponseCW(ctx, validators, totalBonded, query.DelegatorAddress)
+	validatorsCW := oq.BuildDelegatorValidatorsResponseCW(ctx, validators.Validators, totalBonded, query.DelegatorAddress)
 	res := commitmenttypes.QueryDelegatorValidatorsResponse{
 		Validators: validatorsCW,
 	}
@@ -33,8 +39,8 @@ func (oq *Querier) queryDelegatorValidators(ctx sdk.Context, query *commitmentty
 	return responseBytes, nil
 }
 
-func (oq *Querier) BuildDelegatorValidatorsResponseCW(ctx sdk.Context, validators []stakingtypes.Validator, totalBonded cosmos_sdk_math.Int, delegatorAddress string) []commitmenttypes.ValidatorDetail {
-	edenDenomPrice := sdk.ZeroDec()
+func (oq *Querier) BuildDelegatorValidatorsResponseCW(ctx sdk.Context, validators []stakingtypes.Validator, totalBonded sdkmath.Int, delegatorAddress string) []commitmenttypes.ValidatorDetail {
+	edenDenomPrice := sdkmath.LegacyZeroDec()
 	baseCurrency, found := oq.assetKeeper.GetUsdcDenom(ctx)
 	if found {
 		edenDenomPrice = oq.ammKeeper.GetEdenDenomPrice(ctx, baseCurrency)
@@ -66,7 +72,7 @@ func (oq *Querier) BuildDelegatorValidatorsResponseCW(ctx sdk.Context, validator
 			UsdAmount: edenDenomPrice.Mul(tokens),
 		}
 
-		votingPower := sdk.NewDecFromInt(validator.Tokens).QuoInt(totalBonded).MulInt(sdk.NewInt(100))
+		votingPower := sdkmath.LegacyNewDecFromInt(validator.Tokens).QuoInt(totalBonded).MulInt(sdkmath.NewInt(100))
 		validatorCW.VotingPower = votingPower
 
 		validatorsCW = append(validatorsCW, validatorCW)

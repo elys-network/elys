@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -40,8 +41,8 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 					}
 					asset.ExternalLiquidityRatio = (O_Tvl.Quo(P_Tvl)).Quo(liquidityRatio)
 
-					if asset.ExternalLiquidityRatio.LT(sdk.OneDec()) {
-						asset.ExternalLiquidityRatio = sdk.OneDec()
+					if asset.ExternalLiquidityRatio.LT(sdkmath.LegacyOneDec()) {
+						asset.ExternalLiquidityRatio = sdkmath.LegacyOneDec()
 					}
 				}
 			}
@@ -51,18 +52,21 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 	return updatedAssets, nil
 }
 
-func LiquidityRatioFromPriceDepth(depth sdk.Dec) sdk.Dec {
-	if depth == sdk.OneDec() {
-		return sdk.OneDec()
+func LiquidityRatioFromPriceDepth(depth sdkmath.LegacyDec) sdkmath.LegacyDec {
+	if depth == sdkmath.LegacyOneDec() {
+		return sdkmath.LegacyOneDec()
 	}
-	sqrt, err := sdk.OneDec().Sub(depth).ApproxSqrt()
+	sqrt, err := sdkmath.LegacyOneDec().Sub(depth).ApproxSqrt()
 	if err != nil {
 		panic(err)
 	}
-	return sdk.OneDec().Sub(sqrt)
+	return sdkmath.LegacyOneDec().Sub(sqrt)
 }
 
 func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *types.MsgFeedMultipleExternalLiquidity) (*types.MsgFeedMultipleExternalLiquidityResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	feeder, found := k.oracleKeeper.GetPriceFeeder(ctx, sdk.MustAccAddressFromBech32(msg.Sender))

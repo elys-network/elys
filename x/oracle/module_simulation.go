@@ -1,10 +1,10 @@
 package oracle
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
@@ -62,12 +62,12 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 			{
 				Provider: sample.AccAddress(),
 				Asset:    "BTC",
-				Price:    sdk.ZeroDec(),
+				Price:    sdkmath.LegacyZeroDec(),
 			},
 			{
 				Provider: sample.AccAddress(),
 				Asset:    "BTC",
-				Price:    sdk.OneDec(),
+				Price:    sdkmath.LegacyOneDec(),
 			},
 		},
 		PriceFeeders: []types.PriceFeeder{
@@ -87,14 +87,14 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 }
 
 // RegisterStoreDecoder registers a decoder
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {}
 
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgFeedPrice int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgFeedPrice, &weightMsgFeedPrice, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgFeedPrice, &weightMsgFeedPrice, nil,
 		func(_ *rand.Rand) {
 			weightMsgFeedPrice = defaultWeightMsgFeedPrice
 		},
@@ -105,7 +105,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgDeletePriceFeeder int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeletePriceFeeder, &weightMsgDeletePriceFeeder, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgDeletePriceFeeder, &weightMsgDeletePriceFeeder, nil,
 		func(_ *rand.Rand) {
 			weightMsgDeletePriceFeeder = defaultWeightMsgDeletePriceFeeder
 		},
@@ -116,7 +116,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgFeedMultiplePrices int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgFeedMultiplePrices, &weightMsgFeedMultiplePrices, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgFeedMultiplePrices, &weightMsgFeedMultiplePrices, nil,
 		func(_ *rand.Rand) {
 			weightMsgFeedMultiplePrices = defaultWeightMsgFeedMultiplePrices
 		},
@@ -127,7 +127,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgCreateAssetInfo int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateAssetInfo, &weightMsgCreateAssetInfo, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreateAssetInfo, &weightMsgCreateAssetInfo, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreateAssetInfo = defaultWeightMsgCreateAssetInfo
 		},

@@ -1,27 +1,25 @@
 package keeper
 
 import (
+	"cosmossdk.io/core/store"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
 	errorsmod "cosmossdk.io/errors"
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
-	host "github.com/cosmos/ibc-go/v7/modules/core/24-host"
-	"github.com/cosmos/ibc-go/v7/modules/core/exported"
+	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
+	channeltypes "github.com/cosmos/ibc-go/v8/modules/core/04-channel/types"
+	host "github.com/cosmos/ibc-go/v8/modules/core/24-host"
+	"github.com/cosmos/ibc-go/v8/modules/core/exported"
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
 type Keeper struct {
-	cdc        codec.BinaryCodec
-	storeKey   storetypes.StoreKey
-	memKey     storetypes.StoreKey
-	authority  string
-	paramstore paramtypes.Subspace
+	cdc          codec.BinaryCodec
+	storeService store.KVStoreService
+	authority    string
 
 	channelKeeper types.ChannelKeeper
 	portKeeper    types.PortKeeper
@@ -30,25 +28,17 @@ type Keeper struct {
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
+	storeService store.KVStoreService,
 	authority string,
-	ps paramtypes.Subspace,
 	channelKeeper types.ChannelKeeper,
 	portKeeper types.PortKeeper,
 	scopedKeeper exported.ScopedKeeper,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
 
 	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		authority:  authority,
-		paramstore: ps,
+		cdc:          cdc,
+		storeService: storeService,
+		authority:    authority,
 
 		channelKeeper: channelKeeper,
 		portKeeper:    portKeeper,
@@ -85,13 +75,13 @@ func (k Keeper) BindPort(ctx sdk.Context, portID string) error {
 
 // GetPort returns the portID for the IBC app module. Used in ExportGenesis
 func (k Keeper) GetPort(ctx sdk.Context) string {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return string(store.Get(types.PortKey))
 }
 
 // SetPort sets the portID for the IBC app module. Used in InitGenesis
 func (k Keeper) SetPort(ctx sdk.Context, portID string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.PortKey, []byte(portID))
 }
 

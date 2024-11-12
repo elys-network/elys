@@ -1,21 +1,23 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
 func (k Keeper) SetPoolInfo(ctx sdk.Context, pool types.PoolInfo) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPoolInfoKey(pool.GetPoolId())
 	b := k.cdc.MustMarshal(&pool)
 	store.Set(key, b)
 }
 
 func (k Keeper) GetPoolInfo(ctx sdk.Context, poolId uint64) (val types.PoolInfo, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPoolInfoKey(poolId)
 
 	b := store.Get(key)
@@ -28,14 +30,14 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, poolId uint64) (val types.PoolInfo,
 }
 
 func (k Keeper) RemovePoolInfo(ctx sdk.Context, poolId uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPoolInfoKey(poolId)
 	store.Delete(key)
 }
 
 func (k Keeper) GetAllPoolInfos(ctx sdk.Context) (list []types.PoolInfo) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.PoolInfoKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.PoolInfoKeyPrefix)
 
 	defer iterator.Close()
 
@@ -49,14 +51,14 @@ func (k Keeper) GetAllPoolInfos(ctx sdk.Context) (list []types.PoolInfo) {
 }
 
 func (k Keeper) RemoveLegacyPoolInfo(ctx sdk.Context, poolId uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPoolInfoKey(poolId)
 	store.Delete(key)
 }
 
 func (k Keeper) GetAllLegacyPoolInfos(ctx sdk.Context) (list []types.LegacyPoolInfo) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.PoolInfoKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.PoolInfoKeyPrefix)
 
 	defer iterator.Close()
 

@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,16 +14,16 @@ func TestShowFeeInfoQuery(t *testing.T) {
 	keeper, ctx := testkeeper.MasterchefKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	newInfo := types.FeeInfo{
-		GasLp:        sdk.NewInt(300),
-		GasStakers:   sdk.NewInt(150),
-		GasProtocol:  sdk.NewInt(75),
-		DexLp:        sdk.NewInt(400),
-		DexStakers:   sdk.NewInt(200),
-		DexProtocol:  sdk.NewInt(100),
-		PerpLp:       sdk.NewInt(500),
-		PerpStakers:  sdk.NewInt(250),
-		PerpProtocol: sdk.NewInt(125),
-		EdenLp:       sdk.NewInt(2000),
+		GasLp:        math.NewInt(300),
+		GasStakers:   math.NewInt(150),
+		GasProtocol:  math.NewInt(75),
+		DexLp:        math.NewInt(400),
+		DexStakers:   math.NewInt(200),
+		DexProtocol:  math.NewInt(100),
+		PerpLp:       math.NewInt(500),
+		PerpStakers:  math.NewInt(250),
+		PerpProtocol: math.NewInt(125),
+		EdenLp:       math.NewInt(2000),
 	}
 	keeper.SetFeeInfo(ctx, newInfo, "2024-05-01")
 
@@ -35,16 +36,16 @@ func TestListFeeInfoQuery(t *testing.T) {
 	keeper, ctx := testkeeper.MasterchefKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	newInfo := types.FeeInfo{
-		GasLp:        sdk.NewInt(300),
-		GasStakers:   sdk.NewInt(150),
-		GasProtocol:  sdk.NewInt(75),
-		DexLp:        sdk.NewInt(400),
-		DexStakers:   sdk.NewInt(200),
-		DexProtocol:  sdk.NewInt(100),
-		PerpLp:       sdk.NewInt(500),
-		PerpStakers:  sdk.NewInt(250),
-		PerpProtocol: sdk.NewInt(125),
-		EdenLp:       sdk.NewInt(2000),
+		GasLp:        math.NewInt(300),
+		GasStakers:   math.NewInt(150),
+		GasProtocol:  math.NewInt(75),
+		DexLp:        math.NewInt(400),
+		DexStakers:   math.NewInt(200),
+		DexProtocol:  math.NewInt(100),
+		PerpLp:       math.NewInt(500),
+		PerpStakers:  math.NewInt(250),
+		PerpProtocol: math.NewInt(125),
+		EdenLp:       math.NewInt(2000),
 	}
 	keeper.SetFeeInfo(ctx, newInfo, "2024-05-01")
 	keeper.SetFeeInfo(ctx, newInfo, "2024-05-02")

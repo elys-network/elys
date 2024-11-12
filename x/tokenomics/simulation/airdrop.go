@@ -30,7 +30,7 @@ func SimulateMsgCreateAirdrop(
 
 		_, found := k.GetAirdrop(ctx, msg.Intent)
 		if found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "Airdrop already exist"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgCreateAirdrop{}), "Airdrop already exist"), nil, nil
 		}
 
 		txCtx := simulation.OperationInput{
@@ -39,7 +39,6 @@ func SimulateMsgCreateAirdrop(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -73,7 +72,7 @@ func SimulateMsgUpdateAirdrop(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "airdrop authority not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateAirdrop{}), "airdrop authority not found"), nil, nil
 		}
 		msg.Authority = simAccount.Address.String()
 
@@ -85,7 +84,6 @@ func SimulateMsgUpdateAirdrop(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -119,7 +117,7 @@ func SimulateMsgDeleteAirdrop(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "airdrop authority not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateAirdrop{}), "airdrop authority not found"), nil, nil
 		}
 		msg.Authority = simAccount.Address.String()
 
@@ -131,7 +129,6 @@ func SimulateMsgDeleteAirdrop(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,

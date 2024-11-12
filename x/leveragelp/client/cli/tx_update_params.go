@@ -1,6 +1,7 @@
 package cli
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"errors"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -79,12 +80,17 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
+			expedited, err := cmd.Flags().GetBool(FlagExpedited)
+			if err != nil {
+				return err
+			}
+
 			params := &types.Params{
-				LeverageMax:         sdk.MustNewDecFromStr(leverageMax),
+				LeverageMax:         sdkmath.LegacyMustNewDecFromStr(leverageMax),
 				EpochLength:         epoch_length,
 				MaxOpenPositions:    maxOpenPositions,
-				PoolOpenThreshold:   sdk.MustNewDecFromStr(poolOpenThreshold),
-				SafetyFactor:        sdk.MustNewDecFromStr(safetyFactor),
+				PoolOpenThreshold:   sdkmath.LegacyMustNewDecFromStr(poolOpenThreshold),
+				SafetyFactor:        sdkmath.LegacyMustNewDecFromStr(safetyFactor),
 				WhitelistingEnabled: whitelistingEnabled,
 			}
 
@@ -113,7 +119,7 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary)
+			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary, expedited)
 			if err != nil {
 				return err
 			}
@@ -131,6 +137,7 @@ func CmdUpdateParams() *cobra.Command {
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
+	cmd.Flags().String(FlagExpedited, "", "expedited")
 	_ = cmd.MarkFlagRequired(FlagLeverageMax)
 	_ = cmd.MarkFlagRequired(FlagMaxOpenPositions)
 	_ = cmd.MarkFlagRequired(FlagPoolOpenThreshold)

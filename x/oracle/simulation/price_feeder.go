@@ -34,7 +34,7 @@ func SimulateMsgSetPriceFeeder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "priceFeeder creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgSetPriceFeeder{}), "priceFeeder creator not found"), nil, nil
 		}
 		msg.Feeder = priceFeeder.Feeder
 
@@ -44,7 +44,6 @@ func SimulateMsgSetPriceFeeder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -78,7 +77,7 @@ func SimulateMsgDeletePriceFeeder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "priceFeeder creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgSetPriceFeeder{}), "priceFeeder creator not found"), nil, nil
 		}
 		msg.Feeder = priceFeeder.Feeder
 
@@ -88,7 +87,6 @@ func SimulateMsgDeletePriceFeeder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,

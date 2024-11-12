@@ -23,7 +23,10 @@ func (oq *Querier) queryDelegations(ctx sdk.Context, query *types.QueryDelegator
 		return nil, err
 	}
 
-	delegations := oq.stakingKeeper.GetDelegatorDelegations(ctx, delAddr, math.MaxInt16)
+	delegations, err := oq.stakingKeeper.GetDelegatorDelegations(ctx, delAddr, math.MaxInt16)
+	if err != nil {
+		return nil, err
+	}
 	delegationResps, err := oq.DelegationsToDelegationResponses(ctx, delegations)
 
 	res := types.QueryDelegatorDelegationsResponse{
@@ -54,9 +57,13 @@ func (oq *Querier) DelegationsToDelegationResponses(ctx sdk.Context, delegations
 }
 
 func (oq *Querier) DelegationToDelegationResponse(ctx sdk.Context, del stakingtypes.Delegation) (types.DelegationResponse, error) {
-	val, found := oq.stakingKeeper.GetValidator(ctx, del.GetValidatorAddr())
-	if !found {
-		return types.DelegationResponse{}, stakingtypes.ErrNoValidatorFound
+	validator, err := sdk.ValAddressFromBech32(del.GetValidatorAddr())
+	if err != nil {
+		return types.DelegationResponse{}, err
+	}
+	val, err := oq.stakingKeeper.GetValidator(ctx, validator)
+	if err != nil {
+		return types.DelegationResponse{}, err
 	}
 
 	delegatorAddress, err := sdk.AccAddressFromBech32(del.DelegatorAddress)
@@ -64,12 +71,16 @@ func (oq *Querier) DelegationToDelegationResponse(ctx sdk.Context, del stakingty
 		return types.DelegationResponse{}, err
 	}
 
+	bondDenom, err := oq.stakingKeeper.BondDenom(ctx)
+	if err != nil {
+		return types.DelegationResponse{}, err
+	}
 	return types.DelegationResponse{
 		Delegation: types.Delegation{
 			DelegatorAddress: delegatorAddress.String(),
-			ValidatorAddress: del.GetValidatorAddr().String(),
+			ValidatorAddress: del.GetValidatorAddr(),
 			Shares:           del.Shares,
 		},
-		Balance: sdk.NewCoin(oq.stakingKeeper.BondDenom(ctx), val.TokensFromShares(del.Shares).TruncateInt()),
+		Balance: sdk.NewCoin(bondDenom, val.TokensFromShares(del.Shares).TruncateInt()),
 	}, nil
 }

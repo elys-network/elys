@@ -156,7 +156,7 @@ func (p *Pool) UpdateFeesCollected(assetDenom string, amount math.Int, isIncreas
 }
 
 func (pool Pool) GetTotalLongOpenInterest() math.Int {
-	totalLongOpenInterest := sdk.ZeroInt()
+	totalLongOpenInterest := math.ZeroInt()
 	for _, asset := range pool.PoolAssetsLong {
 		// We subtract asset.Collateral from totalCustodyLong because for long with collateral same as trading asset and user will
 		// be charged for that the collateral as well even though they have already given that amount to the pool.
@@ -173,7 +173,7 @@ func (pool Pool) GetTotalLongOpenInterest() math.Int {
 }
 
 func (pool Pool) GetTotalShortOpenInterest() math.Int {
-	totalShortOpenInterest := sdk.ZeroInt()
+	totalShortOpenInterest := math.ZeroInt()
 	for _, asset := range pool.PoolAssetsShort {
 		totalShortOpenInterest = totalShortOpenInterest.Add(asset.Liabilities)
 	}

@@ -32,13 +32,13 @@ The `SetAssetInfo`, `GetAssetInfo`, `RemoveAssetInfo`, and `GetAllAssetInfo` fun
 
 ```go
 func (k Keeper) SetAssetInfo(ctx sdk.Context, assetInfo types.AssetInfo) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AssetInfoKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.AssetInfoKeyPrefix))
     bz := k.cdc.MustMarshal(&assetInfo)
     store.Set(types.AssetInfoKey(assetInfo.Denom), bz)
 }
 
 func (k Keeper) GetAssetInfo(ctx sdk.Context, denom string) (val types.AssetInfo, found bool) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AssetInfoKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.AssetInfoKeyPrefix))
     bz := store.Get(types.AssetInfoKey(denom))
     if bz == nil {
         return val, false
@@ -48,13 +48,13 @@ func (k Keeper) GetAssetInfo(ctx sdk.Context, denom string) (val types.AssetInfo
 }
 
 func (k Keeper) RemoveAssetInfo(ctx sdk.Context, denom string) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AssetInfoKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.AssetInfoKeyPrefix))
     store.Delete(types.AssetInfoKey(denom))
 }
 
 func (k Keeper) GetAllAssetInfo(ctx sdk.Context) (list []types.AssetInfo) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AssetInfoKeyPrefix))
-    iterator := sdk.KVStorePrefixIterator(store, []byte{})
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.AssetInfoKeyPrefix))
+    iterator := storetypes.KVStorePrefixIterator(store, []byte{})
     defer iterator.Close()
     for ; iterator.Valid(); iterator.Next() {
         var val types.AssetInfo
@@ -71,12 +71,12 @@ The `SetBandPriceResult`, `GetBandPriceResult`, `GetLastBandRequestId`, and `Set
 
 ```go
 func (k Keeper) SetBandPriceResult(ctx sdk.Context, requestID types.OracleRequestID, result types.BandPriceResult) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     store.Set(types.BandPriceResultStoreKey(requestID), k.cdc.MustMarshal(&result))
 }
 
 func (k Keeper) GetBandPriceResult(ctx sdk.Context, id types.OracleRequestID) (types.BandPriceResult, error) {
-    bz := ctx.KVStore(k.storeKey).Get(types.BandPriceResultStoreKey(id))
+    bz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.BandPriceResultStoreKey(id))
     if bz == nil {
         return types.BandPriceResult{}, errorsmod.Wrapf(types.ErrNotAvailable, "Result for request ID %d is not available.", id)
     }
@@ -86,14 +86,14 @@ func (k Keeper) GetBandPriceResult(ctx sdk.Context, id types.OracleRequestID) (t
 }
 
 func (k Keeper) GetLastBandRequestId(ctx sdk.Context) int64 {
-    bz := ctx.KVStore(k.storeKey).Get(types.KeyPrefix(types.LastBandRequestIdKey))
+    bz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.KeyPrefix(types.LastBandRequestIdKey))
     intV := gogotypes.Int64Value{}
     k.cdc.MustUnmarshalLengthPrefixed(bz, &intV)
     return intV.GetValue()
 }
 
 func (k Keeper) SetLastBandRequestId(ctx sdk.Context, id types.OracleRequestID) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     store.Set(types.KeyPrefix(types.LastBandRequestIdKey), k.cdc.MustMarshalLengthPrefixed(&gogotypes.Int64Value{Value: int64(id)}))
 }
 ```
@@ -104,13 +104,13 @@ The `SetPrice`, `GetPrice`, `GetLatestPriceFromAssetAndSource`, `GetLatestPriceF
 
 ```go
 func (k Keeper) SetPrice(ctx sdk.Context, price types.Price) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     b := k.cdc.MustMarshal(&price)
     store.Set(types.PriceKey(price.Asset, price.Source, price.Timestamp), b)
 }
 
 func (k Keeper) GetPrice(ctx sdk.Context, asset, source string, timestamp uint64) (val types.Price, found bool) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     b := store.Get(types.PriceKey(asset, source, timestamp))
     if b == nil {
         return val, false
@@ -120,7 +120,7 @@ func (k Keeper) GetPrice(ctx sdk.Context, asset, source string, timestamp uint64
 }
 
 func (k Keeper) GetLatestPriceFromAssetAndSource(ctx sdk.Context, asset, source string) (val types.Price, found bool) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     iterator := sdk.KVStoreReversePrefixIterator(store, types.PriceKeyPrefixAssetAndSource(asset, source))
     defer iterator.Close()
     for ; iterator.Valid(); iterator.Next() {
@@ -132,7 +132,7 @@ func (k Keeper) GetLatestPriceFromAssetAndSource(ctx sdk.Context, asset, source 
 }
 
 func (k Keeper) GetLatestPriceFromAnySource(ctx sdk.Context, asset string) (val types.Price, found bool) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     iterator := sdk.KVStoreReversePrefixIterator(store, types.PriceKeyPrefixAsset(asset))
     defer iterator.Close()
     for ; iterator.Valid(); iterator.Next() {
@@ -144,13 +144,13 @@ func (k Keeper) GetLatestPriceFromAnySource(ctx sdk.Context, asset string) (val 
 }
 
 func (k Keeper) RemovePrice(ctx sdk.Context, asset, source string, timestamp uint64) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     store.Delete(types.PriceKey(asset, source, timestamp))
 }
 
 func (k Keeper) GetAllPrice(ctx sdk.Context) (list []types.Price) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceKeyPrefix))
-    iterator := sdk.KVStorePrefixIterator(store, []byte{})
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PriceKeyPrefix))
+    iterator := storetypes.KVStorePrefixIterator(store, []byte{})
     defer iterator.Close()
     for ; iterator.Valid(); iterator.Next() {
         var val types.Price
@@ -167,7 +167,7 @@ The `SetPriceFeeder`, `GetPriceFeeder`, `RemovePriceFeeder`, and `GetAllPriceFee
 
 ```go
 func (k Keeper) SetPriceFeeder(ctx sdk.Context, priceFeeder types.PriceFeeder) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceFeederKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PriceFeederKeyPrefix))
     b := k.cdc.MustMarshal(&priceFeeder)
     store.Set(types.PriceFeederKey(priceFeeder.Feeder), b)
 }
@@ -175,7 +175,7 @@ func (k Keeper) SetPriceFeeder(ctx sdk.Context, priceFeeder types.PriceFeeder) {
 func (
 
 k Keeper) GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val types.PriceFeeder, found bool) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceFeederKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PriceFeederKeyPrefix))
     b := store.Get(types.PriceFeederKey(feeder))
     if b == nil {
         return val, false
@@ -185,13 +185,13 @@ k Keeper) GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val types.Pric
 }
 
 func (k Keeper) RemovePriceFeeder(ctx sdk.Context, feeder string) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceFeederKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PriceFeederKeyPrefix))
     store.Delete(types.PriceFeederKey(feeder))
 }
 
 func (k Keeper) GetAllPriceFeeder(ctx sdk.Context) (list []types.PriceFeeder) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PriceFeederKeyPrefix))
-    iterator := sdk.KVStorePrefixIterator(store, []byte{})
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PriceFeederKeyPrefix))
+    iterator := storetypes.KVStorePrefixIterator(store, []byte{})
     defer iterator.Close()
     for ; iterator.Valid(); iterator.Next() {
         var val types.PriceFeeder

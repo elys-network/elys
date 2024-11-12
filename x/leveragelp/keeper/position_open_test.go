@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -13,7 +14,7 @@ import (
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (suite KeeperTestSuite) TestOpenLong() {
+func (suite *KeeperTestSuite) TestOpenLong() {
 	k := suite.app.LeveragelpKeeper
 	suite.SetupCoinPrices(suite.ctx)
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -31,27 +32,27 @@ func (suite KeeperTestSuite) TestOpenLong() {
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: ammtypes.PoolParams{
-			SwapFee:                     sdk.ZeroDec(),
-			ExitFee:                     sdk.ZeroDec(),
+			SwapFee:                     sdkmath.LegacyZeroDec(),
+			ExitFee:                     sdkmath.LegacyZeroDec(),
 			UseOracle:                   true,
-			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdk.ZeroDec(),
+			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 			FeeDenom:                    "uusdc",
 		},
-		TotalShares: sdk.NewCoin("amm/pool/1", sdk.NewInt(2).Mul(ammtypes.OneShare)),
+		TotalShares: sdk.NewCoin("amm/pool/1", sdkmath.NewInt(2).Mul(ammtypes.OneShare)),
 		PoolAssets: []ammtypes.PoolAsset{
 			{
 				Token:  poolInit[0],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 			{
 				Token:  poolInit[1],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 		},
-		TotalWeight: sdk.NewInt(20),
+		TotalWeight: sdkmath.NewInt(20),
 	})
 	suite.Require().NoError(err)
 	enablePoolMsg := types.MsgAddPool{
@@ -66,11 +67,11 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	suite.Require().NoError(err)
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     "uusdc",
-		Liquidity: sdk.NewInt(100000),
+		Liquidity: sdkmath.NewInt(100000),
 	})
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{
 		Denom:     "uusdt",
-		Liquidity: sdk.NewInt(100000),
+		Liquidity: sdkmath.NewInt(100000),
 	})
 
 	usdcToken := sdk.NewInt64Coin("uusdc", 100000)
@@ -79,10 +80,10 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, sdk.Coins{usdcToken})
 	suite.Require().NoError(err)
 
-	stableMsgServer := stablestakekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+	stableMsgServer := stablestakekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableMsgServer.Bond(sdk.WrapSDKContext(suite.ctx), &stablestaketypes.MsgBond{
 		Creator: addr.String(),
-		Amount:  sdk.NewInt(10000),
+		Amount:  sdkmath.NewInt(10000),
 	})
 	suite.Require().NoError(err)
 
@@ -90,10 +91,10 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	position, err := k.OpenLong(suite.ctx, &types.MsgOpen{
 		Creator:          addr.String(),
 		CollateralAsset:  "uusdc",
-		CollateralAmount: sdk.NewInt(1000),
+		CollateralAmount: sdkmath.NewInt(1000),
 		AmmPoolId:        1,
-		Leverage:         sdk.NewDec(5),
-		StopLossPrice:    sdk.ZeroDec(),
+		Leverage:         sdkmath.LegacyNewDec(5),
+		StopLossPrice:    sdkmath.LegacyZeroDec(),
 	})
 	suite.Require().NoError(err)
 	suite.Require().Equal(position.Address, addr.String())
@@ -110,10 +111,10 @@ func (suite KeeperTestSuite) TestOpenLong() {
 	_, err = k.OpenConsolidate(suite.ctx, position, &types.MsgOpen{
 		Creator:          addr.String(),
 		CollateralAsset:  "uusdc",
-		CollateralAmount: sdk.NewInt(1000),
+		CollateralAmount: sdkmath.NewInt(1000),
 		AmmPoolId:        1,
-		Leverage:         sdk.NewDec(5),
-		StopLossPrice:    sdk.ZeroDec(),
+		Leverage:         sdkmath.LegacyNewDec(5),
+		StopLossPrice:    sdkmath.LegacyZeroDec(),
 	})
 	suite.Require().NoError(err)
 	position2, err := k.GetPosition(suite.ctx, position.GetOwnerAddress(), position.Id)

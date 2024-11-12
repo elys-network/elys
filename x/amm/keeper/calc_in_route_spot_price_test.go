@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -45,70 +46,70 @@ func (suite *KeeperTestSuite) TestCalcInRouteSpotPrice() {
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
 			UseOracle:                   false,
-			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdk.ZeroDec(),
-			SwapFee:                     sdk.ZeroDec(),
+			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
+			SwapFee:                     sdkmath.LegacyZeroDec(),
 			FeeDenom:                    ptypes.BaseCurrency,
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []types.PoolAsset{
 			{
 				Token:  poolInitBalance[0],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 			{
 				Token:  poolInitBalance[1],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 		},
-		TotalWeight: sdk.ZeroInt(),
+		TotalWeight: sdkmath.ZeroInt(),
 	}
 	pool2 := types.Pool{
 		PoolId:            2,
 		Address:           types.NewPoolAddress(uint64(2)).String(),
 		RebalanceTreasury: treasury2Addr.String(),
 		PoolParams: types.PoolParams{
-			SwapFee:  sdk.ZeroDec(),
+			SwapFee:  sdkmath.LegacyZeroDec(),
 			FeeDenom: ptypes.BaseCurrency,
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []types.PoolAsset{
 			{
 				Token:  pool2InitBalance[0],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 			{
 				Token:  pool2InitBalance[1],
-				Weight: sdk.NewInt(10),
+				Weight: sdkmath.NewInt(10),
 			},
 		},
-		TotalWeight: sdk.ZeroInt(),
+		TotalWeight: sdkmath.ZeroInt(),
 	}
 	suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 	suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
 
-	tokenIn := sdk.NewCoin(ptypes.Elys, sdk.NewInt(100))
+	tokenIn := sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100))
 	routes := []*types.SwapAmountInRoute{{PoolId: 1, TokenOutDenom: ptypes.BaseCurrency}}
-	spotPrice, _, _, _, _, _, _, _, err := suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, sdk.ZeroDec(), sdk.ZeroDec())
+	spotPrice, _, _, _, _, _, _, _, err := suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())
 	suite.Require().NoError(err)
-	suite.Require().Equal(spotPrice.String(), sdk.OneDec().String())
+	suite.Require().Equal(spotPrice.String(), sdkmath.LegacyOneDec().String())
 
 	routes = []*types.SwapAmountInRoute{
 		{PoolId: 1, TokenOutDenom: ptypes.BaseCurrency},
 		{PoolId: 2, TokenOutDenom: "uusda"},
 	}
-	spotPrice, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, sdk.ZeroDec(), sdk.ZeroDec())
+	spotPrice, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())
 	suite.Require().NoError(err)
-	suite.Require().Equal(spotPrice.String(), sdk.OneDec().String())
+	suite.Require().Equal(spotPrice.String(), sdkmath.LegacyOneDec().String())
 
 	// Test no routes
-	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, nil, sdk.ZeroDec(), sdk.ZeroDec())
+	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, nil, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())
 	suite.Require().Error(err)
 
 	// Test invalid pool
 	routes = []*types.SwapAmountInRoute{{PoolId: 9999, TokenOutDenom: "uusda"}}
-	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, sdk.ZeroDec(), sdk.ZeroDec())
+	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())
 	suite.Require().Error(err)
 }

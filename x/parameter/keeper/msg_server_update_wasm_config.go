@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	wasm "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -13,25 +14,28 @@ import (
 
 // UPDATE wasm config
 func (k msgServer) UpdateWasmConfig(goCtx context.Context, msg *types.MsgUpdateWasmConfig) (*types.MsgUpdateWasmConfigResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Creator {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
 	}
 
-	wasmMaxLabelSize, ok := sdk.NewIntFromString(msg.WasmMaxLabelSize)
+	wasmMaxLabelSize, ok := math.NewIntFromString(msg.WasmMaxLabelSize)
 
 	if !ok {
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "wasm max label size must be a positive integer")
 	}
 
-	wasmMaxProposalWasmSize, ok := sdk.NewIntFromString(msg.WasmMaxProposalWasmSize)
+	wasmMaxProposalWasmSize, ok := math.NewIntFromString(msg.WasmMaxProposalWasmSize)
 
 	if !ok {
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "wasm max proposal wasm size must be a positive integer")
 	}
 
-	wasmMaxSize, ok := sdk.NewIntFromString(msg.WasmMaxSize)
+	wasmMaxSize, ok := math.NewIntFromString(msg.WasmMaxSize)
 
 	if !ok {
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "wasm max size must be a positive integer")

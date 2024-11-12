@@ -1,42 +1,20 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
-
-var _ paramtypes.ParamSet = (*Params)(nil)
-
-var (
-	KeyLeverageMax              = []byte("LeverageMax")
-	KeyEpochLength              = []byte("EpochLength")
-	KeyRemovalQueueThreshold    = []byte("RemovalQueueThreshold")
-	KeyMaxOpenPositions         = []byte("MaxOpenPositions")
-	KeyPoolOpenThreshold        = []byte("PoolOpenThreshold")
-	KeyForceCloseFundPercentage = []byte("ForceCloseFundPercentage")
-	KeyForceCloseFundAddress    = []byte("ForceCloseFundAddress")
-	KeySqModifier               = []byte("SqModifier")
-	KeySafetyFactor             = []byte("SafetyFactor")
-	KeyWhitelistingEnabled      = []byte("WhitelistingEnabled")
-	KeyInvariantCheckEpoch      = []byte("InvariantCheckEpoch")
-)
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		LeverageMax:         sdk.NewDec(10),
+		LeverageMax:         sdkmath.LegacyNewDec(10),
 		EpochLength:         (int64)(1),
 		MaxOpenPositions:    (int64)(9999),
-		PoolOpenThreshold:   sdk.NewDecWithPrec(2, 1),  // 0.2
-		SafetyFactor:        sdk.NewDecWithPrec(11, 1), // 1.1
+		PoolOpenThreshold:   sdkmath.LegacyNewDecWithPrec(2, 1),  // 0.2
+		SafetyFactor:        sdkmath.LegacyNewDecWithPrec(11, 1), // 1.1
 		WhitelistingEnabled: false,
 		FallbackEnabled:     true,
 		NumberPerBlock:      (int64)(1000),
@@ -46,18 +24,6 @@ func NewParams() Params {
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return NewParams()
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyLeverageMax, &p.LeverageMax, validateLeverageMax),
-		paramtypes.NewParamSetPair(KeyEpochLength, &p.EpochLength, validateEpochLength),
-		paramtypes.NewParamSetPair(KeyMaxOpenPositions, &p.MaxOpenPositions, validateMaxOpenPositions),
-		paramtypes.NewParamSetPair(KeyPoolOpenThreshold, &p.PoolOpenThreshold, validatePoolOpenThreshold),
-		paramtypes.NewParamSetPair(KeySafetyFactor, &p.SafetyFactor, validateSafetyFactor),
-		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
-	}
 }
 
 // Validate validates the set of params
@@ -96,7 +62,7 @@ func (p Params) String() string {
 }
 
 func validateLeverageMax(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -104,10 +70,10 @@ func validateLeverageMax(i interface{}) error {
 	if v.IsNil() {
 		return fmt.Errorf("leverage max must be not nil")
 	}
-	if !v.GT(sdk.OneDec()) {
+	if !v.GT(sdkmath.LegacyOneDec()) {
 		return fmt.Errorf("leverage max must be greater than 1: %s", v)
 	}
-	if v.GT(sdk.NewDec(10)) {
+	if v.GT(sdkmath.LegacyNewDec(10)) {
 		return fmt.Errorf("leverage max too large: %s", v)
 	}
 
@@ -137,7 +103,7 @@ func validateMaxOpenPositions(i interface{}) error {
 }
 
 func validateSafetyFactor(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -162,7 +128,7 @@ func validateWhitelistingEnabled(i interface{}) error {
 }
 
 func validatePoolOpenThreshold(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

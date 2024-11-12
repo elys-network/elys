@@ -1,10 +1,11 @@
 package keeper
 
 import (
-	"fmt"
-
 	"cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"fmt"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -14,7 +15,7 @@ import (
 )
 
 func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	count := k.GetMTPCount(ctx)
 	openCount := k.GetOpenMTPCount(ctx)
 
@@ -38,7 +39,7 @@ func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
 
 func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) error {
 	key := types.GetMTPKey(mtpAddress, id)
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	if !store.Has(key) {
 		return types.ErrMTPDoesNotExist
 	}
@@ -56,7 +57,7 @@ func (k Keeper) DestroyMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64
 func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (types.MTP, error) {
 	var mtp types.MTP
 	key := types.GetMTPKey(mtpAddress, id)
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	if !store.Has(key) {
 		return mtp, types.ErrMTPDoesNotExist
 	}
@@ -67,19 +68,19 @@ func (k Keeper) GetMTP(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) (t
 
 func (k Keeper) CheckMTPExist(ctx sdk.Context, mtpAddress sdk.AccAddress, id uint64) bool {
 	key := types.GetMTPKey(mtpAddress, id)
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return store.Has(key)
 }
 
-func (k Keeper) GetMTPIterator(ctx sdk.Context) sdk.Iterator {
-	store := ctx.KVStore(k.storeKey)
-	return sdk.KVStorePrefixIterator(store, types.MTPPrefix)
+func (k Keeper) GetMTPIterator(ctx sdk.Context) storetypes.Iterator {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	return storetypes.KVStorePrefixIterator(store, types.MTPPrefix)
 }
 
 func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 	var mtpList []types.MTP
 	iterator := k.GetMTPIterator(ctx)
-	defer func(iterator sdk.Iterator) {
+	defer func(iterator storetypes.Iterator) {
 		err := iterator.Close()
 		if err != nil {
 			panic(err)
@@ -97,8 +98,8 @@ func (k Keeper) GetAllMTPs(ctx sdk.Context) []types.MTP {
 
 func (k Keeper) GetMTPData(ctx sdk.Context, pagination *query.PageRequest, address sdk.AccAddress, ammPoolId *uint64) ([]*types.MtpAndPrice, *query.PageResponse, error) {
 	var mtps []*types.MtpAndPrice
-	store := ctx.KVStore(k.storeKey)
-	var mtpStore sdk.KVStore
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	var mtpStore storetypes.KVStore
 
 	if address != nil {
 		mtpStore = prefix.NewStore(store, types.GetMTPPrefixForAddress(address))
@@ -215,8 +216,8 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 func (k Keeper) GetAllMTPsForAddress(ctx sdk.Context, mtpAddress sdk.AccAddress) []*types.MTP {
 	var mtps []*types.MTP
 
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetMTPPrefixForAddress(mtpAddress))
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetMTPPrefixForAddress(mtpAddress))
 
 	defer iterator.Close()
 
@@ -243,13 +244,13 @@ func (k Keeper) GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.
 
 // Set MTP count
 func (k Keeper) SetMTPCount(ctx sdk.Context, count uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.MTPCountPrefix, types.GetUint64Bytes(count))
 }
 
 func (k Keeper) GetMTPCount(ctx sdk.Context) uint64 {
 	var count uint64
-	countBz := ctx.KVStore(k.storeKey).Get(types.MTPCountPrefix)
+	countBz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.MTPCountPrefix)
 	if countBz == nil {
 		count = 0
 	} else {
@@ -260,13 +261,13 @@ func (k Keeper) GetMTPCount(ctx sdk.Context) uint64 {
 
 // Set Open MTP count
 func (k Keeper) SetOpenMTPCount(ctx sdk.Context, count uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.OpenMTPCountPrefix, types.GetUint64Bytes(count))
 }
 
 func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 	var count uint64
-	countBz := ctx.KVStore(k.storeKey).Get(types.OpenMTPCountPrefix)
+	countBz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.OpenMTPCountPrefix)
 	if countBz == nil {
 		count = 0
 	} else {
@@ -276,7 +277,7 @@ func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 }
 
 func (k Keeper) SetToPay(ctx sdk.Context, toPay *types.ToPay) error {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	address := sdk.MustAccAddressFromBech32(toPay.Address)
 
 	key := types.GetToPayKey(address, toPay.Id)
@@ -286,8 +287,8 @@ func (k Keeper) SetToPay(ctx sdk.Context, toPay *types.ToPay) error {
 
 func (k Keeper) GetAllToPayStore(ctx sdk.Context) []types.ToPay {
 	var toPays []types.ToPay
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.ToPayPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.ToPayPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -300,7 +301,7 @@ func (k Keeper) GetAllToPayStore(ctx sdk.Context) []types.ToPay {
 }
 
 func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) error {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetToPayKey(address, id)
 	if !store.Has(key) {
 		return types.ErrToPayDoesNotExist
@@ -331,7 +332,7 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	totalLiabilities := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 
 	// Calculate estimated PnL
-	var estimatedPnL sdk.Int
+	var estimatedPnL math.Int
 
 	if mtp.Position == types.Position_SHORT {
 		// Estimated PnL for short position:
@@ -362,7 +363,7 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	return estimatedPnL, nil
 }
 
-func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) sdk.Dec {
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) math.LegacyDec {
 	liquidationPrice := math.LegacyZeroDec()
 	params := k.GetParams(ctx)
 	// calculate liquidation price

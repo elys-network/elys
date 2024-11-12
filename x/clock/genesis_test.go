@@ -6,8 +6,6 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -29,10 +27,9 @@ func TestGenesisTestSuite(t *testing.T) {
 }
 
 func (suite *GenesisTestSuite) SetupTest() {
-	suite.app = app.InitElysTestApp(true)
-	suite.ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{
-		ChainID: "testing",
-	})
+	t := suite.T()
+	suite.app = app.InitElysTestApp(true, t)
+	suite.ctx = suite.app.BaseApp.NewContext(true)
 }
 
 func (suite *GenesisTestSuite) TestClockInitGenesis() {

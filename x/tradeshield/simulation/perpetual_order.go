@@ -31,7 +31,6 @@ func SimulateMsgCreatePerpetualOpenOrder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -62,7 +61,6 @@ func SimulateMsgCreatePerpetualCloseOrder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -96,7 +94,7 @@ func SimulateMsgUpdatePerpetualOrder(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingPerpetualOrder owner not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePerpetualOrder{}), "pendingPerpetualOrder owner not found"), nil, nil
 		}
 		msg.OwnerAddress = simAccount.Address.String()
 		msg.OrderId = pendingPerpetualOrder.OrderId
@@ -107,7 +105,6 @@ func SimulateMsgUpdatePerpetualOrder(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -141,7 +138,7 @@ func SimulateMsgCancelPerpetualOrders(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "pendingPerpetualOrder owner not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdatePerpetualOrder{}), "pendingPerpetualOrder owner not found"), nil, nil
 		}
 		msg.OwnerAddress = simAccount.Address.String()
 		msg.OrderId = pendingPerpetualOrder.OrderId
@@ -152,7 +149,6 @@ func SimulateMsgCancelPerpetualOrders(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,

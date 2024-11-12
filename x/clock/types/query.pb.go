@@ -66,7 +66,8 @@ func (m *QueryClockContracts) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryClockContracts proto.InternalMessageInfo
 
-// QueryClockContractsResponse is the response type for the Query/ClockContracts RPC method.
+// QueryClockContractsResponse is the response type for the Query/ClockContracts
+// RPC method.
 type QueryClockContractsResponse struct {
 	ContractAddresses []string `protobuf:"bytes,1,rep,name=contract_addresses,json=contractAddresses,proto3" json:"contract_addresses,omitempty"`
 }
@@ -148,7 +149,8 @@ func (m *QueryParamsRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryParamsRequest proto.InternalMessageInfo
 
-// QueryClockContractsResponse is the response type for the Query/ClockContracts RPC method.
+// QueryClockContractsResponse is the response type for the Query/ClockContracts
+// RPC method.
 type QueryParamsResponse struct {
 	Params *Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
 }

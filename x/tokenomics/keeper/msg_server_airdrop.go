@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,6 +13,9 @@ import (
 )
 
 func (k msgServer) CreateAirdrop(goCtx context.Context, msg *types.MsgCreateAirdrop) (*types.MsgCreateAirdropResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
@@ -36,6 +40,9 @@ func (k msgServer) CreateAirdrop(goCtx context.Context, msg *types.MsgCreateAird
 }
 
 func (k msgServer) UpdateAirdrop(goCtx context.Context, msg *types.MsgUpdateAirdrop) (*types.MsgUpdateAirdropResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
@@ -65,6 +72,9 @@ func (k msgServer) UpdateAirdrop(goCtx context.Context, msg *types.MsgUpdateAird
 }
 
 func (k msgServer) DeleteAirdrop(goCtx context.Context, msg *types.MsgDeleteAirdrop) (*types.MsgDeleteAirdropResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
@@ -87,6 +97,9 @@ func (k msgServer) DeleteAirdrop(goCtx context.Context, msg *types.MsgDeleteAird
 }
 
 func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdrop) (*types.MsgClaimAirdropResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
@@ -107,7 +120,7 @@ func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdro
 	// Add commitments
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 	commitments := k.commitmentKeeper.GetCommitments(ctx, sender)
-	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, sdk.NewInt(int64(airdrop.Amount))))
+	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, math.NewInt(int64(airdrop.Amount))))
 	k.commitmentKeeper.SetCommitments(ctx, commitments)
 
 	k.RemoveAirdrop(ctx, msg.Sender)

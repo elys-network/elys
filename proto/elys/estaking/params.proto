@@ -15,15 +15,16 @@ message LegacyParams {
   string edenb_commit_val = 3;
   // Maximum eden reward apr for stakers - [0 - 0.3]
   string max_eden_reward_apr_stakers = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string eden_boost_apr = 6 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // Tracking dex rewards given to stakers
-  LegacyDexRewardsTracker dex_rewards_stakers = 7 [(gogoproto.nullable) = false];
+  LegacyDexRewardsTracker dex_rewards_stakers = 7
+      [ (gogoproto.nullable) = false ];
 }
 
 // Params defines the parameters for the module.
@@ -35,13 +36,13 @@ message Params {
   string edenb_commit_val = 3;
   // Maximum eden reward apr for stakers - [0 - 0.3]
   string max_eden_reward_apr_stakers = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string eden_boost_apr = 5 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // Tracking dex rewards given to stakers
-  DexRewardsTracker dex_rewards_stakers = 6 [(gogoproto.nullable) = false];
+  DexRewardsTracker dex_rewards_stakers = 6 [ (gogoproto.nullable) = false ];
 }

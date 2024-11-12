@@ -1,0 +1,18 @@
+{
+    "messages": [
+     {
+      "@type": "/elys.commitment.MsgUpdateVestingInfo",
+      "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+      "base_denom": "uelys",
+      "vesting_denom": "uelys",
+      "num_blocks": 10,
+      "vest_now_factor": 10,
+      "num_max_vestings": 20
+     }
+    ],
+    "metadata": "ipfs://CID",
+   
+    "deposit": "10000000stake",
+    "title": "DeWhitelist",
+    "summary": "asdasd"
+}

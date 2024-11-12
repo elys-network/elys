@@ -32,17 +32,17 @@ message VestingInfo {
   string vesting_denom = 2;
   int64 num_blocks = 3;
   string vest_now_factor = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   int64 num_max_vestings = 5;
 }
 
 enum EarnType {
-	ALL_PROGRAM = 0;
-	USDC_PROGRAM = 1;
-	ELYS_PROGRAM = 2;
-	EDEN_PROGRAM = 3;
-	EDENB_PROGRAM = 4;
+  ALL_PROGRAM = 0;
+  USDC_PROGRAM = 1;
+  ELYS_PROGRAM = 2;
+  EDEN_PROGRAM = 3;
+  EDENB_PROGRAM = 4;
   LP_MINING_PROGRAM = 5;
 }

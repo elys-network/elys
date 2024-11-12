@@ -8,23 +8,33 @@ option go_package = "github.com/elys-network/elys/x/estaking/types";
 // Incentive Info
 message LegacyIncentiveInfo {
   // reward amount in eden for 1 year
-  string eden_amount_per_year = 1
-  [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string eden_amount_per_year = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
   // starting block height of the distribution
-  string distribution_start_block = 2
-  [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string distribution_start_block = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
   // distribution duration - block number per year
-  string total_blocks_per_year = 3
-  [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string total_blocks_per_year = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
   // blocks distributed
-  string blocks_distributed = 4
-  [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string blocks_distributed = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message IncentiveInfo {
   // reward amount in eden for 1 year
-  string eden_amount_per_year = 1
-  [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string eden_amount_per_year = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
   // blocks distributed
   int64 blocks_distributed = 2;
 }

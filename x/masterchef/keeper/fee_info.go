@@ -1,11 +1,14 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
-func (k Keeper) AddFeeInfo(ctx sdk.Context, lp, stakers, protocol sdk.Dec, gas bool) {
+func (k Keeper) AddFeeInfo(ctx sdk.Context, lp, stakers, protocol sdkmath.LegacyDec, gas bool) {
 	// Get the current block time and format it as a string
 	currentTime := ctx.BlockTime()
 	dateString := currentTime.Format("2006-01-02") // YYYY-MM-DD format
@@ -25,7 +28,7 @@ func (k Keeper) AddFeeInfo(ctx sdk.Context, lp, stakers, protocol sdk.Dec, gas b
 	k.SetFeeInfo(ctx, info, dateString)
 }
 
-func (k Keeper) AddEdenInfo(ctx sdk.Context, eden sdk.Dec) {
+func (k Keeper) AddEdenInfo(ctx sdk.Context, eden sdkmath.LegacyDec) {
 	// Get the current block time and format it as a string
 	currentTime := ctx.BlockTime()
 	dateString := currentTime.Format("2006-01-02") // YYYY-MM-DD format
@@ -39,7 +42,7 @@ func (k Keeper) AddEdenInfo(ctx sdk.Context, eden sdk.Dec) {
 
 // Deletes fee info that is older than 8 days
 func (k Keeper) DeleteFeeInfo(ctx sdk.Context) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	currentTime := ctx.BlockTime().AddDate(0, 0, -8)
 	dateString := currentTime.Format("2006-01-02") // YYYY-MM-DD format
 	key := types.GetFeeInfoKey(dateString)
@@ -50,7 +53,7 @@ func (k Keeper) DeleteFeeInfo(ctx sdk.Context) {
 }
 
 func (k Keeper) SetFeeInfo(ctx sdk.Context, info types.FeeInfo, timestamp string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	key := types.GetFeeInfoKey(timestamp)
 	b := k.cdc.MustMarshal(&info)
@@ -58,22 +61,22 @@ func (k Keeper) SetFeeInfo(ctx sdk.Context, info types.FeeInfo, timestamp string
 }
 
 func (k Keeper) GetFeeInfo(ctx sdk.Context, timestamp string) (val types.FeeInfo) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetFeeInfoKey(timestamp)
 
 	b := store.Get(key)
 	if b == nil {
 		return types.FeeInfo{
-			GasLp:        sdk.ZeroInt(),
-			GasStakers:   sdk.ZeroInt(),
-			GasProtocol:  sdk.ZeroInt(),
-			DexLp:        sdk.ZeroInt(),
-			DexStakers:   sdk.ZeroInt(),
-			DexProtocol:  sdk.ZeroInt(),
-			PerpLp:       sdk.ZeroInt(),
-			PerpStakers:  sdk.ZeroInt(),
-			PerpProtocol: sdk.ZeroInt(),
-			EdenLp:       sdk.ZeroInt(),
+			GasLp:        sdkmath.ZeroInt(),
+			GasStakers:   sdkmath.ZeroInt(),
+			GasProtocol:  sdkmath.ZeroInt(),
+			DexLp:        sdkmath.ZeroInt(),
+			DexStakers:   sdkmath.ZeroInt(),
+			DexProtocol:  sdkmath.ZeroInt(),
+			PerpLp:       sdkmath.ZeroInt(),
+			PerpStakers:  sdkmath.ZeroInt(),
+			PerpProtocol: sdkmath.ZeroInt(),
+			EdenLp:       sdkmath.ZeroInt(),
 		}
 	}
 
@@ -82,7 +85,7 @@ func (k Keeper) GetFeeInfo(ctx sdk.Context, timestamp string) (val types.FeeInfo
 }
 
 func (k Keeper) RemoveFeeInfo(ctx sdk.Context, timestamp string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetFeeInfoKey(timestamp)
 	if store.Has(key) {
 		store.Delete(key)
@@ -90,8 +93,8 @@ func (k Keeper) RemoveFeeInfo(ctx sdk.Context, timestamp string) {
 }
 
 func (k Keeper) GetAllFeeInfos(ctx sdk.Context) (list []types.FeeInfo) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.FeeInfoKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.FeeInfoKeyPrefix)
 
 	defer iterator.Close()
 

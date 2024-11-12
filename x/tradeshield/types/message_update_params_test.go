@@ -1,9 +1,9 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
@@ -28,9 +28,9 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 					RewardEnabled:        true,
 					LeverageEnabled:      true,
 					LimitProcessOrder:    1,
-					RewardPercentage:     sdk.MustNewDecFromStr("0.5"),
-					MarginError:          sdk.MustNewDecFromStr("0.1"),
-					MinimumDeposit:       sdk.NewInt(100),
+					RewardPercentage:     sdkmath.LegacyMustNewDecFromStr("0.5"),
+					MarginError:          sdkmath.LegacyMustNewDecFromStr("0.1"),
+					MinimumDeposit:       sdkmath.NewInt(100),
 				},
 			},
 			err: sdkerrors.ErrInvalidAddress,
@@ -47,9 +47,9 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 					RewardEnabled:        true,
 					LeverageEnabled:      true,
 					LimitProcessOrder:    1,
-					RewardPercentage:     sdk.MustNewDecFromStr("0.5"),
-					MarginError:          sdk.MustNewDecFromStr("0.1"),
-					MinimumDeposit:       sdk.NewInt(100),
+					RewardPercentage:     sdkmath.LegacyMustNewDecFromStr("0.5"),
+					MarginError:          sdkmath.LegacyMustNewDecFromStr("0.1"),
+					MinimumDeposit:       sdkmath.NewInt(100),
 				},
 			},
 		},
@@ -66,9 +66,9 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 					RewardEnabled:        true,
 					LeverageEnabled:      true,
 					LimitProcessOrder:    1,
-					RewardPercentage:     sdk.MustNewDecFromStr("-0.5"),
-					MarginError:          sdk.MustNewDecFromStr("0.1"),
-					MinimumDeposit:       sdk.NewInt(100),
+					RewardPercentage:     sdkmath.LegacyMustNewDecFromStr("-0.5"),
+					MarginError:          sdkmath.LegacyMustNewDecFromStr("0.1"),
+					MinimumDeposit:       sdkmath.NewInt(100),
 				},
 			},
 			err: sdkerrors.ErrInvalidRequest,

@@ -17,13 +17,13 @@ func SimulateMsgCreateAssetInfo(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgCreateAssetInfo{
-			Creator: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgCreateAssetInfo{
+		//	Creator: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the CreateAssetInfo simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "CreateAssetInfo simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgCreateAssetInfo{}), "CreateAssetInfo simulation not implemented"), nil, nil
 	}
 }

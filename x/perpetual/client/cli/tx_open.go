@@ -1,6 +1,7 @@
 package cli
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"errors"
 	"strconv"
 
@@ -17,9 +18,9 @@ func CmdOpen() *cobra.Command {
 		Use:   "open [position] [leverage] [pool-id] [trading-asset] [collateral] [flags]",
 		Short: "Open perpetual position",
 		Example: `Infinte profitability:
-elysd tx perpetual open long 5 uatom 100000000uusdc 100.0 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual open long 5 1 uatom 100000000uusdc --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
 Finite profitability:
-elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --stop-loss 10 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+elysd tx perpetual open short 5 1 uatom 100000000uusdc --take-profit 100 --stop-loss 10 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
 		Args: cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -34,7 +35,7 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --s
 
 			argPosition := types.GetPositionFromString(args[0])
 
-			argLeverage, err := sdk.NewDecFromStr(args[1])
+			argLeverage, err := sdkmath.LegacyNewDecFromStr(args[1])
 			if err != nil {
 				return err
 			}
@@ -56,9 +57,9 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --s
 				return err
 			}
 
-			var takeProfitPrice sdk.Dec
+			var takeProfitPrice sdkmath.LegacyDec
 			if takeProfitPriceStr != types.InfinitePriceString {
-				takeProfitPrice, err = sdk.NewDecFromStr(takeProfitPriceStr)
+				takeProfitPrice, err = sdkmath.LegacyNewDecFromStr(takeProfitPriceStr)
 				if err != nil {
 					return errors.New("invalid take profit price")
 				}
@@ -71,9 +72,9 @@ elysd tx perpetual open short 5 uatom 100000000uusdc 100.0 --take-profit 100 --s
 				return err
 			}
 
-			var stopLossPrice sdk.Dec
+			var stopLossPrice sdkmath.LegacyDec
 			if stopLossPriceStr != types.ZeroPriceString {
-				stopLossPrice, err = sdk.NewDecFromStr(stopLossPriceStr)
+				stopLossPrice, err = sdkmath.LegacyNewDecFromStr(stopLossPriceStr)
 				if err != nil {
 					return errors.New("invalid stop loss price")
 				}

@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
 	"encoding/json"
 	"io/ioutil"
 	"strconv"
@@ -36,7 +37,7 @@ func CmdCreateSpotOrder() *cobra.Command {
 			orderPrice := types.OrderPrice{
 				BaseDenom:  orderAmount.Denom,
 				QuoteDenom: orderTargetDenom,
-				Rate:       sdk.MustNewDecFromStr(args[3]),
+				Rate:       math.LegacyMustNewDecFromStr(args[3]),
 			}
 
 			msg := types.NewMsgCreateSpotOrder(addr, orderType, orderPrice, orderAmount, orderTargetDenom)

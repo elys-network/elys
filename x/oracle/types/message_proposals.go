@@ -6,36 +6,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	TypeMsgUpdateParams       string = "UpdateParams"
-	TypeMsgAddAssetInfo       string = "AddAssetInfo"
-	TypeMsgRemoveAssetInfo    string = "RemoveAssetInfo"
-	TypeMsgAddPriceFeeders    string = "AddPriceFeeders"
-	TypeMsgRemovePriceFeeders string = "RemovePriceFeeders"
-)
-
 var _ sdk.Msg = &MsgUpdateParams{}
-
-func (msg *MsgUpdateParams) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUpdateParams) Type() string {
-	return TypeMsgUpdateParams
-}
-
-func (msg *MsgUpdateParams) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgUpdateParams) GetSignBytes() []byte {
-	bz := ModuleAminoCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
 
 func (msg *MsgUpdateParams) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
@@ -55,27 +26,6 @@ func NewMsgRemoveAssetInfo(authority, denom string) *MsgRemoveAssetInfo {
 // Implements Msg Interface
 var _ sdk.Msg = &MsgRemoveAssetInfo{}
 
-func (msg *MsgRemoveAssetInfo) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgRemoveAssetInfo) Type() string {
-	return TypeMsgAddAssetInfo
-}
-
-func (msg *MsgRemoveAssetInfo) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgRemoveAssetInfo) GetSignBytes() []byte {
-	bz := ModuleAminoCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
 func (msg *MsgRemoveAssetInfo) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
@@ -93,27 +43,6 @@ func NewMsgAddPriceFeeders(
 		Authority: authority,
 		Feeders:   feeders,
 	}
-}
-
-func (msg *MsgAddPriceFeeders) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgAddPriceFeeders) Type() string {
-	return TypeMsgAddAssetInfo
-}
-
-func (msg *MsgAddPriceFeeders) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgAddPriceFeeders) GetSignBytes() []byte {
-	bz := ModuleAminoCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgAddPriceFeeders) ValidateBasic() error {
@@ -141,27 +70,6 @@ func NewMsgRemovePriceFeeders(authority string, feeders []string) *MsgRemovePric
 
 // Implements Msg Interface
 var _ sdk.Msg = &MsgRemovePriceFeeders{}
-
-func (msg *MsgRemovePriceFeeders) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgRemovePriceFeeders) Type() string {
-	return TypeMsgAddAssetInfo
-}
-
-func (msg *MsgRemovePriceFeeders) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgRemovePriceFeeders) GetSignBytes() []byte {
-	bz := ModuleAminoCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
 
 func (msg *MsgRemovePriceFeeders) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)

@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
 	"errors"
 	"strconv"
 
@@ -33,7 +34,7 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 
 			position := types.PerpetualPosition(perptypes.GetPositionFromString(args[0]))
 
-			leverage, err := sdk.NewDecFromStr(args[1])
+			leverage, err := math.LegacyNewDecFromStr(args[1])
 			if err != nil {
 				return err
 			}
@@ -52,7 +53,7 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 
 			triggerPrice := types.TriggerPrice{
 				TradingAssetDenom: tradingAsset,
-				Rate:              sdk.MustNewDecFromStr(args[5]),
+				Rate:              math.LegacyMustNewDecFromStr(args[5]),
 			}
 
 			takeProfitPriceStr, err := cmd.Flags().GetString(perpcli.FlagTakeProfitPrice)
@@ -60,9 +61,9 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 				return err
 			}
 
-			var takeProfitPrice sdk.Dec
+			var takeProfitPrice math.LegacyDec
 			if takeProfitPriceStr != perptypes.InfinitePriceString {
-				takeProfitPrice, err = sdk.NewDecFromStr(takeProfitPriceStr)
+				takeProfitPrice, err = math.LegacyNewDecFromStr(takeProfitPriceStr)
 				if err != nil {
 					return errors.New("invalid take profit price")
 				}
@@ -75,9 +76,9 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 				return err
 			}
 
-			var stopLossPrice sdk.Dec
+			var stopLossPrice math.LegacyDec
 			if stopLossPriceStr != perptypes.ZeroPriceString {
-				stopLossPrice, err = sdk.NewDecFromStr(stopLossPriceStr)
+				stopLossPrice, err = math.LegacyNewDecFromStr(stopLossPriceStr)
 				if err != nil {
 					return errors.New("invalid stop loss price")
 				}
@@ -127,7 +128,7 @@ func CmdCreatePerpetualCloseOrder() *cobra.Command {
 			// trading asset will be filled by message handler
 			triggerPrice := types.TriggerPrice{
 				TradingAssetDenom: "",
-				Rate:              sdk.MustNewDecFromStr(args[0]),
+				Rate:              math.LegacyMustNewDecFromStr(args[0]),
 			}
 
 			positionId, err := strconv.ParseUint(args[1], 10, 64)

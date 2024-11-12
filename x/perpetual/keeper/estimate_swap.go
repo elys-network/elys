@@ -32,11 +32,11 @@ func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tok
 	tokensIn := sdk.Coins{tokenInAmount}
 	tokenOut, slippage, _, weightBalanceBonus, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, params.PerpetualSwapFee, params.WeightBreakingFeeFactor)
 	if err != nil {
-		return sdk.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
+		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
 	}
 
 	if tokenOut.IsZero() {
-		return sdk.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrAmountTooLow, "tokenOut is zero for swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
+		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrAmountTooLow, "tokenOut is zero for swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
 	}
 	return tokenOut.Amount, slippage, getWeightBreakingFee(weightBalanceBonus), nil
 }
@@ -52,11 +52,11 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, ammPool)
 	tokenIn, slippage, _, weightBalanceBonus, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, params.PerpetualSwapFee, params.WeightBreakingFeeFactor)
 	if err != nil {
-		return sdk.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
+		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
 	}
 
 	if tokenIn.IsZero() {
-		return sdk.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrAmountTooLow, "tokenIn is zero for swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
+		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrAmountTooLow, "tokenIn is zero for swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
 	}
 	return tokenIn.Amount, slippage, getWeightBreakingFee(weightBalanceBonus), nil
 }

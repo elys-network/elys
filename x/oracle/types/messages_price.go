@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -15,7 +16,7 @@ var _ sdk.Msg = &MsgFeedPrice{}
 func NewMsgFeedPrice(
 	creator string,
 	asset string,
-	price sdk.Dec,
+	price sdkmath.LegacyDec,
 	source string,
 ) *MsgFeedPrice {
 	return &MsgFeedPrice{
@@ -24,27 +25,6 @@ func NewMsgFeedPrice(
 		Price:    price,
 		Source:   source,
 	}
-}
-
-func (msg *MsgFeedPrice) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgFeedPrice) Type() string {
-	return TypeMsgFeedPrice
-}
-
-func (msg *MsgFeedPrice) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Provider)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgFeedPrice) GetSignBytes() []byte {
-	bz := ModuleAminoCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgFeedPrice) ValidateBasic() error {

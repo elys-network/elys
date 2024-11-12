@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/x/oracle/types"
@@ -19,7 +20,7 @@ func (k Keeper) AssetInfoAll(c context.Context, req *types.QueryAllAssetInfoRequ
 	var assetInfos []types.AssetInfo
 	ctx := sdk.UnwrapSDKContext(c)
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	assetInfoStore := prefix.NewStore(store, types.KeyPrefix(types.AssetInfoKeyPrefix))
 
 	pageRes, err := query.Paginate(assetInfoStore, req.Pagination, func(key []byte, value []byte) error {

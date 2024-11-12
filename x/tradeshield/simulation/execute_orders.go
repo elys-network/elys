@@ -17,13 +17,13 @@ func SimulateMsgExecuteOrders(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgExecuteOrders{
-			Creator: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgExecuteOrders{
+		//	Creator: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the ExecuteOrders simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "ExecuteOrders simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgExecuteOrders{}), "ExecuteOrders simulation not implemented"), nil, nil
 	}
 }

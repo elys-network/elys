@@ -1,0 +1,18 @@
+{
+    "messages": [
+     {
+      "@type": "/elys.amm.MsgUpdateParams",
+      "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+      "params": {
+         "pool_creation_fee": "20000000",
+         "slippage_track_duration": 804800,
+         "enable_base_currency_paired_pool_only": false
+        }
+     }
+    ],
+    "metadata": "ipfs://CID",
+   
+    "deposit": "10000000stake",
+    "title": "MsgUpdateParams",
+    "summary": "asdasd"
+}

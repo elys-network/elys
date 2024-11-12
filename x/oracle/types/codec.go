@@ -4,15 +4,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
-	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
-	groupcodec "github.com/cosmos/cosmos-sdk/x/group/codec"
 )
 
-func RegisterCodec(cdc *codec.LegacyAmino) {
+func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgFeedPrice{}, "oracle/MsgFeedPrice")
 	legacy.RegisterAminoMsg(cdc, &MsgSetPriceFeeder{}, "oracle/MsgSetPriceFeeder")
 	legacy.RegisterAminoMsg(cdc, &MsgDeletePriceFeeder{}, "oracle/MsgDeletePriceFeeder")
@@ -46,19 +42,5 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 }
 
 var (
-	amino          = codec.NewLegacyAmino()
-	ModuleAminoCdc = codec.NewAminoCodec(amino)
-	ModuleCdc      = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
+	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
 )
-
-func init() {
-	RegisterCodec(amino)
-	cryptocodec.RegisterCrypto(amino)
-	sdk.RegisterLegacyAminoCodec(amino)
-
-	// Register all Amino interfaces and concrete types on the authz  and gov Amino codec so that this can later be
-	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
-	RegisterCodec(authzcodec.Amino)
-	RegisterCodec(govcodec.Amino)
-	RegisterCodec(groupcodec.Amino)
-}

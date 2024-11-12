@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -14,29 +15,29 @@ func (suite *PerpetualKeeperTestSuite) TestGetAmmPool() {
 		RebalanceTreasury: "",
 		PoolParams: ammtypes.PoolParams{
 			UseOracle:                   false,
-			WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-			WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdk.ZeroDec(),
-			WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
-			SwapFee:                     sdk.ZeroDec(),
-			ExitFee:                     sdk.ZeroDec(),
+			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
+			WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
+			SwapFee:                     sdkmath.LegacyZeroDec(),
+			ExitFee:                     sdkmath.LegacyZeroDec(),
 			FeeDenom:                    ptypes.BaseCurrency,
 		},
-		TotalShares: sdk.NewCoin("pool/1", sdk.NewInt(100)),
+		TotalShares: sdk.NewCoin("pool/1", sdkmath.NewInt(100)),
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(10000)),
-				Weight:                 sdk.NewInt(10),
-				ExternalLiquidityRatio: sdk.NewDec(2),
+				Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),
+				Weight:                 sdkmath.NewInt(10),
+				ExternalLiquidityRatio: sdkmath.LegacyNewDec(2),
 			},
 			{
-				Token:                  sdk.NewCoin("borrowAsset", sdk.NewInt(10000)),
-				Weight:                 sdk.NewInt(10),
-				ExternalLiquidityRatio: sdk.NewDec(2),
+				Token:                  sdk.NewCoin("borrowAsset", sdkmath.NewInt(10000)),
+				Weight:                 sdkmath.NewInt(10),
+				ExternalLiquidityRatio: sdkmath.LegacyNewDec(2),
 			},
 		},
-		TotalWeight: sdk.ZeroInt(),
+		TotalWeight: sdkmath.ZeroInt(),
 	}
 	testCases := []struct {
 		name                 string

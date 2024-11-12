@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -11,7 +11,7 @@ import (
 )
 
 func TestDefaultParams(t *testing.T) {
-	require.Equal(t, types.DefaultParams(), types.NewParams(nil, sdk.NewDecWithPrec(60, 2), sdk.NewDecWithPrec(25, 2), sdk.NewDecWithPrec(5, 1), authtypes.NewModuleAddress(govtypes.ModuleName).String()))
+	require.Equal(t, types.DefaultParams(), types.NewParams(nil, sdkmath.LegacyNewDecWithPrec(60, 2), sdkmath.LegacyNewDecWithPrec(25, 2), sdkmath.LegacyNewDecWithPrec(5, 1), authtypes.NewModuleAddress(govtypes.ModuleName).String()))
 	output, err := yaml.Marshal(types.DefaultParams())
 	require.NoError(t, err)
 	require.Equal(t, types.DefaultParams().String(), string(output))
@@ -34,20 +34,20 @@ func TestRewardPortionForLps(t *testing.T) {
 		{
 			name: "RewardPortionForLps is nil",
 			setter: func() {
-				params.RewardPortionForLps = sdk.Dec{}
+				params.RewardPortionForLps = sdkmath.LegacyDec{}
 			},
 			err: "reward percent for lp must not be nil",
 		},
 		{
 			name: "RewardPortionForLps < 0",
 			setter: func() {
-				params.RewardPortionForLps = sdk.MustNewDecFromStr("-0.5")
+				params.RewardPortionForLps = sdkmath.LegacyMustNewDecFromStr("-0.5")
 			},
 			err: "reward percent for lp must be positive",
 		}, {
 			name: "RewardPortionForLps > 1",
 			setter: func() {
-				params.RewardPortionForLps = sdk.OneDec().MulInt64(100)
+				params.RewardPortionForLps = sdkmath.LegacyOneDec().MulInt64(100)
 			},
 			err: "reward percent for lp too large:",
 		},
@@ -82,20 +82,20 @@ func TestRewardPortionForStakers(t *testing.T) {
 		{
 			name: "RewardPortionForStakers is nil",
 			setter: func() {
-				params.RewardPortionForStakers = sdk.Dec{}
+				params.RewardPortionForStakers = sdkmath.LegacyDec{}
 			},
 			err: "reward percent for stakers must not be nil",
 		},
 		{
 			name: "RewardPortionForStakers < 0",
 			setter: func() {
-				params.RewardPortionForStakers = sdk.MustNewDecFromStr("-0.5")
+				params.RewardPortionForStakers = sdkmath.LegacyMustNewDecFromStr("-0.5")
 			},
 			err: "reward percent for stakers must be positive",
 		}, {
 			name: "RewardPortionForLps > 1",
 			setter: func() {
-				params.RewardPortionForStakers = sdk.OneDec().MulInt64(100)
+				params.RewardPortionForStakers = sdkmath.LegacyOneDec().MulInt64(100)
 			},
 			err: "reward percent for stakers too large:",
 		},
@@ -117,7 +117,7 @@ func TestLPIncentives(t *testing.T) {
 	params := types.DefaultParams()
 	params.ProtocolRevenueAddress = "cosmos1vjclnpz4hydg0nv5xn2xtfvg52dlnslnndyh0a"
 	incentiveInfo := types.IncentiveInfo{
-		EdenAmountPerYear: sdk.OneInt().MulRaw(1000),
+		EdenAmountPerYear: sdkmath.OneInt().MulRaw(1000),
 		BlocksDistributed: 10,
 	}
 	params.LpIncentives = &incentiveInfo
@@ -135,14 +135,14 @@ func TestLPIncentives(t *testing.T) {
 		{
 			name: "invalid eden amount per year",
 			setter: func() {
-				params.LpIncentives.EdenAmountPerYear = sdk.OneInt().MulRaw(-1000)
+				params.LpIncentives.EdenAmountPerYear = sdkmath.OneInt().MulRaw(-1000)
 			},
 			err: "invalid eden amount per year",
 		},
 		{
 			name: "invalid BlocksDistributed",
 			setter: func() {
-				params.LpIncentives.EdenAmountPerYear = sdk.OneInt().MulRaw(1000)
+				params.LpIncentives.EdenAmountPerYear = sdkmath.OneInt().MulRaw(1000)
 				params.LpIncentives.BlocksDistributed = -10
 			},
 			err: "invalid BlocksDistributed",
@@ -178,14 +178,14 @@ func TestMaxEdenRewardAprLps(t *testing.T) {
 		{
 			name: "MaxEdenRewardAprLps is nil",
 			setter: func() {
-				params.MaxEdenRewardAprLps = sdk.Dec{}
+				params.MaxEdenRewardAprLps = sdkmath.LegacyDec{}
 			},
 			err: "MaxEdenRewardAprLps must not be nil",
 		},
 		{
 			name: "MaxEdenRewardAprLps is -ve",
 			setter: func() {
-				params.MaxEdenRewardAprLps = sdk.OneDec().MulInt64(-1)
+				params.MaxEdenRewardAprLps = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			err: "MaxEdenRewardAprLps must be positive",
 		},
@@ -251,7 +251,7 @@ func TestSupportedRewardDenoms(t *testing.T) {
 	supportedRewardDenoms := []*types.SupportedRewardDenom{
 		{
 			"uusdc",
-			sdk.OneInt(),
+			sdkmath.OneInt(),
 		},
 	}
 	params.SupportedRewardDenoms = supportedRewardDenoms
@@ -277,7 +277,7 @@ func TestSupportedRewardDenoms(t *testing.T) {
 			name: "reward denom minimum amount is nil",
 			setter: func() {
 				params.SupportedRewardDenoms[0].Denom = "uusdc"
-				params.SupportedRewardDenoms[0].MinAmount = sdk.Int{}
+				params.SupportedRewardDenoms[0].MinAmount = sdkmath.Int{}
 			},
 			err: "reward denom minimum amount cannot be nil",
 		},
@@ -285,7 +285,7 @@ func TestSupportedRewardDenoms(t *testing.T) {
 			name: "reward denom minimum amount is -v",
 			setter: func() {
 				params.SupportedRewardDenoms[0].Denom = "uusdc"
-				params.SupportedRewardDenoms[0].MinAmount = sdk.NewInt(-1000)
+				params.SupportedRewardDenoms[0].MinAmount = sdkmath.NewInt(-1000)
 			},
 			err: "minimum amount cannot be negative",
 		},

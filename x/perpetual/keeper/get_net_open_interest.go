@@ -1,11 +1,12 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) GetFundingPaymentRates(ctx sdk.Context, pool types.Pool) (long sdk.Dec, short sdk.Dec) {
+func (k Keeper) GetFundingPaymentRates(ctx sdk.Context, pool types.Pool) (long math.LegacyDec, short math.LegacyDec) {
 	fundingRateLong, fundingRateShort := k.ComputeFundingRate(ctx, pool)
 
 	totalLongOpenInterest := pool.GetTotalLongOpenInterest()
@@ -14,7 +15,7 @@ func (k Keeper) GetFundingPaymentRates(ctx sdk.Context, pool types.Pool) (long s
 	if fundingRateLong.IsZero() {
 		// short will pay
 		// long will receive
-		unpopular_rate := sdk.ZeroDec()
+		unpopular_rate := math.LegacyZeroDec()
 		if !totalLongOpenInterest.IsZero() {
 			unpopular_rate = fundingRateShort.Mul(totalShortOpenInterest.ToLegacyDec()).Quo(totalLongOpenInterest.ToLegacyDec())
 		}
@@ -22,7 +23,7 @@ func (k Keeper) GetFundingPaymentRates(ctx sdk.Context, pool types.Pool) (long s
 	} else {
 		// long will pay
 		// short will receive
-		unpopular_rate := sdk.ZeroDec()
+		unpopular_rate := math.LegacyZeroDec()
 		if !totalShortOpenInterest.IsZero() {
 			unpopular_rate = fundingRateLong.Mul(totalLongOpenInterest.ToLegacyDec()).Quo(totalShortOpenInterest.ToLegacyDec())
 		}

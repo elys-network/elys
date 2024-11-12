@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -20,7 +21,7 @@ func (k Keeper) PendingSpotOrderAll(goCtx context.Context, req *types.QueryAllPe
 	var pendingSpotOrders []types.SpotOrder
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	pendingSpotOrderStore := prefix.NewStore(store, types.PendingSpotOrderKey)
 
 	pageRes, err := query.Paginate(pendingSpotOrderStore, req.Pagination, func(key []byte, value []byte) error {
