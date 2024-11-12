@@ -44,7 +44,8 @@ func (app *ElysApp) setUpgradeHandler() {
 				// and delete them
 				// TODO: Delete wasm code after deleting wasm module store
 				// Retrieve the wasm module store key
-				storeKey := app.GetMemKey(wasmtypes.StoreKey)
+				storeKey := app.GetKey(wasmtypes.StoreKey)
+
 				store := ctx.KVStore(storeKey)
 
 				iterator := store.Iterator(nil, nil)
