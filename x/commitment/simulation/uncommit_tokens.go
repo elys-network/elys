@@ -17,13 +17,13 @@ func SimulateMsgUncommitTokens(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgUncommitTokens{
-			Creator: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgUncommitTokens{
+		//	Creator: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the UncommitTokens simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "UncommitTokens simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUncommitTokens{}), "UncommitTokens simulation not implemented"), nil, nil
 	}
 }

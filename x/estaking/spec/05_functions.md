@@ -79,11 +79,11 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
     stakeIncentive := params.StakeIncentives
     totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
 
-    edenAmountPerYear := sdk.ZeroInt()
+    edenAmountPerYear := sdkmath.ZeroInt()
     if stakeIncentive != nil && stakeIncentive.EdenAmountPerYear.IsPositive() {
         edenAmountPerYear = stakeIncentive.EdenAmountPerYear
     }
-    stakersEdenAmount := edenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear))
+    stakersEdenAmount := edenAmountPerYear.Quo(math.NewInt(totalBlocksPerYear))
 
     totalElysEdenEdenBStake := k.TotalBondedTokens(ctx)
 
@@ -93,12 +93,12 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 
     stakersEdenAmount = sdk.MinInt(stakersEdenAmount, stakersMaxEdenAmount.TruncateInt())
 
-    stakersEdenBAmount := sdk.NewDecFromInt(totalElysEdenEdenBStake).
+    stakersEdenBAmount := sdkmath.LegacyNewDecFromInt(totalElysEdenEdenBStake).
         Mul(params.EdenBoostApr).
         QuoInt64(totalBlocksPerYear).
         RoundInt()
 
-    params.DexRewardsStakers.NumBlocks = sdk.OneInt()
+    params.DexRewardsStakers.NumBlocks = sdkmath.OneInt()
     params.DexRewardsStakers.Amount = dexRevenueStakersAmount
     k.SetParams(ctx, params)
 

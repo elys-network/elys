@@ -1,9 +1,8 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
-
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -16,22 +15,22 @@ import (
 )
 
 func TestKeeper_Stake(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(false)
 
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Generate 1 random account with 1000000uelys balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Define the test data
 	creator := addr[0].String()
 	denom := ptypes.Elys
-	initialCommitted := sdk.NewInt(100)
-	uncommitAmount := sdk.NewInt(100)
+	initialCommitted := sdkmath.NewInt(100)
+	uncommitAmount := sdkmath.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed & committed tokens
 	committedTokens := types.CommittedTokens{

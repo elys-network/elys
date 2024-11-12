@@ -3,35 +3,32 @@ package keeper
 import (
 	"fmt"
 
+	storetypes "cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 	"cosmossdk.io/math"
-	"github.com/cometbft/cometbft/libs/log"
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/elys-network/elys/x/accountedpool/types"
 )
 
 type (
 	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		bankKeeper types.BankKeeper
+		cdc          codec.BinaryCodec
+		storeService storetypes.KVStoreService
+		bankKeeper   types.BankKeeper
 	}
 )
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
+	storeService storetypes.KVStoreService,
 	bk types.BankKeeper,
 ) *Keeper {
 	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		bankKeeper: bk,
+		cdc:          cdc,
+		storeService: storeService,
+		bankKeeper:   bk,
 	}
 }
 
@@ -43,7 +40,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 func (k Keeper) GetAccountedBalance(ctx sdk.Context, poolId uint64, denom string) math.Int {
 	pool, found := k.GetAccountedPool(ctx, poolId)
 	if !found {
-		return sdk.ZeroInt()
+		return sdkmath.ZeroInt()
 	}
 
 	for _, asset := range pool.PoolAssets {
@@ -52,5 +49,5 @@ func (k Keeper) GetAccountedBalance(ctx sdk.Context, poolId uint64, denom string
 		}
 	}
 
-	return sdk.ZeroInt()
+	return sdkmath.ZeroInt()
 }

@@ -4,7 +4,6 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
@@ -17,7 +16,7 @@ import (
 )
 
 func TestPools_InvalidRequest(t *testing.T) {
-	k := keeper.NewKeeper(nil, nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, nil, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, nil, nil)
 	ctx := sdk.Context{}
 	_, err := k.Pools(ctx, nil)
 
@@ -26,8 +25,8 @@ func TestPools_InvalidRequest(t *testing.T) {
 
 func TestPools_ErrPoolDoesNotExist(t *testing.T) {
 
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	app.PerpetualKeeper.SetPool(ctx, types.Pool{
 		AmmPoolId: uint64(23),

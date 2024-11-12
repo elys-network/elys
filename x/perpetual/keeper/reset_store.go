@@ -1,13 +1,15 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
 // ResetStore resets all keys in the perpetual module store
 func (k Keeper) ResetStore(ctx sdk.Context) error {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	// List of prefixes to clear
 	prefixes := [][]byte{
@@ -18,7 +20,7 @@ func (k Keeper) ResetStore(ctx sdk.Context) error {
 	}
 
 	for _, prefix := range prefixes {
-		iter := sdk.KVStorePrefixIterator(store, prefix)
+		iter := storetypes.KVStorePrefixIterator(store, prefix)
 		defer iter.Close()
 
 		for ; iter.Valid(); iter.Next() {

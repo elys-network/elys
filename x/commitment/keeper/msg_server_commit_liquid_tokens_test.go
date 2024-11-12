@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/app"
@@ -13,9 +13,9 @@ import (
 )
 
 func TestCommitLiquidTokens(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
@@ -27,7 +27,7 @@ func TestCommitLiquidTokens(t *testing.T) {
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: denom, CommitEnabled: true})
 
 	// Add initial funds to creator's account
-	coins := sdk.NewCoins(sdk.NewCoin(denom, sdk.NewInt(200)))
+	coins := sdk.NewCoins(sdk.NewCoin(denom, sdkmath.NewInt(200)))
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, coins)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, coins)
@@ -38,16 +38,16 @@ func TestCommitLiquidTokens(t *testing.T) {
 	require.NoError(t, err)
 
 	// Execute the DepositTokens function
-	err = keeper.CommitLiquidTokens(ctx, creator, denom, sdk.NewInt(100), 0)
+	err = keeper.CommitLiquidTokens(ctx, creator, denom, sdkmath.NewInt(100), 0)
 	require.NoError(t, err)
 
 	// Check if the tokens were deposited and unclaimed balance was updated
 	commitments := keeper.GetCommitments(ctx, creator)
 
 	committedBalance := commitments.GetCommittedAmountForDenom(denom)
-	require.Equal(t, sdk.NewInt(100), committedBalance, "committed balance did not update correctly")
+	require.Equal(t, sdkmath.NewInt(100), committedBalance, "committed balance did not update correctly")
 
 	// Check if the deposited tokens were deducted from creator balance
 	remainingCoins := app.BankKeeper.GetBalance(ctx, creator, denom)
-	require.Equal(t, sdk.NewInt(100), remainingCoins.Amount, "tokens were not deducted correctly")
+	require.Equal(t, sdkmath.NewInt(100), remainingCoins.Amount, "tokens were not deducted correctly")
 }

@@ -10,6 +10,9 @@ import (
 )
 
 func (k msgServer) TogglePoolEdenRewards(goCtx context.Context, msg *types.MsgTogglePoolEdenRewards) (*types.MsgTogglePoolEdenRewardsResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {

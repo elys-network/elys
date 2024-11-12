@@ -15,7 +15,6 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -30,7 +29,7 @@ import (
 type assetPriceInfo struct {
 	denom   string
 	display string
-	price   sdk.Dec
+	price   math.LegacyDec
 }
 
 const (
@@ -42,22 +41,22 @@ var (
 		"uusdc": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   sdk.OneDec(),
+			price:   math.LegacyOneDec(),
 		},
 		"uusdt": {
 			denom:   "uusdt",
 			display: "USDT",
-			price:   sdk.OneDec(),
+			price:   math.LegacyOneDec(),
 		},
 		"uelys": {
 			denom:   ptypes.Elys,
 			display: "ELYS",
-			price:   sdk.MustNewDecFromStr("3.0"),
+			price:   math.LegacyMustNewDecFromStr("3.0"),
 		},
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
-			price:   sdk.MustNewDecFromStr("5.0"),
+			price:   math.LegacyMustNewDecFromStr("5.0"),
 		},
 	}
 )
@@ -71,10 +70,10 @@ type PerpetualKeeperTestSuite struct {
 }
 
 func (k *PerpetualKeeperTestSuite) SetupTest() {
-	app := simapp.InitElysTestApp(initChain)
+	app := simapp.InitElysTestApp(initChain, k.T())
 
 	k.legacyAmino = app.LegacyAmino()
-	k.ctx = app.BaseApp.NewContext(initChain, tmproto.Header{})
+	k.ctx = app.BaseApp.NewContext(initChain)
 	k.app = app
 }
 
@@ -86,16 +85,16 @@ func (suite *PerpetualKeeperTestSuite) ResetSuite() {
 	suite.SetupTest()
 }
 
-func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, useOracle bool, baseTokenAmount, assetAmount sdk.Int) (ammtypes.Pool, types.Pool) {
+func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, useOracle bool, baseTokenAmount, assetAmount math.Int) (ammtypes.Pool, types.Pool) {
 	suite.ResetSuite()
 	suite.SetupCoinPrices()
 	suite.AddAccounts(len(addr), addr)
 	poolCreator := addr[0]
-	ammPool := suite.CreateNewAmmPool(poolCreator, useOracle, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, baseTokenAmount, assetAmount)
+	ammPool := suite.CreateNewAmmPool(poolCreator, useOracle, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, baseTokenAmount, assetAmount)
 	pool := types.NewPool(ammPool)
 	suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
-	params.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.12")
+	params.BorrowInterestRateMin = math.LegacyMustNewDecFromStr("0.12")
 	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 	suite.Require().NoError(err)
 
@@ -157,8 +156,8 @@ func (suite *PerpetualKeeperTestSuite) RemovePrices(ctx sdk.Context, denoms []st
 	}
 }
 
-func (suite *PerpetualKeeperTestSuite) GetAccountIssueAmount() sdk.Int {
-	return sdk.NewInt(10_000_000_000_000)
+func (suite *PerpetualKeeperTestSuite) GetAccountIssueAmount() math.Int {
+	return math.NewInt(10_000_000_000_000)
 }
 
 func (suite *PerpetualKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress) []sdk.AccAddress {
@@ -188,17 +187,17 @@ func (suite *PerpetualKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress
 	return addresses
 }
 
-func (suite *PerpetualKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle bool, swapFee, exitFee sdk.Dec, asset2 string, baseTokenAmount, assetAmount sdk.Int) ammtypes.Pool {
+func (suite *PerpetualKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle bool, swapFee, exitFee math.LegacyDec, asset2 string, baseTokenAmount, assetAmount math.Int) ammtypes.Pool {
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Token:                  sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount),
-			Weight:                 sdk.NewInt(10),
-			ExternalLiquidityRatio: sdk.NewDec(2),
+			Weight:                 math.NewInt(10),
+			ExternalLiquidityRatio: math.LegacyNewDec(2),
 		},
 		{
 			Token:                  sdk.NewCoin(asset2, assetAmount),
-			Weight:                 sdk.NewInt(10),
-			ExternalLiquidityRatio: sdk.NewDec(2),
+			Weight:                 math.NewInt(10),
+			ExternalLiquidityRatio: math.LegacyNewDec(2),
 		},
 	}
 	sort.Slice(poolAssets, func(i, j int) bool {
@@ -206,10 +205,10 @@ func (suite *PerpetualKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, 
 	})
 	poolParams := ammtypes.PoolParams{
 		UseOracle:                   useOracle,
-		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdk.ZeroDec(),
+		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
+		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   math.LegacyZeroDec(),
 		SwapFee:                     swapFee,
 		ExitFee:                     exitFee,
 		FeeDenom:                    ptypes.BaseCurrency,
@@ -237,9 +236,9 @@ func (suite *PerpetualKeeperTestSuite) SetPerpetualPool(poolId uint64) (types.Po
 	accounts := suite.AddAccounts(2, nil)
 	poolCreator := accounts[0]
 
-	amount := sdk.NewInt(100000000000)
+	amount := math.NewInt(100000000000)
 
-	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
@@ -270,13 +269,14 @@ func (suite *PerpetualKeeperTestSuite) AddLiquidity(ammPool ammtypes.Pool, provi
 
 }
 func TestSetGetMTP(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
+	simapp.SetStakingParam(app, ctx)
 	perpetual := app.PerpetualKeeper
 
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
 	for i := 0; i < 2; i++ {
 		mtp := types.MTP{
@@ -302,13 +302,14 @@ func TestSetGetMTP(t *testing.T) {
 }
 
 func TestGetAllWhitelistedAddress(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
+	simapp.SetStakingParam(app, ctx)
 
 	perpetual := app.PerpetualKeeper
 
 	// Generate 2 random accounts with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 2, math.NewInt(1000000))
 
 	// Set whitelisted addresses
 	perpetual.WhitelistAddress(ctx, addr[0])
@@ -364,35 +365,35 @@ func SetupStableCoinPrices(ctx sdk.Context, oracle oraclekeeper.Keeper) {
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDC",
-		Price:     sdk.NewDec(1),
+		Price:     math.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "USDT",
-		Price:     sdk.NewDec(1),
+		Price:     math.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ELYS",
-		Price:     sdk.NewDec(23),
+		Price:     math.LegacyNewDec(23),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
-		Price:     sdk.NewDec(5),
+		Price:     math.LegacyNewDec(5),
 		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "uatom",
-		Price:     sdk.MustNewDecFromStr("5"),
+		Price:     math.LegacyMustNewDecFromStr("5"),
 		Source:    "uatom",
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),

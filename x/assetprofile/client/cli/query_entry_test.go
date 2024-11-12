@@ -20,7 +20,7 @@ import (
 
 func networkWithEntryObjects(t *testing.T, n int) (*network.Network, []types.Entry) {
 	t.Helper()
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig(t.TempDir())
 	state := types.GenesisState{}
 	require.NoError(t, cfg.Codec.UnmarshalJSON(cfg.GenesisState[types.ModuleName], &state))
 

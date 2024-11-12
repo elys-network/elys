@@ -3,6 +3,7 @@ package cli_test
 import (
 	"bytes"
 	"context"
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -10,7 +11,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/elys-network/elys/x/stablestake/client/cli"
 	"github.com/elys-network/elys/x/stablestake/types"
@@ -33,20 +33,20 @@ func (s *CLITestSuite) TestCmdQueryBorrowRatio() {
 			},
 			ctxGen: func() client.Context {
 				bz, _ := s.encCfg.Codec.Marshal(&types.QueryBorrowRatioResponse{
-					TotalDeposit: sdk.NewInt(0),
-					TotalBorrow:  sdk.NewInt(0),
-					BorrowRatio:  sdk.ZeroDec(),
+					TotalDeposit: sdkmath.NewInt(0),
+					TotalBorrow:  sdkmath.NewInt(0),
+					BorrowRatio:  sdkmath.LegacyZeroDec(),
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)
 			},
 			expectErr: false,
 			expectResult: &types.QueryBorrowRatioResponse{
-				TotalDeposit: sdk.NewInt(0),
-				TotalBorrow:  sdk.NewInt(0),
-				BorrowRatio:  sdk.ZeroDec(),
+				TotalDeposit: sdkmath.NewInt(0),
+				TotalBorrow:  sdkmath.NewInt(0),
+				BorrowRatio:  sdkmath.LegacyZeroDec(),
 			},
 		},
 	}

@@ -3,6 +3,8 @@ package keeper_test
 import (
 	"errors"
 
+	"cosmossdk.io/math"
+
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -10,7 +12,7 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (suite KeeperTestSuite) TestCheckUserAuthorization() {
+func (suite *KeeperTestSuite) TestCheckUserAuthorization() {
 	// Create an instance of Keeper with the mock checker
 	k := suite.app.LeveragelpKeeper
 	pk := ed25519.GenPrivKey().PubKey()
@@ -34,10 +36,10 @@ func (suite KeeperTestSuite) TestCheckUserAuthorization() {
 	suite.Require().NoError(err)
 }
 
-func (suite KeeperTestSuite) TestCheckSameAssets() {
+func (suite *KeeperTestSuite) TestCheckSameAssets() {
 	app := suite.app
 	k := app.LeveragelpKeeper
-	addr := simapp.AddTestAddrs(app, suite.ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, suite.ctx, 1, math.NewInt(1000000))
 	suite.SetupCoinPrices(suite.ctx)
 
 	position := types.NewPosition(addr[0].String(), sdk.NewInt64Coin("USDC", 0), 1)
@@ -46,9 +48,9 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 	msg := &types.MsgOpen{
 		Creator:          addr[0].String(),
 		CollateralAsset:  "USDC",
-		CollateralAmount: sdk.NewInt(100),
+		CollateralAmount: math.NewInt(100),
 		AmmPoolId:        1,
-		Leverage:         sdk.NewDec(1),
+		Leverage:         math.LegacyNewDec(1),
 	}
 
 	// Expect no error
@@ -56,7 +58,7 @@ func (suite KeeperTestSuite) TestCheckSameAssets() {
 	suite.Require().NotNil(position)
 }
 
-func (suite KeeperTestSuite) TestCheckPoolHealth() {
+func (suite *KeeperTestSuite) TestCheckPoolHealth() {
 	k := suite.app.LeveragelpKeeper
 	poolId := uint64(1)
 
@@ -74,7 +76,7 @@ func (suite KeeperTestSuite) TestCheckPoolHealth() {
 	// PoolHealthTooLow
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.Pool{
 		AmmPoolId: 1,
-		Health:    sdk.NewDec(5).Quo(sdk.NewDec(100)),
+		Health:    math.LegacyNewDec(5).Quo(math.LegacyNewDec(100)),
 	})
 	err = k.CheckPoolHealth(suite.ctx, poolId)
 	suite.Require().Error(err)
@@ -82,13 +84,13 @@ func (suite KeeperTestSuite) TestCheckPoolHealth() {
 	// PoolIsHealthy
 	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.Pool{
 		AmmPoolId: 1,
-		Health:    sdk.NewDec(15),
+		Health:    math.LegacyNewDec(15),
 	})
 	err = k.CheckPoolHealth(suite.ctx, poolId)
 	suite.Require().NoError(err)
 }
 
-func (suite KeeperTestSuite) TestCheckMaxOpenPositions() {
+func (suite *KeeperTestSuite) TestCheckMaxOpenPositions() {
 	k := suite.app.LeveragelpKeeper
 
 	params := k.GetParams(suite.ctx)
@@ -102,16 +104,16 @@ func (suite KeeperTestSuite) TestCheckMaxOpenPositions() {
 
 	//  Expect an error about max open positions
 	k.SetOpenPositionCount(suite.ctx, 10)
-	err = k.CheckMaxOpenPositions(suite.ctx)
+	_ = k.CheckMaxOpenPositions(suite.ctx)
 	suite.Require().Error(types.ErrMaxOpenPositions)
 
 	// OpenPositionsExceedMax
 	k.SetOpenPositionCount(suite.ctx, 11)
-	err = k.CheckMaxOpenPositions(suite.ctx)
+	_ = k.CheckMaxOpenPositions(suite.ctx)
 	suite.Require().Error(types.ErrMaxOpenPositions)
 }
 
-func (suite KeeperTestSuite) TestGetAmmPool() {
+func (suite *KeeperTestSuite) TestGetAmmPool() {
 	k := suite.app.LeveragelpKeeper
 
 	poolId := uint64(42)

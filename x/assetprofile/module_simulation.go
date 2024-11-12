@@ -4,7 +4,6 @@ import (
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
@@ -70,14 +69,14 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 }
 
 // RegisterStoreDecoder registers a decoder
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {}
 
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgCreateEntry int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateEntry, &weightMsgCreateEntry, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreateEntry, &weightMsgCreateEntry, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreateEntry = defaultWeightMsgCreateEntry
 		},
@@ -88,7 +87,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdateEntry int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateEntry, &weightMsgUpdateEntry, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdateEntry, &weightMsgUpdateEntry, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdateEntry = defaultWeightMsgUpdateEntry
 		},
@@ -99,7 +98,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgDeleteEntry int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteEntry, &weightMsgDeleteEntry, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgDeleteEntry, &weightMsgDeleteEntry, nil,
 		func(_ *rand.Rand) {
 			weightMsgDeleteEntry = defaultWeightMsgDeleteEntry
 		},
@@ -110,7 +109,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgAddEntry int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgAddEntry, &weightMsgAddEntry, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgAddEntry, &weightMsgAddEntry, nil,
 		func(_ *rand.Rand) {
 			weightMsgAddEntry = defaultWeightMsgAddEntry
 		},

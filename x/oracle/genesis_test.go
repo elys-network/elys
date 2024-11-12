@@ -3,8 +3,8 @@ package oracle_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
+
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/oracle"
@@ -33,11 +33,11 @@ func TestGenesis(t *testing.T) {
 		Prices: []types.Price{
 			{
 				Asset: "BTC",
-				Price: sdk.NewDec(30000),
+				Price: sdkmath.LegacyNewDec(30000),
 			},
 			{
 				Asset: "ETH",
-				Price: sdk.NewDec(2000),
+				Price: sdkmath.LegacyNewDec(2000),
 			},
 		},
 		PriceFeeders: []types.PriceFeeder{
@@ -53,8 +53,8 @@ func TestGenesis(t *testing.T) {
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
-	app := simapp.InitElysTestApp(initChain)
-	ctx := app.BaseApp.NewContext(initChain, tmproto.Header{})
+	app := simapp.InitElysTestApp(initChain, t)
+	ctx := app.BaseApp.NewContext(initChain)
 	oracle.InitGenesis(ctx, app.OracleKeeper, genesisState)
 	got := oracle.ExportGenesis(ctx, app.OracleKeeper)
 	require.NotNil(t, got)

@@ -1,12 +1,13 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) InterestRateComputation(ctx sdk.Context) sdk.Dec {
+func (k Keeper) InterestRateComputation(ctx sdk.Context) sdkmath.LegacyDec {
 	params := k.GetParams(ctx)
 	if params.TotalValue.IsZero() {
 		return params.InterestRate
@@ -24,16 +25,16 @@ func (k Keeper) InterestRateComputation(ctx sdk.Context) sdk.Dec {
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 	borrowed := params.TotalValue.Sub(balance.Amount)
 	targetInterestRate := healthGainFactor.
-		Mul(sdk.NewDecFromInt(borrowed)).
-		Quo(sdk.NewDecFromInt(params.TotalValue))
+		Mul(borrowed.ToLegacyDec()).
+		Quo(params.TotalValue.ToLegacyDec())
 
 	interestRateChange := targetInterestRate.Sub(prevInterestRate)
 	interestRate := prevInterestRate
-	if interestRateChange.GTE(interestRateDecrease.Mul(sdk.NewDec(-1))) && interestRateChange.LTE(interestRateIncrease) {
+	if interestRateChange.GTE(interestRateDecrease.Mul(sdkmath.LegacyNewDec(-1))) && interestRateChange.LTE(interestRateIncrease) {
 		interestRate = targetInterestRate
 	} else if interestRateChange.GT(interestRateIncrease) {
 		interestRate = prevInterestRate.Add(interestRateIncrease)
-	} else if interestRateChange.LT(interestRateDecrease.Mul(sdk.NewDec(-1))) {
+	} else if interestRateChange.LT(interestRateDecrease.Mul(sdkmath.LegacyNewDec(-1))) {
 		interestRate = prevInterestRate.Sub(interestRateDecrease)
 	}
 

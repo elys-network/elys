@@ -1,11 +1,12 @@
 package keeper
 
 import (
+	"cosmossdk.io/core/store"
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/x/amm/types"
@@ -16,7 +17,7 @@ import (
 type (
 	Keeper struct {
 		cdc               codec.BinaryCodec
-		storeKey          storetypes.StoreKey
+		storeService      store.KVStoreService
 		transientStoreKey storetypes.StoreKey
 		authority         string
 		hooks             types.AmmHooks
@@ -33,7 +34,7 @@ type (
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
+	storeService store.KVStoreService,
 	transientStoreKey storetypes.StoreKey,
 	authority string,
 
@@ -48,7 +49,7 @@ func NewKeeper(
 
 	return &Keeper{
 		cdc:               cdc,
-		storeKey:          storeKey,
+		storeService:      storeService,
 		transientStoreKey: transientStoreKey,
 		authority:         authority,
 

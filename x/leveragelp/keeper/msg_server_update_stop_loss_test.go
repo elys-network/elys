@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -15,8 +16,8 @@ import (
 )
 
 func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string, openPosition bool) {
-	fee := sdk.MustNewDecFromStr("0.0002")
-	issueAmount := sdk.NewInt(10_000_000_000_000)
+	fee := sdkmath.LegacyMustNewDecFromStr("0.0002")
+	issueAmount := sdkmath.NewInt(10_000_000_000_000)
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
 			sdk.NewCoin(ptypes.ATOM, issueAmount),
@@ -47,11 +48,11 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 		PoolAssets: []ammtypes.PoolAsset{
 			{
 				Token:  sdk.NewInt64Coin(asset1, 100_000_000),
-				Weight: sdk.NewInt(50),
+				Weight: sdkmath.NewInt(50),
 			},
 			{
 				Token:  sdk.NewInt64Coin(asset2, 100_000_000),
-				Weight: sdk.NewInt(50),
+				Weight: sdkmath.NewInt(50),
 			},
 		},
 	}
@@ -71,7 +72,7 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
 	}
-	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	suite.Require().NoError(err)
 	msgBond.Creator = addresses[2].String()
@@ -82,10 +83,10 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 		openMsg := &types.MsgOpen{
 			Creator:          addresses[0].String(),
 			CollateralAsset:  "uusdc",
-			CollateralAmount: sdk.OneInt().MulRaw(1000_0000),
+			CollateralAmount: sdkmath.OneInt().MulRaw(1000_0000),
 			AmmPoolId:        1,
-			Leverage:         sdk.OneDec().MulInt64(2),
-			StopLossPrice:    sdk.ZeroDec(),
+			Leverage:         sdkmath.LegacyOneDec().MulInt64(2),
+			StopLossPrice:    sdkmath.LegacyZeroDec(),
 		}
 		_, err = suite.app.LeveragelpKeeper.Open(suite.ctx, openMsg)
 		if err != nil {
@@ -94,7 +95,7 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 	}
 }
 func (suite *KeeperTestSuite) TestUpdateStopLoss() {
-	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
 	testCases := []struct {
@@ -109,7 +110,7 @@ func (suite *KeeperTestSuite) TestUpdateStopLoss() {
 			input: &types.MsgUpdateStopLoss{
 				Creator:  addresses[0].String(),
 				Position: 2,
-				Price:    sdk.OneDec().MulInt64(10),
+				Price:    sdkmath.LegacyOneDec().MulInt64(10),
 			},
 			expectErr:    true,
 			expectErrMsg: types.ErrPositionDoesNotExist.Error(),
@@ -125,7 +126,7 @@ func (suite *KeeperTestSuite) TestUpdateStopLoss() {
 			input: &types.MsgUpdateStopLoss{
 				Creator:  addresses[0].String(),
 				Position: 1,
-				Price:    sdk.OneDec().MulInt64(10),
+				Price:    sdkmath.LegacyOneDec().MulInt64(10),
 			},
 			expectErr:    false,
 			expectErrMsg: "",
@@ -137,7 +138,7 @@ func (suite *KeeperTestSuite) TestUpdateStopLoss() {
 			postValidateFunc: func() {
 				position, found := suite.app.LeveragelpKeeper.GetPositionWithId(suite.ctx, addresses[0], 1)
 				suite.Require().True(found)
-				suite.Require().Equal(position.StopLossPrice, sdk.OneDec().MulInt64(10))
+				suite.Require().Equal(position.StopLossPrice, sdkmath.LegacyOneDec().MulInt64(10))
 			},
 		},
 	}

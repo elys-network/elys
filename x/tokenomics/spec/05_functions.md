@@ -122,7 +122,7 @@ func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdro
 
     // Add commitments
     commitments := k.commitmentKeeper.GetCommitments(ctx, msg.Sender)
-    commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, sdk.NewInt(int64(airdrop.Amount))))
+    commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, math.NewInt(int64(airdrop.Amount))))
     k.commitmentKeeper.SetCommitments(ctx, commitments)
 
     k.RemoveAirdrop(ctx, msg.Sender)
@@ -268,7 +268,7 @@ func (k Keeper) AirdropAll(goCtx context.Context, req *types.QueryAllAirdropRequ
     var airdrops []types.Airdrop
     ctx := sdk.UnwrapSDKContext(goCtx)
 
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     airdropStore := prefix.NewStore(store, types.KeyPrefix(types.AirdropKeyPrefix))
 
     pageRes, err := query.Paginate(airdropStore, req.Pagination, func(key []byte, value []byte) error {
@@ -341,7 +341,7 @@ func (k Keeper) TimeBasedInflationAll(goCtx context.Context, req *types.QueryAll
     var timeBasedInflations []types.TimeBasedInflation
     ctx := sdk.UnwrapSDKContext(goCtx)
 
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     timeBasedInflationStore := prefix.NewStore(store, types.KeyPrefix(types.TimeBasedInflationKeyPrefix))
 
     pageRes, err := query.Paginate(timeBasedInflationStore, req.Pagination, func(key []byte, value []byte) error {

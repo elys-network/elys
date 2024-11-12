@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
 	"errors"
 	"fmt"
 	"strconv"
@@ -17,6 +18,8 @@ import (
 	"github.com/elys-network/elys/x/masterchef/types"
 	"github.com/spf13/cobra"
 )
+
+const FlagExpedited = "expedited"
 
 func CmdAddExternalIncentive() *cobra.Command {
 	cmd := &cobra.Command{
@@ -48,7 +51,7 @@ func CmdAddExternalIncentive() *cobra.Command {
 			if err != nil {
 				return errors.New("invalid to block")
 			}
-			amountPerBlock, ok := sdk.NewIntFromString(args[4])
+			amountPerBlock, ok := math.NewIntFromString(args[4])
 			if !ok {
 				return errors.New("invalid amount per block")
 			}
@@ -101,13 +104,18 @@ func CmdAddExternalRewardDenom() *cobra.Command {
 				return err
 			}
 
+			expedited, err := cmd.Flags().GetBool(FlagExpedited)
+			if err != nil {
+				return err
+			}
+
 			signer := clientCtx.GetFromAddress()
 			if signer == nil {
 				return errors.New("signer address is missing")
 			}
 
 			rewardDenom := args[0]
-			minAmount, ok := sdk.NewIntFromString(args[1])
+			minAmount, ok := math.NewIntFromString(args[1])
 			if !ok {
 				return errors.New("invalid min amount")
 			}
@@ -137,7 +145,7 @@ func CmdAddExternalRewardDenom() *cobra.Command {
 				return err
 			}
 
-			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary)
+			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary, expedited)
 			if err != nil {
 				return err
 			}
@@ -155,7 +163,7 @@ func CmdAddExternalRewardDenom() *cobra.Command {
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-
+	cmd.Flags().String(FlagExpedited, "", "expedited")
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
 	_ = cmd.MarkFlagRequired(cli.FlagSummary)
 	_ = cmd.MarkFlagRequired(cli.FlagMetadata)
@@ -193,6 +201,11 @@ func CmdUpdatePoolMultipliers() *cobra.Command {
 				return err
 			}
 
+			expedited, err := cmd.Flags().GetBool(FlagExpedited)
+			if err != nil {
+				return err
+			}
+
 			signer := clientCtx.GetFromAddress()
 			if signer == nil {
 				return errors.New("signer address is missing")
@@ -202,7 +215,7 @@ func CmdUpdatePoolMultipliers() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			multiplier := sdk.MustNewDecFromStr(args[1])
+			multiplier := math.LegacyMustNewDecFromStr(args[1])
 
 			poolMultipliers := []types.PoolMultiplier{}
 			poolMultipliers = append(poolMultipliers, types.PoolMultiplier{
@@ -228,7 +241,7 @@ func CmdUpdatePoolMultipliers() *cobra.Command {
 				return err
 			}
 
-			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary)
+			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary, expedited)
 			if err != nil {
 				return err
 			}
@@ -246,7 +259,7 @@ func CmdUpdatePoolMultipliers() *cobra.Command {
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-
+	cmd.Flags().String(FlagExpedited, "", "expedited")
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
 	_ = cmd.MarkFlagRequired(cli.FlagSummary)
 	_ = cmd.MarkFlagRequired(cli.FlagMetadata)

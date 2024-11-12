@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
+
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -12,18 +12,18 @@ import (
 )
 
 func TestPool(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	pools := []types.PoolInfo{
 		{
 			PoolId:               1,
 			RewardWallet:         ammtypes.NewPoolRevenueAddress(1).String(),
-			Multiplier:           sdk.OneDec(),
-			EdenApr:              sdk.OneDec(),
-			DexApr:               sdk.OneDec(),
-			GasApr:               sdk.OneDec(),
-			ExternalIncentiveApr: sdk.OneDec(),
+			Multiplier:           math.LegacyOneDec(),
+			EdenApr:              math.LegacyOneDec(),
+			DexApr:               math.LegacyOneDec(),
+			GasApr:               math.LegacyOneDec(),
+			ExternalIncentiveApr: math.LegacyOneDec(),
 			ExternalRewardDenoms: []string{
 				"rewardDenom1",
 				"rewardDenom2",
@@ -32,11 +32,11 @@ func TestPool(t *testing.T) {
 		{
 			PoolId:               2,
 			RewardWallet:         ammtypes.NewPoolRevenueAddress(2).String(),
-			Multiplier:           sdk.OneDec(),
-			EdenApr:              sdk.OneDec(),
-			DexApr:               sdk.OneDec(),
-			GasApr:               sdk.OneDec(),
-			ExternalIncentiveApr: sdk.OneDec(),
+			Multiplier:           math.LegacyOneDec(),
+			EdenApr:              math.LegacyOneDec(),
+			DexApr:               math.LegacyOneDec(),
+			GasApr:               math.LegacyOneDec(),
+			ExternalIncentiveApr: math.LegacyOneDec(),
 			ExternalRewardDenoms: []string{
 				"rewardDenom1",
 				"rewardDenom2",
@@ -45,11 +45,11 @@ func TestPool(t *testing.T) {
 		{
 			PoolId:               3,
 			RewardWallet:         ammtypes.NewPoolRevenueAddress(3).String(),
-			Multiplier:           sdk.OneDec(),
-			EdenApr:              sdk.OneDec(),
-			DexApr:               sdk.OneDec(),
-			GasApr:               sdk.OneDec(),
-			ExternalIncentiveApr: sdk.OneDec(),
+			Multiplier:           math.LegacyOneDec(),
+			EdenApr:              math.LegacyOneDec(),
+			DexApr:               math.LegacyOneDec(),
+			GasApr:               math.LegacyOneDec(),
+			ExternalIncentiveApr: math.LegacyOneDec(),
 			ExternalRewardDenoms: []string{
 				"rewardDenom1",
 				"rewardDenom2",
@@ -65,26 +65,26 @@ func TestPool(t *testing.T) {
 		require.Equal(t, info, pool)
 	}
 	poolStored := app.MasterchefKeeper.GetAllPoolInfos(ctx)
-	require.Len(t, poolStored, 3)
+	require.Len(t, poolStored, 4) // setting it 4 because PoolId = math.MaxInt16 gets initiated in EndBlock
 
 	app.MasterchefKeeper.RemovePoolInfo(ctx, pools[0].PoolId)
 	poolStored = app.MasterchefKeeper.GetAllPoolInfos(ctx)
-	require.Len(t, poolStored, 2)
+	require.Len(t, poolStored, 3) // setting it 3 because PoolId = math.MaxInt16 gets initiated in EndBlock
 }
 
 func TestUpdatePoolMultipliers(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	pools := []types.PoolInfo{
 		{
 			PoolId:               1,
 			RewardWallet:         ammtypes.NewPoolRevenueAddress(1).String(),
-			Multiplier:           sdk.OneDec(),
-			EdenApr:              sdk.OneDec(),
-			DexApr:               sdk.OneDec(),
-			GasApr:               sdk.OneDec(),
-			ExternalIncentiveApr: sdk.OneDec(),
+			Multiplier:           math.LegacyOneDec(),
+			EdenApr:              math.LegacyOneDec(),
+			DexApr:               math.LegacyOneDec(),
+			GasApr:               math.LegacyOneDec(),
+			ExternalIncentiveApr: math.LegacyOneDec(),
 			ExternalRewardDenoms: []string{
 				"rewardDenom1",
 				"rewardDenom2",
@@ -93,11 +93,11 @@ func TestUpdatePoolMultipliers(t *testing.T) {
 		{
 			PoolId:               2,
 			RewardWallet:         ammtypes.NewPoolRevenueAddress(2).String(),
-			Multiplier:           sdk.OneDec(),
-			EdenApr:              sdk.OneDec(),
-			DexApr:               sdk.OneDec(),
-			GasApr:               sdk.OneDec(),
-			ExternalIncentiveApr: sdk.OneDec(),
+			Multiplier:           math.LegacyOneDec(),
+			EdenApr:              math.LegacyOneDec(),
+			DexApr:               math.LegacyOneDec(),
+			GasApr:               math.LegacyOneDec(),
+			ExternalIncentiveApr: math.LegacyOneDec(),
 			ExternalRewardDenoms: []string{
 				"rewardDenom1",
 				"rewardDenom2",
@@ -106,11 +106,11 @@ func TestUpdatePoolMultipliers(t *testing.T) {
 		{
 			PoolId:               3,
 			RewardWallet:         ammtypes.NewPoolRevenueAddress(3).String(),
-			Multiplier:           sdk.OneDec(),
-			EdenApr:              sdk.OneDec(),
-			DexApr:               sdk.OneDec(),
-			ExternalIncentiveApr: sdk.OneDec(),
-			GasApr:               sdk.OneDec(),
+			Multiplier:           math.LegacyOneDec(),
+			EdenApr:              math.LegacyOneDec(),
+			DexApr:               math.LegacyOneDec(),
+			ExternalIncentiveApr: math.LegacyOneDec(),
+			GasApr:               math.LegacyOneDec(),
 			ExternalRewardDenoms: []string{
 				"rewardDenom1",
 				"rewardDenom2",
@@ -123,19 +123,19 @@ func TestUpdatePoolMultipliers(t *testing.T) {
 	for _, pool := range pools {
 		info, found := app.MasterchefKeeper.GetPoolInfo(ctx, pool.PoolId)
 		require.True(t, found)
-		require.Equal(t, info.Multiplier, sdk.OneDec())
+		require.Equal(t, info.Multiplier, math.LegacyOneDec())
 	}
 
 	poolMultipliers := []types.PoolMultiplier{
 		{
 			PoolId:     1,
-			Multiplier: sdk.OneDec().Add(sdk.OneDec()),
+			Multiplier: math.LegacyOneDec().Add(math.LegacyOneDec()),
 		}, {
 			PoolId:     2,
-			Multiplier: sdk.OneDec().Add(sdk.OneDec()),
+			Multiplier: math.LegacyOneDec().Add(math.LegacyOneDec()),
 		}, {
 			PoolId:     3,
-			Multiplier: sdk.OneDec().Add(sdk.OneDec()),
+			Multiplier: math.LegacyOneDec().Add(math.LegacyOneDec()),
 		},
 	}
 	success := app.MasterchefKeeper.UpdatePoolMultipliers(ctx, poolMultipliers)
@@ -143,6 +143,6 @@ func TestUpdatePoolMultipliers(t *testing.T) {
 	for _, pool := range pools {
 		info, found := app.MasterchefKeeper.GetPoolInfo(ctx, pool.PoolId)
 		require.True(t, found)
-		require.Equal(t, info.Multiplier, sdk.OneDec().Add(sdk.OneDec()))
+		require.Equal(t, info.Multiplier, math.LegacyOneDec().Add(math.LegacyOneDec()))
 	}
 }

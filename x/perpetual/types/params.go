@@ -2,45 +2,10 @@ package types
 
 import (
 	"cosmossdk.io/math"
-	fmt "fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"fmt"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
-
-var _ paramtypes.ParamSet = (*Params)(nil)
-
-var (
-	KeyLeverageMax                                    = []byte("LeverageMax")
-	KeyBorrowInterestRateMax                          = []byte("BorrowInterestRateMax")
-	KeyBorrowInterestRateMin                          = []byte("BorrowInterestRateMin")
-	KeyBorrowInterestRateIncrease                     = []byte("BorrowInterestRateIncrease")
-	KeyBorrowInterestRateDecrease                     = []byte("BorrowInterestRateDecrease")
-	KeyHealthGainFactor                               = []byte("HealthGainFactor")
-	KeyEpochLength                                    = []byte("EpochLength")
-	KeyMaxOpenPositions                               = []byte("MaxOpenPositions")
-	KeyPoolOpenThreshold                              = []byte("PoolOpenThreshold")
-	KeyForceCloseFundPercentage                       = []byte("ForceCloseFundPercentage")
-	KeyForceCloseFundAddress                          = []byte("ForceCloseFundAddress")
-	KeyIncrementalBorrowInterestPaymentFundPercentage = []byte("IncrementalBorrowInterestPaymentFundPercentage")
-	KeyIncrementalBorrowInterestPaymentFundAddress    = []byte("IncrementalBorrowInterestPaymentFundAddress")
-	KeySafetyFactor                                   = []byte("SafetyFactor")
-	KeyIncrementalBorrowInterestPaymentEnabled        = []byte("IncrementalBorrowInterestPaymentEnabled")
-	KeyWhitelistingEnabled                            = []byte("WhitelistingEnabled")
-	KeyTakeProfitBorrowInterestRateMin                = []byte("TakeProfitBorrowInterestRateMin")
-	KeyFundingFeeBaseRate                             = []byte("FundingFeeBaseRate")
-	KeyFundingFeeMinRate                              = []byte("FundingFeeMinRate")
-	KeyFundingFeeMaxRate                              = []byte("FundingFeeMaxRate")
-	KeySwapFee                                        = []byte("SwapFee")
-	KeyMinBorrowInterestAmount                        = []byte("MinBorrowInterestAmount")
-	KeyMaxLimitOrder                                  = []byte("MaxLimitOrder")
-)
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 // NewParams creates a new Params instance
 func NewParams() Params {
@@ -74,30 +39,6 @@ func NewParams() Params {
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return NewParams()
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyLeverageMax, &p.LeverageMax, validateLeverageMax),
-		paramtypes.NewParamSetPair(KeyBorrowInterestRateMax, &p.BorrowInterestRateMax, validateBorrowInterestRateMax),
-		paramtypes.NewParamSetPair(KeyBorrowInterestRateMin, &p.BorrowInterestRateMin, validateBorrowInterestRateMin),
-		paramtypes.NewParamSetPair(KeyBorrowInterestRateIncrease, &p.BorrowInterestRateIncrease, validateBorrowInterestRateIncrease),
-		paramtypes.NewParamSetPair(KeyBorrowInterestRateDecrease, &p.BorrowInterestRateDecrease, validateBorrowInterestRateDecrease),
-		paramtypes.NewParamSetPair(KeyHealthGainFactor, &p.HealthGainFactor, validateHealthGainFactor),
-		paramtypes.NewParamSetPair(KeyMaxOpenPositions, &p.MaxOpenPositions, validateMaxOpenPositions),
-		paramtypes.NewParamSetPair(KeyPoolOpenThreshold, &p.PoolOpenThreshold, validatePoolOpenThreshold),
-		paramtypes.NewParamSetPair(KeyForceCloseFundPercentage, &p.ForceCloseFundPercentage, validateForceCloseFundPercentage),
-		paramtypes.NewParamSetPair(KeyForceCloseFundAddress, &p.ForceCloseFundAddress, validateForceCloseFundAddress),
-		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentFundPercentage, &p.IncrementalBorrowInterestPaymentFundPercentage, validateIncrementalBorrowInterestPaymentFundPercentage),
-		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentFundAddress, &p.IncrementalBorrowInterestPaymentFundAddress, validateIncrementalBorrowInterestPaymentFundAddress),
-		paramtypes.NewParamSetPair(KeySafetyFactor, &p.SafetyFactor, validateSafetyFactor),
-		paramtypes.NewParamSetPair(KeyIncrementalBorrowInterestPaymentEnabled, &p.IncrementalBorrowInterestPaymentEnabled, validateIncrementalBorrowInterestPaymentEnabled),
-		paramtypes.NewParamSetPair(KeyWhitelistingEnabled, &p.WhitelistingEnabled, validateWhitelistingEnabled),
-		paramtypes.NewParamSetPair(KeyFundingFeeBaseRate, &p.FixedFundingRate, validateFixedFundingRate),
-		paramtypes.NewParamSetPair(KeySwapFee, &p.PerpetualSwapFee, validateSwapFee),
-		paramtypes.NewParamSetPair(KeyMaxLimitOrder, &p.MaxLimitOrder, validateMaxLimitOrder),
-	}
 }
 
 // Validate validates the set of params
@@ -169,7 +110,7 @@ func (p Params) String() string {
 }
 
 func validateLeverageMax(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -184,7 +125,7 @@ func validateLeverageMax(i interface{}) error {
 }
 
 func validateBorrowInterestRateMax(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -200,7 +141,7 @@ func validateBorrowInterestRateMax(i interface{}) error {
 }
 
 func validateBorrowInterestRateMin(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -216,7 +157,7 @@ func validateBorrowInterestRateMin(i interface{}) error {
 }
 
 func validateBorrowInterestRateIncrease(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -232,7 +173,7 @@ func validateBorrowInterestRateIncrease(i interface{}) error {
 }
 
 func validateBorrowInterestRateDecrease(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -248,7 +189,7 @@ func validateBorrowInterestRateDecrease(i interface{}) error {
 }
 
 func validateHealthGainFactor(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -273,7 +214,7 @@ func validateMaxOpenPositions(i interface{}) error {
 }
 
 func validateForceCloseFundPercentage(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -298,7 +239,7 @@ func validateForceCloseFundAddress(i interface{}) error {
 }
 
 func validateIncrementalBorrowInterestPaymentFundPercentage(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -323,7 +264,7 @@ func validateIncrementalBorrowInterestPaymentFundAddress(i interface{}) error {
 }
 
 func validateSafetyFactor(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -357,7 +298,7 @@ func validateWhitelistingEnabled(i interface{}) error {
 }
 
 func validatePoolOpenThreshold(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -373,7 +314,7 @@ func validatePoolOpenThreshold(i interface{}) error {
 }
 
 func validateFixedFundingRate(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -388,7 +329,7 @@ func validateFixedFundingRate(i interface{}) error {
 }
 
 func validateSwapFee(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -414,7 +355,7 @@ func validateMaxLimitOrder(i interface{}) error {
 }
 
 func validateWeightBreakingFeeFactor(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

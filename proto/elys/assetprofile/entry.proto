@@ -4,24 +4,23 @@ package elys.assetprofile;
 option go_package = "github.com/elys-network/elys/x/assetprofile/types";
 
 message Entry {
-  string base_denom = 1; 
-  uint64 decimals = 2; 
-  string denom = 3; 
-  string path = 4; 
-  string ibc_channel_id = 5; 
-  string ibc_counterparty_channel_id = 6; 
-  string display_name = 7; 
-  string display_symbol = 8; 
-  string network = 9; 
-  string address = 10; 
-  string external_symbol = 11; 
-  string transfer_limit = 12; 
-  repeated string permissions = 13; 
-  string unit_denom = 14; 
-  string ibc_counterparty_denom = 15; 
-  string ibc_counterparty_chain_id = 16; 
+  string base_denom = 1;
+  uint64 decimals = 2;
+  string denom = 3;
+  string path = 4;
+  string ibc_channel_id = 5;
+  string ibc_counterparty_channel_id = 6;
+  string display_name = 7;
+  string display_symbol = 8;
+  string network = 9;
+  string address = 10;
+  string external_symbol = 11;
+  string transfer_limit = 12;
+  repeated string permissions = 13;
+  string unit_denom = 14;
+  string ibc_counterparty_denom = 15;
+  string ibc_counterparty_chain_id = 16;
   string authority = 17;
   bool commit_enabled = 18;
   bool withdraw_enabled = 19;
 }
-

@@ -1,48 +1,41 @@
 package app
 
 import (
+	"context"
 	"fmt"
-	"time"
 
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	storetypes "cosmossdk.io/store/types"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
 const (
-	LocalNetVersion    = "v999.999.999"
-	NewMaxAgeNumBlocks = int64(1_000_000)      // 1.5s blocks * 1_000_000 = 1.5M seconds > 2 weeks
-	NewMaxAgeDuration  = time.Second * 1209600 // 2 weeks
+	LocalNetVersion = "v999.999.999"
+	NewMaxBytes     = 5 * 1024 * 1024 // 5MB
 )
 
 // make sure to update these when you upgrade the version
-var NextVersion = "v0.49.4"
+var NextVersion = "v0.50.0"
 
-func SetupHandlers(app *ElysApp) {
-	setUpgradeHandler(app)
-
-	loadUpgradeStore(app)
-}
-
-func setUpgradeHandler(app *ElysApp) {
+func (app *ElysApp) setUpgradeHandler() {
 	app.UpgradeKeeper.SetUpgradeHandler(
 		version.Version,
-		func(ctx sdk.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
+		func(goCtx context.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
+			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + version.Version)
 
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
 
 				// Add any logic here to run when the chain is upgraded to the new version
 				// Update consensus params in order to safely enable comet pruning
-				consensusParams, err := app.ConsensusParamsKeeper.Get(ctx)
+				consensusParams, err := app.ConsensusParamsKeeper.ParamsStore.Get(ctx)
 				if err != nil {
 					return nil, err
 				}
-				consensusParams.Evidence.MaxAgeNumBlocks = NewMaxAgeNumBlocks
-				consensusParams.Evidence.MaxAgeDuration = NewMaxAgeDuration
-				app.ConsensusParamsKeeper.Set(ctx, consensusParams)
+				consensusParams.Block.MaxBytes = NewMaxBytes
+				app.ConsensusParamsKeeper.ParamsStore.Set(ctx, consensusParams)
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
@@ -50,10 +43,14 @@ func setUpgradeHandler(app *ElysApp) {
 	)
 }
 
-func loadUpgradeStore(app *ElysApp) {
+func (app *ElysApp) setUpgradeStore() {
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
 		panic(fmt.Sprintf("Failed to read upgrade info from disk: %v", err))
+	}
+
+	if app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+		return
 	}
 
 	app.Logger().Debug("Upgrade info", "info", upgradeInfo)

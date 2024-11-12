@@ -4,7 +4,8 @@ import (
 	"context"
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -31,8 +32,8 @@ func TestMsgServer(t *testing.T) {
 }
 
 func TestWithdrawElysStakingRewards(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	bankKeeper := app.BankKeeper
 	stakingKeeper := app.StakingKeeper
@@ -40,10 +41,10 @@ func TestWithdrawElysStakingRewards(t *testing.T) {
 	estakingKeeper := app.EstakingKeeper
 
 	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
+	validators, _ := stakingKeeper.GetAllValidators(ctx)
 	require.True(t, len(validators) > 0)
-	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
+	valAddr, _ := sdk.ValAddressFromBech32(validators[0].GetOperator())
+	delegations, _ := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
 	require.True(t, len(delegations) > 0)
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
@@ -66,7 +67,7 @@ func TestWithdrawElysStakingRewards(t *testing.T) {
 	require.Equal(t, uint64(4), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
 	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
+	msgServer := keeper.NewMsgServerImpl(*estakingKeeper)
 	res, err := msgServer.WithdrawElysStakingRewards(ctx, &types.MsgWithdrawElysStakingRewards{
 		DelegatorAddress: addr.String(),
 	})
@@ -75,8 +76,8 @@ func TestWithdrawElysStakingRewards(t *testing.T) {
 }
 
 func TestWithdrawReward_NormalValidator(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	bankKeeper := app.BankKeeper
 	stakingKeeper := app.StakingKeeper
@@ -84,10 +85,10 @@ func TestWithdrawReward_NormalValidator(t *testing.T) {
 	estakingKeeper := app.EstakingKeeper
 
 	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
+	validators, _ := stakingKeeper.GetAllValidators(ctx)
 	require.True(t, len(validators) > 0)
-	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
+	valAddr, _ := sdk.ValAddressFromBech32(validators[0].GetOperator())
+	delegations, _ := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
 	require.True(t, len(delegations) > 0)
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
@@ -110,7 +111,7 @@ func TestWithdrawReward_NormalValidator(t *testing.T) {
 	require.Equal(t, uint64(4), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
 	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
+	msgServer := keeper.NewMsgServerImpl(*estakingKeeper)
 	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
 		DelegatorAddress: addr.String(),
 		ValidatorAddress: valAddr.String(),
@@ -120,8 +121,8 @@ func TestWithdrawReward_NormalValidator(t *testing.T) {
 }
 
 func TestWithdrawReward_EdenValidator(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	bankKeeper := app.BankKeeper
 	stakingKeeper := app.StakingKeeper
@@ -129,10 +130,10 @@ func TestWithdrawReward_EdenValidator(t *testing.T) {
 	estakingKeeper := app.EstakingKeeper
 
 	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
+	validators, _ := stakingKeeper.GetAllValidators(ctx)
 	require.True(t, len(validators) > 0)
-	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
+	valAddr, _ := sdk.ValAddressFromBech32(validators[0].GetOperator())
+	delegations, _ := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
 	require.True(t, len(delegations) > 0)
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
@@ -147,11 +148,11 @@ func TestWithdrawReward_EdenValidator(t *testing.T) {
 		CommitEnabled:   true,
 		WithdrawEnabled: true,
 	})
-	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(app.CommitmentKeeper)
-	_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &commitmenttypes.MsgCommitClaimedRewards{
+	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(*app.CommitmentKeeper)
+	_, err := commitmentMsgServer.CommitClaimedRewards(ctx, &commitmenttypes.MsgCommitClaimedRewards{
 		Creator: addr.String(),
 		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(1000_000),
+		Amount:  math.NewInt(1000_000),
 	})
 	require.Nil(t, err)
 
@@ -174,7 +175,7 @@ func TestWithdrawReward_EdenValidator(t *testing.T) {
 	require.Equal(t, uint64(5), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
 	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
+	msgServer := keeper.NewMsgServerImpl(*estakingKeeper)
 	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
 		DelegatorAddress: addr.String(),
 		ValidatorAddress: estakingKeeper.GetParams(ctx).EdenCommitVal,
@@ -184,8 +185,8 @@ func TestWithdrawReward_EdenValidator(t *testing.T) {
 }
 
 func TestWithdrawReward_EdenBValidator(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	bankKeeper := app.BankKeeper
 	stakingKeeper := app.StakingKeeper
@@ -193,10 +194,10 @@ func TestWithdrawReward_EdenBValidator(t *testing.T) {
 	estakingKeeper := app.EstakingKeeper
 
 	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
+	validators, _ := stakingKeeper.GetAllValidators(ctx)
 	require.True(t, len(validators) > 0)
-	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
+	valAddr, _ := sdk.ValAddressFromBech32(validators[0].GetOperator())
+	delegations, _ := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
 	require.True(t, len(delegations) > 0)
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
@@ -211,11 +212,11 @@ func TestWithdrawReward_EdenBValidator(t *testing.T) {
 		CommitEnabled:   true,
 		WithdrawEnabled: true,
 	})
-	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(app.CommitmentKeeper)
+	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(*app.CommitmentKeeper)
 	_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &commitmenttypes.MsgCommitClaimedRewards{
 		Creator: addr.String(),
 		Denom:   ptypes.EdenB,
-		Amount:  sdk.NewInt(1000_000),
+		Amount:  math.NewInt(1000_000),
 	})
 	require.Nil(t, err)
 
@@ -238,7 +239,7 @@ func TestWithdrawReward_EdenBValidator(t *testing.T) {
 	require.Equal(t, uint64(5), distrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
 	// withdraw single rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
+	msgServer := keeper.NewMsgServerImpl(*estakingKeeper)
 	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
 		DelegatorAddress: addr.String(),
 		ValidatorAddress: estakingKeeper.GetParams(ctx).EdenbCommitVal,

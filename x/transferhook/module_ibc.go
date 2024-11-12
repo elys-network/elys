@@ -6,16 +6,16 @@ import (
 	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
-	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
-	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
-	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
+	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
+	transfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
+	channeltypes "github.com/cosmos/ibc-go/v8/modules/core/04-channel/types"
+	porttypes "github.com/cosmos/ibc-go/v8/modules/core/05-port/types"
 
 	"github.com/elys-network/elys/x/transferhook/keeper"
 	"github.com/elys-network/elys/x/transferhook/types"
 
-	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
+	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 )
 
 // IBCModule implements the ICS26 interface for transfer given the transfer keeper.

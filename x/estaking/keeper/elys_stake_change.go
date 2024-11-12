@@ -1,37 +1,39 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/estaking/types"
 )
 
 func (k Keeper) SetElysStakeChange(ctx sdk.Context, addr sdk.AccAddress) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetElysStakeChangeKey(addr)
 	store.Set(key, addr)
 }
 
 func (k Keeper) GetElysStakeChange(ctx sdk.Context, addr sdk.AccAddress) (found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetElysStakeChangeKey(addr)
 	return store.Has(key)
 }
 
 func (k Keeper) RemoveElysStakeChange(ctx sdk.Context, address sdk.AccAddress) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetElysStakeChangeKey(address)
 	store.Delete(key)
 }
 
 func (k Keeper) DeleteLegacyElysStakeChange(ctx sdk.Context, address sdk.AccAddress) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyElysStakeChangeKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyElysStakeChangeKeyPrefix))
 	store.Delete([]byte(address))
 }
 
 func (k Keeper) GetAllElysStakeChange(ctx sdk.Context) (list []sdk.AccAddress) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ElysStakeChangeKeyPrefix)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.ElysStakeChangeKeyPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -43,8 +45,8 @@ func (k Keeper) GetAllElysStakeChange(ctx sdk.Context) (list []sdk.AccAddress) {
 }
 
 func (k Keeper) GetAllLegacyElysStakeChange(ctx sdk.Context) (list []sdk.AccAddress) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LegacyKeyPrefix(types.LegacyElysStakeChangeKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyElysStakeChangeKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

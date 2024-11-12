@@ -1,9 +1,9 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
-	types "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
@@ -25,7 +25,7 @@ func TestMsgFeedPrice_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgFeedPrice{
 				Provider: sample.AccAddress(),
-				Price:    types.MustNewDecFromStr("100"),
+				Price:    sdkmath.LegacyMustNewDecFromStr("100"),
 			},
 		},
 	}

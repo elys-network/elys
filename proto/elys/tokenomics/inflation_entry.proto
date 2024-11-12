@@ -4,10 +4,10 @@ package elys.tokenomics;
 option go_package = "github.com/elys-network/elys/x/tokenomics/types";
 
 message InflationEntry {
-  
-  uint64 lm_rewards = 1; 
-  uint64 ics_staking_rewards = 2; 
-  uint64 community_fund = 3; 
-  uint64 strategic_reserve = 4; 
-  uint64 team_tokens_vested = 5; 
+
+  uint64 lm_rewards = 1;
+  uint64 ics_staking_rewards = 2;
+  uint64 community_fund = 3;
+  uint64 strategic_reserve = 4;
+  uint64 team_tokens_vested = 5;
 }

@@ -1,0 +1,30 @@
+{
+    "messages": [
+        {
+            "@type": "/elys.assetprofile.MsgUpdateEntry",
+            "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+            "address": "",
+            "baseDenom": "zyzae",
+            "decimals": "18",
+            "denom": "zyzae",
+            "displayName": "XYZE",
+            "displaySymbol": "",
+            "externalSymbol": "",
+            "ibcChannelId": "",
+            "ibcCounterpartyChainId": "",
+            "ibcCounterpartyChannelId": "",
+            "ibcCounterpartyDenom": "",
+            "network": "",
+            "path": "",
+            "permissions": [],
+            "transferLimit": "",
+            "unitDenom": "",
+            "commit_enabled": true,
+            "withdraw_enabled": false
+        }
+    ],
+    "metadata": "ipfs://CID",
+    "deposit": "10000000stake",
+    "title": "update entry",
+    "summary": "asdasd"
+}

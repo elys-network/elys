@@ -22,7 +22,7 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 		{
 			desc:              "successful bonding process",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			bondAmount:        sdk.NewInt(10000),
+			bondAmount:        math.NewInt(10000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)}.Sort(),
 			expSenderCommit:   sdk.NewInt64Coin(types.GetShareDenom(), 10000),
 			expPass:           true,
@@ -30,7 +30,7 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 		{
 			desc:              "lack of balance",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
-			bondAmount:        sdk.NewInt(10000000000000),
+			bondAmount:        math.NewInt(10000000000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expSenderCommit:   sdk.Coin{},
 			expPass:           false,
@@ -48,7 +48,7 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tc.senderInitBalance)
 			suite.Require().NoError(err)
 
-			msgServer := keeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 			_, err = msgServer.Bond(
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgBond{

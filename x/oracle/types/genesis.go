@@ -5,7 +5,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	host "github.com/cosmos/ibc-go/v7/modules/core/24-host"
+	host "github.com/cosmos/ibc-go/v8/modules/core/24-host"
 )
 
 // DefaultIndex is the default global index

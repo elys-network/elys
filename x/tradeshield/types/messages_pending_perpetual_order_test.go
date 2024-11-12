@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -25,13 +26,13 @@ func TestMsgCreatePerpetualOpenOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCreatePerpetualOpenOrder{
 				OwnerAddress:    sample.AccAddress(),
-				TriggerPrice:    &TriggerPrice{Rate: sdk.NewDec(100), TradingAssetDenom: "base"},
-				Collateral:      sdk.NewCoin("token", sdk.NewInt(1000)),
+				TriggerPrice:    &TriggerPrice{Rate: math.LegacyNewDec(100), TradingAssetDenom: "base"},
+				Collateral:      sdk.NewCoin("token", math.NewInt(1000)),
 				TradingAsset:    "asset",
 				Position:        PerpetualPosition_LONG,
-				Leverage:        sdk.NewDec(2),
-				TakeProfitPrice: sdk.NewDec(150),
-				StopLossPrice:   sdk.NewDec(90),
+				Leverage:        math.LegacyNewDec(2),
+				TakeProfitPrice: math.LegacyNewDec(150),
+				StopLossPrice:   math.LegacyNewDec(90),
 				PoolId:          1,
 			},
 		},
@@ -64,7 +65,7 @@ func TestMsgCreatePerpetualCloseOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCreatePerpetualCloseOrder{
 				OwnerAddress: sample.AccAddress(),
-				TriggerPrice: &TriggerPrice{Rate: sdk.NewDec(100), TradingAssetDenom: "base"},
+				TriggerPrice: &TriggerPrice{Rate: math.LegacyNewDec(100), TradingAssetDenom: "base"},
 				PositionId:   1,
 			},
 		},
@@ -97,7 +98,7 @@ func TestMsgUpdatePerpetualOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgUpdatePerpetualOrder{
 				OwnerAddress: sample.AccAddress(),
-				TriggerPrice: &TriggerPrice{Rate: sdk.NewDec(100), TradingAssetDenom: "base"},
+				TriggerPrice: &TriggerPrice{Rate: math.LegacyNewDec(100), TradingAssetDenom: "base"},
 				OrderId:      1,
 			},
 		},

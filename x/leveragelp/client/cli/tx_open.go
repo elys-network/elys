@@ -1,13 +1,13 @@
 package cli
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"github.com/spf13/cobra"
 )
@@ -29,13 +29,13 @@ func CmdOpen() *cobra.Command {
 				return errors.New("signer address is missing")
 			}
 
-			leverage, err := sdk.NewDecFromStr(args[0])
+			leverage, err := sdkmath.LegacyNewDecFromStr(args[0])
 			if err != nil {
 				return err
 			}
 
 			collateralAsset := args[1]
-			collateralAmount, ok := sdk.NewIntFromString(args[2])
+			collateralAmount, ok := sdkmath.NewIntFromString(args[2])
 			if !ok {
 				return errors.New("invalid collateral amount")
 			}
@@ -45,7 +45,7 @@ func CmdOpen() *cobra.Command {
 				return err
 			}
 
-			stopLossPrice, err := sdk.NewDecFromStr(args[4])
+			stopLossPrice, err := sdkmath.LegacyNewDecFromStr(args[4])
 			if err != nil {
 				return err
 			}

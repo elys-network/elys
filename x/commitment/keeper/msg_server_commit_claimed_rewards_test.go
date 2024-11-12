@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	sdkmath "cosmossdk.io/math"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/app"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -18,18 +18,18 @@ import (
 
 func TestCommitClaimedRewardsWithEden(t *testing.T) {
 	// Create a test context and keeper
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Define the test data
 	creator := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String()
 	denom := ptypes.Eden
-	initialUnclaimed := sdk.NewInt(500)
-	commitAmount := sdk.NewInt(100)
+	initialUnclaimed := sdkmath.NewInt(500)
+	commitAmount := sdkmath.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed tokens
 	rewardsClaimed := sdk.NewCoin(denom, initialUnclaimed)
@@ -62,18 +62,18 @@ func TestCommitClaimedRewardsWithEden(t *testing.T) {
 
 func TestCommitClaimedRewardsWithEdenB(t *testing.T) {
 	// Create a test context and keeper
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Define the test data
 	creator := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String()
 	denom := ptypes.EdenB
-	initialUnclaimed := sdk.NewInt(500)
-	commitAmount := sdk.NewInt(100)
+	initialUnclaimed := sdkmath.NewInt(500)
+	commitAmount := sdkmath.NewInt(100)
 
 	// Set up initial commitments object with sufficient unclaimed tokens
 	rewardsClaimed := sdk.NewCoin(denom, initialUnclaimed)
@@ -106,12 +106,12 @@ func TestCommitClaimedRewardsWithEdenB(t *testing.T) {
 
 // TestCommitClaimedRewardsWithInvalidDenom tests the CommitClaimedRewards function with an invalid denom
 func TestCommitClaimedRewardsWithInvalidDenom(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Create a new account
 	creator := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String()
@@ -119,7 +119,7 @@ func TestCommitClaimedRewardsWithInvalidDenom(t *testing.T) {
 	// Create a commit claimed rewards message with an invalid denom
 	msg := types.MsgCommitClaimedRewards{
 		Creator: creator,
-		Amount:  sdk.NewInt(100),
+		Amount:  sdkmath.NewInt(100),
 		Denom:   "invalid",
 	}
 
@@ -131,12 +131,12 @@ func TestCommitClaimedRewardsWithInvalidDenom(t *testing.T) {
 
 // TestCommitClaimedRewardsWithEdenDisabled tests the CommitClaimedRewards function with Eden disabled
 func TestCommitClaimedRewardsWithEdenDisabled(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Create a new account
 	creator := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String()
@@ -147,7 +147,7 @@ func TestCommitClaimedRewardsWithEdenDisabled(t *testing.T) {
 	// Create a commit claimed rewards message with Eden
 	msg := types.MsgCommitClaimedRewards{
 		Creator: creator,
-		Amount:  sdk.NewInt(100),
+		Amount:  sdkmath.NewInt(100),
 		Denom:   ptypes.Eden,
 	}
 

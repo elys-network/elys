@@ -12,7 +12,7 @@ import (
 
 func networkWithPendingPerpetualOrderObjects(t *testing.T, n int) (*network.Network, []types.PerpetualOrder) {
 	t.Helper()
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig(t.TempDir())
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
 		pendingPerpetualOrder := types.PerpetualOrder{

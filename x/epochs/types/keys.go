@@ -6,9 +6,6 @@ const (
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
-
-	// RouterKey is the message route for epochs
-	RouterKey = ModuleName
 )
 
 // prefix bytes for the epochs persistent store

@@ -12,6 +12,9 @@ import (
 
 // Update params through gov proposal
 func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {

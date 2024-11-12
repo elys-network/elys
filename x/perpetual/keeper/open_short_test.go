@@ -15,13 +15,13 @@ import (
 func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 	suite.SetupCoinPrices()
 	addr := suite.AddAccounts(10, nil)
-	amount := sdk.NewInt(1000)
+	amount := math.NewInt(1000)
 	poolCreator := addr[0]
 	positionCreator := addr[1]
 	poolId := uint64(1)
 	var ammPool ammtypes.Pool
 	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
-	params.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.12")
+	params.BorrowInterestRateMin = math.LegacyMustNewDecFromStr("0.12")
 	_ = suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 	msg := &types.MsgOpen{
 		Creator:         positionCreator.String(),
@@ -30,8 +30,8 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		PoolId:          poolId,
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-		TakeProfitPrice: sdk.ZeroDec(),
-		StopLossPrice:   sdk.ZeroDec(),
+		TakeProfitPrice: math.LegacyZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 	testCases := []struct {
 		name                 string
@@ -54,7 +54,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 			"pool does not exist",
 			false,
 			func() {
-				ammPool = suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				ammPool = suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 				poolId = ammPool.PoolId
 				enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 					Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -112,7 +112,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 			func() {
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				params = suite.app.PerpetualKeeper.GetParams(suite.ctx)
-				params.BorrowInterestRateMin = sdk.MustNewDecFromStr("0.12")
+				params.BorrowInterestRateMin = math.LegacyMustNewDecFromStr("0.12")
 				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 				suite.Require().NoError(err)
 				err = suite.app.BankKeeper.SendCoinsFromAccountToModule(suite.ctx, positionCreator, govtypes.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
@@ -151,7 +151,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 			"amount too low",
 			false,
 			func() {
-				suite.ResetAndSetSuite(addr, true, amount.MulRaw(1000), sdk.NewInt(2))
+				suite.ResetAndSetSuite(addr, true, amount.MulRaw(1000), math.NewInt(2))
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				msg.Collateral.Amount = amount
 				msg.TradingAsset = ptypes.ATOM

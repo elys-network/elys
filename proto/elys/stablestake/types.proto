@@ -7,31 +7,31 @@ import "cosmos_proto/cosmos.proto";
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
 
 message BalanceBorrowed {
-    string usd_amount = 1 [
-        (cosmos_proto.scalar)  = "cosmos.Dec",
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-        (gogoproto.nullable)   = false
-    ];
-    string percentage = 2 [
-        (cosmos_proto.scalar)  = "cosmos.Dec",
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-        (gogoproto.nullable)   = false
-    ];
+  string usd_amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string percentage = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message InterestBlock {
-    string interest_rate = 1 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-        (gogoproto.nullable) = false
-    ];
-    int64 block_time = 2;
-    uint64 block_height = 3;
+  string interest_rate = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  int64 block_time = 2;
+  uint64 block_height = 3;
 }
 
 message LegacyInterestBlock {
-    string interest_rate = 1 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-        (gogoproto.nullable) = false
-    ];
-    int64 block_time = 2;
+  string interest_rate = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  int64 block_time = 2;
 }

@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -15,16 +15,16 @@ import (
 
 // TestDepositLiquidTokensWithNoEntry tests the deposit of liquid tokens with no assetprofile entry
 func TestDepositLiquidTokensWithNoEntry(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Mint 100ueden
-	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)))
+	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(100)))
 
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, edenToken)
 	require.NoError(t, err)
@@ -39,30 +39,30 @@ func TestDepositLiquidTokensWithNoEntry(t *testing.T) {
 		CommittedTokens: []*types.CommittedTokens{
 			{
 				Denom:  ptypes.Eden,
-				Amount: sdk.NewInt(50),
+				Amount: sdkmath.NewInt(50),
 			},
 		},
-		Claimed: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdk.NewInt(150))},
+		Claimed: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(150))},
 	}
 	keeper.SetCommitments(ctx, commitments)
 
 	// Deposit liquid eden to become claimed state
-	err = keeper.DepositLiquidTokensClaimed(ctx, ptypes.Eden, sdk.NewInt(100), creator)
+	err = keeper.DepositLiquidTokensClaimed(ctx, ptypes.Eden, sdkmath.NewInt(100), creator)
 	require.Error(t, err)
 }
 
 // TestDepositLiquidTokensWithEntryDisabled tests the deposit of liquid tokens with assetprofile entry disabled
 func TestDepositLiquidTokensWithEntryDisabled(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Mint 100ueden
-	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)))
+	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(100)))
 
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, edenToken)
 	require.NoError(t, err)
@@ -80,29 +80,31 @@ func TestDepositLiquidTokensWithEntryDisabled(t *testing.T) {
 		CommittedTokens: []*types.CommittedTokens{
 			{
 				Denom:  ptypes.Eden,
-				Amount: sdk.NewInt(50),
+				Amount: sdkmath.NewInt(50),
 			},
 		},
-		Claimed: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdk.NewInt(150))},
+		Claimed: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(150))},
 	}
 	keeper.SetCommitments(ctx, commitments)
 
 	// Deposit liquid eden to become claimed state
-	err = keeper.DepositLiquidTokensClaimed(ctx, ptypes.Eden, sdk.NewInt(100), creator)
+	err = keeper.DepositLiquidTokensClaimed(ctx, ptypes.Eden, sdkmath.NewInt(100), creator)
 	require.Error(t, err)
 }
 
 func TestDepositLiquidTokens(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
+	app := simapp.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000))
+	simapp.SetStakingParam(app, ctx)
+	simapp.SetupAssetProfile(app, ctx)
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(1000000))
 
 	// Mint 100ueden
-	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdk.NewInt(100)))
+	edenToken := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(100)))
 
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, edenToken)
 	require.NoError(t, err)
@@ -120,15 +122,15 @@ func TestDepositLiquidTokens(t *testing.T) {
 		CommittedTokens: []*types.CommittedTokens{
 			{
 				Denom:  ptypes.Eden,
-				Amount: sdk.NewInt(50),
+				Amount: sdkmath.NewInt(50),
 			},
 		},
-		Claimed: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdk.NewInt(150))},
+		Claimed: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(150))},
 	}
 	keeper.SetCommitments(ctx, commitments)
 
 	// Deposit liquid eden to become claimed state
-	err = keeper.DepositLiquidTokensClaimed(ctx, ptypes.Eden, sdk.NewInt(100), creator)
+	err = keeper.DepositLiquidTokensClaimed(ctx, ptypes.Eden, sdkmath.NewInt(100), creator)
 	require.NoError(t, err)
 
 	// Check if the deposit tokens were added to commitments
@@ -136,12 +138,12 @@ func TestDepositLiquidTokens(t *testing.T) {
 
 	// Check if the claimed tokens were updated correctly
 	claimed := newCommitments.GetClaimedForDenom(ptypes.Eden)
-	require.Equal(t, sdk.NewInt(250), claimed, "claimed tokens were not updated correctly")
+	require.Equal(t, sdkmath.NewInt(250), claimed, "claimed tokens were not updated correctly")
 
 	// Check if the committed tokens were updated correctly
 	committedToken := newCommitments.GetCommittedAmountForDenom(ptypes.Eden)
-	require.Equal(t, sdk.NewInt(50), committedToken, "committed tokens were not updated correctly")
+	require.Equal(t, sdkmath.NewInt(50), committedToken, "committed tokens were not updated correctly")
 
 	edenCoin := app.BankKeeper.GetBalance(ctx, addr[0], ptypes.Eden)
-	require.Equal(t, edenCoin.Amount, sdk.ZeroInt())
+	require.Equal(t, edenCoin.Amount, sdkmath.ZeroInt())
 }

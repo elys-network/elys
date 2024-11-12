@@ -1,0 +1,26 @@
+{
+    "messages": [
+     {
+      "@type": "/elys.stablestake.MsgUpdateParams",
+      "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+      "params": {
+        "deposit_denom": "uusdc",
+        "epoch_length": "1",
+        "health_gain_factor": "1.000000000000000000",
+        "interest_rate": "0.120000000000000000",
+        "interest_rate_decrease": "0.010000000000000000",
+        "interest_rate_increase": "0.010000000000000000",
+        "interest_rate_max": "0.170000000000000000",
+        "interest_rate_min": "0.120000000000000000",
+        "max_leverage_ratio": "0.700000000000000000",
+        "redemption_rate": "1.000009403362797203",
+        "total_value": "300001881"
+        }
+     }
+    ],
+    "metadata": "ipfs://CID",
+   
+    "deposit": "10000000stake",
+    "title": "MsgUpdateParams",
+    "summary": "asdasd"
+}

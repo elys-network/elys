@@ -8,7 +8,7 @@ import (
 )
 
 // Repay ammPool has to be pointer because RemoveFromPoolBalance updates pool assets
-func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, returnAmount math.Int, payingLiabilities math.Int, closingRatio sdk.Dec, baseCurrency string) error {
+func (k Keeper) Repay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, returnAmount math.Int, payingLiabilities math.Int, closingRatio math.LegacyDec, baseCurrency string) error {
 	if returnAmount.IsPositive() {
 		returnCoins := sdk.NewCoins(sdk.NewCoin(mtp.CustodyAsset, returnAmount))
 		err := k.SendFromAmmPool(ctx, ammPool, mtp.GetAccountAddress(), returnCoins)

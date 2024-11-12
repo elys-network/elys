@@ -3,6 +3,7 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -18,29 +19,29 @@ func GetPositionFromString(s string) Position {
 	}
 }
 
-func NewMTP(ctx sdk.Context, signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsset string, position Position, takeProfitPrice sdk.Dec, poolId uint64) *MTP {
+func NewMTP(ctx sdk.Context, signer, collateralAsset, tradingAsset, liabilitiesAsset, custodyAsset string, position Position, takeProfitPrice sdkmath.LegacyDec, poolId uint64) *MTP {
 	return &MTP{
 		Address:                       signer,
 		CollateralAsset:               collateralAsset,
 		TradingAsset:                  tradingAsset,
 		LiabilitiesAsset:              liabilitiesAsset,
 		CustodyAsset:                  custodyAsset,
-		Collateral:                    sdk.ZeroInt(),
-		Liabilities:                   sdk.ZeroInt(),
-		BorrowInterestPaidCustody:     sdk.ZeroInt(),
-		BorrowInterestUnpaidLiability: sdk.ZeroInt(),
-		Custody:                       sdk.ZeroInt(),
-		TakeProfitLiabilities:         sdk.ZeroInt(),
-		TakeProfitCustody:             sdk.ZeroInt(),
-		MtpHealth:                     sdk.ZeroDec(),
+		Collateral:                    sdkmath.ZeroInt(),
+		Liabilities:                   sdkmath.ZeroInt(),
+		BorrowInterestPaidCustody:     sdkmath.ZeroInt(),
+		BorrowInterestUnpaidLiability: sdkmath.ZeroInt(),
+		Custody:                       sdkmath.ZeroInt(),
+		TakeProfitLiabilities:         sdkmath.ZeroInt(),
+		TakeProfitCustody:             sdkmath.ZeroInt(),
+		MtpHealth:                     sdkmath.LegacyZeroDec(),
 		Position:                      position,
 		Id:                            0,
 		AmmPoolId:                     poolId,
 		TakeProfitPrice:               takeProfitPrice,
-		TakeProfitBorrowFactor:        sdk.OneDec(),
-		FundingFeePaidCustody:         sdk.ZeroInt(),
-		FundingFeeReceivedCustody:     sdk.ZeroInt(),
-		OpenPrice:                     sdk.ZeroDec(),
+		TakeProfitBorrowFactor:        sdkmath.LegacyOneDec(),
+		FundingFeePaidCustody:         sdkmath.ZeroInt(),
+		FundingFeeReceivedCustody:     sdkmath.ZeroInt(),
+		OpenPrice:                     sdkmath.LegacyZeroDec(),
 		StopLossPrice:                 math.LegacyZeroDec(),
 		LastInterestCalcTime:          uint64(ctx.BlockTime().Unix()),
 		LastInterestCalcBlock:         uint64(ctx.BlockHeight()),
