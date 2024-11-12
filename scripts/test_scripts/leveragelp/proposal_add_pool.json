@@ -1,0 +1,18 @@
+{
+    "title": "Enable ATOM/USDC pool (PoolId 1) on leveragelp",
+    "summary": "Enable ATOM/USDC pool (PoolId 1) on leveragelp",
+    "messages": [
+      {
+          "@type": "/elys.leveragelp.MsgAddPool",
+          "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+          "pool": 
+            {
+                "amm_pool_id": 3,
+                "leverage_max": "10.0"
+            }
+      }
+    ],
+    "deposit": "10000000stake",
+    "metadata": "ipfs://CID"
+}
+  

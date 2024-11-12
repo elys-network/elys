@@ -15,37 +15,39 @@ option go_package = "github.com/elys-network/elys/x/tokenomics/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
+
   // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/tokenomics/params";
-  
   }
-  
+
   // Queries a list of Airdrop items.
-  rpc Airdrop    (QueryGetAirdropRequest) returns (QueryGetAirdropResponse) {
-    option (google.api.http).get = "/elys-network/elys/tokenomics/airdrop/{intent}";
-  
+  rpc Airdrop(QueryGetAirdropRequest) returns (QueryGetAirdropResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tokenomics/airdrop/{intent}";
   }
-  rpc AirdropAll (QueryAllAirdropRequest) returns (QueryAllAirdropResponse) {
+  rpc AirdropAll(QueryAllAirdropRequest) returns (QueryAllAirdropResponse) {
     option (google.api.http).get = "/elys-network/elys/tokenomics/airdrop";
-  
   }
-  
+
   // Queries a GenesisInflation by index.
-  rpc GenesisInflation (QueryGetGenesisInflationRequest) returns (QueryGetGenesisInflationResponse) {
-    option (google.api.http).get = "/elys-network/elys/tokenomics/genesis_inflation";
-  
+  rpc GenesisInflation(QueryGetGenesisInflationRequest)
+      returns (QueryGetGenesisInflationResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tokenomics/genesis_inflation";
   }
-  
+
   // Queries a list of TimeBasedInflation items.
-  rpc TimeBasedInflation    (QueryGetTimeBasedInflationRequest) returns (QueryGetTimeBasedInflationResponse) {
-    option (google.api.http).get = "/elys-network/elys/tokenomics/time_based_inflation/{start_block_height}/{end_block_height}";
-  
+  rpc TimeBasedInflation(QueryGetTimeBasedInflationRequest)
+      returns (QueryGetTimeBasedInflationResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tokenomics/time_based_inflation/"
+        "{start_block_height}/{end_block_height}";
   }
-  rpc TimeBasedInflationAll (QueryAllTimeBasedInflationRequest) returns (QueryAllTimeBasedInflationResponse) {
-    option (google.api.http).get = "/elys-network/elys/tokenomics/time_based_inflation";
-  
+  rpc TimeBasedInflationAll(QueryAllTimeBasedInflationRequest)
+      returns (QueryAllTimeBasedInflationResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tokenomics/time_based_inflation";
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -53,17 +55,15 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  
+
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryGetAirdropRequest {
-  string intent = 1;
-}
+message QueryGetAirdropRequest { string intent = 1; }
 
 message QueryGetAirdropResponse {
-  Airdrop airdrop = 1 [(gogoproto.nullable) = false];
+  Airdrop airdrop = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllAirdropRequest {
@@ -71,23 +71,23 @@ message QueryAllAirdropRequest {
 }
 
 message QueryAllAirdropResponse {
-  repeated Airdrop                                airdrop    = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated Airdrop airdrop = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryGetGenesisInflationRequest {}
 
 message QueryGetGenesisInflationResponse {
-  GenesisInflation genesis_inflation = 1 [(gogoproto.nullable) = false];
+  GenesisInflation genesis_inflation = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryGetTimeBasedInflationRequest {
   uint64 start_block_height = 1;
-  uint64 end_block_height   = 2;
+  uint64 end_block_height = 2;
 }
 
 message QueryGetTimeBasedInflationResponse {
-  TimeBasedInflation time_based_inflation = 1 [(gogoproto.nullable) = false];
+  TimeBasedInflation time_based_inflation = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllTimeBasedInflationRequest {
@@ -95,7 +95,7 @@ message QueryAllTimeBasedInflationRequest {
 }
 
 message QueryAllTimeBasedInflationResponse {
-  repeated TimeBasedInflation                     time_based_inflation = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination         = 2;
+  repeated TimeBasedInflation time_based_inflation = 1
+      [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
-

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
@@ -11,6 +12,9 @@ import (
 )
 
 func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types.MsgAddPoolResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {
@@ -33,7 +37,7 @@ func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types
 	}
 
 	maxLeverageAllowed := k.GetMaxLeverageParam(ctx)
-	leverage := sdk.MinDec(msg.Pool.LeverageMax, maxLeverageAllowed)
+	leverage := sdkmath.LegacyMinDec(msg.Pool.LeverageMax, maxLeverageAllowed)
 
 	newPool := types.NewPool(ammPool.PoolId, leverage)
 	k.SetPool(ctx, newPool)

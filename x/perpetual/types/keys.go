@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	"encoding/binary"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,12 +14,6 @@ const (
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
-
-	// RouterKey defines the module's message routing key
-	RouterKey = ModuleName
-
-	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_perpetual"
 
 	// ParamsKey is the prefix for parameters of perpetual module
 	ParamsKey = "perpetual_params"
@@ -34,8 +29,8 @@ const (
 )
 
 var (
-	TakeProfitPriceDefault = sdk.MustNewDecFromStr("10000000000000000000000000000000000000000") // 10^40
-	StopLossPriceDefault   = sdk.ZeroDec()
+	TakeProfitPriceDefault = math.LegacyMustNewDecFromStr("10000000000000000000000000000000000000000") // 10^40
+	StopLossPriceDefault   = math.LegacyZeroDec()
 )
 
 var (

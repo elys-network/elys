@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -16,7 +17,7 @@ func (k Keeper) SwapEstimation(goCtx context.Context, req *types.QuerySwapEstima
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	spotPrice, _, tokenOut, swapFee, discount, availableLiquidity, slippage, weightBonus, err := k.CalcInRouteSpotPrice(ctx, req.TokenIn, req.Routes, req.Discount, sdk.ZeroDec())
+	spotPrice, _, tokenOut, swapFee, discount, availableLiquidity, slippage, weightBonus, err := k.CalcInRouteSpotPrice(ctx, req.TokenIn, req.Routes, req.Discount, sdkmath.LegacyZeroDec())
 	if err != nil {
 		return nil, err
 	}

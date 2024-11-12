@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/x/assetprofile/types"
@@ -19,7 +20,7 @@ func (k Keeper) EntryAll(goCtx context.Context, req *types.QueryAllEntryRequest)
 	var entrys []types.Entry
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	entryStore := prefix.NewStore(store, types.KeyPrefix(types.EntryKeyPrefix))
 
 	pageRes, err := query.Paginate(entryStore, req.Pagination, func(key []byte, value []byte) error {

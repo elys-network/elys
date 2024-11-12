@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -14,33 +15,33 @@ func (p Pool) CalcGivenOutSlippage(
 	tokensOut sdk.Coins,
 	tokenInDenom string,
 	accPoolKeeper AccountedPoolKeeper,
-) (sdk.Dec, error) {
-	balancerInCoin, _, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, sdk.ZeroDec(), accPoolKeeper)
+) (sdkmath.LegacyDec, error) {
+	balancerInCoin, _, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, sdkmath.LegacyZeroDec(), accPoolKeeper)
 	if err != nil {
-		return sdk.ZeroDec(), err
+		return sdkmath.LegacyZeroDec(), err
 	}
 
 	tokenOut, poolAssetOut, poolAssetIn, err := p.parsePoolAssets(tokensOut, tokenInDenom)
 	if err != nil {
-		return sdk.ZeroDec(), err
+		return sdkmath.LegacyZeroDec(), err
 	}
 
 	// ensure token prices for in/out tokens set properly
 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
 	if inTokenPrice.IsZero() {
-		return sdk.ZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
+		return sdkmath.LegacyZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
 	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOut.Denom)
 	if outTokenPrice.IsZero() {
-		return sdk.ZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
+		return sdkmath.LegacyZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
 
 	// in amount is calculated in this formula
-	oracleInAmount := sdk.NewDecFromInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
-	balancerIn := sdk.NewDecFromInt(balancerInCoin.Amount)
+	oracleInAmount := sdkmath.LegacyNewDecFromInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
+	balancerIn := sdkmath.LegacyNewDecFromInt(balancerInCoin.Amount)
 	balancerSlippage := balancerIn.Sub(oracleInAmount)
 	if balancerSlippage.IsNegative() {
-		return sdk.ZeroDec(), nil
+		return sdkmath.LegacyZeroDec(), nil
 	}
 	return balancerSlippage, nil
 }
@@ -49,37 +50,37 @@ func (p Pool) CalcGivenOutSlippage(
 // weightBreakingFeePerpetualFactor should be 1 if perpetual is not the one calling this function
 func (p *Pool) SwapInAmtGivenOut(
 	ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool,
-	tokensOut sdk.Coins, tokenInDenom string, swapFee sdk.Dec, accPoolKeeper AccountedPoolKeeper, weightBreakingFeePerpetualFactor math.LegacyDec) (
-	tokenIn sdk.Coin, slippage, slippageAmount sdk.Dec, weightBalanceBonus sdk.Dec, err error,
+	tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec, accPoolKeeper AccountedPoolKeeper, weightBreakingFeePerpetualFactor math.LegacyDec) (
+	tokenIn sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, err error,
 ) {
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
 		balancerInCoin, slippage, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, swapFee, accPoolKeeper)
 		if err != nil {
-			return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
+			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
-		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut, swapFee, sdk.ZeroDec())
+		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut, swapFee, sdkmath.LegacyZeroDec())
 		if err != nil {
-			return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
+			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
-		return balancerInCoin, slippage, sdk.ZeroDec(), sdk.ZeroDec(), nil
+		return balancerInCoin, slippage, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 	}
 
 	tokenOut, poolAssetOut, poolAssetIn, err := p.parsePoolAssets(tokensOut, tokenInDenom)
 	if err != nil {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
 	// ensure token prices for in/out tokens set properly
 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
 	if inTokenPrice.IsZero() {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
 	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOut.Denom)
 	if outTokenPrice.IsZero() {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
 
 	accountedAssets := p.GetAccountedBalance(ctx, accPoolKeeper, p.PoolAssets)
@@ -89,18 +90,18 @@ func (p *Pool) SwapInAmtGivenOut(
 	// balancer slippage amount = Max(oracleOutAmount-balancerOutAmount, 0)
 	// resizedAmount = tokenIn / externalLiquidityRatio
 	// actualSlippageAmount = balancer slippage(resizedAmount)
-	oracleInAmount := sdk.NewDecFromInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
+	oracleInAmount := sdkmath.LegacyNewDecFromInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
 
 	externalLiquidityRatio, err := p.GetAssetExternalLiquidityRatio(tokenOut.Denom)
 	if err != nil {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	// Ensure externalLiquidityRatio is not zero to avoid division by zero
 	if externalLiquidityRatio.IsZero() {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), ErrAmountTooLow
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
 	}
 
-	resizedAmount := sdk.NewDecFromInt(tokenOut.Amount).Quo(externalLiquidityRatio).RoundInt()
+	resizedAmount := sdkmath.LegacyNewDecFromInt(tokenOut.Amount).Quo(externalLiquidityRatio).RoundInt()
 	slippageAmount, err = p.CalcGivenOutSlippage(
 		ctx,
 		oracleKeeper,
@@ -110,7 +111,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		accPoolKeeper,
 	)
 	if err != nil {
-		return sdk.Coin{}, sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdk.Coin{}, sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	inAmountAfterSlippage := oracleInAmount.Add(slippageAmount)
 	slippage = slippageAmount.Quo(oracleInAmount)
@@ -121,7 +122,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		tokensOut, accountedAssets,
 	)
 	if err != nil {
-		return sdk.Coin{}, sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdk.Coin{}, sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
@@ -146,8 +147,8 @@ func (p *Pool) SwapInAmtGivenOut(
 
 	// If swap is improving weight, set weight breaking fee to zero
 	if distanceDiff.IsNegative() {
-		weightBreakingFee = sdk.ZeroDec()
-		weightBalanceBonus = sdk.ZeroDec()
+		weightBreakingFee = sdkmath.LegacyZeroDec()
+		weightBalanceBonus = sdkmath.LegacyZeroDec()
 
 		// set weight breaking fee to zero if bonus is applied
 		if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) {
@@ -155,18 +156,18 @@ func (p *Pool) SwapInAmtGivenOut(
 		}
 	}
 
-	if swapFee.GTE(sdk.OneDec()) {
-		return sdk.Coin{}, sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), ErrTooMuchSwapFee
+	if swapFee.GTE(sdkmath.LegacyOneDec()) {
+		return sdk.Coin{}, sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrTooMuchSwapFee
 	}
 
 	tokenAmountInInt := inAmountAfterSlippage.
-		Mul(sdk.OneDec().Add(weightBreakingFee)).
-		Quo(sdk.OneDec().Sub(swapFee)).
+		Mul(sdkmath.LegacyOneDec().Add(weightBreakingFee)).
+		Quo(sdkmath.LegacyOneDec().Sub(swapFee)).
 		TruncateInt()
 	tokenIn = sdk.NewCoin(tokenInDenom, tokenAmountInInt)
-	err = p.applySwap(ctx, sdk.Coins{tokenIn}, tokensOut, swapFee, sdk.ZeroDec())
+	err = p.applySwap(ctx, sdk.Coins{tokenIn}, tokensOut, swapFee, sdkmath.LegacyZeroDec())
 	if err != nil {
-		return sdk.Coin{}, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), err
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	return tokenIn, slippage, slippageAmount, weightBalanceBonus, nil
 }

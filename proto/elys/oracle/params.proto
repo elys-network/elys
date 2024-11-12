@@ -9,11 +9,9 @@ option go_package = "github.com/elys-network/elys/x/oracle/types";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  
+
   string band_channel_source = 1;
-  uint64 oracle_script_id = 2 [
-    (gogoproto.customname) = "OracleScriptID"
-  ];
+  uint64 oracle_script_id = 2 [ (gogoproto.customname) = "OracleScriptID" ];
   uint64 multiplier = 3;
   uint64 ask_count = 4;
   uint64 min_count = 5;

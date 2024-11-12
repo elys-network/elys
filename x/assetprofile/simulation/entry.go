@@ -29,7 +29,7 @@ func SimulateMsgCreateEntry(
 
 		_, found := k.GetEntry(ctx, msg.BaseDenom)
 		if found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "Entry already exist"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgAddEntry{}), "Entry already exist"), nil, nil
 		}
 
 		txCtx := simulation.OperationInput{
@@ -38,7 +38,6 @@ func SimulateMsgCreateEntry(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -72,7 +71,7 @@ func SimulateMsgUpdateEntry(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "entry authority not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateEntry{}), "entry authority not found"), nil, nil
 		}
 		msg.Authority = simAccount.Address.String()
 
@@ -84,7 +83,6 @@ func SimulateMsgUpdateEntry(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -118,7 +116,7 @@ func SimulateMsgDeleteEntry(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "entry authority not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateEntry{}), "entry authority not found"), nil, nil
 		}
 		msg.Authority = simAccount.Address.String()
 
@@ -130,7 +128,6 @@ func SimulateMsgDeleteEntry(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,

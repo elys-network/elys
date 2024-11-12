@@ -41,7 +41,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_ErrPoolDoes
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
@@ -75,7 +75,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_ErrAssetPro
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
@@ -110,7 +110,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_Successful(
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)

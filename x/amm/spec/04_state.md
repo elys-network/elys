@@ -26,7 +26,7 @@ type Pool struct {
 	// They contain the pool asset and the information about the weight
 	PoolAssets []PoolAsset
 	// sum of all non-normalized pool weights
-	TotalWeight math.Int
+	TotalWeight sdkmath.Int
 }
 ```
 
@@ -61,7 +61,7 @@ type PoolAsset struct {
 	// the denomination must be unique amongst all PoolAssets for this pool.
 	Token sdk.Coin
 	// Weight that is not normalized. This weight must be less than 2^50
-	Weight math.Int
+	Weight sdkmath.Int
 }
 ```
 
@@ -77,13 +77,13 @@ type PoolAsset struct {
 
 ```go
 type PoolParams struct {
-	SwapFee                     sdk.Dec
-	ExitFee                     sdk.Dec
+	SwapFee                     sdkmath.LegacyDec
+	ExitFee                     sdkmath.LegacyDec
 	SmoothWeightChangeParams    *SmoothWeightChangeParams
-	WeightBreakingFeeMutliplier sdk.Dec
+	WeightBreakingFeeMutliplier sdkmath.LegacyDec
     UseOracle                   bool
-    ExternalLiquidityRatio      sdk.Dec
-    WeightRecoveryFeePortion    sdk.Dec
-    ThresholdWeightDiff         sdk.Dec
+    ExternalLiquidityRatio      sdkmath.LegacyDec
+    WeightRecoveryFeePortion    sdkmath.LegacyDec
+    ThresholdWeightDiff         sdkmath.LegacyDec
 }
 ```

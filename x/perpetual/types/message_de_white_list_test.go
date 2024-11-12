@@ -3,7 +3,6 @@ package types
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/assert"
@@ -25,38 +24,6 @@ func TestNewMsgDewhitelist(t *testing.T) {
 	}
 
 	assert.Equal(t, want, got)
-}
-
-func TestMsgDewhitelist_Route(t *testing.T) {
-	msg := MsgDewhitelist{}
-	assert.Equal(t, "perpetual", msg.Route())
-}
-
-func TestMsgDewhitelist_Type(t *testing.T) {
-	msg := MsgDewhitelist{}
-	assert.Equal(t, "dewhitelist", msg.Type())
-}
-
-func TestMsgDewhitelist_GetSigners(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgDewhitelist{Authority: accAdress}
-
-	creator, err := sdk.AccAddressFromBech32(accAdress)
-	if err != nil {
-		panic(err)
-	}
-
-	assert.Equal(t, []sdk.AccAddress{creator}, msg.GetSigners())
-}
-
-func TestMsgDewhitelist_GetSignBytes(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgDewhitelist{Authority: accAdress}
-
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	b := sdk.MustSortJSON(bz)
-
-	assert.Equal(t, b, msg.GetSignBytes())
 }
 
 func TestMsgDewhitelist_ValidateBasic(t *testing.T) {

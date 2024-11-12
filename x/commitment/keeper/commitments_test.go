@@ -55,46 +55,6 @@ func TestKeeper_GetAllCommitments(t *testing.T) {
 	assert.Equal(t, commitments, retrievedCommitments)
 }
 
-// TestKeeper_GetAllLegacyCommitments tests the GetAllLegacyCommitments function
-func TestKeeper_GetAllLegacyCommitments(t *testing.T) {
-	keeper, ctx := keepertest.CommitmentKeeper(t)
-
-	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	commitments := []*types.Commitments{
-		{
-			Creator: addr1.String(),
-		},
-	}
-	// Set the commitments
-	for _, commitment := range commitments {
-		keeper.SetLegacyCommitments(ctx, *commitment)
-	}
-
-	// Test GetAllLegacyCommitments
-	retrievedCommitments := keeper.GetAllLegacyCommitments(ctx)
-	assert.Equal(t, commitments, retrievedCommitments)
-}
-
-// TestKeeper_DeleteLegacyCommitments tests the DeleteLegacyCommitments function
-func TestKeeper_DeleteLegacyCommitments(t *testing.T) {
-	keeper, ctx := keepertest.CommitmentKeeper(t)
-
-	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	commitments := types.Commitments{
-		Creator: addr.String(),
-	}
-
-	// Set the commitments
-	keeper.SetLegacyCommitments(ctx, commitments)
-
-	// Test DeleteLegacyCommitments
-	keeper.DeleteLegacyCommitments(ctx, addr.String())
-
-	// Test that commitments are removed
-	found := keeper.HasLegacyCommitments(ctx, addr.String())
-	assert.False(t, found)
-}
-
 // TestKeeper_IterateCommitments tests the IterateCommitments function
 func TestKeeper_IterateCommitments(t *testing.T) {
 	keeper, ctx := keepertest.CommitmentKeeper(t)
@@ -178,37 +138,37 @@ func TestKeeper_BurnEdenBoost(t *testing.T) {
 	}{
 		{
 			name:            "deduct amount is zero",
-			claimedAmount:   sdk.NewInt(100),
-			committedTokens: sdk.NewInt(100),
-			deductAmount:    sdk.NewInt(0),
+			claimedAmount:   math.NewInt(100),
+			committedTokens: math.NewInt(100),
+			deductAmount:    math.NewInt(0),
 			expectedError:   false,
 		},
 		{
 			name:            "deduct amount is greater than claimed amount",
-			claimedAmount:   sdk.NewInt(100),
-			committedTokens: sdk.NewInt(100),
-			deductAmount:    sdk.NewInt(200),
+			claimedAmount:   math.NewInt(100),
+			committedTokens: math.NewInt(100),
+			deductAmount:    math.NewInt(200),
 			expectedError:   false,
 		},
 		{
 			name:            "deduct amount is greater than claimed amount with no committed tokens",
-			claimedAmount:   sdk.NewInt(100),
-			committedTokens: sdk.NewInt(0),
-			deductAmount:    sdk.NewInt(200),
+			claimedAmount:   math.NewInt(100),
+			committedTokens: math.NewInt(0),
+			deductAmount:    math.NewInt(200),
 			expectedError:   false,
 		},
 		{
 			name:            "deduct amount is less than claimed amount",
-			claimedAmount:   sdk.NewInt(100),
-			committedTokens: sdk.NewInt(100),
-			deductAmount:    sdk.NewInt(50),
+			claimedAmount:   math.NewInt(100),
+			committedTokens: math.NewInt(100),
+			deductAmount:    math.NewInt(50),
 			expectedError:   false,
 		},
 		{
 			name:            "deduct amount is equal to claimed amount",
-			claimedAmount:   sdk.NewInt(100),
-			committedTokens: sdk.NewInt(100),
-			deductAmount:    sdk.NewInt(100),
+			claimedAmount:   math.NewInt(100),
+			committedTokens: math.NewInt(100),
+			deductAmount:    math.NewInt(100),
 			expectedError:   false,
 		},
 	}

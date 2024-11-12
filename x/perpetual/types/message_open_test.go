@@ -22,7 +22,7 @@ func TestNewMsgOpen(t *testing.T) {
 		math.LegacyNewDec(200),
 		1,
 		"uatom",
-		sdk.NewCoin("uusdc", sdk.NewInt(2000)),
+		sdk.NewCoin("uusdc", math.NewInt(2000)),
 		math.LegacyNewDec(100),
 		math.LegacyNewDec(0),
 	)
@@ -33,44 +33,12 @@ func TestNewMsgOpen(t *testing.T) {
 		Leverage:        math.LegacyNewDec(200),
 		PoolId:          1,
 		TradingAsset:    "uatom",
-		Collateral:      sdk.NewCoin("uusdc", sdk.NewInt(2000)),
+		Collateral:      sdk.NewCoin("uusdc", math.NewInt(2000)),
 		TakeProfitPrice: math.LegacyNewDec(100),
 		StopLossPrice:   math.LegacyNewDec(0),
 	}
 
 	assert.Equal(t, want, got)
-}
-
-func TestMsgOpen_Route(t *testing.T) {
-	msg := MsgOpen{}
-	assert.Equal(t, "perpetual", msg.Route())
-}
-
-func TestMsgOpen_Type(t *testing.T) {
-	msg := MsgOpen{}
-	assert.Equal(t, "open", msg.Type())
-}
-
-func TestMsgOpen_GetSigners(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgOpen{Creator: accAdress}
-
-	creator, err := sdk.AccAddressFromBech32(accAdress)
-	if err != nil {
-		panic(err)
-	}
-
-	assert.Equal(t, []sdk.AccAddress{creator}, msg.GetSigners())
-}
-
-func TestMsgOpen_GetSignBytes(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgOpen{Creator: accAdress}
-
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	b := sdk.MustSortJSON(bz)
-
-	assert.Equal(t, b, msg.GetSignBytes())
 }
 
 func TestMsgOpen_ValidateBasic(t *testing.T) {

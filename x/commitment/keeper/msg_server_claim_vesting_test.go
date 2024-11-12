@@ -1,9 +1,8 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
-
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/app"
@@ -15,13 +14,13 @@ import (
 
 // TestKeeper_ClaimVesting tests the ClaimVesting function
 func TestKeeper_ClaimVesting(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// set block height
 	ctx = ctx.WithBlockHeight(10)
@@ -31,7 +30,7 @@ func TestKeeper_ClaimVesting(t *testing.T) {
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 	}
@@ -60,8 +59,8 @@ func TestKeeper_ClaimVesting(t *testing.T) {
 		VestingTokens: []*types.VestingTokens{
 			{
 				Denom:         ptypes.Elys,
-				TotalAmount:   sdk.NewInt(100),
-				ClaimedAmount: sdk.NewInt(1),
+				TotalAmount:   sdkmath.NewInt(100),
+				ClaimedAmount: sdkmath.NewInt(1),
 				NumBlocks:     100,
 				StartBlock:    0,
 			},
@@ -76,6 +75,6 @@ func TestKeeper_ClaimVesting(t *testing.T) {
 	// Check if the vesting tokens were updated correctly
 	newCommitments := keeper.GetCommitments(ctx, creator)
 	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not updated correctly")
-	require.Equal(t, sdk.NewInt(100), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
-	require.Equal(t, sdk.NewInt(10), newCommitments.VestingTokens[0].ClaimedAmount, "claimed amount was not updated correctly")
+	require.Equal(t, sdkmath.NewInt(100), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
+	require.Equal(t, sdkmath.NewInt(10), newCommitments.VestingTokens[0].ClaimedAmount, "claimed amount was not updated correctly")
 }

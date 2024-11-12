@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -79,7 +80,7 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) {
 		// ------------- Stakers parameter -------------
 		blocksDistributed := ctx.BlockHeight() - int64(inflation.StartBlockHeight)
 		params.StakeIncentives = &types.IncentiveInfo{
-			EdenAmountPerYear: sdk.NewInt(int64(inflation.Inflation.IcsStakingRewards)),
+			EdenAmountPerYear: math.NewInt(int64(inflation.Inflation.IcsStakingRewards)),
 			BlocksDistributed: blocksDistributed,
 		}
 		k.SetParams(ctx, params)
@@ -96,7 +97,7 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	// USDC amount in sdk.Dec type
+	// USDC amount in math.LegacyDec type
 	feeCollectorAddr := authtypes.NewModuleAddress(authtypes.FeeCollectorName)
 	totalFeesCollected := k.commKeeper.GetAllBalances(ctx, feeCollectorAddr)
 	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(totalFeesCollected...)
@@ -110,23 +111,26 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
 
 	// Calculate
-	edenAmountPerYear := sdk.ZeroInt()
+	edenAmountPerYear := math.ZeroInt()
 	if stakeIncentive != nil && stakeIncentive.EdenAmountPerYear.IsPositive() {
 		edenAmountPerYear = stakeIncentive.EdenAmountPerYear
 	}
-	stakersEdenAmount := edenAmountPerYear.Quo(sdk.NewInt(totalBlocksPerYear))
+	stakersEdenAmount := edenAmountPerYear.Quo(math.NewInt(totalBlocksPerYear))
 
 	// Maximum eden APR - 30% by default
-	totalElysEdenEdenBStake := k.TotalBondedTokens(ctx)
+	totalElysEdenEdenBStake, err := k.TotalBondedTokens(ctx)
+	if err != nil {
+		return err
+	}
 
 	stakersMaxEdenAmount := params.MaxEdenRewardAprStakers.
 		MulInt(totalElysEdenEdenBStake).
 		QuoInt64(totalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-	stakersEdenAmount = sdk.MinInt(stakersEdenAmount, stakersMaxEdenAmount.TruncateInt())
+	stakersEdenAmount = math.MinInt(stakersEdenAmount, stakersMaxEdenAmount.TruncateInt())
 
-	stakersEdenBAmount := sdk.NewDecFromInt(totalElysEdenEdenBStake).
+	stakersEdenBAmount := math.LegacyNewDecFromInt(totalElysEdenEdenBStake).
 		Mul(params.EdenBoostApr).
 		QuoInt64(totalBlocksPerYear).
 		RoundInt()

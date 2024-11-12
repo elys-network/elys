@@ -8,8 +8,6 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-const TypeMsgCancelVest = "cancel_vest"
-
 var _ sdk.Msg = &MsgCancelVest{}
 
 func NewMsgCancelVest(creator string, amount math.Int, denom string) *MsgCancelVest {
@@ -18,27 +16,6 @@ func NewMsgCancelVest(creator string, amount math.Int, denom string) *MsgCancelV
 		Amount:  amount,
 		Denom:   denom,
 	}
-}
-
-func (msg *MsgCancelVest) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgCancelVest) Type() string {
-	return TypeMsgCancelVest
-}
-
-func (msg *MsgCancelVest) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgCancelVest) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgCancelVest) ValidateBasic() error {

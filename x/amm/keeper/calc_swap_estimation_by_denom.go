@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -12,30 +13,30 @@ func (k Keeper) CalcSwapEstimationByDenom(
 	denomIn string,
 	denomOut string,
 	baseCurrency string,
-	discount sdk.Dec,
-	overrideSwapFee sdk.Dec,
+	discount sdkmath.LegacyDec,
+	overrideSwapFee sdkmath.LegacyDec,
 	decimals uint64,
 ) (
 	inRoute []*types.SwapAmountInRoute,
 	outRoute []*types.SwapAmountOutRoute,
 	outAmount sdk.Coin,
-	spotPrice sdk.Dec,
-	swapFeeOut sdk.Dec,
-	discountOut sdk.Dec,
+	spotPrice sdkmath.LegacyDec,
+	swapFeeOut sdkmath.LegacyDec,
+	discountOut sdkmath.LegacyDec,
 	availableLiquidity sdk.Coin,
-	slippage sdk.Dec,
-	weightBonus sdk.Dec,
-	priceImpact sdk.Dec,
+	slippage sdkmath.LegacyDec,
+	weightBonus sdkmath.LegacyDec,
+	priceImpact sdkmath.LegacyDec,
 	err error,
 ) {
 	var (
-		impactedPrice sdk.Dec
+		impactedPrice sdkmath.LegacyDec
 	)
 
 	// Initialize return variables
 	inRoute, outRoute = nil, nil
 	outAmount, availableLiquidity = sdk.Coin{}, sdk.Coin{}
-	spotPrice, swapFeeOut, discountOut, weightBonus, priceImpact = sdk.ZeroDec(), sdk.ZeroDec(), discount, sdk.ZeroDec(), sdk.ZeroDec()
+	spotPrice, swapFeeOut, discountOut, weightBonus, priceImpact = sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), discount, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec()
 
 	// Determine the correct route based on the amount's denom
 	if amount.Denom == denomIn {

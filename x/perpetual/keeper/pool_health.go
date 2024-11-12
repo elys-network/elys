@@ -28,21 +28,21 @@ func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint
 	return nil
 }
 
-func (k Keeper) CalculatePoolHealthByPosition(pool *types.Pool, ammPool ammtypes.Pool, position types.Position) sdk.Dec {
+func (k Keeper) CalculatePoolHealthByPosition(pool *types.Pool, ammPool ammtypes.Pool, position types.Position) math.LegacyDec {
 	poolAssets := pool.GetPoolAssets(position)
-	H := sdk.NewDec(1)
+	H := math.LegacyNewDec(1)
 	for _, asset := range *poolAssets {
 
 		ammBalance, err := ammPool.GetAmmPoolBalance(asset.AssetDenom)
 		if err != nil {
-			return sdk.ZeroDec()
+			return math.LegacyZeroDec()
 		}
 
 		balance := ammBalance.ToLegacyDec()
 		liabilities := asset.Liabilities.ToLegacyDec()
 
 		if balance.Add(liabilities).IsZero() {
-			return sdk.ZeroDec()
+			return math.LegacyZeroDec()
 		}
 
 		mul := balance.Quo(balance.Add(liabilities))
@@ -51,10 +51,10 @@ func (k Keeper) CalculatePoolHealthByPosition(pool *types.Pool, ammPool ammtypes
 	return H
 }
 
-func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) sdk.Dec {
+func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) math.LegacyDec {
 	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
 	if !found {
-		return sdk.ZeroDec()
+		return math.LegacyZeroDec()
 	}
 
 	H := k.CalculatePoolHealthByPosition(pool, ammPool, types.Position_LONG)

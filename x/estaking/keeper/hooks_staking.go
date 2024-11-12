@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"context"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
@@ -40,55 +42,59 @@ func (k Keeper) StakingHooks() StakingHooks {
 
 // staking StakingHooks
 // Must be called when a validator is created
-func (h StakingHooks) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) error {
+func (h StakingHooks) AfterValidatorCreated(goCtx context.Context, valAddr sdk.ValAddress) error {
 	return nil
 }
 
 // staking StakingHooks
 // Must be called when a validator is created
-func (h StakingHooks) AfterUnbondingInitiated(ctx sdk.Context, id uint64) error {
+func (h StakingHooks) AfterUnbondingInitiated(goCtx context.Context, id uint64) error {
 	return nil
 }
 
 // Must be called when a validator's state changes
-func (h StakingHooks) BeforeValidatorModified(ctx sdk.Context, valAddr sdk.ValAddress) error {
+func (h StakingHooks) BeforeValidatorModified(goCtx context.Context, valAddr sdk.ValAddress) error {
 	return nil
 }
 
 // Must be called when a validator is deleted
-func (h StakingHooks) AfterValidatorRemoved(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
+func (h StakingHooks) AfterValidatorRemoved(goCtx context.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
 	return nil
 }
 
 // Must be called when a validator is bonded
-func (h StakingHooks) AfterValidatorBonded(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
+func (h StakingHooks) AfterValidatorBonded(goCtx context.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
 	return nil
 }
 
 // Must be called when a validator begins unbonding
-func (h StakingHooks) AfterValidatorBeginUnbonding(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
+func (h StakingHooks) AfterValidatorBeginUnbonding(goCtx context.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
 	return nil
 }
 
 // Must be called when a delegation is created
-func (h StakingHooks) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+func (h StakingHooks) BeforeDelegationCreated(goCtx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	return h.k.BeforeDelegationCreated(ctx, delAddr, valAddr)
 }
 
 // Must be called when a delegation's shares are modified
-func (h StakingHooks) BeforeDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+func (h StakingHooks) BeforeDelegationSharesModified(goCtx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	return h.k.BeforeDelegationSharesModified(ctx, delAddr, valAddr)
 }
 
 // Must be called when a delegation is removed
-func (h StakingHooks) BeforeDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+func (h StakingHooks) BeforeDelegationRemoved(goCtx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	return h.k.BeforeDelegationRemoved(ctx, delAddr, valAddr)
 }
 
-func (h StakingHooks) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+func (h StakingHooks) AfterDelegationModified(goCtx context.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	return h.k.AfterDelegationModified(ctx, delAddr, valAddr)
 }
 
-func (h StakingHooks) BeforeValidatorSlashed(ctx sdk.Context, valAddr sdk.ValAddress, fraction sdk.Dec) error {
+func (h StakingHooks) BeforeValidatorSlashed(goCtx context.Context, valAddr sdk.ValAddress, fraction sdkmath.LegacyDec) error {
 	return nil
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/keeper"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
@@ -18,8 +19,8 @@ import (
 )
 
 func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {
-	fee := sdk.MustNewDecFromStr("0.0002")
-	issueAmount := sdk.NewInt(10_000_000_000_000)
+	fee := sdkmath.LegacyMustNewDecFromStr("0.0002")
+	issueAmount := sdkmath.NewInt(10_000_000_000_000)
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
 			sdk.NewCoin(ptypes.ATOM, issueAmount),
@@ -50,11 +51,11 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 		PoolAssets: []ammtypes.PoolAsset{
 			{
 				Token:  sdk.NewInt64Coin(asset1, 100_000_000),
-				Weight: sdk.NewInt(50),
+				Weight: sdkmath.NewInt(50),
 			},
 			{
 				Token:  sdk.NewInt64Coin(asset2, 100_000_000),
-				Weight: sdk.NewInt(50),
+				Weight: sdkmath.NewInt(50),
 			},
 		},
 	}
@@ -75,7 +76,7 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
 	}
-	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
 	if err != nil {
 		panic(err)
@@ -90,13 +91,13 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 func (suite *KeeperTestSuite) TestClose() {
 	suite.ResetSuite()
 	suite.SetupCoinPrices(suite.ctx)
-	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
 	initializeForClose(suite, addresses, asset1, asset2)
-	leverage := sdk.MustNewDecFromStr("2.0")
-	collateralAmount := sdk.NewInt(10000000)
-	leverageLPShares := sdk.MustNewDecFromStr("20000095238095238100").TruncateInt()
+	leverage := sdkmath.LegacyMustNewDecFromStr("2.0")
+	collateralAmount := sdkmath.NewInt(10000000)
+	leverageLPShares := sdkmath.LegacyMustNewDecFromStr("20000095238095238100").TruncateInt()
 	testCases := []struct {
 		name                 string
 		input                *types.MsgClose
@@ -109,7 +110,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			&types.MsgClose{
 				Creator:  addresses[0].String(),
 				Id:       1,
-				LpAmount: sdk.NewInt(0),
+				LpAmount: sdkmath.NewInt(0),
 			},
 			true,
 			types.ErrPositionDoesNotExist.Error(),
@@ -122,7 +123,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			&types.MsgClose{
 				Creator:  addresses[0].String(),
 				Id:       1,
-				LpAmount: sdk.NewInt(0),
+				LpAmount: sdkmath.NewInt(0),
 			},
 			true,
 			"your funds will be locked for 1 hour",
@@ -133,7 +134,7 @@ func (suite *KeeperTestSuite) TestClose() {
 					CollateralAmount: collateralAmount,
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
 				suite.Require().NoError(err)
@@ -156,7 +157,7 @@ func (suite *KeeperTestSuite) TestClose() {
 					CollateralAmount: collateralAmount,
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
 				suite.Require().NoError(err)
@@ -183,7 +184,7 @@ func (suite *KeeperTestSuite) TestClose() {
 					CollateralAmount: collateralAmount,
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
 				suite.Require().NoError(err)
@@ -210,7 +211,7 @@ func (suite *KeeperTestSuite) TestClose() {
 					CollateralAmount: collateralAmount,
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
 				suite.Require().NoError(err)
@@ -239,7 +240,7 @@ func (suite *KeeperTestSuite) TestClose() {
 					CollateralAmount: collateralAmount,
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
 				suite.Require().NoError(err)
@@ -268,7 +269,7 @@ func (suite *KeeperTestSuite) TestClose() {
 					CollateralAmount: collateralAmount,
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdk.MustNewDecFromStr("50.0"),
+					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
 				suite.Require().NoError(err)
@@ -276,7 +277,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			},
 			func() {
 				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
-				actualShares, ok := sdk.NewIntFromString("9999952380952380950")
+				actualShares, ok := sdkmath.NewIntFromString("9999952380952380950")
 				suite.Require().True(ok)
 				suite.Require().Equal(position.LeveragedLpAmount, actualShares)
 			},
@@ -285,7 +286,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			&types.MsgClose{
 				Creator:  addresses[0].String(),
 				Id:       1,
-				LpAmount: sdk.NewInt(0),
+				LpAmount: sdkmath.NewInt(0),
 			},
 			false,
 			"",

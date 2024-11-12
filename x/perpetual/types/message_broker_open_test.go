@@ -22,10 +22,11 @@ func TestNewMsgBrokerOpen(t *testing.T) {
 		Position_LONG,
 		math.LegacyNewDec(200),
 		"uatom",
-		sdk.NewCoin("uusdc", sdk.NewInt(2000)),
+		sdk.NewCoin("uusdc", math.NewInt(2000)),
 		math.LegacyNewDec(100),
 		owner,
-		sdk.ZeroDec(),
+		math.LegacyZeroDec(),
+		1,
 	)
 
 	want := &MsgBrokerOpen{
@@ -33,45 +34,14 @@ func TestNewMsgBrokerOpen(t *testing.T) {
 		Position:        Position_LONG,
 		Leverage:        math.LegacyNewDec(200),
 		TradingAsset:    "uatom",
-		Collateral:      sdk.NewCoin("uusdc", sdk.NewInt(2000)),
+		Collateral:      sdk.NewCoin("uusdc", math.NewInt(2000)),
 		TakeProfitPrice: math.LegacyNewDec(100),
 		Owner:           owner,
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
+		PoolId:          1,
 	}
 
 	assert.Equal(t, want, got)
-}
-
-func TestMsgBrokerOpen_Route(t *testing.T) {
-	msg := MsgBrokerOpen{}
-	assert.Equal(t, "perpetual", msg.Route())
-}
-
-func TestMsgBrokerOpen_Type(t *testing.T) {
-	msg := MsgBrokerOpen{}
-	assert.Equal(t, "broker_open", msg.Type())
-}
-
-func TestMsgBrokerOpen_GetSigners(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgBrokerOpen{Creator: accAdress}
-
-	creator, err := sdk.AccAddressFromBech32(accAdress)
-	if err != nil {
-		panic(err)
-	}
-
-	assert.Equal(t, []sdk.AccAddress{creator}, msg.GetSigners())
-}
-
-func TestMsgBrokerOpen_GetSignBytes(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgBrokerOpen{Creator: accAdress}
-
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	b := sdk.MustSortJSON(bz)
-
-	assert.Equal(t, b, msg.GetSignBytes())
 }
 
 func TestMsgBrokerOpen_ValidateBasic(t *testing.T) {

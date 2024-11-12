@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	simapp "github.com/elys-network/elys/app"
@@ -11,7 +11,7 @@ import (
 
 func (suite *KeeperTestSuite) TestMsgServerUpdateParams() {
 	suite.ResetSuite()
-	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	params := types.DefaultParams()
 	testCases := []struct {
 		name                 string
@@ -43,7 +43,7 @@ func (suite *KeeperTestSuite) TestMsgServerUpdateParams() {
 			"leverage max must be greater than 1",
 			func() {
 				p := &params
-				p.LeverageMax = sdk.OneDec().MulInt64(-1)
+				p.LeverageMax = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			func(msg *types.MsgUpdateParams) {
 
@@ -58,11 +58,11 @@ func (suite *KeeperTestSuite) TestMsgServerUpdateParams() {
 			"",
 			func() {
 				p := &params
-				p.LeverageMax = sdk.MustNewDecFromStr("2.5")
+				p.LeverageMax = sdkmath.LegacyMustNewDecFromStr("2.5")
 			},
 			func(msg *types.MsgUpdateParams) {
 				parameters := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
-				suite.Require().Equal(sdk.MustNewDecFromStr("2.5"), parameters.LeverageMax)
+				suite.Require().Equal(sdkmath.LegacyMustNewDecFromStr("2.5"), parameters.LeverageMax)
 			},
 		},
 	}

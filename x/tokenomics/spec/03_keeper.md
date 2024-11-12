@@ -14,7 +14,7 @@ Sets an airdrop entry in the store.
 
 ```go
 func (k Keeper) SetAirdrop(ctx sdk.Context, airdrop types.Airdrop) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AirdropKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.AirdropKeyPrefix))
     b := k.cdc.MustMarshal(&airdrop)
     store.Set(types.AirdropKey(airdrop.Intent), b)
 }
@@ -26,7 +26,7 @@ Retrieves an airdrop entry by intent.
 
 ```go
 func (k Keeper) GetAirdrop(ctx sdk.Context, intent string) (val types.Airdrop, found bool) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AirdropKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.AirdropKeyPrefix))
 
     b := store.Get(types.AirdropKey(intent))
     if b == nil {
@@ -44,7 +44,7 @@ Removes an airdrop entry by intent.
 
 ```go
 func (k Keeper) RemoveAirdrop(ctx sdk.Context, intent string) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AirdropKeyPrefix))
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.AirdropKeyPrefix))
     store.Delete(types.AirdropKey(intent))
 }
 ```
@@ -55,8 +55,8 @@ Retrieves all airdrop entries.
 
 ```go
 func (k Keeper) GetAllAirdrop(ctx sdk.Context) (list []types.Airdrop) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AirdropKeyPrefix))
-    iterator := sdk.KVStorePrefixIterator(store, []byte{})
+    store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.AirdropKeyPrefix))
+    iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
     defer iterator.Close()
 
@@ -78,7 +78,7 @@ Sets the genesis inflation parameters in the store.
 
 ```go
 func (k Keeper) SetGenesisInflation(ctx sdk.Context, genesisInflation types.GenesisInflation) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     b := k.cdc.MustMarshal(&genesisInflation)
     store.Set([]byte(types.GenesisInflationKey), b)
 }
@@ -90,7 +90,7 @@ Retrieves the genesis inflation parameters.
 
 ```go
 func (k Keeper) GetGenesisInflation(ctx sdk.Context) (val types.GenesisInflation, found bool) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
     b := store.Get([]byte(types.GenesisInflationKey))
     if b == nil {
@@ -108,7 +108,7 @@ Removes the genesis inflation parameters from the store.
 
 ```go
 func (k Keeper) RemoveGenesisInflation(ctx sdk.Context) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     store.Delete([]byte(types.GenesisInflationKey))
 }
 ```
@@ -128,7 +128,7 @@ types.QueryAllAirdropResponse, error) {
     var airdrops []types.Airdrop
     ctx := sdk.UnwrapSDKContext(goCtx)
 
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     airdropStore := prefix.NewStore(store, types.KeyPrefix(types.AirdropKeyPrefix))
 
     pageRes, err := query.Paginate(airdropStore, req.Pagination, func(key []byte, value []byte) error {

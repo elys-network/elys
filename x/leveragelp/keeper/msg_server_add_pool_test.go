@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
@@ -11,8 +12,8 @@ import (
 )
 
 func initializeForAddPool(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string) {
-	fee := sdk.MustNewDecFromStr("0.0002")
-	issueAmount := sdk.NewInt(10_000_000_000_000)
+	fee := sdkmath.LegacyMustNewDecFromStr("0.0002")
+	issueAmount := sdkmath.NewInt(10_000_000_000_000)
 	for _, address := range addresses {
 		coins := sdk.NewCoins(
 			sdk.NewCoin(ptypes.ATOM, issueAmount),
@@ -43,11 +44,11 @@ func initializeForAddPool(suite *KeeperTestSuite, addresses []sdk.AccAddress, as
 		PoolAssets: []ammtypes.PoolAsset{
 			{
 				Token:  sdk.NewInt64Coin(asset1, 100_000_000),
-				Weight: sdk.NewInt(50),
+				Weight: sdkmath.NewInt(50),
 			},
 			{
 				Token:  sdk.NewInt64Coin(asset2, 1000_000_000),
-				Weight: sdk.NewInt(50),
+				Weight: sdkmath.NewInt(50),
 			},
 		},
 	}
@@ -60,7 +61,7 @@ func initializeForAddPool(suite *KeeperTestSuite, addresses []sdk.AccAddress, as
 func (suite *KeeperTestSuite) TestAdd_Pool() {
 	suite.ResetSuite()
 	suite.SetupCoinPrices(suite.ctx)
-	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdk.NewInt(1000000))
+	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
 	initializeForAddPool(suite, addresses, asset1, asset2)
@@ -76,7 +77,7 @@ func (suite *KeeperTestSuite) TestAdd_Pool() {
 				Authority: addresses[0].String(),
 				Pool: types.AddPool{
 					AmmPoolId:   1,
-					LeverageMax: sdk.MustNewDecFromStr("10"),
+					LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
 				},
 			},
 			expectErr:    true,
@@ -89,7 +90,7 @@ func (suite *KeeperTestSuite) TestAdd_Pool() {
 				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
 				Pool: types.AddPool{
 					AmmPoolId:   1,
-					LeverageMax: sdk.MustNewDecFromStr("10"),
+					LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
 				},
 			},
 			expectErr:            false,

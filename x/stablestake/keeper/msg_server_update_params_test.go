@@ -1,7 +1,8 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/stablestake/keeper"
@@ -22,16 +23,16 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 			authority: sender.String(),
 			params: types.Params{
 				DepositDenom:         "stake",
-				RedemptionRate:       sdk.NewDec(1),
+				RedemptionRate:       sdkmath.LegacyNewDec(1),
 				EpochLength:          100,
-				InterestRateMax:      sdk.MustNewDecFromStr("0.1"),
-				InterestRateMin:      sdk.MustNewDecFromStr("0.01"),
-				InterestRate:         sdk.MustNewDecFromStr("0.05"),
-				InterestRateIncrease: sdk.MustNewDecFromStr("0.01"),
-				InterestRateDecrease: sdk.MustNewDecFromStr("0.01"),
-				HealthGainFactor:     sdk.MustNewDecFromStr("0.01"),
-				TotalValue:           sdk.OneInt(),
-				MaxLeverageRatio:     sdk.MustNewDecFromStr("0.1"),
+				InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.1"),
+				InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.01"),
+				InterestRate:         sdkmath.LegacyMustNewDecFromStr("0.05"),
+				InterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				InterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				HealthGainFactor:     sdkmath.LegacyMustNewDecFromStr("0.01"),
+				TotalValue:           sdkmath.OneInt(),
+				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
 			},
 			expected: nil,
 		},
@@ -40,18 +41,18 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 			authority: "invalid_authority",
 			params: types.Params{
 				DepositDenom:         "stake",
-				RedemptionRate:       sdk.NewDec(1),
+				RedemptionRate:       sdkmath.LegacyNewDec(1),
 				EpochLength:          100,
-				InterestRateMax:      sdk.MustNewDecFromStr("0.1"),
-				InterestRateMin:      sdk.MustNewDecFromStr("0.01"),
-				InterestRate:         sdk.MustNewDecFromStr("0.05"),
-				InterestRateIncrease: sdk.MustNewDecFromStr("0.01"),
-				InterestRateDecrease: sdk.MustNewDecFromStr("0.01"),
-				HealthGainFactor:     sdk.MustNewDecFromStr("0.01"),
-				TotalValue:           sdk.OneInt(),
-				MaxLeverageRatio:     sdk.MustNewDecFromStr("0.1"),
+				InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.1"),
+				InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.01"),
+				InterestRate:         sdkmath.LegacyMustNewDecFromStr("0.05"),
+				InterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				InterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				HealthGainFactor:     sdkmath.LegacyMustNewDecFromStr("0.01"),
+				TotalValue:           sdkmath.OneInt(),
+				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
 			},
-			expected: govtypes.ErrInvalidSigner,
+			expected: sdkerrors.ErrInvalidAddress,
 		},
 	}
 
@@ -59,7 +60,7 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 		suite.Run(tt.name, func() {
 			suite.SetupTest()
 
-			msgServer := keeper.NewMsgServerImpl(suite.app.StablestakeKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 
 			msg := &types.MsgUpdateParams{
 				Authority: tt.authority,

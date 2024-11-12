@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/estaking/types"
@@ -11,8 +10,8 @@ import (
 )
 
 func TestGenesis(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 	}

@@ -2,7 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -11,17 +11,17 @@ func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgO
 	// Determine the maximum leverage available and compute the effective leverage to be used.
 	// values for leverage other than 0 or  >1 are invalidated in validate basic
 	maxLeverage := k.GetMaxLeverageParam(ctx)
-	proxyLeverage := sdk.MinDec(msg.Leverage, maxLeverage)
+	proxyLeverage := sdkmath.LegacyMinDec(msg.Leverage, maxLeverage)
 
 	// just adding collateral
 	if msg.Leverage.IsZero() {
-		proxyLeverage = math.LegacyOneDec()
+		proxyLeverage = sdkmath.LegacyOneDec()
 	} else {
 		// opening position, for Short we add 1 because, say atom price 5 usdc, collateral 100 usdc, leverage 5, then liabilities will be 80 atom worth 400 usdc which would be position size
 		// User would be expecting position size of 100 atom / 500 usdc. So we increase the leverage from 5 to 6
 		// Because of this effective leverage for short has to be reduced by 1 in query
 		if msg.Position == types.Position_SHORT {
-			proxyLeverage = proxyLeverage.Add(math.LegacyOneDec())
+			proxyLeverage = proxyLeverage.Add(sdkmath.LegacyOneDec())
 		}
 		// We don't need to do this for LONG as it gives desired position
 	}

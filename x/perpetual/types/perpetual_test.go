@@ -18,7 +18,7 @@ func TestKeeper_GetPerpetualPoolBalances(t *testing.T) {
 			{
 				Token: sdk.Coin{
 					Denom:  "testAsset",
-					Amount: sdk.NewInt(100),
+					Amount: math.NewInt(100),
 				},
 			},
 		},

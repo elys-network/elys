@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	errorsmod "cosmossdk.io/errors"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	sdkmath "cosmossdk.io/math"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/app"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
@@ -15,13 +15,13 @@ import (
 )
 
 func TestVest(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Create a new account
 	creator, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
@@ -36,7 +36,7 @@ func TestVest(t *testing.T) {
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 	}
@@ -51,7 +51,7 @@ func TestVest(t *testing.T) {
 	vestMsg := &types.MsgVest{
 		Creator: creator.String(),
 		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(100),
+		Amount:  sdkmath.NewInt(100),
 	}
 
 	// Set up the commitments for the creator
@@ -60,13 +60,13 @@ func TestVest(t *testing.T) {
 		CommittedTokens: []*types.CommittedTokens{
 			{
 				Denom:  ptypes.Eden,
-				Amount: sdk.NewInt(50),
+				Amount: sdkmath.NewInt(50),
 			},
 		},
 		Claimed: sdk.Coins{
 			{
 				Denom:  ptypes.Eden,
-				Amount: sdk.NewInt(150),
+				Amount: sdkmath.NewInt(150),
 			},
 		},
 	}
@@ -82,24 +82,24 @@ func TestVest(t *testing.T) {
 
 	// Check if the claimed tokens were updated correctly
 	claimed := newCommitments.GetClaimedForDenom(vestMsg.Denom)
-	require.Equal(t, sdk.NewInt(50), claimed, "claimed tokens were not updated correctly")
+	require.Equal(t, sdkmath.NewInt(50), claimed, "claimed tokens were not updated correctly")
 
 	// Check if the committed tokens were updated correctly
 	committedToken := newCommitments.GetCommittedAmountForDenom(vestMsg.Denom)
-	require.Equal(t, sdk.NewInt(50), committedToken, "committed tokens were not updated correctly")
+	require.Equal(t, sdkmath.NewInt(50), committedToken, "committed tokens were not updated correctly")
 
 	_, err = msgServer.Vest(ctx, vestMsg)
 	require.Error(t, err)
 }
 
 func TestExceedVesting(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Create a new account
 	creator, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
@@ -114,7 +114,7 @@ func TestExceedVesting(t *testing.T) {
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 1,
 		},
 	}
@@ -129,7 +129,7 @@ func TestExceedVesting(t *testing.T) {
 	vestMsg := &types.MsgVest{
 		Creator: creator.String(),
 		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(100),
+		Amount:  sdkmath.NewInt(100),
 	}
 
 	// Set up the commitments for the creator
@@ -138,13 +138,13 @@ func TestExceedVesting(t *testing.T) {
 		CommittedTokens: []*types.CommittedTokens{
 			{
 				Denom:  ptypes.Eden,
-				Amount: sdk.NewInt(50),
+				Amount: sdkmath.NewInt(50),
 			},
 		},
 		Claimed: sdk.Coins{
 			{
 				Denom:  ptypes.Eden,
-				Amount: sdk.NewInt(150),
+				Amount: sdkmath.NewInt(150),
 			},
 		},
 	}
@@ -160,11 +160,11 @@ func TestExceedVesting(t *testing.T) {
 
 	// Check if the claimed tokens were updated correctly
 	claimed := newCommitments.GetClaimedForDenom(vestMsg.Denom)
-	require.Equal(t, sdk.NewInt(50), claimed, "claimed tokens were not updated correctly")
+	require.Equal(t, sdkmath.NewInt(50), claimed, "claimed tokens were not updated correctly")
 
 	// Check if the committed tokens were updated correctly
 	committedToken := newCommitments.GetCommittedAmountForDenom(vestMsg.Denom)
-	require.Equal(t, sdk.NewInt(50), committedToken, "committed tokens were not updated correctly")
+	require.Equal(t, sdkmath.NewInt(50), committedToken, "committed tokens were not updated correctly")
 
 	// Execute the Vest again and it should endfunction
 	_, err = msgServer.Vest(ctx, vestMsg)

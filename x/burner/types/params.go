@@ -3,22 +3,13 @@ package types
 import (
 	"fmt"
 
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
 
-var _ paramtypes.ParamSet = (*Params)(nil)
-
-var (
-	KeyEpochIdentifier = []byte("EpochIdentifier")
+const (
 	// TODO: Determine the default value
 	DefaultEpochIdentifier string = "epoch_identifier"
 )
-
-// ParamKeyTable the param key table for launch module
-func ParamKeyTable() paramtypes.KeyTable {
-	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 // NewParams creates a new Params instance
 func NewParams(
@@ -34,13 +25,6 @@ func DefaultParams() Params {
 	return NewParams(
 		DefaultEpochIdentifier,
 	)
-}
-
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyEpochIdentifier, &p.EpochIdentifier, validateEpochIdentifier),
-	}
 }
 
 // Validate validates the set of params

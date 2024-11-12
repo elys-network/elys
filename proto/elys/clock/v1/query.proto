@@ -6,15 +6,14 @@ import "google/api/annotations.proto";
 import "elys/clock/v1/genesis.proto";
 import "elys/clock/v1/params.proto";
 
-option go_package = 	"github.com/elys-network/elys/x/clock/types";
+option go_package = "github.com/elys-network/elys/x/clock/types";
 
 // Query defines the gRPC querier service.
 service Query {
   // ClockContracts
   rpc ClockContracts(QueryClockContracts)
       returns (QueryClockContractsResponse) {
-    option (google.api.http).get =
-        "/elys/clock/v1/contracts";
+    option (google.api.http).get = "/elys/clock/v1/contracts";
   }
   // Params
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
@@ -25,15 +24,13 @@ service Query {
 // QueryClockContracts is the request type to get all contracts.
 message QueryClockContracts {}
 
-// QueryClockContractsResponse is the response type for the Query/ClockContracts RPC method.
-message QueryClockContractsResponse {
-  repeated string contract_addresses = 1;
-}
+// QueryClockContractsResponse is the response type for the Query/ClockContracts
+// RPC method.
+message QueryClockContractsResponse { repeated string contract_addresses = 1; }
 
 // QueryParams is the request type to get all module params.
 message QueryParamsRequest {}
 
-// QueryClockContractsResponse is the response type for the Query/ClockContracts RPC method.
-message QueryParamsResponse {
-  Params params = 1;
-}
+// QueryClockContractsResponse is the response type for the Query/ClockContracts
+// RPC method.
+message QueryParamsResponse { Params params = 1; }

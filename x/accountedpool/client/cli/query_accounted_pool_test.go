@@ -19,7 +19,7 @@ import (
 
 func networkWithAccountedPoolObjects(t *testing.T, n int) (*network.Network, []types.AccountedPool) {
 	t.Helper()
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig(t.TempDir())
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
 		accountedPool := types.AccountedPool{

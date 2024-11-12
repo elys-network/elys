@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -17,15 +16,26 @@ import (
 func TestTimeBasedInflationMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.TokenomicsKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
-	wctx := sdk.WrapSDKContext(ctx)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
+	description := "test"
+	inflation := &types.InflationEntry{
+		LmRewards:         10,
+		IcsStakingRewards: 10,
+		CommunityFund:     10,
+		StrategicReserve:  10,
+		TeamTokensVested:  10,
+	}
+
 	for i := 0; i < 5; i++ {
 		expected := &types.MsgCreateTimeBasedInflation{
 			Authority:        authority,
 			StartBlockHeight: uint64(i),
-			EndBlockHeight:   uint64(i),
+			EndBlockHeight:   100,
+			Description:      description,
+			Inflation:        inflation,
 		}
-		_, err := srv.CreateTimeBasedInflation(wctx, expected)
+		_, err := srv.CreateTimeBasedInflation(ctx, expected)
 		require.NoError(t, err)
 		rst, found := k.GetTimeBasedInflation(ctx,
 			expected.StartBlockHeight,
@@ -39,6 +49,15 @@ func TestTimeBasedInflationMsgServerCreate(t *testing.T) {
 func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
+	description := "test"
+	inflation := &types.InflationEntry{
+		LmRewards:         10,
+		IcsStakingRewards: 10,
+		CommunityFund:     10,
+		StrategicReserve:  10,
+		TeamTokensVested:  10,
+	}
+
 	for _, tc := range []struct {
 		desc    string
 		request *types.MsgUpdateTimeBasedInflation
@@ -48,8 +67,10 @@ func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 			desc: "Completed",
 			request: &types.MsgUpdateTimeBasedInflation{
 				Authority:        authority,
-				StartBlockHeight: 0,
-				EndBlockHeight:   0,
+				StartBlockHeight: 100,
+				EndBlockHeight:   1000,
+				Description:      description,
+				Inflation:        inflation,
 			},
 		},
 		{
@@ -58,15 +79,19 @@ func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 				Authority:        "B",
 				StartBlockHeight: 0,
 				EndBlockHeight:   0,
+				Description:      description,
+				Inflation:        inflation,
 			},
-			err: govtypes.ErrInvalidSigner,
+			err: sdkerrors.ErrInvalidAddress,
 		},
 		{
 			desc: "KeyNotFound",
 			request: &types.MsgUpdateTimeBasedInflation{
 				Authority:        authority,
 				StartBlockHeight: 100000,
-				EndBlockHeight:   100000,
+				EndBlockHeight:   100001,
+				Description:      description,
+				Inflation:        inflation,
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -74,11 +99,13 @@ func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.TokenomicsKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
+			wctx := ctx
 			expected := &types.MsgCreateTimeBasedInflation{
 				Authority:        authority,
-				StartBlockHeight: 0,
-				EndBlockHeight:   0,
+				StartBlockHeight: 100,
+				EndBlockHeight:   1000,
+				Description:      description,
+				Inflation:        inflation,
 			}
 			_, err := srv.CreateTimeBasedInflation(wctx, expected)
 			require.NoError(t, err)
@@ -111,8 +138,8 @@ func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 			desc: "Completed",
 			request: &types.MsgDeleteTimeBasedInflation{
 				Authority:        authority,
-				StartBlockHeight: 0,
-				EndBlockHeight:   0,
+				StartBlockHeight: 10,
+				EndBlockHeight:   100,
 			},
 		},
 		{
@@ -122,14 +149,14 @@ func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 				StartBlockHeight: 0,
 				EndBlockHeight:   0,
 			},
-			err: govtypes.ErrInvalidSigner,
+			err: sdkerrors.ErrInvalidAddress,
 		},
 		{
 			desc: "KeyNotFound",
 			request: &types.MsgDeleteTimeBasedInflation{
 				Authority:        authority,
 				StartBlockHeight: 100000,
-				EndBlockHeight:   100000,
+				EndBlockHeight:   120000,
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -137,12 +164,20 @@ func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.TokenomicsKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
+			wctx := ctx
 
 			_, err := srv.CreateTimeBasedInflation(wctx, &types.MsgCreateTimeBasedInflation{
+				Description:      "Test create time based inflation",
 				Authority:        authority,
-				StartBlockHeight: 0,
-				EndBlockHeight:   0,
+				StartBlockHeight: 10,
+				EndBlockHeight:   100,
+				Inflation: &types.InflationEntry{
+					LmRewards:         10,
+					IcsStakingRewards: 10,
+					CommunityFund:     10,
+					StrategicReserve:  10,
+					TeamTokensVested:  10,
+				},
 			})
 			require.NoError(t, err)
 			_, err = srv.DeleteTimeBasedInflation(wctx, tc.request)

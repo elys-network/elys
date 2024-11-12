@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -9,6 +10,9 @@ import (
 )
 
 func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSpotOrder) (*types.MsgCreateSpotOrderResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var pendingSpotOrder = types.SpotOrder{
@@ -41,12 +45,18 @@ func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSp
 }
 
 func (k msgServer) UpdateSpotOrder(goCtx context.Context, msg *types.MsgUpdateSpotOrder) (*types.MsgUpdateSpotOrderResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	// _ := sdk.UnwrapSDKContext(goCtx)
 
 	return &types.MsgUpdateSpotOrderResponse{}, nil
 }
 
 func (k msgServer) CancelSpotOrder(goCtx context.Context, msg *types.MsgCancelSpotOrder) (*types.MsgCancelSpotOrderResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// get the spot order
@@ -56,7 +66,7 @@ func (k msgServer) CancelSpotOrder(goCtx context.Context, msg *types.MsgCancelSp
 	}
 
 	if spotOrder.OwnerAddress != msg.OwnerAddress {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	k.RemovePendingSpotOrder(ctx, msg.OrderId)
@@ -68,6 +78,9 @@ func (k msgServer) CancelSpotOrder(goCtx context.Context, msg *types.MsgCancelSp
 }
 
 func (k msgServer) CancelSpotOrders(goCtx context.Context, msg *types.MsgCancelSpotOrders) (*types.MsgCancelSpotOrdersResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	if len(msg.SpotOrderIds) == 0 {
 		return nil, types.ErrSizeZero
 	}

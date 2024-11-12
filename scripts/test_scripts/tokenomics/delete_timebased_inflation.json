@@ -1,0 +1,15 @@
+{
+    "messages": [
+     {
+      "@type": "/elys.tokenomics.MsgDeleteTimeBasedInflation",
+      "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+       "start_block_height": 1,
+       "end_block_height": 6400000
+     }
+    ],
+    "metadata": "ipfs://CID",
+   
+    "deposit": "10000000stake",
+    "title": "MsgDeleteTimeBasedInflation",
+    "summary": "asdasd"
+}

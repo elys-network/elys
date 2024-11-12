@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,11 +19,11 @@ func createNBorrowRate(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.I
 	curBlock := ctx.BlockHeight()
 
 	params := keeper.GetParams(ctx)
-	params.FixedFundingRate = sdk.NewDec(0)
+	params.FixedFundingRate = sdkmath.LegacyNewDec(0)
 	keeper.SetParams(ctx, &params)
 
 	for i := range items {
-		items[i].InterestRate = sdk.NewDec(int64(i + 1)) // Start from 1 to avoid zero interest
+		items[i].InterestRate = sdkmath.LegacyNewDec(int64(i + 1)) // Start from 1 to avoid zero interest
 		items[i].BlockHeight = int64(i + 1)
 		items[i].BlockTime = int64(i)
 

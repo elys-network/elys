@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	math "cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	types "github.com/cosmos/cosmos-sdk/types"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -22,18 +22,18 @@ func (_m *AccountedPoolKeeper) EXPECT() *AccountedPoolKeeper_Expecter {
 }
 
 // GetAccountedBalance provides a mock function with given fields: _a0, _a1, _a2
-func (_m *AccountedPoolKeeper) GetAccountedBalance(_a0 types.Context, _a1 uint64, _a2 string) math.Int {
+func (_m *AccountedPoolKeeper) GetAccountedBalance(_a0 types.Context, _a1 uint64, _a2 string) sdkmath.Int {
 	ret := _m.Called(_a0, _a1, _a2)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAccountedBalance")
 	}
 
-	var r0 math.Int
-	if rf, ok := ret.Get(0).(func(types.Context, uint64, string) math.Int); ok {
+	var r0 sdkmath.Int
+	if rf, ok := ret.Get(0).(func(types.Context, uint64, string) sdkmath.Int); ok {
 		r0 = rf(_a0, _a1, _a2)
 	} else {
-		r0 = ret.Get(0).(math.Int)
+		r0 = ret.Get(0).(sdkmath.Int)
 	}
 
 	return r0
@@ -59,12 +59,12 @@ func (_c *AccountedPoolKeeper_GetAccountedBalance_Call) Run(run func(_a0 types.C
 	return _c
 }
 
-func (_c *AccountedPoolKeeper_GetAccountedBalance_Call) Return(_a0 math.Int) *AccountedPoolKeeper_GetAccountedBalance_Call {
+func (_c *AccountedPoolKeeper_GetAccountedBalance_Call) Return(_a0 sdkmath.Int) *AccountedPoolKeeper_GetAccountedBalance_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *AccountedPoolKeeper_GetAccountedBalance_Call) RunAndReturn(run func(types.Context, uint64, string) math.Int) *AccountedPoolKeeper_GetAccountedBalance_Call {
+func (_c *AccountedPoolKeeper_GetAccountedBalance_Call) RunAndReturn(run func(types.Context, uint64, string) sdkmath.Int) *AccountedPoolKeeper_GetAccountedBalance_Call {
 	_c.Call.Return(run)
 	return _c
 }

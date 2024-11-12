@@ -17,7 +17,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions_GetEntryError() {
 
 	suite.app.AssetprofileKeeper.RemoveEntry(ctx, ptypes.BaseCurrency)
 
-	_, err := msg.ClosePositions(ctx, &types.MsgClosePositions{})
+	_, err := msg.ClosePositions(ctx, &types.MsgClosePositions{Creator: sample.AccAddress()})
 	suite.Require().Nil(err)
 }
 
@@ -46,7 +46,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerClose_HandleLiquidateErrors(
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
@@ -60,7 +60,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerClose_HandleLiquidateErrors(
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	secondPosition, err := suite.app.PerpetualKeeper.Open(ctx, secondOpenPositionMsg, false)
@@ -141,7 +141,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerClose_HandleLiquidateCheck()
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,6 +13,9 @@ import (
 )
 
 func (k msgServer) Unstake(goCtx context.Context, msg *types.MsgUnstake) (*types.MsgUnstakeResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if msg.Asset == paramtypes.Elys {
@@ -49,10 +53,10 @@ func (k msgServer) performUnstakeElys(ctx sdk.Context, msg *types.MsgUnstake) er
 	}
 
 	amount := sdk.NewCoin(msg.Asset, msg.Amount)
-	msgMsgUndelegate := stakingtypes.NewMsgUndelegate(address, validator_address, amount)
-	if err := msgMsgUndelegate.ValidateBasic(); err != nil {
-		return errorsmod.Wrap(err, "failed validating msgMsgUndelegate")
+	if !amount.IsValid() || amount.Amount.IsZero() {
+		return fmt.Errorf("invalid amount")
 	}
+	msgMsgUndelegate := stakingtypes.NewMsgUndelegate(address.String(), validator_address.String(), amount)
 
 	if _, err := msgServer.Undelegate(sdk.WrapSDKContext(ctx), msgMsgUndelegate); err != nil { // Discard the response because it's empty
 		return errorsmod.Wrap(err, "elys unstake msg")

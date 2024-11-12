@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	errorsmod "cosmossdk.io/errors"
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/v2/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	leveragelpkeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"

@@ -16,7 +16,7 @@ func (k msgServer) UpdateMinCommission(goCtx context.Context, msg *types.MsgUpda
         return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
     }
 
-    minCommission, err := sdk.NewDecFromStr(msg.MinCommission)
+    minCommission, err := sdk.LegacyNewDecFromStr(msg.MinCommission)
     if err != nil {
         return nil, err
     }
@@ -40,17 +40,17 @@ func (k msgServer) UpdateWasmConfig(goCtx context.Context, msg *types.MsgUpdateW
         return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
     }
 
-    wasmMaxLabelSize, ok := sdk.NewIntFromString(msg.WasmMaxLabelSize)
+    wasmMaxLabelSize, ok := math.NewIntFromString(msg.WasmMaxLabelSize)
     if !ok {
         return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "wasm max label size must be a positive integer")
     }
 
-    wasmMaxProposalWasmSize, ok := sdk.NewIntFromString(msg.WasmMaxProposalWasmSize)
+    wasmMaxProposalWasmSize, ok := math.NewIntFromString(msg.WasmMaxProposalWasmSize)
     if !ok {
         return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "wasm max proposal wasm size must be a positive integer")
     }
 
-    wasmMaxSize, ok := sdk.NewIntFromString(msg.WasmMaxSize)
+    wasmMaxSize, ok := math.NewIntFromString(msg.WasmMaxSize)
 
 
     if !ok {

@@ -3,7 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -17,17 +18,21 @@ import (
 )
 
 func TestUpdateStakersRewards(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	stakingKeeper := app.StakingKeeper
 	estakingKeeper := app.EstakingKeeper
 
 	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
+	validators, err := stakingKeeper.GetAllValidators(ctx)
 	require.True(t, len(validators) > 0)
+	require.NoError(t, err)
 	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
+	validator, err := sdk.ValAddressFromBech32(valAddr)
+	require.NoError(t, err)
+	delegations, err := stakingKeeper.GetValidatorDelegations(ctx, validator)
+	require.NoError(t, err)
 	require.True(t, len(delegations) > 0)
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
@@ -51,28 +56,28 @@ func TestUpdateStakersRewards(t *testing.T) {
 
 	params := estakingKeeper.GetParams(ctx)
 	params.StakeIncentives = &types.IncentiveInfo{
-		EdenAmountPerYear: sdk.NewInt(1000_000_000_000_000),
+		EdenAmountPerYear: math.NewInt(1000_000_000_000_000),
 		BlocksDistributed: 1,
 	}
-	params.MaxEdenRewardAprStakers = sdk.NewDec(1000_000)
+	params.MaxEdenRewardAprStakers = math.LegacyNewDec(1000_000)
 	estakingKeeper.SetParams(ctx, params)
 
 	// update staker rewards
-	err := estakingKeeper.UpdateStakersRewards(ctx)
+	err = estakingKeeper.UpdateStakersRewards(ctx)
 	require.Nil(t, err)
 
 	distrAppModule := exdistr.NewAppModule(
 		app.AppCodec(), app.DistrKeeper, app.AccountKeeper,
-		app.CommitmentKeeper, &app.EstakingKeeper,
+		app.CommitmentKeeper, app.EstakingKeeper,
 		&app.AssetprofileKeeper,
 		authtypes.FeeCollectorName, app.GetSubspace(distrtypes.ModuleName))
 	distrAppModule.AllocateTokens(ctx)
 
 	// withdraw eden rewards
-	msgServer := keeper.NewMsgServerImpl(estakingKeeper)
+	msgServer := keeper.NewMsgServerImpl(*estakingKeeper)
 	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
 		DelegatorAddress: addr.String(),
-		ValidatorAddress: valAddr.String(),
+		ValidatorAddress: valAddr,
 	})
 	require.Nil(t, err)
 	require.Equal(t, res.Amount.String(), "147608ueden")

@@ -1,6 +1,7 @@
 package cli_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"strconv"
 	"testing"
@@ -8,7 +9,6 @@ import (
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -22,24 +22,24 @@ import (
 
 func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool) {
 	t.Helper()
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig(t.TempDir())
 	state := types.GenesisState{}
 	require.NoError(t, cfg.Codec.UnmarshalJSON(cfg.GenesisState[types.ModuleName], &state))
 
 	for i := 0; i < n; i++ {
 		pool := types.Pool{
 			PoolId:      uint64(i),
-			TotalWeight: sdk.NewInt(100),
+			TotalWeight: sdkmath.NewInt(100),
 			Address:     types.NewPoolAddress(uint64(i)).String(),
 			PoolParams: types.PoolParams{
-				SwapFee:                     sdk.ZeroDec(),
-				ExitFee:                     sdk.ZeroDec(),
+				SwapFee:                     sdkmath.LegacyZeroDec(),
+				ExitFee:                     sdkmath.LegacyZeroDec(),
 				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-				WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdk.ZeroDec(),
-				WeightBreakingFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
+				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				FeeDenom:                    ptypes.BaseCurrency,
 			},
 		}

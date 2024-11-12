@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -19,7 +20,7 @@ func (oq *Querier) queryAmmPriceByDenom(ctx sdk.Context, query *ammtypes.QueryAM
 
 	// If amount is zero
 	if query.TokenIn.Amount.IsZero() {
-		responseBytes, err := json.Marshal(sdk.ZeroDec())
+		responseBytes, err := json.Marshal(sdkmath.LegacyZeroDec())
 		if err != nil {
 			return nil, errorsmod.Wrap(err, "failed to serialize in route by denom response")
 		}
@@ -35,7 +36,7 @@ func (oq *Querier) queryAmmPriceByDenom(ctx sdk.Context, query *ammtypes.QueryAM
 	tokenIn := query.TokenIn
 	discount := query.Discount
 
-	spotPrice, _, _, _, _, _, _, _, err := oq.keeper.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, sdk.ZeroDec())
+	spotPrice, _, _, _, _, _, _, _, err := oq.keeper.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, sdkmath.LegacyZeroDec())
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get in route by denom")
 	}

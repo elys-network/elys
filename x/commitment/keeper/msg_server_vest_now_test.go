@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/app"
@@ -17,16 +17,16 @@ import (
 
 // TestKeeper_VestNow tests the VestNow function with VestNowEnabled set to false
 func TestVestNowDisabled(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
 	// Disable VestNow for test
 	commitmentkeeper.VestNowEnabled = false
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 	creatorAddr, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
 
 	// Define the test data
@@ -36,7 +36,7 @@ func TestVestNowDisabled(t *testing.T) {
 	// Test scenario: VestNow should fail
 	msg := &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(3000),
+		Amount:  sdkmath.NewInt(3000),
 		Denom:   denom,
 	}
 
@@ -46,16 +46,16 @@ func TestVestNowDisabled(t *testing.T) {
 
 // TestKeeper_VestNow tests the VestNow function with invalid denom
 func TestVestNowInvalidDenom(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
 	// Enable VestNow for test
 	commitmentkeeper.VestNowEnabled = true
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 	creatorAddr, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
 
 	// Define the test data
@@ -67,7 +67,7 @@ func TestVestNowInvalidDenom(t *testing.T) {
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.ZeroInt(),
+			VestNowFactor:  sdkmath.ZeroInt(),
 			NumMaxVestings: 10,
 		},
 	}
@@ -81,7 +81,7 @@ func TestVestNowInvalidDenom(t *testing.T) {
 	// Test scenario: VestNow should fail
 	msg := &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(3000),
+		Amount:  sdkmath.NewInt(3000),
 		Denom:   denom,
 	}
 
@@ -91,30 +91,30 @@ func TestVestNowInvalidDenom(t *testing.T) {
 
 // TestKeeper_VestNow tests the VestNow function with vest now factor set to zero
 func TestVestNowInvalidAmount(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
 	// Enable VestNow for test
 	commitmentkeeper.VestNowEnabled = true
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 	creatorAddr, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
 
 	// Define the test data
 	creator := creatorAddr.String()
 	denom := ptypes.Eden
-	initialClaimed := sdk.NewInt(5000)
-	initialCommitted := sdk.NewInt(10000)
+	initialClaimed := sdkmath.NewInt(5000)
+	initialCommitted := sdkmath.NewInt(10000)
 
 	vestingInfos := []*types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.ZeroInt(),
+			VestNowFactor:  sdkmath.ZeroInt(),
 			NumMaxVestings: 10,
 		},
 	}
@@ -147,7 +147,7 @@ func TestVestNowInvalidAmount(t *testing.T) {
 	// Test scenario: VestNow should fail
 	msg := &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(3000),
+		Amount:  sdkmath.NewInt(3000),
 		Denom:   denom,
 	}
 
@@ -156,30 +156,30 @@ func TestVestNowInvalidAmount(t *testing.T) {
 }
 
 func TestVestNow(t *testing.T) {
-	app := app.InitElysTestApp(true)
+	app := app.InitElysTestApp(true, t)
 
 	// Enable VestNow for test
 	commitmentkeeper.VestNowEnabled = true
 
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(true)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
-	msgServer := commitmentkeeper.NewMsgServerImpl(keeper)
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 	creatorAddr, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
 
 	// Define the test data
 	creator := creatorAddr.String()
 	denom := ptypes.Eden
-	initialClaimed := sdk.NewInt(5000)
-	initialCommitted := sdk.NewInt(10000)
+	initialClaimed := sdkmath.NewInt(5000)
+	initialCommitted := sdkmath.NewInt(10000)
 
 	vestingInfos := []*types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
 			NumBlocks:      10,
-			VestNowFactor:  sdk.NewInt(90),
+			VestNowFactor:  sdkmath.NewInt(90),
 			NumMaxVestings: 10,
 		},
 	}
@@ -212,7 +212,7 @@ func TestVestNow(t *testing.T) {
 	// Test scenario 1: Withdraw within claimed balance
 	msg := &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(3000),
+		Amount:  sdkmath.NewInt(3000),
 		Denom:   denom,
 	}
 
@@ -222,16 +222,16 @@ func TestVestNow(t *testing.T) {
 	updatedCommitments := keeper.GetCommitments(ctx, creatorAddr)
 
 	claimedBalance := updatedCommitments.GetClaimedForDenom(denom)
-	assert.Equal(t, sdk.NewInt(2000), claimedBalance)
+	assert.Equal(t, sdkmath.NewInt(2000), claimedBalance)
 
 	// Check if the vested tokens were received
 	creatorBalance := app.BankKeeper.GetBalance(ctx, creatorAddr, vestingInfos[0].VestingDenom)
-	require.Equal(t, sdk.NewInt(33), creatorBalance.Amount, "tokens were not vested correctly")
+	require.Equal(t, sdkmath.NewInt(33), creatorBalance.Amount, "tokens were not vested correctly")
 
 	// Test scenario 2: Withdraw more than claimed balance but within total balance
 	msg = &types.MsgVestNow{
 		Creator: creator,
-		Amount:  sdk.NewInt(7000),
+		Amount:  sdkmath.NewInt(7000),
 		Denom:   denom,
 	}
 

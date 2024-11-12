@@ -2,6 +2,7 @@ package migrations
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
@@ -10,7 +11,7 @@ func (m Migrator) V6Migration(ctx sdk.Context) error {
 	pools := m.keeper.GetAllPools(ctx)
 	// Reset pools
 	for _, pool := range pools {
-		pool.LeveragedLpAmount = sdk.NewInt(0)
+		pool.LeveragedLpAmount = math.NewInt(0)
 		m.keeper.SetPool(ctx, pool)
 	}
 	// Traverse positions and update lp amount and health, as there are few positions, haven't optimized it much

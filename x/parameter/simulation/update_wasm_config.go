@@ -17,13 +17,13 @@ func SimulateMsgUpdateWasmConfig(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgUpdateWasmConfig{
-			Creator: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgUpdateWasmConfig{
+		//	Creator: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the UpdateWasmConfig simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "UpdateWasmConfig simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateWasmConfig{}), "UpdateWasmConfig simulation not implemented"), nil, nil
 	}
 }

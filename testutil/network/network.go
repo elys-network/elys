@@ -5,20 +5,24 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/log"
+	pruningtypes "cosmossdk.io/store/pruning/types"
 	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	cometbftdb "github.com/cometbft/cometbft-db"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	cometbftrand "github.com/cometbft/cometbft/libs/rand"
+	cosmosdb "github.com/cosmos/cosmos-db"
+	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	pruningtypes "github.com/cosmos/cosmos-sdk/store/pruning/types"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/app"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -35,7 +39,7 @@ func New(t *testing.T, configs ...network.Config) *network.Network {
 	}
 	var cfg network.Config
 	if len(configs) == 0 {
-		cfg = DefaultConfig()
+		cfg = DefaultConfig(t.TempDir())
 	} else {
 		cfg = configs[0]
 	}
@@ -49,24 +53,41 @@ func New(t *testing.T, configs ...network.Config) *network.Network {
 
 // DefaultConfig will initialize config for the network with custom application,
 // genesis and single validator. All other parameters are inherited from cosmos-sdk/testutil/network.DefaultConfig
-func DefaultConfig() network.Config {
+func DefaultConfig(tempDirectory string) network.Config {
+
 	var (
 		encoding = app.MakeEncodingConfig()
 		chainId  = "elys-" + cometbftrand.NewRand().Str(6)
 	)
 
 	appOptions := make(simtestutil.AppOptionsMap, 0)
+	appOptions[flags.FlagHome] = tempDirectory
+
+	tempApplication := app.NewElysApp(
+		log.NewNopLogger(),
+		dbm.NewMemDB(),
+		nil,
+		true,
+		map[int64]bool{},
+		tempDirectory,
+		appOptions,
+		[]wasmkeeper.Option{},
+	)
 
 	return network.Config{
-		Codec:             encoding.Marshaler,
-		TxConfig:          encoding.TxConfig,
-		LegacyAmino:       encoding.Amino,
-		InterfaceRegistry: encoding.InterfaceRegistry,
+		Codec:             tempApplication.AppCodec(),
+		TxConfig:          tempApplication.TxConfig(),
+		LegacyAmino:       tempApplication.LegacyAmino(),
+		InterfaceRegistry: tempApplication.InterfaceRegistry(),
 		AccountRetriever:  authtypes.AccountRetriever{},
 		AppConstructor: func(val network.ValidatorI) servertypes.Application {
+
+			tempDirectory := tempDirectory + uuid.New().String()
+
 			return app.NewElysApp(
-				val.GetCtx().Logger, cometbftdb.NewMemDB(), nil, true,
-				wasmtypes.EnableAllProposals,
+				val.GetCtx().Logger, cosmosdb.NewMemDB(), nil, true,
+				map[int64]bool{},
+				tempDirectory,
 				appOptions,
 				[]wasm.Option{},
 				baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
@@ -74,7 +95,7 @@ func DefaultConfig() network.Config {
 				baseapp.SetChainID(chainId),
 			)
 		},
-		GenesisState:    app.ModuleBasics.DefaultGenesis(encoding.Marshaler),
+		GenesisState:    app.NewDefaultGenesisState(tempApplication, encoding.Marshaler),
 		TimeoutCommit:   2 * time.Second,
 		ChainID:         chainId,
 		NumValidators:   1,

@@ -1,12 +1,12 @@
 package cli
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -24,7 +24,7 @@ func CmdUpdateStopLoss() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argPrice, err := sdk.NewDecFromStr(args[1])
+			argPrice, err := sdkmath.LegacyNewDecFromStr(args[1])
 			if err != nil {
 				return err
 			}

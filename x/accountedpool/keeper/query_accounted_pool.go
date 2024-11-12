@@ -3,7 +3,8 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/x/accountedpool/types"
@@ -19,7 +20,7 @@ func (k Keeper) AccountedPoolAll(goCtx context.Context, req *types.QueryAllAccou
 	var accountedPools []types.AccountedPool
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	accountedPoolStore := prefix.NewStore(store, types.KeyPrefix(types.AccountedPoolKeyPrefix))
 
 	pageRes, err := query.Paginate(accountedPoolStore, req.Pagination, func(key []byte, value []byte) error {

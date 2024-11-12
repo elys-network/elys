@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/testutil/sample"
@@ -52,9 +51,9 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateParams_Pools() {
 
 	suite.SetupCoinPrices()
 	addr := suite.AddAccounts(1, nil)
-	amount := sdk.NewInt(1000)
+	amount := math.NewInt(1000)
 	poolCreator := addr[0]
-	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{

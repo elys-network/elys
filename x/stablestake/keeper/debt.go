@@ -1,22 +1,25 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
 func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress) (debt types.Debt) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetDebtKey(addr)
 	bz := store.Get(key)
 	if len(bz) == 0 {
 		return types.Debt{
 			Address:               addr.String(),
-			Borrowed:              sdk.ZeroInt(),
-			InterestPaid:          sdk.ZeroInt(),
-			InterestStacked:       sdk.ZeroInt(),
+			Borrowed:              sdkmath.ZeroInt(),
+			InterestPaid:          sdkmath.ZeroInt(),
+			InterestStacked:       sdkmath.ZeroInt(),
 			BorrowTime:            uint64(ctx.BlockTime().Unix()),
 			LastInterestCalcTime:  uint64(ctx.BlockTime().Unix()),
 			LastInterestCalcBlock: uint64(ctx.BlockHeight()),
@@ -42,22 +45,22 @@ func (k Keeper) UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) t
 }
 
 func (k Keeper) SetDebt(ctx sdk.Context, debt types.Debt) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetDebtKey(debt.GetOwnerAccount())
 	bz := k.cdc.MustMarshal(&debt)
 	store.Set(key, bz)
 }
 
 func (k Keeper) DeleteDebt(ctx sdk.Context, debt types.Debt) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetDebtKey(debt.GetOwnerAccount())
 	store.Delete(key)
 }
 
 func (k Keeper) GetAllDebts(ctx sdk.Context) []types.Debt {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
-	iterator := sdk.KVStorePrefixIterator(store, types.DebtPrefixKey)
+	iterator := storetypes.KVStorePrefixIterator(store, types.DebtPrefixKey)
 	defer iterator.Close()
 
 	debts := []types.Debt{}
@@ -71,7 +74,7 @@ func (k Keeper) GetAllDebts(ctx sdk.Context) []types.Debt {
 }
 
 func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.InterestBlock) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
 	if store.Has(sdk.Uint64ToBigEndian(block - 1)) {
 		lastBlock := types.InterestBlock{}
 		bz := store.Get(sdk.Uint64ToBigEndian(block - 1))
@@ -87,7 +90,7 @@ func (k Keeper) SetInterest(ctx sdk.Context, block uint64, interest types.Intere
 }
 
 func (k Keeper) DeleteInterest(ctx sdk.Context, delBlock int64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
 	key := sdk.Uint64ToBigEndian(uint64(delBlock))
 	if store.Has(key) {
 		store.Delete([]byte(key))
@@ -95,8 +98,8 @@ func (k Keeper) DeleteInterest(ctx sdk.Context, delBlock int64) {
 }
 
 func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
-	iterator := sdk.KVStorePrefixIterator(store, nil)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
+	iterator := storetypes.KVStorePrefixIterator(store, nil)
 	defer iterator.Close()
 
 	interests := []types.InterestBlock{}
@@ -115,8 +118,8 @@ func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
 	return interests
 }
 
-func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdk.Dec) sdk.Int {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestPrefixKey)
+func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec) sdkmath.Int {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
 	currentBlockKey := sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))
 	startBlockKey := sdk.Uint64ToBigEndian(startBlock)
 
@@ -135,15 +138,15 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 
 		newInterest := borrowed.
 			Mul(totalInterestRate).
-			Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-			Quo(sdk.NewDec(numberOfBlocks)).
-			Quo(sdk.NewDec(86400 * 365)).
+			Mul(sdkmath.LegacyNewDec(ctx.BlockTime().Unix() - int64(startTime))).
+			Quo(sdkmath.LegacyNewDec(numberOfBlocks)).
+			Quo(sdkmath.LegacyNewDec(86400 * 365)).
 			RoundInt()
 		return newInterest
 	}
 
 	if !store.Has(startBlockKey) && store.Has(currentBlockKey) {
-		iterator := sdk.KVStorePrefixIterator(store, nil)
+		iterator := storetypes.KVStorePrefixIterator(store, nil)
 		defer iterator.Close()
 
 		firstStoredBlock := uint64(0)
@@ -161,9 +164,9 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
 
 			newInterest := borrowed.Mul(totalInterest).
-				Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-				Quo(sdk.NewDec(numberOfBlocks)).
-				Quo(sdk.NewDec(86400 * 365)).
+				Mul(sdkmath.LegacyNewDec(ctx.BlockTime().Unix() - int64(startTime))).
+				Quo(sdkmath.LegacyNewDec(numberOfBlocks)).
+				Quo(sdkmath.LegacyNewDec(86400 * 365)).
 				RoundInt()
 			return newInterest
 		}
@@ -171,8 +174,8 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 	params := k.GetParams(ctx)
 	newInterest := borrowed.
 		Mul(params.InterestRate).
-		Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(startTime))).
-		Quo(sdk.NewDec(86400 * 365)).
+		Mul(sdkmath.LegacyNewDec(ctx.BlockTime().Unix() - int64(startTime))).
+		Quo(sdkmath.LegacyNewDec(86400 * 365)).
 		RoundInt()
 	return newInterest
 }
@@ -203,7 +206,7 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) er
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 
 	borrowed := params.TotalValue.Sub(balance.Amount).ToLegacyDec().Add(amount.Amount.ToLegacyDec())
-	maxAllowed := params.TotalValue.ToLegacyDec().Mul(sdk.NewDec(9)).Quo(sdk.NewDec(10))
+	maxAllowed := params.TotalValue.ToLegacyDec().Mul(sdkmath.LegacyNewDec(9)).Quo(sdkmath.LegacyNewDec(10))
 	if borrowed.GT(maxAllowed) {
 		return types.ErrMaxBorrowAmount
 	}

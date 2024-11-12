@@ -1140,31 +1140,31 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "params"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_ExternalIncentive_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "external_incentive"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_ExternalIncentive_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "external_incentive"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_PoolInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "pool_info"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_PoolInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "pool_info"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_PoolRewardInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "pool_reward_info"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_PoolRewardInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "pool_reward_info"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_UserRewardInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "user_reward_info"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_UserRewardInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "user_reward_info"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_UserPendingReward_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "pending_reward"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_UserPendingReward_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "pending_reward"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_StableStakeApr_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "masterchef", "stable_stake_apr", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_StableStakeApr_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "masterchef", "stable_stake_apr", "denom"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_PoolAprs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "pool_aprs"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_PoolAprs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "pool_aprs"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_ShowFeeInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "masterchef", "show_fee_info", "date"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_ShowFeeInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "masterchef", "show_fee_info", "date"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_ListFeeInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "list_fee_info"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_ListFeeInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "list_fee_info"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Apr_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "masterchef", "apr", "withdraw_type", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Apr_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"elys-network", "elys", "masterchef", "apr", "withdraw_type", "denom"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Aprs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "aprs"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Aprs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "aprs"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_PoolRewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "pool_rewards"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_PoolRewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "masterchef", "pool_rewards"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

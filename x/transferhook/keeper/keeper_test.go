@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/stretchr/testify/suite"
 )
@@ -23,13 +23,18 @@ type KeeperTestSuite struct {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	app := simapp.InitElysTestApp(initChain)
+	app := simapp.InitElysTestApp(initChain, suite.T())
 
 	suite.legacyAmino = app.LegacyAmino()
-	suite.ctx = app.BaseApp.NewContext(initChain, tmproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(initChain)
 	suite.app = app
+	suite.SetTransferParam()
 }
 
 func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
+}
+
+func (suite *KeeperTestSuite) SetTransferParam() {
+	suite.app.TransferKeeper.SetParams(suite.ctx, types.DefaultGenesisState().Params)
 }

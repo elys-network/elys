@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -23,13 +24,16 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 var _ types.MsgServer = msgServer{}
 
 func (k msgServer) UpdateMinCommission(goCtx context.Context, msg *types.MsgUpdateMinCommission) (*types.MsgUpdateMinCommissionResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Creator {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
 	}
 
-	minComission, err := sdk.NewDecFromStr(msg.MinCommission)
+	minComission, err := sdkmath.LegacyNewDecFromStr(msg.MinCommission)
 	if err != nil {
 		return nil, err
 	}
@@ -41,13 +45,16 @@ func (k msgServer) UpdateMinCommission(goCtx context.Context, msg *types.MsgUpda
 }
 
 func (k msgServer) UpdateMaxVotingPower(goCtx context.Context, msg *types.MsgUpdateMaxVotingPower) (*types.MsgUpdateMaxVotingPowerResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Creator {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
 	}
 
-	maxVotingPower, err := sdk.NewDecFromStr(msg.MaxVotingPower)
+	maxVotingPower, err := sdkmath.LegacyNewDecFromStr(msg.MaxVotingPower)
 	if err != nil {
 		return nil, err
 	}
@@ -59,13 +66,16 @@ func (k msgServer) UpdateMaxVotingPower(goCtx context.Context, msg *types.MsgUpd
 }
 
 func (k msgServer) UpdateMinSelfDelegation(goCtx context.Context, msg *types.MsgUpdateMinSelfDelegation) (*types.MsgUpdateMinSelfDelegationResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Creator {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
 	}
 
-	minSelfDelegation, ok := sdk.NewIntFromString(msg.MinSelfDelegation)
+	minSelfDelegation, ok := sdkmath.NewIntFromString(msg.MinSelfDelegation)
 	if !ok {
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "minimum self delegation must be a positive integer")
 	}
@@ -77,6 +87,9 @@ func (k msgServer) UpdateMinSelfDelegation(goCtx context.Context, msg *types.Msg
 }
 
 func (k msgServer) UpdateBrokerAddress(goCtx context.Context, msg *types.MsgUpdateBrokerAddress) (*types.MsgUpdateBrokerAddressResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Creator {
@@ -90,6 +103,9 @@ func (k msgServer) UpdateBrokerAddress(goCtx context.Context, msg *types.MsgUpda
 }
 
 func (k msgServer) UpdateTotalBlocksPerYear(goCtx context.Context, msg *types.MsgUpdateTotalBlocksPerYear) (*types.MsgUpdateTotalBlocksPerYearResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Creator {

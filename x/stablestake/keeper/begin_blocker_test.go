@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -13,32 +13,32 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 		blockHeight    int64
 		epochLength    int64
 		epochPosition  int64
-		interestRate   sdk.Dec
-		redemptionRate sdk.Dec
+		interestRate   sdkmath.LegacyDec
+		redemptionRate sdkmath.LegacyDec
 		expectedError  error
 	}{
 		{
 			name:           "epoch has passed",
 			epochLength:    1,
 			epochPosition:  0,
-			interestRate:   sdk.MustNewDecFromStr("0.17"),
-			redemptionRate: sdk.ZeroDec(),
+			interestRate:   sdkmath.LegacyMustNewDecFromStr("0.17"),
+			redemptionRate: sdkmath.LegacyZeroDec(),
 			expectedError:  nil,
 		},
 		{
 			name:           "epoch has not passed",
 			epochLength:    2,
 			epochPosition:  1,
-			interestRate:   sdk.NewDec(5),
-			redemptionRate: sdk.NewDec(10),
+			interestRate:   sdkmath.LegacyNewDec(5),
+			redemptionRate: sdkmath.LegacyNewDec(10),
 			expectedError:  nil,
 		},
 		{
 			name:           "delete old data",
 			epochLength:    2,
 			epochPosition:  1,
-			interestRate:   sdk.NewDec(5),
-			redemptionRate: sdk.NewDec(10),
+			interestRate:   sdkmath.LegacyNewDec(5),
+			redemptionRate: sdkmath.LegacyNewDec(10),
 			expectedError:  nil,
 			blockHeight:    95768100,
 		},
@@ -50,7 +50,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 			params.InterestRate = tt.interestRate
 			params.RedemptionRate = tt.redemptionRate
 			params.EpochLength = tt.epochLength
-			params.TotalValue = sdk.NewInt(1000000)
+			params.TotalValue = sdkmath.NewInt(1000000)
 			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
 
 			suite.ctx = suite.ctx.WithBlockHeight(tt.blockHeight).WithBlockTime(time.Now())

@@ -3,7 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -14,8 +15,8 @@ import (
 )
 
 func TestBurnEdenBFromElysUnstaked(t *testing.T) {
-	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount()
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount(t)
+	ctx := app.BaseApp.NewContext(true)
 
 	ek, sk := app.EstakingKeeper, app.StakingKeeper
 
@@ -23,8 +24,8 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	var unclaimed sdk.Coins
 
 	// Prepare unclaimed tokens
-	uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000))
-	uedenBToken := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(20000))
+	uedenToken := sdk.NewCoin(ptypes.Eden, math.NewInt(2000))
+	uedenBToken := sdk.NewCoin(ptypes.EdenB, math.NewInt(20000))
 	unclaimed = unclaimed.Add(uedenToken, uedenBToken)
 
 	// Mint coins
@@ -34,8 +35,8 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	require.NoError(t, err)
 
 	// Prepare committed tokens
-	uedenToken = sdk.NewCoin(ptypes.Eden, sdk.NewInt(10000))
-	uedenBToken = sdk.NewCoin(ptypes.EdenB, sdk.NewInt(5000))
+	uedenToken = sdk.NewCoin(ptypes.Eden, math.NewInt(10000))
+	uedenBToken = sdk.NewCoin(ptypes.EdenB, math.NewInt(5000))
 	committed = committed.Add(uedenToken, uedenBToken)
 
 	// Mint coins
@@ -51,8 +52,8 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 	ek.TakeDelegationSnapshot(ctx, genAccount)
 
 	// burn amount = 100000 (unbonded amt) / (1000000 (elys staked) + 10000 (Eden committed)) * (20000 EdenB + 5000 EdenB committed)
-	unbondAmt, err := sk.Unbond(ctx, genAccount, valAddr, sdk.NewDecWithPrec(10, 2))
-	require.Equal(t, unbondAmt, sdk.NewInt(100000))
+	unbondAmt, err := sk.Unbond(ctx, genAccount, valAddr, math.LegacyNewDecWithPrec(10, 2))
+	require.Equal(t, unbondAmt, math.NewInt(100000))
 	require.NoError(t, err)
 
 	// Process EdenB burn operation
@@ -60,8 +61,8 @@ func TestBurnEdenBFromElysUnstaked(t *testing.T) {
 }
 
 func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
-	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount()
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app, genAccount, _ := simapp.InitElysTestAppWithGenAccount(t)
+	ctx := app.BaseApp.NewContext(true)
 
 	ek, commitmentKeeper := app.EstakingKeeper, app.CommitmentKeeper
 
@@ -69,8 +70,8 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	var unclaimed sdk.Coins
 
 	// Prepare unclaimed tokens
-	uedenToken := sdk.NewCoin(ptypes.Eden, sdk.NewInt(2000))
-	uedenBToken := sdk.NewCoin(ptypes.EdenB, sdk.NewInt(20000))
+	uedenToken := sdk.NewCoin(ptypes.Eden, math.NewInt(2000))
+	uedenBToken := sdk.NewCoin(ptypes.EdenB, math.NewInt(20000))
 	unclaimed = unclaimed.Add(uedenToken, uedenBToken)
 
 	// Mint coins
@@ -80,8 +81,8 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	require.NoError(t, err)
 
 	// Prepare committed tokens
-	uedenToken = sdk.NewCoin(ptypes.Eden, sdk.NewInt(10000))
-	uedenBToken = sdk.NewCoin(ptypes.EdenB, sdk.NewInt(5000))
+	uedenToken = sdk.NewCoin(ptypes.Eden, math.NewInt(10000))
+	uedenBToken = sdk.NewCoin(ptypes.EdenB, math.NewInt(5000))
 	committed = committed.Add(uedenToken, uedenBToken)
 
 	// Set assetprofile entry for denom
@@ -91,10 +92,10 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	commitment.Claimed = commitment.Claimed.Add(committed...)
 	app.CommitmentKeeper.SetCommitments(ctx, commitment)
 
-	msgServer := commkeeper.NewMsgServerImpl(commitmentKeeper)
+	msgServer := commkeeper.NewMsgServerImpl(*commitmentKeeper)
 	_, err = msgServer.CommitClaimedRewards(ctx, &ctypes.MsgCommitClaimedRewards{
 		Creator: genAccount.String(),
-		Amount:  sdk.NewInt(1000),
+		Amount:  math.NewInt(1000),
 		Denom:   ptypes.Eden,
 	})
 	require.NoError(t, err)
@@ -105,7 +106,7 @@ func TestBurnEdenBFromEdenUncommitted(t *testing.T) {
 	// Uncommit tokens
 	_, err = msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), &ctypes.MsgUncommitTokens{
 		Creator: genAccount.String(),
-		Amount:  sdk.NewInt(1000),
+		Amount:  math.NewInt(1000),
 		Denom:   ptypes.Eden,
 	})
 	require.NoError(t, err)

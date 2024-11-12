@@ -8,6 +8,9 @@ import (
 )
 
 func (k msgServer) SetPriceFeeder(goCtx context.Context, msg *types.MsgSetPriceFeeder) (*types.MsgSetPriceFeederResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	feederAccount := sdk.MustAccAddressFromBech32(msg.Feeder)
 	_, found := k.Keeper.GetPriceFeeder(ctx, feederAccount)

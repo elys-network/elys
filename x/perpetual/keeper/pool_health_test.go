@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -9,14 +9,14 @@ import (
 func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 	suite.ResetSuite()
 	params := types.DefaultParams()
-	params.PoolOpenThreshold = sdk.OneDec()
+	params.PoolOpenThreshold = sdkmath.LegacyOneDec()
 	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 	suite.Require().NoError(err)
 	addr := suite.AddAccounts(10, nil)
-	amount := sdk.NewInt(1000)
+	amount := sdkmath.NewInt(1000)
 	poolCreator := addr[0]
 	suite.SetupCoinPrices()
-	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdk.ZeroDec(), sdk.ZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	testCases := []struct {
 		name                 string
 		expectErrMsg         string
@@ -34,7 +34,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 			"pool (1) health too low to open new positions",
 			func() {
 				pool := types.NewPool(ammPool)
-				pool.Health = sdk.MustNewDecFromStr("0.5")
+				pool.Health = sdkmath.LegacyMustNewDecFromStr("0.5")
 				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 			},
 		},

@@ -2,7 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -23,7 +23,7 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 	baseCurrency := entry.Denom
 
 	var closedMtp *types.MTP
-	var repayAmount math.Int
+	var repayAmount sdkmath.Int
 	switch mtp.Position {
 	case types.Position_LONG:
 		closedMtp, repayAmount, err = k.ClosePosition(ctx, msg, baseCurrency)
@@ -48,6 +48,6 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 	}, nil
 }
 
-func (k Keeper) EmitCloseEvent(ctx sdk.Context, mtp *types.MTP, repayAmount math.Int) {
+func (k Keeper) EmitCloseEvent(ctx sdk.Context, mtp *types.MTP, repayAmount sdkmath.Int) {
 	ctx.EventManager().EmitEvent(types.GenerateCloseEvent(mtp, repayAmount))
 }

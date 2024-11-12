@@ -1,9 +1,9 @@
 package types_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/elys-network/elys/x/amm/types"
@@ -22,13 +22,13 @@ func TestMsgUpdatePoolParams_ValidateBasic(t *testing.T) {
 			msg: types.MsgUpdatePoolParams{
 				Authority: "invalid_address",
 				PoolParams: &types.PoolParams{
-					SwapFee:                     sdk.ZeroDec(),
-					ExitFee:                     sdk.ZeroDec(),
+					SwapFee:                     sdkmath.LegacyZeroDec(),
+					ExitFee:                     sdkmath.LegacyZeroDec(),
 					UseOracle:                   false,
-					WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdk.ZeroDec(),
+					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 					FeeDenom:                    ptypes.BaseCurrency,
 				},
 			},
@@ -38,13 +38,13 @@ func TestMsgUpdatePoolParams_ValidateBasic(t *testing.T) {
 			msg: types.MsgUpdatePoolParams{
 				Authority: sample.AccAddress(),
 				PoolParams: &types.PoolParams{
-					SwapFee:                     sdk.ZeroDec(),
-					ExitFee:                     sdk.ZeroDec(),
+					SwapFee:                     sdkmath.LegacyZeroDec(),
+					ExitFee:                     sdkmath.LegacyZeroDec(),
 					UseOracle:                   false,
-					WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdk.ZeroDec(),
+					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
+					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
 					FeeDenom:                    ptypes.BaseCurrency,
 				},
 			},

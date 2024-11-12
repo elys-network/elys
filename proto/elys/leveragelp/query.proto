@@ -14,93 +14,96 @@ option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
+
   // Parameters queries the parameters of the module.
-  rpc Params (ParamsRequest) returns (ParamsResponse) {
+  rpc Params(ParamsRequest) returns (ParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/leveragelp/params";
-  
   }
-  
+
   // Queries a list of GetPositions items.
-  rpc QueryPositions (PositionsRequest) returns (PositionsResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/positions/{pagination.key}";
-  
+  rpc QueryPositions(PositionsRequest) returns (PositionsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/positions/{pagination.key}";
   }
-  
+
   // Queries a list of GetPositionsByPool items.
-  rpc QueryPositionsByPool (PositionsByPoolRequest) returns (PositionsByPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/positions-by-pool/{amm_pool_id}/{pagination.key}";
-  
+  rpc QueryPositionsByPool(PositionsByPoolRequest)
+      returns (PositionsByPoolResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/positions-by-pool/{amm_pool_id}/"
+        "{pagination.key}";
   }
-  
+
   // Queries a list of GetStatus items.
-  rpc GetStatus (StatusRequest) returns (StatusResponse) {
+  rpc GetStatus(StatusRequest) returns (StatusResponse) {
     option (google.api.http).get = "/elys-network/elys/leveragelp/status";
-  
   }
-  
+
   // Queries a list of GetPositionsForAddress items.
-  rpc QueryPositionsForAddress (PositionsForAddressRequest) returns (PositionsForAddressResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/positions-for-address/{address}/{pagination.key}";
-  
+  rpc QueryPositionsForAddress(PositionsForAddressRequest)
+      returns (PositionsForAddressResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/positions-for-address/{address}/"
+        "{pagination.key}";
   }
-  
+
   // Queries a list of GetWhitelist items.
-  rpc GetWhitelist (WhitelistRequest) returns (WhitelistResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/whitelist/{pagination.key}";
-  
+  rpc GetWhitelist(WhitelistRequest) returns (WhitelistResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/whitelist/{pagination.key}";
   }
-  
+
   // Queries a list of IsWhitelisted items.
-  rpc IsWhitelisted (IsWhitelistedRequest) returns (IsWhitelistedResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/is-whitelisted";
-  
+  rpc IsWhitelisted(IsWhitelistedRequest) returns (IsWhitelistedResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/is-whitelisted";
   }
-  
+
   // Queries a list of Pool items.
-  rpc Pool  (QueryGetPoolRequest) returns (QueryGetPoolResponse) {
+  rpc Pool(QueryGetPoolRequest) returns (QueryGetPoolResponse) {
     option (google.api.http).get = "/elys-network/elys/leveragelp/pool/{index}";
-  
   }
-  rpc Pools (QueryAllPoolRequest) returns (QueryAllPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/pool/{pagination.key}";
-  
+  rpc Pools(QueryAllPoolRequest) returns (QueryAllPoolResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/pool/{pagination.key}";
   }
-  
+
   // Queries a list of Position items.
-  rpc Position (PositionRequest) returns (PositionResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/position/{address}/{id}";
-  
+  rpc Position(PositionRequest) returns (PositionResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/position/{address}/{id}";
   }
-  
+
   // Query a liquidation price for a position
-  rpc LiquidationPrice (QueryLiquidationPriceRequest) returns (QueryLiquidationPriceResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/liquidation_price/{position_id}";
-  
+  rpc LiquidationPrice(QueryLiquidationPriceRequest)
+      returns (QueryLiquidationPriceResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/liquidation_price/{position_id}";
   }
-  
+
   // Get estimated amount of return value opening a position
-  rpc OpenEst (QueryOpenEstRequest) returns (QueryOpenEstResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/open_estimation";
-  
+  rpc OpenEst(QueryOpenEstRequest) returns (QueryOpenEstResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/open_estimation";
   }
-  
+
   // Get estimated amount of return value closing a position
-  rpc CloseEst (QueryCloseEstRequest) returns (QueryCloseEstResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/close_estimation";
-  
+  rpc CloseEst(QueryCloseEstRequest) returns (QueryCloseEstResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/close_estimation";
   }
-  
+
   // Queries rewards on leveragelp
-  rpc Rewards (QueryRewardsRequest) returns (QueryRewardsResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/rewards/{address}";
-  
+  rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/rewards/{address}";
   }
-  
+
   // Queries a list of CommittedTokensLocked items.
-  rpc CommittedTokensLocked (QueryCommittedTokensLockedRequest) returns (QueryCommittedTokensLockedResponse) {
-    option (google.api.http).get = "/elys-network/elys/leveragelp/committed_tokens_locked/{address}";
-  
+  rpc CommittedTokensLocked(QueryCommittedTokensLockedRequest)
+      returns (QueryCommittedTokensLockedResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/leveragelp/committed_tokens_locked/{address}";
   }
 }
 // ParamsRequest is request type for the Query/Params RPC method.
@@ -108,9 +111,9 @@ message ParamsRequest {}
 
 // ParamsResponse is response type for the Query/Params RPC method.
 message ParamsResponse {
-  
+
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
 message PositionsRequest {
@@ -118,35 +121,35 @@ message PositionsRequest {
 }
 
 message PositionsResponse {
-  repeated QueryPosition                          positions  = 1;
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated QueryPosition positions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message PositionsByPoolRequest {
-  uint64                                amm_pool_id = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination  = 2;
+  uint64 amm_pool_id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message PositionsByPoolResponse {
-  repeated QueryPosition                          positions  = 1;
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated QueryPosition positions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message StatusRequest {}
 
 message StatusResponse {
-  uint64 open_position_count     = 1;
+  uint64 open_position_count = 1;
   uint64 lifetime_position_count = 2;
 }
 
 message PositionsForAddressRequest {
-  string                                address    = 1;
+  string address = 1;
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message PositionsForAddressResponse {
-  repeated PositionAndInterest                    positions  = 1;
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated PositionAndInterest positions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message WhitelistRequest {
@@ -154,97 +157,133 @@ message WhitelistRequest {
 }
 
 message WhitelistResponse {
-  repeated string                                 whitelist  = 1;
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated string whitelist = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message IsWhitelistedRequest {
-  string address = 1;
-}
+message IsWhitelistedRequest { string address = 1; }
 
 message IsWhitelistedResponse {
-  string address        = 1;
-  bool   is_whitelisted = 2;
+  string address = 1;
+  bool is_whitelisted = 2;
 }
 
-message QueryGetPoolRequest {
-  uint64 index = 1;
-}
+message QueryGetPoolRequest { uint64 index = 1; }
 
-message QueryGetPoolResponse {
-  Pool pool = 1 [(gogoproto.nullable) = false];
-}
+message QueryGetPoolResponse { Pool pool = 1 [ (gogoproto.nullable) = false ]; }
 
 message QueryAllPoolRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 message QueryAllPoolResponse {
-  repeated Pool                                   pool       = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated Pool pool = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message PositionResponse {
-  QueryPosition position        = 1;
-  string        locked_lp_token = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  QueryPosition position = 1;
+  string locked_lp_token = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryLiquidationPriceRequest {
-  string address     = 1;
+  string address = 1;
   uint64 position_id = 2;
 }
 
 message QueryLiquidationPriceResponse {
-  string price = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string price = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryOpenEstRequest {
-  string collateral_asset  = 1;
-  string collateral_amount = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  uint64 amm_pool_id       = 3;
-  string leverage          = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string collateral_asset = 1;
+  string collateral_amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  uint64 amm_pool_id = 3;
+  string leverage = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryOpenEstResponse {
-  string position_size        = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string weight_balance_ratio = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string borrow_fee           = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string position_size = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string weight_balance_ratio = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_fee = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryCloseEstRequest {
-  string owner     = 1;
-  uint64 id        = 2;
-  string lp_amount = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string owner = 1;
+  uint64 id = 2;
+  string lp_amount = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryRewardsRequest {
-           string address = 1;
-  repeated uint64 ids     = 2;
+  string address = 1;
+  repeated uint64 ids = 2;
 }
 
 message RewardInfo {
-           uint64                   position_id = 1;
-  repeated cosmos.base.v1beta1.Coin reward      = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+  uint64 position_id = 1;
+  repeated cosmos.base.v1beta1.Coin reward = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
 
 message QueryRewardsResponse {
-  repeated RewardInfo               rewards       = 1;
-  repeated cosmos.base.v1beta1.Coin total_rewards = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+  repeated RewardInfo rewards = 1;
+  repeated cosmos.base.v1beta1.Coin total_rewards = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
 
 message QueryCloseEstResponse {
-  string liability            = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string weight_balance_ratio = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string amount_returned      = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string liability = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string weight_balance_ratio = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string amount_returned = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message QueryCommittedTokensLockedRequest {
-  string address = 1;
-}
+message QueryCommittedTokensLockedRequest { string address = 1; }
 
 message QueryCommittedTokensLockedResponse {
-           string                   address          = 1;
-  repeated cosmos.base.v1beta1.Coin locked_committed = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
-  repeated cosmos.base.v1beta1.Coin total_committed  = 3 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+  string address = 1;
+  repeated cosmos.base.v1beta1.Coin locked_committed = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin total_committed = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
-

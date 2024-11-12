@@ -3,6 +3,7 @@ package cli_test
 import (
 	"bytes"
 	"context"
+	"cosmossdk.io/math"
 	"fmt"
 	"io"
 	"testing"
@@ -24,7 +25,7 @@ import (
 
 func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool) {
 	t.Helper()
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig(t.TempDir())
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
 		ammPool := ammtypes.Pool{
@@ -33,7 +34,7 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 				{
 					Token: sdk.Coin{
 						Denom:  "testAsset",
-						Amount: sdk.NewInt(100),
+						Amount: math.NewInt(100),
 					},
 				},
 			},
@@ -65,7 +66,7 @@ func (s *CLITestSuite) TestShowPool() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.QueryGetPoolResponse{
 					Pool: types.PoolResponse{},
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)
@@ -83,7 +84,7 @@ func (s *CLITestSuite) TestShowPool() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.QueryGetPoolResponse{
 					Pool: types.PoolResponse{},
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)
@@ -135,7 +136,7 @@ func (s *CLITestSuite) TestShowPool() {
 //		objs[k].LastHeightBorrowInterestRateComputed = v.LastHeightBorrowInterestRateComputed
 //		objs[k].PoolAssetsLong = v.PoolAssetsLong
 //		objs[k].PoolAssetsShort = v.PoolAssetsShort
-//		objs[k].NetOpenInterest = sdk.ZeroInt()
+//		objs[k].NetOpenInterest = math.ZeroInt()
 //	}
 //
 //	ctx := net.Validators[0].ClientCtx

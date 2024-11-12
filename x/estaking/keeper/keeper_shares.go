@@ -10,11 +10,20 @@ import (
 // Calculate the delegated amount
 func (k Keeper) CalcDelegationAmount(ctx sdk.Context, delegator sdk.AccAddress) math.Int {
 	// Get elys delegation
-	delAmount := sdk.ZeroDec()
-	delegations := k.Keeper.GetDelegatorDelegations(ctx, delegator, gomath.MaxUint16)
+	delAmount := math.LegacyZeroDec()
+	delegations, err := k.Keeper.GetDelegatorDelegations(ctx, delegator, gomath.MaxUint16)
+	if err != nil {
+		panic(err)
+	}
 	for _, del := range delegations {
-		valAddr := del.GetValidatorAddr()
-		val := k.Keeper.Validator(ctx, valAddr)
+		valAddr, err := sdk.ValAddressFromBech32(del.GetValidatorAddr())
+		if err != nil {
+			panic(err)
+		}
+		val, err := k.Keeper.Validator(ctx, valAddr)
+		if err != nil {
+			panic(err)
+		}
 
 		shares := del.GetShares()
 		tokens := val.TokensFromSharesTruncated(shares)
@@ -27,12 +36,20 @@ func (k Keeper) CalcDelegationAmount(ctx sdk.Context, delegator sdk.AccAddress) 
 // Calculate delegation to bonded validators
 func (k Keeper) CalcBondedDelegationAmount(ctx sdk.Context, delAddr sdk.AccAddress) math.Int {
 	// Get elys delegation for creator address
-	delAmount := sdk.ZeroDec()
-	delegations := k.Keeper.GetDelegatorDelegations(ctx, delAddr, gomath.MaxUint16)
+	delAmount := math.LegacyZeroDec()
+	delegations, err := k.Keeper.GetDelegatorDelegations(ctx, delAddr, gomath.MaxUint16)
+	if err != nil {
+		panic(err)
+	}
 	for _, del := range delegations {
-		valAddr := del.GetValidatorAddr()
-		val := k.Keeper.Validator(ctx, valAddr)
-
+		valAddr, err := sdk.ValAddressFromBech32(del.GetValidatorAddr())
+		if err != nil {
+			panic(err)
+		}
+		val, err := k.Keeper.Validator(ctx, valAddr)
+		if err != nil {
+			panic(err)
+		}
 		if !val.IsBonded() {
 			continue
 		}

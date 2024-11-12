@@ -9,20 +9,20 @@ import (
 
 func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool types.Pool, lpAmount math.Int, isLiquidation bool) (math.Int, error) {
 	if lpAmount.GT(position.LeveragedLpAmount) || lpAmount.IsNegative() {
-		return sdk.ZeroInt(), types.ErrInvalidCloseSize
+		return math.ZeroInt(), types.ErrInvalidCloseSize
 	}
 
 	// Exit liquidity with collateral token
 	_, exitCoinsAfterExitFee, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpAmount, sdk.Coins{}, position.Collateral.Denom, isLiquidation)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return math.ZeroInt(), err
 	}
 
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 
 	// Ensure position.LeveragedLpAmount is not zero to avoid division by zero
 	if position.LeveragedLpAmount.IsZero() {
-		return sdk.ZeroInt(), types.ErrAmountTooLow
+		return math.ZeroInt(), types.ErrAmountTooLow
 	}
 
 	ratio := lpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
@@ -34,7 +34,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 
 	// Check if position has enough coins to repay else repay partial
 	bal := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
-	userAmount := sdk.ZeroInt()
+	userAmount := math.ZeroInt()
 	if bal.Amount.LT(repayAmount) {
 		repayAmount = bal.Amount
 	} else {
@@ -44,7 +44,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	if repayAmount.IsPositive() {
 		err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount))
 		if err != nil {
-			return sdk.ZeroInt(), err
+			return math.ZeroInt(), err
 		}
 	} else {
 		userAmount = bal.Amount
@@ -53,12 +53,12 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
 
 	if userAmount.IsNegative() {
-		return sdk.ZeroInt(), types.ErrNegUserAmountAfterRepay
+		return math.ZeroInt(), types.ErrNegUserAmountAfterRepay
 	}
 	if userAmount.IsPositive() {
 		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), positionOwner, sdk.Coins{sdk.NewCoin(position.Collateral.Denom, userAmount)})
 		if err != nil {
-			return sdk.ZeroInt(), err
+			return math.ZeroInt(), err
 		}
 	}
 
@@ -68,7 +68,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 
 	_, found := k.amm.GetPool(ctx, position.AmmPoolId)
 	if !found {
-		return sdk.ZeroInt(), types.ErrAmmPoolNotFound
+		return math.ZeroInt(), types.ErrAmmPoolNotFound
 	}
 
 	// Update leveragedLpAmount
@@ -81,7 +81,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 		}
 		err = k.DestroyPosition(ctx, positionOwner, position.Id)
 		if err != nil {
-			return sdk.ZeroInt(), err
+			return math.ZeroInt(), err
 		}
 	} else {
 		// Update position health
@@ -104,24 +104,24 @@ func (k Keeper) CloseLong(ctx sdk.Context, msg *types.MsgClose) (*types.Position
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	position, err := k.GetPosition(ctx, creator, msg.Id)
 	if err != nil {
-		return nil, sdk.ZeroInt(), err
+		return nil, math.ZeroInt(), err
 	}
 
 	// Retrieve Pool
 	pool, found := k.GetPool(ctx, position.AmmPoolId)
 	if !found {
-		return nil, sdk.ZeroInt(), errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
+		return nil, math.ZeroInt(), errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
 	positionHealth, err := k.GetPositionHealth(ctx, position)
 	if err != nil {
-		return nil, sdk.ZeroInt(), err
+		return nil, math.ZeroInt(), err
 	}
 	safetyFactor := k.GetSafetyFactor(ctx)
 
 	// If lpAmount is lower than zero or position is unhealthy, close full amount
 	lpAmount := msg.LpAmount
-	if lpAmount.IsNil() || lpAmount.LTE(sdk.ZeroInt()) || positionHealth.LTE(safetyFactor) {
+	if lpAmount.IsNil() || lpAmount.LTE(math.ZeroInt()) || positionHealth.LTE(safetyFactor) {
 		lpAmount = position.LeveragedLpAmount
 	}
 
