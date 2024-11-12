@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"time"
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,10 +11,8 @@ import (
 )
 
 const (
-	LocalNetVersion    = "v999.999.999"
-	NewMaxAgeNumBlocks = int64(1_000_000)      // 1.5s blocks * 1_000_000 = 1.5M seconds > 2 weeks
-	NewMaxAgeDuration  = time.Second * 1209600 // 2 weeks
-	NewMaxBytes        = 5 * 1024 * 1024       // 5MB
+	LocalNetVersion = "v999.999.999"
+	NewMaxBytes     = 5 * 1024 * 1024 // 5MB
 )
 
 // make sure to update these when you upgrade the version
@@ -41,9 +38,6 @@ func setUpgradeHandler(app *ElysApp) {
 				if err != nil {
 					return nil, err
 				}
-				consensusParams.Evidence.MaxAgeNumBlocks = NewMaxAgeNumBlocks
-				consensusParams.Evidence.MaxAgeDuration = NewMaxAgeDuration
-
 				consensusParams.Block.MaxBytes = NewMaxBytes
 				app.ConsensusParamsKeeper.Set(ctx, consensusParams)
 			}
