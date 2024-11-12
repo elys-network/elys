@@ -98,8 +98,8 @@ Pools have the following configurable parameters:
 
 | Key                      | Type                       |
 | ------------------------ | -------------------------- |
-| SwapFee                  | sdk.Dec                    |
-| ExitFee                  | sdk.Dec                    |
+| SwapFee                  | sdkmath.LegacyDec                    |
+| ExitFee                  | sdkmath.LegacyDec                    |
 | Weights                  | \*Weights                  |
 | SmoothWeightChangeParams | \*SmoothWeightChangeParams |
 | PoolCreationFee          | sdk.Coins                  |

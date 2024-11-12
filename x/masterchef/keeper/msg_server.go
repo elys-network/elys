@@ -28,6 +28,9 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 var _ types.MsgServer = msgServer{}
 
 func (k msgServer) AddExternalRewardDenom(goCtx context.Context, msg *types.MsgAddExternalRewardDenom) (*types.MsgAddExternalRewardDenomResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {
@@ -76,6 +79,9 @@ func (k msgServer) AddExternalRewardDenom(goCtx context.Context, msg *types.MsgA
 }
 
 func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAddExternalIncentive) (*types.MsgAddExternalIncentiveResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
@@ -94,7 +100,7 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 	for _, rewardDenom := range params.SupportedRewardDenoms {
 		if msg.RewardDenom == rewardDenom.Denom {
 			found = true
-			if msg.AmountPerBlock.Mul(sdk.NewInt(msg.ToBlock - msg.FromBlock)).LT(rewardDenom.MinAmount) {
+			if msg.AmountPerBlock.Mul(math.NewInt(msg.ToBlock - msg.FromBlock)).LT(rewardDenom.MinAmount) {
 				return nil, status.Error(codes.InvalidArgument, "too small amount")
 			}
 			break
@@ -104,7 +110,7 @@ func (k msgServer) AddExternalIncentive(goCtx context.Context, msg *types.MsgAdd
 		return nil, status.Error(codes.InvalidArgument, "invalid reward denom")
 	}
 
-	amount := msg.AmountPerBlock.Mul(sdk.NewInt(msg.ToBlock - msg.FromBlock))
+	amount := msg.AmountPerBlock.Mul(math.NewInt(msg.ToBlock - msg.FromBlock))
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{sdk.NewCoin(msg.RewardDenom, amount)})
 	if err != nil {
 		return nil, err
@@ -139,7 +145,7 @@ func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []u
 	coins := sdk.NewCoins()
 	rewardPoolIds := []string{}
 	for _, poolId := range poolIds {
-		k.AfterWithdraw(ctx, poolId, sender, sdk.ZeroInt())
+		k.AfterWithdraw(ctx, poolId, sender, math.ZeroInt())
 
 		for _, rewardDenom := range k.GetRewardDenoms(ctx, poolId) {
 			userRewardInfo, found := k.GetUserRewardInfo(ctx, sender, poolId, rewardDenom)
@@ -148,7 +154,7 @@ func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []u
 				coins = coins.Add(coin)
 				rewardPoolIds = append(rewardPoolIds, strconv.FormatUint(poolId, 10))
 
-				userRewardInfo.RewardPending = sdk.ZeroDec()
+				userRewardInfo.RewardPending = math.LegacyZeroDec()
 				if userRewardInfo.RewardDebt.IsZero() {
 					k.RemoveUserRewardInfo(ctx, userRewardInfo.GetUserAccount(), userRewardInfo.PoolId, userRewardInfo.RewardDenom)
 				} else {
@@ -178,6 +184,9 @@ func (k Keeper) ClaimRewards(ctx sdk.Context, sender sdk.AccAddress, poolIds []u
 }
 
 func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimRewards) (*types.MsgClaimRewardsResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
@@ -197,6 +206,9 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 }
 
 func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if k.authority != msg.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
@@ -212,6 +224,9 @@ func (k msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParam
 }
 
 func (k msgServer) UpdatePoolMultipliers(goCtx context.Context, msg *types.MsgUpdatePoolMultipliers) (*types.MsgUpdatePoolMultipliersResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if k.authority != msg.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)

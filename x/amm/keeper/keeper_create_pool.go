@@ -23,7 +23,7 @@ import (
 // - Minting LP shares to pool creator
 // - Setting metadata for the shares
 func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, error) {
-	sender := msg.GetSigners()[0]
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
@@ -90,16 +90,16 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 	}
 
 	if tvl.IsPositive() {
-		pool.TotalShares = sdk.NewCoin(pool.TotalShares.Denom, tvl.Mul(sdk.NewDecFromInt(types.OneShare)).RoundInt())
+		pool.TotalShares = sdk.NewCoin(pool.TotalShares.Denom, tvl.Mul(types.OneShare.ToLegacyDec()).RoundInt())
 	}
 
-	// Mint the initial pool shares share token to the sender
+	// Mint the initial pool shares token to the sender
 	err = k.MintPoolShareToAccount(ctx, *pool, sender, pool.GetTotalShares().Amount)
 	if err != nil {
 		return err
 	}
 
-	// Finally, add the share token's meta data to the bank keeper.
+	// Finally, add the share token's metadata to the bank keeper.
 	poolShareBaseDenom := types.GetPoolShareDenom(pool.GetPoolId())
 	poolShareDisplayDenom := fmt.Sprintf("AMM-%d", pool.GetPoolId())
 	k.bankKeeper.SetDenomMetaData(ctx, banktypes.Metadata{

@@ -17,13 +17,13 @@ func SimulateMsgClosePositions(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgClosePositions{
-			Creator: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgClosePositions{
+		//	Creator: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the ClosePositions simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "ClosePositions simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgClosePositions{}), "ClosePositions simulation not implemented"), nil, nil
 	}
 }

@@ -1,6 +1,8 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -13,11 +15,11 @@ func DefaultParams() Params {
 		StakeIncentives:         nil,
 		EdenCommitVal:           "",
 		EdenbCommitVal:          "",
-		MaxEdenRewardAprStakers: sdk.NewDecWithPrec(3, 1), // 30%
-		EdenBoostApr:            sdk.OneDec(),
+		MaxEdenRewardAprStakers: sdkmath.LegacyNewDecWithPrec(3, 1), // 30%
+		EdenBoostApr:            sdkmath.LegacyOneDec(),
 		DexRewardsStakers: DexRewardsTracker{
 			NumBlocks: 1,
-			Amount:    sdk.ZeroDec(),
+			Amount:    sdkmath.LegacyZeroDec(),
 		},
 	}
 }
@@ -25,16 +27,16 @@ func DefaultParams() Params {
 // Validate validates the set of params
 func (p Params) Validate() error {
 	if _, err := sdk.ValAddressFromBech32(p.EdenCommitVal); p.EdenCommitVal != "" && err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid EdenCommitVal address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid EdenCommitVal address (%s)", err)
 	}
 	if _, err := sdk.ValAddressFromBech32(p.EdenbCommitVal); p.EdenbCommitVal != "" && err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid EdenBCommitVal address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid EdenBCommitVal address (%s)", err)
 	}
 	if p.StakeIncentives != nil {
 		if p.StakeIncentives.BlocksDistributed < 0 {
 			return fmt.Errorf("StakeIncentives blocks distributed must be >= 0")
 		}
-		if p.StakeIncentives.EdenAmountPerYear.LTE(sdk.ZeroInt()) {
+		if p.StakeIncentives.EdenAmountPerYear.LTE(sdkmath.ZeroInt()) {
 			return fmt.Errorf("invalid eden amount per year: %s", p.StakeIncentives.EdenAmountPerYear.String())
 		}
 	}

@@ -1,6 +1,7 @@
 package wasm
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"encoding/json"
 
 	errorsmod "cosmossdk.io/errors"
@@ -12,7 +13,7 @@ import (
 )
 
 func (oq *Querier) queryStakedBalanceOfDenom(ctx sdk.Context, query *ammtypes.QueryBalanceRequest) ([]byte, error) {
-	edenDenomPrice := sdk.ZeroDec()
+	edenDenomPrice := sdkmath.LegacyZeroDec()
 	baseCurrency, found := oq.assetKeeper.GetUsdcDenom(ctx)
 	if found {
 		edenDenomPrice = oq.ammKeeper.GetEdenDenomPrice(ctx, baseCurrency)
@@ -23,7 +24,10 @@ func (oq *Querier) queryStakedBalanceOfDenom(ctx sdk.Context, query *ammtypes.Qu
 		return nil, errorsmod.Wrap(err, "invalid address")
 	}
 
-	bondedAmt := oq.stakingKeeper.GetDelegatorBonded(ctx, address)
+	bondedAmt, err := oq.stakingKeeper.GetDelegatorBonded(ctx, address)
+	if err != nil {
+		return nil, err
+	}
 	balance := sdk.NewCoin(query.Denom, bondedAmt)
 	usdAmount := edenDenomPrice.MulInt(balance.Amount)
 	lockups := make([]commitmenttypes.Lockup, 0)

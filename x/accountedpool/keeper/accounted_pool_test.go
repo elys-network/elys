@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/testutil/nullify"
@@ -16,9 +17,9 @@ func createNAccountedPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types
 	items := make([]types.AccountedPool, n)
 	for i := range items {
 		items[i].PoolId = (uint64)(i)
-		items[i].TotalShares = sdk.NewCoin("lpshare", sdk.ZeroInt())
+		items[i].TotalShares = sdk.NewCoin("lpshare", sdkmath.ZeroInt())
 		items[i].PoolAssets = []ammtypes.PoolAsset{}
-		items[i].TotalWeight = sdk.ZeroInt()
+		items[i].TotalWeight = sdkmath.ZeroInt()
 
 		keeper.SetAccountedPool(ctx, items[i])
 	}

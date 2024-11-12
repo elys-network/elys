@@ -8,7 +8,7 @@ option go_package = "github.com/elys-network/elys/x/oracle/types";
 message Price {
   string asset = 1;
   string price = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string source = 3;
@@ -20,7 +20,7 @@ message Price {
 message LegacyPrice {
   string asset = 1;
   string price = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string source = 3;

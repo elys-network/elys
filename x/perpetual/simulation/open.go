@@ -17,13 +17,13 @@ func SimulateMsgOpen(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgOpen{
-			Creator: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgOpen{
+		//	Creator: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the Open simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "Open simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgOpen{}), "Open simulation not implemented"), nil, nil
 	}
 }

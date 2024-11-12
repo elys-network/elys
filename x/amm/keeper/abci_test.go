@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -33,8 +34,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
-					TokenOutMinAmount: sdk.ZeroInt(),
-					Discount:          sdk.ZeroDec(),
+					TokenOutMinAmount: sdkmath.ZeroInt(),
+					Discount:          sdkmath.LegacyZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{0},
@@ -52,8 +53,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
-					TokenOutMinAmount: sdk.ZeroInt(),
-					Discount:          sdk.ZeroDec(),
+					TokenOutMinAmount: sdkmath.ZeroInt(),
+					Discount:          sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -64,8 +65,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 8000),
-					TokenOutMinAmount: sdk.ZeroInt(),
-					Discount:          sdk.ZeroDec(),
+					TokenOutMinAmount: sdkmath.ZeroInt(),
+					Discount:          sdkmath.LegacyZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{1, 0},
@@ -83,8 +84,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
-					TokenOutMinAmount: sdk.ZeroInt(),
-					Discount:          sdk.ZeroDec(),
+					TokenOutMinAmount: sdkmath.ZeroInt(),
+					Discount:          sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -95,8 +96,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 8000),
-					TokenOutMinAmount: sdk.ZeroInt(),
-					Discount:          sdk.ZeroDec(),
+					TokenOutMinAmount: sdkmath.ZeroInt(),
+					Discount:          sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -107,8 +108,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
-					TokenOutMinAmount: sdk.ZeroInt(),
-					Discount:          sdk.ZeroDec(),
+					TokenOutMinAmount: sdkmath.ZeroInt(),
+					Discount:          sdkmath.LegacyZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{1, 0, 2},
@@ -126,8 +127,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
-					TokenOutMinAmount: sdk.ZeroInt(),
-					Discount:          sdk.ZeroDec(),
+					TokenOutMinAmount: sdkmath.ZeroInt(),
+					Discount:          sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountOut{
 					Sender: sender.String(),
@@ -138,8 +139,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 8000),
-					TokenInMaxAmount: sdk.NewInt(1000000),
-					Discount:         sdk.ZeroDec(),
+					TokenInMaxAmount: sdkmath.NewInt(1000000),
+					Discount:         sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -150,8 +151,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
-					TokenOutMinAmount: sdk.ZeroInt(),
-					Discount:          sdk.ZeroDec(),
+					TokenOutMinAmount: sdkmath.ZeroInt(),
+					Discount:          sdkmath.LegacyZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{2, 1, 0},
@@ -169,8 +170,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
-					TokenOutMinAmount: sdk.ZeroInt(),
-					Discount:          sdk.ZeroDec(),
+					TokenOutMinAmount: sdkmath.ZeroInt(),
+					Discount:          sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountOut{
 					Sender: sender.String(),
@@ -181,8 +182,8 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 8000),
-					TokenInMaxAmount: sdk.NewInt(1000000),
-					Discount:         sdk.ZeroDec(),
+					TokenInMaxAmount: sdkmath.NewInt(1000000),
+					Discount:         sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -197,15 +198,15 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 						},
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
-					TokenOutMinAmount: sdk.ZeroInt(),
-					Discount:          sdk.ZeroDec(),
+					TokenOutMinAmount: sdkmath.ZeroInt(),
+					Discount:          sdkmath.LegacyZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{2, 1, 0},
 		},
 	} {
 		suite.Run(tc.desc, func() {
-			suite.SetupTest()
+			//suite.SetupTest()
 
 			// bootstrap accounts
 			poolAddr := types.NewPoolAddress(uint64(1))
@@ -232,15 +233,15 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 			// execute function
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 				Denom:     ptypes.Elys,
-				Liquidity: sdk.NewInt(2000000),
+				Liquidity: sdkmath.NewInt(2000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 				Denom:     ptypes.BaseCurrency,
-				Liquidity: sdk.NewInt(1000000),
+				Liquidity: sdkmath.NewInt(1000000),
 			})
 			suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 				Denom:     "uusdt",
-				Liquidity: sdk.NewInt(1000000),
+				Liquidity: sdkmath.NewInt(1000000),
 			})
 
 			pool := types.Pool{
@@ -248,47 +249,47 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 				Address:           types.NewPoolAddress(uint64(1)).String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
-					SwapFee:  sdk.ZeroDec(),
+					SwapFee:  sdkmath.LegacyZeroDec(),
 					FeeDenom: ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  poolCoins[0],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 					{
 						Token:  poolCoins[1],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 				},
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: sdkmath.ZeroInt(),
 			}
 			pool2 := types.Pool{
 				PoolId:            2,
 				Address:           types.NewPoolAddress(uint64(2)).String(),
 				RebalanceTreasury: treasuryAddr2.String(),
 				PoolParams: types.PoolParams{
-					SwapFee:  sdk.ZeroDec(),
+					SwapFee:  sdkmath.LegacyZeroDec(),
 					FeeDenom: ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  pool2Coins[0],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 					{
 						Token:  pool2Coins[1],
-						Weight: sdk.NewInt(10),
+						Weight: sdkmath.NewInt(10),
 					},
 				},
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: sdkmath.ZeroInt(),
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
 
-			msgServer := keeper.NewMsgServerImpl(suite.app.AmmKeeper)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			for _, msg := range tc.swapMsgs {
 				switch msg := msg.(type) {
 				case *types.MsgSwapExactAmountIn:

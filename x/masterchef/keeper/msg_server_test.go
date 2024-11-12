@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"context"
+	sdkmath "cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,11 +18,11 @@ func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
 	k.SetPoolInfo(ctx, types.PoolInfo{
 		PoolId:               2,
 		RewardWallet:         "elys1d96rzrky937s3s397g5xh5qvcwgkeqysmh8sg2kn359fhfvzeyrsnalu2u",
-		Multiplier:           sdk.MustNewDecFromStr("1.00"),
-		GasApr:               sdk.MustNewDecFromStr("0.00"),
-		EdenApr:              sdk.MustNewDecFromStr("0.50"),
-		DexApr:               sdk.MustNewDecFromStr("0.00"),
-		ExternalIncentiveApr: sdk.MustNewDecFromStr("0.00"),
+		Multiplier:           sdkmath.LegacyMustNewDecFromStr("1.00"),
+		GasApr:               sdkmath.LegacyMustNewDecFromStr("0.00"),
+		EdenApr:              sdkmath.LegacyMustNewDecFromStr("0.50"),
+		DexApr:               sdkmath.LegacyMustNewDecFromStr("0.00"),
+		ExternalIncentiveApr: sdkmath.LegacyMustNewDecFromStr("0.00"),
 		EnableEdenRewards:    false,
 	})
 

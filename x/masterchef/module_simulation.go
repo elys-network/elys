@@ -44,7 +44,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 }
 
 // RegisterStoreDecoder registers a decoder.
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {}
 
 // ProposalContents doesn't return any content functions for governance proposals.
 func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalContent {
@@ -56,7 +56,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgTogglePoolEdenRewards int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgTogglePoolEdenRewards, &weightMsgTogglePoolEdenRewards, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgTogglePoolEdenRewards, &weightMsgTogglePoolEdenRewards, nil,
 		func(_ *rand.Rand) {
 			weightMsgTogglePoolEdenRewards = defaultWeightMsgTogglePoolEdenRewards
 		},

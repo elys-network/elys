@@ -8,6 +8,9 @@ import (
 )
 
 func (k msgServer) FeedPrice(goCtx context.Context, msg *types.MsgFeedPrice) (*types.MsgFeedPriceResponse, error) {
+	if err := msg.ValidateBasic(); err != nil {
+		return nil, err
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	provider := sdk.MustAccAddressFromBech32(msg.Provider)

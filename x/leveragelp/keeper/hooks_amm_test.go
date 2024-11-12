@@ -1,11 +1,12 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (suite KeeperTestSuite) TestCheckAmmPoolUsdcBalance() {
+func (suite *KeeperTestSuite) TestCheckAmmPoolUsdcBalance() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	_, _, pool := suite.OpenPosition(addr)
@@ -19,7 +20,7 @@ func (suite KeeperTestSuite) TestCheckAmmPoolUsdcBalance() {
 	suite.Require().Equal(ammPool.PoolAssets[0].Token.Denom, usdcDenom)
 
 	// assume usdc amount reduced to 1000 and check
-	ammPool.PoolAssets[0].Token.Amount = sdk.NewInt(1000)
+	ammPool.PoolAssets[0].Token.Amount = math.NewInt(1000)
 	err = k.CheckAmmPoolUsdcBalance(suite.ctx, ammPool)
 	suite.Require().Error(err)
 }

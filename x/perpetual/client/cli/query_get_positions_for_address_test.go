@@ -33,7 +33,7 @@ func (s *CLITestSuite) TestShowMTPByAddress() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.PositionsForAddressResponse{
 					Mtps: make([]*types.MtpAndPrice, 0),
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)
@@ -51,7 +51,7 @@ func (s *CLITestSuite) TestShowMTPByAddress() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.PositionsForAddressResponse{
 					Mtps: make([]*types.MtpAndPrice, 0),
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)

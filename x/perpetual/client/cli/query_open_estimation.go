@@ -2,6 +2,7 @@ package cli
 
 import (
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"errors"
 	"strconv"
 
@@ -21,7 +22,7 @@ func CmdOpenEstimation() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqPosition := types.GetPositionFromString(args[0])
 
-			reqLeverage, err := sdk.NewDecFromStr(args[1])
+			reqLeverage, err := sdkmath.LegacyNewDecFromStr(args[1])
 			if err != nil {
 				return err
 			}
@@ -43,9 +44,9 @@ func CmdOpenEstimation() *cobra.Command {
 				return err
 			}
 
-			var takeProfitPrice sdk.Dec
+			var takeProfitPrice sdkmath.LegacyDec
 			if takeProfitPriceStr != types.InfinitePriceString {
-				takeProfitPrice, err = sdk.NewDecFromStr(takeProfitPriceStr)
+				takeProfitPrice, err = sdkmath.LegacyNewDecFromStr(takeProfitPriceStr)
 				if err != nil {
 					return errors.New("invalid take profit price")
 				}
@@ -58,7 +59,7 @@ func CmdOpenEstimation() *cobra.Command {
 				return err
 			}
 
-			limitPrice, err := sdk.NewDecFromStr(limitPriceStr)
+			limitPrice, err := sdkmath.LegacyNewDecFromStr(limitPriceStr)
 			if err != nil {
 				return errors.New("invalid limit price")
 			}

@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
+	"github.com/cosmos/cosmos-sdk/runtime"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/x/oracle/types"
@@ -19,7 +20,7 @@ func (k Keeper) PriceFeederAll(c context.Context, req *types.QueryAllPriceFeeder
 	var priceFeeders []types.PriceFeeder
 	ctx := sdk.UnwrapSDKContext(c)
 
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	priceFeederStore := prefix.NewStore(store, types.PriceFeederPrefixKey)
 
 	pageRes, err := query.Paginate(priceFeederStore, req.Pagination, func(key []byte, value []byte) error {

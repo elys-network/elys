@@ -2,19 +2,19 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
-func NewPool(poolId uint64, maxLeverage math.LegacyDec) Pool {
+func NewPool(poolId uint64, maxLeverage sdkmath.LegacyDec) Pool {
 	return Pool{
 		AmmPoolId:          poolId,
-		Health:             sdk.NewDec(100),
-		LeveragedLpAmount:  sdk.ZeroInt(),
+		Health:             sdkmath.LegacyNewDec(100),
+		LeveragedLpAmount:  sdkmath.ZeroInt(),
 		LeverageMax:        maxLeverage,
-		MaxLeveragelpRatio: sdk.MustNewDecFromStr("0.6"),
+		MaxLeveragelpRatio: sdkmath.LegacyMustNewDecFromStr("0.6"),
 	}
 }
 

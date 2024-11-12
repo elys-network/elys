@@ -1,0 +1,32 @@
+{
+    "messages": [
+     {
+      "@type": "/elys.oracle.MsgUpdateParams",
+      "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+      "params": {
+          "band_channel_source": "channel-1",
+          "oracle_script_id": "37",
+          "multiplier": "18",
+          "ask_count": "4",
+          "min_count": "3",
+          "fee_limit": [
+            {
+                "amount": "30",
+                "denom": "uband"
+            }
+          ],
+          "prepare_gas": "600000",
+          "execute_gas": "600000",
+          "client_id": "band_price_id",
+          "band_epoch": "band_epoch",
+          "price_expiry_time": "884000000",
+          "life_time_in_blocks": "10000000000"
+        }
+     }
+    ],
+    "metadata": "ipfs://CID",
+   
+    "deposit": "10000000stake",
+    "title": "MsgUpdateParams",
+    "summary": "asdasd"
+}

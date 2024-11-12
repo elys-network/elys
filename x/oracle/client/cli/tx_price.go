@@ -1,10 +1,10 @@
 package cli
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/oracle/types"
 	"github.com/spf13/cobra"
 )
@@ -21,7 +21,7 @@ func CmdFeedPrice() *cobra.Command {
 				return err
 			}
 
-			price, err := sdk.NewDecFromStr(args[1])
+			price, err := sdkmath.LegacyNewDecFromStr(args[1])
 			if err != nil {
 				return err
 			}

@@ -18,7 +18,7 @@ func (k Keeper) SetParams(ctx sdk.Context, p types.Params) error {
         return err
     }
 
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     bz := k.cdc.MustMarshal(&p)
     store.Set(types.ParamsKey, bz)
 
@@ -32,7 +32,7 @@ The `GetParams` function retrieves the parameters from the store.
 
 ```go
 func (k Keeper) GetParams(ctx sdk.Context) (p types.Params) {
-    store := ctx.KVStore(k.storeKey)
+    store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
     bz := store.Get(types.ParamsKey)
     if bz == nil {
         return p

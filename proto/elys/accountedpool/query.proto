@@ -12,20 +12,22 @@ option go_package = "github.com/elys-network/elys/x/accountedpool/types";
 // Query defines the gRPC querier service.
 service Query {
   // Queries a list of AccountedPool items.
-  rpc AccountedPool    (QueryGetAccountedPoolRequest) returns (QueryGetAccountedPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/accountedpool/accounted_pool/{pool_id}";
+  rpc AccountedPool(QueryGetAccountedPoolRequest)
+      returns (QueryGetAccountedPoolResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/accountedpool/accounted_pool/{pool_id}";
   }
-  rpc AccountedPoolAll (QueryAllAccountedPoolRequest) returns (QueryAllAccountedPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/accountedpool/accounted_pool";
+  rpc AccountedPoolAll(QueryAllAccountedPoolRequest)
+      returns (QueryAllAccountedPoolResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/accountedpool/accounted_pool";
   }
 }
 
-message QueryGetAccountedPoolRequest {
-  uint64 pool_id = 1;
-}
+message QueryGetAccountedPoolRequest { uint64 pool_id = 1; }
 
 message QueryGetAccountedPoolResponse {
-  AccountedPool accounted_pool = 1 [(gogoproto.nullable) = false];
+  AccountedPool accounted_pool = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllAccountedPoolRequest {
@@ -33,7 +35,6 @@ message QueryAllAccountedPoolRequest {
 }
 
 message QueryAllAccountedPoolResponse {
-  repeated AccountedPool                          accounted_pool = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination    = 2;
+  repeated AccountedPool accounted_pool = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
-

@@ -1,13 +1,12 @@
 package types
 
 import (
-	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 )
 
 // CalculateFundingRate calculates and returns the funding rate based on long and short amounts
-func CalcFundingRate(longAmount, shortAmount math.Int, baseRate, maxRate, minRate sdk.Dec) sdk.Dec {
-	var ratio sdk.Dec
+func CalcFundingRate(longAmount, shortAmount sdkmath.Int, baseRate, maxRate, minRate sdkmath.LegacyDec) sdkmath.LegacyDec {
+	var ratio sdkmath.LegacyDec
 
 	// Check for division by zero when longAmount > shortAmount
 	if longAmount.GT(shortAmount) {
@@ -15,15 +14,15 @@ func CalcFundingRate(longAmount, shortAmount math.Int, baseRate, maxRate, minRat
 			// Handle the case where shortAmount is zero
 			return maxRate
 		}
-		ratio = sdk.NewDecFromInt(longAmount).Quo(sdk.NewDecFromInt(shortAmount))
-		return sdk.MinDec(sdk.MaxDec(baseRate.Mul(ratio), minRate), maxRate)
+		ratio = longAmount.ToLegacyDec().Quo(shortAmount.ToLegacyDec())
+		return sdkmath.LegacyMinDec(sdkmath.LegacyMaxDec(baseRate.Mul(ratio), minRate), maxRate)
 	} else if shortAmount.GT(longAmount) {
 		if longAmount.IsZero() {
 			// Handle the case where longAmount is zero
 			return maxRate
 		}
-		ratio = sdk.NewDecFromInt(shortAmount).Quo(sdk.NewDecFromInt(longAmount))
-		return sdk.MinDec(sdk.MaxDec(baseRate.Mul(ratio).Neg(), minRate), maxRate)
+		ratio = shortAmount.ToLegacyDec().Quo(longAmount.ToLegacyDec())
+		return sdkmath.LegacyMinDec(sdkmath.LegacyMaxDec(baseRate.Mul(ratio).Neg(), minRate), maxRate)
 	} else {
 		// In case of exact equality, return the base rate
 		return baseRate

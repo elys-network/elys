@@ -32,7 +32,7 @@ func (s *CLITestSuite) TestShowMTPByPool() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.PositionsByPoolResponse{
 					Mtps: make([]*types.MtpAndPrice, 0),
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)
@@ -50,7 +50,7 @@ func (s *CLITestSuite) TestShowMTPByPool() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.PositionsByPoolResponse{
 					Mtps: make([]*types.MtpAndPrice, 0),
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)

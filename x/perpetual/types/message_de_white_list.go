@@ -6,8 +6,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgDewhitelist = "dewhitelist"
-
 var _ sdk.Msg = &MsgDewhitelist{}
 
 func NewMsgDewhitelist(signer string, whitelistedAddress string) *MsgDewhitelist {
@@ -15,27 +13,6 @@ func NewMsgDewhitelist(signer string, whitelistedAddress string) *MsgDewhitelist
 		Authority:          signer,
 		WhitelistedAddress: whitelistedAddress,
 	}
-}
-
-func (msg *MsgDewhitelist) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgDewhitelist) Type() string {
-	return TypeMsgDewhitelist
-}
-
-func (msg *MsgDewhitelist) GetSigners() []sdk.AccAddress {
-	authority, err := sdk.AccAddressFromBech32(msg.Authority)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{authority}
-}
-
-func (msg *MsgDewhitelist) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgDewhitelist) ValidateBasic() error {

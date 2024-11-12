@@ -7,6 +7,7 @@ import (
 	"io"
 	"testing"
 
+	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -26,9 +27,8 @@ import (
 
 func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpAndPrice) {
 	t.Helper()
-	cfg := network.DefaultConfig()
+	cfg := network.DefaultConfig("./")
 	state := types.GenesisState{}
-
 	mtps := make([]*types.MtpAndPrice, 0)
 
 	for i := 0; i < n; i++ {
@@ -39,33 +39,33 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 				TradingAsset:                  "ATOM",
 				LiabilitiesAsset:              ptypes.BaseCurrency,
 				CustodyAsset:                  "ATOM",
-				Collateral:                    sdk.NewInt(0),
-				Liabilities:                   sdk.NewInt(0),
-				BorrowInterestPaidCustody:     sdk.NewInt(0),
-				BorrowInterestUnpaidLiability: sdk.NewInt(0),
-				Custody:                       sdk.NewInt(0),
-				TakeProfitLiabilities:         sdk.NewInt(0),
-				TakeProfitCustody:             sdk.NewInt(0),
-				MtpHealth:                     sdk.NewDec(0),
+				Collateral:                    math.NewInt(0),
+				Liabilities:                   math.NewInt(0),
+				BorrowInterestPaidCustody:     math.NewInt(0),
+				BorrowInterestUnpaidLiability: math.NewInt(0),
+				Custody:                       math.NewInt(0),
+				TakeProfitLiabilities:         math.NewInt(0),
+				TakeProfitCustody:             math.NewInt(0),
+				MtpHealth:                     math.LegacyNewDec(0),
 				Position:                      types.Position_LONG,
 				Id:                            (uint64)(i + 1),
 				AmmPoolId:                     (uint64)(i + 1),
 				TakeProfitPrice:               types.TakeProfitPriceDefault,
-				TakeProfitBorrowFactor:        sdk.OneDec(),
-				FundingFeePaidCustody:         sdk.NewInt(0),
-				FundingFeeReceivedCustody:     sdk.NewInt(0),
-				OpenPrice:                     sdk.NewDec(0),
-				StopLossPrice:                 sdk.NewDec(0),
+				TakeProfitBorrowFactor:        math.LegacyOneDec(),
+				FundingFeePaidCustody:         math.NewInt(0),
+				FundingFeeReceivedCustody:     math.NewInt(0),
+				OpenPrice:                     math.LegacyNewDec(0),
+				StopLossPrice:                 math.LegacyNewDec(0),
 			},
-			TradingAssetPrice: sdk.ZeroDec(),
-			Pnl:               sdk.NewCoin("USDC", sdk.NewInt(0)),
-			LiquidationPrice:  sdk.ZeroDec(),
+			TradingAssetPrice: math.LegacyZeroDec(),
+			Pnl:               sdk.NewCoin("USDC", math.NewInt(0)),
+			LiquidationPrice:  math.LegacyZeroDec(),
 			Fees: &types.Fees{
-				TotalFeesBaseCurrency:            sdk.NewInt(0),
-				BorrowInterestFeesLiabilityAsset: sdk.NewInt(0),
-				BorrowInterestFeesBaseCurrency:   sdk.NewInt(0),
-				FundingFeesLiquidityAsset:        sdk.NewInt(0),
-				FundingFeesBaseCurrency:          sdk.NewInt(0),
+				TotalFeesBaseCurrency:            math.NewInt(0),
+				BorrowInterestFeesLiabilityAsset: math.NewInt(0),
+				BorrowInterestFeesBaseCurrency:   math.NewInt(0),
+				FundingFeesLiquidityAsset:        math.NewInt(0),
+				FundingFeesBaseCurrency:          math.NewInt(0),
 			},
 		}
 
@@ -84,7 +84,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	stateOracle.Prices = []oracletypes.Price{
 		{
 			Asset:       "ATOM",
-			Price:       sdk.NewDec(4),
+			Price:       math.LegacyNewDec(4),
 			Source:      oracletypes.BAND,
 			Provider:    provider.String(),
 			Timestamp:   uint64(1729430615),
@@ -92,7 +92,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 		},
 		{
 			Asset:       "ATOM",
-			Price:       sdk.NewDec(4),
+			Price:       math.LegacyNewDec(4),
 			Source:      oracletypes.ELYS,
 			Provider:    provider.String(),
 			Timestamp:   uint64(1729430615),
@@ -100,7 +100,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 		},
 		{
 			Asset:       "USDC",
-			Price:       sdk.NewDec(1),
+			Price:       math.LegacyNewDec(1),
 			Source:      oracletypes.BAND,
 			Provider:    provider.String(),
 			Timestamp:   uint64(1729430615),
@@ -108,7 +108,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 		},
 		{
 			Asset:       "USDC",
-			Price:       sdk.NewDec(1),
+			Price:       math.LegacyNewDec(1),
 			Source:      oracletypes.ELYS,
 			Provider:    provider.String(),
 			Timestamp:   uint64(1729430615),
@@ -116,7 +116,7 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 		},
 		{
 			Asset:       "BTC",
-			Price:       sdk.NewDec(60000),
+			Price:       math.LegacyNewDec(60000),
 			Source:      oracletypes.ELYS,
 			Provider:    provider.String(),
 			Timestamp:   uint64(1729430615),
@@ -169,7 +169,7 @@ func (s *CLITestSuite) TestShowMTP() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.MTPResponse{
 					Mtp: &types.MtpAndPrice{},
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)
@@ -188,7 +188,7 @@ func (s *CLITestSuite) TestShowMTP() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.MTPResponse{
 					Mtp: &types.MtpAndPrice{},
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)

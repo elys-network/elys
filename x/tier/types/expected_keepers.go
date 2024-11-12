@@ -6,8 +6,6 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -22,23 +20,23 @@ import (
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
+	GetAccount(goCtx context.Context, addr sdk.AccAddress) sdk.AccountI
 	// Methods imported from account should be defined here
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
-	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	GetAllBalances(ctx context.Context, addr sdk.AccAddress) sdk.Coins
+	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
 
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 	// Methods imported from bank should be defined here
 }
 
 type OracleKeeper interface {
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdk.Dec
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) math.LegacyDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
 
@@ -73,9 +71,9 @@ type AmmKeeper interface {
 	CalcInRouteSpotPrice(ctx sdk.Context,
 		tokenIn sdk.Coin,
 		routes []*ammtypes.SwapAmountInRoute,
-		discount sdk.Dec,
-		overrideSwapFee sdk.Dec,
-	) (sdk.Dec, sdk.Dec, sdk.Coin, sdk.Dec, sdk.Dec, sdk.Coin, sdk.Dec, sdk.Dec, error)
+		discount math.LegacyDec,
+		overrideSwapFee math.LegacyDec,
+	) (math.LegacyDec, math.LegacyDec, sdk.Coin, math.LegacyDec, math.LegacyDec, sdk.Coin, math.LegacyDec, math.LegacyDec, error)
 	Balance(goCtx context.Context, req *ammtypes.QueryBalanceRequest) (*ammtypes.QueryBalanceResponse, error)
 	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
 }
@@ -89,12 +87,10 @@ type MasterchefKeeper interface {
 }
 
 type StakingKeeper interface {
-	BondDenom(ctx sdk.Context) string
-	GetUnbondingDelegations(ctx sdk.Context, delegator sdk.AccAddress, maxRetrieve uint16) (unbondingDelegations []stakingtypes.UnbondingDelegation)
-	GetDelegatorValidators(
-		ctx sdk.Context, delegatorAddr sdk.AccAddress, maxRetrieve uint32,
-	) stakingtypes.Validators
-	GetAllDelegatorDelegations(ctx sdk.Context, delegator sdk.AccAddress) []stakingtypes.Delegation
+	BondDenom(ctx context.Context) (string, error)
+	GetUnbondingDelegations(ctx context.Context, delegator sdk.AccAddress, maxRetrieve uint16) (unbondingDelegations []stakingtypes.UnbondingDelegation, err error)
+	GetDelegatorValidators(ctx context.Context, delegatorAddr sdk.AccAddress, maxRetrieve uint32) (stakingtypes.Validators, error)
+	GetAllDelegatorDelegations(ctx context.Context, delegator sdk.AccAddress) ([]stakingtypes.Delegation, error)
 }
 
 type LeverageLpKeeper interface {

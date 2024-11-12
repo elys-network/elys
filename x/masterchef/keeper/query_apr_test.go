@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
@@ -18,8 +18,8 @@ import (
 )
 
 func SetupApp(t *testing.T) (keeper.Keeper, sdk.Context) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	mk, amm, oracle, estaking := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper, app.EstakingKeeper
 
@@ -27,7 +27,7 @@ func SetupApp(t *testing.T) (keeper.Keeper, sdk.Context) {
 	SetupStableCoinPrices(ctx, oracle)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(100010))
+	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(100010))
 
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
@@ -37,34 +37,34 @@ func SetupApp(t *testing.T) (keeper.Keeper, sdk.Context) {
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
 	require.NoError(t, err)
 
-	//app.StakingKeeper.Delegate(ctx, addr[0], sdk.NewInt(100000), sdk.Unbonded, sdk.NewDec(0.1), sdk.NewInt(100000))
+	//app.StakingKeeper.Delegate(ctx, addr[0], math.NewInt(100000), sdk.Unbonded, sdk.NewDec(0.1), math.NewInt(100000))
 
 	var poolAssets []ammtypes.PoolAsset
 	// Elys
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.Elys, sdk.NewInt(1000)),
+		Weight: math.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.Elys, math.NewInt(1000)),
 	})
 
 	// USDC
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: sdk.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(100)),
+		Weight: math.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100)),
 	})
 
 	poolParams := &ammtypes.PoolParams{
-		SwapFee:                     sdk.ZeroDec(),
-		ExitFee:                     sdk.ZeroDec(),
+		SwapFee:                     math.LegacyZeroDec(),
+		ExitFee:                     math.LegacyZeroDec(),
 		UseOracle:                   false,
-		WeightBreakingFeeMultiplier: sdk.ZeroDec(),
-		WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    sdk.NewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdk.ZeroDec(),
+		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
+		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   math.LegacyZeroDec(),
 		FeeDenom:                    "",
 	}
 
 	// Create a Elys+USDC pool
-	msgServer := ammkeeper.NewMsgServerImpl(amm)
+	msgServer := ammkeeper.NewMsgServerImpl(*amm)
 	resp, err := msgServer.CreatePool(
 		sdk.WrapSDKContext(ctx),
 		&ammtypes.MsgCreatePool{
@@ -79,21 +79,21 @@ func SetupApp(t *testing.T) (keeper.Keeper, sdk.Context) {
 	poolInfo, found := mk.GetPoolInfo(ctx, resp.PoolID)
 	require.True(t, found)
 
-	poolInfo.DexApr = sdk.NewDecWithPrec(1, 2)  // 1%
-	poolInfo.EdenApr = sdk.NewDecWithPrec(2, 2) // 2%
+	poolInfo.DexApr = math.LegacyNewDecWithPrec(1, 2)  // 1%
+	poolInfo.EdenApr = math.LegacyNewDecWithPrec(2, 2) // 2%
 	mk.SetPoolInfo(ctx, poolInfo)
 	estakingParams := estaking.GetParams(ctx)
 	estakingParams.StakeIncentives =
 		&estakingtypes.IncentiveInfo{
-			EdenAmountPerYear: sdk.NewInt(1000000),
+			EdenAmountPerYear: math.NewInt(1000000),
 			BlocksDistributed: 1000000,
 		}
-	estakingParams.MaxEdenRewardAprStakers = sdk.NewDecWithPrec(30, 2)
+	estakingParams.MaxEdenRewardAprStakers = math.LegacyNewDecWithPrec(30, 2)
 	estaking.SetParams(ctx, estakingParams)
 
 	mkParams := mk.GetParams(ctx)
 	mkParams.LpIncentives = &types.IncentiveInfo{
-		EdenAmountPerYear: sdk.NewInt(1000000000),
+		EdenAmountPerYear: math.NewInt(1000000000),
 		BlocksDistributed: 1000000,
 	}
 	mk.SetParams(ctx, mkParams)
@@ -115,7 +115,7 @@ func TestApr(t *testing.T) {
 				Denom:        "ueden",
 			},
 			response: &types.QueryAprResponse{
-				Apr: sdk.MustNewDecFromStr("0.299999999999999995"),
+				Apr: math.LegacyMustNewDecFromStr("0.299999999999999995"),
 			},
 			err: nil,
 		},
@@ -152,16 +152,16 @@ func TestAprs(t *testing.T) {
 			desc:    "valid request",
 			request: &types.QueryAprsRequest{},
 			response: &types.QueryAprsResponse{
-				UsdcAprUsdc:  sdk.ZeroDec(),
-				EdenAprUsdc:  sdk.ZeroDec(),
-				UsdcAprEdenb: sdk.ZeroDec(),
-				EdenAprEdenb: sdk.MustNewDecFromStr("0.299999999999999995"),
-				UsdcAprEden:  sdk.ZeroDec(),
-				EdenAprEden:  sdk.MustNewDecFromStr("0.299999999999999995"),
-				EdenbAprEden: sdk.OneDec(),
-				UsdcAprElys:  sdk.ZeroDec(),
-				EdenAprElys:  sdk.MustNewDecFromStr("0.299999999999999995"),
-				EdenbAprElys: sdk.OneDec(),
+				UsdcAprUsdc:  math.LegacyZeroDec(),
+				EdenAprUsdc:  math.LegacyZeroDec(),
+				UsdcAprEdenb: math.LegacyZeroDec(),
+				EdenAprEdenb: math.LegacyMustNewDecFromStr("0.299999999999999995"),
+				UsdcAprEden:  math.LegacyZeroDec(),
+				EdenAprEden:  math.LegacyMustNewDecFromStr("0.299999999999999995"),
+				EdenbAprEden: math.LegacyOneDec(),
+				UsdcAprElys:  math.LegacyZeroDec(),
+				EdenAprElys:  math.LegacyMustNewDecFromStr("0.299999999999999995"),
+				EdenbAprElys: math.LegacyOneDec(),
 			},
 			err: nil,
 		},
@@ -202,9 +202,9 @@ func TestPoolRewards(t *testing.T) {
 			response: &types.QueryPoolRewardsResponse{
 				Pools: []types.PoolRewards{{
 					PoolId:      1,
-					RewardsUsd:  sdk.NewDec(420),
-					RewardCoins: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdk.NewInt(200)), sdk.NewCoin(ptypes.BaseCurrency, sdk.NewInt(400))},
-					EdenForward: sdk.NewCoin(ptypes.Eden, sdk.NewInt(0)),
+					RewardsUsd:  math.LegacyNewDec(420),
+					RewardCoins: sdk.Coins{sdk.NewCoin(ptypes.Eden, math.NewInt(200)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(400))},
+					EdenForward: sdk.NewCoin(ptypes.Eden, math.NewInt(0)),
 				},
 				},
 			},
@@ -222,8 +222,8 @@ func TestPoolRewards(t *testing.T) {
 	ctx.BlockTime()
 	mk.SetPoolRewardsAccum(ctx, types.PoolRewardsAccum{
 		PoolId: 1, BlockHeight: ctx.BlockHeight(),
-		DexReward: sdk.NewDec(100), EdenReward: sdk.NewDec(200),
-		Timestamp: uint64(ctx.BlockTime().Unix()), GasReward: sdk.NewDec(300),
+		DexReward: math.LegacyNewDec(100), EdenReward: math.LegacyNewDec(200),
+		Timestamp: uint64(ctx.BlockTime().Unix()), GasReward: math.LegacyNewDec(300),
 	})
 
 	for _, tc := range tests {

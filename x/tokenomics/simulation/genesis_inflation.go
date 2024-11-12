@@ -25,11 +25,11 @@ func SimulateMsgUpdateGenesisInflation(
 			genesisInflation, found = k.GetGenesisInflation(ctx)
 		)
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "genesisInflation store is empty"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateGenesisInflation{}), "genesisInflation store is empty"), nil, nil
 		}
 		simAccount, found = FindAccount(accs, genesisInflation.Authority)
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "genesisInflation authority not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgUpdateGenesisInflation{}), "genesisInflation authority not found"), nil, nil
 		}
 		msg.Authority = simAccount.Address.String()
 
@@ -39,7 +39,6 @@ func SimulateMsgUpdateGenesisInflation(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,

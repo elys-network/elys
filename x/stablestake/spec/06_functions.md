@@ -90,10 +90,10 @@ The `UpdateInterestStacked` function updates the stacked interest for a given de
 ```go
 func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt) types.Debt {
     params := k.GetParams(ctx)
-    newInterest := sdk.NewDecFromInt(debt.Borrowed).
+    newInterest := sdkmath.LegacyNewDecFromInt(debt.Borrowed).
         Mul(params.InterestRate).
-        Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(debt.LastInterestCalcTime))).
-        Quo(sdk.NewDec(86400 * 365)).
+        Mul(sdkmath.LegacyNewDec(ctx.BlockTime().Unix() - int64(debt.LastInterestCalcTime))).
+        Quo(sdkmath.LegacyNewDec(86400 * 365)).
         RoundInt()
 
     debt.InterestStacked = debt.InterestStacked.Add(newInterest)
@@ -111,7 +111,7 @@ func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt) types.De
 The `InterestRateComputation` function computes the current interest rate based on the network's parameters, total value, and health gain factor.
 
 ```go
-func (k Keeper) InterestRateComputation(ctx sdk.Context) sdk.Dec {
+func (k Keeper) InterestRateComputation(ctx sdk.Context) sdkmath.LegacyDec {
     params := k.GetParams(ctx)
     if params.TotalValue.IsZero() {
         return params.InterestRate
@@ -129,16 +129,16 @@ func (k Keeper) InterestRateComputation(ctx sdk.Context) sdk.Dec {
     balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
     borrowed := params.TotalValue.Sub(balance.Amount)
     targetInterestRate := healthGainFactor.
-        Mul(sdk.NewDecFromInt(borrowed)).
-        Quo(sdk.NewDecFromInt(params.TotalValue))
+        Mul(sdkmath.LegacyNewDecFromInt(borrowed)).
+        Quo(sdkmath.LegacyNewDecFromInt(params.TotalValue))
 
     interestRateChange := targetInterestRate.Sub(prevInterestRate)
     interestRate := prevInterestRate
-    if interestRateChange.GTE(interestRateDecrease.Mul(sdk.NewDec(-1))) && interestRateChange.LTE(interestRateIncrease) {
+    if interestRateChange.GTE(interestRateDecrease.Mul(sdkmath.LegacyNewDec(-1))) && interestRateChange.LTE(interestRateIncrease) {
         interestRate = targetInterestRate
     } else if interestRateChange.GT(interestRateIncrease) {
         interestRate = prevInterestRate.Add(interestRateIncrease)
-    } else if interestRateChange.LT(interestRateDecrease.Mul(sdk.NewDec(-1))) {
+    } else if interestRateChange.LT(interestRateDecrease.Mul(sdkmath.LegacyNewDec(-1))) {
         interestRate = prevInterestRate.Sub(interestRateDecrease)
     }
 

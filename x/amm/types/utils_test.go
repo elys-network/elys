@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/stretchr/testify/require"
@@ -32,9 +32,9 @@ func TestGetPoolShareDenom(t *testing.T) {
 
 func TestEnsureDenomInPool(t *testing.T) {
 	poolAssetsByDenom := map[string]types.PoolAsset{
-		"abc": {Token: sdk.NewCoin("abc", math.ZeroInt())},
-		"def": {Token: sdk.NewCoin("def", math.ZeroInt())},
-		"ghi": {Token: sdk.NewCoin("ghi", math.ZeroInt())},
+		"abc": {Token: sdk.NewCoin("abc", sdkmath.ZeroInt())},
+		"def": {Token: sdk.NewCoin("def", sdkmath.ZeroInt())},
+		"ghi": {Token: sdk.NewCoin("ghi", sdkmath.ZeroInt())},
 	}
 
 	tests := []struct {
@@ -56,14 +56,14 @@ func TestEnsureDenomInPool(t *testing.T) {
 
 func TestAbsDifferenceWithSign(t *testing.T) {
 	tests := []struct {
-		a        sdk.Dec
-		b        sdk.Dec
-		expected sdk.Dec
+		a        sdkmath.LegacyDec
+		b        sdkmath.LegacyDec
+		expected sdkmath.LegacyDec
 		sign     bool
 	}{
-		{sdk.NewDec(5), sdk.NewDec(3), sdk.NewDec(2), false},
-		{sdk.NewDec(3), sdk.NewDec(5), sdk.NewDec(2), true},
-		{sdk.NewDec(0), sdk.NewDec(0), sdk.NewDec(0), false},
+		{sdkmath.LegacyNewDec(5), sdkmath.LegacyNewDec(3), sdkmath.LegacyNewDec(2), false},
+		{sdkmath.LegacyNewDec(3), sdkmath.LegacyNewDec(5), sdkmath.LegacyNewDec(2), true},
+		{sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), false},
 	}
 
 	for _, tt := range tests {
@@ -78,45 +78,45 @@ func TestApplyDiscount(t *testing.T) {
 	// Define test cases
 	tests := []struct {
 		name     string
-		swapFee  sdk.Dec
-		discount sdk.Dec
-		wantFee  sdk.Dec
+		swapFee  sdkmath.LegacyDec
+		discount sdkmath.LegacyDec
+		wantFee  sdkmath.LegacyDec
 	}{
 		{
 			name:     "Zero discount",
-			swapFee:  sdk.NewDecWithPrec(100, 2), // 1.00 as an example
-			discount: sdk.ZeroDec(),
-			wantFee:  sdk.NewDecWithPrec(100, 2),
+			swapFee:  sdkmath.LegacyNewDecWithPrec(100, 2), // 1.00 as an example
+			discount: sdkmath.LegacyZeroDec(),
+			wantFee:  sdkmath.LegacyNewDecWithPrec(100, 2),
 		},
 		{
 			name:     "Positive discount with valid broker address",
-			swapFee:  sdk.NewDecWithPrec(100, 2),
-			discount: sdk.NewDecWithPrec(10, 2), // 0.10 (10%)
-			wantFee:  sdk.NewDecWithPrec(90, 2), // 0.90 after discount
+			swapFee:  sdkmath.LegacyNewDecWithPrec(100, 2),
+			discount: sdkmath.LegacyNewDecWithPrec(10, 2), // 0.10 (10%)
+			wantFee:  sdkmath.LegacyNewDecWithPrec(90, 2), // 0.90 after discount
 		},
 		{
 			name:     "Boundary value for discount",
-			swapFee:  sdk.NewDecWithPrec(100, 2),
-			discount: sdk.NewDecWithPrec(9999, 4), // 0.9999 (99.99%)
-			wantFee:  sdk.NewDecWithPrec(1, 4),    // 0.01 after discount
+			swapFee:  sdkmath.LegacyNewDecWithPrec(100, 2),
+			discount: sdkmath.LegacyNewDecWithPrec(9999, 4), // 0.9999 (99.99%)
+			wantFee:  sdkmath.LegacyNewDecWithPrec(1, 4),    // 0.01 after discount
 		},
 		{
 			name:     "Discount greater than swap fee",
-			swapFee:  sdk.NewDecWithPrec(50, 2), // 0.50
-			discount: sdk.NewDecWithPrec(75, 2), // 0.75
-			wantFee:  sdk.NewDecWithPrec(125, 3),
+			swapFee:  sdkmath.LegacyNewDecWithPrec(50, 2), // 0.50
+			discount: sdkmath.LegacyNewDecWithPrec(75, 2), // 0.75
+			wantFee:  sdkmath.LegacyNewDecWithPrec(125, 3),
 		},
 		{
 			name:     "Zero swap fee with valid discount",
-			swapFee:  sdk.ZeroDec(),
-			discount: sdk.NewDecWithPrec(10, 2),
-			wantFee:  sdk.ZeroDec(),
+			swapFee:  sdkmath.LegacyZeroDec(),
+			discount: sdkmath.LegacyNewDecWithPrec(10, 2),
+			wantFee:  sdkmath.LegacyZeroDec(),
 		},
 		{
 			name:     "Large discount with valid broker address",
-			swapFee:  sdk.NewDecWithPrec(100, 2),
-			discount: sdk.NewDecWithPrec(9000, 4), // 0.90 (90%)
-			wantFee:  sdk.NewDecWithPrec(10, 2),   // 0.10 after discount
+			swapFee:  sdkmath.LegacyNewDecWithPrec(100, 2),
+			discount: sdkmath.LegacyNewDecWithPrec(9000, 4), // 0.90 (90%)
+			wantFee:  sdkmath.LegacyNewDecWithPrec(10, 2),   // 0.10 after discount
 		},
 	}
 
@@ -131,12 +131,12 @@ func TestApplyDiscount(t *testing.T) {
 func TestGetPoolAssetsByDenom(t *testing.T) {
 	poolAssets := []types.PoolAsset{
 		{
-			Token:  sdk.Coin{Denom: "token1", Amount: sdk.NewInt(100)},
-			Weight: sdk.NewInt(10),
+			Token:  sdk.Coin{Denom: "token1", Amount: sdkmath.NewInt(100)},
+			Weight: sdkmath.NewInt(10),
 		},
 		{
-			Token:  sdk.Coin{Denom: "token2", Amount: sdk.NewInt(200)},
-			Weight: sdk.NewInt(20),
+			Token:  sdk.Coin{Denom: "token2", Amount: sdkmath.NewInt(200)},
+			Weight: sdkmath.NewInt(20),
 		},
 	}
 
@@ -150,12 +150,12 @@ func TestGetPoolAssetsByDenom(t *testing.T) {
 	// Test case 2: Duplicate pool asset
 	duplicatePoolAssets := []types.PoolAsset{
 		{
-			Token:  sdk.Coin{Denom: "token1", Amount: sdk.NewInt(100)},
-			Weight: sdk.NewInt(10),
+			Token:  sdk.Coin{Denom: "token1", Amount: sdkmath.NewInt(100)},
+			Weight: sdkmath.NewInt(10),
 		},
 		{
-			Token:  sdk.Coin{Denom: "token1", Amount: sdk.NewInt(200)},
-			Weight: sdk.NewInt(20),
+			Token:  sdk.Coin{Denom: "token1", Amount: sdkmath.NewInt(200)},
+			Weight: sdkmath.NewInt(20),
 		},
 	}
 	_, err = types.GetPoolAssetsByDenom(duplicatePoolAssets)
@@ -166,12 +166,12 @@ func TestGetPoolAssetsByDenom(t *testing.T) {
 func TestGetPoolAssetByDenom(t *testing.T) {
 	poolAssets := []types.PoolAsset{
 		{
-			Token:  sdk.Coin{Denom: "token1", Amount: sdk.NewInt(100)},
-			Weight: sdk.NewInt(10),
+			Token:  sdk.Coin{Denom: "token1", Amount: sdkmath.NewInt(100)},
+			Weight: sdkmath.NewInt(10),
 		},
 		{
-			Token:  sdk.Coin{Denom: "token2", Amount: sdk.NewInt(200)},
-			Weight: sdk.NewInt(20),
+			Token:  sdk.Coin{Denom: "token2", Amount: sdkmath.NewInt(200)},
+			Weight: sdkmath.NewInt(20),
 		},
 	}
 

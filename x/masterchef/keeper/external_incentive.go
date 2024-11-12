@@ -1,45 +1,47 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
 func (k Keeper) GetExternalIncentiveIndex(ctx sdk.Context) (index uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	v := store.Get(types.ExternalIncentiveIndexKeyPrefix)
 	index = sdk.BigEndianToUint64(v)
 	return index
 }
 
 func (k Keeper) SetExternalIncentiveIndex(ctx sdk.Context, index uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.ExternalIncentiveIndexKeyPrefix, sdk.Uint64ToBigEndian(index))
 }
 
 // remove after migration
 func (k Keeper) GetLegacyExternalIncentiveIndex(ctx sdk.Context) (index uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyExternalIncentiveIndexKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyExternalIncentiveIndexKeyPrefix))
 	index = sdk.BigEndianToUint64(store.Get(types.LegacyExternalIncentiveIndex()))
 	return index
 }
 
 // remove after migration
 func (k Keeper) RemoveLegacyExternalIncentiveIndex(ctx sdk.Context) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyExternalIncentiveIndexKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyExternalIncentiveIndexKeyPrefix))
 	store.Delete(types.LegacyExternalIncentiveIndex())
 }
 
 func (k Keeper) SetExternalIncentive(ctx sdk.Context, externalIncentive types.ExternalIncentive) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetExternalIncentiveKey(externalIncentive.Id)
 	b := k.cdc.MustMarshal(&externalIncentive)
 	store.Set(key, b)
 }
 
 func (k Keeper) GetExternalIncentive(ctx sdk.Context, id uint64) (val types.ExternalIncentive, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetExternalIncentiveKey(id)
 	b := store.Get(key)
 	if b == nil {
@@ -51,14 +53,14 @@ func (k Keeper) GetExternalIncentive(ctx sdk.Context, id uint64) (val types.Exte
 }
 
 func (k Keeper) RemoveExternalIncentive(ctx sdk.Context, id uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetExternalIncentiveKey(id)
 	store.Delete(key)
 }
 
 func (k Keeper) GetAllExternalIncentives(ctx sdk.Context) (list []types.ExternalIncentive) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.ExternalIncentiveKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.ExternalIncentiveKeyPrefix)
 
 	defer iterator.Close()
 
@@ -72,13 +74,13 @@ func (k Keeper) GetAllExternalIncentives(ctx sdk.Context) (list []types.External
 }
 
 func (k Keeper) DeleteLegacyExternalIncentive(ctx sdk.Context, id uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyExternalIncentiveKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyExternalIncentiveKeyPrefix))
 	store.Delete(types.LegacyExternalIncentiveKey(id))
 }
 
 func (k Keeper) GetAllLegacyExternalIncentives(ctx sdk.Context) (list []types.ExternalIncentive) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LegacyExternalIncentiveKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyExternalIncentiveKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

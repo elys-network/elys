@@ -17,13 +17,13 @@ func SimulateMsgCancelPerpetualOrder(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgCancelPerpetualOrder{
-			OwnerAddress: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgCancelPerpetualOrder{
+		//	OwnerAddress: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the CancelPerpetualOrder simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "CancelPerpetualOrder simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgCancelPerpetualOrder{}), "CancelPerpetualOrder simulation not implemented"), nil, nil
 	}
 }

@@ -1,9 +1,10 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/require"
@@ -19,14 +20,15 @@ func TestMsgUncommitTokens_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgUncommitTokens{
 				Creator: "invalid_address",
-				Amount:  sdk.ZeroInt(),
+				Amount:  sdkmath.ZeroInt(),
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUncommitTokens{
 				Creator: sample.AccAddress(),
-				Amount:  sdk.ZeroInt(),
+				Amount:  sdkmath.ZeroInt(),
+				Denom:   ptypes.ATOM,
 			},
 		},
 	}

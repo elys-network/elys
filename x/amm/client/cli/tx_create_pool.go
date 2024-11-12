@@ -60,7 +60,7 @@ func CmdCreatePool() *cobra.Command {
 				poolAssets = append(poolAssets, types.PoolAsset{
 					Weight:                 argWeights[i].Amount,
 					Token:                  argInitialDeposit[i],
-					ExternalLiquidityRatio: sdk.OneDec(),
+					ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
 				})
 			}
 
@@ -110,14 +110,14 @@ func CmdCreatePool() *cobra.Command {
 			}
 
 			poolParams := &types.PoolParams{
-				SwapFee:                     sdk.MustNewDecFromStr(swapFeeStr),
-				ExitFee:                     sdk.MustNewDecFromStr(exitFeeStr),
+				SwapFee:                     sdkmath.LegacyMustNewDecFromStr(swapFeeStr),
+				ExitFee:                     sdkmath.LegacyMustNewDecFromStr(exitFeeStr),
 				UseOracle:                   useOracle,
-				WeightBreakingFeeMultiplier: sdk.MustNewDecFromStr(weightBreakingFeeMultiplierStr),
-				WeightBreakingFeeExponent:   sdk.MustNewDecFromStr(weightBreakingFeeExponentStr),
-				WeightRecoveryFeePortion:    sdk.MustNewDecFromStr(weightRecoveryFeePortionStr),
+				WeightBreakingFeeMultiplier: sdkmath.LegacyMustNewDecFromStr(weightBreakingFeeMultiplierStr),
+				WeightBreakingFeeExponent:   sdkmath.LegacyMustNewDecFromStr(weightBreakingFeeExponentStr),
+				WeightRecoveryFeePortion:    sdkmath.LegacyMustNewDecFromStr(weightRecoveryFeePortionStr),
 				WeightBreakingFeePortion:    sdkmath.LegacyMustNewDecFromStr(weightBreakingFeePortionStr),
-				ThresholdWeightDifference:   sdk.MustNewDecFromStr(thresholdWeightDifferenceStr),
+				ThresholdWeightDifference:   sdkmath.LegacyMustNewDecFromStr(thresholdWeightDifferenceStr),
 				FeeDenom:                    feeDenom,
 			}
 

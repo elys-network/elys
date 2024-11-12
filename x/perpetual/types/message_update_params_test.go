@@ -3,7 +3,6 @@ package types
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/stretchr/testify/assert"
@@ -24,38 +23,6 @@ func TestNewMsgUpdateParams(t *testing.T) {
 	}
 
 	assert.Equal(t, want, got)
-}
-
-func TestMsgUpdateParams_Route(t *testing.T) {
-	msg := MsgUpdateParams{}
-	assert.Equal(t, "perpetual", msg.Route())
-}
-
-func TestMsgUpdateParams_Type(t *testing.T) {
-	msg := MsgUpdateParams{}
-	assert.Equal(t, "update_params", msg.Type())
-}
-
-func TestMsgUpdateParams_GetSigners(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgUpdateParams{Authority: accAdress}
-
-	creator, err := sdk.AccAddressFromBech32(accAdress)
-	if err != nil {
-		panic(err)
-	}
-
-	assert.Equal(t, []sdk.AccAddress{creator}, msg.GetSigners())
-}
-
-func TestMsgUpdateParams_GetSignBytes(t *testing.T) {
-	accAdress := sample.AccAddress()
-	msg := MsgUpdateParams{Authority: accAdress}
-
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	b := sdk.MustSortJSON(bz)
-
-	assert.Equal(t, b, msg.GetSignBytes())
 }
 
 func TestMsgUpdateParams_ValidateBasic(t *testing.T) {

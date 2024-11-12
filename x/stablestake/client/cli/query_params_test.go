@@ -34,7 +34,7 @@ func (s *CLITestSuite) TestCmdQueryParams() {
 				bz, _ := s.encCfg.Codec.Marshal(&types.QueryParamsResponse{
 					Params: types.DefaultParams(),
 				})
-				c := clitestutil.NewMockTendermintRPC(abci.ResponseQuery{
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
 				})
 				return s.baseCtx.WithClient(c)

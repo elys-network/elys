@@ -3,7 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	simapp "github.com/elys-network/elys/app"
@@ -15,21 +16,26 @@ import (
 )
 
 func TestEstakingExtendedFunctions(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	stakingKeeper := app.StakingKeeper
 	estakingKeeper := app.EstakingKeeper
 
 	// create validator with 50% commission
-	validators := stakingKeeper.GetAllValidators(ctx)
+	validators, err := stakingKeeper.GetAllValidators(ctx)
+	require.NoError(t, err)
 	require.True(t, len(validators) > 0)
 	valAddr := validators[0].GetOperator()
-	delegations := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
+	validator, err := sdk.ValAddressFromBech32(valAddr)
+	require.NoError(t, err)
+	delegations, err := stakingKeeper.GetValidatorDelegations(ctx, validator)
+	require.NoError(t, err)
 	require.True(t, len(delegations) > 0)
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
-	totalBonded := estakingKeeper.TotalBondedTokens(ctx)
+	totalBonded, err := estakingKeeper.TotalBondedTokens(ctx)
+	require.Nil(t, err)
 	require.Equal(t, totalBonded.String(), "1000000")
 
 	// set commitments
@@ -43,15 +49,16 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 		CommitEnabled:   true,
 		WithdrawEnabled: true,
 	})
-	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(app.CommitmentKeeper)
-	_, err := commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(ctx), &commitmenttypes.MsgCommitClaimedRewards{
+	commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(*app.CommitmentKeeper)
+	_, err = commitmentMsgServer.CommitClaimedRewards(ctx, &commitmenttypes.MsgCommitClaimedRewards{
 		Creator: addr.String(),
 		Denom:   ptypes.Eden,
-		Amount:  sdk.NewInt(1000_000),
+		Amount:  math.NewInt(1000_000),
 	})
 	require.Nil(t, err)
 
-	totalBonded = estakingKeeper.TotalBondedTokens(ctx)
+	totalBonded, err = estakingKeeper.TotalBondedTokens(ctx)
+	require.Nil(t, err)
 	require.Equal(t, totalBonded.String(), "2000000")
 
 	edenVal := estakingKeeper.GetEdenValidator(ctx)
@@ -60,26 +67,36 @@ func TestEstakingExtendedFunctions(t *testing.T) {
 	edenBVal := estakingKeeper.GetEdenBValidator(ctx)
 	require.Equal(t, edenBVal.GetMoniker(), "EdenBValidator")
 
-	require.Equal(t, estakingKeeper.Validator(ctx, edenVal.GetOperator()), edenVal)
-	require.Equal(t, estakingKeeper.Validator(ctx, edenBVal.GetOperator()), edenBVal)
+	edenValidator, err := sdk.ValAddressFromBech32(edenVal.GetOperator())
+	require.NoError(t, err)
+	edenBValidator, err := sdk.ValAddressFromBech32(edenBVal.GetOperator())
+	require.NoError(t, err)
 
-	edenDel := estakingKeeper.Delegation(ctx, addr, edenVal.GetOperator())
-	require.Equal(t, edenDel.GetShares(), sdk.NewDec(1000_000))
+	edenValidatorI, _ := estakingKeeper.Validator(ctx, edenValidator)
+	edenBValidatorI, _ := estakingKeeper.Validator(ctx, edenBValidator)
 
-	edenBDel := estakingKeeper.Delegation(ctx, addr, edenBVal.GetOperator())
+	require.Equal(t, edenValidatorI, edenVal)
+	require.Equal(t, edenBValidatorI, edenBVal)
+
+	edenDel, _ := estakingKeeper.Delegation(ctx, addr, edenValidator)
+	require.Equal(t, edenDel.GetShares(), math.LegacyNewDec(1000_000))
+
+	edenBDel, _ := estakingKeeper.Delegation(ctx, addr, edenBValidator)
 	require.Nil(t, edenBDel)
 
 	numDelegations := int64(0)
-	estakingKeeper.IterateDelegations(ctx, addr, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
+	err = estakingKeeper.IterateDelegations(ctx, addr, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
 		numDelegations++
 		return false
 	})
+	require.NoError(t, err)
 	require.Equal(t, numDelegations, int64(2))
 
 	numBondedValidators := int64(0)
-	estakingKeeper.IterateBondedValidatorsByPower(ctx, func(index int64, delegation stakingtypes.ValidatorI) (stop bool) {
+	err = estakingKeeper.IterateBondedValidatorsByPower(ctx, func(index int64, delegation stakingtypes.ValidatorI) (stop bool) {
 		numBondedValidators++
 		return false
 	})
+	require.NoError(t, err)
 	require.Equal(t, numBondedValidators, int64(2))
 }

@@ -10,7 +10,7 @@ import (
 
 // EstimateAndRepay ammPool has to be pointer because RemoveFromPoolBalance (in Repay) updates pool assets
 // Important to send pointer mtp and pool
-func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, baseCurrency string, closingRatio sdk.Dec) (math.Int, error) {
+func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, baseCurrency string, closingRatio math.LegacyDec) (math.Int, error) {
 
 	if closingRatio.LTE(math.LegacyZeroDec()) || closingRatio.GT(math.LegacyOneDec()) {
 		return math.Int{}, fmt.Errorf("invalid closing ratio (%s)", closingRatio.String())
@@ -22,23 +22,23 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 	}
 	returnAmount, err := k.CalcReturnAmount(*mtp, repayAmount, closingRatio)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return math.ZeroInt(), err
 	}
 
 	// Note: Long settlement is done in trading asset. And short settlement in usdc in Repay function
 	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency); err != nil {
-		return sdk.ZeroInt(), err
+		return math.ZeroInt(), err
 	}
 
 	return repayAmount, nil
 }
 
 // CalcRepayAmount repay amount is in custody asset for liabilities with closing ratio
-func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtypes.Pool, closingRatio sdk.Dec) (repayAmount, payingLiabilities math.Int, slippage, weightBreakingFee math.LegacyDec, err error) {
+func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (repayAmount, payingLiabilities math.Int, slippage, weightBreakingFee math.LegacyDec, err error) {
 	// init repay amount
 	// For long this will be in trading asset (custody asset is trading asset)
 	// For short this will be in USDC (custody asset is USDC)
-	repayAmount = sdk.ZeroInt()
+	repayAmount = math.ZeroInt()
 
 	// mtp.BorrowInterestUnpaidLiability is 0 because settled in SettleInterest so no need to add
 	// For short this will be in trading asset
@@ -57,7 +57,7 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
 		repayAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool)
 		if err != nil {
-			return math.ZeroInt(), sdk.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
+			return math.ZeroInt(), math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
 	}
 
@@ -66,7 +66,7 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 }
 
 // need to make sure unpaid liability interest is paid
-func (k Keeper) CalcReturnAmount(mtp types.MTP, repayAmount math.Int, closingRatio sdk.Dec) (returnAmount math.Int, err error) {
+func (k Keeper) CalcReturnAmount(mtp types.MTP, repayAmount math.Int, closingRatio math.LegacyDec) (returnAmount math.Int, err error) {
 	// closingAmount is what user is trying to close
 	// For long, mtp.Custody is trading asset, unit of repay amount here is custody asset
 	// For short mtp.Custody is base currency, unit of repay amount here is custody asset
@@ -74,7 +74,7 @@ func (k Keeper) CalcReturnAmount(mtp types.MTP, repayAmount math.Int, closingRat
 
 	if closingAmount.LT(repayAmount) {
 		// this case would mean bot liquidation failed as custody amount fall too low after interest was paid
-		returnAmount = sdk.ZeroInt()
+		returnAmount = math.ZeroInt()
 	} else {
 		// can afford both
 		returnAmount = closingAmount.Sub(repayAmount)

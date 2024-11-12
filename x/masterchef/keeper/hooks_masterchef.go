@@ -34,7 +34,7 @@ func (k Keeper) UpdateAccPerShare(ctx sdk.Context, poolId uint64, rewardDenom st
 		poolRewardInfo = types.PoolRewardInfo{
 			PoolId:                poolId,
 			RewardDenom:           rewardDenom,
-			PoolAccRewardPerShare: sdk.NewDec(0),
+			PoolAccRewardPerShare: math.LegacyNewDec(0),
 			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		}
 	}
@@ -56,7 +56,7 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 		poolRewardInfo = types.PoolRewardInfo{
 			PoolId:                poolId,
 			RewardDenom:           rewardDenom,
-			PoolAccRewardPerShare: sdk.NewDec(0),
+			PoolAccRewardPerShare: math.LegacyNewDec(0),
 			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		}
 	}
@@ -67,8 +67,8 @@ func (k Keeper) UpdateUserRewardPending(ctx sdk.Context, poolId uint64, rewardDe
 			User:          user.String(),
 			PoolId:        poolId,
 			RewardDenom:   rewardDenom,
-			RewardDebt:    sdk.NewDec(0),
-			RewardPending: sdk.NewDec(0),
+			RewardDebt:    math.LegacyNewDec(0),
+			RewardPending: math.LegacyNewDec(0),
 		}
 	}
 
@@ -96,7 +96,7 @@ func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom
 		poolRewardInfo = types.PoolRewardInfo{
 			PoolId:                poolId,
 			RewardDenom:           rewardDenom,
-			PoolAccRewardPerShare: sdk.NewDec(0),
+			PoolAccRewardPerShare: math.LegacyNewDec(0),
 			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
 		}
 	}
@@ -107,8 +107,8 @@ func (k Keeper) UpdateUserRewardDebt(ctx sdk.Context, poolId uint64, rewardDenom
 			User:          user.String(),
 			PoolId:        poolId,
 			RewardDenom:   rewardDenom,
-			RewardDebt:    sdk.NewDec(0),
-			RewardPending: sdk.NewDec(0),
+			RewardDebt:    math.LegacyNewDec(0),
+			RewardPending: math.LegacyNewDec(0),
 		}
 	}
 

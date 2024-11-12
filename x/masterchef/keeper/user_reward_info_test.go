@@ -3,8 +3,9 @@ package keeper_test
 import (
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
+
 	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -12,8 +13,8 @@ import (
 )
 
 func TestUserRewardInfo(t *testing.T) {
-	app := simapp.InitElysTestApp(true)
-	ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
 
 	user1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	user2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -22,22 +23,22 @@ func TestUserRewardInfo(t *testing.T) {
 			User:          user1.String(),
 			PoolId:        1,
 			RewardDenom:   "reward1",
-			RewardDebt:    sdk.ZeroDec(),
-			RewardPending: sdk.ZeroDec(),
+			RewardDebt:    sdkmath.LegacyZeroDec(),
+			RewardPending: sdkmath.LegacyZeroDec(),
 		},
 		{
 			User:          user1.String(),
 			PoolId:        1,
 			RewardDenom:   "reward2",
-			RewardDebt:    sdk.ZeroDec(),
-			RewardPending: sdk.ZeroDec(),
+			RewardDebt:    sdkmath.LegacyZeroDec(),
+			RewardPending: sdkmath.LegacyZeroDec(),
 		},
 		{
 			User:          user2.String(),
 			PoolId:        2,
 			RewardDenom:   "reward2",
-			RewardDebt:    sdk.ZeroDec(),
-			RewardPending: sdk.ZeroDec(),
+			RewardDebt:    sdkmath.LegacyZeroDec(),
+			RewardPending: sdkmath.LegacyZeroDec(),
 		},
 	}
 	for _, rewardInfo := range userRewardInfos {

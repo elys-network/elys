@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -28,7 +29,7 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 			continue
 		}
 
-		childCtx := ctx.WithGasMeter(sdk.NewGasMeter(p.ContractGasLimit))
+		childCtx := ctx.WithGasMeter(storetypes.NewGasMeter(p.ContractGasLimit))
 		_, err = k.GetContractKeeper().Sudo(childCtx, contract, message)
 		if err != nil {
 			errorExecs = append(errorExecs, err.Error())

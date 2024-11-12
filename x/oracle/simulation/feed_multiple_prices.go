@@ -17,13 +17,13 @@ func SimulateMsgFeedMultiplePrices(
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgFeedMultiplePrices{
-			Creator: simAccount.Address.String(),
-		}
+		//simAccount, _ := simtypes.RandomAcc(r, accs)
+		//msg := &types.MsgFeedMultiplePrices{
+		//	Creator: simAccount.Address.String(),
+		//}
 
 		// TODO: Handling the FeedMultiplePrices simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "FeedMultiplePrices simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(&types.MsgFeedMultiplePrices{}), "FeedMultiplePrices simulation not implemented"), nil, nil
 	}
 }

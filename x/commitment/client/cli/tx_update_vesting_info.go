@@ -73,6 +73,11 @@ func CmdUpdateVestingInfo() *cobra.Command {
 				return err
 			}
 
+			expedited, err := cmd.Flags().GetBool(FlagExpedited)
+			if err != nil {
+				return err
+			}
+
 			signer := clientCtx.GetFromAddress()
 			if signer == nil {
 				return errors.New("signer address is missing")
@@ -117,7 +122,7 @@ func CmdUpdateVestingInfo() *cobra.Command {
 				return err
 			}
 
-			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary)
+			govMsg, err := v1.NewMsgSubmitProposal([]sdk.Msg{msg}, deposit, signer.String(), metadata, title, summary, expedited)
 			if err != nil {
 				return err
 			}
@@ -130,6 +135,7 @@ func CmdUpdateVestingInfo() *cobra.Command {
 	cmd.Flags().String(FlagVestingDenom, "", "vesting-denom")
 	cmd.Flags().String(FlagEpochIdentifier, "", "epoch-identifier")
 	cmd.Flags().String(FlagNumEpochs, "", "num-epochs")
+	cmd.Flags().Bool(FlagExpedited, false, "expedited")
 	cmd.Flags().String(FlagVestNowFactor, "", "vest-now-factor")
 	cmd.Flags().String(FlagNumMaxVestings, "", "num-max-vestings")
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")

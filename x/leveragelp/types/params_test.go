@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
@@ -31,20 +31,20 @@ func TestValidateLeverageMax(t *testing.T) {
 		{
 			name: "LeverageMax is nil",
 			setter: func() {
-				params.LeverageMax = sdk.Dec{}
+				params.LeverageMax = sdkmath.LegacyDec{}
 			},
 			err: "leverage max must be not nil",
 		},
 		{
 			name: "LeverageMax < 1",
 			setter: func() {
-				params.LeverageMax = sdk.MustNewDecFromStr("0.5")
+				params.LeverageMax = sdkmath.LegacyMustNewDecFromStr("0.5")
 			},
 			err: "leverage max must be greater than 1",
 		}, {
 			name: "LeverageMax is 100",
 			setter: func() {
-				params.LeverageMax = sdk.OneDec().MulInt64(100)
+				params.LeverageMax = sdkmath.LegacyOneDec().MulInt64(100)
 			},
 			err: "leverage max too large",
 		},
@@ -112,20 +112,20 @@ func TestValidateSafetyFactor(t *testing.T) {
 		{
 			name: "SafetyFactor is nil",
 			setter: func() {
-				params.SafetyFactor = sdk.Dec{}
+				params.SafetyFactor = sdkmath.LegacyDec{}
 			},
 			err: "safety factor must be not nil",
 		},
 		{
 			name: "SafetyFactor is 0 ",
 			setter: func() {
-				params.SafetyFactor = sdk.ZeroDec()
+				params.SafetyFactor = sdkmath.LegacyZeroDec()
 			},
 			err: "safety factor must be positive",
 		}, {
 			name: "SafetyFactor is < 0 ",
 			setter: func() {
-				params.SafetyFactor = sdk.OneDec().MulInt64(-1)
+				params.SafetyFactor = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			err: "safety factor must be positive",
 		},
@@ -159,20 +159,20 @@ func TestValidatePoolThreshold(t *testing.T) {
 		{
 			name: "PoolOpenThreshold is nil",
 			setter: func() {
-				params.PoolOpenThreshold = sdk.Dec{}
+				params.PoolOpenThreshold = sdkmath.LegacyDec{}
 			},
 			err: "pool open threshold must be not nil",
 		},
 		{
 			name: "PoolOpenThreshold is 0 ",
 			setter: func() {
-				params.PoolOpenThreshold = sdk.ZeroDec()
+				params.PoolOpenThreshold = sdkmath.LegacyZeroDec()
 			},
 			err: "pool open threshold must be positive",
 		}, {
 			name: "PoolOpenThreshold is < 0 ",
 			setter: func() {
-				params.PoolOpenThreshold = sdk.OneDec().MulInt64(-1)
+				params.PoolOpenThreshold = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			err: "pool open threshold must be positive",
 		},

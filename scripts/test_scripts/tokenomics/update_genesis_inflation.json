@@ -1,0 +1,22 @@
+{
+    "messages": [
+     {
+      "@type": "/elys.tokenomics.MsgUpdateGenesisInflation",
+      "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
+      "inflation": {
+          "lmRewards": 9999999000000,
+          "icsStakingRewards": 9999999000000,
+          "communityFund": 9999999000000,
+          "strategicReserve": 9999999000000,
+          "teamTokensVested": 9999999000000
+        },
+       "seed_vesting": 9999999000000,
+       "strategic_sales_vesting": 9999999000000
+     }
+    ],
+    "metadata": "ipfs://CID",
+   
+    "deposit": "10000000stake",
+    "title": "MsgUpdateGenesisInflation",
+    "summary": "asdasd"
+}

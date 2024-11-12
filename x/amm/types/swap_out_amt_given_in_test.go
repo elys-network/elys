@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	sdkmath "cosmossdk.io/math"
+
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -28,13 +30,13 @@ func TestNormalizedWeights(t *testing.T) {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.Elys, 1000),
-					Weight: sdk.ZeroInt(),
+					Weight: sdkmath.ZeroInt(),
 				},
 			},
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.Elys,
-					Weight: sdk.ZeroDec(),
+					Weight: sdkmath.LegacyZeroDec(),
 				},
 			},
 		},
@@ -43,21 +45,21 @@ func TestNormalizedWeights(t *testing.T) {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.Elys, 1000),
-					Weight: sdk.ZeroInt(),
+					Weight: sdkmath.ZeroInt(),
 				},
 				{
 					Token:  sdk.NewInt64Coin(ptypes.Eden, 1000),
-					Weight: sdk.OneInt(),
+					Weight: sdkmath.OneInt(),
 				},
 			},
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.Elys,
-					Weight: sdk.ZeroDec(),
+					Weight: sdkmath.LegacyZeroDec(),
 				},
 				{
 					Asset:  ptypes.Eden,
-					Weight: sdk.OneDec(),
+					Weight: sdkmath.LegacyOneDec(),
 				},
 			},
 		},
@@ -66,21 +68,21 @@ func TestNormalizedWeights(t *testing.T) {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.Elys, 1000),
-					Weight: sdk.OneInt(),
+					Weight: sdkmath.OneInt(),
 				},
 				{
 					Token:  sdk.NewInt64Coin(ptypes.Eden, 1000),
-					Weight: sdk.OneInt(),
+					Weight: sdkmath.OneInt(),
 				},
 			},
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.Elys,
-					Weight: sdk.NewDecWithPrec(5, 1),
+					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
 				},
 				{
 					Asset:  ptypes.Eden,
-					Weight: sdk.NewDecWithPrec(5, 1),
+					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
 				},
 			},
 		},
@@ -103,21 +105,21 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.BaseCurrency,
-					Weight: sdk.NewDecWithPrec(5, 1),
+					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
 				},
 				{
 					Asset:  "uusdt",
-					Weight: sdk.NewDecWithPrec(5, 1),
+					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
 				},
 			},
 			expError: false,
@@ -127,21 +129,21 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 0), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 0), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.BaseCurrency,
-					Weight: sdk.ZeroDec(),
+					Weight: sdkmath.LegacyZeroDec(),
 				},
 				{
 					Asset:  "uusdt",
-					Weight: sdk.ZeroDec(),
+					Weight: sdkmath.LegacyZeroDec(),
 				},
 			},
 			expError: false,
@@ -151,11 +153,11 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin("uUSDT", 1000_000_000), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			poolWeights: []types.AssetWeight{},
@@ -197,11 +199,11 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			inCoins:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000)},
@@ -209,11 +211,11 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 			poolAssetsAfter: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1001_000_000), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			expErr: false,
@@ -223,11 +225,11 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			inCoins:  sdk.Coins{},
@@ -235,11 +237,11 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 			poolAssetsAfter: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 999_000_000), // 999 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			expErr: false,
@@ -249,11 +251,11 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			inCoins:  sdk.Coins{sdk.NewInt64Coin("uusdt", 1000_000)},
@@ -261,11 +263,11 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 			poolAssetsAfter: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 999_000_000), // 999 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1001_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			expErr: false,
@@ -275,11 +277,11 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
 			inCoins:         sdk.Coins{sdk.NewInt64Coin("uusdt", 1000_000)},
@@ -307,12 +309,12 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
-					SwapFee:   sdk.ZeroDec(),
+					SwapFee:   sdkmath.LegacyZeroDec(),
 					UseOracle: true,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets:  tc.poolAssets,
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: sdkmath.ZeroInt(),
 			}
 			poolAssets, err := pool.NewPoolAssetsAfterSwap(suite.ctx, tc.inCoins, tc.outCoins, tc.poolAssets)
 			if tc.expErr {
@@ -329,63 +331,63 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 	for _, tc := range []struct {
 		desc        string
 		poolAssets  []types.PoolAsset
-		expDistance sdk.Dec
+		expDistance sdkmath.LegacyDec
 	}{
 		{
 			desc: "zero balance for one asset",
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 0), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
-			expDistance: sdk.NewDecWithPrec(5, 1),
+			expDistance: sdkmath.LegacyNewDecWithPrec(5, 1),
 		},
 		{
 			desc: "zero for all assets",
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 0), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 0), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
-			expDistance: sdk.NewDecWithPrec(5, 1),
+			expDistance: sdkmath.LegacyNewDecWithPrec(5, 1),
 		},
 		{
 			desc: "all positive",
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 500_000_000), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1500_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
-			expDistance: sdk.NewDecWithPrec(25, 2),
+			expDistance: sdkmath.LegacyNewDecWithPrec(25, 2),
 		},
 		{
 			desc: "zero distance",
 			poolAssets: []types.PoolAsset{
 				{
 					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000), // 1000 USDT
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 				{
 					Token:  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight: sdk.NewInt(50),
+					Weight: sdkmath.NewInt(50),
 				},
 			},
-			expDistance: sdk.ZeroDec(),
+			expDistance: sdkmath.LegacyZeroDec(),
 		},
 	} {
 		suite.Run(tc.desc, func() {
@@ -407,12 +409,12 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
-					SwapFee:   sdk.ZeroDec(),
+					SwapFee:   sdkmath.LegacyZeroDec(),
 					UseOracle: true,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets:  tc.poolAssets,
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: sdkmath.ZeroInt(),
 			}
 			distance := pool.WeightDistanceFromTarget(suite.ctx, suite.app.OracleKeeper, tc.poolAssets)
 			suite.Require().Equal(distance, tc.expDistance)
@@ -425,12 +427,12 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 		desc                   string
 		poolAssets             []types.PoolAsset
 		useOracle              bool
-		externalLiquidityRatio sdk.Dec
-		thresholdWeightDiff    sdk.Dec
+		externalLiquidityRatio sdkmath.LegacyDec
+		thresholdWeightDiff    sdkmath.LegacyDec
 		tokenIn                sdk.Coin
 		outTokenDenom          string
-		swapFee                sdk.Dec
-		expRecoveryBonus       sdk.Dec
+		swapFee                sdkmath.LegacyDec
+		expRecoveryBonus       sdkmath.LegacyDec
 		expTokenOut            sdk.Coin
 		expErr                 bool
 	}{
@@ -451,22 +453,22 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:                  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000), // 1000 USDT
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.NewDec(10),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 				},
 				{
 					Token:                  sdk.NewInt64Coin("uusdt", 1000_000_000), // 1000 USDC
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.NewDec(10),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 				},
 			},
 			useOracle:              true,
-			externalLiquidityRatio: sdk.NewDec(10),                         // 10x
-			thresholdWeightDiff:    sdk.NewDecWithPrec(20, 2),              // 20%
+			externalLiquidityRatio: sdkmath.LegacyNewDec(10),               // 10x
+			thresholdWeightDiff:    sdkmath.LegacyNewDecWithPrec(20, 2),    // 20%
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
-			swapFee:                sdk.ZeroDec(),
-			expRecoveryBonus:       sdk.MustNewDecFromStr("-0.000330206789333974"),
+			swapFee:                sdkmath.LegacyZeroDec(),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.000330206789333974"),
 			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 99868002),
 			expErr:                 false,
 		},
@@ -487,22 +489,22 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:                  sdk.NewInt64Coin(ptypes.BaseCurrency, 500_000_000), // 1000 USDT
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.NewDec(10),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 				},
 				{
 					Token:                  sdk.NewInt64Coin("uusdt", 1500_000_000), // 1000 USDC
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.NewDec(10),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 				},
 			},
 			useOracle:              true,
-			externalLiquidityRatio: sdk.NewDec(10),                         // 10x
-			thresholdWeightDiff:    sdk.NewDecWithPrec(20, 2),              // 20%
+			externalLiquidityRatio: sdkmath.LegacyNewDec(10),               // 10x
+			thresholdWeightDiff:    sdkmath.LegacyNewDecWithPrec(20, 2),    // 20%
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
-			swapFee:                sdk.ZeroDec(),
-			expRecoveryBonus:       sdk.MustNewDecFromStr("-0.006394728361554381"),
+			swapFee:                sdkmath.LegacyZeroDec(),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.006394728361554381"),
 			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 99229503),
 			expErr:                 false,
 		},
@@ -523,22 +525,22 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:                  sdk.NewInt64Coin(ptypes.BaseCurrency, 500_000_000), // 1000 USDT
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.NewDec(10),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 				},
 				{
 					Token:                  sdk.NewInt64Coin("uusdt", 1500_000_000), // 1000 USDC
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.NewDec(10),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 				},
 			},
 			useOracle:              true,
-			externalLiquidityRatio: sdk.NewDec(10),                                     // 10x
-			thresholdWeightDiff:    sdk.NewDecWithPrec(20, 2),                          // 20%
+			externalLiquidityRatio: sdkmath.LegacyNewDec(10),                           // 10x
+			thresholdWeightDiff:    sdkmath.LegacyNewDecWithPrec(20, 2),                // 20%
 			tokenIn:                sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			outTokenDenom:          "uusdt",
-			swapFee:                sdk.ZeroDec(),
-			expRecoveryBonus:       sdk.MustNewDecFromStr("0.000831847623764616"),
+			swapFee:                sdkmath.LegacyZeroDec(),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0.000831847623764616"),
 			expTokenOut:            sdk.NewInt64Coin("uusdt", 99868706),
 			expErr:                 false,
 		},
@@ -559,22 +561,22 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:                  sdk.NewInt64Coin(ptypes.BaseCurrency, 500_000_000), // 1000 USDT
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.NewDec(10),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 				},
 				{
 					Token:                  sdk.NewInt64Coin("uusdt", 1500_000_000), // 1000 USDC
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.NewDec(10),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 				},
 			},
 			useOracle:              false,
-			externalLiquidityRatio: sdk.NewDec(10),                                     // 10x
-			thresholdWeightDiff:    sdk.NewDecWithPrec(20, 2),                          // 20%
+			externalLiquidityRatio: sdkmath.LegacyNewDec(10),                           // 10x
+			thresholdWeightDiff:    sdkmath.LegacyNewDecWithPrec(20, 2),                // 20%
 			tokenIn:                sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			outTokenDenom:          "uusdt",
-			swapFee:                sdk.NewDecWithPrec(1, 2), // 1%
-			expRecoveryBonus:       sdk.ZeroDec(),
+			swapFee:                sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
+			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
 			expTokenOut:            sdk.NewInt64Coin("uusdt", 247913188),
 			expErr:                 false,
 		},
@@ -584,22 +586,22 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			poolAssets: []types.PoolAsset{
 				{
 					Token:                  sdk.NewInt64Coin(ptypes.BaseCurrency, 500_000_000),
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.NewDec(10),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 				},
 				{
 					Token:                  sdk.NewInt64Coin("uusdt", 1500_000_000),
-					Weight:                 sdk.NewInt(50),
-					ExternalLiquidityRatio: sdk.NewDec(10),
+					Weight:                 sdkmath.NewInt(50),
+					ExternalLiquidityRatio: sdkmath.LegacyNewDec(10),
 				},
 			},
 			useOracle:              false,
-			externalLiquidityRatio: sdk.NewDec(10),
-			thresholdWeightDiff:    sdk.NewDecWithPrec(20, 2),
+			externalLiquidityRatio: sdkmath.LegacyNewDec(10),
+			thresholdWeightDiff:    math.LegacyNewDecWithPrec(20, 2),
 			tokenIn:                sdk.NewInt64Coin(ptypes.BaseCurrency, 0),
 			outTokenDenom:          "uusdt",
-			swapFee:                sdk.NewDecWithPrec(1, 2),
-			expRecoveryBonus:       sdk.ZeroDec(),
+			swapFee:                math.LegacyNewDecWithPrec(1, 2),
+			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
 			expTokenOut:            sdk.NewInt64Coin("uusdt", 0),
 			expErr:                 true,
 		},
@@ -623,16 +625,16 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
-					SwapFee:                     sdk.ZeroDec(),
+					SwapFee:                     sdkmath.LegacyZeroDec(),
 					UseOracle:                   tc.useOracle,
 					ThresholdWeightDifference:   tc.thresholdWeightDiff,
-					WeightBreakingFeeMultiplier: sdk.NewDecWithPrec(2, 4),  // 0.02%
-					WeightBreakingFeeExponent:   sdk.NewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdk.NewDecWithPrec(50, 2), // 50%
+					WeightBreakingFeeMultiplier: sdkmath.LegacyNewDecWithPrec(2, 4),  // 0.02%
+					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
+					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets:  tc.poolAssets,
-				TotalWeight: sdk.ZeroInt(),
+				TotalWeight: sdkmath.ZeroInt(),
 			}
 			tokenOut, _, _, weightBonus, err := pool.SwapOutAmtGivenIn(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenIn}, tc.outTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, math.LegacyOneDec())
 			if tc.expErr {

@@ -1,19 +1,18 @@
 package keeper
 
 import (
+	"context"
+	"cosmossdk.io/core/store"
 	"fmt"
 	"time"
 
-	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/log"
 	"cosmossdk.io/math"
-	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/elys-network/elys/x/estaking/types"
@@ -24,8 +23,7 @@ type (
 	Keeper struct {
 		*stakingkeeper.Keeper
 		cdc                codec.BinaryCodec
-		storeKey           storetypes.StoreKey
-		memKey             storetypes.StoreKey
+		storeService       store.KVStoreService
 		parameterKeeper    types.ParameterKeeper
 		commKeeper         types.CommitmentKeeper
 		distrKeeper        types.DistrKeeper
@@ -61,8 +59,7 @@ func init() {
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
+	storeService store.KVStoreService,
 	parameterKeeper types.ParameterKeeper,
 	stakingKeeper *stakingkeeper.Keeper,
 	commKeeper types.CommitmentKeeper,
@@ -74,8 +71,7 @@ func NewKeeper(
 	return &Keeper{
 		Keeper:             stakingKeeper,
 		cdc:                cdc,
-		storeKey:           storeKey,
-		memKey:             memKey,
+		storeService:       storeService,
 		parameterKeeper:    parameterKeeper,
 		commKeeper:         commKeeper,
 		authority:          authority,
@@ -89,12 +85,16 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) TotalBondedTokens(ctx sdk.Context) math.Int {
-	bondedTokens := k.Keeper.TotalBondedTokens(ctx)
+func (k Keeper) TotalBondedTokens(goCtx context.Context) (math.Int, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	bondedTokens, err := k.Keeper.TotalBondedTokens(ctx)
+	if err != nil {
+		return math.Int{}, err
+	}
 	edenValidator := k.GetEdenValidator(ctx)
 	edenBValidator := k.GetEdenBValidator(ctx)
 	bondedTokens = bondedTokens.Add(edenValidator.GetTokens()).Add(edenBValidator.GetTokens())
-	return bondedTokens
+	return bondedTokens, nil
 }
 
 func (k Keeper) GetEdenValidator(ctx sdk.Context) stakingtypes.ValidatorI {
@@ -108,14 +108,14 @@ func (k Keeper) GetEdenValidator(ctx sdk.Context) stakingtypes.ValidatorI {
 		Jailed:          false,
 		Status:          stakingtypes.Bonded,
 		Tokens:          totalEdenCommit,
-		DelegatorShares: sdk.NewDecFromInt(totalEdenCommit),
+		DelegatorShares: math.LegacyNewDecFromInt(totalEdenCommit),
 		Description: stakingtypes.Description{
 			Moniker: "EdenValidator",
 		},
 		UnbondingHeight:         0,
 		UnbondingTime:           time.Time{},
-		Commission:              stakingtypes.NewCommission(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
-		MinSelfDelegation:       sdk.ZeroInt(),
+		Commission:              stakingtypes.NewCommission(math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()),
+		MinSelfDelegation:       math.ZeroInt(),
 		UnbondingOnHoldRefCount: 0,
 		UnbondingIds:            []uint64{},
 	}
@@ -132,40 +132,41 @@ func (k Keeper) GetEdenBValidator(ctx sdk.Context) stakingtypes.ValidatorI {
 		Jailed:          false,
 		Status:          stakingtypes.Unbonded,
 		Tokens:          totalEdenBCommit,
-		DelegatorShares: sdk.NewDecFromInt(totalEdenBCommit),
+		DelegatorShares: math.LegacyNewDecFromInt(totalEdenBCommit),
 		Description: stakingtypes.Description{
 			Moniker: "EdenBValidator",
 		},
 		UnbondingHeight:         0,
 		UnbondingTime:           time.Time{},
-		Commission:              stakingtypes.NewCommission(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
-		MinSelfDelegation:       sdk.ZeroInt(),
+		Commission:              stakingtypes.NewCommission(math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()),
+		MinSelfDelegation:       math.ZeroInt(),
 		UnbondingOnHoldRefCount: 0,
 		UnbondingIds:            []uint64{},
 	}
 }
 
 // extended staking keeper functionalities
-func (k Keeper) Validator(ctx sdk.Context, address sdk.ValAddress) stakingtypes.ValidatorI {
+func (k Keeper) Validator(goCtx context.Context, address sdk.ValAddress) (stakingtypes.ValidatorI, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
 	if address.String() == params.EdenCommitVal {
-		return k.GetEdenValidator(ctx)
+		return k.GetEdenValidator(ctx), nil
 	}
 
 	if address.String() == params.EdenbCommitVal {
-		return k.GetEdenBValidator(ctx)
+		return k.GetEdenBValidator(ctx), nil
 	}
 
-	val, found := k.GetValidator(ctx, address)
-	if !found {
-		return nil
+	val, err := k.GetValidator(ctx, address)
+	if err != nil {
+		return nil, err
 	}
 
-	return val
+	return val, nil
 }
 
-func (k Keeper) IterateValidators(ctx sdk.Context,
-	fn func(index int64, validator stakingtypes.ValidatorI) (stop bool)) {
+func (k Keeper) IterateValidators(goCtx context.Context, fn func(index int64, validator stakingtypes.ValidatorI) (stop bool)) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
 	if params.EdenCommitVal != "" {
 		edenVal := k.GetEdenValidator(ctx)
@@ -176,48 +177,48 @@ func (k Keeper) IterateValidators(ctx sdk.Context,
 		edenBVal := k.GetEdenBValidator(ctx)
 		fn(0, edenBVal)
 	}
-	k.Keeper.IterateValidators(ctx, fn)
+	return k.Keeper.IterateValidators(ctx, fn)
 }
 
-func (k Keeper) Delegation(ctx sdk.Context, addrDel sdk.AccAddress, addrVal sdk.ValAddress) stakingtypes.DelegationI {
+func (k Keeper) Delegation(goCtx context.Context, addrDel sdk.AccAddress, addrVal sdk.ValAddress) (stakingtypes.DelegationI, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
 	if addrVal.String() == params.EdenCommitVal {
 		commitments := k.commKeeper.GetCommitments(ctx, addrDel)
 		edenCommit := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 		if edenCommit.IsZero() {
-			return nil
+			return nil, nil
 		}
 		return stakingtypes.Delegation{
 			DelegatorAddress: addrDel.String(),
 			ValidatorAddress: addrVal.String(),
-			Shares:           sdk.NewDecFromInt(edenCommit),
-		}
+			Shares:           math.LegacyNewDecFromInt(edenCommit),
+		}, nil
 	}
 
 	if addrVal.String() == params.EdenbCommitVal {
 		commitments := k.commKeeper.GetCommitments(ctx, addrDel)
 		edenBCommit := commitments.GetCommittedAmountForDenom(ptypes.EdenB)
 		if edenBCommit.IsZero() {
-			return nil
+			return nil, nil
 		}
 		return stakingtypes.Delegation{
 			DelegatorAddress: addrDel.String(),
 			ValidatorAddress: addrVal.String(),
-			Shares:           sdk.NewDecFromInt(edenBCommit),
-		}
+			Shares:           math.LegacyNewDecFromInt(edenBCommit),
+		}, nil
 	}
 
-	bond, ok := k.GetDelegation(ctx, addrDel, addrVal)
-	if !ok {
-		return nil
+	bond, err := k.GetDelegation(ctx, addrDel, addrVal)
+	if err != nil {
+		return nil, nil
 	}
 
-	return bond
+	return bond, nil
 }
 
-func (k Keeper) IterateDelegations(ctx sdk.Context, delegator sdk.AccAddress,
-	fn func(index int64, delegation stakingtypes.DelegationI) (stop bool)) {
-
+func (k Keeper) IterateDelegations(goCtx context.Context, delegator sdk.AccAddress, fn func(index int64, delegation stakingtypes.DelegationI) (stop bool)) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
 	commitments := k.commKeeper.GetCommitments(ctx, delegator)
 	edenCommit := commitments.GetCommittedAmountForDenom(ptypes.Eden)
@@ -226,51 +227,52 @@ func (k Keeper) IterateDelegations(ctx sdk.Context, delegator sdk.AccAddress,
 		edenDel := stakingtypes.Delegation{
 			DelegatorAddress: delegator.String(),
 			ValidatorAddress: params.EdenCommitVal,
-			Shares:           sdk.NewDecFromInt(edenCommit),
+			Shares:           math.LegacyNewDecFromInt(edenCommit),
 		}
 		if stop := fn(0, edenDel); stop {
-			return
+			return nil
 		}
 	}
 	if edenBCommit.IsPositive() {
 		edenBDel := stakingtypes.Delegation{
 			DelegatorAddress: delegator.String(),
 			ValidatorAddress: params.EdenbCommitVal,
-			Shares:           sdk.NewDecFromInt(edenBCommit),
+			Shares:           math.LegacyNewDecFromInt(edenBCommit),
 		}
 		if stop := fn(0, edenBDel); stop {
-			return
+			return nil
 		}
 	}
-	k.Keeper.IterateDelegations(ctx, delegator, fn)
+	return k.Keeper.IterateDelegations(ctx, delegator, fn)
 }
 
 // iterate through the bonded validator set and perform the provided function
-func (k Keeper) IterateBondedValidatorsByPower(ctx sdk.Context, fn func(index int64, validator stakingtypes.ValidatorI) (stop bool)) {
+func (k Keeper) IterateBondedValidatorsByPower(goCtx context.Context, fn func(index int64, validator stakingtypes.ValidatorI) (stop bool)) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	commParams := k.commKeeper.GetParams(ctx)
 
 	if commParams.TotalCommitted.AmountOf(ptypes.Eden).IsPositive() {
 		edenValidator := k.GetEdenValidator(ctx)
 		if stop := fn(0, edenValidator); stop {
-			return
+			return nil
 		}
 	}
 
 	if commParams.TotalCommitted.AmountOf(ptypes.EdenB).IsPositive() {
 		edenBValidator := k.GetEdenBValidator(ctx)
 		if stop := fn(0, edenBValidator); stop {
-			return
+			return nil
 		}
 	}
-	k.Keeper.IterateBondedValidatorsByPower(ctx, fn)
+	return k.Keeper.IterateBondedValidatorsByPower(ctx, fn)
 }
 
-func (k Keeper) Slash(ctx sdk.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor sdk.Dec) math.Int {
-	return k.Keeper.Slash(ctx, consAddr, infractionHeight, power, slashFactor)
+func (k Keeper) Slash(goCtx context.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor math.LegacyDec) (math.Int, error) {
+	return k.Keeper.Slash(goCtx, consAddr, infractionHeight, power, slashFactor)
 }
 
-func (k Keeper) SlashWithInfractionReason(ctx sdk.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor sdk.Dec, infraction stakingtypes.Infraction) math.Int {
-	return k.Keeper.SlashWithInfractionReason(ctx, consAddr, infractionHeight, power, slashFactor, infraction)
+func (k Keeper) SlashWithInfractionReason(goCtx context.Context, consAddr sdk.ConsAddress, infractionHeight int64, power int64, slashFactor math.LegacyDec, infraction stakingtypes.Infraction) (math.Int, error) {
+	return k.Keeper.SlashWithInfractionReason(goCtx, consAddr, infractionHeight, power, slashFactor, infraction)
 }
 
 func (k Keeper) WithdrawEdenBReward(ctx sdk.Context, addr sdk.AccAddress) error {
@@ -307,9 +309,9 @@ func (k Keeper) DelegationRewards(ctx sdk.Context, delegatorAddress string, vali
 		return nil, err
 	}
 
-	val := k.Validator(ctx, valAddr)
-	if val == nil {
-		return nil, errorsmod.Wrap(distrtypes.ErrNoValidatorExists, validatorAddress)
+	val, err := k.Validator(ctx, valAddr)
+	if err != nil {
+		return nil, err
 	}
 
 	delAddr, err := sdk.AccAddressFromBech32(delegatorAddress)
@@ -317,12 +319,18 @@ func (k Keeper) DelegationRewards(ctx sdk.Context, delegatorAddress string, vali
 		return nil, err
 	}
 
-	del := k.Delegation(ctx, delAddr, valAddr)
-	if del == nil {
-		return nil, distrtypes.ErrNoDelegationExists
+	del, err := k.Delegation(ctx, delAddr, valAddr)
+	if err != nil {
+		return nil, err
 	}
 
-	endingPeriod := k.distrKeeper.IncrementValidatorPeriod(ctx, val)
-	rewards := k.distrKeeper.CalculateDelegationRewards(ctx, val, del, endingPeriod)
+	endingPeriod, err := k.distrKeeper.IncrementValidatorPeriod(ctx, val)
+	if err != nil {
+		return nil, err
+	}
+	rewards, err := k.distrKeeper.CalculateDelegationRewards(ctx, val, del, endingPeriod)
+	if err != nil {
+		return nil, err
+	}
 	return rewards, nil
 }

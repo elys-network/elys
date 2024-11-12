@@ -14,12 +14,6 @@ func TestMsgClosePositions(t *testing.T) {
 	liquidatePositions := []*types.PositionRequest{}
 	stoplossPositions := []*types.PositionRequest{}
 	msg := types.NewMsgClosePositions(creator, liquidatePositions, stoplossPositions)
-	require.Equal(t, msg.Route(), types.RouterKey)
-	require.Equal(t, msg.Type(), types.TypeMsgClosePositions)
-	require.Equal(t, msg.GetSigners(), []sdk.AccAddress{creator})
-	require.Equal(t, msg.GetSignBytes(), sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(msg)))
-	msg.Creator = ""
-	require.PanicsWithError(t, "empty address string is not allowed", func() { msg.GetSigners() })
 	tests := []struct {
 		name   string
 		setter func()

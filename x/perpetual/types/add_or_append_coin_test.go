@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	"reflect"
 	"testing"
 
@@ -16,27 +17,27 @@ func TestAddOrAppendCoin(t *testing.T) {
 	}{
 		{
 			name:     "Append new coin",
-			coins:    sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(100))),
-			newCoin:  sdk.NewCoin("eth", sdk.NewInt(50)),
-			expected: sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(100)), sdk.NewCoin("eth", sdk.NewInt(50))),
+			coins:    sdk.NewCoins(sdk.NewCoin("atom", math.NewInt(100))),
+			newCoin:  sdk.NewCoin("eth", math.NewInt(50)),
+			expected: sdk.NewCoins(sdk.NewCoin("atom", math.NewInt(100)), sdk.NewCoin("eth", math.NewInt(50))),
 		},
 		{
 			name:     "Aggregate coin amount",
-			coins:    sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(100))),
-			newCoin:  sdk.NewCoin("atom", sdk.NewInt(50)),
-			expected: sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(150))),
+			coins:    sdk.NewCoins(sdk.NewCoin("atom", math.NewInt(100))),
+			newCoin:  sdk.NewCoin("atom", math.NewInt(50)),
+			expected: sdk.NewCoins(sdk.NewCoin("atom", math.NewInt(150))),
 		},
 		{
 			name:     "Aggregate coin amount in larger slice",
-			coins:    sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(100)), sdk.NewCoin("btc", sdk.NewInt(200)), sdk.NewCoin("eth", sdk.NewInt(300))),
-			newCoin:  sdk.NewCoin("btc", sdk.NewInt(50)),
-			expected: sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(100)), sdk.NewCoin("btc", sdk.NewInt(250)), sdk.NewCoin("eth", sdk.NewInt(300))),
+			coins:    sdk.NewCoins(sdk.NewCoin("atom", math.NewInt(100)), sdk.NewCoin("btc", math.NewInt(200)), sdk.NewCoin("eth", math.NewInt(300))),
+			newCoin:  sdk.NewCoin("btc", math.NewInt(50)),
+			expected: sdk.NewCoins(sdk.NewCoin("atom", math.NewInt(100)), sdk.NewCoin("btc", math.NewInt(250)), sdk.NewCoin("eth", math.NewInt(300))),
 		},
 		{
 			name:     "Append new coin to empty slice",
 			coins:    sdk.NewCoins(),
-			newCoin:  sdk.NewCoin("eth", sdk.NewInt(50)),
-			expected: sdk.NewCoins(sdk.NewCoin("eth", sdk.NewInt(50))),
+			newCoin:  sdk.NewCoin("eth", math.NewInt(50)),
+			expected: sdk.NewCoins(sdk.NewCoin("eth", math.NewInt(50))),
 		},
 	}
 

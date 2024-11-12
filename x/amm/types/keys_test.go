@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"encoding/binary"
 	"testing"
 
@@ -49,8 +50,8 @@ func TestTKeyPrefixSwapExactAmountIn(t *testing.T) {
 				TokenOutDenom: ptypes.BaseCurrency,
 			},
 		},
-		TokenIn:           sdk.Coin{Denom: ptypes.Elys, Amount: sdk.NewInt(100)},
-		TokenOutMinAmount: sdk.ZeroInt(),
+		TokenIn:           sdk.Coin{Denom: ptypes.Elys, Amount: sdkmath.NewInt(100)},
+		TokenOutMinAmount: sdkmath.ZeroInt(),
 	}, 1)
 
 	require.Contains(t, string(key), string(expectedKey))
@@ -71,8 +72,8 @@ func TestTKeyPrefixSwapExactAmountOut(t *testing.T) {
 				TokenInDenom: ptypes.BaseCurrency,
 			},
 		},
-		TokenOut:         sdk.Coin{Denom: "uusdt", Amount: sdk.NewInt(100)},
-		TokenInMaxAmount: sdk.ZeroInt(),
+		TokenOut:         sdk.Coin{Denom: "uusdt", Amount: sdkmath.NewInt(100)},
+		TokenInMaxAmount: sdkmath.ZeroInt(),
 	}, 1)
 
 	require.Contains(t, string(key), string(expectedKey))

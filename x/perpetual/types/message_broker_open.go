@@ -4,13 +4,12 @@ import (
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgBrokerOpen = "broker_open"
-
-func NewMsgBrokerOpen(creator string, position Position, leverage sdk.Dec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdk.Dec, owner string, stopLossPrice sdk.Dec) *MsgBrokerOpen {
+func NewMsgBrokerOpen(creator string, position Position, leverage sdkmath.LegacyDec, tradingAsset string, collateral sdk.Coin, takeProfitPrice sdkmath.LegacyDec, owner string, stopLossPrice sdkmath.LegacyDec, poolId uint64) *MsgBrokerOpen {
 	return &MsgBrokerOpen{
 		Creator:         creator,
 		Position:        position,
@@ -20,28 +19,8 @@ func NewMsgBrokerOpen(creator string, position Position, leverage sdk.Dec, tradi
 		TakeProfitPrice: takeProfitPrice,
 		Owner:           owner,
 		StopLossPrice:   stopLossPrice,
+		PoolId:          poolId,
 	}
-}
-
-func (msg *MsgBrokerOpen) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgBrokerOpen) Type() string {
-	return TypeMsgBrokerOpen
-}
-
-func (msg *MsgBrokerOpen) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgBrokerOpen) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgBrokerOpen) ValidateBasic() error {
@@ -62,7 +41,7 @@ func (msg *MsgBrokerOpen) ValidateBasic() error {
 		return ErrInvalidLeverage
 	}
 
-	if !(msg.Leverage.GT(sdk.OneDec()) || msg.Leverage.IsZero()) {
+	if !(msg.Leverage.GT(sdkmath.LegacyOneDec()) || msg.Leverage.IsZero()) {
 		return errorsmod.Wrapf(ErrInvalidLeverage, "leverage (%s) can only be 0 (to add collateral) or > 1 to open positions", msg.Leverage.String())
 	}
 

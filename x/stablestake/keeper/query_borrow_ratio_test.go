@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/stablestake/keeper"
@@ -23,21 +24,21 @@ func (suite *KeeperTestSuite) TestBorrowRatio() {
 			req:  &types.QueryBorrowRatioRequest{},
 			setup: func(ctx sdk.Context, k keeper.Keeper) {
 				params := types.Params{
-					TotalValue:   sdk.NewInt(1000),
+					TotalValue:   sdkmath.NewInt(1000),
 					DepositDenom: "token",
 				}
 				k.SetParams(ctx, params)
 				// bootstrap balances
-				err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.NewCoins(sdk.NewCoin("token", sdk.NewInt(500))))
+				err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.NewCoins(sdk.NewCoin("token", sdkmath.NewInt(500))))
 				suite.Require().NoError(err)
-				err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.NewCoins(sdk.NewCoin("token", sdk.NewInt(500))))
+				err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.NewCoins(sdk.NewCoin("token", sdkmath.NewInt(500))))
 				suite.Require().NoError(err)
 			},
 			expectedError: nil,
 			expectedResp: &types.QueryBorrowRatioResponse{
-				TotalDeposit: sdk.NewInt(1000),
-				TotalBorrow:  sdk.NewInt(500),
-				BorrowRatio:  sdk.NewDecWithPrec(5, 1), // 0.5
+				TotalDeposit: sdkmath.NewInt(1000),
+				TotalBorrow:  sdkmath.NewInt(500),
+				BorrowRatio:  sdkmath.LegacyNewDecWithPrec(5, 1), // 0.5
 			},
 		},
 		{
@@ -52,16 +53,16 @@ func (suite *KeeperTestSuite) TestBorrowRatio() {
 			req:  &types.QueryBorrowRatioRequest{},
 			setup: func(ctx sdk.Context, k keeper.Keeper) {
 				params := types.Params{
-					TotalValue:   sdk.ZeroInt(),
+					TotalValue:   sdkmath.ZeroInt(),
 					DepositDenom: "token",
 				}
 				k.SetParams(ctx, params)
 			},
 			expectedError: nil,
 			expectedResp: &types.QueryBorrowRatioResponse{
-				TotalDeposit: sdk.ZeroInt(),
-				TotalBorrow:  sdk.NewInt(-500),
-				BorrowRatio:  sdk.ZeroDec(),
+				TotalDeposit: sdkmath.ZeroInt(),
+				TotalBorrow:  sdkmath.NewInt(-500),
+				BorrowRatio:  sdkmath.LegacyZeroDec(),
 			},
 		},
 	}
@@ -69,7 +70,7 @@ func (suite *KeeperTestSuite) TestBorrowRatio() {
 	for _, tt := range tests {
 		suite.Run(tt.name, func() {
 			if tt.setup != nil {
-				tt.setup(suite.ctx, suite.app.StablestakeKeeper)
+				tt.setup(suite.ctx, *suite.app.StablestakeKeeper)
 			}
 
 			resp, err := suite.app.StablestakeKeeper.BorrowRatio(suite.ctx, tt.req)

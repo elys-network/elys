@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -10,7 +11,8 @@ import (
 )
 
 func (oq *Querier) queryAddresses(ctx sdk.Context, req *authtypes.QueryAccountsRequest) ([]byte, error) {
-	res, err := oq.keeper.Accounts(sdk.WrapSDKContext(ctx), req)
+	queryServer := authkeeper.NewQueryServer(*oq.keeper)
+	res, err := queryServer.Accounts(sdk.WrapSDKContext(ctx), req)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "failed to get accounts")
 	}

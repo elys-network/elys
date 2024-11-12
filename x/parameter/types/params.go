@@ -1,23 +1,22 @@
 package types
 
 import (
-	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"gopkg.in/yaml.v2"
 )
 
 // NewParams creates a new Params instance
 func NewParams(
-	minCommissionRate sdk.Dec,
-	maxVotingPower sdk.Dec,
-	minSelfDelegation math.Int,
+	minCommissionRate sdkmath.LegacyDec,
+	maxVotingPower sdkmath.LegacyDec,
+	minSelfDelegation sdkmath.Int,
 	brokerAddress string,
 	totalBlocksPerYear int64,
 	rewardsDataLifeTime int64,
-	wasmMaxLabelSize math.Int,
-	wasmMaxSize math.Int,
-	wasmMaxProposalWasmSize math.Int,
+	wasmMaxLabelSize sdkmath.Int,
+	wasmMaxSize sdkmath.Int,
+	wasmMaxProposalWasmSize sdkmath.Int,
 ) Params {
 	return Params{
 		MinCommissionRate:       minCommissionRate,
@@ -35,15 +34,15 @@ func NewParams(
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return NewParams(
-		sdk.NewDecWithPrec(5, 2),
-		sdk.NewDec(100),
-		sdk.OneInt(),
+		sdkmath.LegacyNewDecWithPrec(5, 2),
+		sdkmath.LegacyNewDec(100),
+		sdkmath.OneInt(),
 		authtypes.NewModuleAddress("zero").String(),
 		6307200,
-		86400,               // 1 day
-		sdk.NewInt(256),     //128*2
-		sdk.NewInt(1638400), //819200 * 2
-		sdk.NewInt(6291456), //3145728 * 2
+		86400,                   // 1 day
+		sdkmath.NewInt(256),     //128*2
+		sdkmath.NewInt(1638400), //819200 * 2
+		sdkmath.NewInt(6291456), //3145728 * 2
 	)
 }
 
@@ -71,7 +70,7 @@ func (p Params) String() string {
 }
 
 func validateMinCommissionRate(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return ErrInvalidMinCommissionRate
 	}
@@ -82,7 +81,7 @@ func validateMinCommissionRate(i interface{}) error {
 }
 
 func validateMaxVotingPower(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return ErrInvalidMaxVotingPower
 	}
@@ -93,7 +92,7 @@ func validateMaxVotingPower(i interface{}) error {
 }
 
 func validateMinSelfDelegation(i interface{}) error {
-	v, ok := i.(math.Int)
+	v, ok := i.(sdkmath.Int)
 	if !ok {
 		return ErrInvalidMinSelfDelegation
 	}

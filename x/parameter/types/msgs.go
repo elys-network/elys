@@ -15,14 +15,6 @@ func NewMsgExitPool(creator string, minCommission string) *MsgUpdateMinCommissio
 	}
 }
 
-func (msg *MsgUpdateMinCommission) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{sender}
-}
-
 func (msg *MsgUpdateMinCommission) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -38,14 +30,6 @@ func NewMsgUpdateMaxVotingPower(creator string, maxVotingPower string) *MsgUpdat
 		Creator:        creator,
 		MaxVotingPower: maxVotingPower,
 	}
-}
-
-func (msg *MsgUpdateMaxVotingPower) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgUpdateMaxVotingPower) ValidateBasic() error {
@@ -65,14 +49,6 @@ func NewMsgUpdateMinSelfDelegation(creator string, minSelfDelegation string) *Ms
 	}
 }
 
-func (msg *MsgUpdateMinSelfDelegation) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{sender}
-}
-
 func (msg *MsgUpdateMinSelfDelegation) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -88,14 +64,6 @@ func NewMsgUpdateBrokerAddress(creator string, brokerAddress string) *MsgUpdateB
 		Creator:       creator,
 		BrokerAddress: brokerAddress,
 	}
-}
-
-func (msg *MsgUpdateBrokerAddress) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgUpdateBrokerAddress) ValidateBasic() error {
@@ -118,14 +86,6 @@ func NewMsgUpdateTotalBlocksPerYear(creator string, totalBlocksPerYear int64) *M
 		Creator:            creator,
 		TotalBlocksPerYear: totalBlocksPerYear,
 	}
-}
-
-func (msg *MsgUpdateTotalBlocksPerYear) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgUpdateTotalBlocksPerYear) ValidateBasic() error {

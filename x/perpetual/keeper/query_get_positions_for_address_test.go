@@ -63,7 +63,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsForAddress_Successfu
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	secondOpenPositionMsg := &types.MsgOpen{
@@ -74,7 +74,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsForAddress_Successfu
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
 		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   sdk.ZeroDec(),
+		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
 	_, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)

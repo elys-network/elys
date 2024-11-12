@@ -5,6 +5,8 @@ package mocks
 import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
+	context "context"
+
 	mock "github.com/stretchr/testify/mock"
 
 	types "github.com/cosmos/cosmos-sdk/types"
@@ -24,7 +26,7 @@ func (_m *BankKeeper) EXPECT() *BankKeeper_Expecter {
 }
 
 // BurnCoins provides a mock function with given fields: ctx, moduleName, amt
-func (_m *BankKeeper) BurnCoins(ctx types.Context, moduleName string, amt types.Coins) error {
+func (_m *BankKeeper) BurnCoins(ctx context.Context, moduleName string, amt types.Coins) error {
 	ret := _m.Called(ctx, moduleName, amt)
 
 	if len(ret) == 0 {
@@ -32,7 +34,7 @@ func (_m *BankKeeper) BurnCoins(ctx types.Context, moduleName string, amt types.
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, string, types.Coins) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, types.Coins) error); ok {
 		r0 = rf(ctx, moduleName, amt)
 	} else {
 		r0 = ret.Error(0)
@@ -47,16 +49,16 @@ type BankKeeper_BurnCoins_Call struct {
 }
 
 // BurnCoins is a helper method to define mock.On call
-//   - ctx types.Context
+//   - ctx context.Context
 //   - moduleName string
 //   - amt types.Coins
 func (_e *BankKeeper_Expecter) BurnCoins(ctx interface{}, moduleName interface{}, amt interface{}) *BankKeeper_BurnCoins_Call {
 	return &BankKeeper_BurnCoins_Call{Call: _e.mock.On("BurnCoins", ctx, moduleName, amt)}
 }
 
-func (_c *BankKeeper_BurnCoins_Call) Run(run func(ctx types.Context, moduleName string, amt types.Coins)) *BankKeeper_BurnCoins_Call {
+func (_c *BankKeeper_BurnCoins_Call) Run(run func(ctx context.Context, moduleName string, amt types.Coins)) *BankKeeper_BurnCoins_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(string), args[2].(types.Coins))
+		run(args[0].(context.Context), args[1].(string), args[2].(types.Coins))
 	})
 	return _c
 }
@@ -66,13 +68,13 @@ func (_c *BankKeeper_BurnCoins_Call) Return(_a0 error) *BankKeeper_BurnCoins_Cal
 	return _c
 }
 
-func (_c *BankKeeper_BurnCoins_Call) RunAndReturn(run func(types.Context, string, types.Coins) error) *BankKeeper_BurnCoins_Call {
+func (_c *BankKeeper_BurnCoins_Call) RunAndReturn(run func(context.Context, string, types.Coins) error) *BankKeeper_BurnCoins_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetBalance provides a mock function with given fields: ctx, addr, denom
-func (_m *BankKeeper) GetBalance(ctx types.Context, addr types.AccAddress, denom string) types.Coin {
+func (_m *BankKeeper) GetBalance(ctx context.Context, addr types.AccAddress, denom string) types.Coin {
 	ret := _m.Called(ctx, addr, denom)
 
 	if len(ret) == 0 {
@@ -80,7 +82,7 @@ func (_m *BankKeeper) GetBalance(ctx types.Context, addr types.AccAddress, denom
 	}
 
 	var r0 types.Coin
-	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress, string) types.Coin); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, types.AccAddress, string) types.Coin); ok {
 		r0 = rf(ctx, addr, denom)
 	} else {
 		r0 = ret.Get(0).(types.Coin)
@@ -95,16 +97,16 @@ type BankKeeper_GetBalance_Call struct {
 }
 
 // GetBalance is a helper method to define mock.On call
-//   - ctx types.Context
+//   - ctx context.Context
 //   - addr types.AccAddress
 //   - denom string
 func (_e *BankKeeper_Expecter) GetBalance(ctx interface{}, addr interface{}, denom interface{}) *BankKeeper_GetBalance_Call {
 	return &BankKeeper_GetBalance_Call{Call: _e.mock.On("GetBalance", ctx, addr, denom)}
 }
 
-func (_c *BankKeeper_GetBalance_Call) Run(run func(ctx types.Context, addr types.AccAddress, denom string)) *BankKeeper_GetBalance_Call {
+func (_c *BankKeeper_GetBalance_Call) Run(run func(ctx context.Context, addr types.AccAddress, denom string)) *BankKeeper_GetBalance_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(types.AccAddress), args[2].(string))
+		run(args[0].(context.Context), args[1].(types.AccAddress), args[2].(string))
 	})
 	return _c
 }
@@ -114,13 +116,13 @@ func (_c *BankKeeper_GetBalance_Call) Return(_a0 types.Coin) *BankKeeper_GetBala
 	return _c
 }
 
-func (_c *BankKeeper_GetBalance_Call) RunAndReturn(run func(types.Context, types.AccAddress, string) types.Coin) *BankKeeper_GetBalance_Call {
+func (_c *BankKeeper_GetBalance_Call) RunAndReturn(run func(context.Context, types.AccAddress, string) types.Coin) *BankKeeper_GetBalance_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // IterateAllDenomMetaData provides a mock function with given fields: ctx, cb
-func (_m *BankKeeper) IterateAllDenomMetaData(ctx types.Context, cb func(banktypes.Metadata) bool) {
+func (_m *BankKeeper) IterateAllDenomMetaData(ctx context.Context, cb func(banktypes.Metadata) bool) {
 	_m.Called(ctx, cb)
 }
 
@@ -130,15 +132,15 @@ type BankKeeper_IterateAllDenomMetaData_Call struct {
 }
 
 // IterateAllDenomMetaData is a helper method to define mock.On call
-//   - ctx types.Context
+//   - ctx context.Context
 //   - cb func(banktypes.Metadata) bool
 func (_e *BankKeeper_Expecter) IterateAllDenomMetaData(ctx interface{}, cb interface{}) *BankKeeper_IterateAllDenomMetaData_Call {
 	return &BankKeeper_IterateAllDenomMetaData_Call{Call: _e.mock.On("IterateAllDenomMetaData", ctx, cb)}
 }
 
-func (_c *BankKeeper_IterateAllDenomMetaData_Call) Run(run func(ctx types.Context, cb func(banktypes.Metadata) bool)) *BankKeeper_IterateAllDenomMetaData_Call {
+func (_c *BankKeeper_IterateAllDenomMetaData_Call) Run(run func(ctx context.Context, cb func(banktypes.Metadata) bool)) *BankKeeper_IterateAllDenomMetaData_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(func(banktypes.Metadata) bool))
+		run(args[0].(context.Context), args[1].(func(banktypes.Metadata) bool))
 	})
 	return _c
 }
@@ -148,13 +150,13 @@ func (_c *BankKeeper_IterateAllDenomMetaData_Call) Return() *BankKeeper_IterateA
 	return _c
 }
 
-func (_c *BankKeeper_IterateAllDenomMetaData_Call) RunAndReturn(run func(types.Context, func(banktypes.Metadata) bool)) *BankKeeper_IterateAllDenomMetaData_Call {
+func (_c *BankKeeper_IterateAllDenomMetaData_Call) RunAndReturn(run func(context.Context, func(banktypes.Metadata) bool)) *BankKeeper_IterateAllDenomMetaData_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // SendCoinsFromAccountToModule provides a mock function with given fields: ctx, senderAddr, recipientModule, amt
-func (_m *BankKeeper) SendCoinsFromAccountToModule(ctx types.Context, senderAddr types.AccAddress, recipientModule string, amt types.Coins) error {
+func (_m *BankKeeper) SendCoinsFromAccountToModule(ctx context.Context, senderAddr types.AccAddress, recipientModule string, amt types.Coins) error {
 	ret := _m.Called(ctx, senderAddr, recipientModule, amt)
 
 	if len(ret) == 0 {
@@ -162,7 +164,7 @@ func (_m *BankKeeper) SendCoinsFromAccountToModule(ctx types.Context, senderAddr
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress, string, types.Coins) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, types.AccAddress, string, types.Coins) error); ok {
 		r0 = rf(ctx, senderAddr, recipientModule, amt)
 	} else {
 		r0 = ret.Error(0)
@@ -177,7 +179,7 @@ type BankKeeper_SendCoinsFromAccountToModule_Call struct {
 }
 
 // SendCoinsFromAccountToModule is a helper method to define mock.On call
-//   - ctx types.Context
+//   - ctx context.Context
 //   - senderAddr types.AccAddress
 //   - recipientModule string
 //   - amt types.Coins
@@ -185,9 +187,9 @@ func (_e *BankKeeper_Expecter) SendCoinsFromAccountToModule(ctx interface{}, sen
 	return &BankKeeper_SendCoinsFromAccountToModule_Call{Call: _e.mock.On("SendCoinsFromAccountToModule", ctx, senderAddr, recipientModule, amt)}
 }
 
-func (_c *BankKeeper_SendCoinsFromAccountToModule_Call) Run(run func(ctx types.Context, senderAddr types.AccAddress, recipientModule string, amt types.Coins)) *BankKeeper_SendCoinsFromAccountToModule_Call {
+func (_c *BankKeeper_SendCoinsFromAccountToModule_Call) Run(run func(ctx context.Context, senderAddr types.AccAddress, recipientModule string, amt types.Coins)) *BankKeeper_SendCoinsFromAccountToModule_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(types.AccAddress), args[2].(string), args[3].(types.Coins))
+		run(args[0].(context.Context), args[1].(types.AccAddress), args[2].(string), args[3].(types.Coins))
 	})
 	return _c
 }
@@ -197,13 +199,13 @@ func (_c *BankKeeper_SendCoinsFromAccountToModule_Call) Return(_a0 error) *BankK
 	return _c
 }
 
-func (_c *BankKeeper_SendCoinsFromAccountToModule_Call) RunAndReturn(run func(types.Context, types.AccAddress, string, types.Coins) error) *BankKeeper_SendCoinsFromAccountToModule_Call {
+func (_c *BankKeeper_SendCoinsFromAccountToModule_Call) RunAndReturn(run func(context.Context, types.AccAddress, string, types.Coins) error) *BankKeeper_SendCoinsFromAccountToModule_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // SpendableCoins provides a mock function with given fields: ctx, addr
-func (_m *BankKeeper) SpendableCoins(ctx types.Context, addr types.AccAddress) types.Coins {
+func (_m *BankKeeper) SpendableCoins(ctx context.Context, addr types.AccAddress) types.Coins {
 	ret := _m.Called(ctx, addr)
 
 	if len(ret) == 0 {
@@ -211,7 +213,7 @@ func (_m *BankKeeper) SpendableCoins(ctx types.Context, addr types.AccAddress) t
 	}
 
 	var r0 types.Coins
-	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress) types.Coins); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, types.AccAddress) types.Coins); ok {
 		r0 = rf(ctx, addr)
 	} else {
 		if ret.Get(0) != nil {
@@ -228,15 +230,15 @@ type BankKeeper_SpendableCoins_Call struct {
 }
 
 // SpendableCoins is a helper method to define mock.On call
-//   - ctx types.Context
+//   - ctx context.Context
 //   - addr types.AccAddress
 func (_e *BankKeeper_Expecter) SpendableCoins(ctx interface{}, addr interface{}) *BankKeeper_SpendableCoins_Call {
 	return &BankKeeper_SpendableCoins_Call{Call: _e.mock.On("SpendableCoins", ctx, addr)}
 }
 
-func (_c *BankKeeper_SpendableCoins_Call) Run(run func(ctx types.Context, addr types.AccAddress)) *BankKeeper_SpendableCoins_Call {
+func (_c *BankKeeper_SpendableCoins_Call) Run(run func(ctx context.Context, addr types.AccAddress)) *BankKeeper_SpendableCoins_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(types.AccAddress))
+		run(args[0].(context.Context), args[1].(types.AccAddress))
 	})
 	return _c
 }
@@ -246,7 +248,7 @@ func (_c *BankKeeper_SpendableCoins_Call) Return(_a0 types.Coins) *BankKeeper_Sp
 	return _c
 }
 
-func (_c *BankKeeper_SpendableCoins_Call) RunAndReturn(run func(types.Context, types.AccAddress) types.Coins) *BankKeeper_SpendableCoins_Call {
+func (_c *BankKeeper_SpendableCoins_Call) RunAndReturn(run func(context.Context, types.AccAddress) types.Coins) *BankKeeper_SpendableCoins_Call {
 	_c.Call.Return(run)
 	return _c
 }

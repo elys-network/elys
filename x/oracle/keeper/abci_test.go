@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
@@ -16,19 +16,19 @@ func (suite *KeeperTestSuite) TestEndBlock() {
 	prices := []types.Price{
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(1),
+			Price:     sdkmath.LegacyNewDec(1),
 			Source:    "elys",
 			Timestamp: uint64(now.Unix()),
 		},
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(2),
+			Price:     sdkmath.LegacyNewDec(2),
 			Source:    "band",
 			Timestamp: uint64(now.Unix()) + params.PriceExpiryTime,
 		},
 		{
 			Asset:     "BTC",
-			Price:     sdk.NewDec(3),
+			Price:     sdkmath.LegacyNewDec(3),
 			Source:    "band",
 			Timestamp: uint64(now.Unix()) + params.PriceExpiryTime,
 		},
