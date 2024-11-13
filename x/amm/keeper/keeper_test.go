@@ -3,11 +3,13 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
@@ -57,7 +59,7 @@ var (
 	}
 )
 
-type KeeperTestSuite struct {
+type AmmKeeperTestSuite struct {
 	suite.Suite
 
 	legacyAmino *codec.LegacyAmino
@@ -65,8 +67,7 @@ type KeeperTestSuite struct {
 	app         *simapp.ElysApp
 }
 
-func (suite *KeeperTestSuite) SetupTest() {
-	//t.Parallel()
+func (suite *AmmKeeperTestSuite) SetupTest() {
 	app := simapp.InitElysTestApp(initChain, suite.Suite.T())
 
 	suite.legacyAmino = app.LegacyAmino()
@@ -75,17 +76,52 @@ func (suite *KeeperTestSuite) SetupTest() {
 }
 
 func TestKeeperSuite(t *testing.T) {
-	suite.Run(t, new(KeeperTestSuite))
+	suite.Run(t, new(AmmKeeperTestSuite))
 }
 
-func (suite *KeeperTestSuite) SetAmmParams() {
+func (suite *AmmKeeperTestSuite) ResetSuite() {
+	suite.SetupTest()
+}
+
+func (suite *AmmKeeperTestSuite) GetAccountIssueAmount() math.Int {
+	return math.NewInt(10_000_000_000_000)
+}
+
+func (suite *AmmKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress) []sdk.AccAddress {
+	issueAmount := suite.GetAccountIssueAmount()
+	var addresses []sdk.AccAddress
+	if n > len(given) {
+		addresses = simapp.AddTestAddrs(suite.app, suite.ctx, n-len(given), issueAmount)
+		addresses = append(addresses, given...)
+	} else {
+		addresses = given
+	}
+	for _, address := range addresses {
+		coins := sdk.NewCoins(
+			sdk.NewCoin(ptypes.ATOM, issueAmount),
+			sdk.NewCoin(ptypes.Elys, issueAmount),
+			sdk.NewCoin(ptypes.BaseCurrency, issueAmount),
+		)
+		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+		if err != nil {
+			panic(err)
+		}
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, address, coins)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return addresses
+}
+
+func (suite *AmmKeeperTestSuite) SetAmmParams() {
 	suite.app.AmmKeeper.SetParams(suite.ctx, types.Params{
 		PoolCreationFee:       sdkmath.NewInt(10000000),
 		SlippageTrackDuration: 604800,
 	})
 }
 
-func (suite *KeeperTestSuite) SetupAssetProfile() {
+func (suite *AmmKeeperTestSuite) SetupAssetProfile() {
 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, atypes.Entry{
 		BaseDenom:                "uusdc",
 		Decimals:                 6,
@@ -109,7 +145,7 @@ func (suite *KeeperTestSuite) SetupAssetProfile() {
 	})
 }
 
-func (suite *KeeperTestSuite) SetupStableCoinPrices() {
+func (suite *AmmKeeperTestSuite) SetupStableCoinPrices() {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
@@ -150,7 +186,7 @@ func (suite *KeeperTestSuite) SetupStableCoinPrices() {
 	})
 }
 
-func (suite *KeeperTestSuite) SetupCoinPrices() {
+func (suite *AmmKeeperTestSuite) SetupCoinPrices() {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 

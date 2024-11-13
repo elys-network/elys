@@ -12,7 +12,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
+func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
@@ -203,7 +203,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
+func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	//suite.SetupTest()
 	suite.SetupStableCoinPrices()
 

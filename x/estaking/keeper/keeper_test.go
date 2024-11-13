@@ -31,14 +31,14 @@ type EstakingKeeperTestSuite struct {
 	valAddr     sdk.ValAddress
 }
 
-func (k *EstakingKeeperTestSuite) SetupTest() {
+func (suite *EstakingKeeperTestSuite) SetupTest() {
 	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount(k.T())
 
-	k.legacyAmino = app.LegacyAmino()
-	k.ctx = app.BaseApp.NewContext(initChain)
-	k.app = app
-	k.genAccount = genAccount
-	k.valAddr = valAddr
+	suite.legacyAmino = app.LegacyAmino()
+	suite.ctx = app.BaseApp.NewContext(initChain)
+	suite.app = app
+	suite.genAccount = genAccount
+	suite.valAddr = valAddr
 }
 
 func TestKeeperSuite(t *testing.T) {
