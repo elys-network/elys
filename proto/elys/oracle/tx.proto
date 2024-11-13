@@ -42,6 +42,7 @@ message MsgFeedPrice {
   option (amino.name) = "oracle/MsgFeedPrice";
   string asset = 1;
   string price = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];

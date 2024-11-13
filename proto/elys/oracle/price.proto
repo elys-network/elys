@@ -2,12 +2,14 @@ syntax = "proto3";
 package elys.oracle;
 
 import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/oracle/types";
 
 message Price {
   string asset = 1;
   string price = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -20,6 +22,7 @@ message Price {
 message LegacyPrice {
   string asset = 1;
   string price = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
