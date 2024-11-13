@@ -32,7 +32,7 @@ type EstakingKeeperTestSuite struct {
 }
 
 func (suite *EstakingKeeperTestSuite) SetupTest() {
-	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount(k.T())
+	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount(suite.T())
 
 	suite.legacyAmino = app.LegacyAmino()
 	suite.ctx = app.BaseApp.NewContext(initChain)
