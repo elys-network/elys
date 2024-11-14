@@ -3,7 +3,7 @@ syntax = "proto3";
 package elys.tradeshield;
 
 import "gogoproto/gogo.proto";
-import "elys/tradeshield/types.proto";
+import "elys/tradeshield/order.proto";
 import "elys/tradeshield/params.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos/msg/v1/msg.proto";
@@ -33,6 +33,7 @@ service Msg {
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc ExecuteOrders(MsgExecuteOrders) returns (MsgExecuteOrdersResponse);
 }
+
 message MsgCreateSpotOrder {
   option (cosmos.msg.v1.signer) = "owner_address";
   option (amino.name) = "tradeshield/MsgCreateSpotOrder";
