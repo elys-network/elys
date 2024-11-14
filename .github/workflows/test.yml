@@ -37,6 +37,21 @@ jobs:
           #!/bin/bash
           declare -A allow_coverages
           allow_coverages["ACCOUNTEDPOOL"]="${{vars.ACCOUNTEDPOOL}}"
+          allow_coverages["AMM"]="${{vars.AMM}}"
+          allow_coverages["ASSETPROFILE"]="${{vars.ASSETPROFILE}}"
+          allow_coverages["BURNER"]="${{vars.BURNER}}"
+          allow_coverages["COMMITMENT"]="${{vars.COMMITMENT}}"
+          allow_coverages["EPOCHS"]="${{vars.EPOCHS}}"
+          allow_coverages["ESTAKING"]="${{vars.ESTAKING}}"
+          allow_coverages["MASTERCHEF"]="${{vars.MASTERCHEF}}"
+          allow_coverages["ORACLE"]="${{vars.ORACLE}}"
+          allow_coverages["PARAMETER"]="${{vars.PARAMETER}}"
+          allow_coverages["PERPETUAL"]="${{vars.PERPETUAL}}"
+          allow_coverages["STABLESTAKE"]="${{vars.STABLESTAKE}}"
+          allow_coverages["TIER"]="${{vars.TIER}}"
+          allow_coverages["TRADESHIELD"]="${{vars.TRADESHIELD}}"
+          allow_coverages["TRANSFERHOOK"]="${{vars.TRANSFERHOOK}}"
+
 
           echo "Searching for keeper packages:"
           find . -type d -path "*/x/*/keeper" -not -path "*/vendor/*"
