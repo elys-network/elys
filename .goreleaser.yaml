@@ -12,7 +12,7 @@ builds:
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
     env:
       - CC=o64-clang
-      - CGO_LDFLAGS=-L/lib
+      - CGO_LDFLAGS="-L/lib -mmacosx-version-min=10.12"
     goos:
       - darwin
     goarch:
@@ -41,7 +41,7 @@ builds:
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
     env:
       - CC=oa64-clang
-      - CGO_LDFLAGS=-L/lib
+      - CGO_LDFLAGS="-L/lib -mmacosx-version-min=10.12"
     goos:
       - darwin
     goarch:
@@ -74,6 +74,7 @@ builds:
       - amd64
     env:
       - CC=x86_64-linux-gnu-gcc
+      - CGO_LDFLAGS="-L/usr/lib/x86_64-linux-gnu -lwasmvm_muslc"
     flags:
       - -mod=readonly
       - -trimpath
@@ -104,6 +105,7 @@ builds:
       - arm64
     env:
       - CC=aarch64-linux-gnu-gcc
+      - CGO_LDFLAGS="-L/usr/lib/aarch64-linux-gnu -lwasmvm_muslc"
     flags:
       - -mod=readonly
       - -trimpath
