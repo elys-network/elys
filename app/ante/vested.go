@@ -5,8 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
-	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	"github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
@@ -43,11 +43,9 @@ func (cad VestedAnteHandlerDecorator) checkDelegation(ctx sdk.Context, msg *stak
 	delegatorAcc := cad.ak.GetAccount(ctx, sdk.AccAddress(msg.DelegatorAddress))
 
 	// Check if the account is a vesting account
-	_, accountType1 := delegatorAcc.(*vestingtypes.BaseVestingAccount)
-	_, accountType2 := delegatorAcc.(*vestingtypes.ContinuousVestingAccount)
-	_, accountType3 := delegatorAcc.(*vestingtypes.DelayedVestingAccount)
-	_, accountType4 := delegatorAcc.(*vestingtypes.PeriodicVestingAccount)
-	if accountType1 || accountType2 || accountType3 || accountType4 {
+
+	_, ok := delegatorAcc.(types.VestingAccount)
+	if ok {
 		// Calculate the spendable coins
 		spendableCoins := cad.bk.SpendableCoins(ctx, sdk.AccAddress(msg.DelegatorAddress))
 
