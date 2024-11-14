@@ -51,6 +51,8 @@ jobs:
           allow_coverages["TIER"]="${{vars.TIER}}"
           allow_coverages["TRADESHIELD"]="${{vars.TRADESHIELD}}"
           allow_coverages["TRANSFERHOOK"]="${{vars.TRANSFERHOOK}}"
+          allow_coverages["LEVERAGELP"]="${{vars.LEVERAGELP}}"
+          allow_coverages["TOKENOMICS"]="${{vars.TOKENOMICS}}"
 
 
           echo "Searching for keeper packages:"
