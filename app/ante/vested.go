@@ -43,8 +43,11 @@ func (cad VestedAnteHandlerDecorator) checkDelegation(ctx sdk.Context, msg *stak
 	delegatorAcc := cad.ak.GetAccount(ctx, sdk.AccAddress(msg.DelegatorAddress))
 
 	// Check if the account is a vesting account
-	// TODO: add more account types
-	if _, ok := delegatorAcc.(*vestingtypes.BaseVestingAccount); ok {
+	_, accountType1 := delegatorAcc.(*vestingtypes.BaseVestingAccount)
+	_, accountType2 := delegatorAcc.(*vestingtypes.ContinuousVestingAccount)
+	_, accountType3 := delegatorAcc.(*vestingtypes.DelayedVestingAccount)
+	_, accountType4 := delegatorAcc.(*vestingtypes.PeriodicVestingAccount)
+	if accountType1 || accountType2 || accountType3 || accountType4 {
 		// Calculate the spendable coins
 		spendableCoins := cad.bk.SpendableCoins(ctx, sdk.AccAddress(msg.DelegatorAddress))
 
