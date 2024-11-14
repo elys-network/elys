@@ -39,6 +39,14 @@ jobs:
           NODE=https://rpc.testnet.elys.network:443
           OPTIONS="--node $NODE --chain-id elystestnet-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
 
+          # TODO: remove this block after the next release
+          OLD_VERSION=v0.49.4
+          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${OLD_VERSION}/elysd-${OLD_VERSION}-linux-amd64
+          OLD_BINARY_PATH=/tmp/elysd-${OLD_VERSION}
+
+          # download binary from release
+          curl -L $DOWNLOAD_URL -o ${OLD_BINARY_PATH} && chmod +x ${OLD_BINARY_PATH}
+
           # save private keys to files
           echo "${{ secrets.PRIVATE_KEY_1 }}" > /tmp/private_key_1.txt
           echo "${{ secrets.PRIVATE_KEY_2 }}" > /tmp/private_key_2.txt
@@ -46,20 +54,20 @@ jobs:
           echo "${{ secrets.PRIVATE_KEY_4 }}" > /tmp/private_key_4.txt
 
           # recover keys
-          echo "${{ secrets.PASSPHRASE_1 }}" | $ELYSD keys import key_1 --keyring-backend test /tmp/private_key_1.txt
-          echo "${{ secrets.PASSPHRASE_2 }}" | $ELYSD keys import key_2 --keyring-backend test /tmp/private_key_2.txt
-          echo "${{ secrets.PASSPHRASE_3 }}" | $ELYSD keys import key_3 --keyring-backend test /tmp/private_key_3.txt
-          echo "${{ secrets.PASSPHRASE_4 }}" | $ELYSD keys import key_4 --keyring-backend test /tmp/private_key_4.txt
+          echo "${{ secrets.PASSPHRASE_1 }}" | ${OLD_BINARY_PATH} keys import key_1 --keyring-backend test /tmp/private_key_1.txt
+          echo "${{ secrets.PASSPHRASE_2 }}" | ${OLD_BINARY_PATH} keys import key_2 --keyring-backend test /tmp/private_key_2.txt
+          echo "${{ secrets.PASSPHRASE_3 }}" | ${OLD_BINARY_PATH} keys import key_3 --keyring-backend test /tmp/private_key_3.txt
+          echo "${{ secrets.PASSPHRASE_4 }}" | ${OLD_BINARY_PATH} keys import key_4 --keyring-backend test /tmp/private_key_4.txt
 
           # get checksum
           checksum=$(cat dist/sha256sum.txt | extract_checksum)
 
           # query and upgrade height
-          height=$($ELYSD status --node $NODE | extract_and_calc_upgrade_height)
+          height=$(${OLD_BINARY_PATH} status --node $NODE | extract_and_calc_upgrade_height)
 
           # create proposal
           txhash=$(
-            $ELYSD tx gov submit-legacy-proposal software-upgrade \
+            ${OLD_BINARY_PATH} tx gov submit-legacy-proposal software-upgrade \
               ${{ github.ref_name }} \
               --deposit=10000000uelys \
               --upgrade-height=$height \
@@ -71,11 +79,11 @@ jobs:
               $OPTIONS | extract_txhash
           )
           sleep 10
-          proposalid=$($ELYSD q tx $txhash --node $NODE | extract_proposal_id)
+          proposalid=$(${OLD_BINARY_PATH} q tx $txhash --node $NODE | extract_proposal_id)
 
           # vote on proposal
-          $ELYSD tx gov vote $proposalid yes --from=key_1 $OPTIONS
-          $ELYSD tx gov vote $proposalid yes --from=key_2 $OPTIONS
-          $ELYSD tx gov vote $proposalid yes --from=key_3 $OPTIONS
-          $ELYSD tx gov vote $proposalid yes --from=key_4 $OPTIONS
+          ${OLD_BINARY_PATH} tx gov vote $proposalid yes --from=key_1 $OPTIONS
+          ${OLD_BINARY_PATH} tx gov vote $proposalid yes --from=key_2 $OPTIONS
+          ${OLD_BINARY_PATH} tx gov vote $proposalid yes --from=key_3 $OPTIONS
+          ${OLD_BINARY_PATH} tx gov vote $proposalid yes --from=key_4 $OPTIONS
           sleep 10
