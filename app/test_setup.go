@@ -2,13 +2,13 @@ package app
 
 import (
 	"encoding/json"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"testing"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
-	"github.com/CosmWasm/wasmd/x/wasm"
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmttypes "github.com/cometbft/cometbft/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -33,7 +33,7 @@ import (
 )
 
 // Initiate a new ElysApp object - Common function used by the following 2 functions.
-func InitiateNewElysApp(t *testing.T, opts ...wasm.Option) *ElysApp {
+func InitiateNewElysApp(t *testing.T) *ElysApp {
 	db := dbm.NewMemDB()
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[flags.FlagHome] = DefaultNodeHome
@@ -49,7 +49,6 @@ func InitiateNewElysApp(t *testing.T, opts ...wasm.Option) *ElysApp {
 		map[int64]bool{},
 		t.TempDir(),
 		appOptions,
-		opts,
 	)
 
 	return app
