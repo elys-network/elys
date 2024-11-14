@@ -17,7 +17,6 @@ The diagram below illustrates the architecture of Elys Network, outlining its va
 
    - **Parameters:** Configuration settings for the overall network.
    - **Epochs:** Time-based intervals for system operations.
-   - **Clock:** Execute CosmWasm contracts sudo operations.
    - **Transferhook:** Extends basic IBC transfer capabilities by integrating with the AMM module.
 
 2. **Data Layer:**
