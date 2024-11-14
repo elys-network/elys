@@ -67,6 +67,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		authz.ModuleName,
 		group.StoreKey,
 		consensusparamtypes.StoreKey,
+		"wasm", // TODO: to remove post-upgrade
 
 		//ccvconsumertypes.StoreKey,
 
