@@ -3,11 +3,13 @@ package keeper_test
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
@@ -229,6 +231,175 @@ func (suite *AmmKeeperTestSuite) TestGetExternalLiquidityRatio() {
 				require.NoError(suite.T(), err)
 				require.Equal(suite.T(), tt.expectedResult, assets)
 			}
+		})
+	}
+}
+
+func (suite *AmmKeeperTestSuite) TestFeedMultipleExternalLiquidity() {
+	testCases := []struct {
+		name                 string
+		prerequisiteFunction func()
+		postValidateFunction func()
+	}{
+		{
+			"feed multiple exeternal liquidity with empty msg",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				// msg server
+				msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
+				goCtx := sdk.WrapSDKContext(suite.ctx)
+
+				_, err := msgServer.FeedMultipleExternalLiquidity(goCtx, &types.MsgFeedMultipleExternalLiquidity{})
+				suite.Require().Error(err)
+			},
+		},
+		{
+			"feed multiple exeternal liquidity without price feeder",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				// msg server
+				msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
+				goCtx := sdk.WrapSDKContext(suite.ctx)
+
+				addr := suite.AddAccounts(1, nil)[0]
+
+				_, err := msgServer.FeedMultipleExternalLiquidity(goCtx, &types.MsgFeedMultipleExternalLiquidity{
+					Sender: addr.String(),
+					Liquidity: []types.ExternalLiquidity{
+						{
+							PoolId: 1,
+							AmountDepthInfo: []types.AssetAmountDepth{
+								{
+									Asset:  ptypes.BaseCurrency,
+									Amount: sdkmath.LegacyNewDec(1000000000),
+									Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
+								},
+							},
+						},
+					},
+				})
+				suite.Require().Error(err)
+			},
+		},
+		{
+			"feed multiple exeternal liquidity with price feeder but not active",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				// msg server
+				msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
+				goCtx := sdk.WrapSDKContext(suite.ctx)
+
+				addr := suite.AddAccounts(1, nil)[0]
+
+				suite.app.OracleKeeper.SetPriceFeeder(suite.ctx, oracletypes.PriceFeeder{
+					Feeder:   addr.String(),
+					IsActive: false,
+				})
+
+				_, err := msgServer.FeedMultipleExternalLiquidity(goCtx, &types.MsgFeedMultipleExternalLiquidity{
+					Sender: addr.String(),
+					Liquidity: []types.ExternalLiquidity{
+						{
+							PoolId: 1,
+							AmountDepthInfo: []types.AssetAmountDepth{
+								{
+									Asset:  ptypes.BaseCurrency,
+									Amount: sdkmath.LegacyNewDec(1000000000),
+									Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
+								},
+							},
+						},
+					},
+				})
+				suite.Require().Error(err)
+			},
+		},
+		{
+			"feed multiple exeternal liquidity with active price feeder but invalid pool id",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				// msg server
+				msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
+				goCtx := sdk.WrapSDKContext(suite.ctx)
+
+				addr := suite.AddAccounts(1, nil)[0]
+
+				suite.app.OracleKeeper.SetPriceFeeder(suite.ctx, oracletypes.PriceFeeder{
+					Feeder:   addr.String(),
+					IsActive: true,
+				})
+
+				_, err := msgServer.FeedMultipleExternalLiquidity(goCtx, &types.MsgFeedMultipleExternalLiquidity{
+					Sender: addr.String(),
+					Liquidity: []types.ExternalLiquidity{
+						{
+							PoolId: 1,
+							AmountDepthInfo: []types.AssetAmountDepth{
+								{
+									Asset:  ptypes.BaseCurrency,
+									Amount: sdkmath.LegacyNewDec(1000000000),
+									Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
+								},
+							},
+						},
+					},
+				})
+				suite.Require().Error(err)
+			},
+		},
+		{
+			"feed multiple exeternal liquidity with active price feeder with pool",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+			},
+			func() {
+				// msg server
+				msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
+				goCtx := sdk.WrapSDKContext(suite.ctx)
+
+				addr := suite.AddAccounts(1, nil)[0]
+
+				amount := math.NewInt(100000000000)
+				pool := suite.CreateNewAmmPool(addr, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+
+				suite.app.OracleKeeper.SetPriceFeeder(suite.ctx, oracletypes.PriceFeeder{
+					Feeder:   addr.String(),
+					IsActive: true,
+				})
+
+				_, err := msgServer.FeedMultipleExternalLiquidity(goCtx, &types.MsgFeedMultipleExternalLiquidity{
+					Sender: addr.String(),
+					Liquidity: []types.ExternalLiquidity{
+						{
+							PoolId: pool.PoolId,
+							AmountDepthInfo: []types.AssetAmountDepth{
+								{
+									Asset:  ptypes.ATOM,
+									Amount: sdkmath.LegacyNewDec(1000000000),
+									Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
+								},
+							},
+						},
+					},
+				})
+				suite.Require().Error(err)
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			tc.postValidateFunction()
 		})
 	}
 }
