@@ -12,7 +12,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerExitPool() {
+func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 	for _, tc := range []struct {
 		desc              string
 		poolInitBalance   sdk.Coins
