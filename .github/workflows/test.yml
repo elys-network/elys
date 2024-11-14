@@ -35,7 +35,7 @@ jobs:
       - name: Check keeper package coverage
         run: |
           declare -A allow_coverages
-          allow_coverages["ACCOUNTEDPOOL"]= ${{vars.ACCOUNTEDPOOL}}
+          allow_coverages["ACCOUNTEDPOOL"]= "${{vars.ACCOUNTEDPOOL}}"
 
           echo "Searching for keeper packages:"
           find . -type d -path "*/x/*/keeper" -not -path "*/vendor/*"
