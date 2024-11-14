@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func (suite *KeeperTestSuite) TestLiquidityRatioFromPriceDepth() {
+func (suite *AmmKeeperTestSuite) TestLiquidityRatioFromPriceDepth() {
 	depth := sdkmath.LegacyNewDecWithPrec(1, 2) // 1%
 	suite.Require().Equal("0.005012562893380045", keeper.LiquidityRatioFromPriceDepth(depth).String())
 	depth = sdkmath.LegacyNewDecWithPrec(2, 2) // 2%
@@ -33,7 +33,7 @@ func (suite *KeeperTestSuite) TestLiquidityRatioFromPriceDepth() {
 	suite.Require().Equal("1.000000000000000000", keeper.LiquidityRatioFromPriceDepth(depth).String())
 }
 
-func (suite *KeeperTestSuite) TestGetExternalLiquidityRatio() {
+func (suite *AmmKeeperTestSuite) TestGetExternalLiquidityRatio() {
 	suite.SetupTest()
 	suite.SetupCoinPrices()
 	// set asset profile
