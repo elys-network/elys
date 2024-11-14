@@ -16,7 +16,10 @@ component_management:
     - component_id: module_leveragelp_transactions # this is an identifier that should not be changed
       name: leveragelp_transactions # this is a display name, and can be changed freely
       paths:
-        - ./x/leveragelp/**/msg_server*
+        - ./x/leveragelp/**/msg_server
+      statuses:
+          - type: project
+            target: 100%
     - component_id: module_leveragelp_lifecycle
       name: leveragelp_lifecycle
       paths:
