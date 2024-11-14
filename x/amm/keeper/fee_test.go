@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -25,7 +26,7 @@ func TestPortionCoins(t *testing.T) {
 	require.Equal(t, portion, coins)
 }
 
-func (suite *KeeperTestSuite) TestOnCollectFee() {
+func (suite *AmmKeeperTestSuite) TestOnCollectFee() {
 	for _, tc := range []struct {
 		desc              string
 		fee               sdk.Coins
@@ -121,7 +122,7 @@ func (suite *KeeperTestSuite) TestOnCollectFee() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestSwapFeesToRevenueToken() {
+func (suite *AmmKeeperTestSuite) TestSwapFeesToRevenueToken() {
 	for _, tc := range []struct {
 		desc              string
 		fee               sdk.Coins
