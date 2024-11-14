@@ -96,7 +96,7 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd
       - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,pebbledb
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,osusergo,pebbledb
       - -w -s
       - -linkmode=external
     tags:
