@@ -50,6 +50,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		wasmkeeper.NewLimitSimulationGasDecorator(options.WasmConfig.SimulationGasLimit), // after setup context to enforce limits early
 		wasmkeeper.NewCountTXDecorator(options.TXCounterStoreService),
 		NewMinCommissionDecorator(options.Cdc, options.StakingKeeper, options.BankKeeper, options.ParameterKeeper),
+		NewVestedAnteHandlerDecorator(options.AccountKeeper, options.BankKeeper),
 		ante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),
