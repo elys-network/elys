@@ -20,7 +20,10 @@ func NewQuerier(keeper *keeper.AccountKeeper) *Querier {
 func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuery) ([]byte, error) {
 	switch {
 	case query.AuthAddresses != nil:
-		return oq.queryAddresses(ctx, query.AuthAddresses)
+		return oq.queryAddresses(QueryAddressesParams{
+			Context: ctx,
+			Request: query.AuthAddresses,
+		})
 	default:
 		// This handler cannot handle the query
 		return nil, wasmbindingstypes.ErrCannotHandleQuery
