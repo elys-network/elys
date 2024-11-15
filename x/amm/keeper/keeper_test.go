@@ -3,13 +3,16 @@ package keeper_test
 import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"sort"
+	"strings"
 	"testing"
 
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
@@ -22,7 +25,7 @@ import (
 type assetPriceInfo struct {
 	denom   string
 	display string
-	price   sdkmath.LegacyDec
+	price   math.LegacyDec
 }
 
 const (
@@ -34,32 +37,32 @@ var (
 		"uusdc": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   sdkmath.LegacyOneDec(),
+			price:   math.LegacyOneDec(),
 		},
 		"uusdt": {
 			denom:   "uusdt",
 			display: "USDT",
-			price:   sdkmath.LegacyOneDec(),
+			price:   math.LegacyOneDec(),
 		},
 		"USDC": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   sdkmath.LegacyOneDec(),
+			price:   math.LegacyOneDec(),
 		},
 		"uelys": {
 			denom:   ptypes.Elys,
 			display: "ELYS",
-			price:   sdkmath.LegacyMustNewDecFromStr("3.0"),
+			price:   math.LegacyMustNewDecFromStr("3.0"),
 		},
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
-			price:   sdkmath.LegacyMustNewDecFromStr("1.0"),
+			price:   math.LegacyMustNewDecFromStr("1.0"),
 		},
 	}
 )
 
-type KeeperTestSuite struct {
+type AmmKeeperTestSuite struct {
 	suite.Suite
 
 	legacyAmino *codec.LegacyAmino
@@ -67,8 +70,7 @@ type KeeperTestSuite struct {
 	app         *simapp.ElysApp
 }
 
-func (suite *KeeperTestSuite) SetupTest() {
-	//t.Parallel()
+func (suite *AmmKeeperTestSuite) SetupTest() {
 	app := simapp.InitElysTestApp(initChain, suite.Suite.T())
 
 	suite.legacyAmino = app.LegacyAmino()
@@ -77,24 +79,59 @@ func (suite *KeeperTestSuite) SetupTest() {
 }
 
 func TestKeeperSuite(t *testing.T) {
-	suite.Run(t, new(KeeperTestSuite))
+	suite.Run(t, new(AmmKeeperTestSuite))
 }
 
-func (suite *KeeperTestSuite) SetAmmParams() {
+func (suite *AmmKeeperTestSuite) ResetSuite() {
+	suite.SetupTest()
+}
+
+func (suite *AmmKeeperTestSuite) GetAccountIssueAmount() math.Int {
+	return math.NewInt(10_000_000_000_000)
+}
+
+func (suite *AmmKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress) []sdk.AccAddress {
+	issueAmount := suite.GetAccountIssueAmount()
+	var addresses []sdk.AccAddress
+	if n > len(given) {
+		addresses = simapp.AddTestAddrs(suite.app, suite.ctx, n-len(given), issueAmount)
+		addresses = append(addresses, given...)
+	} else {
+		addresses = given
+	}
+	for _, address := range addresses {
+		coins := sdk.NewCoins(
+			sdk.NewCoin(ptypes.ATOM, issueAmount),
+			sdk.NewCoin(ptypes.Elys, issueAmount),
+			sdk.NewCoin(ptypes.BaseCurrency, issueAmount),
+		)
+		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+		if err != nil {
+			panic(err)
+		}
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, address, coins)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return addresses
+}
+
+func (suite *AmmKeeperTestSuite) SetAmmParams() {
 	suite.app.AmmKeeper.SetParams(suite.ctx, types.Params{
-		PoolCreationFee:             sdkmath.NewInt(10_000_000),
+		PoolCreationFee:             math.NewInt(10_000_000),
 		SlippageTrackDuration:       604800,
 		BaseAssets:                  []string{ptypes.BaseCurrency},
 		AllowedPoolCreators:         []string{authtypes.NewModuleAddress(govtypes.ModuleName).String()},
-		WeightBreakingFeeExponent:   sdkmath.LegacyMustNewDecFromStr("2.5"),
-		WeightBreakingFeeMultiplier: sdkmath.LegacyMustNewDecFromStr("0.0005"),
-		WeightBreakingFeePortion:    sdkmath.LegacyMustNewDecFromStr("0.5"),
-		WeightRecoveryFeePortion:    sdkmath.LegacyMustNewDecFromStr("0.1"),
-		ThresholdWeightDifference:   sdkmath.LegacyMustNewDecFromStr("0.3"),
+		WeightBreakingFeeExponent:   math.LegacyMustNewDecFromStr("2.5"),
+		WeightBreakingFeeMultiplier: math.LegacyMustNewDecFromStr("0.0005"),
+		WeightBreakingFeePortion:    math.LegacyMustNewDecFromStr("0.5"),
+		WeightRecoveryFeePortion:    math.LegacyMustNewDecFromStr("0.1"),
+		ThresholdWeightDifference:   math.LegacyMustNewDecFromStr("0.3"),
 	})
 }
 
-func (suite *KeeperTestSuite) SetupAssetProfile() {
+func (suite *AmmKeeperTestSuite) SetupAssetProfile() {
 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, atypes.Entry{
 		BaseDenom:                "uusdc",
 		Decimals:                 6,
@@ -118,7 +155,7 @@ func (suite *KeeperTestSuite) SetupAssetProfile() {
 	})
 }
 
-func (suite *KeeperTestSuite) SetupStableCoinPrices() {
+func (suite *AmmKeeperTestSuite) SetupStableCoinPrices() {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
@@ -138,28 +175,28 @@ func (suite *KeeperTestSuite) SetupStableCoinPrices() {
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDC",
-		Price:     sdkmath.LegacyNewDec(1),
+		Price:     math.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDT",
-		Price:     sdkmath.LegacyNewDec(1),
+		Price:     math.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDA",
-		Price:     sdkmath.LegacyNewDec(1),
+		Price:     math.LegacyNewDec(1),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 }
 
-func (suite *KeeperTestSuite) SetupCoinPrices() {
+func (suite *AmmKeeperTestSuite) SetupCoinPrices() {
 	// prices set for USDT and USDC
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
@@ -179,6 +216,46 @@ func (suite *KeeperTestSuite) SetupCoinPrices() {
 	}
 }
 
+func (suite *AmmKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle bool, swapFee, exitFee math.LegacyDec, asset2 string, baseTokenAmount, assetAmount math.Int) types.Pool {
+	poolAssets := []types.PoolAsset{
+		{
+			Token:                  sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount),
+			Weight:                 math.NewInt(10),
+			ExternalLiquidityRatio: math.LegacyNewDec(2),
+		},
+		{
+			Token:                  sdk.NewCoin(asset2, assetAmount),
+			Weight:                 math.NewInt(10),
+			ExternalLiquidityRatio: math.LegacyNewDec(2),
+		},
+	}
+	sort.Slice(poolAssets, func(i, j int) bool {
+		return strings.Compare(poolAssets[i].Token.Denom, poolAssets[j].Token.Denom) <= 0
+	})
+	poolParams := types.PoolParams{
+		UseOracle:                   useOracle,
+		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
+		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
+		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
+		ThresholdWeightDifference:   math.LegacyZeroDec(),
+		SwapFee:                     swapFee,
+		ExitFee:                     exitFee,
+		FeeDenom:                    ptypes.BaseCurrency,
+	}
+
+	createPoolMsg := &types.MsgCreatePool{
+		Sender:     creator.String(),
+		PoolParams: &poolParams,
+		PoolAssets: poolAssets,
+	}
+
+	poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, createPoolMsg)
+	suite.Require().NoError(err)
+	ammPool, _ := suite.app.AmmKeeper.GetPool(suite.ctx, poolId)
+
+	return ammPool
+}
+
 func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 	// Create and set mock pools
 	pools := []types.Pool{
@@ -186,10 +263,10 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			PoolId:  1,
 			Address: types.NewPoolAddress(uint64(1)).String(),
 			PoolAssets: []types.PoolAsset{
-				{Token: sdk.NewCoin("denom1", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
-				{Token: sdk.NewCoin("denom2", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
+				{Token: sdk.NewCoin("denom1", math.NewInt(1000)), Weight: math.OneInt()},
+				{Token: sdk.NewCoin("denom2", math.NewInt(1000)), Weight: math.OneInt()},
 			},
-			TotalWeight: sdkmath.NewInt(2),
+			TotalWeight: math.NewInt(2),
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},
@@ -199,10 +276,10 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			PoolId:  2,
 			Address: types.NewPoolAddress(uint64(2)).String(),
 			PoolAssets: []types.PoolAsset{
-				{Token: sdk.NewCoin("uusdc", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
-				{Token: sdk.NewCoin("denom1", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
+				{Token: sdk.NewCoin("uusdc", math.NewInt(1000)), Weight: math.OneInt()},
+				{Token: sdk.NewCoin("denom1", math.NewInt(1000)), Weight: math.OneInt()},
 			},
-			TotalWeight: sdkmath.NewInt(2),
+			TotalWeight: math.NewInt(2),
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},
@@ -212,10 +289,10 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 			PoolId:  3,
 			Address: types.NewPoolAddress(uint64(3)).String(),
 			PoolAssets: []types.PoolAsset{
-				{Token: sdk.NewCoin("uusdc", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
-				{Token: sdk.NewCoin("denom3", sdkmath.NewInt(1000)), Weight: sdkmath.OneInt()},
+				{Token: sdk.NewCoin("uusdc", math.NewInt(1000)), Weight: math.OneInt()},
+				{Token: sdk.NewCoin("denom3", math.NewInt(1000)), Weight: math.OneInt()},
 			},
-			TotalWeight: sdkmath.NewInt(2),
+			TotalWeight: math.NewInt(2),
 			PoolParams: types.PoolParams{
 				UseOracle: false,
 			},

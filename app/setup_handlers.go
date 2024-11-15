@@ -6,7 +6,9 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
@@ -17,7 +19,7 @@ const (
 )
 
 // make sure to update these when you upgrade the version
-var NextVersion = "v0.50.0"
+var NextVersion = "v0.51.0"
 
 func (app *ElysApp) setUpgradeHandler() {
 	app.UpgradeKeeper.SetUpgradeHandler(
@@ -29,13 +31,7 @@ func (app *ElysApp) setUpgradeHandler() {
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
 
 				// Add any logic here to run when the chain is upgraded to the new version
-				// Update consensus params in order to safely enable comet pruning
-				consensusParams, err := app.ConsensusParamsKeeper.ParamsStore.Get(ctx)
-				if err != nil {
-					return nil, err
-				}
-				consensusParams.Block.MaxBytes = NewMaxBytes
-				app.ConsensusParamsKeeper.ParamsStore.Set(ctx, consensusParams)
+
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
@@ -58,7 +54,7 @@ func (app *ElysApp) setUpgradeStore() {
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			// Added: []string{},
-			//Deleted: []string{},
+			// Deleted: []string{},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 

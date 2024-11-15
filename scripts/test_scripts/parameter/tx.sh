@@ -51,13 +51,6 @@ sh ${current_dir}/scripts/test_tx_query/parameter/query.sh
 
 # sleep 10s
 
-# echo "Tx: Create and vote on gov Proposal for MsgUpdateWasmConfig"
-# $BINARY tx gov submit-proposal ${current_dir}/scripts/test_tx_query/parameter/update_wasm_config.json --from=$MY_VALIDATOR_ADDRESS --keyring-backend=test --chain-id=elys --gas=1000000
-# query_tx "create gov proposal"
-# sh ${current_dir}/scripts/test_tx_query/vote.sh
-
-# sleep 10s
-
 # echo "Tx: Create and vote on gov Proposal for MsgUpdateRewardsDataLifetime"
 # $BINARY tx gov submit-proposal ${current_dir}/scripts/test_tx_query/parameter/update_rewards_data_lifetime.json --from=$MY_VALIDATOR_ADDRESS --keyring-backend=test --chain-id=elys --gas=1000000
 # query_tx "create gov proposal"

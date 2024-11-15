@@ -21,8 +21,6 @@ service Msg {
       returns (MsgUpdateBrokerAddressResponse);
   rpc UpdateTotalBlocksPerYear(MsgUpdateTotalBlocksPerYear)
       returns (MsgUpdateTotalBlocksPerYearResponse);
-  rpc UpdateWasmConfig(MsgUpdateWasmConfig)
-      returns (MsgUpdateWasmConfigResponse);
   rpc UpdateRewardsDataLifetime(MsgUpdateRewardsDataLifetime)
       returns (MsgUpdateRewardsDataLifetimeResponse);
 }
@@ -70,17 +68,6 @@ message MsgUpdateTotalBlocksPerYear {
 }
 
 message MsgUpdateTotalBlocksPerYearResponse {}
-
-message MsgUpdateWasmConfig {
-  option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "parameter/MsgUpdateWasmConfig";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string wasm_max_label_size = 2;
-  string wasm_max_size = 3;
-  string wasm_max_proposal_wasm_size = 4;
-}
-
-message MsgUpdateWasmConfigResponse {}
 
 message MsgUpdateRewardsDataLifetime {
   option (cosmos.msg.v1.signer) = "creator";

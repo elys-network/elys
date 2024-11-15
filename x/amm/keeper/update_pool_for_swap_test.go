@@ -9,7 +9,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestUpdatePoolForSwap() {
+func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 	for _, tc := range []struct {
 		desc                string
 		senderInitBalance   sdk.Coins

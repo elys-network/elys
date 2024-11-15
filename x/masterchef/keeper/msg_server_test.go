@@ -2,10 +2,10 @@ package keeper_test
 
 import (
 	"context"
-	sdkmath "cosmossdk.io/math"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
+
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/masterchef/keeper"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -26,7 +26,7 @@ func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
 		EnableEdenRewards:    false,
 	})
 
-	return keeper.NewMsgServerImpl(*k), sdk.WrapSDKContext(ctx)
+	return keeper.NewMsgServerImpl(*k), ctx
 }
 
 func TestMsgServer(t *testing.T) {

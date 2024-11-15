@@ -214,7 +214,7 @@ func TestMsgServerUncommitTokensNoDelegationError(t *testing.T) {
 	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Call the UncommitTokens function through the MsgServer
-	_, err := msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), &types.MsgUncommitTokens{
+	_, err := msgServer.UncommitTokens(ctx, &types.MsgUncommitTokens{
 		Creator: creator,
 		Denom:   denom,
 		Amount:  uncommitAmount,
@@ -255,7 +255,7 @@ func TestMsgServerUncommitTokensUnsupportedUncommitTokenError(t *testing.T) {
 	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Call the UncommitTokens function through the MsgServer
-	_, err := msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), &types.MsgUncommitTokens{
+	_, err := msgServer.UncommitTokens(ctx, &types.MsgUncommitTokens{
 		Creator: creator,
 		Denom:   denom,
 		Amount:  uncommitAmount,
@@ -275,7 +275,7 @@ func TestMsgServerUncommitTokensInvalidAddressError(t *testing.T) {
 	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
 	// Call the UncommitTokens function through the MsgServer
-	_, err := msgServer.UncommitTokens(sdk.WrapSDKContext(ctx), &types.MsgUncommitTokens{
+	_, err := msgServer.UncommitTokens(ctx, &types.MsgUncommitTokens{
 		Creator: "invalid_address",
 		Denom:   ptypes.Eden,
 		Amount:  sdkmath.NewInt(100),

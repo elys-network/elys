@@ -62,7 +62,7 @@ func TestCalculatePoolAprs(t *testing.T) {
 	// Create a Elys+USDC pool
 	msgServer := ammkeeper.NewMsgServerImpl(*amm)
 	resp, err := msgServer.CreatePool(
-		sdk.WrapSDKContext(ctx),
+		ctx,
 		&ammtypes.MsgCreatePool{
 			Sender:     addr.String(),
 			PoolParams: poolParams,

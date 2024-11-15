@@ -96,8 +96,7 @@ func TestUSDCExternalIncentive(t *testing.T) {
 		Description: "Description",
 	}
 
-	wctx := sdk.WrapSDKContext(ctx)
-	_, err := srv.CreateTimeBasedInflation(wctx, expected)
+	_, err := srv.CreateTimeBasedInflation(ctx, expected)
 	require.NoError(t, err)
 
 	expected = &tokenomicstypes.MsgCreateTimeBasedInflation{
@@ -113,7 +112,7 @@ func TestUSDCExternalIncentive(t *testing.T) {
 		},
 		Description: "Description",
 	}
-	_, err = srv.CreateTimeBasedInflation(wctx, expected)
+	_, err = srv.CreateTimeBasedInflation(ctx, expected)
 	require.NoError(t, err)
 
 	// Generate 1 random account with 1000stake balanced
@@ -189,14 +188,14 @@ func TestUSDCExternalIncentive(t *testing.T) {
 	require.NoError(t, err)
 
 	masterchefSrv := masterchefkeeper.NewMsgServerImpl(app.MasterchefKeeper)
-	_, err = masterchefSrv.AddExternalRewardDenom(sdk.WrapSDKContext(ctx), &types.MsgAddExternalRewardDenom{
+	_, err = masterchefSrv.AddExternalRewardDenom(ctx, &types.MsgAddExternalRewardDenom{
 		Authority:   app.GovKeeper.GetAuthority(),
 		RewardDenom: ptypes.BaseCurrency,
 		MinAmount:   sdkmath.OneInt(),
 		Supported:   true,
 	})
 	require.NoError(t, err)
-	_, err = masterchefSrv.AddExternalIncentive(sdk.WrapSDKContext(ctx), &types.MsgAddExternalIncentive{
+	_, err = masterchefSrv.AddExternalIncentive(ctx, &types.MsgAddExternalIncentive{
 		Sender:         addr[0].String(),
 		RewardDenom:    ptypes.BaseCurrency,
 		PoolId:         pools[0].PoolId,
@@ -238,12 +237,12 @@ func TestUSDCExternalIncentive(t *testing.T) {
 	prevUSDCBal := app.BankKeeper.GetBalance(ctx, addr[1], ptypes.BaseCurrency)
 
 	// check rewards claimed
-	_, err = masterchefSrv.ClaimRewards(sdk.WrapSDKContext(ctx), &types.MsgClaimRewards{
+	_, err = masterchefSrv.ClaimRewards(ctx, &types.MsgClaimRewards{
 		Sender:  addr[0].String(),
 		PoolIds: []uint64{pools[0].PoolId},
 	})
 	require.NoError(t, err)
-	_, err = masterchefSrv.ClaimRewards(sdk.WrapSDKContext(ctx), &types.MsgClaimRewards{
+	_, err = masterchefSrv.ClaimRewards(ctx, &types.MsgClaimRewards{
 		Sender:  addr[1].String(),
 		PoolIds: []uint64{pools[0].PoolId},
 	})

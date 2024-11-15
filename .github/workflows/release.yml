@@ -31,7 +31,7 @@ jobs:
           # helper functions
           extract_txhash() { awk -F 'txhash: ' '/txhash:/{print $2; exit}'; }
           extract_proposal_id() { awk -F 'key: proposal_id|value: ' '/key: proposal_id/ { getline; gsub(/"/, "", $2); print $2; exit }'; }
-          extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+500; exit }'; }
+          extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+900; exit }'; }
           extract_checksum() { awk "/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print \$1; exit}"; }
 
           # environment variables
@@ -46,20 +46,20 @@ jobs:
           echo "${{ secrets.PRIVATE_KEY_4 }}" > /tmp/private_key_4.txt
 
           # recover keys
-          echo "${{ secrets.PASSPHRASE_1 }}" | $ELYSD keys import key_1 --keyring-backend test /tmp/private_key_1.txt
-          echo "${{ secrets.PASSPHRASE_2 }}" | $ELYSD keys import key_2 --keyring-backend test /tmp/private_key_2.txt
-          echo "${{ secrets.PASSPHRASE_3 }}" | $ELYSD keys import key_3 --keyring-backend test /tmp/private_key_3.txt
-          echo "${{ secrets.PASSPHRASE_4 }}" | $ELYSD keys import key_4 --keyring-backend test /tmp/private_key_4.txt
+          echo "${{ secrets.PASSPHRASE_1 }}" | ${ELYSD} keys import key_1 --keyring-backend test /tmp/private_key_1.txt
+          echo "${{ secrets.PASSPHRASE_2 }}" | ${ELYSD} keys import key_2 --keyring-backend test /tmp/private_key_2.txt
+          echo "${{ secrets.PASSPHRASE_3 }}" | ${ELYSD} keys import key_3 --keyring-backend test /tmp/private_key_3.txt
+          echo "${{ secrets.PASSPHRASE_4 }}" | ${ELYSD} keys import key_4 --keyring-backend test /tmp/private_key_4.txt
 
           # get checksum
           checksum=$(cat dist/sha256sum.txt | extract_checksum)
 
           # query and upgrade height
-          height=$($ELYSD status --node $NODE | extract_and_calc_upgrade_height)
+          height=$(${ELYSD} status --node $NODE | extract_and_calc_upgrade_height)
 
           # create proposal
           txhash=$(
-            $ELYSD software-upgrade-tx \
+            ${ELYSD} software-upgrade-tx \
               ${{ github.ref_name }} \
               $height \
               10000000uelys \
@@ -69,11 +69,11 @@ jobs:
               $OPTIONS | extract_txhash
           )
           sleep 10
-          proposalid=$($ELYSD q tx $txhash --node $NODE | extract_proposal_id)
+          proposalid=$(${ELYSD} q tx $txhash --node $NODE | extract_proposal_id)
 
           # vote on proposal
-          $ELYSD tx gov vote $proposalid yes --from=key_1 $OPTIONS
-          $ELYSD tx gov vote $proposalid yes --from=key_2 $OPTIONS
-          $ELYSD tx gov vote $proposalid yes --from=key_3 $OPTIONS
-          $ELYSD tx gov vote $proposalid yes --from=key_4 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=key_1 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=key_2 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=key_3 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=key_4 $OPTIONS
           sleep 10

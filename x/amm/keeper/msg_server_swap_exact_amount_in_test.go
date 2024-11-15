@@ -12,7 +12,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
+func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
@@ -180,7 +180,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.SwapExactAmountIn(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgSwapExactAmountIn{
 					Sender:            sender.String(),
 					Routes:            tc.swapRoute,
@@ -203,7 +203,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
+func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	//suite.SetupTest()
 	suite.SetupStableCoinPrices()
 
@@ -275,7 +275,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	cacheCtx, _ := suite.ctx.CacheContext()
 	msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 	resp, err := msgServer.SwapExactAmountIn(
-		sdk.WrapSDKContext(cacheCtx),
+		cacheCtx,
 		&types.MsgSwapExactAmountIn{
 			Sender:            sender.String(),
 			Routes:            swapRoute,
@@ -295,7 +295,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	cacheCtx, _ = suite.ctx.CacheContext()
 	for i := 0; i < 100; i++ {
 		resp, err = msgServer.SwapExactAmountIn(
-			sdk.WrapSDKContext(cacheCtx),
+			cacheCtx,
 			&types.MsgSwapExactAmountIn{
 				Sender:            sender.String(),
 				Routes:            swapRoute,

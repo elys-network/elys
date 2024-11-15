@@ -1,84 +1,195 @@
 package keeper_test
 
 import (
-	"testing"
-
 	"cosmossdk.io/math"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	simapp "github.com/elys-network/elys/app"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/estaking/keeper"
 	exdistr "github.com/elys-network/elys/x/estaking/modules/distribution"
 	"github.com/elys-network/elys/x/estaking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/stretchr/testify/require"
+	ttypes "github.com/elys-network/elys/x/tokenomics/types"
 )
 
-func TestUpdateStakersRewards(t *testing.T) {
-	app := simapp.InitElysTestApp(true, t)
-	ctx := app.BaseApp.NewContext(true)
+func (suite *EstakingKeeperTestSuite) TestAbci() {
+	testCases := []struct {
+		name                 string
+		prerequisiteFunction func() (addr sdk.AccAddress, valAddr sdk.ValAddress)
+		postValidateFunction func(addr sdk.AccAddress, valAddr sdk.ValAddress)
+	}{
+		{
+			"update stakers rewards",
+			func() (addr sdk.AccAddress, valAddr sdk.ValAddress) {
+				suite.ResetSuite()
 
-	stakingKeeper := app.StakingKeeper
-	estakingKeeper := app.EstakingKeeper
+				suite.SetAssetProfile()
 
-	// create validator with 50% commission
-	validators, err := stakingKeeper.GetAllValidators(ctx)
-	require.True(t, len(validators) > 0)
-	require.NoError(t, err)
-	valAddr := validators[0].GetOperator()
-	validator, err := sdk.ValAddressFromBech32(valAddr)
-	require.NoError(t, err)
-	delegations, err := stakingKeeper.GetValidatorDelegations(ctx, validator)
-	require.NoError(t, err)
-	require.True(t, len(delegations) > 0)
-	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
+				// create validator with 50% commission
+				validators, err := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				suite.Require().Nil(err)
+				suite.Require().True(len(validators) > 0)
+				valAddr, err = sdk.ValAddressFromBech32(validators[0].GetOperator())
+				suite.Require().Nil(err)
 
-	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom:       ptypes.Eden,
-		Denom:           ptypes.Eden,
-		Decimals:        6,
-		CommitEnabled:   true,
-		WithdrawEnabled: true,
-	})
-	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom:       ptypes.BaseCurrency,
-		Denom:           ptypes.BaseCurrency,
-		Decimals:        6,
-		CommitEnabled:   true,
-		WithdrawEnabled: true,
-	})
+				delegations, err := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().Nil(err)
+				suite.Require().True(len(delegations) > 0)
+				addr = sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 
-	// next block
-	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+				// next block
+				suite.ctx = suite.ctx.WithBlockHeight(suite.ctx.BlockHeight() + 1)
 
-	params := estakingKeeper.GetParams(ctx)
-	params.StakeIncentives = &types.IncentiveInfo{
-		EdenAmountPerYear: math.NewInt(1000_000_000_000_000),
-		BlocksDistributed: 1,
+				params := suite.app.EstakingKeeper.GetParams(suite.ctx)
+				params.StakeIncentives = &types.IncentiveInfo{
+					EdenAmountPerYear: math.NewInt(1000_000_000_000_000),
+					BlocksDistributed: 1,
+				}
+				params.MaxEdenRewardAprStakers = math.LegacyNewDec(1000_000)
+				suite.app.EstakingKeeper.SetParams(suite.ctx, params)
+
+				return addr, valAddr
+			},
+			func(addr sdk.AccAddress, valAddr sdk.ValAddress) {
+				// update staker rewards
+				err := suite.app.EstakingKeeper.UpdateStakersRewards(suite.ctx)
+				suite.Require().Nil(err)
+
+				distrAppModule := exdistr.NewAppModule(
+					suite.app.AppCodec(), suite.app.DistrKeeper, suite.app.AccountKeeper,
+					suite.app.CommitmentKeeper, suite.app.EstakingKeeper,
+					&suite.app.AssetprofileKeeper,
+					authtypes.FeeCollectorName, suite.app.GetSubspace(distrtypes.ModuleName))
+				distrAppModule.AllocateTokens(suite.ctx)
+
+				// withdraw eden rewards
+				msgServer := keeper.NewMsgServerImpl(*suite.app.EstakingKeeper)
+				res, err := msgServer.WithdrawReward(suite.ctx, &types.MsgWithdrawReward{
+					DelegatorAddress: addr.String(),
+					ValidatorAddress: valAddr.String(),
+				})
+				suite.Require().Nil(err)
+				suite.Require().Equal(res.Amount.String(), "147608ueden")
+			},
+		},
+		{
+			"update stakers rewards missing asset profile base currency",
+			func() (addr sdk.AccAddress, valAddr sdk.ValAddress) {
+				suite.ResetSuite()
+
+				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
+
+				return sdk.AccAddress{}, sdk.ValAddress{}
+			},
+			func(addr sdk.AccAddress, valAddr sdk.ValAddress) {
+				// update staker rewards
+				err := suite.app.EstakingKeeper.UpdateStakersRewards(suite.ctx)
+				suite.Require().Error(err)
+			},
+		},
+		{
+			"process rewards distribution",
+			func() (addr sdk.AccAddress, valAddr sdk.ValAddress) {
+				suite.ResetSuite()
+
+				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
+
+				// create validator with 50% commission
+				validators, err := suite.app.StakingKeeper.GetAllValidators(suite.ctx)
+				suite.Require().Nil(err)
+				suite.Require().True(len(validators) > 0)
+				valAddr, err = sdk.ValAddressFromBech32(validators[0].GetOperator())
+				suite.Require().Nil(err)
+
+				delegations, err := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().Nil(err)
+				suite.Require().True(len(delegations) > 0)
+				addr = sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
+
+				// next block
+				suite.ctx = suite.ctx.WithBlockHeight(suite.ctx.BlockHeight() + 1)
+
+				params := suite.app.EstakingKeeper.GetParams(suite.ctx)
+				params.StakeIncentives = &types.IncentiveInfo{
+					EdenAmountPerYear: math.NewInt(1000_000_000_000_000),
+					BlocksDistributed: 1,
+				}
+				params.MaxEdenRewardAprStakers = math.LegacyNewDec(1000_000)
+				suite.app.EstakingKeeper.SetParams(suite.ctx, params)
+
+				return addr, valAddr
+			},
+			func(addr sdk.AccAddress, valAddr sdk.ValAddress) {
+				// update staker rewards
+				suite.app.EstakingKeeper.ProcessRewardsDistribution(suite.ctx)
+			},
+		},
+		{
+			"process update incentive params block height out of range",
+			func() (addr sdk.AccAddress, valAddr sdk.ValAddress) {
+				suite.ResetSuite()
+
+				suite.SetAssetProfile()
+
+				// create time based inflation item
+				suite.app.TokenomicsKeeper.SetTimeBasedInflation(suite.ctx, ttypes.TimeBasedInflation{
+					StartBlockHeight: 1,
+					EndBlockHeight:   2,
+					Inflation: &ttypes.InflationEntry{
+						IcsStakingRewards: 1000,
+						LmRewards:         0,
+						CommunityFund:     0,
+						StrategicReserve:  0,
+						TeamTokensVested:  0,
+					},
+					Description: "test",
+					Authority:   suite.app.GovKeeper.GetAuthority(),
+				})
+
+				return addr, valAddr
+			},
+			func(addr sdk.AccAddress, valAddr sdk.ValAddress) {
+				// update staker rewards
+				suite.app.EstakingKeeper.ProcessUpdateIncentiveParams(suite.ctx)
+			},
+		},
+		{
+			"process update incentive params",
+			func() (addr sdk.AccAddress, valAddr sdk.ValAddress) {
+				suite.ResetSuite()
+
+				suite.SetAssetProfile()
+
+				// create time based inflation item
+				suite.app.TokenomicsKeeper.SetTimeBasedInflation(suite.ctx, ttypes.TimeBasedInflation{
+					StartBlockHeight: 1,
+					EndBlockHeight:   100,
+					Inflation: &ttypes.InflationEntry{
+						IcsStakingRewards: 1000,
+						LmRewards:         0,
+						CommunityFund:     0,
+						StrategicReserve:  0,
+						TeamTokensVested:  0,
+					},
+					Description: "test",
+					Authority:   suite.app.GovKeeper.GetAuthority(),
+				})
+
+				suite.ctx = suite.ctx.WithBlockHeight(2)
+
+				return addr, valAddr
+			},
+			func(addr sdk.AccAddress, valAddr sdk.ValAddress) {
+				// update staker rewards
+				suite.app.EstakingKeeper.ProcessUpdateIncentiveParams(suite.ctx)
+			},
+		},
 	}
-	params.MaxEdenRewardAprStakers = math.LegacyNewDec(1000_000)
-	estakingKeeper.SetParams(ctx, params)
 
-	// update staker rewards
-	err = estakingKeeper.UpdateStakersRewards(ctx)
-	require.Nil(t, err)
-
-	distrAppModule := exdistr.NewAppModule(
-		app.AppCodec(), app.DistrKeeper, app.AccountKeeper,
-		app.CommitmentKeeper, app.EstakingKeeper,
-		&app.AssetprofileKeeper,
-		authtypes.FeeCollectorName, app.GetSubspace(distrtypes.ModuleName))
-	distrAppModule.AllocateTokens(ctx)
-
-	// withdraw eden rewards
-	msgServer := keeper.NewMsgServerImpl(*estakingKeeper)
-	res, err := msgServer.WithdrawReward(ctx, &types.MsgWithdrawReward{
-		DelegatorAddress: addr.String(),
-		ValidatorAddress: valAddr,
-	})
-	require.Nil(t, err)
-	require.Equal(t, res.Amount.String(), "147608ueden")
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			addr, valAddr := tc.prerequisiteFunction()
+			tc.postValidateFunction(addr, valAddr)
+		})
+	}
 }

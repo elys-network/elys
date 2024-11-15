@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -53,7 +54,7 @@ func TestKeeper_UnstakeWithElys(t *testing.T) {
 	require.NoError(t, err)
 
 	// Call the Stake function
-	_, err = msgServer.Unstake(sdk.WrapSDKContext(ctx), &types.MsgUnstake{
+	_, err = msgServer.Unstake(ctx, &types.MsgUnstake{
 		Creator:          creator,
 		Asset:            denom,
 		Amount:           uncommitAmount,
@@ -102,7 +103,7 @@ func TestKeeper_UnstakeWithElysNegativeAmount(t *testing.T) {
 	require.NoError(t, err)
 
 	// Call the Stake function
-	_, err = msgServer.Unstake(sdk.WrapSDKContext(ctx), &types.MsgUnstake{
+	_, err = msgServer.Unstake(ctx, &types.MsgUnstake{
 		Creator:          "invalid_address",
 		Asset:            denom,
 		Amount:           uncommitAmount,
@@ -151,7 +152,7 @@ func TestKeeper_UnstakeWithUncommitInvalidValidatorAddress(t *testing.T) {
 	require.NoError(t, err)
 
 	// Call the Stake function
-	_, err = msgServer.Unstake(sdk.WrapSDKContext(ctx), &types.MsgUnstake{
+	_, err = msgServer.Unstake(ctx, &types.MsgUnstake{
 		Creator:          creator,
 		Asset:            denom,
 		Amount:           uncommitAmount,
@@ -199,7 +200,7 @@ func TestKeeper_UnstakeWithUncommit(t *testing.T) {
 	require.NoError(t, err)
 
 	// Call the Stake function
-	_, err = msgServer.Unstake(sdk.WrapSDKContext(ctx), &types.MsgUnstake{
+	_, err = msgServer.Unstake(ctx, &types.MsgUnstake{
 		Creator:          creator,
 		Asset:            denom,
 		Amount:           uncommitAmount,
@@ -248,7 +249,7 @@ func TestKeeper_UnstakeWithUncommitNegativeAmount(t *testing.T) {
 	require.NoError(t, err)
 
 	// Call the Stake function
-	_, err = msgServer.Unstake(sdk.WrapSDKContext(ctx), &types.MsgUnstake{
+	_, err = msgServer.Unstake(ctx, &types.MsgUnstake{
 		Creator:          creator,
 		Asset:            denom,
 		Amount:           uncommitAmount,

@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
@@ -17,7 +16,6 @@ import (
 
 func TestEntryQuerySingle(t *testing.T) {
 	keeper, ctx := keepertest.AssetprofileKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
 	msgs := createNEntry(keeper, ctx, 2)
 	for _, tc := range []struct {
 		desc     string
@@ -52,7 +50,7 @@ func TestEntryQuerySingle(t *testing.T) {
 		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
-			response, err := keeper.Entry(wctx, tc.request)
+			response, err := keeper.Entry(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {

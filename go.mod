@@ -16,8 +16,6 @@ require (
 	cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/tx v0.13.5
 	cosmossdk.io/x/upgrade v0.1.4
-	github.com/CosmWasm/wasmd v0.53.0
-	github.com/CosmWasm/wasmvm/v2 v2.1.3
 	github.com/bandprotocol/bandchain-packet v0.0.2
 	github.com/cometbft/cometbft v0.38.12 // not using v0.38.11 due to vulnerabiltiy https://osv.dev/vulnerability/GHSA-g5xx-c4hv-9ccc https://osv.dev/vulnerability/GO-2024-3112
 	github.com/cometbft/cometbft-db v0.12.0 // indirect
@@ -27,10 +25,8 @@ require (
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-go/modules/capability v1.0.1
 	github.com/cosmos/ibc-go/v8 v8.5.1
-	//github.com/cosmos/interchain-security/v6 v6.3.0
-	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/gorilla/mux v1.8.1
-	github.com/prometheus/client_golang v1.20.5
+	github.com/prometheus/client_golang v1.20.5 // indirect
 	github.com/spf13/cast v1.7.0
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
@@ -213,7 +209,6 @@ require (
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sasha-s/go-deadlock v0.3.1 // indirect
-	github.com/shamaton/msgpack/v2 v2.2.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect

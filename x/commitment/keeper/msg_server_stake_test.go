@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
@@ -53,7 +54,7 @@ func TestKeeper_Stake(t *testing.T) {
 	require.NoError(t, err)
 
 	// Call the Stake function
-	_, err = msgServer.Stake(sdk.WrapSDKContext(ctx), &types.MsgStake{
+	_, err = msgServer.Stake(ctx, &types.MsgStake{
 		Creator:          creator,
 		Asset:            denom,
 		Amount:           uncommitAmount,

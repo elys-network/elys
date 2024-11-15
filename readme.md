@@ -78,13 +78,18 @@ cd elys
 3. Optionally, checkout the specific branch or tag you want to build:
 
 ```bash
-git checkout <version>
+git checkout [version]
 ```
 
 4. Ensure that you have the necessary dependencies installed. For instance, on Ubuntu you need to install the `make` tool:
 
 ```bash
 sudo apt-get install --yes make
+```
+
+   To generate proto files install `buf` and `clang-format`, then:
+```bash
+sh ./scripts/protocgen.sh
 ```
 
 5. **Optional**: Use _RocksDB_ instead of _pebbledb_
@@ -201,7 +206,7 @@ After a draft release is created, make your final changes from the release page 
 
 ## Learn more
 
-- [Twitter](https://twitter.com/elys_network)
+- [X (formerly Twitter)](https://x.com/elys_network)
 - [TestNet Explorer](https://testnet.ping.pub/elys)
 - [Developer Chat](https://discord.gg/elysnetwork)
 - [Github](https://github.com/elys-network)
