@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	sdkmath "cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
@@ -30,25 +29,25 @@ func (suite *KeeperTestSuite) TestGRPCQueryPrice() {
 	for _, price := range prices {
 		suite.app.OracleKeeper.SetPrice(suite.ctx, price)
 	}
-	resp, err := suite.app.OracleKeeper.Price(sdk.WrapSDKContext(suite.ctx), &types.QueryGetPriceRequest{
+	resp, err := suite.app.OracleKeeper.Price(suite.ctx, &types.QueryGetPriceRequest{
 		Asset: "BTC",
 	})
 	suite.Require().NoError(err)
 	suite.Require().Equal(resp.Price, prices[2])
-	resp, err = suite.app.OracleKeeper.Price(sdk.WrapSDKContext(suite.ctx), &types.QueryGetPriceRequest{
+	resp, err = suite.app.OracleKeeper.Price(suite.ctx, &types.QueryGetPriceRequest{
 		Asset:  "BTC",
 		Source: "elys",
 	})
 	suite.Require().NoError(err)
 	suite.Require().Equal(resp.Price, prices[0])
-	resp, err = suite.app.OracleKeeper.Price(sdk.WrapSDKContext(suite.ctx), &types.QueryGetPriceRequest{
+	resp, err = suite.app.OracleKeeper.Price(suite.ctx, &types.QueryGetPriceRequest{
 		Asset:     "BTC",
 		Source:    "elys",
 		Timestamp: 100000,
 	})
 	suite.Require().NoError(err)
 	suite.Require().Equal(resp.Price, prices[0])
-	resp, err = suite.app.OracleKeeper.Price(sdk.WrapSDKContext(suite.ctx), &types.QueryGetPriceRequest{
+	resp, err = suite.app.OracleKeeper.Price(suite.ctx, &types.QueryGetPriceRequest{
 		Asset:     "BTC",
 		Source:    "elys",
 		Timestamp: 11000,

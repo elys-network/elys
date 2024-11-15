@@ -1,10 +1,10 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
+
 	testkeeper "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/masterchef/types"
 	"github.com/stretchr/testify/require"
@@ -12,7 +12,7 @@ import (
 
 func TestShowFeeInfoQuery(t *testing.T) {
 	keeper, ctx := testkeeper.MasterchefKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
+
 	newInfo := types.FeeInfo{
 		GasLp:        math.NewInt(300),
 		GasStakers:   math.NewInt(150),
@@ -27,14 +27,14 @@ func TestShowFeeInfoQuery(t *testing.T) {
 	}
 	keeper.SetFeeInfo(ctx, newInfo, "2024-05-01")
 
-	response, err := keeper.ShowFeeInfo(wctx, &types.QueryShowFeeInfoRequest{Date: "2024-05-01"})
+	response, err := keeper.ShowFeeInfo(ctx, &types.QueryShowFeeInfoRequest{Date: "2024-05-01"})
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryShowFeeInfoResponse{FeeInfo: newInfo}, response)
 }
 
 func TestListFeeInfoQuery(t *testing.T) {
 	keeper, ctx := testkeeper.MasterchefKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
+
 	newInfo := types.FeeInfo{
 		GasLp:        math.NewInt(300),
 		GasStakers:   math.NewInt(150),
@@ -50,7 +50,7 @@ func TestListFeeInfoQuery(t *testing.T) {
 	keeper.SetFeeInfo(ctx, newInfo, "2024-05-01")
 	keeper.SetFeeInfo(ctx, newInfo, "2024-05-02")
 
-	response, err := keeper.ListFeeInfo(wctx, &types.QueryListFeeInfoRequest{})
+	response, err := keeper.ListFeeInfo(ctx, &types.QueryListFeeInfoRequest{})
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryListFeeInfoResponse{FeeInfo: []types.FeeInfo{newInfo, newInfo}}, response)
 }

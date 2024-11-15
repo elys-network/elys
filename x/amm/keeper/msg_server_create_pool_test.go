@@ -197,7 +197,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerCreatePool() {
 			suite.app.AmmKeeper.SetParams(suite.ctx, params)
 
 			resp, err := msgServer.CreatePool(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgCreatePool{
 					Sender:     sender.String(),
 					PoolParams: &tc.poolParams,

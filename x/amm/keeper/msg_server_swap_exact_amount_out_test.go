@@ -177,7 +177,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.SwapExactAmountOut(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgSwapExactAmountOut{
 					Sender:           sender.String(),
 					Routes:           tc.swapRoutes,

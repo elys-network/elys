@@ -178,7 +178,7 @@ func (suite *EstakingKeeperTestSuite) TestEstakingExtendedFunctions() {
 	suite.SetAssetProfile()
 
 	commitmentMsgServer := ckeeper.NewMsgServerImpl(*suite.app.CommitmentKeeper)
-	_, err = commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(suite.ctx), &ctypes.MsgCommitClaimedRewards{
+	_, err = commitmentMsgServer.CommitClaimedRewards(suite.ctx, &ctypes.MsgCommitClaimedRewards{
 		Creator: addr.String(),
 		Denom:   ptypes.Eden,
 		Amount:  math.NewInt(1000_000),

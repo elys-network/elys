@@ -14,7 +14,6 @@ import (
 
 func TestPendingSpotOrderForAddress(t *testing.T) {
 	k, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
 
 	order := types.SpotOrder{
 		OrderId:      1,
@@ -85,7 +84,7 @@ func TestPendingSpotOrderForAddress(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
 
-			response, err := k.PendingSpotOrderForAddress(wctx, tc.request)
+			response, err := k.PendingSpotOrderForAddress(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {

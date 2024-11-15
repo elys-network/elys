@@ -137,7 +137,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 				},
 			}
 			_, err = msgServer.CreatePool(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgCreatePool{
 					Sender:     sender.String(),
 					PoolParams: &tc.poolParams,
@@ -147,7 +147,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 			pool := suite.app.AmmKeeper.GetAllPool(suite.ctx)[0]
 			suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 			resp, err := msgServer.ExitPool(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgExitPool{
 					Sender:        sender.String(),
 					PoolId:        pool.PoolId,
