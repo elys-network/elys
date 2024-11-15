@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -106,8 +105,8 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 
 	// Create a pool
 	// Mint 100000USDC
-	suite.MintTokenToAddress(addr[0], sdkmath.NewInt(10000000000), ptypes.BaseCurrency)
-	suite.MintTokenToAddress(addr[1], sdkmath.NewInt(10000000000), ptypes.BaseCurrency)
+	suite.MintTokenToAddress(addr[0], math.NewInt(10000000000), ptypes.BaseCurrency)
+	suite.MintTokenToAddress(addr[1], math.NewInt(10000000000), ptypes.BaseCurrency)
 
 	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000000)))
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, ammtypes.ModuleName, usdcToken.MulInt(math.NewInt(2)))
@@ -156,11 +155,7 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "20002000000000000000000000")
 	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolBalance(suite.ctx, pools[0].PoolId, addr[1]), share)
 
-	atomToken := sdk.NewCoins(sdk.NewCoin("uatom", math.NewIntWithDecimal(100000000, 6)))
-	err = suite.app.BankKeeper.MintCoins(suite.ctx, ammtypes.ModuleName, atomToken)
-	suite.Require().NoError(err)
-	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ammtypes.ModuleName, addr[0], atomToken)
-	suite.Require().NoError(err)
+	suite.MintTokenToAddress(addr[0], math.NewIntWithDecimal(100000000, 6), ptypes.ATOM)
 
 	_, err = suite.msgServer.AddExternalRewardDenom(suite.ctx, &types.MsgAddExternalRewardDenom{
 		Authority:   suite.app.GovKeeper.GetAuthority(),
@@ -181,11 +176,7 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 
 	// Fill in pool revenue wallet
 	revenueAddress1 := ammtypes.NewPoolRevenueAddress(1)
-	usdcRevToken1 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000)))
-	err = suite.app.BankKeeper.MintCoins(suite.ctx, ammtypes.ModuleName, usdcRevToken1)
-	suite.Require().NoError(err)
-	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ammtypes.ModuleName, revenueAddress1, usdcRevToken1)
-	suite.Require().NoError(err)
+	suite.MintTokenToAddress(revenueAddress1, math.NewInt(100000), ptypes.BaseCurrency)
 
 	// check rewards after 100 block
 	for i := 1; i <= 100; i++ {
