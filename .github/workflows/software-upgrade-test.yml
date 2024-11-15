@@ -33,19 +33,24 @@ jobs:
 
       - name: Retrieve latest binary
         run: |
-          # TODO: temporary solution until next release
-          # DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${LATEST_TAG}/elysd-${LATEST_TAG}-linux-amd64
-          DOWNLOAD_URL=https://snapshots.elys.network/elysd-v0.50-0-patch-1
+          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${LATEST_TAG}/elysd-${LATEST_TAG}-linux-amd64
           OLD_BINARY_PATH=/tmp/elysd-${LATEST_TAG}
 
           # download binary from release
-          curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
+          # curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
 
           # build binary from source
           # git tag -f ${LATEST_TAG}
           # make build
           # mv ./build/elysd $OLD_BINARY_PATH
           # git tag -d ${LATEST_TAG}
+
+          git checkout fix/v0.50.0-temp
+          git tag -f ${LATEST_TAG}
+          make build
+          mv ./build/elysd $OLD_BINARY_PATH
+          git tag -d ${LATEST_TAG}
+          git checkout -
 
           echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
 
