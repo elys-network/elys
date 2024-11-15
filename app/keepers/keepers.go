@@ -43,7 +43,6 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
 	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
@@ -168,7 +167,8 @@ type AppKeepers struct {
 	TierKeeper          tiermodulekeeper.Keeper
 	TradeshieldKeeper   tradeshieldmodulekeeper.Keeper
 
-	HooksICS4Wrapper ibchooks.ICS4Middleware
+	// FIXME: disabled to avoid dependency with wasm
+	// HooksICS4Wrapper ibchooks.ICS4Middleware
 }
 
 func (appKeepers AppKeepers) GetKVStoreKeys() map[string]*storetypes.KVStoreKey {
@@ -576,10 +576,11 @@ func NewAppKeeper(
 	)
 	app.IBCHooksKeeper = &hooksKeeper
 
-	app.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
-		app.IBCKeeper.ChannelKeeper,
-		hooksKeeper,
-	)
+	// FIXME: disabled to avoid dependency with wasm
+	// app.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
+	// 	app.IBCKeeper.ChannelKeeper,
+	// 	hooksKeeper,
+	// )
 
 	// provider depends on gov, so gov must be registered first
 	govConfig := govtypes.DefaultConfig()
