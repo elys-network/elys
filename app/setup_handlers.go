@@ -38,19 +38,6 @@ func (app *ElysApp) setUpgradeHandler() {
 				}
 				consensusParams.Block.MaxBytes = NewMaxBytes
 				app.ConsensusParamsKeeper.ParamsStore.Set(ctx, consensusParams)
-
-				// Iterate over all the keys in the wasm module store
-				// and delete them
-				// Retrieve the wasm module store key
-				storeKey := app.GetKey("wasm")
-
-				store := ctx.KVStore(storeKey)
-
-				iterator := store.Iterator(nil, nil)
-				defer iterator.Close()
-				for ; iterator.Valid(); iterator.Next() {
-					store.Delete(iterator.Key())
-				}
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
