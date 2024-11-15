@@ -90,7 +90,7 @@ func (k Keeper) SwapExactAmountIn(ctx sdk.Context, addr sdk.AccAddress, tokenIn 
     msgServer := ammkeeper.NewMsgServerImpl(k.ammKeeper)
     _, err := msgServer.SwapExactAmountIn
 
-(sdk.WrapSDKContext(ctx), msg)
+(ctx, msg)
     if err != nil {
         return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
     }

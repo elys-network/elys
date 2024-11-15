@@ -99,7 +99,7 @@ func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.TokenomicsKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := ctx
+
 			expected := &types.MsgCreateTimeBasedInflation{
 				Authority:        authority,
 				StartBlockHeight: 100,
@@ -107,10 +107,10 @@ func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 				Description:      description,
 				Inflation:        inflation,
 			}
-			_, err := srv.CreateTimeBasedInflation(wctx, expected)
+			_, err := srv.CreateTimeBasedInflation(ctx, expected)
 			require.NoError(t, err)
 
-			_, err = srv.UpdateTimeBasedInflation(wctx, tc.request)
+			_, err = srv.UpdateTimeBasedInflation(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
@@ -164,9 +164,8 @@ func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.TokenomicsKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := ctx
 
-			_, err := srv.CreateTimeBasedInflation(wctx, &types.MsgCreateTimeBasedInflation{
+			_, err := srv.CreateTimeBasedInflation(ctx, &types.MsgCreateTimeBasedInflation{
 				Description:      "Test create time based inflation",
 				Authority:        authority,
 				StartBlockHeight: 10,
@@ -180,7 +179,7 @@ func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 				},
 			})
 			require.NoError(t, err)
-			_, err = srv.DeleteTimeBasedInflation(wctx, tc.request)
+			_, err = srv.DeleteTimeBasedInflation(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {

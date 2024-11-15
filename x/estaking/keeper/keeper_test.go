@@ -31,14 +31,14 @@ type EstakingKeeperTestSuite struct {
 	valAddr     sdk.ValAddress
 }
 
-func (k *EstakingKeeperTestSuite) SetupTest() {
-	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount(k.T())
+func (suite *EstakingKeeperTestSuite) SetupTest() {
+	app, genAccount, valAddr := simapp.InitElysTestAppWithGenAccount(suite.T())
 
-	k.legacyAmino = app.LegacyAmino()
-	k.ctx = app.BaseApp.NewContext(initChain)
-	k.app = app
-	k.genAccount = genAccount
-	k.valAddr = valAddr
+	suite.legacyAmino = app.LegacyAmino()
+	suite.ctx = app.BaseApp.NewContext(initChain)
+	suite.app = app
+	suite.genAccount = genAccount
+	suite.valAddr = valAddr
 }
 
 func TestKeeperSuite(t *testing.T) {
@@ -178,7 +178,7 @@ func (suite *EstakingKeeperTestSuite) TestEstakingExtendedFunctions() {
 	suite.SetAssetProfile()
 
 	commitmentMsgServer := ckeeper.NewMsgServerImpl(*suite.app.CommitmentKeeper)
-	_, err = commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(suite.ctx), &ctypes.MsgCommitClaimedRewards{
+	_, err = commitmentMsgServer.CommitClaimedRewards(suite.ctx, &ctypes.MsgCommitClaimedRewards{
 		Creator: addr.String(),
 		Denom:   ptypes.Eden,
 		Amount:  math.NewInt(1000_000),

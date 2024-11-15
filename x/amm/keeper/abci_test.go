@@ -13,7 +13,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
+func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	for _, tc := range []struct {
 		desc              string
@@ -206,7 +206,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 		},
 	} {
 		suite.Run(tc.desc, func() {
-			//suite.SetupTest()
+			suite.ResetSuite()
 
 			// bootstrap accounts
 			poolAddr := types.NewPoolAddress(uint64(1))
@@ -294,13 +294,13 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 				switch msg := msg.(type) {
 				case *types.MsgSwapExactAmountIn:
 					_, err := msgServer.SwapExactAmountIn(
-						sdk.WrapSDKContext(suite.ctx),
+						suite.ctx,
 						msg,
 					)
 					suite.Require().NoError(err)
 				case *types.MsgSwapExactAmountOut:
 					_, err := msgServer.SwapExactAmountOut(
-						sdk.WrapSDKContext(suite.ctx),
+						suite.ctx,
 						msg,
 					)
 					suite.Require().NoError(err)
@@ -315,7 +315,7 @@ func (suite *KeeperTestSuite) TestExecuteSwapRequests() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestClearOutdatedSlippageTrack() {
+func (suite *AmmKeeperTestSuite) TestClearOutdatedSlippageTrack() {
 	now := time.Now()
 	tracks := []types.OraclePoolSlippageTrack{
 		{
@@ -342,4 +342,158 @@ func (suite *KeeperTestSuite) TestClearOutdatedSlippageTrack() {
 	suite.app.AmmKeeper.ClearOutdatedSlippageTrack(suite.ctx)
 	tracksStored := suite.app.AmmKeeper.AllSlippageTracks(suite.ctx)
 	suite.Require().Len(tracksStored, 2)
+}
+
+func (suite *AmmKeeperTestSuite) TestAbci() {
+	testCases := []struct {
+		name                 string
+		prerequisiteFunction func()
+		postValidateFunction func()
+	}{
+		{
+			"first pool id with swap amount out",
+			func() {
+				suite.ResetSuite()
+
+				addr := suite.AddAccounts(1, nil)[0]
+
+				msg := &types.MsgSwapExactAmountOut{
+					Sender: addr.String(),
+					Routes: []types.SwapAmountOutRoute{
+						{
+							PoolId:       1,
+							TokenInDenom: ptypes.BaseCurrency,
+						},
+					},
+					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 8000),
+					TokenInMaxAmount: sdkmath.NewInt(1000000),
+					Discount:         sdkmath.LegacyZeroDec(),
+				}
+
+				poolId := suite.app.AmmKeeper.FirstPoolId(msg)
+				suite.Require().Equal(uint64(1), poolId)
+			},
+			func() {},
+		},
+		{
+			"first pool id with a msg that is neither swap amount in nor swap amount out",
+			func() {
+				suite.ResetSuite()
+
+				msg := sdk.Msg(nil)
+
+				poolId := suite.app.AmmKeeper.FirstPoolId(msg)
+				suite.Require().Equal(uint64(0), poolId)
+			},
+			func() {},
+		},
+		{
+			"apply swap request with invalid address in swap exact amount in msg",
+			func() {
+				suite.ResetSuite()
+
+				msg := &types.MsgSwapExactAmountIn{
+					Sender: "invalid",
+				}
+
+				err := suite.app.AmmKeeper.ApplySwapRequest(suite.ctx, msg)
+				suite.Require().Error(err)
+			},
+			func() {},
+		},
+		{
+			"apply swap request with invalid denom in swap exact amount in msg",
+			func() {
+				suite.ResetSuite()
+
+				addr := suite.AddAccounts(1, nil)[0]
+
+				msg := &types.MsgSwapExactAmountIn{
+					Sender: addr.String(),
+					Routes: []types.SwapAmountInRoute{
+						{
+							PoolId:        1,
+							TokenOutDenom: "invalid",
+						},
+					},
+					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
+					TokenOutMinAmount: sdkmath.ZeroInt(),
+					Discount:          sdkmath.LegacyZeroDec(),
+				}
+
+				err := suite.app.AmmKeeper.ApplySwapRequest(suite.ctx, msg)
+				suite.Require().Error(err)
+			},
+			func() {},
+		},
+		{
+			"apply swap request with invalid address in swap exact amount in msg",
+			func() {
+				suite.ResetSuite()
+
+				msg := &types.MsgSwapExactAmountOut{
+					Sender: "invalid",
+				}
+
+				err := suite.app.AmmKeeper.ApplySwapRequest(suite.ctx, msg)
+				suite.Require().Error(err)
+			},
+			func() {},
+		},
+		{
+			"apply swap request with invalid denom in swap exact amount in msg",
+			func() {
+				suite.ResetSuite()
+
+				addr := suite.AddAccounts(1, nil)[0]
+
+				msg := &types.MsgSwapExactAmountOut{
+					Sender: addr.String(),
+					Routes: []types.SwapAmountOutRoute{
+						{
+							PoolId:       1,
+							TokenInDenom: "invalid",
+						},
+					},
+					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 10000),
+					TokenInMaxAmount: sdkmath.ZeroInt(),
+					Discount:         sdkmath.LegacyZeroDec(),
+				}
+
+				err := suite.app.AmmKeeper.ApplySwapRequest(suite.ctx, msg)
+				suite.Require().Error(err)
+			},
+			func() {},
+		},
+		{
+			"apply swap request with invalid swap msg type",
+			func() {
+				suite.ResetSuite()
+
+				msg := sdk.Msg(nil)
+
+				err := suite.app.AmmKeeper.ApplySwapRequest(suite.ctx, msg)
+				suite.Require().Error(err)
+			},
+			func() {},
+		},
+		{
+			"get stacked slippage when get pool returns not found",
+			func() {
+				suite.ResetSuite()
+
+				poolId := uint64(2)
+				ratio := suite.app.AmmKeeper.GetStackedSlippage(suite.ctx, poolId)
+				suite.Require().Equal(sdkmath.LegacyZeroDec(), ratio)
+			},
+			func() {},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			tc.postValidateFunction()
+		})
+	}
 }

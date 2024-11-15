@@ -1,10 +1,10 @@
 package keeper_test
 
 import (
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"strconv"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -15,7 +15,7 @@ import (
 
 func (suite *KeeperTestSuite) TestPriceFeederQuerySingle() {
 	keeper, ctx := suite.app.OracleKeeper, suite.ctx
-	wctx := sdk.WrapSDKContext(ctx)
+
 	msgs := createNPriceFeeder(&keeper, ctx, 2)
 	for _, tc := range []struct {
 		desc     string
@@ -50,7 +50,7 @@ func (suite *KeeperTestSuite) TestPriceFeederQuerySingle() {
 		},
 	} {
 		suite.Run(tc.desc, func() {
-			response, err := keeper.PriceFeeder(wctx, tc.request)
+			response, err := keeper.PriceFeeder(ctx, tc.request)
 			if tc.err != nil {
 				suite.Require().ErrorIs(err, tc.err)
 			} else {
@@ -66,7 +66,7 @@ func (suite *KeeperTestSuite) TestPriceFeederQuerySingle() {
 
 func (suite *KeeperTestSuite) TestPriceFeederQueryPaginated() {
 	keeper, ctx := suite.app.OracleKeeper, suite.ctx
-	wctx := sdk.WrapSDKContext(ctx)
+
 	msgs := createNPriceFeeder(&keeper, ctx, 5)
 
 	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllPriceFeederRequest {
@@ -82,7 +82,7 @@ func (suite *KeeperTestSuite) TestPriceFeederQueryPaginated() {
 	suite.Run("ByOffset", func() {
 		step := 2
 		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.PriceFeederAll(wctx, request(nil, uint64(i), uint64(step), false))
+			resp, err := keeper.PriceFeederAll(ctx, request(nil, uint64(i), uint64(step), false))
 			suite.Require().NoError(err)
 			suite.Require().LessOrEqual(len(resp.PriceFeeder), step)
 			suite.Require().Subset(
@@ -95,7 +95,7 @@ func (suite *KeeperTestSuite) TestPriceFeederQueryPaginated() {
 		step := 2
 		var next []byte
 		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.PriceFeederAll(wctx, request(next, 0, uint64(step), false))
+			resp, err := keeper.PriceFeederAll(ctx, request(next, 0, uint64(step), false))
 			suite.Require().NoError(err)
 			suite.Require().LessOrEqual(len(resp.PriceFeeder), step)
 			suite.Require().Subset(
@@ -106,7 +106,7 @@ func (suite *KeeperTestSuite) TestPriceFeederQueryPaginated() {
 		}
 	})
 	suite.Run("Total", func() {
-		resp, err := keeper.PriceFeederAll(wctx, request(nil, 0, 0, true))
+		resp, err := keeper.PriceFeederAll(ctx, request(nil, 0, 0, true))
 		suite.Require().NoError(err)
 		suite.Require().Equal(len(msgs), int(resp.Pagination.Total))
 		suite.Require().ElementsMatch(
@@ -115,7 +115,7 @@ func (suite *KeeperTestSuite) TestPriceFeederQueryPaginated() {
 		)
 	})
 	suite.Run("InvalidRequest", func() {
-		_, err := keeper.PriceFeederAll(wctx, nil)
+		_, err := keeper.PriceFeederAll(ctx, nil)
 		suite.Require().ErrorIs(err, status.Error(codes.InvalidArgument, "invalid request"))
 	})
 }

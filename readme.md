@@ -78,13 +78,18 @@ cd elys
 3. Optionally, checkout the specific branch or tag you want to build:
 
 ```bash
-git checkout <version>
+git checkout [version]
 ```
 
 4. Ensure that you have the necessary dependencies installed. For instance, on Ubuntu you need to install the `make` tool:
 
 ```bash
 sudo apt-get install --yes make
+```
+
+   To generate proto files install `buf` and `clang-format`, then:
+```bash
+sh ./scripts/protocgen.sh
 ```
 
 5. **Optional**: Use _RocksDB_ instead of _pebbledb_

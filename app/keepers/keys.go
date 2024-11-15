@@ -5,7 +5,6 @@ import (
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	"cosmossdk.io/x/feegrant"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -68,7 +67,6 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		authz.ModuleName,
 		group.StoreKey,
 		consensusparamtypes.StoreKey,
-		wasmtypes.StoreKey,
 
 		//ccvconsumertypes.StoreKey,
 

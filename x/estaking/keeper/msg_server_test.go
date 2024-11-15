@@ -151,7 +151,7 @@ func (suite *EstakingKeeperTestSuite) TestMsgServer() {
 					WithdrawEnabled: true,
 				})
 				commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(*suite.app.CommitmentKeeper)
-				_, err = commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(suite.ctx), &commitmenttypes.MsgCommitClaimedRewards{
+				_, err = commitmentMsgServer.CommitClaimedRewards(suite.ctx, &commitmenttypes.MsgCommitClaimedRewards{
 					Creator: addr.String(),
 					Denom:   ptypes.Eden,
 					Amount:  math.NewInt(1000_000),
@@ -216,7 +216,7 @@ func (suite *EstakingKeeperTestSuite) TestMsgServer() {
 					WithdrawEnabled: true,
 				})
 				commitmentMsgServer := commitmentkeeper.NewMsgServerImpl(*suite.app.CommitmentKeeper)
-				_, err = commitmentMsgServer.CommitClaimedRewards(sdk.WrapSDKContext(suite.ctx), &commitmenttypes.MsgCommitClaimedRewards{
+				_, err = commitmentMsgServer.CommitClaimedRewards(suite.ctx, &commitmenttypes.MsgCommitClaimedRewards{
 					Creator: addr.String(),
 					Denom:   ptypes.EdenB,
 					Amount:  math.NewInt(1000_000),

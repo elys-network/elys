@@ -10,7 +10,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
+func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
@@ -177,7 +177,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 			// execute function
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.JoinPool(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgJoinPool{
 					Sender:         sender.String(),
 					PoolId:         1,
@@ -211,7 +211,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
+func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
@@ -302,7 +302,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			// Step 5: New LP adds single-sided liquidity
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.JoinPool(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgJoinPool{
 					Sender:         sender.String(),
 					PoolId:         1,

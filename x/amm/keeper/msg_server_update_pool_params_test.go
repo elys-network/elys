@@ -11,7 +11,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
+func (suite *AmmKeeperTestSuite) TestMsgServerUpdatePoolParams() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
@@ -153,7 +153,7 @@ func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
 			// execute function
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.CreatePool(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgCreatePool{
 					Sender:     sender.String(),
 					PoolParams: &tc.initialPoolParams,
@@ -188,7 +188,7 @@ func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
 				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), tc.expLpCommitment.Amount.String())
 
 				resp2, err := msgServer.UpdatePoolParams(
-					sdk.WrapSDKContext(suite.ctx),
+					suite.ctx,
 					&types.MsgUpdatePoolParams{
 						Authority:  sender.String(),
 						PoolId:     pools[0].PoolId,

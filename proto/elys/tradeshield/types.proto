@@ -6,40 +6,14 @@ option go_package = "github.com/elys-network/elys/x/tradeshield/types";
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "elys/tradeshield/order.proto";
 import "cosmos_proto/cosmos.proto";
-
-// Spot order
-enum SpotOrderType {
-  STOPLOSS = 0;
-  LIMITSELL = 1;
-  LIMITBUY = 2;
-  MARKETBUY = 3;
-}
 
 enum Status {
   PENDING = 0;
   EXECUTED = 1;
   CANCELED = 2;
   ALL = 3;
-}
-
-message OrderPrice {
-  string base_denom = 1;
-  string quote_denom = 2;
-  string rate = 3 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message TriggerPrice {
-  string trading_asset_denom = 1;
-  string rate = 3 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
 }
 
 message Date {
@@ -64,12 +38,6 @@ enum PerpetualOrderType {
   LIMITCLOSE = 1;
 
   STOPLOSSPERP = 2;
-}
-
-enum PerpetualPosition {
-  UNSPECIFIED = 0;
-  LONG = 1;
-  SHORT = 2;
 }
 
 message LegacyPerpetualOrder {

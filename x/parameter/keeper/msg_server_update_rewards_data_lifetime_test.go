@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/parameter/keeper"
 	"github.com/elys-network/elys/x/parameter/types"
@@ -13,7 +12,6 @@ import (
 func TestMsgServer_UpdateRewardsDataLifetime(t *testing.T) {
 	k, ctx := keepertest.ParameterKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
-	wctx := sdk.WrapSDKContext(ctx)
 
 	tests := []struct {
 		name    string
@@ -61,7 +59,7 @@ func TestMsgServer_UpdateRewardsDataLifetime(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := srv.UpdateRewardsDataLifetime(wctx, tt.msg)
+			got, err := srv.UpdateRewardsDataLifetime(ctx, tt.msg)
 			if tt.wantErr {
 				require.Error(t, err)
 				require.Nil(t, got)

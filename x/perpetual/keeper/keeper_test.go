@@ -69,12 +69,12 @@ type PerpetualKeeperTestSuite struct {
 	app         *simapp.ElysApp
 }
 
-func (k *PerpetualKeeperTestSuite) SetupTest() {
-	app := simapp.InitElysTestApp(initChain, k.T())
+func (suite *PerpetualKeeperTestSuite) SetupTest() {
+	app := simapp.InitElysTestApp(initChain, suite.T())
 
-	k.legacyAmino = app.LegacyAmino()
-	k.ctx = app.BaseApp.NewContext(initChain)
-	k.app = app
+	suite.legacyAmino = app.LegacyAmino()
+	suite.ctx = app.BaseApp.NewContext(initChain)
+	suite.app = app
 }
 
 func TestKeeperSuite(t *testing.T) {

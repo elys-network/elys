@@ -27,15 +27,12 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type Params struct {
-	MinCommissionRate       cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=min_commission_rate,json=minCommissionRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"min_commission_rate"`
-	MaxVotingPower          cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=max_voting_power,json=maxVotingPower,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"max_voting_power"`
-	MinSelfDelegation       cosmossdk_io_math.Int       `protobuf:"bytes,3,opt,name=min_self_delegation,json=minSelfDelegation,proto3,customtype=cosmossdk.io/math.Int" json:"min_self_delegation"`
-	BrokerAddress           string                      `protobuf:"bytes,4,opt,name=broker_address,json=brokerAddress,proto3" json:"broker_address,omitempty"`
-	TotalBlocksPerYear      int64                       `protobuf:"varint,5,opt,name=total_blocks_per_year,json=totalBlocksPerYear,proto3" json:"total_blocks_per_year,omitempty"`
-	RewardsDataLifetime     int64                       `protobuf:"varint,6,opt,name=rewards_data_lifetime,json=rewardsDataLifetime,proto3" json:"rewards_data_lifetime,omitempty"`
-	WasmMaxLabelSize        cosmossdk_io_math.Int       `protobuf:"bytes,7,opt,name=wasm_max_label_size,json=wasmMaxLabelSize,proto3,customtype=cosmossdk.io/math.Int" json:"wasm_max_label_size"`
-	WasmMaxSize             cosmossdk_io_math.Int       `protobuf:"bytes,8,opt,name=wasm_max_size,json=wasmMaxSize,proto3,customtype=cosmossdk.io/math.Int" json:"wasm_max_size"`
-	WasmMaxProposalWasmSize cosmossdk_io_math.Int       `protobuf:"bytes,9,opt,name=wasm_max_proposal_wasm_size,json=wasmMaxProposalWasmSize,proto3,customtype=cosmossdk.io/math.Int" json:"wasm_max_proposal_wasm_size"`
+	MinCommissionRate   cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=min_commission_rate,json=minCommissionRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"min_commission_rate"`
+	MaxVotingPower      cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=max_voting_power,json=maxVotingPower,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"max_voting_power"`
+	MinSelfDelegation   cosmossdk_io_math.Int       `protobuf:"bytes,3,opt,name=min_self_delegation,json=minSelfDelegation,proto3,customtype=cosmossdk.io/math.Int" json:"min_self_delegation"`
+	BrokerAddress       string                      `protobuf:"bytes,4,opt,name=broker_address,json=brokerAddress,proto3" json:"broker_address,omitempty"`
+	TotalBlocksPerYear  int64                       `protobuf:"varint,5,opt,name=total_blocks_per_year,json=totalBlocksPerYear,proto3" json:"total_blocks_per_year,omitempty"`
+	RewardsDataLifetime int64                       `protobuf:"varint,6,opt,name=rewards_data_lifetime,json=rewardsDataLifetime,proto3" json:"rewards_data_lifetime,omitempty"`
 }
 
 func (m *Params) Reset()      { *m = Params{} }
@@ -92,11 +89,15 @@ func (m *Params) GetRewardsDataLifetime() int64 {
 }
 
 type LegacyParams struct {
-	MinCommissionRate  cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=min_commission_rate,json=minCommissionRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"min_commission_rate"`
-	MaxVotingPower     cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=max_voting_power,json=maxVotingPower,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"max_voting_power"`
-	MinSelfDelegation  cosmossdk_io_math.Int       `protobuf:"bytes,3,opt,name=min_self_delegation,json=minSelfDelegation,proto3,customtype=cosmossdk.io/math.Int" json:"min_self_delegation"`
-	BrokerAddress      string                      `protobuf:"bytes,4,opt,name=broker_address,json=brokerAddress,proto3" json:"broker_address,omitempty"`
-	TotalBlocksPerYear int64                       `protobuf:"varint,5,opt,name=total_blocks_per_year,json=totalBlocksPerYear,proto3" json:"total_blocks_per_year,omitempty"`
+	MinCommissionRate       cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=min_commission_rate,json=minCommissionRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"min_commission_rate"`
+	MaxVotingPower          cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=max_voting_power,json=maxVotingPower,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"max_voting_power"`
+	MinSelfDelegation       cosmossdk_io_math.Int       `protobuf:"bytes,3,opt,name=min_self_delegation,json=minSelfDelegation,proto3,customtype=cosmossdk.io/math.Int" json:"min_self_delegation"`
+	BrokerAddress           string                      `protobuf:"bytes,4,opt,name=broker_address,json=brokerAddress,proto3" json:"broker_address,omitempty"`
+	TotalBlocksPerYear      int64                       `protobuf:"varint,5,opt,name=total_blocks_per_year,json=totalBlocksPerYear,proto3" json:"total_blocks_per_year,omitempty"`
+	RewardsDataLifetime     int64                       `protobuf:"varint,6,opt,name=rewards_data_lifetime,json=rewardsDataLifetime,proto3" json:"rewards_data_lifetime,omitempty"`
+	WasmMaxLabelSize        cosmossdk_io_math.Int       `protobuf:"bytes,7,opt,name=wasm_max_label_size,json=wasmMaxLabelSize,proto3,customtype=cosmossdk.io/math.Int" json:"wasm_max_label_size"`
+	WasmMaxSize             cosmossdk_io_math.Int       `protobuf:"bytes,8,opt,name=wasm_max_size,json=wasmMaxSize,proto3,customtype=cosmossdk.io/math.Int" json:"wasm_max_size"`
+	WasmMaxProposalWasmSize cosmossdk_io_math.Int       `protobuf:"bytes,9,opt,name=wasm_max_proposal_wasm_size,json=wasmMaxProposalWasmSize,proto3,customtype=cosmossdk.io/math.Int" json:"wasm_max_proposal_wasm_size"`
 }
 
 func (m *LegacyParams) Reset()      { *m = LegacyParams{} }
@@ -145,6 +146,13 @@ func (m *LegacyParams) GetTotalBlocksPerYear() int64 {
 	return 0
 }
 
+func (m *LegacyParams) GetRewardsDataLifetime() int64 {
+	if m != nil {
+		return m.RewardsDataLifetime
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*Params)(nil), "elys.parameter.Params")
 	proto.RegisterType((*LegacyParams)(nil), "elys.parameter.LegacyParams")
@@ -157,35 +165,35 @@ var fileDescriptor_b61780a5be327c2b = []byte{
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0xd4, 0x41, 0x6b, 0x13, 0x4d,
 	0x18, 0x07, 0xf0, 0xec, 0x9b, 0x36, 0xaf, 0x1d, 0x6d, 0xa8, 0x1b, 0x83, 0x6b, 0x03, 0x9b, 0x52,
 	0x10, 0x0a, 0xd2, 0x0d, 0xd5, 0x9b, 0x37, 0x63, 0x0e, 0x16, 0x22, 0x86, 0x14, 0x14, 0xdb, 0xc3,
-	0xf0, 0x64, 0xf7, 0xc9, 0x76, 0xc8, 0xcc, 0xce, 0x32, 0x33, 0x9a, 0xa4, 0x5f, 0xc1, 0x8b, 0x47,
-	0x8f, 0x7e, 0x08, 0x3f, 0x44, 0x8f, 0xd5, 0x93, 0x78, 0x28, 0x92, 0x7c, 0x11, 0xd9, 0x99, 0x25,
-	0x14, 0x3c, 0xc5, 0x8b, 0x17, 0x6f, 0x33, 0xcf, 0x3f, 0xf3, 0xcb, 0xec, 0xee, 0xc3, 0x43, 0x5a,
-	0xc8, 0xe7, 0xba, 0x93, 0x83, 0x02, 0x81, 0x06, 0x95, 0x5b, 0xe9, 0x28, 0x57, 0xd2, 0x48, 0xbf,
-	0x5e, 0x84, 0xd1, 0x2a, 0xdc, 0xbd, 0x97, 0xca, 0x54, 0xda, 0xa8, 0x53, 0xac, 0xdc, 0xaf, 0x76,
-	0x1f, 0xc4, 0x52, 0x0b, 0xa9, 0xa9, 0x0b, 0xdc, 0xc6, 0x45, 0xfb, 0x5f, 0x37, 0x49, 0x6d, 0x60,
-	0x45, 0x1f, 0x48, 0x43, 0xb0, 0x8c, 0xc6, 0x52, 0x08, 0xa6, 0x35, 0x93, 0x19, 0x55, 0x60, 0x30,
-	0xf0, 0xf6, 0xbc, 0x83, 0xad, 0xee, 0xd1, 0xe5, 0x75, 0xbb, 0xf2, 0xe3, 0xba, 0xdd, 0x72, 0xa7,
-	0x75, 0x32, 0x89, 0x98, 0xec, 0x08, 0x30, 0xe7, 0x51, 0x1f, 0x53, 0x88, 0xe7, 0x3d, 0x8c, 0xbf,
-	0x7d, 0x39, 0x24, 0x25, 0xde, 0xc3, 0x78, 0x78, 0x57, 0xb0, 0xec, 0xf9, 0x0a, 0x1b, 0x82, 0x41,
-	0xff, 0x8c, 0xec, 0x08, 0x98, 0xd1, 0xf7, 0xd2, 0xb0, 0x2c, 0xa5, 0xb9, 0x9c, 0xa2, 0x0a, 0xfe,
-	0xfb, 0x53, 0xbf, 0x2e, 0x60, 0xf6, 0xda, 0x4a, 0x83, 0x02, 0xf2, 0xcf, 0xdc, 0xfd, 0x35, 0xf2,
-	0x31, 0x4d, 0x90, 0x63, 0x0a, 0x86, 0xc9, 0x2c, 0xa8, 0x5a, 0xff, 0x51, 0xe9, 0x37, 0x7f, 0xf7,
-	0x8f, 0x33, 0x73, 0x43, 0x3e, 0xce, 0x8c, 0xbd, 0xf9, 0x09, 0xf2, 0x71, 0x6f, 0xa5, 0xf8, 0x0f,
-	0x49, 0x7d, 0xa4, 0xe4, 0x04, 0x15, 0x85, 0x24, 0x51, 0xa8, 0x75, 0xb0, 0x51, 0xb8, 0xc3, 0x6d,
-	0x57, 0x7d, 0xe6, 0x8a, 0xfe, 0x11, 0x69, 0x1a, 0x69, 0x80, 0xd3, 0x11, 0x97, 0xf1, 0x44, 0xd3,
-	0x1c, 0x15, 0x9d, 0x23, 0xa8, 0x60, 0x73, 0xcf, 0x3b, 0xa8, 0x0e, 0x7d, 0x1b, 0x76, 0x6d, 0x36,
-	0x40, 0xf5, 0x16, 0x41, 0xf9, 0x8f, 0x49, 0x53, 0xe1, 0x14, 0x54, 0xa2, 0x69, 0x02, 0x06, 0x28,
-	0x67, 0x63, 0x34, 0x4c, 0x60, 0x50, 0xb3, 0x47, 0x1a, 0x65, 0xd8, 0x03, 0x03, 0xfd, 0x32, 0xf2,
-	0x4f, 0x49, 0x63, 0x0a, 0x5a, 0xd0, 0xe2, 0x65, 0x72, 0x18, 0x21, 0xa7, 0x9a, 0x5d, 0x60, 0xf0,
-	0xff, 0xfa, 0x8f, 0xba, 0x53, 0x38, 0x2f, 0x61, 0xd6, 0x2f, 0x94, 0x13, 0x76, 0x81, 0xfe, 0x2b,
-	0xb2, 0xbd, 0xb2, 0xad, 0x7a, 0x6b, 0x7d, 0xf5, 0x76, 0xa9, 0x5a, 0x90, 0x91, 0xd6, 0x0a, 0xcc,
-	0x95, 0xcc, 0xa5, 0x06, 0x4e, 0x6d, 0xc5, 0xf2, 0x5b, 0xeb, 0xf3, 0xf7, 0x4b, 0x7e, 0x50, 0x6a,
-	0x6f, 0x40, 0x8b, 0xe2, 0xaf, 0x9e, 0x6e, 0x7c, 0xfa, 0xdc, 0xae, 0xec, 0x7f, 0xa8, 0x92, 0x3b,
-	0xae, 0x69, 0xfe, 0x75, 0xf6, 0x5f, 0xec, 0x6c, 0xf7, 0x35, 0xba, 0x2f, 0x2e, 0x17, 0xa1, 0x77,
-	0xb5, 0x08, 0xbd, 0x9f, 0x8b, 0xd0, 0xfb, 0xb8, 0x0c, 0x2b, 0x57, 0xcb, 0xb0, 0xf2, 0x7d, 0x19,
-	0x56, 0x4e, 0xa3, 0x94, 0x99, 0xf3, 0x77, 0xa3, 0x28, 0x96, 0xa2, 0x53, 0xcc, 0xb1, 0xc3, 0x0c,
-	0xcd, 0x54, 0xaa, 0x89, 0xdd, 0x74, 0x66, 0x37, 0x66, 0x9e, 0x99, 0xe7, 0xa8, 0x47, 0x35, 0x3b,
-	0xb2, 0x9e, 0xfc, 0x0a, 0x00, 0x00, 0xff, 0xff, 0xf7, 0xee, 0x91, 0xaa, 0x12, 0x05, 0x00, 0x00,
+	0xf0, 0x64, 0xf7, 0xc9, 0x76, 0xc8, 0xcc, 0xce, 0x32, 0x33, 0x9a, 0xa4, 0x9f, 0xc2, 0xa3, 0x47,
+	0x3f, 0x84, 0x17, 0xbf, 0x41, 0x8f, 0xc5, 0x8b, 0xe2, 0xa1, 0x48, 0xf2, 0x45, 0x64, 0x67, 0x96,
+	0x50, 0xf0, 0x14, 0x6f, 0x82, 0xb7, 0x99, 0xe7, 0xbf, 0xf3, 0xdb, 0xd9, 0x99, 0xe5, 0x21, 0x2d,
+	0xe4, 0x73, 0xdd, 0xc9, 0x41, 0x81, 0x40, 0x83, 0xca, 0x8d, 0x74, 0x94, 0x2b, 0x69, 0xa4, 0x5f,
+	0x2f, 0xc2, 0x68, 0x15, 0xee, 0xde, 0x4b, 0x65, 0x2a, 0x6d, 0xd4, 0x29, 0x46, 0xee, 0xa9, 0xdd,
+	0x07, 0xb1, 0xd4, 0x42, 0x6a, 0xea, 0x02, 0x37, 0x71, 0xd1, 0xfe, 0x97, 0x2a, 0xa9, 0x0d, 0xac,
+	0xe8, 0x03, 0x69, 0x08, 0x96, 0xd1, 0x58, 0x0a, 0xc1, 0xb4, 0x66, 0x32, 0xa3, 0x0a, 0x0c, 0x06,
+	0xde, 0x9e, 0x77, 0xb0, 0xd5, 0x3d, 0xba, 0xbc, 0x6e, 0x57, 0x7e, 0x5c, 0xb7, 0x5b, 0x6e, 0xb5,
+	0x4e, 0x26, 0x11, 0x93, 0x1d, 0x01, 0xe6, 0x3c, 0xea, 0x63, 0x0a, 0xf1, 0xbc, 0x87, 0xf1, 0xd7,
+	0xcf, 0x87, 0xa4, 0xc4, 0x7b, 0x18, 0x0f, 0xef, 0x0a, 0x96, 0x3d, 0x5f, 0x61, 0x43, 0x30, 0xe8,
+	0x9f, 0x91, 0x1d, 0x01, 0x33, 0xfa, 0x5e, 0x1a, 0x96, 0xa5, 0x34, 0x97, 0x53, 0x54, 0xc1, 0x7f,
+	0x7f, 0xea, 0xd7, 0x05, 0xcc, 0x5e, 0x5b, 0x69, 0x50, 0x40, 0xfe, 0x99, 0xdb, 0xbf, 0x46, 0x3e,
+	0xa6, 0x09, 0x72, 0x4c, 0xc1, 0x30, 0x99, 0x05, 0x55, 0xeb, 0x3f, 0x2a, 0xfd, 0xe6, 0xef, 0xfe,
+	0x71, 0x66, 0x6e, 0xc8, 0xc7, 0x99, 0xb1, 0x3b, 0x3f, 0x41, 0x3e, 0xee, 0xad, 0x14, 0xff, 0x21,
+	0xa9, 0x8f, 0x94, 0x9c, 0xa0, 0xa2, 0x90, 0x24, 0x0a, 0xb5, 0x0e, 0x36, 0x0a, 0x77, 0xb8, 0xed,
+	0xaa, 0xcf, 0x5c, 0xd1, 0x3f, 0x22, 0x4d, 0x23, 0x0d, 0x70, 0x3a, 0xe2, 0x32, 0x9e, 0x68, 0x9a,
+	0xa3, 0xa2, 0x73, 0x04, 0x15, 0x6c, 0xee, 0x79, 0x07, 0xd5, 0xa1, 0x6f, 0xc3, 0xae, 0xcd, 0x06,
+	0xa8, 0xde, 0x22, 0x28, 0xff, 0x31, 0x69, 0x2a, 0x9c, 0x82, 0x4a, 0x34, 0x4d, 0xc0, 0x00, 0xe5,
+	0x6c, 0x8c, 0x86, 0x09, 0x0c, 0x6a, 0x76, 0x49, 0xa3, 0x0c, 0x7b, 0x60, 0xa0, 0x5f, 0x46, 0x4f,
+	0x37, 0x3e, 0x7e, 0x6a, 0x57, 0xf6, 0xbf, 0x6d, 0x92, 0x3b, 0xee, 0x70, 0xfe, 0xdd, 0xe0, 0x5f,
+	0x76, 0x83, 0xfe, 0x29, 0x69, 0x4c, 0x41, 0x0b, 0x5a, 0x1c, 0x26, 0x87, 0x11, 0x72, 0xaa, 0xd9,
+	0x05, 0x06, 0xff, 0xaf, 0xff, 0xa9, 0x3b, 0x85, 0xf3, 0x12, 0x66, 0xfd, 0x42, 0x39, 0x61, 0x17,
+	0xe8, 0xbf, 0x22, 0xdb, 0x2b, 0xdb, 0xaa, 0xb7, 0xd6, 0x57, 0x6f, 0x97, 0xaa, 0x05, 0x19, 0x69,
+	0xad, 0xc0, 0x5c, 0xc9, 0x5c, 0x6a, 0xe0, 0xd4, 0x56, 0x2c, 0xbf, 0xb5, 0x3e, 0x7f, 0xbf, 0xe4,
+	0x07, 0xa5, 0xf6, 0x06, 0xb4, 0x28, 0x5e, 0xe5, 0xfe, 0xec, 0xee, 0x8b, 0xcb, 0x45, 0xe8, 0x5d,
+	0x2d, 0x42, 0xef, 0xe7, 0x22, 0xf4, 0x3e, 0x2c, 0xc3, 0xca, 0xd5, 0x32, 0xac, 0x7c, 0x5f, 0x86,
+	0x95, 0xd3, 0x28, 0x65, 0xe6, 0xfc, 0xdd, 0x28, 0x8a, 0xa5, 0xe8, 0x14, 0xbd, 0xef, 0x30, 0x43,
+	0x33, 0x95, 0x6a, 0x62, 0x27, 0x9d, 0xd9, 0x8d, 0x3e, 0x69, 0xe6, 0x39, 0xea, 0x51, 0xcd, 0xb6,
+	0xb9, 0x27, 0xbf, 0x02, 0x00, 0x00, 0xff, 0xff, 0xad, 0x9f, 0x8e, 0xf9, 0x46, 0x05, 0x00, 0x00,
 }
 
 func (m *Params) Marshal() (dAtA []byte, err error) {
@@ -204,6 +212,76 @@ func (m *Params) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.RewardsDataLifetime != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.RewardsDataLifetime))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.TotalBlocksPerYear != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.TotalBlocksPerYear))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.BrokerAddress) > 0 {
+		i -= len(m.BrokerAddress)
+		copy(dAtA[i:], m.BrokerAddress)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.BrokerAddress)))
+		i--
+		dAtA[i] = 0x22
+	}
+	{
+		size := m.MinSelfDelegation.Size()
+		i -= size
+		if _, err := m.MinSelfDelegation.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	{
+		size := m.MaxVotingPower.Size()
+		i -= size
+		if _, err := m.MaxVotingPower.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.MinCommissionRate.Size()
+		i -= size
+		if _, err := m.MinCommissionRate.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *LegacyParams) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LegacyParams) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -288,71 +366,6 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *LegacyParams) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *LegacyParams) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.TotalBlocksPerYear != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.TotalBlocksPerYear))
-		i--
-		dAtA[i] = 0x28
-	}
-	if len(m.BrokerAddress) > 0 {
-		i -= len(m.BrokerAddress)
-		copy(dAtA[i:], m.BrokerAddress)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.BrokerAddress)))
-		i--
-		dAtA[i] = 0x22
-	}
-	{
-		size := m.MinSelfDelegation.Size()
-		i -= size
-		if _, err := m.MinSelfDelegation.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintParams(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x1a
-	{
-		size := m.MaxVotingPower.Size()
-		i -= size
-		if _, err := m.MaxVotingPower.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintParams(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x12
-	{
-		size := m.MinCommissionRate.Size()
-		i -= size
-		if _, err := m.MinCommissionRate.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintParams(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0xa
-	return len(dAtA) - i, nil
-}
-
 func encodeVarintParams(dAtA []byte, offset int, v uint64) int {
 	offset -= sovParams(v)
 	base := offset
@@ -386,12 +399,6 @@ func (m *Params) Size() (n int) {
 	if m.RewardsDataLifetime != 0 {
 		n += 1 + sovParams(uint64(m.RewardsDataLifetime))
 	}
-	l = m.WasmMaxLabelSize.Size()
-	n += 1 + l + sovParams(uint64(l))
-	l = m.WasmMaxSize.Size()
-	n += 1 + l + sovParams(uint64(l))
-	l = m.WasmMaxProposalWasmSize.Size()
-	n += 1 + l + sovParams(uint64(l))
 	return n
 }
 
@@ -414,6 +421,15 @@ func (m *LegacyParams) Size() (n int) {
 	if m.TotalBlocksPerYear != 0 {
 		n += 1 + sovParams(uint64(m.TotalBlocksPerYear))
 	}
+	if m.RewardsDataLifetime != 0 {
+		n += 1 + sovParams(uint64(m.RewardsDataLifetime))
+	}
+	l = m.WasmMaxLabelSize.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.WasmMaxSize.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.WasmMaxProposalWasmSize.Size()
+	n += 1 + l + sovParams(uint64(l))
 	return n
 }
 
@@ -450,6 +466,228 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinCommissionRate", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MinCommissionRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxVotingPower", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MaxVotingPower.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinSelfDelegation", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MinSelfDelegation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BrokerAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BrokerAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TotalBlocksPerYear", wireType)
+			}
+			m.TotalBlocksPerYear = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.TotalBlocksPerYear |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardsDataLifetime", wireType)
+			}
+			m.RewardsDataLifetime = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RewardsDataLifetime |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipParams(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthParams
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LegacyParams) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowParams
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LegacyParams: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LegacyParams: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -726,209 +964,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipParams(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthParams
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *LegacyParams) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowParams
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: LegacyParams: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: LegacyParams: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MinCommissionRate", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.MinCommissionRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxVotingPower", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.MaxVotingPower.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MinSelfDelegation", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.MinSelfDelegation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BrokerAddress", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.BrokerAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TotalBlocksPerYear", wireType)
-			}
-			m.TotalBlocksPerYear = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.TotalBlocksPerYear |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipParams(dAtA[iNdEx:])
