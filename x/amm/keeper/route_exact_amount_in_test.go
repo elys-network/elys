@@ -157,9 +157,8 @@ func (suite *KeeperTestSuite) TestRouteExactAmountIn() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
-					SwapFee:                  tc.swapFeeIn,
-					FeeDenom:                 ptypes.BaseCurrency,
-					WeightRecoveryFeePortion: sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
+					SwapFee:  tc.swapFeeIn,
+					FeeDenom: ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{

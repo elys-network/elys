@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -27,14 +29,14 @@ func SetupApp(t *testing.T) (keeper.Keeper, sdk.Context) {
 	SetupStableCoinPrices(ctx, oracle)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(100010))
+	addr := authtypes.NewModuleAddress(govtypes.ModuleName)
 
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
-	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
+	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 110000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
 	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr, coins)
 	require.NoError(t, err)
 
 	//app.StakingKeeper.Delegate(ctx, addr[0], math.NewInt(100000), sdk.Unbonded, sdk.NewDec(0.1), math.NewInt(100000))
@@ -52,15 +54,10 @@ func SetupApp(t *testing.T) (keeper.Keeper, sdk.Context) {
 		Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100)),
 	})
 
-	poolParams := &ammtypes.PoolParams{
-		SwapFee:                     math.LegacyZeroDec(),
-		ExitFee:                     math.LegacyZeroDec(),
-		UseOracle:                   false,
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		FeeDenom:                    "",
+	poolParams := ammtypes.PoolParams{
+		SwapFee:   math.LegacyZeroDec(),
+		UseOracle: false,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	// Create a Elys+USDC pool
@@ -68,7 +65,7 @@ func SetupApp(t *testing.T) (keeper.Keeper, sdk.Context) {
 	resp, err := msgServer.CreatePool(
 		sdk.WrapSDKContext(ctx),
 		&ammtypes.MsgCreatePool{
-			Sender:     addr[0].String(),
+			Sender:     addr.String(),
 			PoolParams: poolParams,
 			PoolAssets: poolAssets,
 		})

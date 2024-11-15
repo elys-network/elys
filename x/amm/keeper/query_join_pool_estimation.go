@@ -50,9 +50,10 @@ func (k Keeper) JoinPoolEst(
 			}
 		}
 
+		params := k.GetParams(ctx)
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		cacheCtx, _ := ctx.CacheContext()
-		sharesOut, slippage, weightBalanceBonus, err = pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn)
+		sharesOut, slippage, weightBalanceBonus, err = pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params)
 		if err != nil {
 			return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
@@ -60,10 +61,11 @@ func (k Keeper) JoinPoolEst(
 		return tokensIn, sharesOut, slippage, weightBalanceBonus, err
 	}
 
+	params := k.GetParams(ctx)
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 	cacheCtx, _ := ctx.CacheContext()
-	sharesOut, slippage, weightBalanceBonus, err = pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs)
+	sharesOut, slippage, weightBalanceBonus, err = pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params)
 	if err != nil {
 		return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}

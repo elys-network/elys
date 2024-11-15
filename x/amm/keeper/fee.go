@@ -23,7 +23,8 @@ func (k Keeper) OnCollectFee(ctx sdk.Context, pool types.Pool, fee sdk.Coins) er
 	poolRevenueAddress := types.NewPoolRevenueAddress(pool.PoolId)
 	revenueAmount := fee
 	if pool.PoolParams.UseOracle {
-		weightRecoveryFee := PortionCoins(fee, pool.PoolParams.WeightRecoveryFeePortion)
+		params := k.GetParams(ctx)
+		weightRecoveryFee := PortionCoins(fee, params.WeightRecoveryFeePortion)
 		revenueAmount = fee.Sub(weightRecoveryFee...)
 	}
 
@@ -44,6 +45,7 @@ func (k Keeper) OnCollectFee(ctx sdk.Context, pool types.Pool, fee sdk.Coins) er
 // No fee management required when doing swap from fees to revenue token
 func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk.Coins) error {
 	poolRevenueAddress := types.NewPoolRevenueAddress(pool.PoolId)
+	params := k.GetParams(ctx)
 	for _, tokenIn := range fee {
 		// skip for fee denom
 		if tokenIn.Denom == pool.PoolParams.FeeDenom {
@@ -52,7 +54,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-		tokenOutCoin, _, _, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdkmath.LegacyZeroDec(), k.accountedPoolKeeper, math.LegacyOneDec())
+		tokenOutCoin, _, _, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdkmath.LegacyZeroDec(), k.accountedPoolKeeper, math.LegacyOneDec(), params)
 		if err != nil {
 			return err
 		}

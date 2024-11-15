@@ -34,14 +34,9 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 			Address:           ammtypes.NewPoolAddress(poolId).String(),
 			RebalanceTreasury: ammtypes.NewPoolRebalanceTreasury(poolId).String(),
 			PoolParams: ammtypes.PoolParams{
-				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-				WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   math.LegacyZeroDec(),
-				SwapFee:                     math.LegacyZeroDec(),
-				ExitFee:                     math.LegacyZeroDec(),
-				FeeDenom:                    ptypes.BaseCurrency,
+				UseOracle: true,
+				SwapFee:   math.LegacyZeroDec(),
+				FeeDenom:  ptypes.BaseCurrency,
 			},
 			TotalShares: sdk.NewCoin("pool/1", math.NewInt(100)),
 			PoolAssets:  poolAssets,

@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
@@ -80,8 +82,15 @@ func TestKeeperSuite(t *testing.T) {
 
 func (suite *KeeperTestSuite) SetAmmParams() {
 	suite.app.AmmKeeper.SetParams(suite.ctx, types.Params{
-		PoolCreationFee:       sdkmath.NewInt(10000000),
-		SlippageTrackDuration: 604800,
+		PoolCreationFee:             sdkmath.NewInt(10_000_000),
+		SlippageTrackDuration:       604800,
+		BaseAssets:                  []string{ptypes.BaseCurrency},
+		AllowedPoolCreators:         []string{authtypes.NewModuleAddress(govtypes.ModuleName).String()},
+		WeightBreakingFeeExponent:   sdkmath.LegacyMustNewDecFromStr("2.5"),
+		WeightBreakingFeeMultiplier: sdkmath.LegacyMustNewDecFromStr("0.0005"),
+		WeightBreakingFeePortion:    sdkmath.LegacyMustNewDecFromStr("0.5"),
+		WeightRecoveryFeePortion:    sdkmath.LegacyMustNewDecFromStr("0.1"),
+		ThresholdWeightDifference:   sdkmath.LegacyMustNewDecFromStr("0.3"),
 	})
 }
 

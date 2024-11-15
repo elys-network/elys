@@ -155,12 +155,10 @@ func TestCollectGasFees(t *testing.T) {
 		},
 	}
 
-	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.1")
-	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.1")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.01")
 
-	poolParams := &ammtypes.PoolParams{
+	poolParams := ammtypes.PoolParams{
 		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -231,12 +229,10 @@ func TestCollectDEXRevenue(t *testing.T) {
 		},
 	}
 
-	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.1")
-	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.1")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.01")
 
-	poolParams := &ammtypes.PoolParams{
+	poolParams := ammtypes.PoolParams{
 		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -395,12 +391,10 @@ func TestExternalRewardsDistribution(t *testing.T) {
 		},
 	}
 
-	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.1")
-	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.1")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.01")
 
-	poolParams := &ammtypes.PoolParams{
+	poolParams := ammtypes.PoolParams{
 		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(

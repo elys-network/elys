@@ -13,6 +13,7 @@ func TestParamsQuery(t *testing.T) {
 	keeper, ctx, _, _ := testkeeper.AmmKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	params := types.DefaultParams()
+	params.BaseAssets = nil
 	keeper.SetParams(ctx, params)
 
 	response, err := keeper.Params(wctx, &types.QueryParamsRequest{})

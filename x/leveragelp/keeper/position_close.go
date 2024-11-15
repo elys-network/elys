@@ -13,7 +13,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	}
 
 	// Exit liquidity with collateral token
-	_, exitCoinsAfterExitFee, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpAmount, sdk.Coins{}, position.Collateral.Denom, isLiquidation)
+	exitCoins, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpAmount, sdk.Coins{}, position.Collateral.Denom, isLiquidation)
 	if err != nil {
 		return math.ZeroInt(), err
 	}
@@ -38,7 +38,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	if bal.Amount.LT(repayAmount) {
 		repayAmount = bal.Amount
 	} else {
-		userAmount = exitCoinsAfterExitFee[0].Amount.Sub(repayAmount)
+		userAmount = exitCoins[0].Amount.Sub(repayAmount)
 	}
 
 	if repayAmount.IsPositive() {

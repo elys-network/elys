@@ -38,7 +38,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 	// Get the next pool ID and increment the pool ID counter
 	// Create the pool with the given pool ID
 	poolId := k.GetNextPoolId(ctx)
-	pool, err := types.NewBalancerPool(poolId, *msg.PoolParams, msg.PoolAssets, ctx.BlockTime())
+	pool, err := types.NewBalancerPool(poolId, msg.PoolParams, msg.PoolAssets, ctx.BlockTime())
 	if err != nil {
 		return 0, err
 	}

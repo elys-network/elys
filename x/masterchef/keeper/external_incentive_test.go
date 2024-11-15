@@ -148,11 +148,9 @@ func TestUSDCExternalIncentive(t *testing.T) {
 	}
 
 	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.0")
-	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.0")
 
-	poolParams := &ammtypes.PoolParams{
+	poolParams := ammtypes.PoolParams{
 		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -171,7 +169,7 @@ func TestUSDCExternalIncentive(t *testing.T) {
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
-	_, _, err = amm.ExitPool(ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
+	_, err = amm.ExitPool(ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
 	require.NoError(t, err)
 
 	// new user join pool with same shares

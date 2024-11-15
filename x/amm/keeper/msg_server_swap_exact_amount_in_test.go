@@ -211,15 +211,15 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	swapFee := sdkmath.LegacyZeroDec()
 	tokenIn := sdk.NewInt64Coin(ptypes.BaseCurrency, 100000)
 	tokenOutMin := sdkmath.ZeroInt()
-	tokenOut := sdk.NewInt64Coin("uusdt", 99900)
+	tokenOut := sdk.NewInt64Coin("uusdt", 99817)
 	swapRoute := []types.SwapAmountInRoute{
 		{
 			PoolId:        1,
 			TokenOutDenom: "uusdt",
 		},
 	}
-	expSenderBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 99900)}
-	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 99024)}
+	expSenderBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 99817)}
+	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 98924)}
 
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
@@ -284,7 +284,7 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 			Discount:          sdkmath.LegacyZeroDec(),
 		})
 	suite.Require().NoError(err)
-	suite.Require().Equal(resp.TokenOutAmount.String(), tokenOut.Amount.String())
+	suite.Require().Equal(tokenOut.Amount.String(), resp.TokenOutAmount.String())
 	suite.app.AmmKeeper.EndBlocker(cacheCtx)
 
 	// check balance change on sender

@@ -32,29 +32,33 @@ func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, poolAddr, poolInit)
 	suite.Require().NoError(err)
 
+	ammParams := suite.app.AmmKeeper.GetParams(suite.ctx)
+	ammParams.WeightBreakingFeeMultiplier = math.LegacyZeroDec()
+	ammParams.WeightBreakingFeeExponent = math.LegacyNewDecWithPrec(25, 1) // 2.5
+	ammParams.WeightRecoveryFeePortion = math.LegacyNewDecWithPrec(10, 2)  // 10%
+	ammParams.ThresholdWeightDifference = math.LegacyZeroDec()
+	suite.app.AmmKeeper.SetParams(suite.ctx, ammParams)
+
 	suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
 		PoolId:            1,
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: ammtypes.PoolParams{
-			SwapFee:                     math.LegacyZeroDec(),
-			ExitFee:                     math.LegacyZeroDec(),
-			UseOracle:                   true,
-			WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-			WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   math.LegacyZeroDec(),
-			FeeDenom:                    "uusdc",
+			SwapFee:   math.LegacyZeroDec(),
+			UseOracle: true,
+			FeeDenom:  "uusdc",
 		},
 		TotalShares: sdk.NewCoin("amm/pool/1", math.NewInt(2).Mul(ammtypes.OneShare)),
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  poolInit[0],
-				Weight: math.NewInt(10),
+				Token:                  poolInit[0],
+				Weight:                 math.NewInt(10),
+				ExternalLiquidityRatio: math.LegacyOneDec(),
 			},
 			{
-				Token:  poolInit[1],
-				Weight: math.NewInt(10),
+				Token:                  poolInit[1],
+				Weight:                 math.NewInt(10),
+				ExternalLiquidityRatio: math.LegacyOneDec(),
 			},
 		},
 		TotalWeight: math.NewInt(20),

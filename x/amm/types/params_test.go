@@ -4,15 +4,11 @@ import (
 	"cosmossdk.io/math"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/yaml.v2"
 	"testing"
 )
 
 func TestDefaultParams(t *testing.T) {
-	require.Equal(t, types.DefaultParams(), types.NewParams(math.NewInt(10_000_000), 86400*7, false))
-	output, err := yaml.Marshal(types.DefaultParams())
-	require.NoError(t, err)
-	require.Equal(t, types.DefaultParams().String(), string(output))
+	require.Equal(t, types.DefaultParams(), types.NewParams(math.NewInt(10_000_000), 86400*7, []string{}))
 }
 
 func TestParamsValidation(t *testing.T) {

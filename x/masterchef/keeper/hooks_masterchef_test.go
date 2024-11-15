@@ -153,11 +153,9 @@ func TestHookMasterchef(t *testing.T) {
 	}
 
 	argSwapFee := math.LegacyMustNewDecFromStr("0.0")
-	argExitFee := math.LegacyMustNewDecFromStr("0.0")
 
-	poolParams := &ammtypes.PoolParams{
+	poolParams := ammtypes.PoolParams{
 		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -176,7 +174,7 @@ func TestHookMasterchef(t *testing.T) {
 	// check length of pools
 	require.Equal(t, len(pools), 1)
 
-	_, _, err = amm.ExitPool(ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
+	_, err = amm.ExitPool(ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
 	require.NoError(t, err)
 
 	// new user join pool with same shares
@@ -262,7 +260,7 @@ func TestHookMasterchef(t *testing.T) {
 	require.Len(t, res.TotalRewards, 0)
 
 	// first user exit pool
-	_, _, err = amm.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false)
+	_, err = amm.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false)
 	require.NoError(t, err)
 
 	// check rewards after 100 block

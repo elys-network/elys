@@ -25,67 +25,43 @@ func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
 	}{
 		{
 			desc:              "zero tvl pool creation",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.Elys, 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000)},
 			initialPoolParams: types.PoolParams{
-				SwapFee:                     sdkmath.LegacyZeroDec(),
-				ExitFee:                     sdkmath.LegacyZeroDec(),
-				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
-				FeeDenom:                    ptypes.BaseCurrency,
+				SwapFee:   sdkmath.LegacyZeroDec(),
+				UseOracle: false,
+				FeeDenom:  ptypes.BaseCurrency,
 			},
 			updatedPoolParams: types.PoolParams{
-				SwapFee:                     sdkmath.LegacyMustNewDecFromStr("0.01"),
-				ExitFee:                     sdkmath.LegacyMustNewDecFromStr("0.02"),
-				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
-				FeeDenom:                    "feedenom",
+				SwapFee:   sdkmath.LegacyMustNewDecFromStr("0.01"),
+				UseOracle: false,
+				FeeDenom:  "feedenom",
 			},
 			poolAssets: []types.PoolAsset{
-				{
-					Token:  sdk.NewInt64Coin(ptypes.Eden, 1000000),
-					Weight: sdkmath.OneInt(),
-				},
 				{
 					Token:  sdk.NewInt64Coin(ptypes.Elys, 1000000),
 					Weight: sdkmath.OneInt(),
 				},
+				{
+					Token:  sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000),
+					Weight: sdkmath.OneInt(),
+				},
 			},
 			expSenderBalance: sdk.Coins{},
-			expLpCommitment:  sdk.NewCoin("amm/pool/1", sdkmath.NewInt(100).Mul(types.OneShare)),
+			expLpCommitment:  sdk.NewCoin("amm/pool/1", sdkmath.NewInt(2000000000000000000)),
 			expPass:          true,
 		},
 		{
 			desc:              "positive tvl pool creation",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			initialPoolParams: types.PoolParams{
-				SwapFee:                     sdkmath.LegacyZeroDec(),
-				ExitFee:                     sdkmath.LegacyZeroDec(),
-				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
-				FeeDenom:                    ptypes.BaseCurrency,
+				SwapFee:   sdkmath.LegacyZeroDec(),
+				UseOracle: false,
+				FeeDenom:  ptypes.BaseCurrency,
 			},
 			updatedPoolParams: types.PoolParams{
-				SwapFee:                     sdkmath.LegacyZeroDec(),
-				ExitFee:                     sdkmath.LegacyZeroDec(),
-				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
-				FeeDenom:                    ptypes.BaseCurrency,
+				SwapFee:   sdkmath.LegacyZeroDec(),
+				UseOracle: false,
+				FeeDenom:  ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{
 				{
@@ -105,15 +81,9 @@ func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
 			desc:              "not enough balance to create pool",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000000)},
 			initialPoolParams: types.PoolParams{
-				SwapFee:                     sdkmath.LegacyZeroDec(),
-				ExitFee:                     sdkmath.LegacyZeroDec(),
-				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
-				FeeDenom:                    ptypes.BaseCurrency,
+				SwapFee:   sdkmath.LegacyZeroDec(),
+				UseOracle: false,
+				FeeDenom:  ptypes.BaseCurrency,
 			},
 			poolAssets: []types.PoolAsset{
 				{
@@ -156,7 +126,7 @@ func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgCreatePool{
 					Sender:     sender.String(),
-					PoolParams: &tc.initialPoolParams,
+					PoolParams: tc.initialPoolParams,
 					PoolAssets: tc.poolAssets,
 				})
 			if !tc.expPass {
@@ -192,7 +162,7 @@ func (suite *KeeperTestSuite) TestMsgServerUpdatePoolParams() {
 					&types.MsgUpdatePoolParams{
 						Authority:  sender.String(),
 						PoolId:     pools[0].PoolId,
-						PoolParams: &tc.updatedPoolParams,
+						PoolParams: tc.updatedPoolParams,
 					})
 
 				suite.Require().NoError(err)

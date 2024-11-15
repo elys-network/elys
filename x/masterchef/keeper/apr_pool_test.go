@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
@@ -28,14 +30,14 @@ func TestCalculatePoolAprs(t *testing.T) {
 	SetupStableCoinPrices(ctx, oracle)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, sdkmath.NewInt(100010))
+	addr := authtypes.NewModuleAddress(govtypes.ModuleName)
 
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
-	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
+	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 110000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr, coins)
 	require.NoError(t, err)
 
 	var poolAssets []ammtypes.PoolAsset
@@ -51,15 +53,10 @@ func TestCalculatePoolAprs(t *testing.T) {
 		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100)),
 	})
 
-	poolParams := &ammtypes.PoolParams{
-		SwapFee:                     sdkmath.LegacyZeroDec(),
-		ExitFee:                     sdkmath.LegacyZeroDec(),
-		UseOracle:                   false,
-		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-		FeeDenom:                    "",
+	poolParams := ammtypes.PoolParams{
+		SwapFee:   sdkmath.LegacyZeroDec(),
+		UseOracle: false,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	// Create a Elys+USDC pool
@@ -67,7 +64,7 @@ func TestCalculatePoolAprs(t *testing.T) {
 	resp, err := msgServer.CreatePool(
 		sdk.WrapSDKContext(ctx),
 		&ammtypes.MsgCreatePool{
-			Sender:     addr[0].String(),
+			Sender:     addr.String(),
 			PoolParams: poolParams,
 			PoolAssets: poolAssets,
 		})

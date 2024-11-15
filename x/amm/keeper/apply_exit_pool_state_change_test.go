@@ -43,21 +43,13 @@ func (suite *KeeperTestSuite) TestApplyExitPoolStateChange_WithdrawFromCommitmen
 		},
 	}
 
-	swapFee, err := sdkmath.LegacyNewDecFromStr("0.1")
+	swapFee, err := sdkmath.LegacyNewDecFromStr("0.01")
 	suite.Require().NoError(err)
 
-	exitFee, err := sdkmath.LegacyNewDecFromStr("0.1")
-	suite.Require().NoError(err)
-
-	poolParams := &atypes.PoolParams{
-		SwapFee:                     swapFee,
-		ExitFee:                     exitFee,
-		UseOracle:                   true,
-		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-		FeeDenom:                    ptypes.BaseCurrency,
+	poolParams := atypes.PoolParams{
+		SwapFee:   swapFee,
+		UseOracle: true,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	msg := types.NewMsgCreatePool(
@@ -79,6 +71,6 @@ func (suite *KeeperTestSuite) TestApplyExitPoolStateChange_WithdrawFromCommitmen
 	suite.Require().True(lpTokenBalance.Amount.Equal(sdkmath.ZeroInt()))
 
 	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-	_, err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins, false)
+	err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins, false)
 	suite.Require().NoError(err)
 }

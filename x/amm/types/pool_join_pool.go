@@ -120,6 +120,7 @@ func (p *Pool) JoinPool(
 	ctx sdk.Context, snapshot *Pool,
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
+	params Params,
 ) (numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
@@ -195,14 +196,14 @@ func (p *Pool) JoinPool(
 	// weight breaking fee as in Plasma pool
 	weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenInDenom)
 	weightOut := sdkmath.LegacyOneDec().Sub(weightIn)
-	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
+	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, distanceDiff, params)
 
 	// weight recovery reward = weight breaking fee * weight recovery fee portion
-	weightRecoveryReward := weightBreakingFee.Mul(p.PoolParams.WeightRecoveryFeePortion)
+	weightRecoveryReward := weightBreakingFee.Mul(params.WeightRecoveryFeePortion)
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus = weightBreakingFee.Neg()
-	if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) && distanceDiff.IsNegative() {
+	if initialWeightDistance.GT(params.ThresholdWeightDifference) && distanceDiff.IsNegative() {
 		weightBalanceBonus = weightRecoveryReward
 		// set weight breaking fee to zero if bonus is applied
 		weightBreakingFee = sdkmath.LegacyZeroDec()

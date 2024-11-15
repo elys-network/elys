@@ -1,10 +1,11 @@
 package keeper_test
 
 import (
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"time"
 
 	sdkmath "cosmossdk.io/math"
-	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/keeper"
@@ -28,15 +29,9 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 			desc:            "successful non-oracle exit pool",
 			poolInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
-				SwapFee:                     sdkmath.LegacyZeroDec(),
-				ExitFee:                     sdkmath.LegacyZeroDec(),
-				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
-				FeeDenom:                    ptypes.BaseCurrency,
+				SwapFee:   sdkmath.LegacyZeroDec(),
+				UseOracle: false,
+				FeeDenom:  ptypes.BaseCurrency,
 			},
 			shareInAmount:    types.OneShare.Quo(sdkmath.NewInt(5)),
 			tokenOutDenom:    "",
@@ -48,15 +43,9 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 			desc:            "not enough balance to exit pool - non-oracle pool",
 			poolInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
-				SwapFee:                     sdkmath.LegacyZeroDec(),
-				ExitFee:                     sdkmath.LegacyZeroDec(),
-				UseOracle:                   false,
-				WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
-				FeeDenom:                    ptypes.BaseCurrency,
+				SwapFee:   sdkmath.LegacyZeroDec(),
+				UseOracle: false,
+				FeeDenom:  ptypes.BaseCurrency,
 			},
 			shareInAmount:    types.OneShare.Quo(sdkmath.NewInt(5)),
 			tokenOutDenom:    "",
@@ -68,42 +57,30 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 			desc:            "oracle pool exit - breaking weight on balanced pool",
 			poolInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)},
 			poolParams: types.PoolParams{
-				SwapFee:                     sdkmath.LegacyZeroDec(),
-				ExitFee:                     sdkmath.LegacyZeroDec(),
-				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
-				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdkmath.LegacyNewDecWithPrec(2, 1),  // 20%
-				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
-				FeeDenom:                    ptypes.BaseCurrency,
+				SwapFee:   sdkmath.LegacyZeroDec(),
+				UseOracle: true,
+				FeeDenom:  ptypes.BaseCurrency,
 			},
 			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),
 			tokenOutDenom: "uusdt",
-			minAmountsOut: sdk.Coins{sdk.NewInt64Coin("uusdt", 98699)},
+			minAmountsOut: sdk.Coins{sdk.NewInt64Coin("uusdt", 99935)},
 			// expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 95114)}, // slippage enabled
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 98699)}, // slippage disabled
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 99935)}, // slippage disabled
 			expPass:          true,
 		},
 		{
 			desc:            "oracle pool exit - weight recovering on imbalanced pool",
 			poolInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1500000), sdk.NewInt64Coin("uusdt", 500000)},
 			poolParams: types.PoolParams{
-				SwapFee:                     sdkmath.LegacyZeroDec(),
-				ExitFee:                     sdkmath.LegacyZeroDec(),
-				UseOracle:                   true,
-				WeightBreakingFeeMultiplier: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
-				WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-				WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-				ThresholdWeightDifference:   sdkmath.LegacyNewDecWithPrec(2, 1),  // 20%
-				WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
-				FeeDenom:                    ptypes.BaseCurrency,
+				SwapFee:   sdkmath.LegacyZeroDec(),
+				UseOracle: true,
+				FeeDenom:  ptypes.BaseCurrency,
 			},
 			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),
 			tokenOutDenom: ptypes.BaseCurrency,
-			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 86881)},
+			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99344)},
 			// expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)}, // slippage enabled
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 86881)}, // slippage disabled
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99344)}, // slippage disabled
 			expPass:          true,
 		},
 	} {
@@ -114,7 +91,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 			suite.SetupAssetProfile()
 
 			// bootstrap accounts
-			sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+			sender := authtypes.NewModuleAddress(govtypes.ModuleName)
 			params := suite.app.AmmKeeper.GetParams(suite.ctx)
 			// bootstrap balances
 			poolCreationFee := sdk.NewCoin(ptypes.Elys, params.PoolCreationFee)
@@ -140,7 +117,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				sdk.WrapSDKContext(suite.ctx),
 				&types.MsgCreatePool{
 					Sender:     sender.String(),
-					PoolParams: &tc.poolParams,
+					PoolParams: tc.poolParams,
 					PoolAssets: poolAssets,
 				})
 			suite.Require().NoError(err)

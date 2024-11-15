@@ -179,6 +179,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 	swapFee sdkmath.LegacyDec,
 	accPoolKeeper AccountedPoolKeeper,
 	weightBreakingFeePerpetualFactor math.LegacyDec,
+	params Params,
 ) (tokenOut sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, err error) {
 	balancerOutCoin, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, accPoolKeeper)
 	if err != nil {
@@ -304,13 +305,13 @@ func (p *Pool) SwapOutAmtGivenIn(
 	// weight breaking fee as in Plasma pool
 	weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenIn.Denom)
 	weightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenOutDenom)
-	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, p.PoolParams, distanceDiff)
+	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, distanceDiff, params)
 
 	// weightBreakingFeePerpetualFactor is 1 if not send by perpetual
 	weightBreakingFee = weightBreakingFee.Mul(weightBreakingFeePerpetualFactor)
 
 	// weight recovery reward = weight breaking fee * weight recovery fee portion
-	weightRecoveryReward := weightBreakingFee.Mul(p.PoolParams.WeightRecoveryFeePortion)
+	weightRecoveryReward := weightBreakingFee.Mul(params.WeightRecoveryFeePortion)
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus = weightBreakingFee.Neg()
@@ -321,7 +322,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 		weightBalanceBonus = sdkmath.LegacyZeroDec()
 
 		// set weight breaking fee to zero if bonus is applied
-		if initialWeightDistance.GT(p.PoolParams.ThresholdWeightDifference) {
+		if initialWeightDistance.GT(params.ThresholdWeightDifference) {
 			weightBalanceBonus = weightRecoveryReward
 		}
 	}

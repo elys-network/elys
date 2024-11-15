@@ -85,14 +85,9 @@ func (suite *KeeperTestSuite) TestOnCollectFee() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
-					SwapFee:                     sdkmath.LegacyZeroDec(),
-					ExitFee:                     sdkmath.LegacyZeroDec(),
-					UseOracle:                   false,
-					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-					FeeDenom:                    ptypes.BaseCurrency,
+					SwapFee:   sdkmath.LegacyZeroDec(),
+					UseOracle: false,
+					FeeDenom:  ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{
@@ -181,14 +176,9 @@ func (suite *KeeperTestSuite) TestSwapFeesToRevenueToken() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
-					SwapFee:                     sdkmath.LegacyZeroDec(),
-					ExitFee:                     sdkmath.LegacyZeroDec(),
-					UseOracle:                   false,
-					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-					FeeDenom:                    ptypes.BaseCurrency,
+					SwapFee:   sdkmath.LegacyZeroDec(),
+					UseOracle: false,
+					FeeDenom:  ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets: []types.PoolAsset{
