@@ -7,7 +7,6 @@ import (
 	feegrantmodule "cosmossdk.io/x/feegrant/module"
 	"cosmossdk.io/x/upgrade"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -101,7 +100,6 @@ var maccPerms = map[string][]string{
 	govtypes.ModuleName:            {authtypes.Burner},
 	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:         nil,
-	wasm.ModuleName:                {authtypes.Burner},
 
 	minttypes.ModuleName: {authtypes.Minter}, // Need in writing test cases to initialize accounts with balances, otherwise no use
 
@@ -140,7 +138,6 @@ func appModules(
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
-		wasm.NewAppModule(appCodec, &app.AppKeepers.WasmKeeper, app.AppKeepers.StakingKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasm.ModuleName)),
 		ibc.NewAppModule(app.IBCKeeper),
 		ibctm.NewAppModule(),
 		params.NewAppModule(app.ParamsKeeper),
@@ -203,7 +200,6 @@ func simulationModules(
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		wasm.NewAppModule(appCodec, &app.AppKeepers.WasmKeeper, app.AppKeepers.StakingKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasm.ModuleName)),
 		ibc.NewAppModule(app.IBCKeeper),
 		transfer.NewAppModule(app.TransferKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
@@ -273,7 +269,6 @@ func orderBeginBlockers() []string {
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
 		perpetualmoduletypes.ModuleName,
-		wasm.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
@@ -326,7 +321,6 @@ func orderEndBlockers() []string {
 		ammmoduletypes.ModuleName,
 		parametermoduletypes.ModuleName,
 		perpetualmoduletypes.ModuleName,
-		wasm.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
@@ -377,7 +371,6 @@ func orderInitBlockers() []string {
 		burnermoduletypes.ModuleName,
 		ammmoduletypes.ModuleName,
 		perpetualmoduletypes.ModuleName,
-		wasm.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
 		transferhooktypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
