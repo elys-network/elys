@@ -1,19 +1,13 @@
 package keeper_test
 
 import (
-	"testing"
-
 	"cosmossdk.io/math"
 
-	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/masterchef/types"
-	"github.com/stretchr/testify/require"
 )
 
-func TestPool(t *testing.T) {
-	app := simapp.InitElysTestApp(true, t)
-	ctx := app.BaseApp.NewContext(true)
+func (suite *MasterchefKeeperTestSuite) TestPool() {
 
 	pools := []types.PoolInfo{
 		{
@@ -57,24 +51,21 @@ func TestPool(t *testing.T) {
 		},
 	}
 	for _, pool := range pools {
-		app.MasterchefKeeper.SetPoolInfo(ctx, pool)
+		suite.app.MasterchefKeeper.SetPoolInfo(suite.ctx, pool)
+		info, found := suite.app.MasterchefKeeper.GetPoolInfo(suite.ctx, pool.PoolId)
+		suite.Require().True(found)
+		suite.Require().Equal(info, pool)
 	}
-	for _, pool := range pools {
-		info, found := app.MasterchefKeeper.GetPoolInfo(ctx, pool.PoolId)
-		require.True(t, found)
-		require.Equal(t, info, pool)
-	}
-	poolStored := app.MasterchefKeeper.GetAllPoolInfos(ctx)
-	require.Len(t, poolStored, 4) // setting it 4 because PoolId = math.MaxInt16 gets initiated in EndBlock
 
-	app.MasterchefKeeper.RemovePoolInfo(ctx, pools[0].PoolId)
-	poolStored = app.MasterchefKeeper.GetAllPoolInfos(ctx)
-	require.Len(t, poolStored, 3) // setting it 3 because PoolId = math.MaxInt16 gets initiated in EndBlock
+	poolStored := suite.app.MasterchefKeeper.GetAllPoolInfos(suite.ctx)
+	suite.Require().Len(poolStored, 4) // setting it 4 because PoolId = math.MaxInt16 gets initiated in EndBlock
+
+	suite.app.MasterchefKeeper.RemovePoolInfo(suite.ctx, pools[0].PoolId)
+	poolStored = suite.app.MasterchefKeeper.GetAllPoolInfos(suite.ctx)
+	suite.Require().Len(poolStored, 3) // setting it 3 because PoolId = math.MaxInt16 gets initiated in EndBlock
 }
 
-func TestUpdatePoolMultipliers(t *testing.T) {
-	app := simapp.InitElysTestApp(true, t)
-	ctx := app.BaseApp.NewContext(true)
+func (suite *MasterchefKeeperTestSuite) TestUpdatePoolMultipliers() {
 
 	pools := []types.PoolInfo{
 		{
@@ -117,13 +108,14 @@ func TestUpdatePoolMultipliers(t *testing.T) {
 			},
 		},
 	}
+
 	for _, pool := range pools {
-		app.MasterchefKeeper.SetPoolInfo(ctx, pool)
+		suite.app.MasterchefKeeper.SetPoolInfo(suite.ctx, pool)
 	}
 	for _, pool := range pools {
-		info, found := app.MasterchefKeeper.GetPoolInfo(ctx, pool.PoolId)
-		require.True(t, found)
-		require.Equal(t, info.Multiplier, math.LegacyOneDec())
+		info, found := suite.app.MasterchefKeeper.GetPoolInfo(suite.ctx, pool.PoolId)
+		suite.Require().True(found)
+		suite.Require().Equal(info.Multiplier, math.LegacyOneDec())
 	}
 
 	poolMultipliers := []types.PoolMultiplier{
@@ -138,11 +130,11 @@ func TestUpdatePoolMultipliers(t *testing.T) {
 			Multiplier: math.LegacyOneDec().Add(math.LegacyOneDec()),
 		},
 	}
-	success := app.MasterchefKeeper.UpdatePoolMultipliers(ctx, poolMultipliers)
-	require.True(t, success)
+	success := suite.app.MasterchefKeeper.UpdatePoolMultipliers(suite.ctx, poolMultipliers)
+	suite.Require().True(success)
 	for _, pool := range pools {
-		info, found := app.MasterchefKeeper.GetPoolInfo(ctx, pool.PoolId)
-		require.True(t, found)
-		require.Equal(t, info.Multiplier, math.LegacyOneDec().Add(math.LegacyOneDec()))
+		info, found := suite.app.MasterchefKeeper.GetPoolInfo(suite.ctx, pool.PoolId)
+		suite.Require().True(found)
+		suite.Require().Equal(info.Multiplier, math.LegacyOneDec().Add(math.LegacyOneDec()))
 	}
 }
