@@ -9,7 +9,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestSwapExactAmountOut() {
+func (suite *AmmKeeperTestSuite) TestSwapExactAmountOut() {
 	for _, tc := range []struct {
 		desc                string
 		senderInitBalance   sdk.Coins

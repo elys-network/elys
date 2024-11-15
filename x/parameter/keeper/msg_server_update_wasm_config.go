@@ -2,10 +2,10 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
-	wasm "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -40,11 +40,6 @@ func (k msgServer) UpdateWasmConfig(goCtx context.Context, msg *types.MsgUpdateW
 	if !ok {
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "wasm max size must be a positive integer")
 	}
-
-	// increase wasm size limit
-	wasm.MaxLabelSize = int(wasmMaxLabelSize.Int64())
-	wasm.MaxWasmSize = int(wasmMaxProposalWasmSize.Int64())
-	wasm.MaxProposalWasmSize = int(wasmMaxSize.Int64())
 
 	params := k.GetParams(ctx)
 	params.WasmMaxLabelSize = wasmMaxLabelSize

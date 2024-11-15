@@ -10,7 +10,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
+func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
@@ -211,7 +211,7 @@ func (suite *KeeperTestSuite) TestMsgServerJoinPool() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
+func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins

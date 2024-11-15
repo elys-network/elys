@@ -167,7 +167,6 @@ stop-docker:
 .PHONY: build-docker start-docker clean-docker stop-docker
 
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
-COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm/v2 | sed 's/.* //')
 
 ## release: Build binaries for all platforms and generate checksums
 ifdef GITHUB_TOKEN
@@ -175,7 +174,6 @@ release:
 	docker run \
 		--rm \
 		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
-		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/elysd \
 		-w /go/src/elysd \
@@ -191,7 +189,6 @@ endif
 release-dry-run:
 	docker run \
 		--rm \
-		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/elysd \
 		-w /go/src/elysd \
@@ -204,7 +201,6 @@ release-dry-run:
 release-snapshot:
 	docker run \
 		--rm \
-		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/elysd \
 		-w /go/src/elysd \

@@ -7,8 +7,6 @@ import (
 
 	"cosmossdk.io/log"
 	pruningtypes "cosmossdk.io/store/pruning/types"
-	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	cometbftrand "github.com/cometbft/cometbft/libs/rand"
 	cosmosdb "github.com/cosmos/cosmos-db"
 	dbm "github.com/cosmos/cosmos-db"
@@ -71,7 +69,6 @@ func DefaultConfig(tempDirectory string) network.Config {
 		map[int64]bool{},
 		tempDirectory,
 		appOptions,
-		[]wasmkeeper.Option{},
 	)
 
 	return network.Config{
@@ -89,7 +86,6 @@ func DefaultConfig(tempDirectory string) network.Config {
 				map[int64]bool{},
 				tempDirectory,
 				appOptions,
-				[]wasm.Option{},
 				baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
 				baseapp.SetMinGasPrices(val.GetAppConfig().MinGasPrices),
 				baseapp.SetChainID(chainId),
