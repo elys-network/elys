@@ -51,6 +51,20 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=$(NAME) \
 		  -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,$(DBENGINE)
 BUILD_FLAGS := -ldflags '$(ldflags)' -tags '$(GOTAGS)'
 
+
+PROTO_VERSION=0.14.0
+protoImageName=ghcr.io/cosmos/proto-builder:$(PROTO_VERSION)
+protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
+
+proto-all: proto-format proto-gen
+
+proto-gen:
+	@echo "Generating Protobuf files"
+	@$(protoImage) sh ./scripts/protocgen.sh
+
+proto-format:
+	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
+
 ## install: Install elysd binary in $GOBIN
 install: check-version go.sum
 	@echo Installing Elysd binary...
