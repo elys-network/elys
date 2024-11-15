@@ -33,7 +33,9 @@ jobs:
 
       - name: Retrieve latest binary
         run: |
-          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${LATEST_TAG}/elysd-${LATEST_TAG}-linux-amd64
+          # TODO: temporary solution until next release
+          # DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${LATEST_TAG}/elysd-${LATEST_TAG}-linux-amd64
+          DOWNLOAD_URL=https://snapshots.elys.network/elysd-v0.50-0-patch-1
           OLD_BINARY_PATH=/tmp/elysd-${LATEST_TAG}
 
           # download binary from release
