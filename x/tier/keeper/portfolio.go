@@ -221,12 +221,19 @@ func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (sd
 	if err != nil {
 		return sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0)
 	}
+	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	if !found {
+		return sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0)
+	}
+	usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+
 	for _, perpetual := range perpetuals {
 		if perpetual.Mtp.Position == perpetualtypes.Position_LONG {
 			totalAssets = totalAssets.Add(k.CalculateUSDValue(ctx, perpetual.Mtp.GetTradingAsset(), perpetual.Mtp.Custody))
-			totalLiability = totalLiability.Add(sdkmath.LegacyDec(perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability)))
+			liabInUsd := sdkmath.LegacyDec(perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability)).Mul(usdcPrice)
+			totalLiability = totalLiability.Add(liabInUsd)
 		} else {
-			totalAssets = totalAssets.Add(perpetual.Mtp.Custody.ToLegacyDec())
+			totalAssets = totalAssets.Add(perpetual.Mtp.Custody.ToLegacyDec().Mul(usdcPrice))
 			totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.Mtp.LiabilitiesAsset, perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability)))
 		}
 	}
