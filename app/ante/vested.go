@@ -40,14 +40,12 @@ func (cad VestedAnteHandlerDecorator) AnteHandle(
 
 func (cad VestedAnteHandlerDecorator) checkDelegation(ctx sdk.Context, msg *stakingtypes.MsgDelegate) error {
 	// Retrieve the delegator account
-	delegatorAcc := cad.ak.GetAccount(ctx, sdk.AccAddress(msg.DelegatorAddress))
+	delegatorAcc := cad.ak.GetAccount(ctx, sdk.MustAccAddressFromBech32(msg.DelegatorAddress))
 
 	// Check if the account is a vesting account
-
 	if _, ok := delegatorAcc.(types.VestingAccount); ok {
 		// Calculate the spendable coins
-		spendableCoins := cad.bk.SpendableCoins(ctx, sdk.AccAddress(msg.DelegatorAddress))
-
+		spendableCoins := cad.bk.SpendableCoins(ctx, sdk.MustAccAddressFromBech32(msg.DelegatorAddress))
 		// Ensure the amount to be delegated is less than or equal to the spendable coins
 		if msg.Amount.Amount.GT(spendableCoins.AmountOf(msg.Amount.Denom)) {
 			return errorsmod.Wrap(sdkerrors.ErrUnauthorized, "cannot delegate vested tokens")
