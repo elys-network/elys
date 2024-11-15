@@ -249,9 +249,8 @@ func (suite *AmmKeeperTestSuite) TestFeedMultipleExternalLiquidity() {
 			func() {
 				// msg server
 				msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
-				goCtx := sdk.WrapSDKContext(suite.ctx)
 
-				_, err := msgServer.FeedMultipleExternalLiquidity(goCtx, &types.MsgFeedMultipleExternalLiquidity{})
+				_, err := msgServer.FeedMultipleExternalLiquidity(suite.ctx, &types.MsgFeedMultipleExternalLiquidity{})
 				suite.Require().Error(err)
 			},
 		},
@@ -263,11 +262,10 @@ func (suite *AmmKeeperTestSuite) TestFeedMultipleExternalLiquidity() {
 			func() {
 				// msg server
 				msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
-				goCtx := sdk.WrapSDKContext(suite.ctx)
 
 				addr := suite.AddAccounts(1, nil)[0]
 
-				_, err := msgServer.FeedMultipleExternalLiquidity(goCtx, &types.MsgFeedMultipleExternalLiquidity{
+				_, err := msgServer.FeedMultipleExternalLiquidity(suite.ctx, &types.MsgFeedMultipleExternalLiquidity{
 					Sender: addr.String(),
 					Liquidity: []types.ExternalLiquidity{
 						{
@@ -293,7 +291,6 @@ func (suite *AmmKeeperTestSuite) TestFeedMultipleExternalLiquidity() {
 			func() {
 				// msg server
 				msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
-				goCtx := sdk.WrapSDKContext(suite.ctx)
 
 				addr := suite.AddAccounts(1, nil)[0]
 
@@ -302,7 +299,7 @@ func (suite *AmmKeeperTestSuite) TestFeedMultipleExternalLiquidity() {
 					IsActive: false,
 				})
 
-				_, err := msgServer.FeedMultipleExternalLiquidity(goCtx, &types.MsgFeedMultipleExternalLiquidity{
+				_, err := msgServer.FeedMultipleExternalLiquidity(suite.ctx, &types.MsgFeedMultipleExternalLiquidity{
 					Sender: addr.String(),
 					Liquidity: []types.ExternalLiquidity{
 						{
@@ -328,7 +325,6 @@ func (suite *AmmKeeperTestSuite) TestFeedMultipleExternalLiquidity() {
 			func() {
 				// msg server
 				msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
-				goCtx := sdk.WrapSDKContext(suite.ctx)
 
 				addr := suite.AddAccounts(1, nil)[0]
 
@@ -337,7 +333,7 @@ func (suite *AmmKeeperTestSuite) TestFeedMultipleExternalLiquidity() {
 					IsActive: true,
 				})
 
-				_, err := msgServer.FeedMultipleExternalLiquidity(goCtx, &types.MsgFeedMultipleExternalLiquidity{
+				_, err := msgServer.FeedMultipleExternalLiquidity(suite.ctx, &types.MsgFeedMultipleExternalLiquidity{
 					Sender: addr.String(),
 					Liquidity: []types.ExternalLiquidity{
 						{
@@ -364,7 +360,6 @@ func (suite *AmmKeeperTestSuite) TestFeedMultipleExternalLiquidity() {
 			func() {
 				// msg server
 				msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
-				goCtx := sdk.WrapSDKContext(suite.ctx)
 
 				addr := suite.AddAccounts(1, nil)[0]
 
@@ -376,7 +371,7 @@ func (suite *AmmKeeperTestSuite) TestFeedMultipleExternalLiquidity() {
 					IsActive: true,
 				})
 
-				_, err := msgServer.FeedMultipleExternalLiquidity(goCtx, &types.MsgFeedMultipleExternalLiquidity{
+				_, err := msgServer.FeedMultipleExternalLiquidity(suite.ctx, &types.MsgFeedMultipleExternalLiquidity{
 					Sender: addr.String(),
 					Liquidity: []types.ExternalLiquidity{
 						{

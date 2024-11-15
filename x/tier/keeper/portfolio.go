@@ -322,7 +322,7 @@ func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdkm
 		return sdkmath.LegacyZeroDec()
 	}
 	usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-	resp, err := k.amm.InRouteByDenom(sdk.WrapSDKContext(ctx), &ammtypes.QueryInRouteByDenomRequest{DenomIn: denom, DenomOut: usdcDenom})
+	resp, err := k.amm.InRouteByDenom(ctx, &ammtypes.QueryInRouteByDenomRequest{DenomIn: denom, DenomOut: usdcDenom})
 	if err != nil {
 		return sdkmath.LegacyZeroDec()
 	}

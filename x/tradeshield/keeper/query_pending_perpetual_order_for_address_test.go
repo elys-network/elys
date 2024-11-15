@@ -15,7 +15,6 @@ import (
 
 func TestPendingPerpetualOrderForAddress(t *testing.T) {
 	k, ctx, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
 
 	ownerAddress := "valid_address"
 	ownerAddressAcc := sdk.AccAddress(ownerAddress)
@@ -121,7 +120,7 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
-			response, err := k.PendingPerpetualOrderForAddress(wctx, tc.request)
+			response, err := k.PendingPerpetualOrderForAddress(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {

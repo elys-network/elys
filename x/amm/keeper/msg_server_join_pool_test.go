@@ -177,7 +177,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 			// execute function
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.JoinPool(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgJoinPool{
 					Sender:         sender.String(),
 					PoolId:         1,
@@ -302,7 +302,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			// Step 5: New LP adds single-sided liquidity
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.JoinPool(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgJoinPool{
 					Sender:         sender.String(),
 					PoolId:         1,

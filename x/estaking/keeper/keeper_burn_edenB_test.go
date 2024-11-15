@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	commkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -77,7 +76,7 @@ func (suite *EstakingKeeperTestSuite) TestBurnEdenBFromEdenUncommitted() {
 			suite.Require().NoError(err)
 
 			// Uncommit tokens
-			_, err = msgServer.UncommitTokens(sdk.WrapSDKContext(suite.ctx), &ctypes.MsgUncommitTokens{
+			_, err = msgServer.UncommitTokens(suite.ctx, &ctypes.MsgUncommitTokens{
 				Creator: suite.genAccount.String(),
 				Amount:  math.NewInt(1000),
 				Denom:   ptypes.Eden,
