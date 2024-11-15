@@ -14,20 +14,14 @@ func NewParams(
 	brokerAddress string,
 	totalBlocksPerYear int64,
 	rewardsDataLifeTime int64,
-	wasmMaxLabelSize sdkmath.Int,
-	wasmMaxSize sdkmath.Int,
-	wasmMaxProposalWasmSize sdkmath.Int,
 ) Params {
 	return Params{
-		MinCommissionRate:       minCommissionRate,
-		MaxVotingPower:          maxVotingPower,
-		MinSelfDelegation:       minSelfDelegation,
-		BrokerAddress:           brokerAddress,
-		TotalBlocksPerYear:      totalBlocksPerYear,
-		RewardsDataLifetime:     rewardsDataLifeTime,
-		WasmMaxLabelSize:        wasmMaxLabelSize,
-		WasmMaxSize:             wasmMaxSize,
-		WasmMaxProposalWasmSize: wasmMaxProposalWasmSize,
+		MinCommissionRate:   minCommissionRate,
+		MaxVotingPower:      maxVotingPower,
+		MinSelfDelegation:   minSelfDelegation,
+		BrokerAddress:       brokerAddress,
+		TotalBlocksPerYear:  totalBlocksPerYear,
+		RewardsDataLifetime: rewardsDataLifeTime,
 	}
 }
 
@@ -39,10 +33,7 @@ func DefaultParams() Params {
 		sdkmath.OneInt(),
 		authtypes.NewModuleAddress("zero").String(),
 		6307200,
-		86400,                   // 1 day
-		sdkmath.NewInt(256),     //128*2
-		sdkmath.NewInt(1638400), //819200 * 2
-		sdkmath.NewInt(6291456), //3145728 * 2
+		86400, // 1 day
 	)
 }
 
