@@ -541,7 +541,7 @@ func NewAppKeeper(
 	app.TransferhookKeeper = *transferhookkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[transferhooktypes.StoreKey]),
-		*app.AmmKeeper)
+		app.AmmKeeper)
 
 	//app.ConsumerKeeper = ccvconsumerkeeper.NewKeeper(
 	//	appCodec,
