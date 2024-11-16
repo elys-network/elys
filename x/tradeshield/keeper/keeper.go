@@ -9,6 +9,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
@@ -18,7 +19,7 @@ type (
 		storeService store.KVStoreService
 		authority    string
 		amm          types.AmmKeeper
-		tier         types.TierKeeper
+		tier         *tierkeeper.Keeper
 		perpetual    types.PerpetualKeeper
 	}
 )
@@ -28,7 +29,7 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	authority string,
 	amm types.AmmKeeper,
-	tier types.TierKeeper,
+	tier *tierkeeper.Keeper,
 	perpetual types.PerpetualKeeper,
 ) *Keeper {
 	return &Keeper{

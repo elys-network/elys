@@ -163,7 +163,7 @@ type AppKeepers struct {
 	LeveragelpKeeper    *leveragelpmodulekeeper.Keeper
 	MasterchefKeeper    masterchefmodulekeeper.Keeper
 	EstakingKeeper      *estakingmodulekeeper.Keeper
-	TierKeeper          tiermodulekeeper.Keeper
+	TierKeeper          *tiermodulekeeper.Keeper
 	TradeshieldKeeper   tradeshieldmodulekeeper.Keeper
 }
 
@@ -606,7 +606,7 @@ func NewAppKeeper(
 		app.AccountedPoolKeeper,
 	)
 
-	app.TierKeeper = *tiermodulekeeper.NewKeeper(
+	app.TierKeeper = tiermodulekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[tiermoduletypes.StoreKey]),
 		app.BankKeeper,
@@ -621,7 +621,7 @@ func NewAppKeeper(
 		app.LeveragelpKeeper,
 		app.StablestakeKeeper,
 	)
-	app.AmmKeeper.SetTierKeeper(&app.TierKeeper)
+	app.AmmKeeper.SetTierKeeper(app.TierKeeper)
 
 	app.TradeshieldKeeper = *tradeshieldmodulekeeper.NewKeeper(
 		appCodec,
