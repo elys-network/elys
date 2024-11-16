@@ -138,7 +138,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 					},
 				}
 
-				swapFee, err := sdkmath.LegacyNewDecFromStr("0.1")
+				swapFee, err := sdkmath.LegacyNewDecFromStr("0.01")
 				suite.Require().NoError(err)
 
 				poolParams := types.PoolParams{

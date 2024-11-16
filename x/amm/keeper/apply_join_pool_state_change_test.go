@@ -45,15 +45,10 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 					},
 				}
 
-				poolParams := &types.PoolParams{
-					SwapFee:                     sdkmath.LegacyMustNewDecFromStr("0.1"),
-					ExitFee:                     sdkmath.LegacyMustNewDecFromStr("0.1"),
-					UseOracle:                   true,
-					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-					FeeDenom:                    ptypes.BaseCurrency,
+				poolParams := types.PoolParams{
+					SwapFee:   sdkmath.LegacyMustNewDecFromStr("0.01"),
+					UseOracle: true,
+					FeeDenom:  ptypes.BaseCurrency,
 				}
 
 				msg := types.NewMsgCreatePool(
@@ -110,15 +105,10 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 					},
 				}
 
-				poolParams := &types.PoolParams{
-					SwapFee:                     sdkmath.LegacyMustNewDecFromStr("0.1"),
-					ExitFee:                     sdkmath.LegacyMustNewDecFromStr("0.1"),
-					UseOracle:                   true,
-					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-					FeeDenom:                    ptypes.BaseCurrency,
+				poolParams := types.PoolParams{
+					SwapFee:   sdkmath.LegacyMustNewDecFromStr("0.01"),
+					UseOracle: true,
+					FeeDenom:  ptypes.BaseCurrency,
 				}
 
 				msg := types.NewMsgCreatePool(
@@ -178,15 +168,10 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 					},
 				}
 
-				poolParams := &types.PoolParams{
-					SwapFee:                     sdkmath.LegacyMustNewDecFromStr("0.1"),
-					ExitFee:                     sdkmath.LegacyMustNewDecFromStr("0.1"),
-					UseOracle:                   true,
-					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-					FeeDenom:                    ptypes.BaseCurrency,
+				poolParams := types.PoolParams{
+					SwapFee:   sdkmath.LegacyMustNewDecFromStr("0.01"),
+					UseOracle: true,
+					FeeDenom:  ptypes.BaseCurrency,
 				}
 
 				msg := types.NewMsgCreatePool(
@@ -250,15 +235,10 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 					},
 				}
 
-				poolParams := &types.PoolParams{
-					SwapFee:                     sdkmath.LegacyMustNewDecFromStr("0.1"),
-					ExitFee:                     sdkmath.LegacyMustNewDecFromStr("0.1"),
-					UseOracle:                   true,
-					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-					FeeDenom:                    ptypes.BaseCurrency,
+				poolParams := types.PoolParams{
+					SwapFee:   sdkmath.LegacyMustNewDecFromStr("0.01"),
+					UseOracle: true,
+					FeeDenom:  ptypes.BaseCurrency,
 				}
 
 				msg := types.NewMsgCreatePool(
