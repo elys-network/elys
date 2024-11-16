@@ -13,6 +13,7 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
+	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
 )
 
 type (
@@ -30,7 +31,7 @@ type (
 		commitmentKeeper    *commitmentkeeper.Keeper
 		assetProfileKeeper  types.AssetProfileKeeper
 		accountedPoolKeeper types.AccountedPoolKeeper
-		tierKeeper          types.TierKeeper
+		tierKeeper          *tierkeeper.Keeper
 	}
 )
 
@@ -47,7 +48,7 @@ func NewKeeper(
 	commitmentKeeper *commitmentkeeper.Keeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	accountedPoolKeeper types.AccountedPoolKeeper,
-	tierKeeper types.TierKeeper,
+	tierKeeper *tierkeeper.Keeper,
 ) *Keeper {
 
 	return &Keeper{
@@ -82,6 +83,6 @@ func (k *Keeper) SetHooks(gh types.AmmHooks) *Keeper {
 	return k
 }
 
-func (k *Keeper) SetTierKeeper(tk types.TierKeeper) {
+func (k *Keeper) SetTierKeeper(tk *tierkeeper.Keeper) {
 	k.tierKeeper = tk
 }

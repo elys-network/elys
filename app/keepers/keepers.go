@@ -621,7 +621,7 @@ func NewAppKeeper(
 		app.LeveragelpKeeper,
 		app.StablestakeKeeper,
 	)
-	app.AmmKeeper.SetTierKeeper(app.TierKeeper)
+	app.AmmKeeper.SetTierKeeper(&app.TierKeeper)
 
 	app.TradeshieldKeeper = *tradeshieldmodulekeeper.NewKeeper(
 		appCodec,
