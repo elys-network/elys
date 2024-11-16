@@ -86,3 +86,7 @@ func (k *Keeper) SetHooks(gh types.AmmHooks) *Keeper {
 func (k *Keeper) SetTierKeeper(tk *tierkeeper.Keeper) {
 	k.tierKeeper = tk
 }
+
+func (k *Keeper) GetTierKeeper() *tierkeeper.Keeper {
+	return k.tierKeeper
+}

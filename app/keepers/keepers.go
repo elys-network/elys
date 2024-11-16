@@ -474,7 +474,7 @@ func NewAppKeeper(
 		app.CommitmentKeeper,
 		app.AssetprofileKeeper,
 		app.AccountedPoolKeeper,
-		nil,
+		&app.TierKeeper,
 	)
 
 	app.StablestakeKeeper = stablestakekeeper.NewKeeper(
