@@ -370,7 +370,7 @@ func (k Keeper) GetPortfolio(ctx sdk.Context, user sdk.AccAddress, date string) 
 	return val.Portfolio, true
 }
 
-func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, tier string, discount uint64) {
+func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, tier string, discount sdkmath.LegacyDec) {
 	year, month, day := ctx.BlockTime().Date()
 	dateToday := time.Date(year, month, day, 0, 0, 0, 0, ctx.BlockTime().Location())
 	startDate := dateToday.AddDate(0, 0, -7)
@@ -384,23 +384,23 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_p
 	}
 
 	if minTotal.Equal(sdkmath.LegacyNewDec(math.MaxInt64)) {
-		return sdkmath.LegacyNewDec(0), "bronze", 0
+		return sdkmath.LegacyNewDec(0), "bronze", sdkmath.LegacyZeroDec()
 	}
 
 	// TODO: Make tier discount and minimum balance configurable
 	if minTotal.GTE(sdkmath.LegacyNewDec(500000)) {
-		return minTotal, "platinum", 30
+		return minTotal, "platinum", sdkmath.LegacyMustNewDecFromStr("0.3")
 	}
 
 	if minTotal.GTE(sdkmath.LegacyNewDec(250000)) {
-		return minTotal, "gold", 20
+		return minTotal, "gold", sdkmath.LegacyMustNewDecFromStr("0.2")
 	}
 
 	if minTotal.GTE(sdkmath.LegacyNewDec(50000)) {
-		return minTotal, "silver", 10
+		return minTotal, "silver", sdkmath.LegacyMustNewDecFromStr("0.1")
 	}
 
-	return minTotal, "bronze", 0
+	return minTotal, "bronze", sdkmath.LegacyZeroDec()
 }
 
 // RemovePortfolioLast removes a portfolio from the store with a specific date
