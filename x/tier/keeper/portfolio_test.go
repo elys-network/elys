@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -210,10 +211,10 @@ func TestPortfolioGetDiscount(t *testing.T) {
 	keeper.SetPortfolio(ctx, items[9])
 
 	_, _, discount := keeper.GetMembershipTier(ctx, sdk.MustAccAddressFromBech32(items[0].Creator))
-	require.Equal(t, discount, uint64(20))
+	require.Equal(t, discount, sdkmath.LegacyMustNewDecFromStr("0.2"))
 
 	_, _, discount = keeper.GetMembershipTier(ctx, sdk.MustAccAddressFromBech32(items[9].Creator))
-	require.Equal(t, discount, uint64(0))
+	require.Equal(t, discount, sdkmath.LegacyZeroDec())
 }
 
 func TestGetPortfolioPerpetual(t *testing.T) {

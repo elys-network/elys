@@ -71,7 +71,7 @@ func TestExecuteStopLossOrder(t *testing.T) {
 
 	tierKeeper.On("CalculateUSDValue", ctx, "base", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
 	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
-	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), "tier", uint64(10))
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), "tier", sdkmath.LegacyMustNewDecFromStr("0.1"))
 	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    address.String(),
 		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
@@ -118,7 +118,7 @@ func TestExecuteLimitSellOrder(t *testing.T) {
 
 	tierKeeper.On("CalculateUSDValue", ctx, "base", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
 	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
-	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), "tier", uint64(10))
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), "tier", math.LegacyMustNewDecFromStr("0.1"))
 	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    address.String(),
 		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),

@@ -56,9 +56,6 @@ func (k Keeper) GetUserDiscount(ctx sdk.Context, address string) (sdkmath.Legacy
 	// Get discount tier (range from 0 to 100)
 	_, _, discountDec := k.tier.GetMembershipTier(ctx, user)
 
-	// Normalize the discount to be between 0 and 1
-	discountDec = discountDec.Quo(sdkmath.LegacyNewDec(100))
-
 	// Return the discount
 	return discountDec, nil
 }
