@@ -210,7 +210,7 @@ func TestExecuteMarketBuyOrder(t *testing.T) {
 
 	address := sdk.AccAddress([]byte("address"))
 
-	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), "tier", uint64(10))
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), "tier", sdkmath.LegacyMustNewDecFromStr("0.1"))
 	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    address.String(),
 		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
