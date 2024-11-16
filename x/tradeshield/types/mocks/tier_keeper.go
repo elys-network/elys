@@ -71,7 +71,7 @@ func (_c *TierKeeper_CalculateUSDValue_Call) RunAndReturn(run func(types.Context
 }
 
 // GetMembershipTier provides a mock function with given fields: ctx, user
-func (_m *TierKeeper) GetMembershipTier(ctx types.Context, user types.AccAddress) (math.LegacyDec, string, uint64) {
+func (_m *TierKeeper) GetMembershipTier(ctx types.Context, user types.AccAddress) (math.LegacyDec, string, math.LegacyDec) {
 	ret := _m.Called(ctx, user)
 
 	if len(ret) == 0 {
@@ -80,8 +80,8 @@ func (_m *TierKeeper) GetMembershipTier(ctx types.Context, user types.AccAddress
 
 	var r0 math.LegacyDec
 	var r1 string
-	var r2 uint64
-	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress) (math.LegacyDec, string, uint64)); ok {
+	var r2 math.LegacyDec
+	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress) (math.LegacyDec, string, math.LegacyDec)); ok {
 		return rf(ctx, user)
 	}
 	if rf, ok := ret.Get(0).(func(types.Context, types.AccAddress) math.LegacyDec); ok {
@@ -96,10 +96,10 @@ func (_m *TierKeeper) GetMembershipTier(ctx types.Context, user types.AccAddress
 		r1 = ret.Get(1).(string)
 	}
 
-	if rf, ok := ret.Get(2).(func(types.Context, types.AccAddress) uint64); ok {
+	if rf, ok := ret.Get(2).(func(types.Context, types.AccAddress) math.LegacyDec); ok {
 		r2 = rf(ctx, user)
 	} else {
-		r2 = ret.Get(2).(uint64)
+		r2 = ret.Get(2).(math.LegacyDec)
 	}
 
 	return r0, r1, r2
@@ -124,12 +124,12 @@ func (_c *TierKeeper_GetMembershipTier_Call) Run(run func(ctx types.Context, use
 	return _c
 }
 
-func (_c *TierKeeper_GetMembershipTier_Call) Return(total_portfolio math.LegacyDec, tier string, discount uint64) *TierKeeper_GetMembershipTier_Call {
+func (_c *TierKeeper_GetMembershipTier_Call) Return(total_portfolio math.LegacyDec, tier string, discount math.LegacyDec) *TierKeeper_GetMembershipTier_Call {
 	_c.Call.Return(total_portfolio, tier, discount)
 	return _c
 }
 
-func (_c *TierKeeper_GetMembershipTier_Call) RunAndReturn(run func(types.Context, types.AccAddress) (math.LegacyDec, string, uint64)) *TierKeeper_GetMembershipTier_Call {
+func (_c *TierKeeper_GetMembershipTier_Call) RunAndReturn(run func(types.Context, types.AccAddress) (math.LegacyDec, string, math.LegacyDec)) *TierKeeper_GetMembershipTier_Call {
 	_c.Call.Return(run)
 	return _c
 }
