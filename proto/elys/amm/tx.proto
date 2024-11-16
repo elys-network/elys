@@ -84,7 +84,7 @@ message MsgExitPool {
 }
 
 message MsgExitPoolResponse {
-  repeated cosmos.base.v1beta1.Coin token_out = 2
+  repeated cosmos.base.v1beta1.Coin token_out = 1
       [ (gogoproto.nullable) = false ];
 }
 
