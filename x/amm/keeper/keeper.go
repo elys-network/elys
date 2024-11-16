@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"cosmossdk.io/core/store"
 	"fmt"
+
+	"cosmossdk.io/core/store"
 
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
@@ -29,6 +30,7 @@ type (
 		commitmentKeeper    *commitmentkeeper.Keeper
 		assetProfileKeeper  types.AssetProfileKeeper
 		accountedPoolKeeper types.AccountedPoolKeeper
+		tierKeeper          types.TierKeeper
 	}
 )
 
@@ -45,6 +47,7 @@ func NewKeeper(
 	commitmentKeeper *commitmentkeeper.Keeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	accountedPoolKeeper types.AccountedPoolKeeper,
+	tierKeeper types.TierKeeper,
 ) *Keeper {
 
 	return &Keeper{
@@ -60,6 +63,7 @@ func NewKeeper(
 		commitmentKeeper:    commitmentKeeper,
 		assetProfileKeeper:  assetProfileKeeper,
 		accountedPoolKeeper: accountedPoolKeeper,
+		tierKeeper:          tierKeeper,
 	}
 }
 
@@ -76,4 +80,8 @@ func (k *Keeper) SetHooks(gh types.AmmHooks) *Keeper {
 	k.hooks = gh
 
 	return k
+}
+
+func (k *Keeper) SetTierKeeper(tk types.TierKeeper) {
+	k.tierKeeper = tk
 }

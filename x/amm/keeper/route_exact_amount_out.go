@@ -3,7 +3,6 @@ package keeper
 import (
 	"fmt"
 
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -100,13 +99,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		}
 
 		// Apply discount to swap fee if applicable
-		brokerAddress := k.parameterKeeper.GetParams(ctx).BrokerAddress
-		if discount.IsNil() {
-			discount = math.LegacyZeroDec()
-		}
-		if discount.IsPositive() && sender.String() != brokerAddress {
-			return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrInvalidDiscount, "discount %s is positive and signer address %s is not broker address %s", discount, sender, brokerAddress)
-		}
+		_, _, discount := k.tierKeeper.GetMembershipTier(ctx, sender)
 		swapFee = types.ApplyDiscount(swapFee, discount)
 
 		// Calculate the total discounted swap fee
