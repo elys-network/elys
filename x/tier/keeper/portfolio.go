@@ -24,29 +24,6 @@ import (
 	"github.com/elys-network/elys/x/tier/types"
 )
 
-var (
-	bronze = types.MembershipTier{
-		Discount:         sdkmath.LegacyZeroDec(),
-		Membership:       "bronze",
-		MinimumPortfolio: sdkmath.LegacyZeroDec(),
-	}
-	silver = types.MembershipTier{
-		Discount:         sdkmath.LegacyMustNewDecFromStr("0.1"),
-		Membership:       "silver",
-		MinimumPortfolio: sdkmath.LegacyMustNewDecFromStr("50000"),
-	}
-	gold = types.MembershipTier{
-		Discount:         sdkmath.LegacyMustNewDecFromStr("0.2"),
-		Membership:       "gold",
-		MinimumPortfolio: sdkmath.LegacyMustNewDecFromStr("250000"),
-	}
-	platinum = types.MembershipTier{
-		Discount:         sdkmath.LegacyMustNewDecFromStr("0.3"),
-		Membership:       "platinum",
-		MinimumPortfolio: sdkmath.LegacyMustNewDecFromStr("500000"),
-	}
-)
-
 func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 	// set today + user -> amount
 	todayDate := k.GetDateFromContext(ctx)
@@ -407,23 +384,23 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_p
 	}
 
 	if minTotal.Equal(sdkmath.LegacyNewDec(math.MaxInt64)) {
-		return sdkmath.LegacyNewDec(0), bronze
+		return sdkmath.LegacyNewDec(0), types.Bronze
 	}
 
 	// TODO: Make tier discount and minimum balance configurable
 	if minTotal.GTE(sdkmath.LegacyNewDec(500000)) {
-		return minTotal, platinum
+		return minTotal, types.Platinum
 	}
 
 	if minTotal.GTE(sdkmath.LegacyNewDec(250000)) {
-		return minTotal, gold
+		return minTotal, types.Gold
 	}
 
 	if minTotal.GTE(sdkmath.LegacyNewDec(50000)) {
-		return minTotal, silver
+		return minTotal, types.Silver
 	}
 
-	return minTotal, bronze
+	return minTotal, types.Bronze
 }
 
 // RemovePortfolioLast removes a portfolio from the store with a specific date
