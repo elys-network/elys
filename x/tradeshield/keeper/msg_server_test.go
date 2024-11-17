@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
+func setupMsgServer(t *testing.T) (types.MsgServer, context.Context) {
 	k, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
 	return keeper.NewMsgServerImpl(*k), ctx
 }
