@@ -1,10 +1,10 @@
 package keeper
 
 import (
+	"testing"
+
 	"cosmossdk.io/store/metrics"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	simapp "github.com/elys-network/elys/app"
-	"testing"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
@@ -21,7 +21,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TradeshieldKeeper(t *testing.T) (*keeper.Keeper, sdk.Context, *mocks.AmmKeeper, *mocks.TierKeeper, *mocks.PerpetualKeeper) {
+func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AmmKeeper, *mocks.TierKeeper, *mocks.PerpetualKeeper) {
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 	storeService := runtime.NewKVStoreService(storeKey)
 
@@ -37,13 +37,12 @@ func TradeshieldKeeper(t *testing.T) (*keeper.Keeper, sdk.Context, *mocks.AmmKee
 	ammKeeper := mocks.NewAmmKeeper(t)
 	tierKeeper := mocks.NewTierKeeper(t)
 	perpetualKeeper := mocks.NewPerpetualKeeper(t)
-	app, _, _ := simapp.InitElysTestAppWithGenAccount(t)
 	k := keeper.NewKeeper(
 		cdc,
 		storeService,
 		govAddress.String(),
 		ammKeeper,
-		app.TierKeeper,
+		tierKeeper,
 		perpetualKeeper,
 	)
 
