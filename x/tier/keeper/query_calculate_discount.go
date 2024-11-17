@@ -21,11 +21,10 @@ func (k Keeper) CalculateDiscount(goCtx context.Context, req *types.QueryCalcula
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	portfolio, tier, discount := k.GetMembershipTier(ctx, user)
+	portfolio, tier := k.GetMembershipTier(ctx, user)
 
 	return &types.QueryCalculateDiscountResponse{
-		Discount:  discount.String(),
-		Portfolio: portfolio.String(),
-		Tier:      tier,
+		Portfolio:      portfolio.String(),
+		MembershipTier: &tier,
 	}, nil
 }

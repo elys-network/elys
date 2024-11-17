@@ -79,8 +79,8 @@ func (k Keeper) RouteExactAmountIn(
 		}
 
 		// Apply discount to swap fee if applicable
-		_, _, discount := k.tierKeeper.GetMembershipTier(ctx, sender)
-		swapFee = types.ApplyDiscount(swapFee, discount)
+		_, tier := k.tierKeeper.GetMembershipTier(ctx, sender)
+		swapFee = types.ApplyDiscount(swapFee, tier.Discount)
 
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
