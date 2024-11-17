@@ -73,7 +73,7 @@ func TestExecuteStopLossOrder(t *testing.T) {
 
 	tierKeeper.On("CalculateUSDValue", ctx, "base", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
 	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
-	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), tiertypes.Gold)
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), tiertypes.Silver)
 	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    address.String(),
 		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
@@ -120,7 +120,7 @@ func TestExecuteLimitSellOrder(t *testing.T) {
 
 	tierKeeper.On("CalculateUSDValue", ctx, "base", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
 	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
-	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), tiertypes.Gold)
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), tiertypes.Silver)
 	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    address.String(),
 		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
@@ -167,7 +167,7 @@ func TestExecuteLimitBuyOrder(t *testing.T) {
 
 	tierKeeper.On("CalculateUSDValue", ctx, "base", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
 	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
-	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), tiertypes.Gold)
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), tiertypes.Silver)
 	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    address.String(),
 		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
@@ -212,7 +212,7 @@ func TestExecuteMarketBuyOrder(t *testing.T) {
 
 	address := sdk.AccAddress([]byte("address"))
 
-	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), tiertypes.Gold)
+	tierKeeper.On("GetMembershipTier", ctx, address).Return(sdkmath.LegacyNewDec(10), tiertypes.Silver)
 	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    address.String(),
 		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
