@@ -22,15 +22,18 @@ func getWeightBreakingFee(weightBalanceBonus math.LegacyDec) math.LegacyDec {
 }
 
 // Swap estimation using amm CalcOutAmtGivenIn function
-func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool) (math.Int, math.LegacyDec, math.LegacyDec, error) {
+func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tokenOutDenom string, ammPool ammtypes.Pool, owner string) (math.Int, math.LegacyDec, math.LegacyDec, error) {
 	if tokenInAmount.IsZero() {
 		return math.Int{}, math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("tokenInAmount is zero for EstimateSwapGivenIn")
 	}
 	params := k.GetParams(ctx)
+
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, sdk.MustAccAddressFromBech32(owner))
+	perpetualFees := ammtypes.ApplyDiscount(params.PerpetualSwapFee, tier.Discount)
 	// Estimate swap
 	snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, ammPool)
 	tokensIn := sdk.Coins{tokenInAmount}
-	tokenOut, slippage, _, weightBalanceBonus, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, params.PerpetualSwapFee, params.WeightBreakingFeeFactor)
+	tokenOut, slippage, _, weightBalanceBonus, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, perpetualFees, params.WeightBreakingFeeFactor)
 	if err != nil {
 		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
 	}
@@ -42,15 +45,18 @@ func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tok
 }
 
 // Swap estimation using amm CalcInAmtGivenOut function
-func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool) (math.Int, math.LegacyDec, math.LegacyDec, error) {
+func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, tokenInDenom string, ammPool ammtypes.Pool, owner string) (math.Int, math.LegacyDec, math.LegacyDec, error) {
 	if tokenOutAmount.IsZero() {
 		return math.Int{}, math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("tokenOutAmount is zero for EstimateSwapGivenOut")
 	}
 	params := k.GetParams(ctx)
 	tokensOut := sdk.Coins{tokenOutAmount}
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, sdk.MustAccAddressFromBech32(owner))
+	perpetualFees := ammtypes.ApplyDiscount(params.PerpetualSwapFee, tier.Discount)
+
 	// Estimate swap
 	snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, ammPool)
-	tokenIn, slippage, _, weightBalanceBonus, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, params.PerpetualSwapFee, params.WeightBreakingFeeFactor)
+	tokenIn, slippage, _, weightBalanceBonus, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, perpetualFees, params.WeightBreakingFeeFactor)
 	if err != nil {
 		return math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
 	}

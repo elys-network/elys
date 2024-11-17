@@ -511,6 +511,7 @@ func NewAppKeeper(
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
 		&app.ParameterKeeper,
+		app.TierKeeper,
 	)
 
 	app.MasterchefKeeper = *masterchefmodulekeeper.NewKeeper(
@@ -622,6 +623,7 @@ func NewAppKeeper(
 		app.StablestakeKeeper,
 	)
 	app.AmmKeeper.SetTierKeeper(app.TierKeeper)
+	app.PerpetualKeeper.SetTierKeeper(app.TierKeeper)
 
 	app.TradeshieldKeeper = *tradeshieldmodulekeeper.NewKeeper(
 		appCodec,
