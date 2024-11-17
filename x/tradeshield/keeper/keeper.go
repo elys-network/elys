@@ -54,10 +54,10 @@ func (k Keeper) GetUserDiscount(ctx sdk.Context, address string) (sdkmath.Legacy
 	}
 
 	// Get discount tier (range from 0 to 100)
-	_, _, discountDec := k.tier.GetMembershipTier(ctx, user)
+	_, tier := k.tier.GetMembershipTier(ctx, user)
 
 	// Return the discount
-	return discountDec, nil
+	return tier.Discount, nil
 }
 
 // GetAssetPriceFromDenomInToDenomOut returns the price of an asset from a denom to another denom
