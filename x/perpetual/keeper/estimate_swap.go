@@ -28,7 +28,11 @@ func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tok
 	}
 	params := k.GetParams(ctx)
 
-	_, tier := k.tierKeeper.GetMembershipTier(ctx, sdk.MustAccAddressFromBech32(owner))
+	addr, err := sdk.AccAddressFromBech32(owner)
+	if err != nil {
+		addr = sdk.AccAddress{}
+	}
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, addr)
 	perpetualFees := ammtypes.ApplyDiscount(params.PerpetualSwapFee, tier.Discount)
 	// Estimate swap
 	snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, ammPool)
@@ -51,7 +55,12 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 	}
 	params := k.GetParams(ctx)
 	tokensOut := sdk.Coins{tokenOutAmount}
-	_, tier := k.tierKeeper.GetMembershipTier(ctx, sdk.MustAccAddressFromBech32(owner))
+
+	addr, err := sdk.AccAddressFromBech32(owner)
+	if err != nil {
+		addr = sdk.AccAddress{}
+	}
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, addr)
 	perpetualFees := ammtypes.ApplyDiscount(params.PerpetualSwapFee, tier.Discount)
 
 	// Estimate swap
