@@ -54,6 +54,7 @@ message MsgCommitClaimedRewards {
   option (amino.name) = "commitment/MsgCommitClaimedRewards";
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -67,6 +68,7 @@ message MsgUncommitTokens {
   option (amino.name) = "commitment/MsgUncommitTokens";
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -80,6 +82,7 @@ message MsgVest {
   option (amino.name) = "commitment/MsgVest";
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -93,6 +96,7 @@ message MsgCancelVest {
   option (amino.name) = "commitment/MsgCancelVest";
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -114,6 +118,7 @@ message MsgVestNow {
   option (amino.name) = "commitment/MsgVestNow";
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -140,6 +145,7 @@ message MsgVestLiquid {
   option (amino.name) = "commitment/MsgVestLiquid";
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -153,6 +159,7 @@ message MsgStake {
   option (amino.name) = "commitment/MsgStake";
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -171,6 +178,7 @@ message MsgUnstake {
   option (amino.name) = "commitment/MsgUnstake";
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];

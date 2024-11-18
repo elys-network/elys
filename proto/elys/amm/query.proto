@@ -140,6 +140,7 @@ message QuerySwapEstimationRequest {
   repeated SwapAmountInRoute routes = 1;
   cosmos.base.v1beta1.Coin token_in = 2 [ (gogoproto.nullable) = false ];
   string discount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -157,10 +158,12 @@ message QueryJoinPoolEstimationResponse {
   repeated cosmos.base.v1beta1.Coin amounts_in = 2
       [ (gogoproto.nullable) = false ];
   string slippage = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string weight_balance_ratio = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -169,6 +172,7 @@ message QueryJoinPoolEstimationResponse {
 message QueryExitPoolEstimationRequest {
   uint64 pool_id = 1;
   string share_amount_in = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -182,25 +186,30 @@ message QueryExitPoolEstimationResponse {
 
 message QuerySwapEstimationResponse {
   string spot_price = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin token_out = 2 [ (gogoproto.nullable) = false ];
   string swap_fee = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string discount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin available_liquidity = 5
       [ (gogoproto.nullable) = false ];
   string slippage = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string weight_balance_ratio = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -254,29 +263,35 @@ message QuerySwapEstimationByDenomResponse {
   repeated SwapAmountInRoute in_route = 1;
   repeated SwapAmountOutRoute out_route = 2;
   string spot_price = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin amount = 4 [ (gogoproto.nullable) = false ];
   string swap_fee = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string discount = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin available_liquidity = 7
       [ (gogoproto.nullable) = false ];
   string weight_balance_ratio = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string slippage = 9 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string price_impact = 10 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -285,6 +300,7 @@ message QuerySwapEstimationByDenomResponse {
 message QueryAMMPriceRequest {
   cosmos.base.v1beta1.Coin token_in = 1 [ (gogoproto.nullable) = false ];
   string discount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
