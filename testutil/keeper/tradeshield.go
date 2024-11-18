@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"testing"
+
 	"cosmossdk.io/store/metrics"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	"testing"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
@@ -36,7 +37,6 @@ func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AmmKee
 	ammKeeper := mocks.NewAmmKeeper(t)
 	tierKeeper := mocks.NewTierKeeper(t)
 	perpetualKeeper := mocks.NewPerpetualKeeper(t)
-
 	k := keeper.NewKeeper(
 		cdc,
 		storeService,

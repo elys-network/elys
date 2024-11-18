@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -12,6 +13,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
 	"github.com/elys-network/elys/x/perpetual/types"
+	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
 )
 
 type (
@@ -24,6 +26,7 @@ type (
 		bankKeeper         types.BankKeeper
 		oracleKeeper       types.OracleKeeper
 		assetProfileKeeper types.AssetProfileKeeper
+		tierKeeper         *tierkeeper.Keeper
 
 		hooks types.PerpetualHooks
 	}
@@ -38,6 +41,7 @@ func NewKeeper(
 	oracleKeeper types.OracleKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	parameterKeeper *pkeeper.Keeper,
+	tierKeeper *tierkeeper.Keeper,
 ) *Keeper {
 	// ensure that authority is a valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -53,6 +57,7 @@ func NewKeeper(
 		oracleKeeper:       oracleKeeper,
 		assetProfileKeeper: assetProfileKeeper,
 		parameterKeeper:    parameterKeeper,
+		tierKeeper:         tierKeeper,
 	}
 
 	return keeper
@@ -60,6 +65,14 @@ func NewKeeper(
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+func (k *Keeper) SetTierKeeper(tk *tierkeeper.Keeper) {
+	k.tierKeeper = tk
+}
+
+func (k *Keeper) GetTierKeeper() *tierkeeper.Keeper {
+	return k.tierKeeper
 }
 
 func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, proxyLeverage math.LegacyDec, baseCurrency string, isBroker bool) error {
@@ -93,7 +106,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		if !liabilities.IsZero() {
 			liabilitiesInCollateralTokenOut := sdk.NewCoin(mtp.CollateralAsset, liabilitiesInCollateral)
 			// Calculate base currency amount given atom out amount and we use it liabilty amount in base currency
-			liabilities, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenOut, baseCurrency, *ammPool)
+			liabilities, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenOut, baseCurrency, *ammPool, mtp.Address)
 			if err != nil {
 				return err
 			}
@@ -105,7 +118,7 @@ func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount
 		// liabilities.IsZero() happens when we are consolidating with leverage 1 as eta = 0
 		if !liabilities.IsZero() {
 			liabilitiesInCollateralTokenIn := sdk.NewCoin(baseCurrency, liabilities)
-			liabilities, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool)
+			liabilities, _, _, err = k.EstimateSwapGivenOut(ctx, liabilitiesInCollateralTokenIn, mtp.LiabilitiesAsset, *ammPool, mtp.Address)
 			if err != nil {
 				return err
 			}
