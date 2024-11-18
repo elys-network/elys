@@ -3,8 +3,6 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	testkeeper "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
@@ -29,8 +27,6 @@ func (suite *MasterchefKeeperTestSuite) TestShowFeeInfoQuery() {
 }
 
 func (suite *MasterchefKeeperTestSuite) TestListFeeInfoQuery() {
-	keeper, ctx := testkeeper.MasterchefKeeper(suite.T())
-	wctx := sdk.WrapSDKContext(ctx)
 	newInfo := types.FeeInfo{
 		GasLp:        math.NewInt(300),
 		GasStakers:   math.NewInt(150),
@@ -43,10 +39,12 @@ func (suite *MasterchefKeeperTestSuite) TestListFeeInfoQuery() {
 		PerpProtocol: math.NewInt(125),
 		EdenLp:       math.NewInt(2000),
 	}
-	keeper.SetFeeInfo(ctx, newInfo, "2024-05-01")
-	keeper.SetFeeInfo(ctx, newInfo, "2024-05-02")
+	currData := suite.ctx.BlockTime().Format("2006-01-02")
+	suite.app.MasterchefKeeper.SetFeeInfo(suite.ctx, newInfo, currData)
+	currData = suite.ctx.BlockTime().AddDate(0, 0, 1).Format("2006-01-02")
+	suite.app.MasterchefKeeper.SetFeeInfo(suite.ctx, newInfo, currData)
 
-	response, err := keeper.ListFeeInfo(wctx, &types.QueryListFeeInfoRequest{})
+	response, err := suite.app.MasterchefKeeper.ListFeeInfo(suite.ctx, &types.QueryListFeeInfoRequest{})
 	suite.Require().NoError(err)
 	suite.Require().Equal(&types.QueryListFeeInfoResponse{FeeInfo: []types.FeeInfo{newInfo, newInfo}}, response)
 }
