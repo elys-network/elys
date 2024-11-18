@@ -100,7 +100,7 @@ func (k msgServer) CreatePerpetualCloseOrder(goCtx context.Context, msg *types.M
 
 	// var pendingPerpetualOrder = types.PerpetualOrder{
 	// 	PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
-	// 	TriggerPrice: &types.TriggerPrice{
+	// 	TriggerPrice: types.TriggerPrice{
 	// 		TradingAssetDenom: position.TradingAsset,
 	// 		Rate:              msg.TriggerPrice.Rate,
 	// 	},

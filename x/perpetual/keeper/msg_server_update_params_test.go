@@ -22,14 +22,14 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateParams_ErrUnauthorised
 }
 
 func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateParams_ErrSetParams() {
+	params := types.DefaultParams()
+	params.LeverageMax = math.LegacyNewDec(-12)
 	msg := keeper.NewMsgServerImpl(*suite.app.PerpetualKeeper)
 	_, err := msg.UpdateParams(suite.ctx, &types.MsgUpdateParams{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		Params: &types.Params{
-			LeverageMax: math.LegacyNewDec(int64(-200)),
-		},
+		Params:    &params,
 	})
-	suite.Require().ErrorContains(err, "leverage max must be positive")
+	suite.Require().ErrorContains(err, "LeverageMax is negative")
 }
 
 func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateParams_Successful() {

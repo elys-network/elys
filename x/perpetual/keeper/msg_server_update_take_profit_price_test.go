@@ -44,7 +44,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_ErrPoolDoes
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 	k.RemovePool(ctx, firstPool)
 	_, err = msg.UpdateTakeProfitPrice(ctx, &types.MsgUpdateTakeProfitPrice{
@@ -78,7 +78,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_ErrAssetPro
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	suite.app.OracleKeeper.RemoveAssetInfo(ctx, ptypes.ATOM)
@@ -113,7 +113,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_Successful(
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 	_, err = msg.UpdateTakeProfitPrice(ctx, &types.MsgUpdateTakeProfitPrice{
 		Creator: firstPositionCreator.String(),

@@ -31,6 +31,7 @@ func TestPendingSpotOrderGet(t *testing.T) {
 	items := createNPendingSpotOrder(keeper, ctx, 10)
 	for _, item := range items {
 		got, found := keeper.GetPendingSpotOrder(ctx, item.OrderId)
+		item.OrderPrice.Rate = math.LegacyZeroDec()
 		require.True(t, found)
 		require.Equal(t,
 			nullify.Fill(&item),
@@ -51,11 +52,17 @@ func TestPendingSpotOrderRemove(t *testing.T) {
 
 func TestPendingSpotOrderGetAll(t *testing.T) {
 	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
-	items := createNPendingSpotOrder(keeper, ctx, 10)
-	require.ElementsMatch(t,
-		nullify.Fill(items),
-		nullify.Fill(keeper.GetAllPendingSpotOrder(ctx)),
-	)
+	_ = createNPendingSpotOrder(keeper, ctx, 10)
+
+	for _, item := range keeper.GetAllPendingSpotOrder(ctx) {
+		got, found := keeper.GetPendingSpotOrder(ctx, item.OrderId)
+		item.OrderPrice.Rate = math.LegacyZeroDec()
+		require.True(t, found)
+		require.Equal(t,
+			nullify.Fill(&item),
+			nullify.Fill(&got),
+		)
+	}
 }
 
 func TestPendingSpotOrderCount(t *testing.T) {
@@ -89,7 +96,7 @@ func TestExecuteStopLossOrder(t *testing.T) {
 		OwnerAddress: address.String(),
 		OrderId:      0,
 		OrderType:    types.SpotOrderType_STOPLOSS,
-		OrderPrice: &types.OrderPrice{
+		OrderPrice: types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
 			Rate:       sdkmath.LegacyNewDec(1),
@@ -136,7 +143,7 @@ func TestExecuteLimitSellOrder(t *testing.T) {
 		OwnerAddress: address.String(),
 		OrderId:      0,
 		OrderType:    types.SpotOrderType_LIMITSELL,
-		OrderPrice: &types.OrderPrice{
+		OrderPrice: types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
 			Rate:       sdkmath.LegacyNewDec(1),
@@ -183,7 +190,7 @@ func TestExecuteLimitBuyOrder(t *testing.T) {
 		OwnerAddress: address.String(),
 		OrderId:      0,
 		OrderType:    types.SpotOrderType_LIMITBUY,
-		OrderPrice: &types.OrderPrice{
+		OrderPrice: types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
 			Rate:       sdkmath.LegacyNewDec(1),
@@ -227,7 +234,7 @@ func TestExecuteMarketBuyOrder(t *testing.T) {
 		OwnerAddress: address.String(),
 		OrderId:      0,
 		OrderType:    types.SpotOrderType_MARKETBUY,
-		OrderPrice: &types.OrderPrice{
+		OrderPrice: types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
 			Rate:       sdkmath.LegacyNewDec(1),

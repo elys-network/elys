@@ -1,6 +1,8 @@
-package types
+package types_test
 
 import (
+	"github.com/elys-network/elys/x/oracle/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -11,19 +13,24 @@ import (
 func TestMsgCreateAssetInfo_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCreateAssetInfo
+		msg  types.MsgCreateAssetInfo
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCreateAssetInfo{
+			msg: types.MsgCreateAssetInfo{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgCreateAssetInfo{
-				Creator: sample.AccAddress(),
+			msg: types.MsgCreateAssetInfo{
+				Creator:    sample.AccAddress(),
+				Denom:      ptypes.ATOM,
+				Display:    "ATOM",
+				ElysTicker: "ATOM",
+				BandTicker: "ATOM",
+				Decimal:    6,
 			},
 		},
 	}

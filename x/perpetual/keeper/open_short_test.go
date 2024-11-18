@@ -36,14 +36,13 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 	testCases := []struct {
 		name                 string
 		expectErrMsg         string
-		isBroker             bool
 		prerequisiteFunction func()
 		postValidateFunction func(mtp *types.MTP)
 	}{
 		{
 			"pool not found",
 			types.ErrPoolDoesNotExist.Error(),
-			false,
+
 			func() {
 			},
 			func(mtp *types.MTP) {
@@ -52,7 +51,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		{
 			"amm pool not found",
 			"pool does not exist",
-			false,
+
 			func() {
 				ammPool = suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 				poolId = ammPool.PoolId
@@ -74,7 +73,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		{
 			"trading asset is not in the pool",
 			"(uelys) does not exist in the pool",
-			false,
+
 			func() {
 				suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
 				msg.Collateral.Denom = ptypes.BaseCurrency
@@ -86,7 +85,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		{
 			"collateral asset neither base currency nor present in the pool",
 			"collateral must be base currency",
-			false,
+
 			func() {
 				msg.Collateral.Denom = ptypes.Elys
 				msg.TradingAsset = ptypes.ATOM
@@ -97,7 +96,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		{
 			"collateral asset is ATOM",
 			"collateral must be base currency",
-			false,
+
 			func() {
 				suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
 				msg.Collateral.Denom = ptypes.ATOM
@@ -108,7 +107,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		{
 			"Borrow fails: lack of funds",
 			"user does not have enough balance of the required coin",
-			false,
+
 			func() {
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				params = suite.app.PerpetualKeeper.GetParams(suite.ctx)
@@ -124,7 +123,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		{
 			"collateral amount is too high",
 			"borrowed amount is higher than pool depth",
-			false,
+
 			func() {
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				msg.Collateral.Amount = msg.Collateral.Amount.MulRaw(1000_000_000)
@@ -135,7 +134,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		{
 			"success: collateral USDC, trading asset ATOM, stop loss price 0, TakeProfitPrice 0",
 			"",
-			false,
+
 			func() {
 				err := suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, govtypes.ModuleName, positionCreator, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
 				suite.Require().NoError(err)
@@ -149,7 +148,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 		{
 			"collateral is USDC, trading asset is ATOM, amm pool has enough USDC but not enough ATOM",
 			"amount too low",
-			false,
+
 			func() {
 				suite.ResetAndSetSuite(addr, true, amount.MulRaw(1000), math.NewInt(2))
 				msg.Collateral.Denom = ptypes.BaseCurrency
@@ -166,7 +165,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 			tc.prerequisiteFunction()
 			err := msg.ValidateBasic()
 			suite.Require().NoError(err)
-			mtp, err := suite.app.PerpetualKeeper.OpenDefineAssets(suite.ctx, poolId, msg, ptypes.BaseCurrency, tc.isBroker)
+			mtp, err := suite.app.PerpetualKeeper.OpenDefineAssets(suite.ctx, poolId, msg, ptypes.BaseCurrency)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

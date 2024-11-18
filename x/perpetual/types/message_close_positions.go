@@ -9,7 +9,7 @@ import (
 
 var _ sdk.Msg = &MsgClosePositions{}
 
-func NewMsgClosePositions(creator string, liquidate []*PositionRequest, stopLoss []*PositionRequest, takeProfit []*PositionRequest) *MsgClosePositions {
+func NewMsgClosePositions(creator string, liquidate []PositionRequest, stopLoss []PositionRequest, takeProfit []PositionRequest) *MsgClosePositions {
 	return &MsgClosePositions{
 		Creator:    creator,
 		Liquidate:  liquidate,

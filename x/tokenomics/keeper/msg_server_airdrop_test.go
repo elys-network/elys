@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"strconv"
 	"testing"
 	"time"
@@ -60,7 +61,7 @@ func TestAirdropMsgServerUpdate(t *testing.T) {
 				Amount:    200,
 				Expiry:    uint64(time.Now().Unix()),
 			},
-			err: sdkerrors.ErrInvalidAddress,
+			err: fmt.Errorf("invalid authority"),
 		},
 		{
 			desc: "KeyNotFound",
@@ -85,7 +86,7 @@ func TestAirdropMsgServerUpdate(t *testing.T) {
 
 			_, err = srv.UpdateAirdrop(ctx, tc.request)
 			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+				require.ErrorContains(t, err, tc.err.Error())
 			} else {
 				require.NoError(t, err)
 				rst, found := k.GetAirdrop(ctx,
@@ -119,7 +120,7 @@ func TestAirdropMsgServerDelete(t *testing.T) {
 				Authority: "B",
 				Intent:    strconv.Itoa(0),
 			},
-			err: sdkerrors.ErrInvalidAddress,
+			err: fmt.Errorf("invalid authority"),
 		},
 		{
 			desc: "KeyNotFound",
@@ -141,7 +142,7 @@ func TestAirdropMsgServerDelete(t *testing.T) {
 			require.NoError(t, err)
 			_, err = srv.DeleteAirdrop(ctx, tc.request)
 			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+				require.ErrorContains(t, err, tc.err.Error())
 			} else {
 				require.NoError(t, err)
 				_, found := k.GetAirdrop(ctx,

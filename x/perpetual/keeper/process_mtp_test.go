@@ -135,7 +135,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 	err = app.PerpetualKeeper.SetParams(ctx, &params)
 	suite.Require().NoError(err)
 	app.PerpetualKeeper.WhitelistAddress(ctx, sdk.MustAccAddressFromBech32(msg2.Creator))
-	_, err = mk.Open(ctx, msg2, false)
+	_, err = mk.Open(ctx, msg2)
 	suite.Require().NoError(err)
 
 	mtps := mk.GetAllMTPs(ctx)
@@ -324,7 +324,7 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 		sdkmath.LegacyZeroDec(),
 	)
 
-	_, err = mk.Open(ctx, msg2, false)
+	_, err = mk.Open(ctx, msg2)
 	require.NoError(t, err)
 
 	mtps := mk.GetAllMTPs(ctx)
@@ -488,7 +488,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	err = app.PerpetualKeeper.SetParams(ctx, &params)
 	suite.Require().NoError(err)
 	app.PerpetualKeeper.WhitelistAddress(ctx, sdk.MustAccAddressFromBech32(msg2.Creator))
-	_, err = mk.Open(ctx, msg2, false)
+	_, err = mk.Open(ctx, msg2)
 	suite.Require().NoError(err)
 
 	oracle.SetPrice(ctx, oracletypes.Price{

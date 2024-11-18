@@ -22,7 +22,7 @@ func TestCancelVest(t *testing.T) {
 
 	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,

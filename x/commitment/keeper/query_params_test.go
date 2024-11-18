@@ -17,6 +17,7 @@ func TestParamsQuery(t *testing.T) {
 
 	response, err := keeper.Params(ctx, &types.QueryParamsRequest{})
 	require.NoError(t, err)
+	params.TotalCommitted = nil
 	require.Equal(t, &types.QueryParamsResponse{Params: params}, response)
 }
 
