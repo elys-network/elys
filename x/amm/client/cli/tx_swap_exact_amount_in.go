@@ -40,15 +40,6 @@ func CmdSwapExactAmountIn() *cobra.Command {
 			}
 			argSwapRouteDenoms := strings.Split(args[3], listSeparator)
 
-			discountStr, err := cmd.Flags().GetString(FlagAddress)
-			if err != nil {
-				return err
-			}
-			discount, err := math.LegacyNewDecFromStr(discountStr)
-			if err != nil {
-				return err
-			}
-
 			recipient, err := cmd.Flags().GetString(FlagRecipient)
 			if err != nil {
 				return err
@@ -66,7 +57,6 @@ func CmdSwapExactAmountIn() *cobra.Command {
 				argTokenOutMinAmount,
 				argSwapRoutePoolIds,
 				argSwapRouteDenoms,
-				discount,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -77,7 +67,6 @@ func CmdSwapExactAmountIn() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagAddress, "", "address of the account making the swap")
 	cmd.Flags().String(FlagRecipient, "", "optional recipient field for the tokens swapped to be sent to")
 
 	return cmd

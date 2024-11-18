@@ -161,7 +161,6 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapByDenom() {
 					MaxAmount: sdk.Coin{},
 					DenomIn:   tc.tokenIn.Denom,
 					DenomOut:  tc.tokenOut.Denom,
-					Discount:  sdkmath.LegacyZeroDec(),
 				})
 			if !tc.expPass {
 				suite.Require().Error(err)
