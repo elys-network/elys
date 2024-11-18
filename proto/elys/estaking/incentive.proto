@@ -2,6 +2,7 @@ syntax = "proto3";
 package elys.estaking;
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/estaking/types";
 
@@ -9,21 +10,25 @@ option go_package = "github.com/elys-network/elys/x/estaking/types";
 message LegacyIncentiveInfo {
   // reward amount in eden for 1 year
   string eden_amount_per_year = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   // starting block height of the distribution
   string distribution_start_block = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   // distribution duration - block number per year
   string total_blocks_per_year = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   // blocks distributed
   string blocks_distributed = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -32,6 +37,7 @@ message LegacyIncentiveInfo {
 message IncentiveInfo {
   // reward amount in eden for 1 year
   string eden_amount_per_year = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];

@@ -16,6 +16,7 @@ message Pool {
   string pool = 2;
   string fiat_value = 3;
   string amount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];

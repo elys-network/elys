@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	FlagDiscount        = "discount"
+	FlagAddress         = "address"
 	FlagTakeProfitPrice = "take-profit"
 	FlagStopLossPrice   = "stop-loss"
 	FlagLimitPrice      = "limit-price"

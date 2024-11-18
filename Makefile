@@ -56,7 +56,13 @@ PROTO_VERSION=0.14.0
 protoImageName=ghcr.io/cosmos/proto-builder:$(PROTO_VERSION)
 protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
 
+.PHONY: proto
+
 proto-all: proto-format proto-gen
+
+proto:
+	@echo "Generating Protobuf files"
+	@sh ./scripts/protocgen.sh
 
 proto-gen:
 	@echo "Generating Protobuf files"

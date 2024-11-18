@@ -89,7 +89,7 @@ sudo apt-get install --yes make
 
    To generate proto files install `buf` and `clang-format`, then:
 ```bash
-sh ./scripts/protocgen.sh
+make proto
 ```
 
 5. **Optional**: Use _RocksDB_ instead of _pebbledb_

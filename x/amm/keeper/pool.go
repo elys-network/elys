@@ -19,7 +19,6 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
 	store.Set(types.PoolKey(pool.PoolId), b)
-	return
 }
 
 // GetPool returns a pool from its index
@@ -170,8 +169,6 @@ func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types
 			break
 		}
 	}
-
-	return
 }
 
 // GetPoolSnapshotOrSet returns a pool snapshot or set the snapshot

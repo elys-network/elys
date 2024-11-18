@@ -1,51 +1,45 @@
 package keeper_test
 
 import (
-	"testing"
-
 	sdkmath "cosmossdk.io/math"
 
-	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/masterchef/types"
-	"github.com/stretchr/testify/require"
 )
 
-func TestPoolRewardInfo(t *testing.T) {
-	app := simapp.InitElysTestApp(true, t)
-	ctx := app.BaseApp.NewContext(true)
+func (suite *MasterchefKeeperTestSuite) TestPoolRewardInfo() {
 
 	poolRewardInfos := []types.PoolRewardInfo{
 		{
 			PoolId:                1,
 			RewardDenom:           "reward1",
 			PoolAccRewardPerShare: sdkmath.LegacyOneDec(),
-			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
+			LastUpdatedBlock:      uint64(suite.ctx.BlockHeight()),
 		},
 		{
 			PoolId:                1,
 			RewardDenom:           "reward2",
 			PoolAccRewardPerShare: sdkmath.LegacyOneDec(),
-			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
+			LastUpdatedBlock:      uint64(suite.ctx.BlockHeight()),
 		},
 		{
 			PoolId:                2,
 			RewardDenom:           "reward2",
 			PoolAccRewardPerShare: sdkmath.LegacyOneDec(),
-			LastUpdatedBlock:      uint64(ctx.BlockHeight()),
+			LastUpdatedBlock:      uint64(suite.ctx.BlockHeight()),
 		},
 	}
 	for _, rewardInfo := range poolRewardInfos {
-		app.MasterchefKeeper.SetPoolRewardInfo(ctx, rewardInfo)
+		suite.app.MasterchefKeeper.SetPoolRewardInfo(suite.ctx, rewardInfo)
 	}
 	for _, rewardInfo := range poolRewardInfos {
-		info, found := app.MasterchefKeeper.GetPoolRewardInfo(ctx, rewardInfo.PoolId, rewardInfo.RewardDenom)
-		require.True(t, found)
-		require.Equal(t, info, rewardInfo)
+		info, found := suite.app.MasterchefKeeper.GetPoolRewardInfo(suite.ctx, rewardInfo.PoolId, rewardInfo.RewardDenom)
+		suite.Require().True(found)
+		suite.Require().Equal(info, rewardInfo)
 	}
-	rewardInfosStored := app.MasterchefKeeper.GetAllPoolRewardInfos(ctx)
-	require.Len(t, rewardInfosStored, 3)
+	rewardInfosStored := suite.app.MasterchefKeeper.GetAllPoolRewardInfos(suite.ctx)
+	suite.Require().Len(rewardInfosStored, 3)
 
-	app.MasterchefKeeper.RemovePoolRewardInfo(ctx, poolRewardInfos[0].PoolId, poolRewardInfos[0].RewardDenom)
-	rewardInfosStored = app.MasterchefKeeper.GetAllPoolRewardInfos(ctx)
-	require.Len(t, rewardInfosStored, 2)
+	suite.app.MasterchefKeeper.RemovePoolRewardInfo(suite.ctx, poolRewardInfos[0].PoolId, poolRewardInfos[0].RewardDenom)
+	rewardInfosStored = suite.app.MasterchefKeeper.GetAllPoolRewardInfos(suite.ctx)
+	suite.Require().Len(rewardInfosStored, 2)
 }

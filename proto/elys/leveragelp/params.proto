@@ -2,21 +2,25 @@ syntax = "proto3";
 package elys.leveragelp;
 
 import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 
 // Params defines the parameters for the module.
 message LegacyParams {
   string leverage_max = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   int64 max_open_positions = 2;
   string pool_open_threshold = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string safety_factor = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -27,15 +31,18 @@ message LegacyParams {
 // Params defines the parameters for the module.
 message Params {
   string leverage_max = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   int64 max_open_positions = 2;
   string pool_open_threshold = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string safety_factor = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];

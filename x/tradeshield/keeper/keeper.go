@@ -45,21 +45,6 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// GetUserDiscount returns the discount of a user
-func (k Keeper) GetUserDiscount(ctx sdk.Context, address string) (sdkmath.LegacyDec, error) {
-	// Get user address
-	user, err := sdk.AccAddressFromBech32(address)
-	if err != nil {
-		return sdkmath.LegacyZeroDec(), err
-	}
-
-	// Get discount tier (range from 0 to 100)
-	_, tier := k.tier.GetMembershipTier(ctx, user)
-
-	// Return the discount
-	return tier.Discount, nil
-}
-
 // GetAssetPriceFromDenomInToDenomOut returns the price of an asset from a denom to another denom
 func (k Keeper) GetAssetPriceFromDenomInToDenomOut(ctx sdk.Context, denomIn, denomOut string) (sdkmath.LegacyDec, error) {
 	priceIn := k.tier.CalculateUSDValue(ctx, denomIn, sdkmath.NewInt(1))

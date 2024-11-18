@@ -9,6 +9,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/leveragelp/params.proto";
 import "elys/leveragelp/types.proto";
 import "elys/leveragelp/pool.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/leveragelp/types";
 
@@ -184,6 +185,7 @@ message QueryAllPoolResponse {
 message PositionResponse {
   QueryPosition position = 1;
   string locked_lp_token = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -196,6 +198,7 @@ message QueryLiquidationPriceRequest {
 
 message QueryLiquidationPriceResponse {
   string price = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -204,11 +207,13 @@ message QueryLiquidationPriceResponse {
 message QueryOpenEstRequest {
   string collateral_asset = 1;
   string collateral_amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   uint64 amm_pool_id = 3;
   string leverage = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -216,14 +221,17 @@ message QueryOpenEstRequest {
 
 message QueryOpenEstResponse {
   string position_size = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   string weight_balance_ratio = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string borrow_fee = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -233,6 +241,7 @@ message QueryCloseEstRequest {
   string owner = 1;
   uint64 id = 2;
   string lp_amount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -261,14 +270,17 @@ message QueryRewardsResponse {
 
 message QueryCloseEstResponse {
   string liability = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   string weight_balance_ratio = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string amount_returned = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];

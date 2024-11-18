@@ -21,6 +21,7 @@ message BalanceBorrowed {
 
 message InterestBlock {
   string interest_rate = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -30,6 +31,7 @@ message InterestBlock {
 
 message LegacyInterestBlock {
   string interest_rate = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
