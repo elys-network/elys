@@ -109,7 +109,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	// Mint uatom
 	suite.MintTokenToAddress(addr[0], math.NewIntWithDecimal(100000000, 6), "uatom")
 
-	// external reward distribute
+	// external reward distribution
 	_, err = suite.msgServer.AddExternalRewardDenom(suite.ctx, &types.MsgAddExternalRewardDenom{
 		Authority:   suite.app.GovKeeper.GetAuthority(),
 		RewardDenom: "uatom",
