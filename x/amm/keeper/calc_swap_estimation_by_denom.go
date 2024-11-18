@@ -33,7 +33,11 @@ func (k Keeper) CalcSwapEstimationByDenom(
 		impactedPrice sdkmath.LegacyDec
 	)
 
-	_, tier := k.tierKeeper.GetMembershipTier(ctx, sdk.MustAccAddressFromBech32(address))
+	addr, err := sdk.AccAddressFromBech32(address)
+	if err != nil {
+		addr = sdk.AccAddress{}
+	}
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, addr)
 
 	// Initialize return variables
 	inRoute, outRoute = nil, nil
