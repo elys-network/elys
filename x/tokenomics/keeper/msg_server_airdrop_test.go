@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
@@ -19,14 +18,14 @@ import (
 func TestAirdropMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.TokenomicsKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
-	wctx := sdk.WrapSDKContext(ctx)
+
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	for i := 0; i < 5; i++ {
 		expected := &types.MsgCreateAirdrop{
 			Authority: authority,
 			Intent:    strconv.Itoa(i),
 		}
-		_, err := srv.CreateAirdrop(wctx, expected)
+		_, err := srv.CreateAirdrop(ctx, expected)
 		require.NoError(t, err)
 		rst, found := k.GetAirdrop(ctx,
 			expected.Intent,
@@ -77,15 +76,14 @@ func TestAirdropMsgServerUpdate(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.TokenomicsKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := ctx
 			expected := &types.MsgCreateAirdrop{
 				Authority: authority,
 				Intent:    strconv.Itoa(0),
 			}
-			_, err := srv.CreateAirdrop(wctx, expected)
+			_, err := srv.CreateAirdrop(ctx, expected)
 			require.NoError(t, err)
 
-			_, err = srv.UpdateAirdrop(wctx, tc.request)
+			_, err = srv.UpdateAirdrop(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
@@ -135,14 +133,13 @@ func TestAirdropMsgServerDelete(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.TokenomicsKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := ctx
 
-			_, err := srv.CreateAirdrop(wctx, &types.MsgCreateAirdrop{
+			_, err := srv.CreateAirdrop(ctx, &types.MsgCreateAirdrop{
 				Authority: authority,
 				Intent:    strconv.Itoa(0),
 			})
 			require.NoError(t, err)
-			_, err = srv.DeleteAirdrop(wctx, tc.request)
+			_, err = srv.DeleteAirdrop(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {

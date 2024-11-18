@@ -50,7 +50,20 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=$(NAME) \
 		  -X github.com/cosmos/cosmos-sdk/types.DBBackend=$(DBENGINE) \
 		  -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,$(DBENGINE)
 BUILD_FLAGS := -ldflags '$(ldflags)' -tags '$(GOTAGS)'
-BUILD_FOLDER = ./build
+
+
+PROTO_VERSION=0.14.0
+protoImageName=ghcr.io/cosmos/proto-builder:$(PROTO_VERSION)
+protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
+
+proto-all: proto-format proto-gen
+
+proto-gen:
+	@echo "Generating Protobuf files"
+	@$(protoImage) sh ./scripts/protocgen.sh
+
+proto-format:
+	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
 
 ## install: Install elysd binary in $GOBIN
 install: check-version go.sum
@@ -58,19 +71,20 @@ install: check-version go.sum
 	@GOFLAGS=$(GOFLAGS) go install $(BUILD_FLAGS) ./cmd/$(BINARY)
 	@elysd version
 
+$(BUILDDIR)/:
+	@-mkdir -p $(BUILDDIR) 2> /dev/null
+
 ## build: Build the binary
-build: check-version go.sum
+build: check-version go.sum $(BUILDDIR)/
 	@echo Building Elysd binary...
-	@-mkdir -p $(BUILD_FOLDER) 2> /dev/null
-	@GOFLAGS=$(GOFLAGS) go build $(BUILD_FLAGS) -o $(BUILD_FOLDER) ./cmd/$(BINARY)
+	@GOFLAGS=$(GOFLAGS) go build $(BUILD_FLAGS) -o $(BUILDDIR) ./cmd/$(BINARY)
 
 ## build-all: Build binaries for all platforms
-build-all:
+build-all: $(BUILDDIR)/
 	@echo Building Elysd binaries for all platforms...
-	@-mkdir -p $(BUILD_FOLDER) 2> /dev/null
-	@GOFLAGS=$(GOFLAGS) GOOS=linux GOARCH=amd64 go build $(BUILD_FLAGS) -o $(BUILD_FOLDER)/$(BINARY)-linux-amd64 ./cmd/$(BINARY)
-	@GOFLAGS=$(GOFLAGS) GOOS=linux GOARCH=arm64 go build $(BUILD_FLAGS) -o $(BUILD_FOLDER)/$(BINARY)-linux-arm64 ./cmd/$(BINARY)
-	@GOFLAGS=$(GOFLAGS) GOOS=darwin GOARCH=amd64 go build $(BUILD_FLAGS) -o $(BUILD_FOLDER)/$(BINARY)-darwin-amd64 ./cmd/$(BINARY)
+	@GOFLAGS=$(GOFLAGS) GOOS=linux GOARCH=amd64 go build $(BUILD_FLAGS) -o $(BUILDDIR)/$(BINARY)-linux-amd64 ./cmd/$(BINARY)
+	@GOFLAGS=$(GOFLAGS) GOOS=linux GOARCH=arm64 go build $(BUILD_FLAGS) -o $(BUILDDIR)/$(BINARY)-linux-arm64 ./cmd/$(BINARY)
+	@GOFLAGS=$(GOFLAGS) GOOS=darwin GOARCH=amd64 go build $(BUILD_FLAGS) -o $(BUILDDIR)/$(BINARY)-darwin-amd64 ./cmd/$(BINARY)
 
 ## do-checksum: Generate checksums for all binaries
 do-checksum:
@@ -79,7 +93,7 @@ do-checksum:
 ## build-with-checksum: Build binaries for all platforms and generate checksums
 build-with-checksum: build-all do-checksum
 
-.PHONY: install build build-all do-checksum build-with-checksum
+.PHONY: install build build-all do-checksum build-with-checksum $(BUILDDIR)/
 
 ## mocks: Generate mocks
 mocks:
@@ -103,7 +117,7 @@ ci-test-unit:
 ## clean: Clean build files. Runs `go clean` internally.
 clean:
 	@echo Cleaning build cache...
-	@rm -rf $(BUILD_FOLDER) 2> /dev/null
+	@rm -rf $(BUILDDIR) 2> /dev/null
 	@go clean ./...
 
 .PHONY: mocks test-unit ci-test-unit clean

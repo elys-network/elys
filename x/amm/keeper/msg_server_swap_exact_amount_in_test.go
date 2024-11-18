@@ -180,7 +180,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.SwapExactAmountIn(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgSwapExactAmountIn{
 					Sender:            sender.String(),
 					Routes:            tc.swapRoute,
@@ -275,7 +275,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	cacheCtx, _ := suite.ctx.CacheContext()
 	msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 	resp, err := msgServer.SwapExactAmountIn(
-		sdk.WrapSDKContext(cacheCtx),
+		cacheCtx,
 		&types.MsgSwapExactAmountIn{
 			Sender:            sender.String(),
 			Routes:            swapRoute,
@@ -295,7 +295,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	cacheCtx, _ = suite.ctx.CacheContext()
 	for i := 0; i < 100; i++ {
 		resp, err = msgServer.SwapExactAmountIn(
-			sdk.WrapSDKContext(cacheCtx),
+			cacheCtx,
 			&types.MsgSwapExactAmountIn{
 				Sender:            sender.String(),
 				Routes:            swapRoute,

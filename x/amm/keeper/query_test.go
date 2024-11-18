@@ -1,21 +1,47 @@
 package keeper_test
 
 import (
-	"testing"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	testkeeper "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/amm/types"
-	"github.com/stretchr/testify/require"
 )
 
-func TestParamsQuery(t *testing.T) {
-	keeper, ctx, _, _ := testkeeper.AmmKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
-	params := types.DefaultParams()
-	keeper.SetParams(ctx, params)
+func (suite *AmmKeeperTestSuite) TestQuery() {
+	testCases := []struct {
+		name                 string
+		prerequisiteFunction func()
+		postValidateFunction func()
+	}{
+		{
+			"params",
+			func() {
+				suite.ResetSuite()
 
-	response, err := keeper.Params(wctx, &types.QueryParamsRequest{})
-	require.NoError(t, err)
-	require.Equal(t, &types.QueryParamsResponse{Params: params}, response)
+				params := types.DefaultParams()
+				suite.app.AmmKeeper.SetParams(suite.ctx, params)
+			},
+			func() {
+				params := types.DefaultParams()
+
+				response, err := suite.app.AmmKeeper.Params(suite.ctx, &types.QueryParamsRequest{})
+				suite.Require().NoError(err)
+				suite.Require().Equal(&types.QueryParamsResponse{Params: params}, response)
+			},
+		},
+		{
+			"params with nil request",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				_, err := suite.app.AmmKeeper.Params(suite.ctx, nil)
+				suite.Require().Error(err)
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			tc.postValidateFunction()
+		})
+	}
 }
