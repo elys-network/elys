@@ -183,7 +183,6 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 					Routes:           tc.swapRoutes,
 					TokenOut:         tc.tokenOut,
 					TokenInMaxAmount: tc.tokenInMax,
-					Discount:         sdkmath.LegacyZeroDec(),
 				})
 			if !tc.expPass {
 				suite.Require().Error(err)

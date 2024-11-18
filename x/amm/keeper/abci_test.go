@@ -35,7 +35,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 					TokenOutMinAmount: sdkmath.ZeroInt(),
-					Discount:          sdkmath.LegacyZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{0},
@@ -54,7 +53,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 					TokenOutMinAmount: sdkmath.ZeroInt(),
-					Discount:          sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -66,7 +64,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 8000),
 					TokenOutMinAmount: sdkmath.ZeroInt(),
-					Discount:          sdkmath.LegacyZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{1, 0},
@@ -85,7 +82,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
 					TokenOutMinAmount: sdkmath.ZeroInt(),
-					Discount:          sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -97,7 +93,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 8000),
 					TokenOutMinAmount: sdkmath.ZeroInt(),
-					Discount:          sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -109,7 +104,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
 					TokenOutMinAmount: sdkmath.ZeroInt(),
-					Discount:          sdkmath.LegacyZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{1, 0, 2},
@@ -128,7 +122,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
 					TokenOutMinAmount: sdkmath.ZeroInt(),
-					Discount:          sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountOut{
 					Sender: sender.String(),
@@ -140,7 +133,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 8000),
 					TokenInMaxAmount: sdkmath.NewInt(1000000),
-					Discount:         sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -152,7 +144,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
 					TokenOutMinAmount: sdkmath.ZeroInt(),
-					Discount:          sdkmath.LegacyZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{2, 1, 0},
@@ -171,7 +162,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 11000),
 					TokenOutMinAmount: sdkmath.ZeroInt(),
-					Discount:          sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountOut{
 					Sender: sender.String(),
@@ -183,7 +173,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 8000),
 					TokenInMaxAmount: sdkmath.NewInt(1000000),
-					Discount:         sdkmath.LegacyZeroDec(),
 				},
 				&types.MsgSwapExactAmountIn{
 					Sender: sender.String(),
@@ -199,7 +188,6 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 1000),
 					TokenOutMinAmount: sdkmath.ZeroInt(),
-					Discount:          sdkmath.LegacyZeroDec(),
 				},
 			},
 			expSwapOrder: []uint64{2, 1, 0},
@@ -367,7 +355,6 @@ func (suite *AmmKeeperTestSuite) TestAbci() {
 					},
 					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 8000),
 					TokenInMaxAmount: sdkmath.NewInt(1000000),
-					Discount:         sdkmath.LegacyZeroDec(),
 				}
 
 				poolId := suite.app.AmmKeeper.FirstPoolId(msg)
@@ -418,7 +405,6 @@ func (suite *AmmKeeperTestSuite) TestAbci() {
 					},
 					TokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 					TokenOutMinAmount: sdkmath.ZeroInt(),
-					Discount:          sdkmath.LegacyZeroDec(),
 				}
 
 				err := suite.app.AmmKeeper.ApplySwapRequest(suite.ctx, msg)
@@ -457,7 +443,6 @@ func (suite *AmmKeeperTestSuite) TestAbci() {
 					},
 					TokenOut:         sdk.NewInt64Coin(ptypes.Elys, 10000),
 					TokenInMaxAmount: sdkmath.ZeroInt(),
-					Discount:         sdkmath.LegacyZeroDec(),
 				}
 
 				err := suite.app.AmmKeeper.ApplySwapRequest(suite.ctx, msg)
