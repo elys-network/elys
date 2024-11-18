@@ -1,7 +1,6 @@
 package cli
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -53,15 +52,6 @@ func CmdSwapByDenom() *cobra.Command {
 				}
 			}
 
-			discountStr, err := cmd.Flags().GetString(FlagAddress)
-			if err != nil {
-				return err
-			}
-			discount, err := sdkmath.LegacyNewDecFromStr(discountStr)
-			if err != nil {
-				return err
-			}
-
 			recipient, err := cmd.Flags().GetString(FlagRecipient)
 			if err != nil {
 				return err
@@ -80,7 +70,6 @@ func CmdSwapByDenom() *cobra.Command {
 				maxAmount,
 				argDenomIn,
 				argDenomOut,
-				discount,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -93,7 +82,6 @@ func CmdSwapByDenom() *cobra.Command {
 
 	cmd.Flags().String(FlagMinAmount, "", "minimum amount of tokens to receive")
 	cmd.Flags().String(FlagMaxAmount, "", "maximum amount of tokens to send")
-	cmd.Flags().String(FlagAddress, "0.0", "discount to apply to the swap fee (only smart contract broker can apply the discount)")
 	cmd.Flags().String(FlagRecipient, "", "optional recipient field for the tokens swapped to be sent to")
 
 	return cmd

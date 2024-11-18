@@ -181,11 +181,7 @@ message MsgSwapByDenom {
   cosmos.base.v1beta1.Coin max_amount = 4 [ (gogoproto.nullable) = false ];
   string denom_in = 5;
   string denom_out = 6;
-  string discount = 7 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string recipient = 8 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string recipient = 7 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgSwapByDenomResponse {

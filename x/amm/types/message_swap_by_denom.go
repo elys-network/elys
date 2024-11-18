@@ -2,14 +2,13 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ sdk.Msg = &MsgSwapByDenom{}
 
-func NewMsgSwapByDenom(sender, recipient string, amount sdk.Coin, minAmount sdk.Coin, maxAmount sdk.Coin, denomIn string, denomOut string, discount sdkmath.LegacyDec) *MsgSwapByDenom {
+func NewMsgSwapByDenom(sender, recipient string, amount sdk.Coin, minAmount sdk.Coin, maxAmount sdk.Coin, denomIn string, denomOut string) *MsgSwapByDenom {
 	return &MsgSwapByDenom{
 		Sender:    sender,
 		Recipient: recipient,
@@ -18,7 +17,6 @@ func NewMsgSwapByDenom(sender, recipient string, amount sdk.Coin, minAmount sdk.
 		MaxAmount: maxAmount,
 		DenomIn:   denomIn,
 		DenomOut:  denomOut,
-		Discount:  discount,
 	}
 }
 

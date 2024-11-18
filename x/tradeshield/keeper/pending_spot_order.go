@@ -1,11 +1,12 @@
 package keeper
 
 import (
+	"encoding/binary"
+	"math"
+
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
-	"encoding/binary"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	"math"
 
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -192,12 +193,6 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) err
 		return nil
 	}
 
-	// Get the discount for the user
-	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
-	if err != nil {
-		return err
-	}
-
 	// Swap the order amount with the target denom
 	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
@@ -205,7 +200,6 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) err
 		Amount:    order.OrderAmount,
 		DenomIn:   order.OrderPrice.BaseDenom,
 		DenomOut:  order.OrderPrice.QuoteDenom,
-		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
 	if err != nil {
@@ -230,12 +224,6 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) er
 		return nil
 	}
 
-	// Get the discount for the user
-	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
-	if err != nil {
-		return err
-	}
-
 	// Swap the order amount with the target denom
 	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
@@ -243,7 +231,6 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) er
 		Amount:    order.OrderAmount,
 		DenomIn:   order.OrderPrice.BaseDenom,
 		DenomOut:  order.OrderPrice.QuoteDenom,
-		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
 	if err != nil {
@@ -268,12 +255,6 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) err
 		return nil
 	}
 
-	// Get the discount for the user
-	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
-	if err != nil {
-		return err
-	}
-
 	// Swap the order amount with the target denom
 	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
@@ -281,7 +262,6 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) err
 		Amount:    order.OrderAmount,
 		DenomIn:   order.OrderPrice.BaseDenom,
 		DenomOut:  order.OrderPrice.QuoteDenom,
-		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
 	if err != nil {
@@ -296,20 +276,13 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) err
 
 // ExecuteMarketBuyOrder executes a market buy order
 func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) error {
-	// Get the discount for the user
-	discount, err := k.GetUserDiscount(ctx, order.OwnerAddress)
-	if err != nil {
-		return err
-	}
-
 	// Swap the order amount with the target denom
-	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	_, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
 		DenomIn:   order.OrderAmount.Denom,
 		DenomOut:  order.OrderTargetDenom,
-		Discount:  discount,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
 	if err != nil {
