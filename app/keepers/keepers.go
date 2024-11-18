@@ -164,7 +164,7 @@ type AppKeepers struct {
 	LeveragelpKeeper    *leveragelpmodulekeeper.Keeper
 	MasterchefKeeper    masterchefmodulekeeper.Keeper
 	EstakingKeeper      *estakingmodulekeeper.Keeper
-	TierKeeper          tiermodulekeeper.Keeper
+	TierKeeper          *tiermodulekeeper.Keeper
 	TradeshieldKeeper   tradeshieldmodulekeeper.Keeper
 
 	// FIXME: disabled to avoid dependency with wasm
@@ -478,6 +478,7 @@ func NewAppKeeper(
 		app.CommitmentKeeper,
 		app.AssetprofileKeeper,
 		app.AccountedPoolKeeper,
+		app.TierKeeper,
 	)
 
 	app.StablestakeKeeper = stablestakekeeper.NewKeeper(
@@ -514,6 +515,7 @@ func NewAppKeeper(
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
 		&app.ParameterKeeper,
+		app.TierKeeper,
 	)
 
 	app.MasterchefKeeper = *masterchefmodulekeeper.NewKeeper(
@@ -544,7 +546,7 @@ func NewAppKeeper(
 	app.TransferhookKeeper = *transferhookkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[transferhooktypes.StoreKey]),
-		*app.AmmKeeper)
+		app.AmmKeeper)
 
 	//app.ConsumerKeeper = ccvconsumerkeeper.NewKeeper(
 	//	appCodec,
@@ -621,7 +623,7 @@ func NewAppKeeper(
 		app.AccountedPoolKeeper,
 	)
 
-	app.TierKeeper = *tiermodulekeeper.NewKeeper(
+	app.TierKeeper = tiermodulekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[tiermoduletypes.StoreKey]),
 		app.BankKeeper,
@@ -636,6 +638,8 @@ func NewAppKeeper(
 		app.LeveragelpKeeper,
 		app.StablestakeKeeper,
 	)
+	app.AmmKeeper.SetTierKeeper(app.TierKeeper)
+	app.PerpetualKeeper.SetTierKeeper(app.TierKeeper)
 
 	app.TradeshieldKeeper = *tradeshieldmodulekeeper.NewKeeper(
 		appCodec,
