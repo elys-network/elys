@@ -247,10 +247,7 @@ message QuerySwapEstimationByDenomRequest {
   cosmos.base.v1beta1.Coin amount = 1 [ (gogoproto.nullable) = false ];
   string denom_in = 2;
   string denom_out = 3;
-  string discount = 4 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string address = 4;
 }
 
 message QuerySwapEstimationByDenomResponse {

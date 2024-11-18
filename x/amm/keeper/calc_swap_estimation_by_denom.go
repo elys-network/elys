@@ -13,7 +13,7 @@ func (k Keeper) CalcSwapEstimationByDenom(
 	denomIn string,
 	denomOut string,
 	baseCurrency string,
-	discount sdkmath.LegacyDec,
+	address string,
 	overrideSwapFee sdkmath.LegacyDec,
 	decimals uint64,
 ) (
@@ -33,10 +33,16 @@ func (k Keeper) CalcSwapEstimationByDenom(
 		impactedPrice sdkmath.LegacyDec
 	)
 
+	addr, err := sdk.AccAddressFromBech32(address)
+	if err != nil {
+		addr = sdk.AccAddress{}
+	}
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, addr)
+
 	// Initialize return variables
 	inRoute, outRoute = nil, nil
 	outAmount, availableLiquidity = sdk.Coin{}, sdk.Coin{}
-	spotPrice, swapFeeOut, discountOut, weightBonus, priceImpact = sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), discount, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec()
+	spotPrice, swapFeeOut, discountOut, weightBonus, priceImpact = sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), tier.Discount, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec()
 
 	// Determine the correct route based on the amount's denom
 	if amount.Denom == denomIn {
@@ -54,9 +60,9 @@ func (k Keeper) CalcSwapEstimationByDenom(
 
 	// Calculate final spot price and other outputs
 	if amount.Denom == denomIn {
-		spotPrice, impactedPrice, outAmount, swapFeeOut, _, availableLiquidity, slippage, weightBonus, err = k.CalcInRouteSpotPrice(ctx, amount, inRoute, discount, overrideSwapFee)
+		spotPrice, impactedPrice, outAmount, swapFeeOut, _, availableLiquidity, slippage, weightBonus, err = k.CalcInRouteSpotPrice(ctx, amount, inRoute, tier.Discount, overrideSwapFee)
 	} else {
-		spotPrice, impactedPrice, outAmount, swapFeeOut, _, availableLiquidity, slippage, weightBonus, err = k.CalcOutRouteSpotPrice(ctx, amount, outRoute, discount, overrideSwapFee)
+		spotPrice, impactedPrice, outAmount, swapFeeOut, _, availableLiquidity, slippage, weightBonus, err = k.CalcOutRouteSpotPrice(ctx, amount, outRoute, tier.Discount, overrideSwapFee)
 	}
 
 	if err != nil {

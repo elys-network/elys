@@ -40,7 +40,7 @@ func CmdSwapExactAmountIn() *cobra.Command {
 			}
 			argSwapRouteDenoms := strings.Split(args[3], listSeparator)
 
-			discountStr, err := cmd.Flags().GetString(FlagDiscount)
+			discountStr, err := cmd.Flags().GetString(FlagAddress)
 			if err != nil {
 				return err
 			}
@@ -77,7 +77,7 @@ func CmdSwapExactAmountIn() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagDiscount, "0.0", "discount to apply to the swap fee (only smart contract broker can apply the discount)")
+	cmd.Flags().String(FlagAddress, "", "address of the account making the swap")
 	cmd.Flags().String(FlagRecipient, "", "optional recipient field for the tokens swapped to be sent to")
 
 	return cmd

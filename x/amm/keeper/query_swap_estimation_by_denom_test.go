@@ -58,7 +58,7 @@ func (suite *AmmKeeperTestSuite) TestQuerySwapEstimationByDenom() {
 					Amount:   sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000)),
 					DenomIn:  ptypes.BaseCurrency,
 					DenomOut: ptypes.ATOM,
-					Discount: math.LegacyZeroDec(),
+					Address:  "",
 				})
 				suite.Require().Error(err)
 			},
@@ -79,7 +79,7 @@ func (suite *AmmKeeperTestSuite) TestQuerySwapEstimationByDenom() {
 					Amount:   sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000)),
 					DenomIn:  ptypes.BaseCurrency,
 					DenomOut: ptypes.ATOM,
-					Discount: math.LegacyZeroDec(),
+					Address:  "",
 				})
 				suite.Require().NoError(err)
 			},
