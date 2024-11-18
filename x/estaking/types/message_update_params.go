@@ -14,5 +14,9 @@ func (msg *MsgUpdateParams) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 
+	if err = msg.Params.Validate(); err != nil {
+		return err
+	}
+
 	return nil
 }

@@ -13,9 +13,6 @@ import (
 )
 
 func (k msgServer) Stake(goCtx context.Context, msg *types.MsgStake) (*types.MsgStakeResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if msg.Asset == paramtypes.Elys {
@@ -40,7 +37,7 @@ func (k msgServer) performStakeElys(ctx sdk.Context, msg *types.MsgStake) error 
 		return errorsmod.Wrap(errorsmod.Error{}, "staking keeper")
 	}
 
-	msgServer := stakingkeeper.NewMsgServerImpl(stakingKeeper)
+	stakingMsgServer := stakingkeeper.NewMsgServerImpl(stakingKeeper)
 
 	address, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -58,7 +55,7 @@ func (k msgServer) performStakeElys(ctx sdk.Context, msg *types.MsgStake) error 
 	}
 	msgMsgDelegate := stakingtypes.NewMsgDelegate(address.String(), validator_address.String(), amount)
 
-	if _, err := msgServer.Delegate(ctx, msgMsgDelegate); err != nil { // Discard the response because it's empty
+	if _, err := stakingMsgServer.Delegate(ctx, msgMsgDelegate); err != nil { // Discard the response because it's empty
 		return errorsmod.Wrap(err, "elys stake msg")
 	}
 

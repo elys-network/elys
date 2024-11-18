@@ -27,7 +27,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 
 	stkIncentive := estakingParams.StakeIncentives
 
-	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
+	totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 
 	if query.Denom == ptypes.Eden {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {

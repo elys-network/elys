@@ -27,6 +27,9 @@ func (msg *MsgCreateAirdrop) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
 	}
+	if len(msg.Intent) == 0 {
+		return errorsmod.Wrap(sdkerrors.ErrUnknownRequest, "intent cannot be empty")
+	}
 	return nil
 }
 

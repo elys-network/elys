@@ -30,5 +30,9 @@ func (msg *MsgAddExternalIncentive) ValidateBasic() error {
 		return errorsmod.Wrapf(ErrInvalidAmountPerBlock, "amount per block is negative")
 	}
 
+	if err = sdk.ValidateDenom(msg.RewardDenom); err != nil {
+		return err
+	}
+
 	return nil
 }

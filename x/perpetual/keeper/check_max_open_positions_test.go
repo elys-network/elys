@@ -35,6 +35,13 @@ func (suite *PerpetualKeeperTestSuite) TestCheckMaxOpenPositions() {
 				suite.app.PerpetualKeeper.SetOpenMTPCount(suite.ctx, 3)
 			},
 		},
+		{
+			"No limit",
+			"",
+			func() {
+				suite.app.PerpetualKeeper.SetOpenMTPCount(suite.ctx, -1)
+			},
+		},
 	}
 
 	for _, tc := range testCases {

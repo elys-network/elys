@@ -22,5 +22,13 @@ func (msg *MsgAddExternalRewardDenom) ValidateBasic() error {
 		return errorsmod.Wrapf(ErrInvalidMinAmount, "min amount is negative")
 	}
 
+	if msg.MinAmount.IsZero() {
+		return errorsmod.Wrapf(ErrInvalidAmountPerBlock, "min amount is zero")
+	}
+
+	if err = sdk.ValidateDenom(msg.RewardDenom); err != nil {
+		return err
+	}
+
 	return nil
 }

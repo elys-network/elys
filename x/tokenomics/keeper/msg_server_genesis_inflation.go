@@ -10,9 +10,6 @@ import (
 )
 
 func (k msgServer) UpdateGenesisInflation(goCtx context.Context, msg *types.MsgUpdateGenesisInflation) (*types.MsgUpdateGenesisInflationResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	if k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}

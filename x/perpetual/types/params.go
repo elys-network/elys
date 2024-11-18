@@ -3,8 +3,8 @@ package types
 import (
 	"cosmossdk.io/math"
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"gopkg.in/yaml.v2"
 )
 
 // NewParams creates a new Params instance
@@ -41,329 +41,71 @@ func DefaultParams() Params {
 	return NewParams()
 }
 
+func CheckLegacyDecNilAndNegative(value math.LegacyDec, name string) error {
+	if value.IsNil() {
+		return fmt.Errorf("%s is nil", name)
+	}
+	if value.IsNegative() {
+		return fmt.Errorf("%s is negative", name)
+	}
+	return nil
+}
+
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validateLeverageMax(p.LeverageMax); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.BorrowInterestRateMax, "BorrowInterestRateMax"); err != nil {
 		return err
 	}
-	if err := validateBorrowInterestRateMax(p.BorrowInterestRateMax); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.BorrowInterestRateMin, "BorrowInterestRateMin"); err != nil {
 		return err
 	}
-	if err := validateBorrowInterestRateMin(p.BorrowInterestRateMin); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.BorrowInterestRateIncrease, "BorrowInterestRateIncrease"); err != nil {
 		return err
 	}
-	if err := validateBorrowInterestRateIncrease(p.BorrowInterestRateIncrease); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.BorrowInterestRateDecrease, "BorrowInterestRateDecrease"); err != nil {
 		return err
 	}
-	if err := validateBorrowInterestRateDecrease(p.BorrowInterestRateDecrease); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.FixedFundingRate, "FixedFundingRate"); err != nil {
 		return err
 	}
-	if err := validateHealthGainFactor(p.HealthGainFactor); err != nil {
+	if _, err := sdk.AccAddressFromBech32(p.ForceCloseFundAddress); err != nil {
+		return fmt.Errorf("invalid address: %s", err.Error())
+	}
+	if err := CheckLegacyDecNilAndNegative(p.ForceCloseFundPercentage, "ForceCloseFundPercentage"); err != nil {
 		return err
 	}
-	if err := validateMaxOpenPositions(p.MaxOpenPositions); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.HealthGainFactor, "HealthGainFactor"); err != nil {
 		return err
 	}
-	if err := validatePoolOpenThreshold(p.PoolOpenThreshold); err != nil {
+	if _, err := sdk.AccAddressFromBech32(p.IncrementalBorrowInterestPaymentFundAddress); err != nil {
+		return fmt.Errorf("invalid address: %s", err.Error())
+	}
+	if err := CheckLegacyDecNilAndNegative(p.IncrementalBorrowInterestPaymentFundPercentage, "IncrementalBorrowInterestPaymentFundPercentage"); err != nil {
 		return err
 	}
-	if err := validateForceCloseFundPercentage(p.ForceCloseFundPercentage); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.LeverageMax, "LeverageMax"); err != nil {
 		return err
 	}
-	if err := validateForceCloseFundAddress(p.ForceCloseFundAddress); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.MaximumLongTakeProfitPriceRatio, "MaximumLongTakeProfitPriceRatio"); err != nil {
 		return err
 	}
-	if err := validateIncrementalBorrowInterestPaymentFundPercentage(p.IncrementalBorrowInterestPaymentFundPercentage); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.MaximumShortTakeProfitPriceRatio, "MaximumShortTakeProfitPriceRatio"); err != nil {
 		return err
 	}
-	if err := validateIncrementalBorrowInterestPaymentFundAddress(p.IncrementalBorrowInterestPaymentFundAddress); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.MinimumLongTakeProfitPriceRatio, "MinimumLongTakeProfitPriceRatio"); err != nil {
 		return err
 	}
-	if err := validateSafetyFactor(p.SafetyFactor); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.PerpetualSwapFee, "PerpetualSwapFee"); err != nil {
 		return err
 	}
-	if err := validateIncrementalBorrowInterestPaymentEnabled(p.IncrementalBorrowInterestPaymentEnabled); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.PoolOpenThreshold, "PoolOpenThreshold"); err != nil {
 		return err
 	}
-	if err := validateWhitelistingEnabled(p.WhitelistingEnabled); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.SafetyFactor, "SafetyFactor"); err != nil {
 		return err
 	}
-	if err := validateFixedFundingRate(p.FixedFundingRate); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.WeightBreakingFeeFactor, "WeightBreakingFeeFactor"); err != nil {
 		return err
-	}
-	if err := validateSwapFee(p.PerpetualSwapFee); err != nil {
-		return err
-	}
-	if err := validateMaxLimitOrder(p.MaxLimitOrder); err != nil {
-		return err
-	}
-	if err := validateWeightBreakingFeeFactor(p.WeightBreakingFeeFactor); err != nil {
-		return err
-	}
-	return nil
-}
-
-// String implements the Stringer interface.
-func (p Params) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
-}
-
-func validateLeverageMax(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("leverage max must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("leverage max must be positive: %s", v)
-	}
-	return nil
-}
-
-func validateBorrowInterestRateMax(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("borrow interest max must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("borrow interest max must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateBorrowInterestRateMin(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("borrow interest min must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("borrow interest min must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateBorrowInterestRateIncrease(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("borrow interest rate increase must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("borrow interest rate increase must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateBorrowInterestRateDecrease(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("borrow interest rate decrease must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("borrow interest rate decrease must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateHealthGainFactor(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("health gain factor must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("health gain factor must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateMaxOpenPositions(i interface{}) error {
-	_, ok := i.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateForceCloseFundPercentage(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("force close fund percentage must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("force close fund percentage must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateForceCloseFundAddress(i interface{}) error {
-	_, ok := i.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateIncrementalBorrowInterestPaymentFundPercentage(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("incremental borrow interest payment fund percentage must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("incremental borrow interest payment fund percentage must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateIncrementalBorrowInterestPaymentFundAddress(i interface{}) error {
-	_, ok := i.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateSafetyFactor(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("safety factor must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("safety factor must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateIncrementalBorrowInterestPaymentEnabled(i interface{}) error {
-	_, ok := i.(bool)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateWhitelistingEnabled(i interface{}) error {
-	_, ok := i.(bool)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validatePoolOpenThreshold(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("pool open threshold must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("pool open threshold must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateFixedFundingRate(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v.IsNil() {
-		return fmt.Errorf("fixed funding fee must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("fixed funding fee must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateSwapFee(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v.IsNil() {
-		return fmt.Errorf("swap fee must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("swap fee must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateMaxLimitOrder(i interface{}) error {
-	v, ok := i.(int64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v < 0 {
-		return fmt.Errorf("MaxLimitOrder should not be -ve: %d", v)
-	}
-	return nil
-}
-
-func validateWeightBreakingFeeFactor(i interface{}) error {
-	v, ok := i.(math.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-	if v.IsNil() {
-		return fmt.Errorf("WeightBreakingFeeFactor must be not nil")
-	}
-	if v.IsNegative() {
-		return fmt.Errorf("WeightBreakingFeeFactor must be positive: %s", v)
 	}
 
 	return nil

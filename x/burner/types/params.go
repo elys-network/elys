@@ -1,10 +1,6 @@
 package types
 
-import (
-	"fmt"
-
-	"gopkg.in/yaml.v2"
-)
+import "fmt"
 
 const (
 	// TODO: Determine the default value
@@ -29,28 +25,8 @@ func DefaultParams() Params {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validateEpochIdentifier(p.EpochIdentifier); err != nil {
-		return err
+	if p.EpochIdentifier == "" {
+		return fmt.Errorf("epoch_identifier is required")
 	}
-
-	return nil
-}
-
-// String implements the Stringer interface.
-func (p Params) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
-}
-
-// validateEpochIdentifier validates the EpochIdentifier param
-func validateEpochIdentifier(v interface{}) error {
-	epochIdentifier, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", v)
-	}
-
-	// TODO implement validation
-	_ = epochIdentifier
-
 	return nil
 }

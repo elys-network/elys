@@ -7,8 +7,6 @@ option go_package = "github.com/elys-network/elys/x/tradeshield/types";
 
 // Params defines the parameters for the module.
 message Params {
-  option (gogoproto.goproto_stringer) = false;
-
   bool market_order_enabled = 1;
   bool stake_enabled = 2;
   bool process_orders_enabled = 3;

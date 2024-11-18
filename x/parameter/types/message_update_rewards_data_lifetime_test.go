@@ -25,13 +25,13 @@ func TestMsgUpdateRewardsDataLifetime_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgUpdateRewardsDataLifetime{
 				Creator:             sample.AccAddress(),
-				RewardsDataLifetime: "1",
+				RewardsDataLifetime: 1,
 			},
 		}, {
 			name: "invalid reward lifecycle",
 			msg: MsgUpdateRewardsDataLifetime{
 				Creator:             sample.AccAddress(),
-				RewardsDataLifetime: "abcd",
+				RewardsDataLifetime: -1,
 			},
 			err: ErrInvalidRewardsDataLifecycle,
 		},

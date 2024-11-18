@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -29,6 +30,7 @@ func TestMsgAddEntry_ValidateBasic(t *testing.T) {
 				Creator:   sample.AccAddress(),
 				Decimals:  6,
 				BaseDenom: "uusdc",
+				Denom:     "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
 			},
 		},
 		{
@@ -55,6 +57,7 @@ func TestMsgAddEntry_ValidateBasic(t *testing.T) {
 				Creator:   sample.AccAddress(),
 				Decimals:  6,
 				BaseDenom: "uusdc",
+				Denom:     "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
 			},
 		},
 		{
@@ -63,6 +66,7 @@ func TestMsgAddEntry_ValidateBasic(t *testing.T) {
 				Creator:   sample.AccAddress(),
 				Decimals:  12,
 				BaseDenom: "uusdc",
+				Denom:     "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
 			},
 		},
 		{
@@ -71,6 +75,7 @@ func TestMsgAddEntry_ValidateBasic(t *testing.T) {
 				Creator:   sample.AccAddress(),
 				Decimals:  18,
 				BaseDenom: "uusdc",
+				Denom:     "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
 			},
 		},
 		{
@@ -82,12 +87,22 @@ func TestMsgAddEntry_ValidateBasic(t *testing.T) {
 			},
 			err: ErrInvalidBaseDenom,
 		},
+		{
+			name: "invalid denom",
+			msg: MsgAddEntry{
+				Creator:   sample.AccAddress(),
+				Decimals:  18,
+				BaseDenom: "uusdc",
+				Denom:     "",
+			},
+			err: fmt.Errorf("invalid denom"),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.msg.ValidateBasic()
 			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
+				require.ErrorContains(t, err, tt.err.Error())
 				return
 			}
 			require.NoError(t, err)

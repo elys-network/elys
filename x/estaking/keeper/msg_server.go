@@ -37,9 +37,6 @@ func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParam
 }
 
 func (k msgServer) WithdrawReward(goCtx context.Context, msg *types.MsgWithdrawReward) (*types.MsgWithdrawRewardResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
@@ -64,9 +61,6 @@ func (k msgServer) WithdrawReward(goCtx context.Context, msg *types.MsgWithdrawR
 }
 
 func (k msgServer) WithdrawElysStakingRewards(goCtx context.Context, msg *types.MsgWithdrawElysStakingRewards) (*types.MsgWithdrawElysStakingRewardsResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
 
@@ -109,15 +103,12 @@ func (k msgServer) WithdrawElysStakingRewards(goCtx context.Context, msg *types.
 }
 
 func (k Keeper) WithdrawAllRewards(goCtx context.Context, msg *types.MsgWithdrawAllRewards) (*types.MsgWithdrawAllRewardsResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	delAddr := sdk.MustAccAddressFromBech32(msg.DelegatorAddress)
 	var amount sdk.Coins
 	var err error = nil
 	var rewards = sdk.Coins{}
-	k.IterateDelegations(ctx, delAddr, func(index int64, del stakingtypes.DelegationI) (stop bool) {
+	err = k.IterateDelegations(ctx, delAddr, func(index int64, del stakingtypes.DelegationI) (stop bool) {
 		valAddr, errB := sdk.ValAddressFromBech32(del.GetValidatorAddr())
 		if errB != nil {
 			err = errB
@@ -139,6 +130,9 @@ func (k Keeper) WithdrawAllRewards(goCtx context.Context, msg *types.MsgWithdraw
 		})
 		return false
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	if err != nil {
 		return nil, err

@@ -3,7 +3,6 @@ package types
 import (
 	"cosmossdk.io/math"
 	"fmt"
-	"gopkg.in/yaml.v2"
 )
 
 // NewParams creates a new Params instance
@@ -33,10 +32,4 @@ func (p Params) Validate() error {
 		return fmt.Errorf("pool creation fee must be positive")
 	}
 	return nil
-}
-
-// String implements the Stringer interface.
-func (p Params) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
 }

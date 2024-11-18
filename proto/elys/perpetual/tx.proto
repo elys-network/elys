@@ -16,9 +16,7 @@ import "cosmos_proto/cosmos.proto";
 service Msg {
   option (cosmos.msg.v1.service) = true;
   rpc Open(MsgOpen) returns (MsgOpenResponse);
-  rpc BrokerOpen(MsgBrokerOpen) returns (MsgOpenResponse);
   rpc Close(MsgClose) returns (MsgCloseResponse);
-  rpc BrokerClose(MsgBrokerClose) returns (MsgCloseResponse);
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc Whitelist(MsgWhitelist) returns (MsgWhitelistResponse);
   rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
@@ -49,29 +47,6 @@ message MsgOpen {
   uint64 pool_id = 8;
 }
 
-message MsgBrokerOpen {
-  option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "perpetual/MsgBrokerOpen";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  Position position = 2;
-  string leverage = 3 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string trading_asset = 4;
-  cosmos.base.v1beta1.Coin collateral = 5 [ (gogoproto.nullable) = false ];
-  string take_profit_price = 6 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string owner = 7;
-  string stop_loss_price = 8 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  uint64 pool_id = 9;
-}
-
 message MsgOpenResponse { uint64 id = 1; }
 
 message MsgClose {
@@ -83,18 +58,6 @@ message MsgClose {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-}
-
-message MsgBrokerClose {
-  option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "perpetual/MsgBrokerClose";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  uint64 id = 2;
-  string amount = 3 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string owner = 4;
 }
 
 message MsgCloseResponse {

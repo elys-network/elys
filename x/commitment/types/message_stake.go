@@ -26,10 +26,10 @@ func (msg *MsgStake) ValidateBasic() error {
 	}
 
 	if err = sdk.ValidateDenom(msg.Asset); err != nil {
-		return err
+		return errorsmod.Wrapf(ErrInvalidDenom, msg.Asset)
 	}
 	if msg.Asset == paramtypes.Elys {
-		_, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
+		_, err = sdk.ValAddressFromBech32(msg.ValidatorAddress)
 		if err != nil {
 			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid validator address  (%s)", err)
 		}
@@ -39,8 +39,8 @@ func (msg *MsgStake) ValidateBasic() error {
 		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be nil")
 	}
 
-	if msg.Amount.IsNegative() {
-		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative")
+	if msg.Amount.IsNegative() || msg.Amount.IsZero() {
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative or zero")
 	}
 
 	return nil
