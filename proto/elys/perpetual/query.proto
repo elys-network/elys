@@ -239,11 +239,7 @@ message QueryOpenEstimationRequest {
   ];
   string trading_asset = 3;
   cosmos.base.v1beta1.Coin collateral = 4 [ (gogoproto.nullable) = false ];
-  string discount = 5 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string address = 5;
   string take_profit_price = 6 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",

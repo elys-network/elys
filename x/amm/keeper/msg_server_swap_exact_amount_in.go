@@ -38,7 +38,7 @@ func (k Keeper) SwapExactAmountIn(ctx sdk.Context, msg *types.MsgSwapExactAmount
 	}
 	// Try executing the tx on cached context environment, to filter invalid transactions out
 	cacheCtx, _ := ctx.CacheContext()
-	tokenOutAmount, swapFee, discount, err := k.RouteExactAmountIn(cacheCtx, sender, recipient, msg.Routes, msg.TokenIn, sdkmath.Int(msg.TokenOutMinAmount), msg.Discount)
+	tokenOutAmount, swapFee, discount, err := k.RouteExactAmountIn(cacheCtx, sender, recipient, msg.Routes, msg.TokenIn, sdkmath.Int(msg.TokenOutMinAmount))
 	if err != nil {
 		return nil, err
 	}

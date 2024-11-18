@@ -119,9 +119,8 @@ message QueryAllPortfolioResponse {
 message QueryCalculateDiscountRequest { string user = 1; }
 
 message QueryCalculateDiscountResponse {
-  string discount = 1;
-  string tier = 2;
-  string portfolio = 3;
+  MembershipTier membership_tier = 1;
+  string portfolio = 2;
 }
 
 message QueryLeverageLpTotalRequest { string user = 1; }

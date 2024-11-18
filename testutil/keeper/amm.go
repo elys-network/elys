@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"testing"
+
 	"cosmossdk.io/store/metrics"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	"testing"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
@@ -50,6 +51,7 @@ func AmmKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.AccountedPoolK
 		nil,
 		nil,
 		accountedPoolKeeper,
+		nil,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

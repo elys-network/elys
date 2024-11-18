@@ -1,59 +1,76 @@
 package keeper_test
 
 import (
-	"testing"
-
+	errorsmod "cosmossdk.io/errors"
+	"github.com/cometbft/cometbft/crypto/ed25519"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/masterchef/types"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestTogglePoolEdenRewards(t *testing.T) {
+func (suite *MasterchefKeeperTestSuite) TestTogglePoolEdenRewards() {
 
-	type TestTogglePoolEdenReward struct {
-		msg  types.MsgTogglePoolEdenRewards
-		want error
-	}
-
+	pk := ed25519.GenPrivKey().PubKey()
+	nonAuthority := sdk.AccAddress(pk.Address()).String()
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	suite.AddPoolInfo()
 
-	table := []TestTogglePoolEdenReward{
+	testCases := []struct {
+		name         string
+		msg          *types.MsgTogglePoolEdenRewards
+		expectErr    bool
+		expectErrMsg error
+	}{
 		{
-			msg: types.MsgTogglePoolEdenRewards{
+			name: "Invalid signer",
+			msg: &types.MsgTogglePoolEdenRewards{
 				Authority: "",
 				PoolId:    2,
 			},
-			want: govtypes.ErrInvalidSigner,
+			expectErr:    true,
+			expectErrMsg: sdkerrors.ErrInvalidAddress,
 		},
 		{
-			msg: types.MsgTogglePoolEdenRewards{
+			name: "Invalid Signer Address",
+			msg: &types.MsgTogglePoolEdenRewards{
+				Authority: nonAuthority,
+				PoolId:    2,
+			},
+			expectErr:    true,
+			expectErrMsg: errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", authority, nonAuthority),
+		},
+		{
+			name: "Pool not found",
+			msg: &types.MsgTogglePoolEdenRewards{
 				Authority: authority,
 				PoolId:    3,
 			},
-			want: types.ErrPoolNotFound,
+			expectErr:    true,
+			expectErrMsg: types.ErrPoolNotFound,
 		},
 		{
-			msg: types.MsgTogglePoolEdenRewards{
+			name: "Happy Flow",
+			msg: &types.MsgTogglePoolEdenRewards{
 				Authority: authority,
 				PoolId:    2,
 				Enable:    true,
 			},
-			want: nil,
+			expectErr:    false,
+			expectErrMsg: nil,
 		},
 	}
-	ms, ctx := setupMsgServer(t)
 
-	for _, test := range table {
-
-		_, err := ms.TogglePoolEdenRewards(ctx, &test.msg)
-
-		if err != nil {
-			assert.Error(t, err, test.want)
-		} else {
-			assert.Equal(t, err, test.want)
-		}
-
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			_, err := suite.msgServer.TogglePoolEdenRewards(suite.ctx, tc.msg)
+			if tc.expectErr {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectErrMsg.Error())
+			} else {
+				suite.Require().NoError(err)
+			}
+		})
 	}
-
 }

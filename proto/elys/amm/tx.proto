@@ -99,12 +99,7 @@ message MsgSwapExactAmountIn {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string discount = 5 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string recipient = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string recipient = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgSwapExactAmountInResponse {
@@ -137,12 +132,7 @@ message MsgSwapExactAmountOut {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string discount = 5 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string recipient = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string recipient = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgSwapExactAmountOutResponse {

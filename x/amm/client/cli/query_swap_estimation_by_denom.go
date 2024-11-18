@@ -1,7 +1,6 @@
 package cli
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -23,11 +22,7 @@ func CmdSwapEstimationByDenom() *cobra.Command {
 			reqDenomIn := args[1]
 			reqDenomOut := args[2]
 
-			discountStr, err := cmd.Flags().GetString(FlagDiscount)
-			if err != nil {
-				return err
-			}
-			discount, err := sdkmath.LegacyNewDecFromStr(discountStr)
+			address, err := cmd.Flags().GetString(FlagAddress)
 			if err != nil {
 				return err
 			}
@@ -43,7 +38,7 @@ func CmdSwapEstimationByDenom() *cobra.Command {
 				Amount:   reqAmount,
 				DenomIn:  reqDenomIn,
 				DenomOut: reqDenomOut,
-				Discount: discount,
+				Address:  address,
 			}
 
 			res, err := queryClient.SwapEstimationByDenom(cmd.Context(), params)
@@ -57,7 +52,7 @@ func CmdSwapEstimationByDenom() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagDiscount, "0.0", "discount to apply to the swap fee")
+	cmd.Flags().String(FlagAddress, "", "address of the account making swap")
 
 	return cmd
 }

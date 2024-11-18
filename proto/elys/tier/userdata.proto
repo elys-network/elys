@@ -21,3 +21,24 @@ message Pool {
     (gogoproto.nullable) = false
   ];
 }
+
+enum MembershipTierType {
+  BRONZE = 0;
+  SILVER = 1;
+  GOLD = 2;
+  PLATINUM = 3;
+}
+
+message MembershipTier {
+  string minimum_portfolio = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  MembershipTierType membership = 2;
+  string discount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}

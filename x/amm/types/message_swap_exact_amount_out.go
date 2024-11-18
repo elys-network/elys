@@ -29,7 +29,6 @@ func NewMsgSwapExactAmountOut(sender, recipient string, tokenOut sdk.Coin, token
 		Routes:           routes,
 		TokenOut:         tokenOut,
 		TokenInMaxAmount: tokenInMaxAmount,
-		Discount:         discount,
 	}
 }
 
