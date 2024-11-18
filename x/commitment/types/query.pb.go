@@ -817,7 +817,6 @@ func _Query_CommitmentVestingInfo_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.commitment.Query",
 	HandlerType: (*QueryServer)(nil),

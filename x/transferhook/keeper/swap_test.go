@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"encoding/json"
 	"fmt"
+
+	"cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/ibc-go/v8/modules/apps/transfer"
@@ -199,6 +200,7 @@ func (suite *KeeperTestSuite) TestSwapOnRecvPacket() {
 			suite.app.TransferhookKeeper.SetParams(suite.ctx, types.Params{
 				AmmActive: tc.forwardingActive,
 			})
+
 			// bootstrap accounts
 			poolAddr := ammtypes.NewPoolAddress(uint64(1))
 			treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
