@@ -12,6 +12,7 @@ message AccountedPool {
   cosmos.base.v1beta1.Coin total_shares = 2 [ (gogoproto.nullable) = false ];
   repeated elys.amm.PoolAsset pool_assets = 3 [ (gogoproto.nullable) = false ];
   string total_weight = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];

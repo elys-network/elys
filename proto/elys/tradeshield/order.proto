@@ -12,6 +12,7 @@ message OrderPrice {
   string base_denom = 1;
   string quote_denom = 2;
   string rate = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -28,6 +29,7 @@ enum SpotOrderType {
 message TriggerPrice {
   string trading_asset_denom = 1;
   string rate = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];

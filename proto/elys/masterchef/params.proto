@@ -4,6 +4,7 @@ package elys.masterchef;
 import "gogoproto/gogo.proto";
 import "elys/masterchef/incentive.proto";
 import "elys/masterchef/pool.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/masterchef/types";
 
@@ -15,6 +16,7 @@ message LegacyParams {
   // gas fees and swap fees portion for lps, `100 - reward_portion_for_lps -
   // reward_portion_for_stakers = revenue percent for protocol`.
   string reward_portion_for_lps = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -22,12 +24,14 @@ message LegacyParams {
   // gas fees and swap fees portion for stakers, `100 - reward_portion_for_lps -
   // reward_portion_for_stakers = revenue percent for protocol`.
   string reward_portion_for_stakers = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 
   // Maximum eden reward apr for lps - [0 - 0.3]
   string max_eden_reward_apr_lps = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -44,6 +48,7 @@ message Params {
   // gas fees and swap fees portion for lps, `100 - reward_portion_for_lps -
   // reward_portion_for_stakers = revenue percent for protocol`.
   string reward_portion_for_lps = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -51,12 +56,14 @@ message Params {
   // gas fees and swap fees portion for stakers, `100 - reward_portion_for_lps -
   // reward_portion_for_stakers = revenue percent for protocol`.
   string reward_portion_for_stakers = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 
   // Maximum eden reward apr for lps - [0 - 0.3]
   string max_eden_reward_apr_lps = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -69,6 +76,7 @@ message Params {
 message SupportedRewardDenom {
   string denom = 1;
   string min_amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
