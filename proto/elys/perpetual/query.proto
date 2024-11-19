@@ -83,12 +83,6 @@ service Query {
         "/elys-network/elys/perpetual/open-estimation";
   }
 
-  // Queries a list of GetAllToPay items.
-  rpc GetAllToPay(QueryGetAllToPayRequest) returns (QueryGetAllToPayResponse) {
-    option (google.api.http).get =
-        "/elys-network/elys/perpetual/get_all_to_pay";
-  }
-
   // Queries a list of CloseEstimation items.
   rpc CloseEstimation(QueryCloseEstimationRequest)
       returns (QueryCloseEstimationResponse) {
@@ -319,10 +313,6 @@ message QueryOpenEstimationResponse {
     (gogoproto.nullable) = false
   ];
 }
-
-message QueryGetAllToPayRequest {}
-
-message QueryGetAllToPayResponse { repeated ToPay to_pay = 1; }
 
 message PoolResponse {
   uint64 amm_pool_id = 1;
