@@ -97,7 +97,8 @@ func (suite *MasterchefKeeperTestSuite) TestABCI_EndBlocker() {
 func (suite *MasterchefKeeperTestSuite) TestCollectGasFees() {
 	suite.ResetSuite(true)
 	// Collect gas fees
-	collectedAmt := suite.app.MasterchefKeeper.CollectGasFees(suite.ctx, ptypes.BaseCurrency)
+	collectedAmt, err := suite.app.MasterchefKeeper.CollectGasFees(suite.ctx, ptypes.BaseCurrency)
+	suite.Require().NoError(err)
 
 	// rewards should be zero
 	suite.Require().True(collectedAmt.IsZero())
@@ -112,7 +113,7 @@ func (suite *MasterchefKeeperTestSuite) TestCollectGasFees() {
 	suite.app.MasterchefKeeper.SetParams(suite.ctx, params)
 
 	// Deposit 100elys to FeeCollectorName wallet
-	err := suite.app.BankKeeper.SendCoinsFromAccountToModule(suite.ctx, addr[0], authtypes.FeeCollectorName, sdk.NewCoins(transferAmt))
+	err = suite.app.BankKeeper.SendCoinsFromAccountToModule(suite.ctx, addr[0], authtypes.FeeCollectorName, sdk.NewCoins(transferAmt))
 	suite.Require().NoError(err)
 
 	// Create a pool
@@ -151,7 +152,8 @@ func (suite *MasterchefKeeperTestSuite) TestCollectGasFees() {
 	suite.Require().Equal(int64(0), suite.ctx.BlockHeight())
 
 	// Collect gas fees again
-	collectedAmt = suite.app.MasterchefKeeper.CollectGasFees(suite.ctx, ptypes.BaseCurrency)
+	collectedAmt, err = suite.app.MasterchefKeeper.CollectGasFees(suite.ctx, ptypes.BaseCurrency)
+	suite.Require().NoError(err)
 
 	// check block height
 	suite.Require().Equal(int64(0), suite.ctx.BlockHeight())
@@ -238,7 +240,8 @@ func (suite *MasterchefKeeperTestSuite) TestCollectDEXRevenue() {
 	suite.app.MasterchefKeeper.SetParams(suite.ctx, params)
 
 	// Collect revenue
-	collectedAmt, rewardForLpsAmt, _ := suite.app.MasterchefKeeper.CollectDEXRevenue(suite.ctx)
+	collectedAmt, rewardForLpsAmt, _, err := suite.app.MasterchefKeeper.CollectDEXRevenue(suite.ctx)
+	suite.Require().NoError(err)
 
 	// check block height
 	suite.Require().Equal(int64(0), suite.ctx.BlockHeight())
@@ -261,7 +264,8 @@ func (suite *MasterchefKeeperTestSuite) TestCollectPerpRevenue() {
 	// Fill in perpetual revenue wallet
 	suite.MintTokenToAddress(addr[0], sdkmath.NewInt(3000), ptypes.BaseCurrency)
 
-	fees := suite.app.MasterchefKeeper.CollectPerpRevenue(suite.ctx, ptypes.BaseCurrency)
+	fees, err := suite.app.MasterchefKeeper.CollectPerpRevenue(suite.ctx, ptypes.BaseCurrency)
+	suite.Require().NoError(err)
 
 	// It should be 1950=3000*0.65 usdc
 	suite.Require().Equal(fees, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdkmath.NewInt(1800))})
