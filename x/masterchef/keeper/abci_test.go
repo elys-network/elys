@@ -137,7 +137,7 @@ func (suite *MasterchefKeeperTestSuite) TestCollectGasFees() {
 	}
 
 	// Create a Elys+USDC pool
-	ammPool := suite.CreateNewAmmPool(sdk.AccAddress(addr[0]), poolAssets, poolParams)
+	ammPool := suite.CreateNewAmmPool(addr[0], poolAssets, poolParams)
 	suite.Require().Equal(ammPool.PoolId, uint64(1))
 
 	pools := suite.app.AmmKeeper.GetAllPool(suite.ctx)
