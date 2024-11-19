@@ -39,6 +39,14 @@ func TestMsgUnbond_ValidateBasic(t *testing.T) {
 			err: fmt.Errorf("amount should be positive"),
 		},
 		{
+			name: "nil amount",
+			msg: MsgUnbond{
+				Creator: sample.AccAddress(),
+				Amount:  math.Int{},
+			},
+			err: fmt.Errorf("amount cannot be nil"),
+		},
+		{
 			name: "zero amount",
 			msg: MsgUnbond{
 				Creator: sample.AccAddress(),

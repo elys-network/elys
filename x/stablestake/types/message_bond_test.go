@@ -40,6 +40,14 @@ func TestMsgBond_ValidateBasic(t *testing.T) {
 			err: fmt.Errorf("amount should be positive"),
 		},
 		{
+			name: "nil amount",
+			msg: MsgBond{
+				Creator: sample.AccAddress(),
+				Amount:  math.Int{},
+			},
+			err: fmt.Errorf("amount cannot be nil"),
+		},
+		{
 			name: "zero amount",
 			msg: MsgBond{
 				Creator: sample.AccAddress(),

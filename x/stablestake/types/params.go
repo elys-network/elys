@@ -7,35 +7,6 @@ import (
 	"cosmossdk.io/math"
 )
 
-// NewParams creates a new Params instance
-func NewParams(
-	depositDenom string,
-	redemptionRate math.LegacyDec,
-	epochLength int64,
-	interestRate math.LegacyDec,
-	interestRateMax math.LegacyDec,
-	interestRateMin math.LegacyDec,
-	interestRateIncrease math.LegacyDec,
-	interestRateDecrease math.LegacyDec,
-	healthGainFactor math.LegacyDec,
-	totalValue math.Int,
-	MaxLeveragePercent math.LegacyDec,
-) Params {
-	return Params{
-		DepositDenom:         depositDenom,
-		RedemptionRate:       redemptionRate,
-		EpochLength:          epochLength,
-		InterestRate:         interestRate,
-		InterestRateMax:      interestRateMax,
-		InterestRateMin:      interestRateMin,
-		InterestRateIncrease: interestRateIncrease,
-		InterestRateDecrease: interestRateDecrease,
-		HealthGainFactor:     healthGainFactor,
-		TotalValue:           totalValue,
-		MaxLeverageRatio:     MaxLeveragePercent,
-	}
-}
-
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
