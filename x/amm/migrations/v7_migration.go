@@ -14,7 +14,7 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		newPoolAddress := types.NewPoolAddress(pool.PoolId)
 		poolAccountModuleName := types.GetPoolIdModuleName(pool.PoolId)
 		if err := utils.CreateModuleAccount(ctx, m.keeper.GetAccountKeeper(), newPoolAddress, poolAccountModuleName); err != nil {
-			panic(fmt.Errorf("error creating new pool account for %d: %w", pool.PoolId, err))
+			return fmt.Errorf("error creating new pool account for %d: %w", pool.PoolId, err)
 		}
 		poolAccAddress := sdk.MustAccAddressFromBech32(pool.Address)
 		// Bank: Transfer funds from prevPoolAddress to new newPoolAddress
@@ -27,7 +27,7 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		entry, found := m.keeper.GetAssetProfileKeeper().GetEntry(ctx, poolBaseDenom)
 		// Should not happen
 		if !found {
-			panic(fmt.Errorf("assetprofile not found for basedenom: %s", poolBaseDenom))
+			return fmt.Errorf("assetprofile not found for basedenom: %s", poolBaseDenom)
 		}
 
 		entry.Authority = newPoolAddress.String()
@@ -41,7 +41,7 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		metadata, found := m.keeper.GetBankKeeper().GetDenomMetaData(ctx, poolBaseDenom)
 		// Should not happen
 		if !found {
-			panic(fmt.Errorf("denom metadata for poolshare denom not found in bank denom metadata: %s", poolBaseDenom))
+			return fmt.Errorf("denom metadata for poolshare denom not found in bank denom metadata: %s", poolBaseDenom)
 		}
 		metadata.Name = metadata.Base
 		metadata.Symbol = metadata.Display
