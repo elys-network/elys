@@ -9,7 +9,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
+func (suite *AmmKeeperTestSuite) TestRouteExactAmountOut() {
 	for _, tc := range []struct {
 		desc                string
 		senderInitBalance   sdk.Coins
@@ -184,7 +184,6 @@ func (suite *KeeperTestSuite) TestRouteExactAmountOut() {
 						TokenInDenom: tc.tokenIn.Denom,
 					},
 				}, tc.tokenInMax, tc.tokenOut,
-				math.LegacyZeroDec(),
 			)
 			if !tc.expPass {
 				suite.Require().Error(err)

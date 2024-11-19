@@ -91,7 +91,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 			_, err = msgServer.Unbond(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgUnbond{
 					Creator: sender.String(),
 					Amount:  tc.unbondAmount,

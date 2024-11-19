@@ -4,7 +4,7 @@ order: 1
 
 # Concepts
 
-The `parameter` module in the Elys Network manages key configuration parameters for the network, enabling dynamic updates and retrievals. It facilitates the modification of various parameters related to commissions, voting power, self-delegation, broker address, total blocks per year, and WASM configuration.
+The `parameter` module in the Elys Network manages key configuration parameters for the network, enabling dynamic updates and retrievals. It facilitates the modification of various parameters related to commissions, voting power, self-delegation, broker address and total blocks per year.
 
 ## Module Components
 
@@ -36,40 +36,6 @@ func (k msgServer) UpdateMinCommission(goCtx context.Context, msg *types.MsgUpda
 **Return**:
 
 - Returns an error if the caller lacks authority or if the commission rate is invalid.
-
-### 2. `UpdateWasmConfig`
-
-The `UpdateWasmConfig` function updates the configuration parameters for WASM. It includes the maximum label size, maximum size, and maximum proposal size.
-
-**Function Signature**:
-
-```go
-func (k msgServer) UpdateWasmConfig(goCtx context.Context, msg *types.MsgUpdateWasmConfig) (*types.MsgUpdateWasmConfigResponse, error)
-```
-
-**Parameters**:
-
-- `goCtx`: The context of the current transaction.
-- `msg`: The message containing the new WASM configuration values.
-
-**Return**:
-
-- Returns an error if the caller lacks authority or if the parameters are invalid.
-
-## Hooks
-
-The `parameter` module does not include hooks as it primarily deals with static configuration parameters rather than dynamic state changes.
-
-## Error Handling
-
-The `parameter` module includes error handling to manage invalid parameters or unauthorized access. Notable errors include:
-
-- `types.ErrInvalidMinCommissionRate`
-- `types.ErrInvalidMaxVotingPower`
-- `types.ErrInvalidMinSelfDelegation`
-- `types.ErrInvalidBrokerAddress`
-
-These errors ensure that the module can gracefully handle invalid updates and provide meaningful feedback for debugging and resolution.
 
 ## Integration
 

@@ -12,7 +12,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerExitPool() {
+func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 	for _, tc := range []struct {
 		desc              string
 		poolInitBalance   sdk.Coins
@@ -137,7 +137,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 				},
 			}
 			_, err = msgServer.CreatePool(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgCreatePool{
 					Sender:     sender.String(),
 					PoolParams: &tc.poolParams,
@@ -147,7 +147,7 @@ func (suite *KeeperTestSuite) TestMsgServerExitPool() {
 			pool := suite.app.AmmKeeper.GetAllPool(suite.ctx)[0]
 			suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 			resp, err := msgServer.ExitPool(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgExitPool{
 					Sender:        sender.String(),
 					PoolId:        pool.PoolId,

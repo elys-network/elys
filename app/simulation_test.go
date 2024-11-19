@@ -3,7 +3,6 @@ package app_test
 import (
 	"encoding/json"
 	"fmt"
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"math/rand"
 	"os"
 	"runtime/debug"
@@ -95,7 +94,6 @@ func BenchmarkSimulation(b *testing.B) {
 		map[int64]bool{},
 		dir,
 		appOptions,
-		[]wasmkeeper.Option{},
 	)
 	require.Equal(b, app.Name, bApp.Name())
 
@@ -175,7 +173,6 @@ func TestAppStateDeterminism(t *testing.T) {
 				map[int64]bool{},
 				dir,
 				appOptions,
-				[]wasmkeeper.Option{},
 			)
 
 			fmt.Printf(
@@ -250,7 +247,6 @@ func TestAppImportExport(t *testing.T) {
 		map[int64]bool{},
 		dir,
 		appOptions,
-		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 
@@ -309,7 +305,6 @@ func TestAppImportExport(t *testing.T) {
 		map[int64]bool{},
 		newDir,
 		appOptions,
-		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 
@@ -400,7 +395,6 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		map[int64]bool{},
 		dir,
 		appOptions,
-		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 
@@ -464,7 +458,6 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		map[int64]bool{},
 		dir,
 		appOptions,
-		[]wasmkeeper.Option{},
 	)
 	require.Equal(t, app.Name, bApp.Name())
 

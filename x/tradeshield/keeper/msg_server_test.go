@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
@@ -13,7 +12,7 @@ import (
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
 	k, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
-	return keeper.NewMsgServerImpl(*k), sdk.WrapSDKContext(ctx)
+	return keeper.NewMsgServerImpl(*k), ctx
 }
 
 func TestMsgServer(t *testing.T) {

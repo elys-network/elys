@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"cosmossdk.io/core/store"
 	"fmt"
+
+	"cosmossdk.io/core/store"
 
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
@@ -12,6 +13,7 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	pkeeper "github.com/elys-network/elys/x/parameter/keeper"
+	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
 )
 
 type (
@@ -29,6 +31,7 @@ type (
 		commitmentKeeper    *commitmentkeeper.Keeper
 		assetProfileKeeper  types.AssetProfileKeeper
 		accountedPoolKeeper types.AccountedPoolKeeper
+		tierKeeper          *tierkeeper.Keeper
 	}
 )
 
@@ -45,6 +48,7 @@ func NewKeeper(
 	commitmentKeeper *commitmentkeeper.Keeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	accountedPoolKeeper types.AccountedPoolKeeper,
+	tierKeeper *tierkeeper.Keeper,
 ) *Keeper {
 
 	return &Keeper{
@@ -60,6 +64,7 @@ func NewKeeper(
 		commitmentKeeper:    commitmentKeeper,
 		assetProfileKeeper:  assetProfileKeeper,
 		accountedPoolKeeper: accountedPoolKeeper,
+		tierKeeper:          tierKeeper,
 	}
 }
 
@@ -76,4 +81,12 @@ func (k *Keeper) SetHooks(gh types.AmmHooks) *Keeper {
 	k.hooks = gh
 
 	return k
+}
+
+func (k *Keeper) SetTierKeeper(tk *tierkeeper.Keeper) {
+	k.tierKeeper = tk
+}
+
+func (k *Keeper) GetTierKeeper() *tierkeeper.Keeper {
+	return k.tierKeeper
 }

@@ -33,16 +33,19 @@ message MsgOpen {
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   Position position = 2;
   string leverage = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string trading_asset = 4;
   cosmos.base.v1beta1.Coin collateral = 5 [ (gogoproto.nullable) = false ];
   string take_profit_price = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string stop_loss_price = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -55,17 +58,20 @@ message MsgBrokerOpen {
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   Position position = 2;
   string leverage = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string trading_asset = 4;
   cosmos.base.v1beta1.Coin collateral = 5 [ (gogoproto.nullable) = false ];
   string take_profit_price = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string owner = 7;
   string stop_loss_price = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -80,6 +86,7 @@ message MsgClose {
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
   string amount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -91,6 +98,7 @@ message MsgBrokerClose {
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
   string amount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -100,6 +108,7 @@ message MsgBrokerClose {
 message MsgCloseResponse {
   uint64 id = 1;
   string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -152,6 +161,7 @@ message MsgUpdateStopLoss {
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
   string price = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -165,6 +175,7 @@ message MsgUpdateTakeProfitPrice {
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
   string price = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];

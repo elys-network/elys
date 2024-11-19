@@ -35,8 +35,8 @@ func (suite *KeeperTestSuite) TestPriceFeederMsgServerUpdate() {
 			})
 
 			srv := keeper.NewMsgServerImpl(k)
-			wctx := sdk.WrapSDKContext(ctx)
-			_, err := srv.SetPriceFeeder(wctx, tc.request)
+
+			_, err := srv.SetPriceFeeder(ctx, tc.request)
 			if tc.err != nil {
 				suite.Require().ErrorIs(err, tc.err)
 			} else {
@@ -76,8 +76,8 @@ func (suite *KeeperTestSuite) TestPriceFeederMsgServerDelete() {
 			})
 
 			srv := keeper.NewMsgServerImpl(k)
-			wctx := sdk.WrapSDKContext(ctx)
-			_, err := srv.DeletePriceFeeder(wctx, tc.request)
+
+			_, err := srv.DeletePriceFeeder(ctx, tc.request)
 			if tc.err != nil {
 				suite.Require().ErrorIs(err, tc.err)
 			} else {

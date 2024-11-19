@@ -6,7 +6,6 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -20,7 +19,7 @@ const (
 )
 
 // make sure to update these when you upgrade the version
-var NextVersion = "v0.50.0"
+var NextVersion = "v0.51.0"
 
 func (app *ElysApp) setUpgradeHandler() {
 	app.UpgradeKeeper.SetUpgradeHandler(
@@ -32,27 +31,28 @@ func (app *ElysApp) setUpgradeHandler() {
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
 
 				// Add any logic here to run when the chain is upgraded to the new version
-				// Update consensus params in order to safely enable comet pruning
-				consensusParams, err := app.ConsensusParamsKeeper.ParamsStore.Get(ctx)
-				if err != nil {
-					return nil, err
+
+				// untombstone validators
+				validators := []string{
+					"elysvalcons1f9lzcfxxu6l9yj9uf0lqjc0qa82raypnlk58ej", // Synergy Nodes
+					"elysvalcons1frn2njtny6gzdjl2df9rvz3atcds2vl2fhxg8s", // Regenerator | Green Validator
 				}
-				consensusParams.Block.MaxBytes = NewMaxBytes
-				app.ConsensusParamsKeeper.ParamsStore.Set(ctx, consensusParams)
-
-				// Iterate over all the keys in the wasm module store
-				// and delete them
-				// TODO: Delete wasm code after deleting wasm module store
-				// Retrieve the wasm module store key
-				storeKey := app.GetKey(wasmtypes.StoreKey)
-
-				store := ctx.KVStore(storeKey)
-
-				iterator := store.Iterator(nil, nil)
-				defer iterator.Close()
-				for ; iterator.Valid(); iterator.Next() {
-					store.Delete(iterator.Key())
+				for _, val := range validators {
+					addr, err := sdk.ConsAddressFromBech32(val)
+					if err != nil {
+						app.Logger().Error("failed to convert validator address", "error", err)
+						continue
+					}
+					signingInfo, err := app.SlashingKeeper.GetValidatorSigningInfo(ctx, addr)
+					if err != nil {
+						app.Logger().Error("failed to get validator signing info", "validator", val)
+						continue
+					}
+					signingInfo.Tombstoned = false
+					app.SlashingKeeper.SetValidatorSigningInfo(ctx, addr, signingInfo)
+					app.Logger().Info("reset tombstoned status for validator", "validator", val)
 				}
+
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
@@ -75,7 +75,7 @@ func (app *ElysApp) setUpgradeStore() {
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			// Added: []string{},
-			Deleted: []string{"clock"},
+			// Deleted: []string{},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 

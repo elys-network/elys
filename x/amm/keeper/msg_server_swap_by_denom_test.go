@@ -11,7 +11,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
+func (suite *AmmKeeperTestSuite) TestMsgServerSwapByDenom() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
@@ -161,7 +161,6 @@ func (suite *KeeperTestSuite) TestMsgServerSwapByDenom() {
 					MaxAmount: sdk.Coin{},
 					DenomIn:   tc.tokenIn.Denom,
 					DenomOut:  tc.tokenOut.Denom,
-					Discount:  sdkmath.LegacyZeroDec(),
 				})
 			if !tc.expPass {
 				suite.Require().Error(err)

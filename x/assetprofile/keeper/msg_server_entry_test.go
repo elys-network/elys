@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
@@ -53,16 +52,15 @@ func TestEntryMsgServerUpdate(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := keepertest.AssetprofileKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
 			expected := &types.MsgAddEntry{
 				Creator:   authority,
 				BaseDenom: strconv.Itoa(0),
 				Decimals:  6,
 			}
-			_, err := srv.AddEntry(wctx, expected)
+			_, err := srv.AddEntry(ctx, expected)
 			require.NoError(t, err)
 
-			_, err = srv.UpdateEntry(wctx, tc.request)
+			_, err = srv.UpdateEntry(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {

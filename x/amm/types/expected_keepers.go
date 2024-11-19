@@ -60,3 +60,9 @@ type AssetProfileKeeper interface {
 type AccountedPoolKeeper interface {
 	GetAccountedBalance(sdk.Context, uint64, string) sdkmath.Int
 }
+
+type TierKeeper interface {
+	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, tier string, discount sdkmath.LegacyDec)
+
+	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec
+}

@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package elys.tradeshield;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/elys-network/elys/x/tradeshield/types";
+
+message OrderPrice {
+  string base_denom = 1;
+  string quote_denom = 2;
+  string rate = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// Spot order
+enum SpotOrderType {
+  STOPLOSS = 0;
+  LIMITSELL = 1;
+  LIMITBUY = 2;
+  MARKETBUY = 3;
+}
+
+message TriggerPrice {
+  string trading_asset_denom = 1;
+  string rate = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+enum PerpetualPosition {
+  UNSPECIFIED = 0;
+  LONG = 1;
+  SHORT = 2;
+}

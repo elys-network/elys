@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"cosmossdk.io/core/store"
 	"fmt"
+
+	"cosmossdk.io/core/store"
 
 	"cosmossdk.io/log"
 	sdkmath "cosmossdk.io/math"
@@ -42,27 +43,6 @@ func NewKeeper(
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
-}
-
-// GetUserDiscount returns the discount of a user
-func (k Keeper) GetUserDiscount(ctx sdk.Context, address string) (sdkmath.LegacyDec, error) {
-	// Get user address
-	user, err := sdk.AccAddressFromBech32(address)
-	if err != nil {
-		return sdkmath.LegacyZeroDec(), err
-	}
-
-	// Get discount tier (range from 0 to 100)
-	_, _, discount := k.tier.GetMembershipTier(ctx, user)
-
-	// Convert uint64 discount to math.LegacyDec
-	discountDec := sdkmath.LegacyNewDec(int64(discount))
-
-	// Normalize the discount to be between 0 and 1
-	discountDec = discountDec.Quo(sdkmath.LegacyNewDec(100))
-
-	// Return the discount
-	return discountDec, nil
 }
 
 // GetAssetPriceFromDenomInToDenomOut returns the price of an asset from a denom to another denom

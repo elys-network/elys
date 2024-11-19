@@ -12,7 +12,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
+func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
@@ -180,13 +180,12 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.SwapExactAmountIn(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgSwapExactAmountIn{
 					Sender:            sender.String(),
 					Routes:            tc.swapRoute,
 					TokenIn:           tc.tokenIn,
 					TokenOutMinAmount: tc.tokenOutMin,
-					Discount:          sdkmath.LegacyZeroDec(),
 				})
 			if !tc.expPass {
 				suite.Require().Error(err)
@@ -203,7 +202,7 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
+func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	//suite.SetupTest()
 	suite.SetupStableCoinPrices()
 
@@ -275,13 +274,12 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	cacheCtx, _ := suite.ctx.CacheContext()
 	msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 	resp, err := msgServer.SwapExactAmountIn(
-		sdk.WrapSDKContext(cacheCtx),
+		cacheCtx,
 		&types.MsgSwapExactAmountIn{
 			Sender:            sender.String(),
 			Routes:            swapRoute,
 			TokenIn:           tokenIn,
 			TokenOutMinAmount: tokenOutMin,
-			Discount:          sdkmath.LegacyZeroDec(),
 		})
 	suite.Require().NoError(err)
 	suite.Require().Equal(resp.TokenOutAmount.String(), tokenOut.Amount.String())
@@ -295,13 +293,12 @@ func (suite *KeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	cacheCtx, _ = suite.ctx.CacheContext()
 	for i := 0; i < 100; i++ {
 		resp, err = msgServer.SwapExactAmountIn(
-			sdk.WrapSDKContext(cacheCtx),
+			cacheCtx,
 			&types.MsgSwapExactAmountIn{
 				Sender:            sender.String(),
 				Routes:            swapRoute,
 				TokenIn:           sdk.Coin{Denom: tokenIn.Denom, Amount: tokenIn.Amount.Quo(sdkmath.NewInt(100))},
 				TokenOutMinAmount: tokenOutMin,
-				Discount:          sdkmath.LegacyZeroDec(),
 			})
 		suite.Require().NoError(err)
 		fmt.Printf("outAmount%d: %s\n", i, resp.TokenOutAmount.String())

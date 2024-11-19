@@ -221,12 +221,17 @@ func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (sd
 	if err != nil {
 		return sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0)
 	}
+	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	if !found {
+		return sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0)
+	}
+
 	for _, perpetual := range perpetuals {
 		if perpetual.Mtp.Position == perpetualtypes.Position_LONG {
 			totalAssets = totalAssets.Add(k.CalculateUSDValue(ctx, perpetual.Mtp.GetTradingAsset(), perpetual.Mtp.Custody))
-			totalLiability = totalLiability.Add(sdkmath.LegacyDec(perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability)))
+			totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, usdcDenom, perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability)))
 		} else {
-			totalAssets = totalAssets.Add(perpetual.Mtp.Custody.ToLegacyDec())
+			totalAssets = totalAssets.Add(k.CalculateUSDValue(ctx, usdcDenom, perpetual.Mtp.Custody))
 			totalLiability = totalLiability.Add(k.CalculateUSDValue(ctx, perpetual.Mtp.LiabilitiesAsset, perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability)))
 		}
 	}
@@ -317,7 +322,7 @@ func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdkm
 		return sdkmath.LegacyZeroDec()
 	}
 	usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-	resp, err := k.amm.InRouteByDenom(sdk.WrapSDKContext(ctx), &ammtypes.QueryInRouteByDenomRequest{DenomIn: denom, DenomOut: usdcDenom})
+	resp, err := k.amm.InRouteByDenom(ctx, &ammtypes.QueryInRouteByDenomRequest{DenomIn: denom, DenomOut: usdcDenom})
 	if err != nil {
 		return sdkmath.LegacyZeroDec()
 	}
@@ -365,7 +370,7 @@ func (k Keeper) GetPortfolio(ctx sdk.Context, user sdk.AccAddress, date string) 
 	return val.Portfolio, true
 }
 
-func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, tier string, discount uint64) {
+func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, membership_tier types.MembershipTier) {
 	year, month, day := ctx.BlockTime().Date()
 	dateToday := time.Date(year, month, day, 0, 0, 0, 0, ctx.BlockTime().Location())
 	startDate := dateToday.AddDate(0, 0, -7)
@@ -379,23 +384,23 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_p
 	}
 
 	if minTotal.Equal(sdkmath.LegacyNewDec(math.MaxInt64)) {
-		return sdkmath.LegacyNewDec(0), "bronze", 0
+		return sdkmath.LegacyNewDec(0), types.Bronze
 	}
 
 	// TODO: Make tier discount and minimum balance configurable
 	if minTotal.GTE(sdkmath.LegacyNewDec(500000)) {
-		return minTotal, "platinum", 30
+		return minTotal, types.Platinum
 	}
 
 	if minTotal.GTE(sdkmath.LegacyNewDec(250000)) {
-		return minTotal, "gold", 20
+		return minTotal, types.Gold
 	}
 
 	if minTotal.GTE(sdkmath.LegacyNewDec(50000)) {
-		return minTotal, "silver", 10
+		return minTotal, types.Silver
 	}
 
-	return minTotal, "bronze", 0
+	return minTotal, types.Bronze
 }
 
 // RemovePortfolioLast removes a portfolio from the store with a specific date

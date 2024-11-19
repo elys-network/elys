@@ -10,7 +10,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
+func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 	for _, tc := range []struct {
 		desc              string
 		senderInitBalance sdk.Coins
@@ -177,13 +177,12 @@ func (suite *KeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.SwapExactAmountOut(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgSwapExactAmountOut{
 					Sender:           sender.String(),
 					Routes:           tc.swapRoutes,
 					TokenOut:         tc.tokenOut,
 					TokenInMaxAmount: tc.tokenInMax,
-					Discount:         sdkmath.LegacyZeroDec(),
 				})
 			if !tc.expPass {
 				suite.Require().Error(err)

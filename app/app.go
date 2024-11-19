@@ -9,7 +9,6 @@ import (
 
 	"cosmossdk.io/client/v2/autocli"
 	"cosmossdk.io/core/appmodule"
-	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
@@ -20,14 +19,12 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmos "github.com/cometbft/cometbft/libs/os"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	tmjson "github.com/cometbft/cometbft/libs/json"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -65,17 +62,9 @@ import (
 const (
 	AccountAddressPrefix = "elys"
 	Name                 = "elys"
-
-	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
-	// If EnabledSpecificProposals is "", and this is not "true", then disable all x/wasm proposals.
-	ProposalsEnabled = "false"
-	// If set to non-empty string it must be comma-separated list of values that are all a subset
-	// of "EnableAllProposals" (takes precedence over ProposalsEnabled)
-	// https://github.com/CosmWasm/wasmd/blob/02a54d33ff2c064f3539ae12d75d027d9c665f05/x/wasm/internal/types/proposal.go#L28-L34
-	EnableSpecificProposals = ""
 )
 
-// this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
+// this line is used by starport scaffolding
 
 func getGovProposalHandlers() []govclient.ProposalHandler {
 	var govProposalHandlers []govclient.ProposalHandler
@@ -139,7 +128,6 @@ func NewElysApp(
 	skipUpgradeHeights map[int64]bool,
 	homePath string,
 	appOpts servertypes.AppOptions,
-	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *ElysApp {
 
@@ -195,7 +183,6 @@ func NewElysApp(
 		invCheckPeriod,
 		logger,
 		appOpts,
-		wasmOpts,
 		AccountAddressPrefix,
 	)
 
@@ -277,11 +264,6 @@ func NewElysApp(
 	app.MountTransientStores(app.GetTransientStoreKey())
 	app.MountMemoryStores(app.GetMemoryStoreKey())
 
-	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
-	if err != nil {
-		panic("error while reading wasm config: " + err.Error())
-	}
-
 	anteHandler, err := ante.NewAnteHandler(
 		ante.HandlerOptions{
 
@@ -294,13 +276,11 @@ func NewElysApp(
 				TxFeeChecker:    ante.CheckTxFeeWithValidatorMinGasPrices,
 			},
 
-			BankKeeper:            app.BankKeeper,
-			ParameterKeeper:       app.ParameterKeeper,
-			Cdc:                   appCodec,
-			IBCKeeper:             app.IBCKeeper,
-			StakingKeeper:         app.StakingKeeper,
-			WasmConfig:            &wasmConfig,
-			TXCounterStoreService: runtime.NewKVStoreService(app.AppKeepers.GetKey(wasm.StoreKey)),
+			BankKeeper:      app.BankKeeper,
+			ParameterKeeper: app.ParameterKeeper,
+			Cdc:             appCodec,
+			IBCKeeper:       app.IBCKeeper,
+			StakingKeeper:   app.StakingKeeper,
 		},
 	)
 	if err != nil {
@@ -314,13 +294,6 @@ func NewElysApp(
 	app.SetPreBlocker(app.PreBlocker)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
-
-	if manager := app.SnapshotManager(); manager != nil {
-		err = manager.RegisterExtensions(wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.AppKeepers.WasmKeeper))
-		if err != nil {
-			panic("failed to register snapshot extension: " + err.Error())
-		}
-	}
 
 	app.setUpgradeHandler()
 	app.setUpgradeStore()
@@ -341,12 +314,6 @@ func NewElysApp(
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
 			tmos.Exit(fmt.Sprintf("failed to load latest version: %s", err))
-		}
-
-		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
-
-		if err := app.AppKeepers.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
-			tmos.Exit(fmt.Sprintf("WasmKeeper failed initialize pinned codes %s", err))
 		}
 	}
 

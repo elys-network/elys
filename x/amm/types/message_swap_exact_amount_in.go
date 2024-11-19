@@ -9,7 +9,7 @@ import (
 
 var _ sdk.Msg = &MsgSwapExactAmountIn{}
 
-func NewMsgSwapExactAmountIn(sender, recipient string, tokenIn sdk.Coin, tokenOutMinAmount sdkmath.Int, swapRoutePoolIds []uint64, swapRouteDenoms []string, discount sdkmath.LegacyDec) *MsgSwapExactAmountIn {
+func NewMsgSwapExactAmountIn(sender, recipient string, tokenIn sdk.Coin, tokenOutMinAmount sdkmath.Int, swapRoutePoolIds []uint64, swapRouteDenoms []string) *MsgSwapExactAmountIn {
 	if len(swapRoutePoolIds) != len(swapRouteDenoms) {
 		return nil // or raise an error as the input lists should have the same length
 	}
@@ -29,7 +29,6 @@ func NewMsgSwapExactAmountIn(sender, recipient string, tokenIn sdk.Coin, tokenOu
 		Routes:            routes,
 		TokenIn:           tokenIn,
 		TokenOutMinAmount: tokenOutMinAmount,
-		Discount:          discount,
 	}
 }
 

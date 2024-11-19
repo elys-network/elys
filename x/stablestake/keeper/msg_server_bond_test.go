@@ -50,7 +50,7 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 			_, err = msgServer.Bond(
-				sdk.WrapSDKContext(suite.ctx),
+				suite.ctx,
 				&types.MsgBond{
 					Creator: sender.String(),
 					Amount:  tc.bondAmount,

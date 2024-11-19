@@ -15,14 +15,14 @@ type (
 	Keeper struct {
 		Cdc          codec.BinaryCodec
 		storeService store.KVStoreService
-		ammKeeper    ammkeeper.Keeper
+		ammKeeper    *ammkeeper.Keeper
 	}
 )
 
 func NewKeeper(
 	Cdc codec.BinaryCodec,
 	storeService store.KVStoreService,
-	ammKeeper ammkeeper.Keeper,
+	ammKeeper *ammkeeper.Keeper,
 ) *Keeper {
 
 	return &Keeper{

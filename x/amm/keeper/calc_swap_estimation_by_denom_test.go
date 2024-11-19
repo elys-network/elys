@@ -9,7 +9,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
+func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
 	poolInitBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}
 	pool2InitBalance := sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}
 	senderInitBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}
@@ -95,7 +95,7 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		suite.ctx,
 		amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
-		sdkmath.LegacyZeroDec(),
+		"",
 		sdkmath.LegacyZeroDec(),
 		1,
 	)
@@ -110,7 +110,7 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		suite.ctx,
 		amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
-		sdkmath.LegacyZeroDec(),
+		"",
 		sdkmath.LegacyZeroDec(),
 		1,
 	)
@@ -125,7 +125,7 @@ func (suite *KeeperTestSuite) TestCalcSwapEstimationByDenom() {
 	_, _, _, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcSwapEstimationByDenom(
 		suite.ctx, amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
-		sdkmath.LegacyZeroDec(),
+		"",
 		sdkmath.LegacyZeroDec(),
 		1,
 	)

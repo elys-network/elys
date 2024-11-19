@@ -1,10 +1,10 @@
 package cli
 
 import (
-	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 	"errors"
 	"strconv"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -54,6 +54,11 @@ func CmdOpenEstimation() *cobra.Command {
 				takeProfitPrice = types.TakeProfitPriceDefault
 			}
 
+			address, err := cmd.Flags().GetString(FlagAddress)
+			if err != nil {
+				return err
+			}
+
 			limitPriceStr, err := cmd.Flags().GetString(FlagLimitPrice)
 			if err != nil {
 				return err
@@ -79,7 +84,7 @@ func CmdOpenEstimation() *cobra.Command {
 				TakeProfitPrice: takeProfitPrice,
 				PoolId:          reqPoolId,
 				LimitPrice:      limitPrice,
-				Discount:        math.LegacyZeroDec(), // not being used
+				Address:         address,
 			}
 
 			res, err := queryClient.OpenEstimation(cmd.Context(), params)
@@ -95,6 +100,7 @@ func CmdOpenEstimation() *cobra.Command {
 
 	cmd.Flags().String(FlagTakeProfitPrice, types.InfinitePriceString, "Optional take profit price")
 	cmd.Flags().String(FlagLimitPrice, "0.0", "limit price, default 0 which calculates at market price")
+	cmd.Flags().String(FlagAddress, "", "address of the account which will open the position")
 
 	return cmd
 }
