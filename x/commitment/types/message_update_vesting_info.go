@@ -9,6 +9,18 @@ import (
 
 var _ sdk.Msg = &MsgUpdateVestingInfo{}
 
+func NewMsgUpdateVestingInfo(govAddress, baseDenom, vestingDenom string, numBlocks, vestNowFactor, numMaxVestings int64) MsgUpdateVestingInfo {
+	return MsgUpdateVestingInfo{
+		Authority:      govAddress,
+		BaseDenom:      baseDenom,
+		VestingDenom:   vestingDenom,
+		VestNowFactor:  vestNowFactor,
+		NumMaxVestings: numMaxVestings,
+		NumBlocks:      numBlocks,
+	}
+
+}
+
 func (msg *MsgUpdateVestingInfo) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {

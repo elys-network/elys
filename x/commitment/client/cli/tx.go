@@ -25,6 +25,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdVest())
 	cmd.AddCommand(CmdCancelVest())
 	cmd.AddCommand(CmdVestNow())
+	cmd.AddCommand(CmdUpdateVestingInfo())
 	cmd.AddCommand(CmdVestLiquid())
 	cmd.AddCommand(CmdStake())
 	cmd.AddCommand(CmdUnstake())
