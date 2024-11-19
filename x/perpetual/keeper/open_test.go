@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -20,7 +22,9 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 	positionCreator := addr[1]
 	poolId := uint64(1)
 	tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
 	suite.Require().NoError(err)
+
 	var ammPool ammtypes.Pool
 	msg := &types.MsgOpen{
 		Creator:         positionCreator.String(),
@@ -50,6 +54,76 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			},
 		},
 		{
+			"borrow asset is usdc in long",
+			"invalid operation: the borrowed asset cannot be the base currency: invalid borrowing asset",
+			false,
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+
+				msg.TradingAsset = ptypes.BaseCurrency
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"invalid collateral",
+			"collateral must either match the borrowed asset or be the base currency: invalid borrowing asset",
+			false,
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+
+				msg.Collateral.Denom = ptypes.ATOM
+				msg.TradingAsset = ptypes.Elys
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"short base currency",
+			"cannot take a short position against the base currency: invalid borrowing asset",
+			false,
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+
+				msg.Position = types.Position_SHORT
+				msg.TradingAsset = ptypes.BaseCurrency
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"short same coin as collateral",
+			"invalid operation: collateral asset cannot be identical to the borrowed asset for a short position: invalid collateral asset",
+			false,
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+
+				msg.Position = types.Position_SHORT
+				msg.TradingAsset = ptypes.ATOM
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"short with nonUSDC coin",
+			"invalid collateral: the collateral asset for a short position must be the base currency: invalid collateral asset",
+			false,
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+
+				msg.Position = types.Position_SHORT
+				msg.Collateral.Denom = ptypes.Elys
+				msg.TradingAsset = ptypes.ATOM
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
 			"user not whitelisted",
 			"unauthorised: address not on whitelist",
 			false,
@@ -61,6 +135,9 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 				params.WhitelistingEnabled = true
 				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 				suite.Require().NoError(err)
+				msg.Position = types.Position_LONG
+				msg.Collateral.Denom = ptypes.BaseCurrency
+				msg.TradingAsset = ptypes.ATOM
 			},
 			func(mtp *types.MTP) {
 			},
@@ -213,6 +290,28 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				msg.Collateral.Amount = amount
 				msg.TradingAsset = ptypes.ATOM
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"take profit price below minimum ratio",
+			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
+			false,
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.MinimumLongTakeProfitPriceRatio).Quo(math.LegacyNewDec(2))
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"take profit price above maximum ratio",
+			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
+			false,
+			func() {
+				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.MaximumLongTakeProfitPriceRatio).Mul(math.LegacyNewDec(2))
 			},
 			func(mtp *types.MTP) {
 			},

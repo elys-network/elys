@@ -8,4 +8,9 @@ func (suite *PerpetualKeeperTestSuite) TestGetEpochPosition() {
 	currentBlock := k.GetEpochPosition(ctx, 100)
 	blockWant := int64(23)
 	suite.Require().Equal(currentBlock, blockWant)
+
+	// epoch length is 0
+	currentBlock = k.GetEpochPosition(ctx, 0)
+	blockWant = int64(0)
+	suite.Require().Equal(currentBlock, blockWant)
 }
