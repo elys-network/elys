@@ -28,7 +28,7 @@ func TestPendingSpotOrderGet(t *testing.T) {
 	items := createNPendingSpotOrder(keeper, ctx, 10)
 	for _, item := range items {
 		got, found := keeper.GetPendingSpotOrder(ctx, item.OrderId)
-		item.OrderPrice.Rate = math.LegacyZeroDec()
+		item.OrderPrice.Rate = sdkmath.LegacyZeroDec()
 		require.True(t, found)
 		require.Equal(t,
 			nullify.Fill(&item),
@@ -53,7 +53,7 @@ func TestPendingSpotOrderGetAll(t *testing.T) {
 
 	for _, item := range keeper.GetAllPendingSpotOrder(ctx) {
 		got, found := keeper.GetPendingSpotOrder(ctx, item.OrderId)
-		item.OrderPrice.Rate = math.LegacyZeroDec()
+		item.OrderPrice.Rate = sdkmath.LegacyZeroDec()
 		require.True(t, found)
 		require.Equal(t,
 			nullify.Fill(&item),
