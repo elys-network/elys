@@ -54,8 +54,6 @@ jobs:
           -X github.com/cosmos/cosmos-sdk/types.DBBackend=${DBENGINE} \
           -X github.com/elys-network/elys/app.NextVersion=${VERSION} \
           -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,osusergo,${DBENGINE} \
-          -w -s \
-          -linkmode=external \
           " -tags "ledger,${DBENGINE}" ./cmd/${BINARY}
           echo "Version of elysd: $(./elysd version)"
       - name: Compressing elys binary
