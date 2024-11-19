@@ -31,6 +31,12 @@ func (app *ElysApp) setUpgradeHandler() {
 			if version.Version == NextVersion || version.Version == LocalNetVersion {
 
 				// Add any logic here to run when the chain is upgraded to the new version
+				consensusParams, err := app.ConsensusParamsKeeper.ParamsStore.Get(ctx)
+				if err != nil {
+					return nil, err
+				}
+				consensusParams.Block.MaxBytes = NewMaxBytes
+				app.ConsensusParamsKeeper.ParamsStore.Set(ctx, consensusParams)
 
 				// untombstone validators
 				validators := []string{
