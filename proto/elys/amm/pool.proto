@@ -15,6 +15,7 @@ message LegacyPool {
   cosmos.base.v1beta1.Coin total_shares = 4 [ (gogoproto.nullable) = false ];
   repeated PoolAsset pool_assets = 5 [ (gogoproto.nullable) = false ];
   string total_weight = 6 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -28,6 +29,7 @@ message Pool {
   cosmos.base.v1beta1.Coin total_shares = 4 [ (gogoproto.nullable) = false ];
   repeated PoolAsset pool_assets = 5 [ (gogoproto.nullable) = false ];
   string total_weight = 6 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -36,10 +38,12 @@ message Pool {
 
 message PoolExtraInfo {
   string tvl = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string lp_token_price = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];

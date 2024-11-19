@@ -4,6 +4,7 @@ package elys.estaking;
 import "gogoproto/gogo.proto";
 import "elys/estaking/incentive.proto";
 import "elys/estaking/dex_rewards_tracker.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/estaking/types";
 
@@ -15,10 +16,12 @@ message LegacyParams {
   string edenb_commit_val = 3;
   // Maximum eden reward apr for stakers - [0 - 0.3]
   string max_eden_reward_apr_stakers = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string eden_boost_apr = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -36,10 +39,12 @@ message Params {
   string edenb_commit_val = 3;
   // Maximum eden reward apr for stakers - [0 - 0.3]
   string max_eden_reward_apr_stakers = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string eden_boost_apr = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];

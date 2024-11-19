@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
+
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
@@ -16,7 +17,7 @@ import (
 )
 
 func TestPools_InvalidRequest(t *testing.T) {
-	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, nil, nil)
+	k := keeper.NewKeeper(nil, nil, "cosmos1ysxv266l8w76lq0vy44ktzajdr9u9yhlxzlvga", nil, nil, nil, nil, nil, nil)
 	ctx := sdk.Context{}
 	_, err := k.Pools(ctx, nil)
 

@@ -2,6 +2,7 @@ syntax = "proto3";
 package elys.tier;
 
 import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/tier/types";
 
@@ -15,7 +16,29 @@ message Pool {
   string pool = 2;
   string fiat_value = 3;
   string amount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+enum MembershipTierType {
+  BRONZE = 0;
+  SILVER = 1;
+  GOLD = 2;
+  PLATINUM = 3;
+}
+
+message MembershipTier {
+  string minimum_portfolio = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  MembershipTierType membership = 2;
+  string discount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 }

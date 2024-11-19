@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/tier/types"
@@ -22,11 +21,10 @@ func (k Keeper) CalculateDiscount(goCtx context.Context, req *types.QueryCalcula
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	portfolio, tier, discount := k.GetMembershipTier(ctx, user)
+	portfolio, tier := k.GetMembershipTier(ctx, user)
 
 	return &types.QueryCalculateDiscountResponse{
-		Discount:  strconv.FormatUint(discount, 10),
-		Portfolio: portfolio.String(),
-		Tier:      tier,
+		Portfolio:      portfolio.String(),
+		MembershipTier: &tier,
 	}, nil
 }

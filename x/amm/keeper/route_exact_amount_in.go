@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -17,7 +16,6 @@ func (k Keeper) RouteExactAmountIn(
 	routes []types.SwapAmountInRoute,
 	tokenIn sdk.Coin,
 	tokenOutMinAmount math.Int,
-	discount math.LegacyDec,
 ) (tokenOutAmount math.Int, totalDiscountedSwapFee math.LegacyDec, discountOut math.LegacyDec, err error) {
 	isMultiHopRouted, routeSwapFee, sumOfSwapFees := false, math.LegacyDec{}, math.LegacyDec{}
 	route := types.SwapAmountInRoutes(routes)
@@ -45,6 +43,9 @@ func (k Keeper) RouteExactAmountIn(
 
 	// Initialize the total discounted swap fee
 	totalDiscountedSwapFee = math.LegacyZeroDec()
+
+	_, tier := k.tierKeeper.GetMembershipTier(ctx, sender)
+	discount := tier.Discount
 
 	for i, route := range routes {
 		// recipient is the same as the sender until the last pool
@@ -80,13 +81,6 @@ func (k Keeper) RouteExactAmountIn(
 		}
 
 		// Apply discount to swap fee if applicable
-		brokerAddress := k.parameterKeeper.GetParams(ctx).BrokerAddress
-		if discount.IsNil() {
-			discount = math.LegacyZeroDec()
-		}
-		if discount.IsPositive() && sender.String() != brokerAddress {
-			return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrInvalidDiscount, "discount %s is positive and signer address %s is not broker address %s", discount, sender, brokerAddress)
-		}
 		swapFee = types.ApplyDiscount(swapFee, discount)
 
 		// Calculate the total discounted swap fee
@@ -102,5 +96,5 @@ func (k Keeper) RouteExactAmountIn(
 		tokenIn = sdk.NewCoin(route.TokenOutDenom, tokenOutAmount)
 	}
 
-	return tokenOutAmount, totalDiscountedSwapFee, discount, nil
+	return tokenOutAmount, totalDiscountedSwapFee, tier.Discount, nil
 }

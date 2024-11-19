@@ -5,7 +5,7 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func (suite *AmmKeeperTestSuite) TestSlippageTrack() {
+func (suite *AmmKeeperTestSuite) TestOraclePoolSlippageTrack() {
 	tracks := []types.OraclePoolSlippageTrack{
 		{
 			PoolId:    1,

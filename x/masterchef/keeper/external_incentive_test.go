@@ -1,28 +1,20 @@
 package keeper_test
 
 import (
-	"testing"
-
 	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	masterchefkeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
-	"github.com/stretchr/testify/require"
 )
 
-func TestExternalIncentive(t *testing.T) {
-	app := simapp.InitElysTestApp(true, t)
-	ctx := app.BaseApp.NewContext(true)
-
+func (suite *MasterchefKeeperTestSuite) TestExternalIncentive() {
 	externalIncentives := []types.ExternalIncentive{
 		{
 			Id:             0,
@@ -30,8 +22,8 @@ func TestExternalIncentive(t *testing.T) {
 			PoolId:         1,
 			FromBlock:      0,
 			ToBlock:        100,
-			AmountPerBlock: sdkmath.OneInt(),
-			Apr:            sdkmath.LegacyZeroDec(),
+			AmountPerBlock: math.OneInt(),
+			Apr:            math.LegacyZeroDec(),
 		},
 		{
 			Id:             1,
@@ -39,8 +31,8 @@ func TestExternalIncentive(t *testing.T) {
 			PoolId:         1,
 			FromBlock:      0,
 			ToBlock:        100,
-			AmountPerBlock: sdkmath.OneInt(),
-			Apr:            sdkmath.LegacyZeroDec(),
+			AmountPerBlock: math.OneInt(),
+			Apr:            math.LegacyZeroDec(),
 		},
 		{
 			Id:             2,
@@ -48,39 +40,32 @@ func TestExternalIncentive(t *testing.T) {
 			PoolId:         2,
 			FromBlock:      0,
 			ToBlock:        100,
-			AmountPerBlock: sdkmath.OneInt(),
-			Apr:            sdkmath.LegacyZeroDec(),
+			AmountPerBlock: math.OneInt(),
+			Apr:            math.LegacyZeroDec(),
 		},
 	}
 	for _, externalIncentive := range externalIncentives {
-		app.MasterchefKeeper.SetExternalIncentive(ctx, externalIncentive)
+		suite.app.MasterchefKeeper.SetExternalIncentive(suite.ctx, externalIncentive)
 	}
 	for _, externalIncentive := range externalIncentives {
-		info, found := app.MasterchefKeeper.GetExternalIncentive(ctx, externalIncentive.Id)
-		require.True(t, found)
-		require.Equal(t, info, externalIncentive)
+		info, found := suite.app.MasterchefKeeper.GetExternalIncentive(suite.ctx, externalIncentive.Id)
+		suite.Require().True(found)
+		suite.Require().Equal(info, externalIncentive)
 	}
-	externalIncentivesStored := app.MasterchefKeeper.GetAllExternalIncentives(ctx)
-	require.Len(t, externalIncentivesStored, 3)
+	externalIncentivesStored := suite.app.MasterchefKeeper.GetAllExternalIncentives(suite.ctx)
+	suite.Require().Len(externalIncentivesStored, 3)
 
-	app.MasterchefKeeper.RemoveExternalIncentive(ctx, externalIncentives[0].Id)
-	externalIncentivesStored = app.MasterchefKeeper.GetAllExternalIncentives(ctx)
-	require.Len(t, externalIncentivesStored, 2)
+	suite.app.MasterchefKeeper.RemoveExternalIncentive(suite.ctx, externalIncentives[0].Id)
+	externalIncentivesStored = suite.app.MasterchefKeeper.GetAllExternalIncentives(suite.ctx)
+	suite.Require().Len(externalIncentivesStored, 2)
 }
 
 // Test USDC reward as external and via dex collection
-func TestUSDCExternalIncentive(t *testing.T) {
-	app, _, _ := simapp.InitElysTestAppWithGenAccount(t)
-	ctx := app.BaseApp.NewContext(true)
-
-	mk, amm, oracle := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper
-
-	// Setup coin prices
-	SetupStableCoinPrices(ctx, oracle)
+func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
-	srv := tokenomicskeeper.NewMsgServerImpl(app.TokenomicsKeeper)
+	srv := tokenomicskeeper.NewMsgServerImpl(suite.app.TokenomicsKeeper)
 
 	expected := &tokenomicstypes.MsgCreateTimeBasedInflation{
 		Authority:        authority,
@@ -96,8 +81,8 @@ func TestUSDCExternalIncentive(t *testing.T) {
 		Description: "Description",
 	}
 
-	_, err := srv.CreateTimeBasedInflation(ctx, expected)
-	require.NoError(t, err)
+	_, err := srv.CreateTimeBasedInflation(suite.ctx, expected)
+	suite.Require().NoError(err)
 
 	expected = &tokenomicstypes.MsgCreateTimeBasedInflation{
 		Authority:        authority,
@@ -112,90 +97,72 @@ func TestUSDCExternalIncentive(t *testing.T) {
 		},
 		Description: "Description",
 	}
-	_, err = srv.CreateTimeBasedInflation(ctx, expected)
-	require.NoError(t, err)
+	_, err = srv.CreateTimeBasedInflation(suite.ctx, expected)
+	suite.Require().NoError(err)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(10000000000))
+	addr := simapp.AddTestAddrs(suite.app, suite.ctx, 2, math.NewInt(10000000000))
 
 	// Create a pool
 	// Mint 100000USDC
-	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000000000)))
+	suite.MintTokenToAddress(addr[0], math.NewInt(10000000000), ptypes.BaseCurrency)
+	suite.MintTokenToAddress(addr[1], math.NewInt(10000000000), ptypes.BaseCurrency)
 
-	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken.MulInt(sdkmath.NewInt(2)))
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[1], usdcToken)
-	require.NoError(t, err)
-
-	usdcToken = sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000000)))
-	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken.MulInt(sdkmath.NewInt(2)))
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
-	require.NoError(t, err)
+	usdcToken := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100000000000)))
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, ammtypes.ModuleName, usdcToken.MulInt(math.NewInt(2)))
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ammtypes.ModuleName, addr[0], usdcToken)
+	suite.Require().NoError(err)
 
 	poolAssets := []ammtypes.PoolAsset{
 		{
-			Weight: sdkmath.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(10000000)),
+			Weight: math.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.Elys, math.NewInt(10000000)),
 		},
 		{
-			Weight: sdkmath.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000000)),
+			Weight: math.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000)),
 		},
 	}
 
-	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.0")
+	argSwapFee := math.LegacyMustNewDecFromStr("0.0")
 
 	poolParams := ammtypes.PoolParams{
 		SwapFee: argSwapFee,
 	}
 
-	msg := ammtypes.NewMsgCreatePool(
-		addr[0].String(),
-		poolParams,
-		poolAssets,
-	)
-
 	// Create a Elys+USDC pool
-	poolId, err := amm.CreatePool(ctx, msg)
-	require.NoError(t, err)
-	require.Equal(t, poolId, uint64(1))
+	ammPool := suite.CreateNewAmmPool(sdk.AccAddress(addr[0]), poolAssets, poolParams)
+	suite.Require().Equal(ammPool.PoolId, uint64(1))
 
-	pools := amm.GetAllPool(ctx)
+	pools := suite.app.AmmKeeper.GetAllPool(suite.ctx)
 
 	// check length of pools
-	require.Equal(t, len(pools), 1)
+	suite.Require().Equal(len(pools), 1)
 
-	_, err = amm.ExitPool(ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
-	require.NoError(t, err)
+	_, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
+	suite.Require().NoError(err)
 
 	// new user join pool with same shares
 	share := ammtypes.InitPoolSharesSupply.Mul(math.NewIntWithDecimal(1, 5))
-	t.Log(mk.GetPoolTotalCommit(ctx, pools[0].PoolId))
-	require.Equal(t, mk.GetPoolTotalCommit(ctx, pools[0].PoolId).String(), "10002000000000000000000000")
-	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[0]).String(), "10000000000000000000000000")
-	_, _, err = amm.JoinPoolNoSwap(ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000000))))
-	require.NoError(t, err)
-	require.Equal(t, mk.GetPoolTotalCommit(ctx, pools[0].PoolId).String(), "20002000000000000000000000")
-	require.Equal(t, mk.GetPoolBalance(ctx, pools[0].PoolId, addr[1]), share)
+	suite.T().Log(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId))
+	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "10002000000000000000000000")
+	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolBalance(suite.ctx, pools[0].PoolId, addr[0]).String(), "10000000000000000000000000")
+	_, _, err = suite.app.AmmKeeper.JoinPoolNoSwap(suite.ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, math.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000))))
+	suite.Require().NoError(err)
+	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "20002000000000000000000000")
+	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolBalance(suite.ctx, pools[0].PoolId, addr[1]), share)
 
-	atomToken := sdk.NewCoins(sdk.NewCoin("uatom", math.NewIntWithDecimal(100000000, 6)))
-	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, atomToken)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], atomToken)
-	require.NoError(t, err)
+	suite.MintTokenToAddress(addr[0], math.NewIntWithDecimal(100000000, 6), ptypes.ATOM)
 
-	masterchefSrv := masterchefkeeper.NewMsgServerImpl(app.MasterchefKeeper)
-	_, err = masterchefSrv.AddExternalRewardDenom(ctx, &types.MsgAddExternalRewardDenom{
-		Authority:   app.GovKeeper.GetAuthority(),
+	_, err = suite.msgServer.AddExternalRewardDenom(suite.ctx, &types.MsgAddExternalRewardDenom{
+		Authority:   suite.app.GovKeeper.GetAuthority(),
 		RewardDenom: ptypes.BaseCurrency,
-		MinAmount:   sdkmath.OneInt(),
+		MinAmount:   math.OneInt(),
 		Supported:   true,
 	})
-	require.NoError(t, err)
-	_, err = masterchefSrv.AddExternalIncentive(ctx, &types.MsgAddExternalIncentive{
+	suite.Require().NoError(err)
+	_, err = suite.msgServer.AddExternalIncentive(suite.ctx, &types.MsgAddExternalIncentive{
 		Sender:         addr[0].String(),
 		RewardDenom:    ptypes.BaseCurrency,
 		PoolId:         pools[0].PoolId,
@@ -203,64 +170,60 @@ func TestUSDCExternalIncentive(t *testing.T) {
 		FromBlock:      0,
 		ToBlock:        1000,
 	})
-	require.NoError(t, err)
+	suite.Require().NoError(err)
 
 	// Fill in pool revenue wallet
 	revenueAddress1 := ammtypes.NewPoolRevenueAddress(1)
-	usdcRevToken1 := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)))
-	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcRevToken1)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, revenueAddress1, usdcRevToken1)
-	require.NoError(t, err)
+	suite.MintTokenToAddress(revenueAddress1, math.NewInt(100000), ptypes.BaseCurrency)
 
 	// check rewards after 100 block
 	for i := 1; i <= 100; i++ {
-		mk.EndBlocker(ctx)
-		ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+		suite.app.MasterchefKeeper.EndBlocker(suite.ctx)
+		suite.ctx = suite.ctx.WithBlockHeight(suite.ctx.BlockHeight() + 1)
 	}
 
-	require.Equal(t, ctx.BlockHeight(), int64(100))
-	poolRewardInfo, _ := app.MasterchefKeeper.GetPoolRewardInfo(ctx, pools[0].PoolId, ptypes.BaseCurrency)
-	require.Equal(t, poolRewardInfo.LastUpdatedBlock, uint64(99))
+	suite.Require().Equal(suite.ctx.BlockHeight(), int64(100))
+	poolRewardInfo, _ := suite.app.MasterchefKeeper.GetPoolRewardInfo(suite.ctx, pools[0].PoolId, ptypes.BaseCurrency)
+	suite.Require().Equal(poolRewardInfo.LastUpdatedBlock, uint64(99))
 
-	res, err := mk.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
+	res, err := suite.app.MasterchefKeeper.UserPendingReward(suite.ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[0].String(),
 	})
-	require.NoError(t, err)
-	require.Equal(t, res.TotalRewards[0].Amount.String(), "4949545046")
-	res, err = mk.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
+	suite.Require().NoError(err)
+	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "4949545046")
+	res, err = suite.app.MasterchefKeeper.UserPendingReward(suite.ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[1].String(),
 	})
-	require.NoError(t, err)
-	require.Equal(t, res.TotalRewards[0].Amount.String(), "4949545046")
+	suite.Require().NoError(err)
+	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "4949545046")
 
-	prevUSDCBal := app.BankKeeper.GetBalance(ctx, addr[1], ptypes.BaseCurrency)
+	prevUSDCBal := suite.app.BankKeeper.GetBalance(suite.ctx, addr[1], ptypes.BaseCurrency)
 
 	// check rewards claimed
-	_, err = masterchefSrv.ClaimRewards(ctx, &types.MsgClaimRewards{
+	_, err = suite.msgServer.ClaimRewards(suite.ctx, &types.MsgClaimRewards{
 		Sender:  addr[0].String(),
 		PoolIds: []uint64{pools[0].PoolId},
 	})
-	require.NoError(t, err)
-	_, err = masterchefSrv.ClaimRewards(ctx, &types.MsgClaimRewards{
+	suite.Require().NoError(err)
+	_, err = suite.msgServer.ClaimRewards(suite.ctx, &types.MsgClaimRewards{
 		Sender:  addr[1].String(),
 		PoolIds: []uint64{pools[0].PoolId},
 	})
-	require.NoError(t, err)
+	suite.Require().NoError(err)
 
-	curUSDCBal := app.BankKeeper.GetBalance(ctx, addr[1], ptypes.BaseCurrency)
-	amount, _ := sdkmath.NewIntFromString("4949545046")
-	require.Equal(t, curUSDCBal.Amount.String(), prevUSDCBal.Amount.Add(amount).String())
+	curUSDCBal := suite.app.BankKeeper.GetBalance(suite.ctx, addr[1], ptypes.BaseCurrency)
+	amount, _ := math.NewIntFromString("4949545046")
+	suite.Require().Equal(curUSDCBal.Amount.String(), prevUSDCBal.Amount.Add(amount).String())
 
 	// no pending rewards
-	res, err = mk.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
+	res, err = suite.app.MasterchefKeeper.UserPendingReward(suite.ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[0].String(),
 	})
-	require.NoError(t, err)
-	require.Len(t, res.TotalRewards, 0)
-	res, err = mk.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
+	suite.Require().NoError(err)
+	suite.Require().Len(res.TotalRewards, 0)
+	res, err = suite.app.MasterchefKeeper.UserPendingReward(suite.ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[1].String(),
 	})
-	require.NoError(t, err)
-	require.Len(t, res.TotalRewards, 0)
+	suite.Require().NoError(err)
+	suite.Require().Len(res.TotalRewards, 0)
 }

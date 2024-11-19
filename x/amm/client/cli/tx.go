@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	FlagDiscount  = "discount"
+	FlagAddress   = "address"
 	FlagRecipient = "recipient"
 	listSeparator = ","
 )

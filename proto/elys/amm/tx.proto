@@ -52,6 +52,7 @@ message MsgJoinPool {
   repeated cosmos.base.v1beta1.Coin max_amounts_in = 3
       [ (gogoproto.nullable) = false ];
   string share_amount_out = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -59,6 +60,7 @@ message MsgJoinPool {
 
 message MsgJoinPoolResponse {
   string share_amount_out = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -74,6 +76,7 @@ message MsgExitPool {
   repeated cosmos.base.v1beta1.Coin min_amounts_out = 3
       [ (gogoproto.nullable) = false ];
   string share_amount_in = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -81,7 +84,7 @@ message MsgExitPool {
 }
 
 message MsgExitPoolResponse {
-  repeated cosmos.base.v1beta1.Coin token_out = 2
+  repeated cosmos.base.v1beta1.Coin token_out = 1
       [ (gogoproto.nullable) = false ];
 }
 
@@ -92,26 +95,26 @@ message MsgSwapExactAmountIn {
   repeated SwapAmountInRoute routes = 2 [ (gogoproto.nullable) = false ];
   cosmos.base.v1beta1.Coin token_in = 3 [ (gogoproto.nullable) = false ];
   string token_out_min_amount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string discount = 5 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string recipient = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string recipient = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgSwapExactAmountInResponse {
   string token_out_amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   string swap_fee = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string discount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -125,26 +128,26 @@ message MsgSwapExactAmountOut {
   repeated SwapAmountOutRoute routes = 2 [ (gogoproto.nullable) = false ];
   cosmos.base.v1beta1.Coin token_out = 3 [ (gogoproto.nullable) = false ];
   string token_in_max_amount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string discount = 5 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string recipient = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string recipient = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgSwapExactAmountOutResponse {
   string token_in_amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   string swap_fee = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string discount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -163,10 +166,12 @@ message MsgFeedMultipleExternalLiquidityResponse {}
 message AssetAmountDepth {
   string asset = 1;
   string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string depth = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
@@ -189,11 +194,7 @@ message MsgSwapByDenom {
   cosmos.base.v1beta1.Coin max_amount = 4 [ (gogoproto.nullable) = false ];
   string denom_in = 5;
   string denom_out = 6;
-  string discount = 7 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string recipient = 8 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string recipient = 7 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgSwapByDenomResponse {
@@ -201,14 +202,17 @@ message MsgSwapByDenomResponse {
   repeated SwapAmountInRoute in_route = 2;
   repeated SwapAmountOutRoute out_route = 3;
   string spot_price = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string swap_fee = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string discount = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];

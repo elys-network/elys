@@ -184,7 +184,6 @@ func (suite *AmmKeeperTestSuite) TestRouteExactAmountOut() {
 						TokenInDenom: tc.tokenIn.Denom,
 					},
 				}, tc.tokenInMax, tc.tokenOut,
-				math.LegacyZeroDec(),
 			)
 			if !tc.expPass {
 				suite.Require().Error(err)

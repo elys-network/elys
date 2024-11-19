@@ -1,32 +1,19 @@
 package keeper_test
 
 import (
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"testing"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
-	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
-	"github.com/elys-network/elys/x/masterchef/keeper"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func SetupApp(t *testing.T) (keeper.Keeper, sdk.Context) {
-	app := simapp.InitElysTestApp(true, t)
-	ctx := app.BaseApp.NewContext(true)
-
-	mk, amm, oracle, estaking := app.MasterchefKeeper, app.AmmKeeper, app.OracleKeeper, app.EstakingKeeper
-
-	// Setup coin prices
-	SetupStableCoinPrices(ctx, oracle)
+func (suite *MasterchefKeeperTestSuite) SetupApp() {
 
 	// Generate 1 random account with 1000stake balanced
 	addr := authtypes.NewModuleAddress(govtypes.ModuleName)
@@ -34,10 +21,7 @@ func SetupApp(t *testing.T) (keeper.Keeper, sdk.Context) {
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
 	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 110000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
-	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
-	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr, coins)
-	require.NoError(t, err)
+	suite.MintMultipleTokenToAddress(addr, coins)
 
 	//app.StakingKeeper.Delegate(ctx, addr[0], math.NewInt(100000), sdk.Unbonded, sdk.NewDec(0.1), math.NewInt(100000))
 
@@ -61,44 +45,33 @@ func SetupApp(t *testing.T) (keeper.Keeper, sdk.Context) {
 	}
 
 	// Create a Elys+USDC pool
-	msgServer := ammkeeper.NewMsgServerImpl(*amm)
-	resp, err := msgServer.CreatePool(
-		ctx,
-		&ammtypes.MsgCreatePool{
-			Sender:     addr.String(),
-			PoolParams: poolParams,
-			PoolAssets: poolAssets,
-		})
+	ammPool := suite.CreateNewAmmPool(addr, poolAssets, poolParams)
+	suite.Require().Equal(ammPool.PoolId, uint64(1))
 
-	require.NoError(t, err)
-	require.Equal(t, resp.PoolID, uint64(1))
-
-	poolInfo, found := mk.GetPoolInfo(ctx, resp.PoolID)
-	require.True(t, found)
+	poolInfo, found := suite.app.MasterchefKeeper.GetPoolInfo(suite.ctx, ammPool.PoolId)
+	suite.Require().True(found)
 
 	poolInfo.DexApr = math.LegacyNewDecWithPrec(1, 2)  // 1%
 	poolInfo.EdenApr = math.LegacyNewDecWithPrec(2, 2) // 2%
-	mk.SetPoolInfo(ctx, poolInfo)
-	estakingParams := estaking.GetParams(ctx)
+	suite.app.MasterchefKeeper.SetPoolInfo(suite.ctx, poolInfo)
+	estakingParams := suite.app.EstakingKeeper.GetParams(suite.ctx)
 	estakingParams.StakeIncentives =
 		&estakingtypes.IncentiveInfo{
 			EdenAmountPerYear: math.NewInt(1000000),
 			BlocksDistributed: 1000000,
 		}
 	estakingParams.MaxEdenRewardAprStakers = math.LegacyNewDecWithPrec(30, 2)
-	estaking.SetParams(ctx, estakingParams)
+	suite.app.EstakingKeeper.SetParams(suite.ctx, estakingParams)
 
-	mkParams := mk.GetParams(ctx)
+	mkParams := suite.app.MasterchefKeeper.GetParams(suite.ctx)
 	mkParams.LpIncentives = &types.IncentiveInfo{
 		EdenAmountPerYear: math.NewInt(1000000000),
 		BlocksDistributed: 1000000,
 	}
-	mk.SetParams(ctx, mkParams)
-
-	return mk, ctx
+	suite.app.MasterchefKeeper.SetParams(suite.ctx, mkParams)
 }
 
-func TestApr(t *testing.T) {
+func (suite *MasterchefKeeperTestSuite) TestApr() {
 	tests := []struct {
 		desc     string
 		request  *types.QueryAprRequest
@@ -123,22 +96,22 @@ func TestApr(t *testing.T) {
 		},
 	}
 
-	mk, ctx := SetupApp(t)
+	suite.SetupApp()
 
 	for _, tc := range tests {
-		t.Run(tc.desc, func(t *testing.T) {
-			response, err := mk.Apr(ctx, tc.request)
+		suite.Run(tc.desc, func() {
+			response, err := suite.app.MasterchefKeeper.Apr(suite.ctx, tc.request)
 			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+				suite.Require().ErrorIs(err, tc.err)
 			} else {
-				require.NoError(t, err)
-				require.Equal(t, tc.response, response)
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.response, response)
 			}
 		})
 	}
 }
 
-func TestAprs(t *testing.T) {
+func (suite *MasterchefKeeperTestSuite) TestAprs() {
 	tests := []struct {
 		desc     string
 		request  *types.QueryAprsRequest
@@ -169,22 +142,22 @@ func TestAprs(t *testing.T) {
 		},
 	}
 
-	mk, ctx := SetupApp(t)
+	suite.SetupApp()
 
 	for _, tc := range tests {
-		t.Run(tc.desc, func(t *testing.T) {
-			response, err := mk.Aprs(ctx, tc.request)
+		suite.Run(tc.desc, func() {
+			response, err := suite.app.MasterchefKeeper.Aprs(suite.ctx, tc.request)
 			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+				suite.Require().ErrorIs(err, tc.err)
 			} else {
-				require.NoError(t, err)
-				require.Equal(t, tc.response.String(), response.String())
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.response.String(), response.String())
 			}
 		})
 	}
 }
 
-func TestPoolRewards(t *testing.T) {
+func (suite *MasterchefKeeperTestSuite) TestPoolRewards() {
 	tests := []struct {
 		desc     string
 		request  *types.QueryPoolRewardsRequest
@@ -214,23 +187,23 @@ func TestPoolRewards(t *testing.T) {
 		},
 	}
 
-	mk, ctx := SetupApp(t)
+	suite.SetupApp()
 
-	ctx.BlockTime()
-	mk.SetPoolRewardsAccum(ctx, types.PoolRewardsAccum{
-		PoolId: 1, BlockHeight: ctx.BlockHeight(),
+	suite.ctx.BlockTime()
+	suite.app.MasterchefKeeper.SetPoolRewardsAccum(suite.ctx, types.PoolRewardsAccum{
+		PoolId: 1, BlockHeight: suite.ctx.BlockHeight(),
 		DexReward: math.LegacyNewDec(100), EdenReward: math.LegacyNewDec(200),
-		Timestamp: uint64(ctx.BlockTime().Unix()), GasReward: math.LegacyNewDec(300),
+		Timestamp: uint64(suite.ctx.BlockTime().Unix()), GasReward: math.LegacyNewDec(300),
 	})
 
 	for _, tc := range tests {
-		t.Run(tc.desc, func(t *testing.T) {
-			response, err := mk.PoolRewards(ctx, tc.request)
+		suite.Run(tc.desc, func() {
+			response, err := suite.app.MasterchefKeeper.PoolRewards(suite.ctx, tc.request)
 			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+				suite.Require().ErrorIs(err, tc.err)
 			} else {
-				require.NoError(t, err)
-				require.Equal(t, tc.response.String(), response.String())
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.response.String(), response.String())
 			}
 		})
 	}

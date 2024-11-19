@@ -44,6 +44,7 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
 	icacontroller "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller"
@@ -163,8 +164,11 @@ type AppKeepers struct {
 	LeveragelpKeeper    *leveragelpmodulekeeper.Keeper
 	MasterchefKeeper    masterchefmodulekeeper.Keeper
 	EstakingKeeper      *estakingmodulekeeper.Keeper
-	TierKeeper          tiermodulekeeper.Keeper
+	TierKeeper          *tiermodulekeeper.Keeper
 	TradeshieldKeeper   tradeshieldmodulekeeper.Keeper
+
+	// FIXME: disabled to avoid dependency with wasm
+	// HooksICS4Wrapper ibchooks.ICS4Middleware
 }
 
 func (appKeepers AppKeepers) GetKVStoreKeys() map[string]*storetypes.KVStoreKey {
@@ -474,6 +478,7 @@ func NewAppKeeper(
 		app.CommitmentKeeper,
 		app.AssetprofileKeeper,
 		app.AccountedPoolKeeper,
+		app.TierKeeper,
 	)
 
 	app.StablestakeKeeper = stablestakekeeper.NewKeeper(
@@ -510,6 +515,7 @@ func NewAppKeeper(
 		app.OracleKeeper,
 		app.AssetprofileKeeper,
 		&app.ParameterKeeper,
+		app.TierKeeper,
 	)
 
 	app.MasterchefKeeper = *masterchefmodulekeeper.NewKeeper(
@@ -540,7 +546,7 @@ func NewAppKeeper(
 	app.TransferhookKeeper = *transferhookkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[transferhooktypes.StoreKey]),
-		*app.AmmKeeper)
+		app.AmmKeeper)
 
 	//app.ConsumerKeeper = ccvconsumerkeeper.NewKeeper(
 	//	appCodec,
@@ -565,6 +571,18 @@ func NewAppKeeper(
 	//
 	//// register slashing module StakingHooks to the consumer keeper
 	//app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
+
+	// Configure the hooks keeper
+	hooksKeeper := ibchookskeeper.NewKeeper(
+		app.keys[ibchookstypes.StoreKey],
+	)
+	app.IBCHooksKeeper = &hooksKeeper
+
+	// FIXME: disabled to avoid dependency with wasm
+	// app.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
+	// 	app.IBCKeeper.ChannelKeeper,
+	// 	hooksKeeper,
+	// )
 
 	// provider depends on gov, so gov must be registered first
 	govConfig := govtypes.DefaultConfig()
@@ -605,7 +623,7 @@ func NewAppKeeper(
 		app.AccountedPoolKeeper,
 	)
 
-	app.TierKeeper = *tiermodulekeeper.NewKeeper(
+	app.TierKeeper = tiermodulekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[tiermoduletypes.StoreKey]),
 		app.BankKeeper,
@@ -620,6 +638,8 @@ func NewAppKeeper(
 		app.LeveragelpKeeper,
 		app.StablestakeKeeper,
 	)
+	app.AmmKeeper.SetTierKeeper(app.TierKeeper)
+	app.PerpetualKeeper.SetTierKeeper(app.TierKeeper)
 
 	app.TradeshieldKeeper = *tradeshieldmodulekeeper.NewKeeper(
 		appCodec,

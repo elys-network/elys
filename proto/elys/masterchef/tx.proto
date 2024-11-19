@@ -30,6 +30,7 @@ message MsgAddExternalRewardDenom {
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string reward_denom = 2;
   string min_amount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -47,6 +48,7 @@ message MsgAddExternalIncentive {
   int64 from_block = 4;
   int64 to_block = 5;
   string amount_per_block = 6 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -66,6 +68,7 @@ message MsgUpdateParamsResponse {}
 message PoolMultiplier {
   uint64 pool_id = 1;
   string multiplier = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];

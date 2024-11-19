@@ -32,6 +32,7 @@ message VestingInfo {
   string vesting_denom = 2;
   int64 num_blocks = 3;
   string vest_now_factor = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];

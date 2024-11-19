@@ -91,7 +91,7 @@ func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		suite.ctx,
 		amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
-		sdkmath.LegacyZeroDec(),
+		"",
 		sdkmath.LegacyZeroDec(),
 		1,
 	)
@@ -106,7 +106,7 @@ func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		suite.ctx,
 		amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
-		sdkmath.LegacyZeroDec(),
+		"",
 		sdkmath.LegacyZeroDec(),
 		1,
 	)
@@ -121,7 +121,7 @@ func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
 	_, _, _, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcSwapEstimationByDenom(
 		suite.ctx, amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
-		sdkmath.LegacyZeroDec(),
+		"",
 		sdkmath.LegacyZeroDec(),
 		1,
 	)

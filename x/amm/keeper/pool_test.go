@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -101,4 +102,135 @@ func TestGetBestPoolWithDenoms(t *testing.T) {
 	// Test case where pool is not found
 	_, found = keeper.GetBestPoolWithDenoms(ctx, []string{"nonexistent", "usdc"}, false)
 	require.False(t, found)
+}
+
+func (suite *AmmKeeperTestSuite) TestPool() {
+	testCases := []struct {
+		name                 string
+		prerequisiteFunction func()
+		postValidateFunction func()
+	}{
+		{
+			"GetAllLegacyPool returns empty list",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				list := suite.app.AmmKeeper.GetAllLegacyPool(suite.ctx)
+				suite.Require().Len(list, 0)
+			},
+		},
+		{
+			"GetAllLegacyPool returns list with one item",
+			func() {
+				suite.ResetSuite()
+
+				suite.app.AmmKeeper.SetPool(suite.ctx, types.Pool{
+					PoolId:  1,
+					Address: types.NewPoolAddress(1).String(),
+				})
+			},
+			func() {
+				list := suite.app.AmmKeeper.GetAllLegacyPool(suite.ctx)
+				suite.Require().Len(list, 1)
+			},
+		},
+		{
+			"IterateLiquidityPools",
+			func() {
+				suite.ResetSuite()
+
+				suite.app.AmmKeeper.SetPool(suite.ctx, types.Pool{
+					PoolId:  1,
+					Address: types.NewPoolAddress(1).String(),
+				})
+			},
+			func() {
+				suite.app.AmmKeeper.IterateLiquidityPools(suite.ctx, func(pool types.Pool) (stop bool) {
+					suite.Require().Equal(uint64(1), pool.PoolId)
+					return true
+				})
+			},
+		},
+		{
+			"AddToPoolBalance with non-existent pool asset",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+			},
+			func() {
+				addr := suite.AddAccounts(1, nil)[0]
+
+				amount := math.NewInt(100000000000)
+				pool := suite.CreateNewAmmPool(addr, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+
+				err := suite.app.AmmKeeper.AddToPoolBalance(suite.ctx, &pool, math.ZeroInt(), sdk.NewCoins(sdk.NewCoin("non-existant-denom", amount)))
+				suite.Require().Error(err)
+			},
+		},
+		{
+			"AddToPoolBalance with existent pool",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+			},
+			func() {
+				addr := suite.AddAccounts(1, nil)[0]
+
+				amount := math.NewInt(100000000000)
+				pool := suite.CreateNewAmmPool(addr, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+
+				err := suite.app.AmmKeeper.AddToPoolBalance(suite.ctx, &pool, math.ZeroInt(), sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, amount)))
+				suite.Require().NoError(err)
+			},
+		},
+		{
+			"RemoveFromPoolBalance with non-existent pool asset",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+			},
+			func() {
+				addr := suite.AddAccounts(1, nil)[0]
+
+				amount := math.NewInt(100000000000)
+				pool := suite.CreateNewAmmPool(addr, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+
+				err := suite.app.AmmKeeper.RemoveFromPoolBalance(suite.ctx, &pool, math.ZeroInt(), sdk.NewCoins(sdk.NewCoin("non-existant-denom", amount)))
+				suite.Require().Error(err)
+			},
+		},
+		{
+			"RemoveFromPoolBalance with existent pool",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+			},
+			func() {
+				addr := suite.AddAccounts(1, nil)[0]
+
+				amount := math.NewInt(100000000000)
+				pool := suite.CreateNewAmmPool(addr, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+
+				err := suite.app.AmmKeeper.RemoveFromPoolBalance(suite.ctx, &pool, math.ZeroInt(), sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, amount)))
+				suite.Require().NoError(err)
+			},
+		},
+		{
+			"PoolExists",
+			func() {
+				suite.ResetSuite()
+			},
+			func() {
+				suite.Require().False(suite.app.AmmKeeper.PoolExists(suite.ctx, 1))
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			tc.prerequisiteFunction()
+			tc.postValidateFunction()
+		})
+	}
 }

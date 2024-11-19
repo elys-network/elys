@@ -58,13 +58,12 @@ func (k Keeper) SwapExactAmountIn(ctx sdk.Context, addr sdk.AccAddress, tokenIn 
 		Routes:            routes,
 		TokenIn:           tokenIn,
 		TokenOutMinAmount: math.OneInt(),
-		Discount:          math.LegacyZeroDec(),
 	}
 	if err := msg.ValidateBasic(); err != nil {
 		return err
 	}
 
-	msgServer := ammkeeper.NewMsgServerImpl(k.ammKeeper)
+	msgServer := ammkeeper.NewMsgServerImpl(*k.ammKeeper)
 	_, err := msgServer.SwapExactAmountIn(ctx, msg)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())

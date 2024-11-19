@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -47,7 +48,7 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 
 	if mtp.Position == types.Position_LONG {
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
-		repayAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool)
+		repayAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
 		if err != nil {
 			return math.ZeroInt(), math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
@@ -55,7 +56,7 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 	if mtp.Position == types.Position_SHORT {
 		// if position is short, repay in custody asset which is base currency
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
-		repayAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool)
+		repayAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
 		if err != nil {
 			return math.ZeroInt(), math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}

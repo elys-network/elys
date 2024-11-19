@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
@@ -29,7 +30,7 @@ func (k Keeper) SwapByDenom(ctx sdk.Context, msg *types.MsgSwapByDenom) (*types.
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	inRoute, outRoute, _, spotPrice, _, _, _, _, _, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Discount, sdkmath.LegacyZeroDec(), 0)
+	inRoute, outRoute, _, spotPrice, _, _, _, _, _, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Sender, sdkmath.LegacyZeroDec(), 0)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +56,6 @@ func (k Keeper) SwapByDenom(ctx sdk.Context, msg *types.MsgSwapByDenom) (*types.
 				Routes:            route,
 				TokenIn:           msg.Amount,
 				TokenOutMinAmount: msg.MinAmount.Amount,
-				Discount:          msg.Discount,
 			},
 		)
 		if err != nil {
@@ -93,7 +93,6 @@ func (k Keeper) SwapByDenom(ctx sdk.Context, msg *types.MsgSwapByDenom) (*types.
 				Routes:           route,
 				TokenInMaxAmount: msg.MaxAmount.Amount,
 				TokenOut:         msg.Amount,
-				Discount:         msg.Discount,
 			},
 		)
 		if err != nil {
