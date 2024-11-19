@@ -15,7 +15,7 @@ import (
 
 const (
 	LocalNetVersion = "v999.999.999"
-	NewMaxBytes     = 5 * 1024 * 1024 // 5MB
+	NewMaxBytes     = 2 * 1024 * 1024 // 2MB
 )
 
 // make sure to update these when you upgrade the version
