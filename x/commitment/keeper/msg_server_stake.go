@@ -6,6 +6,8 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/elys-network/elys/x/commitment/types"
@@ -56,6 +58,17 @@ func (k msgServer) performStakeElys(ctx sdk.Context, msg *types.MsgStake) error 
 	if !amount.IsValid() || amount.Amount.IsZero() {
 		return fmt.Errorf("invalid amount")
 	}
+
+	// Don't allow vested tokens to be staked
+	// Retrieve the delegator account
+	delegatorAcc := k.accountKeeper.GetAccount(ctx, address)
+	if _, ok := delegatorAcc.(banktypes.VestingAccount); ok {
+		spendableCoins := k.bankKeeper.SpendableCoins(ctx, address)
+		if msg.Amount.GT(spendableCoins.AmountOf(msg.Asset)) {
+			return errorsmod.Wrap(sdkerrors.ErrUnauthorized, "cannot delegate vested tokens")
+		}
+	}
+
 	msgMsgDelegate := stakingtypes.NewMsgDelegate(address.String(), validator_address.String(), amount)
 
 	if _, err := msgServer.Delegate(ctx, msgMsgDelegate); err != nil { // Discard the response because it's empty
