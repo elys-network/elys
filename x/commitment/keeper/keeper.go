@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/core/store"
 	"fmt"
+
+	"cosmossdk.io/core/store"
 
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -33,6 +34,7 @@ type (
 		storeService store.KVStoreService
 		hooks        types.CommitmentHooks
 
+		accountKeeper      types.AccountKeeper
 		bankKeeper         types.BankKeeper
 		stakingKeeper      types.StakingKeeper
 		assetProfileKeeper types.AssetProfileKeeper
@@ -43,6 +45,7 @@ type (
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeService store.KVStoreService,
+	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	stakingKeeper types.StakingKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
@@ -52,6 +55,7 @@ func NewKeeper(
 		cdc:          cdc,
 		storeService: storeService,
 
+		accountKeeper:      accountKeeper,
 		bankKeeper:         bankKeeper,
 		stakingKeeper:      stakingKeeper,
 		assetProfileKeeper: assetProfileKeeper,
