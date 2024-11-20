@@ -42,8 +42,12 @@ func (msg *MsgAddEntry) ValidateBasic() error {
 		return ErrDecimalsInvalid
 	}
 
-	if len(msg.BaseDenom) == 0 {
+	if err = sdk.ValidateDenom(msg.BaseDenom); err != nil {
 		return ErrInvalidBaseDenom
+	}
+
+	if err = sdk.ValidateDenom(msg.Denom); err != nil {
+		return err
 	}
 
 	return nil

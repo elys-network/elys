@@ -6,10 +6,7 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/parameter/types";
 
-// Params defines the parameters for the module.
-message Params {
-  option (gogoproto.goproto_stringer) = false;
-
+message LegacyParams {
   string min_commission_rate = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -30,9 +27,8 @@ message Params {
   int64 rewards_data_lifetime = 6; // default 1 day = 86400
 }
 
-message LegacyParams {
-  option (gogoproto.goproto_stringer) = false;
-
+// Params defines the parameters for the module.
+message Params {
   string min_commission_rate = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -48,22 +44,6 @@ message LegacyParams {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string broker_address = 4;
-  int64 total_blocks_per_year = 5;
-  int64 rewards_data_lifetime = 6; // default 1 day = 86400
-  string wasm_max_label_size = 7 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string wasm_max_size = 8 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string wasm_max_proposal_wasm_size = 9 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
+  uint64 total_blocks_per_year = 4;
+  uint64 rewards_data_lifetime = 5; // default 1 day = 86400
 }

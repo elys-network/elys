@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/require"
@@ -43,7 +43,7 @@ func TestGenesisInflationMsgServerUpdate(t *testing.T) {
 				SeedVesting:           10,
 				StrategicSalesVesting: 5,
 			},
-			err: sdkerrors.ErrInvalidAddress,
+			err: fmt.Errorf("invalid authority"),
 		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {
@@ -59,7 +59,7 @@ func TestGenesisInflationMsgServerUpdate(t *testing.T) {
 
 			_, err = srv.UpdateGenesisInflation(ctx, tc.request)
 			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+				require.ErrorContains(t, err, tc.err.Error())
 			} else {
 				require.NoError(t, err)
 				rst, found := k.GetGenesisInflation(ctx)

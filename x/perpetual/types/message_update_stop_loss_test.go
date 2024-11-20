@@ -44,7 +44,7 @@ func TestMsgUpdateStopLoss(t *testing.T) {
 				msg.Creator = sample.AccAddress()
 				msg.Price = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
-			errMsg: "stop loss price cannot be negative",
+			errMsg: "price is negative",
 		},
 	}
 	for _, tt := range tests {

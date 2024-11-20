@@ -134,17 +134,6 @@ message FundingRateBlock {
   int64 block_time = 6;
 }
 
-message ToPay {
-  string asset_balance = 1 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string asset_denom = 2;
-  string address = 3;
-  uint64 id = 4;
-}
-
 message WhiteList { repeated string validator_list = 1; }
 
 message PositionRequest {

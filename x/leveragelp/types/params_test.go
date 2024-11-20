@@ -4,15 +4,11 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/yaml.v2"
 	"testing"
 )
 
 func TestDefaultParams(t *testing.T) {
 	require.Equal(t, types.DefaultParams(), types.NewParams())
-	output, err := yaml.Marshal(types.DefaultParams())
-	require.NoError(t, err)
-	require.Equal(t, types.DefaultParams().String(), string(output))
 }
 
 func TestValidateLeverageMax(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 // CreateModuleAccount creates a module account at the provided address.
 // It overrides an account if it exists at that address, with a non-zero sequence number & pubkey
 // Contract: addr is derived from `address.Module(ModuleName, key)`
-func CreateModuleAccount(ctx sdk.Context, ak types.AccountKeeper, addr sdk.AccAddress) error {
+func CreateModuleAccount(ctx sdk.Context, ak types.AccountKeeper, addr sdk.AccAddress, name string) error {
 	err := CanCreateModuleAccountAtAddr(ctx, ak, addr)
 	if err != nil {
 		return err
@@ -19,7 +19,7 @@ func CreateModuleAccount(ctx sdk.Context, ak types.AccountKeeper, addr sdk.AccAd
 		ctx,
 		authtypes.NewModuleAccount(
 			authtypes.NewBaseAccountWithAddress(addr),
-			addr.String(),
+			name,
 		),
 	)
 	ak.SetAccount(ctx, acc)

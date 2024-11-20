@@ -24,6 +24,10 @@ func TestMsgClosePositions_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgClosePositions{
 				Creator: sample.AccAddress(),
+				StopLoss: []PositionRequest{
+					{Address: sample.AccAddress(),
+						Id: 1},
+				},
 			},
 		},
 	}

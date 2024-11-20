@@ -166,7 +166,7 @@ func CmdUpdatePerpetualOrder() *cobra.Command {
 			}
 
 			// TODO: Add order price definition in other task
-			msg := types.NewMsgUpdatePerpetualOrder(clientCtx.GetFromAddress().String(), id, &types.TriggerPrice{})
+			msg := types.NewMsgUpdatePerpetualOrder(clientCtx.GetFromAddress().String(), id, types.TriggerPrice{})
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

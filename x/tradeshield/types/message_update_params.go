@@ -20,18 +20,8 @@ func (msg *MsgUpdateParams) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	// Validate params
-	if msg.Params.LimitProcessOrder <= 0 {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "LimitProcessOrder must be greater than 0")
-	}
-	if msg.Params.RewardPercentage.IsNegative() {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "RewardPercentage must be non-negative")
-	}
-	if msg.Params.MarginError.IsNegative() {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "MarginError must be non-negative")
-	}
-	if msg.Params.MinimumDeposit.IsNegative() {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "MinimumDeposit must be non-negative")
+	if err = msg.Params.Validate(); err != nil {
+		return err
 	}
 
 	return nil

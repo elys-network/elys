@@ -15,7 +15,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateMinCommission{}, "parameter/MsgUpdateMinCommission")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateMaxVotingPower{}, "parameter/MsgUpdateMaxVotingPower")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateMinSelfDelegation{}, "parameter/MsgUpdateMinSelfDelegation")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateBrokerAddress{}, "parameter/MsgUpdateBrokerAddress")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateTotalBlocksPerYear{}, "parameter/MsgUpdateTotalBlocksPerYear")
 	// this line is used by starport scaffolding # 2
 }
@@ -25,7 +24,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateMinCommission{},
 		&MsgUpdateMaxVotingPower{},
 		&MsgUpdateMinSelfDelegation{},
-		&MsgUpdateBrokerAddress{},
 		&MsgUpdateTotalBlocksPerYear{},
 		&MsgUpdateRewardsDataLifetime{},
 	)

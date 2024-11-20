@@ -40,143 +40,52 @@ func DefaultParams() Params {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validateRewardPortionForLps(p.RewardPortionForLps); err != nil {
-		return err
-	}
-
-	if err := validateRewardPortionForStakers(p.RewardPortionForStakers); err != nil {
-		return err
-	}
-
-	if err := validateMaxEdenRewardAprLps(p.MaxEdenRewardAprLps); err != nil {
-		return err
-	}
-
-	if err := validateLPIncentives(p.LpIncentives); err != nil {
-		return err
-	}
-
-	if err := validateProtocolRevenueAddress(p.ProtocolRevenueAddress); err != nil {
-		return err
-	}
-
-	if err := validateSupportedRewardDenoms(p.SupportedRewardDenoms); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// String implements the Stringer interface.
-func (p Params) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
-}
-
-// String implements the Stringer interface.
-func (p LegacyParams) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
-}
-
-func validateRewardPortionForLps(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
+	if p.RewardPortionForLps.IsNil() {
 		return fmt.Errorf("reward percent for lp must not be nil")
 	}
-	if v.IsNegative() {
-		return fmt.Errorf("reward percent for lp must be positive: %s", v)
+	if p.RewardPortionForLps.IsNegative() {
+		return fmt.Errorf("reward percent for lp must be positive: %s", p.RewardPortionForLps.String())
 	}
-	if v.GT(sdkmath.LegacyOneDec()) {
-		return fmt.Errorf("reward percent for lp too large: %s", v)
-	}
-
-	return nil
-}
-
-func validateRewardPortionForStakers(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+	if p.RewardPortionForLps.GT(sdkmath.LegacyOneDec()) {
+		return fmt.Errorf("reward percent for lp too large: %s", p.RewardPortionForLps.String())
 	}
 
-	if v.IsNil() {
+	if p.RewardPortionForStakers.IsNil() {
 		return fmt.Errorf("reward percent for stakers must not be nil")
 	}
-	if v.IsNegative() {
-		return fmt.Errorf("reward percent for stakers must be positive: %s", v)
+	if p.RewardPortionForStakers.IsNegative() {
+		return fmt.Errorf("reward percent for stakers must be positive: %s", p.RewardPortionForStakers.String())
 	}
-	if v.GT(sdkmath.LegacyOneDec()) {
-		return fmt.Errorf("reward percent for stakers too large: %s", v)
-	}
-
-	return nil
-}
-
-func validateLPIncentives(i interface{}) error {
-	vv, ok := i.(*IncentiveInfo)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+	if p.RewardPortionForStakers.GT(sdkmath.LegacyOneDec()) {
+		return fmt.Errorf("reward percent for stakers too large: %s", p.RewardPortionForStakers.String())
 	}
 
-	// not checking for nil as LPIncentives nil is allowed in abci.go
-	if vv != nil && vv.EdenAmountPerYear.LTE(sdkmath.ZeroInt()) {
-		return fmt.Errorf("invalid eden amount per year: %v", vv)
+	if p.RewardPortionForStakers.Add(p.RewardPortionForLps).GT(sdkmath.LegacyOneDec()) {
+		return fmt.Errorf("reward percent for stakers + lp too large: %s", p.RewardPortionForStakers.Add(p.RewardPortionForLps).String())
 	}
 
-	if vv != nil && vv.BlocksDistributed < 0 {
-		return fmt.Errorf("invalid BlocksDistributed: %v", vv)
-	}
-
-	return nil
-}
-
-func validateMaxEdenRewardAprLps(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNil() {
+	if p.MaxEdenRewardAprLps.IsNil() {
 		return fmt.Errorf("MaxEdenRewardAprLps must not be nil")
 	}
-	if v.IsNegative() {
-		return fmt.Errorf("MaxEdenRewardAprLps must be positive: %s", v)
+	if p.MaxEdenRewardAprLps.IsNegative() {
+		return fmt.Errorf("MaxEdenRewardAprLps must be positive: %s", p.MaxEdenRewardAprLps.String())
 	}
 
-	return nil
-}
-
-func validateProtocolRevenueAddress(i interface{}) error {
-	v, ok := i.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+	if p.LpIncentives != nil && p.LpIncentives.EdenAmountPerYear.LTE(sdkmath.ZeroInt()) {
+		return fmt.Errorf("invalid eden amount per year: %v", p.LpIncentives.String())
 	}
 
-	if v == "" {
-		return fmt.Errorf("ProtocolRevenueAddres cannot be empty")
+	if p.LpIncentives != nil && p.LpIncentives.BlocksDistributed < 0 {
+		return fmt.Errorf("invalid BlocksDistributed: %v", p.LpIncentives.String())
 	}
 
-	_, err := sdk.AccAddressFromBech32(v)
+	_, err := sdk.AccAddressFromBech32(p.ProtocolRevenueAddress)
 	if err != nil {
-		return fmt.Errorf("invalid ProtocolRevenueAddress %s: %v", v, err)
+		return fmt.Errorf("invalid ProtocolRevenueAddress %s: %s", p.ProtocolRevenueAddress, err.Error())
 	}
 
-	return nil
-}
-
-func validateSupportedRewardDenoms(i interface{}) error {
-	v, ok := i.([]*SupportedRewardDenom)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	for _, supportedRewardDenom := range v {
-		if err := sdk.ValidateDenom(supportedRewardDenom.Denom); err != nil {
+	for _, supportedRewardDenom := range p.SupportedRewardDenoms {
+		if err = sdk.ValidateDenom(supportedRewardDenom.Denom); err != nil {
 			return fmt.Errorf("invalid reward denom %s: %v", supportedRewardDenom.Denom, err)
 		}
 		if supportedRewardDenom.MinAmount.IsNil() {
@@ -188,4 +97,10 @@ func validateSupportedRewardDenoms(i interface{}) error {
 	}
 
 	return nil
+}
+
+// String implements the Stringer interface.
+func (p LegacyParams) String() string {
+	out, _ := yaml.Marshal(p)
+	return string(out)
 }

@@ -70,7 +70,7 @@ func CmdUpdateSpotOrder() *cobra.Command {
 			}
 
 			// TODO: Add order price definition in other task
-			msg := types.NewMsgUpdateSpotOrder(clientCtx.GetFromAddress().String(), id, &types.OrderPrice{})
+			msg := types.NewMsgUpdateSpotOrder(clientCtx.GetFromAddress().String(), id, types.OrderPrice{})
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

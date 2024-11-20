@@ -5,7 +5,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/yaml.v2"
 	"testing"
 )
 
@@ -215,13 +214,6 @@ func TestProtocolRevenueAddress(t *testing.T) {
 			setter: func() {
 			},
 			err: "",
-		},
-		{
-			name: "ProtocolRevenueAddres is empty",
-			setter: func() {
-				params.ProtocolRevenueAddress = ""
-			},
-			err: "ProtocolRevenueAddres cannot be empty",
 		},
 		{
 			name: "invalid ProtocolRevenueAddress",

@@ -311,6 +311,7 @@ func NewAppKeeper(
 	app.CommitmentKeeper = commitmentmodulekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[commitmentmoduletypes.StoreKey]),
+		app.AccountKeeper,
 		app.BankKeeper,
 		app.StakingKeeper,
 		app.AssetprofileKeeper,
