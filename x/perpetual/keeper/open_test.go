@@ -55,7 +55,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"borrow asset is usdc in long",
 			"invalid operation: the borrowed asset cannot be the base currency: invalid borrowing asset",
-			false,
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices()
@@ -68,7 +67,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"invalid collateral",
 			"collateral must either match the borrowed asset or be the base currency: invalid borrowing asset",
-			false,
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices()
@@ -82,7 +80,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"short base currency",
 			"cannot take a short position against the base currency: invalid borrowing asset",
-			false,
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices()
@@ -96,7 +93,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"short same coin as collateral",
 			"invalid operation: collateral asset cannot be identical to the borrowed asset for a short position: invalid collateral asset",
-			false,
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices()
@@ -110,7 +106,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"short with nonUSDC coin",
 			"invalid collateral: the collateral asset for a short position must be the base currency: invalid collateral asset",
-			false,
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices()
@@ -296,7 +291,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"take profit price below minimum ratio",
 			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
-			false,
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices()
@@ -308,7 +302,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"take profit price above maximum ratio",
 			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
-			false,
 			func() {
 				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.MaximumLongTakeProfitPriceRatio).Mul(math.LegacyNewDec(2))
 			},
