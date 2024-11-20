@@ -37,7 +37,7 @@ func TestEntryMsgServerUpdate(t *testing.T) {
 				BaseDenom: strconv.Itoa(0),
 				Decimals:  6,
 			},
-			err: sdkerrors.ErrInvalidAddress,
+			err: govtypes.ErrInvalidSigner,
 		},
 		{
 			desc: "KeyNotFound",
@@ -96,7 +96,7 @@ func TestEntryMsgServerDelete(t *testing.T) {
 				Authority: "B",
 				BaseDenom: strconv.Itoa(0),
 			},
-			err: sdkerrors.ErrInvalidAddress,
+			err: govtypes.ErrInvalidSigner,
 		},
 		{
 			desc: "KeyNotFound",

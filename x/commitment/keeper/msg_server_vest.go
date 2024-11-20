@@ -13,9 +13,6 @@ import (
 // Vest converts user's commitment to vesting - start with unclaimed rewards and if it's not enough deduct from committed bucket
 // mainly utilized for Eden
 func (k msgServer) Vest(goCtx context.Context, msg *types.MsgVest) (*types.MsgVestResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	err := k.ProcessTokenVesting(ctx, msg.Denom, msg.Amount, creator)

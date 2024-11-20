@@ -57,7 +57,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				firstPosition, err := suite.app.PerpetualKeeper.Open(suite.ctx, firstOpenPositionMsg, false)
+				firstPosition, err := suite.app.PerpetualKeeper.Open(suite.ctx, firstOpenPositionMsg)
 				suite.Require().NoError(err)
 
 				secondOpenPositionMsg := &types.MsgOpen{
@@ -71,7 +71,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				secondPosition, err := suite.app.PerpetualKeeper.Open(suite.ctx, secondOpenPositionMsg, false)
+				secondPosition, err := suite.app.PerpetualKeeper.Open(suite.ctx, secondOpenPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.PerpetualKeeper.RemovePool(suite.ctx, firstPool)
@@ -79,7 +79,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 
 				return &types.MsgClosePositions{
 					Creator: sample.AccAddress(),
-					Liquidate: []*types.PositionRequest{
+					Liquidate: []types.PositionRequest{
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,
@@ -93,7 +93,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 							Id:      2000,
 						},
 					},
-					StopLoss: []*types.PositionRequest{
+					StopLoss: []types.PositionRequest{
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,
@@ -103,7 +103,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 							Id:      2000,
 						},
 					},
-					TakeProfit: []*types.PositionRequest{
+					TakeProfit: []types.PositionRequest{
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,
@@ -144,7 +144,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				firstPosition, err := suite.app.PerpetualKeeper.Open(suite.ctx, firstOpenPositionMsg, false)
+				firstPosition, err := suite.app.PerpetualKeeper.Open(suite.ctx, firstOpenPositionMsg)
 				suite.Require().NoError(err)
 
 				// Increase unpaid liability to reduce the MTP health
@@ -154,14 +154,14 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 
 				return &types.MsgClosePositions{
 					Creator: sample.AccAddress(),
-					Liquidate: []*types.PositionRequest{
+					Liquidate: []types.PositionRequest{
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,
 						},
 					},
-					StopLoss:   []*types.PositionRequest{},
-					TakeProfit: []*types.PositionRequest{},
+					StopLoss:   []types.PositionRequest{},
+					TakeProfit: []types.PositionRequest{},
 				}
 			},
 			"",
@@ -193,7 +193,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					StopLossPrice:   math.LegacyMustNewDecFromStr("2.00"),
 				}
 
-				firstPosition, err := suite.app.PerpetualKeeper.Open(suite.ctx, firstOpenPositionMsg, false)
+				firstPosition, err := suite.app.PerpetualKeeper.Open(suite.ctx, firstOpenPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
@@ -206,14 +206,14 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 
 				return &types.MsgClosePositions{
 					Creator:   sample.AccAddress(),
-					Liquidate: []*types.PositionRequest{},
-					StopLoss: []*types.PositionRequest{
+					Liquidate: []types.PositionRequest{},
+					StopLoss: []types.PositionRequest{
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,
 						},
 					},
-					TakeProfit: []*types.PositionRequest{},
+					TakeProfit: []types.PositionRequest{},
 				}
 			},
 			"",
@@ -245,7 +245,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					StopLossPrice:   math.LegacyMustNewDecFromStr("2.00"),
 				}
 
-				firstPosition, err := suite.app.PerpetualKeeper.Open(suite.ctx, firstOpenPositionMsg, false)
+				firstPosition, err := suite.app.PerpetualKeeper.Open(suite.ctx, firstOpenPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
@@ -258,9 +258,9 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 
 				return &types.MsgClosePositions{
 					Creator:   sample.AccAddress(),
-					Liquidate: []*types.PositionRequest{},
-					StopLoss:  []*types.PositionRequest{},
-					TakeProfit: []*types.PositionRequest{
+					Liquidate: []types.PositionRequest{},
+					StopLoss:  []types.PositionRequest{},
+					TakeProfit: []types.PositionRequest{
 						{
 							Address: firstPositionCreator.String(),
 							Id:      firstPosition.Id,

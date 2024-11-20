@@ -32,8 +32,6 @@ message LegacyParams {
 
 // Params defines the parameters for the module.
 message Params {
-  option (gogoproto.goproto_stringer) = false;
-
   IncentiveInfo stake_incentives = 1;
   string eden_commit_val = 2;
   string edenb_commit_val = 3;

@@ -2,6 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
+	"fmt"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -71,14 +72,14 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 					MinimumDeposit:       sdkmath.NewInt(100),
 				},
 			},
-			err: sdkerrors.ErrInvalidRequest,
+			err: fmt.Errorf("RewardPercentage is negative"),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.msg.ValidateBasic()
 			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
+				require.ErrorContains(t, err, tt.err.Error())
 				return
 			}
 			require.NoError(t, err)

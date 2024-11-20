@@ -26,7 +26,7 @@ func TestMsgCreatePerpetualOpenOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCreatePerpetualOpenOrder{
 				OwnerAddress:    sample.AccAddress(),
-				TriggerPrice:    &TriggerPrice{Rate: math.LegacyNewDec(100), TradingAssetDenom: "base"},
+				TriggerPrice:    TriggerPrice{Rate: math.LegacyNewDec(100), TradingAssetDenom: "base"},
 				Collateral:      sdk.NewCoin("token", math.NewInt(1000)),
 				TradingAsset:    "asset",
 				Position:        PerpetualPosition_LONG,
@@ -65,7 +65,7 @@ func TestMsgCreatePerpetualCloseOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCreatePerpetualCloseOrder{
 				OwnerAddress: sample.AccAddress(),
-				TriggerPrice: &TriggerPrice{Rate: math.LegacyNewDec(100), TradingAssetDenom: "base"},
+				TriggerPrice: TriggerPrice{Rate: math.LegacyNewDec(100), TradingAssetDenom: "base"},
 				PositionId:   1,
 			},
 		},
@@ -98,7 +98,7 @@ func TestMsgUpdatePerpetualOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgUpdatePerpetualOrder{
 				OwnerAddress: sample.AccAddress(),
-				TriggerPrice: &TriggerPrice{Rate: math.LegacyNewDec(100), TradingAssetDenom: "base"},
+				TriggerPrice: TriggerPrice{Rate: math.LegacyNewDec(100), TradingAssetDenom: "base"},
 				OrderId:      1,
 			},
 		},

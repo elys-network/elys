@@ -7,8 +7,6 @@ import "cosmos_proto/cosmos.proto";
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
 
 message LegacyParams {
-  option (gogoproto.goproto_stringer) = false;
-
   string deposit_denom = 1;
   string redemption_rate = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
@@ -55,8 +53,6 @@ message LegacyParams {
 
 // Params defines the parameters for the module.
 message Params {
-  option (gogoproto.goproto_stringer) = false;
-
   string deposit_denom = 1;
   string redemption_rate = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",

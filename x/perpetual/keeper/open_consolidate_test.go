@@ -36,7 +36,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, positionCreator, position.Id)
 				suite.Require().NoError(err)
@@ -70,7 +70,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, positionCreator, position.Id)
 				suite.Require().NoError(err)
@@ -106,7 +106,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				mtp, err := suite.app.PerpetualKeeper.GetMTP(suite.ctx, positionCreator, position.Id)
 				suite.Require().NoError(err)
@@ -161,7 +161,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				openPositionMsg.Leverage = math.LegacyNewDec(3)
@@ -200,7 +200,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				// make new Positon leverage 0 to add collateral
@@ -220,7 +220,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			msg := tc.setup()
-			position, err := suite.app.PerpetualKeeper.Open(suite.ctx, msg, false)
+			position, err := suite.app.PerpetualKeeper.Open(suite.ctx, msg)
 			suite.Require().NoError(err)
 
 			if tc.expectedErrMsg != "" {

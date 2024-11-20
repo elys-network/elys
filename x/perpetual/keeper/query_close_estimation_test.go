@@ -90,9 +90,9 @@ func (suite *PerpetualKeeperTestSuite) TestQueryCloseEstimation_ErrorGetPerpetua
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	openResponse, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	openResponse, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
-	_, err = suite.app.PerpetualKeeper.Open(ctx, secondOpenPositionMsg, false)
+	_, err = suite.app.PerpetualKeeper.Open(ctx, secondOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	suite.app.PerpetualKeeper.RemovePool(ctx, firstPool)
@@ -140,9 +140,9 @@ func (suite *PerpetualKeeperTestSuite) TestQueryCloseEstimation_Successful() {
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	openResponse, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	openResponse, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
-	_, err = suite.app.PerpetualKeeper.Open(ctx, secondOpenPositionMsg, false)
+	_, err = suite.app.PerpetualKeeper.Open(ctx, secondOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	_, err = k.CloseEstimation(ctx, &types.QueryCloseEstimationRequest{

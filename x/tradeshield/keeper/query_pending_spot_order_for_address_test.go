@@ -19,7 +19,7 @@ func TestPendingSpotOrderForAddress(t *testing.T) {
 		OrderId:      1,
 		OwnerAddress: "valid_address",
 		OrderType:    types.SpotOrderType_LIMITBUY,
-		OrderPrice: &types.OrderPrice{
+		OrderPrice: types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
 			Rate:       math.LegacyNewDec(1),
@@ -33,7 +33,7 @@ func TestPendingSpotOrderForAddress(t *testing.T) {
 		OrderId:      2,
 		OwnerAddress: "valid_address",
 		OrderType:    types.SpotOrderType_LIMITBUY,
-		OrderPrice: &types.OrderPrice{
+		OrderPrice: types.OrderPrice{
 			BaseDenom:  "base",
 			QuoteDenom: "quote",
 			Rate:       math.LegacyNewDec(1),

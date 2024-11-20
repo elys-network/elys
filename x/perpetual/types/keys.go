@@ -1,8 +1,9 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"encoding/binary"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
@@ -42,7 +43,6 @@ var (
 
 	InterestRatePrefix = []byte{0x07}
 	FundingRatePrefix  = []byte{0x08}
-	ToPayPrefix        = []byte{0x09}
 )
 
 func KeyPrefix(p string) []byte {
@@ -88,8 +88,4 @@ func GetInterestRateKey(block uint64, pool uint64) []byte {
 
 func GetFundingRateKey(block uint64, pool uint64) []byte {
 	return append(GetUint64Bytes(block), GetUint64Bytes(pool)...)
-}
-
-func GetToPayKey(addr sdk.AccAddress, id uint64) []byte {
-	return append(ToPayPrefix, append(address.MustLengthPrefix(addr), sdk.Uint64ToBigEndian(id)...)...)
 }

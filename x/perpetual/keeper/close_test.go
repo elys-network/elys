@@ -50,7 +50,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
 				return &types.MsgClose{
@@ -83,7 +83,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				return &types.MsgClose{
@@ -116,7 +116,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
@@ -157,7 +157,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
@@ -198,7 +198,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					StopLossPrice:   math.LegacyMustNewDecFromStr("2.0"),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
@@ -238,7 +238,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				return &types.MsgClose{
 					Creator: positionCreator.String(),
@@ -267,7 +267,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				return &types.MsgClose{
 					Creator: positionCreator.String(),
@@ -298,7 +298,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				// Increase unpaid liability
@@ -334,7 +334,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{

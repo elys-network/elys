@@ -93,7 +93,7 @@ elysd tx perpetual open short 5 1 uatom 100000000uusdc --take-profit 100 --stop-
 				stopLossPrice,
 			)
 
-			if err := msg.ValidateBasic(); err != nil {
+			if err = msg.ValidateBasic(); err != nil {
 				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)

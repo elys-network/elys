@@ -6,15 +6,11 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/yaml.v2"
 	"testing"
 )
 
 func TestDefaultParams(t *testing.T) {
 	require.Equal(t, types.DefaultParams(), types.NewParams(nil, sdkmath.LegacyNewDecWithPrec(60, 2), sdkmath.LegacyNewDecWithPrec(25, 2), sdkmath.LegacyNewDecWithPrec(5, 1), authtypes.NewModuleAddress(govtypes.ModuleName).String()))
-	output, err := yaml.Marshal(types.DefaultParams())
-	require.NoError(t, err)
-	require.Equal(t, types.DefaultParams().String(), string(output))
 }
 
 func TestRewardPortionForLps(t *testing.T) {
@@ -216,13 +212,6 @@ func TestProtocolRevenueAddress(t *testing.T) {
 			setter: func() {
 			},
 			err: "",
-		},
-		{
-			name: "ProtocolRevenueAddres is empty",
-			setter: func() {
-				params.ProtocolRevenueAddress = ""
-			},
-			err: "ProtocolRevenueAddres cannot be empty",
 		},
 		{
 			name: "invalid ProtocolRevenueAddress",

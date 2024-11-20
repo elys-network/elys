@@ -10,9 +10,6 @@ import (
 )
 
 func (k msgServer) Whitelist(goCtx context.Context, msg *types.MsgWhitelist) (*types.MsgWhitelistResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {

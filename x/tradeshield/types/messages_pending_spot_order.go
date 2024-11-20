@@ -13,8 +13,8 @@ func NewMsgCreateSpotOrder(ownerAddress string, orderType SpotOrderType,
 	orderTargetDenom string) *MsgCreateSpotOrder {
 	return &MsgCreateSpotOrder{
 		OrderType:        orderType,
-		OrderPrice:       &orderPrice,
-		OrderAmount:      &orderAmount,
+		OrderPrice:       orderPrice,
+		OrderAmount:      orderAmount,
 		OwnerAddress:     ownerAddress,
 		OrderTargetDenom: orderTargetDenom,
 	}
@@ -26,23 +26,14 @@ func (msg *MsgCreateSpotOrder) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	// Validate order price
-	if msg.OrderPrice == nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be nil")
+	if err = CheckLegacyDecNilAndNegative(msg.OrderPrice.Rate, "OrderPrice Rate"); err != nil {
+		return err
 	}
-
-	// Validate order price
-	if msg.OrderPrice.Rate.IsNegative() {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be negative")
-	}
-
-	err = sdk.ValidateDenom(msg.OrderPrice.BaseDenom)
-	if err != nil {
+	if err = sdk.ValidateDenom(msg.OrderPrice.BaseDenom); err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid base asset denom (%s)", err)
 	}
 
-	err = sdk.ValidateDenom(msg.OrderPrice.QuoteDenom)
-	if err != nil {
+	if err = sdk.ValidateDenom(msg.OrderPrice.QuoteDenom); err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid quote asset denom (%s)", err)
 	}
 
@@ -51,16 +42,19 @@ func (msg *MsgCreateSpotOrder) ValidateBasic() error {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid order amount")
 	}
 
-	err = sdk.ValidateDenom(msg.OrderTargetDenom)
-	if err != nil {
+	if err = sdk.ValidateDenom(msg.OrderTargetDenom); err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order target asset denom (%s)", err)
+	}
+
+	if msg.OrderType != SpotOrderType_STOPLOSS && msg.OrderType != SpotOrderType_LIMITSELL && msg.OrderType != SpotOrderType_LIMITBUY && msg.OrderType != SpotOrderType_MARKETBUY {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "invalid order type")
 	}
 	return nil
 }
 
 var _ sdk.Msg = &MsgUpdateSpotOrder{}
 
-func NewMsgUpdateSpotOrder(creator string, id uint64, orderPrice *OrderPrice) *MsgUpdateSpotOrder {
+func NewMsgUpdateSpotOrder(creator string, id uint64, orderPrice OrderPrice) *MsgUpdateSpotOrder {
 	return &MsgUpdateSpotOrder{
 		OrderId:      id,
 		OwnerAddress: creator,
@@ -74,23 +68,15 @@ func (msg *MsgUpdateSpotOrder) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 
-	// Validate order price
-	if msg.OrderPrice == nil {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be nil")
+	if err = CheckLegacyDecNilAndNegative(msg.OrderPrice.Rate, "OrderPrice Rate"); err != nil {
+		return err
 	}
 
-	// Validate order price
-	if msg.OrderPrice.Rate.IsNegative() {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "order price cannot be negative")
-	}
-
-	err = sdk.ValidateDenom(msg.OrderPrice.BaseDenom)
-	if err != nil {
+	if err = sdk.ValidateDenom(msg.OrderPrice.BaseDenom); err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid base asset denom (%s)", err)
 	}
 
-	err = sdk.ValidateDenom(msg.OrderPrice.QuoteDenom)
-	if err != nil {
+	if err = sdk.ValidateDenom(msg.OrderPrice.QuoteDenom); err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid quote asset denom (%s)", err)
 	}
 

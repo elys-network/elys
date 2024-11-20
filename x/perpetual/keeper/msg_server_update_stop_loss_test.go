@@ -44,7 +44,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateStopLoss_ErrPoolDoesNo
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 	k.RemovePool(ctx, firstPool)
 	_, err = msg.UpdateStopLoss(ctx, &types.MsgUpdateStopLoss{
@@ -78,7 +78,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateStopLoss_Successful() 
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 	_, err = msg.UpdateStopLoss(ctx, &types.MsgUpdateStopLoss{
 		Creator: firstPositionCreator.String(),

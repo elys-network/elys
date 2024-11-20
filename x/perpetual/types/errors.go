@@ -35,6 +35,5 @@ var (
 	ErrInvalidAmount          = errorsmod.Register(ModuleName, 40, "invalid amount")
 	ErrInvalidPrice           = errorsmod.Register(ModuleName, 41, "error invalid price ")
 	ErrPoolHasToBeOracle      = errorsmod.Register(ModuleName, 42, "pool has to be oracle enabled")
-	ErrToPayDoesNotExist      = errorsmod.Register(ModuleName, 43, "to pay does not exist")
-	ErrZeroCustodyAmount      = errorsmod.Register(ModuleName, 44, "Custody amount is zero")
+	ErrZeroCustodyAmount      = errorsmod.Register(ModuleName, 43, "Custody amount is zero")
 )

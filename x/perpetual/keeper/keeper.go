@@ -75,18 +75,10 @@ func (k *Keeper) GetTierKeeper() *tierkeeper.Keeper {
 	return k.tierKeeper
 }
 
-func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, proxyLeverage math.LegacyDec, baseCurrency string, isBroker bool) error {
+func (k Keeper) Borrow(ctx sdk.Context, collateralAmount math.Int, custodyAmount math.Int, mtp *types.MTP, ammPool *ammtypes.Pool, pool *types.Pool, proxyLeverage math.LegacyDec, baseCurrency string) error {
 	senderAddress, err := sdk.AccAddressFromBech32(mtp.Address)
 	if err != nil {
 		return err
-	}
-	// if isBroker is true, then retrieve broker address and assign it to senderAddress
-	if isBroker {
-		brokerAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).BrokerAddress)
-		if err != nil {
-			return err
-		}
-		senderAddress = brokerAddress
 	}
 
 	collateralCoin := sdk.NewCoin(mtp.CollateralAsset, collateralAmount)

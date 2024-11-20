@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -82,7 +83,7 @@ func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 				Description:      description,
 				Inflation:        inflation,
 			},
-			err: sdkerrors.ErrInvalidAddress,
+			err: fmt.Errorf("invalid authority"),
 		},
 		{
 			desc: "KeyNotFound",
@@ -112,7 +113,7 @@ func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 
 			_, err = srv.UpdateTimeBasedInflation(ctx, tc.request)
 			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+				require.ErrorContains(t, err, tc.err.Error())
 			} else {
 				require.NoError(t, err)
 				rst, found := k.GetTimeBasedInflation(ctx,
@@ -149,7 +150,7 @@ func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 				StartBlockHeight: 0,
 				EndBlockHeight:   0,
 			},
-			err: sdkerrors.ErrInvalidAddress,
+			err: fmt.Errorf("invalid authority"),
 		},
 		{
 			desc: "KeyNotFound",
@@ -181,7 +182,7 @@ func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 			require.NoError(t, err)
 			_, err = srv.DeleteTimeBasedInflation(ctx, tc.request)
 			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+				require.ErrorContains(t, err, tc.err.Error())
 			} else {
 				require.NoError(t, err)
 				_, found := k.GetTimeBasedInflation(ctx,

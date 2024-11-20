@@ -2,7 +2,7 @@ package keeper_test
 
 import (
 	sdkmath "cosmossdk.io/math"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"fmt"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/stablestake/keeper"
@@ -52,7 +52,7 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 				TotalValue:           sdkmath.OneInt(),
 				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
 			},
-			expected: sdkerrors.ErrInvalidAddress,
+			expected: fmt.Errorf("invalid authority"),
 		},
 	}
 
@@ -69,7 +69,7 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 
 			_, err := msgServer.UpdateParams(suite.ctx, msg)
 			if tt.expected != nil {
-				require.ErrorIs(suite.T(), err, tt.expected)
+				require.ErrorContains(suite.T(), err, tt.expected.Error())
 			} else {
 				require.NoError(suite.T(), err)
 				storedParams := suite.app.StablestakeKeeper.GetParams(suite.ctx)

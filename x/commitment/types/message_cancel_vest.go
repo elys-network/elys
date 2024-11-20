@@ -32,8 +32,8 @@ func (msg *MsgCancelVest) ValidateBasic() error {
 		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be nil")
 	}
 
-	if msg.Amount.IsNegative() {
-		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative")
+	if msg.Amount.IsNegative() || msg.Amount.IsZero() {
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative or zero")
 	}
 
 	return nil

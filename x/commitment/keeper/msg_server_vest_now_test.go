@@ -62,7 +62,7 @@ func TestVestNowInvalidDenom(t *testing.T) {
 	creator := creatorAddr.String()
 	denom := "invalid_denom"
 
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
@@ -109,7 +109,7 @@ func TestVestNowInvalidAmount(t *testing.T) {
 	initialClaimed := sdkmath.NewInt(5000)
 	initialCommitted := sdkmath.NewInt(10000)
 
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
@@ -174,7 +174,7 @@ func TestVestNow(t *testing.T) {
 	initialClaimed := sdkmath.NewInt(5000)
 	initialCommitted := sdkmath.NewInt(10000)
 
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
