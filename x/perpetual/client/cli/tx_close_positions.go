@@ -31,9 +31,9 @@ func CmdClosePositions() *cobra.Command {
 				return err
 			}
 			// Convert to slice of pointers
-			var liqudiatePtrs []*types.PositionRequest
+			var liqudiatePtrs []types.PositionRequest
 			for i := range liquidate {
-				liqudiatePtrs = append(liqudiatePtrs, &liquidate[i])
+				liqudiatePtrs = append(liqudiatePtrs, liquidate[i])
 			}
 
 			stopLoss, err := readPositionRequestJSON(args[1])
@@ -41,9 +41,9 @@ func CmdClosePositions() *cobra.Command {
 				return err
 			}
 			// Convert to slice of pointers
-			var stoplossPtrs []*types.PositionRequest
+			var stoplossPtrs []types.PositionRequest
 			for i := range stopLoss {
-				stoplossPtrs = append(stoplossPtrs, &stopLoss[i])
+				stoplossPtrs = append(stoplossPtrs, stopLoss[i])
 			}
 
 			takeProfit, err := readPositionRequestJSON(args[2])
@@ -51,9 +51,9 @@ func CmdClosePositions() *cobra.Command {
 				return err
 			}
 			// Convert to slice of pointers
-			var takeProfitPtrs []*types.PositionRequest
+			var takeProfitPtrs []types.PositionRequest
 			for i := range takeProfit {
-				takeProfitPtrs = append(takeProfitPtrs, &takeProfit[i])
+				takeProfitPtrs = append(takeProfitPtrs, takeProfit[i])
 			}
 
 			msg := types.NewMsgClosePositions(

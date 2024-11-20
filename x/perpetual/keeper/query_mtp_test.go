@@ -30,7 +30,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_Successful() {
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	response, err := k.MTP(ctx, &types.MTPRequest{
@@ -98,7 +98,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_BaseCurrencyNotFound() {
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	suite.app.AssetprofileKeeper.RemoveEntry(ctx, ptypes.BaseCurrency)
@@ -133,7 +133,7 @@ func (suite *PerpetualKeeperTestSuite) TestQueryMtp_ErrFillMTPData() {
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	suite.app.AmmKeeper.RemovePool(ctx, firstPool)

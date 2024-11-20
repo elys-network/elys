@@ -22,7 +22,7 @@ func TestGetParams(t *testing.T) {
 	k := testapp.CommitmentKeeper
 	require.NotNil(t, k)
 
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
@@ -43,7 +43,7 @@ func TestGetParams(t *testing.T) {
 }
 
 func TestEncodeDecodeParams(t *testing.T) {
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
@@ -75,7 +75,7 @@ func TestGetParamsNew(t *testing.T) {
 	k := testapp.CommitmentKeeper
 	require.NotNil(t, k)
 
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
@@ -105,7 +105,7 @@ func TestGetVestingInfo(t *testing.T) {
 	k := testapp.CommitmentKeeper
 	require.NotNil(t, k)
 
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,

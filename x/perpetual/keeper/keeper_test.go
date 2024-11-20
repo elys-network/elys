@@ -36,6 +36,8 @@ const (
 	initChain = true
 )
 
+var oracleProvider = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+
 var (
 	priceMap = map[string]assetPriceInfo{
 		"uusdc": {
@@ -111,7 +113,7 @@ func (suite *PerpetualKeeperTestSuite) AddBlockTime(d time.Duration) {
 
 func (suite *PerpetualKeeperTestSuite) SetupCoinPrices() {
 	// prices set for USDT and USDC
-	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	provider := oracleProvider
 
 	for _, v := range priceMap {
 		suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{

@@ -12,9 +12,6 @@ import (
 
 // CommitClaimedRewards commit the tokens on unclaimed store to committed
 func (k msgServer) CommitClaimedRewards(goCtx context.Context, msg *types.MsgCommitClaimedRewards) (*types.MsgCommitClaimedRewardsResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(msg.Creator)
 	assetProfile, found := k.assetProfileKeeper.GetEntry(ctx, msg.Denom)

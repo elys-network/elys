@@ -25,7 +25,7 @@ func TestKeeper_ClaimVesting(t *testing.T) {
 	// set block height
 	ctx = ctx.WithBlockHeight(10)
 
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,

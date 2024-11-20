@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -58,8 +59,12 @@ func (msg *MsgUpdateEntry) ValidateBasic() error {
 		return ErrDecimalsInvalid
 	}
 
-	if len(msg.BaseDenom) == 0 {
+	if err = sdk.ValidateDenom(msg.BaseDenom); err != nil {
 		return ErrInvalidBaseDenom
+	}
+
+	if err = sdk.ValidateDenom(msg.Denom); err != nil {
+		return fmt.Errorf("invalid denom")
 	}
 	return nil
 }
@@ -82,7 +87,7 @@ func (msg *MsgDeleteEntry) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
 	}
 
-	if len(msg.BaseDenom) == 0 {
+	if err = sdk.ValidateDenom(msg.BaseDenom); err != nil {
 		return ErrInvalidBaseDenom
 	}
 	return nil

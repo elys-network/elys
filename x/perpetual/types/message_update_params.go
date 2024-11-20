@@ -13,6 +13,10 @@ func (msg *MsgUpdateParams) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+
+	if err = msg.Params.Validate(); err != nil {
+		return err
+	}
 	return nil
 }
 

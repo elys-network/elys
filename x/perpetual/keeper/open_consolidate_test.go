@@ -29,7 +29,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate_ErrPoolDoesNotExist()
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	mtp, err := k.GetMTP(ctx, firstPositionCreator, firstPosition.Id)
@@ -83,7 +83,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate_ErrMTPUnhealthy() {
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	mtp, err := k.GetMTP(ctx, firstPositionCreator, firstPosition.Id)
@@ -139,7 +139,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate_Successful() {
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	mtp, err := k.GetMTP(ctx, firstPositionCreator, firstPosition.Id)
