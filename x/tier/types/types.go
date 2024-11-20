@@ -20,10 +20,15 @@ func NewPortfolioWithContextDate(date string, creator sdk.AccAddress, value sdkm
 }
 
 var (
-	Bronze = MembershipTier{
+	Basic = MembershipTier{
 		Discount:         sdkmath.LegacyZeroDec(),
-		Membership:       MembershipTierType_BRONZE,
+		Membership:       MembershipTierType_BASIC,
 		MinimumPortfolio: sdkmath.LegacyZeroDec(),
+	}
+	Bronze = MembershipTier{
+		Discount:         sdkmath.LegacyMustNewDecFromStr("0.05"),
+		Membership:       MembershipTierType_BRONZE,
+		MinimumPortfolio: sdkmath.LegacyMustNewDecFromStr("25000"),
 	}
 	Silver = MembershipTier{
 		Discount:         sdkmath.LegacyMustNewDecFromStr("0.1"),

@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
-	errorsmod "cosmossdk.io/errors"
 	"fmt"
+
+	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -80,6 +81,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		Collateral:      msg.Collateral,
 		TakeProfitPrice: msg.TakeProfitPrice,
 		PoolId:          msg.PoolId,
+		LimitPrice:      msg.TriggerPrice.Rate,
 	})
 	if err != nil {
 		return nil, err

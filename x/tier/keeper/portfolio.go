@@ -384,23 +384,26 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_p
 	}
 
 	if minTotal.Equal(sdkmath.LegacyNewDec(math.MaxInt64)) {
-		return sdkmath.LegacyNewDec(0), types.Bronze
+		return sdkmath.LegacyNewDec(0), types.Basic
 	}
 
-	// TODO: Make tier discount and minimum balance configurable
-	if minTotal.GTE(sdkmath.LegacyNewDec(500000)) {
+	if minTotal.GTE(types.Platinum.MinimumPortfolio) {
 		return minTotal, types.Platinum
 	}
 
-	if minTotal.GTE(sdkmath.LegacyNewDec(250000)) {
+	if minTotal.GTE(types.Gold.MinimumPortfolio) {
 		return minTotal, types.Gold
 	}
 
-	if minTotal.GTE(sdkmath.LegacyNewDec(50000)) {
+	if minTotal.GTE(types.Silver.MinimumPortfolio) {
 		return minTotal, types.Silver
 	}
 
-	return minTotal, types.Bronze
+	if minTotal.GTE(types.Bronze.MinimumPortfolio) {
+		return minTotal, types.Bronze
+	}
+
+	return minTotal, types.Basic
 }
 
 // RemovePortfolioLast removes a portfolio from the store with a specific date
