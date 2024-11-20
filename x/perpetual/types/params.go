@@ -89,11 +89,23 @@ func (p Params) Validate() error {
 	if err := CheckLegacyDecNilAndNegative(p.MaximumLongTakeProfitPriceRatio, "MaximumLongTakeProfitPriceRatio"); err != nil {
 		return err
 	}
+	if p.MaximumLongTakeProfitPriceRatio.LTE(math.LegacyOneDec()) {
+		return fmt.Errorf("MaximumLongTakeProfitPriceRatio must be greater than 1")
+	}
 	if err := CheckLegacyDecNilAndNegative(p.MaximumShortTakeProfitPriceRatio, "MaximumShortTakeProfitPriceRatio"); err != nil {
 		return err
 	}
+	if p.MaximumShortTakeProfitPriceRatio.GTE(math.LegacyOneDec()) {
+		return fmt.Errorf("MaximumShortTakeProfitPriceRatio must be less than 1")
+	}
 	if err := CheckLegacyDecNilAndNegative(p.MinimumLongTakeProfitPriceRatio, "MinimumLongTakeProfitPriceRatio"); err != nil {
 		return err
+	}
+	if p.MinimumLongTakeProfitPriceRatio.LTE(math.LegacyOneDec()) {
+		return fmt.Errorf("MinimumLongTakeProfitPriceRatio must be greater than 1")
+	}
+	if p.MaximumLongTakeProfitPriceRatio.LTE(p.MinimumLongTakeProfitPriceRatio) {
+		return fmt.Errorf("MaximumLongTakeProfitPriceRatio must be greater than MinimumLongTakeProfitPriceRatio")
 	}
 	if err := CheckLegacyDecNilAndNegative(p.PerpetualSwapFee, "PerpetualSwapFee"); err != nil {
 		return err
