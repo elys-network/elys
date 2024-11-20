@@ -6,7 +6,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"gopkg.in/yaml.v2"
 )
 
@@ -35,7 +34,7 @@ func DefaultParams() Params {
 		sdkmath.LegacyNewDecWithPrec(60, 2),
 		sdkmath.LegacyNewDecWithPrec(25, 2),
 		sdkmath.LegacyNewDecWithPrec(5, 1),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authtypes.NewModuleAddress("protocol-revenue-address").String(), // Change it in genesis in mainnet launch
 	)
 }
 
