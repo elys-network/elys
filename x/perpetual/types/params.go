@@ -59,6 +59,9 @@ func (p Params) Validate() error {
 	if err := CheckLegacyDecNilAndNegative(p.BorrowInterestRateMin, "BorrowInterestRateMin"); err != nil {
 		return err
 	}
+	if p.BorrowInterestRateMin.GT(p.BorrowInterestRateMax) {
+		return fmt.Errorf("BorrowInterestRateMin must be less than BorrowInterestRateMax")
+	}
 	if err := CheckLegacyDecNilAndNegative(p.BorrowInterestRateIncrease, "BorrowInterestRateIncrease"); err != nil {
 		return err
 	}

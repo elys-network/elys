@@ -52,6 +52,9 @@ func (p Params) Validate() error {
 	if err := CheckLegacyDecNilAndNegative(p.InterestRateMin, "InterestRateMin"); err != nil {
 		return err
 	}
+	if p.InterestRateMax.LT(p.InterestRateMin) {
+		return fmt.Errorf("InterestRateMax must be greater than InterestRateMin")
+	}
 	if err := CheckLegacyDecNilAndNegative(p.InterestRateIncrease, "InterestRateIncrease"); err != nil {
 		return err
 	}

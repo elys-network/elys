@@ -68,10 +68,10 @@ func (p Params) Validate() error {
 		return fmt.Errorf("channel should not be empty: %s", p.BandChannelSource)
 	}
 	if p.AskCount == 0 {
-		return fmt.Errorf("count should not be zero: %d", p.AskCount)
+		return fmt.Errorf("ask count should not be zero: %d", p.AskCount)
 	}
 	if p.MinCount == 0 {
-		return fmt.Errorf("count should not be zero: %d", p.MinCount)
+		return fmt.Errorf("min count should not be zero: %d", p.MinCount)
 	}
 	if err := p.FeeLimit.Validate(); err != nil {
 		return err

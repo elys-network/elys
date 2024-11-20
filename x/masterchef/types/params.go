@@ -61,6 +61,10 @@ func (p Params) Validate() error {
 		return fmt.Errorf("reward percent for stakers too large: %s", p.RewardPortionForStakers.String())
 	}
 
+	if p.RewardPortionForStakers.Add(p.RewardPortionForLps).GT(sdkmath.LegacyOneDec()) {
+		return fmt.Errorf("reward percent for stakers + lp too large: %s", p.RewardPortionForStakers.Add(p.RewardPortionForLps).String())
+	}
+
 	if p.MaxEdenRewardAprLps.IsNil() {
 		return fmt.Errorf("MaxEdenRewardAprLps must not be nil")
 	}
