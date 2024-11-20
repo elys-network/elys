@@ -10,16 +10,13 @@ import (
 )
 
 func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSpotOrder) (*types.MsgCreateSpotOrderResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var pendingSpotOrder = types.SpotOrder{
 		OrderType:        msg.OrderType,
 		OrderId:          uint64(0),
 		OrderPrice:       msg.OrderPrice,
-		OrderAmount:      *msg.OrderAmount,
+		OrderAmount:      msg.OrderAmount,
 		OwnerAddress:     msg.OwnerAddress,
 		OrderTargetDenom: msg.OrderTargetDenom,
 		Date:             &types.Date{Height: uint64(ctx.BlockHeight()), Timestamp: uint64(ctx.BlockTime().Unix())},
@@ -45,18 +42,12 @@ func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSp
 }
 
 func (k msgServer) UpdateSpotOrder(goCtx context.Context, msg *types.MsgUpdateSpotOrder) (*types.MsgUpdateSpotOrderResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	// _ := sdk.UnwrapSDKContext(goCtx)
 
 	return &types.MsgUpdateSpotOrderResponse{}, nil
 }
 
 func (k msgServer) CancelSpotOrder(goCtx context.Context, msg *types.MsgCancelSpotOrder) (*types.MsgCancelSpotOrderResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// get the spot order
@@ -78,9 +69,6 @@ func (k msgServer) CancelSpotOrder(goCtx context.Context, msg *types.MsgCancelSp
 }
 
 func (k msgServer) CancelSpotOrders(goCtx context.Context, msg *types.MsgCancelSpotOrders) (*types.MsgCancelSpotOrdersResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	if len(msg.SpotOrderIds) == 0 {
 		return nil, types.ErrSizeZero
 	}

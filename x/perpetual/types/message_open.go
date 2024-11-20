@@ -37,6 +37,10 @@ func (msg *MsgOpen) ValidateBasic() error {
 		return ErrInvalidLeverage
 	}
 
+	if msg.PoolId == 0 {
+		return fmt.Errorf("pool id cannot be 0")
+	}
+
 	if !(msg.Leverage.GT(sdkmath.LegacyOneDec()) || msg.Leverage.IsZero()) {
 		return errorsmod.Wrapf(ErrInvalidLeverage, "leverage (%s) can only be 0 (to add collateral) or > 1 to open positions", msg.Leverage.String())
 	}
@@ -45,21 +49,15 @@ func (msg *MsgOpen) ValidateBasic() error {
 		return errorsmod.Wrapf(ErrInvalidTradingAsset, err.Error())
 	}
 
-	if msg.TakeProfitPrice.IsNil() {
-		return errorsmod.Wrapf(ErrInvalidTakeProfitPrice, "takeProfitPrice cannot be nil")
+	if err = msg.Collateral.Validate(); err != nil {
+		return err
 	}
-
-	if msg.TakeProfitPrice.IsNegative() {
-		return errorsmod.Wrapf(ErrInvalidTakeProfitPrice, "takeProfitPrice cannot be negative")
+	if err = CheckLegacyDecNilAndNegative(msg.TakeProfitPrice, "TakeProfitPrice"); err != nil {
+		return err
 	}
-	if msg.StopLossPrice.IsNil() {
-		return errorsmod.Wrapf(ErrInvalidPrice, "stopLossPrice cannot be nil")
+	if err = CheckLegacyDecNilAndNegative(msg.StopLossPrice, "StopLossPrice"); err != nil {
+		return err
 	}
-
-	if msg.StopLossPrice.IsNegative() {
-		return errorsmod.Wrapf(ErrInvalidPrice, "stopLossPrice cannot be negative")
-	}
-
 	if msg.Position == Position_LONG && !msg.StopLossPrice.IsZero() && msg.TakeProfitPrice.LTE(msg.StopLossPrice) {
 		return fmt.Errorf("TakeProfitPrice cannot be <= StopLossPrice for LONG")
 	}

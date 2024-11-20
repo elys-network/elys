@@ -8,9 +8,6 @@ import (
 )
 
 func (k msgServer) SetPortfolio(goCtx context.Context, msg *types.MsgSetPortfolio) (*types.MsgSetPortfolioResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	user := sdk.MustAccAddressFromBech32(msg.User)
 	k.RetrieveAllPortfolio(ctx, user)

@@ -13,9 +13,6 @@ import (
 
 // CancelVest cancel the user's vesting and the user reject to get vested tokens
 func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (*types.MsgCancelVestResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if msg.Denom != ptypes.Eden {

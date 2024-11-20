@@ -60,7 +60,7 @@ func CmdWhitelist() *cobra.Command {
 				govAddress.String(),
 				args[0],
 			)
-			if err := msg.ValidateBasic(); err != nil {
+			if err = msg.ValidateBasic(); err != nil {
 				return err
 			}
 

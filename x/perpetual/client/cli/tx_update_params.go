@@ -169,7 +169,7 @@ func CmdUpdateParams() *cobra.Command {
 				params,
 			)
 
-			if err := msg.ValidateBasic(); err != nil {
+			if err = msg.ValidateBasic(); err != nil {
 				return err
 			}
 

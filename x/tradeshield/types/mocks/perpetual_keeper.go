@@ -443,9 +443,9 @@ func (_c *PerpetualKeeper_HandleOpenEstimation_Call) RunAndReturn(run func(types
 	return _c
 }
 
-// Open provides a mock function with given fields: ctx, msg, isBroker
-func (_m *PerpetualKeeper) Open(ctx types.Context, msg *perpetualtypes.MsgOpen, isBroker bool) (*perpetualtypes.MsgOpenResponse, error) {
-	ret := _m.Called(ctx, msg, isBroker)
+// Open provides a mock function with given fields: ctx, msg
+func (_m *PerpetualKeeper) Open(ctx types.Context, msg *perpetualtypes.MsgOpen) (*perpetualtypes.MsgOpenResponse, error) {
+	ret := _m.Called(ctx, msg)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Open")
@@ -453,19 +453,19 @@ func (_m *PerpetualKeeper) Open(ctx types.Context, msg *perpetualtypes.MsgOpen, 
 
 	var r0 *perpetualtypes.MsgOpenResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, *perpetualtypes.MsgOpen, bool) (*perpetualtypes.MsgOpenResponse, error)); ok {
-		return rf(ctx, msg, isBroker)
+	if rf, ok := ret.Get(0).(func(types.Context, *perpetualtypes.MsgOpen) (*perpetualtypes.MsgOpenResponse, error)); ok {
+		return rf(ctx, msg)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, *perpetualtypes.MsgOpen, bool) *perpetualtypes.MsgOpenResponse); ok {
-		r0 = rf(ctx, msg, isBroker)
+	if rf, ok := ret.Get(0).(func(types.Context, *perpetualtypes.MsgOpen) *perpetualtypes.MsgOpenResponse); ok {
+		r0 = rf(ctx, msg)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*perpetualtypes.MsgOpenResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(types.Context, *perpetualtypes.MsgOpen, bool) error); ok {
-		r1 = rf(ctx, msg, isBroker)
+	if rf, ok := ret.Get(1).(func(types.Context, *perpetualtypes.MsgOpen) error); ok {
+		r1 = rf(ctx, msg)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -481,14 +481,13 @@ type PerpetualKeeper_Open_Call struct {
 // Open is a helper method to define mock.On call
 //   - ctx types.Context
 //   - msg *perpetualtypes.MsgOpen
-//   - isBroker bool
-func (_e *PerpetualKeeper_Expecter) Open(ctx interface{}, msg interface{}, isBroker interface{}) *PerpetualKeeper_Open_Call {
-	return &PerpetualKeeper_Open_Call{Call: _e.mock.On("Open", ctx, msg, isBroker)}
+func (_e *PerpetualKeeper_Expecter) Open(ctx interface{}, msg interface{}) *PerpetualKeeper_Open_Call {
+	return &PerpetualKeeper_Open_Call{Call: _e.mock.On("Open", ctx, msg)}
 }
 
-func (_c *PerpetualKeeper_Open_Call) Run(run func(ctx types.Context, msg *perpetualtypes.MsgOpen, isBroker bool)) *PerpetualKeeper_Open_Call {
+func (_c *PerpetualKeeper_Open_Call) Run(run func(ctx types.Context, msg *perpetualtypes.MsgOpen)) *PerpetualKeeper_Open_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(*perpetualtypes.MsgOpen), args[2].(bool))
+		run(args[0].(types.Context), args[1].(*perpetualtypes.MsgOpen))
 	})
 	return _c
 }
@@ -498,7 +497,7 @@ func (_c *PerpetualKeeper_Open_Call) Return(_a0 *perpetualtypes.MsgOpenResponse,
 	return _c
 }
 
-func (_c *PerpetualKeeper_Open_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MsgOpen, bool) (*perpetualtypes.MsgOpenResponse, error)) *PerpetualKeeper_Open_Call {
+func (_c *PerpetualKeeper_Open_Call) RunAndReturn(run func(types.Context, *perpetualtypes.MsgOpen) (*perpetualtypes.MsgOpenResponse, error)) *PerpetualKeeper_Open_Call {
 	_c.Call.Return(run)
 	return _c
 }

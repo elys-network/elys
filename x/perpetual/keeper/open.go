@@ -11,7 +11,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types.MsgOpenResponse, error) {
+func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
@@ -98,7 +98,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen, isBroker bool) (*types
 		return nil, err
 	}
 
-	mtp, err := k.OpenDefineAssets(ctx, poolId, msg, baseCurrency, isBroker)
+	mtp, err := k.OpenDefineAssets(ctx, poolId, msg, baseCurrency)
 	if err != nil {
 		return nil, err
 	}

@@ -47,7 +47,7 @@ func TestMsgUpdatetakeProfitPrice(t *testing.T) {
 				msg.Creator = sample.AccAddress()
 				msg.Price = math.LegacyOneDec().MulInt64(-1)
 			},
-			errMsg: "take profit price cannot be negative",
+			errMsg: "price is negative",
 		},
 	}
 	for _, tt := range tests {

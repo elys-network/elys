@@ -51,7 +51,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				suite.app.PerpetualKeeper.RemovePool(suite.ctx, ammPool.PoolId)
 				return &types.MsgUpdateTakeProfitPrice{
@@ -82,7 +82,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				suite.app.OracleKeeper.RemoveAssetInfo(suite.ctx, ptypes.ATOM)
 				return &types.MsgUpdateTakeProfitPrice{
@@ -113,7 +113,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				return &types.MsgUpdateTakeProfitPrice{
@@ -144,7 +144,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
@@ -183,7 +183,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
@@ -220,7 +220,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("2.9"),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{

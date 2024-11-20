@@ -48,7 +48,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				suite.app.PerpetualKeeper.RemovePool(suite.ctx, ammPool.PoolId)
 				return &types.MsgUpdateStopLoss{
@@ -79,7 +79,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 				suite.app.OracleKeeper.RemoveAssetInfo(suite.ctx, ptypes.ATOM)
 				return &types.MsgUpdateStopLoss{
@@ -110,7 +110,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				return &types.MsgUpdateStopLoss{
@@ -141,7 +141,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
@@ -178,7 +178,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					TakeProfitPrice: math.LegacyMustNewDecFromStr("2.9"),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
-				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 				suite.Require().NoError(err)
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{

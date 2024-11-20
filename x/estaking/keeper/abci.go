@@ -108,7 +108,7 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	stakeIncentive := params.StakeIncentives
 
 	// Ensure totalBlocksPerYear are not zero to avoid division by zero
-	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
+	totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 
 	// Calculate
 	edenAmountPerYear := math.ZeroInt()

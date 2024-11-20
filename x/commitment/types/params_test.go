@@ -5,23 +5,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/yaml.v2"
 	"testing"
 )
 
-func TestDefaultParams(t *testing.T) {
-	require.Equal(t, types.DefaultParams(), types.Params{
-		VestingInfos:        nil,
-		TotalCommitted:      nil,
-		NumberOfCommitments: 0,
-	})
-	output, err := yaml.Marshal(types.DefaultParams())
-	require.NoError(t, err)
-	require.Equal(t, types.DefaultParams().String(), string(output))
-}
-
 func TestParamsValidation(t *testing.T) {
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			"uusdc",
 			"uatom",
@@ -90,17 +78,10 @@ func TestParamsValidation(t *testing.T) {
 			err: "vesting now factor must be positive",
 		},
 		{
-			name: "params.VestingInfos contains nil",
-			setter: func() {
-				params.VestingInfos[0].VestNowFactor = sdkmath.OneInt()
-				params.VestingInfos = append(params.VestingInfos, nil)
-			},
-			err: "vesting info cannot be nil",
-		},
-		{
 			name: "TotalCommitted is invalid",
 			setter: func() {
 				params.VestingInfos = vestingInfos
+				params.VestingInfos[0].VestNowFactor = sdkmath.OneInt()
 				params.TotalCommitted = sdk.Coins{sdk.Coin{"@@@@", sdkmath.OneInt()}}
 			},
 			err: "invalid denom",

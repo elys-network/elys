@@ -63,9 +63,9 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsByPool_Successful() 
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	_, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	_, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
-	_, err = suite.app.PerpetualKeeper.Open(ctx, secondOpenPositionMsg, false)
+	_, err = suite.app.PerpetualKeeper.Open(ctx, secondOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	response, err := k.GetPositionsByPool(ctx, &types.PositionsByPoolRequest{

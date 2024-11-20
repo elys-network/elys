@@ -54,7 +54,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose_ErrorGetEntry() {
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 	suite.Require().NoError(err)
 
 	suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
@@ -99,7 +99,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose_Short() {
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 	suite.Require().NoError(err)
 
 	_, err = suite.app.PerpetualKeeper.Close(suite.ctx, &types.MsgClose{
@@ -156,7 +156,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose_Long() {
 
 	tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, math.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000_000)))
 	suite.AddLiquidity(ammPool, addr[2], tokensIn)
-	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 	suite.Require().NoError(err)
 
 	_, err = suite.app.PerpetualKeeper.Close(suite.ctx, &types.MsgClose{
@@ -196,7 +196,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose_Short_NotEnoughLiquidity() {
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+	position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg)
 	suite.Require().NoError(err)
 
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, ammtypes.DenomLiquidity{

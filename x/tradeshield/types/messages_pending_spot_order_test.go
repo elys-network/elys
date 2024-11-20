@@ -26,13 +26,13 @@ func TestMsgCreateSpotOrder_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgCreateSpotOrder{
 				OwnerAddress: sample.AccAddress(),
-				OrderPrice: &OrderPrice{
+				OrderPrice: OrderPrice{
 					BaseDenom:  "base_denom",
 					QuoteDenom: "quote_denom",
 					Rate:       sdkmath.LegacyOneDec(),
 				},
 				OrderType:        SpotOrderType_LIMITBUY,
-				OrderAmount:      &sdk.Coin{Denom: "base", Amount: sdkmath.OneInt()},
+				OrderAmount:      sdk.Coin{Denom: "base", Amount: sdkmath.OneInt()},
 				OrderTargetDenom: "base_denom",
 			},
 		},
@@ -66,7 +66,7 @@ func TestMsgUpdateSpotOrder_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateSpotOrder{
 				OwnerAddress: sample.AccAddress(),
 				OrderId:      1,
-				OrderPrice: &OrderPrice{
+				OrderPrice: OrderPrice{
 					BaseDenom:  "base_denom",
 					QuoteDenom: "quote_denom",
 					Rate:       sdkmath.LegacyOneDec(),

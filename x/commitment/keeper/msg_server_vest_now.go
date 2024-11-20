@@ -16,9 +16,6 @@ var VestNowEnabled = false
 // VestNow provides functionality to get the token immediately but lower amount than original
 // e.g. user can burn 1000 ueden and get 800 uelys when the ratio is 80%
 func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types.MsgVestNowResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if !VestNowEnabled {

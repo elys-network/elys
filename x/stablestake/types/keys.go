@@ -11,12 +11,6 @@ const (
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
-
-	// RouterKey defines the module's message routing key
-	RouterKey = ModuleName
-
-	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_stablestake"
 )
 
 var (
@@ -25,14 +19,6 @@ var (
 	ParamKeyPrefix    = []byte{0x03}
 )
 
-func KeyPrefix(p string) []byte {
-	return []byte(p)
-}
-
 func GetDebtKey(owner sdk.AccAddress) []byte {
 	return append(DebtPrefixKey, address.MustLengthPrefix(owner)...)
-}
-
-func GetLegacyDebtKey(owner string) []byte {
-	return append(DebtPrefixKey, []byte(owner)...)
 }

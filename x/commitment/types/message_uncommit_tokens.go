@@ -24,15 +24,15 @@ func (msg MsgUncommitTokens) ValidateBasic() error {
 	}
 
 	if err = sdk.ValidateDenom(msg.Denom); err != nil {
-		return err
+		return errorsmod.Wrapf(ErrInvalidDenom, msg.Denom)
 	}
 
 	if msg.Amount.IsNil() {
 		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be nil")
 	}
 
-	if msg.Amount.IsNegative() {
-		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative")
+	if msg.Amount.IsNegative() || msg.Amount.IsZero() {
+		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative or zero")
 	}
 	return nil
 }
