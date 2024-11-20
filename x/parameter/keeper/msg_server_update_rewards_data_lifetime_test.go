@@ -23,37 +23,10 @@ func TestMsgServer_UpdateRewardsDataLifetime(t *testing.T) {
 			name: "Valid positive rewards data lifetime",
 			msg: &types.MsgUpdateRewardsDataLifetime{
 				Creator:             "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
-				RewardsDataLifetime: "100",
+				RewardsDataLifetime: 100,
 			},
 			want:    &types.MsgUpdateRewardsDataLifetimeResponse{},
 			wantErr: false,
-		},
-		{
-			name: "Invalid zero rewards data lifetime",
-			msg: &types.MsgUpdateRewardsDataLifetime{
-				Creator:             "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
-				RewardsDataLifetime: "0",
-			},
-			want:    nil,
-			wantErr: true,
-		},
-		{
-			name: "Invalid negative rewards data lifetime",
-			msg: &types.MsgUpdateRewardsDataLifetime{
-				Creator:             "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
-				RewardsDataLifetime: "-10",
-			},
-			want:    nil,
-			wantErr: true,
-		},
-		{
-			name: "Invalid non-numeric rewards data lifetime",
-			msg: &types.MsgUpdateRewardsDataLifetime{
-				Creator:             "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
-				RewardsDataLifetime: "abc",
-			},
-			want:    nil,
-			wantErr: true,
 		},
 	}
 

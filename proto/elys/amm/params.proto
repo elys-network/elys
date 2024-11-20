@@ -8,8 +8,6 @@ option go_package = "github.com/elys-network/elys/x/amm/types";
 
 // Params defines the parameters for the module.
 message Params {
-  option (gogoproto.goproto_stringer) = false;
-
   string pool_creation_fee = 1 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",

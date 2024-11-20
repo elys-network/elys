@@ -2,8 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"gopkg.in/yaml.v2"
+	"fmt"
 )
 
 // NewParams creates a new Params instance
@@ -11,15 +10,13 @@ func NewParams(
 	minCommissionRate sdkmath.LegacyDec,
 	maxVotingPower sdkmath.LegacyDec,
 	minSelfDelegation sdkmath.Int,
-	brokerAddress string,
-	totalBlocksPerYear int64,
-	rewardsDataLifeTime int64,
+	totalBlocksPerYear uint64,
+	rewardsDataLifeTime uint64,
 ) Params {
 	return Params{
 		MinCommissionRate:   minCommissionRate,
 		MaxVotingPower:      maxVotingPower,
 		MinSelfDelegation:   minSelfDelegation,
-		BrokerAddress:       brokerAddress,
 		TotalBlocksPerYear:  totalBlocksPerYear,
 		RewardsDataLifetime: rewardsDataLifeTime,
 	}
@@ -31,7 +28,6 @@ func DefaultParams() Params {
 		sdkmath.LegacyNewDecWithPrec(5, 2),
 		sdkmath.LegacyNewDec(100),
 		sdkmath.OneInt(),
-		authtypes.NewModuleAddress("zero").String(),
 		6307200,
 		86400, // 1 day
 	)
@@ -39,73 +35,33 @@ func DefaultParams() Params {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validateMinCommissionRate(p.MinCommissionRate); err != nil {
-		return err
+	if p.MinCommissionRate.IsNil() {
+		return fmt.Errorf("minimum commission rate cannot be nil")
 	}
-	if err := validateMaxVotingPower(p.MaxVotingPower); err != nil {
-		return err
-	}
-	if err := validateMinSelfDelegation(p.MinSelfDelegation); err != nil {
-		return err
-	}
-	if err := validateBrokerAddress(p.BrokerAddress); err != nil {
-		return err
-	}
-	return nil
-}
-
-// String implements the Stringer interface.
-func (p Params) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
-}
-
-func validateMinCommissionRate(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
-	if !ok {
+	if p.MinCommissionRate.IsNegative() {
 		return ErrInvalidMinCommissionRate
 	}
-	if v.IsNegative() {
-		return ErrInvalidMinCommissionRate
-	}
-	return nil
-}
 
-func validateMaxVotingPower(i interface{}) error {
-	v, ok := i.(sdkmath.LegacyDec)
-	if !ok {
+	if p.MaxVotingPower.IsNil() {
+		return fmt.Errorf("maximum voting power cannot be nil")
+	}
+	if p.MaxVotingPower.IsNegative() {
 		return ErrInvalidMaxVotingPower
 	}
-	if v.IsNegative() {
-		return ErrInvalidMaxVotingPower
-	}
-	return nil
-}
 
-func validateMinSelfDelegation(i interface{}) error {
-	v, ok := i.(sdkmath.Int)
-	if !ok {
+	if p.MinCommissionRate.IsNil() {
+		return fmt.Errorf("minimum commission rate cannot be nil")
+	}
+	if p.MinCommissionRate.IsNegative() {
 		return ErrInvalidMinSelfDelegation
 	}
-	if v.IsNegative() {
-		return ErrInvalidMinSelfDelegation
+
+	if p.TotalBlocksPerYear <= 0 {
+		return fmt.Errorf("total blocks per year cannot be negative or zero")
+	}
+
+	if p.RewardsDataLifetime <= 0 {
+		return fmt.Errorf("rewards data lifetime cannot be negative or zero")
 	}
 	return nil
-}
-
-func validateBrokerAddress(i interface{}) error {
-	v, ok := i.(string)
-	if !ok {
-		return ErrInvalidBrokerAddress
-	}
-	if v == "" {
-		return ErrInvalidBrokerAddress
-	}
-	return nil
-}
-
-// String implements the Stringer interface.
-func (p LegacyParams) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
 }

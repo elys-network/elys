@@ -13,9 +13,6 @@ import (
 
 // UpdateVestingInfo add/update specific vesting info by denom on Params
 func (k msgServer) UpdateVestingInfo(goCtx context.Context, msg *types.MsgUpdateVestingInfo) (*types.MsgUpdateVestingInfoResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {
@@ -32,7 +29,7 @@ func (k msgServer) UpdateVestingInfo(goCtx context.Context, msg *types.MsgUpdate
 			VestNowFactor:  sdkmath.NewInt(msg.VestNowFactor),
 			NumMaxVestings: msg.NumMaxVestings,
 		}
-		params.VestingInfos = append(params.VestingInfos, vestingInfo)
+		params.VestingInfos = append(params.VestingInfos, *vestingInfo)
 	} else {
 		params.VestingInfos[index].BaseDenom = msg.BaseDenom
 		params.VestingInfos[index].VestingDenom = msg.VestingDenom

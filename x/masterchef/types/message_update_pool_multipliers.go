@@ -18,5 +18,14 @@ func (msg *MsgUpdatePoolMultipliers) ValidateBasic() error {
 		return errorsmod.Wrapf(ErrInvalidPoolMultiplier, "pool multipliers is empty")
 	}
 
+	for _, multiplier := range msg.PoolMultipliers {
+		if multiplier.Multiplier.IsNil() {
+			return errorsmod.Wrapf(ErrInvalidPoolMultiplier, "multiplier is empty")
+		}
+		if multiplier.Multiplier.IsNegative() {
+			return errorsmod.Wrapf(ErrInvalidPoolMultiplier, "multiplier cannot be negative")
+		}
+	}
+
 	return nil
 }

@@ -23,11 +23,15 @@ func (msg *MsgCommitClaimedRewards) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address: %v", err)
 	}
 
+	if err = sdk.ValidateDenom(msg.Denom); err != nil {
+		return errorsmod.Wrapf(ErrInvalidDenom, msg.Denom)
+	}
+
 	if msg.Amount.IsNil() {
 		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be nil")
 	}
 
-	if msg.Amount.IsNegative() {
+	if msg.Amount.IsNegative() || msg.Amount.IsZero() {
 		return errorsmod.Wrapf(ErrInvalidAmount, "Amount can not be negative")
 	}
 

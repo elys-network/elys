@@ -40,7 +40,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		totalLongOpenInterest := pool.GetTotalLongOpenInterest()
 		totalShortOpenInterest := pool.GetTotalShortOpenInterest()
 
-		blocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
+		blocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 		fundingAmountLong := types.CalcTakeAmount(totalLongOpenInterest, fundingRateLong).ToLegacyDec().Quo(math.LegacyNewDec(blocksPerYear))
 		fundingAmountShort := types.CalcTakeAmount(totalShortOpenInterest, fundingRateShort).ToLegacyDec().Quo(math.LegacyNewDec(blocksPerYear))
 

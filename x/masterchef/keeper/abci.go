@@ -45,7 +45,7 @@ func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
 func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	curBlockHeight := ctx.BlockHeight()
-	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
+	totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 
 	externalIncentives := k.GetAllExternalIncentives(ctx)
 	externalIncentiveAprs := make(map[uint64]math.LegacyDec)
@@ -170,7 +170,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	totalProxyTVL, totalProxyTvlEdenEnable := k.CalculateProxyTVL(ctx, baseCurrency)
 
 	// Ensure totalBlocksPerYear is not zero to avoid division by zero
-	totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
+	totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 	if totalBlocksPerYear == 0 {
 		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid inflationary params")
 	}
@@ -267,7 +267,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		dataLifetime := params.RewardsDataLifetime
 		for {
 			firstAccum := k.FirstPoolRewardsAccum(ctx, pool.PoolId)
-			if firstAccum.Timestamp == 0 || int64(firstAccum.Timestamp)+dataLifetime >= ctx.BlockTime().Unix() {
+			if firstAccum.Timestamp == 0 || int64(firstAccum.Timestamp+dataLifetime) >= ctx.BlockTime().Unix() {
 				break
 			}
 			k.DeletePoolRewardsAccum(ctx, firstAccum)

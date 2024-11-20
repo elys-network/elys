@@ -3,8 +3,6 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -24,9 +22,8 @@ func (msg *MsgUpdateTakeProfitPrice) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
-
-	if msg.Price.IsNegative() {
-		return fmt.Errorf("take profit price cannot be negative")
+	if err = CheckLegacyDecNilAndNegative(msg.Price, "price"); err != nil {
+		return err
 	}
 	return nil
 }

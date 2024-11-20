@@ -77,9 +77,9 @@ func (suite *PerpetualKeeperTestSuite) TestQueryGetPositionsForAddress_Successfu
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	_, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	_, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
-	_, err = suite.app.PerpetualKeeper.Open(ctx, secondOpenPositionMsg, false)
+	_, err = suite.app.PerpetualKeeper.Open(ctx, secondOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	response, err := k.GetPositionsForAddress(ctx, &types.PositionsForAddressRequest{

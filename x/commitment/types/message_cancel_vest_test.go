@@ -1,6 +1,7 @@
-package types
+package types_test
 
 import (
+	"github.com/elys-network/elys/x/commitment/types"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -13,27 +14,32 @@ import (
 func TestMsgCancelVest_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCancelVest
+		msg  types.MsgCancelVest
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg:  *NewMsgCancelVest("invalid_address", math.ZeroInt(), ptypes.Eden),
+			msg:  *types.NewMsgCancelVest("invalid_address", math.ZeroInt(), ptypes.Eden),
 			err:  sdkerrors.ErrInvalidAddress,
 		},
 		{
 			name: "valid address",
-			msg:  *NewMsgCancelVest(sample.AccAddress(), math.ZeroInt(), ptypes.Eden),
+			msg:  *types.NewMsgCancelVest(sample.AccAddress(), math.OneInt(), ptypes.Eden),
 		},
 		{
 			name: "invalid denom",
-			msg:  *NewMsgCancelVest(sample.AccAddress(), math.ZeroInt(), "invalid_denom"),
-			err:  ErrInvalidDenom,
+			msg:  *types.NewMsgCancelVest(sample.AccAddress(), math.OneInt(), "invalid_denom"),
+			err:  types.ErrInvalidDenom,
 		},
 		{
 			name: "invalid amount - negative",
-			msg:  *NewMsgCancelVest(sample.AccAddress(), math.NewInt(-200), ptypes.Eden),
-			err:  ErrInvalidAmount,
+			msg:  *types.NewMsgCancelVest(sample.AccAddress(), math.NewInt(-200), ptypes.Eden),
+			err:  types.ErrInvalidAmount,
+		},
+		{
+			name: "invalid amount - nil",
+			msg:  types.MsgCancelVest{sample.AccAddress(), math.Int{}, ptypes.Eden},
+			err:  types.ErrInvalidAmount,
 		},
 	}
 	for _, tt := range tests {

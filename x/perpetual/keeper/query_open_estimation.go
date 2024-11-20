@@ -158,7 +158,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, err
 	}
 	hourlyInterestRate := math.LegacyZeroDec()
-	blocksPerYear := math.LegacyNewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
+	blocksPerYear := math.LegacyNewDec(int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear))
 	blocksPerSecond := blocksPerYear.Quo(math.LegacyNewDec(86400 * 365))                        // in seconds
 	startBlock := ctx.BlockHeight() - math.LegacyNewDec(3600).Mul(blocksPerSecond).RoundInt64() // block height 1 hour ago
 	if startBlock > 0 {

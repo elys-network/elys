@@ -42,7 +42,6 @@ message LegacyParams {
 }
 
 message Params {
-  option (gogoproto.goproto_stringer) = false;
   IncentiveInfo lp_incentives = 1;
 
   // gas fees and swap fees portion for lps, `100 - reward_portion_for_lps -

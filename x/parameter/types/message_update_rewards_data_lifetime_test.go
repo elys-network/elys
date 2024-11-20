@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -18,29 +19,29 @@ func TestMsgUpdateRewardsDataLifetime_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: MsgUpdateRewardsDataLifetime{
 				Creator:             "invalid_address",
-				RewardsDataLifetime: "1",
+				RewardsDataLifetime: 1,
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdateRewardsDataLifetime{
 				Creator:             sample.AccAddress(),
-				RewardsDataLifetime: "1",
+				RewardsDataLifetime: 1,
 			},
 		}, {
 			name: "invalid reward lifecycle",
 			msg: MsgUpdateRewardsDataLifetime{
 				Creator:             sample.AccAddress(),
-				RewardsDataLifetime: "abcd",
+				RewardsDataLifetime: 0,
 			},
-			err: ErrInvalidRewardsDataLifecycle,
+			err: fmt.Errorf("rewards_data_lifetime must be > 0"),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.msg.ValidateBasic()
 			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
+				require.ErrorContains(t, err, tt.err.Error())
 				return
 			}
 			require.NoError(t, err)

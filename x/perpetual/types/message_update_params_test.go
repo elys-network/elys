@@ -27,6 +27,7 @@ func TestNewMsgUpdateParams(t *testing.T) {
 
 func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 
+	params := DefaultParams()
 	type Test struct {
 		title string
 		msg   MsgUpdateParams
@@ -45,6 +46,7 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			title: "successful",
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
+				Params:    &params,
 			},
 			want: nil,
 		},

@@ -8,26 +8,14 @@ import (
 
 var _ sdk.Msg = &MsgUpdateParams{}
 
-func NewMsgUpdateParams(creator string, authority string, params *Params) *MsgUpdateParams {
-	return &MsgUpdateParams{
-		Authority: authority,
-		Params:    params,
-	}
-}
-
 func (msg *MsgUpdateParams) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	if msg.Params == nil {
-		return errorsmod.Wrapf(ErrInvalidParams, "params is nil")
+	if err = msg.Params.Validate(); err != nil {
+		return err
 	}
-
-	if len(msg.Params.EpochIdentifier) == 0 {
-		return ErrInvalidEpochIdentifier
-	}
-
 	return nil
 }

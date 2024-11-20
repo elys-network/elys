@@ -24,7 +24,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			return sdkmath.LegacyZeroDec(), nil
 		}
 
-		totalBlocksPerYear := k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear
+		totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 		if totalBlocksPerYear == 0 {
 			return sdkmath.LegacyZeroDec(), nil
 		}

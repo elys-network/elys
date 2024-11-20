@@ -7,7 +7,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage sdkmath.LegacyDec, collateralAmountDec sdkmath.LegacyDec, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
+func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage sdkmath.LegacyDec, collateralAmountDec sdkmath.LegacyDec, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
@@ -73,7 +73,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage sdkma
 	}
 
 	// Borrow the asset the user wants to long.
-	err = k.Borrow(ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, proxyLeverage, baseCurrency, isBroker)
+	err = k.Borrow(ctx, msg.Collateral.Amount, custodyAmount, mtp, &ammPool, &pool, proxyLeverage, baseCurrency)
 	if err != nil {
 		return nil, err
 	}

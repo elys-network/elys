@@ -49,7 +49,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerClose_HandleLiquidateErrors(
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	secondOpenPositionMsg := &types.MsgOpen{
@@ -63,7 +63,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerClose_HandleLiquidateErrors(
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	secondPosition, err := suite.app.PerpetualKeeper.Open(ctx, secondOpenPositionMsg, false)
+	secondPosition, err := suite.app.PerpetualKeeper.Open(ctx, secondOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	k.RemovePool(ctx, firstPool)
@@ -71,7 +71,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerClose_HandleLiquidateErrors(
 
 	_, err = msg.ClosePositions(ctx, &types.MsgClosePositions{
 		Creator: sample.AccAddress(),
-		Liquidate: []*types.PositionRequest{
+		Liquidate: []types.PositionRequest{
 			{
 				Address: firstPositionCreator.String(),
 				Id:      firstPosition.Id,
@@ -85,7 +85,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerClose_HandleLiquidateErrors(
 				Id:      2000,
 			},
 		},
-		StopLoss: []*types.PositionRequest{
+		StopLoss: []types.PositionRequest{
 			{
 				Address: firstPositionCreator.String(),
 				Id:      firstPosition.Id,
@@ -95,7 +95,7 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerClose_HandleLiquidateErrors(
 				Id:      2000,
 			},
 		},
-		TakeProfit: []*types.PositionRequest{
+		TakeProfit: []types.PositionRequest{
 			{
 				Address: firstPositionCreator.String(),
 				Id:      firstPosition.Id,
@@ -144,22 +144,22 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerClose_HandleLiquidateCheck()
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
+	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg)
 	suite.Require().NoError(err)
 
 	_, err = msg.ClosePositions(ctx, &types.MsgClosePositions{
 		Creator: sample.AccAddress(),
-		Liquidate: []*types.PositionRequest{
+		Liquidate: []types.PositionRequest{
 			{
 				Address: firstPositionCreator.String(),
 				Id:      firstPosition.Id,
 			},
 		},
-		StopLoss: []*types.PositionRequest{{
+		StopLoss: []types.PositionRequest{{
 			Address: firstPositionCreator.String(),
 			Id:      firstPosition.Id,
 		}},
-		TakeProfit: []*types.PositionRequest{{
+		TakeProfit: []types.PositionRequest{{
 			Address: firstPositionCreator.String(),
 			Id:      firstPosition.Id,
 		}},
