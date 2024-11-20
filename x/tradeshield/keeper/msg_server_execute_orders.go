@@ -80,8 +80,8 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.TypeEvtExecuteOrders,
-		sdk.NewAttribute("liquidations", strings.Join(spotLog, "\n")),
-		sdk.NewAttribute("stop_loss", strings.Join(perpLog, "\n")),
+		sdk.NewAttribute("spot_orders", strings.Join(spotLog, "\n")),
+		sdk.NewAttribute("perpetual_orders", strings.Join(perpLog, "\n")),
 	))
 
 	return &types.MsgExecuteOrdersResponse{}, nil
