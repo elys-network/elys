@@ -1,13 +1,21 @@
 package types
 
 import (
+	"strconv"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 func NewPoolAddress(poolId uint64) sdk.AccAddress {
-	key := append([]byte("pool_account"), sdk.Uint64ToBigEndian(poolId)...)
-	return address.Module(ModuleName, key)
+	poolIdModuleName := GetPoolIdModuleName(poolId)
+	return address.Module(poolIdModuleName)
+}
+
+func GetPoolIdModuleName(poolId uint64) string {
+	poolIdStr := strconv.FormatUint(poolId, 10)
+	poolIdModuleName := ModuleName + "/pool/account/" + poolIdStr
+	return poolIdModuleName
 }
 
 func NewPoolRebalanceTreasury(poolId uint64) sdk.AccAddress {
