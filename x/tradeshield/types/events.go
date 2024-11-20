@@ -9,6 +9,7 @@ import (
 const (
 	TypeEvtCloseSpotOrder       = "close_spot_order"
 	TypeEvtCancelPerpetualOrder = "cancel_perpetual_order"
+	TypeEvtExecuteOrders        = "execute_orders"
 )
 
 func EmitCloseSpotOrderEvent(ctx sdk.Context, order SpotOrder) {
