@@ -18,28 +18,50 @@ import (
 	"github.com/elys-network/elys/x/assetprofile/types"
 )
 
+var usdcEntry = types.Entry{
+	BaseDenom:                "uusdc",
+	Decimals:                 6,
+	Denom:                    "uusdc",
+	Path:                     "",
+	IbcChannelId:             "",
+	IbcCounterpartyChannelId: "",
+	DisplayName:              "",
+	DisplaySymbol:            "",
+	Network:                  "",
+	Address:                  "",
+	ExternalSymbol:           "",
+	TransferLimit:            "",
+	Permissions:              nil,
+	UnitDenom:                "",
+	IbcCounterpartyDenom:     "",
+	IbcCounterpartyChainId:   "",
+	Authority:                "",
+	CommitEnabled:            true,
+	WithdrawEnabled:          true,
+}
+
 func networkWithEntryObjects(t *testing.T, n int) (*network.Network, []types.Entry) {
 	t.Helper()
 	cfg := network.DefaultConfig(t.TempDir())
-	state := types.GenesisState{}
-	require.NoError(t, cfg.Codec.UnmarshalJSON(cfg.GenesisState[types.ModuleName], &state))
+	assetProfileGenesisState := types.DefaultGenesis()
 
 	for i := 0; i < n; i++ {
 		entry := types.Entry{
 			BaseDenom: strconv.Itoa(i),
 		}
 		nullify.Fill(&entry)
-		state.EntryList = append(state.EntryList, entry)
+		assetProfileGenesisState.EntryList = append(assetProfileGenesisState.EntryList, entry)
 	}
-	buf, err := cfg.Codec.MarshalJSON(&state)
+	assetProfileGenesisState.EntryList = append(assetProfileGenesisState.EntryList, usdcEntry)
+	buf, err := cfg.Codec.MarshalJSON(assetProfileGenesisState)
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf
-	return network.New(t, cfg), state.EntryList
+	return network.New(t, cfg), assetProfileGenesisState.EntryList
 }
 
 func TestShowEntry(t *testing.T) {
 	net, objs := networkWithEntryObjects(t, 2)
-
+	objs = append(objs, usdcEntry)
 	ctx := net.Validators[0].ClientCtx
 	common := []string{
 		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
