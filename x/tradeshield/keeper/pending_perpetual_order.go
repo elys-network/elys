@@ -352,9 +352,18 @@ func (k Keeper) ConstructPerpetualOrderExtraInfo(ctx sdk.Context, order types.Pe
 			Collateral:      order.Collateral,
 			TakeProfitPrice: order.TakeProfitPrice,
 			PoolId:          order.PoolId,
+			LimitPrice:      order.TriggerPrice.Rate,
 		})
+
+		// If error use zero values
 		if err != nil {
-			return nil, err
+			return &types.PerpetualOrderExtraInfo{
+				PerpetualOrder:     &order,
+				PositionSize:       sdk.Coin{},
+				LiquidationPrice:   sdkmath.LegacyZeroDec(),
+				FundingRate:        sdkmath.LegacyZeroDec(),
+				BorrowInterestRate: sdkmath.LegacyZeroDec(),
+			}, nil
 		}
 
 		return &types.PerpetualOrderExtraInfo{
