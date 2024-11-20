@@ -34,7 +34,7 @@ func DefaultParams() Params {
 		sdkmath.LegacyNewDecWithPrec(60, 2),
 		sdkmath.LegacyNewDecWithPrec(25, 2),
 		sdkmath.LegacyNewDecWithPrec(5, 1),
-		authtypes.NewModuleAddress("protocol-revenue-address").String(), // Change it in genesis in mainnet launch
+		authtypes.NewModuleAddress("protocol-revenue-address").String(), // TODO: Change it in genesis in mainnet launch
 	)
 }
 
