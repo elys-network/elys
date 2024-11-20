@@ -1,10 +1,11 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -279,37 +280,15 @@ func (k Keeper) GetOpenMTPCount(ctx sdk.Context) uint64 {
 	return count
 }
 
-func (k Keeper) SetToPay(ctx sdk.Context, toPay *types.ToPay) error {
+// Delete all to pay if any
+func (k Keeper) DeleteAllToPay(ctx sdk.Context) error {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	address := sdk.MustAccAddressFromBech32(toPay.Address)
-
-	key := types.GetToPayKey(address, toPay.Id)
-	store.Set(key, k.cdc.MustMarshal(toPay))
-	return nil
-}
-
-func (k Keeper) GetAllToPayStore(ctx sdk.Context) []types.ToPay {
-	var toPays []types.ToPay
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	iterator := storetypes.KVStorePrefixIterator(store, types.ToPayPrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{0x09})
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var toPay types.ToPay
-		bytesValue := iterator.Value()
-		k.cdc.MustUnmarshal(bytesValue, &toPay)
-		toPays = append(toPays, toPay)
+		store.Delete(iterator.Key())
 	}
-	return toPays
-}
-
-func (k Keeper) DeleteToPay(ctx sdk.Context, address sdk.AccAddress, id uint64) error {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetToPayKey(address, id)
-	if !store.Has(key) {
-		return types.ErrToPayDoesNotExist
-	}
-	store.Delete(key)
 	return nil
 }
 

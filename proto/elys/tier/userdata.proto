@@ -23,10 +23,11 @@ message Pool {
 }
 
 enum MembershipTierType {
-  BRONZE = 0;
-  SILVER = 1;
-  GOLD = 2;
-  PLATINUM = 3;
+  BASIC = 0;
+  BRONZE = 1;
+  SILVER = 2;
+  GOLD = 3;
+  PLATINUM = 4;
 }
 
 message MembershipTier {
