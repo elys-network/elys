@@ -9,116 +9,131 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_ErrorGetMtp() {
-	k := suite.app.PerpetualKeeper
-	ctx := suite.ctx
-	msg := keeper.NewMsgServerImpl(*k)
-	_, err := msg.UpdateTakeProfitPrice(ctx, &types.MsgUpdateTakeProfitPrice{
-		Creator: sample.AccAddress(),
-		Id:      1,
-		Price:   math.LegacyMustNewDecFromStr("0.98"),
-	})
-	suite.Require().ErrorIs(err, types.ErrMTPDoesNotExist)
-}
+func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 
-func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_ErrPoolDoesNotExist() {
-	k := suite.app.PerpetualKeeper
-	ctx := suite.ctx
-	msg := keeper.NewMsgServerImpl(*k)
+	// Define test cases
+	testCases := []struct {
+		name           string
+		setup          func() *types.MsgUpdateTakeProfitPrice
+		expectedErrMsg string
+	}{
+		{
+			"mtp not found",
+			func() *types.MsgUpdateTakeProfitPrice {
+				return &types.MsgUpdateTakeProfitPrice{
+					Creator: sample.AccAddress(),
+					Id:      uint64(10),
+					Price:   math.LegacyNewDec(2),
+				}
+			},
+			"mtp not found",
+		},
+		{
+			"perpetual pool does not exist",
+			func() *types.MsgUpdateTakeProfitPrice {
+				addr := suite.AddAccounts(1, nil)
+				positionCreator := addr[0]
+				_, _, ammPool := suite.SetPerpetualPool(1)
+				tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				suite.Require().NoError(err)
+				openPositionMsg := &types.MsgOpen{
+					Creator:         positionCreator.String(),
+					Leverage:        math.LegacyNewDec(2),
+					Position:        types.Position_LONG,
+					PoolId:          ammPool.PoolId,
+					TradingAsset:    ptypes.ATOM,
+					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					StopLossPrice:   math.LegacyZeroDec(),
+				}
 
-	firstPool := uint64(1)
-	suite.SetPerpetualPool(firstPool)
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				suite.Require().NoError(err)
+				suite.app.PerpetualKeeper.RemovePool(suite.ctx, ammPool.PoolId)
+				return &types.MsgUpdateTakeProfitPrice{
+					Creator: positionCreator.String(),
+					Id:      position.Id,
+					Price:   math.LegacyNewDec(2),
+				}
+			},
+			"perpetual pool does not exist",
+		},
+		{
+			"asset profile not found",
+			func() *types.MsgUpdateTakeProfitPrice {
+				suite.ResetSuite()
+				addr := suite.AddAccounts(1, nil)
+				positionCreator := addr[0]
+				_, _, ammPool := suite.SetPerpetualPool(1)
+				tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				suite.Require().NoError(err)
+				openPositionMsg := &types.MsgOpen{
+					Creator:         positionCreator.String(),
+					Leverage:        math.LegacyNewDec(2),
+					Position:        types.Position_LONG,
+					PoolId:          ammPool.PoolId,
+					TradingAsset:    ptypes.ATOM,
+					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					StopLossPrice:   math.LegacyZeroDec(),
+				}
 
-	amount := math.NewInt(400)
-	addr := suite.AddAccounts(2, nil)
-	firstPositionCreator := addr[0]
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				suite.Require().NoError(err)
+				suite.app.OracleKeeper.RemoveAssetInfo(suite.ctx, ptypes.ATOM)
+				return &types.MsgUpdateTakeProfitPrice{
+					Creator: positionCreator.String(),
+					Id:      position.Id,
+					Price:   math.LegacyNewDec(2),
+				}
+			},
+			"asset price uatom not found",
+		},
+		{
+			"success: take profit price updated",
+			func() *types.MsgUpdateTakeProfitPrice {
+				suite.ResetSuite()
+				addr := suite.AddAccounts(1, nil)
+				positionCreator := addr[0]
+				_, _, ammPool := suite.SetPerpetualPool(1)
+				tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				suite.Require().NoError(err)
+				openPositionMsg := &types.MsgOpen{
+					Creator:         positionCreator.String(),
+					Leverage:        math.LegacyNewDec(2),
+					Position:        types.Position_LONG,
+					PoolId:          ammPool.PoolId,
+					TradingAsset:    ptypes.ATOM,
+					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					StopLossPrice:   math.LegacyZeroDec(),
+				}
 
-	firstOpenPositionMsg := &types.MsgOpen{
-		Creator:         firstPositionCreator.String(),
-		Leverage:        math.LegacyNewDec(5),
-		Position:        types.Position_SHORT,
-		PoolId:          firstPool,
-		TradingAsset:    ptypes.ATOM,
-		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   math.LegacyZeroDec(),
+				position, err := suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				suite.Require().NoError(err)
+
+				return &types.MsgUpdateTakeProfitPrice{
+					Creator: positionCreator.String(),
+					Id:      position.Id,
+					Price:   math.LegacyNewDec(10),
+				}
+			},
+			"",
+		},
 	}
 
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
-	suite.Require().NoError(err)
-	k.RemovePool(ctx, firstPool)
-	_, err = msg.UpdateTakeProfitPrice(ctx, &types.MsgUpdateTakeProfitPrice{
-		Creator: firstPositionCreator.String(),
-		Id:      firstPosition.Id,
-		Price:   math.LegacyMustNewDecFromStr("0.98"),
-	})
-	suite.Require().ErrorIs(err, types.ErrPoolDoesNotExist)
-}
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			msg := tc.setup()
+			msgSrvr := keeper.NewMsgServerImpl(*suite.app.PerpetualKeeper)
+			_, err := msgSrvr.UpdateTakeProfitPrice(suite.ctx, msg)
 
-func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_ErrAssetProfileNotFound() {
-	k := suite.app.PerpetualKeeper
-	ctx := suite.ctx
-	msg := keeper.NewMsgServerImpl(*k)
-
-	firstPool := uint64(1)
-	suite.SetPerpetualPool(firstPool)
-
-	amount := math.NewInt(400)
-	addr := suite.AddAccounts(2, nil)
-	firstPositionCreator := addr[0]
-
-	firstOpenPositionMsg := &types.MsgOpen{
-		Creator:         firstPositionCreator.String(),
-		Leverage:        math.LegacyNewDec(5),
-		Position:        types.Position_SHORT,
-		PoolId:          firstPool,
-		TradingAsset:    ptypes.ATOM,
-		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   math.LegacyZeroDec(),
+			if tc.expectedErrMsg != "" {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectedErrMsg)
+			} else {
+				suite.Require().NoError(err)
+			}
+		})
 	}
-
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
-	suite.Require().NoError(err)
-
-	suite.app.OracleKeeper.RemoveAssetInfo(ctx, ptypes.ATOM)
-	_, err = msg.UpdateTakeProfitPrice(ctx, &types.MsgUpdateTakeProfitPrice{
-		Creator: firstPositionCreator.String(),
-		Id:      firstPosition.Id,
-		Price:   math.LegacyMustNewDecFromStr("0.98"),
-	})
-	suite.Require().ErrorContains(err, "asset price uatom not found")
-}
-
-func (suite *PerpetualKeeperTestSuite) TestMsgServerUpdateTakeProfit_Successful() {
-	k := suite.app.PerpetualKeeper
-	ctx := suite.ctx
-	msg := keeper.NewMsgServerImpl(*k)
-
-	firstPool := uint64(1)
-	suite.SetPerpetualPool(firstPool)
-
-	amount := math.NewInt(400)
-	addr := suite.AddAccounts(2, nil)
-	firstPositionCreator := addr[0]
-
-	firstOpenPositionMsg := &types.MsgOpen{
-		Creator:         firstPositionCreator.String(),
-		Leverage:        math.LegacyNewDec(5),
-		Position:        types.Position_SHORT,
-		PoolId:          firstPool,
-		TradingAsset:    ptypes.ATOM,
-		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-		TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
-		StopLossPrice:   math.LegacyZeroDec(),
-	}
-
-	firstPosition, err := suite.app.PerpetualKeeper.Open(ctx, firstOpenPositionMsg, false)
-	suite.Require().NoError(err)
-	_, err = msg.UpdateTakeProfitPrice(ctx, &types.MsgUpdateTakeProfitPrice{
-		Creator: firstPositionCreator.String(),
-		Id:      firstPosition.Id,
-		Price:   math.LegacyMustNewDecFromStr("0.98"),
-	})
-	suite.Require().Nil(err)
 }
