@@ -9,10 +9,9 @@ import (
 
 func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 	testCases := []struct {
-		name            string
-		setup           func() (*types.MsgOpen, *types.MTP, *types.MTP)
-		expectedErrMsg  string
-		consolidatedMtp *types.MTP
+		name           string
+		setup          func() (*types.MsgOpen, *types.MTP, *types.MTP)
+		expectedErrMsg string
 	}{
 		{
 			"Pool does not exist",
@@ -47,7 +46,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 				return openPositionMsg, &mtp, &mtp
 			},
 			"perpetual pool does not exist",
-			nil,
 		},
 		{
 			"Mtp health will be low for the safety factor",
@@ -84,7 +82,6 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 				return openPositionMsg, &mtp, &mtp
 			},
 			"mtp health would be too low for safety factor",
-			nil,
 		},
 		{
 			"Sucess: MTP consolidation",
@@ -117,13 +114,11 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 				return openPositionMsg, &mtp, &mtp
 			},
 			"",
-			nil,
 		},
 	}
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			msg, existingMtp, newMtp := tc.setup()
-
 			_, err := suite.app.PerpetualKeeper.OpenConsolidate(suite.ctx, existingMtp, newMtp, msg, ptypes.BaseCurrency)
 
 			if tc.expectedErrMsg != "" {
@@ -131,6 +126,114 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 				suite.Require().Contains(err.Error(), tc.expectedErrMsg)
 			} else {
 				suite.Require().NoError(err)
+			}
+		})
+	}
+}
+
+func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
+	testCases := []struct {
+		name            string
+		setup           func() *types.MsgOpen
+		expectedErrMsg  string
+		consolidatedMtp *types.MTP
+	}{
+		{
+			"Sucess: Consolidate two position with different leverage and take profit price",
+			func() *types.MsgOpen {
+				suite.ResetSuite()
+
+				firstPool := uint64(1)
+				addr := suite.AddAccounts(1, nil)
+				positionCreator := addr[0]
+				suite.SetPerpetualPool(1)
+				_, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				suite.Require().NoError(err)
+
+				amount := math.NewInt(400)
+				openPositionMsg := &types.MsgOpen{
+					Creator:         positionCreator.String(),
+					Leverage:        math.LegacyNewDec(5),
+					Position:        types.Position_SHORT,
+					PoolId:          firstPool,
+					TradingAsset:    ptypes.ATOM,
+					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
+					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
+					StopLossPrice:   math.LegacyZeroDec(),
+				}
+				_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				suite.Require().NoError(err)
+
+				openPositionMsg.Leverage = math.LegacyNewDec(3)
+				openPositionMsg.TakeProfitPrice = math.LegacyMustNewDecFromStr("0.5")
+
+				return openPositionMsg
+			},
+			"",
+			&types.MTP{
+				Collateral:      math.NewInt(800),
+				Liabilities:     math.NewInt(641),
+				Custody:         math.NewInt(4000),
+				TakeProfitPrice: math.LegacyMustNewDecFromStr("0.692857142857142857"),
+			},
+		},
+		{
+			"Sucess: add collateral for the existing position",
+			func() *types.MsgOpen {
+				suite.ResetSuite()
+
+				firstPool := uint64(1)
+				addr := suite.AddAccounts(1, nil)
+				positionCreator := addr[0]
+				suite.SetPerpetualPool(1)
+				_, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				suite.Require().NoError(err)
+
+				amount := math.NewInt(400)
+				openPositionMsg := &types.MsgOpen{
+					Creator:         positionCreator.String(),
+					Leverage:        math.LegacyNewDec(5),
+					Position:        types.Position_SHORT,
+					PoolId:          firstPool,
+					TradingAsset:    ptypes.ATOM,
+					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
+					TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
+					StopLossPrice:   math.LegacyZeroDec(),
+				}
+				_, err = suite.app.PerpetualKeeper.Open(suite.ctx, openPositionMsg, false)
+				suite.Require().NoError(err)
+
+				// make new Positon leverage 0 to add collateral
+				openPositionMsg.Leverage = math.LegacyNewDec(0)
+
+				return openPositionMsg
+			},
+			"",
+			&types.MTP{
+				Collateral:      math.NewInt(800),
+				Liabilities:     math.NewInt(400),
+				Custody:         math.NewInt(2800),
+				TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
+			},
+		},
+	}
+	for _, tc := range testCases {
+		suite.Run(tc.name, func() {
+			msg := tc.setup()
+			position, err := suite.app.PerpetualKeeper.Open(suite.ctx, msg, false)
+			suite.Require().NoError(err)
+
+			if tc.expectedErrMsg != "" {
+				suite.Require().Error(err)
+				suite.Require().Contains(err.Error(), tc.expectedErrMsg)
+			} else {
+				suite.Require().NoError(err)
+				consolidateMtp, mtpErr := suite.app.PerpetualKeeper.GetMTP(suite.ctx, sdk.MustAccAddressFromBech32(msg.Creator), position.Id)
+				suite.Require().NoError(mtpErr)
+				suite.Require().Equal(tc.consolidatedMtp.Collateral, consolidateMtp.Collateral)
+				suite.Require().Equal(tc.consolidatedMtp.Liabilities, consolidateMtp.Liabilities)
+				suite.Require().Equal(tc.consolidatedMtp.Custody, consolidateMtp.Custody)
+				suite.Require().Equal(tc.consolidatedMtp.TakeProfitPrice, consolidateMtp.TakeProfitPrice)
 			}
 		})
 	}
