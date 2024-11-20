@@ -456,7 +456,14 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 	amountTotalCollected := sdk.Coins{}
 	amountLPsCollected := sdk.DecCoins{}
 	rewardsPerPool := make(map[uint64]math.LegacyDec)
-	var err error
+	// LPs Portion param
+	params := k.GetParams(ctx)
+	rewardPortionForLps := params.RewardPortionForLps
+	rewardPortionForStakers := params.RewardPortionForStakers
+	protocolRevenueAddress, err := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
+	if err != nil {
+		return nil, nil, nil, err
+	}
 
 	// Iterate to calculate total Eden from LpElys, MElys committed
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
@@ -474,11 +481,6 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 				return true
 			}
 		}
-
-		// LPs Portion param
-		params := k.GetParams(ctx)
-		rewardPortionForLps := params.RewardPortionForLps
-		rewardPortionForStakers := params.RewardPortionForStakers
 
 		// Calculate revenue portion for LPs
 		revenueDec := sdk.NewDecCoinsFromCoins(revenue...)
@@ -505,11 +507,6 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 
 		// Send coins to protocol revenue address
 		if protocolRevenueCoins.IsAllPositive() {
-			var protocolRevenueAddress sdk.AccAddress
-			protocolRevenueAddress, err = sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
-			if err != nil {
-				return true
-			}
 			err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, protocolRevenueAddress, protocolRevenueCoins)
 			if err != nil {
 				return true
