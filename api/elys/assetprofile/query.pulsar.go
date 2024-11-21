@@ -807,25 +807,25 @@ func (x *fastReflection_QueryParamsResponse) ProtoMethods() *protoiface.Methods 
 }
 
 var (
-	md_QueryGetEntryRequest            protoreflect.MessageDescriptor
-	fd_QueryGetEntryRequest_base_denom protoreflect.FieldDescriptor
+	md_QueryEntryRequest            protoreflect.MessageDescriptor
+	fd_QueryEntryRequest_base_denom protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_assetprofile_query_proto_init()
-	md_QueryGetEntryRequest = File_elys_assetprofile_query_proto.Messages().ByName("QueryGetEntryRequest")
-	fd_QueryGetEntryRequest_base_denom = md_QueryGetEntryRequest.Fields().ByName("base_denom")
+	md_QueryEntryRequest = File_elys_assetprofile_query_proto.Messages().ByName("QueryEntryRequest")
+	fd_QueryEntryRequest_base_denom = md_QueryEntryRequest.Fields().ByName("base_denom")
 }
 
-var _ protoreflect.Message = (*fastReflection_QueryGetEntryRequest)(nil)
+var _ protoreflect.Message = (*fastReflection_QueryEntryRequest)(nil)
 
-type fastReflection_QueryGetEntryRequest QueryGetEntryRequest
+type fastReflection_QueryEntryRequest QueryEntryRequest
 
-func (x *QueryGetEntryRequest) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryGetEntryRequest)(x)
+func (x *QueryEntryRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEntryRequest)(x)
 }
 
-func (x *QueryGetEntryRequest) slowProtoReflect() protoreflect.Message {
+func (x *QueryEntryRequest) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_assetprofile_query_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -837,43 +837,43 @@ func (x *QueryGetEntryRequest) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryGetEntryRequest_messageType fastReflection_QueryGetEntryRequest_messageType
-var _ protoreflect.MessageType = fastReflection_QueryGetEntryRequest_messageType{}
+var _fastReflection_QueryEntryRequest_messageType fastReflection_QueryEntryRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEntryRequest_messageType{}
 
-type fastReflection_QueryGetEntryRequest_messageType struct{}
+type fastReflection_QueryEntryRequest_messageType struct{}
 
-func (x fastReflection_QueryGetEntryRequest_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryGetEntryRequest)(nil)
+func (x fastReflection_QueryEntryRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEntryRequest)(nil)
 }
-func (x fastReflection_QueryGetEntryRequest_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryGetEntryRequest)
+func (x fastReflection_QueryEntryRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEntryRequest)
 }
-func (x fastReflection_QueryGetEntryRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryGetEntryRequest
+func (x fastReflection_QueryEntryRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEntryRequest
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QueryGetEntryRequest) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryGetEntryRequest
+func (x *fastReflection_QueryEntryRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEntryRequest
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryGetEntryRequest) Type() protoreflect.MessageType {
-	return _fastReflection_QueryGetEntryRequest_messageType
+func (x *fastReflection_QueryEntryRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEntryRequest_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryGetEntryRequest) New() protoreflect.Message {
-	return new(fastReflection_QueryGetEntryRequest)
+func (x *fastReflection_QueryEntryRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryEntryRequest)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryGetEntryRequest) Interface() protoreflect.ProtoMessage {
-	return (*QueryGetEntryRequest)(x)
+func (x *fastReflection_QueryEntryRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryEntryRequest)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -881,10 +881,10 @@ func (x *fastReflection_QueryGetEntryRequest) Interface() protoreflect.ProtoMess
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QueryGetEntryRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_QueryEntryRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.BaseDenom != "" {
 		value := protoreflect.ValueOfString(x.BaseDenom)
-		if !f(fd_QueryGetEntryRequest_base_denom, value) {
+		if !f(fd_QueryEntryRequest_base_denom, value) {
 			return
 		}
 	}
@@ -901,15 +901,15 @@ func (x *fastReflection_QueryGetEntryRequest) Range(f func(protoreflect.FieldDes
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryGetEntryRequest) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QueryEntryRequest) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryRequest.base_denom":
+	case "elys.assetprofile.QueryEntryRequest.base_denom":
 		return x.BaseDenom != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -919,15 +919,15 @@ func (x *fastReflection_QueryGetEntryRequest) Has(fd protoreflect.FieldDescripto
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryRequest) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QueryEntryRequest) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryRequest.base_denom":
+	case "elys.assetprofile.QueryEntryRequest.base_denom":
 		x.BaseDenom = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -937,16 +937,16 @@ func (x *fastReflection_QueryGetEntryRequest) Clear(fd protoreflect.FieldDescrip
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryGetEntryRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.assetprofile.QueryGetEntryRequest.base_denom":
+	case "elys.assetprofile.QueryEntryRequest.base_denom":
 		value := x.BaseDenom
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryRequest does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryRequest does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -960,15 +960,15 @@ func (x *fastReflection_QueryGetEntryRequest) Get(descriptor protoreflect.FieldD
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QueryEntryRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryRequest.base_denom":
+	case "elys.assetprofile.QueryEntryRequest.base_denom":
 		x.BaseDenom = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -982,40 +982,40 @@ func (x *fastReflection_QueryGetEntryRequest) Set(fd protoreflect.FieldDescripto
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryRequest.base_denom":
-		panic(fmt.Errorf("field base_denom of message elys.assetprofile.QueryGetEntryRequest is not mutable"))
+	case "elys.assetprofile.QueryEntryRequest.base_denom":
+		panic(fmt.Errorf("field base_denom of message elys.assetprofile.QueryEntryRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryGetEntryRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryRequest.base_denom":
+	case "elys.assetprofile.QueryEntryRequest.base_denom":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryGetEntryRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QueryEntryRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.assetprofile.QueryGetEntryRequest", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.assetprofile.QueryEntryRequest", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1023,7 +1023,7 @@ func (x *fastReflection_QueryGetEntryRequest) WhichOneof(d protoreflect.OneofDes
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryGetEntryRequest) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QueryEntryRequest) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1034,7 +1034,7 @@ func (x *fastReflection_QueryGetEntryRequest) GetUnknown() protoreflect.RawField
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryRequest) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QueryEntryRequest) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -1046,7 +1046,7 @@ func (x *fastReflection_QueryGetEntryRequest) SetUnknown(fields protoreflect.Raw
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QueryGetEntryRequest) IsValid() bool {
+func (x *fastReflection_QueryEntryRequest) IsValid() bool {
 	return x != nil
 }
 
@@ -1056,9 +1056,9 @@ func (x *fastReflection_QueryGetEntryRequest) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryGetEntryRequest) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QueryEntryRequest) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryGetEntryRequest)
+		x := input.Message.Interface().(*QueryEntryRequest)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1084,7 +1084,7 @@ func (x *fastReflection_QueryGetEntryRequest) ProtoMethods() *protoiface.Methods
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryGetEntryRequest)
+		x := input.Message.Interface().(*QueryEntryRequest)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1121,7 +1121,7 @@ func (x *fastReflection_QueryGetEntryRequest) ProtoMethods() *protoiface.Methods
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryGetEntryRequest)
+		x := input.Message.Interface().(*QueryEntryRequest)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1153,10 +1153,10 @@ func (x *fastReflection_QueryGetEntryRequest) ProtoMethods() *protoiface.Methods
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryGetEntryRequest: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEntryRequest: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryGetEntryRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEntryRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -1227,25 +1227,25 @@ func (x *fastReflection_QueryGetEntryRequest) ProtoMethods() *protoiface.Methods
 }
 
 var (
-	md_QueryGetEntryByDenomRequest       protoreflect.MessageDescriptor
-	fd_QueryGetEntryByDenomRequest_denom protoreflect.FieldDescriptor
+	md_QueryEntryByDenomRequest       protoreflect.MessageDescriptor
+	fd_QueryEntryByDenomRequest_denom protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_assetprofile_query_proto_init()
-	md_QueryGetEntryByDenomRequest = File_elys_assetprofile_query_proto.Messages().ByName("QueryGetEntryByDenomRequest")
-	fd_QueryGetEntryByDenomRequest_denom = md_QueryGetEntryByDenomRequest.Fields().ByName("denom")
+	md_QueryEntryByDenomRequest = File_elys_assetprofile_query_proto.Messages().ByName("QueryEntryByDenomRequest")
+	fd_QueryEntryByDenomRequest_denom = md_QueryEntryByDenomRequest.Fields().ByName("denom")
 }
 
-var _ protoreflect.Message = (*fastReflection_QueryGetEntryByDenomRequest)(nil)
+var _ protoreflect.Message = (*fastReflection_QueryEntryByDenomRequest)(nil)
 
-type fastReflection_QueryGetEntryByDenomRequest QueryGetEntryByDenomRequest
+type fastReflection_QueryEntryByDenomRequest QueryEntryByDenomRequest
 
-func (x *QueryGetEntryByDenomRequest) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryGetEntryByDenomRequest)(x)
+func (x *QueryEntryByDenomRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEntryByDenomRequest)(x)
 }
 
-func (x *QueryGetEntryByDenomRequest) slowProtoReflect() protoreflect.Message {
+func (x *QueryEntryByDenomRequest) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_assetprofile_query_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1257,43 +1257,43 @@ func (x *QueryGetEntryByDenomRequest) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryGetEntryByDenomRequest_messageType fastReflection_QueryGetEntryByDenomRequest_messageType
-var _ protoreflect.MessageType = fastReflection_QueryGetEntryByDenomRequest_messageType{}
+var _fastReflection_QueryEntryByDenomRequest_messageType fastReflection_QueryEntryByDenomRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEntryByDenomRequest_messageType{}
 
-type fastReflection_QueryGetEntryByDenomRequest_messageType struct{}
+type fastReflection_QueryEntryByDenomRequest_messageType struct{}
 
-func (x fastReflection_QueryGetEntryByDenomRequest_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryGetEntryByDenomRequest)(nil)
+func (x fastReflection_QueryEntryByDenomRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEntryByDenomRequest)(nil)
 }
-func (x fastReflection_QueryGetEntryByDenomRequest_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryGetEntryByDenomRequest)
+func (x fastReflection_QueryEntryByDenomRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEntryByDenomRequest)
 }
-func (x fastReflection_QueryGetEntryByDenomRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryGetEntryByDenomRequest
+func (x fastReflection_QueryEntryByDenomRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEntryByDenomRequest
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QueryGetEntryByDenomRequest) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryGetEntryByDenomRequest
+func (x *fastReflection_QueryEntryByDenomRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEntryByDenomRequest
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryGetEntryByDenomRequest) Type() protoreflect.MessageType {
-	return _fastReflection_QueryGetEntryByDenomRequest_messageType
+func (x *fastReflection_QueryEntryByDenomRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEntryByDenomRequest_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryGetEntryByDenomRequest) New() protoreflect.Message {
-	return new(fastReflection_QueryGetEntryByDenomRequest)
+func (x *fastReflection_QueryEntryByDenomRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryEntryByDenomRequest)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryGetEntryByDenomRequest) Interface() protoreflect.ProtoMessage {
-	return (*QueryGetEntryByDenomRequest)(x)
+func (x *fastReflection_QueryEntryByDenomRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryEntryByDenomRequest)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -1301,10 +1301,10 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) Interface() protoreflect.Pr
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QueryGetEntryByDenomRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_QueryEntryByDenomRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Denom != "" {
 		value := protoreflect.ValueOfString(x.Denom)
-		if !f(fd_QueryGetEntryByDenomRequest_denom, value) {
+		if !f(fd_QueryEntryByDenomRequest_denom, value) {
 			return
 		}
 	}
@@ -1321,15 +1321,15 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) Range(f func(protoreflect.F
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryGetEntryByDenomRequest) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QueryEntryByDenomRequest) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomRequest.denom":
+	case "elys.assetprofile.QueryEntryByDenomRequest.denom":
 		return x.Denom != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1339,15 +1339,15 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) Has(fd protoreflect.FieldDe
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryByDenomRequest) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QueryEntryByDenomRequest) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomRequest.denom":
+	case "elys.assetprofile.QueryEntryByDenomRequest.denom":
 		x.Denom = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1357,16 +1357,16 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) Clear(fd protoreflect.Field
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryGetEntryByDenomRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryByDenomRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomRequest.denom":
+	case "elys.assetprofile.QueryEntryByDenomRequest.denom":
 		value := x.Denom
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomRequest does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomRequest does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -1380,15 +1380,15 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) Get(descriptor protoreflect
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryByDenomRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QueryEntryByDenomRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomRequest.denom":
+	case "elys.assetprofile.QueryEntryByDenomRequest.denom":
 		x.Denom = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1402,40 +1402,40 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) Set(fd protoreflect.FieldDe
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryByDenomRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryByDenomRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomRequest.denom":
-		panic(fmt.Errorf("field denom of message elys.assetprofile.QueryGetEntryByDenomRequest is not mutable"))
+	case "elys.assetprofile.QueryEntryByDenomRequest.denom":
+		panic(fmt.Errorf("field denom of message elys.assetprofile.QueryEntryByDenomRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryGetEntryByDenomRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryByDenomRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomRequest.denom":
+	case "elys.assetprofile.QueryEntryByDenomRequest.denom":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomRequest"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryGetEntryByDenomRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QueryEntryByDenomRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.assetprofile.QueryGetEntryByDenomRequest", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.assetprofile.QueryEntryByDenomRequest", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1443,7 +1443,7 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) WhichOneof(d protoreflect.O
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryGetEntryByDenomRequest) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QueryEntryByDenomRequest) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1454,7 +1454,7 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) GetUnknown() protoreflect.R
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryByDenomRequest) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QueryEntryByDenomRequest) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -1466,7 +1466,7 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) SetUnknown(fields protorefl
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QueryGetEntryByDenomRequest) IsValid() bool {
+func (x *fastReflection_QueryEntryByDenomRequest) IsValid() bool {
 	return x != nil
 }
 
@@ -1476,9 +1476,9 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryGetEntryByDenomRequest) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QueryEntryByDenomRequest) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryGetEntryByDenomRequest)
+		x := input.Message.Interface().(*QueryEntryByDenomRequest)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1504,7 +1504,7 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) ProtoMethods() *protoiface.
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryGetEntryByDenomRequest)
+		x := input.Message.Interface().(*QueryEntryByDenomRequest)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1541,7 +1541,7 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) ProtoMethods() *protoiface.
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryGetEntryByDenomRequest)
+		x := input.Message.Interface().(*QueryEntryByDenomRequest)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1573,10 +1573,10 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) ProtoMethods() *protoiface.
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryGetEntryByDenomRequest: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEntryByDenomRequest: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryGetEntryByDenomRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEntryByDenomRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -1647,25 +1647,25 @@ func (x *fastReflection_QueryGetEntryByDenomRequest) ProtoMethods() *protoiface.
 }
 
 var (
-	md_QueryGetEntryResponse       protoreflect.MessageDescriptor
-	fd_QueryGetEntryResponse_entry protoreflect.FieldDescriptor
+	md_QueryEntryResponse       protoreflect.MessageDescriptor
+	fd_QueryEntryResponse_entry protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_assetprofile_query_proto_init()
-	md_QueryGetEntryResponse = File_elys_assetprofile_query_proto.Messages().ByName("QueryGetEntryResponse")
-	fd_QueryGetEntryResponse_entry = md_QueryGetEntryResponse.Fields().ByName("entry")
+	md_QueryEntryResponse = File_elys_assetprofile_query_proto.Messages().ByName("QueryEntryResponse")
+	fd_QueryEntryResponse_entry = md_QueryEntryResponse.Fields().ByName("entry")
 }
 
-var _ protoreflect.Message = (*fastReflection_QueryGetEntryResponse)(nil)
+var _ protoreflect.Message = (*fastReflection_QueryEntryResponse)(nil)
 
-type fastReflection_QueryGetEntryResponse QueryGetEntryResponse
+type fastReflection_QueryEntryResponse QueryEntryResponse
 
-func (x *QueryGetEntryResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryGetEntryResponse)(x)
+func (x *QueryEntryResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEntryResponse)(x)
 }
 
-func (x *QueryGetEntryResponse) slowProtoReflect() protoreflect.Message {
+func (x *QueryEntryResponse) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_assetprofile_query_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1677,43 +1677,43 @@ func (x *QueryGetEntryResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryGetEntryResponse_messageType fastReflection_QueryGetEntryResponse_messageType
-var _ protoreflect.MessageType = fastReflection_QueryGetEntryResponse_messageType{}
+var _fastReflection_QueryEntryResponse_messageType fastReflection_QueryEntryResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEntryResponse_messageType{}
 
-type fastReflection_QueryGetEntryResponse_messageType struct{}
+type fastReflection_QueryEntryResponse_messageType struct{}
 
-func (x fastReflection_QueryGetEntryResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryGetEntryResponse)(nil)
+func (x fastReflection_QueryEntryResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEntryResponse)(nil)
 }
-func (x fastReflection_QueryGetEntryResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryGetEntryResponse)
+func (x fastReflection_QueryEntryResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEntryResponse)
 }
-func (x fastReflection_QueryGetEntryResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryGetEntryResponse
+func (x fastReflection_QueryEntryResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEntryResponse
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QueryGetEntryResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryGetEntryResponse
+func (x *fastReflection_QueryEntryResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEntryResponse
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryGetEntryResponse) Type() protoreflect.MessageType {
-	return _fastReflection_QueryGetEntryResponse_messageType
+func (x *fastReflection_QueryEntryResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEntryResponse_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryGetEntryResponse) New() protoreflect.Message {
-	return new(fastReflection_QueryGetEntryResponse)
+func (x *fastReflection_QueryEntryResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryEntryResponse)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryGetEntryResponse) Interface() protoreflect.ProtoMessage {
-	return (*QueryGetEntryResponse)(x)
+func (x *fastReflection_QueryEntryResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryEntryResponse)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -1721,10 +1721,10 @@ func (x *fastReflection_QueryGetEntryResponse) Interface() protoreflect.ProtoMes
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QueryGetEntryResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_QueryEntryResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Entry != nil {
 		value := protoreflect.ValueOfMessage(x.Entry.ProtoReflect())
-		if !f(fd_QueryGetEntryResponse_entry, value) {
+		if !f(fd_QueryEntryResponse_entry, value) {
 			return
 		}
 	}
@@ -1741,15 +1741,15 @@ func (x *fastReflection_QueryGetEntryResponse) Range(f func(protoreflect.FieldDe
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryGetEntryResponse) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QueryEntryResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryResponse.entry":
+	case "elys.assetprofile.QueryEntryResponse.entry":
 		return x.Entry != nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1759,15 +1759,15 @@ func (x *fastReflection_QueryGetEntryResponse) Has(fd protoreflect.FieldDescript
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryResponse) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QueryEntryResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryResponse.entry":
+	case "elys.assetprofile.QueryEntryResponse.entry":
 		x.Entry = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1777,16 +1777,16 @@ func (x *fastReflection_QueryGetEntryResponse) Clear(fd protoreflect.FieldDescri
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryGetEntryResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.assetprofile.QueryGetEntryResponse.entry":
+	case "elys.assetprofile.QueryEntryResponse.entry":
 		value := x.Entry
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryResponse does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryResponse does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -1800,15 +1800,15 @@ func (x *fastReflection_QueryGetEntryResponse) Get(descriptor protoreflect.Field
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QueryEntryResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryResponse.entry":
+	case "elys.assetprofile.QueryEntryResponse.entry":
 		x.Entry = value.Message().Interface().(*Entry)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1822,44 +1822,44 @@ func (x *fastReflection_QueryGetEntryResponse) Set(fd protoreflect.FieldDescript
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryResponse.entry":
+	case "elys.assetprofile.QueryEntryResponse.entry":
 		if x.Entry == nil {
 			x.Entry = new(Entry)
 		}
 		return protoreflect.ValueOfMessage(x.Entry.ProtoReflect())
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryGetEntryResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryResponse.entry":
+	case "elys.assetprofile.QueryEntryResponse.entry":
 		m := new(Entry)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryGetEntryResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QueryEntryResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.assetprofile.QueryGetEntryResponse", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.assetprofile.QueryEntryResponse", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1867,7 +1867,7 @@ func (x *fastReflection_QueryGetEntryResponse) WhichOneof(d protoreflect.OneofDe
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryGetEntryResponse) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QueryEntryResponse) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1878,7 +1878,7 @@ func (x *fastReflection_QueryGetEntryResponse) GetUnknown() protoreflect.RawFiel
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryResponse) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QueryEntryResponse) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -1890,7 +1890,7 @@ func (x *fastReflection_QueryGetEntryResponse) SetUnknown(fields protoreflect.Ra
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QueryGetEntryResponse) IsValid() bool {
+func (x *fastReflection_QueryEntryResponse) IsValid() bool {
 	return x != nil
 }
 
@@ -1900,9 +1900,9 @@ func (x *fastReflection_QueryGetEntryResponse) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryGetEntryResponse) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QueryEntryResponse) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryGetEntryResponse)
+		x := input.Message.Interface().(*QueryEntryResponse)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1928,7 +1928,7 @@ func (x *fastReflection_QueryGetEntryResponse) ProtoMethods() *protoiface.Method
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryGetEntryResponse)
+		x := input.Message.Interface().(*QueryEntryResponse)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1972,7 +1972,7 @@ func (x *fastReflection_QueryGetEntryResponse) ProtoMethods() *protoiface.Method
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryGetEntryResponse)
+		x := input.Message.Interface().(*QueryEntryResponse)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2004,10 +2004,10 @@ func (x *fastReflection_QueryGetEntryResponse) ProtoMethods() *protoiface.Method
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryGetEntryResponse: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEntryResponse: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryGetEntryResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEntryResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -2082,25 +2082,25 @@ func (x *fastReflection_QueryGetEntryResponse) ProtoMethods() *protoiface.Method
 }
 
 var (
-	md_QueryGetEntryByDenomResponse       protoreflect.MessageDescriptor
-	fd_QueryGetEntryByDenomResponse_entry protoreflect.FieldDescriptor
+	md_QueryEntryByDenomResponse       protoreflect.MessageDescriptor
+	fd_QueryEntryByDenomResponse_entry protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_assetprofile_query_proto_init()
-	md_QueryGetEntryByDenomResponse = File_elys_assetprofile_query_proto.Messages().ByName("QueryGetEntryByDenomResponse")
-	fd_QueryGetEntryByDenomResponse_entry = md_QueryGetEntryByDenomResponse.Fields().ByName("entry")
+	md_QueryEntryByDenomResponse = File_elys_assetprofile_query_proto.Messages().ByName("QueryEntryByDenomResponse")
+	fd_QueryEntryByDenomResponse_entry = md_QueryEntryByDenomResponse.Fields().ByName("entry")
 }
 
-var _ protoreflect.Message = (*fastReflection_QueryGetEntryByDenomResponse)(nil)
+var _ protoreflect.Message = (*fastReflection_QueryEntryByDenomResponse)(nil)
 
-type fastReflection_QueryGetEntryByDenomResponse QueryGetEntryByDenomResponse
+type fastReflection_QueryEntryByDenomResponse QueryEntryByDenomResponse
 
-func (x *QueryGetEntryByDenomResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryGetEntryByDenomResponse)(x)
+func (x *QueryEntryByDenomResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEntryByDenomResponse)(x)
 }
 
-func (x *QueryGetEntryByDenomResponse) slowProtoReflect() protoreflect.Message {
+func (x *QueryEntryByDenomResponse) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_assetprofile_query_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -2112,43 +2112,43 @@ func (x *QueryGetEntryByDenomResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryGetEntryByDenomResponse_messageType fastReflection_QueryGetEntryByDenomResponse_messageType
-var _ protoreflect.MessageType = fastReflection_QueryGetEntryByDenomResponse_messageType{}
+var _fastReflection_QueryEntryByDenomResponse_messageType fastReflection_QueryEntryByDenomResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEntryByDenomResponse_messageType{}
 
-type fastReflection_QueryGetEntryByDenomResponse_messageType struct{}
+type fastReflection_QueryEntryByDenomResponse_messageType struct{}
 
-func (x fastReflection_QueryGetEntryByDenomResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryGetEntryByDenomResponse)(nil)
+func (x fastReflection_QueryEntryByDenomResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEntryByDenomResponse)(nil)
 }
-func (x fastReflection_QueryGetEntryByDenomResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryGetEntryByDenomResponse)
+func (x fastReflection_QueryEntryByDenomResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEntryByDenomResponse)
 }
-func (x fastReflection_QueryGetEntryByDenomResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryGetEntryByDenomResponse
+func (x fastReflection_QueryEntryByDenomResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEntryByDenomResponse
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QueryGetEntryByDenomResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryGetEntryByDenomResponse
+func (x *fastReflection_QueryEntryByDenomResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEntryByDenomResponse
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryGetEntryByDenomResponse) Type() protoreflect.MessageType {
-	return _fastReflection_QueryGetEntryByDenomResponse_messageType
+func (x *fastReflection_QueryEntryByDenomResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEntryByDenomResponse_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryGetEntryByDenomResponse) New() protoreflect.Message {
-	return new(fastReflection_QueryGetEntryByDenomResponse)
+func (x *fastReflection_QueryEntryByDenomResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryEntryByDenomResponse)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryGetEntryByDenomResponse) Interface() protoreflect.ProtoMessage {
-	return (*QueryGetEntryByDenomResponse)(x)
+func (x *fastReflection_QueryEntryByDenomResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryEntryByDenomResponse)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -2156,10 +2156,10 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) Interface() protoreflect.P
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QueryGetEntryByDenomResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_QueryEntryByDenomResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Entry != nil {
 		value := protoreflect.ValueOfMessage(x.Entry.ProtoReflect())
-		if !f(fd_QueryGetEntryByDenomResponse_entry, value) {
+		if !f(fd_QueryEntryByDenomResponse_entry, value) {
 			return
 		}
 	}
@@ -2176,15 +2176,15 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) Range(f func(protoreflect.
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryGetEntryByDenomResponse) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QueryEntryByDenomResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomResponse.entry":
+	case "elys.assetprofile.QueryEntryByDenomResponse.entry":
 		return x.Entry != nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -2194,15 +2194,15 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) Has(fd protoreflect.FieldD
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryByDenomResponse) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QueryEntryByDenomResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomResponse.entry":
+	case "elys.assetprofile.QueryEntryByDenomResponse.entry":
 		x.Entry = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -2212,16 +2212,16 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) Clear(fd protoreflect.Fiel
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryGetEntryByDenomResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryByDenomResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomResponse.entry":
+	case "elys.assetprofile.QueryEntryByDenomResponse.entry":
 		value := x.Entry
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomResponse does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomResponse does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -2235,15 +2235,15 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) Get(descriptor protoreflec
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryByDenomResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QueryEntryByDenomResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomResponse.entry":
+	case "elys.assetprofile.QueryEntryByDenomResponse.entry":
 		x.Entry = value.Message().Interface().(*Entry)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -2257,44 +2257,44 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) Set(fd protoreflect.FieldD
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryByDenomResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryByDenomResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomResponse.entry":
+	case "elys.assetprofile.QueryEntryByDenomResponse.entry":
 		if x.Entry == nil {
 			x.Entry = new(Entry)
 		}
 		return protoreflect.ValueOfMessage(x.Entry.ProtoReflect())
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryGetEntryByDenomResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEntryByDenomResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.assetprofile.QueryGetEntryByDenomResponse.entry":
+	case "elys.assetprofile.QueryEntryByDenomResponse.entry":
 		m := new(Entry)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryGetEntryByDenomResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.assetprofile.QueryEntryByDenomResponse"))
 		}
-		panic(fmt.Errorf("message elys.assetprofile.QueryGetEntryByDenomResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.assetprofile.QueryEntryByDenomResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryGetEntryByDenomResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QueryEntryByDenomResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.assetprofile.QueryGetEntryByDenomResponse", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.assetprofile.QueryEntryByDenomResponse", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -2302,7 +2302,7 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) WhichOneof(d protoreflect.
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryGetEntryByDenomResponse) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QueryEntryByDenomResponse) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -2313,7 +2313,7 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) GetUnknown() protoreflect.
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryGetEntryByDenomResponse) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QueryEntryByDenomResponse) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -2325,7 +2325,7 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) SetUnknown(fields protoref
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QueryGetEntryByDenomResponse) IsValid() bool {
+func (x *fastReflection_QueryEntryByDenomResponse) IsValid() bool {
 	return x != nil
 }
 
@@ -2335,9 +2335,9 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryGetEntryByDenomResponse) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QueryEntryByDenomResponse) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryGetEntryByDenomResponse)
+		x := input.Message.Interface().(*QueryEntryByDenomResponse)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2363,7 +2363,7 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) ProtoMethods() *protoiface
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryGetEntryByDenomResponse)
+		x := input.Message.Interface().(*QueryEntryByDenomResponse)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2407,7 +2407,7 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) ProtoMethods() *protoiface
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryGetEntryByDenomResponse)
+		x := input.Message.Interface().(*QueryEntryByDenomResponse)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2439,10 +2439,10 @@ func (x *fastReflection_QueryGetEntryByDenomResponse) ProtoMethods() *protoiface
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryGetEntryByDenomResponse: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEntryByDenomResponse: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryGetEntryByDenomResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEntryByDenomResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -3601,7 +3601,7 @@ func (x *QueryParamsResponse) GetParams() *Params {
 	return nil
 }
 
-type QueryGetEntryRequest struct {
+type QueryEntryRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -3609,8 +3609,8 @@ type QueryGetEntryRequest struct {
 	BaseDenom string `protobuf:"bytes,1,opt,name=base_denom,json=baseDenom,proto3" json:"base_denom,omitempty"`
 }
 
-func (x *QueryGetEntryRequest) Reset() {
-	*x = QueryGetEntryRequest{}
+func (x *QueryEntryRequest) Reset() {
+	*x = QueryEntryRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_assetprofile_query_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3618,25 +3618,25 @@ func (x *QueryGetEntryRequest) Reset() {
 	}
 }
 
-func (x *QueryGetEntryRequest) String() string {
+func (x *QueryEntryRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryGetEntryRequest) ProtoMessage() {}
+func (*QueryEntryRequest) ProtoMessage() {}
 
-// Deprecated: Use QueryGetEntryRequest.ProtoReflect.Descriptor instead.
-func (*QueryGetEntryRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryEntryRequest.ProtoReflect.Descriptor instead.
+func (*QueryEntryRequest) Descriptor() ([]byte, []int) {
 	return file_elys_assetprofile_query_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *QueryGetEntryRequest) GetBaseDenom() string {
+func (x *QueryEntryRequest) GetBaseDenom() string {
 	if x != nil {
 		return x.BaseDenom
 	}
 	return ""
 }
 
-type QueryGetEntryByDenomRequest struct {
+type QueryEntryByDenomRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -3644,8 +3644,8 @@ type QueryGetEntryByDenomRequest struct {
 	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 }
 
-func (x *QueryGetEntryByDenomRequest) Reset() {
-	*x = QueryGetEntryByDenomRequest{}
+func (x *QueryEntryByDenomRequest) Reset() {
+	*x = QueryEntryByDenomRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_assetprofile_query_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3653,25 +3653,25 @@ func (x *QueryGetEntryByDenomRequest) Reset() {
 	}
 }
 
-func (x *QueryGetEntryByDenomRequest) String() string {
+func (x *QueryEntryByDenomRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryGetEntryByDenomRequest) ProtoMessage() {}
+func (*QueryEntryByDenomRequest) ProtoMessage() {}
 
-// Deprecated: Use QueryGetEntryByDenomRequest.ProtoReflect.Descriptor instead.
-func (*QueryGetEntryByDenomRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryEntryByDenomRequest.ProtoReflect.Descriptor instead.
+func (*QueryEntryByDenomRequest) Descriptor() ([]byte, []int) {
 	return file_elys_assetprofile_query_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *QueryGetEntryByDenomRequest) GetDenom() string {
+func (x *QueryEntryByDenomRequest) GetDenom() string {
 	if x != nil {
 		return x.Denom
 	}
 	return ""
 }
 
-type QueryGetEntryResponse struct {
+type QueryEntryResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -3679,8 +3679,8 @@ type QueryGetEntryResponse struct {
 	Entry *Entry `protobuf:"bytes,1,opt,name=entry,proto3" json:"entry,omitempty"`
 }
 
-func (x *QueryGetEntryResponse) Reset() {
-	*x = QueryGetEntryResponse{}
+func (x *QueryEntryResponse) Reset() {
+	*x = QueryEntryResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_assetprofile_query_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3688,25 +3688,25 @@ func (x *QueryGetEntryResponse) Reset() {
 	}
 }
 
-func (x *QueryGetEntryResponse) String() string {
+func (x *QueryEntryResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryGetEntryResponse) ProtoMessage() {}
+func (*QueryEntryResponse) ProtoMessage() {}
 
-// Deprecated: Use QueryGetEntryResponse.ProtoReflect.Descriptor instead.
-func (*QueryGetEntryResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryEntryResponse.ProtoReflect.Descriptor instead.
+func (*QueryEntryResponse) Descriptor() ([]byte, []int) {
 	return file_elys_assetprofile_query_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *QueryGetEntryResponse) GetEntry() *Entry {
+func (x *QueryEntryResponse) GetEntry() *Entry {
 	if x != nil {
 		return x.Entry
 	}
 	return nil
 }
 
-type QueryGetEntryByDenomResponse struct {
+type QueryEntryByDenomResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -3714,8 +3714,8 @@ type QueryGetEntryByDenomResponse struct {
 	Entry *Entry `protobuf:"bytes,1,opt,name=entry,proto3" json:"entry,omitempty"`
 }
 
-func (x *QueryGetEntryByDenomResponse) Reset() {
-	*x = QueryGetEntryByDenomResponse{}
+func (x *QueryEntryByDenomResponse) Reset() {
+	*x = QueryEntryByDenomResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_assetprofile_query_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3723,18 +3723,18 @@ func (x *QueryGetEntryByDenomResponse) Reset() {
 	}
 }
 
-func (x *QueryGetEntryByDenomResponse) String() string {
+func (x *QueryEntryByDenomResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryGetEntryByDenomResponse) ProtoMessage() {}
+func (*QueryEntryByDenomResponse) ProtoMessage() {}
 
-// Deprecated: Use QueryGetEntryByDenomResponse.ProtoReflect.Descriptor instead.
-func (*QueryGetEntryByDenomResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryEntryByDenomResponse.ProtoReflect.Descriptor instead.
+func (*QueryEntryByDenomResponse) Descriptor() ([]byte, []int) {
 	return file_elys_assetprofile_query_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *QueryGetEntryByDenomResponse) GetEntry() *Entry {
+func (x *QueryEntryByDenomResponse) GetEntry() *Entry {
 	if x != nil {
 		return x.Entry
 	}
@@ -3841,90 +3841,89 @@ var file_elys_assetprofile_query_proto_rawDesc = []byte{
 	0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19,
 	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69,
 	0x6c, 0x65, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
-	0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x35, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x47, 0x65, 0x74, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x1d, 0x0a, 0x0a, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x09, 0x62, 0x61, 0x73, 0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x33,
-	0x0a, 0x1b, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42,
-	0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a,
-	0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65,
-	0x6e, 0x6f, 0x6d, 0x22, 0x4d, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x45,
-	0x6e, 0x74, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x34, 0x0a, 0x05,
-	0x65, 0x6e, 0x74, 0x72, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e,
-	0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x05, 0x65, 0x6e, 0x74,
-	0x72, 0x79, 0x22, 0x54, 0x0a, 0x1c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x45, 0x6e,
-	0x74, 0x72, 0x79, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x34, 0x0a, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72,
-	0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f,
-	0x00, 0x52, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x22, 0x5e, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x41, 0x6c, 0x6c, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61,
-	0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31,
-	0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61,
-	0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x96, 0x01, 0x0a, 0x15, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x41, 0x6c, 0x6c, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x34, 0x0a, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x18, 0x01, 0x20, 0x03, 0x28,
-	0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72,
-	0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f,
-	0x00, 0x52, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69,
-	0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79,
-	0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x32, 0xe2, 0x04, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x87, 0x01, 0x0a, 0x06,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73,
-	0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c,
-	0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x28, 0x12, 0x26, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2f, 0x70,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x96, 0x01, 0x0a, 0x05, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12,
-	0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66,
-	0x69, 0x6c, 0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x45, 0x6e, 0x74, 0x72,
-	0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x47, 0x65, 0x74, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x3a, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x34, 0x12, 0x32, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61,
-	0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2f, 0x65, 0x6e, 0x74, 0x72,
-	0x79, 0x2f, 0x7b, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x7d, 0x12, 0xa6,
-	0x01, 0x0a, 0x0c, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12,
-	0x2e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66,
-	0x69, 0x6c, 0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x45, 0x6e, 0x74, 0x72,
-	0x79, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x2f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66,
-	0x69, 0x6c, 0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x47, 0x65, 0x74, 0x45, 0x6e, 0x74, 0x72,
-	0x79, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x22, 0x35, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2f, 0x12, 0x2d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
+	0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x32, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d, 0x0a, 0x0a,
+	0x62, 0x61, 0x73, 0x65, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x09, 0x62, 0x61, 0x73, 0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x30, 0x0a, 0x18, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x4a, 0x0a,
+	0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x34, 0x0a, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70,
+	0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x04, 0xc8, 0xde,
+	0x1f, 0x00, 0x52, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x22, 0x51, 0x0a, 0x19, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x34, 0x0a, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73,
+	0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42,
+	0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x22, 0x5e, 0x0a, 0x14,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62,
+	0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x96, 0x01, 0x0a,
+	0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x34, 0x0a, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73,
+	0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42,
+	0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x47, 0x0a, 0x0a,
+	0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x27, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71,
+	0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x32, 0xd6, 0x04, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12,
+	0x87, 0x01, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72,
+	0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2e, 0x82, 0xd3, 0xe4, 0x93, 0x02,
+	0x28, 0x12, 0x26, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69,
+	0x6c, 0x65, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x90, 0x01, 0x0a, 0x05, 0x45, 0x6e,
+	0x74, 0x72, 0x79, 0x12, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74,
+	0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x6e, 0x74,
+	0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x3a, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x34, 0x12, 0x32, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
 	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x73, 0x73,
 	0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2f, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x2f,
-	0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x7d, 0x12, 0x8c, 0x01, 0x0a, 0x08, 0x45, 0x6e, 0x74, 0x72,
-	0x79, 0x41, 0x6c, 0x6c, 0x12, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65,
-	0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c,
-	0x6c, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e,
+	0x7b, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x7d, 0x12, 0xa0, 0x01, 0x0a,
+	0x0c, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x2b, 0x2e,
 	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c,
-	0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2d, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x27, 0x12,
-	0x25, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65,
-	0x6c, 0x79, 0x73, 0x2f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65,
-	0x2f, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x42, 0xbc, 0x01, 0x0a, 0x15, 0x63, 0x6f, 0x6d, 0x2e, 0x65,
+	0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x79, 0x44, 0x65,
+	0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x35, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2f,
+	0x12, 0x2d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
+	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c,
+	0x65, 0x2f, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x7d, 0x12,
+	0x8c, 0x01, 0x0a, 0x08, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x12, 0x27, 0x2e, 0x65,
 	0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65,
-	0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x32,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
-	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69,
-	0x6c, 0x65, 0xa2, 0x02, 0x03, 0x45, 0x41, 0x58, 0xaa, 0x02, 0x11, 0x45, 0x6c, 0x79, 0x73, 0x2e,
-	0x41, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0xca, 0x02, 0x11, 0x45,
-	0x6c, 0x79, 0x73, 0x5c, 0x41, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65,
-	0xe2, 0x02, 0x1d, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f,
-	0x66, 0x69, 0x6c, 0x65, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
-	0xea, 0x02, 0x12, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x41, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72,
-	0x6f, 0x66, 0x69, 0x6c, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73,
+	0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41,
+	0x6c, 0x6c, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x2d, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x27, 0x12, 0x25, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x73, 0x73, 0x65,
+	0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x2f, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x42, 0xbc,
+	0x01, 0x0a, 0x15, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x73, 0x73, 0x65,
+	0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50,
+	0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
+	0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
+	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x73,
+	0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0xa2, 0x02, 0x03, 0x45, 0x41, 0x58,
+	0xaa, 0x02, 0x11, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x41, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f,
+	0x66, 0x69, 0x6c, 0x65, 0xca, 0x02, 0x11, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x73, 0x73, 0x65,
+	0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0xe2, 0x02, 0x1d, 0x45, 0x6c, 0x79, 0x73, 0x5c,
+	0x41, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x5c, 0x47, 0x50, 0x42,
+	0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x12, 0x45, 0x6c, 0x79, 0x73, 0x3a,
+	0x3a, 0x41, 0x73, 0x73, 0x65, 0x74, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3941,33 +3940,33 @@ func file_elys_assetprofile_query_proto_rawDescGZIP() []byte {
 
 var file_elys_assetprofile_query_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_elys_assetprofile_query_proto_goTypes = []interface{}{
-	(*QueryParamsRequest)(nil),           // 0: elys.assetprofile.QueryParamsRequest
-	(*QueryParamsResponse)(nil),          // 1: elys.assetprofile.QueryParamsResponse
-	(*QueryGetEntryRequest)(nil),         // 2: elys.assetprofile.QueryGetEntryRequest
-	(*QueryGetEntryByDenomRequest)(nil),  // 3: elys.assetprofile.QueryGetEntryByDenomRequest
-	(*QueryGetEntryResponse)(nil),        // 4: elys.assetprofile.QueryGetEntryResponse
-	(*QueryGetEntryByDenomResponse)(nil), // 5: elys.assetprofile.QueryGetEntryByDenomResponse
-	(*QueryAllEntryRequest)(nil),         // 6: elys.assetprofile.QueryAllEntryRequest
-	(*QueryAllEntryResponse)(nil),        // 7: elys.assetprofile.QueryAllEntryResponse
-	(*Params)(nil),                       // 8: elys.assetprofile.Params
-	(*Entry)(nil),                        // 9: elys.assetprofile.Entry
-	(*v1beta1.PageRequest)(nil),          // 10: cosmos.base.query.v1beta1.PageRequest
-	(*v1beta1.PageResponse)(nil),         // 11: cosmos.base.query.v1beta1.PageResponse
+	(*QueryParamsRequest)(nil),        // 0: elys.assetprofile.QueryParamsRequest
+	(*QueryParamsResponse)(nil),       // 1: elys.assetprofile.QueryParamsResponse
+	(*QueryEntryRequest)(nil),         // 2: elys.assetprofile.QueryEntryRequest
+	(*QueryEntryByDenomRequest)(nil),  // 3: elys.assetprofile.QueryEntryByDenomRequest
+	(*QueryEntryResponse)(nil),        // 4: elys.assetprofile.QueryEntryResponse
+	(*QueryEntryByDenomResponse)(nil), // 5: elys.assetprofile.QueryEntryByDenomResponse
+	(*QueryAllEntryRequest)(nil),      // 6: elys.assetprofile.QueryAllEntryRequest
+	(*QueryAllEntryResponse)(nil),     // 7: elys.assetprofile.QueryAllEntryResponse
+	(*Params)(nil),                    // 8: elys.assetprofile.Params
+	(*Entry)(nil),                     // 9: elys.assetprofile.Entry
+	(*v1beta1.PageRequest)(nil),       // 10: cosmos.base.query.v1beta1.PageRequest
+	(*v1beta1.PageResponse)(nil),      // 11: cosmos.base.query.v1beta1.PageResponse
 }
 var file_elys_assetprofile_query_proto_depIdxs = []int32{
 	8,  // 0: elys.assetprofile.QueryParamsResponse.params:type_name -> elys.assetprofile.Params
-	9,  // 1: elys.assetprofile.QueryGetEntryResponse.entry:type_name -> elys.assetprofile.Entry
-	9,  // 2: elys.assetprofile.QueryGetEntryByDenomResponse.entry:type_name -> elys.assetprofile.Entry
+	9,  // 1: elys.assetprofile.QueryEntryResponse.entry:type_name -> elys.assetprofile.Entry
+	9,  // 2: elys.assetprofile.QueryEntryByDenomResponse.entry:type_name -> elys.assetprofile.Entry
 	10, // 3: elys.assetprofile.QueryAllEntryRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
 	9,  // 4: elys.assetprofile.QueryAllEntryResponse.entry:type_name -> elys.assetprofile.Entry
 	11, // 5: elys.assetprofile.QueryAllEntryResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
 	0,  // 6: elys.assetprofile.Query.Params:input_type -> elys.assetprofile.QueryParamsRequest
-	2,  // 7: elys.assetprofile.Query.Entry:input_type -> elys.assetprofile.QueryGetEntryRequest
-	3,  // 8: elys.assetprofile.Query.EntryByDenom:input_type -> elys.assetprofile.QueryGetEntryByDenomRequest
+	2,  // 7: elys.assetprofile.Query.Entry:input_type -> elys.assetprofile.QueryEntryRequest
+	3,  // 8: elys.assetprofile.Query.EntryByDenom:input_type -> elys.assetprofile.QueryEntryByDenomRequest
 	6,  // 9: elys.assetprofile.Query.EntryAll:input_type -> elys.assetprofile.QueryAllEntryRequest
 	1,  // 10: elys.assetprofile.Query.Params:output_type -> elys.assetprofile.QueryParamsResponse
-	4,  // 11: elys.assetprofile.Query.Entry:output_type -> elys.assetprofile.QueryGetEntryResponse
-	5,  // 12: elys.assetprofile.Query.EntryByDenom:output_type -> elys.assetprofile.QueryGetEntryByDenomResponse
+	4,  // 11: elys.assetprofile.Query.Entry:output_type -> elys.assetprofile.QueryEntryResponse
+	5,  // 12: elys.assetprofile.Query.EntryByDenom:output_type -> elys.assetprofile.QueryEntryByDenomResponse
 	7,  // 13: elys.assetprofile.Query.EntryAll:output_type -> elys.assetprofile.QueryAllEntryResponse
 	10, // [10:14] is the sub-list for method output_type
 	6,  // [6:10] is the sub-list for method input_type
@@ -4009,7 +4008,7 @@ func file_elys_assetprofile_query_proto_init() {
 			}
 		}
 		file_elys_assetprofile_query_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryGetEntryRequest); i {
+			switch v := v.(*QueryEntryRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4021,7 +4020,7 @@ func file_elys_assetprofile_query_proto_init() {
 			}
 		}
 		file_elys_assetprofile_query_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryGetEntryByDenomRequest); i {
+			switch v := v.(*QueryEntryByDenomRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4033,7 +4032,7 @@ func file_elys_assetprofile_query_proto_init() {
 			}
 		}
 		file_elys_assetprofile_query_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryGetEntryResponse); i {
+			switch v := v.(*QueryEntryResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4045,7 +4044,7 @@ func file_elys_assetprofile_query_proto_init() {
 			}
 		}
 		file_elys_assetprofile_query_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryGetEntryByDenomResponse); i {
+			switch v := v.(*QueryEntryByDenomResponse); i {
 			case 0:
 				return &v.state
 			case 1:
