@@ -13,8 +13,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func TestPendingPerpetualOrderForAddress(t *testing.T) {
-	k, ctx, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
+func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderForAddress() {
+	k, ctx, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(suite.T())
 
 	ownerAddress := "valid_address"
 	ownerAddressAcc := sdk.AccAddress(ownerAddress)
@@ -119,7 +119,7 @@ func TestPendingPerpetualOrderForAddress(t *testing.T) {
 	_ = k.AppendPendingPerpetualOrder(ctx, *order2.PerpetualOrder)
 
 	for _, tc := range tests {
-		t.Run(tc.desc, func(t *testing.T) {
+		suite.T().Run(tc.desc, func(t *testing.T) {
 			response, err := k.PendingPerpetualOrderForAddress(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)

@@ -7,7 +7,6 @@ import (
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
-	"github.com/stretchr/testify/require"
 )
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
@@ -15,8 +14,8 @@ func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
 	return keeper.NewMsgServerImpl(*k), ctx
 }
 
-func TestMsgServer(t *testing.T) {
-	ms, ctx := setupMsgServer(t)
-	require.NotNil(t, ms)
-	require.NotNil(t, ctx)
+func (suite *TradeshieldKeeperTestSuite) TestMsgServer() {
+	ms, ctx := setupMsgServer(suite.T())
+	suite.Require().NotNil(ms)
+	suite.Require().NotNil(ctx)
 }

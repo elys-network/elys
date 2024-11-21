@@ -1,18 +1,12 @@
 package keeper_test
 
 import (
-	"testing"
-
-	testkeeper "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
-	"github.com/stretchr/testify/require"
 )
 
-func TestGetParams(t *testing.T) {
-	k, ctx, _, _, _ := testkeeper.TradeshieldKeeper(t)
+func (suite *TradeshieldKeeperTestSuite) TestGetParams() {
 	params := types.DefaultParams()
+	suite.app.TradeshieldKeeper.SetParams(suite.ctx, &params)
 
-	k.SetParams(ctx, &params)
-
-	require.EqualValues(t, params, k.GetParams(ctx))
+	suite.Require().EqualValues(params, suite.app.TradeshieldKeeper.GetParams(suite.ctx))
 }

@@ -12,8 +12,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func TestPendingSpotOrderForAddress(t *testing.T) {
-	k, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
+func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderForAddress() {
+	k, ctx, _, _, _ := keepertest.TradeshieldKeeper(suite.T())
 
 	order := types.SpotOrder{
 		OrderId:      1,
@@ -82,7 +82,7 @@ func TestPendingSpotOrderForAddress(t *testing.T) {
 	_ = k.AppendPendingSpotOrder(ctx, order2)
 
 	for _, tc := range tests {
-		t.Run(tc.desc, func(t *testing.T) {
+		suite.T().Run(tc.desc, func(t *testing.T) {
 
 			response, err := k.PendingSpotOrderForAddress(ctx, tc.request)
 			if tc.err != nil {
