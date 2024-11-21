@@ -224,7 +224,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		}
 
 		// Calculate new Eden for this pool
-		newEdenAllocatedForPool := poolShareEdenEnable.MulInt(lpsEdenAmount)
+		newEdenAllocatedForPool := math.LegacyZeroDec()
 
 		// Maximum eden APR - 30% by default
 		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
@@ -234,6 +234,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 		if pool.EnableEdenRewards {
+			newEdenAllocatedForPool = poolShareEdenEnable.MulInt(lpsEdenAmount)
 			newEdenAllocatedForPool = math.LegacyMinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
 			if newEdenAllocatedForPool.IsPositive() {
 				err = k.commitmentKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.TruncateInt())})
@@ -266,9 +267,6 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 		// Track pool rewards accumulation
 		edenReward := newEdenAllocatedForPool
-		if !pool.EnableEdenRewards {
-			edenReward = math.LegacyZeroDec()
-		}
 
 		k.AddPoolRewardsAccum(
 			ctx,
@@ -582,6 +580,8 @@ func (k Keeper) InitPoolParams(ctx sdk.Context, poolId uint64) bool {
 			ExternalIncentiveApr: math.LegacyZeroDec(),
 			// external reward denoms on the pool
 			ExternalRewardDenoms: []string{},
+			// enable eden reward on the pool
+			EnableEdenRewards: false,
 		}
 		k.SetPoolInfo(ctx, poolInfo)
 	}

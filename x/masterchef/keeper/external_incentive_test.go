@@ -172,6 +172,10 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 	})
 	suite.Require().NoError(err)
 
+	info, _ := suite.app.MasterchefKeeper.GetPoolInfo(suite.ctx, pools[0].PoolId)
+	info.EnableEdenRewards = true
+	suite.app.MasterchefKeeper.SetPoolInfo(suite.ctx, info)
+
 	// Fill in pool revenue wallet
 	revenueAddress1 := ammtypes.NewPoolRevenueAddress(1)
 	suite.MintTokenToAddress(revenueAddress1, math.NewInt(100000), ptypes.BaseCurrency)
@@ -190,12 +194,14 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 		User: addr[0].String(),
 	})
 	suite.Require().NoError(err)
-	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "4949545046")
+	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "49")
+	suite.Require().Equal(res.TotalRewards[1].Amount.String(), "4949545046")
 	res, err = suite.app.MasterchefKeeper.UserPendingReward(suite.ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[1].String(),
 	})
 	suite.Require().NoError(err)
-	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "4949545046")
+	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "49")
+	suite.Require().Equal(res.TotalRewards[1].Amount.String(), "4949545046")
 
 	prevUSDCBal := suite.app.BankKeeper.GetBalance(suite.ctx, addr[1], ptypes.BaseCurrency)
 
@@ -226,4 +232,8 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 	})
 	suite.Require().NoError(err)
 	suite.Require().Len(res.TotalRewards, 0)
+
+	// Eden should not be claimable
+	curEdenBal := suite.app.BankKeeper.GetBalance(suite.ctx, addr[1], ptypes.Eden)
+	suite.Require().Equal(curEdenBal.Amount.String(), "0")
 }
