@@ -52,7 +52,7 @@ func local_request_Query_Params_0(ctx context.Context, marshaler runtime.Marshal
 }
 
 func request_Query_Entry_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryGetEntryRequest
+	var protoReq QueryEntryRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -79,7 +79,7 @@ func request_Query_Entry_0(ctx context.Context, marshaler runtime.Marshaler, cli
 }
 
 func local_request_Query_Entry_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryGetEntryRequest
+	var protoReq QueryEntryRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -106,7 +106,7 @@ func local_request_Query_Entry_0(ctx context.Context, marshaler runtime.Marshale
 }
 
 func request_Query_EntryByDenom_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryGetEntryByDenomRequest
+	var protoReq QueryEntryByDenomRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -133,7 +133,7 @@ func request_Query_EntryByDenom_0(ctx context.Context, marshaler runtime.Marshal
 }
 
 func local_request_Query_EntryByDenom_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryGetEntryByDenomRequest
+	var protoReq QueryEntryByDenomRequest
 	var metadata runtime.ServerMetadata
 
 	var (

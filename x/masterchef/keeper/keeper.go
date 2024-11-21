@@ -2,11 +2,8 @@ package keeper
 
 import (
 	"cosmossdk.io/core/store"
-	"fmt"
 
-	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
 
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -67,8 +64,4 @@ func NewKeeper(
 		estakingKeeper:      estakingKeeper,
 		authority:           authority,
 	}
-}
-
-func (k Keeper) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }

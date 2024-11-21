@@ -155,10 +155,10 @@ service Query {
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/assetprofile/params";
   }
-  rpc Entry (QueryGetEntryRequest) returns (QueryGetEntryResponse) {
+  rpc Entry (QueryEntryRequest) returns (QueryEntryResponse) {
     option (google.api.http).get = "/elys-network/elys/assetprofile/entry/{base_denom}";
   }
-  rpc EntryByDenom (QueryGetEntryByDenomRequest) returns (QueryGetEntryByDenomResponse) {
+  rpc EntryByDenom (QueryEntryByDenomRequest) returns (QueryEntryByDenomResponse) {
     option (google.api.http).get = "/elys-network/elys/assetprofile/entry/{denom}";
   }
   rpc EntryAll (QueryAllEntryRequest) returns (QueryAllEntryResponse) {
@@ -185,42 +185,42 @@ message QueryParamsResponse {
 }
 ```
 
-#### QueryGetEntryRequest
+#### QueryEntryRequest
 
 This message requests an asset entry by its base denomination.
 
 ```proto
-message QueryGetEntryRequest {
+message QueryEntryRequest {
   string base_denom = 1;
 }
 ```
 
-#### QueryGetEntryResponse
+#### QueryEntryResponse
 
 This message responds with the asset entry details.
 
 ```proto
-message QueryGetEntryResponse {
+message QueryEntryResponse {
   Entry entry = 1 [(gogoproto.nullable) = false];
 }
 ```
 
-#### QueryGetEntryByDenomRequest
+#### QueryEntryByDenomRequest
 
 This message requests an asset entry by its denomination.
 
 ```proto
-message QueryGetEntryByDenomRequest {
+message QueryEntryByDenomRequest {
   string denom = 1;
 }
 ```
 
-#### QueryGetEntryByDenomResponse
+#### QueryEntryByDenomResponse
 
 This message responds with the asset entry details by denomination.
 
 ```proto
-message QueryGetEntryByDenomResponse {
+message QueryEntryByDenomResponse {
   Entry entry = 1 [(gogoproto.nullable) = false];
 }
 ```
