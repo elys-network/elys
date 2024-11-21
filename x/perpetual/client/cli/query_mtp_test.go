@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"io"
 	"testing"
 
@@ -149,6 +150,34 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 	bufO, err := cfg.Codec.MarshalJSON(&stateOracle)
 	require.NoError(t, err)
 	cfg.GenesisState[oracletypes.ModuleName] = bufO
+
+	assetProfileGenesisState := assetprofilemoduletypes.DefaultGenesis()
+	usdcEntry := assetprofilemoduletypes.Entry{
+		BaseDenom:                "uusdc",
+		Decimals:                 6,
+		Denom:                    "uusdc",
+		Path:                     "",
+		IbcChannelId:             "",
+		IbcCounterpartyChannelId: "",
+		DisplayName:              "",
+		DisplaySymbol:            "",
+		Network:                  "",
+		Address:                  "",
+		ExternalSymbol:           "",
+		TransferLimit:            "",
+		Permissions:              nil,
+		UnitDenom:                "",
+		IbcCounterpartyDenom:     "",
+		IbcCounterpartyChainId:   "",
+		Authority:                "",
+		CommitEnabled:            true,
+		WithdrawEnabled:          true,
+	}
+	assetProfileGenesisState.EntryList = []assetprofilemoduletypes.Entry{usdcEntry}
+	buf, err = cfg.Codec.MarshalJSON(assetProfileGenesisState)
+	require.NoError(t, err)
+	cfg.GenesisState[assetprofilemoduletypes.ModuleName] = buf
+
 	return network.New(t, cfg), mtps
 }
 

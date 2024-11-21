@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func GenerateCloseEvent(mtp *MTP, repayAmount math.Int) sdk.Event {
+func GenerateCloseEvent(mtp *MTP, repayAmount math.Int, closingRatio math.LegacyDec) sdk.Event {
 	return sdk.NewEvent(EventClose,
 		sdk.NewAttribute("address", mtp.Address),
 		sdk.NewAttribute("collateral_asset", mtp.CollateralAsset),
@@ -31,5 +31,6 @@ func GenerateCloseEvent(mtp *MTP, repayAmount math.Int) sdk.Event {
 		sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
 		sdk.NewAttribute("open_price", mtp.OpenPrice.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
+		sdk.NewAttribute("closing_ratio", closingRatio.String()),
 	)
 }

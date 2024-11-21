@@ -21,8 +21,8 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a list of Entry items.
-	Entry(ctx context.Context, in *QueryGetEntryRequest, opts ...grpc.CallOption) (*QueryGetEntryResponse, error)
-	EntryByDenom(ctx context.Context, in *QueryGetEntryByDenomRequest, opts ...grpc.CallOption) (*QueryGetEntryByDenomResponse, error)
+	Entry(ctx context.Context, in *QueryEntryRequest, opts ...grpc.CallOption) (*QueryEntryResponse, error)
+	EntryByDenom(ctx context.Context, in *QueryEntryByDenomRequest, opts ...grpc.CallOption) (*QueryEntryByDenomResponse, error)
 	EntryAll(ctx context.Context, in *QueryAllEntryRequest, opts ...grpc.CallOption) (*QueryAllEntryResponse, error)
 }
 
@@ -43,8 +43,8 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Entry(ctx context.Context, in *QueryGetEntryRequest, opts ...grpc.CallOption) (*QueryGetEntryResponse, error) {
-	out := new(QueryGetEntryResponse)
+func (c *queryClient) Entry(ctx context.Context, in *QueryEntryRequest, opts ...grpc.CallOption) (*QueryEntryResponse, error) {
+	out := new(QueryEntryResponse)
 	err := c.cc.Invoke(ctx, "/elys.assetprofile.Query/Entry", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -52,8 +52,8 @@ func (c *queryClient) Entry(ctx context.Context, in *QueryGetEntryRequest, opts 
 	return out, nil
 }
 
-func (c *queryClient) EntryByDenom(ctx context.Context, in *QueryGetEntryByDenomRequest, opts ...grpc.CallOption) (*QueryGetEntryByDenomResponse, error) {
-	out := new(QueryGetEntryByDenomResponse)
+func (c *queryClient) EntryByDenom(ctx context.Context, in *QueryEntryByDenomRequest, opts ...grpc.CallOption) (*QueryEntryByDenomResponse, error) {
+	out := new(QueryEntryByDenomResponse)
 	err := c.cc.Invoke(ctx, "/elys.assetprofile.Query/EntryByDenom", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -77,8 +77,8 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a list of Entry items.
-	Entry(context.Context, *QueryGetEntryRequest) (*QueryGetEntryResponse, error)
-	EntryByDenom(context.Context, *QueryGetEntryByDenomRequest) (*QueryGetEntryByDenomResponse, error)
+	Entry(context.Context, *QueryEntryRequest) (*QueryEntryResponse, error)
+	EntryByDenom(context.Context, *QueryEntryByDenomRequest) (*QueryEntryByDenomResponse, error)
 	EntryAll(context.Context, *QueryAllEntryRequest) (*QueryAllEntryResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
@@ -90,10 +90,10 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) Entry(context.Context, *QueryGetEntryRequest) (*QueryGetEntryResponse, error) {
+func (UnimplementedQueryServer) Entry(context.Context, *QueryEntryRequest) (*QueryEntryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Entry not implemented")
 }
-func (UnimplementedQueryServer) EntryByDenom(context.Context, *QueryGetEntryByDenomRequest) (*QueryGetEntryByDenomResponse, error) {
+func (UnimplementedQueryServer) EntryByDenom(context.Context, *QueryEntryByDenomRequest) (*QueryEntryByDenomResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EntryByDenom not implemented")
 }
 func (UnimplementedQueryServer) EntryAll(context.Context, *QueryAllEntryRequest) (*QueryAllEntryResponse, error) {
@@ -131,7 +131,7 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 }
 
 func _Query_Entry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetEntryRequest)
+	in := new(QueryEntryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -143,13 +143,13 @@ func _Query_Entry_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/elys.assetprofile.Query/Entry",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Entry(ctx, req.(*QueryGetEntryRequest))
+		return srv.(QueryServer).Entry(ctx, req.(*QueryEntryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_EntryByDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetEntryByDenomRequest)
+	in := new(QueryEntryByDenomRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -161,7 +161,7 @@ func _Query_EntryByDenom_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/elys.assetprofile.Query/EntryByDenom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).EntryByDenom(ctx, req.(*QueryGetEntryByDenomRequest))
+		return srv.(QueryServer).EntryByDenom(ctx, req.(*QueryEntryByDenomRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

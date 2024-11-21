@@ -19,12 +19,12 @@ service Query {
   }
 
   // Queries a list of Entry items.
-  rpc Entry(QueryGetEntryRequest) returns (QueryGetEntryResponse) {
+  rpc Entry(QueryEntryRequest) returns (QueryEntryResponse) {
     option (google.api.http).get =
         "/elys-network/elys/assetprofile/entry/{base_denom}";
   }
-  rpc EntryByDenom(QueryGetEntryByDenomRequest)
-      returns (QueryGetEntryByDenomResponse) {
+  rpc EntryByDenom(QueryEntryByDenomRequest)
+      returns (QueryEntryByDenomResponse) {
     option (google.api.http).get =
         "/elys-network/elys/assetprofile/entry/{denom}";
   }
@@ -42,15 +42,13 @@ message QueryParamsResponse {
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryGetEntryRequest { string base_denom = 1; }
+message QueryEntryRequest { string base_denom = 1; }
 
-message QueryGetEntryByDenomRequest { string denom = 1; }
+message QueryEntryByDenomRequest { string denom = 1; }
 
-message QueryGetEntryResponse {
-  Entry entry = 1 [ (gogoproto.nullable) = false ];
-}
+message QueryEntryResponse { Entry entry = 1 [ (gogoproto.nullable) = false ]; }
 
-message QueryGetEntryByDenomResponse {
+message QueryEntryByDenomResponse {
   Entry entry = 1 [ (gogoproto.nullable) = false ];
 }
 
