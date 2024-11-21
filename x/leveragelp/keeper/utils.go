@@ -75,12 +75,12 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 		if !found {
 			return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 		}
-		exitCoinsAfterFee, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), position.LeveragedLpAmount, baseCurrency)
+		exitCoins, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), position.LeveragedLpAmount, baseCurrency)
 		if err != nil {
 			return nil, err
 		}
 
-		exitAmountAfterFee := exitCoinsAfterFee.AmountOf(baseCurrency)
+		exitAmountAfterFee := exitCoins.AmountOf(baseCurrency)
 
 		updated_leverage := sdkmath.LegacyZeroDec()
 		denomimator := exitAmountAfterFee.ToLegacyDec().Sub(position.Liabilities.ToLegacyDec())

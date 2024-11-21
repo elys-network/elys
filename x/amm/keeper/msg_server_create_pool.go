@@ -2,12 +2,13 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"strconv"
+	"strings"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -15,30 +16,31 @@ import (
 // The pool creation fee is used to fund the community pool.
 // It will create a dedicated module account for the pool and sends the initial liquidity to the created module account.
 func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (*types.MsgCreatePoolResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Pay pool creation fee
-	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 	params := k.GetParams(ctx)
 
-	if params.EnableBaseCurrencyPairedPoolOnly {
-		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-		if !found {
-			return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-		}
+	if !params.IsCreatorAllowed(msg.Sender) {
+		return nil, fmt.Errorf("sender is not allowed to create pool")
+	}
 
-		is_base_curency_paired_pool := false
-		for _, asset := range msg.PoolAssets {
-			if asset.Token.Denom == baseCurrency {
-				is_base_curency_paired_pool = true
-			}
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+
+	baseAssetExists := false
+	for _, asset := range msg.PoolAssets {
+		baseAssetExists = k.CheckBaseAssetExist(ctx, asset.Token.Denom)
+		if baseAssetExists {
+			break
 		}
-		if !is_base_curency_paired_pool {
-			return nil, errorsmod.Wrapf(types.ErrOnlyBaseCurrencyPoolAllowed, "one of the asset must be %s", ptypes.BaseCurrency)
-		}
+	}
+	if !baseAssetExists {
+		return nil, errorsmod.Wrapf(types.ErrOnlyBaseAssetsPoolAllowed, "one of the asset must be from %s", strings.Join(params.BaseAssets, ", "))
+	}
+
+	feeAssetExists := k.CheckBaseAssetExist(ctx, msg.PoolParams.FeeDenom)
+	if !feeAssetExists {
+		return nil, fmt.Errorf("fee denom must be from %s", strings.Join(params.BaseAssets, ", "))
 	}
 
 	if !params.PoolCreationFee.IsNil() && params.PoolCreationFee.IsPositive() {

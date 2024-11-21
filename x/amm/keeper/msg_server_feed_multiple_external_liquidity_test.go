@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"fmt"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
@@ -250,7 +251,7 @@ func (suite *AmmKeeperTestSuite) TestFeedMultipleExternalLiquidity() {
 				// msg server
 				msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 
-				_, err := msgServer.FeedMultipleExternalLiquidity(suite.ctx, &types.MsgFeedMultipleExternalLiquidity{})
+				_, err := msgServer.FeedMultipleExternalLiquidity(suite.ctx, &types.MsgFeedMultipleExternalLiquidity{Sender: authtypes.NewModuleAddress("test").String()})
 				suite.Require().Error(err)
 			},
 		},

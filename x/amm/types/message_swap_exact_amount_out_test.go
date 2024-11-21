@@ -1,6 +1,9 @@
 package types_test
 
 import (
+	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -24,7 +27,11 @@ func TestMsgSwapExactAmountOut_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: types.MsgSwapExactAmountOut{
-				Sender: sample.AccAddress(),
+				Sender:           sample.AccAddress(),
+				Routes:           nil,
+				TokenOut:         sdk.Coin{ptypes.ATOM, math.NewInt(10)},
+				TokenInMaxAmount: math.NewInt(1),
+				Recipient:        "",
 			},
 		},
 	}

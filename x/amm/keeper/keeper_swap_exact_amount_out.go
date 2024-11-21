@@ -40,8 +40,9 @@ func (k Keeper) InternalSwapExactAmountOut(
 		return math.Int{}, errorsmod.Wrapf(types.ErrTooManyTokensOut, "cannot get more tokens out than there are tokens in the pool")
 	}
 
+	params := k.GetParams(ctx)
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-	tokenIn, _, slippageAmount, weightBalanceBonus, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, math.LegacyOneDec())
+	tokenIn, _, slippageAmount, weightBalanceBonus, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, math.LegacyOneDec(), params)
 	if err != nil {
 		return math.Int{}, err
 	}

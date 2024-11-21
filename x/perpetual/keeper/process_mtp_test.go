@@ -71,17 +71,11 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 	}
 
 	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.0")
-	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.0")
 
-	poolParams := &ammtypes.PoolParams{
-		UseOracle:                   true,
-		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-		SwapFee:                     argSwapFee,
-		ExitFee:                     argExitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
+	poolParams := ammtypes.PoolParams{
+		UseOracle: true,
+		SwapFee:   argSwapFee,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -255,17 +249,11 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 	}
 
 	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.0")
-	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.0")
 
-	poolParams := &ammtypes.PoolParams{
-		UseOracle:                   true,
-		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-		SwapFee:                     argSwapFee,
-		ExitFee:                     argExitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
+	poolParams := ammtypes.PoolParams{
+		UseOracle: true,
+		SwapFee:   argSwapFee,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -392,6 +380,8 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	// Mint 100000ATOM
 	atomToken := []sdk.Coin{sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(200000000000))}
 
+	elysToken := []sdk.Coin{sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(200000000000))}
+
 	err := app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, usdcToken)
 	suite.Require().NoError(err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], usdcToken)
@@ -400,6 +390,11 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, atomToken)
 	suite.Require().NoError(err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], atomToken)
+	suite.Require().NoError(err)
+
+	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, elysToken)
+	suite.Require().NoError(err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], elysToken)
 	suite.Require().NoError(err)
 
 	poolAssets := []ammtypes.PoolAsset{
@@ -416,17 +411,11 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	}
 
 	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.0")
-	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.0")
 
-	poolParams := &ammtypes.PoolParams{
-		UseOracle:                   true,
-		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-		SwapFee:                     argSwapFee,
-		ExitFee:                     argExitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
+	poolParams := ammtypes.PoolParams{
+		UseOracle: true,
+		SwapFee:   argSwapFee,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -454,7 +443,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	poolAddress := sdk.MustAccAddressFromBech32(ammPool.GetAddress())
 	suite.Require().NoError(err)
 
-	err = app.BankKeeper.SendCoins(ctx, addr[0], poolAddress, sdk.NewCoins(sdk.NewCoin("uelys", sdkmath.NewInt(1000000))))
+	err = app.BankKeeper.SendCoins(ctx, addr[0], poolAddress, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(1000000))))
 	suite.Require().NoError(err)
 	// Balance check before create a perpetual position
 	balances := app.BankKeeper.GetAllBalances(ctx, poolAddress)

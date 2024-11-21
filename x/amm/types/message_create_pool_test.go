@@ -22,15 +22,10 @@ func TestMsgCreatePool_ValidateBasic(t *testing.T) {
 			name: "invalid address",
 			msg: types.MsgCreatePool{
 				Sender: "invalid_address",
-				PoolParams: &types.PoolParams{
-					SwapFee:                     sdkmath.LegacyZeroDec(),
-					ExitFee:                     sdkmath.LegacyZeroDec(),
-					UseOracle:                   false,
-					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-					FeeDenom:                    ptypes.BaseCurrency,
+				PoolParams: types.PoolParams{
+					SwapFee:   sdkmath.LegacyZeroDec(),
+					UseOracle: false,
+					FeeDenom:  ptypes.BaseCurrency,
 				},
 			},
 			err: sdkerrors.ErrInvalidAddress,
@@ -39,15 +34,10 @@ func TestMsgCreatePool_ValidateBasic(t *testing.T) {
 			name: "pool assets must be exactly two",
 			msg: types.MsgCreatePool{
 				Sender: sample.AccAddress(),
-				PoolParams: &types.PoolParams{
-					SwapFee:                     sdkmath.LegacyZeroDec(),
-					ExitFee:                     sdkmath.LegacyZeroDec(),
-					UseOracle:                   false,
-					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-					FeeDenom:                    ptypes.BaseCurrency,
+				PoolParams: types.PoolParams{
+					SwapFee:   sdkmath.LegacyZeroDec(),
+					UseOracle: false,
+					FeeDenom:  ptypes.BaseCurrency,
 				},
 				PoolAssets: []types.PoolAsset{
 					{
@@ -62,24 +52,21 @@ func TestMsgCreatePool_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: types.MsgCreatePool{
 				Sender: sample.AccAddress(),
-				PoolParams: &types.PoolParams{
-					SwapFee:                     sdkmath.LegacyZeroDec(),
-					ExitFee:                     sdkmath.LegacyZeroDec(),
-					UseOracle:                   false,
-					WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-					ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-					FeeDenom:                    ptypes.BaseCurrency,
+				PoolParams: types.PoolParams{
+					SwapFee:   sdkmath.LegacyZeroDec(),
+					UseOracle: false,
+					FeeDenom:  ptypes.BaseCurrency,
 				},
 				PoolAssets: []types.PoolAsset{
 					{
-						Token:  sdk.NewCoin("uusdc", sdkmath.NewInt(10000000)),
-						Weight: sdkmath.NewInt(10),
+						Token:                  sdk.NewCoin("uusdc", sdkmath.NewInt(10000000)),
+						Weight:                 sdkmath.NewInt(10),
+						ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
 					},
 					{
-						Token:  sdk.NewCoin("uatom", sdkmath.NewInt(10000000)),
-						Weight: sdkmath.NewInt(10),
+						Token:                  sdk.NewCoin("uatom", sdkmath.NewInt(10000000)),
+						Weight:                 sdkmath.NewInt(10),
+						ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
 					},
 				},
 			},

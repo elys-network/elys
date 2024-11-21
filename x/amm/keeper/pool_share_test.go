@@ -54,15 +54,11 @@ func TestCommitMintedLPTokenToCommitmentModule(t *testing.T) {
 		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),
 	})
 
-	argSwapFee, err := sdkmath.LegacyNewDecFromStr("0.1")
+	argSwapFee, err := sdkmath.LegacyNewDecFromStr("0.01")
 	require.NoError(t, err)
 
-	argExitFee, err := sdkmath.LegacyNewDecFromStr("0.1")
-	require.NoError(t, err)
-
-	poolParams := &atypes.PoolParams{
+	poolParams := atypes.PoolParams{
 		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
 	}
 
 	msg := types.NewMsgCreatePool(

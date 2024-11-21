@@ -2,14 +2,14 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ sdk.Msg = &MsgCreatePool{}
+var _ sdk.HasValidateBasic = &MsgCreatePool{}
 
-func NewMsgCreatePool(sender string, poolParams *PoolParams, poolAssets []PoolAsset) *MsgCreatePool {
+func NewMsgCreatePool(sender string, poolParams PoolParams, poolAssets []PoolAsset) *MsgCreatePool {
 	return &MsgCreatePool{
 		Sender:     sender,
 		PoolParams: poolParams,
@@ -27,24 +27,14 @@ func (msg *MsgCreatePool) ValidateBasic() error {
 		return ErrPoolAssetsMustBeTwo
 	}
 
-	if msg.PoolParams == nil {
-		return ErrPoolParamsShouldNotBeNil
+	if err = msg.PoolParams.Validate(); err != nil {
+		return err
 	}
 
-	if msg.PoolParams.SwapFee.IsNegative() {
-		return ErrFeeShouldNotBeNegative
-	}
-
-	if msg.PoolParams.SwapFee.GT(sdkmath.LegacyNewDecWithPrec(2, 2)) { // >2%
-		return ErrSwapFeeShouldNotExceedTwoPercent
-	}
-
-	if msg.PoolParams.ExitFee.IsNegative() {
-		return ErrFeeShouldNotBeNegative
-	}
-
-	if msg.PoolParams.ExitFee.GT(sdkmath.LegacyNewDecWithPrec(2, 2)) { // >2%
-		return ErrExitFeeShouldNotExceedTwoPercent
+	for _, asset := range msg.PoolAssets {
+		if err = asset.Validate(); err != nil {
+			return err
+		}
 	}
 
 	return nil

@@ -77,11 +77,9 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	}
 
 	argSwapFee := math.LegacyMustNewDecFromStr("0.0")
-	argExitFee := math.LegacyMustNewDecFromStr("0.0")
 
-	poolParams := &ammtypes.PoolParams{
+	poolParams := ammtypes.PoolParams{
 		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
 	}
 
 	// Create a Elys+USDC pool
@@ -93,7 +91,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	// check length of pools
 	suite.Require().Equal(len(pools), 1)
 
-	_, _, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
+	_, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
 	suite.Require().NoError(err)
 
 	// new user join pool with same shares
@@ -177,7 +175,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	suite.Require().Len(res.TotalRewards, 0)
 
 	// first user exit pool
-	_, _, err = suite.app.AmmKeeper.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false)
+	_, err = suite.app.AmmKeeper.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false)
 	suite.Require().NoError(err)
 
 	// check rewards after 100 block

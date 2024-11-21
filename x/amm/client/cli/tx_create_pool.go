@@ -13,15 +13,9 @@ import (
 )
 
 const (
-	FlagSwapFee                     = "swap-fee"
-	FlagExitFee                     = "exit-fee"
-	FlagUseOracle                   = "use-oracle"
-	FlagWeightBreakingFeeMultiplier = "weight-breaking-fee-multiplier"
-	FlagWeightBreakingFeeExponent   = "weight-breaking-fee-exponent"
-	FlagWeightRecoveryFeePortion    = "weight-recovery-fee-portion"
-	FlagWeightBreakingFeePortion    = "weight-breaking-fee-portion"
-	FlagThresholdWeightDifference   = "threshold-weight-diff"
-	FlagFeeDenom                    = "fee-denom"
+	FlagSwapFee   = "swap-fee"
+	FlagUseOracle = "use-oracle"
+	FlagFeeDenom  = "fee-denom"
 )
 
 func CmdCreatePool() *cobra.Command {
@@ -69,37 +63,7 @@ func CmdCreatePool() *cobra.Command {
 				return err
 			}
 
-			exitFeeStr, err := cmd.Flags().GetString(FlagExitFee)
-			if err != nil {
-				return err
-			}
-
 			useOracle, err := cmd.Flags().GetBool(FlagUseOracle)
-			if err != nil {
-				return err
-			}
-
-			weightBreakingFeeMultiplierStr, err := cmd.Flags().GetString(FlagWeightBreakingFeeMultiplier)
-			if err != nil {
-				return err
-			}
-
-			weightBreakingFeeExponentStr, err := cmd.Flags().GetString(FlagWeightBreakingFeeExponent)
-			if err != nil {
-				return err
-			}
-
-			weightRecoveryFeePortionStr, err := cmd.Flags().GetString(FlagWeightRecoveryFeePortion)
-			if err != nil {
-				return err
-			}
-
-			weightBreakingFeePortionStr, err := cmd.Flags().GetString(FlagWeightBreakingFeePortion)
-			if err != nil {
-				return err
-			}
-
-			thresholdWeightDifferenceStr, err := cmd.Flags().GetString(FlagThresholdWeightDifference)
 			if err != nil {
 				return err
 			}
@@ -109,16 +73,10 @@ func CmdCreatePool() *cobra.Command {
 				return err
 			}
 
-			poolParams := &types.PoolParams{
-				SwapFee:                     sdkmath.LegacyMustNewDecFromStr(swapFeeStr),
-				ExitFee:                     sdkmath.LegacyMustNewDecFromStr(exitFeeStr),
-				UseOracle:                   useOracle,
-				WeightBreakingFeeMultiplier: sdkmath.LegacyMustNewDecFromStr(weightBreakingFeeMultiplierStr),
-				WeightBreakingFeeExponent:   sdkmath.LegacyMustNewDecFromStr(weightBreakingFeeExponentStr),
-				WeightRecoveryFeePortion:    sdkmath.LegacyMustNewDecFromStr(weightRecoveryFeePortionStr),
-				WeightBreakingFeePortion:    sdkmath.LegacyMustNewDecFromStr(weightBreakingFeePortionStr),
-				ThresholdWeightDifference:   sdkmath.LegacyMustNewDecFromStr(thresholdWeightDifferenceStr),
-				FeeDenom:                    feeDenom,
+			poolParams := types.PoolParams{
+				SwapFee:   sdkmath.LegacyMustNewDecFromStr(swapFeeStr),
+				UseOracle: useOracle,
+				FeeDenom:  feeDenom,
 			}
 
 			msg := types.NewMsgCreatePool(
@@ -136,13 +94,7 @@ func CmdCreatePool() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	cmd.Flags().String(FlagSwapFee, "0.00", "swap fee")
-	cmd.Flags().String(FlagExitFee, "0.00", "exit fee")
 	cmd.Flags().Bool(FlagUseOracle, false, "flag to be an oracle pool or non-oracle pool")
-	cmd.Flags().String(FlagWeightBreakingFeeMultiplier, "0.00", "weight breaking fee multiplier")
-	cmd.Flags().String(FlagWeightBreakingFeeExponent, "2.50", "weight breaking fee exponent")
-	cmd.Flags().String(FlagWeightRecoveryFeePortion, "0.10", "weight recovery fee portion")
-	cmd.Flags().String(FlagWeightBreakingFeePortion, "0.10", "weight breaking fee portion")
-	cmd.Flags().String(FlagThresholdWeightDifference, "0.00", "threshold weight difference - valid for oracle pool")
 	cmd.Flags().String(FlagFeeDenom, "", "fee denom")
 
 	return cmd

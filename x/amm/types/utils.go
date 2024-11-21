@@ -60,16 +60,16 @@ func ApplyDiscount(swapFee sdkmath.LegacyDec, discount sdkmath.LegacyDec) sdkmat
 	return swapFee
 }
 
-func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut sdkmath.LegacyDec, poolParams PoolParams, distanceDiff sdkmath.LegacyDec) sdkmath.LegacyDec {
+func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut sdkmath.LegacyDec, distanceDiff sdkmath.LegacyDec, params Params) sdkmath.LegacyDec {
 	weightBreakingFee := sdkmath.LegacyZeroDec()
-	if !weightOut.IsZero() && !weightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() && !poolParams.WeightBreakingFeeMultiplier.IsZero() {
+	if !weightOut.IsZero() && !weightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() && !params.WeightBreakingFeeMultiplier.IsZero() {
 		// (45/55*60/40) ^ 2.5
 		if distanceDiff.IsPositive() {
-			weightBreakingFee = poolParams.WeightBreakingFeeMultiplier.
-				Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), poolParams.WeightBreakingFeeExponent))
+			weightBreakingFee = params.WeightBreakingFeeMultiplier.
+				Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), params.WeightBreakingFeeExponent))
 		} else {
-			weightBreakingFee = poolParams.WeightBreakingFeeMultiplier.
-				Mul(Pow(weightOut.Mul(targetWeightIn).Quo(weightIn).Quo(targetWeightOut), poolParams.WeightBreakingFeeExponent))
+			weightBreakingFee = params.WeightBreakingFeeMultiplier.
+				Mul(Pow(weightOut.Mul(targetWeightIn).Quo(weightIn).Quo(targetWeightOut), params.WeightBreakingFeeExponent))
 		}
 
 		if weightBreakingFee.GT(sdkmath.LegacyNewDecWithPrec(99, 2)) {
@@ -77,26 +77,6 @@ func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut s
 		}
 	}
 	return weightBreakingFee
-}
-
-func (params PoolParams) Validate(poolWeights []PoolAsset) error {
-	if params.ExitFee.IsNegative() {
-		return ErrNegativeExitFee
-	}
-
-	if params.ExitFee.GTE(sdkmath.LegacyOneDec()) {
-		return ErrTooMuchExitFee
-	}
-
-	if params.SwapFee.IsNegative() {
-		return ErrNegativeSwapFee
-	}
-
-	if params.SwapFee.GTE(sdkmath.LegacyOneDec()) {
-		return ErrTooMuchSwapFee
-	}
-
-	return nil
 }
 
 // GetPoolAssetsByDenom return a mapping from pool asset

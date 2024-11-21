@@ -17,7 +17,7 @@ func NewBalancerPool(poolId uint64, balancerPoolParams PoolParams, assets []Pool
 	poolAddr := NewPoolAddress(poolId)
 	poolRebalanceTreasuryAddr := NewPoolRebalanceTreasury(poolId)
 
-	// pool thats created up to ensuring the assets and params are valid.
+	// pool that's created up to ensuring the assets and params are valid.
 	// We assume that FuturePoolGovernor is valid.
 	pool := &Pool{
 		PoolId:            poolId,
@@ -35,7 +35,7 @@ func NewBalancerPool(poolId uint64, balancerPoolParams PoolParams, assets []Pool
 	}
 
 	sortedPoolAssets := pool.GetAllPoolAssets()
-	err = balancerPoolParams.Validate(sortedPoolAssets)
+	err = balancerPoolParams.Validate()
 	if err != nil {
 		return Pool{}, err
 	}

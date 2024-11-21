@@ -9,7 +9,7 @@ import (
 )
 
 func (m Migrator) V7Migration(ctx sdk.Context) error {
-	pools := m.keeper.GetAllPool(ctx)
+	pools := m.keeper.GetAllLegacyPool(ctx)
 	for _, pool := range pools {
 		newPoolAddress := types.NewPoolAddress(pool.PoolId)
 		poolAccountModuleName := types.GetPoolIdModuleName(pool.PoolId)
@@ -19,7 +19,10 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		poolAccAddress := sdk.MustAccAddressFromBech32(pool.Address)
 		// Bank: Transfer funds from prevPoolAddress to new newPoolAddress
 		prevPoolAddressBalances := m.keeper.GetBankKeeper().GetAllBalances(ctx, poolAccAddress)
-		m.keeper.GetBankKeeper().SendCoins(ctx, poolAccAddress, newPoolAddress, prevPoolAddressBalances)
+		err := m.keeper.GetBankKeeper().SendCoins(ctx, poolAccAddress, newPoolAddress, prevPoolAddressBalances)
+		if err != nil {
+			return err
+		}
 
 		// AssetProfile: Update authority in assetprofile entry
 		poolBaseDenom := types.GetPoolShareDenom(pool.PoolId)
@@ -35,7 +38,7 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 
 		pool.Address = newPoolAddress.String()
 
-		m.keeper.SetPool(ctx, pool)
+		m.keeper.SetLegacyPool(ctx, pool)
 
 		// Update the name and Symbol of pool share token metadata
 		metadata, found := m.keeper.GetBankKeeper().GetDenomMetaData(ctx, poolBaseDenom)
