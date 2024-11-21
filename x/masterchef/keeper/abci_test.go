@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"time"
+
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -380,4 +382,32 @@ func (suite *MasterchefKeeperTestSuite) TestExternalRewardsDistribution() {
 	suite.Require().True(found)
 	suite.Require().Equal(rewardInfo.RewardDenom, externalIncentive2.RewardDenom)
 	suite.Require().Equal(rewardInfo.PoolAccRewardPerShare, sdkmath.LegacyMustNewDecFromStr("0.000099900099900099"))
+
+	// Get Tvl for non-existent pool
+	res := suite.app.MasterchefKeeper.GetPoolTVL(suite.ctx, 1000)
+	suite.Require().Equal(res, sdkmath.LegacyZeroDec())
+
+	// increase timestamp
+	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
+	suite.app.MasterchefKeeper.ProcessExternalRewardsDistribution(suite.ctx)
+
+	// set current block to last block
+	suite.ctx = suite.ctx.WithBlockHeight(externalIncentive.ToBlock)
+
+	suite.app.MasterchefKeeper.ProcessExternalRewardsDistribution(suite.ctx)
+
+	// should delete incentives
+	listInc := suite.app.MasterchefKeeper.GetAllExternalIncentives(suite.ctx)
+	suite.Require().Equal(len(listInc), 0)
+}
+
+func (suite *MasterchefKeeperTestSuite) TestInitialParams() {
+	suite.ResetSuite(true)
+
+	res := suite.app.MasterchefKeeper.InitPoolParams(suite.ctx, 1)
+	suite.Require().Equal(res, true)
+
+	poolInfo, found := suite.app.MasterchefKeeper.GetPoolInfo(suite.ctx, 1)
+	suite.Require().Equal(found, true)
+	suite.Require().Equal(poolInfo.PoolId, uint64(1))
 }
