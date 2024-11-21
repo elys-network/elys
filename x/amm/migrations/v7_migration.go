@@ -50,5 +50,5 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 	}
 	ctx.Logger().Info("Bank Module Migration Finished")
 
-	return m.keeper.V7Migrate(ctx)
+	return nil
 }

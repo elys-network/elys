@@ -51,7 +51,7 @@ func (k Keeper) CheckBaseAssetExist(ctx sdk.Context, denom string) bool {
 	return found
 }
 
-func (k Keeper) V7Migrate(ctx sdk.Context) error {
+func (k Keeper) V8Migrate(ctx sdk.Context) error {
 	baseCurrencyDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
 		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
