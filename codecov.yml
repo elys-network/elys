@@ -3,6 +3,7 @@ comment:
 
 ignore:
   - "**/*.pb*"
+  - "**/*.pulsar*"
 
 component_management:
   default_rules: # default rules that will be inherited by all components
