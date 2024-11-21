@@ -30,3 +30,5 @@ cp -r github.com/elys-network/elys/* ./
 rm -rf github.com
 
 go mod tidy
+
+./scripts/protocgen-pulsar.sh
