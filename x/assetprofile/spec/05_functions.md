@@ -235,7 +235,7 @@ func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*t
 The `Entry` function handles querying an asset entry by its base denomination.
 
 ```go
-func (k Keeper) Entry(goCtx context.Context, req *types.QueryGetEntryRequest) (*types.QueryGetEntryResponse, error) {
+func (k Keeper) Entry(goCtx context.Context, req *types.QueryEntryRequest) (*types.QueryEntryResponse, error) {
     if req == nil {
         return nil, status.Error(codes.InvalidArgument, "invalid request")
     }
@@ -246,7 +246,7 @@ func (k Keeper) Entry(goCtx context.Context, req *types.QueryGetEntryRequest) (*
         return nil, status.Error(codes.NotFound, "not found")
     }
 
-    return &types.QueryGetEntryResponse{Entry: val}, nil
+    return &types.QueryEntryResponse{Entry: val}, nil
 }
 ```
 
@@ -255,7 +255,7 @@ func (k Keeper) Entry(goCtx context.Context, req *types.QueryGetEntryRequest) (*
 The `EntryByDenom` function handles querying an asset entry by its denomination.
 
 ```go
-func (k Keeper) EntryByDenom(goCtx context.Context, req *types.QueryGetEntryByDenomRequest) (*types.QueryGetEntryByDenomResponse, error) {
+func (k Keeper) EntryByDenom(goCtx context.Context, req *types.QueryEntryByDenomRequest) (*types.QueryEntryByDenomResponse, error) {
     if req == nil {
         return nil, status.Error(codes.InvalidArgument, "invalid request")
     }
@@ -266,7 +266,7 @@ func (k Keeper) EntryByDenom(goCtx context.Context, req *types.QueryGetEntryByDe
         return nil, status.Error(codes.NotFound, "not found")
     }
 
-    return &types.QueryGetEntryByDenomResponse{Entry: val}, nil
+    return &types.QueryEntryByDenomResponse{Entry: val}, nil
 }
 ```
 

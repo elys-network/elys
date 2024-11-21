@@ -36,11 +36,17 @@ func (suite *PerpetualKeeperTestSuite) TestMsgServerDeWhileList() {
 
 	t.Run("Successful", func(t *testing.T) {
 		msg := keeper.NewMsgServerImpl(*suite.app.PerpetualKeeper)
+		address := sample.AccAddress()
 		_, err := msg.Dewhitelist(suite.ctx, &types.MsgDewhitelist{
 			Authority:          authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-			WhitelistedAddress: sample.AccAddress(),
+			WhitelistedAddress: address,
 		})
 		suite.Require().Nil(err)
+		isWhitelisted, err := suite.app.PerpetualKeeper.IsWhitelisted(suite.ctx, &types.IsWhitelistedRequest{
+			Address: address,
+		})
+		suite.Require().Nil(err)
+		suite.Require().Equal(false, isWhitelisted.IsWhitelisted)
 	})
 
 }

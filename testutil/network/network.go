@@ -2,6 +2,7 @@ package network
 
 import (
 	"fmt"
+	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"testing"
 	"time"
 
@@ -41,6 +42,33 @@ func New(t *testing.T, configs ...network.Config) *network.Network {
 	} else {
 		cfg = configs[0]
 	}
+	assetProfileGenesisState := assetprofilemoduletypes.DefaultGenesis()
+	usdcEntry := assetprofilemoduletypes.Entry{
+		BaseDenom:                "uusdc",
+		Decimals:                 6,
+		Denom:                    "uusdc",
+		Path:                     "",
+		IbcChannelId:             "",
+		IbcCounterpartyChannelId: "",
+		DisplayName:              "",
+		DisplaySymbol:            "",
+		Network:                  "",
+		Address:                  "",
+		ExternalSymbol:           "",
+		TransferLimit:            "",
+		Permissions:              nil,
+		UnitDenom:                "",
+		IbcCounterpartyDenom:     "",
+		IbcCounterpartyChainId:   "",
+		Authority:                "",
+		CommitEnabled:            true,
+		WithdrawEnabled:          true,
+	}
+	assetProfileGenesisState.EntryList = []assetprofilemoduletypes.Entry{usdcEntry}
+	buf, err := cfg.Codec.MarshalJSON(assetProfileGenesisState)
+	require.NoError(t, err)
+	cfg.GenesisState[assetprofilemoduletypes.ModuleName] = buf
+
 	net, err := network.New(t, t.TempDir(), cfg)
 	require.NoError(t, err)
 	_, err = net.WaitForHeight(1)
