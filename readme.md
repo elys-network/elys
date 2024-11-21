@@ -87,7 +87,13 @@ git checkout [version]
 sudo apt-get install --yes make
 ```
 
-   To generate proto files install `buf` and `clang-format`, then:
+   In order to generate proto files, install the dependencies below:
+
+   * `buf`
+   * `clang-format`
+   * `protoc-gen-go-cosmos-orm`: `go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest`
+
+   Then run the following command:
 ```bash
 make proto
 ```
