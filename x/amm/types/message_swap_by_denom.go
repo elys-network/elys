@@ -25,5 +25,19 @@ func (msg *MsgSwapByDenom) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
+	if msg.Recipient != "" {
+		if _, err = sdk.AccAddressFromBech32(msg.Recipient); err != nil {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid recipient address (%s)", err)
+		}
+	}
+	if err = msg.Amount.Validate(); err != nil {
+		return err
+	}
+	if err = sdk.ValidateDenom(msg.DenomIn); err != nil {
+		return err
+	}
+	if err = sdk.ValidateDenom(msg.DenomOut); err != nil {
+		return err
+	}
 	return nil
 }

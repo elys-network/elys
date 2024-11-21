@@ -32,5 +32,11 @@ func (msg *MsgJoinPool) ValidateBasic() error {
 		return ErrInvalidShareAmountOut
 	}
 
+	for _, coin := range msg.MaxAmountsIn {
+		if err = coin.Validate(); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }

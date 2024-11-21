@@ -24,6 +24,12 @@ func (msg *MsgExitPool) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 
+	for _, coin := range msg.MinAmountsOut {
+		if err = coin.Validate(); err != nil {
+			return err
+		}
+	}
+
 	if msg.ShareAmountIn.IsNil() {
 		return ErrInvalidShareAmountOut
 	}
