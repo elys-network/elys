@@ -193,6 +193,13 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) err
 		return nil
 	}
 
+	// send the order amount back to the owner
+	ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
+	err = k.bank.SendCoins(ctx, order.GetOrderAddress(), ownerAddress, sdk.NewCoins(order.OrderAmount))
+	if err != nil {
+		return err
+	}
+
 	// Swap the order amount with the target denom
 	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
@@ -224,6 +231,13 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) er
 		return nil
 	}
 
+	// send the order amount back to the owner
+	ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
+	err = k.bank.SendCoins(ctx, order.GetOrderAddress(), ownerAddress, sdk.NewCoins(order.OrderAmount))
+	if err != nil {
+		return err
+	}
+
 	// Swap the order amount with the target denom
 	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
@@ -253,6 +267,13 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) err
 	if marketPrice.GT(order.OrderPrice.Rate) {
 		// skip the order
 		return nil
+	}
+
+	// send the order amount back to the owner
+	ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
+	err = k.bank.SendCoins(ctx, order.GetOrderAddress(), ownerAddress, sdk.NewCoins(order.OrderAmount))
+	if err != nil {
+		return err
 	}
 
 	// Swap the order amount with the target denom

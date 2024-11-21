@@ -13,7 +13,7 @@ import (
 )
 
 func TestPendingSpotOrderForAddress(t *testing.T) {
-	k, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
+	k, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
 
 	order := types.SpotOrder{
 		OrderId:      1,

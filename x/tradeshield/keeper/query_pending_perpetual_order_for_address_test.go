@@ -14,7 +14,7 @@ import (
 )
 
 func TestPendingPerpetualOrderForAddress(t *testing.T) {
-	k, ctx, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
+	k, ctx, _, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
 
 	ownerAddress := "valid_address"
 	ownerAddressAcc := sdk.AccAddress(ownerAddress)
