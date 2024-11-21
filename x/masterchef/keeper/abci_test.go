@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"time"
+
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -384,6 +386,10 @@ func (suite *MasterchefKeeperTestSuite) TestExternalRewardsDistribution() {
 	// Get Tvl for non-existent pool
 	res := suite.app.MasterchefKeeper.GetPoolTVL(suite.ctx, 1000)
 	suite.Require().Equal(res, sdkmath.LegacyZeroDec())
+
+	// increase timestamp
+	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
+	suite.app.MasterchefKeeper.ProcessExternalRewardsDistribution(suite.ctx)
 
 	// set current block to last block
 	suite.ctx = suite.ctx.WithBlockHeight(externalIncentive.ToBlock)

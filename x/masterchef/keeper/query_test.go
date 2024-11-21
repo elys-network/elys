@@ -299,79 +299,87 @@ func (suite *MasterchefKeeperTestSuite) TestPoolInfo() {
 	}
 }
 
-// func (suite *MasterchefKeeperTestSuite) TestPoolRewardInfoQuery() {
-// 	tests := []struct {
-// 		desc     string
-// 		request  *types.QueryPoolRewardInfoRequest
-// 		response *types.QueryPoolRewardInfoResponse
-// 		err      error
-// 	}{
-// 		{
-// 			desc: "valid request",
-// 			request: &types.QueryPoolRewardInfoRequest{
-// 				PoolId: 1,
-// 			},
-// 			response: &types.QueryPoolRewardInfoResponse{
-// 				PoolRewardInfo: types.PoolRewardInfo{},
-// 			},
-// 			err: nil,
-// 		},
-// 	}
+func (suite *MasterchefKeeperTestSuite) TestPoolRewardInfoQuery() {
+	suite.SetupApp()
+	tests := []struct {
+		desc     string
+		request  *types.QueryPoolRewardInfoRequest
+		response *types.QueryPoolRewardInfoResponse
+		err      error
+	}{
+		{
+			desc: "valid request",
+			request: &types.QueryPoolRewardInfoRequest{
+				PoolId:      1,
+				RewardDenom: "reward",
+			},
+			response: &types.QueryPoolRewardInfoResponse{
+				PoolRewardInfo: types.PoolRewardInfo{
+					PoolId:                1,
+					RewardDenom:           "reward",
+					PoolAccRewardPerShare: math.LegacyNewDec(0),
+					LastUpdatedBlock:      uint64(suite.ctx.BlockHeight()),
+				},
+			},
+			err: nil,
+		},
+	}
 
-// 	suite.SetupApp()
+	for _, tc := range tests {
+		suite.Run(tc.desc, func() {
+			suite.app.MasterchefKeeper.EndBlocker(suite.ctx)
+			suite.app.MasterchefKeeper.SetPoolRewardInfo(suite.ctx, tc.response.PoolRewardInfo)
+			response, err := suite.app.MasterchefKeeper.PoolRewardInfo(suite.ctx, tc.request)
+			if tc.err != nil {
+				suite.Require().ErrorIs(err, tc.err)
+			} else {
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.response.String(), response.String())
+			}
+		})
+	}
+}
 
-// 	for _, tc := range tests {
-// 		suite.Run(tc.desc, func() {
-// 			suite.app.MasterchefKeeper.EndBlocker(suite.ctx)
-// 			response, err := suite.app.MasterchefKeeper.PoolRewardInfo(suite.ctx, tc.request)
-// 			if tc.err != nil {
-// 				suite.Require().ErrorIs(err, tc.err)
-// 			} else {
-// 				suite.Require().NoError(err)
-// 				suite.Require().Equal(tc.response.String(), response.String())
-// 			}
-// 		})
-// 	}
-// }
+func (suite *MasterchefKeeperTestSuite) TestUserRewardInfoQuery() {
+	addr := simapp.AddTestAddrs(suite.app, suite.ctx, 1, math.NewInt(100010))
+	tests := []struct {
+		desc     string
+		request  *types.QueryUserRewardInfoRequest
+		response *types.QueryUserRewardInfoResponse
+		err      error
+	}{
+		{
+			desc: "valid request",
+			request: &types.QueryUserRewardInfoRequest{
+				PoolId:      1,
+				User:        addr[0].String(),
+				RewardDenom: "reward",
+			},
+			response: &types.QueryUserRewardInfoResponse{
+				UserRewardInfo: types.UserRewardInfo{
+					User:          addr[0].String(),
+					PoolId:        1,
+					RewardDenom:   "reward",
+					RewardDebt:    sdkmath.LegacyOneDec(),
+					RewardPending: sdkmath.LegacyOneDec(),
+				},
+			},
+			err: nil,
+		},
+	}
 
-// func (suite *MasterchefKeeperTestSuite) TestUserRewardInfoQuery() {
-// 	tests := []struct {
-// 		desc     string
-// 		request  *types.QueryPoolInfoRequest
-// 		response *types.QueryPoolInfoResponse
-// 		err      error
-// 	}{
-// 		{
-// 			desc: "valid request",
-// 			request: &types.QueryPoolInfoRequest{
-// 				PoolId: 1,
-// 			},
-// 			response: &types.QueryPoolInfoResponse{
-// 				PoolInfo: types.PoolInfo{
-// 					PoolId:               1,
-// 					RewardWallet:         "cosmos1lz2ajk0mvhda7hdzedydeany3f673600pd6euqnjvqv8w5p4az5qmt08tn",
-// 					Multiplier:           sdkmath.LegacyOneDec(),
-// 					EdenApr:              sdkmath.LegacyMustNewDecFromStr("0.02"),
-// 					GasApr:               sdkmath.LegacyZeroDec(),
-// 					DexApr:               sdkmath.LegacyMustNewDecFromStr("0.01"),
-// 					ExternalIncentiveApr: sdkmath.LegacyZeroDec(),
-// 				},
-// 			},
-// 			err: nil,
-// 		},
-// 	}
+	suite.SetupApp()
 
-// 	suite.SetupApp()
-
-// 	for _, tc := range tests {
-// 		suite.Run(tc.desc, func() {
-// 			response, err := suite.app.MasterchefKeeper.PoolInfo(suite.ctx, tc.request)
-// 			if tc.err != nil {
-// 				suite.Require().ErrorIs(err, tc.err)
-// 			} else {
-// 				suite.Require().NoError(err)
-// 				suite.Require().Equal(tc.response.String(), response.String())
-// 			}
-// 		})
-// 	}
-// }
+	for _, tc := range tests {
+		suite.Run(tc.desc, func() {
+			suite.app.MasterchefKeeper.SetUserRewardInfo(suite.ctx, tc.response.UserRewardInfo)
+			response, err := suite.app.MasterchefKeeper.UserRewardInfo(suite.ctx, tc.request)
+			if tc.err != nil {
+				suite.Require().ErrorIs(err, tc.err)
+			} else {
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.response.String(), response.String())
+			}
+		})
+	}
+}
