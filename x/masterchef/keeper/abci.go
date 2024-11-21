@@ -13,14 +13,18 @@ import (
 )
 
 // EndBlocker of amm module
-func (k Keeper) EndBlocker(ctx sdk.Context) {
+func (k Keeper) EndBlocker(ctx sdk.Context) error {
 
 	k.DeleteFeeInfo(ctx)
 
 	// distribute LP rewards
-	k.ProcessLPRewardDistribution(ctx)
+	err := k.ProcessLPRewardDistribution(ctx)
+	if err != nil {
+		return err
+	}
 	// distribute external rewards
 	k.ProcessExternalRewardsDistribution(ctx)
+	return nil
 }
 
 func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
@@ -98,25 +102,27 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) ProcessLPRewardDistribution(ctx sdk.Context) {
+func (k Keeper) ProcessLPRewardDistribution(ctx sdk.Context) error {
 	// Read tokenomics time based inflation params and update incentive module params.
 	k.ProcessUpdateIncentiveParams(ctx)
 
 	err := k.UpdateLPRewards(ctx)
 	if err != nil {
 		ctx.Logger().Error("Failed to update lp rewards unclaimed", "error", err)
+		return err
 	}
+	return nil
 }
 
 func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) {
 	// Non-linear inflation per year happens and this includes yearly inflation data
-	listTimeBasedInflations := k.tokenomicsKeeper.GetAllTimeBasedInflation(ctx)
-	if len(listTimeBasedInflations) == 0 {
+	listTimeBasedInflation := k.tokenomicsKeeper.GetAllTimeBasedInflation(ctx)
+	if len(listTimeBasedInflation) == 0 {
 		return
 	}
 
 	params := k.GetParams(ctx)
-	for _, inflation := range listTimeBasedInflations {
+	for _, inflation := range listTimeBasedInflation {
 		// Finding only current inflation data - and skip rest
 		if inflation.StartBlockHeight > uint64(ctx.BlockHeight()) || inflation.EndBlockHeight < uint64(ctx.BlockHeight()) {
 			continue
@@ -155,9 +161,19 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	}
 
 	// Collect Gas fees + swap fees
-	gasFeesForLpsDec := k.CollectGasFees(ctx, baseCurrency)
-	gasFeesForLpsDec = gasFeesForLpsDec.Add(k.CollectPerpRevenue(ctx, baseCurrency)...)
-	_, _, rewardsPerPool := k.CollectDEXRevenue(ctx)
+	gasFeesForLpsDec, err := k.CollectGasFees(ctx, baseCurrency)
+	if err != nil {
+		return err
+	}
+	perpRevenue, err := k.CollectPerpRevenue(ctx, baseCurrency)
+	if err != nil {
+		return err
+	}
+	gasFeesForLpsDec = gasFeesForLpsDec.Add(perpRevenue...)
+	_, _, rewardsPerPool, err := k.CollectDEXRevenue(ctx)
+	if err != nil {
+		return err
+	}
 
 	// USDC amount in math.LegacyDec type
 	gasFeeUsdcAmountForLps := gasFeesForLpsDec.AmountOf(baseCurrency)
@@ -345,7 +361,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 	return totalSwappedCoins
 }
 
-func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) sdk.DecCoins {
+func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoins, error) {
 	params := k.GetParams(ctx)
 	feeCollector := k.authKeeper.GetModuleAccount(ctx, authtypes.FeeCollectorName)
 	// Calculate each portion of Gas fees collected - stakers, LPs
@@ -365,7 +381,7 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) sdk.DecCoin
 	if lpsGasFeeCoins.IsAllPositive() {
 		err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, types.ModuleName, lpsGasFeeCoins)
 		if err != nil {
-			panic(err)
+			return sdk.DecCoins{}, err
 		}
 	}
 
@@ -375,20 +391,20 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) sdk.DecCoin
 		if err != nil {
 			// Handle the error by skipping the fee distribution
 			ctx.Logger().Error("Invalid protocol revenue address", "error", err)
-			return gasFeesForLpsDec
+			return gasFeesForLpsDec, err
 		}
 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, protocolRevenueAddress, protocolGasFeeCoins)
 		if err != nil {
-			panic(err)
+			return sdk.DecCoins{}, err
 		}
 	}
-	return gasFeesForLpsDec
+	return gasFeesForLpsDec, nil
 }
 
 // Collect all Perpetual module revenues to Perpetual revenue wallet,
 // transfer collected fees from perpetual moduleto the distribution module account
 // Coins are not in usdc, so convert them to usdc
-func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) sdk.DecCoins {
+func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) (sdk.DecCoins, error) {
 	fundAddr := k.perpetualKeeper.GetIncrementalBorrowInterestPaymentFundAddress(ctx)
 	params := k.GetParams(ctx)
 	// Transfer revenue to a single wallet of Perpetual revenue wallet.
@@ -409,7 +425,7 @@ func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) sdk.Dec
 	if lpsGasFeeCoins.IsAllPositive() {
 		err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, fundAddr, types.ModuleName, lpsGasFeeCoins)
 		if err != nil {
-			panic(err)
+			return sdk.DecCoins{}, err
 		}
 	}
 
@@ -419,25 +435,33 @@ func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) sdk.Dec
 		if err != nil {
 			// Handle the error by skipping the fee distribution
 			ctx.Logger().Error("Invalid protocol revenue address", "error", err)
-			return perpFeesForLpsDec
+			return perpFeesForLpsDec, err
 		}
 		err = k.bankKeeper.SendCoins(ctx, fundAddr, protocolRevenueAddress, protocolGasFeeCoins)
 		if err != nil {
-			panic(err)
+			return sdk.DecCoins{}, err
 		}
 	}
-	return perpFeesForLpsDec
+	return perpFeesForLpsDec, nil
 }
 
 // Collect all DEX revenues to DEX revenue wallet,
 // while tracking the 60% of it for LPs reward distribution
 // transfer collected fees from different wallets(liquidity pool, perpetual module etc) to the distribution module account
 // Assume this is already in USDC.
-func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map[uint64]math.LegacyDec) {
+func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map[uint64]math.LegacyDec, error) {
 	// Total collected revenue amount
 	amountTotalCollected := sdk.Coins{}
 	amountLPsCollected := sdk.DecCoins{}
 	rewardsPerPool := make(map[uint64]math.LegacyDec)
+	// LPs Portion param
+	params := k.GetParams(ctx)
+	rewardPortionForLps := params.RewardPortionForLps
+	rewardPortionForStakers := params.RewardPortionForStakers
+	protocolRevenueAddress, err := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
+	if err != nil {
+		return nil, nil, nil, err
+	}
 
 	// Iterate to calculate total Eden from LpElys, MElys committed
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
@@ -450,16 +474,11 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 		// Transfer revenue to a single wallet of DEX revenue wallet.
 		revenue := k.bankKeeper.GetAllBalances(ctx, revenueAddress)
 		if revenue.IsAllPositive() {
-			err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, revenueAddress, types.ModuleName, revenue)
+			err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, revenueAddress, types.ModuleName, revenue)
 			if err != nil {
-				panic(err)
+				return true
 			}
 		}
-
-		// LPs Portion param
-		params := k.GetParams(ctx)
-		rewardPortionForLps := params.RewardPortionForLps
-		rewardPortionForStakers := params.RewardPortionForStakers
 
 		// Calculate revenue portion for LPs
 		revenueDec := sdk.NewDecCoinsFromCoins(revenue...)
@@ -478,18 +497,17 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 
 		// Send coins to fee collector name
 		if stakerRevenueCoins.IsAllPositive() {
-			err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, stakerRevenueCoins)
+			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, stakerRevenueCoins)
 			if err != nil {
-				panic(err)
+				return true
 			}
 		}
 
 		// Send coins to protocol revenue address
 		if protocolRevenueCoins.IsAllPositive() {
-			protocolRevenueAddress := sdk.MustAccAddressFromBech32(params.ProtocolRevenueAddress)
-			err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, protocolRevenueAddress, protocolRevenueCoins)
+			err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, protocolRevenueAddress, protocolRevenueCoins)
 			if err != nil {
-				panic(err)
+				return true
 			}
 		}
 
@@ -506,8 +524,11 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 
 		return false
 	})
+	if err != nil {
+		return nil, nil, nil, err
+	}
 
-	return amountTotalCollected, amountLPsCollected, rewardsPerPool
+	return amountTotalCollected, amountLPsCollected, rewardsPerPool, nil
 }
 
 // Calculate Proxy TVL

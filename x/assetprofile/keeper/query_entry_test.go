@@ -19,27 +19,27 @@ func TestEntryQuerySingle(t *testing.T) {
 	msgs := createNEntry(keeper, ctx, 2)
 	for _, tc := range []struct {
 		desc     string
-		request  *types.QueryGetEntryRequest
-		response *types.QueryGetEntryResponse
+		request  *types.QueryEntryRequest
+		response *types.QueryEntryResponse
 		err      error
 	}{
 		{
 			desc: "First",
-			request: &types.QueryGetEntryRequest{
+			request: &types.QueryEntryRequest{
 				BaseDenom: msgs[0].BaseDenom,
 			},
-			response: &types.QueryGetEntryResponse{Entry: msgs[0]},
+			response: &types.QueryEntryResponse{Entry: msgs[0]},
 		},
 		{
 			desc: "Second",
-			request: &types.QueryGetEntryRequest{
+			request: &types.QueryEntryRequest{
 				BaseDenom: msgs[1].BaseDenom,
 			},
-			response: &types.QueryGetEntryResponse{Entry: msgs[1]},
+			response: &types.QueryEntryResponse{Entry: msgs[1]},
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.QueryGetEntryRequest{
+			request: &types.QueryEntryRequest{
 				BaseDenom: strconv.Itoa(100000),
 			},
 			err: status.Error(codes.NotFound, "not found"),
