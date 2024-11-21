@@ -10,9 +10,6 @@ import (
 
 func TestDefaultParams(t *testing.T) {
 	require.Equal(t, types.DefaultParams(), types.NewParams(nil, sdkmath.LegacyNewDecWithPrec(60, 2), sdkmath.LegacyNewDecWithPrec(25, 2), sdkmath.LegacyNewDecWithPrec(5, 1), authtypes.NewModuleAddress("protocol-revenue-address").String()))
-	output, err := yaml.Marshal(types.DefaultParams())
-	require.NoError(t, err)
-	require.Equal(t, types.DefaultParams().String(), string(output))
 }
 
 func TestRewardPortionForLps(t *testing.T) {

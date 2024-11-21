@@ -113,22 +113,22 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
-type QueryGetEntryRequest struct {
+type QueryEntryRequest struct {
 	BaseDenom string `protobuf:"bytes,1,opt,name=base_denom,json=baseDenom,proto3" json:"base_denom,omitempty"`
 }
 
-func (m *QueryGetEntryRequest) Reset()         { *m = QueryGetEntryRequest{} }
-func (m *QueryGetEntryRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryGetEntryRequest) ProtoMessage()    {}
-func (*QueryGetEntryRequest) Descriptor() ([]byte, []int) {
+func (m *QueryEntryRequest) Reset()         { *m = QueryEntryRequest{} }
+func (m *QueryEntryRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryEntryRequest) ProtoMessage()    {}
+func (*QueryEntryRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_00a2123f96a91c9e, []int{2}
 }
-func (m *QueryGetEntryRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryEntryRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetEntryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEntryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetEntryRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEntryRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -138,41 +138,41 @@ func (m *QueryGetEntryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *QueryGetEntryRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetEntryRequest.Merge(m, src)
+func (m *QueryEntryRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEntryRequest.Merge(m, src)
 }
-func (m *QueryGetEntryRequest) XXX_Size() int {
+func (m *QueryEntryRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetEntryRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetEntryRequest.DiscardUnknown(m)
+func (m *QueryEntryRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEntryRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetEntryRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryEntryRequest proto.InternalMessageInfo
 
-func (m *QueryGetEntryRequest) GetBaseDenom() string {
+func (m *QueryEntryRequest) GetBaseDenom() string {
 	if m != nil {
 		return m.BaseDenom
 	}
 	return ""
 }
 
-type QueryGetEntryByDenomRequest struct {
+type QueryEntryByDenomRequest struct {
 	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 }
 
-func (m *QueryGetEntryByDenomRequest) Reset()         { *m = QueryGetEntryByDenomRequest{} }
-func (m *QueryGetEntryByDenomRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryGetEntryByDenomRequest) ProtoMessage()    {}
-func (*QueryGetEntryByDenomRequest) Descriptor() ([]byte, []int) {
+func (m *QueryEntryByDenomRequest) Reset()         { *m = QueryEntryByDenomRequest{} }
+func (m *QueryEntryByDenomRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryEntryByDenomRequest) ProtoMessage()    {}
+func (*QueryEntryByDenomRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_00a2123f96a91c9e, []int{3}
 }
-func (m *QueryGetEntryByDenomRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryEntryByDenomRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetEntryByDenomRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEntryByDenomRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetEntryByDenomRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEntryByDenomRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -182,41 +182,41 @@ func (m *QueryGetEntryByDenomRequest) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-func (m *QueryGetEntryByDenomRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetEntryByDenomRequest.Merge(m, src)
+func (m *QueryEntryByDenomRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEntryByDenomRequest.Merge(m, src)
 }
-func (m *QueryGetEntryByDenomRequest) XXX_Size() int {
+func (m *QueryEntryByDenomRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetEntryByDenomRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetEntryByDenomRequest.DiscardUnknown(m)
+func (m *QueryEntryByDenomRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEntryByDenomRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetEntryByDenomRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryEntryByDenomRequest proto.InternalMessageInfo
 
-func (m *QueryGetEntryByDenomRequest) GetDenom() string {
+func (m *QueryEntryByDenomRequest) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-type QueryGetEntryResponse struct {
+type QueryEntryResponse struct {
 	Entry Entry `protobuf:"bytes,1,opt,name=entry,proto3" json:"entry"`
 }
 
-func (m *QueryGetEntryResponse) Reset()         { *m = QueryGetEntryResponse{} }
-func (m *QueryGetEntryResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGetEntryResponse) ProtoMessage()    {}
-func (*QueryGetEntryResponse) Descriptor() ([]byte, []int) {
+func (m *QueryEntryResponse) Reset()         { *m = QueryEntryResponse{} }
+func (m *QueryEntryResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryEntryResponse) ProtoMessage()    {}
+func (*QueryEntryResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_00a2123f96a91c9e, []int{4}
 }
-func (m *QueryGetEntryResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryEntryResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetEntryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEntryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetEntryResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEntryResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -226,41 +226,41 @@ func (m *QueryGetEntryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *QueryGetEntryResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetEntryResponse.Merge(m, src)
+func (m *QueryEntryResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEntryResponse.Merge(m, src)
 }
-func (m *QueryGetEntryResponse) XXX_Size() int {
+func (m *QueryEntryResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetEntryResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetEntryResponse.DiscardUnknown(m)
+func (m *QueryEntryResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEntryResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetEntryResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryEntryResponse proto.InternalMessageInfo
 
-func (m *QueryGetEntryResponse) GetEntry() Entry {
+func (m *QueryEntryResponse) GetEntry() Entry {
 	if m != nil {
 		return m.Entry
 	}
 	return Entry{}
 }
 
-type QueryGetEntryByDenomResponse struct {
+type QueryEntryByDenomResponse struct {
 	Entry Entry `protobuf:"bytes,1,opt,name=entry,proto3" json:"entry"`
 }
 
-func (m *QueryGetEntryByDenomResponse) Reset()         { *m = QueryGetEntryByDenomResponse{} }
-func (m *QueryGetEntryByDenomResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGetEntryByDenomResponse) ProtoMessage()    {}
-func (*QueryGetEntryByDenomResponse) Descriptor() ([]byte, []int) {
+func (m *QueryEntryByDenomResponse) Reset()         { *m = QueryEntryByDenomResponse{} }
+func (m *QueryEntryByDenomResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryEntryByDenomResponse) ProtoMessage()    {}
+func (*QueryEntryByDenomResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_00a2123f96a91c9e, []int{5}
 }
-func (m *QueryGetEntryByDenomResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryEntryByDenomResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetEntryByDenomResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEntryByDenomResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetEntryByDenomResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEntryByDenomResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -270,19 +270,19 @@ func (m *QueryGetEntryByDenomResponse) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *QueryGetEntryByDenomResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetEntryByDenomResponse.Merge(m, src)
+func (m *QueryEntryByDenomResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEntryByDenomResponse.Merge(m, src)
 }
-func (m *QueryGetEntryByDenomResponse) XXX_Size() int {
+func (m *QueryEntryByDenomResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetEntryByDenomResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetEntryByDenomResponse.DiscardUnknown(m)
+func (m *QueryEntryByDenomResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEntryByDenomResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetEntryByDenomResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryEntryByDenomResponse proto.InternalMessageInfo
 
-func (m *QueryGetEntryByDenomResponse) GetEntry() Entry {
+func (m *QueryEntryByDenomResponse) GetEntry() Entry {
 	if m != nil {
 		return m.Entry
 	}
@@ -388,10 +388,10 @@ func (m *QueryAllEntryResponse) GetPagination() *query.PageResponse {
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "elys.assetprofile.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "elys.assetprofile.QueryParamsResponse")
-	proto.RegisterType((*QueryGetEntryRequest)(nil), "elys.assetprofile.QueryGetEntryRequest")
-	proto.RegisterType((*QueryGetEntryByDenomRequest)(nil), "elys.assetprofile.QueryGetEntryByDenomRequest")
-	proto.RegisterType((*QueryGetEntryResponse)(nil), "elys.assetprofile.QueryGetEntryResponse")
-	proto.RegisterType((*QueryGetEntryByDenomResponse)(nil), "elys.assetprofile.QueryGetEntryByDenomResponse")
+	proto.RegisterType((*QueryEntryRequest)(nil), "elys.assetprofile.QueryEntryRequest")
+	proto.RegisterType((*QueryEntryByDenomRequest)(nil), "elys.assetprofile.QueryEntryByDenomRequest")
+	proto.RegisterType((*QueryEntryResponse)(nil), "elys.assetprofile.QueryEntryResponse")
+	proto.RegisterType((*QueryEntryByDenomResponse)(nil), "elys.assetprofile.QueryEntryByDenomResponse")
 	proto.RegisterType((*QueryAllEntryRequest)(nil), "elys.assetprofile.QueryAllEntryRequest")
 	proto.RegisterType((*QueryAllEntryResponse)(nil), "elys.assetprofile.QueryAllEntryResponse")
 }
@@ -399,42 +399,42 @@ func init() {
 func init() { proto.RegisterFile("elys/assetprofile/query.proto", fileDescriptor_00a2123f96a91c9e) }
 
 var fileDescriptor_00a2123f96a91c9e = []byte{
-	// 557 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x94, 0x41, 0x6b, 0x13, 0x41,
-	0x14, 0xc7, 0x33, 0xb5, 0x09, 0xf6, 0xe9, 0xc5, 0x31, 0x42, 0x8d, 0xed, 0x2a, 0x0b, 0x4d, 0x82,
-	0x90, 0x19, 0x92, 0xb6, 0x08, 0xde, 0x1a, 0xd4, 0x1e, 0x44, 0xa9, 0xc1, 0x93, 0x07, 0x65, 0x52,
-	0xc7, 0x75, 0x71, 0xb3, 0xb3, 0xdd, 0x99, 0xa8, 0x41, 0xbc, 0x78, 0xf1, 0xe2, 0x41, 0x10, 0xfa,
-	0x11, 0xfc, 0x2c, 0x3d, 0x16, 0xbc, 0x78, 0x12, 0x49, 0xfc, 0x20, 0xb2, 0x33, 0x13, 0xb2, 0x9b,
-	0x6c, 0xd8, 0x40, 0x6f, 0xc9, 0xcc, 0x7b, 0xff, 0xff, 0xef, 0xbd, 0xfc, 0x27, 0xb0, 0xcd, 0x83,
-	0x91, 0xa4, 0x4c, 0x4a, 0xae, 0xa2, 0x58, 0xbc, 0xf1, 0x03, 0x4e, 0x4f, 0x86, 0x3c, 0x1e, 0x91,
-	0x28, 0x16, 0x4a, 0xe0, 0x6b, 0xc9, 0x35, 0x49, 0x5f, 0xd7, 0xaa, 0x9e, 0xf0, 0x84, 0xbe, 0xa5,
-	0xc9, 0x27, 0x53, 0x58, 0xdb, 0xf2, 0x84, 0xf0, 0x02, 0x4e, 0x59, 0xe4, 0x53, 0x16, 0x86, 0x42,
-	0x31, 0xe5, 0x8b, 0x50, 0xda, 0xdb, 0xbb, 0xc7, 0x42, 0x0e, 0x84, 0xa4, 0x7d, 0x26, 0xad, 0x3e,
-	0x7d, 0xdf, 0xee, 0x73, 0xc5, 0xda, 0x34, 0x62, 0x9e, 0x1f, 0xea, 0x62, 0x5b, 0xeb, 0x2c, 0x12,
-	0x45, 0x2c, 0x66, 0x83, 0xa9, 0x56, 0x0e, 0x31, 0x0f, 0xd5, 0x94, 0xd8, 0xad, 0x02, 0x7e, 0x96,
-	0x18, 0x1c, 0xe9, 0x9e, 0x1e, 0x3f, 0x19, 0x72, 0xa9, 0xdc, 0xa7, 0x70, 0x3d, 0x73, 0x2a, 0x23,
-	0x11, 0x4a, 0x8e, 0xef, 0x41, 0xc5, 0x68, 0x6f, 0xa2, 0x3b, 0xa8, 0x79, 0xa5, 0x73, 0x93, 0x2c,
-	0xcc, 0x4b, 0x4c, 0x4b, 0x77, 0xfd, 0xec, 0xcf, 0xed, 0x52, 0xcf, 0x96, 0xbb, 0xfb, 0x50, 0xd5,
-	0x7a, 0x87, 0x5c, 0x3d, 0x4c, 0xcc, 0xad, 0x0f, 0xde, 0x06, 0x48, 0x66, 0x7c, 0xf5, 0x9a, 0x87,
-	0x62, 0xa0, 0x45, 0x37, 0x7a, 0x1b, 0xc9, 0xc9, 0x83, 0xe4, 0xc0, 0xdd, 0x85, 0x5b, 0x99, 0xb6,
-	0xee, 0x48, 0x9f, 0x4f, 0xbb, 0xab, 0x50, 0x4e, 0x37, 0x9a, 0x2f, 0xee, 0x13, 0xb8, 0x31, 0xe7,
-	0x65, 0xe9, 0xf7, 0xa0, 0xac, 0x27, 0xb7, 0xf0, 0x9b, 0x39, 0xf0, 0xc6, 0xc5, 0xb0, 0x9b, 0x62,
-	0xf7, 0x39, 0x6c, 0xe5, 0x33, 0x5c, 0x48, 0xf5, 0xa5, 0x5d, 0xc8, 0x41, 0x10, 0x64, 0x16, 0xf2,
-	0x08, 0x60, 0xf6, 0x0b, 0x5b, 0xc9, 0x3a, 0x31, 0x71, 0x20, 0xc9, 0x62, 0x88, 0x89, 0x9b, 0x8d,
-	0x03, 0x39, 0x62, 0x1e, 0xb7, 0xbd, 0xbd, 0x54, 0xa7, 0x7b, 0x8a, 0xec, 0x16, 0x66, 0x06, 0x8b,
-	0xbc, 0x97, 0x56, 0xe6, 0xc5, 0x87, 0x19, 0xae, 0x35, 0xcd, 0xd5, 0x28, 0xe4, 0x32, 0x96, 0x69,
-	0xb0, 0xce, 0x78, 0x1d, 0xca, 0x1a, 0x0c, 0x7f, 0x45, 0x50, 0x31, 0x61, 0xc1, 0x3b, 0x39, 0x10,
-	0x8b, 0xa9, 0xac, 0xd5, 0x8b, 0xca, 0x8c, 0x9f, 0x4b, 0xbe, 0xfc, 0xfa, 0xf7, 0x63, 0xad, 0x89,
-	0xeb, 0x34, 0xa9, 0x6f, 0x85, 0x5c, 0x7d, 0x10, 0xf1, 0x3b, 0xba, 0xec, 0xa1, 0xe0, 0x53, 0x04,
-	0x65, 0x3d, 0x33, 0x6e, 0x2c, 0x73, 0x98, 0x0b, 0x6e, 0xad, 0x59, 0x5c, 0x68, 0x61, 0xee, 0x6b,
-	0x98, 0x3d, 0xdc, 0x29, 0x82, 0xd1, 0x8b, 0xa6, 0x9f, 0x66, 0xef, 0xe1, 0x33, 0xfe, 0x89, 0xe0,
-	0x6a, 0x3a, 0x74, 0x98, 0x14, 0xd9, 0x66, 0x5f, 0x48, 0x8d, 0xae, 0x5c, 0x6f, 0x69, 0xf7, 0x35,
-	0x2d, 0xc5, 0xad, 0x15, 0x69, 0x2d, 0xe8, 0x37, 0x04, 0x97, 0xb5, 0xde, 0x41, 0x10, 0x2c, 0x5f,
-	0xe2, 0x5c, 0xd8, 0x97, 0x2f, 0x71, 0x3e, 0xb4, 0x6e, 0x4b, 0x63, 0x35, 0xf0, 0xce, 0x4a, 0x58,
-	0xdd, 0xc7, 0x67, 0x63, 0x07, 0x9d, 0x8f, 0x1d, 0xf4, 0x77, 0xec, 0xa0, 0xef, 0x13, 0xa7, 0x74,
-	0x3e, 0x71, 0x4a, 0xbf, 0x27, 0x4e, 0xe9, 0x45, 0xdb, 0xf3, 0xd5, 0xdb, 0x61, 0x9f, 0x1c, 0x8b,
-	0x41, 0x8e, 0xd4, 0xc7, 0xac, 0x98, 0x1a, 0x45, 0x5c, 0xf6, 0x2b, 0xfa, 0x8f, 0x72, 0xf7, 0x7f,
-	0x00, 0x00, 0x00, 0xff, 0xff, 0x64, 0x1a, 0x98, 0x6b, 0xfb, 0x05, 0x00, 0x00,
+	// 556 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x94, 0x4f, 0x8b, 0x13, 0x31,
+	0x18, 0xc6, 0x9b, 0x75, 0x5b, 0xdc, 0x57, 0x2f, 0x1b, 0x2b, 0x74, 0x07, 0x77, 0x94, 0xc1, 0xfe,
+	0x41, 0x6d, 0x62, 0xeb, 0x8a, 0xe0, 0x6d, 0x8b, 0x7f, 0x40, 0x41, 0x76, 0x7b, 0xf4, 0xa0, 0xa4,
+	0x6b, 0x1c, 0x8b, 0xd3, 0xc9, 0x6c, 0x93, 0xaa, 0x45, 0xbc, 0x78, 0xf1, 0xe2, 0x61, 0x41, 0xf0,
+	0xec, 0xc7, 0xd9, 0xe3, 0x82, 0x20, 0x9e, 0x44, 0x5a, 0x3f, 0x88, 0x4c, 0x92, 0xd2, 0x99, 0xed,
+	0xd4, 0x29, 0x78, 0x6b, 0x93, 0xe7, 0x7d, 0x9e, 0xdf, 0x9b, 0xbc, 0x19, 0xd8, 0xe6, 0xc1, 0x58,
+	0x52, 0x26, 0x25, 0x57, 0xd1, 0x50, 0xbc, 0xec, 0x07, 0x9c, 0x1e, 0x8e, 0xf8, 0x70, 0x4c, 0xa2,
+	0xa1, 0x50, 0x02, 0x6f, 0xc6, 0xdb, 0x24, 0xb9, 0xed, 0x94, 0x7d, 0xe1, 0x0b, 0xbd, 0x4b, 0xe3,
+	0x5f, 0x46, 0xe8, 0x5c, 0xf2, 0x85, 0xf0, 0x03, 0x4e, 0x59, 0xd4, 0xa7, 0x2c, 0x0c, 0x85, 0x62,
+	0xaa, 0x2f, 0x42, 0x69, 0x77, 0xaf, 0x1d, 0x08, 0x39, 0x10, 0x92, 0xf6, 0x98, 0xb4, 0xfe, 0xf4,
+	0x4d, 0xab, 0xc7, 0x15, 0x6b, 0xd1, 0x88, 0xf9, 0xfd, 0x50, 0x8b, 0xad, 0xd6, 0x5d, 0x24, 0x8a,
+	0xd8, 0x90, 0x0d, 0x66, 0x5e, 0x19, 0xc4, 0x3c, 0x54, 0x33, 0x62, 0xaf, 0x0c, 0x78, 0x3f, 0x0e,
+	0xd8, 0xd3, 0x35, 0x5d, 0x7e, 0x38, 0xe2, 0x52, 0x79, 0x4f, 0xe0, 0x42, 0x6a, 0x55, 0x46, 0x22,
+	0x94, 0x1c, 0xdf, 0x81, 0x92, 0xf1, 0xae, 0xa0, 0x2b, 0xa8, 0x71, 0xae, 0xbd, 0x45, 0x16, 0xfa,
+	0x25, 0xa6, 0xa4, 0xb3, 0x7e, 0xfc, 0xeb, 0x72, 0xa1, 0x6b, 0xe5, 0x5e, 0x1b, 0x36, 0xb5, 0xdf,
+	0xfd, 0x38, 0xd9, 0x86, 0xe0, 0x6d, 0x80, 0xb8, 0xc1, 0xe7, 0x2f, 0x78, 0x28, 0x06, 0xda, 0x71,
+	0xa3, 0xbb, 0x11, 0xaf, 0xdc, 0x8b, 0x17, 0xbc, 0x9b, 0x50, 0x99, 0xd7, 0x74, 0xc6, 0x7a, 0x71,
+	0x56, 0x5a, 0x86, 0x62, 0xb2, 0xca, 0xfc, 0xf1, 0x1e, 0xd9, 0x5e, 0x6c, 0x8a, 0x85, 0xde, 0x81,
+	0xa2, 0x6e, 0xd8, 0x32, 0x57, 0x32, 0x98, 0x4d, 0x84, 0x41, 0x36, 0x62, 0x6f, 0x1f, 0xb6, 0x32,
+	0xd2, 0xff, 0xcb, 0xf2, 0x19, 0x94, 0xb5, 0xe5, 0x6e, 0x10, 0xa4, 0xce, 0xe1, 0x01, 0xc0, 0xfc,
+	0x56, 0xad, 0x65, 0x8d, 0x98, 0x11, 0x20, 0xf1, 0x79, 0x10, 0x33, 0x62, 0x76, 0x04, 0xc8, 0x1e,
+	0xf3, 0xb9, 0xad, 0xed, 0x26, 0x2a, 0xbd, 0xaf, 0x08, 0x2e, 0x9e, 0x0a, 0x58, 0xe4, 0x3d, 0xb3,
+	0x32, 0x2f, 0x7e, 0x98, 0xe2, 0x5a, 0xd3, 0x5c, 0xf5, 0x5c, 0x2e, 0x13, 0x99, 0x04, 0x6b, 0xff,
+	0x58, 0x87, 0xa2, 0x06, 0xc3, 0x9f, 0x10, 0x94, 0xcc, 0x80, 0xe0, 0x6a, 0x06, 0xc4, 0xe2, 0x24,
+	0x3a, 0xb5, 0x3c, 0x99, 0xc9, 0xf3, 0xc8, 0xc7, 0xef, 0x7f, 0xbe, 0xac, 0x35, 0x70, 0x8d, 0xc6,
+	0xfa, 0x66, 0xc8, 0xd5, 0x5b, 0x31, 0x7c, 0x4d, 0x97, 0x3d, 0x0e, 0x7c, 0x84, 0xa0, 0xa8, 0x7b,
+	0xc6, 0x57, 0x97, 0x25, 0x24, 0x2f, 0xc9, 0xa9, 0xe6, 0xa8, 0x2c, 0xc6, 0x5d, 0x8d, 0xb1, 0x83,
+	0xdb, 0x79, 0x18, 0xfa, 0x88, 0xe9, 0xfb, 0xf9, 0x03, 0xf8, 0x80, 0xbf, 0x21, 0x38, 0x9f, 0x1c,
+	0x37, 0x7c, 0xfd, 0x9f, 0x99, 0xe9, 0x27, 0xe1, 0xdc, 0x58, 0x4d, 0x6c, 0x39, 0x6f, 0x6b, 0x4e,
+	0x8a, 0x9b, 0x2b, 0x72, 0x5a, 0xc4, 0xcf, 0x08, 0xce, 0x6a, 0xbf, 0xdd, 0x20, 0xc0, 0xf5, 0x65,
+	0x89, 0xa7, 0x06, 0xdc, 0x69, 0xe4, 0x0b, 0x2d, 0x56, 0x53, 0x63, 0xd5, 0x71, 0x75, 0x25, 0xac,
+	0xce, 0xe3, 0xe3, 0x89, 0x8b, 0x4e, 0x26, 0x2e, 0xfa, 0x3d, 0x71, 0xd1, 0xd1, 0xd4, 0x2d, 0x9c,
+	0x4c, 0xdd, 0xc2, 0xcf, 0xa9, 0x5b, 0x78, 0xda, 0xf2, 0xfb, 0xea, 0xd5, 0xa8, 0x47, 0x0e, 0xc4,
+	0x20, 0xc3, 0xea, 0x5d, 0xda, 0x4c, 0x8d, 0x23, 0x2e, 0x7b, 0x25, 0xfd, 0x41, 0xbc, 0xf5, 0x37,
+	0x00, 0x00, 0xff, 0xff, 0x4f, 0xb5, 0x9d, 0x1a, 0xe3, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -452,8 +452,8 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a list of Entry items.
-	Entry(ctx context.Context, in *QueryGetEntryRequest, opts ...grpc.CallOption) (*QueryGetEntryResponse, error)
-	EntryByDenom(ctx context.Context, in *QueryGetEntryByDenomRequest, opts ...grpc.CallOption) (*QueryGetEntryByDenomResponse, error)
+	Entry(ctx context.Context, in *QueryEntryRequest, opts ...grpc.CallOption) (*QueryEntryResponse, error)
+	EntryByDenom(ctx context.Context, in *QueryEntryByDenomRequest, opts ...grpc.CallOption) (*QueryEntryByDenomResponse, error)
 	EntryAll(ctx context.Context, in *QueryAllEntryRequest, opts ...grpc.CallOption) (*QueryAllEntryResponse, error)
 }
 
@@ -474,8 +474,8 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Entry(ctx context.Context, in *QueryGetEntryRequest, opts ...grpc.CallOption) (*QueryGetEntryResponse, error) {
-	out := new(QueryGetEntryResponse)
+func (c *queryClient) Entry(ctx context.Context, in *QueryEntryRequest, opts ...grpc.CallOption) (*QueryEntryResponse, error) {
+	out := new(QueryEntryResponse)
 	err := c.cc.Invoke(ctx, "/elys.assetprofile.Query/Entry", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -483,8 +483,8 @@ func (c *queryClient) Entry(ctx context.Context, in *QueryGetEntryRequest, opts 
 	return out, nil
 }
 
-func (c *queryClient) EntryByDenom(ctx context.Context, in *QueryGetEntryByDenomRequest, opts ...grpc.CallOption) (*QueryGetEntryByDenomResponse, error) {
-	out := new(QueryGetEntryByDenomResponse)
+func (c *queryClient) EntryByDenom(ctx context.Context, in *QueryEntryByDenomRequest, opts ...grpc.CallOption) (*QueryEntryByDenomResponse, error) {
+	out := new(QueryEntryByDenomResponse)
 	err := c.cc.Invoke(ctx, "/elys.assetprofile.Query/EntryByDenom", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -506,8 +506,8 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a list of Entry items.
-	Entry(context.Context, *QueryGetEntryRequest) (*QueryGetEntryResponse, error)
-	EntryByDenom(context.Context, *QueryGetEntryByDenomRequest) (*QueryGetEntryByDenomResponse, error)
+	Entry(context.Context, *QueryEntryRequest) (*QueryEntryResponse, error)
+	EntryByDenom(context.Context, *QueryEntryByDenomRequest) (*QueryEntryByDenomResponse, error)
 	EntryAll(context.Context, *QueryAllEntryRequest) (*QueryAllEntryResponse, error)
 }
 
@@ -518,10 +518,10 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) Entry(ctx context.Context, req *QueryGetEntryRequest) (*QueryGetEntryResponse, error) {
+func (*UnimplementedQueryServer) Entry(ctx context.Context, req *QueryEntryRequest) (*QueryEntryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Entry not implemented")
 }
-func (*UnimplementedQueryServer) EntryByDenom(ctx context.Context, req *QueryGetEntryByDenomRequest) (*QueryGetEntryByDenomResponse, error) {
+func (*UnimplementedQueryServer) EntryByDenom(ctx context.Context, req *QueryEntryByDenomRequest) (*QueryEntryByDenomResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EntryByDenom not implemented")
 }
 func (*UnimplementedQueryServer) EntryAll(ctx context.Context, req *QueryAllEntryRequest) (*QueryAllEntryResponse, error) {
@@ -551,7 +551,7 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 }
 
 func _Query_Entry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetEntryRequest)
+	in := new(QueryEntryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -563,13 +563,13 @@ func _Query_Entry_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/elys.assetprofile.Query/Entry",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Entry(ctx, req.(*QueryGetEntryRequest))
+		return srv.(QueryServer).Entry(ctx, req.(*QueryEntryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_EntryByDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetEntryByDenomRequest)
+	in := new(QueryEntryByDenomRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -581,7 +581,7 @@ func _Query_EntryByDenom_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/elys.assetprofile.Query/EntryByDenom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).EntryByDenom(ctx, req.(*QueryGetEntryByDenomRequest))
+		return srv.(QueryServer).EntryByDenom(ctx, req.(*QueryEntryByDenomRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -685,7 +685,7 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetEntryRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryEntryRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -695,12 +695,12 @@ func (m *QueryGetEntryRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetEntryRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEntryRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetEntryRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEntryRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -715,7 +715,7 @@ func (m *QueryGetEntryRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetEntryByDenomRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryEntryByDenomRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -725,12 +725,12 @@ func (m *QueryGetEntryByDenomRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetEntryByDenomRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEntryByDenomRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetEntryByDenomRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEntryByDenomRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -745,7 +745,7 @@ func (m *QueryGetEntryByDenomRequest) MarshalToSizedBuffer(dAtA []byte) (int, er
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetEntryResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryEntryResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -755,12 +755,12 @@ func (m *QueryGetEntryResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetEntryResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEntryResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetEntryResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEntryResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -778,7 +778,7 @@ func (m *QueryGetEntryResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetEntryByDenomResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryEntryByDenomResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -788,12 +788,12 @@ func (m *QueryGetEntryByDenomResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetEntryByDenomResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEntryByDenomResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetEntryByDenomResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEntryByDenomResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -926,7 +926,7 @@ func (m *QueryParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetEntryRequest) Size() (n int) {
+func (m *QueryEntryRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -939,7 +939,7 @@ func (m *QueryGetEntryRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetEntryByDenomRequest) Size() (n int) {
+func (m *QueryEntryByDenomRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -952,7 +952,7 @@ func (m *QueryGetEntryByDenomRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetEntryResponse) Size() (n int) {
+func (m *QueryEntryResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -963,7 +963,7 @@ func (m *QueryGetEntryResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetEntryByDenomResponse) Size() (n int) {
+func (m *QueryEntryByDenomResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1145,7 +1145,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetEntryRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryEntryRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1168,10 +1168,10 @@ func (m *QueryGetEntryRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetEntryRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEntryRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetEntryRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEntryRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1227,7 +1227,7 @@ func (m *QueryGetEntryRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetEntryByDenomRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryEntryByDenomRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1250,10 +1250,10 @@ func (m *QueryGetEntryByDenomRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetEntryByDenomRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEntryByDenomRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetEntryByDenomRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEntryByDenomRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1309,7 +1309,7 @@ func (m *QueryGetEntryByDenomRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetEntryResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryEntryResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1332,10 +1332,10 @@ func (m *QueryGetEntryResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetEntryResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEntryResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetEntryResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEntryResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1392,7 +1392,7 @@ func (m *QueryGetEntryResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetEntryByDenomResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryEntryByDenomResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1415,10 +1415,10 @@ func (m *QueryGetEntryByDenomResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetEntryByDenomResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEntryByDenomResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetEntryByDenomResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEntryByDenomResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

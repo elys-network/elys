@@ -54,7 +54,7 @@ func CmdShowEntry() *cobra.Command {
 
 			argBaseDenom := args[0]
 
-			params := &types.QueryGetEntryRequest{
+			params := &types.QueryEntryRequest{
 				BaseDenom: argBaseDenom,
 			}
 
@@ -84,7 +84,7 @@ func CmdShowEntryByDenom() *cobra.Command {
 
 			argDenom := args[0]
 
-			params := &types.QueryGetEntryByDenomRequest{
+			params := &types.QueryEntryByDenomRequest{
 				Denom: argDenom,
 			}
 

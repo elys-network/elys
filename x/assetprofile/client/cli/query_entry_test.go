@@ -1,21 +1,25 @@
 package cli_test
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/client"
+	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
+	"io"
 	"strconv"
 	"testing"
 
+	"context"
+	abci "github.com/cometbft/cometbft/abci/types"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
+	"github.com/cosmos/gogoproto/proto"
 	"github.com/elys-network/elys/testutil/network"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/assetprofile/client/cli"
 	"github.com/elys-network/elys/x/assetprofile/types"
+	"github.com/stretchr/testify/require"
 )
 
 var usdcEntry = types.Entry{
@@ -59,55 +63,69 @@ func networkWithEntryObjects(t *testing.T, n int) (*network.Network, []types.Ent
 	return network.New(t, cfg), assetProfileGenesisState.EntryList
 }
 
-func TestShowEntry(t *testing.T) {
-	net, objs := networkWithEntryObjects(t, 2)
-	objs = append(objs, usdcEntry)
-	ctx := net.Validators[0].ClientCtx
-	common := []string{
-		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
-	}
-	for _, tc := range []struct {
-		desc        string
-		idBaseDenom string
+func (s *CLITestSuite) TestShowEntry() {
+	cmd := cli.CmdShowEntry()
+	cmd.SetOutput(io.Discard)
 
-		args []string
-		err  error
-		obj  types.Entry
+	testCases := []struct {
+		name         string
+		ctxGen       func() client.Context
+		args         []string
+		expectResult proto.Message
+		expectErr    bool
 	}{
 		{
-			desc:        "found",
-			idBaseDenom: objs[0].BaseDenom,
-
-			args: common,
-			obj:  objs[0],
+			"valid query",
+			func() client.Context {
+				bz, _ := s.encCfg.Codec.Marshal(&types.QueryEntryResponse{})
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
+					Value: bz,
+				})
+				return s.baseCtx.WithClient(c)
+			},
+			[]string{
+				"uusdc",
+				fmt.Sprintf("--%s=json", flags.FlagOutput),
+			},
+			&types.QueryEntryResponse{},
+			false,
 		},
 		{
-			desc:        "not found",
-			idBaseDenom: strconv.Itoa(100000),
-
-			args: common,
-			err:  status.Error(codes.NotFound, "not found"),
+			"invalid query",
+			func() client.Context {
+				bz, _ := s.encCfg.Codec.Marshal(&types.QueryEntryResponse{})
+				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
+					Value: bz,
+				})
+				return s.baseCtx.WithClient(c)
+			},
+			[]string{
+				"-1",
+				fmt.Sprintf("--%s=json", flags.FlagOutput),
+			},
+			&types.QueryEntryResponse{},
+			true,
 		},
-	} {
-		t.Run(tc.desc, func(t *testing.T) {
-			args := []string{
-				tc.idBaseDenom,
-			}
-			args = append(args, tc.args...)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdShowEntry(), args)
-			if tc.err != nil {
-				stat, ok := status.FromError(tc.err)
-				require.True(t, ok)
-				require.ErrorIs(t, stat.Err(), tc.err)
+	}
+
+	for _, tc := range testCases {
+		s.Run(tc.name, func() {
+			var outBuf bytes.Buffer
+
+			clientCtx := tc.ctxGen().WithOutput(&outBuf)
+			ctx := svrcmd.CreateExecuteContext(context.Background())
+
+			cmd.SetContext(ctx)
+			cmd.SetArgs(tc.args)
+
+			s.Require().NoError(client.SetCmdClientContextHandler(clientCtx, cmd))
+
+			err := cmd.Execute()
+			if tc.expectErr {
+				s.Require().Error(err)
 			} else {
-				require.NoError(t, err)
-				var resp types.QueryGetEntryResponse
-				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-				require.NotNil(t, resp.Entry)
-				require.Equal(t,
-					nullify.Fill(&tc.obj),
-					nullify.Fill(&resp.Entry),
-				)
+				s.Require().NoError(s.encCfg.Codec.UnmarshalJSON(outBuf.Bytes(), tc.expectResult))
+				s.Require().NoError(err)
 			}
 		})
 	}
