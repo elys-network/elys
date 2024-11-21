@@ -21,7 +21,6 @@ var (
 	fd_LegacyPoolParams_use_oracle                     protoreflect.FieldDescriptor
 	fd_LegacyPoolParams_weight_breaking_fee_multiplier protoreflect.FieldDescriptor
 	fd_LegacyPoolParams_weight_breaking_fee_exponent   protoreflect.FieldDescriptor
-	fd_LegacyPoolParams_external_liquidity_ratio       protoreflect.FieldDescriptor
 	fd_LegacyPoolParams_weight_recovery_fee_portion    protoreflect.FieldDescriptor
 	fd_LegacyPoolParams_threshold_weight_difference    protoreflect.FieldDescriptor
 	fd_LegacyPoolParams_weight_breaking_fee_portion    protoreflect.FieldDescriptor
@@ -36,7 +35,6 @@ func init() {
 	fd_LegacyPoolParams_use_oracle = md_LegacyPoolParams.Fields().ByName("use_oracle")
 	fd_LegacyPoolParams_weight_breaking_fee_multiplier = md_LegacyPoolParams.Fields().ByName("weight_breaking_fee_multiplier")
 	fd_LegacyPoolParams_weight_breaking_fee_exponent = md_LegacyPoolParams.Fields().ByName("weight_breaking_fee_exponent")
-	fd_LegacyPoolParams_external_liquidity_ratio = md_LegacyPoolParams.Fields().ByName("external_liquidity_ratio")
 	fd_LegacyPoolParams_weight_recovery_fee_portion = md_LegacyPoolParams.Fields().ByName("weight_recovery_fee_portion")
 	fd_LegacyPoolParams_threshold_weight_difference = md_LegacyPoolParams.Fields().ByName("threshold_weight_difference")
 	fd_LegacyPoolParams_weight_breaking_fee_portion = md_LegacyPoolParams.Fields().ByName("weight_breaking_fee_portion")
@@ -138,12 +136,6 @@ func (x *fastReflection_LegacyPoolParams) Range(f func(protoreflect.FieldDescrip
 			return
 		}
 	}
-	if x.ExternalLiquidityRatio != "" {
-		value := protoreflect.ValueOfString(x.ExternalLiquidityRatio)
-		if !f(fd_LegacyPoolParams_external_liquidity_ratio, value) {
-			return
-		}
-	}
 	if x.WeightRecoveryFeePortion != "" {
 		value := protoreflect.ValueOfString(x.WeightRecoveryFeePortion)
 		if !f(fd_LegacyPoolParams_weight_recovery_fee_portion, value) {
@@ -193,8 +185,6 @@ func (x *fastReflection_LegacyPoolParams) Has(fd protoreflect.FieldDescriptor) b
 		return x.WeightBreakingFeeMultiplier != ""
 	case "elys.amm.LegacyPoolParams.weight_breaking_fee_exponent":
 		return x.WeightBreakingFeeExponent != ""
-	case "elys.amm.LegacyPoolParams.external_liquidity_ratio":
-		return x.ExternalLiquidityRatio != ""
 	case "elys.amm.LegacyPoolParams.weight_recovery_fee_portion":
 		return x.WeightRecoveryFeePortion != ""
 	case "elys.amm.LegacyPoolParams.threshold_weight_difference":
@@ -229,8 +219,6 @@ func (x *fastReflection_LegacyPoolParams) Clear(fd protoreflect.FieldDescriptor)
 		x.WeightBreakingFeeMultiplier = ""
 	case "elys.amm.LegacyPoolParams.weight_breaking_fee_exponent":
 		x.WeightBreakingFeeExponent = ""
-	case "elys.amm.LegacyPoolParams.external_liquidity_ratio":
-		x.ExternalLiquidityRatio = ""
 	case "elys.amm.LegacyPoolParams.weight_recovery_fee_portion":
 		x.WeightRecoveryFeePortion = ""
 	case "elys.amm.LegacyPoolParams.threshold_weight_difference":
@@ -269,9 +257,6 @@ func (x *fastReflection_LegacyPoolParams) Get(descriptor protoreflect.FieldDescr
 		return protoreflect.ValueOfString(value)
 	case "elys.amm.LegacyPoolParams.weight_breaking_fee_exponent":
 		value := x.WeightBreakingFeeExponent
-		return protoreflect.ValueOfString(value)
-	case "elys.amm.LegacyPoolParams.external_liquidity_ratio":
-		value := x.ExternalLiquidityRatio
 		return protoreflect.ValueOfString(value)
 	case "elys.amm.LegacyPoolParams.weight_recovery_fee_portion":
 		value := x.WeightRecoveryFeePortion
@@ -315,8 +300,6 @@ func (x *fastReflection_LegacyPoolParams) Set(fd protoreflect.FieldDescriptor, v
 		x.WeightBreakingFeeMultiplier = value.Interface().(string)
 	case "elys.amm.LegacyPoolParams.weight_breaking_fee_exponent":
 		x.WeightBreakingFeeExponent = value.Interface().(string)
-	case "elys.amm.LegacyPoolParams.external_liquidity_ratio":
-		x.ExternalLiquidityRatio = value.Interface().(string)
 	case "elys.amm.LegacyPoolParams.weight_recovery_fee_portion":
 		x.WeightRecoveryFeePortion = value.Interface().(string)
 	case "elys.amm.LegacyPoolParams.threshold_weight_difference":
@@ -355,8 +338,6 @@ func (x *fastReflection_LegacyPoolParams) Mutable(fd protoreflect.FieldDescripto
 		panic(fmt.Errorf("field weight_breaking_fee_multiplier of message elys.amm.LegacyPoolParams is not mutable"))
 	case "elys.amm.LegacyPoolParams.weight_breaking_fee_exponent":
 		panic(fmt.Errorf("field weight_breaking_fee_exponent of message elys.amm.LegacyPoolParams is not mutable"))
-	case "elys.amm.LegacyPoolParams.external_liquidity_ratio":
-		panic(fmt.Errorf("field external_liquidity_ratio of message elys.amm.LegacyPoolParams is not mutable"))
 	case "elys.amm.LegacyPoolParams.weight_recovery_fee_portion":
 		panic(fmt.Errorf("field weight_recovery_fee_portion of message elys.amm.LegacyPoolParams is not mutable"))
 	case "elys.amm.LegacyPoolParams.threshold_weight_difference":
@@ -387,8 +368,6 @@ func (x *fastReflection_LegacyPoolParams) NewField(fd protoreflect.FieldDescript
 	case "elys.amm.LegacyPoolParams.weight_breaking_fee_multiplier":
 		return protoreflect.ValueOfString("")
 	case "elys.amm.LegacyPoolParams.weight_breaking_fee_exponent":
-		return protoreflect.ValueOfString("")
-	case "elys.amm.LegacyPoolParams.external_liquidity_ratio":
 		return protoreflect.ValueOfString("")
 	case "elys.amm.LegacyPoolParams.weight_recovery_fee_portion":
 		return protoreflect.ValueOfString("")
@@ -486,10 +465,6 @@ func (x *fastReflection_LegacyPoolParams) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.ExternalLiquidityRatio)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
 		l = len(x.WeightRecoveryFeePortion)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
@@ -540,33 +515,26 @@ func (x *fastReflection_LegacyPoolParams) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.FeeDenom)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.FeeDenom)))
 			i--
-			dAtA[i] = 0x52
+			dAtA[i] = 0x4a
 		}
 		if len(x.WeightBreakingFeePortion) > 0 {
 			i -= len(x.WeightBreakingFeePortion)
 			copy(dAtA[i:], x.WeightBreakingFeePortion)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBreakingFeePortion)))
 			i--
-			dAtA[i] = 0x4a
+			dAtA[i] = 0x42
 		}
 		if len(x.ThresholdWeightDifference) > 0 {
 			i -= len(x.ThresholdWeightDifference)
 			copy(dAtA[i:], x.ThresholdWeightDifference)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ThresholdWeightDifference)))
 			i--
-			dAtA[i] = 0x42
+			dAtA[i] = 0x3a
 		}
 		if len(x.WeightRecoveryFeePortion) > 0 {
 			i -= len(x.WeightRecoveryFeePortion)
 			copy(dAtA[i:], x.WeightRecoveryFeePortion)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightRecoveryFeePortion)))
-			i--
-			dAtA[i] = 0x3a
-		}
-		if len(x.ExternalLiquidityRatio) > 0 {
-			i -= len(x.ExternalLiquidityRatio)
-			copy(dAtA[i:], x.ExternalLiquidityRatio)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ExternalLiquidityRatio)))
 			i--
 			dAtA[i] = 0x32
 		}
@@ -807,38 +775,6 @@ func (x *fastReflection_LegacyPoolParams) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 6:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExternalLiquidityRatio", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.ExternalLiquidityRatio = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 7:
-				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightRecoveryFeePortion", wireType)
 				}
 				var stringLen uint64
@@ -869,7 +805,7 @@ func (x *fastReflection_LegacyPoolParams) ProtoMethods() *protoiface.Methods {
 				}
 				x.WeightRecoveryFeePortion = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 8:
+			case 7:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ThresholdWeightDifference", wireType)
 				}
@@ -901,7 +837,7 @@ func (x *fastReflection_LegacyPoolParams) ProtoMethods() *protoiface.Methods {
 				}
 				x.ThresholdWeightDifference = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 9:
+			case 8:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBreakingFeePortion", wireType)
 				}
@@ -933,7 +869,7 @@ func (x *fastReflection_LegacyPoolParams) ProtoMethods() *protoiface.Methods {
 				}
 				x.WeightBreakingFeePortion = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 10:
+			case 9:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FeeDenom", wireType)
 				}
@@ -1001,29 +937,17 @@ func (x *fastReflection_LegacyPoolParams) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_PoolParams                                protoreflect.MessageDescriptor
-	fd_PoolParams_swap_fee                       protoreflect.FieldDescriptor
-	fd_PoolParams_exit_fee                       protoreflect.FieldDescriptor
-	fd_PoolParams_use_oracle                     protoreflect.FieldDescriptor
-	fd_PoolParams_weight_breaking_fee_multiplier protoreflect.FieldDescriptor
-	fd_PoolParams_weight_breaking_fee_exponent   protoreflect.FieldDescriptor
-	fd_PoolParams_weight_recovery_fee_portion    protoreflect.FieldDescriptor
-	fd_PoolParams_threshold_weight_difference    protoreflect.FieldDescriptor
-	fd_PoolParams_weight_breaking_fee_portion    protoreflect.FieldDescriptor
-	fd_PoolParams_fee_denom                      protoreflect.FieldDescriptor
+	md_PoolParams            protoreflect.MessageDescriptor
+	fd_PoolParams_swap_fee   protoreflect.FieldDescriptor
+	fd_PoolParams_use_oracle protoreflect.FieldDescriptor
+	fd_PoolParams_fee_denom  protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_amm_pool_params_proto_init()
 	md_PoolParams = File_elys_amm_pool_params_proto.Messages().ByName("PoolParams")
 	fd_PoolParams_swap_fee = md_PoolParams.Fields().ByName("swap_fee")
-	fd_PoolParams_exit_fee = md_PoolParams.Fields().ByName("exit_fee")
 	fd_PoolParams_use_oracle = md_PoolParams.Fields().ByName("use_oracle")
-	fd_PoolParams_weight_breaking_fee_multiplier = md_PoolParams.Fields().ByName("weight_breaking_fee_multiplier")
-	fd_PoolParams_weight_breaking_fee_exponent = md_PoolParams.Fields().ByName("weight_breaking_fee_exponent")
-	fd_PoolParams_weight_recovery_fee_portion = md_PoolParams.Fields().ByName("weight_recovery_fee_portion")
-	fd_PoolParams_threshold_weight_difference = md_PoolParams.Fields().ByName("threshold_weight_difference")
-	fd_PoolParams_weight_breaking_fee_portion = md_PoolParams.Fields().ByName("weight_breaking_fee_portion")
 	fd_PoolParams_fee_denom = md_PoolParams.Fields().ByName("fee_denom")
 }
 
@@ -1098,45 +1022,9 @@ func (x *fastReflection_PoolParams) Range(f func(protoreflect.FieldDescriptor, p
 			return
 		}
 	}
-	if x.ExitFee != "" {
-		value := protoreflect.ValueOfString(x.ExitFee)
-		if !f(fd_PoolParams_exit_fee, value) {
-			return
-		}
-	}
 	if x.UseOracle != false {
 		value := protoreflect.ValueOfBool(x.UseOracle)
 		if !f(fd_PoolParams_use_oracle, value) {
-			return
-		}
-	}
-	if x.WeightBreakingFeeMultiplier != "" {
-		value := protoreflect.ValueOfString(x.WeightBreakingFeeMultiplier)
-		if !f(fd_PoolParams_weight_breaking_fee_multiplier, value) {
-			return
-		}
-	}
-	if x.WeightBreakingFeeExponent != "" {
-		value := protoreflect.ValueOfString(x.WeightBreakingFeeExponent)
-		if !f(fd_PoolParams_weight_breaking_fee_exponent, value) {
-			return
-		}
-	}
-	if x.WeightRecoveryFeePortion != "" {
-		value := protoreflect.ValueOfString(x.WeightRecoveryFeePortion)
-		if !f(fd_PoolParams_weight_recovery_fee_portion, value) {
-			return
-		}
-	}
-	if x.ThresholdWeightDifference != "" {
-		value := protoreflect.ValueOfString(x.ThresholdWeightDifference)
-		if !f(fd_PoolParams_threshold_weight_difference, value) {
-			return
-		}
-	}
-	if x.WeightBreakingFeePortion != "" {
-		value := protoreflect.ValueOfString(x.WeightBreakingFeePortion)
-		if !f(fd_PoolParams_weight_breaking_fee_portion, value) {
 			return
 		}
 	}
@@ -1163,20 +1051,8 @@ func (x *fastReflection_PoolParams) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "elys.amm.PoolParams.swap_fee":
 		return x.SwapFee != ""
-	case "elys.amm.PoolParams.exit_fee":
-		return x.ExitFee != ""
 	case "elys.amm.PoolParams.use_oracle":
 		return x.UseOracle != false
-	case "elys.amm.PoolParams.weight_breaking_fee_multiplier":
-		return x.WeightBreakingFeeMultiplier != ""
-	case "elys.amm.PoolParams.weight_breaking_fee_exponent":
-		return x.WeightBreakingFeeExponent != ""
-	case "elys.amm.PoolParams.weight_recovery_fee_portion":
-		return x.WeightRecoveryFeePortion != ""
-	case "elys.amm.PoolParams.threshold_weight_difference":
-		return x.ThresholdWeightDifference != ""
-	case "elys.amm.PoolParams.weight_breaking_fee_portion":
-		return x.WeightBreakingFeePortion != ""
 	case "elys.amm.PoolParams.fee_denom":
 		return x.FeeDenom != ""
 	default:
@@ -1197,20 +1073,8 @@ func (x *fastReflection_PoolParams) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "elys.amm.PoolParams.swap_fee":
 		x.SwapFee = ""
-	case "elys.amm.PoolParams.exit_fee":
-		x.ExitFee = ""
 	case "elys.amm.PoolParams.use_oracle":
 		x.UseOracle = false
-	case "elys.amm.PoolParams.weight_breaking_fee_multiplier":
-		x.WeightBreakingFeeMultiplier = ""
-	case "elys.amm.PoolParams.weight_breaking_fee_exponent":
-		x.WeightBreakingFeeExponent = ""
-	case "elys.amm.PoolParams.weight_recovery_fee_portion":
-		x.WeightRecoveryFeePortion = ""
-	case "elys.amm.PoolParams.threshold_weight_difference":
-		x.ThresholdWeightDifference = ""
-	case "elys.amm.PoolParams.weight_breaking_fee_portion":
-		x.WeightBreakingFeePortion = ""
 	case "elys.amm.PoolParams.fee_denom":
 		x.FeeDenom = ""
 	default:
@@ -1232,27 +1096,9 @@ func (x *fastReflection_PoolParams) Get(descriptor protoreflect.FieldDescriptor)
 	case "elys.amm.PoolParams.swap_fee":
 		value := x.SwapFee
 		return protoreflect.ValueOfString(value)
-	case "elys.amm.PoolParams.exit_fee":
-		value := x.ExitFee
-		return protoreflect.ValueOfString(value)
 	case "elys.amm.PoolParams.use_oracle":
 		value := x.UseOracle
 		return protoreflect.ValueOfBool(value)
-	case "elys.amm.PoolParams.weight_breaking_fee_multiplier":
-		value := x.WeightBreakingFeeMultiplier
-		return protoreflect.ValueOfString(value)
-	case "elys.amm.PoolParams.weight_breaking_fee_exponent":
-		value := x.WeightBreakingFeeExponent
-		return protoreflect.ValueOfString(value)
-	case "elys.amm.PoolParams.weight_recovery_fee_portion":
-		value := x.WeightRecoveryFeePortion
-		return protoreflect.ValueOfString(value)
-	case "elys.amm.PoolParams.threshold_weight_difference":
-		value := x.ThresholdWeightDifference
-		return protoreflect.ValueOfString(value)
-	case "elys.amm.PoolParams.weight_breaking_fee_portion":
-		value := x.WeightBreakingFeePortion
-		return protoreflect.ValueOfString(value)
 	case "elys.amm.PoolParams.fee_denom":
 		value := x.FeeDenom
 		return protoreflect.ValueOfString(value)
@@ -1278,20 +1124,8 @@ func (x *fastReflection_PoolParams) Set(fd protoreflect.FieldDescriptor, value p
 	switch fd.FullName() {
 	case "elys.amm.PoolParams.swap_fee":
 		x.SwapFee = value.Interface().(string)
-	case "elys.amm.PoolParams.exit_fee":
-		x.ExitFee = value.Interface().(string)
 	case "elys.amm.PoolParams.use_oracle":
 		x.UseOracle = value.Bool()
-	case "elys.amm.PoolParams.weight_breaking_fee_multiplier":
-		x.WeightBreakingFeeMultiplier = value.Interface().(string)
-	case "elys.amm.PoolParams.weight_breaking_fee_exponent":
-		x.WeightBreakingFeeExponent = value.Interface().(string)
-	case "elys.amm.PoolParams.weight_recovery_fee_portion":
-		x.WeightRecoveryFeePortion = value.Interface().(string)
-	case "elys.amm.PoolParams.threshold_weight_difference":
-		x.ThresholdWeightDifference = value.Interface().(string)
-	case "elys.amm.PoolParams.weight_breaking_fee_portion":
-		x.WeightBreakingFeePortion = value.Interface().(string)
 	case "elys.amm.PoolParams.fee_denom":
 		x.FeeDenom = value.Interface().(string)
 	default:
@@ -1316,20 +1150,8 @@ func (x *fastReflection_PoolParams) Mutable(fd protoreflect.FieldDescriptor) pro
 	switch fd.FullName() {
 	case "elys.amm.PoolParams.swap_fee":
 		panic(fmt.Errorf("field swap_fee of message elys.amm.PoolParams is not mutable"))
-	case "elys.amm.PoolParams.exit_fee":
-		panic(fmt.Errorf("field exit_fee of message elys.amm.PoolParams is not mutable"))
 	case "elys.amm.PoolParams.use_oracle":
 		panic(fmt.Errorf("field use_oracle of message elys.amm.PoolParams is not mutable"))
-	case "elys.amm.PoolParams.weight_breaking_fee_multiplier":
-		panic(fmt.Errorf("field weight_breaking_fee_multiplier of message elys.amm.PoolParams is not mutable"))
-	case "elys.amm.PoolParams.weight_breaking_fee_exponent":
-		panic(fmt.Errorf("field weight_breaking_fee_exponent of message elys.amm.PoolParams is not mutable"))
-	case "elys.amm.PoolParams.weight_recovery_fee_portion":
-		panic(fmt.Errorf("field weight_recovery_fee_portion of message elys.amm.PoolParams is not mutable"))
-	case "elys.amm.PoolParams.threshold_weight_difference":
-		panic(fmt.Errorf("field threshold_weight_difference of message elys.amm.PoolParams is not mutable"))
-	case "elys.amm.PoolParams.weight_breaking_fee_portion":
-		panic(fmt.Errorf("field weight_breaking_fee_portion of message elys.amm.PoolParams is not mutable"))
 	case "elys.amm.PoolParams.fee_denom":
 		panic(fmt.Errorf("field fee_denom of message elys.amm.PoolParams is not mutable"))
 	default:
@@ -1347,20 +1169,8 @@ func (x *fastReflection_PoolParams) NewField(fd protoreflect.FieldDescriptor) pr
 	switch fd.FullName() {
 	case "elys.amm.PoolParams.swap_fee":
 		return protoreflect.ValueOfString("")
-	case "elys.amm.PoolParams.exit_fee":
-		return protoreflect.ValueOfString("")
 	case "elys.amm.PoolParams.use_oracle":
 		return protoreflect.ValueOfBool(false)
-	case "elys.amm.PoolParams.weight_breaking_fee_multiplier":
-		return protoreflect.ValueOfString("")
-	case "elys.amm.PoolParams.weight_breaking_fee_exponent":
-		return protoreflect.ValueOfString("")
-	case "elys.amm.PoolParams.weight_recovery_fee_portion":
-		return protoreflect.ValueOfString("")
-	case "elys.amm.PoolParams.threshold_weight_difference":
-		return protoreflect.ValueOfString("")
-	case "elys.amm.PoolParams.weight_breaking_fee_portion":
-		return protoreflect.ValueOfString("")
 	case "elys.amm.PoolParams.fee_denom":
 		return protoreflect.ValueOfString("")
 	default:
@@ -1436,32 +1246,8 @@ func (x *fastReflection_PoolParams) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.ExitFee)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
 		if x.UseOracle {
 			n += 2
-		}
-		l = len(x.WeightBreakingFeeMultiplier)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.WeightBreakingFeeExponent)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.WeightRecoveryFeePortion)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.ThresholdWeightDifference)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.WeightBreakingFeePortion)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		l = len(x.FeeDenom)
 		if l > 0 {
@@ -1501,42 +1287,7 @@ func (x *fastReflection_PoolParams) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.FeeDenom)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.FeeDenom)))
 			i--
-			dAtA[i] = 0x4a
-		}
-		if len(x.WeightBreakingFeePortion) > 0 {
-			i -= len(x.WeightBreakingFeePortion)
-			copy(dAtA[i:], x.WeightBreakingFeePortion)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBreakingFeePortion)))
-			i--
-			dAtA[i] = 0x42
-		}
-		if len(x.ThresholdWeightDifference) > 0 {
-			i -= len(x.ThresholdWeightDifference)
-			copy(dAtA[i:], x.ThresholdWeightDifference)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ThresholdWeightDifference)))
-			i--
-			dAtA[i] = 0x3a
-		}
-		if len(x.WeightRecoveryFeePortion) > 0 {
-			i -= len(x.WeightRecoveryFeePortion)
-			copy(dAtA[i:], x.WeightRecoveryFeePortion)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightRecoveryFeePortion)))
-			i--
-			dAtA[i] = 0x32
-		}
-		if len(x.WeightBreakingFeeExponent) > 0 {
-			i -= len(x.WeightBreakingFeeExponent)
-			copy(dAtA[i:], x.WeightBreakingFeeExponent)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBreakingFeeExponent)))
-			i--
-			dAtA[i] = 0x2a
-		}
-		if len(x.WeightBreakingFeeMultiplier) > 0 {
-			i -= len(x.WeightBreakingFeeMultiplier)
-			copy(dAtA[i:], x.WeightBreakingFeeMultiplier)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBreakingFeeMultiplier)))
-			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x1a
 		}
 		if x.UseOracle {
 			i--
@@ -1546,14 +1297,7 @@ func (x *fastReflection_PoolParams) ProtoMethods() *protoiface.Methods {
 				dAtA[i] = 0
 			}
 			i--
-			dAtA[i] = 0x18
-		}
-		if len(x.ExitFee) > 0 {
-			i -= len(x.ExitFee)
-			copy(dAtA[i:], x.ExitFee)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ExitFee)))
-			i--
-			dAtA[i] = 0x12
+			dAtA[i] = 0x10
 		}
 		if len(x.SwapFee) > 0 {
 			i -= len(x.SwapFee)
@@ -1644,38 +1388,6 @@ func (x *fastReflection_PoolParams) ProtoMethods() *protoiface.Methods {
 				x.SwapFee = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 2:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExitFee", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.ExitFee = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 3:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UseOracle", wireType)
 				}
@@ -1695,167 +1407,7 @@ func (x *fastReflection_PoolParams) ProtoMethods() *protoiface.Methods {
 					}
 				}
 				x.UseOracle = bool(v != 0)
-			case 4:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBreakingFeeMultiplier", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.WeightBreakingFeeMultiplier = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 5:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBreakingFeeExponent", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.WeightBreakingFeeExponent = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 6:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightRecoveryFeePortion", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.WeightRecoveryFeePortion = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 7:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ThresholdWeightDifference", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.ThresholdWeightDifference = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 8:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBreakingFeePortion", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.WeightBreakingFeePortion = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 9:
+			case 3:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FeeDenom", wireType)
 				}
@@ -1945,11 +1497,10 @@ type LegacyPoolParams struct {
 	UseOracle                   bool   `protobuf:"varint,3,opt,name=use_oracle,json=useOracle,proto3" json:"use_oracle,omitempty"`
 	WeightBreakingFeeMultiplier string `protobuf:"bytes,4,opt,name=weight_breaking_fee_multiplier,json=weightBreakingFeeMultiplier,proto3" json:"weight_breaking_fee_multiplier,omitempty"`
 	WeightBreakingFeeExponent   string `protobuf:"bytes,5,opt,name=weight_breaking_fee_exponent,json=weightBreakingFeeExponent,proto3" json:"weight_breaking_fee_exponent,omitempty"`
-	ExternalLiquidityRatio      string `protobuf:"bytes,6,opt,name=external_liquidity_ratio,json=externalLiquidityRatio,proto3" json:"external_liquidity_ratio,omitempty"`
-	WeightRecoveryFeePortion    string `protobuf:"bytes,7,opt,name=weight_recovery_fee_portion,json=weightRecoveryFeePortion,proto3" json:"weight_recovery_fee_portion,omitempty"`
-	ThresholdWeightDifference   string `protobuf:"bytes,8,opt,name=threshold_weight_difference,json=thresholdWeightDifference,proto3" json:"threshold_weight_difference,omitempty"`
-	WeightBreakingFeePortion    string `protobuf:"bytes,9,opt,name=weight_breaking_fee_portion,json=weightBreakingFeePortion,proto3" json:"weight_breaking_fee_portion,omitempty"`
-	FeeDenom                    string `protobuf:"bytes,10,opt,name=fee_denom,json=feeDenom,proto3" json:"fee_denom,omitempty"` // denom for fee collection
+	WeightRecoveryFeePortion    string `protobuf:"bytes,6,opt,name=weight_recovery_fee_portion,json=weightRecoveryFeePortion,proto3" json:"weight_recovery_fee_portion,omitempty"`
+	ThresholdWeightDifference   string `protobuf:"bytes,7,opt,name=threshold_weight_difference,json=thresholdWeightDifference,proto3" json:"threshold_weight_difference,omitempty"`
+	WeightBreakingFeePortion    string `protobuf:"bytes,8,opt,name=weight_breaking_fee_portion,json=weightBreakingFeePortion,proto3" json:"weight_breaking_fee_portion,omitempty"`
+	FeeDenom                    string `protobuf:"bytes,9,opt,name=fee_denom,json=feeDenom,proto3" json:"fee_denom,omitempty"` // denom for fee collection
 }
 
 func (x *LegacyPoolParams) Reset() {
@@ -2007,13 +1558,6 @@ func (x *LegacyPoolParams) GetWeightBreakingFeeExponent() string {
 	return ""
 }
 
-func (x *LegacyPoolParams) GetExternalLiquidityRatio() string {
-	if x != nil {
-		return x.ExternalLiquidityRatio
-	}
-	return ""
-}
-
 func (x *LegacyPoolParams) GetWeightRecoveryFeePortion() string {
 	if x != nil {
 		return x.WeightRecoveryFeePortion
@@ -2047,15 +1591,9 @@ type PoolParams struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SwapFee                     string `protobuf:"bytes,1,opt,name=swap_fee,json=swapFee,proto3" json:"swap_fee,omitempty"`
-	ExitFee                     string `protobuf:"bytes,2,opt,name=exit_fee,json=exitFee,proto3" json:"exit_fee,omitempty"`
-	UseOracle                   bool   `protobuf:"varint,3,opt,name=use_oracle,json=useOracle,proto3" json:"use_oracle,omitempty"`
-	WeightBreakingFeeMultiplier string `protobuf:"bytes,4,opt,name=weight_breaking_fee_multiplier,json=weightBreakingFeeMultiplier,proto3" json:"weight_breaking_fee_multiplier,omitempty"`
-	WeightBreakingFeeExponent   string `protobuf:"bytes,5,opt,name=weight_breaking_fee_exponent,json=weightBreakingFeeExponent,proto3" json:"weight_breaking_fee_exponent,omitempty"`
-	WeightRecoveryFeePortion    string `protobuf:"bytes,6,opt,name=weight_recovery_fee_portion,json=weightRecoveryFeePortion,proto3" json:"weight_recovery_fee_portion,omitempty"`
-	ThresholdWeightDifference   string `protobuf:"bytes,7,opt,name=threshold_weight_difference,json=thresholdWeightDifference,proto3" json:"threshold_weight_difference,omitempty"`
-	WeightBreakingFeePortion    string `protobuf:"bytes,8,opt,name=weight_breaking_fee_portion,json=weightBreakingFeePortion,proto3" json:"weight_breaking_fee_portion,omitempty"`
-	FeeDenom                    string `protobuf:"bytes,9,opt,name=fee_denom,json=feeDenom,proto3" json:"fee_denom,omitempty"` // denom for fee collection
+	SwapFee   string `protobuf:"bytes,1,opt,name=swap_fee,json=swapFee,proto3" json:"swap_fee,omitempty"`
+	UseOracle bool   `protobuf:"varint,2,opt,name=use_oracle,json=useOracle,proto3" json:"use_oracle,omitempty"`
+	FeeDenom  string `protobuf:"bytes,3,opt,name=fee_denom,json=feeDenom,proto3" json:"fee_denom,omitempty"` // denom for fee collection
 }
 
 func (x *PoolParams) Reset() {
@@ -2085,53 +1623,11 @@ func (x *PoolParams) GetSwapFee() string {
 	return ""
 }
 
-func (x *PoolParams) GetExitFee() string {
-	if x != nil {
-		return x.ExitFee
-	}
-	return ""
-}
-
 func (x *PoolParams) GetUseOracle() bool {
 	if x != nil {
 		return x.UseOracle
 	}
 	return false
-}
-
-func (x *PoolParams) GetWeightBreakingFeeMultiplier() string {
-	if x != nil {
-		return x.WeightBreakingFeeMultiplier
-	}
-	return ""
-}
-
-func (x *PoolParams) GetWeightBreakingFeeExponent() string {
-	if x != nil {
-		return x.WeightBreakingFeeExponent
-	}
-	return ""
-}
-
-func (x *PoolParams) GetWeightRecoveryFeePortion() string {
-	if x != nil {
-		return x.WeightRecoveryFeePortion
-	}
-	return ""
-}
-
-func (x *PoolParams) GetThresholdWeightDifference() string {
-	if x != nil {
-		return x.ThresholdWeightDifference
-	}
-	return ""
-}
-
-func (x *PoolParams) GetWeightBreakingFeePortion() string {
-	if x != nil {
-		return x.WeightBreakingFeePortion
-	}
-	return ""
 }
 
 func (x *PoolParams) GetFeeDenom() string {
@@ -2149,7 +1645,7 @@ var file_elys_amm_pool_params_proto_rawDesc = []byte{
 	0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x9a, 0x07, 0x0a, 0x10, 0x4c, 0x65, 0x67, 0x61,
+	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xad, 0x06, 0x0a, 0x10, 0x4c, 0x65, 0x67, 0x61,
 	0x63, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x4c, 0x0a, 0x08,
 	0x73, 0x77, 0x61, 0x70, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
 	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
@@ -2177,97 +1673,49 @@ var file_elys_amm_pool_params_proto_rawDesc = []byte{
 	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x19, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
 	0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x45, 0x78, 0x70, 0x6f, 0x6e,
-	0x65, 0x6e, 0x74, 0x12, 0x6b, 0x0a, 0x18, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x5f,
-	0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18,
-	0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
-	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x16, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e,
-	0x61, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x61, 0x74, 0x69, 0x6f,
-	0x12, 0x70, 0x0a, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x72, 0x65, 0x63, 0x6f, 0x76,
-	0x65, 0x72, 0x79, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x18,
-	0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
-	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x18, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
-	0x52, 0x65, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x79, 0x46, 0x65, 0x65, 0x50, 0x6f, 0x72, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x71, 0x0a, 0x1b, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x5f,
-	0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x64, 0x69, 0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63,
-	0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
-	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
-	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x19, 0x74, 0x68, 0x72, 0x65,
-	0x73, 0x68, 0x6f, 0x6c, 0x64, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x44, 0x69, 0x66, 0x66, 0x65,
-	0x72, 0x65, 0x6e, 0x63, 0x65, 0x12, 0x70, 0x0a, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f,
-	0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x6f, 0x72,
-	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0x65, 0x6e, 0x74, 0x12, 0x70, 0x0a, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x72, 0x65,
+	0x63, 0x6f, 0x76, 0x65, 0x72, 0x79, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x6f, 0x72, 0x74, 0x69,
+	0x6f, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
+	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x18, 0x77, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x79, 0x46, 0x65, 0x65, 0x50, 0x6f,
+	0x72, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x71, 0x0a, 0x1b, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f,
+	0x6c, 0x64, 0x5f, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x64, 0x69, 0x66, 0x66, 0x65, 0x72,
+	0x65, 0x6e, 0x63, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
 	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
 	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
-	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x18, 0x77,
-	0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65,
-	0x50, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1b, 0x0a, 0x09, 0x66, 0x65, 0x65, 0x5f, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x65, 0x65, 0x44,
-	0x65, 0x6e, 0x6f, 0x6d, 0x22, 0xa7, 0x06, 0x0a, 0x0a, 0x50, 0x6f, 0x6f, 0x6c, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x12, 0x4c, 0x0a, 0x08, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x66, 0x65, 0x65, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
-	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x07, 0x73, 0x77, 0x61, 0x70, 0x46, 0x65,
-	0x65, 0x12, 0x4c, 0x0a, 0x08, 0x65, 0x78, 0x69, 0x74, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
-	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x07, 0x65, 0x78, 0x69, 0x74, 0x46, 0x65, 0x65, 0x12,
-	0x1d, 0x0a, 0x0a, 0x75, 0x73, 0x65, 0x5f, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x08, 0x52, 0x09, 0x75, 0x73, 0x65, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x12, 0x76,
-	0x0a, 0x1e, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e,
-	0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65, 0x72,
-	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
-	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68,
-	0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x4d, 0x75, 0x6c, 0x74,
-	0x69, 0x70, 0x6c, 0x69, 0x65, 0x72, 0x12, 0x72, 0x0a, 0x1c, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
-	0x5f, 0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x65, 0x78,
-	0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
-	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
-	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x19, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46,
-	0x65, 0x65, 0x45, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x12, 0x70, 0x0a, 0x1b, 0x77, 0x65,
-	0x69, 0x67, 0x68, 0x74, 0x5f, 0x72, 0x65, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x79, 0x5f, 0x66, 0x65,
-	0x65, 0x5f, 0x70, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
-	0x65, 0x63, 0x52, 0x18, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x76, 0x65,
-	0x72, 0x79, 0x46, 0x65, 0x65, 0x50, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x71, 0x0a, 0x1b,
-	0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x5f, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
-	0x5f, 0x64, 0x69, 0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
-	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x19, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x57,
-	0x65, 0x69, 0x67, 0x68, 0x74, 0x44, 0x69, 0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x12,
-	0x70, 0x0a, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x72, 0x65, 0x61, 0x6b, 0x69,
-	0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x08,
-	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
-	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x18, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42,
-	0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x50, 0x6f, 0x72, 0x74, 0x69, 0x6f,
-	0x6e, 0x12, 0x1b, 0x0a, 0x09, 0x66, 0x65, 0x65, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x09,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x65, 0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x42, 0x8b,
-	0x01, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x42,
-	0x0f, 0x50, 0x6f, 0x6f, 0x6c, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f,
-	0x50, 0x01, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65,
-	0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0xa2, 0x02, 0x03,
-	0x45, 0x41, 0x58, 0xaa, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x41, 0x6d, 0x6d, 0xca, 0x02,
-	0x08, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0xe2, 0x02, 0x14, 0x45, 0x6c, 0x79, 0x73,
-	0x5c, 0x41, 0x6d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
-	0xea, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x41, 0x6d, 0x6d, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x19, 0x74,
+	0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x44, 0x69,
+	0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x12, 0x70, 0x0a, 0x1b, 0x77, 0x65, 0x69, 0x67,
+	0x68, 0x74, 0x5f, 0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f,
+	0x70, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
+	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
+	0x52, 0x18, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67,
+	0x46, 0x65, 0x65, 0x50, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1b, 0x0a, 0x09, 0x66, 0x65,
+	0x65, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66,
+	0x65, 0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x96, 0x01, 0x0a, 0x0a, 0x50, 0x6f, 0x6f, 0x6c,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x4c, 0x0a, 0x08, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x66,
+	0x65, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
+	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x07, 0x73, 0x77, 0x61,
+	0x70, 0x46, 0x65, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x75, 0x73, 0x65, 0x5f, 0x6f, 0x72, 0x61, 0x63,
+	0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09, 0x75, 0x73, 0x65, 0x4f, 0x72, 0x61,
+	0x63, 0x6c, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x66, 0x65, 0x65, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x65, 0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
+	0x42, 0x8b, 0x01, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d,
+	0x6d, 0x42, 0x0f, 0x50, 0x6f, 0x6f, 0x6c, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f,
+	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0xa2,
+	0x02, 0x03, 0x45, 0x41, 0x58, 0xaa, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x41, 0x6d, 0x6d,
+	0xca, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0xe2, 0x02, 0x14, 0x45, 0x6c,
+	0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x74, 0x61, 0xea, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x41, 0x6d, 0x6d, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
