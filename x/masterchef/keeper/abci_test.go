@@ -376,4 +376,17 @@ func (suite *MasterchefKeeperTestSuite) TestExternalRewardsDistribution() {
 	suite.Require().True(found)
 	suite.Require().Equal(rewardInfo.RewardDenom, externalIncentive2.RewardDenom)
 	suite.Require().Equal(rewardInfo.PoolAccRewardPerShare, sdkmath.LegacyMustNewDecFromStr("0.000099900099900099"))
+
+	// Get Tvl for non-existent pool
+	res := suite.app.MasterchefKeeper.GetPoolTVL(suite.ctx, 1000)
+	suite.Require().Equal(res, sdkmath.LegacyZeroDec())
+
+	// set current block to last block
+	suite.ctx = suite.ctx.WithBlockHeight(externalIncentive.ToBlock)
+
+	suite.app.MasterchefKeeper.ProcessExternalRewardsDistribution(suite.ctx)
+
+	// should delete incentives
+	listInc := suite.app.MasterchefKeeper.GetAllExternalIncentives(suite.ctx)
+	suite.Require().Equal(len(listInc), 0)
 }
