@@ -19,9 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
 	Open(ctx context.Context, in *MsgOpen, opts ...grpc.CallOption) (*MsgOpenResponse, error)
-	BrokerOpen(ctx context.Context, in *MsgBrokerOpen, opts ...grpc.CallOption) (*MsgOpenResponse, error)
 	Close(ctx context.Context, in *MsgClose, opts ...grpc.CallOption) (*MsgCloseResponse, error)
-	BrokerClose(ctx context.Context, in *MsgBrokerClose, opts ...grpc.CallOption) (*MsgCloseResponse, error)
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	Whitelist(ctx context.Context, in *MsgWhitelist, opts ...grpc.CallOption) (*MsgWhitelistResponse, error)
 	Dewhitelist(ctx context.Context, in *MsgDewhitelist, opts ...grpc.CallOption) (*MsgDewhitelistResponse, error)
@@ -47,27 +45,9 @@ func (c *msgClient) Open(ctx context.Context, in *MsgOpen, opts ...grpc.CallOpti
 	return out, nil
 }
 
-func (c *msgClient) BrokerOpen(ctx context.Context, in *MsgBrokerOpen, opts ...grpc.CallOption) (*MsgOpenResponse, error) {
-	out := new(MsgOpenResponse)
-	err := c.cc.Invoke(ctx, "/elys.perpetual.Msg/BrokerOpen", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) Close(ctx context.Context, in *MsgClose, opts ...grpc.CallOption) (*MsgCloseResponse, error) {
 	out := new(MsgCloseResponse)
 	err := c.cc.Invoke(ctx, "/elys.perpetual.Msg/Close", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) BrokerClose(ctx context.Context, in *MsgBrokerClose, opts ...grpc.CallOption) (*MsgCloseResponse, error) {
-	out := new(MsgCloseResponse)
-	err := c.cc.Invoke(ctx, "/elys.perpetual.Msg/BrokerClose", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -133,9 +113,7 @@ func (c *msgClient) UpdateTakeProfitPrice(ctx context.Context, in *MsgUpdateTake
 // for forward compatibility
 type MsgServer interface {
 	Open(context.Context, *MsgOpen) (*MsgOpenResponse, error)
-	BrokerOpen(context.Context, *MsgBrokerOpen) (*MsgOpenResponse, error)
 	Close(context.Context, *MsgClose) (*MsgCloseResponse, error)
-	BrokerClose(context.Context, *MsgBrokerClose) (*MsgCloseResponse, error)
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	Whitelist(context.Context, *MsgWhitelist) (*MsgWhitelistResponse, error)
 	Dewhitelist(context.Context, *MsgDewhitelist) (*MsgDewhitelistResponse, error)
@@ -152,14 +130,8 @@ type UnimplementedMsgServer struct {
 func (UnimplementedMsgServer) Open(context.Context, *MsgOpen) (*MsgOpenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Open not implemented")
 }
-func (UnimplementedMsgServer) BrokerOpen(context.Context, *MsgBrokerOpen) (*MsgOpenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BrokerOpen not implemented")
-}
 func (UnimplementedMsgServer) Close(context.Context, *MsgClose) (*MsgCloseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Close not implemented")
-}
-func (UnimplementedMsgServer) BrokerClose(context.Context, *MsgBrokerClose) (*MsgCloseResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BrokerClose not implemented")
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -210,24 +182,6 @@ func _Msg_Open_Handler(srv interface{}, ctx context.Context, dec func(interface{
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_BrokerOpen_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgBrokerOpen)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).BrokerOpen(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.perpetual.Msg/BrokerOpen",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).BrokerOpen(ctx, req.(*MsgBrokerOpen))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_Close_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgClose)
 	if err := dec(in); err != nil {
@@ -242,24 +196,6 @@ func _Msg_Close_Handler(srv interface{}, ctx context.Context, dec func(interface
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).Close(ctx, req.(*MsgClose))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_BrokerClose_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgBrokerClose)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).BrokerClose(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.perpetual.Msg/BrokerClose",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).BrokerClose(ctx, req.(*MsgBrokerClose))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -384,16 +320,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_Open_Handler,
 		},
 		{
-			MethodName: "BrokerOpen",
-			Handler:    _Msg_BrokerOpen_Handler,
-		},
-		{
 			MethodName: "Close",
 			Handler:    _Msg_Close_Handler,
-		},
-		{
-			MethodName: "BrokerClose",
-			Handler:    _Msg_BrokerClose_Handler,
 		},
 		{
 			MethodName: "UpdateParams",

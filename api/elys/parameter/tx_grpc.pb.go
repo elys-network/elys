@@ -21,7 +21,6 @@ type MsgClient interface {
 	UpdateMinCommission(ctx context.Context, in *MsgUpdateMinCommission, opts ...grpc.CallOption) (*MsgUpdateMinCommissionResponse, error)
 	UpdateMaxVotingPower(ctx context.Context, in *MsgUpdateMaxVotingPower, opts ...grpc.CallOption) (*MsgUpdateMaxVotingPowerResponse, error)
 	UpdateMinSelfDelegation(ctx context.Context, in *MsgUpdateMinSelfDelegation, opts ...grpc.CallOption) (*MsgUpdateMinSelfDelegationResponse, error)
-	UpdateBrokerAddress(ctx context.Context, in *MsgUpdateBrokerAddress, opts ...grpc.CallOption) (*MsgUpdateBrokerAddressResponse, error)
 	UpdateTotalBlocksPerYear(ctx context.Context, in *MsgUpdateTotalBlocksPerYear, opts ...grpc.CallOption) (*MsgUpdateTotalBlocksPerYearResponse, error)
 	UpdateRewardsDataLifetime(ctx context.Context, in *MsgUpdateRewardsDataLifetime, opts ...grpc.CallOption) (*MsgUpdateRewardsDataLifetimeResponse, error)
 }
@@ -61,15 +60,6 @@ func (c *msgClient) UpdateMinSelfDelegation(ctx context.Context, in *MsgUpdateMi
 	return out, nil
 }
 
-func (c *msgClient) UpdateBrokerAddress(ctx context.Context, in *MsgUpdateBrokerAddress, opts ...grpc.CallOption) (*MsgUpdateBrokerAddressResponse, error) {
-	out := new(MsgUpdateBrokerAddressResponse)
-	err := c.cc.Invoke(ctx, "/elys.parameter.Msg/UpdateBrokerAddress", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) UpdateTotalBlocksPerYear(ctx context.Context, in *MsgUpdateTotalBlocksPerYear, opts ...grpc.CallOption) (*MsgUpdateTotalBlocksPerYearResponse, error) {
 	out := new(MsgUpdateTotalBlocksPerYearResponse)
 	err := c.cc.Invoke(ctx, "/elys.parameter.Msg/UpdateTotalBlocksPerYear", in, out, opts...)
@@ -95,7 +85,6 @@ type MsgServer interface {
 	UpdateMinCommission(context.Context, *MsgUpdateMinCommission) (*MsgUpdateMinCommissionResponse, error)
 	UpdateMaxVotingPower(context.Context, *MsgUpdateMaxVotingPower) (*MsgUpdateMaxVotingPowerResponse, error)
 	UpdateMinSelfDelegation(context.Context, *MsgUpdateMinSelfDelegation) (*MsgUpdateMinSelfDelegationResponse, error)
-	UpdateBrokerAddress(context.Context, *MsgUpdateBrokerAddress) (*MsgUpdateBrokerAddressResponse, error)
 	UpdateTotalBlocksPerYear(context.Context, *MsgUpdateTotalBlocksPerYear) (*MsgUpdateTotalBlocksPerYearResponse, error)
 	UpdateRewardsDataLifetime(context.Context, *MsgUpdateRewardsDataLifetime) (*MsgUpdateRewardsDataLifetimeResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -113,9 +102,6 @@ func (UnimplementedMsgServer) UpdateMaxVotingPower(context.Context, *MsgUpdateMa
 }
 func (UnimplementedMsgServer) UpdateMinSelfDelegation(context.Context, *MsgUpdateMinSelfDelegation) (*MsgUpdateMinSelfDelegationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateMinSelfDelegation not implemented")
-}
-func (UnimplementedMsgServer) UpdateBrokerAddress(context.Context, *MsgUpdateBrokerAddress) (*MsgUpdateBrokerAddressResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateBrokerAddress not implemented")
 }
 func (UnimplementedMsgServer) UpdateTotalBlocksPerYear(context.Context, *MsgUpdateTotalBlocksPerYear) (*MsgUpdateTotalBlocksPerYearResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateTotalBlocksPerYear not implemented")
@@ -190,24 +176,6 @@ func _Msg_UpdateMinSelfDelegation_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateBrokerAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateBrokerAddress)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).UpdateBrokerAddress(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.parameter.Msg/UpdateBrokerAddress",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateBrokerAddress(ctx, req.(*MsgUpdateBrokerAddress))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_UpdateTotalBlocksPerYear_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateTotalBlocksPerYear)
 	if err := dec(in); err != nil {
@@ -262,10 +230,6 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateMinSelfDelegation",
 			Handler:    _Msg_UpdateMinSelfDelegation_Handler,
-		},
-		{
-			MethodName: "UpdateBrokerAddress",
-			Handler:    _Msg_UpdateBrokerAddress_Handler,
 		},
 		{
 			MethodName: "UpdateTotalBlocksPerYear",

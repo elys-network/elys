@@ -40,8 +40,6 @@ type QueryClient interface {
 	MTP(ctx context.Context, in *MTPRequest, opts ...grpc.CallOption) (*MTPResponse, error)
 	// Queries an estimation of a new open position details.
 	OpenEstimation(ctx context.Context, in *QueryOpenEstimationRequest, opts ...grpc.CallOption) (*QueryOpenEstimationResponse, error)
-	// Queries a list of GetAllToPay items.
-	GetAllToPay(ctx context.Context, in *QueryGetAllToPayRequest, opts ...grpc.CallOption) (*QueryGetAllToPayResponse, error)
 	// Queries a list of CloseEstimation items.
 	CloseEstimation(ctx context.Context, in *QueryCloseEstimationRequest, opts ...grpc.CallOption) (*QueryCloseEstimationResponse, error)
 }
@@ -153,15 +151,6 @@ func (c *queryClient) OpenEstimation(ctx context.Context, in *QueryOpenEstimatio
 	return out, nil
 }
 
-func (c *queryClient) GetAllToPay(ctx context.Context, in *QueryGetAllToPayRequest, opts ...grpc.CallOption) (*QueryGetAllToPayResponse, error) {
-	out := new(QueryGetAllToPayResponse)
-	err := c.cc.Invoke(ctx, "/elys.perpetual.Query/GetAllToPay", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) CloseEstimation(ctx context.Context, in *QueryCloseEstimationRequest, opts ...grpc.CallOption) (*QueryCloseEstimationResponse, error) {
 	out := new(QueryCloseEstimationResponse)
 	err := c.cc.Invoke(ctx, "/elys.perpetual.Query/CloseEstimation", in, out, opts...)
@@ -197,8 +186,6 @@ type QueryServer interface {
 	MTP(context.Context, *MTPRequest) (*MTPResponse, error)
 	// Queries an estimation of a new open position details.
 	OpenEstimation(context.Context, *QueryOpenEstimationRequest) (*QueryOpenEstimationResponse, error)
-	// Queries a list of GetAllToPay items.
-	GetAllToPay(context.Context, *QueryGetAllToPayRequest) (*QueryGetAllToPayResponse, error)
 	// Queries a list of CloseEstimation items.
 	CloseEstimation(context.Context, *QueryCloseEstimationRequest) (*QueryCloseEstimationResponse, error)
 	mustEmbedUnimplementedQueryServer()
@@ -240,9 +227,6 @@ func (UnimplementedQueryServer) MTP(context.Context, *MTPRequest) (*MTPResponse,
 }
 func (UnimplementedQueryServer) OpenEstimation(context.Context, *QueryOpenEstimationRequest) (*QueryOpenEstimationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OpenEstimation not implemented")
-}
-func (UnimplementedQueryServer) GetAllToPay(context.Context, *QueryGetAllToPayRequest) (*QueryGetAllToPayResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllToPay not implemented")
 }
 func (UnimplementedQueryServer) CloseEstimation(context.Context, *QueryCloseEstimationRequest) (*QueryCloseEstimationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CloseEstimation not implemented")
@@ -458,24 +442,6 @@ func _Query_OpenEstimation_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetAllToPay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetAllToPayRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).GetAllToPay(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.perpetual.Query/GetAllToPay",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetAllToPay(ctx, req.(*QueryGetAllToPayRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_CloseEstimation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryCloseEstimationRequest)
 	if err := dec(in); err != nil {
@@ -544,10 +510,6 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OpenEstimation",
 			Handler:    _Query_OpenEstimation_Handler,
-		},
-		{
-			MethodName: "GetAllToPay",
-			Handler:    _Query_GetAllToPay_Handler,
 		},
 		{
 			MethodName: "CloseEstimation",
