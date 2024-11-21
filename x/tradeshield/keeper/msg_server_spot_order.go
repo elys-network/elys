@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -31,18 +32,45 @@ func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSp
 		return &types.MsgCreateSpotOrderResponse{}, nil
 	}
 
+	// add the order to the pending orders
 	id := k.AppendPendingSpotOrder(
 		ctx,
 		pendingSpotOrder,
 	)
 
+	// set the order id
+	pendingSpotOrder.OrderId = id
+
+	// send order amount from owner to the order address
+	ownerAddress := sdk.MustAccAddressFromBech32(pendingSpotOrder.OwnerAddress)
+	err := k.Keeper.bank.SendCoins(ctx, ownerAddress, pendingSpotOrder.GetOrderAddress(), sdk.NewCoins(pendingSpotOrder.OrderAmount))
+	if err != nil {
+		return nil, err
+	}
+
+	// return the order id
 	return &types.MsgCreateSpotOrderResponse{
-		OrderId: id,
+		OrderId: pendingSpotOrder.OrderId,
 	}, nil
 }
 
 func (k msgServer) UpdateSpotOrder(goCtx context.Context, msg *types.MsgUpdateSpotOrder) (*types.MsgUpdateSpotOrderResponse, error) {
-	// _ := sdk.UnwrapSDKContext(goCtx)
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Checks that the element exists
+	order, found := k.GetPendingSpotOrder(ctx, msg.OrderId)
+	if !found {
+		return nil, types.ErrSpotOrderNotFound
+	}
+
+	// Checks if the the msg creator is the same as the current owner
+	if msg.OwnerAddress != order.OwnerAddress {
+		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	// update the order
+	order.OrderPrice = msg.OrderPrice
+	k.SetPendingSpotOrder(ctx, order)
 
 	return &types.MsgUpdateSpotOrderResponse{}, nil
 }
@@ -58,6 +86,13 @@ func (k msgServer) CancelSpotOrder(goCtx context.Context, msg *types.MsgCancelSp
 
 	if spotOrder.OwnerAddress != msg.OwnerAddress {
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	// send the order amount back to the owner
+	ownerAddress := sdk.MustAccAddressFromBech32(spotOrder.OwnerAddress)
+	err := k.Keeper.bank.SendCoins(ctx, spotOrder.GetOrderAddress(), ownerAddress, sdk.NewCoins(spotOrder.OrderAmount))
+	if err != nil {
+		return nil, err
 	}
 
 	k.RemovePendingSpotOrder(ctx, msg.OrderId)

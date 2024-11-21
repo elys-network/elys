@@ -39,7 +39,7 @@ func createNPendingPerpetualOrder(keeper *keeper.Keeper, ctx sdk.Context, n int)
 }
 
 func TestPendingPerpetualOrderGet(t *testing.T) {
-	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
 	items := createNPendingPerpetualOrder(keeper, ctx, 10)
 	for _, item := range items {
 		got, found := keeper.GetPendingPerpetualOrder(ctx, item.OrderId)
@@ -52,7 +52,7 @@ func TestPendingPerpetualOrderGet(t *testing.T) {
 }
 
 func TestPendingPerpetualOrderRemove(t *testing.T) {
-	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
 	items := createNPendingPerpetualOrder(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemovePendingPerpetualOrder(ctx, item.OrderId)
@@ -62,7 +62,7 @@ func TestPendingPerpetualOrderRemove(t *testing.T) {
 }
 
 func TestPendingPerpetualOrderGetAll(t *testing.T) {
-	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
 	items := createNPendingPerpetualOrder(keeper, ctx, 10)
 	require.ElementsMatch(t,
 		nullify.Fill(items),
@@ -71,7 +71,7 @@ func TestPendingPerpetualOrderGetAll(t *testing.T) {
 }
 
 func TestPendingPerpetualOrderCount(t *testing.T) {
-	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
 	items := createNPendingPerpetualOrder(keeper, ctx, 10)
 	count := uint64(len(items))
 	require.Equal(t, count, keeper.GetPendingPerpetualOrderCount(ctx)-1)
@@ -79,7 +79,7 @@ func TestPendingPerpetualOrderCount(t *testing.T) {
 
 // TestExecuteLimitOpenOrder
 func TestExecuteLimitOpenOrder(t *testing.T) {
-	keeper, ctx, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, bankKeeper, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
 
 	address := sdk.AccAddress([]byte("address"))
 	// Set up the mock to expect the GetAssetPrice call and specify the return values
@@ -113,6 +113,8 @@ func TestExecuteLimitOpenOrder(t *testing.T) {
 
 	order, _ := keeper.GetPendingPerpetualOrder(ctx, 1)
 
+	bankKeeper.On("SendCoins", ctx, order.GetOrderAddress(), address, sdk.NewCoins(order.Collateral)).Return(nil).Once()
+
 	err := keeper.ExecuteLimitOpenOrder(ctx, order)
 	require.NoError(t, err)
 
@@ -122,7 +124,7 @@ func TestExecuteLimitOpenOrder(t *testing.T) {
 
 // TestExecuteLimitCloseOrder
 func TestExecuteLimitCloseOrder(t *testing.T) {
-	keeper, ctx, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
 
 	address := sdk.AccAddress([]byte("address"))
 
@@ -158,7 +160,7 @@ func TestExecuteLimitCloseOrder(t *testing.T) {
 
 // TestExecuteMarketOpenOrder
 func TestExecuteMarketOpenOrder(t *testing.T) {
-	keeper, ctx, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
 
 	address := sdk.AccAddress([]byte("address"))
 
@@ -199,7 +201,7 @@ func TestExecuteMarketOpenOrder(t *testing.T) {
 
 // TestExecuteMarketCloseOrder
 func TestExecuteMarketCloseOrder(t *testing.T) {
-	keeper, ctx, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _, perpetualKeeper := keepertest.TradeshieldKeeper(t)
 
 	address := sdk.AccAddress([]byte("address"))
 

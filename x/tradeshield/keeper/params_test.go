@@ -9,7 +9,7 @@ import (
 )
 
 func TestGetParams(t *testing.T) {
-	k, ctx, _, _, _ := testkeeper.TradeshieldKeeper(t)
+	k, ctx, _, _, _, _ := testkeeper.TradeshieldKeeper(t)
 	params := types.DefaultParams()
 
 	k.SetParams(ctx, &params)

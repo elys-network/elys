@@ -201,55 +201,43 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 		return err
 	}
 
-	found := false
-
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
-		if marketPrice.LTE(order.TriggerPrice.Rate) {
-			_, err = k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
-				Creator:         order.OwnerAddress,
-				Position:        perpetualtypes.Position(order.Position),
-				Leverage:        order.Leverage,
-				TradingAsset:    order.TradingAsset,
-				Collateral:      order.Collateral,
-				TakeProfitPrice: order.TakeProfitPrice,
-				StopLossPrice:   order.StopLossPrice,
-				PoolId:          order.PoolId,
-			})
-			if err != nil {
-				return err
-			}
-
-			found = true
+		if marketPrice.GT(order.TriggerPrice.Rate) {
+			// skip the order
+			return nil
 		}
 	case types.PerpetualPosition_SHORT:
-		if marketPrice.GTE(order.TriggerPrice.Rate) {
-			_, err = k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
-				Creator:         order.OwnerAddress,
-				Position:        perpetualtypes.Position(order.Position),
-				Leverage:        order.Leverage,
-				TradingAsset:    order.TradingAsset,
-				Collateral:      order.Collateral,
-				TakeProfitPrice: order.TakeProfitPrice,
-				StopLossPrice:   order.StopLossPrice,
-				PoolId:          order.PoolId,
-			})
-			if err != nil {
-				return err
-			}
-
-			found = true
+		if marketPrice.LT(order.TriggerPrice.Rate) {
+			// skip the order
+			return nil
 		}
 	}
 
-	if found {
-		// Remove the order from the pending order list
-		k.RemovePendingPerpetualOrder(ctx, order.OrderId)
-
-		return nil
+	// send the collateral amount back to the owner
+	ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
+	err = k.bank.SendCoins(ctx, order.GetOrderAddress(), ownerAddress, sdk.NewCoins(order.Collateral))
+	if err != nil {
+		return err
 	}
 
-	// skip the order
+	_, err = k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+		Creator:         order.OwnerAddress,
+		Position:        perpetualtypes.Position(order.Position),
+		Leverage:        order.Leverage,
+		TradingAsset:    order.TradingAsset,
+		Collateral:      order.Collateral,
+		TakeProfitPrice: order.TakeProfitPrice,
+		StopLossPrice:   order.StopLossPrice,
+		PoolId:          order.PoolId,
+	})
+	if err != nil {
+		return err
+	}
+
+	// Remove the order from the pending order list
+	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+
 	return nil
 }
 
@@ -260,45 +248,31 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 		return err
 	}
 
-	found := false
-
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
-		if marketPrice.GTE(order.TriggerPrice.Rate) {
-			_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
-				Creator: order.OwnerAddress,
-				Id:      order.PositionId,
-				Amount:  sdkmath.ZeroInt(),
-			})
-			if err != nil {
-				return err
-			}
-
-			found = true
+		if marketPrice.LT(order.TriggerPrice.Rate) {
+			// skip the order
+			return nil
 		}
 	case types.PerpetualPosition_SHORT:
-		if marketPrice.LTE(order.TriggerPrice.Rate) {
-			_, err := k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
-				Creator: order.OwnerAddress,
-				Id:      order.PositionId,
-				Amount:  sdkmath.ZeroInt(),
-			})
-			if err != nil {
-				return err
-			}
-
-			found = true
+		if marketPrice.GT(order.TriggerPrice.Rate) {
+			// skip the order
+			return nil
 		}
 	}
 
-	if found {
-		// Remove the order from the pending order list
-		k.RemovePendingPerpetualOrder(ctx, order.OrderId)
-
-		return nil
+	_, err = k.perpetual.Close(ctx, &perpetualtypes.MsgClose{
+		Creator: order.OwnerAddress,
+		Id:      order.PositionId,
+		Amount:  sdkmath.ZeroInt(),
+	})
+	if err != nil {
+		return err
 	}
 
-	// skip the order
+	// Remove the order from the pending order list
+	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+
 	return nil
 }
 

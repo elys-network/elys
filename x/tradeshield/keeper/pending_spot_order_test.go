@@ -24,7 +24,7 @@ func createNPendingSpotOrder(keeper *keeper.Keeper, ctx sdk.Context, n int) []ty
 }
 
 func TestPendingSpotOrderGet(t *testing.T) {
-	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
 	items := createNPendingSpotOrder(keeper, ctx, 10)
 	for _, item := range items {
 		got, found := keeper.GetPendingSpotOrder(ctx, item.OrderId)
@@ -38,7 +38,7 @@ func TestPendingSpotOrderGet(t *testing.T) {
 }
 
 func TestPendingSpotOrderRemove(t *testing.T) {
-	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
 	items := createNPendingSpotOrder(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemovePendingSpotOrder(ctx, item.OrderId)
@@ -48,7 +48,7 @@ func TestPendingSpotOrderRemove(t *testing.T) {
 }
 
 func TestPendingSpotOrderGetAll(t *testing.T) {
-	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
 	_ = createNPendingSpotOrder(keeper, ctx, 10)
 
 	for _, item := range keeper.GetAllPendingSpotOrder(ctx) {
@@ -63,7 +63,7 @@ func TestPendingSpotOrderGetAll(t *testing.T) {
 }
 
 func TestPendingSpotOrderCount(t *testing.T) {
-	keeper, ctx, _, _, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
 	items := createNPendingSpotOrder(keeper, ctx, 10)
 	count := uint64(len(items))
 	require.Equal(t, count, keeper.GetPendingSpotOrderCount(ctx)-1)
@@ -71,7 +71,7 @@ func TestPendingSpotOrderCount(t *testing.T) {
 
 // TestExecuteStopLossOrder
 func TestExecuteStopLossOrder(t *testing.T) {
-	keeper, ctx, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, bankKeeper, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
 
 	address := sdk.AccAddress([]byte("address"))
 
@@ -102,6 +102,8 @@ func TestExecuteStopLossOrder(t *testing.T) {
 
 	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
 
+	bankKeeper.On("SendCoins", ctx, order.GetOrderAddress(), address, sdk.NewCoins(order.OrderAmount)).Return(nil).Once()
+
 	err := keeper.ExecuteStopLossOrder(ctx, order)
 	require.NoError(t, err)
 
@@ -116,7 +118,7 @@ func TestExecuteStopLossOrder(t *testing.T) {
 
 // TestExecuteLimitSellOrder
 func TestExecuteLimitSellOrder(t *testing.T) {
-	keeper, ctx, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, bankKeeper, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
 
 	address := sdk.AccAddress([]byte("address"))
 
@@ -147,6 +149,8 @@ func TestExecuteLimitSellOrder(t *testing.T) {
 
 	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
 
+	bankKeeper.On("SendCoins", ctx, order.GetOrderAddress(), address, sdk.NewCoins(order.OrderAmount)).Return(nil).Once()
+
 	err := keeper.ExecuteLimitSellOrder(ctx, order)
 	require.NoError(t, err)
 
@@ -161,7 +165,7 @@ func TestExecuteLimitSellOrder(t *testing.T) {
 
 // TestExecuteLimitBuyOrder
 func TestExecuteLimitBuyOrder(t *testing.T) {
-	keeper, ctx, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, bankKeeper, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
 
 	address := sdk.AccAddress([]byte("address"))
 
@@ -192,6 +196,8 @@ func TestExecuteLimitBuyOrder(t *testing.T) {
 
 	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
 
+	bankKeeper.On("SendCoins", ctx, order.GetOrderAddress(), address, sdk.NewCoins(order.OrderAmount)).Return(nil).Once()
+
 	err := keeper.ExecuteLimitBuyOrder(ctx, order)
 	require.NoError(t, err)
 
@@ -206,7 +212,7 @@ func TestExecuteLimitBuyOrder(t *testing.T) {
 
 // TestExecuteMarketBuyOrder
 func TestExecuteMarketBuyOrder(t *testing.T) {
-	keeper, ctx, ammKeeper, _, _ := keepertest.TradeshieldKeeper(t)
+	keeper, ctx, _, ammKeeper, _, _ := keepertest.TradeshieldKeeper(t)
 
 	address := sdk.AccAddress([]byte("address"))
 
