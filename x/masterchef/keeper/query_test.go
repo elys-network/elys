@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -212,3 +213,165 @@ func (suite *MasterchefKeeperTestSuite) TestPoolRewards() {
 		})
 	}
 }
+
+func (suite *MasterchefKeeperTestSuite) TestExternalIncentiveQuery() {
+	tests := []struct {
+		desc     string
+		request  *types.QueryExternalIncentiveRequest
+		response *types.QueryExternalIncentiveResponse
+		err      error
+	}{
+		{
+			desc: "valid request",
+			request: &types.QueryExternalIncentiveRequest{
+				Id: 1,
+			},
+			response: &types.QueryExternalIncentiveResponse{
+				ExternalIncentive: types.ExternalIncentive{
+					Id:             1,
+					RewardDenom:    "reward2",
+					PoolId:         1,
+					FromBlock:      suite.ctx.BlockHeight() - 1,
+					ToBlock:        suite.ctx.BlockHeight() + 101,
+					AmountPerBlock: sdkmath.OneInt(),
+					Apr:            sdkmath.LegacyZeroDec(),
+				},
+			},
+			err: nil,
+		},
+	}
+
+	suite.SetupApp()
+
+	for _, tc := range tests {
+		suite.Run(tc.desc, func() {
+			suite.app.MasterchefKeeper.SetExternalIncentive(suite.ctx, tc.response.ExternalIncentive)
+			response, err := suite.app.MasterchefKeeper.ExternalIncentive(suite.ctx, tc.request)
+			if tc.err != nil {
+				suite.Require().ErrorIs(err, tc.err)
+			} else {
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.response.String(), response.String())
+			}
+		})
+	}
+}
+
+func (suite *MasterchefKeeperTestSuite) TestPoolInfo() {
+	tests := []struct {
+		desc     string
+		request  *types.QueryPoolInfoRequest
+		response *types.QueryPoolInfoResponse
+		err      error
+	}{
+		{
+			desc: "valid request",
+			request: &types.QueryPoolInfoRequest{
+				PoolId: 1,
+			},
+			response: &types.QueryPoolInfoResponse{
+				PoolInfo: types.PoolInfo{
+					PoolId:               1,
+					RewardWallet:         "cosmos1lz2ajk0mvhda7hdzedydeany3f673600pd6euqnjvqv8w5p4az5qmt08tn",
+					Multiplier:           sdkmath.LegacyOneDec(),
+					EdenApr:              sdkmath.LegacyMustNewDecFromStr("0.02"),
+					GasApr:               sdkmath.LegacyZeroDec(),
+					DexApr:               sdkmath.LegacyMustNewDecFromStr("0.01"),
+					ExternalIncentiveApr: sdkmath.LegacyZeroDec(),
+				},
+			},
+			err: nil,
+		},
+	}
+
+	suite.SetupApp()
+
+	for _, tc := range tests {
+		suite.Run(tc.desc, func() {
+			response, err := suite.app.MasterchefKeeper.PoolInfo(suite.ctx, tc.request)
+			if tc.err != nil {
+				suite.Require().ErrorIs(err, tc.err)
+			} else {
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.response.String(), response.String())
+			}
+		})
+	}
+}
+
+// func (suite *MasterchefKeeperTestSuite) TestPoolRewardInfoQuery() {
+// 	tests := []struct {
+// 		desc     string
+// 		request  *types.QueryPoolRewardInfoRequest
+// 		response *types.QueryPoolRewardInfoResponse
+// 		err      error
+// 	}{
+// 		{
+// 			desc: "valid request",
+// 			request: &types.QueryPoolRewardInfoRequest{
+// 				PoolId: 1,
+// 			},
+// 			response: &types.QueryPoolRewardInfoResponse{
+// 				PoolRewardInfo: types.PoolRewardInfo{},
+// 			},
+// 			err: nil,
+// 		},
+// 	}
+
+// 	suite.SetupApp()
+
+// 	for _, tc := range tests {
+// 		suite.Run(tc.desc, func() {
+// 			suite.app.MasterchefKeeper.EndBlocker(suite.ctx)
+// 			response, err := suite.app.MasterchefKeeper.PoolRewardInfo(suite.ctx, tc.request)
+// 			if tc.err != nil {
+// 				suite.Require().ErrorIs(err, tc.err)
+// 			} else {
+// 				suite.Require().NoError(err)
+// 				suite.Require().Equal(tc.response.String(), response.String())
+// 			}
+// 		})
+// 	}
+// }
+
+// func (suite *MasterchefKeeperTestSuite) TestUserRewardInfoQuery() {
+// 	tests := []struct {
+// 		desc     string
+// 		request  *types.QueryPoolInfoRequest
+// 		response *types.QueryPoolInfoResponse
+// 		err      error
+// 	}{
+// 		{
+// 			desc: "valid request",
+// 			request: &types.QueryPoolInfoRequest{
+// 				PoolId: 1,
+// 			},
+// 			response: &types.QueryPoolInfoResponse{
+// 				PoolInfo: types.PoolInfo{
+// 					PoolId:               1,
+// 					RewardWallet:         "cosmos1lz2ajk0mvhda7hdzedydeany3f673600pd6euqnjvqv8w5p4az5qmt08tn",
+// 					Multiplier:           sdkmath.LegacyOneDec(),
+// 					EdenApr:              sdkmath.LegacyMustNewDecFromStr("0.02"),
+// 					GasApr:               sdkmath.LegacyZeroDec(),
+// 					DexApr:               sdkmath.LegacyMustNewDecFromStr("0.01"),
+// 					ExternalIncentiveApr: sdkmath.LegacyZeroDec(),
+// 				},
+// 			},
+// 			err: nil,
+// 		},
+// 	}
+
+// 	suite.SetupApp()
+
+// 	for _, tc := range tests {
+// 		suite.Run(tc.desc, func() {
+// 			response, err := suite.app.MasterchefKeeper.PoolInfo(suite.ctx, tc.request)
+// 			if tc.err != nil {
+// 				suite.Require().ErrorIs(err, tc.err)
+// 			} else {
+// 				suite.Require().NoError(err)
+// 				suite.Require().Equal(tc.response.String(), response.String())
+// 			}
+// 		})
+// 	}
+// }

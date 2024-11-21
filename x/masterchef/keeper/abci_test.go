@@ -390,3 +390,14 @@ func (suite *MasterchefKeeperTestSuite) TestExternalRewardsDistribution() {
 	listInc := suite.app.MasterchefKeeper.GetAllExternalIncentives(suite.ctx)
 	suite.Require().Equal(len(listInc), 0)
 }
+
+func (suite *MasterchefKeeperTestSuite) TestInitialParams() {
+	suite.ResetSuite(true)
+
+	res := suite.app.MasterchefKeeper.InitPoolParams(suite.ctx, 1)
+	suite.Require().Equal(res, true)
+
+	poolInfo, found := suite.app.MasterchefKeeper.GetPoolInfo(suite.ctx, 1)
+	suite.Require().Equal(found, true)
+	suite.Require().Equal(poolInfo.PoolId, uint64(1))
+}
