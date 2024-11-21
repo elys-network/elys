@@ -1,6 +1,9 @@
-package types
+package types_test
 
 import (
+	"fmt"
+	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -12,28 +15,57 @@ import (
 func TestMsgVestLiquid_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgVestLiquid
+		msg  types.MsgVestLiquid
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgVestLiquid{
+			msg: types.MsgVestLiquid{
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
-		}, {
+		},
+		{
 			name: "valid address",
-			msg: MsgVestLiquid{
+			msg: types.MsgVestLiquid{
 				Creator: sample.AccAddress(),
 				Amount:  math.NewInt(200),
+				Denom:   ptypes.ATOM,
 			},
+		},
+		{
+			name: "amount is nil",
+			msg: types.MsgVestLiquid{
+				Creator: sample.AccAddress(),
+				Amount:  math.Int{},
+				Denom:   ptypes.ATOM,
+			},
+			err: types.ErrInvalidAmount,
+		},
+		{
+			name: "amount is -ve",
+			msg: types.MsgVestLiquid{
+				Creator: sample.AccAddress(),
+				Amount:  math.NewInt(-14),
+				Denom:   ptypes.ATOM,
+			},
+			err: types.ErrInvalidAmount,
+		},
+		{
+			name: "invalid denom",
+			msg: types.MsgVestLiquid{
+				Creator: sample.AccAddress(),
+				Amount:  math.NewInt(14),
+				Denom:   "",
+			},
+			err: fmt.Errorf("invalid denom"),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.msg.ValidateBasic()
 			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
+				require.ErrorContains(t, err, tt.err.Error())
 				return
 			}
 			require.NoError(t, err)

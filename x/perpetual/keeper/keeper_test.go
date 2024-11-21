@@ -36,6 +36,8 @@ const (
 	initChain = true
 )
 
+var oracleProvider = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+
 var (
 	priceMap = map[string]assetPriceInfo{
 		"uusdc": {
@@ -95,6 +97,9 @@ func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, u
 	suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
 	params.BorrowInterestRateMin = math.LegacyMustNewDecFromStr("0.12")
+	params.MaximumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("11.000000000000000000")
+	params.MinimumLongTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("1.020000000000000000")
+	params.MaximumShortTakeProfitPriceRatio = math.LegacyMustNewDecFromStr("0.980000000000000000")
 	err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 	suite.Require().NoError(err)
 
@@ -111,7 +116,7 @@ func (suite *PerpetualKeeperTestSuite) AddBlockTime(d time.Duration) {
 
 func (suite *PerpetualKeeperTestSuite) SetupCoinPrices() {
 	// prices set for USDT and USDC
-	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	provider := oracleProvider
 
 	for _, v := range priceMap {
 		suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{

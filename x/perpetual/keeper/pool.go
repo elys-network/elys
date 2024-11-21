@@ -113,7 +113,7 @@ func (k Keeper) GetBorrowInterestRate(ctx sdk.Context, startBlock, startTime uin
 	currentBlockKey := types.GetInterestRateKey(uint64(ctx.BlockHeight()), poolId)
 	startBlockKey := types.GetInterestRateKey(startBlock, poolId)
 
-	blocksPerYear := math.LegacyNewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
+	blocksPerYear := math.LegacyNewDec(int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear))
 
 	// note: exclude start block
 	if store.Has(startBlockKey) && store.Has(currentBlockKey) && startBlock != uint64(ctx.BlockHeight()) {
@@ -231,7 +231,7 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, startBlock uint64, startTime uin
 	currentBlockKey := types.GetFundingRateKey(uint64(ctx.BlockHeight()), poolId)
 	startBlockKey := types.GetFundingRateKey(startBlock, poolId)
 
-	blocksPerYear := math.LegacyNewDec(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
+	blocksPerYear := math.LegacyNewDec(int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear))
 
 	// note: exclude start block
 	if store.Has(startBlockKey) && store.Has(currentBlockKey) && startBlock != uint64(ctx.BlockHeight()) {

@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -22,6 +23,9 @@ func (msg *MsgExecuteOrders) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
+	if len(msg.SpotOrderIds) == 0 && len(msg.PerpetualOrderIds) == 0 {
+		return fmt.Errorf("SpotOrderIds and PerpetualOrderIds both are empty")
+	}
 	for _, id := range msg.SpotOrderIds {
 		if id == 0 {
 			return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")

@@ -32,7 +32,7 @@ func (k Keeper) GetVestingInfo(ctx sdk.Context, baseDenom string) (*types.Vestin
 
 	for i, vestingInfo := range params.VestingInfos {
 		if vestingInfo.BaseDenom == baseDenom {
-			return vestingInfo, i
+			return &vestingInfo, i
 		}
 	}
 

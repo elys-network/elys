@@ -8,6 +8,7 @@ import (
 )
 
 func TestGenesisState_Validate(t *testing.T) {
+	params := types.DefaultParams()
 	tests := []struct {
 		desc     string
 		genState *types.GenesisState
@@ -21,7 +22,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
-
+				Params: params,
 				PendingSpotOrderList: []types.SpotOrder{
 					{
 						OrderId: 0,

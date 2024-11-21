@@ -2,9 +2,9 @@ package keeper_test
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"fmt"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -30,7 +30,7 @@ func (suite *MasterchefKeeperTestSuite) TestTogglePoolEdenRewards() {
 				PoolId:    2,
 			},
 			expectErr:    true,
-			expectErrMsg: sdkerrors.ErrInvalidAddress,
+			expectErrMsg: fmt.Errorf("invalid authority"),
 		},
 		{
 			name: "Invalid Signer Address",

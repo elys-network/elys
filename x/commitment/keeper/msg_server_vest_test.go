@@ -31,7 +31,7 @@ func TestVest(t *testing.T) {
 		app.AccountKeeper.SetAccount(ctx, acc)
 	}
 
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
@@ -109,7 +109,7 @@ func TestExceedVesting(t *testing.T) {
 		app.AccountKeeper.SetAccount(ctx, acc)
 	}
 
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,

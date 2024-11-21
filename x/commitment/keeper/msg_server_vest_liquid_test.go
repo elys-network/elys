@@ -38,7 +38,7 @@ func TestLiquidVestWithExceed(t *testing.T) {
 
 	creator := addr[0]
 	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      ptypes.Eden,
 			VestingDenom:   ptypes.Elys,
@@ -125,7 +125,7 @@ func TestKeeper_VestLiquidWithInvalidDenom(t *testing.T) {
 
 	creator := addr[0]
 	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
-	vestingInfos := []*types.VestingInfo{
+	vestingInfos := []types.VestingInfo{
 		{
 			BaseDenom:      "invalid_denom",
 			VestingDenom:   ptypes.Elys,

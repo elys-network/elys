@@ -7,7 +7,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, baseCurrency string, isBroker bool) (*types.MTP, error) {
+func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
 	// Determine the maximum leverage available and compute the effective leverage to be used.
 	// values for leverage other than 0 or  >1 are invalidated in validate basic
 	maxLeverage := k.GetMaxLeverageParam(ctx)
@@ -46,5 +46,5 @@ func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgO
 	mtp := types.NewMTP(ctx, msg.Creator, msg.Collateral.Denom, msg.TradingAsset, liabilitiesAsset, custodyAsset, msg.Position, msg.TakeProfitPrice, poolId)
 
 	// Call the function to process the open long logic.
-	return k.ProcessOpen(ctx, mtp, proxyLeverage, collateralAmountDec, poolId, msg, baseCurrency, isBroker)
+	return k.ProcessOpen(ctx, mtp, proxyLeverage, collateralAmountDec, poolId, msg, baseCurrency)
 }

@@ -37,7 +37,7 @@ func CmdUpdateTakeProfitPrice() *cobra.Command {
 				uint64(positionId),
 				math.LegacyDec(argPrice),
 			)
-			if err := msg.ValidateBasic(); err != nil {
+			if err = msg.ValidateBasic(); err != nil {
 				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)

@@ -56,7 +56,7 @@ func TestUpdateVestingInfo(t *testing.T) {
 
 	// Define the test data
 	signer := govAddress.String()
-	vestingInfo := &types.VestingInfo{
+	vestingInfo := types.VestingInfo{
 		BaseDenom:      "test_denom",
 		VestingDenom:   "test_denom",
 		NumBlocks:      10,
@@ -68,8 +68,8 @@ func TestUpdateVestingInfo(t *testing.T) {
 	params.VestingInfos = append(params.VestingInfos, vestingInfo)
 	keeper.SetParams(ctx, params)
 
-	vestingInfo, _ = keeper.GetVestingInfo(ctx, "test_denom")
-	assert.Equal(t, vestingInfo.BaseDenom, "test_denom", "Incorrect denom")
+	vestingInfoResult, _ := keeper.GetVestingInfo(ctx, "test_denom")
+	assert.Equal(t, vestingInfoResult.BaseDenom, "test_denom", "Incorrect denom")
 
 	// Call the UpdateVestingInfo function
 	msg := types.MsgUpdateVestingInfo{

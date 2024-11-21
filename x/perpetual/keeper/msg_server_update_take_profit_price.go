@@ -11,9 +11,6 @@ import (
 )
 
 func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUpdateTakeProfitPrice) (*types.MsgUpdateTakeProfitPriceResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Load existing mtp
@@ -27,6 +24,25 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
+	}
+
+	params := k.GetParams(ctx)
+
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	if err != nil {
+		return nil, err
+	}
+
+	ratio := msg.Price.Quo(tradingAssetPrice)
+	if mtp.Position == types.Position_LONG {
+		if ratio.LT(params.MinimumLongTakeProfitPriceRatio) || ratio.GT(params.MaximumLongTakeProfitPriceRatio) {
+			return nil, fmt.Errorf("take profit price should be between %s and %s times of current market price for long (current ratio: %s)", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String(), ratio.String())
+		}
+	}
+	if mtp.Position == types.Position_SHORT {
+		if ratio.GT(params.MaximumShortTakeProfitPriceRatio) {
+			return nil, fmt.Errorf("take profit price should be less than %s times of current market price for short (current ratio: %s)", params.MaximumShortTakeProfitPriceRatio.String(), ratio.String())
+		}
 	}
 
 	mtp.TakeProfitPrice = msg.Price

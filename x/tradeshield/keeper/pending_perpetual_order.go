@@ -206,7 +206,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
 		if marketPrice.LTE(order.TriggerPrice.Rate) {
-			_, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+			_, err = k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
 				Creator:         order.OwnerAddress,
 				Position:        perpetualtypes.Position(order.Position),
 				Leverage:        order.Leverage,
@@ -215,7 +215,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 				TakeProfitPrice: order.TakeProfitPrice,
 				StopLossPrice:   order.StopLossPrice,
 				PoolId:          order.PoolId,
-			}, false)
+			})
 			if err != nil {
 				return err
 			}
@@ -224,7 +224,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 		}
 	case types.PerpetualPosition_SHORT:
 		if marketPrice.GTE(order.TriggerPrice.Rate) {
-			_, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+			_, err = k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
 				Creator:         order.OwnerAddress,
 				Position:        perpetualtypes.Position(order.Position),
 				Leverage:        order.Leverage,
@@ -233,7 +233,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 				TakeProfitPrice: order.TakeProfitPrice,
 				StopLossPrice:   order.StopLossPrice,
 				PoolId:          order.PoolId,
-			}, false)
+			})
 			if err != nil {
 				return err
 			}
@@ -313,7 +313,7 @@ func (k Keeper) ExecuteMarketOpenOrder(ctx sdk.Context, order types.PerpetualOrd
 		TakeProfitPrice: order.TakeProfitPrice,
 		StopLossPrice:   order.StopLossPrice,
 		PoolId:          order.PoolId,
-	}, false)
+	})
 	if err != nil {
 		return err
 	}
@@ -352,9 +352,18 @@ func (k Keeper) ConstructPerpetualOrderExtraInfo(ctx sdk.Context, order types.Pe
 			Collateral:      order.Collateral,
 			TakeProfitPrice: order.TakeProfitPrice,
 			PoolId:          order.PoolId,
+			LimitPrice:      order.TriggerPrice.Rate,
 		})
+
+		// If error use zero values
 		if err != nil {
-			return nil, err
+			return &types.PerpetualOrderExtraInfo{
+				PerpetualOrder:     &order,
+				PositionSize:       sdk.Coin{},
+				LiquidationPrice:   sdkmath.LegacyZeroDec(),
+				FundingRate:        sdkmath.LegacyZeroDec(),
+				BorrowInterestRate: sdkmath.LegacyZeroDec(),
+			}, nil
 		}
 
 		return &types.PerpetualOrderExtraInfo{

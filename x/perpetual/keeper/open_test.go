@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -20,7 +22,9 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 	positionCreator := addr[1]
 	poolId := uint64(1)
 	tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
 	suite.Require().NoError(err)
+
 	var ammPool ammtypes.Pool
 	msg := &types.MsgOpen{
 		Creator:         positionCreator.String(),
@@ -35,14 +39,13 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 	testCases := []struct {
 		name                 string
 		expectErrMsg         string
-		isBroker             bool
 		prerequisiteFunction func()
 		postValidateFunction func(mtp *types.MTP)
 	}{
 		{
 			"base currency not found",
 			"asset profile not found for denom",
-			false,
+
 			func() {
 				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
 			},
@@ -50,9 +53,74 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			},
 		},
 		{
+			"borrow asset is usdc in long",
+			"invalid operation: the borrowed asset cannot be the base currency: invalid borrowing asset",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+
+				msg.TradingAsset = ptypes.BaseCurrency
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"invalid collateral",
+			"collateral must either match the borrowed asset or be the base currency: invalid borrowing asset",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+
+				msg.Collateral.Denom = ptypes.ATOM
+				msg.TradingAsset = ptypes.Elys
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"short base currency",
+			"cannot take a short position against the base currency: invalid borrowing asset",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+
+				msg.Position = types.Position_SHORT
+				msg.TradingAsset = ptypes.BaseCurrency
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"short same coin as collateral",
+			"invalid operation: collateral asset cannot be identical to the borrowed asset for a short position: invalid collateral asset",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+
+				msg.Position = types.Position_SHORT
+				msg.TradingAsset = ptypes.ATOM
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"short with nonUSDC coin",
+			"invalid collateral: the collateral asset for a short position must be the base currency: invalid collateral asset",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+
+				msg.Position = types.Position_SHORT
+				msg.Collateral.Denom = ptypes.Elys
+				msg.TradingAsset = ptypes.ATOM
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
 			"user not whitelisted",
 			"unauthorised: address not on whitelist",
-			false,
+
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices()
@@ -61,6 +129,9 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 				params.WhitelistingEnabled = true
 				err := suite.app.PerpetualKeeper.SetParams(suite.ctx, &params)
 				suite.Require().NoError(err)
+				msg.Position = types.Position_LONG
+				msg.Collateral.Denom = ptypes.BaseCurrency
+				msg.TradingAsset = ptypes.ATOM
 			},
 			func(mtp *types.MTP) {
 			},
@@ -68,7 +139,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"amm pool not found",
 			"pool does not exist",
-			false,
+
 			func() {
 				for _, account := range addr {
 					suite.app.PerpetualKeeper.WhitelistAddress(suite.ctx, account)
@@ -93,7 +164,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"collateral asset neither base currency nor present in the pool",
 			"collateral must either match the borrowed asset or be the base currency",
-			false,
+
 			func() {
 				suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
 				msg.Collateral.Denom = ptypes.Elys
@@ -104,7 +175,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"collateral is same as trading asset but pool doesn't have enough depth",
 			"borrowed amount is higher than pool depth",
-			false,
+
 			func() {
 				msg.Collateral.Denom = ptypes.ATOM
 				params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
@@ -118,7 +189,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"collateral amount is too high",
 			"borrowed amount is higher than pool depth",
-			false,
+
 			func() {
 				msg.Collateral.Denom = ptypes.BaseCurrency
 				msg.Collateral.Amount = msg.Collateral.Amount.MulRaw(1000_000_000)
@@ -129,7 +200,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"Borrow fails: lack of funds",
 			"user does not have enough balance of the required coin",
-			false,
+
 			func() {
 				msg.Collateral.Amount = amount
 				msg.Leverage = math.LegacyMustNewDecFromStr("1.2")
@@ -148,7 +219,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"stop loss price is greater than current asset price for long",
 			"stop loss price cannot be greater than equal to tradingAssetPrice for long",
-			false,
+
 			func() {
 				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, govtypes.ModuleName, positionCreator, sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, suite.GetAccountIssueAmount())))
 				suite.Require().NoError(err)
@@ -165,7 +236,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"stop loss price is less than current asset price for short",
 			"stop loss price cannot be less than equal to tradingAssetPrice for short",
-			false,
+
 			func() {
 				msg.Position = types.Position_SHORT
 				msg.StopLossPrice = math.LegacyOneDec().MulInt64(3)
@@ -177,7 +248,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"success: collateral USDC, trading asset ATOM, stop loss price 0, TakeProfitPrice 0",
 			"",
-			false,
+
 			func() {
 				msg.Position = types.Position_LONG
 				msg.StopLossPrice = math.LegacyZeroDec()
@@ -189,7 +260,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"success: collateral ATOM, trading asset ATOM, stop loss price 0, TakeProfitPrice 0",
 			"",
-			false,
+
 			func() {
 				tokensIn := sdk.NewCoins(sdk.NewCoin(ptypes.ATOM, math.NewInt(1000_000_000)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000_000)))
 				suite.AddLiquidity(ammPool, addr[3], tokensIn)
@@ -205,7 +276,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		{
 			"collateral is USDC, trading asset is ATOM, amm pool has enough USDC but not enough ATOM",
 			"negative pool amount after swap",
-			false,
+
 			func() {
 				suite.ResetAndSetSuite(addr, true, amount.MulRaw(1000), math.NewInt(2))
 
@@ -217,6 +288,26 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			func(mtp *types.MTP) {
 			},
 		},
+		{
+			"take profit price below minimum ratio",
+			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices()
+				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.MinimumLongTakeProfitPriceRatio).Quo(math.LegacyNewDec(2))
+			},
+			func(mtp *types.MTP) {
+			},
+		},
+		{
+			"take profit price above maximum ratio",
+			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
+			func() {
+				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.MaximumLongTakeProfitPriceRatio).Mul(math.LegacyNewDec(2))
+			},
+			func(mtp *types.MTP) {
+			},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -224,7 +315,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			tc.prerequisiteFunction()
 			err := msg.ValidateBasic()
 			suite.Require().NoError(err)
-			_, err = suite.app.PerpetualKeeper.Open(suite.ctx, msg, tc.isBroker)
+			_, err = suite.app.PerpetualKeeper.Open(suite.ctx, msg)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
