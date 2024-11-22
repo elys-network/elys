@@ -1,7 +1,6 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 )
 
@@ -25,7 +24,7 @@ func (mtp MTP) CalcMTPTakeProfitBorrowFactor() (sdkmath.LegacyDec, error) {
 		return sdkmath.LegacyOneDec(), nil
 	}
 
-	takeProfitBorrowFactor := math.LegacyOneDec()
+	takeProfitBorrowFactor := sdkmath.LegacyOneDec()
 	if mtp.Position == Position_LONG {
 		// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
 		takeProfitBorrowFactor = sdkmath.LegacyOneDec().Sub(mtp.Liabilities.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec().Mul(mtp.TakeProfitPrice)))

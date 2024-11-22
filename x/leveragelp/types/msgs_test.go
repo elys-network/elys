@@ -3,7 +3,6 @@ package types_test
 import (
 	"testing"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -13,7 +12,7 @@ import (
 )
 
 func TestMsgClose(t *testing.T) {
-	msg := types.NewMsgClose(sample.AccAddress(), 1, math.OneInt())
+	msg := types.NewMsgClose(sample.AccAddress(), 1, sdkmath.OneInt())
 	tests := []struct {
 		name   string
 		setter func()
