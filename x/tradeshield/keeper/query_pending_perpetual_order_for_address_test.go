@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// TODO: Update test once feature is complete
+// TODO: Update test for close order once feature is complete
 func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderForAddress() {
 	// _, _, _ = suite.SetPerpetualPool(1)
 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
