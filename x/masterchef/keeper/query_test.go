@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -30,18 +29,18 @@ func (suite *MasterchefKeeperTestSuite) SetupApp() {
 	var poolAssets []ammtypes.PoolAsset
 	// Elys
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: math.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.Elys, math.NewInt(1000)),
+		Weight: sdkmath.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(1000)),
 	})
 
 	// USDC
 	poolAssets = append(poolAssets, ammtypes.PoolAsset{
-		Weight: math.NewInt(50),
-		Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100)),
+		Weight: sdkmath.NewInt(50),
+		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100)),
 	})
 
 	poolParams := ammtypes.PoolParams{
-		SwapFee:   math.LegacyZeroDec(),
+		SwapFee:   sdkmath.LegacyZeroDec(),
 		UseOracle: false,
 		FeeDenom:  ptypes.BaseCurrency,
 	}
@@ -53,21 +52,21 @@ func (suite *MasterchefKeeperTestSuite) SetupApp() {
 	poolInfo, found := suite.app.MasterchefKeeper.GetPoolInfo(suite.ctx, ammPool.PoolId)
 	suite.Require().True(found)
 
-	poolInfo.DexApr = math.LegacyNewDecWithPrec(1, 2)  // 1%
-	poolInfo.EdenApr = math.LegacyNewDecWithPrec(2, 2) // 2%
+	poolInfo.DexApr = sdkmath.LegacyNewDecWithPrec(1, 2)  // 1%
+	poolInfo.EdenApr = sdkmath.LegacyNewDecWithPrec(2, 2) // 2%
 	suite.app.MasterchefKeeper.SetPoolInfo(suite.ctx, poolInfo)
 	estakingParams := suite.app.EstakingKeeper.GetParams(suite.ctx)
 	estakingParams.StakeIncentives =
 		&estakingtypes.IncentiveInfo{
-			EdenAmountPerYear: math.NewInt(1000000),
+			EdenAmountPerYear: sdkmath.NewInt(1000000),
 			BlocksDistributed: 1000000,
 		}
-	estakingParams.MaxEdenRewardAprStakers = math.LegacyNewDecWithPrec(30, 2)
+	estakingParams.MaxEdenRewardAprStakers = sdkmath.LegacyNewDecWithPrec(30, 2)
 	suite.app.EstakingKeeper.SetParams(suite.ctx, estakingParams)
 
 	mkParams := suite.app.MasterchefKeeper.GetParams(suite.ctx)
 	mkParams.LpIncentives = &types.IncentiveInfo{
-		EdenAmountPerYear: math.NewInt(1000000000),
+		EdenAmountPerYear: sdkmath.NewInt(1000000000),
 		BlocksDistributed: 1000000,
 	}
 	suite.app.MasterchefKeeper.SetParams(suite.ctx, mkParams)
@@ -87,7 +86,7 @@ func (suite *MasterchefKeeperTestSuite) TestApr() {
 				Denom:        "ueden",
 			},
 			response: &types.QueryAprResponse{
-				Apr: math.LegacyMustNewDecFromStr("0.299999999999999995"),
+				Apr: sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
 			},
 			err: nil,
 		},
@@ -124,16 +123,16 @@ func (suite *MasterchefKeeperTestSuite) TestAprs() {
 			desc:    "valid request",
 			request: &types.QueryAprsRequest{},
 			response: &types.QueryAprsResponse{
-				UsdcAprUsdc:  math.LegacyZeroDec(),
-				EdenAprUsdc:  math.LegacyZeroDec(),
-				UsdcAprEdenb: math.LegacyZeroDec(),
-				EdenAprEdenb: math.LegacyMustNewDecFromStr("0.299999999999999995"),
-				UsdcAprEden:  math.LegacyZeroDec(),
-				EdenAprEden:  math.LegacyMustNewDecFromStr("0.299999999999999995"),
-				EdenbAprEden: math.LegacyOneDec(),
-				UsdcAprElys:  math.LegacyZeroDec(),
-				EdenAprElys:  math.LegacyMustNewDecFromStr("0.299999999999999995"),
-				EdenbAprElys: math.LegacyOneDec(),
+				UsdcAprUsdc:  sdkmath.LegacyZeroDec(),
+				EdenAprUsdc:  sdkmath.LegacyZeroDec(),
+				UsdcAprEdenb: sdkmath.LegacyZeroDec(),
+				EdenAprEdenb: sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				UsdcAprEden:  sdkmath.LegacyZeroDec(),
+				EdenAprEden:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				EdenbAprEden: sdkmath.LegacyOneDec(),
+				UsdcAprElys:  sdkmath.LegacyZeroDec(),
+				EdenAprElys:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				EdenbAprElys: sdkmath.LegacyOneDec(),
 			},
 			err: nil,
 		},
@@ -174,9 +173,9 @@ func (suite *MasterchefKeeperTestSuite) TestPoolRewards() {
 			response: &types.QueryPoolRewardsResponse{
 				Pools: []types.PoolRewards{{
 					PoolId:      1,
-					RewardsUsd:  math.LegacyNewDec(420),
-					RewardCoins: sdk.Coins{sdk.NewCoin(ptypes.Eden, math.NewInt(200)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(400))},
-					EdenForward: sdk.NewCoin(ptypes.Eden, math.NewInt(0)),
+					RewardsUsd:  sdkmath.LegacyNewDec(420),
+					RewardCoins: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(200)), sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(400))},
+					EdenForward: sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(0)),
 				},
 				},
 			},
@@ -194,8 +193,8 @@ func (suite *MasterchefKeeperTestSuite) TestPoolRewards() {
 	suite.ctx.BlockTime()
 	suite.app.MasterchefKeeper.SetPoolRewardsAccum(suite.ctx, types.PoolRewardsAccum{
 		PoolId: 1, BlockHeight: suite.ctx.BlockHeight(),
-		DexReward: math.LegacyNewDec(100), EdenReward: math.LegacyNewDec(200),
-		Timestamp: uint64(suite.ctx.BlockTime().Unix()), GasReward: math.LegacyNewDec(300),
+		DexReward: sdkmath.LegacyNewDec(100), EdenReward: sdkmath.LegacyNewDec(200),
+		Timestamp: uint64(suite.ctx.BlockTime().Unix()), GasReward: sdkmath.LegacyNewDec(300),
 	})
 
 	for _, tc := range tests {
@@ -314,7 +313,7 @@ func (suite *MasterchefKeeperTestSuite) TestPoolRewardInfoQuery() {
 				PoolRewardInfo: types.PoolRewardInfo{
 					PoolId:                1,
 					RewardDenom:           "reward",
-					PoolAccRewardPerShare: math.LegacyNewDec(0),
+					PoolAccRewardPerShare: sdkmath.LegacyNewDec(0),
 					LastUpdatedBlock:      uint64(suite.ctx.BlockHeight()),
 				},
 			},
@@ -338,7 +337,7 @@ func (suite *MasterchefKeeperTestSuite) TestPoolRewardInfoQuery() {
 }
 
 func (suite *MasterchefKeeperTestSuite) TestUserRewardInfoQuery() {
-	addr := simapp.AddTestAddrs(suite.app, suite.ctx, 1, math.NewInt(100010))
+	addr := simapp.AddTestAddrs(suite.app, suite.ctx, 1, sdkmath.NewInt(100010))
 	tests := []struct {
 		desc     string
 		request  *types.QueryUserRewardInfoRequest

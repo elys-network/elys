@@ -6,7 +6,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/leveragelp/keeper"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -60,13 +59,13 @@ func initializeForClose(suite *KeeperTestSuite, addresses []sdk.AccAddress, asse
 		Authority: authtypes.NewModuleAddress("gov").String(),
 		Pool: types.AddPool{
 			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyNewDec(10),
+			LeverageMax: sdkmath.LegacyNewDec(10),
 		},
 	}
 	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
 	_, err = msgServer.AddPool(suite.ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
-	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, math.LegacyMustNewDecFromStr("10")))
+	suite.app.LeveragelpKeeper.SetPool(suite.ctx, types.NewPool(poolId, sdkmath.LegacyMustNewDecFromStr("10")))
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),

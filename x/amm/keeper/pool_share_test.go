@@ -10,7 +10,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/amm/types"
-	atypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
 )
@@ -41,15 +40,15 @@ func TestCommitMintedLPTokenToCommitmentModule(t *testing.T) {
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr[0], usdcToken)
 	require.NoError(t, err)
 
-	var poolAssets []atypes.PoolAsset
+	var poolAssets []types.PoolAsset
 	// Elys
-	poolAssets = append(poolAssets, atypes.PoolAsset{
+	poolAssets = append(poolAssets, types.PoolAsset{
 		Weight: sdkmath.NewInt(50),
 		Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100000)),
 	})
 
 	// USDC
-	poolAssets = append(poolAssets, atypes.PoolAsset{
+	poolAssets = append(poolAssets, types.PoolAsset{
 		Weight: sdkmath.NewInt(50),
 		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),
 	})
@@ -57,7 +56,7 @@ func TestCommitMintedLPTokenToCommitmentModule(t *testing.T) {
 	argSwapFee, err := sdkmath.LegacyNewDecFromStr("0.01")
 	require.NoError(t, err)
 
-	poolParams := atypes.PoolParams{
+	poolParams := types.PoolParams{
 		SwapFee: argSwapFee,
 	}
 

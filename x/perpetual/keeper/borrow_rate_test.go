@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
@@ -40,18 +40,18 @@ func TestBorrowRateGet(t *testing.T) {
 	ctx = ctx.WithBlockHeight(lastBlock)
 
 	// 1st case: recent block
-	res := keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-1), uint64(ctx.BlockTime().Unix())-(86400*365), 1, math.LegacyOneDec())
-	require.Equal(t, math.LegacyMustNewDecFromStr("50.0"), res) // 19 * 1000 / 2
+	res := keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-1), uint64(ctx.BlockTime().Unix())-(86400*365), 1, sdkmath.LegacyOneDec())
+	require.Equal(t, sdkmath.LegacyMustNewDecFromStr("50.0"), res) // 19 * 1000 / 2
 
 	// 2nd case: older block
-	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-8), uint64(ctx.BlockTime().Unix())-(86400*365), 1, math.LegacyOneDec())
-	require.Equal(t, math.LegacyMustNewDecFromStr("32.5"), res) // 52 * 1000 / 8
+	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-8), uint64(ctx.BlockTime().Unix())-(86400*365), 1, sdkmath.LegacyOneDec())
+	require.Equal(t, sdkmath.LegacyMustNewDecFromStr("32.5"), res) // 52 * 1000 / 8
 
 	// 3rd case: future block (should return zero)
-	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()+10), uint64(ctx.BlockTime().Unix())-(86400*365), 1, math.LegacyOneDec())
-	require.Equal(t, math.LegacyZeroDec(), res)
+	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()+10), uint64(ctx.BlockTime().Unix())-(86400*365), 1, sdkmath.LegacyOneDec())
+	require.Equal(t, sdkmath.LegacyZeroDec(), res)
 
 	// 4th case: non-existent pool
-	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-2), uint64(ctx.BlockTime().Unix())-(86400*365), 2, math.LegacyOneDec())
-	require.Equal(t, math.LegacyZeroDec(), res)
+	res = keeper.GetBorrowInterestRate(ctx, uint64(ctx.BlockHeight()-2), uint64(ctx.BlockTime().Unix())-(86400*365), 2, sdkmath.LegacyOneDec())
+	require.Equal(t, sdkmath.LegacyZeroDec(), res)
 }
