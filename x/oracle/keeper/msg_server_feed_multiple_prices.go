@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
@@ -20,10 +19,15 @@ func (k msgServer) FeedMultiplePrices(goCtx context.Context, msg *types.MsgFeedM
 		return nil, types.ErrPriceFeederNotActive
 	}
 
-	for _, price := range msg.Prices {
-		price.Provider = msg.Creator
-		price.Timestamp = uint64(ctx.BlockTime().Unix())
-		price.BlockHeight = uint64(ctx.BlockHeight())
+	for _, feedPrice := range msg.FeedPrices {
+		price := types.Price{
+			Asset:       feedPrice.Asset,
+			Price:       feedPrice.Price,
+			Source:      feedPrice.Source,
+			Provider:    msg.Creator,
+			Timestamp:   uint64(ctx.BlockTime().Unix()),
+			BlockHeight: uint64(ctx.BlockHeight()),
+		}
 		k.SetPrice(ctx, price)
 	}
 

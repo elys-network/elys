@@ -37,9 +37,8 @@ service Msg {
   // this line is used by starport scaffolding # proto/tx/rpc
   rpc CreateAssetInfo(MsgCreateAssetInfo) returns (MsgCreateAssetInfoResponse);
 }
-message MsgFeedPrice {
-  option (cosmos.msg.v1.signer) = "provider";
-  option (amino.name) = "oracle/MsgFeedPrice";
+
+message FeedPrice {
   string asset = 1;
   string price = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
@@ -47,7 +46,12 @@ message MsgFeedPrice {
     (gogoproto.nullable) = false
   ];
   string source = 3;
-  string provider = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+message MsgFeedPrice {
+  option (cosmos.msg.v1.signer) = "provider";
+  option (amino.name) = "oracle/MsgFeedPrice";
+  string provider = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  FeedPrice feed_price = 2 [ (gogoproto.nullable) = false ];
 }
 
 message MsgFeedPriceResponse {}
@@ -73,7 +77,7 @@ message MsgFeedMultiplePrices {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "oracle/MsgFeedMultiplePrices";
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  repeated Price prices = 2 [ (gogoproto.nullable) = false ];
+  repeated FeedPrice feed_prices = 2 [ (gogoproto.nullable) = false ];
 }
 
 message MsgFeedMultiplePricesResponse {}
