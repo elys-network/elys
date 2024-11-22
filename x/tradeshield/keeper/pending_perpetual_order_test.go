@@ -67,8 +67,6 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderCount() {
 	suite.Require().Equal(count, suite.app.TradeshieldKeeper.GetPendingPerpetualOrderCount(suite.ctx)-1)
 }
 
-// TODO: Try removing Mockery
-// TestExecuteLimitOpenOrder
 func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitOpenOrder() {
 
 	address := suite.AddAccounts(3, nil)
@@ -107,7 +105,6 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitOpenOrder() {
 }
 
 // TODO: Update it when close is supported from tradeshield
-// TestExecuteLimitCloseOrder
 func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitCloseOrder() {
 	address := suite.AddAccounts(3, nil)
 	_, _, _ = suite.SetPerpetualPool(1)
@@ -154,7 +151,6 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitCloseOrder() {
 	suite.Require().True(found)
 }
 
-// TestExecuteMarketOpenOrder
 func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketOpenOrder() {
 	address := suite.AddAccounts(3, nil)
 	_, _, _ = suite.SetPerpetualPool(1)
@@ -186,7 +182,6 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketOpenOrder() {
 }
 
 // TODO: Update tests when close is supported from tradeshield
-// TestExecuteMarketCloseOrder
 func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketCloseOrder() {
 	address := suite.AddAccounts(3, nil)
 	_, _, _ = suite.SetPerpetualPool(1)

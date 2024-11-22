@@ -60,7 +60,6 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderCount() {
 	suite.Require().Equal(count, suite.app.TradeshieldKeeper.GetPendingSpotOrderCount(suite.ctx)-1)
 }
 
-// TestExecuteStopLossOrder
 func (suite *TradeshieldKeeperTestSuite) TestExecuteStopLossOrder() {
 	address := suite.AddAccounts(2, nil)
 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
@@ -113,7 +112,6 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteStopLossOrder() {
 	suite.Assert().False(found)
 }
 
-// TestExecuteLimitSellOrder
 func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitSellOrder() {
 	address := suite.AddAccounts(1, nil)
 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
@@ -166,7 +164,6 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitSellOrder() {
 	suite.Assert().False(found)
 }
 
-// TestExecuteLimitBuyOrder
 func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitBuyOrder() {
 	address := suite.AddAccounts(2, nil)
 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
@@ -219,7 +216,6 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitBuyOrder() {
 	suite.Assert().False(found)
 }
 
-// TestExecuteMarketBuyOrder
 func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketBuyOrder() {
 	address := suite.AddAccounts(1, nil)
 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
