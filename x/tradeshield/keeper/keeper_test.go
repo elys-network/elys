@@ -14,6 +14,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
@@ -33,6 +34,8 @@ const (
 )
 
 var (
+	oracleProvider = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+
 	priceMap = map[string]assetPriceInfo{
 		"uusdc": {
 			denom:   ptypes.BaseCurrency,
@@ -43,6 +46,21 @@ var (
 			denom:   ptypes.ATOM,
 			display: "ATOM",
 			price:   math.LegacyMustNewDecFromStr("5.0"),
+		},
+	}
+
+	entry = []aptypes.Entry{
+		{
+			BaseDenom:   ptypes.BaseCurrency,
+			Denom:       ptypes.BaseCurrency,
+			Decimals:    6,
+			DisplayName: "USDC",
+		},
+		{
+			BaseDenom:   ptypes.ATOM,
+			Denom:       ptypes.ATOM,
+			Decimals:    6,
+			DisplayName: "ATOM",
 		},
 	}
 )
@@ -73,7 +91,7 @@ func (suite *TradeshieldKeeperTestSuite) ResetSuite() {
 
 func (suite *TradeshieldKeeperTestSuite) SetupCoinPrices() {
 	// prices set for USDT and USDC
-	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	provider := oracleProvider
 
 	for _, v := range priceMap {
 		suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
@@ -93,6 +111,12 @@ func (suite *TradeshieldKeeperTestSuite) SetupCoinPrices() {
 
 func (suite *TradeshieldKeeperTestSuite) GetAccountIssueAmount() math.Int {
 	return math.NewInt(10_000_000_000_000)
+}
+
+func (suite *TradeshieldKeeperTestSuite) SetupAssetProfile() {
+	for _, v := range entry {
+		suite.app.AssetprofileKeeper.SetEntry(suite.ctx, v)
+	}
 }
 
 func (suite *TradeshieldKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress) []sdk.AccAddress {
@@ -162,6 +186,7 @@ func (suite *TradeshieldKeeperTestSuite) SetPerpetualPool(poolId uint64) (types.
 	k := suite.app.PerpetualKeeper
 	//prices
 	suite.SetupCoinPrices()
+	suite.SetupAssetProfile()
 	//accounts
 	accounts := suite.AddAccounts(2, nil)
 	poolCreator := accounts[0]
