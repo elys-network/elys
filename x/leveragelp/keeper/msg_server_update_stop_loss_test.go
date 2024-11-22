@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -57,7 +56,7 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 		Authority: authtypes.NewModuleAddress("gov").String(),
 		Pool: types.AddPool{
 			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyNewDec(10),
+			LeverageMax: sdkmath.LegacyNewDec(10),
 		},
 	}
 	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)

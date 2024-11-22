@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -28,10 +27,10 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	suite.Require().NoError(err)
 
 	ammParams := suite.app.AmmKeeper.GetParams(suite.ctx)
-	ammParams.WeightBreakingFeeMultiplier = math.LegacyZeroDec()
-	ammParams.WeightBreakingFeeExponent = math.LegacyNewDecWithPrec(25, 1) // 2.5
-	ammParams.WeightRecoveryFeePortion = math.LegacyNewDecWithPrec(10, 2)  // 10%
-	ammParams.ThresholdWeightDifference = math.LegacyZeroDec()
+	ammParams.WeightBreakingFeeMultiplier = sdkmath.LegacyZeroDec()
+	ammParams.WeightBreakingFeeExponent = sdkmath.LegacyNewDecWithPrec(25, 1) // 2.5
+	ammParams.WeightRecoveryFeePortion = sdkmath.LegacyNewDecWithPrec(10, 2)  // 10%
+	ammParams.ThresholdWeightDifference = sdkmath.LegacyZeroDec()
 	suite.app.AmmKeeper.SetParams(suite.ctx, ammParams)
 
 	suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
@@ -61,7 +60,7 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 		Authority: authtypes.NewModuleAddress("gov").String(),
 		Pool: types.AddPool{
 			AmmPoolId:   1,
-			LeverageMax: math.LegacyNewDec(10),
+			LeverageMax: sdkmath.LegacyNewDec(10),
 		},
 	}
 	msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)

@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -75,7 +74,7 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 		Authority: authtypes.NewModuleAddress("gov").String(),
 		Pool: types.AddPool{
 			AmmPoolId:   poolId,
-			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+			LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
 		},
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &addPoolMsg)
@@ -168,7 +167,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErr:    true,
 			expectErrMsg: "pool does not exis",
 			prerequisiteFunction: func() {
-				pool := types.NewPool(2, math.LegacyMustNewDecFromStr("10"))
+				pool := types.NewPool(2, sdkmath.LegacyMustNewDecFromStr("10"))
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 				suite.SetMaxOpenPositions(20)

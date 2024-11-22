@@ -5,7 +5,6 @@ import (
 
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/log"
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -37,7 +36,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // Get accounted pool balance
-func (k Keeper) GetAccountedBalance(ctx sdk.Context, poolId uint64, denom string) math.Int {
+func (k Keeper) GetAccountedBalance(ctx sdk.Context, poolId uint64, denom string) sdkmath.Int {
 	pool, found := k.GetAccountedPool(ctx, poolId)
 	if !found {
 		return sdkmath.ZeroInt()
