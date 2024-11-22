@@ -13,6 +13,13 @@ jobs:
     runs-on: elys-runner-x2
 
     steps:
+      - name: Check if secrets are set
+        run: |
+          if [ -z "${{ secrets.R2_ACCESS_KEY }}" ]; then
+            echo "R2_ACCESS_KEY is not set."
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -91,6 +98,20 @@ jobs:
           SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
           echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
           echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
+
+          APPLIED_URL=https://api.testnet.elys.network/cosmos/upgrade/v1beta1/applied_plan/${LAST_TAG}
+          curl -L $APPLIED_URL -o /tmp/applied.json
+          echo "Applied.json downloaded to check snapshot version."
+
+          # retrieve height field value from applied.json
+          UPGRADE_HEIGHT=$(cat /tmp/applied.json | awk -F'"' '/"height":/{print $4}')
+          echo "Upgrade height: $UPGRADE_HEIGHT"
+
+          # SNAPSHOT_BLOCK_HEIGHT must be greater than UPGRADE_HEIGHT
+          if [ $SNAPSHOT_BLOCK_HEIGHT -le $UPGRADE_HEIGHT ]; then
+            echo "Snapshot block height ($SNAPSHOT_BLOCK_HEIGHT) is not greater than upgrade height ($UPGRADE_HEIGHT)."
+            exit 1
+          fi
 
           # set snapshot download url
           SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
