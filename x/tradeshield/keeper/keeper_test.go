@@ -139,19 +139,14 @@ func (suite *TradeshieldKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress
 		return strings.Compare(poolAssets[i].Token.Denom, poolAssets[j].Token.Denom) <= 0
 	})
 	poolParams := ammtypes.PoolParams{
-		UseOracle:                   useOracle,
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		SwapFee:                     swapFee,
-		ExitFee:                     exitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
+		UseOracle: useOracle,
+		SwapFee:   swapFee,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	createPoolMsg := &ammtypes.MsgCreatePool{
 		Sender:     creator.String(),
-		PoolParams: &poolParams,
+		PoolParams: poolParams,
 		PoolAssets: poolAssets,
 	}
 

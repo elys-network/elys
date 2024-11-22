@@ -25,15 +25,9 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 		items[i].TotalWeight = sdkmath.NewInt(100)
 		items[i].TotalShares = sdk.NewCoin(types.GetPoolShareDenom(uint64(i)), types.OneShare)
 		items[i].PoolParams = types.PoolParams{
-			SwapFee:                     sdkmath.LegacyZeroDec(),
-			ExitFee:                     sdkmath.LegacyZeroDec(),
-			UseOracle:                   false,
-			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-			WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
-			FeeDenom:                    ptypes.BaseCurrency,
+			SwapFee:   sdkmath.LegacyZeroDec(),
+			UseOracle: false,
+			FeeDenom:  ptypes.BaseCurrency,
 		}
 
 		keeper.SetPool(ctx, items[i])

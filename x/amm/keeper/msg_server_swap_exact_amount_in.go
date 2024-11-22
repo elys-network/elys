@@ -9,9 +9,6 @@ import (
 )
 
 func (k msgServer) SwapExactAmountIn(goCtx context.Context, msg *types.MsgSwapExactAmountIn) (*types.MsgSwapExactAmountInResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Swap event is handled elsewhere

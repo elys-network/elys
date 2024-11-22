@@ -34,16 +34,13 @@ func (k Keeper) UpdatePoolParams(ctx sdk.Context, poolId uint64, poolParams type
 }
 
 func (k msgServer) UpdatePoolParams(goCtx context.Context, msg *types.MsgUpdatePoolParams) (*types.MsgUpdatePoolParamsResponse, error) {
-	if err := msg.ValidateBasic(); err != nil {
-		return nil, err
-	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
-	poolId, poolParams, err := k.Keeper.UpdatePoolParams(ctx, msg.PoolId, *msg.PoolParams)
+	poolId, poolParams, err := k.Keeper.UpdatePoolParams(ctx, msg.PoolId, msg.PoolParams)
 	if err != nil {
 		return nil, err
 	}

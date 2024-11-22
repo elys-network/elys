@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"strconv"
 	"testing"
 
@@ -127,14 +129,14 @@ func TestGetPortfolioAmm(t *testing.T) {
 	SetupCoinPrices(ctx, oracle, assetProfiler)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(1000000))
+	sender := authtypes.NewModuleAddress(govtypes.ModuleName)
 
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
-	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
+	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 100000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, sender, coins)
 	require.NoError(t, err)
 
 	var poolAssets []ammtypes.PoolAsset
@@ -150,15 +152,10 @@ func TestGetPortfolioAmm(t *testing.T) {
 		Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000)),
 	})
 
-	poolParams := &ammtypes.PoolParams{
-		SwapFee:                     math.LegacyZeroDec(),
-		ExitFee:                     math.LegacyZeroDec(),
-		UseOracle:                   false,
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		FeeDenom:                    "",
+	poolParams := ammtypes.PoolParams{
+		SwapFee:   math.LegacyZeroDec(),
+		UseOracle: false,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	// Create a Elys+USDC pool
@@ -166,7 +163,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 	resp, err := msgServer.CreatePool(
 		ctx,
 		&ammtypes.MsgCreatePool{
-			Sender:     addr[0].String(),
+			Sender:     sender.String(),
 			PoolParams: poolParams,
 			PoolAssets: poolAssets,
 		})
@@ -183,11 +180,11 @@ func TestGetPortfolioAmm(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, resp.PoolID, uint64(1))
 
-	tier.RetrieveAllPortfolio(ctx, addr[0])
+	tier.RetrieveAllPortfolio(ctx, sender)
 
-	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
+	portfolio, found := tier.GetPortfolio(ctx, sender, tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, math.LegacyNewDec(100100), portfolio)
+	require.Equal(t, math.LegacyNewDec(109000), portfolio)
 }
 
 func TestPortfolioGetDiscount(t *testing.T) {
@@ -230,13 +227,13 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 	SetupCoinPrices(ctx, oracle, assetProfiler)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(1000000))
+	addr := authtypes.NewModuleAddress(govtypes.ModuleName)
 
 	// Create a pool
 	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 1000000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 10000000))
 	err = app.BankKeeper.MintCoins(ctx, ammtypes.ModuleName, coins)
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr[0], coins)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, ammtypes.ModuleName, addr, coins)
 	require.NoError(t, err)
 
 	var poolAssets []ammtypes.PoolAsset
@@ -252,15 +249,10 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 		Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000000)),
 	})
 
-	poolParams := &ammtypes.PoolParams{
-		SwapFee:                     math.LegacyZeroDec(),
-		ExitFee:                     math.LegacyZeroDec(),
-		UseOracle:                   false,
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		FeeDenom:                    "",
+	poolParams := ammtypes.PoolParams{
+		SwapFee:   math.LegacyZeroDec(),
+		UseOracle: false,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	// Create a Elys+USDC pool
@@ -268,7 +260,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 	resp, err := msgServer.CreatePool(
 		ctx,
 		&ammtypes.MsgCreatePool{
-			Sender:     addr[0].String(),
+			Sender:     addr.String(),
 			PoolParams: poolParams,
 			PoolAssets: poolAssets,
 		})
@@ -277,7 +269,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 	require.Equal(t, resp.PoolID, uint64(1))
 
 	err = perpetual.SetMTP(ctx, &perpetualtypes.MTP{
-		Address:                       addr[0].String(),
+		Address:                       addr.String(),
 		CollateralAsset:               ptypes.BaseCurrency,
 		CustodyAsset:                  ptypes.Elys,
 		Collateral:                    math.NewInt(0),
@@ -291,11 +283,11 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	tier.RetrieveAllPortfolio(ctx, addr[0])
+	tier.RetrieveAllPortfolio(ctx, addr)
 
-	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
+	portfolio, found := tier.GetPortfolio(ctx, addr, tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, math.LegacyNewDec(10099100), portfolio)
+	require.Equal(t, math.LegacyNewDec(10099000), portfolio)
 }
 
 // TODO

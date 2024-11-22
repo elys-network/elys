@@ -147,7 +147,7 @@ func (suite *MasterchefKeeperTestSuite) SetupStableCoinPrices() {
 	})
 }
 
-func (suite *MasterchefKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, poolAssets []ammtypes.PoolAsset, poolParams *ammtypes.PoolParams) ammtypes.Pool {
+func (suite *MasterchefKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, poolAssets []ammtypes.PoolAsset, poolParams ammtypes.PoolParams) ammtypes.Pool {
 
 	createPoolMsg := &ammtypes.MsgCreatePool{
 		Sender:     creator.String(),

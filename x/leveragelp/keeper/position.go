@@ -266,12 +266,12 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 		leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
 	}
 
-	exitCoinsAfterFee, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), leveragedLpAmount, baseCurrency)
+	exitCoins, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), leveragedLpAmount, baseCurrency)
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), err
 	}
 
-	exitAmountAfterFee := exitCoinsAfterFee.AmountOf(baseCurrency)
+	exitAmountAfterFee := exitCoins.AmountOf(baseCurrency)
 
 	health := exitAmountAfterFee.ToLegacyDec().Quo(debtAmount.ToLegacyDec())
 

@@ -93,7 +93,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(200),
+			math.NewInt(202),
 		},
 		{
 			"Close with price greater than open price and less than take profit price",
@@ -130,11 +130,11 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				return &types.MsgClose{
 					Creator: positionCreator.String(),
 					Id:      position.Id,
-					Amount:  math.NewInt(399),
+					Amount:  math.NewInt(107),
 				}
 			},
 			"",
-			math.NewInt(100), // less than at the same price
+			math.NewInt(29), // less than at the same price
 		},
 		{
 			"Close at take profit price",
@@ -175,7 +175,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(50),
+			math.NewInt(72),
 		},
 		{
 			"Close at stopLoss price",
@@ -216,7 +216,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(500),
+			math.NewInt(501),
 		},
 		{
 			"Sucess: close long position,at same price as open price",
@@ -247,7 +247,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(200),
+			math.NewInt(202),
 		},
 		{
 			"Success: close short position at same price as open price",

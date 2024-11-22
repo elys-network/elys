@@ -68,17 +68,11 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 	}
 
 	argSwapFee := math.LegacyMustNewDecFromStr("0.0")
-	argExitFee := math.LegacyMustNewDecFromStr("0.0")
 
-	poolParams := &ammtypes.PoolParams{
-		UseOracle:                   true,
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		SwapFee:                     argSwapFee,
-		ExitFee:                     argExitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
+	poolParams := ammtypes.PoolParams{
+		UseOracle: true,
+		SwapFee:   argSwapFee,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -199,17 +193,10 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 	}
 
 	argSwapFee := math.LegacyMustNewDecFromStr("0.0")
-	argExitFee := math.LegacyMustNewDecFromStr("0.0")
-
-	poolParams := &ammtypes.PoolParams{
-		UseOracle:                   true,
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		SwapFee:                     argSwapFee,
-		ExitFee:                     argExitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
+	poolParams := ammtypes.PoolParams{
+		UseOracle: true,
+		SwapFee:   argSwapFee,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -251,23 +238,23 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryOpenEstimationResponse{
 		Position:           types.Position_LONG,
-		EffectiveLeverage:  math.LegacyMustNewDecFromStr("5.035307678145308466"),
+		EffectiveLeverage:  math.LegacyMustNewDecFromStr("5.064647900714587379"),
 		TradingAsset:       ptypes.ATOM,
 		Collateral:         sdk.NewCoin(ptypes.ATOM, math.NewInt(10_000_000)),
 		PositionSize:       sdk.NewCoin(ptypes.ATOM, math.NewInt(50_000_000)),
-		OpenPrice:          math.LegacyMustNewDecFromStr("5.008765025000000000"),
+		OpenPrice:          math.LegacyMustNewDecFromStr("5.015955675000000000"),
 		TakeProfitPrice:    tradingAssetPrice.MulInt64(3),
-		LiquidationPrice:   math.LegacyMustNewDecFromStr("4.107187320500000000"),
-		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(399649399)),
+		LiquidationPrice:   math.LegacyMustNewDecFromStr("4.113083653500000000"),
+		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(399361773)),
 		HourlyInterestRate: math.LegacyZeroDec(),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
 		Slippage:           math.LegacyMustNewDecFromStr("0.000751255000000000"),
 		BorrowInterestRate: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        math.LegacyMustNewDecFromStr("0.000000000000000000"),
-		PriceImpact:        math.LegacyMustNewDecFromStr("-0.001753005000000000"),
+		PriceImpact:        math.LegacyMustNewDecFromStr("-0.003191135000000000"),
 		Custody:            sdk.NewCoin(ptypes.ATOM, math.NewInt(50_000_000)),
-		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(200_350_601)),
-		WeightBreakingFee:  math.LegacyZeroDec(),
+		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(200638227)),
+		WeightBreakingFee:  math.LegacyMustNewDecFromStr("0.001435613665417722"),
 	}, res)
 }
 
@@ -329,17 +316,11 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 	}
 
 	argSwapFee := math.LegacyMustNewDecFromStr("0.0")
-	argExitFee := math.LegacyMustNewDecFromStr("0.0")
 
-	poolParams := &ammtypes.PoolParams{
-		UseOracle:                   true,
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		SwapFee:                     argSwapFee,
-		ExitFee:                     argExitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
+	poolParams := ammtypes.PoolParams{
+		UseOracle: true,
+		SwapFee:   argSwapFee,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -474,17 +455,11 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 	}
 
 	argSwapFee := math.LegacyMustNewDecFromStr("0.0")
-	argExitFee := math.LegacyMustNewDecFromStr("0.0")
 
-	poolParams := &ammtypes.PoolParams{
-		UseOracle:                   true,
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		SwapFee:                     argSwapFee,
-		ExitFee:                     argExitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
+	poolParams := ammtypes.PoolParams{
+		UseOracle: true,
+		SwapFee:   argSwapFee,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(
@@ -606,17 +581,11 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 	}
 
 	argSwapFee := math.LegacyMustNewDecFromStr("0.0")
-	argExitFee := math.LegacyMustNewDecFromStr("0.0")
 
-	poolParams := &ammtypes.PoolParams{
-		UseOracle:                   true,
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		SwapFee:                     argSwapFee,
-		ExitFee:                     argExitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
+	poolParams := ammtypes.PoolParams{
+		UseOracle: true,
+		SwapFee:   argSwapFee,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	msg := ammtypes.NewMsgCreatePool(

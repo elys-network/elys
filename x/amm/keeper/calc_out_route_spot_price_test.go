@@ -45,13 +45,9 @@ func (suite *AmmKeeperTestSuite) TestCalcOutRouteSpotPrice() {
 		Address:           types.NewPoolAddress(uint64(1)).String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: types.PoolParams{
-			UseOracle:                   false,
-			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-			SwapFee:                     sdkmath.LegacyZeroDec(),
-			FeeDenom:                    ptypes.BaseCurrency,
+			UseOracle: false,
+			SwapFee:   sdkmath.LegacyZeroDec(),
+			FeeDenom:  ptypes.BaseCurrency,
 		},
 		TotalShares: sdk.Coin{},
 		PoolAssets: []types.PoolAsset{

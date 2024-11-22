@@ -625,18 +625,20 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 				Address:           poolAddr.String(),
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
-					SwapFee:                     sdkmath.LegacyZeroDec(),
-					UseOracle:                   tc.useOracle,
-					ThresholdWeightDifference:   tc.thresholdWeightDiff,
-					WeightBreakingFeeMultiplier: sdkmath.LegacyNewDecWithPrec(2, 4),  // 0.02%
-					WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-					WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
+					SwapFee:   sdkmath.LegacyZeroDec(),
+					UseOracle: tc.useOracle,
+					FeeDenom:  ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.Coin{},
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdkmath.ZeroInt(),
 			}
-			tokenOut, _, _, weightBonus, err := pool.SwapOutAmtGivenIn(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenIn}, tc.outTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, math.LegacyOneDec())
+			params := suite.app.AmmKeeper.GetParams(suite.ctx)
+			params.ThresholdWeightDifference = tc.thresholdWeightDiff
+			params.WeightBreakingFeeMultiplier = sdkmath.LegacyNewDecWithPrec(2, 4)
+			params.WeightBreakingFeeExponent = sdkmath.LegacyNewDecWithPrec(25, 1) // 2.5
+			params.WeightRecoveryFeePortion = sdkmath.LegacyNewDecWithPrec(50, 2)  // 50%
+			tokenOut, _, _, weightBonus, err := pool.SwapOutAmtGivenIn(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenIn}, tc.outTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, math.LegacyOneDec(), params)
 			if tc.expErr {
 				suite.Require().Error(err)
 				suite.Require().EqualError(err, "amount too low")

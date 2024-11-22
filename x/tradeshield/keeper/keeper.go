@@ -17,6 +17,7 @@ type (
 		cdc          codec.BinaryCodec
 		storeService store.KVStoreService
 		authority    string
+		bank         types.BankKeeper
 		amm          types.AmmKeeper
 		tier         types.TierKeeper
 		perpetual    types.PerpetualKeeper
@@ -27,6 +28,7 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeService store.KVStoreService,
 	authority string,
+	bank types.BankKeeper,
 	amm types.AmmKeeper,
 	tier types.TierKeeper,
 	perpetual types.PerpetualKeeper,
@@ -35,6 +37,7 @@ func NewKeeper(
 		cdc:          cdc,
 		storeService: storeService,
 		authority:    authority,
+		bank:         bank,
 		amm:          amm,
 		tier:         tier,
 		perpetual:    perpetual,

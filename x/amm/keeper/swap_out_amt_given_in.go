@@ -22,6 +22,6 @@ func (k Keeper) SwapOutAmtGivenIn(
 	if !found {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("invalid pool: %d", poolId)
 	}
-
-	return ammPool.SwapOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper, weightBreakingFeePerpetualFactor)
+	params := k.GetParams(ctx)
+	return ammPool.SwapOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper, weightBreakingFeePerpetualFactor, params)
 }

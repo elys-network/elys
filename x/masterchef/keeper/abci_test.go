@@ -133,16 +133,14 @@ func (suite *MasterchefKeeperTestSuite) TestCollectGasFees() {
 		},
 	}
 
-	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.1")
-	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.1")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.01")
 
-	poolParams := &ammtypes.PoolParams{
+	poolParams := ammtypes.PoolParams{
 		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
 	}
 
 	// Create a Elys+USDC pool
-	ammPool := suite.CreateNewAmmPool(sdk.AccAddress(addr[0]), poolAssets, poolParams)
+	ammPool := suite.CreateNewAmmPool(addr[0], poolAssets, poolParams)
 	suite.Require().Equal(ammPool.PoolId, uint64(1))
 
 	pools := suite.app.AmmKeeper.GetAllPool(suite.ctx)
@@ -187,12 +185,10 @@ func (suite *MasterchefKeeperTestSuite) TestCollectDEXRevenue() {
 		},
 	}
 
-	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.1")
-	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.1")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.01")
 
-	poolParams := &ammtypes.PoolParams{
+	poolParams := ammtypes.PoolParams{
 		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
 	}
 
 	// Create a Elys+USDC pool
@@ -295,12 +291,10 @@ func (suite *MasterchefKeeperTestSuite) TestExternalRewardsDistribution() {
 		},
 	}
 
-	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.1")
-	argExitFee := sdkmath.LegacyMustNewDecFromStr("0.1")
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.01")
 
-	poolParams := &ammtypes.PoolParams{
+	poolParams := ammtypes.PoolParams{
 		SwapFee: argSwapFee,
-		ExitFee: argExitFee,
 	}
 
 	// Create a Elys+USDC pool

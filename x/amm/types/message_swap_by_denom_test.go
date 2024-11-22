@@ -1,6 +1,8 @@
 package types
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -23,7 +25,10 @@ func TestMsgSwapByDenom_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgSwapByDenom{
-				Sender: sample.AccAddress(),
+				Sender:   sample.AccAddress(),
+				Amount:   sdk.NewInt64Coin(ptypes.ATOM, 10),
+				DenomIn:  ptypes.ATOM,
+				DenomOut: ptypes.BaseCurrency,
 			},
 		},
 	}

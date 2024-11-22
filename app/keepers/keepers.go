@@ -646,6 +646,7 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[tradeshieldmoduletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.BankKeeper,
 		app.AmmKeeper,
 		app.TierKeeper,
 		app.PerpetualKeeper,

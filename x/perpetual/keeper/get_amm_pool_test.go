@@ -14,15 +14,9 @@ func (suite *PerpetualKeeperTestSuite) TestGetAmmPool() {
 		Address:           ammtypes.NewPoolAddress(1).String(),
 		RebalanceTreasury: "",
 		PoolParams: ammtypes.PoolParams{
-			UseOracle:                   false,
-			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-			WeightBreakingFeePortion:    sdkmath.LegacyNewDecWithPrec(50, 2), // 50%
-			SwapFee:                     sdkmath.LegacyZeroDec(),
-			ExitFee:                     sdkmath.LegacyZeroDec(),
-			FeeDenom:                    ptypes.BaseCurrency,
+			UseOracle: false,
+			SwapFee:   sdkmath.LegacyZeroDec(),
+			FeeDenom:  ptypes.BaseCurrency,
 		},
 		TotalShares: sdk.NewCoin("pool/1", sdkmath.NewInt(100)),
 		PoolAssets: []ammtypes.PoolAsset{

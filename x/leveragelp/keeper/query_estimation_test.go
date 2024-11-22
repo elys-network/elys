@@ -39,14 +39,9 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: ammtypes.PoolParams{
-			SwapFee:                     sdkmath.LegacyZeroDec(),
-			ExitFee:                     sdkmath.LegacyZeroDec(),
-			UseOracle:                   true,
-			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-			FeeDenom:                    "uusdc",
+			SwapFee:   sdkmath.LegacyZeroDec(),
+			UseOracle: true,
+			FeeDenom:  "uusdc",
 		},
 		TotalShares: sdk.NewCoin("amm/pool/1", sdkmath.NewInt(2).Mul(ammtypes.OneShare)),
 		PoolAssets: []ammtypes.PoolAsset{

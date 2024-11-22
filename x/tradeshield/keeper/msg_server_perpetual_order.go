@@ -84,8 +84,18 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		return nil, err
 	}
 
+	// set the order id
+	pendingPerpetualOrder.OrderId = id
+
+	// send collateral amount from owner to the order address
+	ownerAddress := sdk.MustAccAddressFromBech32(pendingPerpetualOrder.OwnerAddress)
+	err = k.Keeper.bank.SendCoins(ctx, ownerAddress, pendingPerpetualOrder.GetOrderAddress(), sdk.NewCoins(pendingPerpetualOrder.Collateral))
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.MsgCreatePerpetualOpenOrderResponse{
-		OrderId: id,
+		OrderId: pendingPerpetualOrder.OrderId,
 	}, nil
 }
 
@@ -134,6 +144,7 @@ func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpd
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
+	// update the order
 	order.TriggerPrice = msg.TriggerPrice
 	k.SetPendingPerpetualOrder(ctx, order)
 
@@ -152,6 +163,13 @@ func (k msgServer) CancelPerpetualOrder(goCtx context.Context, msg *types.MsgCan
 	// Checks if the msg creator is the same as the current owner
 	if msg.OwnerAddress != order.OwnerAddress {
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	// send the collateral amount back to the owner
+	ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
+	err := k.Keeper.bank.SendCoins(ctx, order.GetOrderAddress(), ownerAddress, sdk.NewCoins(order.Collateral))
+	if err != nil {
+		return nil, err
 	}
 
 	k.RemovePendingPerpetualOrder(ctx, msg.OrderId)

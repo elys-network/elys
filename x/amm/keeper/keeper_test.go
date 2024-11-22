@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"sort"
 	"strings"
 	"testing"
@@ -117,8 +119,15 @@ func (suite *AmmKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress) []sd
 
 func (suite *AmmKeeperTestSuite) SetAmmParams() {
 	suite.app.AmmKeeper.SetParams(suite.ctx, types.Params{
-		PoolCreationFee:       math.NewInt(10000000),
-		SlippageTrackDuration: 604800,
+		PoolCreationFee:             math.NewInt(10_000_000),
+		SlippageTrackDuration:       604800,
+		BaseAssets:                  []string{ptypes.BaseCurrency},
+		AllowedPoolCreators:         []string{authtypes.NewModuleAddress(govtypes.ModuleName).String()},
+		WeightBreakingFeeExponent:   math.LegacyMustNewDecFromStr("2.5"),
+		WeightBreakingFeeMultiplier: math.LegacyMustNewDecFromStr("0.0005"),
+		WeightBreakingFeePortion:    math.LegacyMustNewDecFromStr("0.5"),
+		WeightRecoveryFeePortion:    math.LegacyMustNewDecFromStr("0.1"),
+		ThresholdWeightDifference:   math.LegacyMustNewDecFromStr("0.3"),
 	})
 }
 
@@ -224,19 +233,14 @@ func (suite *AmmKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOra
 		return strings.Compare(poolAssets[i].Token.Denom, poolAssets[j].Token.Denom) <= 0
 	})
 	poolParams := types.PoolParams{
-		UseOracle:                   useOracle,
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		SwapFee:                     swapFee,
-		ExitFee:                     exitFee,
-		FeeDenom:                    ptypes.BaseCurrency,
+		UseOracle: useOracle,
+		SwapFee:   swapFee,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	createPoolMsg := &types.MsgCreatePool{
 		Sender:     creator.String(),
-		PoolParams: &poolParams,
+		PoolParams: poolParams,
 		PoolAssets: poolAssets,
 	}
 

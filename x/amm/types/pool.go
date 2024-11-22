@@ -306,8 +306,9 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	accountedPoolKeeper AccountedPoolKeeper,
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
+	params Params,
 ) (exitedCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, err error) {
-	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom)
+	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom, params)
 }
 
 func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {

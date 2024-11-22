@@ -4,6 +4,8 @@ import (
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
@@ -16,12 +18,12 @@ import (
 func (suite *MasterchefKeeperTestSuite) SetupApp() {
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(suite.app, suite.ctx, 1, math.NewInt(100010))
+	addr := authtypes.NewModuleAddress(govtypes.ModuleName)
 
 	// Create a pool
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
-	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
-	suite.MintMultipleTokenToAddress(addr[0], coins)
+	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 110000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
+	suite.MintMultipleTokenToAddress(addr, coins)
 
 	//app.StakingKeeper.Delegate(ctx, addr[0], math.NewInt(100000), sdk.Unbonded, sdk.NewDec(0.1), math.NewInt(100000))
 
@@ -38,19 +40,14 @@ func (suite *MasterchefKeeperTestSuite) SetupApp() {
 		Token:  sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(100)),
 	})
 
-	poolParams := &ammtypes.PoolParams{
-		SwapFee:                     math.LegacyZeroDec(),
-		ExitFee:                     math.LegacyZeroDec(),
-		UseOracle:                   false,
-		WeightBreakingFeeMultiplier: math.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   math.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    math.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   math.LegacyZeroDec(),
-		FeeDenom:                    "",
+	poolParams := ammtypes.PoolParams{
+		SwapFee:   math.LegacyZeroDec(),
+		UseOracle: false,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 
 	// Create a Elys+USDC pool
-	ammPool := suite.CreateNewAmmPool(addr[0], poolAssets, poolParams)
+	ammPool := suite.CreateNewAmmPool(addr, poolAssets, poolParams)
 	suite.Require().Equal(ammPool.PoolId, uint64(1))
 
 	poolInfo, found := suite.app.MasterchefKeeper.GetPoolInfo(suite.ctx, ammPool.PoolId)

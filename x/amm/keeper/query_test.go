@@ -20,7 +20,7 @@ func (suite *AmmKeeperTestSuite) TestQuery() {
 			},
 			func() {
 				params := types.DefaultParams()
-
+				params.BaseAssets = nil
 				response, err := suite.app.AmmKeeper.Params(suite.ctx, &types.QueryParamsRequest{})
 				suite.Require().NoError(err)
 				suite.Require().Equal(&types.QueryParamsResponse{Params: params}, response)

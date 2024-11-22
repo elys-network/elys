@@ -8,7 +8,7 @@ import (
 )
 
 func TestDefaultParams(t *testing.T) {
-	require.Equal(t, types.DefaultParams(), types.NewParams(math.NewInt(10_000_000), 86400*7, false))
+	require.Equal(t, types.DefaultParams(), types.NewParams(math.NewInt(10_000_000), 86400*7, []string{}))
 }
 
 func TestParamsValidation(t *testing.T) {

@@ -33,19 +33,21 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, poolAddr, poolInit)
 	suite.Require().NoError(err)
 
+	ammParams := suite.app.AmmKeeper.GetParams(suite.ctx)
+	ammParams.WeightBreakingFeeMultiplier = sdkmath.LegacyZeroDec()
+	ammParams.WeightBreakingFeeExponent = sdkmath.LegacyNewDecWithPrec(25, 1) // 2.5
+	ammParams.WeightRecoveryFeePortion = sdkmath.LegacyNewDecWithPrec(10, 2)  // 10%
+	ammParams.ThresholdWeightDifference = sdkmath.LegacyZeroDec()
+	suite.app.AmmKeeper.SetParams(suite.ctx, ammParams)
+
 	suite.app.AmmKeeper.SetPool(suite.ctx, ammtypes.Pool{
 		PoolId:            1,
 		Address:           poolAddr.String(),
 		RebalanceTreasury: treasuryAddr.String(),
 		PoolParams: ammtypes.PoolParams{
-			SwapFee:                     sdkmath.LegacyZeroDec(),
-			ExitFee:                     sdkmath.LegacyZeroDec(),
-			UseOracle:                   true,
-			WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-			WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-			WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-			ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-			FeeDenom:                    "uusdc",
+			SwapFee:   sdkmath.LegacyZeroDec(),
+			UseOracle: true,
+			FeeDenom:  "uusdc",
 		},
 		TotalShares: sdk.NewCoin("amm/pool/1", sdkmath.NewInt(2).Mul(ammtypes.OneShare)),
 		PoolAssets: []ammtypes.PoolAsset{

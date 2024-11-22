@@ -2,9 +2,10 @@ package keeper_test
 
 import (
 	sdkmath "cosmossdk.io/math"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -12,11 +13,11 @@ import (
 func (suite *MasterchefKeeperTestSuite) TestCalculatePoolAprs() {
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(suite.app, suite.ctx, 1, sdkmath.NewInt(100010))
+	addr := authtypes.NewModuleAddress(govtypes.ModuleName)
 
 	// Mint 100000USDC + 10 ELYS (pool creation fee)
-	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 10000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
-	suite.MintMultipleTokenToAddress(addr[0], coins)
+	coins := sdk.NewCoins(sdk.NewInt64Coin(ptypes.Elys, 110000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000))
+	suite.MintMultipleTokenToAddress(addr, coins)
 
 	// Create pool
 	var poolAssets []ammtypes.PoolAsset
@@ -32,18 +33,13 @@ func (suite *MasterchefKeeperTestSuite) TestCalculatePoolAprs() {
 		Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100)),
 	})
 
-	poolParams := &ammtypes.PoolParams{
-		SwapFee:                     sdkmath.LegacyZeroDec(),
-		ExitFee:                     sdkmath.LegacyZeroDec(),
-		UseOracle:                   false,
-		WeightBreakingFeeMultiplier: sdkmath.LegacyZeroDec(),
-		WeightBreakingFeeExponent:   sdkmath.LegacyNewDecWithPrec(25, 1), // 2.5
-		WeightRecoveryFeePortion:    sdkmath.LegacyNewDecWithPrec(10, 2), // 10%
-		ThresholdWeightDifference:   sdkmath.LegacyZeroDec(),
-		FeeDenom:                    "",
+	poolParams := ammtypes.PoolParams{
+		SwapFee:   sdkmath.LegacyZeroDec(),
+		UseOracle: false,
+		FeeDenom:  ptypes.BaseCurrency,
 	}
 	// Create a Elys+USDC pool
-	ammPool := suite.CreateNewAmmPool(addr[0], poolAssets, poolParams)
+	ammPool := suite.CreateNewAmmPool(addr, poolAssets, poolParams)
 	suite.Require().Equal(ammPool.PoolId, uint64(1))
 
 	poolInfo, found := suite.app.MasterchefKeeper.GetPoolInfo(suite.ctx, ammPool.PoolId)

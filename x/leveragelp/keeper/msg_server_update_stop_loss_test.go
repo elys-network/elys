@@ -35,15 +35,10 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 	}
 	msgCreatePool := ammtypes.MsgCreatePool{
 		Sender: addresses[0].String(),
-		PoolParams: &ammtypes.PoolParams{
-			SwapFee:                     fee,
-			ExitFee:                     fee,
-			UseOracle:                   true,
-			WeightBreakingFeeMultiplier: fee,
-			WeightBreakingFeeExponent:   fee,
-			WeightRecoveryFeePortion:    fee,
-			ThresholdWeightDifference:   fee,
-			FeeDenom:                    ptypes.Elys,
+		PoolParams: ammtypes.PoolParams{
+			SwapFee:   fee,
+			UseOracle: true,
+			FeeDenom:  ptypes.Elys,
 		},
 		PoolAssets: []ammtypes.PoolAsset{
 			{
