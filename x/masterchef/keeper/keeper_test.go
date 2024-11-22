@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"testing"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	simapp "github.com/elys-network/elys/app"
@@ -119,28 +118,28 @@ func (suite *MasterchefKeeperTestSuite) SetupStableCoinPrices() {
 
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDC",
-		Price:     math.LegacyNewDec(1000000),
+		Price:     sdkmath.LegacyNewDec(1000000),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "USDT",
-		Price:     math.LegacyNewDec(1000000),
+		Price:     sdkmath.LegacyNewDec(1000000),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "ELYS",
-		Price:     math.LegacyNewDec(100),
+		Price:     sdkmath.LegacyNewDec(100),
 		Source:    "elys",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 		Asset:     "ATOM",
-		Price:     math.LegacyNewDec(100),
+		Price:     sdkmath.LegacyNewDec(100),
 		Source:    "atom",
 		Provider:  provider.String(),
 		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
@@ -162,7 +161,7 @@ func (suite *MasterchefKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress,
 	return ammPool
 }
 
-func (suite *MasterchefKeeperTestSuite) MintTokenToAddress(address sdk.AccAddress, amount math.Int, denom string) {
+func (suite *MasterchefKeeperTestSuite) MintTokenToAddress(address sdk.AccAddress, amount sdkmath.Int, denom string) {
 
 	token := sdk.NewCoins(sdk.NewCoin(denom, amount))
 
