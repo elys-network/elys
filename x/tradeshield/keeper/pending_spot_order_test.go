@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/testutil/nullify"
@@ -23,7 +22,7 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderGet() {
 	items := suite.createNPendingSpotOrder(10)
 	for _, item := range items {
 		got, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, item.OrderId)
-		item.OrderPrice.Rate = sdkmath.LegacyZeroDec()
+		item.OrderPrice.Rate = math.LegacyZeroDec()
 		suite.Require().True(found)
 		suite.Require().Equal(
 			nullify.Fill(&item),
@@ -46,7 +45,7 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderGetAll() {
 
 	for _, item := range suite.app.TradeshieldKeeper.GetAllPendingSpotOrder(suite.ctx) {
 		got, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, item.OrderId)
-		item.OrderPrice.Rate = sdkmath.LegacyZeroDec()
+		item.OrderPrice.Rate = math.LegacyZeroDec()
 		suite.Require().True(found)
 		suite.Require().Equal(
 			nullify.Fill(&item),
@@ -63,7 +62,7 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderCount() {
 
 // TestExecuteStopLossOrder
 func (suite *TradeshieldKeeperTestSuite) TestExecuteStopLossOrder() {
-	address := suite.AddAccounts(1, nil)
+	address := suite.AddAccounts(2, nil)
 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
 		BaseDenom:   ptypes.ATOM,
 		Denom:       ptypes.ATOM,
@@ -80,19 +79,25 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteStopLossOrder() {
 
 	_ = suite.CreateNewAmmPool(address[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
 
-	// Set to main storage
-	suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, types.SpotOrder{
-		OwnerAddress: address[0].String(),
-		OrderId:      0,
+	pendingSpotOrder := types.SpotOrder{
+		OwnerAddress: address[1].String(),
+		OrderId:      1, // pending order count will be zero, so ultimately this will be 1
 		OrderType:    types.SpotOrderType_STOPLOSS,
 		OrderPrice: types.OrderPrice{
 			BaseDenom:  "uusdc",
 			QuoteDenom: "uatom",
-			Rate:       sdkmath.LegacyNewDec(1),
+			Rate:       math.LegacyNewDec(1),
 		},
 		OrderTargetDenom: "uatom",
-		OrderAmount:      sdk.NewCoin("uusdc", sdkmath.NewInt(1000000000)),
-	})
+		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(1000000000)),
+	}
+
+	// Fund orderAddress
+	orderAddress := pendingSpotOrder.GetOrderAddress()
+	suite.AddAccounts(1, []sdk.AccAddress{orderAddress})
+
+	// Set to main storage
+	suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, pendingSpotOrder)
 
 	order, _ := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
 
@@ -127,19 +132,25 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitSellOrder() {
 
 	_ = suite.CreateNewAmmPool(address[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
 
-	// Set to main storage
-	suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, types.SpotOrder{
+	pendingSpotOrder := types.SpotOrder{
 		OwnerAddress: address[0].String(),
-		OrderId:      0,
+		OrderId:      1, // pending order count will be zero, so ultimately this will be 1
 		OrderType:    types.SpotOrderType_LIMITSELL,
 		OrderPrice: types.OrderPrice{
 			BaseDenom:  "uusdc",
 			QuoteDenom: "uatom",
-			Rate:       sdkmath.LegacyNewDec(0),
+			Rate:       math.LegacyNewDec(0),
 		},
 		OrderTargetDenom: "uatom",
-		OrderAmount:      sdk.NewCoin("uusdc", sdkmath.NewInt(1000000)),
-	})
+		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(1000000)),
+	}
+
+	// Fund orderAddress
+	orderAddress := pendingSpotOrder.GetOrderAddress()
+	suite.AddAccounts(1, []sdk.AccAddress{orderAddress})
+
+	// Set to main storage
+	suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, pendingSpotOrder)
 
 	order, _ := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
 
@@ -157,7 +168,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitSellOrder() {
 
 // TestExecuteLimitBuyOrder
 func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitBuyOrder() {
-	address := suite.AddAccounts(1, nil)
+	address := suite.AddAccounts(2, nil)
 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
 		BaseDenom:   ptypes.ATOM,
 		Denom:       ptypes.ATOM,
@@ -174,19 +185,25 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitBuyOrder() {
 
 	_ = suite.CreateNewAmmPool(address[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
 
-	// Set to main storage
-	suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, types.SpotOrder{
-		OwnerAddress: address[0].String(),
-		OrderId:      0,
+	pendingSpotOrder := types.SpotOrder{
+		OwnerAddress: address[1].String(),
+		OrderId:      1, // pending order count will be zero, so ultimately this will be 1
 		OrderType:    types.SpotOrderType_LIMITBUY,
 		OrderPrice: types.OrderPrice{
 			BaseDenom:  "uusdc",
 			QuoteDenom: "uatom",
-			Rate:       sdkmath.LegacyNewDec(1),
+			Rate:       math.LegacyNewDec(1),
 		},
 		OrderTargetDenom: "uatom",
-		OrderAmount:      sdk.NewCoin("uusdc", sdkmath.NewInt(100000)),
-	})
+		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
+	}
+
+	// Fund orderAddress
+	orderAddress := pendingSpotOrder.GetOrderAddress()
+	suite.AddAccounts(1, []sdk.AccAddress{orderAddress})
+
+	// Set to main storage
+	suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, pendingSpotOrder)
 
 	order, _ := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
 
@@ -228,10 +245,10 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketBuyOrder() {
 		OrderPrice: types.OrderPrice{
 			BaseDenom:  "uusdc",
 			QuoteDenom: "uatom",
-			Rate:       sdkmath.LegacyNewDec(1),
+			Rate:       math.LegacyNewDec(1),
 		},
 		OrderTargetDenom: "uatom",
-		OrderAmount:      sdk.NewCoin("uusdc", sdkmath.NewInt(1000)),
+		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(1000)),
 	}
 
 	err := suite.app.TradeshieldKeeper.ExecuteMarketBuyOrder(suite.ctx, order)

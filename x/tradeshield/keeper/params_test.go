@@ -4,12 +4,7 @@ import (
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
-<<<<<<< HEAD
 func (suite *TradeshieldKeeperTestSuite) TestGetParams() {
-=======
-func TestGetParams(t *testing.T) {
-	k, ctx, _, _, _, _ := testkeeper.TradeshieldKeeper(t)
->>>>>>> main
 	params := types.DefaultParams()
 	suite.app.TradeshieldKeeper.SetParams(suite.ctx, &params)
 
