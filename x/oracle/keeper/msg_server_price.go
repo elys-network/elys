@@ -21,10 +21,10 @@ func (k msgServer) FeedPrice(goCtx context.Context, msg *types.MsgFeedPrice) (*t
 	}
 
 	price := types.Price{
+		Asset:       msg.FeedPrice.Asset,
+		Price:       msg.FeedPrice.Price,
+		Source:      msg.FeedPrice.Source,
 		Provider:    msg.Provider,
-		Asset:       msg.Asset,
-		Price:       msg.Price,
-		Source:      msg.Source,
 		Timestamp:   uint64(ctx.BlockTime().Unix()),
 		BlockHeight: uint64(ctx.BlockHeight()),
 	}

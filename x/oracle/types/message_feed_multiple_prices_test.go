@@ -27,14 +27,11 @@ func TestMsgFeedMultiplePrices_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: types.MsgFeedMultiplePrices{
 				Creator: sample.AccAddress(),
-				Prices: []types.Price{
+				FeedPrices: []types.FeedPrice{
 					{
-						Asset:       ptypes.ATOM,
-						Price:       math.LegacyOneDec(),
-						Source:      "source",
-						Provider:    "provider",
-						Timestamp:   1,
-						BlockHeight: 1,
+						Asset:  ptypes.ATOM,
+						Price:  math.LegacyOneDec(),
+						Source: "source",
 					},
 				},
 			},
