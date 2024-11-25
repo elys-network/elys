@@ -70,7 +70,8 @@ func (suite *EstakingKeeperTestSuite) TestQuery() {
 					suite.app.CommitmentKeeper, suite.app.EstakingKeeper,
 					&suite.app.AssetprofileKeeper,
 					authtypes.FeeCollectorName, suite.app.GetSubspace(distrtypes.ModuleName))
-				distrAppModule.AllocateTokens(ctx)
+				distrAppModule.AllocateEdenUsdcTokens(ctx)
+				distrAppModule.AllocateEdenBTokens(ctx)
 
 				// query rewards
 				res, err := suite.app.EstakingKeeper.Rewards(ctx, &types.QueryRewardsRequest{
@@ -132,7 +133,8 @@ func (suite *EstakingKeeperTestSuite) TestQuery() {
 					suite.app.CommitmentKeeper, suite.app.EstakingKeeper,
 					&suite.app.AssetprofileKeeper,
 					authtypes.FeeCollectorName, suite.app.GetSubspace(distrtypes.ModuleName))
-				distrAppModule.AllocateTokens(ctx)
+				distrAppModule.AllocateEdenUsdcTokens(ctx)
+				distrAppModule.AllocateEdenBTokens(ctx)
 
 				// query invariant
 				res, err := suite.app.EstakingKeeper.Invariant(ctx, &types.QueryInvariantRequest{})

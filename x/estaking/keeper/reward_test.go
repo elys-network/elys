@@ -118,9 +118,9 @@ func (suite *EstakingKeeperTestSuite) TestRewardDistribution() {
 				suite.Require().Equal(totalBonded.String(), "100019000000")
 
 				// Exclude EDENB
-				totalBonded, err = suite.app.EstakingKeeper.TotalBondedElysEdenTokens(suite.ctx)
+				totalBondedE, err := suite.app.EstakingKeeper.TotalBondedElysEdenTokens(suite.ctx)
 				suite.Require().NoError(err)
-				suite.Require().Equal(totalBonded.String(), "100005000000")
+				suite.Require().Equal(totalBondedE.String(), "100005000000")
 
 				delegatedAmount = suite.app.EstakingKeeper.CalcDelegationAmount(suite.ctx, suite.genAccount)
 				suite.Require().Equal(delegatedAmount, sdk.DefaultPowerReduction.Add(math.NewInt(100000000000)))
@@ -143,7 +143,7 @@ func (suite *EstakingKeeperTestSuite) TestRewardDistribution() {
 				})
 				suite.Require().NoError(err)
 
-				for i := 1; i <= 5; i++ {
+				for i := 1; i <= 50; i++ {
 					_, err := suite.app.BeginBlocker(suite.ctx)
 					suite.Require().NoError(err)
 

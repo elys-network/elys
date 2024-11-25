@@ -83,7 +83,8 @@ func (am AppModule) BeginBlock(goCtx context.Context) error {
 	}
 
 	if ctx.BlockHeight() > 1 {
-		am.AllocateTokens(ctx)
+		am.AllocateEdenUsdcTokens(ctx)
+		am.AllocateEdenBTokens(ctx)
 	}
 
 	consAddr := sdk.ConsAddress(ctx.BlockHeader().ProposerAddress)
@@ -103,7 +104,8 @@ func FilterDenoms(coins sdk.Coins, denoms ...string) sdk.Coins {
 }
 
 // AllocateTokens handles distribution of the collected fees
-func (am AppModule) AllocateTokens(ctx sdk.Context) {
+// Handles Eden and Usdc rewards
+func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 	// fetch and clear the collected fees for distribution, since this is
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the current representatives)
@@ -111,7 +113,7 @@ func (am AppModule) AllocateTokens(ctx sdk.Context) {
 	feesCollectedInt := am.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
 
 	usdcDenom, _ := am.assetprofileKeeper.GetUsdcDenom(ctx)
-	filteredCoins := FilterDenoms(feesCollectedInt, usdcDenom, ptypes.Eden, ptypes.EdenB)
+	filteredCoins := FilterDenoms(feesCollectedInt, usdcDenom, ptypes.Eden)
 	feesCollected := sdk.NewDecCoinsFromCoins(filteredCoins...)
 
 	// transfer collected fees to the distribution module account
@@ -153,6 +155,91 @@ func (am AppModule) AllocateTokens(ctx sdk.Context) {
 	sumOfValTokensDec := math.LegacyNewDecFromInt(sumOfValTokens)
 	// allocate tokens proportionally to representatives voting power
 	err = am.estakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
+		// we get this validator's percentage of the total power by dividing their tokens by the total bonded tokens
+		powerFraction := math.LegacyNewDecFromInt(validator.GetTokens()).QuoTruncate(sumOfValTokensDec)
+		// we truncate here again, which means that the reward will be slightly lower than it should be
+		reward := feesCollected.MulDecTruncate(representativesFraction).MulDecTruncate(powerFraction)
+		err = am.keeper.AllocateTokensToValidator(ctx, validator, reward)
+		if err != nil {
+			panic(err)
+		}
+		remaining = remaining.Sub(reward)
+		return false
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	// temporary workaround to keep CanWithdrawInvariant happy
+	feePool, err := am.keeper.FeePool.Get(ctx)
+	if err != nil {
+		panic(err)
+	}
+	feePool.CommunityPool = feePool.CommunityPool.Add(remaining...)
+	err = am.keeper.FeePool.Set(ctx, feePool)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// AllocateTokens handles distribution of the collected fees
+// Handles EdenB rewards
+func (am AppModule) AllocateEdenBTokens(ctx sdk.Context) {
+	// fetch and clear the collected fees for distribution, since this is
+	// called in BeginBlock, collected fees will be from the previous block
+	// (and distributed to the current representatives)
+	feeCollector := am.accountKeeper.GetModuleAccount(ctx, am.feeCollectorName)
+	feesCollectedInt := am.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
+
+	filteredCoins := FilterDenoms(feesCollectedInt, ptypes.EdenB)
+	feesCollected := sdk.NewDecCoinsFromCoins(filteredCoins...)
+
+	// transfer collected fees to the distribution module account
+	if filteredCoins.IsAllPositive() {
+		err := am.bankKeeper.SendCoinsFromModuleToModule(ctx, am.feeCollectorName, distrtypes.ModuleName, filteredCoins)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	// calculate the fraction allocated to representatives by subtracting the community tax.
+	// e.g. if community tax is 0.02, representatives fraction will be 0.98 (2% goes to the community pool and the rest to the representatives)
+	remaining := feesCollected
+	communityTax, err := am.keeper.GetCommunityTax(ctx)
+	if err != nil {
+		panic(err)
+	}
+	representativesFraction := math.LegacyOneDec().Sub(communityTax)
+
+	edenBValidator := am.estakingKeeper.GetEdenBValidator(ctx).GetOperator()
+
+	// Note: to prevent negative coin amount issue when invariant's broken,
+	// calculation of total bonded tokens manually through iteration
+	sumOfValTokens := math.ZeroInt()
+	err = am.estakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
+		if validator.GetOperator() != edenBValidator {
+			sumOfValTokens = sumOfValTokens.Add(validator.GetTokens())
+		}
+		return false
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	totalBondedElysEdenTokens, err := am.estakingKeeper.TotalBondedElysEdenTokens(ctx)
+	if err != nil {
+		panic(err)
+	}
+	if !totalBondedElysEdenTokens.Equal(sumOfValTokens) {
+		ctx.Logger().Error("invariant broken", "sumOfValTokens", sumOfValTokens.String(), "totalBondedElysEdenTokens", totalBondedElysEdenTokens.String())
+	}
+
+	sumOfValTokensDec := math.LegacyNewDecFromInt(sumOfValTokens)
+	// allocate tokens proportionally to representatives voting power
+	err = am.estakingKeeper.IterateBondedValidatorsByPower(ctx, func(_ int64, validator stakingtypes.ValidatorI) bool {
+		if validator.GetOperator() == edenBValidator {
+			return false
+		}
 		// we get this validator's percentage of the total power by dividing their tokens by the total bonded tokens
 		powerFraction := math.LegacyNewDecFromInt(validator.GetTokens()).QuoTruncate(sumOfValTokensDec)
 		// we truncate here again, which means that the reward will be slightly lower than it should be
