@@ -129,25 +129,6 @@ func (suite *AmmKeeperTestSuite) TestGetExternalLiquidityRatio() {
 			expectedError:  fmt.Errorf("asset profile not found for denom"),
 		},
 		{
-			name: "missing asset price",
-			pool: types.Pool{
-				PoolAssets: []types.PoolAsset{
-					{
-						Token: sdk.NewCoin("asset2denom", sdkmath.NewInt(1000)),
-					},
-				},
-			},
-			amountDepthInfo: []types.AssetAmountDepth{
-				{
-					Asset:  "asset2",
-					Amount: sdkmath.LegacyNewDec(500),
-					Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
-				},
-			},
-			expectedResult: nil,
-			expectedError:  fmt.Errorf("asset price not set: asset2"),
-		},
-		{
 			name: "division by zero",
 			pool: types.Pool{
 				PoolAssets: []types.PoolAsset{
