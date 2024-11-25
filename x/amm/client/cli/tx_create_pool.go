@@ -15,15 +15,14 @@ import (
 const (
 	FlagSwapFee   = "swap-fee"
 	FlagUseOracle = "use-oracle"
-	FlagFeeDenom  = "fee-denom"
 )
 
 func CmdCreatePool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "create-pool [weights] [initial-deposit]",
+		Use:     "create-pool [weights] [initial-deposit] [fee-denom]",
 		Short:   "create a new pool and provide the liquidity to it",
-		Example: `elysd tx amm create-pool 100uatom,100uusdc 100000000000uatom,100000000000uusdc --swap-fee=0.00 --exit-fee=0.00 --use-oracle=false  --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
-		Args:    cobra.ExactArgs(2),
+		Example: `elysd tx amm create-pool 100uatom,100uusdc 100000000000uatom,100000000000uusdc --swap-fee=0.00 --use-oracle=false  --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argWeights, err := sdk.ParseCoinsNormalized(args[0])
 			if err != nil {
@@ -68,10 +67,7 @@ func CmdCreatePool() *cobra.Command {
 				return err
 			}
 
-			feeDenom, err := cmd.Flags().GetString(FlagFeeDenom)
-			if err != nil {
-				return err
-			}
+			feeDenom := args[2]
 
 			poolParams := types.PoolParams{
 				SwapFee:   sdkmath.LegacyMustNewDecFromStr(swapFeeStr),
@@ -95,7 +91,6 @@ func CmdCreatePool() *cobra.Command {
 
 	cmd.Flags().String(FlagSwapFee, "0.00", "swap fee")
 	cmd.Flags().Bool(FlagUseOracle, false, "flag to be an oracle pool or non-oracle pool")
-	cmd.Flags().String(FlagFeeDenom, "", "fee denom")
 
 	return cmd
 }
