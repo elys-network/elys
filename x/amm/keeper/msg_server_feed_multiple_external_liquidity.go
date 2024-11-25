@@ -2,8 +2,8 @@ package keeper
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
-	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -22,28 +22,24 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 				return nil, assetprofiletypes.ErrAssetProfileNotFound
 			}
 			if entry.DisplayName == el.Asset {
-				price, found := k.oracleKeeper.GetAssetPrice(ctx, el.Asset)
-				if !found {
-					return nil, fmt.Errorf("asset price not set: %s", el.Asset)
-				} else {
-					O_Tvl := price.Price.Mul(el.Amount)
-					P_Tvl := asset.Token.Amount.ToLegacyDec().Mul(price.Price)
 
-					// Ensure tvl is not zero to avoid division by zero
-					if P_Tvl.IsZero() {
-						return nil, types.ErrAmountTooLow
-					}
+				O_Tvl := el.Amount
+				P_Tvl := asset.Token.Amount.ToLegacyDec()
 
-					liquidityRatio := LiquidityRatioFromPriceDepth(el.Depth)
-					// Ensure tvl is not zero to avoid division by zero
-					if liquidityRatio.IsZero() {
-						return nil, types.ErrAmountTooLow
-					}
-					asset.ExternalLiquidityRatio = (O_Tvl.Quo(P_Tvl)).Quo(liquidityRatio)
+				// Ensure tvl is not zero to avoid division by zero
+				if P_Tvl.IsZero() {
+					return nil, types.ErrAmountTooLow
+				}
 
-					if asset.ExternalLiquidityRatio.LT(sdkmath.LegacyOneDec()) {
-						asset.ExternalLiquidityRatio = sdkmath.LegacyOneDec()
-					}
+				liquidityRatio := LiquidityRatioFromPriceDepth(el.Depth)
+				// Ensure tvl is not zero to avoid division by zero
+				if liquidityRatio.IsZero() {
+					return nil, types.ErrAmountTooLow
+				}
+				asset.ExternalLiquidityRatio = (O_Tvl.Quo(P_Tvl)).Quo(liquidityRatio)
+
+				if asset.ExternalLiquidityRatio.LT(sdkmath.LegacyOneDec()) {
+					asset.ExternalLiquidityRatio = sdkmath.LegacyOneDec()
 				}
 			}
 		}

@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"math"
 
+	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -187,6 +188,9 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) err
 	if err != nil {
 		return err
 	}
+	if marketPrice.IsZero() {
+		return errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	}
 
 	if marketPrice.GT(order.OrderPrice.Rate) {
 		// skip the order
@@ -225,6 +229,9 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) er
 	if err != nil {
 		return err
 	}
+	if marketPrice.IsZero() {
+		return errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	}
 
 	if marketPrice.LT(order.OrderPrice.Rate) {
 		// skip the order
@@ -262,6 +269,9 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) err
 	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
 	if err != nil {
 		return err
+	}
+	if marketPrice.IsZero() {
+		return errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
 	}
 
 	if marketPrice.GT(order.OrderPrice.Rate) {
