@@ -127,8 +127,51 @@ func (suite *EstakingKeeperTestSuite) TestRewardDistribution() {
 
 				// Left over rewards in user address
 				commitment := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, suite.genAccount)
+				prevEdenBalance := commitment.Claimed.AmountOf(ptypes.Eden)
+				prevEdenBBalance := commitment.Claimed.AmountOf(ptypes.EdenB)
+
 				suite.Require().Equal(commitment.Claimed.AmountOf(ptypes.Eden).String(), "423408")
 				suite.Require().Equal(commitment.Claimed.AmountOf(ptypes.EdenB).String(), "746243")
+
+				new_users := suite.AddAccounts(1, nil)
+				// Stake same amount of tokens in elys from another user
+				_, err = msgServerCommitment.Stake(suite.ctx, &commitmenttypes.MsgStake{
+					Creator:          new_users[0].String(),
+					Amount:           totalBonded,
+					Asset:            "uelys",
+					ValidatorAddress: valAddr,
+				})
+				suite.Require().NoError(err)
+
+				for i := 1; i <= 5; i++ {
+					_, err := suite.app.BeginBlocker(suite.ctx)
+					suite.Require().NoError(err)
+
+					suite.app.EstakingKeeper.EndBlocker(suite.ctx)
+					suite.Require().NoError(err)
+
+					suite.ctx = suite.ctx.WithBlockHeight(suite.ctx.BlockHeight() + 1)
+				}
+
+				_, err = suite.app.EstakingKeeper.WithdrawAllRewards(suite.ctx, &types.MsgWithdrawAllRewards{
+					DelegatorAddress: suite.genAccount.String(),
+				})
+				suite.Require().NoError(err)
+
+				_, err = suite.app.EstakingKeeper.WithdrawAllRewards(suite.ctx, &types.MsgWithdrawAllRewards{
+					DelegatorAddress: new_users[0].String(),
+				})
+				suite.Require().NoError(err)
+
+				commitment = suite.app.CommitmentKeeper.GetCommitments(suite.ctx, suite.genAccount)
+
+				// Should not be equal
+				commitmentNew := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, new_users[0])
+				suite.Require().Equal(commitment.Claimed.AmountOf(ptypes.Eden).Sub(prevEdenBalance),
+					commitmentNew.Claimed.AmountOf(ptypes.Eden))
+				suite.Require().Equal(commitment.Claimed.AmountOf(ptypes.EdenB).Sub(prevEdenBBalance),
+					commitmentNew.Claimed.AmountOf(ptypes.EdenB))
+				// Eden amount should be based on TotalBondedTokens and EdenB should be based on TotalBondedElysEdenTokens
 
 			},
 		},
