@@ -144,6 +144,20 @@ func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpd
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
+	perpetualParams := k.perpetual.GetParams(ctx)
+
+	ratio := order.TakeProfitPrice.Quo(msg.TriggerPrice.Rate)
+	if order.Position == types.PerpetualPosition_LONG {
+		if ratio.LT(perpetualParams.MinimumLongTakeProfitPriceRatio) || ratio.GT(perpetualParams.MaximumLongTakeProfitPriceRatio) {
+			return nil, fmt.Errorf("invalid trigger price, take profit price should be between %s and %s times of current market price for long (current ratio: %s)", perpetualParams.MinimumLongTakeProfitPriceRatio.String(), perpetualParams.MaximumLongTakeProfitPriceRatio.String(), ratio.String())
+		}
+	}
+	if order.Position == types.PerpetualPosition_SHORT {
+		if ratio.GT(perpetualParams.MaximumShortTakeProfitPriceRatio) {
+			return nil, fmt.Errorf("invalid trigger price, take profit price should be less than %s times of current market price for short (current ratio: %s)", perpetualParams.MaximumShortTakeProfitPriceRatio.String(), ratio.String())
+		}
+	}
+
 	// update the order
 	order.TriggerPrice = msg.TriggerPrice
 	k.SetPendingPerpetualOrder(ctx, order)
