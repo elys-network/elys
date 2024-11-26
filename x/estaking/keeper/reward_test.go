@@ -170,9 +170,11 @@ func (suite *EstakingKeeperTestSuite) TestRewardDistribution() {
 				commitmentNew := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, new_users[0])
 				suite.Require().Equal(commitment.Claimed.AmountOf(ptypes.Eden).Sub(prevEdenBalance),
 					commitmentNew.Claimed.AmountOf(ptypes.Eden).Add(math.NewInt(3)))
+
 				// This number will be different as new_user doesn't have EdenB staked and has higher shares if we exclude edenb
-				suite.Require().Less(commitment.Claimed.AmountOf(ptypes.EdenB).Sub(prevEdenBBalance).String(),
-					commitmentNew.Claimed.AmountOf(ptypes.EdenB).String())
+				userEdenB := commitment.Claimed.AmountOf(ptypes.EdenB).Sub(prevEdenBBalance)
+				newUserEdenB := commitmentNew.Claimed.AmountOf(ptypes.EdenB)
+				suite.Require().Greater(newUserEdenB.Sub(userEdenB).Uint64(), math.NewInt(200).Uint64())
 
 			},
 		},
