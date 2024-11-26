@@ -68,10 +68,19 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	if err != nil {
 		return nil, err
 	}
-	if req.Position == types.Position_LONG && req.TakeProfitPrice.LTE(tradingAssetPrice) {
+
+	useLimitPrice := !req.LimitPrice.IsNil() && !req.LimitPrice.IsZero()
+
+	assetPriceAtOpen := tradingAssetPrice
+
+	if useLimitPrice {
+		assetPriceAtOpen = req.LimitPrice
+	}
+
+	if req.Position == types.Position_LONG && req.TakeProfitPrice.LTE(assetPriceAtOpen) {
 		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be less than equal to trading price for long")
 	}
-	if req.Position == types.Position_SHORT && req.TakeProfitPrice.GTE(tradingAssetPrice) {
+	if req.Position == types.Position_SHORT && req.TakeProfitPrice.GTE(assetPriceAtOpen) {
 		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be greater than equal to trading price for short")
 	}
 
@@ -80,7 +89,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	if !found {
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", req.Collateral.Denom)
 	}
-	useLimitPrice := !req.LimitPrice.IsNil() && !req.LimitPrice.IsZero()
+
 	custodyAsset := req.TradingAsset
 	liabilitiesAsset := baseCurrency
 	if req.Position == types.Position_SHORT {
