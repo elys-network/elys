@@ -84,6 +84,13 @@ func (suite *EstakingKeeperTestSuite) SetAssetProfile() {
 		CommitEnabled:   true,
 		WithdrawEnabled: true,
 	})
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, aptypes.Entry{
+		BaseDenom:       ptypes.EdenB,
+		Denom:           ptypes.EdenB,
+		Decimals:        6,
+		CommitEnabled:   true,
+		WithdrawEnabled: true,
+	})
 }
 
 // Prepare unclaimed tokens

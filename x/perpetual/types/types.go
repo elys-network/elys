@@ -1,10 +1,10 @@
 package types
 
 import (
-	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -42,7 +42,7 @@ func NewMTP(ctx sdk.Context, signer, collateralAsset, tradingAsset, liabilitiesA
 		FundingFeePaidCustody:         sdkmath.ZeroInt(),
 		FundingFeeReceivedCustody:     sdkmath.ZeroInt(),
 		OpenPrice:                     sdkmath.LegacyZeroDec(),
-		StopLossPrice:                 math.LegacyZeroDec(),
+		StopLossPrice:                 sdkmath.LegacyZeroDec(),
 		LastInterestCalcTime:          uint64(ctx.BlockTime().Unix()),
 		LastInterestCalcBlock:         uint64(ctx.BlockHeight()),
 		LastFundingCalcTime:           uint64(ctx.BlockTime().Unix()),
@@ -71,7 +71,7 @@ func (mtp MTP) Validate() error {
 }
 
 func (mtp *MTP) GetAndSetOpenPrice() {
-	openPrice := math.LegacyZeroDec()
+	openPrice := sdkmath.LegacyZeroDec()
 	if mtp.Position == Position_LONG {
 		if mtp.CollateralAsset == mtp.TradingAsset {
 			// open price = liabilities / (custody - collateral)
@@ -99,11 +99,11 @@ func (mtp MTP) GetAccountAddress() sdk.AccAddress {
 	return sdk.MustAccAddressFromBech32(mtp.Address)
 }
 
-func (mtp MTP) GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice math.LegacyDec) (math.Int, error) {
-	borrowInterestPaymentInCustody := math.ZeroInt()
+func (mtp MTP) GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice sdkmath.LegacyDec) (sdkmath.Int, error) {
+	borrowInterestPaymentInCustody := sdkmath.ZeroInt()
 	if mtp.Position == Position_LONG {
 		if tradingAssetPrice.IsZero() {
-			return math.ZeroInt(), fmt.Errorf("trading asset price is zero")
+			return sdkmath.ZeroInt(), fmt.Errorf("trading asset price is zero")
 		}
 		// liabilities are in usdc, custody is in trading asset
 		borrowInterestPaymentInCustody = mtp.BorrowInterestUnpaidLiability.ToLegacyDec().Quo(tradingAssetPrice).TruncateInt()

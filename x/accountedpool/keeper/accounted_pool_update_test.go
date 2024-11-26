@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
@@ -50,9 +49,8 @@ func TestAccountedPoolUpdate(t *testing.T) {
 		NonAmmPoolTokens: []sdk.Coin{},
 	}
 
-	for _, asset := range ammPool.PoolAssets {
-		accountedPool.PoolAssets = append(accountedPool.PoolAssets, asset)
-	}
+	accountedPool.PoolAssets = append(accountedPool.PoolAssets, ammPool.PoolAssets...)
+
 	// Set accounted pool
 	apk.SetAccountedPool(ctx, accountedPool)
 
@@ -62,33 +60,33 @@ func TestAccountedPoolUpdate(t *testing.T) {
 		BorrowInterestRate: sdkmath.LegacyNewDec(1),
 		PoolAssetsLong: []perpetualtypes.PoolAsset{
 			{
-				Liabilities:           math.NewInt(400),
-				Custody:               math.NewInt(50),
-				TakeProfitCustody:     math.NewInt(10),
-				TakeProfitLiabilities: math.NewInt(20),
+				Liabilities:           sdkmath.NewInt(400),
+				Custody:               sdkmath.NewInt(50),
+				TakeProfitCustody:     sdkmath.NewInt(10),
+				TakeProfitLiabilities: sdkmath.NewInt(20),
 				AssetDenom:            ptypes.BaseCurrency,
 			},
 			{
-				Liabilities:           math.NewInt(0),
-				Custody:               math.NewInt(50),
-				TakeProfitCustody:     math.ZeroInt(),
-				TakeProfitLiabilities: math.ZeroInt(),
+				Liabilities:           sdkmath.NewInt(0),
+				Custody:               sdkmath.NewInt(50),
+				TakeProfitCustody:     sdkmath.ZeroInt(),
+				TakeProfitLiabilities: sdkmath.ZeroInt(),
 				AssetDenom:            ptypes.ATOM,
 			},
 		},
 		PoolAssetsShort: []perpetualtypes.PoolAsset{
 			{
-				Liabilities:           math.NewInt(400),
-				Custody:               math.NewInt(70),
-				TakeProfitCustody:     math.ZeroInt(),
-				TakeProfitLiabilities: math.ZeroInt(),
+				Liabilities:           sdkmath.NewInt(400),
+				Custody:               sdkmath.NewInt(70),
+				TakeProfitCustody:     sdkmath.ZeroInt(),
+				TakeProfitLiabilities: sdkmath.ZeroInt(),
 				AssetDenom:            ptypes.BaseCurrency,
 			},
 			{
-				Liabilities:           math.NewInt(0),
-				Custody:               math.NewInt(50),
-				TakeProfitCustody:     math.ZeroInt(),
-				TakeProfitLiabilities: math.ZeroInt(),
+				Liabilities:           sdkmath.NewInt(0),
+				Custody:               sdkmath.NewInt(50),
+				TakeProfitCustody:     sdkmath.ZeroInt(),
+				TakeProfitLiabilities: sdkmath.ZeroInt(),
 				AssetDenom:            ptypes.ATOM,
 			},
 		},

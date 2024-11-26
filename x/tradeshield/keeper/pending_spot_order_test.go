@@ -1,251 +1,260 @@
 package keeper_test
 
 import (
-	"testing"
-
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/testutil/nullify"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/tradeshield/keeper"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
-func createNPendingSpotOrder(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.SpotOrder {
+func (suite *TradeshieldKeeperTestSuite) createNPendingSpotOrder(n int) []types.SpotOrder {
 	items := make([]types.SpotOrder, n)
 	for i := range items {
-		items[i].OrderId = keeper.AppendPendingSpotOrder(ctx, items[i])
+		items[i].OrderId = suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, items[i])
 	}
 	return items
 }
 
-func TestPendingSpotOrderGet(t *testing.T) {
-	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
-	items := createNPendingSpotOrder(keeper, ctx, 10)
+func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderGet() {
+	items := suite.createNPendingSpotOrder(10)
 	for _, item := range items {
-		got, found := keeper.GetPendingSpotOrder(ctx, item.OrderId)
-		item.OrderPrice.Rate = sdkmath.LegacyZeroDec()
-		require.True(t, found)
-		require.Equal(t,
+		got, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, item.OrderId)
+		item.OrderPrice.Rate = math.LegacyZeroDec()
+		suite.Require().True(found)
+		suite.Require().Equal(
 			nullify.Fill(&item),
 			nullify.Fill(&got),
 		)
 	}
 }
 
-func TestPendingSpotOrderRemove(t *testing.T) {
-	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
-	items := createNPendingSpotOrder(keeper, ctx, 10)
+func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderRemove() {
+	items := suite.createNPendingSpotOrder(10)
 	for _, item := range items {
-		keeper.RemovePendingSpotOrder(ctx, item.OrderId)
-		_, found := keeper.GetPendingSpotOrder(ctx, item.OrderId)
-		require.False(t, found)
+		suite.app.TradeshieldKeeper.RemovePendingSpotOrder(suite.ctx, item.OrderId)
+		_, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, item.OrderId)
+		suite.Require().False(found)
 	}
 }
 
-func TestPendingSpotOrderGetAll(t *testing.T) {
-	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
-	_ = createNPendingSpotOrder(keeper, ctx, 10)
+func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderGetAll() {
+	_ = suite.createNPendingSpotOrder(10)
 
-	for _, item := range keeper.GetAllPendingSpotOrder(ctx) {
-		got, found := keeper.GetPendingSpotOrder(ctx, item.OrderId)
-		item.OrderPrice.Rate = sdkmath.LegacyZeroDec()
-		require.True(t, found)
-		require.Equal(t,
+	for _, item := range suite.app.TradeshieldKeeper.GetAllPendingSpotOrder(suite.ctx) {
+		got, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, item.OrderId)
+		item.OrderPrice.Rate = math.LegacyZeroDec()
+		suite.Require().True(found)
+		suite.Require().Equal(
 			nullify.Fill(&item),
 			nullify.Fill(&got),
 		)
 	}
 }
 
-func TestPendingSpotOrderCount(t *testing.T) {
-	keeper, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
-	items := createNPendingSpotOrder(keeper, ctx, 10)
+func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderCount() {
+	items := suite.createNPendingSpotOrder(10)
 	count := uint64(len(items))
-	require.Equal(t, count, keeper.GetPendingSpotOrderCount(ctx)-1)
+	suite.Require().Equal(count, suite.app.TradeshieldKeeper.GetPendingSpotOrderCount(suite.ctx)-1)
 }
 
-// TestExecuteStopLossOrder
-func TestExecuteStopLossOrder(t *testing.T) {
-	keeper, ctx, bankKeeper, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
+func (suite *TradeshieldKeeperTestSuite) TestExecuteStopLossOrder() {
+	address := suite.AddAccounts(2, nil)
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.ATOM,
+		Denom:       ptypes.ATOM,
+		Decimals:    6,
+		DisplayName: "ATOM",
+	})
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.BaseCurrency,
+		Denom:       ptypes.BaseCurrency,
+		Decimals:    6,
+		DisplayName: "USDC",
+	})
+	suite.SetupCoinPrices()
 
-	address := sdk.AccAddress([]byte("address"))
+	_ = suite.CreateNewAmmPool(address[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
 
-	tierKeeper.On("CalculateUSDValue", ctx, "base", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
-	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
-	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
-		Sender:    address.String(),
-		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
-		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
-		DenomIn:   "base",
-		DenomOut:  "quote",
-		Recipient: address.String(),
-	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
-
-	// Set to main storage
-	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
-		OwnerAddress: address.String(),
-		OrderId:      0,
+	pendingSpotOrder := types.SpotOrder{
+		OwnerAddress: address[1].String(),
+		OrderId:      1, // pending order count will be zero, so ultimately this will be 1
 		OrderType:    types.SpotOrderType_STOPLOSS,
 		OrderPrice: types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdkmath.LegacyNewDec(1),
+			BaseDenom:  "uusdc",
+			QuoteDenom: "uatom",
+			Rate:       math.LegacyNewDec(1),
 		},
-		OrderTargetDenom: "quote",
-		OrderAmount:      sdk.NewCoin("base", sdkmath.NewInt(1)),
-	})
+		OrderTargetDenom: "uatom",
+		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(1000000000)),
+	}
 
-	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
-
-	bankKeeper.On("SendCoins", ctx, order.GetOrderAddress(), address, sdk.NewCoins(order.OrderAmount)).Return(nil).Once()
-
-	err := keeper.ExecuteStopLossOrder(ctx, order)
-	require.NoError(t, err)
-
-	// Should remove from pending order list
-	res := keeper.GetAllPendingSpotOrder(ctx)
-	assert.Equal(t, res, []types.SpotOrder(nil))
-
-	// Should remove from main storage
-	_, found := keeper.GetPendingSpotOrder(ctx, 1)
-	assert.False(t, found)
-}
-
-// TestExecuteLimitSellOrder
-func TestExecuteLimitSellOrder(t *testing.T) {
-	keeper, ctx, bankKeeper, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
-
-	address := sdk.AccAddress([]byte("address"))
-
-	tierKeeper.On("CalculateUSDValue", ctx, "base", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
-	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
-	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
-		Sender:    address.String(),
-		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
-		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
-		DenomIn:   "base",
-		DenomOut:  "quote",
-		Recipient: address.String(),
-	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
+	// Fund orderAddress
+	orderAddress := pendingSpotOrder.GetOrderAddress()
+	suite.AddAccounts(1, []sdk.AccAddress{orderAddress})
 
 	// Set to main storage
-	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
-		OwnerAddress: address.String(),
-		OrderId:      0,
+	suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, pendingSpotOrder)
+
+	order, _ := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
+
+	err := suite.app.TradeshieldKeeper.ExecuteStopLossOrder(suite.ctx, order)
+	suite.Require().NoError(err)
+
+	// Should remove from pending order list
+	res := suite.app.TradeshieldKeeper.GetAllPendingSpotOrder(suite.ctx)
+	suite.Assert().Equal(res, []types.SpotOrder(nil))
+
+	// Should remove from main storage
+	_, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
+	suite.Assert().False(found)
+}
+
+func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitSellOrder() {
+	address := suite.AddAccounts(1, nil)
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.ATOM,
+		Denom:       ptypes.ATOM,
+		Decimals:    6,
+		DisplayName: "ATOM",
+	})
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.BaseCurrency,
+		Denom:       ptypes.BaseCurrency,
+		Decimals:    6,
+		DisplayName: "USDC",
+	})
+	suite.SetupCoinPrices()
+
+	_ = suite.CreateNewAmmPool(address[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
+
+	pendingSpotOrder := types.SpotOrder{
+		OwnerAddress: address[0].String(),
+		OrderId:      1, // pending order count will be zero, so ultimately this will be 1
 		OrderType:    types.SpotOrderType_LIMITSELL,
 		OrderPrice: types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdkmath.LegacyNewDec(1),
+			BaseDenom:  "uusdc",
+			QuoteDenom: "uatom",
+			Rate:       math.LegacyNewDec(0),
 		},
-		OrderTargetDenom: "quote",
-		OrderAmount:      sdk.NewCoin("base", sdkmath.NewInt(1)),
-	})
+		OrderTargetDenom: "uatom",
+		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(1000000)),
+	}
 
-	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
-
-	bankKeeper.On("SendCoins", ctx, order.GetOrderAddress(), address, sdk.NewCoins(order.OrderAmount)).Return(nil).Once()
-
-	err := keeper.ExecuteLimitSellOrder(ctx, order)
-	require.NoError(t, err)
-
-	// Should remove from pending order list
-	res := keeper.GetAllPendingSpotOrder(ctx)
-	assert.Equal(t, res, []types.SpotOrder(nil))
-
-	// Should remove from main storage
-	_, found := keeper.GetPendingSpotOrder(ctx, 1)
-	assert.False(t, found)
-}
-
-// TestExecuteLimitBuyOrder
-func TestExecuteLimitBuyOrder(t *testing.T) {
-	keeper, ctx, bankKeeper, ammKeeper, tierKeeper, _ := keepertest.TradeshieldKeeper(t)
-
-	address := sdk.AccAddress([]byte("address"))
-
-	tierKeeper.On("CalculateUSDValue", ctx, "base", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
-	tierKeeper.On("CalculateUSDValue", ctx, "quote", sdkmath.NewInt(1)).Return(sdkmath.LegacyNewDec(1))
-	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
-		Sender:    address.String(),
-		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
-		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
-		DenomIn:   "base",
-		DenomOut:  "quote",
-		Recipient: address.String(),
-	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
+	// Fund orderAddress
+	orderAddress := pendingSpotOrder.GetOrderAddress()
+	suite.AddAccounts(1, []sdk.AccAddress{orderAddress})
 
 	// Set to main storage
-	keeper.AppendPendingSpotOrder(ctx, types.SpotOrder{
-		OwnerAddress: address.String(),
-		OrderId:      0,
-		OrderType:    types.SpotOrderType_LIMITBUY,
-		OrderPrice: types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdkmath.LegacyNewDec(1),
-		},
-		OrderTargetDenom: "quote",
-		OrderAmount:      sdk.NewCoin("base", sdkmath.NewInt(1)),
-	})
+	suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, pendingSpotOrder)
 
-	order, _ := keeper.GetPendingSpotOrder(ctx, 1)
+	order, _ := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
 
-	bankKeeper.On("SendCoins", ctx, order.GetOrderAddress(), address, sdk.NewCoins(order.OrderAmount)).Return(nil).Once()
-
-	err := keeper.ExecuteLimitBuyOrder(ctx, order)
-	require.NoError(t, err)
+	err := suite.app.TradeshieldKeeper.ExecuteLimitSellOrder(suite.ctx, order)
+	suite.Require().NoError(err)
 
 	// Should remove from pending order list
-	res := keeper.GetAllPendingSpotOrder(ctx)
-	assert.Equal(t, res, []types.SpotOrder(nil))
+	res := suite.app.TradeshieldKeeper.GetAllPendingSpotOrder(suite.ctx)
+	suite.Assert().Equal(res, []types.SpotOrder(nil))
 
 	// Should remove from main storage
-	_, found := keeper.GetPendingSpotOrder(ctx, 1)
-	assert.False(t, found)
+	_, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
+	suite.Assert().False(found)
 }
 
-// TestExecuteMarketBuyOrder
-func TestExecuteMarketBuyOrder(t *testing.T) {
-	keeper, ctx, _, ammKeeper, _, _ := keepertest.TradeshieldKeeper(t)
+func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitBuyOrder() {
+	address := suite.AddAccounts(2, nil)
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.ATOM,
+		Denom:       ptypes.ATOM,
+		Decimals:    6,
+		DisplayName: "ATOM",
+	})
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.BaseCurrency,
+		Denom:       ptypes.BaseCurrency,
+		Decimals:    6,
+		DisplayName: "USDC",
+	})
+	suite.SetupCoinPrices()
 
-	address := sdk.AccAddress([]byte("address"))
+	_ = suite.CreateNewAmmPool(address[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
 
-	ammKeeper.On("SwapByDenom", ctx, &ammtypes.MsgSwapByDenom{
-		Sender:    address.String(),
-		Amount:    sdk.NewCoin("base", sdkmath.NewInt(1)),
-		MinAmount: sdk.NewCoin("quote", sdkmath.ZeroInt()),
-		DenomIn:   "base",
-		DenomOut:  "quote",
-		Recipient: address.String(),
-	}).Return(&ammtypes.MsgSwapByDenomResponse{}, nil)
+	pendingSpotOrder := types.SpotOrder{
+		OwnerAddress: address[1].String(),
+		OrderId:      1, // pending order count will be zero, so ultimately this will be 1
+		OrderType:    types.SpotOrderType_LIMITBUY,
+		OrderPrice: types.OrderPrice{
+			BaseDenom:  "uusdc",
+			QuoteDenom: "uatom",
+			Rate:       math.LegacyNewDec(1),
+		},
+		OrderTargetDenom: "uatom",
+		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
+	}
+
+	// Fund orderAddress
+	orderAddress := pendingSpotOrder.GetOrderAddress()
+	suite.AddAccounts(1, []sdk.AccAddress{orderAddress})
+
+	// Set to main storage
+	suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, pendingSpotOrder)
+
+	order, _ := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
+
+	err := suite.app.TradeshieldKeeper.ExecuteLimitBuyOrder(suite.ctx, order)
+	suite.Require().NoError(err)
+
+	// Should remove from pending order list
+	res := suite.app.TradeshieldKeeper.GetAllPendingSpotOrder(suite.ctx)
+	suite.Assert().Equal(res, []types.SpotOrder(nil))
+
+	// Should remove from main storage
+	_, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
+	suite.Assert().False(found)
+}
+
+func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketBuyOrder() {
+	address := suite.AddAccounts(1, nil)
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.ATOM,
+		Denom:       ptypes.ATOM,
+		Decimals:    6,
+		DisplayName: "ATOM",
+	})
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.BaseCurrency,
+		Denom:       ptypes.BaseCurrency,
+		Decimals:    6,
+		DisplayName: "USDC",
+	})
+	suite.SetupCoinPrices()
+
+	_ = suite.CreateNewAmmPool(address[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
 
 	order := types.SpotOrder{
-		OwnerAddress: address.String(),
+		OwnerAddress: address[0].String(),
 		OrderId:      0,
 		OrderType:    types.SpotOrderType_MARKETBUY,
 		OrderPrice: types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       sdkmath.LegacyNewDec(1),
+			BaseDenom:  "uusdc",
+			QuoteDenom: "uatom",
+			Rate:       math.LegacyNewDec(1),
 		},
-		OrderTargetDenom: "quote",
-		OrderAmount:      sdk.NewCoin("base", sdkmath.NewInt(1)),
+		OrderTargetDenom: "uatom",
+		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(1000)),
 	}
 
-	err := keeper.ExecuteMarketBuyOrder(ctx, order)
-	require.NoError(t, err)
+	err := suite.app.TradeshieldKeeper.ExecuteMarketBuyOrder(suite.ctx, order)
+	suite.Require().NoError(err)
 
 	// Should remove from pending order list
-	res := keeper.GetAllPendingSpotOrder(ctx)
-	assert.Equal(t, res, []types.SpotOrder(nil))
+	res := suite.app.TradeshieldKeeper.GetAllPendingSpotOrder(suite.ctx)
+	suite.Assert().Equal(res, []types.SpotOrder(nil))
 
 	// Should remove from main storage
-	_, found := keeper.GetPendingSpotOrder(ctx, 1)
-	assert.False(t, found)
+	_, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
+	suite.Assert().False(found)
 }

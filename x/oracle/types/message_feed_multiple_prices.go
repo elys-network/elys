@@ -15,37 +15,13 @@ func (msg *MsgFeedMultiplePrices) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	if len(msg.Prices) == 0 {
+	if len(msg.FeedPrices) == 0 {
 		return fmt.Errorf("no prices provided")
 	}
 
-	for _, price := range msg.Prices {
-		if price.Price.IsNil() {
-			return errorsmod.Wrapf(ErrInvalidPrice, "price is nil")
-		}
-
-		if price.Price.IsNegative() {
-			return errorsmod.Wrapf(ErrInvalidPrice, "price is negative")
-		}
-
-		if err = sdk.ValidateDenom(price.Asset); err != nil {
-			return err
-		}
-
-		if len(price.Source) == 0 {
-			return errorsmod.Wrapf(ErrInvalidPrice, "source is empty")
-		}
-
-		if len(price.Provider) == 0 {
-			return errorsmod.Wrapf(ErrInvalidPrice, "provider is empty")
-		}
-
-		if price.BlockHeight == 0 {
-			return errorsmod.Wrapf(ErrInvalidPrice, "block height is zero")
-		}
-
-		if price.Timestamp == 0 {
-			return errorsmod.Wrapf(ErrInvalidPrice, "timestamp is zero")
+	for _, price := range msg.FeedPrices {
+		if err = price.Validate(); err != nil {
+			return errorsmod.Wrapf(ErrInvalidPrice, "invalid price (%s)", err)
 		}
 	}
 	return nil

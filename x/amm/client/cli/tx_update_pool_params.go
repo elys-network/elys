@@ -10,6 +10,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const FlagFeeDenom = "fee-denom"
+
 func CmdUpdatePoolParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "update-pool-params [pool-id] [flags]",

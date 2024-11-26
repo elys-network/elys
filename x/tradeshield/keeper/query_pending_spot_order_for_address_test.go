@@ -1,19 +1,14 @@
 package keeper_test
 
 import (
-	"testing"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
-	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func TestPendingSpotOrderForAddress(t *testing.T) {
-	k, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
+func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderForAddress() {
 
 	order := types.SpotOrder{
 		OrderId:      1,
@@ -78,18 +73,18 @@ func TestPendingSpotOrderForAddress(t *testing.T) {
 		},
 	}
 
-	_ = k.AppendPendingSpotOrder(ctx, order)
-	_ = k.AppendPendingSpotOrder(ctx, order2)
+	_ = suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, order)
+	_ = suite.app.TradeshieldKeeper.AppendPendingSpotOrder(suite.ctx, order2)
 
 	for _, tc := range tests {
-		t.Run(tc.desc, func(t *testing.T) {
+		suite.Run(tc.desc, func() {
 
-			response, err := k.PendingSpotOrderForAddress(ctx, tc.request)
+			response, err := suite.app.TradeshieldKeeper.PendingSpotOrderForAddress(suite.ctx, tc.request)
 			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+				suite.Require().ErrorIs(err, tc.err)
 			} else {
-				require.NoError(t, err)
-				require.Equal(t, tc.response, response)
+				suite.Require().NoError(err)
+				suite.Require().Equal(tc.response, response)
 			}
 		})
 	}

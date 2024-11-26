@@ -3,7 +3,6 @@ package types
 import (
 	"fmt"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -178,7 +177,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 	tokenOutDenom string,
 	swapFee sdkmath.LegacyDec,
 	accPoolKeeper AccountedPoolKeeper,
-	weightBreakingFeePerpetualFactor math.LegacyDec,
+	weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
 	params Params,
 ) (tokenOut sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, err error) {
 	balancerOutCoin, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, accPoolKeeper)

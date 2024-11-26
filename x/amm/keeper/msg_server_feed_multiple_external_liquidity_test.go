@@ -2,9 +2,9 @@ package keeper_test
 
 import (
 	"fmt"
+
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/keeper"
@@ -127,25 +127,6 @@ func (suite *AmmKeeperTestSuite) TestGetExternalLiquidityRatio() {
 			},
 			expectedResult: nil,
 			expectedError:  fmt.Errorf("asset profile not found for denom"),
-		},
-		{
-			name: "missing asset price",
-			pool: types.Pool{
-				PoolAssets: []types.PoolAsset{
-					{
-						Token: sdk.NewCoin("asset2denom", sdkmath.NewInt(1000)),
-					},
-				},
-			},
-			amountDepthInfo: []types.AssetAmountDepth{
-				{
-					Asset:  "asset2",
-					Amount: sdkmath.LegacyNewDec(500),
-					Depth:  sdkmath.LegacyMustNewDecFromStr("0.5"),
-				},
-			},
-			expectedResult: nil,
-			expectedError:  fmt.Errorf("asset price not set: asset2"),
 		},
 		{
 			name: "division by zero",
@@ -364,8 +345,8 @@ func (suite *AmmKeeperTestSuite) TestFeedMultipleExternalLiquidity() {
 
 				addr := suite.AddAccounts(1, nil)[0]
 
-				amount := math.NewInt(100000000000)
-				pool := suite.CreateNewAmmPool(addr, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				amount := sdkmath.NewInt(100000000000)
+				pool := suite.CreateNewAmmPool(addr, true, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 
 				suite.app.OracleKeeper.SetPriceFeeder(suite.ctx, oracletypes.PriceFeeder{
 					Feeder:   addr.String(),

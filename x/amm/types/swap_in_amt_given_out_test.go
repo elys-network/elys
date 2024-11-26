@@ -1,7 +1,6 @@
 package types_test
 
 import (
-	"cosmossdk.io/math"
 	"time"
 
 	sdkmath "cosmossdk.io/math"
@@ -185,10 +184,10 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			},
 			useOracle:              false,
 			externalLiquidityRatio: sdkmath.LegacyNewDec(10),
-			thresholdWeightDiff:    math.LegacyNewDecWithPrec(20, 2),
+			thresholdWeightDiff:    sdkmath.LegacyNewDecWithPrec(20, 2),
 			tokenOut:               sdk.NewInt64Coin("uusdt", 0),
 			inTokenDenom:           ptypes.BaseCurrency,
-			swapFee:                math.LegacyNewDecWithPrec(1, 2),
+			swapFee:                sdkmath.LegacyNewDecWithPrec(1, 2),
 			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
 			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 0),
 			expErr:                 true,
@@ -226,7 +225,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			params.WeightBreakingFeeMultiplier = sdkmath.LegacyNewDecWithPrec(2, 4)
 			params.WeightBreakingFeeExponent = sdkmath.LegacyNewDecWithPrec(25, 1) // 2.5
 			params.WeightRecoveryFeePortion = sdkmath.LegacyNewDecWithPrec(50, 2)  // 50%
-			tokenOut, _, _, weightBonus, err := pool.SwapInAmtGivenOut(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenOut}, tc.inTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, math.LegacyOneDec(), params)
+			tokenOut, _, _, weightBonus, err := pool.SwapInAmtGivenOut(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenOut}, tc.inTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, sdkmath.LegacyOneDec(), params)
 			if tc.expErr {
 				suite.Require().Error(err)
 				suite.Require().EqualError(err, "amount too low")

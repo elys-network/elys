@@ -123,13 +123,19 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 		return err
 	}
 
+	totalElysEdenStake, err := k.TotalBondedElysEdenTokens(ctx)
+	if err != nil {
+		return err
+	}
+
 	stakersMaxEdenAmount := params.MaxEdenRewardAprStakers.
-		MulInt(totalElysEdenEdenBStake).
+		MulInt(totalElysEdenStake).
 		QuoInt64(totalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 	stakersEdenAmount = math.MinInt(stakersEdenAmount, stakersMaxEdenAmount.TruncateInt())
 
+	// EdenB should be mint based on Elys + Eden staked (should exclude edenB staked)
 	stakersEdenBAmount := math.LegacyNewDecFromInt(totalElysEdenEdenBStake).
 		Mul(params.EdenBoostApr).
 		QuoInt64(totalBlocksPerYear).

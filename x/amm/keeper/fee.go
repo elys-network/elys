@@ -2,7 +2,6 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -54,7 +53,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-		tokenOutCoin, _, _, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdkmath.LegacyZeroDec(), k.accountedPoolKeeper, math.LegacyOneDec(), params)
+		tokenOutCoin, _, _, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdkmath.LegacyZeroDec(), k.accountedPoolKeeper, sdkmath.LegacyOneDec(), params)
 		if err != nil {
 			return err
 		}

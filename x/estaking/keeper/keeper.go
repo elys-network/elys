@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/core/store"
 	"fmt"
 	"time"
+
+	"cosmossdk.io/core/store"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
@@ -94,6 +95,17 @@ func (k Keeper) TotalBondedTokens(goCtx context.Context) (math.Int, error) {
 	edenValidator := k.GetEdenValidator(ctx)
 	edenBValidator := k.GetEdenBValidator(ctx)
 	bondedTokens = bondedTokens.Add(edenValidator.GetTokens()).Add(edenBValidator.GetTokens())
+	return bondedTokens, nil
+}
+
+func (k Keeper) TotalBondedElysEdenTokens(goCtx context.Context) (math.Int, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	bondedTokens, err := k.Keeper.TotalBondedTokens(ctx)
+	if err != nil {
+		return math.Int{}, err
+	}
+	edenValidator := k.GetEdenValidator(ctx)
+	bondedTokens = bondedTokens.Add(edenValidator.GetTokens())
 	return bondedTokens, nil
 }
 

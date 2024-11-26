@@ -27,9 +27,11 @@ func TestMsgFeedPrice_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: types.MsgFeedPrice{
 				Provider: sample.AccAddress(),
-				Price:    sdkmath.LegacyMustNewDecFromStr("100"),
-				Asset:    ptypes.ATOM,
-				Source:   "source",
+				FeedPrice: types.FeedPrice{
+					Price:  sdkmath.LegacyMustNewDecFromStr("100"),
+					Asset:  ptypes.ATOM,
+					Source: "source",
+				},
 			},
 		},
 	}

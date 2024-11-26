@@ -18,31 +18,29 @@ import (
 )
 
 var (
-	md_MsgFeedPrice          protoreflect.MessageDescriptor
-	fd_MsgFeedPrice_asset    protoreflect.FieldDescriptor
-	fd_MsgFeedPrice_price    protoreflect.FieldDescriptor
-	fd_MsgFeedPrice_source   protoreflect.FieldDescriptor
-	fd_MsgFeedPrice_provider protoreflect.FieldDescriptor
+	md_FeedPrice        protoreflect.MessageDescriptor
+	fd_FeedPrice_asset  protoreflect.FieldDescriptor
+	fd_FeedPrice_price  protoreflect.FieldDescriptor
+	fd_FeedPrice_source protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_oracle_tx_proto_init()
-	md_MsgFeedPrice = File_elys_oracle_tx_proto.Messages().ByName("MsgFeedPrice")
-	fd_MsgFeedPrice_asset = md_MsgFeedPrice.Fields().ByName("asset")
-	fd_MsgFeedPrice_price = md_MsgFeedPrice.Fields().ByName("price")
-	fd_MsgFeedPrice_source = md_MsgFeedPrice.Fields().ByName("source")
-	fd_MsgFeedPrice_provider = md_MsgFeedPrice.Fields().ByName("provider")
+	md_FeedPrice = File_elys_oracle_tx_proto.Messages().ByName("FeedPrice")
+	fd_FeedPrice_asset = md_FeedPrice.Fields().ByName("asset")
+	fd_FeedPrice_price = md_FeedPrice.Fields().ByName("price")
+	fd_FeedPrice_source = md_FeedPrice.Fields().ByName("source")
 }
 
-var _ protoreflect.Message = (*fastReflection_MsgFeedPrice)(nil)
+var _ protoreflect.Message = (*fastReflection_FeedPrice)(nil)
 
-type fastReflection_MsgFeedPrice MsgFeedPrice
+type fastReflection_FeedPrice FeedPrice
 
-func (x *MsgFeedPrice) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_MsgFeedPrice)(x)
+func (x *FeedPrice) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_FeedPrice)(x)
 }
 
-func (x *MsgFeedPrice) slowProtoReflect() protoreflect.Message {
+func (x *FeedPrice) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_oracle_tx_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -54,43 +52,43 @@ func (x *MsgFeedPrice) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgFeedPrice_messageType fastReflection_MsgFeedPrice_messageType
-var _ protoreflect.MessageType = fastReflection_MsgFeedPrice_messageType{}
+var _fastReflection_FeedPrice_messageType fastReflection_FeedPrice_messageType
+var _ protoreflect.MessageType = fastReflection_FeedPrice_messageType{}
 
-type fastReflection_MsgFeedPrice_messageType struct{}
+type fastReflection_FeedPrice_messageType struct{}
 
-func (x fastReflection_MsgFeedPrice_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_MsgFeedPrice)(nil)
+func (x fastReflection_FeedPrice_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_FeedPrice)(nil)
 }
-func (x fastReflection_MsgFeedPrice_messageType) New() protoreflect.Message {
-	return new(fastReflection_MsgFeedPrice)
+func (x fastReflection_FeedPrice_messageType) New() protoreflect.Message {
+	return new(fastReflection_FeedPrice)
 }
-func (x fastReflection_MsgFeedPrice_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgFeedPrice
+func (x fastReflection_FeedPrice_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_FeedPrice
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_MsgFeedPrice) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgFeedPrice
+func (x *fastReflection_FeedPrice) Descriptor() protoreflect.MessageDescriptor {
+	return md_FeedPrice
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_MsgFeedPrice) Type() protoreflect.MessageType {
-	return _fastReflection_MsgFeedPrice_messageType
+func (x *fastReflection_FeedPrice) Type() protoreflect.MessageType {
+	return _fastReflection_FeedPrice_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_MsgFeedPrice) New() protoreflect.Message {
-	return new(fastReflection_MsgFeedPrice)
+func (x *fastReflection_FeedPrice) New() protoreflect.Message {
+	return new(fastReflection_FeedPrice)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_MsgFeedPrice) Interface() protoreflect.ProtoMessage {
-	return (*MsgFeedPrice)(x)
+func (x *fastReflection_FeedPrice) Interface() protoreflect.ProtoMessage {
+	return (*FeedPrice)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -98,28 +96,22 @@ func (x *fastReflection_MsgFeedPrice) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_MsgFeedPrice) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_FeedPrice) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Asset != "" {
 		value := protoreflect.ValueOfString(x.Asset)
-		if !f(fd_MsgFeedPrice_asset, value) {
+		if !f(fd_FeedPrice_asset, value) {
 			return
 		}
 	}
 	if x.Price != "" {
 		value := protoreflect.ValueOfString(x.Price)
-		if !f(fd_MsgFeedPrice_price, value) {
+		if !f(fd_FeedPrice_price, value) {
 			return
 		}
 	}
 	if x.Source != "" {
 		value := protoreflect.ValueOfString(x.Source)
-		if !f(fd_MsgFeedPrice_source, value) {
-			return
-		}
-	}
-	if x.Provider != "" {
-		value := protoreflect.ValueOfString(x.Provider)
-		if !f(fd_MsgFeedPrice_provider, value) {
+		if !f(fd_FeedPrice_source, value) {
 			return
 		}
 	}
@@ -136,21 +128,19 @@ func (x *fastReflection_MsgFeedPrice) Range(f func(protoreflect.FieldDescriptor,
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_MsgFeedPrice) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_FeedPrice) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.oracle.MsgFeedPrice.asset":
+	case "elys.oracle.FeedPrice.asset":
 		return x.Asset != ""
-	case "elys.oracle.MsgFeedPrice.price":
+	case "elys.oracle.FeedPrice.price":
 		return x.Price != ""
-	case "elys.oracle.MsgFeedPrice.source":
+	case "elys.oracle.FeedPrice.source":
 		return x.Source != ""
-	case "elys.oracle.MsgFeedPrice.provider":
-		return x.Provider != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.FeedPrice"))
 		}
-		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.oracle.FeedPrice does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -160,21 +150,19 @@ func (x *fastReflection_MsgFeedPrice) Has(fd protoreflect.FieldDescriptor) bool 
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgFeedPrice) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_FeedPrice) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.oracle.MsgFeedPrice.asset":
+	case "elys.oracle.FeedPrice.asset":
 		x.Asset = ""
-	case "elys.oracle.MsgFeedPrice.price":
+	case "elys.oracle.FeedPrice.price":
 		x.Price = ""
-	case "elys.oracle.MsgFeedPrice.source":
+	case "elys.oracle.FeedPrice.source":
 		x.Source = ""
-	case "elys.oracle.MsgFeedPrice.provider":
-		x.Provider = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.FeedPrice"))
 		}
-		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.oracle.FeedPrice does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -184,25 +172,22 @@ func (x *fastReflection_MsgFeedPrice) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_MsgFeedPrice) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_FeedPrice) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.oracle.MsgFeedPrice.asset":
+	case "elys.oracle.FeedPrice.asset":
 		value := x.Asset
 		return protoreflect.ValueOfString(value)
-	case "elys.oracle.MsgFeedPrice.price":
+	case "elys.oracle.FeedPrice.price":
 		value := x.Price
 		return protoreflect.ValueOfString(value)
-	case "elys.oracle.MsgFeedPrice.source":
+	case "elys.oracle.FeedPrice.source":
 		value := x.Source
-		return protoreflect.ValueOfString(value)
-	case "elys.oracle.MsgFeedPrice.provider":
-		value := x.Provider
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.FeedPrice"))
 		}
-		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.oracle.FeedPrice does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -216,21 +201,19 @@ func (x *fastReflection_MsgFeedPrice) Get(descriptor protoreflect.FieldDescripto
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgFeedPrice) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_FeedPrice) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.oracle.MsgFeedPrice.asset":
+	case "elys.oracle.FeedPrice.asset":
 		x.Asset = value.Interface().(string)
-	case "elys.oracle.MsgFeedPrice.price":
+	case "elys.oracle.FeedPrice.price":
 		x.Price = value.Interface().(string)
-	case "elys.oracle.MsgFeedPrice.source":
+	case "elys.oracle.FeedPrice.source":
 		x.Source = value.Interface().(string)
-	case "elys.oracle.MsgFeedPrice.provider":
-		x.Provider = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.FeedPrice"))
 		}
-		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.oracle.FeedPrice does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -244,52 +227,48 @@ func (x *fastReflection_MsgFeedPrice) Set(fd protoreflect.FieldDescriptor, value
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgFeedPrice) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_FeedPrice) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.oracle.MsgFeedPrice.asset":
-		panic(fmt.Errorf("field asset of message elys.oracle.MsgFeedPrice is not mutable"))
-	case "elys.oracle.MsgFeedPrice.price":
-		panic(fmt.Errorf("field price of message elys.oracle.MsgFeedPrice is not mutable"))
-	case "elys.oracle.MsgFeedPrice.source":
-		panic(fmt.Errorf("field source of message elys.oracle.MsgFeedPrice is not mutable"))
-	case "elys.oracle.MsgFeedPrice.provider":
-		panic(fmt.Errorf("field provider of message elys.oracle.MsgFeedPrice is not mutable"))
+	case "elys.oracle.FeedPrice.asset":
+		panic(fmt.Errorf("field asset of message elys.oracle.FeedPrice is not mutable"))
+	case "elys.oracle.FeedPrice.price":
+		panic(fmt.Errorf("field price of message elys.oracle.FeedPrice is not mutable"))
+	case "elys.oracle.FeedPrice.source":
+		panic(fmt.Errorf("field source of message elys.oracle.FeedPrice is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.FeedPrice"))
 		}
-		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.oracle.FeedPrice does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_MsgFeedPrice) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_FeedPrice) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.oracle.MsgFeedPrice.asset":
+	case "elys.oracle.FeedPrice.asset":
 		return protoreflect.ValueOfString("")
-	case "elys.oracle.MsgFeedPrice.price":
+	case "elys.oracle.FeedPrice.price":
 		return protoreflect.ValueOfString("")
-	case "elys.oracle.MsgFeedPrice.source":
-		return protoreflect.ValueOfString("")
-	case "elys.oracle.MsgFeedPrice.provider":
+	case "elys.oracle.FeedPrice.source":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.FeedPrice"))
 		}
-		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.oracle.FeedPrice does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_MsgFeedPrice) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_FeedPrice) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.oracle.MsgFeedPrice", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.oracle.FeedPrice", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -297,7 +276,7 @@ func (x *fastReflection_MsgFeedPrice) WhichOneof(d protoreflect.OneofDescriptor)
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_MsgFeedPrice) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_FeedPrice) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -308,7 +287,7 @@ func (x *fastReflection_MsgFeedPrice) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgFeedPrice) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_FeedPrice) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -320,7 +299,7 @@ func (x *fastReflection_MsgFeedPrice) SetUnknown(fields protoreflect.RawFields) 
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_MsgFeedPrice) IsValid() bool {
+func (x *fastReflection_FeedPrice) IsValid() bool {
 	return x != nil
 }
 
@@ -330,9 +309,9 @@ func (x *fastReflection_MsgFeedPrice) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_MsgFeedPrice) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_FeedPrice) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*MsgFeedPrice)
+		x := input.Message.Interface().(*FeedPrice)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -356,10 +335,6 @@ func (x *fastReflection_MsgFeedPrice) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.Provider)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -370,7 +345,7 @@ func (x *fastReflection_MsgFeedPrice) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*MsgFeedPrice)
+		x := input.Message.Interface().(*FeedPrice)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -388,13 +363,6 @@ func (x *fastReflection_MsgFeedPrice) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.Provider) > 0 {
-			i -= len(x.Provider)
-			copy(dAtA[i:], x.Provider)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Provider)))
-			i--
-			dAtA[i] = 0x22
 		}
 		if len(x.Source) > 0 {
 			i -= len(x.Source)
@@ -428,7 +396,7 @@ func (x *fastReflection_MsgFeedPrice) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*MsgFeedPrice)
+		x := input.Message.Interface().(*FeedPrice)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -460,10 +428,10 @@ func (x *fastReflection_MsgFeedPrice) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgFeedPrice: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: FeedPrice: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgFeedPrice: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: FeedPrice: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -562,7 +530,438 @@ func (x *fastReflection_MsgFeedPrice) ProtoMethods() *protoiface.Methods {
 				}
 				x.Source = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 4:
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_MsgFeedPrice            protoreflect.MessageDescriptor
+	fd_MsgFeedPrice_provider   protoreflect.FieldDescriptor
+	fd_MsgFeedPrice_feed_price protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_oracle_tx_proto_init()
+	md_MsgFeedPrice = File_elys_oracle_tx_proto.Messages().ByName("MsgFeedPrice")
+	fd_MsgFeedPrice_provider = md_MsgFeedPrice.Fields().ByName("provider")
+	fd_MsgFeedPrice_feed_price = md_MsgFeedPrice.Fields().ByName("feed_price")
+}
+
+var _ protoreflect.Message = (*fastReflection_MsgFeedPrice)(nil)
+
+type fastReflection_MsgFeedPrice MsgFeedPrice
+
+func (x *MsgFeedPrice) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgFeedPrice)(x)
+}
+
+func (x *MsgFeedPrice) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_oracle_tx_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MsgFeedPrice_messageType fastReflection_MsgFeedPrice_messageType
+var _ protoreflect.MessageType = fastReflection_MsgFeedPrice_messageType{}
+
+type fastReflection_MsgFeedPrice_messageType struct{}
+
+func (x fastReflection_MsgFeedPrice_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgFeedPrice)(nil)
+}
+func (x fastReflection_MsgFeedPrice_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgFeedPrice)
+}
+func (x fastReflection_MsgFeedPrice_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgFeedPrice
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MsgFeedPrice) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgFeedPrice
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MsgFeedPrice) Type() protoreflect.MessageType {
+	return _fastReflection_MsgFeedPrice_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MsgFeedPrice) New() protoreflect.Message {
+	return new(fastReflection_MsgFeedPrice)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MsgFeedPrice) Interface() protoreflect.ProtoMessage {
+	return (*MsgFeedPrice)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MsgFeedPrice) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Provider != "" {
+		value := protoreflect.ValueOfString(x.Provider)
+		if !f(fd_MsgFeedPrice_provider, value) {
+			return
+		}
+	}
+	if x.FeedPrice != nil {
+		value := protoreflect.ValueOfMessage(x.FeedPrice.ProtoReflect())
+		if !f(fd_MsgFeedPrice_feed_price, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MsgFeedPrice) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.oracle.MsgFeedPrice.provider":
+		return x.Provider != ""
+	case "elys.oracle.MsgFeedPrice.feed_price":
+		return x.FeedPrice != nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+		}
+		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgFeedPrice) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.oracle.MsgFeedPrice.provider":
+		x.Provider = ""
+	case "elys.oracle.MsgFeedPrice.feed_price":
+		x.FeedPrice = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+		}
+		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MsgFeedPrice) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.oracle.MsgFeedPrice.provider":
+		value := x.Provider
+		return protoreflect.ValueOfString(value)
+	case "elys.oracle.MsgFeedPrice.feed_price":
+		value := x.FeedPrice
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+		}
+		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgFeedPrice) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.oracle.MsgFeedPrice.provider":
+		x.Provider = value.Interface().(string)
+	case "elys.oracle.MsgFeedPrice.feed_price":
+		x.FeedPrice = value.Message().Interface().(*FeedPrice)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+		}
+		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgFeedPrice) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.oracle.MsgFeedPrice.feed_price":
+		if x.FeedPrice == nil {
+			x.FeedPrice = new(FeedPrice)
+		}
+		return protoreflect.ValueOfMessage(x.FeedPrice.ProtoReflect())
+	case "elys.oracle.MsgFeedPrice.provider":
+		panic(fmt.Errorf("field provider of message elys.oracle.MsgFeedPrice is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+		}
+		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MsgFeedPrice) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.oracle.MsgFeedPrice.provider":
+		return protoreflect.ValueOfString("")
+	case "elys.oracle.MsgFeedPrice.feed_price":
+		m := new(FeedPrice)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedPrice"))
+		}
+		panic(fmt.Errorf("message elys.oracle.MsgFeedPrice does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MsgFeedPrice) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.oracle.MsgFeedPrice", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MsgFeedPrice) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgFeedPrice) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MsgFeedPrice) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MsgFeedPrice) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MsgFeedPrice)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Provider)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.FeedPrice != nil {
+			l = options.Size(x.FeedPrice)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MsgFeedPrice)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.FeedPrice != nil {
+			encoded, err := options.Marshal(x.FeedPrice)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Provider) > 0 {
+			i -= len(x.Provider)
+			copy(dAtA[i:], x.Provider)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Provider)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MsgFeedPrice)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgFeedPrice: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgFeedPrice: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Provider", wireType)
 				}
@@ -593,6 +992,42 @@ func (x *fastReflection_MsgFeedPrice) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.Provider = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FeedPrice", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.FeedPrice == nil {
+					x.FeedPrice = &FeedPrice{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.FeedPrice); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -647,7 +1082,7 @@ func (x *MsgFeedPriceResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgFeedPriceResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[1]
+	mi := &file_elys_oracle_tx_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1007,7 +1442,7 @@ func (x *MsgSetPriceFeeder) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgSetPriceFeeder) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[2]
+	mi := &file_elys_oracle_tx_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1477,7 +1912,7 @@ func (x *MsgSetPriceFeederResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgSetPriceFeederResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[3]
+	mi := &file_elys_oracle_tx_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1835,7 +2270,7 @@ func (x *MsgDeletePriceFeeder) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgDeletePriceFeeder) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[4]
+	mi := &file_elys_oracle_tx_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2253,7 +2688,7 @@ func (x *MsgDeletePriceFeederResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgDeletePriceFeederResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[5]
+	mi := &file_elys_oracle_tx_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2594,7 +3029,7 @@ func (x *fastReflection_MsgDeletePriceFeederResponse) ProtoMethods() *protoiface
 var _ protoreflect.List = (*_MsgFeedMultiplePrices_2_list)(nil)
 
 type _MsgFeedMultiplePrices_2_list struct {
-	list *[]*Price
+	list *[]*FeedPrice
 }
 
 func (x *_MsgFeedMultiplePrices_2_list) Len() int {
@@ -2610,18 +3045,18 @@ func (x *_MsgFeedMultiplePrices_2_list) Get(i int) protoreflect.Value {
 
 func (x *_MsgFeedMultiplePrices_2_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Price)
+	concreteValue := valueUnwrapped.Interface().(*FeedPrice)
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_MsgFeedMultiplePrices_2_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Price)
+	concreteValue := valueUnwrapped.Interface().(*FeedPrice)
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_MsgFeedMultiplePrices_2_list) AppendMutable() protoreflect.Value {
-	v := new(Price)
+	v := new(FeedPrice)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
@@ -2634,7 +3069,7 @@ func (x *_MsgFeedMultiplePrices_2_list) Truncate(n int) {
 }
 
 func (x *_MsgFeedMultiplePrices_2_list) NewElement() protoreflect.Value {
-	v := new(Price)
+	v := new(FeedPrice)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
@@ -2643,16 +3078,16 @@ func (x *_MsgFeedMultiplePrices_2_list) IsValid() bool {
 }
 
 var (
-	md_MsgFeedMultiplePrices         protoreflect.MessageDescriptor
-	fd_MsgFeedMultiplePrices_creator protoreflect.FieldDescriptor
-	fd_MsgFeedMultiplePrices_prices  protoreflect.FieldDescriptor
+	md_MsgFeedMultiplePrices             protoreflect.MessageDescriptor
+	fd_MsgFeedMultiplePrices_creator     protoreflect.FieldDescriptor
+	fd_MsgFeedMultiplePrices_feed_prices protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_oracle_tx_proto_init()
 	md_MsgFeedMultiplePrices = File_elys_oracle_tx_proto.Messages().ByName("MsgFeedMultiplePrices")
 	fd_MsgFeedMultiplePrices_creator = md_MsgFeedMultiplePrices.Fields().ByName("creator")
-	fd_MsgFeedMultiplePrices_prices = md_MsgFeedMultiplePrices.Fields().ByName("prices")
+	fd_MsgFeedMultiplePrices_feed_prices = md_MsgFeedMultiplePrices.Fields().ByName("feed_prices")
 }
 
 var _ protoreflect.Message = (*fastReflection_MsgFeedMultiplePrices)(nil)
@@ -2664,7 +3099,7 @@ func (x *MsgFeedMultiplePrices) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgFeedMultiplePrices) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[6]
+	mi := &file_elys_oracle_tx_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2726,9 +3161,9 @@ func (x *fastReflection_MsgFeedMultiplePrices) Range(f func(protoreflect.FieldDe
 			return
 		}
 	}
-	if len(x.Prices) != 0 {
-		value := protoreflect.ValueOfList(&_MsgFeedMultiplePrices_2_list{list: &x.Prices})
-		if !f(fd_MsgFeedMultiplePrices_prices, value) {
+	if len(x.FeedPrices) != 0 {
+		value := protoreflect.ValueOfList(&_MsgFeedMultiplePrices_2_list{list: &x.FeedPrices})
+		if !f(fd_MsgFeedMultiplePrices_feed_prices, value) {
 			return
 		}
 	}
@@ -2749,8 +3184,8 @@ func (x *fastReflection_MsgFeedMultiplePrices) Has(fd protoreflect.FieldDescript
 	switch fd.FullName() {
 	case "elys.oracle.MsgFeedMultiplePrices.creator":
 		return x.Creator != ""
-	case "elys.oracle.MsgFeedMultiplePrices.prices":
-		return len(x.Prices) != 0
+	case "elys.oracle.MsgFeedMultiplePrices.feed_prices":
+		return len(x.FeedPrices) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedMultiplePrices"))
@@ -2769,8 +3204,8 @@ func (x *fastReflection_MsgFeedMultiplePrices) Clear(fd protoreflect.FieldDescri
 	switch fd.FullName() {
 	case "elys.oracle.MsgFeedMultiplePrices.creator":
 		x.Creator = ""
-	case "elys.oracle.MsgFeedMultiplePrices.prices":
-		x.Prices = nil
+	case "elys.oracle.MsgFeedMultiplePrices.feed_prices":
+		x.FeedPrices = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedMultiplePrices"))
@@ -2790,11 +3225,11 @@ func (x *fastReflection_MsgFeedMultiplePrices) Get(descriptor protoreflect.Field
 	case "elys.oracle.MsgFeedMultiplePrices.creator":
 		value := x.Creator
 		return protoreflect.ValueOfString(value)
-	case "elys.oracle.MsgFeedMultiplePrices.prices":
-		if len(x.Prices) == 0 {
+	case "elys.oracle.MsgFeedMultiplePrices.feed_prices":
+		if len(x.FeedPrices) == 0 {
 			return protoreflect.ValueOfList(&_MsgFeedMultiplePrices_2_list{})
 		}
-		listValue := &_MsgFeedMultiplePrices_2_list{list: &x.Prices}
+		listValue := &_MsgFeedMultiplePrices_2_list{list: &x.FeedPrices}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -2818,10 +3253,10 @@ func (x *fastReflection_MsgFeedMultiplePrices) Set(fd protoreflect.FieldDescript
 	switch fd.FullName() {
 	case "elys.oracle.MsgFeedMultiplePrices.creator":
 		x.Creator = value.Interface().(string)
-	case "elys.oracle.MsgFeedMultiplePrices.prices":
+	case "elys.oracle.MsgFeedMultiplePrices.feed_prices":
 		lv := value.List()
 		clv := lv.(*_MsgFeedMultiplePrices_2_list)
-		x.Prices = *clv.list
+		x.FeedPrices = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.oracle.MsgFeedMultiplePrices"))
@@ -2842,11 +3277,11 @@ func (x *fastReflection_MsgFeedMultiplePrices) Set(fd protoreflect.FieldDescript
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_MsgFeedMultiplePrices) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.oracle.MsgFeedMultiplePrices.prices":
-		if x.Prices == nil {
-			x.Prices = []*Price{}
+	case "elys.oracle.MsgFeedMultiplePrices.feed_prices":
+		if x.FeedPrices == nil {
+			x.FeedPrices = []*FeedPrice{}
 		}
-		value := &_MsgFeedMultiplePrices_2_list{list: &x.Prices}
+		value := &_MsgFeedMultiplePrices_2_list{list: &x.FeedPrices}
 		return protoreflect.ValueOfList(value)
 	case "elys.oracle.MsgFeedMultiplePrices.creator":
 		panic(fmt.Errorf("field creator of message elys.oracle.MsgFeedMultiplePrices is not mutable"))
@@ -2865,8 +3300,8 @@ func (x *fastReflection_MsgFeedMultiplePrices) NewField(fd protoreflect.FieldDes
 	switch fd.FullName() {
 	case "elys.oracle.MsgFeedMultiplePrices.creator":
 		return protoreflect.ValueOfString("")
-	case "elys.oracle.MsgFeedMultiplePrices.prices":
-		list := []*Price{}
+	case "elys.oracle.MsgFeedMultiplePrices.feed_prices":
+		list := []*FeedPrice{}
 		return protoreflect.ValueOfList(&_MsgFeedMultiplePrices_2_list{list: &list})
 	default:
 		if fd.IsExtension() {
@@ -2941,8 +3376,8 @@ func (x *fastReflection_MsgFeedMultiplePrices) ProtoMethods() *protoiface.Method
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if len(x.Prices) > 0 {
-			for _, e := range x.Prices {
+		if len(x.FeedPrices) > 0 {
+			for _, e := range x.FeedPrices {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
@@ -2976,9 +3411,9 @@ func (x *fastReflection_MsgFeedMultiplePrices) ProtoMethods() *protoiface.Method
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Prices) > 0 {
-			for iNdEx := len(x.Prices) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.Prices[iNdEx])
+		if len(x.FeedPrices) > 0 {
+			for iNdEx := len(x.FeedPrices) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.FeedPrices[iNdEx])
 				if err != nil {
 					return protoiface.MarshalOutput{
 						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -3082,7 +3517,7 @@ func (x *fastReflection_MsgFeedMultiplePrices) ProtoMethods() *protoiface.Method
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Prices", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FeedPrices", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -3109,8 +3544,8 @@ func (x *fastReflection_MsgFeedMultiplePrices) ProtoMethods() *protoiface.Method
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Prices = append(x.Prices, &Price{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Prices[len(x.Prices)-1]); err != nil {
+				x.FeedPrices = append(x.FeedPrices, &FeedPrice{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.FeedPrices[len(x.FeedPrices)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
@@ -3167,7 +3602,7 @@ func (x *MsgFeedMultiplePricesResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgFeedMultiplePricesResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[7]
+	mi := &file_elys_oracle_tx_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3527,7 +3962,7 @@ func (x *MsgRemoveAssetInfo) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgRemoveAssetInfo) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[8]
+	mi := &file_elys_oracle_tx_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4007,7 +4442,7 @@ func (x *MsgRemoveAssetInfoResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgRemoveAssetInfoResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[9]
+	mi := &file_elys_oracle_tx_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4413,7 +4848,7 @@ func (x *MsgAddPriceFeeders) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgAddPriceFeeders) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[10]
+	mi := &file_elys_oracle_tx_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4907,7 +5342,7 @@ func (x *MsgAddPriceFeedersResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgAddPriceFeedersResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[11]
+	mi := &file_elys_oracle_tx_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5313,7 +5748,7 @@ func (x *MsgRemovePriceFeeders) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgRemovePriceFeeders) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[12]
+	mi := &file_elys_oracle_tx_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5807,7 +6242,7 @@ func (x *MsgRemovePriceFeedersResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgRemovePriceFeedersResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[13]
+	mi := &file_elys_oracle_tx_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6167,7 +6602,7 @@ func (x *MsgUpdateParams) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgUpdateParams) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[14]
+	mi := &file_elys_oracle_tx_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6662,7 +7097,7 @@ func (x *MsgUpdateParamsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgUpdateParamsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[15]
+	mi := &file_elys_oracle_tx_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7030,7 +7465,7 @@ func (x *MsgCreateAssetInfo) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgCreateAssetInfo) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[16]
+	mi := &file_elys_oracle_tx_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7742,7 +8177,7 @@ func (x *MsgCreateAssetInfoResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MsgCreateAssetInfoResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_oracle_tx_proto_msgTypes[17]
+	mi := &file_elys_oracle_tx_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8093,21 +8528,70 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type FeedPrice struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Asset  string `protobuf:"bytes,1,opt,name=asset,proto3" json:"asset,omitempty"`
+	Price  string `protobuf:"bytes,2,opt,name=price,proto3" json:"price,omitempty"`
+	Source string `protobuf:"bytes,3,opt,name=source,proto3" json:"source,omitempty"`
+}
+
+func (x *FeedPrice) Reset() {
+	*x = FeedPrice{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_oracle_tx_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FeedPrice) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FeedPrice) ProtoMessage() {}
+
+// Deprecated: Use FeedPrice.ProtoReflect.Descriptor instead.
+func (*FeedPrice) Descriptor() ([]byte, []int) {
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *FeedPrice) GetAsset() string {
+	if x != nil {
+		return x.Asset
+	}
+	return ""
+}
+
+func (x *FeedPrice) GetPrice() string {
+	if x != nil {
+		return x.Price
+	}
+	return ""
+}
+
+func (x *FeedPrice) GetSource() string {
+	if x != nil {
+		return x.Source
+	}
+	return ""
+}
+
 type MsgFeedPrice struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Asset    string `protobuf:"bytes,1,opt,name=asset,proto3" json:"asset,omitempty"`
-	Price    string `protobuf:"bytes,2,opt,name=price,proto3" json:"price,omitempty"`
-	Source   string `protobuf:"bytes,3,opt,name=source,proto3" json:"source,omitempty"`
-	Provider string `protobuf:"bytes,4,opt,name=provider,proto3" json:"provider,omitempty"`
+	Provider  string     `protobuf:"bytes,1,opt,name=provider,proto3" json:"provider,omitempty"`
+	FeedPrice *FeedPrice `protobuf:"bytes,2,opt,name=feed_price,json=feedPrice,proto3" json:"feed_price,omitempty"`
 }
 
 func (x *MsgFeedPrice) Reset() {
 	*x = MsgFeedPrice{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[0]
+		mi := &file_elys_oracle_tx_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8121,28 +8605,7 @@ func (*MsgFeedPrice) ProtoMessage() {}
 
 // Deprecated: Use MsgFeedPrice.ProtoReflect.Descriptor instead.
 func (*MsgFeedPrice) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *MsgFeedPrice) GetAsset() string {
-	if x != nil {
-		return x.Asset
-	}
-	return ""
-}
-
-func (x *MsgFeedPrice) GetPrice() string {
-	if x != nil {
-		return x.Price
-	}
-	return ""
-}
-
-func (x *MsgFeedPrice) GetSource() string {
-	if x != nil {
-		return x.Source
-	}
-	return ""
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *MsgFeedPrice) GetProvider() string {
@@ -8150,6 +8613,13 @@ func (x *MsgFeedPrice) GetProvider() string {
 		return x.Provider
 	}
 	return ""
+}
+
+func (x *MsgFeedPrice) GetFeedPrice() *FeedPrice {
+	if x != nil {
+		return x.FeedPrice
+	}
+	return nil
 }
 
 type MsgFeedPriceResponse struct {
@@ -8161,7 +8631,7 @@ type MsgFeedPriceResponse struct {
 func (x *MsgFeedPriceResponse) Reset() {
 	*x = MsgFeedPriceResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[1]
+		mi := &file_elys_oracle_tx_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8175,7 +8645,7 @@ func (*MsgFeedPriceResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgFeedPriceResponse.ProtoReflect.Descriptor instead.
 func (*MsgFeedPriceResponse) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{1}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{2}
 }
 
 type MsgSetPriceFeeder struct {
@@ -8190,7 +8660,7 @@ type MsgSetPriceFeeder struct {
 func (x *MsgSetPriceFeeder) Reset() {
 	*x = MsgSetPriceFeeder{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[2]
+		mi := &file_elys_oracle_tx_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8204,7 +8674,7 @@ func (*MsgSetPriceFeeder) ProtoMessage() {}
 
 // Deprecated: Use MsgSetPriceFeeder.ProtoReflect.Descriptor instead.
 func (*MsgSetPriceFeeder) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{2}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *MsgSetPriceFeeder) GetFeeder() string {
@@ -8230,7 +8700,7 @@ type MsgSetPriceFeederResponse struct {
 func (x *MsgSetPriceFeederResponse) Reset() {
 	*x = MsgSetPriceFeederResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[3]
+		mi := &file_elys_oracle_tx_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8244,7 +8714,7 @@ func (*MsgSetPriceFeederResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgSetPriceFeederResponse.ProtoReflect.Descriptor instead.
 func (*MsgSetPriceFeederResponse) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{3}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{4}
 }
 
 type MsgDeletePriceFeeder struct {
@@ -8258,7 +8728,7 @@ type MsgDeletePriceFeeder struct {
 func (x *MsgDeletePriceFeeder) Reset() {
 	*x = MsgDeletePriceFeeder{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[4]
+		mi := &file_elys_oracle_tx_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8272,7 +8742,7 @@ func (*MsgDeletePriceFeeder) ProtoMessage() {}
 
 // Deprecated: Use MsgDeletePriceFeeder.ProtoReflect.Descriptor instead.
 func (*MsgDeletePriceFeeder) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{4}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *MsgDeletePriceFeeder) GetFeeder() string {
@@ -8291,7 +8761,7 @@ type MsgDeletePriceFeederResponse struct {
 func (x *MsgDeletePriceFeederResponse) Reset() {
 	*x = MsgDeletePriceFeederResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[5]
+		mi := &file_elys_oracle_tx_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8305,7 +8775,7 @@ func (*MsgDeletePriceFeederResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgDeletePriceFeederResponse.ProtoReflect.Descriptor instead.
 func (*MsgDeletePriceFeederResponse) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{5}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{6}
 }
 
 type MsgFeedMultiplePrices struct {
@@ -8313,14 +8783,14 @@ type MsgFeedMultiplePrices struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Creator string   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Prices  []*Price `protobuf:"bytes,2,rep,name=prices,proto3" json:"prices,omitempty"`
+	Creator    string       `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	FeedPrices []*FeedPrice `protobuf:"bytes,2,rep,name=feed_prices,json=feedPrices,proto3" json:"feed_prices,omitempty"`
 }
 
 func (x *MsgFeedMultiplePrices) Reset() {
 	*x = MsgFeedMultiplePrices{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[6]
+		mi := &file_elys_oracle_tx_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8334,7 +8804,7 @@ func (*MsgFeedMultiplePrices) ProtoMessage() {}
 
 // Deprecated: Use MsgFeedMultiplePrices.ProtoReflect.Descriptor instead.
 func (*MsgFeedMultiplePrices) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{6}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *MsgFeedMultiplePrices) GetCreator() string {
@@ -8344,9 +8814,9 @@ func (x *MsgFeedMultiplePrices) GetCreator() string {
 	return ""
 }
 
-func (x *MsgFeedMultiplePrices) GetPrices() []*Price {
+func (x *MsgFeedMultiplePrices) GetFeedPrices() []*FeedPrice {
 	if x != nil {
-		return x.Prices
+		return x.FeedPrices
 	}
 	return nil
 }
@@ -8360,7 +8830,7 @@ type MsgFeedMultiplePricesResponse struct {
 func (x *MsgFeedMultiplePricesResponse) Reset() {
 	*x = MsgFeedMultiplePricesResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[7]
+		mi := &file_elys_oracle_tx_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8374,7 +8844,7 @@ func (*MsgFeedMultiplePricesResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgFeedMultiplePricesResponse.ProtoReflect.Descriptor instead.
 func (*MsgFeedMultiplePricesResponse) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{7}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{8}
 }
 
 type MsgRemoveAssetInfo struct {
@@ -8389,7 +8859,7 @@ type MsgRemoveAssetInfo struct {
 func (x *MsgRemoveAssetInfo) Reset() {
 	*x = MsgRemoveAssetInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[8]
+		mi := &file_elys_oracle_tx_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8403,7 +8873,7 @@ func (*MsgRemoveAssetInfo) ProtoMessage() {}
 
 // Deprecated: Use MsgRemoveAssetInfo.ProtoReflect.Descriptor instead.
 func (*MsgRemoveAssetInfo) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{8}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *MsgRemoveAssetInfo) GetAuthority() string {
@@ -8429,7 +8899,7 @@ type MsgRemoveAssetInfoResponse struct {
 func (x *MsgRemoveAssetInfoResponse) Reset() {
 	*x = MsgRemoveAssetInfoResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[9]
+		mi := &file_elys_oracle_tx_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8443,7 +8913,7 @@ func (*MsgRemoveAssetInfoResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgRemoveAssetInfoResponse.ProtoReflect.Descriptor instead.
 func (*MsgRemoveAssetInfoResponse) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{9}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{10}
 }
 
 type MsgAddPriceFeeders struct {
@@ -8458,7 +8928,7 @@ type MsgAddPriceFeeders struct {
 func (x *MsgAddPriceFeeders) Reset() {
 	*x = MsgAddPriceFeeders{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[10]
+		mi := &file_elys_oracle_tx_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8472,7 +8942,7 @@ func (*MsgAddPriceFeeders) ProtoMessage() {}
 
 // Deprecated: Use MsgAddPriceFeeders.ProtoReflect.Descriptor instead.
 func (*MsgAddPriceFeeders) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{10}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *MsgAddPriceFeeders) GetAuthority() string {
@@ -8498,7 +8968,7 @@ type MsgAddPriceFeedersResponse struct {
 func (x *MsgAddPriceFeedersResponse) Reset() {
 	*x = MsgAddPriceFeedersResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[11]
+		mi := &file_elys_oracle_tx_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8512,7 +8982,7 @@ func (*MsgAddPriceFeedersResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgAddPriceFeedersResponse.ProtoReflect.Descriptor instead.
 func (*MsgAddPriceFeedersResponse) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{11}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{12}
 }
 
 type MsgRemovePriceFeeders struct {
@@ -8527,7 +8997,7 @@ type MsgRemovePriceFeeders struct {
 func (x *MsgRemovePriceFeeders) Reset() {
 	*x = MsgRemovePriceFeeders{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[12]
+		mi := &file_elys_oracle_tx_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8541,7 +9011,7 @@ func (*MsgRemovePriceFeeders) ProtoMessage() {}
 
 // Deprecated: Use MsgRemovePriceFeeders.ProtoReflect.Descriptor instead.
 func (*MsgRemovePriceFeeders) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{12}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *MsgRemovePriceFeeders) GetAuthority() string {
@@ -8567,7 +9037,7 @@ type MsgRemovePriceFeedersResponse struct {
 func (x *MsgRemovePriceFeedersResponse) Reset() {
 	*x = MsgRemovePriceFeedersResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[13]
+		mi := &file_elys_oracle_tx_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8581,7 +9051,7 @@ func (*MsgRemovePriceFeedersResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgRemovePriceFeedersResponse.ProtoReflect.Descriptor instead.
 func (*MsgRemovePriceFeedersResponse) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{13}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{14}
 }
 
 type MsgUpdateParams struct {
@@ -8597,7 +9067,7 @@ type MsgUpdateParams struct {
 func (x *MsgUpdateParams) Reset() {
 	*x = MsgUpdateParams{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[14]
+		mi := &file_elys_oracle_tx_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8611,7 +9081,7 @@ func (*MsgUpdateParams) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateParams.ProtoReflect.Descriptor instead.
 func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{14}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *MsgUpdateParams) GetAuthority() string {
@@ -8637,7 +9107,7 @@ type MsgUpdateParamsResponse struct {
 func (x *MsgUpdateParamsResponse) Reset() {
 	*x = MsgUpdateParamsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[15]
+		mi := &file_elys_oracle_tx_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8651,7 +9121,7 @@ func (*MsgUpdateParamsResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateParamsResponse.ProtoReflect.Descriptor instead.
 func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{15}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{16}
 }
 
 // this line is used by starport scaffolding # proto/tx/message
@@ -8671,7 +9141,7 @@ type MsgCreateAssetInfo struct {
 func (x *MsgCreateAssetInfo) Reset() {
 	*x = MsgCreateAssetInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[16]
+		mi := &file_elys_oracle_tx_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8685,7 +9155,7 @@ func (*MsgCreateAssetInfo) ProtoMessage() {}
 
 // Deprecated: Use MsgCreateAssetInfo.ProtoReflect.Descriptor instead.
 func (*MsgCreateAssetInfo) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{16}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *MsgCreateAssetInfo) GetCreator() string {
@@ -8739,7 +9209,7 @@ type MsgCreateAssetInfoResponse struct {
 func (x *MsgCreateAssetInfoResponse) Reset() {
 	*x = MsgCreateAssetInfoResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_oracle_tx_proto_msgTypes[17]
+		mi := &file_elys_oracle_tx_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8753,7 +9223,7 @@ func (*MsgCreateAssetInfoResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgCreateAssetInfoResponse.ProtoReflect.Descriptor instead.
 func (*MsgCreateAssetInfoResponse) Descriptor() ([]byte, []int) {
-	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{17}
+	return file_elys_oracle_tx_proto_rawDescGZIP(), []int{18}
 }
 
 var File_elys_oracle_tx_proto protoreflect.FileDescriptor
@@ -8778,183 +9248,188 @@ var file_elys_oracle_tx_proto_rawDesc = []byte{
 	0x6f, 0x1a, 0x11, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2f, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22,
-	0xe2, 0x01, 0x0a, 0x0c, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65,
-	0x12, 0x14, 0x0a, 0x05, 0x61, 0x73, 0x73, 0x65, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x05, 0x61, 0x73, 0x73, 0x65, 0x74, 0x12, 0x47, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
-	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12,
-	0x16, 0x0a, 0x06, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x06, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x12, 0x34, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69,
-	0x64, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72,
-	0x69, 0x6e, 0x67, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x3a, 0x25, 0x82,
-	0xe7, 0xb0, 0x2a, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x8a, 0xe7, 0xb0, 0x2a,
-	0x13, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x50,
-	0x72, 0x69, 0x63, 0x65, 0x22, 0x16, 0x0a, 0x14, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x50,
-	0x72, 0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x8c, 0x01, 0x0a,
-	0x11, 0x4d, 0x73, 0x67, 0x53, 0x65, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64,
-	0x65, 0x72, 0x12, 0x30, 0x0a, 0x06, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41,
-	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x06, 0x66, 0x65,
-	0x65, 0x64, 0x65, 0x72, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x73, 0x5f, 0x61, 0x63, 0x74, 0x69, 0x76,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x69, 0x73, 0x41, 0x63, 0x74, 0x69, 0x76,
-	0x65, 0x3a, 0x28, 0x82, 0xe7, 0xb0, 0x2a, 0x06, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x8a, 0xe7,
-	0xb0, 0x2a, 0x18, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x53, 0x65, 0x74,
-	0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x22, 0x1b, 0x0a, 0x19, 0x4d,
-	0x73, 0x67, 0x53, 0x65, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x75, 0x0a, 0x14, 0x4d, 0x73, 0x67, 0x44,
-	0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72,
-	0x12, 0x30, 0x0a, 0x06, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x06, 0x66, 0x65, 0x65, 0x64,
-	0x65, 0x72, 0x3a, 0x2b, 0x82, 0xe7, 0xb0, 0x2a, 0x06, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x8a,
-	0xe7, 0xb0, 0x2a, 0x1b, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x44, 0x65,
-	0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x22,
-	0x1e, 0x0a, 0x1c, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x63,
-	0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
-	0xac, 0x01, 0x0a, 0x15, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x4d, 0x75, 0x6c, 0x74, 0x69,
-	0x70, 0x6c, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65,
-	0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74,
-	0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x30, 0x0a,
-	0x06, 0x70, 0x72, 0x69, 0x63, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x50, 0x72, 0x69, 0x63,
-	0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x70, 0x72, 0x69, 0x63, 0x65, 0x73, 0x3a,
-	0x2d, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0,
-	0x2a, 0x1c, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64,
-	0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x22, 0x1f,
-	0x0a, 0x1d, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c,
-	0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
-	0x90, 0x01, 0x0a, 0x12, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41, 0x73, 0x73,
-	0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72,
-	0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72,
-	0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x14,
-	0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x3a, 0x2c, 0x82, 0xe7, 0xb0, 0x2a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f,
-	0x72, 0x69, 0x74, 0x79, 0x8a, 0xe7, 0xb0, 0x2a, 0x19, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f,
-	0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e,
-	0x66, 0x6f, 0x22, 0x1c, 0x0a, 0x1a, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41,
-	0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x22, 0x94, 0x01, 0x0a, 0x12, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65,
-	0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f,
-	0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74,
-	0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12,
-	0x18, 0x0a, 0x07, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09,
-	0x52, 0x07, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x3a, 0x2c, 0x82, 0xe7, 0xb0, 0x2a, 0x09,
-	0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x8a, 0xe7, 0xb0, 0x2a, 0x19, 0x6f, 0x72,
-	0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65,
-	0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x22, 0x1c, 0x0a, 0x1a, 0x4d, 0x73, 0x67, 0x41, 0x64,
-	0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x9a, 0x01, 0x0a, 0x15, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d,
-	0x6f, 0x76, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x12,
+	0x82, 0x01, 0x0a, 0x09, 0x46, 0x65, 0x65, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x14, 0x0a,
+	0x05, 0x61, 0x73, 0x73, 0x65, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x61, 0x73,
+	0x73, 0x65, 0x74, 0x12, 0x47, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x16, 0x0a, 0x06,
+	0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x6f,
+	0x75, 0x72, 0x63, 0x65, 0x22, 0xa8, 0x01, 0x0a, 0x0c, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64,
+	0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x34, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65,
+	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e,
+	0x67, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x12, 0x3b, 0x0a, 0x0a, 0x66,
+	0x65, 0x65, 0x64, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x16, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x46, 0x65,
+	0x65, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x66,
+	0x65, 0x65, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x3a, 0x25, 0x82, 0xe7, 0xb0, 0x2a, 0x08, 0x70,
+	0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x13, 0x6f, 0x72, 0x61, 0x63,
+	0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x22,
+	0x16, 0x0a, 0x14, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x8c, 0x01, 0x0a, 0x11, 0x4d, 0x73, 0x67, 0x53,
+	0x65, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x12, 0x30, 0x0a,
+	0x06, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2,
+	0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x06, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x12,
+	0x1b, 0x0a, 0x09, 0x69, 0x73, 0x5f, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x08, 0x69, 0x73, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x3a, 0x28, 0x82, 0xe7,
+	0xb0, 0x2a, 0x06, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x18, 0x6f, 0x72,
+	0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x53, 0x65, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65,
+	0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x22, 0x1b, 0x0a, 0x19, 0x4d, 0x73, 0x67, 0x53, 0x65, 0x74,
+	0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x75, 0x0a, 0x14, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x12, 0x30, 0x0a, 0x06, 0x66,
+	0x65, 0x65, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d,
+	0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53,
+	0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x06, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x3a, 0x2b, 0x82,
+	0xe7, 0xb0, 0x2a, 0x06, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x1b, 0x6f,
+	0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50,
+	0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x22, 0x1e, 0x0a, 0x1c, 0x4d, 0x73,
+	0x67, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64,
+	0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xb9, 0x01, 0x0a, 0x15, 0x4d,
+	0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65, 0x50, 0x72,
+	0x69, 0x63, 0x65, 0x73, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52,
+	0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x3d, 0x0a, 0x0b, 0x66, 0x65, 0x65, 0x64,
+	0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x46, 0x65, 0x65, 0x64,
+	0x50, 0x72, 0x69, 0x63, 0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0a, 0x66, 0x65, 0x65,
+	0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x3a, 0x2d, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72,
+	0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x1c, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65,
+	0x2f, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65,
+	0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x22, 0x1f, 0x0a, 0x1d, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65,
+	0x64, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x90, 0x01, 0x0a, 0x12, 0x4d, 0x73, 0x67, 0x52,
+	0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x36,
+	0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74,
+	0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x3a, 0x2c, 0x82, 0xe7,
+	0xb0, 0x2a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x8a, 0xe7, 0xb0, 0x2a,
+	0x19, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76,
+	0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x1c, 0x0a, 0x1a, 0x4d, 0x73,
+	0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x94, 0x01, 0x0a, 0x12, 0x4d, 0x73, 0x67,
+	0x41, 0x64, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x12,
 	0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41,
 	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75,
 	0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x66, 0x65, 0x65, 0x64, 0x65,
 	0x72, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x07, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72,
-	0x73, 0x3a, 0x2f, 0x82, 0xe7, 0xb0, 0x2a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74,
-	0x79, 0x8a, 0xe7, 0xb0, 0x2a, 0x1c, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67,
-	0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65,
-	0x72, 0x73, 0x22, 0x1f, 0x0a, 0x1d, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50,
-	0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0xa7, 0x01, 0x0a, 0x0f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74,
-	0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f,
+	0x73, 0x3a, 0x2c, 0x82, 0xe7, 0xb0, 0x2a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74,
+	0x79, 0x8a, 0xe7, 0xb0, 0x2a, 0x19, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67,
+	0x41, 0x64, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x22,
+	0x1c, 0x0a, 0x1a, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65,
+	0x65, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x9a, 0x01,
+	0x0a, 0x15, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65,
+	0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f,
 	0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14,
 	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74,
 	0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12,
-	0x31, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x13, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x50, 0x61,
-	0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x3a, 0x29, 0x82, 0xe7, 0xb0, 0x2a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69,
-	0x74, 0x79, 0x8a, 0xe7, 0xb0, 0x2a, 0x16, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73,
-	0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x19, 0x0a,
-	0x17, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x80, 0x02, 0x0a, 0x12, 0x4d, 0x73, 0x67,
-	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x12,
-	0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61,
-	0x74, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x18, 0x0a, 0x07, 0x64, 0x69, 0x73,
-	0x70, 0x6c, 0x61, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x69, 0x73, 0x70,
-	0x6c, 0x61, 0x79, 0x12, 0x1f, 0x0a, 0x0b, 0x62, 0x61, 0x6e, 0x64, 0x5f, 0x74, 0x69, 0x63, 0x6b,
-	0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x62, 0x61, 0x6e, 0x64, 0x54, 0x69,
-	0x63, 0x6b, 0x65, 0x72, 0x12, 0x1f, 0x0a, 0x0b, 0x65, 0x6c, 0x79, 0x73, 0x5f, 0x74, 0x69, 0x63,
-	0x6b, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x65, 0x6c, 0x79, 0x73, 0x54,
-	0x69, 0x63, 0x6b, 0x65, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c,
-	0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c, 0x3a,
-	0x2a, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0,
-	0x2a, 0x19, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61,
-	0x74, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x1c, 0x0a, 0x1a, 0x4d,
-	0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66,
-	0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xcb, 0x06, 0x0a, 0x03, 0x4d, 0x73,
-	0x67, 0x12, 0x49, 0x0a, 0x09, 0x46, 0x65, 0x65, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x19,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67,
-	0x46, 0x65, 0x65, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x1a, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x50,
-	0x72, 0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x64, 0x0a, 0x12,
-	0x46, 0x65, 0x65, 0x64, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65, 0x50, 0x72, 0x69, 0x63,
-	0x65, 0x73, 0x12, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65,
-	0x2e, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65,
-	0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x1a, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72,
-	0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x4d, 0x75, 0x6c, 0x74,
-	0x69, 0x70, 0x6c, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x58, 0x0a, 0x0e, 0x53, 0x65, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65,
-	0x65, 0x64, 0x65, 0x72, 0x12, 0x1e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63,
-	0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x53, 0x65, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65,
-	0x65, 0x64, 0x65, 0x72, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63,
-	0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x53, 0x65, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65,
-	0x65, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x61, 0x0a, 0x11,
-	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65,
-	0x72, 0x12, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e,
-	0x4d, 0x73, 0x67, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65,
-	0x65, 0x64, 0x65, 0x72, 0x1a, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63,
-	0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x63,
-	0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x5b, 0x0a, 0x0f, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e,
-	0x66, 0x6f, 0x12, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65,
-	0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49,
-	0x6e, 0x66, 0x6f, 0x1a, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c,
-	0x65, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74,
-	0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5b, 0x0a, 0x0f,
-	0x41, 0x64, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x12,
-	0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73,
-	0x67, 0x41, 0x64, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73,
-	0x1a, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d,
-	0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72,
-	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x64, 0x0a, 0x12, 0x52, 0x65, 0x6d,
-	0x6f, 0x76, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x12,
-	0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73,
+	0x18, 0x0a, 0x07, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09,
+	0x52, 0x07, 0x66, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x3a, 0x2f, 0x82, 0xe7, 0xb0, 0x2a, 0x09,
+	0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x8a, 0xe7, 0xb0, 0x2a, 0x1c, 0x6f, 0x72,
+	0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x72,
+	0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x22, 0x1f, 0x0a, 0x1d, 0x4d, 0x73,
 	0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64,
-	0x65, 0x72, 0x73, 0x1a, 0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c,
-	0x65, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65,
-	0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x52, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
-	0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73,
-	0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x24, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x55,
-	0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x5b, 0x0a, 0x0f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x73, 0x73,
-	0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72,
-	0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x73,
-	0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x1a, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f,
-	0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41,
-	0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0x95, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x42, 0x07, 0x54, 0x78, 0x50,
-	0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2c, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
-	0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6f, 0x72,
-	0x61, 0x63, 0x6c, 0x65, 0xa2, 0x02, 0x03, 0x45, 0x4f, 0x58, 0xaa, 0x02, 0x0b, 0x45, 0x6c, 0x79,
-	0x73, 0x2e, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0xca, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x5c,
-	0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0xe2, 0x02, 0x17, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4f, 0x72,
-	0x61, 0x63, 0x6c, 0x65, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
-	0xea, 0x02, 0x0c, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xa7, 0x01, 0x0a, 0x0f,
+	0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
+	0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x31, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f,
+	0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8, 0xde,
+	0x1f, 0x00, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x3a, 0x29, 0x82, 0xe7, 0xb0, 0x2a,
+	0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x8a, 0xe7, 0xb0, 0x2a, 0x16, 0x6f,
+	0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x19, 0x0a, 0x17, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x80, 0x02, 0x0a, 0x12, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x73,
+	0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74,
+	0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69,
+	0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x64,
+	0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x12, 0x18, 0x0a, 0x07, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x12, 0x1f, 0x0a, 0x0b, 0x62,
+	0x61, 0x6e, 0x64, 0x5f, 0x74, 0x69, 0x63, 0x6b, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0a, 0x62, 0x61, 0x6e, 0x64, 0x54, 0x69, 0x63, 0x6b, 0x65, 0x72, 0x12, 0x1f, 0x0a, 0x0b,
+	0x65, 0x6c, 0x79, 0x73, 0x5f, 0x74, 0x69, 0x63, 0x6b, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0a, 0x65, 0x6c, 0x79, 0x73, 0x54, 0x69, 0x63, 0x6b, 0x65, 0x72, 0x12, 0x18, 0x0a,
+	0x07, 0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07,
+	0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c, 0x3a, 0x2a, 0x82, 0xe7, 0xb0, 0x2a, 0x07, 0x63, 0x72,
+	0x65, 0x61, 0x74, 0x6f, 0x72, 0x8a, 0xe7, 0xb0, 0x2a, 0x19, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65,
+	0x2f, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49,
+	0x6e, 0x66, 0x6f, 0x22, 0x1c, 0x0a, 0x1a, 0x4d, 0x73, 0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x32, 0xcb, 0x06, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x49, 0x0a, 0x09, 0x46, 0x65, 0x65,
+	0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72,
+	0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x50, 0x72, 0x69, 0x63,
+	0x65, 0x1a, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e,
+	0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x64, 0x0a, 0x12, 0x46, 0x65, 0x65, 0x64, 0x4d, 0x75, 0x6c, 0x74,
+	0x69, 0x70, 0x6c, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x12, 0x22, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x46, 0x65, 0x65, 0x64,
+	0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x1a, 0x2a,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67,
+	0x46, 0x65, 0x65, 0x64, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x65, 0x50, 0x72, 0x69, 0x63,
+	0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x58, 0x0a, 0x0e, 0x53, 0x65,
+	0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x12, 0x1e, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x53, 0x65,
+	0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x1a, 0x26, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x53, 0x65,
+	0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x61, 0x0a, 0x11, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72,
+	0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x12, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x1a, 0x29, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5b, 0x0a, 0x0f, 0x52, 0x65, 0x6d, 0x6f, 0x76,
+	0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x1f, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f,
+	0x76, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x1a, 0x27, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d,
+	0x6f, 0x76, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5b, 0x0a, 0x0f, 0x41, 0x64, 0x64, 0x50, 0x72, 0x69, 0x63, 0x65,
+	0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x12, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f,
+	0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x72, 0x69, 0x63,
+	0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x1a, 0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x72, 0x69,
+	0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x64, 0x0a, 0x12, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65,
+	0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x12, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f,
+	0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50,
+	0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x1a, 0x2a, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d,
+	0x6f, 0x76, 0x65, 0x50, 0x72, 0x69, 0x63, 0x65, 0x46, 0x65, 0x65, 0x64, 0x65, 0x72, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x52, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f,
+	0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61,
+	0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5b, 0x0a, 0x0f, 0x43,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x1f,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73, 0x67,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x1a,
+	0x27, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x4d, 0x73,
+	0x67, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x49, 0x6e, 0x66, 0x6f,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42,
+	0x95, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6f, 0x72, 0x61,
+	0x63, 0x6c, 0x65, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2c,
+	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
+	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0xa2, 0x02, 0x03, 0x45,
+	0x4f, 0x58, 0xaa, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65,
+	0xca, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0xe2, 0x02,
+	0x17, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x5c, 0x47, 0x50, 0x42,
+	0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c, 0x45, 0x6c, 0x79, 0x73, 0x3a,
+	0x3a, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -8969,55 +9444,56 @@ func file_elys_oracle_tx_proto_rawDescGZIP() []byte {
 	return file_elys_oracle_tx_proto_rawDescData
 }
 
-var file_elys_oracle_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_elys_oracle_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_elys_oracle_tx_proto_goTypes = []interface{}{
-	(*MsgFeedPrice)(nil),                  // 0: elys.oracle.MsgFeedPrice
-	(*MsgFeedPriceResponse)(nil),          // 1: elys.oracle.MsgFeedPriceResponse
-	(*MsgSetPriceFeeder)(nil),             // 2: elys.oracle.MsgSetPriceFeeder
-	(*MsgSetPriceFeederResponse)(nil),     // 3: elys.oracle.MsgSetPriceFeederResponse
-	(*MsgDeletePriceFeeder)(nil),          // 4: elys.oracle.MsgDeletePriceFeeder
-	(*MsgDeletePriceFeederResponse)(nil),  // 5: elys.oracle.MsgDeletePriceFeederResponse
-	(*MsgFeedMultiplePrices)(nil),         // 6: elys.oracle.MsgFeedMultiplePrices
-	(*MsgFeedMultiplePricesResponse)(nil), // 7: elys.oracle.MsgFeedMultiplePricesResponse
-	(*MsgRemoveAssetInfo)(nil),            // 8: elys.oracle.MsgRemoveAssetInfo
-	(*MsgRemoveAssetInfoResponse)(nil),    // 9: elys.oracle.MsgRemoveAssetInfoResponse
-	(*MsgAddPriceFeeders)(nil),            // 10: elys.oracle.MsgAddPriceFeeders
-	(*MsgAddPriceFeedersResponse)(nil),    // 11: elys.oracle.MsgAddPriceFeedersResponse
-	(*MsgRemovePriceFeeders)(nil),         // 12: elys.oracle.MsgRemovePriceFeeders
-	(*MsgRemovePriceFeedersResponse)(nil), // 13: elys.oracle.MsgRemovePriceFeedersResponse
-	(*MsgUpdateParams)(nil),               // 14: elys.oracle.MsgUpdateParams
-	(*MsgUpdateParamsResponse)(nil),       // 15: elys.oracle.MsgUpdateParamsResponse
-	(*MsgCreateAssetInfo)(nil),            // 16: elys.oracle.MsgCreateAssetInfo
-	(*MsgCreateAssetInfoResponse)(nil),    // 17: elys.oracle.MsgCreateAssetInfoResponse
-	(*Price)(nil),                         // 18: elys.oracle.Price
+	(*FeedPrice)(nil),                     // 0: elys.oracle.FeedPrice
+	(*MsgFeedPrice)(nil),                  // 1: elys.oracle.MsgFeedPrice
+	(*MsgFeedPriceResponse)(nil),          // 2: elys.oracle.MsgFeedPriceResponse
+	(*MsgSetPriceFeeder)(nil),             // 3: elys.oracle.MsgSetPriceFeeder
+	(*MsgSetPriceFeederResponse)(nil),     // 4: elys.oracle.MsgSetPriceFeederResponse
+	(*MsgDeletePriceFeeder)(nil),          // 5: elys.oracle.MsgDeletePriceFeeder
+	(*MsgDeletePriceFeederResponse)(nil),  // 6: elys.oracle.MsgDeletePriceFeederResponse
+	(*MsgFeedMultiplePrices)(nil),         // 7: elys.oracle.MsgFeedMultiplePrices
+	(*MsgFeedMultiplePricesResponse)(nil), // 8: elys.oracle.MsgFeedMultiplePricesResponse
+	(*MsgRemoveAssetInfo)(nil),            // 9: elys.oracle.MsgRemoveAssetInfo
+	(*MsgRemoveAssetInfoResponse)(nil),    // 10: elys.oracle.MsgRemoveAssetInfoResponse
+	(*MsgAddPriceFeeders)(nil),            // 11: elys.oracle.MsgAddPriceFeeders
+	(*MsgAddPriceFeedersResponse)(nil),    // 12: elys.oracle.MsgAddPriceFeedersResponse
+	(*MsgRemovePriceFeeders)(nil),         // 13: elys.oracle.MsgRemovePriceFeeders
+	(*MsgRemovePriceFeedersResponse)(nil), // 14: elys.oracle.MsgRemovePriceFeedersResponse
+	(*MsgUpdateParams)(nil),               // 15: elys.oracle.MsgUpdateParams
+	(*MsgUpdateParamsResponse)(nil),       // 16: elys.oracle.MsgUpdateParamsResponse
+	(*MsgCreateAssetInfo)(nil),            // 17: elys.oracle.MsgCreateAssetInfo
+	(*MsgCreateAssetInfoResponse)(nil),    // 18: elys.oracle.MsgCreateAssetInfoResponse
 	(*Params)(nil),                        // 19: elys.oracle.Params
 }
 var file_elys_oracle_tx_proto_depIdxs = []int32{
-	18, // 0: elys.oracle.MsgFeedMultiplePrices.prices:type_name -> elys.oracle.Price
-	19, // 1: elys.oracle.MsgUpdateParams.params:type_name -> elys.oracle.Params
-	0,  // 2: elys.oracle.Msg.FeedPrice:input_type -> elys.oracle.MsgFeedPrice
-	6,  // 3: elys.oracle.Msg.FeedMultiplePrices:input_type -> elys.oracle.MsgFeedMultiplePrices
-	2,  // 4: elys.oracle.Msg.SetPriceFeeder:input_type -> elys.oracle.MsgSetPriceFeeder
-	4,  // 5: elys.oracle.Msg.DeletePriceFeeder:input_type -> elys.oracle.MsgDeletePriceFeeder
-	8,  // 6: elys.oracle.Msg.RemoveAssetInfo:input_type -> elys.oracle.MsgRemoveAssetInfo
-	10, // 7: elys.oracle.Msg.AddPriceFeeders:input_type -> elys.oracle.MsgAddPriceFeeders
-	12, // 8: elys.oracle.Msg.RemovePriceFeeders:input_type -> elys.oracle.MsgRemovePriceFeeders
-	14, // 9: elys.oracle.Msg.UpdateParams:input_type -> elys.oracle.MsgUpdateParams
-	16, // 10: elys.oracle.Msg.CreateAssetInfo:input_type -> elys.oracle.MsgCreateAssetInfo
-	1,  // 11: elys.oracle.Msg.FeedPrice:output_type -> elys.oracle.MsgFeedPriceResponse
-	7,  // 12: elys.oracle.Msg.FeedMultiplePrices:output_type -> elys.oracle.MsgFeedMultiplePricesResponse
-	3,  // 13: elys.oracle.Msg.SetPriceFeeder:output_type -> elys.oracle.MsgSetPriceFeederResponse
-	5,  // 14: elys.oracle.Msg.DeletePriceFeeder:output_type -> elys.oracle.MsgDeletePriceFeederResponse
-	9,  // 15: elys.oracle.Msg.RemoveAssetInfo:output_type -> elys.oracle.MsgRemoveAssetInfoResponse
-	11, // 16: elys.oracle.Msg.AddPriceFeeders:output_type -> elys.oracle.MsgAddPriceFeedersResponse
-	13, // 17: elys.oracle.Msg.RemovePriceFeeders:output_type -> elys.oracle.MsgRemovePriceFeedersResponse
-	15, // 18: elys.oracle.Msg.UpdateParams:output_type -> elys.oracle.MsgUpdateParamsResponse
-	17, // 19: elys.oracle.Msg.CreateAssetInfo:output_type -> elys.oracle.MsgCreateAssetInfoResponse
-	11, // [11:20] is the sub-list for method output_type
-	2,  // [2:11] is the sub-list for method input_type
-	2,  // [2:2] is the sub-list for extension type_name
-	2,  // [2:2] is the sub-list for extension extendee
-	0,  // [0:2] is the sub-list for field type_name
+	0,  // 0: elys.oracle.MsgFeedPrice.feed_price:type_name -> elys.oracle.FeedPrice
+	0,  // 1: elys.oracle.MsgFeedMultiplePrices.feed_prices:type_name -> elys.oracle.FeedPrice
+	19, // 2: elys.oracle.MsgUpdateParams.params:type_name -> elys.oracle.Params
+	1,  // 3: elys.oracle.Msg.FeedPrice:input_type -> elys.oracle.MsgFeedPrice
+	7,  // 4: elys.oracle.Msg.FeedMultiplePrices:input_type -> elys.oracle.MsgFeedMultiplePrices
+	3,  // 5: elys.oracle.Msg.SetPriceFeeder:input_type -> elys.oracle.MsgSetPriceFeeder
+	5,  // 6: elys.oracle.Msg.DeletePriceFeeder:input_type -> elys.oracle.MsgDeletePriceFeeder
+	9,  // 7: elys.oracle.Msg.RemoveAssetInfo:input_type -> elys.oracle.MsgRemoveAssetInfo
+	11, // 8: elys.oracle.Msg.AddPriceFeeders:input_type -> elys.oracle.MsgAddPriceFeeders
+	13, // 9: elys.oracle.Msg.RemovePriceFeeders:input_type -> elys.oracle.MsgRemovePriceFeeders
+	15, // 10: elys.oracle.Msg.UpdateParams:input_type -> elys.oracle.MsgUpdateParams
+	17, // 11: elys.oracle.Msg.CreateAssetInfo:input_type -> elys.oracle.MsgCreateAssetInfo
+	2,  // 12: elys.oracle.Msg.FeedPrice:output_type -> elys.oracle.MsgFeedPriceResponse
+	8,  // 13: elys.oracle.Msg.FeedMultiplePrices:output_type -> elys.oracle.MsgFeedMultiplePricesResponse
+	4,  // 14: elys.oracle.Msg.SetPriceFeeder:output_type -> elys.oracle.MsgSetPriceFeederResponse
+	6,  // 15: elys.oracle.Msg.DeletePriceFeeder:output_type -> elys.oracle.MsgDeletePriceFeederResponse
+	10, // 16: elys.oracle.Msg.RemoveAssetInfo:output_type -> elys.oracle.MsgRemoveAssetInfoResponse
+	12, // 17: elys.oracle.Msg.AddPriceFeeders:output_type -> elys.oracle.MsgAddPriceFeedersResponse
+	14, // 18: elys.oracle.Msg.RemovePriceFeeders:output_type -> elys.oracle.MsgRemovePriceFeedersResponse
+	16, // 19: elys.oracle.Msg.UpdateParams:output_type -> elys.oracle.MsgUpdateParamsResponse
+	18, // 20: elys.oracle.Msg.CreateAssetInfo:output_type -> elys.oracle.MsgCreateAssetInfoResponse
+	12, // [12:21] is the sub-list for method output_type
+	3,  // [3:12] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_elys_oracle_tx_proto_init() }
@@ -9032,7 +9508,7 @@ func file_elys_oracle_tx_proto_init() {
 	file_elys_oracle_params_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_elys_oracle_tx_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgFeedPrice); i {
+			switch v := v.(*FeedPrice); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9044,7 +9520,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgFeedPriceResponse); i {
+			switch v := v.(*MsgFeedPrice); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9056,7 +9532,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgSetPriceFeeder); i {
+			switch v := v.(*MsgFeedPriceResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9068,7 +9544,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgSetPriceFeederResponse); i {
+			switch v := v.(*MsgSetPriceFeeder); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9080,7 +9556,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgDeletePriceFeeder); i {
+			switch v := v.(*MsgSetPriceFeederResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9092,7 +9568,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgDeletePriceFeederResponse); i {
+			switch v := v.(*MsgDeletePriceFeeder); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9104,7 +9580,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgFeedMultiplePrices); i {
+			switch v := v.(*MsgDeletePriceFeederResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9116,7 +9592,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgFeedMultiplePricesResponse); i {
+			switch v := v.(*MsgFeedMultiplePrices); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9128,7 +9604,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgRemoveAssetInfo); i {
+			switch v := v.(*MsgFeedMultiplePricesResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9140,7 +9616,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgRemoveAssetInfoResponse); i {
+			switch v := v.(*MsgRemoveAssetInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9152,7 +9628,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgAddPriceFeeders); i {
+			switch v := v.(*MsgRemoveAssetInfoResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9164,7 +9640,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgAddPriceFeedersResponse); i {
+			switch v := v.(*MsgAddPriceFeeders); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9176,7 +9652,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgRemovePriceFeeders); i {
+			switch v := v.(*MsgAddPriceFeedersResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9188,7 +9664,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgRemovePriceFeedersResponse); i {
+			switch v := v.(*MsgRemovePriceFeeders); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9200,7 +9676,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgUpdateParams); i {
+			switch v := v.(*MsgRemovePriceFeedersResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9212,7 +9688,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgUpdateParamsResponse); i {
+			switch v := v.(*MsgUpdateParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9224,7 +9700,7 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgCreateAssetInfo); i {
+			switch v := v.(*MsgUpdateParamsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -9236,6 +9712,18 @@ func file_elys_oracle_tx_proto_init() {
 			}
 		}
 		file_elys_oracle_tx_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgCreateAssetInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_oracle_tx_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgCreateAssetInfoResponse); i {
 			case 0:
 				return &v.state
@@ -9254,7 +9742,7 @@ func file_elys_oracle_tx_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_oracle_tx_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
