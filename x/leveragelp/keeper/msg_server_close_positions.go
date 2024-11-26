@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"context"
-	errorsmod "cosmossdk.io/errors"
 	"fmt"
 	"strings"
+
+	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -34,6 +35,11 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if err != nil {
 			// Add log about error or not liquidated
 			liqLog = append(liqLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
+		} else {
+			ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventCloseUnhealthyPosition,
+				sdk.NewAttribute("address", position.Address),
+				sdk.NewAttribute("id", fmt.Sprintf("%d", position.Id)),
+			))
 		}
 
 		if k.hooks != nil {
@@ -71,6 +77,11 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if err != nil {
 			// Add log about error or not closed
 			closeLog = append(closeLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
+		} else {
+			ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClosePositionStopLoss,
+				sdk.NewAttribute("address", position.Address),
+				sdk.NewAttribute("id", fmt.Sprintf("%d", position.Id)),
+			))
 		}
 
 		if k.hooks != nil {
