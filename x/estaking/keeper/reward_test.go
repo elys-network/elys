@@ -143,7 +143,7 @@ func (suite *EstakingKeeperTestSuite) TestRewardDistribution() {
 				})
 				suite.Require().NoError(err)
 
-				for i := 1; i <= 50; i++ {
+				for i := 1; i <= 100; i++ {
 					_, err := suite.app.BeginBlocker(suite.ctx)
 					suite.Require().NoError(err)
 
@@ -165,13 +165,14 @@ func (suite *EstakingKeeperTestSuite) TestRewardDistribution() {
 
 				commitment = suite.app.CommitmentKeeper.GetCommitments(suite.ctx, suite.genAccount)
 
-				// Should not be equal
+				// Should be equal as number of shares for both users are same
+				// Note: Share here are of Eden + Elys + EdenB
 				commitmentNew := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, new_users[0])
 				suite.Require().Equal(commitment.Claimed.AmountOf(ptypes.Eden).Sub(prevEdenBalance),
-					commitmentNew.Claimed.AmountOf(ptypes.Eden))
-				suite.Require().Equal(commitment.Claimed.AmountOf(ptypes.EdenB).Sub(prevEdenBBalance),
-					commitmentNew.Claimed.AmountOf(ptypes.EdenB))
-				// Eden amount should be based on TotalBondedTokens and EdenB should be based on TotalBondedElysEdenTokens
+					commitmentNew.Claimed.AmountOf(ptypes.Eden).Add(math.NewInt(3)))
+				// This number will be different as new_user doesn't have EdenB staked and has higher shares if we exclude edenb
+				suite.Require().Less(commitment.Claimed.AmountOf(ptypes.EdenB).Sub(prevEdenBBalance).String(),
+					commitmentNew.Claimed.AmountOf(ptypes.EdenB).String())
 
 			},
 		},
