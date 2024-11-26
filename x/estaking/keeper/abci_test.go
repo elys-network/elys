@@ -60,7 +60,8 @@ func (suite *EstakingKeeperTestSuite) TestAbci() {
 					suite.app.CommitmentKeeper, suite.app.EstakingKeeper,
 					&suite.app.AssetprofileKeeper,
 					authtypes.FeeCollectorName, suite.app.GetSubspace(distrtypes.ModuleName))
-				distrAppModule.AllocateTokens(suite.ctx)
+				distrAppModule.AllocateEdenUsdcTokens(suite.ctx)
+				distrAppModule.AllocateEdenBTokens(suite.ctx)
 
 				// withdraw eden rewards
 				msgServer := keeper.NewMsgServerImpl(*suite.app.EstakingKeeper)
