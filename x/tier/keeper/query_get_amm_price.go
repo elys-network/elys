@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	"github.com/elys-network/elys/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -15,9 +16,9 @@ func (k Keeper) GetAmmPrice(goCtx context.Context, req *types.QueryGetAmmPriceRe
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	resp := k.CalcAmmPrice(ctx, req.Denom, uint64(req.Decimal))
+	resp, decimal := k.CalcAmmPrice(ctx, req.Denom, uint64(req.Decimal))
 
 	return &types.QueryGetAmmPriceResponse{
-		Total: resp,
+		Total: resp.Quo(oraclekeeper.Pow10(decimal)),
 	}, nil
 }

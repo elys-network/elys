@@ -1,9 +1,11 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 )
 
 // SwapOutAmtGivenIn is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
@@ -27,14 +29,14 @@ func (p *Pool) GetTokenARate(
 		), nil
 	}
 
-	priceA := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenA)
+	priceA, tokenADecimal := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenA)
 	if priceA.IsZero() {
 		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenA)
 	}
-	priceB := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenB)
+	priceB, tokenBDecimal := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenB)
 	if priceB.IsZero() {
 		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenB)
 	}
 
-	return priceA.Quo(priceB), nil
+	return priceA.Mul(oraclekeeper.Pow10(tokenBDecimal)).Quo(priceB.Mul(oraclekeeper.Pow10(tokenADecimal))), nil
 }

@@ -5,6 +5,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 )
 
 type PoolAssetUSDValue struct {
@@ -20,15 +21,16 @@ type InternalSwapRequest struct {
 func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins) (sdkmath.LegacyDec, error) {
 	joinValue := sdkmath.LegacyZeroDec()
 	for _, asset := range tokensIn {
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
+		tokenPrice, tokenDecimal := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
 		if tokenPrice.IsZero() {
 			return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", asset.Denom)
 		}
-		v := tokenPrice.Mul(sdkmath.LegacyNewDecFromInt(asset.Amount))
+		v := tokenPrice.Mul(sdkmath.LegacyNewDecFromInt(asset.Amount)).Quo(oraclekeeper.Pow10(tokenDecimal))
 		joinValue = joinValue.Add(v)
 	}
 	return joinValue, nil
 
+	// TODO: Before removing comments, make sure to update calculations related to token price
 	// Note: Disable slippage handling for oracle pool due to 1 hour lockup on oracle lp
 	// // weights := NormalizedWeights(p.PoolAssets)
 	// weights, err := GetOraclePoolNormalizedWeights(ctx, oracleKeeper, p.PoolAssets)

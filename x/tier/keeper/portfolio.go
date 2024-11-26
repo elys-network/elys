@@ -20,6 +20,7 @@ import (
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tier/types"
 )
@@ -107,25 +108,25 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 				if !found {
 					continue
 				}
-				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+				tokenPrice, tokenDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
 				params := k.stablestakeKeeper.GetParams(ctx)
-				usdValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice)
+				usdValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice).Quo(oraclekeeper.Pow10(tokenDecimal))
 				totalCommit = totalCommit.Add(usdValue)
 				continue
 			}
 			if commitment.Denom == ptypes.Eden {
 				commitment.Denom = ptypes.Elys
 			}
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
+			tokenPrice, tokenDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, commitment.Denom)
 			if !found {
 				continue
 			}
 			if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
-				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+				tokenPrice, tokenDecimal = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := commitment.Amount.ToLegacyDec()
-			totalCommit = totalCommit.Add(amount.Mul(tokenPrice))
+			totalCommit = totalCommit.Add(amount.Mul(tokenPrice).Quo(oraclekeeper.Pow10(tokenDecimal)))
 		}
 	}
 
@@ -140,15 +141,15 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 	if err != nil {
 		panic(err)
 	}
-	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, bondDenom)
+	tokenPrice, tokenDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, bondDenom)
 	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, bondDenom)
 	if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
-		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+		tokenPrice, tokenDecimal = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	}
 	if found {
 		for _, delegation := range delegations {
 			amount := delegation.Shares
-			totalDelegations = totalDelegations.Add(amount.Mul(tokenPrice))
+			totalDelegations = totalDelegations.Add(amount.Mul(tokenPrice).Quo(oraclekeeper.Pow10(tokenDecimal)))
 		}
 	}
 
@@ -163,7 +164,7 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 		for _, delegation := range unbondingDelegations {
 			for _, entry := range delegation.Entries {
 				amount := entry.Balance.ToLegacyDec()
-				totalUnbondings = totalUnbondings.Add(amount.Mul(tokenPrice))
+				totalUnbondings = totalUnbondings.Add(amount.Mul(tokenPrice).Quo(oraclekeeper.Pow10(tokenDecimal)))
 			}
 		}
 	}
@@ -180,16 +181,16 @@ func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdkma
 			if balance.Denom == ptypes.Eden {
 				balance.Denom = ptypes.Elys
 			}
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+			tokenPrice, tokenDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 			if !found {
 				continue
 			}
 			if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
-				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+				tokenPrice, tokenDecimal = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := balance.Amount.ToLegacyDec()
-			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+			totalValue = totalValue.Add(amount.Mul(tokenPrice).Quo(oraclekeeper.Pow10(tokenDecimal)))
 		}
 	}
 
@@ -198,16 +199,16 @@ func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdkma
 			if balance.Denom == ptypes.Eden {
 				balance.Denom = ptypes.Elys
 			}
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+			tokenPrice, tokenDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 			if !found {
 				continue
 			}
 			if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
-				tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+				tokenPrice, tokenDecimal = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
 			amount := balance.Amount.ToLegacyDec()
-			totalValue = totalValue.Add(amount.Mul(tokenPrice))
+			totalValue = totalValue.Add(amount.Mul(tokenPrice).Quo(oraclekeeper.Pow10(tokenDecimal)))
 		}
 	}
 	return totalValue
@@ -251,16 +252,16 @@ func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 		if balance.Denom == ptypes.Eden {
 			balance.Denom = ptypes.Elys
 		}
-		tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+		tokenPrice, tokenDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
 		asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 		if !found {
 			continue
 		}
 		if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
-			tokenPrice = k.CalcAmmPrice(ctx, balance.Denom, asset.Decimals)
+			tokenPrice, tokenDecimal = k.CalcAmmPrice(ctx, balance.Denom, asset.Decimals)
 		}
 		amount := balance.Amount.ToLegacyDec()
-		totalValue = totalValue.Add(amount.Mul(tokenPrice))
+		totalValue = totalValue.Add(amount.Mul(tokenPrice).Quo(oraclekeeper.Pow10(tokenDecimal)))
 	}
 	return totalValue
 }
@@ -285,9 +286,9 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) (s
 			if !found {
 				continue
 			}
-			usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+			usdcPrice, usdcDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
 			liab := debt.GetTotalLiablities().ToLegacyDec()
-			totalBorrow = totalBorrow.Add(liab.Mul(usdcPrice))
+			totalBorrow = totalBorrow.Add(liab.Mul(usdcPrice).Quo(oraclekeeper.Pow10(usdcDecimal)))
 		}
 		netValue = totalValue.Sub(totalBorrow)
 	}
@@ -298,12 +299,14 @@ func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdkmat
 	if denom == ptypes.Eden {
 		denom = ptypes.Elys
 	}
-	tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+	tokenPriceOracle, tokenDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
 	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
 	if !found {
 		tokenPriceOracle = sdkmath.LegacyNewDec(0)
 	}
-	tokenPriceAmm := k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+	tokenPriceOracle = tokenPriceOracle.Quo(oraclekeeper.Pow10(tokenDecimal))
+
+	tokenPriceAmm, tokenDecimalAmm := k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	info, found := k.oracleKeeper.GetAssetInfo(ctx, denom)
 	tokenPriceOracleDec := sdkmath.LegacyZeroDec()
 	if found {
@@ -313,28 +316,28 @@ func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdkmat
 		}
 	}
 
-	return tokenPriceOracle, tokenPriceAmm, tokenPriceOracleDec
+	return tokenPriceOracle, tokenPriceAmm.Quo(oraclekeeper.Pow10(tokenDecimalAmm)), tokenPriceOracleDec
 }
 
-func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdkmath.LegacyDec {
+func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) (sdkmath.LegacyDec, uint64) {
 	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found || denom == usdcDenom {
-		return sdkmath.LegacyZeroDec()
+		return sdkmath.LegacyZeroDec(), 0
 	}
-	usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+	usdcPrice, usdcDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
 	resp, err := k.amm.InRouteByDenom(ctx, &ammtypes.QueryInRouteByDenomRequest{DenomIn: denom, DenomOut: usdcDenom})
 	if err != nil {
-		return sdkmath.LegacyZeroDec()
+		return sdkmath.LegacyZeroDec(), 0
 	}
 
 	routes := resp.InRoute
-	tokenIn := sdk.NewCoin(denom, sdkmath.NewInt(Pow10(decimal).TruncateInt64()))
+	tokenIn := sdk.NewCoin(denom, sdkmath.NewInt(oraclekeeper.Pow10(decimal).TruncateInt64()))
 	discount := sdkmath.LegacyNewDec(1)
 	spotPrice, _, _, _, _, _, _, _, err := k.amm.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, sdkmath.LegacyZeroDec())
 	if err != nil {
-		return sdkmath.LegacyZeroDec()
+		return sdkmath.LegacyZeroDec(), 0
 	}
-	return spotPrice.Mul(usdcPrice)
+	return spotPrice.Mul(usdcPrice), usdcDecimal
 }
 
 func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec {
@@ -342,11 +345,11 @@ func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.
 	if !found {
 		sdkmath.LegacyZeroDec()
 	}
-	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+	tokenPrice, tokenDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
 	if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
-		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+		tokenPrice, tokenDecimal = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	}
-	return amount.ToLegacyDec().Mul(tokenPrice)
+	return amount.ToLegacyDec().Mul(tokenPrice).Quo(oraclekeeper.Pow10(tokenDecimal))
 }
 
 // SetPortfolio set a specific portfolio in the store from its index
@@ -464,14 +467,6 @@ func GetPoolIdFromShareDenom(shareDenom string) (uint64, error) {
 		return 0, err
 	}
 	return uint64(poolId), nil
-}
-
-func Pow10(decimal uint64) (value sdkmath.LegacyDec) {
-	value = sdkmath.LegacyNewDec(1)
-	for i := 0; i < int(decimal); i++ {
-		value = value.Mul(sdkmath.LegacyNewDec(10))
-	}
-	return
 }
 
 // remove after migrations

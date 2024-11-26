@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 )
 
 func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
@@ -24,10 +25,10 @@ func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) 
 		Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
 	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
-	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, depositDenom)
+	price, denomDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, depositDenom)
 
 	for _, asset := range ammPool.PoolAssets {
-		if asset.Token.Denom == depositDenom && price.MulInt(asset.Token.Amount).LT(leverageLpTvl) {
+		if asset.Token.Denom == depositDenom && price.MulInt(asset.Token.Amount).Quo(oraclekeeper.Pow10(denomDecimal)).LT(leverageLpTvl) {
 			return types.ErrInsufficientUsdcAfterOp
 		}
 	}

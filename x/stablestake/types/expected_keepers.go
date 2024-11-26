@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -37,6 +38,6 @@ type AssetProfileKeeper interface {
 // OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) (sdkmath.LegacyDec, uint64)
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }

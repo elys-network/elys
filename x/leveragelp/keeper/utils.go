@@ -12,6 +12,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -108,10 +109,11 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 	for _, position := range positions {
 		var positionAndInterest types.PositionAndInterest
 		positionAndInterest.Position = position
-		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Position.Collateral.Denom)
+		price, denomDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Position.Collateral.Denom)
 		interestRateHour := params.InterestRate.Quo(hours)
 		positionAndInterest.InterestRateHour = interestRateHour
-		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(sdkmath.LegacyDec(position.Position.Liabilities.Mul(price.RoundInt())))
+		// TODO: Check calculation
+		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(sdkmath.LegacyDec(position.Position.Liabilities.Mul(price.Quo(oraclekeeper.Pow10(denomDecimal)).RoundInt())))
 		positions_and_interest = append(positions_and_interest, &positionAndInterest)
 	}
 

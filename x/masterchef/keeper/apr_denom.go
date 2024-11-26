@@ -7,6 +7,7 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/masterchef/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
@@ -108,10 +109,11 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				return math.LegacyZeroDec(), nil
 			}
 
-			usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+			usdcDenomPrice, usdcDenomDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 			yearlyDexRewardAmount := amount.
 				Mul(usdcDenomPrice).
 				MulInt64(totalBlocksPerYear).
+				Quo(oraclekeeper.Pow10(usdcDenomDecimal)).
 				QuoInt64(params.DexRewardsStakers.NumBlocks)
 
 			apr := yearlyDexRewardAmount.
@@ -155,10 +157,11 @@ func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (ma
 	rewardCoins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, dailyEdenRewardsTotal.RoundInt()))
 	rewardCoins = rewardCoins.Add(sdk.NewCoin(baseCurrency, dailyDexRewardsTotal.Add(dailyGasRewardsTotal).RoundInt()))
 
-	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	usdcDenomPrice, usdcDenomDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
 	totalRewardsUsd := usdcDenomPrice.Mul(dailyDexRewardsTotal.Add(dailyGasRewardsTotal)).
+		Quo(oraclekeeper.Pow10(usdcDenomDecimal)).
 		Add(edenDenomPrice.Mul(dailyEdenRewardsTotal))
 	return totalRewardsUsd, rewardCoins
 }

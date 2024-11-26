@@ -9,6 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tier/types"
 	"google.golang.org/grpc/codes"
@@ -40,7 +41,7 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 		return nil, err
 	}
 
-	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+	tokenPrice, tokenDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
 	params := k.stablestakeKeeper.GetParams(ctx)
 
 	usersData := []*types.UserData{}
@@ -56,7 +57,7 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 
 		for _, commitment := range user.CommittedTokens {
 			if strings.HasPrefix(commitment.Denom, "stablestake/share") {
-				fiatValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice)
+				fiatValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice).Quo(oraclekeeper.Pow10(tokenDecimal))
 				u.Pools = append(u.Pools, &types.Pool{
 					Pool:      "USDC",
 					PoolId:    commitment.Denom,

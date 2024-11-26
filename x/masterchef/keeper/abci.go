@@ -8,6 +8,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/masterchef/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
@@ -620,7 +621,7 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 // Update APR for AMM pool
 func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL math.LegacyDec, edenDenomPrice math.LegacyDec) {
 	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	usdcDenomPrice, usdcDenomDecimal := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
 		tvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
@@ -652,11 +653,13 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 			poolInfo.DexApr = lastAccum.DexReward.
 				MulInt64(totalBlocksPerYear).
 				Mul(usdcDenomPrice).
+				Quo(oraclekeeper.Pow10(usdcDenomDecimal)).
 				Quo(tvl)
 
 			poolInfo.GasApr = lastAccum.GasReward.
 				MulInt64(totalBlocksPerYear).
 				Mul(usdcDenomPrice).
+				Quo(oraclekeeper.Pow10(usdcDenomDecimal)).
 				Quo(tvl)
 		} else {
 			duration := lastAccum.Timestamp - firstAccum.Timestamp
@@ -666,12 +669,14 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 				MulInt64(secondsInYear).
 				QuoInt64(int64(duration)).
 				Mul(usdcDenomPrice).
+				Quo(oraclekeeper.Pow10(usdcDenomDecimal)).
 				Quo(tvl)
 
 			poolInfo.GasApr = lastAccum.GasReward.Sub(firstAccum.GasReward).
 				MulInt64(secondsInYear).
 				QuoInt64(int64(duration)).
 				Mul(usdcDenomPrice).
+				Quo(oraclekeeper.Pow10(usdcDenomDecimal)).
 				Quo(tvl)
 		}
 		k.SetPoolInfo(ctx, poolInfo)

@@ -7,6 +7,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 )
 
 func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper, pool Pool, exitingShares sdkmath.Int, tokenOutDenom string) (sdkmath.LegacyDec, error) {
@@ -107,7 +108,7 @@ func CalcExitPool(
 
 		accountedAssets := pool.GetAccountedBalance(ctx, accountedPoolKeeper, pool.PoolAssets)
 		initialWeightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, accountedAssets)
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+		tokenPrice, tokenDecimal := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
 		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom)
 		if err != nil {
 			return sdk.Coins{}, sdkmath.LegacyZeroDec(), err
@@ -118,7 +119,7 @@ func CalcExitPool(
 			return sdk.Coins{}, sdkmath.LegacyZeroDec(), ErrAmountTooLow
 		}
 
-		oracleOutAmount := exitValueWithoutSlippage.Quo(tokenPrice)
+		oracleOutAmount := exitValueWithoutSlippage.Mul(oraclekeeper.Pow10(tokenDecimal)).Quo(tokenPrice)
 
 		newAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
 			sdk.Coins{},

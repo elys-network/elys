@@ -127,14 +127,14 @@ func Pow10(decimal uint64) (value sdkmath.LegacyDec) {
 	return
 }
 
-func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec {
+func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) (sdkmath.LegacyDec, uint64) {
 	info, found := k.GetAssetInfo(ctx, denom)
 	if !found {
-		return sdkmath.LegacyZeroDec()
+		return sdkmath.LegacyZeroDec(), 0
 	}
 	price, found := k.GetAssetPrice(ctx, info.Display)
 	if !found {
-		return sdkmath.LegacyZeroDec()
+		return sdkmath.LegacyZeroDec(), info.Decimal
 	}
-	return price.Price.Quo(Pow10(info.Decimal))
+	return price.Price, info.Decimal
 }

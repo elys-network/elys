@@ -10,6 +10,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
 )
 
 func (p *Pool) addToPoolAssetBalances(coins sdk.Coins) error {
@@ -320,7 +321,7 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 	totalWeight := sdkmath.ZeroInt()
 	oracleAssetsWeight := sdkmath.ZeroInt()
 	for _, asset := range p.PoolAssets {
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
+		tokenPrice, tokenDecimal := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
 		totalWeight = totalWeight.Add(asset.Weight)
 		if tokenPrice.IsZero() {
 			if p.PoolParams.UseOracle {
@@ -334,7 +335,7 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 					amount = accountedPoolAmt
 				}
 			}
-			v := amount.ToLegacyDec().Mul(tokenPrice)
+			v := amount.ToLegacyDec().Mul(tokenPrice).Quo(oraclekeeper.Pow10(tokenDecimal))
 			oracleAssetsTVL = oracleAssetsTVL.Add(v)
 			oracleAssetsWeight = oracleAssetsWeight.Add(asset.Weight)
 		}

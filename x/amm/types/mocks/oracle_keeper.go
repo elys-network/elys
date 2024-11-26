@@ -81,7 +81,7 @@ func (_c *OracleKeeper_GetAssetPrice_Call) RunAndReturn(run func(types.Context, 
 }
 
 // GetAssetPriceFromDenom provides a mock function with given fields: ctx, denom
-func (_m *OracleKeeper) GetAssetPriceFromDenom(ctx types.Context, denom string) math.LegacyDec {
+func (_m *OracleKeeper) GetAssetPriceFromDenom(ctx types.Context, denom string) (math.LegacyDec,uint64) {
 	ret := _m.Called(ctx, denom)
 
 	if len(ret) == 0 {
@@ -89,13 +89,15 @@ func (_m *OracleKeeper) GetAssetPriceFromDenom(ctx types.Context, denom string) 
 	}
 
 	var r0 math.LegacyDec
-	if rf, ok := ret.Get(0).(func(types.Context, string) math.LegacyDec); ok {
-		r0 = rf(ctx, denom)
+	var r1 uint64
+	if rf, ok := ret.Get(0).(func(types.Context, string) (math.LegacyDec,uint64)); ok {
+		r0,r1 = rf(ctx, denom)
 	} else {
 		r0 = ret.Get(0).(math.LegacyDec)
+		r1 = ret.Get(1).(uint64)
 	}
 
-	return r0
+	return r0, r1
 }
 
 // OracleKeeper_GetAssetPriceFromDenom_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAssetPriceFromDenom'
