@@ -43,6 +43,8 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 		if err != nil {
 			// Add log about error or not executed
 			spotLog = append(spotLog, fmt.Sprintf("Spot order Id:%d cannot be executed due to err: %s", spotOrderId, err.Error()))
+		} else {
+			ctx.EventManager().EmitEvent(types.NewExecuteSpotOrderEvt(spotOrder))
 		}
 	}
 
@@ -73,6 +75,8 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 		if err != nil {
 			// Add log about error or not executed
 			perpLog = append(perpLog, fmt.Sprintf("Perpetual order Id:%d cannot be executed due to err: %s", perpetualOrderId, err.Error()))
+		} else {
+			ctx.EventManager().EmitEvent(types.NewExecutePerpetualOrderEvt(perpetualOrder))
 		}
 	}
 
