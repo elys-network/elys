@@ -9,20 +9,20 @@ import (
 
 // InitGenesis initializes the module's state from a provided genesis state.
 func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
-	var shouldRunEdenValHook = false
-	var shouldRunEdenBValHook = false
+	//var shouldRunEdenValHook = false
+	//var shouldRunEdenBValHook = false
 	edenValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.Eden))
 	edenBValAddr := sdk.ValAddress(authtypes.NewModuleAddress(ptypes.EdenB))
 
 	// Create validators for Eden and EdenB
 	if genState.Params.EdenCommitVal == "" {
 		genState.Params.EdenCommitVal = edenValAddr.String()
-		shouldRunEdenValHook = true
+		//shouldRunEdenValHook = true
 	}
 
 	if genState.Params.EdenbCommitVal == "" {
 		genState.Params.EdenbCommitVal = edenBValAddr.String()
-		shouldRunEdenBValHook = true
+		//shouldRunEdenBValHook = true
 	}
 
 	// this line is used by starport scaffolding # genesis/module/init
@@ -31,20 +31,20 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 		k.SetElysStaked(ctx, snap)
 	}
 
-	if k.Hooks() != nil {
-		if shouldRunEdenValHook {
-			err := k.Hooks().AfterValidatorCreated(ctx, edenValAddr)
-			if err != nil {
-				panic(err)
-			}
-		}
-		if shouldRunEdenBValHook {
-			err := k.Hooks().AfterValidatorCreated(ctx, edenBValAddr)
-			if err != nil {
-				panic(err)
-			}
-		}
-	}
+	//if k.Hooks() != nil {
+	//	if shouldRunEdenValHook {
+	//		err := k.Hooks().AfterValidatorCreated(ctx, edenValAddr)
+	//		if err != nil {
+	//			panic(err)
+	//		}
+	//	}
+	//	if shouldRunEdenBValHook {
+	//		err := k.Hooks().AfterValidatorCreated(ctx, edenBValAddr)
+	//		if err != nil {
+	//			panic(err)
+	//		}
+	//	}
+	//}
 }
 
 // ExportGenesis returns the module's exported genesis
