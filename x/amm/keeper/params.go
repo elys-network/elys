@@ -46,6 +46,7 @@ func (k Keeper) CheckBaseAssetExist(ctx sdk.Context, denom string) bool {
 	for _, asset := range params.BaseAssets {
 		if asset == denom {
 			found = true
+			break
 		}
 	}
 	return found
