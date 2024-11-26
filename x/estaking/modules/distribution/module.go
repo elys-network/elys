@@ -104,7 +104,7 @@ func FilterDenoms(coins sdk.Coins, denoms ...string) sdk.Coins {
 }
 
 // AllocateTokens handles distribution of the collected fees
-// Handles Eden and Usdc rewards
+// USDC and Eden is distributed for staking Elys and locking Eden and locking EdenB
 func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 	// fetch and clear the collected fees for distribution, since this is
 	// called in BeginBlock, collected fees will be from the previous block
@@ -144,6 +144,7 @@ func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 		panic(err)
 	}
 
+	// We consider ELYS + EDEN + EDENB bonded tokens here
 	totalBondedTokens, err := am.estakingKeeper.TotalBondedTokens(ctx)
 	if err != nil {
 		panic(err)
@@ -183,7 +184,7 @@ func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 }
 
 // AllocateTokens handles distribution of the collected fees
-// Handles EdenB rewards
+// EdenB is distributed for staking Elys and locking Eden, not for locking EdenB
 func (am AppModule) AllocateEdenBTokens(ctx sdk.Context) {
 	// fetch and clear the collected fees for distribution, since this is
 	// called in BeginBlock, collected fees will be from the previous block
@@ -226,6 +227,7 @@ func (am AppModule) AllocateEdenBTokens(ctx sdk.Context) {
 		panic(err)
 	}
 
+	// We consider ELYS and EDEN bonded tokens, EdenB bonded tokens are excluded here
 	totalBondedElysEdenTokens, err := am.estakingKeeper.TotalBondedElysEdenTokens(ctx)
 	if err != nil {
 		panic(err)
