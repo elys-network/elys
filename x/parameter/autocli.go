@@ -36,10 +36,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Skip:      true, // skipped because authority gated
 				},
 				{
-					RpcMethod: "UpdateBrokerAddress",
-					Skip:      true, // skipped because authority gated
-				},
-				{
 					RpcMethod: "UpdateTotalBlocksPerYear",
 					Skip:      true, // skipped because authority gated
 				},
