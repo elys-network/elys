@@ -89,7 +89,7 @@ func TestApplyDiscount(t *testing.T) {
 			wantFee:  sdkmath.LegacyNewDecWithPrec(100, 2),
 		},
 		{
-			name:     "Positive discount with valid broker address",
+			name:     "Positive discount",
 			swapFee:  sdkmath.LegacyNewDecWithPrec(100, 2),
 			discount: sdkmath.LegacyNewDecWithPrec(10, 2), // 0.10 (10%)
 			wantFee:  sdkmath.LegacyNewDecWithPrec(90, 2), // 0.90 after discount
@@ -113,7 +113,7 @@ func TestApplyDiscount(t *testing.T) {
 			wantFee:  sdkmath.LegacyZeroDec(),
 		},
 		{
-			name:     "Large discount with valid broker address",
+			name:     "Large discount",
 			swapFee:  sdkmath.LegacyNewDecWithPrec(100, 2),
 			discount: sdkmath.LegacyNewDecWithPrec(9000, 4), // 0.90 (90%)
 			wantFee:  sdkmath.LegacyNewDecWithPrec(10, 2),   // 0.10 after discount

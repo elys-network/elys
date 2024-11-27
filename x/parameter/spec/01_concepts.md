@@ -4,7 +4,7 @@ order: 1
 
 # Concepts
 
-The `parameter` module in the Elys Network manages key configuration parameters for the network, enabling dynamic updates and retrievals. It facilitates the modification of various parameters related to commissions, voting power, self-delegation, broker address and total blocks per year.
+The `parameter` module in the Elys Network manages key configuration parameters for the network, enabling dynamic updates and retrievals. It facilitates the modification of various parameters related to commissions, voting power, self-delegation and total blocks per year.
 
 ## Module Components
 

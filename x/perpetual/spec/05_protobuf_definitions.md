@@ -573,9 +573,7 @@ The `Msg` service defines the gRPC transaction service for the perpetual module.
 ### Msg Service
 
 - **Open**: Opens a new position.
-- **BrokerOpen**: Broker opens a new position.
 - **Close**: Closes an existing position.
-- **BrokerClose**: Broker closes an existing position.
 - **UpdateParams**: Updates the module parameters.
 - **Whitelist**: Adds an address to the whitelist.
 - **Dewhitelist**: Removes an address from the whitelist.
@@ -618,46 +616,6 @@ message MsgOpenResponse {
 }
 ```
 
-### MsgBrokerOpen
-
-**Request**:
-
-- **string creator**: Creator of the message.
-- **Position position**: Position to open.
-- **string leverage**: Leverage for the position.
-- **string trading_asset**: Trading asset.
-- **cosmos.base.v1beta1.Coin collateral**: Collateral.
-- **string take_profit_price**: Take profit price.
-- **string owner**: Owner of the position.
-
-**Response**:
-
-- **uint64 id**: ID of the opened position.
-
-```proto
-message MsgBrokerOpen {
-  string creator = 1;
-  Position position = 2;
-  string leverage = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string trading_asset = 4;
-  cosmos.base.v1beta1.Coin collateral = 5 [
-    (gogoproto.nullable) = false
-  ];
-  string take_profit_price = 6 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string owner = 7;
-}
-
-message MsgOpenResponse {
-  uint64 id = 1;
-}
-```
-
 ### MsgClose
 
 **Request**:
@@ -679,40 +637,6 @@ message MsgClose {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-}
-
-message MsgCloseResponse {
-  uint64 id = 1;
-  string amount = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-}
-```
-
-### MsgBrokerClose
-
-**Request**:
-
-- **string creator**: Creator of the message.
-- **uint64 id**: ID of the position to close.
-- **string amount**: Amount to close.
-- **string owner**: Owner of the position.
-
-**Response**:
-
-- **uint64 id**: ID of the closed position.
-- **string amount**: Closed amount.
-
-```proto
-message MsgBrokerClose {
-  string creator = 1;
-  uint64 id = 2;
-  string amount = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string owner = 4;
 }
 
 message MsgCloseResponse {
