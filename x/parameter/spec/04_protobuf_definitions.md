@@ -8,7 +8,7 @@ order: 4
 
 ### Params
 
-The `Params` message defines the structure of the configuration parameters, including commission rates, voting power, self-delegation and broker address.
+The `Params` message defines the structure of the configuration parameters, including commission rates, voting power and self-delegation.
 
 ```proto
 message Params {
@@ -24,9 +24,8 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string broker_address = 4;
-  int64 total_blocks_per_year = 5;
-  int64 rewards_data_lifetime = 6;
+  int64 total_blocks_per_year = 4;
+  int64 rewards_data_lifetime = 5;
 }
 ```
 
