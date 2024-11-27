@@ -4,14 +4,15 @@ import (
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
 const (
-	TypeEvtCloseSpotOrder        = "tradeshield/close_spot_order"
-	TypeEvtCancelPerpetualOrder  = "tradeshield/cancel_perpetual_order"
-	TypeEvtExecuteOrders         = "tradeshield/execute_orders"
-	TypeEvtExecutePerpetualOrder = "tradeshield/execute_perpetual_order"
-	TypeEvtExecuteSpotOrder      = "tradeshield/execute_spot_order"
+	TypeEvtCloseSpotOrder                 = "tradeshield/close_spot_order"
+	TypeEvtCancelPerpetualOrder           = "tradeshield/cancel_perpetual_order"
+	TypeEvtExecuteOrders                  = "tradeshield/execute_orders"
+	TypeEvtExecuteLimitOpenPerpetualOrder = "tradeshield/execute_perpetual_limit_open_order"
+	TypeEvtExecuteSpotOrder               = "tradeshield/execute_spot_order"
 )
 
 func EmitCloseSpotOrderEvent(ctx sdk.Context, order SpotOrder) {
@@ -56,7 +57,7 @@ func NewCancelPerpetualOrderEvt(order PerpetualOrder) sdk.Event {
 	)
 }
 
-func NewExecuteSpotOrderEvt(order SpotOrder) sdk.Event {
+func NewExecuteSpotOrderEvt(order SpotOrder, res *ammtypes.MsgSwapByDenomResponse) sdk.Event {
 	return sdk.NewEvent(TypeEvtExecuteSpotOrder,
 		sdk.NewAttribute("order_type", order.OrderType.String()),
 		sdk.NewAttribute("order_id", strconv.FormatInt(int64(order.OrderId), 10)),
@@ -65,15 +66,21 @@ func NewExecuteSpotOrderEvt(order SpotOrder) sdk.Event {
 		sdk.NewAttribute("owner_address", order.OwnerAddress),
 		sdk.NewAttribute("order_target_denom", order.OrderTargetDenom),
 		sdk.NewAttribute("date", order.Date.String()),
+		sdk.NewAttribute("amount", res.Amount.String()),
+		sdk.NewAttribute("spot_price", res.SpotPrice.String()),
+		sdk.NewAttribute("swap_fee", res.SwapFee.String()),
+		sdk.NewAttribute("discount", res.Discount.String()),
+		sdk.NewAttribute("recipient", res.Recipient),
 	)
 }
 
-func NewExecutePerpetualOrderEvt(order PerpetualOrder) sdk.Event {
-	return sdk.NewEvent(TypeEvtExecutePerpetualOrder,
+func NewExecuteLimitOpenPerpetualOrderEvt(order PerpetualOrder, positionId uint64) sdk.Event {
+	return sdk.NewEvent(TypeEvtExecuteLimitOpenPerpetualOrder,
 		sdk.NewAttribute("order_id", strconv.FormatInt(int64(order.OrderId), 10)),
 		sdk.NewAttribute("owner_address", order.OwnerAddress),
 		sdk.NewAttribute("order_type", order.PerpetualOrderType.String()),
 		sdk.NewAttribute("position", order.Position.String()),
+		sdk.NewAttribute("position_id", strconv.FormatInt(int64(positionId), 10)),
 		sdk.NewAttribute("trigger_price", order.TriggerPrice.String()),
 	)
 }
