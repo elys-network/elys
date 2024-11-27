@@ -100,7 +100,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteStopLossOrder() {
 
 	order, _ := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
 
-	err := suite.app.TradeshieldKeeper.ExecuteStopLossOrder(suite.ctx, order)
+	_, err := suite.app.TradeshieldKeeper.ExecuteStopLossOrder(suite.ctx, order)
 	suite.Require().NoError(err)
 
 	// Should remove from pending order list
@@ -152,7 +152,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitSellOrder() {
 
 	order, _ := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
 
-	err := suite.app.TradeshieldKeeper.ExecuteLimitSellOrder(suite.ctx, order)
+	_, err := suite.app.TradeshieldKeeper.ExecuteLimitSellOrder(suite.ctx, order)
 	suite.Require().NoError(err)
 
 	// Should remove from pending order list
@@ -204,7 +204,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitBuyOrder() {
 
 	order, _ := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, 1)
 
-	err := suite.app.TradeshieldKeeper.ExecuteLimitBuyOrder(suite.ctx, order)
+	_, err := suite.app.TradeshieldKeeper.ExecuteLimitBuyOrder(suite.ctx, order)
 	suite.Require().NoError(err)
 
 	// Should remove from pending order list
@@ -247,7 +247,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketBuyOrder() {
 		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(1000)),
 	}
 
-	err := suite.app.TradeshieldKeeper.ExecuteMarketBuyOrder(suite.ctx, order)
+	_, err := suite.app.TradeshieldKeeper.ExecuteMarketBuyOrder(suite.ctx, order)
 	suite.Require().NoError(err)
 
 	// Should remove from pending order list

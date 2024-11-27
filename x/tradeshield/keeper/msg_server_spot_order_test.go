@@ -95,7 +95,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdateSpotOrder() {
 			},
 		},
 		{
-			"Incorrect Order Owner updating the order",
+			"Incorrect Order-Owner updating the order",
 			"incorrect owner",
 			func() *types.MsgUpdateSpotOrder {
 				_, _, _ = suite.SetPerpetualPool(1)

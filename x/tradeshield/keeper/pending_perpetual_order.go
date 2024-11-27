@@ -221,7 +221,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 		return err
 	}
 
-	_, err = k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
+	res, err := k.perpetual.Open(ctx, &perpetualtypes.MsgOpen{
 		Creator:         order.OwnerAddress,
 		Position:        perpetualtypes.Position(order.Position),
 		Leverage:        order.Leverage,
@@ -237,6 +237,8 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 
 	// Remove the order from the pending order list
 	k.RemovePendingPerpetualOrder(ctx, order.OrderId)
+
+	ctx.EventManager().EmitEvent(types.NewExecuteLimitOpenPerpetualOrderEvt(order, res.Id))
 
 	return nil
 }
