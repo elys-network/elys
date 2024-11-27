@@ -91,7 +91,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 		ctx.Logger().Debug(errorsmod.Wrap(err, "error executing liquidation").Error())
 		return isHealthy, true, h, err
 	}
-	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventCloseUnhealthyPosition,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
 		sdk.NewAttribute("address", position.Address),
 		sdk.NewAttribute("collateral", position.Collateral.String()),
@@ -133,7 +133,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 		return underStopLossPrice, true, err
 	}
-	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClosePositionStopLoss,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(position.Id), 10)),
 		sdk.NewAttribute("address", position.Address),
 		sdk.NewAttribute("collateral", position.Collateral.String()),

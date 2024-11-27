@@ -16,8 +16,8 @@ func (k Keeper) EmitFundPayment(ctx sdk.Context, mtp *types.MTP, takeAmount math
 	))
 }
 
-func (k Keeper) EmitForceClose(ctx sdk.Context, mtp *types.MTP, repayAmount math.Int, closer string) {
-	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventForceClose,
+func (k Keeper) EmitForceClose(ctx sdk.Context, eventType string, mtp *types.MTP, repayAmount math.Int, closer string) {
+	ctx.EventManager().EmitEvent(sdk.NewEvent(eventType,
 		sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),
 		sdk.NewAttribute("position", mtp.Position.String()),
 		sdk.NewAttribute("address", mtp.Address),

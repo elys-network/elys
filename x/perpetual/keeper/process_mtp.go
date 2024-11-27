@@ -67,7 +67,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, mtp *types.M
 
 		if err == nil {
 			// Emit event if position was closed
-			k.EmitForceClose(ctx, mtp, repayAmount, "")
+			k.EmitForceClose(ctx, types.EventForceCloseUnhealthy, mtp, repayAmount, "")
 		} else {
 			return errors.Wrap(err, "error executing force close")
 		}
@@ -116,7 +116,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, mtp *types.MTP, pool ty
 
 	if err == nil {
 		// Emit event if position was closed
-		k.EmitForceClose(ctx, mtp, repayAmount, "")
+		k.EmitForceClose(ctx, types.EventForceCloseStopLoss, mtp, repayAmount, "")
 	} else {
 		return errors.Wrap(err, "error executing force close")
 	}
@@ -160,7 +160,7 @@ func (k Keeper) CheckAndCloseAtTakeProfit(ctx sdk.Context, mtp *types.MTP, pool 
 
 	if err == nil {
 		// Emit event if position was closed
-		k.EmitForceClose(ctx, mtp, repayAmount, "")
+		k.EmitForceClose(ctx, types.EventForceCloseTakeprofit, mtp, repayAmount, "")
 	} else {
 		return errors.Wrap(err, "error executing force close")
 	}
