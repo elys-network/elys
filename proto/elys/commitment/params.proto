@@ -17,15 +17,6 @@ message Params {
   uint64 number_of_commitments = 3;
 }
 
-message LegacyParams {
-  option (gogoproto.goproto_stringer) = false;
-  repeated VestingInfo vesting_infos = 1;
-  repeated cosmos.base.v1beta1.Coin total_committed = 2 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-  ];
-}
-
 message VestingInfo {
   string base_denom = 1;
   string vesting_denom = 2;
