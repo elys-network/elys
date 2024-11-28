@@ -17,11 +17,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
-	"github.com/elys-network/elys/x/tradeshield/types/mocks"
 	"github.com/stretchr/testify/require"
 )
 
-func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.BankKeeper, *mocks.AmmKeeper, *mocks.TierKeeper, *mocks.PerpetualKeeper) {
+func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 	storeService := runtime.NewKVStoreService(storeKey)
 
@@ -34,18 +33,14 @@ func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.BankKe
 	cdc := codec.NewProtoCodec(registry)
 	govAddress := sdk.AccAddress(address.Module("gov"))
 
-	bankKeeper := mocks.NewBankKeeper(t)
-	ammKeeper := mocks.NewAmmKeeper(t)
-	tierKeeper := mocks.NewTierKeeper(t)
-	perpetualKeeper := mocks.NewPerpetualKeeper(t)
 	k := keeper.NewKeeper(
 		cdc,
 		storeService,
 		govAddress.String(),
-		bankKeeper,
-		ammKeeper,
-		tierKeeper,
-		perpetualKeeper,
+		nil,
+		nil,
+		nil,
+		nil,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
@@ -54,5 +49,5 @@ func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.BankKe
 	params := types.DefaultParams()
 	k.SetParams(ctx, &params)
 
-	return k, ctx, bankKeeper, ammKeeper, tierKeeper, perpetualKeeper
+	return k, ctx
 }
