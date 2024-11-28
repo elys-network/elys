@@ -16,6 +16,7 @@ import (
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	tradeshieldtypes "github.com/elys-network/elys/x/tradeshield/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -77,6 +78,8 @@ type AmmKeeper interface {
 	) (math.LegacyDec, math.LegacyDec, sdk.Coin, math.LegacyDec, math.LegacyDec, sdk.Coin, math.LegacyDec, math.LegacyDec, error)
 	Balance(goCtx context.Context, req *ammtypes.QueryBalanceRequest) (*ammtypes.QueryBalanceResponse, error)
 	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
+	CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) math.LegacyDec
+	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) math.LegacyDec
 }
 
 type EstakingKeeper interface {
@@ -102,4 +105,9 @@ type StablestakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stablestaketypes.Params)
 	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
 	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+}
+
+type TradeshieldKeeper interface {
+	GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address string, status *tradeshieldtypes.Status, pagination *query.PageRequest) ([]tradeshieldtypes.PerpetualOrder, *query.PageResponse, error)
+	GetPendingSpotOrdersForAddress(ctx sdk.Context, address string, status *tradeshieldtypes.Status, pagination *query.PageRequest) ([]tradeshieldtypes.SpotOrder, *query.PageResponse, error)
 }

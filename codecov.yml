@@ -98,24 +98,6 @@ component_management:
       name: burner_queries
       paths:
         - ./x/burner/**/*query*
-    # Clock
-    - component_id: module_clock_transactions
-      name: clock_transactions
-      paths:
-        - ./x/clock/**/msg_server*
-    - component_id: module_clock_lifecycle
-      name: clock_lifecycle
-      paths:
-        - ./x/clock/**/abci*
-        - ./x/clock/**/*blocker*
-    - component_id: module_clock_keeper
-      name: clock_keeper
-      paths:
-        - ./x/clock/**/keeper*
-    - component_id: module_clock_queries
-      name: clock_queries
-      paths:
-        - ./x/clock/**/*query*
     # Commitment
     - component_id: module_commitment_transactions
       name: commitment_transactions

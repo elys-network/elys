@@ -15,7 +15,7 @@ func (k Keeper) GetAmmPrice(goCtx context.Context, req *types.QueryGetAmmPriceRe
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	resp := k.CalcAmmPrice(ctx, req.Denom, uint64(req.Decimal))
+	resp := k.amm.CalcAmmPrice(ctx, req.Denom, uint64(req.Decimal))
 
 	return &types.QueryGetAmmPriceResponse{
 		Total: resp,

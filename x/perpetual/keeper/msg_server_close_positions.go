@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"strconv"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -41,11 +40,6 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if err != nil {
 			// Add log about error or not liquidated
 			liqLog = append(liqLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
-		} else {
-			ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClosePositions,
-				sdk.NewAttribute("address", position.Address),
-				sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
-			))
 		}
 	}
 
@@ -67,11 +61,6 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if err != nil {
 			// Add log about error or not closed
 			closeLog = append(closeLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
-		} else {
-			ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClosePositions,
-				sdk.NewAttribute("address", position.Address),
-				sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
-			))
 		}
 	}
 
@@ -93,11 +82,6 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		if err != nil {
 			// Add log about error or not closed
 			takeProfitLog = append(takeProfitLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
-		} else {
-			ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClosePositions,
-				sdk.NewAttribute("address", position.Address),
-				sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
-			))
 		}
 	}
 

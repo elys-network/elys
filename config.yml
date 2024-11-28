@@ -33,10 +33,6 @@ validators:
     bonded: 100000000uelys
 genesis:
   app_state:
-    clock:
-      params:
-        contract_addresses:
-          ["elys1suhgf5svhu4usrurvxzlgn54ksxmn8gljarjtxqnapv8kjnp4nrswuu7l0"]
     crisis:
       constant_fee:
         denom: uelys
@@ -418,7 +414,6 @@ genesis:
         min_commission_rate: "0.05"
         max_voting_power: "1.00"
         min_self_delegation: "1"
-        broker_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
     perpetual:
       params:
         leverage_max: "10"

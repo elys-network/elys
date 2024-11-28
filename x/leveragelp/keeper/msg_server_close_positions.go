@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"context"
-	errorsmod "cosmossdk.io/errors"
 	"fmt"
 	"strings"
+
+	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -48,7 +49,6 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 				return nil, err
 			}
 		}
-
 	}
 
 	// Handle stop loss

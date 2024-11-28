@@ -8,7 +8,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-	tiertypes "github.com/elys-network/elys/x/tier/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -32,15 +31,8 @@ type BankKeeper interface {
 //go:generate mockery --srcpkg . --name AmmKeeper --structname AmmKeeper --filename amm_keeper.go --with-expecter
 type AmmKeeper interface {
 	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
-}
-
-// TierKeeper defines the expected interface needed to get tier information
-//
-//go:generate mockery --srcpkg . --name TierKeeper --structname TierKeeper --filename tier_keeper.go --with-expecter
-type TierKeeper interface {
-	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, tier tiertypes.MembershipTier)
-
 	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec
+	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdkmath.LegacyDec
 }
 
 // PerpetualKeeper defines the expected interface needed to open and close perpetual positions

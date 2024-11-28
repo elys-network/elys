@@ -50,6 +50,22 @@ func (k Keeper) GetAllAccountedPool(ctx sdk.Context) (list []types.AccountedPool
 	return
 }
 
+// GetAllAccountedPool returns all accountedPool
+func (k Keeper) GetAllLegacyAccountedPool(ctx sdk.Context) (list []types.LegacyAccountedPool) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.AccountedPoolKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyAccountedPool
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
 // PoolExists checks if a pool with the given poolId exists in the list of pools
 func (k Keeper) PoolExists(ctx sdk.Context, poolId uint64) bool {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.AccountedPoolKeyPrefix))

@@ -16,21 +16,21 @@ func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetu
 
 	// Accounted pool balance = amm pool + (long liability - long profit taking liability) - (long custody - long profit taking custody) + (short liability - short profit taking liability ) - ( short custody - short profit taking custody)
 	// Accounted pool balance = amm pool + totalLiabilities - totalCustody + total profit taking custody - total profit taking liability
-	for i, asset := range accountedPool.PoolAssets {
-		ammBalance, err := ammPool.GetAmmPoolBalance(asset.Token.Denom)
+	for i, asset := range accountedPool.TotalTokens {
+		ammBalance, err := ammPool.GetAmmPoolBalance(asset.Denom)
 		if err != nil {
 			return err
 		}
-		totalLiabilities, totalCustody, totalTakeProfitCustody, totalTakeProfitLiabilities := perpetualPool.GetPerpetualPoolBalances(asset.Token.Denom)
+		totalLiabilities, totalCustody, totalTakeProfitCustody, totalTakeProfitLiabilities := perpetualPool.GetPerpetualPoolBalances(asset.Denom)
 		accountedPoolAmt := ammBalance.Add(totalLiabilities).Sub(totalCustody)
 		// if this is enabled then we need to consider impact of weight balance bonus of swap while calculating takeProfitLiabilities
 		if EnableTakeProfitCustodyLiabilities {
 			accountedPoolAmt = accountedPoolAmt.Add(totalTakeProfitCustody).Sub(totalTakeProfitLiabilities)
 		}
-		accountedPool.PoolAssets[i].Token = sdk.NewCoin(asset.Token.Denom, accountedPoolAmt)
+		accountedPool.TotalTokens[i] = sdk.NewCoin(asset.Denom, accountedPoolAmt)
 
 		for j, nonAmmToken := range accountedPool.NonAmmPoolTokens {
-			if nonAmmToken.Denom == asset.Token.Denom {
+			if nonAmmToken.Denom == asset.Denom {
 				accountedPool.NonAmmPoolTokens[j].Amount = accountedPoolAmt.Sub(ammBalance)
 				break
 			}
