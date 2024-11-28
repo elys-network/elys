@@ -44,7 +44,6 @@ func TradeshieldKeeper(t testing.TB) (*keeper.Keeper, sdk.Context, *mocks.BankKe
 		govAddress.String(),
 		bankKeeper,
 		ammKeeper,
-		tierKeeper,
 		perpetualKeeper,
 	)
 

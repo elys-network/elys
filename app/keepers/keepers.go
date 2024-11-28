@@ -648,7 +648,6 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.BankKeeper,
 		app.AmmKeeper,
-		app.TierKeeper,
 		app.PerpetualKeeper,
 	)
 
