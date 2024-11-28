@@ -43704,8 +43704,6 @@ paths:
                     type: string
                   min_self_delegation:
                     type: string
-                  broker_address:
-                    type: string
                   total_blocks_per_year:
                     type: string
                     format: int64
@@ -90815,8 +90813,6 @@ definitions:
             type: string
             format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  elys.parameter.MsgUpdateBrokerAddressResponse:
-    type: object
   elys.parameter.MsgUpdateMaxVotingPowerResponse:
     type: object
   elys.parameter.MsgUpdateMinCommissionResponse:
@@ -90837,8 +90833,6 @@ definitions:
       max_voting_power:
         type: string
       min_self_delegation:
-        type: string
-      broker_address:
         type: string
       total_blocks_per_year:
         type: string
@@ -90866,8 +90860,6 @@ definitions:
           max_voting_power:
             type: string
           min_self_delegation:
-            type: string
-          broker_address:
             type: string
           total_blocks_per_year:
             type: string

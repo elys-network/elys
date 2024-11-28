@@ -45,10 +45,6 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgAddCollateral int = 100
 
-	opWeightMsgBrokerAddCollateral = "op_weight_msg_broker_add_collateral"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgBrokerAddCollateral int = 100
-
 	opWeightMsgClosePositions = "op_weight_msg_close_positions"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgClosePositions int = 100
