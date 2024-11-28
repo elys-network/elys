@@ -709,7 +709,6 @@ func _Msg_UpdateRewardsDataLifetime_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-var Msg_serviceDesc = _Msg_serviceDesc
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.parameter.Msg",
 	HandlerType: (*MsgServer)(nil),

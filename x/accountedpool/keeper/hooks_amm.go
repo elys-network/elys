@@ -25,15 +25,12 @@ func (k Keeper) UpdateAccountedPoolOnAmmChange(ctx sdk.Context, ammPool ammtypes
 			}
 		}
 
-		for j, accountedPoolAsset := range accountedPool.PoolAssets {
+		for j, accountedPoolAsset := range accountedPool.TotalTokens {
 
-			if ammPoolAsset.Token.Denom == accountedPoolAsset.Token.Denom {
+			if ammPoolAsset.Token.Denom == accountedPoolAsset.Denom {
 				updatedAccountedPoolAsset := ammPoolAsset
 				updatedAccountedPoolAsset.Token.Amount = updatedAccountedPoolAsset.Token.Amount.Add(nonAmmTokenBalance)
-				// TODO what to do with the weight
-				//updatedAccountedPoolAsset.Weight =
-
-				accountedPool.PoolAssets[j] = updatedAccountedPoolAsset
+				accountedPool.TotalTokens[j] = updatedAccountedPoolAsset.Token
 				break
 			}
 
