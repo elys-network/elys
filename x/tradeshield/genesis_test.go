@@ -35,7 +35,7 @@ func TestGenesis(t *testing.T) {
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
-	k, ctx, _, _, _, _ := keepertest.TradeshieldKeeper(t)
+	k, ctx := keepertest.TradeshieldKeeper(t)
 	tradeshield.InitGenesis(ctx, *k, genesisState)
 	got := tradeshield.ExportGenesis(ctx, *k)
 	require.NotNil(t, got)
