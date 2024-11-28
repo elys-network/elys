@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -62,4 +64,45 @@ func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 		usdcDenomPrice = math.LegacyNewDecWithPrec(1, usdcDecimal)
 	}
 	return tokenUsdcRate.Mul(usdcDenomPrice)
+}
+
+func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec {
+	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
+	if !found {
+		sdkmath.LegacyZeroDec()
+	}
+	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+	if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
+		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+	}
+	return amount.ToLegacyDec().Mul(tokenPrice)
+}
+
+func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdkmath.LegacyDec {
+	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	if !found || denom == usdcDenom {
+		return sdkmath.LegacyZeroDec()
+	}
+	usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+	resp, err := k.InRouteByDenom(ctx, &types.QueryInRouteByDenomRequest{DenomIn: denom, DenomOut: usdcDenom})
+	if err != nil {
+		return sdkmath.LegacyZeroDec()
+	}
+
+	routes := resp.InRoute
+	tokenIn := sdk.NewCoin(denom, sdkmath.NewInt(Pow10(decimal).TruncateInt64()))
+	discount := sdkmath.LegacyNewDec(1)
+	spotPrice, _, _, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, sdkmath.LegacyZeroDec())
+	if err != nil {
+		return sdkmath.LegacyZeroDec()
+	}
+	return spotPrice.Mul(usdcPrice)
+}
+
+func Pow10(decimal uint64) (value sdkmath.LegacyDec) {
+	value = sdkmath.LegacyNewDec(1)
+	for i := 0; i < int(decimal); i++ {
+		value = value.Mul(sdkmath.LegacyNewDec(10))
+	}
+	return
 }
