@@ -71,24 +71,6 @@ func (k Keeper) GetAllCommitmentsWithPagination(ctx sdk.Context, pagination *que
 	return listCommitments, pageRes, nil
 }
 
-// remove after migration
-func (k Keeper) GetAllLegacyCommitments(ctx sdk.Context) []*types.Commitments {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	list := []*types.Commitments{}
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.Commitments
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, &val)
-	}
-
-	return list
-}
-
 // GetCommitments returns a commitments from its index
 func (k Keeper) GetCommitments(ctx sdk.Context, creator sdk.AccAddress) types.Commitments {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
@@ -114,13 +96,6 @@ func (k Keeper) HasCommitments(ctx sdk.Context, creator sdk.AccAddress) bool {
 	return store.Has(key)
 }
 
-// remove after migration
-func (k Keeper) HasLegacyCommitments(ctx sdk.Context, creator string) bool {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
-	b := store.Get(types.LegacyCommitmentsKey(creator))
-	return b != nil
-}
-
 // RemoveCommitments removes a commitments from the store
 func (k Keeper) RemoveCommitments(ctx sdk.Context, creator sdk.AccAddress) {
 	if k.HasCommitments(ctx, creator) {
@@ -130,17 +105,6 @@ func (k Keeper) RemoveCommitments(ctx sdk.Context, creator sdk.AccAddress) {
 	}
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetCommitmentsKey(creator))
-}
-
-// remove after migration
-func (k Keeper) DeleteLegacyCommitments(ctx sdk.Context, creator string) {
-	if k.HasLegacyCommitments(ctx, creator) {
-		params := k.GetParams(ctx)
-		params.NumberOfCommitments--
-		k.SetParams(ctx, params)
-	}
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyCommitmentsKeyPrefix))
-	store.Delete(types.LegacyCommitmentsKey(creator))
 }
 
 // IterateCommitments iterates over all Commitments and performs a
