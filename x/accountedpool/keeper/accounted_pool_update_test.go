@@ -43,13 +43,13 @@ func TestAccountedPoolUpdate(t *testing.T) {
 	// Initiate pool
 	accountedPool := types.AccountedPool{
 		PoolId:           0,
-		TotalShares:      ammPool.TotalShares,
-		PoolAssets:       []ammtypes.PoolAsset{},
-		TotalWeight:      ammPool.TotalWeight,
+		TotalTokens:      []sdk.Coin{},
 		NonAmmPoolTokens: []sdk.Coin{},
 	}
 
-	accountedPool.PoolAssets = append(accountedPool.PoolAssets, ammPool.PoolAssets...)
+	for _, asset := range ammPool.PoolAssets {
+		accountedPool.TotalTokens = append(accountedPool.TotalTokens, asset.Token)
+	}
 
 	// Set accounted pool
 	apk.SetAccountedPool(ctx, accountedPool)
