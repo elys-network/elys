@@ -1,0 +1,13 @@
+- name: elys-simd
+  dockerfile: cosmos
+  build-dir: simapp
+  build-target: make build
+  binaries:
+    - simapp/build/simd
+- name: elys
+  github-organization: elys-network
+  github-repo: elys
+  dockerfile: cosmos
+  build-target: make build
+  binaries:
+    - build/elysd

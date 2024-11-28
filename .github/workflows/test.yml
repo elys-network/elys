@@ -25,8 +25,12 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
-      - name: Run tests
+      - name: Run unit tests
         run: go test -coverprofile=coverage.txt ./...
+
+      - name: Run e2e tests
+        run: |
+          make local-image && make test-e2e
 
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v4
