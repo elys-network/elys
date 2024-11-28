@@ -9,13 +9,18 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
+	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
+	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/elys-network/elys/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	"github.com/stretchr/testify/suite"
 )
@@ -218,6 +223,21 @@ func (suite *TierKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOr
 	poolId, err := suite.app.AmmKeeper.CreatePool(suite.ctx, createPoolMsg)
 	suite.Require().NoError(err)
 	ammPool, _ := suite.app.AmmKeeper.GetPool(suite.ctx, poolId)
+
+	//Set Perpetual
+	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
+		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		Pool: leveragelpmoduletypes.AddPool{
+			AmmPoolId:   poolId,
+			LeverageMax: math.LegacyMustNewDecFromStr("10"),
+		},
+	}
+
+	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &enablePoolMsg)
+	suite.Require().NoError(err)
+	pool := types.NewPool(ammPool)
+	k := suite.app.PerpetualKeeper
+	k.SetPool(suite.ctx, pool)
 
 	return ammPool
 }
