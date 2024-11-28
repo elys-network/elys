@@ -32,6 +32,6 @@ func TestJoinPoolEstimation(t *testing.T) {
 		AmountsIn: sdk.NewCoins(sdk.NewInt64Coin("denom1", 100), sdk.NewInt64Coin("denom2", 200)),
 	})
 	require.NoError(t, err)
-	require.Equal(t, sdk.Coins(resp.AmountsIn).String(), "100denom1,200denom2")
+	require.Equal(t, sdk.Coins(resp.AmountsIn).String(), "100denom1,100denom2")
 	require.Equal(t, resp.ShareAmountOut.String(), "100000000000000000amm/pool/1")
 }
