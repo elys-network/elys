@@ -638,6 +638,7 @@ func NewAppKeeper(
 		app.PerpetualKeeper,
 		app.LeveragelpKeeper,
 		app.StablestakeKeeper,
+		app.TradeshieldKeeper,
 	)
 	app.AmmKeeper.SetTierKeeper(app.TierKeeper)
 	app.PerpetualKeeper.SetTierKeeper(app.TierKeeper)
@@ -650,6 +651,8 @@ func NewAppKeeper(
 		app.AmmKeeper,
 		app.PerpetualKeeper,
 	)
+
+	app.TierKeeper.SetTradeshieldKeeper(&app.TradeshieldKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 

@@ -16,6 +16,7 @@ import (
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	tradeshieldtypes "github.com/elys-network/elys/x/tradeshield/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -104,4 +105,9 @@ type StablestakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stablestaketypes.Params)
 	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
 	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+}
+
+type TradeshieldKeeper interface {
+	GetPendingPerpetualOrdersForAddress(ctx sdk.Context, address string, status *tradeshieldtypes.Status, pagination *query.PageRequest) ([]tradeshieldtypes.PerpetualOrder, *query.PageResponse, error)
+	GetPendingSpotOrdersForAddress(ctx sdk.Context, address string, status *tradeshieldtypes.Status, pagination *query.PageRequest) ([]tradeshieldtypes.SpotOrder, *query.PageResponse, error)
 }

@@ -19,6 +19,7 @@ import (
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	tradeshieldtypes "github.com/elys-network/elys/x/tradeshield/types"
 
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tier/types"
@@ -63,8 +64,11 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 
 	// LeverageLp
 	_, _, lev := k.RetrieveLeverageLpTotal(ctx, user)
-
 	totalValue = totalValue.Add(lev)
+
+	// Tradeshield assets
+	tradeshieldTotal := k.RetrieveTradeshieldTotal(ctx, user)
+	totalValue = totalValue.Add(tradeshieldTotal)
 
 	k.SetPortfolio(ctx, types.NewPortfolioWithContextDate(todayDate, user, totalValue))
 }
@@ -292,6 +296,33 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) (s
 		netValue = totalValue.Sub(totalBorrow)
 	}
 	return totalValue, totalBorrow, netValue
+}
+
+func (k Keeper) RetrieveTradeshieldTotal(ctx sdk.Context, user sdk.AccAddress) sdkmath.LegacyDec {
+	pendingStatus := tradeshieldtypes.Status_PENDING
+	// Perpetual orders total
+	perpetualOrders, _, err := k.tradeshieldKeeper.GetPendingPerpetualOrdersForAddress(ctx, user.String(), &pendingStatus, &query.PageRequest{})
+	totalValue := sdkmath.LegacyNewDec(0)
+	if err == nil {
+		for _, order := range perpetualOrders {
+			balances := k.bankKeeper.GetAllBalances(ctx, order.GetOrderAddress())
+			for _, balance := range balances {
+				totalValue = totalValue.Add(k.amm.CalculateUSDValue(ctx, balance.Denom, balance.Amount))
+			}
+		}
+	}
+
+	// Spot orders total
+	spotOrders, _, err := k.tradeshieldKeeper.GetPendingSpotOrdersForAddress(ctx, user.String(), &pendingStatus, &query.PageRequest{})
+	if err == nil {
+		for _, order := range spotOrders {
+			balances := k.bankKeeper.GetAllBalances(ctx, order.GetOrderAddress())
+			for _, balance := range balances {
+				totalValue = totalValue.Add(k.amm.CalculateUSDValue(ctx, balance.Denom, balance.Amount))
+			}
+		}
+	}
+	return totalValue
 }
 
 func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdkmath.LegacyDec, sdkmath.LegacyDec, sdkmath.LegacyDec) {
