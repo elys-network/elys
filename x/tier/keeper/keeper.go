@@ -1,13 +1,15 @@
 package keeper
 
 import (
-	"cosmossdk.io/core/store"
 	"fmt"
+
+	"cosmossdk.io/core/store"
 
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/tier/types"
+	tradeshieldkeeper "github.com/elys-network/elys/x/tradeshield/keeper"
 )
 
 type (
@@ -25,6 +27,7 @@ type (
 		stakingKeeper      types.StakingKeeper
 		leveragelp         types.LeverageLpKeeper
 		stablestakeKeeper  types.StablestakeKeeper
+		tradeshieldKeeper  types.TradeshieldKeeper
 	}
 )
 
@@ -42,6 +45,7 @@ func NewKeeper(
 	perpetual types.PerpetualKeeper,
 	leveragelp types.LeverageLpKeeper,
 	stablestakeKeeper types.StablestakeKeeper,
+	tradeshieldKeeper types.TradeshieldKeeper,
 ) *Keeper {
 
 	return &Keeper{
@@ -58,9 +62,14 @@ func NewKeeper(
 		perpetual:          perpetual,
 		leveragelp:         leveragelp,
 		stablestakeKeeper:  stablestakeKeeper,
+		tradeshieldKeeper:  tradeshieldKeeper,
 	}
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+func (k *Keeper) SetTradeshieldKeeper(tk *tradeshieldkeeper.Keeper) {
+	k.tradeshieldKeeper = tk
 }

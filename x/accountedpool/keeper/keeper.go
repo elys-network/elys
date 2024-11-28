@@ -42,9 +42,9 @@ func (k Keeper) GetAccountedBalance(ctx sdk.Context, poolId uint64, denom string
 		return sdkmath.ZeroInt()
 	}
 
-	for _, asset := range pool.PoolAssets {
-		if asset.Token.Denom == denom {
-			return asset.Token.Amount
+	for _, token := range pool.TotalTokens {
+		if token.Denom == denom {
+			return token.Amount
 		}
 	}
 
