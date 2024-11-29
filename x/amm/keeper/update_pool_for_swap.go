@@ -125,7 +125,7 @@ func (k Keeper) UpdatePoolForSwap(
 
 	// record bonus token amount as total liquidity decrease
 	bonusToken := sdk.NewCoin(tokenOut.Denom, bonusTokenAmount)
-	err = k.RecordTotalLiquidityDecrease(ctx, sdk.Coins{bonusToken})
+	err = k.RemoveFromPoolBalance(ctx, &pool, sdkmath.ZeroInt(), sdk.Coins{bonusToken})
 	if err != nil {
 		return sdkmath.Int{}, err
 	}
