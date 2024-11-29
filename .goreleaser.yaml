@@ -144,25 +144,9 @@ release:
   github:
     owner: elys-network
     name: elys
-  replace_existing_draft: true
+  replace_existing_draft: false
   header: |
-    ## Description
-
-    Proposal: https://testnet.ping.pub/elys/gov/XXX
-
-    We're thrilled to announce the launch of Elys Network v{{ .Version }}! This update is primarily focused on enhancements and codebase improvements. Here’s a brief overview of what’s new:
-
-    ### Changes
-
-    * item 1
-    * item 2
-    * item 3
-    * ...
-
-    This release is part of our continuous effort to refine and optimize Elys Network. We appreciate the dedication and expertise of our contributors who help make Elys Network more robust and user-friendly.
-
-    Thank you for your ongoing support of Elys Network!
-
+    
     ## ⚡️ Binaries
 
     Binaries for Linux and Darwin (amd64 and arm64) are available below.
@@ -177,12 +161,8 @@ release:
     cd elys && git checkout v{{ .Version }}
     make install
     ````
-
-    ## What's Changed
-
-    See the full changelog [here](https://github.com/elys-network/elys/blob/v{{ .Version }}/CHANGELOG.md)
   name_template: "v{{.Version}}"
-  mode: replace
+  mode: append
   draft: false
 # Docs: https://goreleaser.com/customization/announce/
 # We could automatically announce the release in
