@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
@@ -90,7 +91,7 @@ func (suite *AmmKeeperTestSuite) TestOnCollectFee() {
 					UseOracle: false,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
-				TotalShares: sdk.Coin{},
+				TotalShares: sdk.Coin{Amount: math.ZeroInt()},
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  tc.poolInitBalance[0],
@@ -181,7 +182,7 @@ func (suite *AmmKeeperTestSuite) TestSwapFeesToRevenueToken() {
 					UseOracle: false,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
-				TotalShares: sdk.Coin{},
+				TotalShares: sdk.Coin{Amount: math.ZeroInt()},
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  tc.poolInitBalance[0],
