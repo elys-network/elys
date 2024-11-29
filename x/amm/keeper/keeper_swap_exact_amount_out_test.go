@@ -216,7 +216,7 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountOut() {
 					SwapFee:   tc.swapFeeOut,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
-				TotalShares: sdk.Coin{},
+				TotalShares: sdk.Coin{Amount: sdkmath.ZeroInt()},
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:                  tc.poolInitBalance[0],

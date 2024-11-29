@@ -154,7 +154,7 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 					UseOracle: false,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
-				TotalShares: sdk.Coin{},
+				TotalShares: sdk.Coin{Amount: sdkmath.ZeroInt()},
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  tc.poolInitBalance[0],
