@@ -2,8 +2,9 @@ package staking
 
 import (
 	"context"
-	"cosmossdk.io/core/appmodule"
 	"encoding/json"
+
+	"cosmossdk.io/core/appmodule"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -107,7 +108,7 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 
 					if !val.IsUnbonding() {
 						val.Status = types.Unbonding
-						val.Jailed = true
+						// val.Jailed = true
 						err = am.keeper.SetValidator(sdkCtx, val)
 						if err != nil {
 							panic(err)
