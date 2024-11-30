@@ -73,7 +73,7 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator sdk.AccA
 	totalEdenB := edenBCommitted.Add(edenBClaimed)
 
 	unclaimedAmtDec := math.LegacyNewDecFromInt(uncommitAmt)
-	// This formula shud be applied before eden uncommitted or elys staked is removed from eden committed amount and elys staked amount respectively
+	// This formula should be applied before eden uncommitted or elys staked is removed from eden committed amount and elys staked amount respectively
 	// So add uncommitted amount to committed eden bucket in calculation.
 	edenCommittedAndElysStakedDec := math.LegacyNewDecFromInt(edenCommitted.Add(elysStaked.Amount).Add(uncommitAmt))
 	if edenCommittedAndElysStakedDec.IsZero() {
