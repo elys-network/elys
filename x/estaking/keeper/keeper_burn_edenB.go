@@ -3,18 +3,19 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/estaking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Burn EdenBoost from Elys unstaked
-func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAddress) {
+func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAddress) error {
 	// Get commitments
 	commitments := k.commKeeper.GetCommitments(ctx, delegator)
 
 	// Get previous amount
 	prevElysStaked := k.GetElysStaked(ctx, delegator)
 	if prevElysStaked.Amount.IsZero() {
-		return
+		return nil
 	}
 
 	// Calculate current delegated amount of delegator
@@ -23,10 +24,13 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	// If not unstaked,
 	// should return nil otherwise it will break staking module
 	if delAmount.GTE(prevElysStaked.Amount) {
-		return
+		return nil
 	}
 
-	// TODO: Claim all delegation rewards
+	_, err := k.WithdrawAllRewards(ctx, &types.MsgWithdrawAllRewards{DelegatorAddress: delegator.String()})
+	if err != nil {
+		return err
+	}
 
 	edenCommitted := commitments.GetCommittedAmountForDenom(ptypes.Eden)
 
@@ -45,22 +49,23 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 		edenBToBurn = unstakedElysDec.Quo(edenCommittedAndElysStakedDec).MulInt(totalEdenB)
 	}
 	if edenBToBurn.IsZero() {
-		return
+		return nil
 	}
 
 	// Burn EdenB in commitment module
-	cacheCtx, write := ctx.CacheContext()
-	err := k.commKeeper.BurnEdenBoost(cacheCtx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
+	err = k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
 	if err != nil {
-		k.Logger(ctx).Error("EdenB burn failure", err)
-	} else {
-		write()
+		return err
 	}
+	return nil
 }
 
 // Burn EdenBoost from Eden unclaimed
 func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator sdk.AccAddress, uncommitAmt math.Int) error {
-	// TODO: Claim all delegation rewards
+	_, err := k.WithdrawAllRewards(ctx, &types.MsgWithdrawAllRewards{DelegatorAddress: delegator.String()})
+	if err != nil {
+		return err
+	}
 
 	// Get elys staked amount
 	elysStaked := k.GetElysStaked(ctx, delegator)
@@ -89,6 +94,6 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator sdk.AccA
 	}
 
 	// Burn EdenB in commitment module
-	err := k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
+	err = k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
 	return err
 }

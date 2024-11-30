@@ -11,6 +11,7 @@ import (
 )
 
 // VestNow is not enabled at this stage
+// REV: we need to include this in params and update using gov proposal
 var VestNowEnabled = false
 
 // VestNow provides functionality to get the token immediately but lower amount than original
