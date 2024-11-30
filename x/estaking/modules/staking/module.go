@@ -107,6 +107,8 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 					}
 
 					if !val.IsUnbonding() {
+						// print
+						sdkCtx.Logger().Info("Unbonding validator", "validator", valAddr)
 						val.Status = types.Unbonding
 						// val.Jailed = true
 						err = am.keeper.SetValidator(sdkCtx, val)
