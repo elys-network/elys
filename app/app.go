@@ -341,30 +341,6 @@ func (app *ElysApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
-	if ctx.BlockHeight() == 11517072 {
-		// if block height is 11517072, remove unbonding queue data for previously untombstoned validators
-		// this is a temporary fix for the unbonding queue issue
-		// update the unbonded status for the validators
-		operators := []string{
-			"elysvaloper1xesqr8vjvy34jhu027zd70ypl0nnev5ewa6r7h", // Synergy Nodes
-			"elysvaloper19r0mcqdgserlx4v9htqh8erp8r2fc4ry30vl3j", // Regenerator | Green Validator
-		}
-		for _, operator := range operators {
-			addr, err := sdk.ValAddressFromBech32(operator)
-			if err != nil {
-				panic(fmt.Sprintf("failed to convert operator address: %s", err))
-			}
-			validator, err := app.StakingKeeper.GetValidator(ctx, addr)
-			if err != nil {
-				panic(fmt.Sprintf("failed to get validator: %s", err))
-			}
-			err = app.StakingKeeper.DeleteValidatorQueue(ctx, validator)
-			if err != nil {
-				panic(fmt.Sprintf("failed to delete validator queue: %s", err))
-			}
-		}
-	}
-
 	return app.mm.BeginBlock(ctx)
 }
 
