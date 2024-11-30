@@ -4,10 +4,10 @@ import (
 	"context"
 	"cosmossdk.io/core/appmodule"
 	"encoding/json"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/staking/exported"
 	"github.com/cosmos/cosmos-sdk/x/staking/keeper"
@@ -38,7 +38,7 @@ type AppModuleBasic struct {
 type AppModule struct {
 	// embed the Cosmos SDK's x/staking AppModule
 	staking.AppModule
-
+	cdc        codec.Codec
 	keeper     *keeper.Keeper
 	accKeeper  types.AccountKeeper
 	bankKeeper types.BankKeeper
@@ -53,6 +53,7 @@ func NewAppModule(cdc codec.Codec, keeper *keeper.Keeper, ak types.AccountKeeper
 		keeper:     keeper,
 		accKeeper:  ak,
 		bankKeeper: bk,
+		cdc:        cdc,
 	}
 }
 
@@ -66,6 +67,57 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 
 // EndBlock delegates the EndBlock call to the underlying x/staking module,
 func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, error) {
+	sdkCtx := sdk.UnwrapSDKContext(goCtx)
+	if sdkCtx.BlockHeight() == 11517072 {
+		blockTime := sdkCtx.BlockTime()
+		blockHeight := sdkCtx.BlockHeight()
+		unbondingValIterator, err := am.keeper.ValidatorQueueIterator(sdkCtx, blockTime, blockHeight)
+		if err != nil {
+			panic(err)
+		}
+		defer unbondingValIterator.Close()
+
+		validatorAddressCodec := authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix())
+
+		for ; unbondingValIterator.Valid(); unbondingValIterator.Next() {
+			key := unbondingValIterator.Key()
+			keyTime, keyHeight, err := types.ParseValidatorQueueKey(key)
+			if err != nil {
+				panic(err)
+			}
+
+			// All addresses for the given key have the same unbonding height and time.
+			// We only unbond if the height and time are less than the current height
+			// and time.
+			if keyHeight <= blockHeight && (keyTime.Before(blockTime) || keyTime.Equal(blockTime)) {
+				addrs := types.ValAddresses{}
+				if err = am.cdc.Unmarshal(unbondingValIterator.Value(), &addrs); err != nil {
+					panic(err)
+				}
+
+				for _, valAddr := range addrs.Addresses {
+					addr, err := validatorAddressCodec.StringToBytes(valAddr)
+					if err != nil {
+						panic(err)
+					}
+					val, err := am.keeper.GetValidator(sdkCtx, addr)
+					if err != nil {
+						panic(err)
+					}
+
+					if !val.IsUnbonding() {
+						val.Status = types.Unbonding
+						val.Jailed = true
+						err = am.keeper.SetValidator(sdkCtx, val)
+						if err != nil {
+							panic(err)
+						}
+					}
+				}
+			}
+		}
+	}
+
 	return am.keeper.BlockValidatorUpdates(goCtx)
 }
 
