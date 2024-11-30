@@ -13,7 +13,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/elys-network/elys/app/keepers"
 	"github.com/spf13/cast"
@@ -342,56 +341,56 @@ func (app *ElysApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
-	if ctx.BlockHeight() == 11517072 {
-		// update the signing info for the validators
-		signers := []string{
-			"elysvalcons1f9lzcfxxu6l9yj9uf0lqjc0qa82raypnlk58ej", // Synergy Nodes
-			"elysvalcons1frn2njtny6gzdjl2df9rvz3atcds2vl2fhxg8s", // Regenerator | Green Validator
-		}
-		for _, signer := range signers {
-			addr, err := sdk.ConsAddressFromBech32(signer)
-			if err != nil {
-				panic(err)
-			}
-			signingInfo, err := app.SlashingKeeper.GetValidatorSigningInfo(ctx, addr)
-			if err != nil {
-				panic(err)
-			}
-			signingInfo.JailedUntil = ctx.BlockTime() // set jailed until to current block time
-			signingInfo.Tombstoned = true
-			app.SlashingKeeper.SetValidatorSigningInfo(ctx, addr, signingInfo)
-			app.Logger().Info("reset tombstoned status and jailed until date for signer", "signer", signer)
-		}
-		// update the unbonded status for the validators
-		operators := []string{
-			"elysvaloper1xesqr8vjvy34jhu027zd70ypl0nnev5ewa6r7h", // Synergy Nodes
-			"elysvaloper19r0mcqdgserlx4v9htqh8erp8r2fc4ry30vl3j", // Regenerator | Green Validator
-		}
-		for _, operator := range operators {
-			addr, err := sdk.ValAddressFromBech32(operator)
-			if err != nil {
-				panic(err)
-			}
-			validator, err := app.StakingKeeper.GetValidator(ctx, addr)
-			if err != nil {
-				panic(err)
-			}
-			for _, unbondingId := range validator.UnbondingIds {
-				unbondingDelegation, err := app.StakingKeeper.GetUnbondingDelegationByUnbondingID(ctx, unbondingId)
-				if err != nil {
-					panic(err)
-				}
-				app.StakingKeeper.RemoveUnbondingDelegation(ctx, unbondingDelegation)
-				app.Logger().Info("removed unbonding delegation", "operator", operator, "unbondingId", unbondingId)
-			}
-			validator.Jailed = true
-			validator.Status = stakingtypes.Unbonded
-			validator.UnbondingTime = ctx.BlockTime()
-			validator.UnbondingIds = []uint64{}
-			app.StakingKeeper.SetValidator(ctx, validator)
-			app.Logger().Info("reset unbonded status for validator", "operator", operator)
-		}
-	}
+	// if ctx.BlockHeight() == 11517072 {
+	// 	// update the signing info for the validators
+	// 	signers := []string{
+	// 		"elysvalcons1f9lzcfxxu6l9yj9uf0lqjc0qa82raypnlk58ej", // Synergy Nodes
+	// 		"elysvalcons1frn2njtny6gzdjl2df9rvz3atcds2vl2fhxg8s", // Regenerator | Green Validator
+	// 	}
+	// 	for _, signer := range signers {
+	// 		addr, err := sdk.ConsAddressFromBech32(signer)
+	// 		if err != nil {
+	// 			panic(err)
+	// 		}
+	// 		signingInfo, err := app.SlashingKeeper.GetValidatorSigningInfo(ctx, addr)
+	// 		if err != nil {
+	// 			panic(err)
+	// 		}
+	// 		signingInfo.JailedUntil = ctx.BlockTime() // set jailed until to current block time
+	// 		signingInfo.Tombstoned = true
+	// 		app.SlashingKeeper.SetValidatorSigningInfo(ctx, addr, signingInfo)
+	// 		app.Logger().Info("reset tombstoned status and jailed until date for signer", "signer", signer)
+	// 	}
+	// 	// update the unbonded status for the validators
+	// 	operators := []string{
+	// 		"elysvaloper1xesqr8vjvy34jhu027zd70ypl0nnev5ewa6r7h", // Synergy Nodes
+	// 		"elysvaloper19r0mcqdgserlx4v9htqh8erp8r2fc4ry30vl3j", // Regenerator | Green Validator
+	// 	}
+	// 	for _, operator := range operators {
+	// 		addr, err := sdk.ValAddressFromBech32(operator)
+	// 		if err != nil {
+	// 			panic(err)
+	// 		}
+	// 		validator, err := app.StakingKeeper.GetValidator(ctx, addr)
+	// 		if err != nil {
+	// 			panic(err)
+	// 		}
+	// 		for _, unbondingId := range validator.UnbondingIds {
+	// 			unbondingDelegation, err := app.StakingKeeper.GetUnbondingDelegationByUnbondingID(ctx, unbondingId)
+	// 			if err != nil {
+	// 				panic(err)
+	// 			}
+	// 			app.StakingKeeper.RemoveUnbondingDelegation(ctx, unbondingDelegation)
+	// 			app.Logger().Info("removed unbonding delegation", "operator", operator, "unbondingId", unbondingId)
+	// 		}
+	// 		validator.Jailed = true
+	// 		validator.Status = stakingtypes.Unbonded
+	// 		validator.UnbondingTime = ctx.BlockTime()
+	// 		validator.UnbondingIds = []uint64{}
+	// 		app.StakingKeeper.SetValidator(ctx, validator)
+	// 		app.Logger().Info("reset unbonded status for validator", "operator", operator)
+	// 	}
+	// }
 
 	return app.mm.BeginBlock(ctx)
 }
