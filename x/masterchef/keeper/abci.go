@@ -337,6 +337,10 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 		snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		tokenOutCoin, _, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, baseCurrency, math.LegacyZeroDec(), math.LegacyOneDec())
 		if err != nil {
+			// Continue as we can swap it when this amount is higher
+			if err == ammtypes.ErrTokenOutAmountZero {
+				continue
+			}
 			return sdk.Coins{}, err
 		}
 
