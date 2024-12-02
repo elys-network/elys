@@ -309,8 +309,8 @@ func (p *Pool) SwapOutAmtGivenIn(
 	// weightBreakingFeePerpetualFactor is 1 if not send by perpetual
 	weightBreakingFee = weightBreakingFee.Mul(weightBreakingFeePerpetualFactor)
 
-	// weight recovery reward = weight breaking fee * weight recovery fee portion
-	weightRecoveryReward := weightBreakingFee.Mul(params.WeightRecoveryFeePortion)
+	// weight recovery reward = weight breaking fee * weight breaking fee portion
+	weightRecoveryReward := weightBreakingFee.Mul(params.WeightBreakingFeePortion)
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus = weightBreakingFee.Neg()
