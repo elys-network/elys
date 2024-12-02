@@ -47,12 +47,12 @@ func Suite(t *testing.T, wrapper *Wrapper, ibcEnabled bool) (ctx context.Context
 				ChainID: "elys-1",
 				Images: []ibc.DockerImage{
 					{
-						Repository: "elys-simd",
+						Repository: "elys",
 						Version:    "local",
 						UidGid:     "1025:1025",
 					},
 				},
-				Bin:            "simd",
+				Bin:            "elysd",
 				Bech32Prefix:   "elys",
 				Denom:          "uelys",
 				GasPrices:      "0.1uelys",
