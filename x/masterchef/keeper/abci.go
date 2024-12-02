@@ -307,7 +307,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 
 // Move gas fees collected to dex revenue wallet
 // Convert it into USDC
-func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, address sdk.AccAddress) sdk.Coins {
+func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, address sdk.AccAddress) (sdk.Coins, error) {
 	// fetch and clear the collected fees for distribution, since this is
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the previous proposer)
@@ -326,7 +326,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 		// Find a pool that can convert tokenIn to usdc
 		pool, found := k.amm.GetBestPoolWithDenoms(ctx, []string{tokenIn.Denom, baseCurrency}, false)
 		if !found {
-			continue
+			return sdk.Coins{}, types.ErrPoolNotFound
 		}
 
 		// Executes the swap in the pool and stores the output. Updates pool assets but
@@ -334,7 +334,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 		snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		tokenOutCoin, _, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, baseCurrency, math.LegacyZeroDec(), math.LegacyOneDec())
 		if err != nil {
-			continue
+			return sdk.Coins{}, err
 		}
 
 		tokenOutAmount := tokenOutCoin.Amount
@@ -344,12 +344,10 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 		// Also emits a swap event and updates related liquidity metrics.
-		cacheCtx, write := ctx.CacheContext()
-		_, err = k.amm.UpdatePoolForSwap(cacheCtx, pool, address, address, tokenIn, tokenOutCoin, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec())
+		_, err = k.amm.UpdatePoolForSwap(ctx, pool, address, address, tokenIn, tokenOutCoin, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec())
 		if err != nil {
-			continue
+			return sdk.Coins{}, err
 		}
-		write()
 
 		// Swapped USDC coin
 		swappedCoins := sdk.NewCoins(sdk.NewCoin(baseCurrency, tokenOutAmount))
@@ -358,14 +356,17 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 		totalSwappedCoins = totalSwappedCoins.Add(swappedCoins...)
 	}
 
-	return totalSwappedCoins
+	return totalSwappedCoins, nil
 }
 
 func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoins, error) {
 	params := k.GetParams(ctx)
 	feeCollector := k.authKeeper.GetModuleAccount(ctx, authtypes.FeeCollectorName)
 	// Calculate each portion of Gas fees collected - stakers, LPs
-	fees := k.ConvertGasFeesToUsdc(ctx, baseCurrency, feeCollector.GetAddress())
+	fees, err := k.ConvertGasFeesToUsdc(ctx, baseCurrency, feeCollector.GetAddress())
+	if err != nil {
+		return sdk.DecCoins{}, err
+	}
 	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(fees...)
 
 	gasFeesForLpsDec := gasFeeCollectedDec.MulDecTruncate(params.RewardPortionForLps)
@@ -408,7 +409,10 @@ func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) (sdk.De
 	fundAddr := k.perpetualKeeper.GetIncrementalBorrowInterestPaymentFundAddress(ctx)
 	params := k.GetParams(ctx)
 	// Transfer revenue to a single wallet of Perpetual revenue wallet.
-	fees := k.ConvertGasFeesToUsdc(ctx, baseCurrency, fundAddr)
+	fees, err := k.ConvertGasFeesToUsdc(ctx, baseCurrency, fundAddr)
+	if err != nil {
+		return sdk.DecCoins{}, err
+	}
 	// Calculate each portion of Gas fees collected - stakers, LPs
 	perpFeeCollectedDec := sdk.NewDecCoinsFromCoins(fees...)
 
