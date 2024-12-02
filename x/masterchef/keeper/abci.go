@@ -326,7 +326,10 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 		// Find a pool that can convert tokenIn to usdc
 		pool, found := k.amm.GetBestPoolWithDenoms(ctx, []string{tokenIn.Denom, baseCurrency}, false)
 		if !found {
-			return sdk.Coins{}, types.ErrPoolNotFound
+			// If there is a denom for which pool doesn't exist, log it, otherwise
+			// if pool exist, throw error later
+			ctx.Logger().Info("Pool not found for denom: " + tokenIn.Denom)
+			continue
 		}
 
 		// Executes the swap in the pool and stores the output. Updates pool assets but
@@ -424,10 +427,19 @@ func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) (sdk.De
 
 	lpsGasFeeCoins, _ := perpFeesForLpsDec.TruncateDecimal()
 	protocolGasFeeCoins, _ := perpFeesForProtocolDec.TruncateDecimal()
+	stakerCoins, _ := perpFeesForStakersDec.TruncateDecimal()
 
 	// Send coins from fund address to masterchef
 	if lpsGasFeeCoins.IsAllPositive() {
 		err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, fundAddr, types.ModuleName, lpsGasFeeCoins)
+		if err != nil {
+			return sdk.DecCoins{}, err
+		}
+	}
+
+	// Send coins to fee collector name
+	if perpFeesForStakersDec.IsAllPositive() {
+		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, stakerCoins)
 		if err != nil {
 			return sdk.DecCoins{}, err
 		}
