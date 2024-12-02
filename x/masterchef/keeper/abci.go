@@ -339,6 +339,14 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 		if err != nil {
 			// Continue as we can swap it when this amount is higher
 			if err == ammtypes.ErrTokenOutAmountZero {
+				ctx.Logger().Info("Token out amount is zero(skipping conversion) for denom: " + tokenIn.Denom)
+				ctx.EventManager().EmitEvents(sdk.Events{
+					sdk.NewEvent(
+						types.TypeEvtSkipSwap,
+						sdk.NewAttribute("Token denom", tokenIn.Denom),
+						sdk.NewAttribute("Token amount", "0"),
+					),
+				})
 				continue
 			}
 			return sdk.Coins{}, err

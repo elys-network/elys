@@ -66,8 +66,7 @@ func (p Pool) CalcOutAmtGivenIn(
 	if err != nil {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
 	}
-	// REV: Origin could be here, improve error handling
-	// This is the origin
+
 	if tokenAmountOut.IsZero() {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), ErrTokenOutAmountZero
 	}
