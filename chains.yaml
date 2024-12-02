@@ -8,6 +8,6 @@
   github-organization: elys-network
   github-repo: elys
   dockerfile: cosmos
-  build-target: make build
+  build-target: make build STATIC=1
   binaries:
     - build/elysd

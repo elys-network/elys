@@ -41,15 +41,29 @@ DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bu
 DOCKERNET_HOME=./dockernet
 DOCKERNET_COMPOSE_FILE=$(DOCKERNET_HOME)/docker-compose.yml
 
+# Set STATIC variable (default to 0 for dynamic builds, 1 for static builds)
+STATIC ?= 0
+
+# Linker flags
 ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=$(NAME) \
-		  -X github.com/cosmos/cosmos-sdk/version.AppName=$(NAME) \
-		  -X github.com/cosmos/cosmos-sdk/version.ServerName=$(BINARY) \
-		  -X github.com/cosmos/cosmos-sdk/version.ClientName=$(BINARY) \
-		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
-		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
-		  -X github.com/cosmos/cosmos-sdk/types.DBBackend=$(DBENGINE) \
-		  -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,osusergo,$(DBENGINE)
+          -X github.com/cosmos/cosmos-sdk/version.AppName=$(NAME) \
+          -X github.com/cosmos/cosmos-sdk/version.ServerName=$(BINARY) \
+          -X github.com/cosmos/cosmos-sdk/version.ClientName=$(BINARY) \
+          -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
+          -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
+          -X github.com/cosmos/cosmos-sdk/types.DBBackend=$(DBENGINE) \
+          -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,osusergo,$(DBENGINE)
+
+# Add static linking flags if STATIC=1
+ifeq ($(STATIC),1)
+	ldflags += -extldflags "-static"
+	CGO_ENABLED := 0
+else
+	CGO_ENABLED := 1
+endif
+
 BUILD_FLAGS := -ldflags '$(ldflags)' -tags '$(GOTAGS)'
+
 
 
 PROTO_VERSION=0.14.0
@@ -122,7 +136,7 @@ ifeq (,$(shell which heighliner))
 	@echo heighliner not found. https://github.com/strangelove-ventures/heighliner
 else
 	@echo "🤖 Building image..."
-	@heighliner build --chain elys-simd --local 1 -f chains.yaml> /dev/null
+	@heighliner build --chain elys --local 1 -f chains.yaml > /dev/null
 	@echo "✅ Completed build!"
 endif
 
