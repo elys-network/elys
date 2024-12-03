@@ -264,6 +264,19 @@ jobs:
           echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
           cd /home/runner
           tar -cf - .elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
+          
+          echo "alice node key:"
+          cat .elys/config/node_key.json
+          echo "alice priv validator key:"
+          cat .elys/config/priv_validator_key.json
+          echo "alice priv validator state:"
+          cat .elys/data/priv_validator_state.json
+          echo "bob node key:"
+          cat .elys2/config/node_key.json
+          echo "bob priv validator key:"
+          cat .elys2/config/priv_validator_key.json
+          echo "bob priv validator state:"
+          cat .elys2/data/priv_validator_state.json
 
       - name: Upload snapshot
         env:
