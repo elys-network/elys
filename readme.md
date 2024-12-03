@@ -217,3 +217,4 @@ After a draft release is created, make your final changes from the release page 
 - [TestNet Explorer](https://testnet.ping.pub/elys)
 - [Developer Chat](https://discord.gg/elysnetwork)
 - [Github](https://github.com/elys-network)
+
