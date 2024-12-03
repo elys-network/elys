@@ -7,7 +7,7 @@
           "authority": "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3",
           "pool": 
             {
-                "amm_pool_id": 3,
+                "amm_pool_id": 1,
                 "leverage_max": "10.0"
             }
       }
