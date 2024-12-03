@@ -110,31 +110,6 @@ func (suite *AmmKeeperTestSuite) TestPool() {
 		postValidateFunction func()
 	}{
 		{
-			"GetAllLegacyPool returns empty list",
-			func() {
-				suite.ResetSuite()
-			},
-			func() {
-				list := suite.app.AmmKeeper.GetAllLegacyPool(suite.ctx)
-				suite.Require().Len(list, 0)
-			},
-		},
-		{
-			"GetAllLegacyPool returns list with one item",
-			func() {
-				suite.ResetSuite()
-
-				suite.app.AmmKeeper.SetPool(suite.ctx, types.Pool{
-					PoolId:  1,
-					Address: types.NewPoolAddress(1).String(),
-				})
-			},
-			func() {
-				list := suite.app.AmmKeeper.GetAllLegacyPool(suite.ctx)
-				suite.Require().Len(list, 1)
-			},
-		},
-		{
 			"IterateLiquidityPools",
 			func() {
 				suite.ResetSuite()

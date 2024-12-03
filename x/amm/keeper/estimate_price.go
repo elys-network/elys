@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -9,11 +8,11 @@ import (
 )
 
 // Estimate the price : eg, 1 Eden -> x usdc
-func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec {
+func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) sdkmath.LegacyDec {
 	// Find a pool that can convert tokenIn to usdc
 	pool, found := k.GetBestPoolWithDenoms(ctx, []string{tokenInDenom, baseCurrency}, false)
 	if !found {
-		return math.LegacyZeroDec()
+		return sdkmath.LegacyZeroDec()
 	}
 
 	// Executes the swap in the pool and stores the output. Updates pool assets but
@@ -22,17 +21,17 @@ func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 
 	rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, &snapshot, tokenInDenom, baseCurrency, k.accountedPoolKeeper)
 	if err != nil {
-		return math.LegacyZeroDec()
+		return sdkmath.LegacyZeroDec()
 	}
 
 	return rate
 }
 
-func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec {
+func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) sdkmath.LegacyDec {
 	// Calc ueden / uusdc rate
 	edenUsdcRate := k.EstimatePrice(ctx, ptypes.Elys, baseCurrency)
 	if edenUsdcRate.IsZero() {
-		edenUsdcRate = math.LegacyOneDec()
+		edenUsdcRate = sdkmath.LegacyOneDec()
 	}
 	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 	if usdcDenomPrice.IsZero() {
@@ -41,12 +40,12 @@ func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.Leg
 		if found {
 			usdcDecimal = int64(usdcEntry.Decimals)
 		}
-		usdcDenomPrice = math.LegacyNewDecWithPrec(1, usdcDecimal)
+		usdcDenomPrice = sdkmath.LegacyNewDecWithPrec(1, usdcDecimal)
 	}
 	return edenUsdcRate.Mul(usdcDenomPrice)
 }
 
-func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec {
+func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) sdkmath.LegacyDec {
 	oraclePrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
 	if !oraclePrice.IsZero() {
 		return oraclePrice
@@ -61,7 +60,7 @@ func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 		if found {
 			usdcDecimal = int64(usdcEntry.Decimals)
 		}
-		usdcDenomPrice = math.LegacyNewDecWithPrec(1, usdcDecimal)
+		usdcDenomPrice = sdkmath.LegacyNewDecWithPrec(1, usdcDecimal)
 	}
 	return tokenUsdcRate.Mul(usdcDenomPrice)
 }

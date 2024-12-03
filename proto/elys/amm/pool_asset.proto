@@ -6,16 +6,6 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
-message LegacyPoolAsset {
-
-  cosmos.base.v1beta1.Coin token = 1 [ (gogoproto.nullable) = false ];
-  string weight = 2 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-}
-
 message PoolAsset {
 
   cosmos.base.v1beta1.Coin token = 1 [ (gogoproto.nullable) = false ];

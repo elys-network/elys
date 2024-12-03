@@ -20,12 +20,6 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store.Set(types.PoolKey(pool.PoolId), b)
 }
 
-func (k Keeper) SetLegacyPool(ctx sdk.Context, pool types.LegacyPool) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
-	b := k.cdc.MustMarshal(&pool)
-	store.Set(types.PoolKey(pool.PoolId), b)
-}
-
 // GetPool returns a pool from its index
 func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (val types.Pool, found bool) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
@@ -54,22 +48,6 @@ func (k Keeper) GetAllPool(ctx sdk.Context) (list []types.Pool) {
 
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Pool
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-
-	return
-}
-
-// GetAllLegacyPool returns all legacy pool
-func (k Keeper) GetAllLegacyPool(ctx sdk.Context) (list []types.LegacyPool) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.LegacyPool
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}

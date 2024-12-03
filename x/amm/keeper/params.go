@@ -1,12 +1,9 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
@@ -50,36 +47,4 @@ func (k Keeper) CheckBaseAssetExist(ctx sdk.Context, denom string) bool {
 		}
 	}
 	return found
-}
-
-func (k Keeper) V8Migrate(ctx sdk.Context) error {
-	baseCurrencyDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	if !found {
-		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-
-	params := types.DefaultParams()
-	params.BaseAssets = []string{baseCurrencyDenom}
-
-	k.SetParams(ctx, params)
-
-	legacyPools := k.GetAllLegacyPool(ctx)
-	for _, legacyPool := range legacyPools {
-		var newPool types.Pool
-		newPool.PoolId = legacyPool.PoolId
-		newPool.Address = legacyPool.Address
-		newPool.PoolParams = types.PoolParams{
-			SwapFee:   legacyPool.PoolParams.SwapFee,
-			UseOracle: legacyPool.PoolParams.UseOracle,
-			FeeDenom:  legacyPool.PoolParams.FeeDenom,
-		}
-		newPool.TotalShares = legacyPool.TotalShares
-		newPool.TotalWeight = legacyPool.TotalWeight
-		newPool.PoolAssets = legacyPool.PoolAssets
-		newPool.RebalanceTreasury = legacyPool.RebalanceTreasury
-
-		k.SetPool(ctx, newPool)
-	}
-
-	return nil
 }
