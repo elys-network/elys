@@ -183,29 +183,29 @@ func (k Keeper) DeleteAllPendingSpotOrder(ctx sdk.Context) (list []types.SpotOrd
 }
 
 // ExecuteStopLossSpotOrder executes a stop loss order
-func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) error {
+func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
 	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if marketPrice.IsZero() {
-		return errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
 	}
 
 	if marketPrice.GT(order.OrderPrice.Rate) {
 		// skip the order
-		return nil
+		return nil, nil
 	}
 
 	// send the order amount back to the owner
 	ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
 	err = k.bank.SendCoins(ctx, order.GetOrderAddress(), ownerAddress, sdk.NewCoins(order.OrderAmount))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Swap the order amount with the target denom
-	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	res, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -214,39 +214,39 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) err
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
 	if err != nil {
-		return err
+		return res, err
 	}
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
 
-	return nil
+	return res, nil
 }
 
 // ExecuteLimitSellOrder executes a limit sell order
-func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) error {
+func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
 	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if marketPrice.IsZero() {
-		return errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
 	}
 
 	if marketPrice.LT(order.OrderPrice.Rate) {
 		// skip the order
-		return nil
+		return nil, nil
 	}
 
 	// send the order amount back to the owner
 	ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
 	err = k.bank.SendCoins(ctx, order.GetOrderAddress(), ownerAddress, sdk.NewCoins(order.OrderAmount))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Swap the order amount with the target denom
-	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	res, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -255,39 +255,39 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) er
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
 	if err != nil {
-		return err
+		return res, err
 	}
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
 
-	return nil
+	return res, nil
 }
 
 // ExecuteLimitBuyOrder executes a limit buy order
-func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) error {
+func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
 	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if marketPrice.IsZero() {
-		return errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
 	}
 
 	if marketPrice.GT(order.OrderPrice.Rate) {
 		// skip the order
-		return nil
+		return nil, nil
 	}
 
 	// send the order amount back to the owner
 	ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
 	err = k.bank.SendCoins(ctx, order.GetOrderAddress(), ownerAddress, sdk.NewCoins(order.OrderAmount))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Swap the order amount with the target denom
-	_, err = k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	res, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -296,19 +296,19 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) err
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
 	if err != nil {
-		return err
+		return res, err
 	}
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
 
-	return nil
+	return res, nil
 }
 
 // ExecuteMarketBuyOrder executes a market buy order
-func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) error {
+func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
 	// Swap the order amount with the target denom
-	_, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+	res, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
@@ -317,8 +317,8 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) er
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 	})
 	if err != nil {
-		return err
+		return res, err
 	}
 
-	return nil
+	return res, nil
 }

@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
-	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -35,26 +34,6 @@ func (k Keeper) DeletePoolRewardsAccum(ctx sdk.Context, accum types.PoolRewardsA
 func (k Keeper) GetAllPoolRewardsAccum(ctx sdk.Context) (list []types.PoolRewardsAccum) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iterator := storetypes.KVStorePrefixIterator(store, types.PoolRewardsAccumKeyPrefix)
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.PoolRewardsAccum
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-
-	return
-}
-
-func (k Keeper) DeleteLegacyPoolRewardsAccum(ctx sdk.Context, accum types.PoolRewardsAccum) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store.Delete(types.GetLegacyPoolRewardsAccumKey(accum.PoolId, accum.Timestamp))
-}
-
-func (k Keeper) GetAllLegacyPoolRewardsAccum(ctx sdk.Context) (list []types.PoolRewardsAccum) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyPoolRewardsAccumKeyPrefix))
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

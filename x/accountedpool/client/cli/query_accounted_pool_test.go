@@ -108,8 +108,6 @@ func TestShowAccountedPool(t *testing.T) {
 				var resp types.QueryGetAccountedPoolResponse
 				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
 				require.NotNil(t, resp.AccountedPool)
-				// total weight is not set in genesis state
-				tc.obj.TotalWeight = resp.AccountedPool.TotalWeight
 				require.Equal(t,
 					nullify.Fill(&tc.obj),
 					nullify.Fill(&resp.AccountedPool),
@@ -167,10 +165,6 @@ func TestListAccountedPool(t *testing.T) {
 			require.NoError(t, err)
 			require.LessOrEqual(t, len(resp.AccountedPool), stepSize)
 
-			for j, accountedPool := range resp.AccountedPool {
-				objs[i+j].TotalWeight = accountedPool.TotalWeight
-			}
-
 			require.Subset(t, nullify.Fill(objs), nullify.Fill(resp.AccountedPool))
 		}
 	})
@@ -182,10 +176,6 @@ func TestListAccountedPool(t *testing.T) {
 			require.NoError(t, err)
 			require.LessOrEqual(t, len(resp.AccountedPool), stepSize)
 
-			for j, accountedPool := range resp.AccountedPool {
-				objs[i+j].TotalWeight = accountedPool.TotalWeight
-			}
-
 			require.Subset(t, nullify.Fill(objs), nullify.Fill(resp.AccountedPool))
 			next = resp.Pagination.NextKey
 		}
@@ -195,10 +185,6 @@ func TestListAccountedPool(t *testing.T) {
 		resp, err := executeCmdAndCheck(t, RequestArgs{Next: nil, Offset: 0, Limit: uint64(len(objs)), Total: true})
 		require.NoError(t, err)
 		require.Equal(t, len(objs), int(resp.Pagination.Total))
-
-		for i, accountedPool := range resp.AccountedPool {
-			objs[i].TotalWeight = accountedPool.TotalWeight
-		}
 
 		require.ElementsMatch(t, nullify.Fill(objs), nullify.Fill(resp.AccountedPool))
 	})

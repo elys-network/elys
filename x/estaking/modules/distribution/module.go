@@ -17,6 +17,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	assetprofilekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
+	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -44,7 +45,7 @@ type AppModule struct {
 
 	keeper             keeper.Keeper
 	accountKeeper      distrtypes.AccountKeeper
-	bankKeeper         distrtypes.BankKeeper
+	commitmentKeeper   *commitmentkeeper.Keeper
 	estakingKeeper     *estakingkeeper.Keeper
 	assetprofileKeeper *assetprofilekeeper.Keeper
 
@@ -55,17 +56,17 @@ type AppModule struct {
 // AppModule constructor.
 func NewAppModule(
 	cdc codec.Codec, keeper keeper.Keeper, ak distrtypes.AccountKeeper,
-	bk distrtypes.BankKeeper,
+	ck *commitmentkeeper.Keeper,
 	sk *estakingkeeper.Keeper,
 	assetprofileKeeper *assetprofilekeeper.Keeper,
 	feeCollectorName string, subspace exported.Subspace,
 ) AppModule {
-	distrAppMod := distr.NewAppModule(cdc, keeper, ak, bk, sk, subspace)
+	distrAppMod := distr.NewAppModule(cdc, keeper, ak, ck, sk, subspace)
 	return AppModule{
 		AppModule:          distrAppMod,
 		keeper:             keeper,
 		accountKeeper:      ak,
-		bankKeeper:         bk,
+		commitmentKeeper:   ck,
 		estakingKeeper:     sk,
 		assetprofileKeeper: assetprofileKeeper,
 		feeCollectorName:   feeCollectorName,
@@ -111,7 +112,7 @@ func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the current representatives)
 	feeCollector := am.accountKeeper.GetModuleAccount(ctx, ccvconsumertypes.ConsumerRedistributeName)
-	feesCollectedInt := am.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
+	feesCollectedInt := am.commitmentKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
 
 	usdcDenom, _ := am.assetprofileKeeper.GetUsdcDenom(ctx)
 	filteredCoins := FilterDenoms(feesCollectedInt, usdcDenom, ptypes.Eden)
@@ -119,7 +120,7 @@ func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 
 	// transfer collected fees to the distribution module account
 	if filteredCoins.IsAllPositive() {
-		err := am.bankKeeper.SendCoinsFromModuleToModule(ctx, ccvconsumertypes.ConsumerRedistributeName, distrtypes.ModuleName, filteredCoins)
+		err := am.commitmentKeeper.SendCoinsFromModuleToModule(ctx, ccvconsumertypes.ConsumerRedistributeName, distrtypes.ModuleName, filteredCoins)
 		if err != nil {
 			panic(err)
 		}
@@ -191,14 +192,14 @@ func (am AppModule) AllocateEdenBTokens(ctx sdk.Context) {
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the current representatives)
 	feeCollector := am.accountKeeper.GetModuleAccount(ctx, ccvconsumertypes.ConsumerRedistributeName)
-	feesCollectedInt := am.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
+	feesCollectedInt := am.commitmentKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
 
 	filteredCoins := FilterDenoms(feesCollectedInt, ptypes.EdenB)
 	feesCollected := sdk.NewDecCoinsFromCoins(filteredCoins...)
 
 	// transfer collected fees to the distribution module account
 	if filteredCoins.IsAllPositive() {
-		err := am.bankKeeper.SendCoinsFromModuleToModule(ctx, ccvconsumertypes.ConsumerRedistributeName, distrtypes.ModuleName, filteredCoins)
+		err := am.commitmentKeeper.SendCoinsFromModuleToModule(ctx, ccvconsumertypes.ConsumerRedistributeName, distrtypes.ModuleName, filteredCoins)
 		if err != nil {
 			panic(err)
 		}

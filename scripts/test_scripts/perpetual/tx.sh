@@ -5,7 +5,6 @@ set -e
 BINARY="elysd"
 NODE="tcp://localhost:26657"
 MY_VALIDATOR_ADDRESS=$($BINARY keys show my_validator -a --keyring-backend test)
-BROKER_ADDRESS=$($BINARY keys show test1 -a --keyring-backend test)
 MY_TEST2_ADDRESS=$($BINARY keys show test2 -a --keyring-backend test)
 MY_TEST3_ADDRESS=$($BINARY keys show test3 -a --keyring-backend test)
 MY_TEST4_ADDRESS=$($BINARY keys show test4 -a --keyring-backend test)
@@ -64,19 +63,6 @@ $BINARY tx perpetual open long 5 2 uatom 100000000uusdc --take-profit 45 --from=
 query_tx "perpetual open long"
 echo "Querying position"
 $BINARY q perpetual get-positions-for-address $MY_TEST5_ADDRESS
-
-# echo "Open long position using broker"
-# $BINARY tx perpetual broker-open long 5 5 uatom 100000000uusdc $MY_TEST2_ADDRESS --take-profit 45 --from=$BROKER_ADDRESS --keyring-backend=test --chain-id=elys --gas=1000000
-# query_tx "perpetual broker-open long"
-# echo "Querying position"
-# $BINARY q perpetual get-positions-for-address $MY_TEST2_ADDRESS
-
-# echo "Close position using broker"
-# $BINARY tx perpetual broker-close 4 49934694 $MY_TEST2_ADDRESS --from=$BROKER_ADDRESS --keyring-backend=test --chain-id=elys --gas=1000000
-# query_tx "perpetual broker-close"
-# echo "Querying position"
-# $BINARY q perpetual get-positions-for-address $MY_TEST2_ADDRESS
-
 
 # sleep 6s
 

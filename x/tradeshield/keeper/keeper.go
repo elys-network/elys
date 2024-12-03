@@ -19,7 +19,6 @@ type (
 		authority    string
 		bank         types.BankKeeper
 		amm          types.AmmKeeper
-		tier         types.TierKeeper
 		perpetual    types.PerpetualKeeper
 	}
 )
@@ -30,7 +29,6 @@ func NewKeeper(
 	authority string,
 	bank types.BankKeeper,
 	amm types.AmmKeeper,
-	tier types.TierKeeper,
 	perpetual types.PerpetualKeeper,
 ) *Keeper {
 	return &Keeper{
@@ -39,7 +37,6 @@ func NewKeeper(
 		authority:    authority,
 		bank:         bank,
 		amm:          amm,
-		tier:         tier,
 		perpetual:    perpetual,
 	}
 }
@@ -50,8 +47,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 // GetAssetPriceFromDenomInToDenomOut returns the price of an asset from a denom to another denom
 func (k Keeper) GetAssetPriceFromDenomInToDenomOut(ctx sdk.Context, denomIn, denomOut string) (sdkmath.LegacyDec, error) {
-	priceIn := k.tier.CalculateUSDValue(ctx, denomIn, sdkmath.NewInt(1))
-	priceOut := k.tier.CalculateUSDValue(ctx, denomOut, sdkmath.NewInt(1))
+	priceIn := k.amm.CalculateUSDValue(ctx, denomIn, sdkmath.NewInt(1))
+	priceOut := k.amm.CalculateUSDValue(ctx, denomOut, sdkmath.NewInt(1))
 
 	// If the price of the asset is 0, return an error
 	if priceIn.IsZero() || priceOut.IsZero() {

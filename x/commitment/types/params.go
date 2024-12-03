@@ -4,9 +4,9 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"gopkg.in/yaml.v2"
 )
 
 // DefaultParams returns a default set of parameters
@@ -58,15 +58,4 @@ func (vestingInfo VestingInfo) Validate() error {
 		return fmt.Errorf("vesting now factor must be positive")
 	}
 	return nil
-}
-
-// Validate validates the set of params
-func (p LegacyParams) Validate() error {
-	return nil
-}
-
-// String implements the Stringer interface.
-func (p LegacyParams) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
 }

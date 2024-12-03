@@ -5,7 +5,6 @@ set -e
 BINARY="elysd"
 NODE="tcp://localhost:26657"
 MY_VALIDATOR_ADDRESS=$($BINARY keys show my_validator -a --keyring-backend test)
-BROKER_ADDRESS=$($BINARY keys show test1 -a --keyring-backend test)
 MY_TEST1_ADDRESS=$($BINARY keys show test1 -a --keyring-backend test)
 MY_TEST2_ADDRESS=$($BINARY keys show test2 -a --keyring-backend test)
 MY_TEST3_ADDRESS=$($BINARY keys show test3 -a --keyring-backend test)

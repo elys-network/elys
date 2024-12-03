@@ -20,16 +20,14 @@ func (k Keeper) OnLeverageLpPoolEnable(ctx sdk.Context, ammPool ammtypes.Pool) e
 	// Initiate pool
 	accountedPool := types.AccountedPool{
 		PoolId:           poolId,
-		TotalShares:      ammPool.TotalShares,
-		PoolAssets:       []ammtypes.PoolAsset{},
-		TotalWeight:      ammPool.TotalWeight,
+		TotalTokens:      sdk.NewCoins(),
 		NonAmmPoolTokens: sdk.NewCoins(),
 	}
 
 	nonAmmPoolTokens := make([]sdk.Coin, len(ammPool.PoolAssets))
 
 	for i, poolAsset := range ammPool.PoolAssets {
-		accountedPool.PoolAssets = append(accountedPool.PoolAssets, poolAsset)
+		accountedPool.TotalTokens = append(accountedPool.TotalTokens, poolAsset.Token)
 		nonAmmPoolTokens[i] = sdk.NewCoin(poolAsset.Token.Denom, math.ZeroInt())
 	}
 	accountedPool.NonAmmPoolTokens = nonAmmPoolTokens
