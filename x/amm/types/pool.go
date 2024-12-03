@@ -92,8 +92,13 @@ func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coin
 	if err != nil {
 		return err
 	}
-	inTokensAfterFee := sdkmath.LegacyNewDecFromInt(tokensIn[0].Amount).Mul(sdkmath.LegacyOneDec().Sub(swapFeeIn)).TruncateInt()
-	outTokensAfterFee := sdkmath.LegacyNewDecFromInt(tokensOut[0].Amount).Mul(sdkmath.LegacyOneDec().Sub(swapFeeOut)).TruncateInt()
+
+	inTokenFee := sdkmath.LegacyNewDecFromInt(tokensIn[0].Amount).Mul(swapFeeIn).TruncateInt()
+	outTokenFee := sdkmath.LegacyNewDecFromInt(tokensOut[0].Amount).Mul(swapFeeOut).TruncateInt()
+
+	inTokensAfterFee := tokensIn[0].Amount.Sub(inTokenFee)
+	outTokensAfterFee := tokensOut[0].Amount.Sub(outTokenFee)
+
 	inPoolAsset.Token.Amount = inPoolAsset.Token.Amount.Add(inTokensAfterFee)
 	outPoolAsset.Token.Amount = outPoolAsset.Token.Amount.Sub(outTokensAfterFee)
 

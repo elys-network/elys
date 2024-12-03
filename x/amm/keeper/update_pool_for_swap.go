@@ -131,8 +131,6 @@ func (k Keeper) UpdatePoolForSwap(
 	if err != nil {
 		return sdkmath.Int{}, err
 	}
-	println("swapFee coin: ", swapFeeCoins.String())
-	println("BonusTokenAmount: ", bonusToken.String())
 
 	// return swap fee out amount
 	return swapFeeOutCoins.AmountOf(tokenOut.Denom), nil
