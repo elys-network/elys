@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	storetypes "cosmossdk.io/store/types"
 	"fmt"
+
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -43,27 +44,6 @@ func (k Keeper) GetAllPoolInfos(ctx sdk.Context) (list []types.PoolInfo) {
 
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.PoolInfo
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-
-	return
-}
-
-func (k Keeper) RemoveLegacyPoolInfo(ctx sdk.Context, poolId uint64) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPoolInfoKey(poolId)
-	store.Delete(key)
-}
-
-func (k Keeper) GetAllLegacyPoolInfos(ctx sdk.Context) (list []types.LegacyPoolInfo) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	iterator := storetypes.KVStorePrefixIterator(store, types.PoolInfoKeyPrefix)
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.LegacyPoolInfo
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
