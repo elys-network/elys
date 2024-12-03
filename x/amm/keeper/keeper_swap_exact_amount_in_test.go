@@ -120,8 +120,8 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountIn() {
 			useNewRecipient:     false,
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009969)},
 			expRecipientBalance: sdk.Coins{},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990028)},
-			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000003)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1009997), sdk.NewInt64Coin(ptypes.BaseCurrency, 990031)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000003), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
 		},
 		{

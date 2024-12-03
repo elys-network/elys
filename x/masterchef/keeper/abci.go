@@ -332,7 +332,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
 		snapshot := k.amm.GetAccountedPoolSnapshotOrSet(ctx, pool)
-		tokenOutCoin, _, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, baseCurrency, math.LegacyZeroDec(), math.LegacyOneDec())
+		tokenOutCoin, _, _, _, oracleOutAmount, err := k.amm.SwapOutAmtGivenIn(ctx, pool.PoolId, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, baseCurrency, math.LegacyZeroDec(), math.LegacyOneDec())
 		if err != nil {
 			continue
 		}
@@ -345,7 +345,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 		// Also emits a swap event and updates related liquidity metrics.
 		cacheCtx, write := ctx.CacheContext()
-		_, err = k.amm.UpdatePoolForSwap(cacheCtx, pool, address, address, tokenIn, tokenOutCoin, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec())
+		err = k.amm.UpdatePoolForSwap(cacheCtx, pool, address, address, tokenIn, tokenOutCoin, math.LegacyZeroDec(), math.ZeroInt(), oracleOutAmount.TruncateInt(), math.LegacyZeroDec(), false)
 		if err != nil {
 			continue
 		}

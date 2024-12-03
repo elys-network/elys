@@ -9,7 +9,8 @@ import (
 // UpdatePoolForSwap takes a pool, sender, and tokenIn, tokenOut amounts
 // It then updates the pool's balances to the new reserve amounts, and
 // sends the in tokens from the sender to the pool, and the out tokens from the pool to the sender.
-
+// Swap Fees and Weight Breaking Fees is always applied on In Amount. When SwapInGivenOut, oracleInAmount should be used for it otherwise tokenInAmount
+// Weight Recovery Bonus is always applied on Out Amount. When SwapInGivenOut, tokenOutAmount should be used for it otherwise oracleOutAmount
 func (k Keeper) UpdatePoolForSwap(
 	ctx sdk.Context,
 	pool types.Pool,
@@ -17,10 +18,24 @@ func (k Keeper) UpdatePoolForSwap(
 	recipient sdk.AccAddress,
 	tokenIn sdk.Coin,
 	tokenOut sdk.Coin,
-	swapFeeIn sdkmath.LegacyDec,
-	swapFeeOut sdkmath.LegacyDec,
+	swapFee sdkmath.LegacyDec,
+	oracleInAmount sdkmath.Int,
+	oracleOutAmount sdkmath.Int,
 	weightBalanceBonus sdkmath.LegacyDec,
-) (sdkmath.Int, error) {
+	givenOut bool,
+) error {
+	//if givenOut && oracleInAmount.IsZero() {
+	//	return fmt.Errorf("oracleInAmount cannot be zero for SwapInGivenOut")
+	//}
+	//if !givenOut && tokenIn.IsZero() {
+	//	return fmt.Errorf("tokenIn cannot be zero for SwapInGivenOut")
+	//}
+	//if givenOut && tokenOut.IsZero() {
+	//	return fmt.Errorf("tokenOut cannot be zero for SwapOutGivenOut")
+	//}
+	//if !givenOut && oracleOutAmount.IsZero() {
+	//	return fmt.Errorf("oracleOutAmount cannot be zero for SwapOutGivenOut")
+	//}
 	tokensIn := sdk.Coins{tokenIn}
 	tokensOut := sdk.Coins{tokenOut}
 
@@ -30,13 +45,18 @@ func (k Keeper) UpdatePoolForSwap(
 	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
 	err := k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
 	if err != nil {
-		return sdkmath.ZeroInt(), err
+		return err
 	}
 
 	// apply swap fee when weight balance bonus is not available
 	swapFeeInCoins := sdk.Coins{}
 	if !weightBalanceBonus.IsPositive() {
-		swapFeeInCoins = PortionCoins(tokensIn, swapFeeIn)
+		if givenOut {
+			// if swapInGivenOut, use oracleIn amount to get swap fees
+			swapFeeInCoins = PortionCoins(sdk.Coins{sdk.NewCoin(tokenIn.Denom, oracleInAmount)}, swapFee)
+		} else {
+			swapFeeInCoins = PortionCoins(tokensIn, swapFee)
+		}
 	}
 
 	// send swap fee to rebalance treasury
@@ -44,11 +64,11 @@ func (k Keeper) UpdatePoolForSwap(
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, swapFeeInCoins)
 		if err != nil {
-			return sdkmath.ZeroInt(), err
+			return err
 		}
 		err = k.OnCollectFee(ctx, pool, swapFeeInCoins)
 		if err != nil {
-			return sdkmath.ZeroInt(), err
+			return err
 		}
 	}
 
@@ -63,13 +83,17 @@ func (k Keeper) UpdatePoolForSwap(
 
 		// weight recovery fee must be positive
 		if weightRecoveryFee.IsPositive() {
-			weightRecoveryFeeAmount = tokenOut.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			if givenOut {
+				weightRecoveryFeeAmount = oracleInAmount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			} else {
+				weightRecoveryFeeAmount = tokenIn.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			}
 
 			// send weight recovery fee to rebalance treasury if weight recovery fee amount is positive
 			if weightRecoveryFeeAmount.IsPositive() {
-				err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, sdk.Coins{sdk.NewCoin(tokenOut.Denom, weightRecoveryFeeAmount)})
+				err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, sdk.Coins{sdk.NewCoin(tokenIn.Denom, weightRecoveryFeeAmount)})
 				if err != nil {
-					return sdkmath.ZeroInt(), err
+					return err
 				}
 			}
 		}
@@ -78,28 +102,8 @@ func (k Keeper) UpdatePoolForSwap(
 	// Send coins to recipient
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, recipient, sdk.Coins{tokenOut})
 	if err != nil {
-		return sdkmath.ZeroInt(), err
+		return err
 	}
-
-	// apply swap fee when weight balance bonus is not available
-	swapFeeOutCoins := sdk.Coins{}
-	if !weightBalanceBonus.IsPositive() {
-		swapFeeOutCoins = PortionCoins(tokensOut, swapFeeOut)
-	}
-	if swapFeeOutCoins.IsAllPositive() {
-		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
-		err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, swapFeeOutCoins)
-		if err != nil {
-			return sdkmath.ZeroInt(), err
-		}
-		err = k.OnCollectFee(ctx, pool, swapFeeOutCoins)
-		if err != nil {
-			return sdkmath.ZeroInt(), err
-		}
-	}
-
-	// calculate total swap fee
-	swapFeeCoins := swapFeeInCoins.Add(swapFeeOutCoins...)
 
 	// calculate bonus token amount if weightBalanceBonus is positive
 	if weightBalanceBonus.IsPositive() {
@@ -107,8 +111,13 @@ func (k Keeper) UpdatePoolForSwap(
 		rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
 
+		bonusTokenAmount := sdkmath.ZeroInt()
 		// bonus token amount is the tokenOut amount times weightBalanceBonus
-		bonusTokenAmount := sdkmath.LegacyNewDecFromInt(tokenOut.Amount).Mul(weightBalanceBonus).RoundInt()
+		if givenOut {
+			bonusTokenAmount = tokenOut.Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+		} else {
+			bonusTokenAmount = oracleOutAmount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+		}
 
 		// if treasury balance is less than bonusTokenAmount, set bonusTokenAmount to treasury balance
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
@@ -120,7 +129,7 @@ func (k Keeper) UpdatePoolForSwap(
 			bonusToken := sdk.NewCoin(tokenOut.Denom, bonusTokenAmount)
 			err = k.bankKeeper.SendCoins(ctx, rebalanceTreasuryAddr, recipient, sdk.Coins{bonusToken})
 			if err != nil {
-				return sdkmath.ZeroInt(), err
+				return err
 			}
 		}
 	}
@@ -130,35 +139,34 @@ func (k Keeper) UpdatePoolForSwap(
 	if k.hooks != nil {
 		err = k.hooks.AfterSwap(ctx, sender, pool, tokensIn, tokensOut)
 		if err != nil {
-			return sdkmath.ZeroInt(), err
+			return err
 		}
 	}
 
 	// record tokenIn amount as total liquidity increase
 	err = k.RecordTotalLiquidityIncrease(ctx, tokensIn)
 	if err != nil {
-		return sdkmath.Int{}, err
+		return err
 	}
 
 	// record tokenOut amount as total liquidity decrease
 	err = k.RecordTotalLiquidityDecrease(ctx, tokensOut)
 	if err != nil {
-		return sdkmath.Int{}, err
+		return err
 	}
 
 	// record swap fee as total liquidity decrease
-	err = k.RecordTotalLiquidityDecrease(ctx, swapFeeCoins)
+	err = k.RecordTotalLiquidityDecrease(ctx, swapFeeInCoins)
 	if err != nil {
-		return sdkmath.Int{}, err
+		return err
 	}
 
 	// record weight recovery fee amount as total liquidity decrease
 	weightRecoveryToken := sdk.NewCoin(tokenOut.Denom, weightRecoveryFeeAmount)
 	err = k.RecordTotalLiquidityDecrease(ctx, sdk.Coins{weightRecoveryToken})
 	if err != nil {
-		return sdkmath.Int{}, err
+		return err
 	}
 
-	// return swap fee out amount
-	return swapFeeOutCoins.AmountOf(tokenOut.Denom), nil
+	return nil
 }

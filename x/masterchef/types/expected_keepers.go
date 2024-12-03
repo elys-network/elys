@@ -82,10 +82,12 @@ type AmmKeeper interface {
 		recipient sdk.AccAddress,
 		tokenIn sdk.Coin,
 		tokenOut sdk.Coin,
-		swapFeeIn math.LegacyDec,
-		swapFeeOut math.LegacyDec,
+		swapFee math.LegacyDec,
+		oracleInAmount math.Int,
+		oracleOutAmount math.Int,
 		weightBalanceBonus math.LegacyDec,
-	) (math.Int, error)
+		givenOut bool,
+	) error
 	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOracle bool) (pool ammtypes.Pool, found bool)
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
@@ -103,7 +105,7 @@ type AmmKeeper interface {
 		tokenOutDenom string,
 		swapFee math.LegacyDec,
 		weightBreakingFeePerpetualFactor math.LegacyDec,
-	) (tokenOut sdk.Coin, slippage, slippageAmount math.LegacyDec, weightBalanceBonus math.LegacyDec, err error)
+	) (tokenOut sdk.Coin, slippage, slippageAmount math.LegacyDec, weightBalanceBonus math.LegacyDec, oracleOutAmount math.LegacyDec, err error)
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec) (sdk.Coin, math.LegacyDec, error)
 	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
 	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec
