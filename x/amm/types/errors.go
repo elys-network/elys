@@ -3,8 +3,9 @@ package types
 // DONTCOVER
 
 import (
-	"cosmossdk.io/errors"
 	"fmt"
+
+	"cosmossdk.io/errors"
 )
 
 // x/amm module sentinel errors
@@ -36,6 +37,8 @@ var (
 	ErrInvalidShareAmountOut     = errors.Register(ModuleName, 112, "invalid share amount out")
 	ErrPoolAssetsMustBeTwo       = errors.Register(ModuleName, 113, "pool assets must be exactly two")
 	ErrOnlyBaseAssetsPoolAllowed = errors.Register(ModuleName, 114, "Only base assets paired pool allowed")
+
+	ErrTokenOutAmountZero = errors.Register(ModuleName, 115, "token out amount is zero")
 )
 
 const (

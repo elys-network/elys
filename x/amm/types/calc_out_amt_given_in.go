@@ -66,8 +66,9 @@ func (p Pool) CalcOutAmtGivenIn(
 	if err != nil {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
 	}
+
 	if tokenAmountOut.IsZero() {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), ErrAmountTooLow
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), ErrTokenOutAmountZero
 	}
 
 	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenIn.Denom, tokenOutDenom, accountedPool)
@@ -87,7 +88,7 @@ func (p Pool) CalcOutAmtGivenIn(
 	// We ignore the decimal component, as we round down the token amount out.
 	tokenAmountOutInt := tokenAmountOut.TruncateInt()
 	if !tokenAmountOutInt.IsPositive() {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), errorsmod.Wrapf(ErrInvalidMathApprox, "token amount must be positive")
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), ErrTokenOutAmountZero
 	}
 
 	return sdk.NewCoin(tokenOutDenom, tokenAmountOutInt), slippage, nil
