@@ -187,8 +187,8 @@ func (p *Pool) SwapOutAmtGivenIn(
 		if len(tokensIn) != 1 {
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errors.New("expected tokensIn to be of length one")
 		}
-		tokensIn[0].Amount = tokensIn[0].Amount.ToLegacyDec().Mul(sdkmath.LegacyOneDec().Sub(swapFee)).TruncateInt()
-		balancerOutCoin, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, accPoolKeeper)
+		tokensInAfterFee := []sdk.Coin{sdk.NewCoin(tokensIn[0].Denom, tokensIn[0].Amount.ToLegacyDec().Mul(sdkmath.LegacyOneDec().Sub(swapFee)).TruncateInt())}
+		balancerOutCoin, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensInAfterFee, tokenOutDenom, swapFee, accPoolKeeper)
 		if err != nil {
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
