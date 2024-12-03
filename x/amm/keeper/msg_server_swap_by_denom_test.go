@@ -29,7 +29,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapByDenom() {
 			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOutMin:       sdkmath.ZeroInt(),
 			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9802),
-			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009802)},
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
 			expPass:           true,
 		},
 		{
@@ -54,7 +54,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapByDenom() {
 		},
 	} {
 		suite.Run(tc.desc, func() {
-			//suite.SetupTest()
+			suite.SetupTest()
 
 			// set asset profile
 			suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
@@ -150,6 +150,8 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapByDenom() {
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(2))
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.SwapByDenom(
@@ -168,6 +170,8 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapByDenom() {
 				suite.Require().NoError(err)
 				suite.Require().Equal(resp.Amount.String(), tc.tokenOut.String())
 				suite.app.AmmKeeper.EndBlocker(suite.ctx)
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(2))
 
 				// check balance change on sender
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, sender)

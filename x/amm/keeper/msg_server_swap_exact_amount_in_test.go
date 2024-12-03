@@ -37,7 +37,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 					TokenOutDenom: ptypes.BaseCurrency,
 				},
 			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009802)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
 			expPass:          true,
 		},
 		{
@@ -177,6 +177,8 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(2))
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.SwapExactAmountIn(
@@ -193,6 +195,8 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 				suite.Require().NoError(err)
 				suite.Require().Equal(resp.TokenOutAmount.String(), tc.tokenOut.Amount.String())
 				suite.app.AmmKeeper.EndBlocker(suite.ctx)
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(2))
 
 				// check balance change on sender
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, sender)
@@ -270,6 +274,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 		TotalWeight: sdkmath.ZeroInt(),
 	}
 	suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+	suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 	cacheCtx, _ := suite.ctx.CacheContext()
 	msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
@@ -284,6 +289,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	suite.Require().NoError(err)
 	suite.Require().Equal(tokenOut.Amount.String(), resp.TokenOutAmount.String())
 	suite.app.AmmKeeper.EndBlocker(cacheCtx)
+	suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 	// check balance change on sender
 	balances := suite.app.BankKeeper.GetAllBalances(cacheCtx, sender)
@@ -307,4 +313,5 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	// check balance change on sender after splitting swap to 100
 	balances = suite.app.BankKeeper.GetAllBalances(cacheCtx, sender)
 	suite.Require().Equal(balances.String(), expSenderBalanceSplitSwap.String())
+	suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 }
