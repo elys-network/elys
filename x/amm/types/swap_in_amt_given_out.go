@@ -58,8 +58,8 @@ func (p *Pool) SwapInAmtGivenOut(
 		if err != nil {
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
-
-		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut, swapFee, sdkmath.LegacyZeroDec())
+		balancerInCoin.Amount = balancerInCoin.Amount.ToLegacyDec().Mul(sdkmath.LegacyOneDec().Add(swapFee)).TruncateInt()
+		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut)
 		if err != nil {
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
@@ -171,7 +171,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		Mul(sdkmath.LegacyOneDec().Add(swapFee)).
 		TruncateInt()
 	tokenIn = sdk.NewCoin(tokenInDenom, tokenAmountInInt)
-	err = p.applySwap(ctx, sdk.Coins{tokenIn}, tokensOut, swapFee, sdkmath.LegacyZeroDec())
+	err = p.applySwap(ctx, sdk.Coins{tokenIn}, tokensOut)
 	if err != nil {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}

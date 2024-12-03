@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
@@ -180,14 +181,19 @@ func (p *Pool) SwapOutAmtGivenIn(
 	weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
 	params Params,
 ) (tokenOut sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, oracleOutAmount sdkmath.LegacyDec, err error) {
-	balancerOutCoin, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, accPoolKeeper)
-	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
-	}
 
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
-		err = p.applySwap(ctx, tokensIn, sdk.Coins{balancerOutCoin}, sdkmath.LegacyZeroDec(), swapFee)
+		if len(tokensIn) != 1 {
+			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errors.New("expected tokensIn to be of length one")
+		}
+		tokensIn[0].Amount = tokensIn[0].Amount.ToLegacyDec().Mul(sdkmath.LegacyOneDec().Sub(swapFee)).TruncateInt()
+		balancerOutCoin, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, accPoolKeeper)
+		if err != nil {
+			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		}
+
+		err = p.applySwap(ctx, tokensIn, sdk.Coins{balancerOutCoin})
 		if err != nil {
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
@@ -340,7 +346,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
 		Mul(sdkmath.LegacyOneDec().Sub(swapFee)).TruncateInt()
 	oracleOutCoin := sdk.NewCoin(tokenOutDenom, tokenAmountOutInt)
-	err = p.applySwap(ctx, tokensIn, sdk.Coins{oracleOutCoin}, sdkmath.LegacyZeroDec(), swapFee)
+	err = p.applySwap(ctx, tokensIn, sdk.Coins{oracleOutCoin})
 	if err != nil {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}

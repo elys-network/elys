@@ -84,7 +84,7 @@ func (p *Pool) setInitialPoolParams(params PoolParams, sortedAssets []PoolAsset,
 	return nil
 }
 
-func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coins, swapFeeIn, swapFeeOut sdkmath.LegacyDec) error {
+func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coins) error {
 	// Fixed gas consumption per swap to prevent spam
 	ctx.GasMeter().ConsumeGas(BalancerGasFeeForSwap, "balancer swap computation")
 	// Also ensures that len(tokensIn) = 1 = len(tokensOut)
@@ -92,10 +92,8 @@ func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coin
 	if err != nil {
 		return err
 	}
-	inTokensAfterFee := sdkmath.LegacyNewDecFromInt(tokensIn[0].Amount).Mul(sdkmath.LegacyOneDec().Sub(swapFeeIn)).TruncateInt()
-	outTokensAfterFee := sdkmath.LegacyNewDecFromInt(tokensOut[0].Amount).Mul(sdkmath.LegacyOneDec().Sub(swapFeeOut)).TruncateInt()
-	inPoolAsset.Token.Amount = inPoolAsset.Token.Amount.Add(inTokensAfterFee)
-	outPoolAsset.Token.Amount = outPoolAsset.Token.Amount.Sub(outTokensAfterFee)
+	inPoolAsset.Token.Amount = inPoolAsset.Token.Amount.Add(tokensIn[0].Amount)
+	outPoolAsset.Token.Amount = outPoolAsset.Token.Amount.Sub(tokensOut[0].Amount)
 
 	return p.UpdatePoolAssetBalances(sdk.NewCoins(
 		inPoolAsset.Token,
