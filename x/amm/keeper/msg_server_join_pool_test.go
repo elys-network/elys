@@ -75,7 +75,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:  ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   math.NewInt(805987500000000000), // weight recovery direction - slippage enable
-			shareOutAmount:   math.NewInt(999500000000000000), // weight recovery direction - slippage disable
+			shareOutAmount:   math.NewInt(992205771365940052), // weight recovery direction - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,

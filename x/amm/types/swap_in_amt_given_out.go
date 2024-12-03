@@ -168,7 +168,7 @@ func (p *Pool) SwapInAmtGivenOut(
 
 	tokenAmountInInt := inAmountAfterSlippage.
 		Mul(sdkmath.LegacyOneDec().Add(weightBreakingFee)).
-		Quo(sdkmath.LegacyOneDec().Sub(swapFee)).
+		Mul(sdkmath.LegacyOneDec().Add(swapFee)).
 		TruncateInt()
 	tokenIn = sdk.NewCoin(tokenInDenom, tokenAmountInInt)
 	err = p.applySwap(ctx, sdk.Coins{tokenIn}, tokensOut, swapFee, sdkmath.LegacyZeroDec())

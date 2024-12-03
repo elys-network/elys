@@ -78,9 +78,9 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 			},
 			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),
 			tokenOutDenom: ptypes.BaseCurrency,
-			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99344)},
+			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99221)},
 			// expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)}, // slippage enabled
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99344)}, // slippage disabled
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99221)}, // slippage disabled
 			expPass:          true,
 		},
 	} {
