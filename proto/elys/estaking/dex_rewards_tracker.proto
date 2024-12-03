@@ -20,19 +20,3 @@ message DexRewardsTracker {
     (gogoproto.nullable) = false
   ];
 }
-
-message LegacyDexRewardsTracker {
-  // Number of blocks since start of epoch (distribution epoch)
-  string num_blocks = 1 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  // Accumulated amount at distribution epoch - recalculated at every
-  // distribution epoch
-  string amount = 2 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
