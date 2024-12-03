@@ -1,10 +1,11 @@
 package types_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestDefaultParams(t *testing.T) {
