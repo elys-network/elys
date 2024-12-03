@@ -10,7 +10,7 @@ on:
 
 jobs:
   create-new-snapshot:
-    runs-on: elys-runner-x2
+    runs-on: elys-runner-x2-2
 
     steps:
       - name: Check if secrets are set
