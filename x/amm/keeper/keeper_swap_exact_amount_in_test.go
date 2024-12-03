@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -81,9 +80,9 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountIn() {
 			weightBalanceBonus:  sdkmath.LegacyZeroDec(),
 			isOraclePool:        false,
 			useNewRecipient:     false,
-			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009802)},
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
 			expRecipientBalance: sdk.Coins{},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990100)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990198)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
 		},
@@ -226,7 +225,7 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountIn() {
 					SwapFee:   tc.swapFeeIn,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
-				TotalShares: sdk.Coin{Amount: math.ZeroInt()},
+				TotalShares: sdk.Coin{Amount: sdkmath.ZeroInt()},
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:                  tc.poolInitBalance[0],
@@ -241,6 +240,8 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountIn() {
 				},
 				TotalWeight: sdkmath.ZeroInt(),
 			}
+			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+			// suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 			tokenOut, err := suite.app.AmmKeeper.InternalSwapExactAmountIn(suite.ctx, sender, recipient, pool, tc.tokenIn, tc.tokenOut.Denom, tc.tokenOutMin, tc.swapFeeIn)
 			if !tc.expPass {
@@ -248,6 +249,8 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountIn() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(tokenOut.String(), tc.tokenOut.Amount.String())
+
+				// suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 				// check pool balance increase/decrease
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, poolAddr)

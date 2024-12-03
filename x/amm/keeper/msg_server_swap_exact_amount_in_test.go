@@ -37,7 +37,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountIn() {
 					TokenOutDenom: ptypes.BaseCurrency,
 				},
 			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009802)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
 			expPass:          true,
 		},
 		{

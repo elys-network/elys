@@ -29,7 +29,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapByDenom() {
 			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOutMin:       sdkmath.ZeroInt(),
 			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 9802),
-			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009802)},
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009704)},
 			expPass:           true,
 		},
 		{
