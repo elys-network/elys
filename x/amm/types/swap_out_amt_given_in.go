@@ -302,9 +302,15 @@ func (p *Pool) SwapOutAmtGivenIn(
 	targetWeightOut := GetDenomNormalizedWeight(newAssetPools, tokenOutDenom)
 
 	// weight breaking fee as in Plasma pool
-	weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenIn.Denom)
-	weightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenOutDenom)
-	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, distanceDiff, params)
+	finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenIn.Denom)
+	finalWeightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenOutDenom)
+	initialAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
+		sdk.NewCoins(),
+		sdk.NewCoins(), accountedAssets,
+	)
+	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenIn.Denom)
+	initialWeightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenOutDenom)
+	weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
 
 	// weightBreakingFeePerpetualFactor is 1 if not send by perpetual
 	weightBreakingFee = weightBreakingFee.Mul(weightBreakingFeePerpetualFactor)

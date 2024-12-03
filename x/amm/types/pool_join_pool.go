@@ -194,9 +194,16 @@ func (p *Pool) JoinPool(
 	targetWeightOut := sdkmath.LegacyOneDec().Sub(targetWeightIn)
 
 	// weight breaking fee as in Plasma pool
-	weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenInDenom)
-	weightOut := sdkmath.LegacyOneDec().Sub(weightIn)
-	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, distanceDiff, params)
+	finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenInDenom)
+	finalWeightOut := sdkmath.LegacyOneDec().Sub(finalWeightIn)
+
+	initialAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
+		sdk.NewCoins(),
+		sdk.NewCoins(), accountedAssets,
+	)
+	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenInDenom)
+	initialWeightOut := sdkmath.LegacyOneDec().Sub(initialWeightIn)
+	weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
 
 	// weight recovery reward = weight breaking fee * weight breaking fee portion
 	weightRecoveryReward := weightBreakingFee.Mul(params.WeightBreakingFeePortion)
