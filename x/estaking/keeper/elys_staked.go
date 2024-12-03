@@ -54,33 +54,3 @@ func (k Keeper) GetAllElysStaked(ctx sdk.Context) (list []types.ElysStaked) {
 
 	return
 }
-
-// SetLegacyElysStaked set a specific elysStaked in the store from its index
-func (k Keeper) SetLegacyElysStaked(ctx sdk.Context, elysStaked types.ElysStaked) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyElysStakedKeyPrefix))
-	b := k.cdc.MustMarshal(&elysStaked)
-	key := types.GetElysStakedKey(elysStaked.GetAccountAddress())
-	store.Set(key, b)
-}
-
-// remove after migration
-func (k Keeper) GetAllLegacyElysStaked(ctx sdk.Context) (list []types.ElysStaked) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyElysStakedKeyPrefix))
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.ElysStaked
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-
-	return
-}
-
-// TODO: remove all legacy prefixes and functions after migration
-func (k Keeper) DeleteLegacyElysStaked(ctx sdk.Context, address string) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LegacyKeyPrefix(types.LegacyElysStakedKeyPrefix))
-	store.Delete(types.LegacyElysStakedKey(address))
-}
