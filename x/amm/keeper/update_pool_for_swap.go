@@ -52,12 +52,6 @@ func (k Keeper) UpdatePoolForSwap(
 		}
 	}
 
-	// Send coins to recipient
-	err = k.bankKeeper.SendCoins(ctx, poolAddr, recipient, sdk.Coins{tokenOut})
-	if err != nil {
-		return sdkmath.ZeroInt(), err
-	}
-
 	// apply swap fee when weight balance bonus is not available
 	swapFeeOutCoins := sdk.Coins{}
 	if !weightBalanceBonus.IsPositive() {
@@ -73,6 +67,13 @@ func (k Keeper) UpdatePoolForSwap(
 		if err != nil {
 			return sdkmath.ZeroInt(), err
 		}
+	}
+	tokenOutAfterFee := sdk.NewCoins(tokenOut).Sub(swapFeeOutCoins...)
+
+	// Send coins to recipient
+	err = k.bankKeeper.SendCoins(ctx, poolAddr, recipient, tokenOutAfterFee)
+	if err != nil {
+		return sdkmath.ZeroInt(), err
 	}
 
 	// calculate total swap fee
@@ -118,7 +119,8 @@ func (k Keeper) UpdatePoolForSwap(
 	}
 
 	// record swap fee as total liquidity decrease
-	err = k.RecordTotalLiquidityDecrease(ctx, swapFeeCoins)
+	// err = k.RecordTotalLiquidityDecrease(ctx, swapFeeCoins)
+	err = k.RemoveFromPoolBalance(ctx, &pool, sdkmath.ZeroInt(), swapFeeCoins)
 	if err != nil {
 		return sdkmath.Int{}, err
 	}
@@ -129,6 +131,8 @@ func (k Keeper) UpdatePoolForSwap(
 	if err != nil {
 		return sdkmath.Int{}, err
 	}
+	println("swapFee coin: ", swapFeeCoins.String())
+	println("BonusTokenAmount: ", bonusToken.String())
 
 	// return swap fee out amount
 	return swapFeeOutCoins.AmountOf(tokenOut.Denom), nil
