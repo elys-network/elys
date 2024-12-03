@@ -52,6 +52,7 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
+	ccvgov "github.com/cosmos/interchain-security/v6/x/ccv/democracy/governance"
 	accountedpoolmodule "github.com/elys-network/elys/x/accountedpool"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
 	ammmodule "github.com/elys-network/elys/x/amm"
@@ -133,9 +134,11 @@ func appModules(
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		groupmodule.NewAppModule(appCodec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
-		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
+		ccvgov.NewAppModule(appCodec, *app.GovKeeper, app.AccountKeeper, app.BankKeeper, IsProposalWhitelisted, app.GetSubspace(govtypes.ModuleName), IsModuleWhiteList),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.ConsumerKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
-		exdistr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CommitmentKeeper, app.EstakingKeeper, &app.AssetprofileKeeper, authtypes.FeeCollectorName, app.GetSubspace(distrtypes.ModuleName)),
+		// fee collector name here has to be ccvconsumertypes.ConsumerRedistributeName for consumer chain distribution
+		// inside the keeper it doesn't matter because it ain't used
+		exdistr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CommitmentKeeper, app.EstakingKeeper, &app.AssetprofileKeeper, ccvconsumertypes.ConsumerRedistributeName, app.GetSubspace(distrtypes.ModuleName)),
 		exstaking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),

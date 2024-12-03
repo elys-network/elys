@@ -538,8 +538,7 @@ func NewAppKeeper(
 		app.AccountKeeper,
 		app.CommitmentKeeper,
 		app.EstakingKeeper,
-		// TODO We are changing the fee collector name, will this affect masterchef and estaking module?
-		authtypes.FeeCollectorName, // TODO it should be this or ccvconsumertypes.ConsumerRedistributeName?? What;s the impact on our token economics (fee distribution implemented in estaking/modules/distribution)
+		ccvconsumertypes.ConsumerRedistributeName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -606,6 +605,7 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[govtypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
+		// No need to send EstakingKeeper here as gov only does sk.IterateBondedValidatorsByPower, no need to give vp to Eden and EdenB
 		app.StakingKeeper,
 		app.DistrKeeper,
 		bApp.MsgServiceRouter(),
@@ -721,7 +721,7 @@ func NewAppKeeper(
 	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here
-			app.SlashingKeeper.Hooks(),
+			// Do not use slashing keeper hooks when it's consumer chain
 			app.DistrKeeper.Hooks(),
 			app.EstakingKeeper.StakingHooks(),
 			app.TierKeeper.StakingHooks(),
@@ -751,6 +751,7 @@ func NewAppKeeper(
 			app.CommitmentKeeper.Hooks(),
 			app.BurnerKeeper.Hooks(),
 			app.PerpetualKeeper.EpochHooks(),
+			app.EstakingKeeper.EpochHooks(),
 		),
 	)
 

@@ -14,8 +14,22 @@ func NewGenesisState(epochs []EpochInfo) *GenesisState {
 func DefaultGenesisState() *GenesisState {
 	return NewGenesisState([]EpochInfo{
 		{
-			Identifier:              "band_epoch",
+			Identifier:              BandEpochID,
 			Duration:                time.Second * 15,
+			CurrentEpoch:            0,
+			CurrentEpochStartHeight: 0,
+			EpochCountingStarted:    false,
+		},
+		{
+			Identifier:              TenDaysEpochID,
+			Duration:                time.Second * 864000,
+			CurrentEpoch:            0,
+			CurrentEpochStartHeight: 0,
+			EpochCountingStarted:    false,
+		},
+		{
+			Identifier:              FiveMinutesEpochID,
+			Duration:                time.Second * 60,
 			CurrentEpoch:            0,
 			CurrentEpochStartHeight: 0,
 			EpochCountingStarted:    false,

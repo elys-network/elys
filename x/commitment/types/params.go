@@ -2,15 +2,25 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"gopkg.in/yaml.v2"
 )
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		VestingInfos:   nil,
+		VestingInfos: []VestingInfo{
+			{
+				BaseDenom:      ptypes.Eden,
+				VestingDenom:   ptypes.Elys,
+				NumBlocks:      1576800,
+				VestNowFactor:  math.NewInt(90),
+				NumMaxVestings: 10000,
+			},
+		},
 		TotalCommitted: sdk.Coins{},
 	}
 }

@@ -4,7 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -363,7 +363,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 
 func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoins, error) {
 	params := k.GetParams(ctx)
-	feeCollector := k.authKeeper.GetModuleAccount(ctx, authtypes.FeeCollectorName)
+	feeCollector := k.authKeeper.GetModuleAccount(ctx, ccvconsumertypes.ConsumerRedistributeName)
 	// Calculate each portion of Gas fees collected - stakers, LPs
 	fees := k.ConvertGasFeesToUsdc(ctx, baseCurrency, feeCollector.GetAddress())
 	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(fees...)
@@ -379,7 +379,7 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 
 	// Send coins from fee collector name to masterchef
 	if lpsGasFeeCoins.IsAllPositive() {
-		err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, types.ModuleName, lpsGasFeeCoins)
+		err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, ccvconsumertypes.ConsumerRedistributeName, types.ModuleName, lpsGasFeeCoins)
 		if err != nil {
 			return sdk.DecCoins{}, err
 		}
@@ -393,7 +393,7 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 			ctx.Logger().Error("Invalid protocol revenue address", "error", err)
 			return gasFeesForLpsDec, err
 		}
-		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, protocolRevenueAddress, protocolGasFeeCoins)
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ccvconsumertypes.ConsumerRedistributeName, protocolRevenueAddress, protocolGasFeeCoins)
 		if err != nil {
 			return sdk.DecCoins{}, err
 		}
@@ -497,7 +497,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 
 		// Send coins to fee collector name
 		if stakerRevenueCoins.IsAllPositive() {
-			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, stakerRevenueCoins)
+			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerRedistributeName, stakerRevenueCoins)
 			if err != nil {
 				return true
 			}

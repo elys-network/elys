@@ -3,6 +3,7 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -98,7 +99,7 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	}
 
 	// USDC amount in math.LegacyDec type
-	feeCollectorAddr := authtypes.NewModuleAddress(authtypes.FeeCollectorName)
+	feeCollectorAddr := authtypes.NewModuleAddress(ccvconsumertypes.ConsumerRedistributeName)
 	totalFeesCollected := k.commKeeper.GetAllBalances(ctx, feeCollectorAddr)
 	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(totalFeesCollected...)
 	dexRevenueStakersAmount := gasFeeCollectedDec.AmountOf(baseCurrency)
@@ -146,9 +147,14 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	params.DexRewardsStakers.Amount = dexRevenueStakersAmount
 	k.SetParams(ctx, params)
 
-	coins := sdk.NewCoins(
-		sdk.NewCoin(ptypes.Eden, stakersEdenAmount),
+	providerEdenAmount := stakersEdenAmount.ToLegacyDec().Mul(params.ProviderStakingRewardsPortion).TruncateInt()
+	consumerCoins := sdk.NewCoins(
+		sdk.NewCoin(ptypes.Eden, stakersEdenAmount.Sub(providerEdenAmount)),
 		sdk.NewCoin(ptypes.EdenB, stakersEdenBAmount),
 	)
-	return k.commKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins.Sort())
+	err = k.commKeeper.MintCoins(ctx, ccvconsumertypes.ConsumerToSendToProviderName, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, providerEdenAmount)))
+	if err != nil {
+		return err
+	}
+	return k.commKeeper.MintCoins(ctx, ccvconsumertypes.ConsumerRedistributeName, consumerCoins.Sort())
 }
