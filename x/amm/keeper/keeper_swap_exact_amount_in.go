@@ -50,7 +50,7 @@ func (k Keeper) InternalSwapExactAmountIn(
 	tokenOutAmount = tokenOutCoin.Amount
 
 	if !tokenOutAmount.IsPositive() {
-		return math.Int{}, errorsmod.Wrapf(types.ErrTokenOutAmountZero, "token amount must be positive")
+		return math.Int{}, types.ErrTokenOutAmountZero
 	}
 
 	if tokenOutAmount.LT(tokenOutMinAmount) {
