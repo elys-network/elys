@@ -68,6 +68,12 @@ service Query {
         "/elys-network/elys/tier/liquid_total/{user}";
   }
 
+  // Queries a list of LockedOrder items.
+  rpc LockedOrder(QueryLockedOrderRequest) returns (QueryLockedOrderResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tier/locked_order/{user}";
+  }
+
   // Queries a list of GetAmmPrice items.
   rpc GetAmmPrice(QueryGetAmmPriceRequest) returns (QueryGetAmmPriceResponse) {
     option (google.api.http).get =
@@ -176,6 +182,16 @@ message QueryPerpetualResponse {
 message QueryLiquidTotalRequest { string user = 1; }
 
 message QueryLiquidTotalResponse {
+  string total = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryLockedOrderRequest { string user = 1; }
+
+message QueryLockedOrderResponse {
   string total = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",

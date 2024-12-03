@@ -59,40 +59,6 @@ func (suite *EstakingKeeperTestSuite) TestElysStaked() {
 				suite.Require().Equal(2, len(list))
 			},
 		},
-		{
-			"get all legacy elys staked",
-			func() (addr sdk.AccAddress) {
-				suite.ResetSuite()
-
-				addr = suite.AddAccounts(1, nil)[0]
-
-				// set elys staked
-				suite.app.EstakingKeeper.SetLegacyElysStaked(suite.ctx, types.ElysStaked{
-					Address: addr.String(),
-					Amount:  math.NewInt(1000),
-				})
-
-				return addr
-			},
-			func(addr sdk.AccAddress) {
-				list := suite.app.EstakingKeeper.GetAllLegacyElysStaked(suite.ctx)
-				suite.Require().Equal(1, len(list))
-				suite.Require().Equal(math.NewInt(1000), list[0].Amount)
-			},
-		},
-		{
-			"delete legacy elys staked",
-			func() (addr sdk.AccAddress) {
-				suite.ResetSuite()
-
-				addr = suite.AddAccounts(1, nil)[0]
-
-				return addr
-			},
-			func(addr sdk.AccAddress) {
-				suite.app.EstakingKeeper.DeleteLegacyElysStaked(suite.ctx, addr.String())
-			},
-		},
 	}
 
 	for _, tc := range testCases {
