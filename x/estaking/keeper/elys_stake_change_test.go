@@ -27,48 +27,6 @@ func (suite *EstakingKeeperTestSuite) TestElysStakeChange() {
 				suite.Require().True(found)
 			},
 		},
-		{
-			"delete legacy elys stake change",
-			func() (addr sdk.AccAddress) {
-				suite.ResetSuite()
-
-				addr = suite.AddAccounts(1, nil)[0]
-
-				return addr
-			},
-			func(addr sdk.AccAddress) {
-				suite.app.EstakingKeeper.DeleteLegacyElysStakeChange(suite.ctx, addr)
-			},
-		},
-		{
-			"get all legacy elys stake change with no data",
-			func() (addr sdk.AccAddress) {
-				suite.ResetSuite()
-
-				return sdk.AccAddress{}
-			},
-			func(addr sdk.AccAddress) {
-				list := suite.app.EstakingKeeper.GetAllLegacyElysStakeChange(suite.ctx)
-				suite.Require().Equal(0, len(list))
-			},
-		},
-		{
-			"get all legacy elys stake change with data",
-			func() (addr sdk.AccAddress) {
-				suite.ResetSuite()
-
-				addr = suite.AddAccounts(1, nil)[0]
-
-				// set legacy elys stake change
-				suite.app.EstakingKeeper.SetLegacyElysStakeChange(suite.ctx, addr)
-
-				return sdk.AccAddress{}
-			},
-			func(addr sdk.AccAddress) {
-				list := suite.app.EstakingKeeper.GetAllLegacyElysStakeChange(suite.ctx)
-				suite.Require().Equal(1, len(list))
-			},
-		},
 	}
 
 	for _, tc := range testCases {
