@@ -5,6 +5,7 @@ const (
 	TypeEvtAddExternalIncentive   = "add_external_incentive"
 	TypeEvtClaimRewards           = "claim_rewards"
 	TypeEvtSetPoolMultiplier      = "set_pool_multiplier"
+	TypeEvtSkipSwap               = "skip_conversion_of_fee"
 
 	AttributeRewardDenom    = "reward_denom"
 	AttributeMinAmount      = "min_amount"
