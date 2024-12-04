@@ -12,6 +12,7 @@ func DefaultParams() Params {
 	return Params{
 		VestingInfos:   nil,
 		TotalCommitted: sdk.Coins{},
+		EnableVestNow:  false,
 	}
 }
 
