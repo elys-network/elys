@@ -71,6 +71,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 				poolId, err := amm.CreatePool(ctx, msg)
 				suite.Require().NoError(err)
 				suite.Require().Equal(poolId, uint64(1))
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 				pool, found := amm.GetPool(ctx, poolId)
 				suite.Require().True(found)
@@ -157,6 +158,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 				poolId, err := amm.CreatePool(ctx, msg)
 				suite.Require().NoError(err)
 				suite.Require().Equal(poolId, uint64(1))
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 				pool, found := amm.GetPool(ctx, poolId)
 				suite.Require().True(found)

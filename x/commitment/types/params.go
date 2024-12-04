@@ -22,6 +22,7 @@ func DefaultParams() Params {
 			},
 		},
 		TotalCommitted: sdk.Coins{},
+		EnableVestNow:  false,
 	}
 }
 
