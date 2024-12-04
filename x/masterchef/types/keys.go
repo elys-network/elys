@@ -14,12 +14,6 @@ const (
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
-
-	LegacyUserRewardInfoKeyPrefix         = "UserRewardInfo"
-	LegacyExternalIncentiveIndexKeyPrefix = "IndexExternalIncentive"
-	LegacyExternalIncentiveKeyPrefix      = "ExternalIncentive"
-	LegacyPoolRewardInfoKeyPrefix         = "PoolRewardInfo"
-	LegacyPoolRewardsAccumKeyPrefix       = "PoolRewardsAccum"
 )
 
 var (
@@ -37,17 +31,6 @@ func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
 
-func LegacyPoolInfoKey(poolId uint64) []byte {
-	var key []byte
-
-	poolIdBytes := make([]byte, 8)
-	binary.BigEndian.PutUint64(poolIdBytes, poolId)
-	key = append(key, poolIdBytes...)
-	key = append(key, []byte("/")...)
-
-	return key
-}
-
 func GetPoolInfoKey(poolId uint64) []byte {
 	key := PoolInfoKeyPrefix
 	poolIdBytes := make([]byte, 8)
@@ -57,41 +40,11 @@ func GetPoolInfoKey(poolId uint64) []byte {
 	return key
 }
 
-func LegacyExternalIncentiveKey(incentiveId uint64) []byte {
-	var key []byte
-
-	incentiveIdBytes := make([]byte, 8)
-	binary.BigEndian.PutUint64(incentiveIdBytes, incentiveId)
-	key = append(key, incentiveIdBytes...)
-	key = append(key, []byte("/")...)
-
-	return key
-}
-
 func GetExternalIncentiveKey(incentiveId uint64) []byte {
 	key := ExternalIncentiveKeyPrefix
 
 	incentiveIdBytes := sdk.Uint64ToBigEndian(incentiveId)
 	key = append(key, incentiveIdBytes...)
-
-	return key
-}
-
-func LegacyExternalIncentiveIndex() []byte {
-	var key []byte
-
-	key = append(key, LegacyExternalIncentiveIndexKeyPrefix...)
-	return key
-}
-
-func LegacyPoolRewardInfoKey(poolId uint64, rewardDenom string) []byte {
-	var key []byte
-
-	poolIdBytes := sdk.Uint64ToBigEndian(poolId)
-	key = append(key, poolIdBytes...)
-	key = append(key, []byte("/")...)
-	key = append(key, rewardDenom...)
-	key = append(key, []byte("/")...)
 
 	return key
 }
@@ -108,20 +61,6 @@ func GetPoolRewardInfoKey(poolId uint64, rewardDenom string) []byte {
 	return key
 }
 
-func GetLegacyUserRewardInfoKey(user string, poolId uint64, rewardDenom string) []byte {
-	key := KeyPrefix(LegacyUserRewardInfoKeyPrefix)
-
-	key = append(key, user...)
-	key = append(key, []byte("/")...)
-	poolIdBytes := sdk.Uint64ToBigEndian(poolId)
-	key = append(key, poolIdBytes...)
-	key = append(key, []byte("/")...)
-	key = append(key, rewardDenom...)
-	key = append(key, []byte("/")...)
-
-	return key
-}
-
 func GetUserRewardInfoKey(user sdk.AccAddress, poolId uint64, rewardDenom string) []byte {
 	key := UserRewardInfoKeyPrefix
 
@@ -133,14 +72,6 @@ func GetUserRewardInfoKey(user sdk.AccAddress, poolId uint64, rewardDenom string
 	key = append(key, rewardDenom...)
 
 	return key
-}
-
-func GetLegacyPoolRewardsAccumPrefix(poolId uint64) []byte {
-	return append([]byte(LegacyPoolRewardsAccumKeyPrefix), sdk.Uint64ToBigEndian(uint64(poolId))...)
-}
-
-func GetLegacyPoolRewardsAccumKey(poolId uint64, timestamp uint64) []byte {
-	return append(GetLegacyPoolRewardsAccumPrefix(poolId), sdk.Uint64ToBigEndian(timestamp)...)
 }
 
 func GetPoolRewardsAccumPrefix(poolId uint64) []byte {

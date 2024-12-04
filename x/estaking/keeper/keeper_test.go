@@ -8,7 +8,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	stypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	simapp "github.com/elys-network/elys/app"
 	aptypes "github.com/elys-network/elys/x/assetprofile/types"
 	ckeeper "github.com/elys-network/elys/x/commitment/keeper"
@@ -169,6 +168,7 @@ func (suite *EstakingKeeperTestSuite) TestEstakingExtendedFunctions() {
 	suite.Require().Nil(err)
 
 	delegations, err := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, operatorAddr)
+	suite.Require().Nil(err)
 
 	suite.Require().True(len(delegations) > 0)
 	addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
@@ -212,6 +212,7 @@ func (suite *EstakingKeeperTestSuite) TestEstakingExtendedFunctions() {
 	suite.Require().Nil(err)
 	suite.Require().Equal(validator, edenVal)
 	validator, err = suite.app.EstakingKeeper.Validator(suite.ctx, operatorBValAddr)
+	suite.Require().Nil(err)
 	suite.Require().Equal(validator, edenBVal)
 
 	edenDel, err := suite.app.EstakingKeeper.Delegation(suite.ctx, addr, operatorValAddr)
@@ -223,14 +224,14 @@ func (suite *EstakingKeeperTestSuite) TestEstakingExtendedFunctions() {
 	suite.Require().Nil(edenBDel)
 
 	numDelegations := int64(0)
-	suite.app.EstakingKeeper.IterateDelegations(suite.ctx, addr, func(index int64, delegation stypes.DelegationI) (stop bool) {
+	suite.app.EstakingKeeper.IterateDelegations(suite.ctx, addr, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
 		numDelegations++
 		return false
 	})
 	suite.Require().Equal(numDelegations, int64(2))
 
 	numBondedValidators := int64(0)
-	suite.app.EstakingKeeper.IterateBondedValidatorsByPower(suite.ctx, func(index int64, delegation stypes.ValidatorI) (stop bool) {
+	suite.app.EstakingKeeper.IterateBondedValidatorsByPower(suite.ctx, func(index int64, delegation stakingtypes.ValidatorI) (stop bool) {
 		numBondedValidators++
 		return false
 	})
@@ -238,7 +239,7 @@ func (suite *EstakingKeeperTestSuite) TestEstakingExtendedFunctions() {
 
 	// test IterateValidators
 	numValidators := int64(0)
-	suite.app.EstakingKeeper.IterateValidators(suite.ctx, func(index int64, validator stypes.ValidatorI) (stop bool) {
+	suite.app.EstakingKeeper.IterateValidators(suite.ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
 		numValidators++
 		return false
 	})

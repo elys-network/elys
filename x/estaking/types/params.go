@@ -1,12 +1,12 @@
 package types
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"gopkg.in/yaml.v2"
 )
 
 // DefaultParams returns a default set of parameters
@@ -62,9 +62,4 @@ func (p Params) Validate() error {
 		return fmt.Errorf("DexRewardsStakers NumBlocks cannot be -ve")
 	}
 	return nil
-}
-
-func (p LegacyParams) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
 }

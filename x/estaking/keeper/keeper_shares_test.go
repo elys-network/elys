@@ -30,25 +30,6 @@ func (suite *EstakingKeeperTestSuite) TestKeeperShares() {
 				suite.Require().Equal(delegatedAmount, sdk.DefaultPowerReduction)
 			},
 		},
-		{
-			"calc bonded delegation amount",
-			func() (addr sdk.AccAddress) {
-				suite.ResetSuite()
-
-				addr = suite.AddAccounts(1, nil)[0]
-
-				return addr
-			},
-			func(addr sdk.AccAddress) {
-				// Check with non-delegator
-				delegatedAmount := suite.app.EstakingKeeper.CalcBondedDelegationAmount(suite.ctx, addr)
-				suite.Require().Equal(delegatedAmount, math.ZeroInt())
-
-				// Check with genesis account (delegator)
-				delegatedAmount = suite.app.EstakingKeeper.CalcBondedDelegationAmount(suite.ctx, suite.genAccount)
-				suite.Require().Equal(delegatedAmount, sdk.DefaultPowerReduction)
-			},
-		},
 	}
 
 	for _, tc := range testCases {

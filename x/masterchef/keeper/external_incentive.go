@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,19 +17,6 @@ func (k Keeper) GetExternalIncentiveIndex(ctx sdk.Context) (index uint64) {
 func (k Keeper) SetExternalIncentiveIndex(ctx sdk.Context, index uint64) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.ExternalIncentiveIndexKeyPrefix, sdk.Uint64ToBigEndian(index))
-}
-
-// remove after migration
-func (k Keeper) GetLegacyExternalIncentiveIndex(ctx sdk.Context) (index uint64) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyExternalIncentiveIndexKeyPrefix))
-	index = sdk.BigEndianToUint64(store.Get(types.LegacyExternalIncentiveIndex()))
-	return index
-}
-
-// remove after migration
-func (k Keeper) RemoveLegacyExternalIncentiveIndex(ctx sdk.Context) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyExternalIncentiveIndexKeyPrefix))
-	store.Delete(types.LegacyExternalIncentiveIndex())
 }
 
 func (k Keeper) SetExternalIncentive(ctx sdk.Context, externalIncentive types.ExternalIncentive) {
@@ -61,26 +47,6 @@ func (k Keeper) RemoveExternalIncentive(ctx sdk.Context, id uint64) {
 func (k Keeper) GetAllExternalIncentives(ctx sdk.Context) (list []types.ExternalIncentive) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iterator := storetypes.KVStorePrefixIterator(store, types.ExternalIncentiveKeyPrefix)
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.ExternalIncentive
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-
-	return
-}
-
-func (k Keeper) DeleteLegacyExternalIncentive(ctx sdk.Context, id uint64) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyExternalIncentiveKeyPrefix))
-	store.Delete(types.LegacyExternalIncentiveKey(id))
-}
-
-func (k Keeper) GetAllLegacyExternalIncentives(ctx sdk.Context) (list []types.ExternalIncentive) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyExternalIncentiveKeyPrefix))
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
