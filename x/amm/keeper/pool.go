@@ -209,7 +209,7 @@ func (k Keeper) GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) 
 }
 
 // AddToPoolBalance Used in perpetual balance changes
-func (k Keeper) AddToPoolBalance(ctx sdk.Context, pool *types.Pool, addShares sdkmath.Int, coins sdk.Coins) error {
+func (k Keeper) AddToPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *types.Pool, addShares sdkmath.Int, coins sdk.Coins) error {
 	err := pool.IncreaseLiquidity(addShares, coins)
 	if err != nil {
 		return err
@@ -219,7 +219,7 @@ func (k Keeper) AddToPoolBalance(ctx sdk.Context, pool *types.Pool, addShares sd
 }
 
 // RemoveFromPoolBalance Used in perpetual balance changes
-func (k Keeper) RemoveFromPoolBalance(ctx sdk.Context, pool *types.Pool, removeShares sdkmath.Int, coins sdk.Coins) error {
+func (k Keeper) RemoveFromPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *types.Pool, removeShares sdkmath.Int, coins sdk.Coins) error {
 	err := pool.DecreaseLiquidity(removeShares, coins)
 	if err != nil {
 		return err

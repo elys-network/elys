@@ -58,7 +58,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			inTokenDenom:           "uusdt",
 			swapFee:                sdkmath.LegacyZeroDec(),
 			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.000330373444662133"),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 100134081),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 100134093),
 			expErr:                 false,
 		},
 		// scenario2 - oracle based
@@ -94,7 +94,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			inTokenDenom:           "uusdt",
 			swapFee:                sdkmath.LegacyZeroDec(),
 			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.006401354515992492"),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 100776445),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 100780576),
 			expErr:                 false,
 		},
 		// scenario3 - oracle based
@@ -166,7 +166,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			inTokenDenom:           ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
 			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
-			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 36435787),
+			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 36075037),
 			expErr:                 false,
 		},
 
@@ -216,7 +216,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 					UseOracle: tc.useOracle,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
-				TotalShares: sdk.Coin{},
+				TotalShares: sdk.NewCoin(types.GetPoolShareDenom(1), sdkmath.ZeroInt()),
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdkmath.ZeroInt(),
 			}

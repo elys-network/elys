@@ -170,6 +170,7 @@ func (p Pool) CalcGivenInSlippage(
 
 // SwapOutAmtGivenIn is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 // weightBreakingFeePerpetualFactor should be 1 if perpetual is not the one calling this function
+// Pool, and it's bank balances are updated in keeper.UpdatePoolForSwap
 func (p *Pool) SwapOutAmtGivenIn(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
@@ -182,21 +183,19 @@ func (p *Pool) SwapOutAmtGivenIn(
 	params Params,
 ) (tokenOut sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, oracleOutAmount sdkmath.LegacyDec, err error) {
 
+	// Fixed gas consumption per swap to prevent spam
+	ctx.GasMeter().ConsumeGas(BalancerGasFeeForSwap, "balancer swap computation")
+
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
 		if len(tokensIn) != 1 {
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errors.New("expected tokensIn to be of length one")
 		}
-		tokensInAfterFee := []sdk.Coin{sdk.NewCoin(tokensIn[0].Denom, tokensIn[0].Amount.ToLegacyDec().Mul(sdkmath.LegacyOneDec().Sub(swapFee)).TruncateInt())}
-		balancerOutCoin, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensInAfterFee, tokenOutDenom, swapFee, accPoolKeeper)
+		balancerOutCoin, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, accPoolKeeper)
 		if err != nil {
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
-
-		err = p.applySwap(ctx, tokensIn, sdk.Coins{balancerOutCoin})
-		if err != nil {
-			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
-		}
+		// Pools and it's bank balances are updated in keeper.UpdatePoolForSwap
 		return balancerOutCoin, slippage, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 	}
 
@@ -344,12 +343,8 @@ func (p *Pool) SwapOutAmtGivenIn(
 
 	tokenAmountOutInt := outAmountAfterSlippage.
 		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
-		Mul(sdkmath.LegacyOneDec().Sub(swapFee)).TruncateInt()
+		Mul(sdkmath.LegacyOneDec().Sub(swapFee)).TruncateInt() // We ignore the decimal component, as we round down the token amount out.
 	oracleOutCoin := sdk.NewCoin(tokenOutDenom, tokenAmountOutInt)
-	err = p.applySwap(ctx, tokensIn, sdk.Coins{oracleOutCoin})
-	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
-	}
 	return oracleOutCoin, slippage, slippageAmount, weightBalanceBonus, oracleOutAmount, nil
 }
 

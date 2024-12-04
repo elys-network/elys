@@ -31,8 +31,8 @@ type AmmKeeper interface {
 	SwapOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec, weightBreakingFeePerpetualFactor math.LegacyDec) (tokenOut sdk.Coin, slippage math.LegacyDec, slippageAmount math.LegacyDec, weightBalanceBonus, oracleOut math.LegacyDec, err error)
 	SwapInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee math.LegacyDec, weightBreakingFeePerpetualFactor math.LegacyDec) (tokenIn sdk.Coin, slippage, slippageAmount math.LegacyDec, weightBalanceBonus, oracleIn math.LegacyDec, err error)
 
-	AddToPoolBalance(ctx sdk.Context, pool *ammtypes.Pool, addShares math.Int, coins sdk.Coins) error
-	RemoveFromPoolBalance(ctx sdk.Context, pool *ammtypes.Pool, removeShares math.Int, coins sdk.Coins) error
+	AddToPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, addShares math.Int, coins sdk.Coins) error
+	RemoveFromPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, removeShares math.Int, coins sdk.Coins) error
 }
 
 type BankKeeper interface {

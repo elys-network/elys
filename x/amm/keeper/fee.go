@@ -29,7 +29,7 @@ func (k Keeper) OnCollectFee(ctx sdk.Context, pool types.Pool, fee sdk.Coins) er
 
 	err := k.bankKeeper.SendCoins(ctx, sdk.MustAccAddressFromBech32(pool.RebalanceTreasury), poolRevenueAddress, revenueAmount)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	// handling the case, pool does not enough liquidity to swap fees to revenue token when liquidity is being fully removed

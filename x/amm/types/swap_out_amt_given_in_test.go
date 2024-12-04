@@ -576,7 +576,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			outTokenDenom:          "uusdt",
 			swapFee:                sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
 			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
-			expTokenOut:            sdk.NewInt64Coin("uusdt", 245840370),
+			expTokenOut:            sdk.NewInt64Coin("uusdt", 247913188),
 			expErr:                 false,
 		},
 
