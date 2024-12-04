@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -37,26 +36,6 @@ func (k Keeper) RemovePoolRewardInfo(ctx sdk.Context, poolId uint64, rewardDenom
 func (k Keeper) GetAllPoolRewardInfos(ctx sdk.Context) (list []types.PoolRewardInfo) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iterator := storetypes.KVStorePrefixIterator(store, types.PoolRewardInfoKeyPrefix)
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.PoolRewardInfo
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-
-	return
-}
-
-func (k Keeper) DeleteLegacyPoolRewardInfo(ctx sdk.Context, poolId uint64, rewardDenom string) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyPoolRewardInfoKeyPrefix))
-	store.Delete(types.LegacyPoolRewardInfoKey(poolId, rewardDenom))
-}
-
-func (k Keeper) GetAllLegacyPoolRewardInfos(ctx sdk.Context) (list []types.PoolRewardInfo) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyPoolRewardInfoKeyPrefix))
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

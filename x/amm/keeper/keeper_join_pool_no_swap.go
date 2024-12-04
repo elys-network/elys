@@ -67,7 +67,7 @@ func (k Keeper) JoinPoolNoSwap(
 		}
 		params := k.GetParams(ctx)
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-		sharesOut, _, weightBalanceBonus, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params)
+		tokensJoined, sharesOut, _, weightBalanceBonus, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params)
 		if err != nil {
 			return nil, sdkmath.ZeroInt(), err
 		}
@@ -78,23 +78,23 @@ func (k Keeper) JoinPoolNoSwap(
 				shareOutAmount, sharesOut))
 		}
 
-		err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensIn, weightBalanceBonus)
+		err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus)
 		if err != nil {
 			return nil, sdkmath.Int{}, err
 		}
 		// Increase liquidity amount
-		err = k.RecordTotalLiquidityIncrease(ctx, tokensIn)
+		err = k.RecordTotalLiquidityIncrease(ctx, tokensJoined)
 		if err != nil {
 			return nil, sdkmath.Int{}, err
 		}
 
-		return tokensIn, sharesOut, err
+		return tokensJoined, sharesOut, err
 	}
 
 	params := k.GetParams(ctx)
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-	sharesOut, _, weightBalanceBonus, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params)
+	tokensJoined, sharesOut, _, weightBalanceBonus, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params)
 	if err != nil {
 		return nil, sdkmath.ZeroInt(), err
 	}
@@ -105,16 +105,16 @@ func (k Keeper) JoinPoolNoSwap(
 			shareOutAmount, sharesOut))
 	}
 
-	err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokenInMaxs, weightBalanceBonus)
+	err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus)
 	if err != nil {
 		return nil, sdkmath.Int{}, err
 	}
 
 	// Increase liquidity amount
-	err = k.RecordTotalLiquidityIncrease(ctx, tokenInMaxs)
+	err = k.RecordTotalLiquidityIncrease(ctx, tokensJoined)
 	if err != nil {
 		return nil, sdkmath.Int{}, err
 	}
 
-	return tokenInMaxs, sharesOut, err
+	return tokensJoined, sharesOut, err
 }

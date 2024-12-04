@@ -640,7 +640,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenOut, _, _, weightBonus, _, err := pool.SwapOutAmtGivenIn(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenIn}, tc.outTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, sdkmath.LegacyOneDec(), params)
 			if tc.expErr {
 				suite.Require().Error(err)
-				suite.Require().EqualError(err, "amount too low")
+				suite.Require().EqualError(err, "token out amount is zero")
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(tokenOut.String(), tc.expTokenOut.String())
