@@ -562,7 +562,6 @@ func NewAppKeeper(
 		app.TokenomicsKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.PerpetualKeeper,
 		app.EstakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)

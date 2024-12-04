@@ -11,8 +11,6 @@ import (
 	ctypes "github.com/elys-network/elys/x/commitment/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametertypes "github.com/elys-network/elys/x/parameter/types"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
 )
@@ -129,9 +127,4 @@ type TokenomicsKeeper interface {
 
 type ParameterKeeper interface {
 	GetParams(ctx sdk.Context) (params parametertypes.Params)
-}
-
-type PeperpetualKeeper interface {
-	GetParams(ctx sdk.Context) (params perpetualtypes.Params)
-	GetIncrementalBorrowInterestPaymentFundAddress(ctx sdk.Context) sdk.AccAddress
 }
