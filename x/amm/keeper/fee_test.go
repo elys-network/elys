@@ -90,7 +90,7 @@ func (suite *AmmKeeperTestSuite) TestOnCollectFee() {
 					UseOracle: false,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
-				TotalShares: sdk.Coin{},
+				TotalShares: sdk.NewCoin(types.GetPoolShareDenom(1), sdkmath.ZeroInt()),
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  tc.poolInitBalance[0],
@@ -103,12 +103,15 @@ func (suite *AmmKeeperTestSuite) TestOnCollectFee() {
 				},
 				TotalWeight: sdkmath.ZeroInt(),
 			}
+			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
+
 			err = suite.app.AmmKeeper.OnCollectFee(suite.ctx, pool, tc.fee)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
 				suite.Require().NoError(err)
-
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 				// check pool balance increase/decrease
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, revenueAddr)
 				suite.Require().Equal(balances.String(), tc.expRevenueBalance.String())
@@ -181,7 +184,7 @@ func (suite *AmmKeeperTestSuite) TestSwapFeesToRevenueToken() {
 					UseOracle: false,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
-				TotalShares: sdk.Coin{},
+				TotalShares: sdk.NewCoin(types.GetPoolShareDenom(1), sdkmath.ZeroInt()),
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:  tc.poolInitBalance[0],
@@ -194,12 +197,14 @@ func (suite *AmmKeeperTestSuite) TestSwapFeesToRevenueToken() {
 				},
 				TotalWeight: sdkmath.ZeroInt(),
 			}
+			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 			err = suite.app.AmmKeeper.SwapFeesToRevenueToken(suite.ctx, pool, tc.fee)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
 				suite.Require().NoError(err)
-
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 				// check pool balance increase/decrease
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, revenueAddr)
 				suite.Require().Equal(balances.String(), tc.expRevenueBalance.String())
