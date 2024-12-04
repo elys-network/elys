@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
@@ -286,8 +287,11 @@ func (k Keeper) BorrowInterestRateComputation(ctx sdk.Context, pool types.Pool) 
 	return newBorrowInterestRate, nil
 }
 
-func (k Keeper) TakeFundPayment(ctx sdk.Context, amount math.Int, returnAsset string, takePercentage math.LegacyDec, fundAddr sdk.AccAddress, ammPool *ammtypes.Pool) (math.Int, error) {
-	takeAmount := amount.ToLegacyDec().Mul(takePercentage).TruncateInt()
+func (k Keeper) TakeFundPayment(ctx sdk.Context, amount math.Int, returnAsset string, ammPool *ammtypes.Pool) (math.Int, error) {
+	params := k.GetParams(ctx)
+	fundAddr := sdk.MustAccAddressFromBech32(params.BorrowInterestPaymentFundAddress)
+
+	takeAmount := amount.ToLegacyDec().Mul(params.BorrowInterestPaymentFundPercentage).TruncateInt()
 
 	if !takeAmount.IsZero() {
 		takeCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, takeAmount))
@@ -299,6 +303,22 @@ func (k Keeper) TakeFundPayment(ctx sdk.Context, amount math.Int, returnAsset st
 
 	}
 	return takeAmount, nil
+}
+
+func (k Keeper) TransferRevenueAmount(ctx sdk.Context, revenueAmt math.Int, returnAsset string, ammPool *ammtypes.Pool) error {
+
+	if !revenueAmt.IsZero() {
+		revenueCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, revenueAmt))
+
+		toAddress := authtypes.NewModuleAddress(types.ModuleName)
+
+		err := k.SendFromAmmPool(ctx, ammPool, toAddress, revenueCoins)
+		if err != nil {
+			return err
+		}
+
+	}
+	return nil
 }
 
 // Set the perpetual hooks.

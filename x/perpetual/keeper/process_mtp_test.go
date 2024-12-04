@@ -144,9 +144,8 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 
 	// Set params
 	params = mk.GetParams(ctx)
-	params.ForceCloseFundAddress = addr[1].String()
-	params.IncrementalBorrowInterestPaymentFundAddress = addr[2].String()
-	params.IncrementalBorrowInterestPaymentFundPercentage = sdkmath.LegacyMustNewDecFromStr("0.5")
+	params.BorrowInterestPaymentFundAddress = addr[2].String()
+	params.BorrowInterestPaymentFundPercentage = sdkmath.LegacyMustNewDecFromStr("0.5")
 	mk.SetParams(ctx, &params)
 
 	mtp := mtps[0]

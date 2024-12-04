@@ -35,6 +35,17 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	return params
 }
 
+func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	bz := store.Get(types.KeyPrefix(types.ParamsKey))
+	if bz == nil {
+		return params
+	}
+
+	k.cdc.MustUnmarshal(bz, &params)
+	return params
+}
+
 func (k Keeper) GetMaxLeverageParam(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).LeverageMax
 }
@@ -63,25 +74,12 @@ func (k Keeper) GetPoolOpenThreshold(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).PoolOpenThreshold
 }
 
-func (k Keeper) GetForceCloseFundPercentage(ctx sdk.Context) sdkmath.LegacyDec {
-	return k.GetParams(ctx).ForceCloseFundPercentage
+func (k Keeper) GetBorrowInterestPaymentFundPercentage(ctx sdk.Context) sdkmath.LegacyDec {
+	return k.GetParams(ctx).BorrowInterestPaymentFundPercentage
 }
 
-func (k Keeper) GetForceCloseFundAddress(ctx sdk.Context) sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(k.GetParams(ctx).ForceCloseFundAddress)
-	if err != nil {
-		panic(err)
-	}
-
-	return addr
-}
-
-func (k Keeper) GetIncrementalBorrowInterestPaymentFundPercentage(ctx sdk.Context) sdkmath.LegacyDec {
-	return k.GetParams(ctx).IncrementalBorrowInterestPaymentFundPercentage
-}
-
-func (k Keeper) GetIncrementalBorrowInterestPaymentFundAddress(ctx sdk.Context) sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(k.GetParams(ctx).IncrementalBorrowInterestPaymentFundAddress)
+func (k Keeper) GetBorrowInterestPaymentFundAddress(ctx sdk.Context) sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(k.GetParams(ctx).BorrowInterestPaymentFundAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -93,8 +91,8 @@ func (k Keeper) GetMaxOpenPositions(ctx sdk.Context) int64 {
 	return k.GetParams(ctx).MaxOpenPositions
 }
 
-func (k Keeper) GetIncrementalBorrowInterestPaymentEnabled(ctx sdk.Context) bool {
-	return k.GetParams(ctx).IncrementalBorrowInterestPaymentEnabled
+func (k Keeper) GetBorrowInterestPaymentEnabled(ctx sdk.Context) bool {
+	return k.GetParams(ctx).BorrowInterestPaymentEnabled
 }
 
 func (k Keeper) GetSafetyFactor(ctx sdk.Context) sdkmath.LegacyDec {
