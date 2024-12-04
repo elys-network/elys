@@ -72,22 +72,6 @@ type BankKeeper interface {
 
 // AmmKeeper defines the expected interface needed to swap tokens
 type AmmKeeper interface {
-	// UpdatePoolForSwap takes a pool, sender, and tokenIn, tokenOut amounts
-	// It then updates the pool's balances to the new reserve amounts, and
-	// sends the in tokens from the sender to the pool, and the out tokens from the pool to the sender.
-	UpdatePoolForSwap(
-		ctx sdk.Context,
-		pool ammtypes.Pool,
-		sender sdk.AccAddress,
-		recipient sdk.AccAddress,
-		tokenIn sdk.Coin,
-		tokenOut sdk.Coin,
-		swapFee math.LegacyDec,
-		oracleInAmount math.Int,
-		oracleOutAmount math.Int,
-		weightBalanceBonus math.LegacyDec,
-		givenOut bool,
-	) error
 	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOracle bool) (pool ammtypes.Pool, found bool)
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
