@@ -56,7 +56,7 @@ jobs:
 
       - name: Retrieve post upgrade snapshot generator binary
         run: |
-          POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION=v0.6.3
+          POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION=v0.6.4
           DOWNLOAD_URL=https://github.com/elys-network/post-upgrade-snapshot-generator/releases/download/${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}-linux-amd64
           POST_UPGRADE_SNAPSHOT_GENERATOR_PATH=/tmp/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}
           curl -L $DOWNLOAD_URL -o $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH && chmod +x $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH
@@ -264,7 +264,7 @@ jobs:
           echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
           cd /home/runner
           tar -cf - .elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
-          
+
           echo "alice node key:"
           cat .elys/config/node_key.json
           echo "alice priv validator key:"
