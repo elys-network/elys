@@ -49,7 +49,7 @@ func (k Keeper) InternalSwapExactAmountOut(
 	tokenInAmount = tokenIn.Amount
 
 	if tokenInAmount.LTE(math.ZeroInt()) {
-		return math.Int{}, errorsmod.Wrapf(types.ErrInvalidMathApprox, "token amount is zero or negative")
+		return math.Int{}, types.ErrTokenOutAmountZero
 	}
 
 	if tokenInAmount.GT(tokenInMaxAmount) {
