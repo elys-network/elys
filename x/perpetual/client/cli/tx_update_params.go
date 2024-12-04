@@ -103,7 +103,7 @@ func CmdUpdateParams() *cobra.Command {
 				return err
 			}
 
-			incrementalBorrowInterestPaymentFundPercentage, err := cmd.Flags().GetString(FlagBorrowInterestPaymentFundPercentage)
+			borrowInterestPaymentFundPercentage, err := cmd.Flags().GetString(FlagBorrowInterestPaymentFundPercentage)
 			if err != nil {
 				return err
 			}
