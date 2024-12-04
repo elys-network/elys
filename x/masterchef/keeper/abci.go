@@ -11,6 +11,7 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	perpetualmoduletypes "github.com/elys-network/elys/x/perpetual/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
@@ -363,11 +364,15 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 
 func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoins, error) {
 	params := k.GetParams(ctx)
-	feeCollector := k.authKeeper.GetModuleAccount(ctx, ccvconsumertypes.ConsumerRedistributeName)
+	estakingParams := k.estakingKeeper.GetParams(ctx)
+	feeCollector := k.authKeeper.GetModuleAccount(ctx, authtypes.FeeCollectorName)
 	// Calculate each portion of Gas fees collected - stakers, LPs
 	fees, err := k.ConvertGasFeesToUsdc(ctx, baseCurrency, feeCollector.GetAddress())
 	if err != nil {
 		return sdk.DecCoins{}, err
+	}
+	if fees.IsZero() {
+		return sdk.DecCoins{}, nil
 	}
 	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(fees...)
 
@@ -378,11 +383,23 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 	k.AddFeeInfo(ctx, gasFeesForLpsDec.AmountOf(baseCurrency), gasFeesForStakersDec.AmountOf(baseCurrency), gasFeesForProtocolDec.AmountOf(baseCurrency), true)
 
 	lpsGasFeeCoins, _ := gasFeesForLpsDec.TruncateDecimal()
+	stakersGasFeeCoins, _ := gasFeesForStakersDec.TruncateDecimal() // Before ccv, this used to be remain in FeeCollectorName
 	protocolGasFeeCoins, _ := gasFeesForProtocolDec.TruncateDecimal()
+
+	if stakersGasFeeCoins.IsAllPositive() {
+		// Earlier this amount remained in FeeCollectorName and distribution module handled it using FeeCollectorName.
+		// But after ccv, distribution module only acts on ccvconsumertypes.ConsumerRedistributeName
+		err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, ccvconsumertypes.ConsumerRedistributeName, stakersGasFeeCoins)
+		if err != nil {
+			return sdk.DecCoins{}, err
+		}
+
+		k.estakingKeeper.SetDexRewardsStakers(ctx, gasFeesForStakersDec.AmountOf(baseCurrency))
+	}
 
 	// Send coins from fee collector name to masterchef
 	if lpsGasFeeCoins.IsAllPositive() {
-		err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, ccvconsumertypes.ConsumerRedistributeName, types.ModuleName, lpsGasFeeCoins)
+		err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, types.ModuleName, lpsGasFeeCoins)
 		if err != nil {
 			return sdk.DecCoins{}, err
 		}
@@ -396,7 +413,16 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 			ctx.Logger().Error("Invalid protocol revenue address", "error", err)
 			return gasFeesForLpsDec, err
 		}
-		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, ccvconsumertypes.ConsumerRedistributeName, protocolRevenueAddress, protocolGasFeeCoins)
+		providerPortion := ammkeeper.PortionCoins(protocolGasFeeCoins, estakingParams.ProviderStakingRewardsPortion)
+		consumerPortion := protocolGasFeeCoins.Sub(providerPortion...)
+
+		// This will be sent to provider
+		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, ccvconsumertypes.ConsumerToSendToProviderName, providerPortion)
+		if err != nil {
+			return sdk.DecCoins{}, err
+		}
+
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, protocolRevenueAddress, consumerPortion)
 		if err != nil {
 			return sdk.DecCoins{}, err
 		}
@@ -408,12 +434,16 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 // transfer collected fees from perpetual moduleto the distribution module account
 // Coins are not in usdc, so convert them to usdc
 func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) (sdk.DecCoins, error) {
-	fundAddr := k.perpetualKeeper.GetIncrementalBorrowInterestPaymentFundAddress(ctx)
+	fundAddr := authtypes.NewModuleAddress(perpetualmoduletypes.ModuleName)
 	params := k.GetParams(ctx)
+	estakingParams := k.estakingKeeper.GetParams(ctx)
 	// Transfer revenue to a single wallet of Perpetual revenue wallet.
 	fees, err := k.ConvertGasFeesToUsdc(ctx, baseCurrency, fundAddr)
 	if err != nil {
 		return sdk.DecCoins{}, err
+	}
+	if fees.IsZero() {
+		return sdk.DecCoins{}, nil
 	}
 	// Calculate each portion of Gas fees collected - stakers, LPs
 	perpFeeCollectedDec := sdk.NewDecCoinsFromCoins(fees...)
@@ -438,7 +468,8 @@ func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) (sdk.De
 
 	// Send coins to fee collector name
 	if perpFeesForStakersDec.IsAllPositive() {
-		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, stakerCoins)
+		// The distribution module picks from ccvconsumertypes.ConsumerRedistributeName
+		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerRedistributeName, stakerCoins)
 		if err != nil {
 			return sdk.DecCoins{}, err
 		}
@@ -448,11 +479,20 @@ func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) (sdk.De
 	if protocolGasFeeCoins.IsAllPositive() {
 		protocolRevenueAddress, err := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
 		if err != nil {
-			// Handle the error by skipping the fee distribution
 			ctx.Logger().Error("Invalid protocol revenue address", "error", err)
 			return perpFeesForLpsDec, err
 		}
-		err = k.bankKeeper.SendCoins(ctx, fundAddr, protocolRevenueAddress, protocolGasFeeCoins)
+
+		providerPortion := ammkeeper.PortionCoins(protocolGasFeeCoins, estakingParams.ProviderStakingRewardsPortion)
+		consumerPortion := protocolGasFeeCoins.Sub(providerPortion...)
+
+		// This will be sent to provider
+		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerToSendToProviderName, providerPortion)
+		if err != nil {
+			return sdk.DecCoins{}, err
+		}
+
+		err = k.bankKeeper.SendCoins(ctx, fundAddr, protocolRevenueAddress, consumerPortion)
 		if err != nil {
 			return sdk.DecCoins{}, err
 		}
@@ -471,7 +511,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 	rewardsPerPool := make(map[uint64]math.LegacyDec)
 	// LPs Portion param
 	params := k.GetParams(ctx)
-	esktaingParams := k.estakingKeeper.GetParams(ctx)
+	estakingParams := k.estakingKeeper.GetParams(ctx)
 	protocolRevenueAddress, err := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
 	if err != nil {
 		return nil, nil, nil, err
@@ -511,15 +551,8 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 
 		// Send coins to fee collector name
 		if stakerRevenueCoins.IsAllPositive() {
-			providerPortion := ammkeeper.PortionCoins(stakerRevenueCoins, esktaingParams.ProviderStakingRewardsPortion)
-			consumerPortion := stakerRevenueCoins.Sub(providerPortion...)
-
-			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerToSendToProviderName, providerPortion)
-			if err != nil {
-				return true
-			}
-
-			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerRedistributeName, consumerPortion)
+			// The distribution module picks from ccvconsumertypes.ConsumerRedistributeName
+			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerRedistributeName, stakerRevenueCoins)
 			if err != nil {
 				return true
 			}
@@ -527,7 +560,16 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 
 		// Send coins to protocol revenue address
 		if protocolRevenueCoins.IsAllPositive() {
-			err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, protocolRevenueAddress, protocolRevenueCoins)
+			providerPortion := ammkeeper.PortionCoins(protocolRevenueCoins, estakingParams.ProviderStakingRewardsPortion)
+			consumerPortion := stakerRevenueCoins.Sub(providerPortion...)
+
+			// This will be sent to provider
+			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerToSendToProviderName, providerPortion)
+			if err != nil {
+				return true
+			}
+
+			err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, protocolRevenueAddress, consumerPortion)
 			if err != nil {
 				return true
 			}

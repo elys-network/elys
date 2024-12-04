@@ -136,8 +136,10 @@ func appModules(
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
 		ccvgov.NewAppModule(appCodec, *app.GovKeeper, app.AccountKeeper, app.BankKeeper, IsProposalWhitelisted, app.GetSubspace(govtypes.ModuleName), IsModuleWhiteList),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.ConsumerKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
-		// fee collector name here has to be ccvconsumertypes.ConsumerRedistributeName for consumer chain distribution
-		// inside the keeper it doesn't matter because it ain't used
+		// Important: The idea is that the rewards that needs to be sent to provider we will do so in estaking and masterchef EndBlocker by sending it to ConsumerToSendToProviderName.
+		// And the one that needs to be distributed on Consumer we will do there only by sending it to ConsumerRedistributeName. This requires that our distribution module uses ConsumerRedistributeName
+		// This needs consumer_redistribution_fraction MUST be 1 as we are totally controlling the rewards. Also, this needs  ccvconsumer EndBlocker to be run after estaking and masterchef as it will move funds from
+		// FeeCollector to ConsumerRedistributeName
 		exdistr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CommitmentKeeper, app.EstakingKeeper, &app.AssetprofileKeeper, ccvconsumertypes.ConsumerRedistributeName, app.GetSubspace(distrtypes.ModuleName)),
 		exstaking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
@@ -317,7 +319,6 @@ func orderEndBlockers() []string {
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		ccvconsumertypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		assetprofilemoduletypes.ModuleName,
 		oracletypes.ModuleName,
@@ -334,6 +335,9 @@ func orderEndBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+
+		// Must be called after estaking and masterchef
+		ccvconsumertypes.ModuleName,
 	}
 }
 

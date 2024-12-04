@@ -1,13 +1,10 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	"github.com/elys-network/elys/x/estaking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -101,16 +98,6 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) {
 }
 
 func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
-	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	if !found {
-		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-
-	// USDC amount in math.LegacyDec type
-	feeCollectorAddr := authtypes.NewModuleAddress(ccvconsumertypes.ConsumerRedistributeName)
-	totalFeesCollected := k.commKeeper.GetAllBalances(ctx, feeCollectorAddr)
-	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(totalFeesCollected...)
-	dexRevenueStakersAmount := gasFeeCollectedDec.AmountOf(baseCurrency)
 
 	// Calculate eden amount per block
 	params := k.GetParams(ctx)
@@ -149,11 +136,6 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 		Mul(params.EdenBoostApr).
 		QuoInt64(totalBlocksPerYear).
 		RoundInt()
-
-	// Set block number and total dex rewards given
-	params.DexRewardsStakers.NumBlocks = 1
-	params.DexRewardsStakers.Amount = dexRevenueStakersAmount
-	k.SetParams(ctx, params)
 
 	providerEdenAmount := stakersEdenAmount.ToLegacyDec().Mul(params.ProviderStakingRewardsPortion).TruncateInt()
 	consumerCoins := sdk.NewCoins(

@@ -444,8 +444,6 @@ func NewAppKeeper(
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[evidencetypes.StoreKey]),
-		// TODO I think we can set it here because we are doing app.ConsumerKeeper.SetStandaloneStakingKeeper(app.EstakingKeeper) below but that's only for chain that was previously standalone.
-		// But it has some constraints
 		&app.ConsumerKeeper,
 		app.SlashingKeeper,
 		app.AccountKeeper.AddressCodec(),
@@ -473,9 +471,6 @@ func NewAppKeeper(
 		address.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
 		address.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	)
-
-	// TODO NOTE: This method should only be called for previously standalone chains that are now consumers, should we do this?
-	// app.ConsumerKeeper.SetStandaloneStakingKeeper(app.EstakingKeeper)
 
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))

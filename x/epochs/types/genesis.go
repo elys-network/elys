@@ -29,7 +29,7 @@ func DefaultGenesisState() *GenesisState {
 		},
 		{
 			Identifier:              FiveMinutesEpochID,
-			Duration:                time.Second * 60,
+			Duration:                time.Second * 300,
 			CurrentEpoch:            0,
 			CurrentEpochStartHeight: 0,
 			EpochCountingStarted:    false,
