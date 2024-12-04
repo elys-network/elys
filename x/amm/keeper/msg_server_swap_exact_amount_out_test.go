@@ -174,6 +174,8 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(2))
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			resp, err := msgServer.SwapExactAmountOut(
@@ -190,6 +192,8 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 				suite.Require().NoError(err)
 				suite.Require().Equal(resp.TokenInAmount.String(), tc.tokenIn.Amount.String())
 				suite.app.AmmKeeper.EndBlocker(suite.ctx)
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(2))
 
 				// check balance change on sender
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, sender)
