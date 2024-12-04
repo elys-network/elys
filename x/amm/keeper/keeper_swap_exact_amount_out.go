@@ -42,21 +42,21 @@ func (k Keeper) InternalSwapExactAmountOut(
 
 	params := k.GetParams(ctx)
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-	tokenIn, _, slippageAmount, weightBalanceBonus, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, math.LegacyOneDec(), params)
+	tokenIn, _, slippageAmount, weightBalanceBonus, oracleInAmount, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, math.LegacyOneDec(), params)
 	if err != nil {
 		return math.Int{}, err
 	}
 	tokenInAmount = tokenIn.Amount
 
 	if tokenInAmount.LTE(math.ZeroInt()) {
-		return math.Int{}, errorsmod.Wrapf(types.ErrInvalidMathApprox, "token amount is zero or negative")
+		return math.Int{}, types.ErrTokenOutAmountZero
 	}
 
 	if tokenInAmount.GT(tokenInMaxAmount) {
 		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
-	_, err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, math.LegacyZeroDec(), weightBalanceBonus)
+	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, oracleInAmount.TruncateInt(), math.ZeroInt(), weightBalanceBonus, true)
 	if err != nil {
 		return math.Int{}, err
 	}

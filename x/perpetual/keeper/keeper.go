@@ -186,7 +186,7 @@ func (k Keeper) SendToAmmPool(ctx sdk.Context, senderAddress sdk.AccAddress, amm
 	if err != nil {
 		return err
 	}
-	err = k.amm.AddToPoolBalance(ctx, ammPool, math.ZeroInt(), coins)
+	err = k.amm.AddToPoolBalanceAndUpdateLiquidity(ctx, ammPool, math.ZeroInt(), coins)
 	if err != nil {
 		return err
 	}
@@ -204,7 +204,7 @@ func (k Keeper) SendFromAmmPool(ctx sdk.Context, ammPool *ammtypes.Pool, receive
 	if err != nil {
 		return err
 	}
-	err = k.amm.RemoveFromPoolBalance(ctx, ammPool, math.ZeroInt(), coins)
+	err = k.amm.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, ammPool, math.ZeroInt(), coins)
 	if err != nil {
 		return err
 	}

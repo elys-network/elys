@@ -106,16 +106,16 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountOut() {
 			poolInitBalance:     sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			treasuryInitBalance: sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFeeOut:          sdkmath.LegacyZeroDec(),
-			tokenIn:             sdk.NewInt64Coin("uusda", 211409),
+			tokenIn:             sdk.NewInt64Coin("uusda", 211411),
 			tokenInMax:          sdkmath.NewInt(10000000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 200000),
 			weightBalanceBonus:  sdkmath.LegacyZeroDec(),
 			isOraclePool:        true,
 			useNewRecipient:     false,
-			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 788591), sdk.NewInt64Coin(ptypes.BaseCurrency, 1200000)},
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 788589), sdk.NewInt64Coin(ptypes.BaseCurrency, 1200000)},
 			expRecipientBalance: sdk.Coins{},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1211409), sdk.NewInt64Coin(ptypes.BaseCurrency, 800000)},
-			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1211270), sdk.NewInt64Coin(ptypes.BaseCurrency, 800000)},
+			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000141), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
 		},
 		{
@@ -216,7 +216,7 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountOut() {
 					SwapFee:   tc.swapFeeOut,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
-				TotalShares: sdk.Coin{},
+				TotalShares: sdk.NewCoin(types.GetPoolShareDenom(1), sdkmath.ZeroInt()),
 				PoolAssets: []types.PoolAsset{
 					{
 						Token:                  tc.poolInitBalance[0],
@@ -231,6 +231,8 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountOut() {
 				},
 				TotalWeight: sdkmath.ZeroInt(),
 			}
+			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 			tokenInAmount, err := suite.app.AmmKeeper.InternalSwapExactAmountOut(suite.ctx, sender, recipient, pool, tc.tokenIn.Denom, tc.tokenInMax, tc.tokenOut, tc.swapFeeOut)
 			if !tc.expPass {
@@ -238,7 +240,7 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountOut() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(tokenInAmount.String(), tc.tokenIn.Amount.String())
-
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 				// check pool balance increase/decrease
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, poolAddr)
 				suite.Require().Equal(balances.String(), tc.expPoolBalance.String())

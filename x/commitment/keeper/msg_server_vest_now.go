@@ -10,15 +10,13 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-// VestNow is not enabled at this stage
-var VestNowEnabled = false
-
 // VestNow provides functionality to get the token immediately but lower amount than original
 // e.g. user can burn 1000 ueden and get 800 uelys when the ratio is 80%
 func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types.MsgVestNowResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	params := k.GetParams(ctx)
 
-	if !VestNowEnabled {
+	if !params.EnableVestNow {
 		return nil, types.ErrVestNowIsNotEnabled
 	}
 

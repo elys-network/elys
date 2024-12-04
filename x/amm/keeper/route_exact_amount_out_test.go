@@ -173,6 +173,7 @@ func (suite *AmmKeeperTestSuite) TestRouteExactAmountOut() {
 				TotalWeight: math.ZeroInt(),
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 			// TODO: add multiple route case
 			// TODO: add invalid route case
@@ -190,6 +191,7 @@ func (suite *AmmKeeperTestSuite) TestRouteExactAmountOut() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(tokenInAmount.String(), tc.tokenIn.Amount.String())
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 				// check pool balance increase/decrease
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, poolAddr)
