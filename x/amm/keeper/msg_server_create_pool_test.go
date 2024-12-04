@@ -252,6 +252,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerCreatePool() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(resp.PoolID, uint64(1))
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 				pools := suite.app.AmmKeeper.GetAllPool(suite.ctx)
 				suite.Require().Len(pools, 1)

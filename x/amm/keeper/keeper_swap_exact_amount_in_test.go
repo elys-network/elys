@@ -240,6 +240,8 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountIn() {
 				},
 				TotalWeight: sdkmath.ZeroInt(),
 			}
+			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 			tokenOut, err := suite.app.AmmKeeper.InternalSwapExactAmountIn(suite.ctx, sender, recipient, pool, tc.tokenIn, tc.tokenOut.Denom, tc.tokenOutMin, tc.swapFeeIn)
 			if !tc.expPass {
@@ -247,7 +249,7 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountIn() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(tokenOut.String(), tc.tokenOut.Amount.String())
-
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 				// check pool balance increase/decrease
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, poolAddr)
 				suite.Require().Equal(balances.String(), tc.expPoolBalance.String())

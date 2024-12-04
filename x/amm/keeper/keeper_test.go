@@ -1,11 +1,12 @@
 package keeper_test
 
 import (
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"sort"
 	"strings"
 	"testing"
+
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"cosmossdk.io/math"
 
@@ -298,4 +299,21 @@ func SetupMockPools(k *keeper.Keeper, ctx sdk.Context) {
 	for _, pool := range pools {
 		k.SetPool(ctx, pool)
 	}
+}
+
+func (suite *AmmKeeperTestSuite) VerifyPoolAssetWithBalance(poolId uint64) bool {
+	pool, found := suite.app.AmmKeeper.GetPool(suite.ctx, poolId)
+	if !found {
+		return false
+	}
+	for _, asset := range pool.PoolAssets {
+		bal := suite.app.BankKeeper.GetBalance(suite.ctx, sdk.MustAccAddressFromBech32(pool.Address), asset.Token.Denom)
+		if !asset.Token.Amount.Equal(bal.Amount) {
+			println("pool Asset DS: ", asset.Token.String())
+			println("pool balance: ", bal.String())
+			return false
+		}
+	}
+
+	return true
 }

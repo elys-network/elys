@@ -160,11 +160,15 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 				},
 				TotalWeight: sdkmath.ZeroInt(),
 			}
+			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
+
 			err = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, sender, tc.tokenIn, tc.tokenOut, tc.swapFee, tc.tokenIn.Amount, tc.tokenOut.Amount, tc.weightBalanceBonus, false)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
 				suite.Require().NoError(err)
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 				// check pool balance increase/decrease
 				balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, poolAddr)
