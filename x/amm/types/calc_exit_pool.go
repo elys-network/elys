@@ -141,9 +141,15 @@ func CalcExitPool(
 		targetWeightIn := sdkmath.LegacyOneDec().Sub(targetWeightOut)
 
 		// weight breaking fee as in Plasma pool
-		weightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, newAssetPools, tokenOutDenom)
-		weightIn := sdkmath.LegacyOneDec().Sub(weightOut)
-		weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, distanceDiff, params)
+		finalWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, newAssetPools, tokenOutDenom)
+		finalWeightIn := sdkmath.LegacyOneDec().Sub(finalWeightOut)
+		initialAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
+			sdk.NewCoins(),
+			sdk.NewCoins(), accountedAssets,
+		)
+		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, initialAssetPools, tokenOutDenom)
+		initialWeightIn := sdkmath.LegacyOneDec().Sub(initialWeightOut)
+		weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
 
 		tokenOutAmount := oracleOutAmount.Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).RoundInt()
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBreakingFee.Neg(), nil
