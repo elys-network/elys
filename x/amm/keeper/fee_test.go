@@ -194,7 +194,7 @@ func (suite *AmmKeeperTestSuite) TestSwapFeesToRevenueToken() {
 				},
 				TotalWeight: sdkmath.ZeroInt(),
 			}
-			err = suite.app.AmmKeeper.SwapFeesToRevenueToken(suite.ctx, pool, tc.fee)
+			err = suite.app.AmmKeeper.SwapFeesToRevenueToken(suite.ctx, pool, tc.fee, true)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
