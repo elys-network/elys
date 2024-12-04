@@ -137,7 +137,7 @@ func CmdUpdateParams() *cobra.Command {
 				HealthGainFactor:                    sdkmath.LegacyMustNewDecFromStr(healthGainFactor),
 				MaxOpenPositions:                    maxOpenPositions,
 				PoolOpenThreshold:                   sdkmath.LegacyMustNewDecFromStr(poolOpenThreshold),
-				BorrowInterestPaymentFundPercentage: sdkmath.LegacyMustNewDecFromStr(incrementalBorrowInterestPaymentFundPercentage),
+				BorrowInterestPaymentFundPercentage: sdkmath.LegacyMustNewDecFromStr(borrowInterestPaymentFundPercentage),
 				BorrowInterestPaymentFundAddress:    borrowInterestPaymentFundAddress,
 				SafetyFactor:                        sdkmath.LegacyMustNewDecFromStr(safetyFactor),
 				BorrowInterestPaymentEnabled:        borrowInterestPaymentEnabled,
