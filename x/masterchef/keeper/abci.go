@@ -9,6 +9,7 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
@@ -406,7 +407,7 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 // transfer collected fees from perpetual moduleto the distribution module account
 // Coins are not in usdc, so convert them to usdc
 func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) (sdk.DecCoins, error) {
-	fundAddr := k.perpetualKeeper.GetIncrementalBorrowInterestPaymentFundAddress(ctx)
+	fundAddr := authtypes.NewModuleAddress(perpetualtypes.ModuleName)
 	params := k.GetParams(ctx)
 	// Transfer revenue to a single wallet of Perpetual revenue wallet.
 	fees, err := k.ConvertGasFeesToUsdc(ctx, baseCurrency, fundAddr)
