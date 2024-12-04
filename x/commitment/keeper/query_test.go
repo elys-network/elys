@@ -101,7 +101,7 @@ func TestKeeper_NumberOfCommitments(t *testing.T) {
 	require.NotNil(t, actualRes)
 
 	expectedRes := &types.QueryNumberOfCommitmentsResponse{
-		Number: 2, // set to 2 because end block from AddEdenEdenBOnModule
+		Number: 3, // set to 3 because end block from estaking
 	}
 
 	require.Equal(t, expectedRes, actualRes)
