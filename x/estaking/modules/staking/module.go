@@ -24,8 +24,7 @@ var (
 	_ module.HasABCIGenesis      = AppModule{}
 	_ module.HasABCIEndBlock     = AppModule{}
 
-	_ appmodule.AppModule       = AppModule{}
-	_ appmodule.HasBeginBlocker = AppModule{}
+	_ appmodule.AppModule = AppModule{}
 )
 
 // AppModule embeds the Cosmos SDK's x/staking AppModuleBasic.
@@ -61,15 +60,13 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 	var genesisState types.GenesisState
 
 	cdc.MustUnmarshalJSON(data, &genesisState)
-	return am.keeper.InitGenesis(ctx, &genesisState)
+	_ = am.keeper.InitGenesis(ctx, &genesisState)
+
+	return []abci.ValidatorUpdate{}
 }
 
 // EndBlock delegates the EndBlock call to the underlying x/staking module,
 func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, error) {
-	return am.keeper.BlockValidatorUpdates(goCtx)
-}
-
-// BeginBlock returns the begin blocker for the staking module.
-func (am AppModule) BeginBlock(ctx context.Context) error {
-	return am.keeper.BeginBlocker(ctx)
+	_, _ = am.keeper.BlockValidatorUpdates(goCtx)
+	return []abci.ValidatorUpdate{}, nil
 }

@@ -2,6 +2,7 @@ package types_test
 
 import (
 	sdkmath "cosmossdk.io/math"
+	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
 	"github.com/elys-network/elys/x/estaking/types"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -18,6 +19,8 @@ func TestDefaultParams(t *testing.T) {
 			NumBlocks: 1,
 			Amount:    sdkmath.LegacyZeroDec(),
 		},
+		ProviderVestingEpochIdentifier: epochsmoduletypes.TenDaysEpochID,
+		ProviderStakingRewardsPortion:  sdkmath.LegacyMustNewDecFromStr("0.25"),
 	}
 	require.Equal(t, types.DefaultParams(), params)
 }

@@ -195,13 +195,13 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 	})
 	suite.Require().NoError(err)
 	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "49")
-	suite.Require().Equal(res.TotalRewards[1].Amount.String(), "4949545046")
+	suite.Require().Equal(res.TotalRewards[1].Amount.String(), "4949535046")
 	res, err = suite.app.MasterchefKeeper.UserPendingReward(suite.ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[1].String(),
 	})
 	suite.Require().NoError(err)
 	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "49")
-	suite.Require().Equal(res.TotalRewards[1].Amount.String(), "4949545046")
+	suite.Require().Equal(res.TotalRewards[1].Amount.String(), "4949535046")
 
 	prevUSDCBal := suite.app.BankKeeper.GetBalance(suite.ctx, addr[1], ptypes.BaseCurrency)
 
@@ -218,7 +218,7 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 	suite.Require().NoError(err)
 
 	curUSDCBal := suite.app.BankKeeper.GetBalance(suite.ctx, addr[1], ptypes.BaseCurrency)
-	amount, _ := math.NewIntFromString("4949545046")
+	amount, _ := math.NewIntFromString("4949535046")
 	suite.Require().Equal(curUSDCBal.Amount.String(), prevUSDCBal.Amount.Add(amount).String())
 
 	// no pending rewards

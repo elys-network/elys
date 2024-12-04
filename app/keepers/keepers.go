@@ -65,9 +65,10 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v8/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
-
-	//ccvconsumerkeeper "github.com/cosmos/interchain-security/v6/x/ccv/consumer/keeper"
-	//ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
+	ccvconsumer "github.com/cosmos/interchain-security/v6/x/ccv/consumer"
+	ccvconsumerkeeper "github.com/cosmos/interchain-security/v6/x/ccv/consumer/keeper"
+	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
+	ccv "github.com/cosmos/interchain-security/v6/x/ccv/types"
 	accountedpoolmodulekeeper "github.com/elys-network/elys/x/accountedpool/keeper"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
 	ammmodulekeeper "github.com/elys-network/elys/x/amm/keeper"
@@ -138,7 +139,8 @@ type AppKeepers struct {
 	IBCFeeKeeper   ibcfeekeeper.Keeper
 	IBCHooksKeeper *ibchookskeeper.Keeper
 
-	//ConsumerKeeper ccvconsumerkeeper.Keeper
+	ConsumerKeeper ccvconsumerkeeper.Keeper
+	ConsumerModule ccvconsumer.AppModule // Have to declare this here for IBC router
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
@@ -147,7 +149,7 @@ type AppKeepers struct {
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
 	ScopedOracleKeeper        capabilitykeeper.ScopedKeeper
-	//ScopedCCVConsumerKeeper   capabilitykeeper.ScopedKeeper
+	ScopedCCVConsumerKeeper   capabilitykeeper.ScopedKeeper
 
 	EpochsKeeper        *epochsmodulekeeper.Keeper
 	AssetprofileKeeper  assetprofilemodulekeeper.Keeper
@@ -246,7 +248,7 @@ func NewAppKeeper(
 	app.ScopedICAControllerKeeper = app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 	app.ScopedTransferKeeper = app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
 	app.ScopedOracleKeeper = app.CapabilityKeeper.ScopeToModule(oracletypes.ModuleName)
-	//app.ScopedCCVConsumerKeeper = app.CapabilityKeeper.ScopeToModule(ccvconsumertypes.ModuleName)
+	app.ScopedCCVConsumerKeeper = app.CapabilityKeeper.ScopeToModule(ccvconsumertypes.ModuleName)
 
 	// Add normal keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
@@ -341,7 +343,7 @@ func NewAppKeeper(
 		appCodec,
 		legacyAmino,
 		runtime.NewKVStoreService(app.keys[slashingtypes.StoreKey]),
-		app.EstakingKeeper,
+		&app.ConsumerKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -368,18 +370,23 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	//app.ConsumerKeeper = ccvconsumerkeeper.NewNonZeroKeeper(
-	//	appCodec,
-	//	app.keys[ccvconsumertypes.StoreKey],
-	//	app.GetSubspace(ccvconsumertypes.ModuleName),
-	//)
+	// ... other modules keepers
+	// pre-initialize ConsumerKeeper to satisfy ibckeeper.NewKeeper
+	// which would panic on nil or zero keeper
+	// ConsumerKeeper implements StakingKeeper but all function calls result in no-ops so this is safe
+	// communication over IBC is not affected by these changes
+	app.ConsumerKeeper = ccvconsumerkeeper.NewNonZeroKeeper(
+		appCodec,
+		app.keys[ccvconsumertypes.StoreKey],
+		app.GetSubspace(ccvconsumertypes.ModuleName),
+	)
 
 	// UpgradeKeeper must be created before IBCKeeper
 	app.IBCKeeper = ibckeeper.NewKeeper(
 		appCodec,
 		app.keys[ibcexported.StoreKey],
 		app.GetSubspace(ibcexported.ModuleName),
-		app.StakingKeeper,
+		&app.ConsumerKeeper,
 		app.UpgradeKeeper,
 		app.ScopedIBCKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -437,13 +444,36 @@ func NewAppKeeper(
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[evidencetypes.StoreKey]),
-		app.StakingKeeper,
+		&app.ConsumerKeeper,
 		app.SlashingKeeper,
 		app.AccountKeeper.AddressCodec(),
 		runtime.ProvideCometInfoService(),
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
+
+	app.ConsumerKeeper = ccvconsumerkeeper.NewKeeper(
+		appCodec,
+		app.keys[ccvconsumertypes.StoreKey],
+		app.GetSubspace(ccvconsumertypes.ModuleName),
+		app.ScopedCCVConsumerKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.PortKeeper,
+		app.IBCKeeper.ConnectionKeeper,
+		app.IBCKeeper.ClientKeeper,
+		app.SlashingKeeper,
+		app.BankKeeper,
+		app.AccountKeeper,
+		app.TransferKeeper,
+		app.IBCKeeper,
+		authtypes.FeeCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		address.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		address.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+	)
+
+	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
+	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
 
 	app.OracleKeeper = *oraclekeeper.NewKeeper(
 		appCodec,
@@ -503,7 +533,7 @@ func NewAppKeeper(
 		app.AccountKeeper,
 		app.CommitmentKeeper,
 		app.EstakingKeeper,
-		authtypes.FeeCollectorName,
+		ccvconsumertypes.ConsumerRedistributeName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -548,30 +578,6 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[transferhooktypes.StoreKey]),
 		app.AmmKeeper)
 
-	//app.ConsumerKeeper = ccvconsumerkeeper.NewKeeper(
-	//	appCodec,
-	//	app.keys[ccvconsumertypes.StoreKey],
-	//	app.GetSubspace(ccvconsumertypes.ModuleName),
-	//	app.ScopedCCVConsumerKeeper,
-	//	app.IBCKeeper.ChannelKeeper,
-	//	app.IBCKeeper.PortKeeper,
-	//	app.IBCKeeper.ConnectionKeeper,
-	//	app.IBCKeeper.ClientKeeper,
-	//	app.SlashingKeeper,
-	//	app.BankKeeper,
-	//	app.AccountKeeper,
-	//	app.TransferKeeper,
-	//	app.IBCKeeper,
-	//	authtypes.FeeCollectorName,
-	//	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	//	app.StakingKeeper.ValidatorAddressCodec(),
-	//	app.StakingKeeper.ConsensusAddressCodec(),
-	//)
-	//app.ConsumerKeeper.SetStandaloneStakingKeeper(app.EstakingKeeper)
-	//
-	//// register slashing module StakingHooks to the consumer keeper
-	//app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
-
 	// Configure the hooks keeper
 	hooksKeeper := ibchookskeeper.NewKeeper(
 		app.keys[ibchookstypes.StoreKey],
@@ -593,6 +599,7 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[govtypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
+		// No need to send EstakingKeeper here as gov only does sk.IterateBondedValidatorsByPower, no need to give vp to Eden and EdenB
 		app.StakingKeeper,
 		app.DistrKeeper,
 		bApp.MsgServiceRouter(),
@@ -688,7 +695,8 @@ func NewAppKeeper(
 		AddRoute(icahosttypes.SubModuleName, icaHostStack).
 		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
 		AddRoute(ibctransfertypes.ModuleName, transferStack).
-		AddRoute(oracletypes.ModuleName, oracleIBCModule)
+		AddRoute(oracletypes.ModuleName, oracleIBCModule).
+		AddRoute(ccvconsumertypes.ModuleName, app.ConsumerModule)
 
 	app.IBCKeeper.SetRouter(ibcRouter)
 
@@ -709,7 +717,7 @@ func NewAppKeeper(
 	app.EstakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(
 			// insert staking hooks receivers here
-			app.SlashingKeeper.Hooks(),
+			// Do not use slashing keeper hooks when it's consumer chain
 			app.DistrKeeper.Hooks(),
 			app.EstakingKeeper.StakingHooks(),
 			app.TierKeeper.StakingHooks(),
@@ -739,6 +747,7 @@ func NewAppKeeper(
 			app.CommitmentKeeper.Hooks(),
 			app.BurnerKeeper.Hooks(),
 			app.PerpetualKeeper.EpochHooks(),
+			app.EstakingKeeper.EpochHooks(),
 		),
 	)
 
@@ -780,7 +789,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName).WithKeyTable(ibctransfertypes.ParamKeyTable())
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
 	paramsKeeper.Subspace(icahosttypes.SubModuleName).WithKeyTable(icahosttypes.ParamKeyTable())
-	//paramsKeeper.Subspace(ccvconsumertypes.ModuleName)
+	paramsKeeper.Subspace(ccvconsumertypes.ModuleName).WithKeyTable(ccv.ParamKeyTable())
 
 	// Can be removed as we are not using param subspace anymore anywhere
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)

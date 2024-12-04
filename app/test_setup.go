@@ -24,11 +24,16 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	ibctypes "github.com/cosmos/ibc-go/v8/modules/core/02-client/types"
+	ibcCommitment "github.com/cosmos/ibc-go/v8/modules/core/23-commitment/types"
+	ibctmtypes "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
+	consumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
+	ccvprovidertypes "github.com/cosmos/interchain-security/v6/x/ccv/provider/types"
+	ccvtypes "github.com/cosmos/interchain-security/v6/x/ccv/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
@@ -163,6 +168,7 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *cmttypes.ValidatorSet,
 	delegations := make([]stakingtypes.Delegation, 0, len(valSet.Validators))
 
 	bondAmt := sdk.DefaultPowerReduction
+	initValPowers := []abci.ValidatorUpdate{}
 
 	for _, val := range valSet.Validators {
 		pk, _ := cryptocodec.FromTmPubKeyInterface(val.PubKey)
@@ -182,6 +188,13 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *cmttypes.ValidatorSet,
 		}
 		validators = append(validators, validator)
 		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress().String(), sdk.ValAddress(val.Address).String(), math.LegacyOneDec()))
+
+		// add initial validator powers so consumer InitGenesis runs correctly
+		pub, _ := val.ToProto()
+		initValPowers = append(initValPowers, abci.ValidatorUpdate{
+			Power:  val.VotingPower,
+			PubKey: pub.PubKey,
+		})
 	}
 
 	// set validators and delegations
@@ -211,6 +224,18 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *cmttypes.ValidatorSet,
 	// update total supply
 	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, totalSupply, []banktypes.Metadata{}, []banktypes.SendEnabled{})
 	genesisState[banktypes.ModuleName] = app.AppCodec().MustMarshalJSON(bankGenesis)
+
+	vals, err := cmttypes.PB2TM.ValidatorUpdates(initValPowers)
+	if err != nil {
+		panic("failed to get vals")
+	}
+
+	consumerGenesisState := CreateMinimalConsumerTestGenesis()
+	consumerGenesisState.Provider.InitialValSet = initValPowers
+	consumerGenesisState.Provider.ConsensusState.NextValidatorsHash = cmttypes.NewValidatorSet(vals).Hash()
+	consumerGenesisState.Params.Enabled = true
+	genesisState[consumertypes.ModuleName] = app.AppCodec().MustMarshalJSON(consumerGenesisState)
+
 	return genesisState, valSet, genAccs[0].GetAddress(), sdk.ValAddress(validator.Address)
 }
 
@@ -319,4 +344,26 @@ func AddTestCommitment(app *ElysApp, ctx sdk.Context, address sdk.AccAddress, co
 	}
 
 	app.CommitmentKeeper.SetCommitments(ctx, commitment)
+}
+
+func CreateMinimalConsumerTestGenesis() *ccvtypes.ConsumerGenesisState {
+	genesisState := ccvtypes.DefaultConsumerGenesisState()
+	genesisState.Params.Enabled = true
+	genesisState.NewChain = true
+	genesisState.Provider.ClientState = ccvprovidertypes.DefaultParams().TemplateClient
+	genesisState.Provider.ClientState.ChainId = "stride"
+	genesisState.Provider.ClientState.LatestHeight = ibctypes.Height{RevisionNumber: 0, RevisionHeight: 1}
+	trustPeriod, err := ccvtypes.CalculateTrustPeriod(genesisState.Params.UnbondingPeriod, ccvprovidertypes.DefaultTrustingPeriodFraction)
+	if err != nil {
+		panic("provider client trusting period error")
+	}
+	genesisState.Provider.ClientState.TrustingPeriod = trustPeriod
+	genesisState.Provider.ClientState.UnbondingPeriod = genesisState.Params.UnbondingPeriod
+	genesisState.Provider.ClientState.MaxClockDrift = ccvprovidertypes.DefaultMaxClockDrift
+	genesisState.Provider.ConsensusState = &ibctmtypes.ConsensusState{
+		Timestamp: time.Now().UTC(),
+		Root:      ibcCommitment.MerkleRoot{Hash: []byte("dummy")},
+	}
+
+	return genesisState
 }

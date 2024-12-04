@@ -52,6 +52,7 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	"github.com/elys-network/elys/app/ante"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
@@ -281,6 +282,7 @@ func NewElysApp(
 			Cdc:             appCodec,
 			IBCKeeper:       app.IBCKeeper,
 			StakingKeeper:   app.StakingKeeper,
+			ConsumerKeeper:  app.ConsumerKeeper,
 		},
 	)
 	if err != nil {
@@ -388,7 +390,10 @@ func (app *ElysApp) ModuleAccountAddrs() map[string]bool {
 func (app *ElysApp) BlockedModuleAccountAddrs() map[string]bool {
 	modAccAddrs := app.ModuleAccountAddrs()
 	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
-
+	// Remove the fee-pool from the group of blocked recipient addresses in bank
+	// this is required for the consumer chain to be able to send tokens to
+	// the provider chain
+	delete(modAccAddrs, authtypes.NewModuleAddress(ccvconsumertypes.ConsumerToSendToProviderName).String())
 	return modAccAddrs
 }
 

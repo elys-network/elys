@@ -25,7 +25,9 @@ const (
 	// BandEpochID defines the identifier for band epochs
 	BandEpochID = "band_epoch"
 	// TenSecondsEpochID defines the identifier for 10 seconds
-	TenSecondsEpochID = "tenseconds"
+	TenSecondsEpochID  = "tenseconds"
+	TenDaysEpochID     = "ten_days"
+	FiveMinutesEpochID = "five_minutes"
 )
 
 // ValidateEpochIdentifierInterface performs a stateless
