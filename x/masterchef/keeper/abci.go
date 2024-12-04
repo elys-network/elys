@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
+	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -485,8 +486,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 	rewardsPerPool := make(map[uint64]math.LegacyDec)
 	// LPs Portion param
 	params := k.GetParams(ctx)
-	rewardPortionForLps := params.RewardPortionForLps
-	rewardPortionForStakers := params.RewardPortionForStakers
+	esktaingParams := k.estakingKeeper.GetParams(ctx)
 	protocolRevenueAddress, err := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
 	if err != nil {
 		return nil, nil, nil, err
@@ -513,8 +513,8 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 		revenueDec := sdk.NewDecCoinsFromCoins(revenue...)
 
 		// LPs portion of pool revenue
-		revenuePortionForLPs := revenueDec.MulDecTruncate(rewardPortionForLps)
-		revenuePortionForStakers := revenueDec.MulDecTruncate(rewardPortionForStakers)
+		revenuePortionForLPs := revenueDec.MulDecTruncate(params.RewardPortionForLps)
+		revenuePortionForStakers := revenueDec.MulDecTruncate(params.RewardPortionForStakers)
 		revenuePortionForProtocol := revenueDec.Sub(revenuePortionForLPs).Sub(revenuePortionForStakers)
 		stakerRevenueCoins, _ := revenuePortionForStakers.TruncateDecimal()
 		protocolRevenueCoins, _ := revenuePortionForProtocol.TruncateDecimal()
@@ -526,7 +526,15 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 
 		// Send coins to fee collector name
 		if stakerRevenueCoins.IsAllPositive() {
-			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerRedistributeName, stakerRevenueCoins)
+			providerPortion := ammkeeper.PortionCoins(stakerRevenueCoins, esktaingParams.ProviderStakingRewardsPortion)
+			consumerPortion := stakerRevenueCoins.Sub(providerPortion...)
+
+			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerToSendToProviderName, providerPortion)
+			if err != nil {
+				return true
+			}
+
+			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerRedistributeName, consumerPortion)
 			if err != nil {
 				return true
 			}
