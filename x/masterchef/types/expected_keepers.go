@@ -72,22 +72,6 @@ type BankKeeper interface {
 
 // AmmKeeper defines the expected interface needed to swap tokens
 type AmmKeeper interface {
-	// UpdatePoolForSwap takes a pool, sender, and tokenIn, tokenOut amounts
-	// It then updates the pool's balances to the new reserve amounts, and
-	// sends the in tokens from the sender to the pool, and the out tokens from the pool to the sender.
-	UpdatePoolForSwap(
-		ctx sdk.Context,
-		pool ammtypes.Pool,
-		sender sdk.AccAddress,
-		recipient sdk.AccAddress,
-		tokenIn sdk.Coin,
-		tokenOut sdk.Coin,
-		swapFee math.LegacyDec,
-		oracleInAmount math.Int,
-		oracleOutAmount math.Int,
-		weightBalanceBonus math.LegacyDec,
-		givenOut bool,
-	) error
 	GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOracle bool) (pool ammtypes.Pool, found bool)
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
@@ -97,18 +81,19 @@ type AmmKeeper interface {
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
 
-	SwapOutAmtGivenIn(
-		ctx sdk.Context, poolId uint64,
-		oracleKeeper ammtypes.OracleKeeper,
-		snapshot *ammtypes.Pool,
-		tokensIn sdk.Coins,
-		tokenOutDenom string,
-		swapFee math.LegacyDec,
-		weightBreakingFeePerpetualFactor math.LegacyDec,
-	) (tokenOut sdk.Coin, slippage, slippageAmount math.LegacyDec, weightBalanceBonus math.LegacyDec, oracleOutAmount math.LegacyDec, err error)
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec) (sdk.Coin, math.LegacyDec, error)
 	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
 	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec
+	InternalSwapExactAmountIn(
+		ctx sdk.Context,
+		sender sdk.AccAddress,
+		recipient sdk.AccAddress,
+		pool ammtypes.Pool,
+		tokenIn sdk.Coin,
+		tokenOutDenom string,
+		tokenOutMinAmount math.Int,
+		swapFee math.LegacyDec,
+	) (tokenOutAmount math.Int, err error)
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info
