@@ -84,7 +84,7 @@ func (p *Pool) setInitialPoolParams(params PoolParams, sortedAssets []PoolAsset,
 	return nil
 }
 
-func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coins) error {
+func (p *Pool) applySwap(ctx sdk.Context, bankKeeper BankKeeper, recipient sdk.AccAddress, tokensIn sdk.Coins, tokensOut sdk.Coins, executeTransfer bool) error {
 	// Fixed gas consumption per swap to prevent spam
 	ctx.GasMeter().ConsumeGas(BalancerGasFeeForSwap, "balancer swap computation")
 	// Also ensures that len(tokensIn) = 1 = len(tokensOut)
@@ -94,6 +94,18 @@ func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coin
 	}
 	inPoolAsset.Token.Amount = inPoolAsset.Token.Amount.Add(tokensIn[0].Amount)
 	outPoolAsset.Token.Amount = outPoolAsset.Token.Amount.Sub(tokensOut[0].Amount)
+
+	if executeTransfer {
+		// Transfer amount to and from recipient
+		err = bankKeeper.SendCoins(ctx, recipient, sdk.MustAccAddressFromBech32(p.Address), tokensIn)
+		if err != nil {
+			return err
+		}
+		err = bankKeeper.SendCoins(ctx, sdk.MustAccAddressFromBech32(p.Address), recipient, tokensOut)
+		if err != nil {
+			return err
+		}
+	}
 
 	return p.UpdatePoolAssetBalances(sdk.NewCoins(
 		inPoolAsset.Token,

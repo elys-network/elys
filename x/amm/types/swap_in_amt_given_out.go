@@ -48,8 +48,13 @@ func (p Pool) CalcGivenOutSlippage(
 // SwapInAmtGivenOut is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 // weightBreakingFeePerpetualFactor should be 1 if perpetual is not the one calling this function
 func (p *Pool) SwapInAmtGivenOut(
-	ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool,
-	tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec, accPoolKeeper AccountedPoolKeeper, weightBreakingFeePerpetualFactor sdkmath.LegacyDec, params Params) (
+	ctx sdk.Context,
+	bankKeeper BankKeeper,
+	recipient sdk.AccAddress,
+	oracleKeeper OracleKeeper,
+	snapshot *Pool,
+	tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec, accPoolKeeper AccountedPoolKeeper, weightBreakingFeePerpetualFactor sdkmath.LegacyDec, params Params,
+	executeTransfer bool) (
 	tokenIn sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, oracleInAmount sdkmath.LegacyDec, err error,
 ) {
 	// early return with balancer swap if normal amm pool
@@ -59,7 +64,7 @@ func (p *Pool) SwapInAmtGivenOut(
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 		balancerInCoin.Amount = balancerInCoin.Amount.ToLegacyDec().Mul(sdkmath.LegacyOneDec().Add(swapFee)).TruncateInt()
-		err = p.applySwap(ctx, sdk.Coins{balancerInCoin}, tokensOut)
+		err = p.applySwap(ctx, bankKeeper, recipient, sdk.Coins{balancerInCoin}, tokensOut, executeTransfer)
 		if err != nil {
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
@@ -171,7 +176,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		Mul(sdkmath.LegacyOneDec().Add(swapFee)).
 		TruncateInt()
 	tokenIn = sdk.NewCoin(tokenInDenom, tokenAmountInInt)
-	err = p.applySwap(ctx, sdk.Coins{tokenIn}, tokensOut)
+	err = p.applySwap(ctx, bankKeeper, recipient, sdk.Coins{tokenIn}, tokensOut, executeTransfer)
 	if err != nil {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}

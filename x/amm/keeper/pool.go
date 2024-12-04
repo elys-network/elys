@@ -227,3 +227,33 @@ func (k Keeper) RemoveFromPoolBalance(ctx sdk.Context, pool *types.Pool, removeS
 	k.SetPool(ctx, *pool)
 	return k.RecordTotalLiquidityDecrease(ctx, coins)
 }
+
+// AddToPoolBalanceAndTransfer update pool balance and transfer coins between pool and sender
+func (k Keeper) AddToPoolBalanceAndTransfer(ctx sdk.Context, pool *types.Pool, addShares sdkmath.Int, coins sdk.Coins, sender sdk.AccAddress) error {
+	err := pool.IncreaseLiquidity(addShares, coins)
+	if err != nil {
+		return err
+	}
+	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
+	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, coins)
+	if err != nil {
+		return err
+	}
+	k.SetPool(ctx, *pool)
+	return nil
+}
+
+// RemoveFromPoolBalanceAndTransfer update pool balance and transfer coins between pool and recipient
+func (k Keeper) RemoveFromPoolBalanceAndTransfer(ctx sdk.Context, pool *types.Pool, removeShares sdkmath.Int, coins sdk.Coins, recipient sdk.AccAddress) error {
+	err := pool.DecreaseLiquidity(removeShares, coins)
+	if err != nil {
+		return err
+	}
+	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
+	err = k.bankKeeper.SendCoins(ctx, poolAddr, recipient, coins)
+	if err != nil {
+		return err
+	}
+	k.SetPool(ctx, *pool)
+	return nil
+}

@@ -170,8 +170,11 @@ func (p Pool) CalcGivenInSlippage(
 
 // SwapOutAmtGivenIn is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 // weightBreakingFeePerpetualFactor should be 1 if perpetual is not the one calling this function
+// executeTransfer transfer tokens between recipient and pool if true
 func (p *Pool) SwapOutAmtGivenIn(
 	ctx sdk.Context,
+	bankKeeper BankKeeper,
+	recipient sdk.AccAddress,
 	oracleKeeper OracleKeeper,
 	snapshot *Pool,
 	tokensIn sdk.Coins,
@@ -180,6 +183,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 	accPoolKeeper AccountedPoolKeeper,
 	weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
 	params Params,
+	executeTransfer bool,
 ) (tokenOut sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, oracleOutAmount sdkmath.LegacyDec, err error) {
 
 	// early return with balancer swap if normal amm pool
@@ -193,7 +197,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
-		err = p.applySwap(ctx, tokensIn, sdk.Coins{balancerOutCoin})
+		err = p.applySwap(ctx, bankKeeper, recipient, tokensIn, sdk.Coins{balancerOutCoin}, executeTransfer)
 		if err != nil {
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
@@ -346,7 +350,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
 		Mul(sdkmath.LegacyOneDec().Sub(swapFee)).TruncateInt()
 	oracleOutCoin := sdk.NewCoin(tokenOutDenom, tokenAmountOutInt)
-	err = p.applySwap(ctx, tokensIn, sdk.Coins{oracleOutCoin})
+	err = p.applySwap(ctx, bankKeeper, recipient, tokensIn, sdk.Coins{oracleOutCoin}, executeTransfer)
 	if err != nil {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}

@@ -34,7 +34,7 @@ func (k Keeper) OnCollectFee(ctx sdk.Context, pool types.Pool, fee sdk.Coins) er
 
 	// handling the case, pool does not enough liquidity to swap fees to revenue token when liquidity is being fully removed
 	cacheCtx, write := ctx.CacheContext()
-	err = k.SwapFeesToRevenueToken(cacheCtx, pool, revenueAmount)
+	err = k.SwapFeesToRevenueToken(cacheCtx, pool, revenueAmount, true)
 	if err == nil {
 		write()
 	}
@@ -42,7 +42,7 @@ func (k Keeper) OnCollectFee(ctx sdk.Context, pool types.Pool, fee sdk.Coins) er
 }
 
 // No fee management required when doing swap from fees to revenue token
-func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk.Coins) error {
+func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk.Coins, executeTransfer bool) error {
 	poolRevenueAddress := types.NewPoolRevenueAddress(pool.PoolId)
 	params := k.GetParams(ctx)
 	for _, tokenIn := range fee {
@@ -53,7 +53,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-		tokenOutCoin, _, _, _, oracleOutAmount, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdkmath.LegacyZeroDec(), k.accountedPoolKeeper, sdkmath.LegacyOneDec(), params)
+		tokenOutCoin, _, _, _, oracleOutAmount, err := pool.SwapOutAmtGivenIn(ctx, k.bankKeeper, poolRevenueAddress, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdkmath.LegacyZeroDec(), k.accountedPoolKeeper, sdkmath.LegacyOneDec(), params, executeTransfer)
 		if err != nil {
 			return err
 		}
