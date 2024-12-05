@@ -113,6 +113,14 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 	}
 	stakersEdenAmount := edenAmountPerYear.Quo(math.NewInt(totalBlocksPerYear))
 
+	providerEdenAmount := stakersEdenAmount.ToLegacyDec().Mul(params.ProviderStakingRewardsPortion).TruncateInt()
+	err := k.commKeeper.MintCoins(ctx, ccvconsumertypes.ConsumerToSendToProviderName, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, providerEdenAmount)))
+	if err != nil {
+		return err
+	}
+
+	stakersEdenAmountAfterProvider := stakersEdenAmount.Sub(providerEdenAmount)
+
 	totalElysEdenEdenBStake, err := k.TotalBondedTokens(ctx)
 	if err != nil {
 		return err
@@ -129,7 +137,7 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 		QuoInt64(totalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-	stakersEdenAmount = math.MinInt(stakersEdenAmount, stakersMaxEdenAmount.TruncateInt())
+	stakersEdenAmountForGovernors := math.MinInt(stakersEdenAmountAfterProvider, stakersMaxEdenAmount.TruncateInt())
 
 	// EdenB should be mint based on Elys + Eden staked (should exclude edenB staked)
 	stakersEdenBAmount := math.LegacyNewDecFromInt(totalElysEdenEdenBStake).
@@ -137,14 +145,9 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 		QuoInt64(totalBlocksPerYear).
 		RoundInt()
 
-	providerEdenAmount := stakersEdenAmount.ToLegacyDec().Mul(params.ProviderStakingRewardsPortion).TruncateInt()
 	consumerCoins := sdk.NewCoins(
-		sdk.NewCoin(ptypes.Eden, stakersEdenAmount.Sub(providerEdenAmount)),
+		sdk.NewCoin(ptypes.Eden, stakersEdenAmountForGovernors),
 		sdk.NewCoin(ptypes.EdenB, stakersEdenBAmount),
 	)
-	err = k.commKeeper.MintCoins(ctx, ccvconsumertypes.ConsumerToSendToProviderName, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, providerEdenAmount)))
-	if err != nil {
-		return err
-	}
 	return k.commKeeper.MintCoins(ctx, ccvconsumertypes.ConsumerRedistributeName, consumerCoins.Sort())
 }
