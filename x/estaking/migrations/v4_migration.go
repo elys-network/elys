@@ -20,10 +20,6 @@ func (m Migrator) V4Migration(ctx sdk.Context) error {
 	params.EdenbCommitVal = legacyParams.EdenbCommitVal
 	params.MaxEdenRewardAprStakers = legacyParams.MaxEdenRewardAprStakers
 	params.EdenBoostApr = legacyParams.EdenBoostApr
-	params.DexRewardsStakers = types.DexRewardsTracker{
-		NumBlocks: legacyParams.DexRewardsStakers.NumBlocks,
-		Amount:    legacyParams.DexRewardsStakers.Amount,
-	}
 	params.ProviderVestingEpochIdentifier = epochsmoduletypes.TenDaysEpochID
 	params.ProviderStakingRewardsPortion = math.LegacyMustNewDecFromStr("0.25")
 

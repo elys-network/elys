@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/estaking/types"
@@ -37,12 +36,4 @@ func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
 
 	k.cdc.MustUnmarshal(b, &params)
 	return
-}
-
-func (k Keeper) SetDexRewardsStakers(ctx sdk.Context, amount math.LegacyDec) {
-	params := k.GetParams(ctx)
-	// Set block number and total dex rewards given
-	params.DexRewardsStakers.NumBlocks = 1 // Don't know why this is 1
-	params.DexRewardsStakers.Amount = amount
-	k.SetParams(ctx, params)
 }

@@ -393,8 +393,6 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 		if err != nil {
 			return sdk.DecCoins{}, err
 		}
-
-		k.estakingKeeper.SetDexRewardsStakers(ctx, gasFeesForStakersDec.AmountOf(baseCurrency))
 	}
 
 	// Send coins from fee collector name to masterchef

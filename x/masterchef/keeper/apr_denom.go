@@ -79,14 +79,9 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			return apr, nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
-			params := k.estakingKeeper.GetParams(ctx)
-			amount := params.DexRewardsStakers.Amount
-			if amount.IsZero() {
-				return math.LegacyZeroDec(), nil
-			}
-
-			// If no rewards were given.
-			if params.DexRewardsStakers.NumBlocks == 0 {
+			// Get 7 days average rewards
+			usdcAmount := k.GetAvgStakerFeesCollected(ctx)
+			if usdcAmount.IsZero() {
 				return math.LegacyZeroDec(), nil
 			}
 
@@ -108,11 +103,8 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				return math.LegacyZeroDec(), nil
 			}
 
-			usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-			yearlyDexRewardAmount := amount.
-				Mul(usdcDenomPrice).
-				MulInt64(totalBlocksPerYear).
-				QuoInt64(params.DexRewardsStakers.NumBlocks)
+			// Mutiply by 52 to get yearly rewards
+			yearlyDexRewardAmount := usdcAmount.Mul(math.LegacyNewDec(52))
 
 			apr := yearlyDexRewardAmount.
 				Quo(edenDenomPrice).
