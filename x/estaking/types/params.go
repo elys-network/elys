@@ -13,13 +13,11 @@ import (
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		StakeIncentives:         nil,
-		EdenCommitVal:           "",
-		EdenbCommitVal:          "",
-		MaxEdenRewardAprStakers: sdkmath.LegacyNewDecWithPrec(3, 1), // 30%
-		EdenBoostApr:            sdkmath.LegacyOneDec(),
-		DpgStakersRewards:       sdkmath.LegacyZeroDec(),
-
+		StakeIncentives:                nil,
+		EdenCommitVal:                  "",
+		EdenbCommitVal:                 "",
+		MaxEdenRewardAprStakers:        sdkmath.LegacyNewDecWithPrec(3, 1), // 30%
+		EdenBoostApr:                   sdkmath.LegacyOneDec(),
 		ProviderVestingEpochIdentifier: epochsmoduletypes.TenDaysEpochID,
 		ProviderStakingRewardsPortion:  sdkmath.LegacyMustNewDecFromStr("0.25"),
 	}
@@ -52,12 +50,6 @@ func (p Params) Validate() error {
 	}
 	if p.EdenBoostApr.IsNegative() {
 		return fmt.Errorf("EdenBoostApr cannot be negative: %s", p.EdenBoostApr.String())
-	}
-	if p.DpgStakersRewards.IsNil() {
-		return fmt.Errorf("DexRewardsStakers amount must not be nil")
-	}
-	if p.DpgStakersRewards.IsNegative() {
-		return fmt.Errorf("DexRewardsStakers amount cannot be -ve")
 	}
 	if p.ProviderVestingEpochIdentifier == "" {
 		return fmt.Errorf("ProviderVestingEpochIdentifier must not be empty")

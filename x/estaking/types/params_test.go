@@ -16,7 +16,6 @@ func TestDefaultParams(t *testing.T) {
 		EdenbCommitVal:                 "",
 		MaxEdenRewardAprStakers:        sdkmath.LegacyNewDecWithPrec(3, 1), // 30%
 		EdenBoostApr:                   sdkmath.LegacyOneDec(),
-		DpgStakersRewards:              sdkmath.LegacyZeroDec(),
 		ProviderVestingEpochIdentifier: epochsmoduletypes.TenDaysEpochID,
 		ProviderStakingRewardsPortion:  sdkmath.LegacyMustNewDecFromStr("0.25"),
 	}
@@ -100,28 +99,6 @@ func TestRewardPortionForLps(t *testing.T) {
 				params.EdenBoostApr = sdkmath.LegacyOneDec().MulInt64(-1)
 			},
 			err: "EdenBoostApr cannot be negative",
-		},
-		{
-			name: "DexRewardsStakers DexRewardsStakers is nil",
-			setter: func() {
-				params.EdenBoostApr = sdkmath.LegacyOneDec()
-				params.DpgStakersRewards = sdkmath.LegacyZeroDec()
-			},
-			err: "DexRewardsStakers amount must not be nil",
-		},
-		{
-			name: "DexRewardsStakers DexRewardsStakers is -ve",
-			setter: func() {
-				params.DpgStakersRewards = sdkmath.LegacyZeroDec()
-			},
-			err: "DexRewardsStakers amount cannot be -ve",
-		},
-		{
-			name: "DexRewardsStakers NumBlocks is -ve",
-			setter: func() {
-				params.DpgStakersRewards = sdkmath.LegacyZeroDec()
-			},
-			err: "DexRewardsStakers NumBlocks cannot be -ve",
 		},
 	}
 	for _, tt := range tests {
