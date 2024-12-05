@@ -39,10 +39,9 @@ func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
 	return
 }
 
-func (k Keeper) SetDexRewardsStakers(ctx sdk.Context, amount math.LegacyDec) {
+// Set Dex + Perp + GasFees rewards received
+func (k Keeper) SetDPGRewardsStakers(ctx sdk.Context, amount math.LegacyDec) {
 	params := k.GetParams(ctx)
-	// Set block number and total dex rewards given
-	params.DexRewardsStakers.NumBlocks = 1 // Don't know why this is 1
-	params.DexRewardsStakers.Amount = amount
+	params.DpgStakersRewards = amount
 	k.SetParams(ctx, params)
 }

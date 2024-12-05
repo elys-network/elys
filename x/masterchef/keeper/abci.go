@@ -394,7 +394,8 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 			return sdk.DecCoins{}, err
 		}
 
-		k.estakingKeeper.SetDexRewardsStakers(ctx, gasFeesForStakersDec.AmountOf(baseCurrency))
+		// Initialise stakers rewards for tracking and query purpose
+		k.estakingKeeper.SetDPGRewardsStakers(ctx, gasFeesForStakersDec.AmountOf(baseCurrency))
 	}
 
 	// Send coins from fee collector name to masterchef
@@ -473,6 +474,10 @@ func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) (sdk.De
 		if err != nil {
 			return sdk.DecCoins{}, err
 		}
+
+		// Add stakers rewards for tracking and query purpose
+		amount := k.estakingKeeper.GetParams(ctx).DpgStakersRewards
+		k.estakingKeeper.SetDPGRewardsStakers(ctx, perpFeesForStakersDec.AmountOf(baseCurrency).Add(amount))
 	}
 
 	// Send coins to protocol revenue address
@@ -556,6 +561,10 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 			if err != nil {
 				return true
 			}
+
+			// Add stakers rewards for tracking and query purpose
+			amount := k.estakingKeeper.GetParams(ctx).DpgStakersRewards
+			k.estakingKeeper.SetDPGRewardsStakers(ctx, revenuePortionForStakers.AmountOf(baseCurrency).Add(amount))
 		}
 
 		// Send coins to protocol revenue address

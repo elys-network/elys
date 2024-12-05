@@ -1,24 +1,22 @@
 package types_test
 
 import (
+	"testing"
+
 	sdkmath "cosmossdk.io/math"
 	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
 	"github.com/elys-network/elys/x/estaking/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestDefaultParams(t *testing.T) {
 	params := types.Params{
-		StakeIncentives:         nil,
-		EdenCommitVal:           "",
-		EdenbCommitVal:          "",
-		MaxEdenRewardAprStakers: sdkmath.LegacyNewDecWithPrec(3, 1), // 30%
-		EdenBoostApr:            sdkmath.LegacyOneDec(),
-		DexRewardsStakers: types.DexRewardsTracker{
-			NumBlocks: 1,
-			Amount:    sdkmath.LegacyZeroDec(),
-		},
+		StakeIncentives:                nil,
+		EdenCommitVal:                  "",
+		EdenbCommitVal:                 "",
+		MaxEdenRewardAprStakers:        sdkmath.LegacyNewDecWithPrec(3, 1), // 30%
+		EdenBoostApr:                   sdkmath.LegacyOneDec(),
+		DpgStakersRewards:              sdkmath.LegacyZeroDec(),
 		ProviderVestingEpochIdentifier: epochsmoduletypes.TenDaysEpochID,
 		ProviderStakingRewardsPortion:  sdkmath.LegacyMustNewDecFromStr("0.25"),
 	}
@@ -107,22 +105,21 @@ func TestRewardPortionForLps(t *testing.T) {
 			name: "DexRewardsStakers DexRewardsStakers is nil",
 			setter: func() {
 				params.EdenBoostApr = sdkmath.LegacyOneDec()
-				params.DexRewardsStakers.Amount = sdkmath.LegacyDec{}
+				params.DpgStakersRewards = sdkmath.LegacyZeroDec()
 			},
 			err: "DexRewardsStakers amount must not be nil",
 		},
 		{
 			name: "DexRewardsStakers DexRewardsStakers is -ve",
 			setter: func() {
-				params.DexRewardsStakers.Amount = sdkmath.LegacyOneDec().MulInt64(-1)
+				params.DpgStakersRewards = sdkmath.LegacyZeroDec()
 			},
 			err: "DexRewardsStakers amount cannot be -ve",
 		},
 		{
 			name: "DexRewardsStakers NumBlocks is -ve",
 			setter: func() {
-				params.DexRewardsStakers.Amount = sdkmath.LegacyOneDec()
-				params.DexRewardsStakers.NumBlocks = -1
+				params.DpgStakersRewards = sdkmath.LegacyZeroDec()
 			},
 			err: "DexRewardsStakers NumBlocks cannot be -ve",
 		},

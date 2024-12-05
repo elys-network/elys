@@ -18,10 +18,8 @@ func DefaultParams() Params {
 		EdenbCommitVal:          "",
 		MaxEdenRewardAprStakers: sdkmath.LegacyNewDecWithPrec(3, 1), // 30%
 		EdenBoostApr:            sdkmath.LegacyOneDec(),
-		DexRewardsStakers: DexRewardsTracker{
-			NumBlocks: 1,
-			Amount:    sdkmath.LegacyZeroDec(),
-		},
+		DpgStakersRewards:       sdkmath.LegacyZeroDec(),
+
 		ProviderVestingEpochIdentifier: epochsmoduletypes.TenDaysEpochID,
 		ProviderStakingRewardsPortion:  sdkmath.LegacyMustNewDecFromStr("0.25"),
 	}
@@ -55,14 +53,11 @@ func (p Params) Validate() error {
 	if p.EdenBoostApr.IsNegative() {
 		return fmt.Errorf("EdenBoostApr cannot be negative: %s", p.EdenBoostApr.String())
 	}
-	if p.DexRewardsStakers.Amount.IsNil() {
+	if p.DpgStakersRewards.IsNil() {
 		return fmt.Errorf("DexRewardsStakers amount must not be nil")
 	}
-	if p.DexRewardsStakers.Amount.IsNegative() {
+	if p.DpgStakersRewards.IsNegative() {
 		return fmt.Errorf("DexRewardsStakers amount cannot be -ve")
-	}
-	if p.DexRewardsStakers.NumBlocks < 0 {
-		return fmt.Errorf("DexRewardsStakers NumBlocks cannot be -ve")
 	}
 	if p.ProviderVestingEpochIdentifier == "" {
 		return fmt.Errorf("ProviderVestingEpochIdentifier must not be empty")
