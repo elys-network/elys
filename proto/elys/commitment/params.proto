@@ -8,6 +8,15 @@ import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/elys-network/elys/x/commitment/types";
 
 // Params defines the parameters for the module.
+message LegacyParams {
+  repeated VestingInfo vesting_infos = 1 [ (gogoproto.nullable) = false ];
+  repeated cosmos.base.v1beta1.Coin total_committed = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  uint64 number_of_commitments = 3;
+}
+
 message Params {
   repeated VestingInfo vesting_infos = 1 [ (gogoproto.nullable) = false ];
   repeated cosmos.base.v1beta1.Coin total_committed = 2 [
@@ -15,6 +24,7 @@ message Params {
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   uint64 number_of_commitments = 3;
+  bool enable_vest_now = 4;
 }
 
 message VestingInfo {

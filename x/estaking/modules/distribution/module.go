@@ -15,10 +15,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	assetprofilekeeper "github.com/elys-network/elys/x/assetprofile/keeper"
 	commitmentkeeper "github.com/elys-network/elys/x/commitment/keeper"
 	estakingkeeper "github.com/elys-network/elys/x/estaking/keeper"
-
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -111,7 +111,7 @@ func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 	// fetch and clear the collected fees for distribution, since this is
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the current representatives)
-	feeCollector := am.accountKeeper.GetModuleAccount(ctx, am.feeCollectorName)
+	feeCollector := am.accountKeeper.GetModuleAccount(ctx, ccvconsumertypes.ConsumerRedistributeName)
 	feesCollectedInt := am.commitmentKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
 
 	usdcDenom, _ := am.assetprofileKeeper.GetUsdcDenom(ctx)
@@ -120,7 +120,7 @@ func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 
 	// transfer collected fees to the distribution module account
 	if filteredCoins.IsAllPositive() {
-		err := am.commitmentKeeper.SendCoinsFromModuleToModule(ctx, am.feeCollectorName, distrtypes.ModuleName, filteredCoins)
+		err := am.commitmentKeeper.SendCoinsFromModuleToModule(ctx, ccvconsumertypes.ConsumerRedistributeName, distrtypes.ModuleName, filteredCoins)
 		if err != nil {
 			panic(err)
 		}
@@ -191,7 +191,7 @@ func (am AppModule) AllocateEdenBTokens(ctx sdk.Context) {
 	// fetch and clear the collected fees for distribution, since this is
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the current representatives)
-	feeCollector := am.accountKeeper.GetModuleAccount(ctx, am.feeCollectorName)
+	feeCollector := am.accountKeeper.GetModuleAccount(ctx, ccvconsumertypes.ConsumerRedistributeName)
 	feesCollectedInt := am.commitmentKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
 
 	filteredCoins := FilterDenoms(feesCollectedInt, ptypes.EdenB)
@@ -199,7 +199,7 @@ func (am AppModule) AllocateEdenBTokens(ctx sdk.Context) {
 
 	// transfer collected fees to the distribution module account
 	if filteredCoins.IsAllPositive() {
-		err := am.commitmentKeeper.SendCoinsFromModuleToModule(ctx, am.feeCollectorName, distrtypes.ModuleName, filteredCoins)
+		err := am.commitmentKeeper.SendCoinsFromModuleToModule(ctx, ccvconsumertypes.ConsumerRedistributeName, distrtypes.ModuleName, filteredCoins)
 		if err != nil {
 			panic(err)
 		}

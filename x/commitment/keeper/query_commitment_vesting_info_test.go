@@ -1,12 +1,12 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/elys-network/elys/app"
 	simapp "github.com/elys-network/elys/app"
 
 	"github.com/elys-network/elys/x/commitment/types"
@@ -15,7 +15,7 @@ import (
 
 // TestKeeper_CommitmentVestingInfo tests the CommitmentVestingInfo method
 func TestKeeper_CommitmentVestingInfo(t *testing.T) {
-	app := app.InitElysTestApp(true, t)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.CommitmentKeeper
@@ -67,7 +67,7 @@ func TestKeeper_CommitmentVestingInfo(t *testing.T) {
 
 // TestKeeper_CommitmentVestingInfoNilRequest tests the CommitmentVestingInfo method with nil request
 func TestKeeper_CommitmentVestingInfoNilRequest(t *testing.T) {
-	app := app.InitElysTestApp(true, t)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.CommitmentKeeper
