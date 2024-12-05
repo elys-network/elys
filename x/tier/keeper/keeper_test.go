@@ -179,11 +179,6 @@ var (
 			display: "USDT",
 			price:   math.LegacyOneDec(),
 		},
-		/*"uelys": {
-			denom:   ptypes.Elys,
-			display: "ELYS",
-			price:   math.LegacyMustNewDecFromStr("3.0"),
-		},*/
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
