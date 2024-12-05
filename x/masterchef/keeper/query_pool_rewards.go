@@ -96,11 +96,10 @@ func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]math.Lega
 
 	for _, externalIncentive := range externalIncentives {
 		if externalIncentive.FromBlock < curBlockHeight && curBlockHeight <= externalIncentive.ToBlock {
-			totalAmount := externalIncentive.AmountPerBlock.Mul(math.NewInt(totalBlocksPerYear))
-			// convert to usdc
-			//amountInUsdc := k.GetPri
-			// add to specific pool
-			rewardsPerPool[externalIncentive.PoolId] = rewardsPerPool[externalIncentive.PoolId].Add(amountInUsdc)
+			totalAmount := math.LegacyNewDecFromInt(externalIncentive.AmountPerBlock.Mul(math.NewInt(totalBlocksPerYear)))
+			price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, externalIncentive.RewardDenom)
+
+			rewardsPerPool[externalIncentive.PoolId] = rewardsPerPool[externalIncentive.PoolId].Add(totalAmount.Mul(price))
 		}
 	}
 
@@ -112,9 +111,12 @@ func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]math.Lega
 		if !found {
 			continue
 		}
-		totalLiquidity := pool.TVL(ctx, pool.PoolId)
-		externalRewardsApr := value.Quo(totalLiquidity).Mul(math.NewInt(100))
+		totalLiquidity, err := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+		if err != nil {
+			rewardsPerPool[key] = math.LegacyZeroDec()
+		}
+		externalRewardsApr := value.Quo(totalLiquidity)
 		rewardsPerPool[key] = externalRewardsApr
 	}
-	return externalRewardsApr
+	return rewardsPerPool
 }
