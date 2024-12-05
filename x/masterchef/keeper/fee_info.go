@@ -123,5 +123,9 @@ func (k Keeper) GetAvgStakerFeesCollected(ctx sdk.Context) sdkmath.LegacyDec {
 			count = count.Add(sdkmath.OneInt())
 		}
 	}
+
+	if count.IsZero() {
+		return sdkmath.LegacyZeroDec()
+	}
 	return sdkmath.LegacyNewDecFromInt(total).Quo(sdkmath.LegacyNewDecFromInt(count))
 }
