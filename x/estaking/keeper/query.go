@@ -47,6 +47,14 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryRewardsRequest) (
 			if err != nil {
 				return false
 			}
+			// check if the delegation is valid
+			startingInfo, err := k.distrKeeper.GetDelegatorStartingInfo(ctx, sdk.ValAddress(valAddr), sdk.AccAddress(delAddr))
+			if err != nil {
+				return false
+			}
+			if startingInfo.Height == 0 {
+				return false
+			}
 			delReward, err := k.distrKeeper.CalculateDelegationRewards(ctx, val, del, endingPeriod)
 			if err != nil {
 				return false
