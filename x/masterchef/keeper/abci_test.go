@@ -252,15 +252,9 @@ func (suite *MasterchefKeeperTestSuite) TestCollectDEXRevenue() {
 
 func (suite *MasterchefKeeperTestSuite) TestCollectPerpRevenue() {
 
-	// Generate 1 random account
-	addr := simapp.AddTestAddrs(suite.app, suite.ctx, 2, sdkmath.NewInt(1000000))
-
-	perpParams := perptypes.DefaultParams()
-	perpParams.IncrementalBorrowInterestPaymentFundAddress = addr[0].String()
-	suite.app.PerpetualKeeper.SetParams(suite.ctx, &perpParams)
-
+	addr := authtypes.NewModuleAddress(perptypes.ModuleName)
 	// Fill in perpetual revenue wallet
-	suite.MintTokenToAddress(addr[0], sdkmath.NewInt(3000), ptypes.BaseCurrency)
+	suite.MintTokenToAddress(addr, sdkmath.NewInt(3000), ptypes.BaseCurrency)
 
 	fees, err := suite.app.MasterchefKeeper.CollectPerpRevenue(suite.ctx, ptypes.BaseCurrency)
 	suite.Require().NoError(err)

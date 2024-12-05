@@ -22,8 +22,8 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
+	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 
-	//ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
 	ammmoduletypes "github.com/elys-network/elys/x/amm/types"
 	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -67,8 +67,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		authz.ModuleName,
 		group.StoreKey,
 		consensusparamtypes.StoreKey,
-
-		//ccvconsumertypes.StoreKey,
+		ccvconsumertypes.StoreKey,
 
 		epochsmoduletypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,

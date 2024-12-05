@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
+	"time"
+
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"time"
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -78,9 +79,9 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 			},
 			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),
 			tokenOutDenom: ptypes.BaseCurrency,
-			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99344)},
+			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99221)},
 			// expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)}, // slippage enabled
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99344)}, // slippage disabled
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99221)}, // slippage disabled
 			expPass:          true,
 		},
 	} {
@@ -113,7 +114,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 					Weight: sdkmath.NewInt(10),
 				},
 			}
-			_, err = msgServer.CreatePool(
+			res, err := msgServer.CreatePool(
 				suite.ctx,
 				&types.MsgCreatePool{
 					Sender:     sender.String(),
@@ -121,6 +122,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 					PoolAssets: poolAssets,
 				})
 			suite.Require().NoError(err)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(res.PoolID))
 			pool := suite.app.AmmKeeper.GetAllPool(suite.ctx)[0]
 			suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 			resp, err := msgServer.ExitPool(
@@ -137,6 +139,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(sdk.Coins(resp.TokenOut).String(), tc.minAmountsOut.String())
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(pool.PoolId))
 
 				pools := suite.app.AmmKeeper.GetAllPool(suite.ctx)
 				suite.Require().Len(pools, 1)

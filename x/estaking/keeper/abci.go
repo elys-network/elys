@@ -1,12 +1,10 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	"github.com/elys-network/elys/x/estaking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -100,16 +98,6 @@ func (k Keeper) ProcessUpdateIncentiveParams(ctx sdk.Context) {
 }
 
 func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
-	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	if !found {
-		return errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-
-	// USDC amount in math.LegacyDec type
-	feeCollectorAddr := authtypes.NewModuleAddress(authtypes.FeeCollectorName)
-	totalFeesCollected := k.commKeeper.GetAllBalances(ctx, feeCollectorAddr)
-	gasFeeCollectedDec := sdk.NewDecCoinsFromCoins(totalFeesCollected...)
-	dexRevenueStakersAmount := gasFeeCollectedDec.AmountOf(baseCurrency)
 
 	// Calculate eden amount per block
 	params := k.GetParams(ctx)
@@ -124,6 +112,14 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 		edenAmountPerYear = stakeIncentive.EdenAmountPerYear
 	}
 	stakersEdenAmount := edenAmountPerYear.Quo(math.NewInt(totalBlocksPerYear))
+
+	providerEdenAmount := stakersEdenAmount.ToLegacyDec().Mul(params.ProviderStakingRewardsPortion).TruncateInt()
+	err := k.commKeeper.MintCoins(ctx, ccvconsumertypes.ConsumerToSendToProviderName, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, providerEdenAmount)))
+	if err != nil {
+		return err
+	}
+
+	stakersEdenAmountAfterProvider := stakersEdenAmount.Sub(providerEdenAmount)
 
 	totalElysEdenEdenBStake, err := k.TotalBondedTokens(ctx)
 	if err != nil {
@@ -141,7 +137,7 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 		QuoInt64(totalBlocksPerYear)
 
 	// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-	stakersEdenAmount = math.MinInt(stakersEdenAmount, stakersMaxEdenAmount.TruncateInt())
+	stakersEdenAmountForGovernors := math.MinInt(stakersEdenAmountAfterProvider, stakersMaxEdenAmount.TruncateInt())
 
 	// EdenB should be mint based on Elys + Eden staked (should exclude edenB staked)
 	stakersEdenBAmount := math.LegacyNewDecFromInt(totalElysEdenEdenBStake).
@@ -149,14 +145,9 @@ func (k Keeper) UpdateStakersRewards(ctx sdk.Context) error {
 		QuoInt64(totalBlocksPerYear).
 		RoundInt()
 
-	// Set block number and total dex rewards given
-	params.DexRewardsStakers.NumBlocks = 1
-	params.DexRewardsStakers.Amount = dexRevenueStakersAmount
-	k.SetParams(ctx, params)
-
-	coins := sdk.NewCoins(
-		sdk.NewCoin(ptypes.Eden, stakersEdenAmount),
+	consumerCoins := sdk.NewCoins(
+		sdk.NewCoin(ptypes.Eden, stakersEdenAmountForGovernors),
 		sdk.NewCoin(ptypes.EdenB, stakersEdenBAmount),
 	)
-	return k.commKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins.Sort())
+	return k.commKeeper.MintCoins(ctx, ccvconsumertypes.ConsumerRedistributeName, consumerCoins.Sort())
 }

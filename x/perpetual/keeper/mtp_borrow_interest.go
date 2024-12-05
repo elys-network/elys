@@ -77,13 +77,16 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 	// This will go to zero if borrowInterestPaymentInCustody.GT(mtp.Custody) true
 	mtp.Custody = mtp.Custody.Sub(borrowInterestPaymentInCustody)
 
-	takePercentage := k.GetIncrementalBorrowInterestPaymentFundPercentage(ctx)
-	fundAddr := k.GetIncrementalBorrowInterestPaymentFundAddress(ctx)
-	takeAmount, err := k.TakeFundPayment(ctx, borrowInterestPaymentInCustody, mtp.CustodyAsset, takePercentage, fundAddr, &ammPool)
+	takeAmount, err := k.TakeFundPayment(ctx, borrowInterestPaymentInCustody, mtp.CustodyAsset, &ammPool)
 	if err != nil {
 		return math.ZeroInt(), err
 	}
-	actualBorrowInterestPaymentCustody := borrowInterestPaymentInCustody.Sub(takeAmount)
+
+	revenueAmount := borrowInterestPaymentInCustody.Sub(takeAmount)
+	err = k.TransferRevenueAmount(ctx, revenueAmount, mtp.CustodyAsset, &ammPool)
+	if err != nil {
+		return math.ZeroInt(), err
+	}
 
 	if !takeAmount.IsZero() {
 		k.EmitFundPayment(ctx, mtp, takeAmount, mtp.CustodyAsset, types.EventIncrementalPayFund)
@@ -94,6 +97,6 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		return math.ZeroInt(), err
 	}
 
-	return actualBorrowInterestPaymentCustody, nil
+	return borrowInterestPaymentInCustody, nil
 
 }

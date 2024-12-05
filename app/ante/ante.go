@@ -6,6 +6,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
+	consumerante "github.com/cosmos/interchain-security/v6/app/consumer/ante"
 )
 
 // NewAnteHandler returns an AnteHandler that checks and increments sequence
@@ -28,7 +29,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "IBC keeper is required for AnteHandler")
 	}
 	if options.StakingKeeper == nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrNotFound, "staking param store is required for AnteHandler")
+		return nil, errorsmod.Wrap(sdkerrors.ErrNotFound, "staking keeper is required for AnteHandler")
 	}
 
 	sigGasConsumer := options.SigGasConsumer
@@ -46,6 +47,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		NewMinCommissionDecorator(options.Cdc, options.StakingKeeper, options.BankKeeper, options.ParameterKeeper),
 		NewVestedAnteHandlerDecorator(options.AccountKeeper, options.BankKeeper),
 		ante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
+		consumerante.NewDisabledModulesDecorator("/cosmos.evidence", "/cosmos.slashing"),
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),
 		ante.NewValidateMemoDecorator(options.AccountKeeper),
