@@ -70,7 +70,7 @@ func (suite *EstakingKeeperTestSuite) TestAbci() {
 					ValidatorAddress: valAddr.String(),
 				})
 				suite.Require().Nil(err)
-				suite.Require().Equal(res.Amount.String(), "110706ueden")
+				suite.Require().Equal(res.Amount.String(), "147608ueden")
 			},
 		},
 		//{

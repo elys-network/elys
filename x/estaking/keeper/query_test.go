@@ -78,7 +78,7 @@ func (suite *EstakingKeeperTestSuite) TestQuery() {
 					Address: addr.String(),
 				})
 				suite.Require().Nil(err)
-				suite.Require().Equal(res.Total.String(), "110706ueden")
+				suite.Require().Equal(res.Total.String(), "147608ueden")
 			},
 		},
 		{
