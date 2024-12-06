@@ -78,12 +78,20 @@ func (k *Keeper) generatePoolRewards(ctx sdk.Context, ammPool *ammtypes.Pool, ex
 	// Get rewards amount
 	rewardsUsd, rewardCoins := k.GetDailyRewardsAmountForPool(ctx, ammPool.PoolId)
 	edenForward := sdk.NewCoin(ptypes.Eden, k.ForwardEdenCalc(ctx, ammPool.PoolId).RoundInt())
+	tvl, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+	apr := rewardsUsd.Mul(math.LegacyNewDec(365))
+	if err != nil {
+		apr = math.LegacyZeroDec()
+	} else {
+		apr = apr.Quo(tvl)
+	}
 
 	return types.PoolRewards{
 		PoolId:             ammPool.PoolId,
 		RewardsUsd:         rewardsUsd,
 		RewardCoins:        rewardCoins,
 		EdenForward:        edenForward,
+		RewardsUsdApr:      apr,
 		ExternalRewardsApr: externalRewardsAprs[ammPool.PoolId],
 	}
 }

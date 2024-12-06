@@ -114,7 +114,7 @@ func (k Keeper) GetAvgStakerFeesCollected(ctx sdk.Context) sdkmath.LegacyDec {
 	total := sdkmath.ZeroInt()
 
 	for i := 0; i < 7; i++ {
-		date := start.AddDate(0, 0, i).Format("2006-01-02")
+		date := start.AddDate(0, 0, i*-1).Format("2006-01-02")
 		info := k.GetFeeInfo(ctx, date)
 
 		collected := info.DexStakers.Add(info.GasStakers).Add(info.PerpStakers)

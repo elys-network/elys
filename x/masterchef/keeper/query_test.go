@@ -172,10 +172,11 @@ func (suite *MasterchefKeeperTestSuite) TestPoolRewards() {
 			},
 			response: &types.QueryPoolRewardsResponse{
 				Pools: []types.PoolRewards{{
-					PoolId:      1,
-					RewardsUsd:  sdkmath.LegacyNewDec(420),
-					RewardCoins: sdk.Coins{sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(200)), sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(400))},
-					EdenForward: sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(0)),
+					PoolId:        1,
+					RewardsUsd:    sdkmath.LegacyNewDec(420),
+					RewardCoins:   sdk.Coins{sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(200)), sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(400))},
+					EdenForward:   sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(0)),
+					RewardsUsdApr: sdkmath.LegacyMustNewDecFromStr("1531.468531468531468531"),
 				},
 				},
 			},

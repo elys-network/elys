@@ -26,6 +26,8 @@ const (
 	// OraclePoolSlippageTrackPrefix is the prefix to retrieve slippage tracked
 	OraclePoolSlippageTrackPrefix = "OraclePool/slippage/track/value/"
 
+	WeightAndSlippagePrefix = "WeightBreakingFee/slippage/value/"
+
 	// DenomLiquidityKeyPrefix is the prefix to retrieve all DenomLiquidity
 	DenomLiquidityKeyPrefix = "DenomLiquidity/value/"
 
@@ -55,6 +57,11 @@ func PoolKey(poolId uint64) []byte {
 
 func OraclePoolSlippageTrackKey(poolId uint64, timestamp uint64) []byte {
 	return append(sdk.Uint64ToBigEndian(poolId), sdk.Uint64ToBigEndian(timestamp)...)
+}
+
+func WeightAndSlippageFeeKey(poolId uint64, date string) []byte {
+	dateBytes := []byte(date)
+	return append(sdk.Uint64ToBigEndian(poolId), dateBytes...)
 }
 
 // DenomLiquidityKey returns the store key to retrieve a DenomLiquidity from the index fields

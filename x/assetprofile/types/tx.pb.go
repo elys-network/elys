@@ -764,6 +764,7 @@ func _Msg_AddEntry_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+var Msg_serviceDesc = _Msg_serviceDesc
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.assetprofile.Msg",
 	HandlerType: (*MsgServer)(nil),
