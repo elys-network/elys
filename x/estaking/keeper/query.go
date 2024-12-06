@@ -52,7 +52,7 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryRewardsRequest) (
 			if err != nil {
 				return false
 			}
-			if startingInfo.Height == 0 {
+			if startingInfo.Stake.IsNil() {
 				return false
 			}
 			delReward, err := k.distrKeeper.CalculateDelegationRewards(ctx, val, del, endingPeriod)
