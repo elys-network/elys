@@ -113,7 +113,6 @@ func (k Keeper) UpdatePoolForSwap(
 				return err
 			}
 
-			// TODO: Some issue in weight breaking fee amount as we already multiply it
 			k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, weightRecoveryFeeAmount))
 		}
 

@@ -18,7 +18,10 @@ func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool) types.PoolExtraI
 	tvl, _ := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	lpTokenPrice, _ := pool.LpTokenPrice(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	avg := k.GetWeightBreakingSlippageAvg(ctx, pool.PoolId)
-	apr := avg.Mul(math.LegacyNewDec(52)).Quo(tvl)
+	apr := math.LegacyZeroDec()
+	if tvl.IsPositive() {
+		apr = avg.Mul(math.LegacyNewDec(52)).Quo(tvl)
+	}
 	return types.PoolExtraInfo{
 		Tvl:          tvl,
 		LpTokenPrice: lpTokenPrice,
