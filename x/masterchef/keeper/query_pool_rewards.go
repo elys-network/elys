@@ -21,6 +21,9 @@ func (k Keeper) PoolRewards(goCtx context.Context, req *types.QueryPoolRewardsRe
 	pools := make([]types.PoolRewards, 0)
 	skipCount := uint64(0)
 
+	// calculate external rewards APR
+	externalRewardsAprs := k.generateExternalRewardsApr(ctx)
+
 	// If we have pool Ids specified,
 	if len(req.PoolIds) > 0 {
 		for _, pId := range req.PoolIds {
@@ -41,7 +44,7 @@ func (k Keeper) PoolRewards(goCtx context.Context, req *types.QueryPoolRewardsRe
 			}
 
 			// Construct earn pool
-			earnPool := k.generatePoolRewards(ctx, &pool)
+			earnPool := k.generatePoolRewards(ctx, &pool, externalRewardsAprs)
 			pools = append(pools, earnPool)
 		}
 	} else {
@@ -58,7 +61,7 @@ func (k Keeper) PoolRewards(goCtx context.Context, req *types.QueryPoolRewardsRe
 			}
 
 			// Construct earn pool
-			poolRewards := k.generatePoolRewards(ctx, &p)
+			poolRewards := k.generatePoolRewards(ctx, &p, externalRewardsAprs)
 			pools = append(pools, poolRewards)
 
 			return false
@@ -71,7 +74,7 @@ func (k Keeper) PoolRewards(goCtx context.Context, req *types.QueryPoolRewardsRe
 }
 
 // Generate earn pool struct
-func (k *Keeper) generatePoolRewards(ctx sdk.Context, ammPool *ammtypes.Pool) types.PoolRewards {
+func (k *Keeper) generatePoolRewards(ctx sdk.Context, ammPool *ammtypes.Pool, externalRewardsAprs map[uint64]math.LegacyDec) types.PoolRewards {
 	// Get rewards amount
 	rewardsUsd, rewardCoins := k.GetDailyRewardsAmountForPool(ctx, ammPool.PoolId)
 	edenForward := sdk.NewCoin(ptypes.Eden, k.ForwardEdenCalc(ctx, ammPool.PoolId).RoundInt())
@@ -84,10 +87,44 @@ func (k *Keeper) generatePoolRewards(ctx sdk.Context, ammPool *ammtypes.Pool) ty
 	}
 
 	return types.PoolRewards{
-		PoolId:        ammPool.PoolId,
-		RewardsUsd:    rewardsUsd,
-		RewardCoins:   rewardCoins,
-		EdenForward:   edenForward,
-		RewardsUsdApr: apr,
+		PoolId:             ammPool.PoolId,
+		RewardsUsd:         rewardsUsd,
+		RewardCoins:        rewardCoins,
+		EdenForward:        edenForward,
+		RewardsUsdApr:      apr,
+		ExternalRewardsApr: externalRewardsAprs[ammPool.PoolId],
 	}
+}
+
+func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]math.LegacyDec {
+	externalIncentives := k.GetAllExternalIncentives(ctx)
+	rewardsPerPool := make(map[uint64]math.LegacyDec)
+	curBlockHeight := ctx.BlockHeight()
+	totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
+
+	for _, externalIncentive := range externalIncentives {
+		if externalIncentive.FromBlock < curBlockHeight && curBlockHeight <= externalIncentive.ToBlock {
+			totalAmount := math.LegacyNewDecFromInt(externalIncentive.AmountPerBlock.Mul(math.NewInt(totalBlocksPerYear)))
+			price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, externalIncentive.RewardDenom)
+
+			rewardsPerPool[externalIncentive.PoolId] = rewardsPerPool[externalIncentive.PoolId].Add(totalAmount.Mul(price))
+		}
+	}
+
+	// Convert all rewards to APR
+	// Traverse rewardsPerPool map
+	for key, value := range rewardsPerPool {
+		// Get total pool liquidity
+		pool, found := k.amm.GetPool(ctx, key)
+		if !found {
+			continue
+		}
+		totalLiquidity, err := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+		if err != nil {
+			rewardsPerPool[key] = math.LegacyZeroDec()
+		}
+		externalRewardsApr := value.Quo(totalLiquidity)
+		rewardsPerPool[key] = externalRewardsApr
+	}
+	return rewardsPerPool
 }
