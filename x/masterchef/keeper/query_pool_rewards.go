@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -74,11 +75,19 @@ func (k *Keeper) generatePoolRewards(ctx sdk.Context, ammPool *ammtypes.Pool) ty
 	// Get rewards amount
 	rewardsUsd, rewardCoins := k.GetDailyRewardsAmountForPool(ctx, ammPool.PoolId)
 	edenForward := sdk.NewCoin(ptypes.Eden, k.ForwardEdenCalc(ctx, ammPool.PoolId).RoundInt())
+	tvl, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+	apr := rewardsUsd.Mul(math.LegacyNewDec(365))
+	if err != nil {
+		apr = math.LegacyZeroDec()
+	} else {
+		apr = apr.Quo(tvl)
+	}
 
 	return types.PoolRewards{
-		PoolId:      ammPool.PoolId,
-		RewardsUsd:  rewardsUsd,
-		RewardCoins: rewardCoins,
-		EdenForward: edenForward,
+		PoolId:        ammPool.PoolId,
+		RewardsUsd:    rewardsUsd,
+		RewardCoins:   rewardCoins,
+		EdenForward:   edenForward,
+		RewardsUsdApr: apr,
 	}
 }
