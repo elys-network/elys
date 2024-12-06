@@ -57,3 +57,13 @@ message OraclePoolSlippageTrack {
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }
+
+message WeightBreakingSlippage {
+  uint64 pool_id = 1;
+  string date = 2;
+  string amount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
