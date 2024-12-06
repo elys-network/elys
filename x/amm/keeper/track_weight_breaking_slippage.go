@@ -51,14 +51,12 @@ func (k Keeper) AddWeightAndSlippageFee(ctx sdk.Context, track types.WeightBreak
 	store.Set(types.WeightAndSlippageFeeKey(track.PoolId, track.Date), bz)
 }
 
-func (k Keeper) TrackWeightBreakingSlippage(ctx sdk.Context, pool types.Pool, slippage sdk.Coin, weightBreakingFee math.LegacyDec) {
+func (k Keeper) TrackWeightBreakingSlippage(ctx sdk.Context, poolId uint64, token sdk.Coin) {
+	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, token.Denom)
 	track := types.WeightBreakingSlippage{
-		PoolId: pool.PoolId,
+		PoolId: poolId,
 		Date:   ctx.BlockTime().Format("2006-01-02"),
-		Amount: weightBreakingFee,
-	}
-	if weightBreakingFee.IsNegative() {
-		track.Amount = weightBreakingFee.Abs()
+		Amount: price.Mul(math.LegacyNewDecFromInt(token.Amount)),
 	}
 	k.AddWeightAndSlippageFee(ctx, track)
 }

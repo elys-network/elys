@@ -67,5 +67,9 @@ func (k Keeper) InternalSwapExactAmountIn(
 	// track slippage
 	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenOutCoin.Denom, slippageAmount.RoundInt()))
 
+	if pool.PoolParams.UseOracle {
+		k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenOutCoin.Denom, slippageAmount.RoundInt()))
+	}
+
 	return tokenOutAmount, nil
 }
