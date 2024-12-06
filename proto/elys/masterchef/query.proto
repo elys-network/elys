@@ -272,6 +272,11 @@ message PoolRewards {
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   cosmos.base.v1beta1.Coin eden_forward = 4 [ (gogoproto.nullable) = false ];
+  string external_rewards_apr = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 message QueryPoolRewardsResponse {
   repeated PoolRewards pools = 1 [ (gogoproto.nullable) = false ];
