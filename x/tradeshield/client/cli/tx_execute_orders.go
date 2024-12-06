@@ -22,6 +22,9 @@ func CmdExecuteOrders() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argCastSpotOrderIds := strings.Split(args[0], listSeparator)
+			if len(argCastSpotOrderIds) == 1 && argCastSpotOrderIds[0] == "" {
+				argCastSpotOrderIds = []string{}
+			}
 			argSpotOrderIds := make([]uint64, len(argCastSpotOrderIds))
 			for i, arg := range argCastSpotOrderIds {
 				value, err := cast.ToUint64E(arg)
@@ -31,6 +34,9 @@ func CmdExecuteOrders() *cobra.Command {
 				argSpotOrderIds[i] = value
 			}
 			argCastPerpetualOrderIds := strings.Split(args[1], listSeparator)
+			if len(argCastPerpetualOrderIds) == 1 && argCastPerpetualOrderIds[0] == "" {
+				argCastPerpetualOrderIds = []string{}
+			}
 			argPerpetualOrderIds := make([]uint64, len(argCastPerpetualOrderIds))
 			for i, arg := range argCastPerpetualOrderIds {
 				value, err := cast.ToUint64E(arg)

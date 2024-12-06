@@ -1243,6 +1243,8 @@ github.com/cosmos/ibc-go/v8 v8.5.1 h1:3JleEMKBjRKa3FeTKt4fjg22za/qygLBo7mDkoYTNB
 github.com/cosmos/ibc-go/v8 v8.5.1/go.mod h1:P5hkAvq0Qbg0h18uLxDVA9q1kOJ0l36htMsskiNwXbo=
 github.com/cosmos/ics23/go v0.11.0 h1:jk5skjT0TqX5e5QJbEnwXIS2yI2vnmLOgpQPeM5RtnU=
 github.com/cosmos/ics23/go v0.11.0/go.mod h1:A8OjxPE67hHST4Icw94hOxxFEJMBG031xIGF/JHNIY0=
+github.com/cosmos/interchain-security/v6 v6.3.0 h1:AIsfxLUDtUGVfaqJ1WPwnYIOT5AxoSO58469iw9vNH4=
+github.com/cosmos/interchain-security/v6 v6.3.0/go.mod h1:6DSiV2w+DuPkxP1KGFtaxpiwf8Xt2iusj8O53KCx96Q=
 github.com/cosmos/keyring v1.2.0 h1:8C1lBP9xhImmIabyXW4c3vFjjLiBdGCmfLUfeZlV1Yo=
 github.com/cosmos/keyring v1.2.0/go.mod h1:fc+wB5KTk9wQ9sDx0kFXB3A0MaeGHM9AwRStKOQ5vOA=
 github.com/cosmos/ledger-cosmos-go v0.12.1/go.mod h1:dhO6kj+Y+AHIOgAe4L9HL/6NDdyyth4q238I9yFpD2g=
@@ -2622,6 +2624,8 @@ github.com/otiai10/curr v0.0.0-20150429015615-9b4961190c95/go.mod h1:9qAhocn7zKJ
 github.com/otiai10/curr v1.0.0/go.mod h1:LskTG5wDwr8Rs+nNQ+1LlxRjAtTZZjtJW4rMXl6j4vs=
 github.com/otiai10/mint v1.3.0/go.mod h1:F5AjcsTsWUqX+Na9fpHb52P8pcRX2CI6A3ctIT91xUo=
 github.com/otiai10/mint v1.3.1/go.mod h1:/yxELlJQ0ufhjUwhshSj+wFjZ78CnZ48/1wtmBH1OTc=
+github.com/oxyno-zeta/gomock-extra-matcher v1.2.0 h1:WPEclU0y0PMwUzdDcaKZvld4aXpa3fkzjiUMQdcBEHg=
+github.com/oxyno-zeta/gomock-extra-matcher v1.2.0/go.mod h1:S0r7HmKeCGsHmvIVFMjKWwswb4+30nCNWbXRMBVPkaU=
 github.com/pact-foundation/pact-go v1.0.4/go.mod h1:uExwJY4kCzNPcHRj+hCR/HBbOOIwwtUjcrb0b5/5kLM=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pascaldekloe/goe v0.1.0 h1:cBOtyMzM9HTpWjXfbbunk26uA6nG3a8n06Wieeh0MwY=
@@ -3301,6 +3305,8 @@ go.uber.org/goleak v1.1.11-0.20210813005559-691160354723/go.mod h1:cwTWslyiVhfpK
 go.uber.org/goleak v1.1.11/go.mod h1:cwTWslyiVhfpKIDGSZEM2HlOvcqm+tG4zioyIeLoqMQ=
 go.uber.org/goleak v1.1.12 h1:gZAh5/EyT/HQwlpkCy6wTpqfH9H8Lz8zbm3dZh+OyzA=
 go.uber.org/goleak v1.1.12/go.mod h1:cwTWslyiVhfpKIDGSZEM2HlOvcqm+tG4zioyIeLoqMQ=
+go.uber.org/mock v0.2.0 h1:TaP3xedm7JaAgScZO7tlvlKrqT0p7I6OsdGB5YNSMDU=
+go.uber.org/mock v0.2.0/go.mod h1:J0y0rp9L3xiff1+ZBfKxlC1fz2+aO16tw0tsDOixfuM=
 go.uber.org/multierr v1.1.0/go.mod h1:wR5kodmAFQ0UK8QlbwjlSNy0Z68gJhDJUG5sjR94q/0=
 go.uber.org/multierr v1.3.0/go.mod h1:VgVr7evmIr6uPjLBxg28wmKNXyqE9akIJ5XnfpiKl+4=
 go.uber.org/multierr v1.4.0/go.mod h1:VgVr7evmIr6uPjLBxg28wmKNXyqE9akIJ5XnfpiKl+4=

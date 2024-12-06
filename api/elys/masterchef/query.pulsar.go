@@ -13029,11 +13029,13 @@ func (x *_PoolRewards_3_list) IsValid() bool {
 }
 
 var (
-	md_PoolRewards              protoreflect.MessageDescriptor
-	fd_PoolRewards_pool_id      protoreflect.FieldDescriptor
-	fd_PoolRewards_rewards_usd  protoreflect.FieldDescriptor
-	fd_PoolRewards_reward_coins protoreflect.FieldDescriptor
-	fd_PoolRewards_eden_forward protoreflect.FieldDescriptor
+	md_PoolRewards                      protoreflect.MessageDescriptor
+	fd_PoolRewards_pool_id              protoreflect.FieldDescriptor
+	fd_PoolRewards_rewards_usd          protoreflect.FieldDescriptor
+	fd_PoolRewards_reward_coins         protoreflect.FieldDescriptor
+	fd_PoolRewards_eden_forward         protoreflect.FieldDescriptor
+	fd_PoolRewards_rewards_usd_apr      protoreflect.FieldDescriptor
+	fd_PoolRewards_external_rewards_apr protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -13043,6 +13045,8 @@ func init() {
 	fd_PoolRewards_rewards_usd = md_PoolRewards.Fields().ByName("rewards_usd")
 	fd_PoolRewards_reward_coins = md_PoolRewards.Fields().ByName("reward_coins")
 	fd_PoolRewards_eden_forward = md_PoolRewards.Fields().ByName("eden_forward")
+	fd_PoolRewards_rewards_usd_apr = md_PoolRewards.Fields().ByName("rewards_usd_apr")
+	fd_PoolRewards_external_rewards_apr = md_PoolRewards.Fields().ByName("external_rewards_apr")
 }
 
 var _ protoreflect.Message = (*fastReflection_PoolRewards)(nil)
@@ -13134,6 +13138,18 @@ func (x *fastReflection_PoolRewards) Range(f func(protoreflect.FieldDescriptor, 
 			return
 		}
 	}
+	if x.RewardsUsdApr != "" {
+		value := protoreflect.ValueOfString(x.RewardsUsdApr)
+		if !f(fd_PoolRewards_rewards_usd_apr, value) {
+			return
+		}
+	}
+	if x.ExternalRewardsApr != "" {
+		value := protoreflect.ValueOfString(x.ExternalRewardsApr)
+		if !f(fd_PoolRewards_external_rewards_apr, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -13157,6 +13173,10 @@ func (x *fastReflection_PoolRewards) Has(fd protoreflect.FieldDescriptor) bool {
 		return len(x.RewardCoins) != 0
 	case "elys.masterchef.PoolRewards.eden_forward":
 		return x.EdenForward != nil
+	case "elys.masterchef.PoolRewards.rewards_usd_apr":
+		return x.RewardsUsdApr != ""
+	case "elys.masterchef.PoolRewards.external_rewards_apr":
+		return x.ExternalRewardsApr != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.PoolRewards"))
@@ -13181,6 +13201,10 @@ func (x *fastReflection_PoolRewards) Clear(fd protoreflect.FieldDescriptor) {
 		x.RewardCoins = nil
 	case "elys.masterchef.PoolRewards.eden_forward":
 		x.EdenForward = nil
+	case "elys.masterchef.PoolRewards.rewards_usd_apr":
+		x.RewardsUsdApr = ""
+	case "elys.masterchef.PoolRewards.external_rewards_apr":
+		x.ExternalRewardsApr = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.PoolRewards"))
@@ -13212,6 +13236,12 @@ func (x *fastReflection_PoolRewards) Get(descriptor protoreflect.FieldDescriptor
 	case "elys.masterchef.PoolRewards.eden_forward":
 		value := x.EdenForward
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.masterchef.PoolRewards.rewards_usd_apr":
+		value := x.RewardsUsdApr
+		return protoreflect.ValueOfString(value)
+	case "elys.masterchef.PoolRewards.external_rewards_apr":
+		value := x.ExternalRewardsApr
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.PoolRewards"))
@@ -13242,6 +13272,10 @@ func (x *fastReflection_PoolRewards) Set(fd protoreflect.FieldDescriptor, value 
 		x.RewardCoins = *clv.list
 	case "elys.masterchef.PoolRewards.eden_forward":
 		x.EdenForward = value.Message().Interface().(*v1beta1.Coin)
+	case "elys.masterchef.PoolRewards.rewards_usd_apr":
+		x.RewardsUsdApr = value.Interface().(string)
+	case "elys.masterchef.PoolRewards.external_rewards_apr":
+		x.ExternalRewardsApr = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.PoolRewards"))
@@ -13277,6 +13311,10 @@ func (x *fastReflection_PoolRewards) Mutable(fd protoreflect.FieldDescriptor) pr
 		panic(fmt.Errorf("field pool_id of message elys.masterchef.PoolRewards is not mutable"))
 	case "elys.masterchef.PoolRewards.rewards_usd":
 		panic(fmt.Errorf("field rewards_usd of message elys.masterchef.PoolRewards is not mutable"))
+	case "elys.masterchef.PoolRewards.rewards_usd_apr":
+		panic(fmt.Errorf("field rewards_usd_apr of message elys.masterchef.PoolRewards is not mutable"))
+	case "elys.masterchef.PoolRewards.external_rewards_apr":
+		panic(fmt.Errorf("field external_rewards_apr of message elys.masterchef.PoolRewards is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.PoolRewards"))
@@ -13300,6 +13338,10 @@ func (x *fastReflection_PoolRewards) NewField(fd protoreflect.FieldDescriptor) p
 	case "elys.masterchef.PoolRewards.eden_forward":
 		m := new(v1beta1.Coin)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.masterchef.PoolRewards.rewards_usd_apr":
+		return protoreflect.ValueOfString("")
+	case "elys.masterchef.PoolRewards.external_rewards_apr":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.PoolRewards"))
@@ -13386,6 +13428,14 @@ func (x *fastReflection_PoolRewards) ProtoMethods() *protoiface.Methods {
 			l = options.Size(x.EdenForward)
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.RewardsUsdApr)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.ExternalRewardsApr)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -13414,6 +13464,20 @@ func (x *fastReflection_PoolRewards) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.ExternalRewardsApr) > 0 {
+			i -= len(x.ExternalRewardsApr)
+			copy(dAtA[i:], x.ExternalRewardsApr)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ExternalRewardsApr)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if len(x.RewardsUsdApr) > 0 {
+			i -= len(x.RewardsUsdApr)
+			copy(dAtA[i:], x.RewardsUsdApr)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.RewardsUsdApr)))
+			i--
+			dAtA[i] = 0x2a
 		}
 		if x.EdenForward != nil {
 			encoded, err := options.Marshal(x.EdenForward)
@@ -13626,6 +13690,70 @@ func (x *fastReflection_PoolRewards) ProtoMethods() *protoiface.Methods {
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.EdenForward); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field RewardsUsdApr", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.RewardsUsdApr = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExternalRewardsApr", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ExternalRewardsApr = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -15247,10 +15375,12 @@ type PoolRewards struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PoolId      uint64          `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
-	RewardsUsd  string          `protobuf:"bytes,2,opt,name=rewards_usd,json=rewardsUsd,proto3" json:"rewards_usd,omitempty"`
-	RewardCoins []*v1beta1.Coin `protobuf:"bytes,3,rep,name=reward_coins,json=rewardCoins,proto3" json:"reward_coins,omitempty"`
-	EdenForward *v1beta1.Coin   `protobuf:"bytes,4,opt,name=eden_forward,json=edenForward,proto3" json:"eden_forward,omitempty"`
+	PoolId             uint64          `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	RewardsUsd         string          `protobuf:"bytes,2,opt,name=rewards_usd,json=rewardsUsd,proto3" json:"rewards_usd,omitempty"`
+	RewardCoins        []*v1beta1.Coin `protobuf:"bytes,3,rep,name=reward_coins,json=rewardCoins,proto3" json:"reward_coins,omitempty"`
+	EdenForward        *v1beta1.Coin   `protobuf:"bytes,4,opt,name=eden_forward,json=edenForward,proto3" json:"eden_forward,omitempty"`
+	RewardsUsdApr      string          `protobuf:"bytes,5,opt,name=rewards_usd_apr,json=rewardsUsdApr,proto3" json:"rewards_usd_apr,omitempty"`
+	ExternalRewardsApr string          `protobuf:"bytes,6,opt,name=external_rewards_apr,json=externalRewardsApr,proto3" json:"external_rewards_apr,omitempty"`
 }
 
 func (x *PoolRewards) Reset() {
@@ -15299,6 +15429,20 @@ func (x *PoolRewards) GetEdenForward() *v1beta1.Coin {
 		return x.EdenForward
 	}
 	return nil
+}
+
+func (x *PoolRewards) GetRewardsUsdApr() string {
+	if x != nil {
+		return x.RewardsUsdApr
+	}
+	return ""
+}
+
+func (x *PoolRewards) GetExternalRewardsApr() string {
+	if x != nil {
+		return x.ExternalRewardsApr
+	}
+	return ""
 }
 
 type QueryPoolRewardsResponse struct {
@@ -15566,7 +15710,7 @@ var file_elys_masterchef_query_proto_rawDesc = []byte{
 	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e,
 	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75,
 	0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22,
-	0xae, 0x02, 0x0a, 0x0b, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12,
+	0xee, 0x03, 0x0a, 0x0b, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12,
 	0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04,
 	0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x52, 0x0a, 0x0b, 0x72, 0x65, 0x77, 0x61,
 	0x72, 0x64, 0x73, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
@@ -15585,6 +15729,18 @@ var file_elys_masterchef_query_proto_rawDesc = []byte{
 	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65,
 	0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8,
 	0xde, 0x1f, 0x00, 0x52, 0x0b, 0x65, 0x64, 0x65, 0x6e, 0x46, 0x6f, 0x72, 0x77, 0x61, 0x72, 0x64,
+	0x12, 0x59, 0x0a, 0x0f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x5f, 0x75, 0x73, 0x64, 0x5f,
+	0x61, 0x70, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
+	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0d, 0x72, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x73, 0x55, 0x73, 0x64, 0x41, 0x70, 0x72, 0x12, 0x63, 0x0a, 0x14, 0x65,
+	0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x5f,
+	0x61, 0x70, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
+	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x65, 0x78,
+	0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x41, 0x70, 0x72,
 	0x22, 0x54, 0x0a, 0x18, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77,
 	0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x38, 0x0a, 0x05,
 	0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c,

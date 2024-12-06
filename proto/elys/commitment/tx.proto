@@ -45,6 +45,10 @@ service Msg {
   rpc UpdateVestingInfo(MsgUpdateVestingInfo)
       returns (MsgUpdateVestingInfoResponse);
 
+  // UpdateEnableVestNow add/update enable vest now on Params
+  rpc UpdateEnableVestNow(MsgUpdateEnableVestNow)
+      returns (MsgUpdateEnableVestNowResponse);
+
   rpc Stake(MsgStake) returns (MsgStakeResponse);
   rpc Unstake(MsgUnstake) returns (MsgUnstakeResponse);
 }
@@ -139,6 +143,15 @@ message MsgUpdateVestingInfo {
 }
 
 message MsgUpdateVestingInfoResponse {}
+
+message MsgUpdateEnableVestNow {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "commitment/MsgUpdateEnableVestNow";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  bool enable_vest_now = 2;
+}
+
+message MsgUpdateEnableVestNowResponse {}
 
 message MsgVestLiquid {
   option (cosmos.msg.v1.signer) = "creator";

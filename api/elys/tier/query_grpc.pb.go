@@ -35,6 +35,8 @@ type QueryClient interface {
 	Perpetual(ctx context.Context, in *QueryPerpetualRequest, opts ...grpc.CallOption) (*QueryPerpetualResponse, error)
 	// Queries a list of LiquidTotal items.
 	LiquidTotal(ctx context.Context, in *QueryLiquidTotalRequest, opts ...grpc.CallOption) (*QueryLiquidTotalResponse, error)
+	// Queries a list of LockedOrder items.
+	LockedOrder(ctx context.Context, in *QueryLockedOrderRequest, opts ...grpc.CallOption) (*QueryLockedOrderResponse, error)
 	// Queries a list of GetAmmPrice items.
 	GetAmmPrice(ctx context.Context, in *QueryGetAmmPriceRequest, opts ...grpc.CallOption) (*QueryGetAmmPriceResponse, error)
 	// Queries a list of GetConsolidatedPrice items.
@@ -134,6 +136,15 @@ func (c *queryClient) LiquidTotal(ctx context.Context, in *QueryLiquidTotalReque
 	return out, nil
 }
 
+func (c *queryClient) LockedOrder(ctx context.Context, in *QueryLockedOrderRequest, opts ...grpc.CallOption) (*QueryLockedOrderResponse, error) {
+	out := new(QueryLockedOrderResponse)
+	err := c.cc.Invoke(ctx, "/elys.tier.Query/LockedOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) GetAmmPrice(ctx context.Context, in *QueryGetAmmPriceRequest, opts ...grpc.CallOption) (*QueryGetAmmPriceResponse, error) {
 	out := new(QueryGetAmmPriceResponse)
 	err := c.cc.Invoke(ctx, "/elys.tier.Query/GetAmmPrice", in, out, opts...)
@@ -191,6 +202,8 @@ type QueryServer interface {
 	Perpetual(context.Context, *QueryPerpetualRequest) (*QueryPerpetualResponse, error)
 	// Queries a list of LiquidTotal items.
 	LiquidTotal(context.Context, *QueryLiquidTotalRequest) (*QueryLiquidTotalResponse, error)
+	// Queries a list of LockedOrder items.
+	LockedOrder(context.Context, *QueryLockedOrderRequest) (*QueryLockedOrderResponse, error)
 	// Queries a list of GetAmmPrice items.
 	GetAmmPrice(context.Context, *QueryGetAmmPriceRequest) (*QueryGetAmmPriceResponse, error)
 	// Queries a list of GetConsolidatedPrice items.
@@ -232,6 +245,9 @@ func (UnimplementedQueryServer) Perpetual(context.Context, *QueryPerpetualReques
 }
 func (UnimplementedQueryServer) LiquidTotal(context.Context, *QueryLiquidTotalRequest) (*QueryLiquidTotalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LiquidTotal not implemented")
+}
+func (UnimplementedQueryServer) LockedOrder(context.Context, *QueryLockedOrderRequest) (*QueryLockedOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LockedOrder not implemented")
 }
 func (UnimplementedQueryServer) GetAmmPrice(context.Context, *QueryGetAmmPriceRequest) (*QueryGetAmmPriceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAmmPrice not implemented")
@@ -420,6 +436,24 @@ func _Query_LiquidTotal_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_LockedOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryLockedOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).LockedOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.tier.Query/LockedOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).LockedOrder(ctx, req.(*QueryLockedOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_GetAmmPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetAmmPriceRequest)
 	if err := dec(in); err != nil {
@@ -534,6 +568,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LiquidTotal",
 			Handler:    _Query_LiquidTotal_Handler,
+		},
+		{
+			MethodName: "LockedOrder",
+			Handler:    _Query_LockedOrder_Handler,
 		},
 		{
 			MethodName: "GetAmmPrice",

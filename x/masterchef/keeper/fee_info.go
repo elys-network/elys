@@ -106,3 +106,26 @@ func (k Keeper) GetAllFeeInfos(ctx sdk.Context) (list []types.FeeInfo) {
 
 	return
 }
+
+// Returns last 7 days average of staker fees collected
+func (k Keeper) GetAvgStakerFeesCollected(ctx sdk.Context) sdkmath.LegacyDec {
+	start := ctx.BlockTime()
+	count := sdkmath.ZeroInt()
+	total := sdkmath.ZeroInt()
+
+	for i := 0; i < 7; i++ {
+		date := start.AddDate(0, 0, i*-1).Format("2006-01-02")
+		info := k.GetFeeInfo(ctx, date)
+
+		collected := info.DexStakers.Add(info.GasStakers).Add(info.PerpStakers)
+		if collected.IsPositive() {
+			total = total.Add(collected)
+			count = count.Add(sdkmath.OneInt())
+		}
+	}
+
+	if count.IsZero() {
+		return sdkmath.LegacyZeroDec()
+	}
+	return sdkmath.LegacyNewDecFromInt(total).Quo(sdkmath.LegacyNewDecFromInt(count))
+}

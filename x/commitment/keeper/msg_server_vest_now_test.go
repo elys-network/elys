@@ -19,9 +19,6 @@ import (
 func TestVestNowDisabled(t *testing.T) {
 	app := app.InitElysTestApp(true, t)
 
-	// Disable VestNow for test
-	commitmentkeeper.VestNowEnabled = false
-
 	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
@@ -48,9 +45,6 @@ func TestVestNowDisabled(t *testing.T) {
 func TestVestNowInvalidDenom(t *testing.T) {
 	app := app.InitElysTestApp(true, t)
 
-	// Enable VestNow for test
-	commitmentkeeper.VestNowEnabled = true
-
 	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
@@ -73,7 +67,8 @@ func TestVestNowInvalidDenom(t *testing.T) {
 	}
 
 	params := types.Params{
-		VestingInfos: vestingInfos,
+		VestingInfos:  vestingInfos,
+		EnableVestNow: true,
 	}
 
 	keeper.SetParams(ctx, params)
@@ -92,9 +87,6 @@ func TestVestNowInvalidDenom(t *testing.T) {
 // TestKeeper_VestNow tests the VestNow function with vest now factor set to zero
 func TestVestNowInvalidAmount(t *testing.T) {
 	app := app.InitElysTestApp(true, t)
-
-	// Enable VestNow for test
-	commitmentkeeper.VestNowEnabled = true
 
 	ctx := app.BaseApp.NewContext(false)
 	// Create a test context and keeper
@@ -120,7 +112,8 @@ func TestVestNowInvalidAmount(t *testing.T) {
 	}
 
 	params := types.Params{
-		VestingInfos: vestingInfos,
+		VestingInfos:  vestingInfos,
+		EnableVestNow: true,
 	}
 
 	keeper.SetParams(ctx, params)
@@ -158,9 +151,6 @@ func TestVestNowInvalidAmount(t *testing.T) {
 func TestVestNow(t *testing.T) {
 	app := app.InitElysTestApp(true, t)
 
-	// Enable VestNow for test
-	commitmentkeeper.VestNowEnabled = true
-
 	ctx := app.BaseApp.NewContext(true)
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
@@ -185,7 +175,8 @@ func TestVestNow(t *testing.T) {
 	}
 
 	params := types.Params{
-		VestingInfos: vestingInfos,
+		VestingInfos:  vestingInfos,
+		EnableVestNow: true,
 	}
 
 	keeper.SetParams(ctx, params)

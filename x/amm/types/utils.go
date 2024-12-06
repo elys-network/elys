@@ -60,16 +60,23 @@ func ApplyDiscount(swapFee sdkmath.LegacyDec, discount sdkmath.LegacyDec) sdkmat
 	return swapFee
 }
 
-func GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut sdkmath.LegacyDec, distanceDiff sdkmath.LegacyDec, params Params) sdkmath.LegacyDec {
+// GetWeightBreakingFee When distanceDiff > 0, pool is getting worse so we calculate WBF based on final weight
+// When distanceDiff < 0, pool is improving, we need to use initial weights. Say target is 50:50, initially pool is 80:20 and now after it is becoming 30:70,
+// this is improving the pool but with finalWeightOut/finalWeightIn it will be 30/70 which doesn't provide enough bonus to user
+func GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut sdkmath.LegacyDec, distanceDiff sdkmath.LegacyDec, params Params) sdkmath.LegacyDec {
 	weightBreakingFee := sdkmath.LegacyZeroDec()
-	if !weightOut.IsZero() && !weightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() && !params.WeightBreakingFeeMultiplier.IsZero() {
+	if !params.WeightBreakingFeeMultiplier.IsZero() {
 		// (45/55*60/40) ^ 2.5
 		if distanceDiff.IsPositive() {
-			weightBreakingFee = params.WeightBreakingFeeMultiplier.
-				Mul(Pow(weightIn.Mul(targetWeightOut).Quo(weightOut).Quo(targetWeightIn), params.WeightBreakingFeeExponent))
+			if !finalWeightOut.IsZero() && !finalWeightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() {
+				weightBreakingFee = params.WeightBreakingFeeMultiplier.
+					Mul(Pow(finalWeightIn.Mul(targetWeightOut).Quo(finalWeightOut).Quo(targetWeightIn), params.WeightBreakingFeeExponent))
+			}
 		} else {
-			weightBreakingFee = params.WeightBreakingFeeMultiplier.
-				Mul(Pow(weightOut.Mul(targetWeightIn).Quo(weightIn).Quo(targetWeightOut), params.WeightBreakingFeeExponent))
+			if !initialWeightOut.IsZero() && !initialWeightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() {
+				weightBreakingFee = params.WeightBreakingFeeMultiplier.
+					Mul(Pow(initialWeightOut.Mul(targetWeightIn).Quo(initialWeightIn).Quo(targetWeightOut), params.WeightBreakingFeeExponent))
+			}
 		}
 
 		if weightBreakingFee.GT(sdkmath.LegacyNewDecWithPrec(99, 2)) {

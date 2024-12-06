@@ -276,6 +276,8 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool2)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(2))
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			for _, msg := range tc.swapMsgs {
@@ -299,6 +301,8 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 			for i, order := range tc.expSwapOrder {
 				suite.Require().Equal(tc.swapMsgs[order], requests[i], fmt.Sprintf("%dth item not match", i))
 			}
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(2))
 		})
 	}
 }

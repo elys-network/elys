@@ -84,25 +84,6 @@ func (p *Pool) setInitialPoolParams(params PoolParams, sortedAssets []PoolAsset,
 	return nil
 }
 
-func (p *Pool) applySwap(ctx sdk.Context, tokensIn sdk.Coins, tokensOut sdk.Coins, swapFeeIn, swapFeeOut sdkmath.LegacyDec) error {
-	// Fixed gas consumption per swap to prevent spam
-	ctx.GasMeter().ConsumeGas(BalancerGasFeeForSwap, "balancer swap computation")
-	// Also ensures that len(tokensIn) = 1 = len(tokensOut)
-	inPoolAsset, outPoolAsset, err := p.parsePoolAssetsCoins(tokensIn, tokensOut)
-	if err != nil {
-		return err
-	}
-	inTokensAfterFee := sdkmath.LegacyNewDecFromInt(tokensIn[0].Amount).Mul(sdkmath.LegacyOneDec().Sub(swapFeeIn)).TruncateInt()
-	outTokensAfterFee := sdkmath.LegacyNewDecFromInt(tokensOut[0].Amount).Mul(sdkmath.LegacyOneDec().Sub(swapFeeOut)).TruncateInt()
-	inPoolAsset.Token.Amount = inPoolAsset.Token.Amount.Add(inTokensAfterFee)
-	outPoolAsset.Token.Amount = outPoolAsset.Token.Amount.Sub(outTokensAfterFee)
-
-	return p.UpdatePoolAssetBalances(sdk.NewCoins(
-		inPoolAsset.Token,
-		outPoolAsset.Token,
-	))
-}
-
 // SetInitialPoolAssets sets the PoolAssets in the pool. It is only designed to
 // be called at the pool's creation. If the same denom's PoolAsset exists, will
 // return error.
