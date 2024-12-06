@@ -2,8 +2,10 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/cosmos/cosmos-sdk/runtime"
 
+	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -15,9 +17,12 @@ import (
 func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool) types.PoolExtraInfo {
 	tvl, _ := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	lpTokenPrice, _ := pool.LpTokenPrice(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+	avg := k.GetWeightBreakingSlippageAvg(ctx, pool.PoolId)
+	apr := avg.Mul(math.LegacyNewDec(52)).Quo(tvl)
 	return types.PoolExtraInfo{
 		Tvl:          tvl,
 		LpTokenPrice: lpTokenPrice,
+		LpSavedApr:   apr,
 	}
 }
 
