@@ -1,14 +1,12 @@
 name: Test Software Upgrade
 
 on:
-  workflow_dispatch:
-  # FIXME: disable as we move to PSS, we need to update those settings to work with PSS
-  # pull_request:
-  # push:
-  #   branches:
-  #     - develop
-  #     - devnet
-  #     - main
+  pull_request:
+  push:
+    branches:
+      - develop
+      - devnet
+      - main
 
 jobs:
   create-new-snapshot:
