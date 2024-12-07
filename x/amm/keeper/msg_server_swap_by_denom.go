@@ -100,7 +100,7 @@ func (k Keeper) SwapByDenom(ctx sdk.Context, msg *types.MsgSwapByDenom) (*types.
 		}
 
 		return &types.MsgSwapByDenomResponse{
-			Amount:    sdk.NewCoin(msg.DenomOut, res.TokenInAmount),
+			Amount:    sdk.NewCoin(msg.DenomIn, res.TokenInAmount),
 			InRoute:   nil,
 			OutRoute:  outRoute,
 			SpotPrice: spotPrice,
