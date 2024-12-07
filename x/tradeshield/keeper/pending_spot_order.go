@@ -5,7 +5,6 @@ import (
 	"math"
 
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 
@@ -209,9 +208,9 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
-		DenomIn:   order.OrderPrice.BaseDenom,
-		DenomOut:  order.OrderPrice.QuoteDenom,
-		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		DenomIn:   order.OrderPrice.QuoteDenom,
+		DenomOut:  order.OrderPrice.BaseDenom,
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err
@@ -250,9 +249,9 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
-		DenomIn:   order.OrderPrice.BaseDenom,
-		DenomOut:  order.OrderPrice.QuoteDenom,
-		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		DenomIn:   order.OrderPrice.QuoteDenom,
+		DenomOut:  order.OrderPrice.BaseDenom,
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err
@@ -291,9 +290,9 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
-		DenomIn:   order.OrderPrice.BaseDenom,
-		DenomOut:  order.OrderPrice.QuoteDenom,
-		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		DenomIn:   order.OrderPrice.QuoteDenom,
+		DenomOut:  order.OrderPrice.BaseDenom,
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err
@@ -312,9 +311,9 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) (*
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
-		DenomIn:   order.OrderAmount.Denom,
-		DenomOut:  order.OrderTargetDenom,
-		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		DenomIn:   order.OrderTargetDenom,
+		DenomOut:  order.OrderAmount.Denom,
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err
