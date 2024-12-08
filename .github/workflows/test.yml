@@ -30,7 +30,7 @@ jobs:
 
       - name: Run e2e tests
         run: |
-          make local-image && make test-e2e
+          make get-heighliner && make local-image && make test-e2e
 
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v4

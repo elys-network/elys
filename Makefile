@@ -130,6 +130,11 @@ mocks:
 	fi
 	@go generate ./...
 
+## get-heighliner: Get heighliner
+get-heighliner:
+	@echo "🤖 Getting heighliner..."
+	@go install github.com/strangelove-ventures/heighliner@latest
+
 ## local-image: Build local docker image
 local-image:
 ifeq (,$(shell which heighliner))
