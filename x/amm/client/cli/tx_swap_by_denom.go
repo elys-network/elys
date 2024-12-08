@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -32,24 +33,28 @@ func CmdSwapByDenom() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			minAmount := sdk.Coin{}
+			var minAmount sdk.Coin
 			if minAmountStr != "" {
 				minAmount, err = sdk.ParseCoinNormalized(minAmountStr)
 				if err != nil {
 					return err
 				}
+			} else {
+				minAmount = sdk.NewCoin(argDenomOut, math.ZeroInt())
 			}
 
 			maxAmountStr, err := cmd.Flags().GetString(FlagMaxAmount)
 			if err != nil {
 				return err
 			}
-			maxAmount := sdk.Coin{}
-			if maxAmountStr == "" {
+			var maxAmount sdk.Coin
+			if maxAmountStr != "" {
 				maxAmount, err = sdk.ParseCoinNormalized(maxAmountStr)
 				if err != nil {
 					return err
 				}
+			} else {
+				maxAmount = argAmount
 			}
 
 			recipient, err := cmd.Flags().GetString(FlagRecipient)
@@ -80,8 +85,8 @@ func CmdSwapByDenom() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagMinAmount, "", "minimum amount of tokens to receive")
-	cmd.Flags().String(FlagMaxAmount, "", "maximum amount of tokens to send")
+	cmd.Flags().String(FlagMinAmount, "", "minimum amount of tokens to receive (default: 0{denom-out})")
+	cmd.Flags().String(FlagMaxAmount, "", "maximum amount of tokens to send (default: {amount})")
 	cmd.Flags().String(FlagRecipient, "", "optional recipient field for the tokens swapped to be sent to")
 
 	return cmd
