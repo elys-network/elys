@@ -37,7 +37,7 @@ jobs:
           # environment variables
           ELYSD=dist/elysd-linux-amd64_linux_amd64_v1/elysd
           NODE=https://rpc.testnet.elys.network:443
-          OPTIONS="--node $NODE --chain-id elystestnet-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
+          OPTIONS="--node $NODE --chain-id elysicstestnet-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
 
           # save private keys to files
           echo "${{ secrets.PRIVATE_KEY_1 }}" > /tmp/private_key_1.txt
