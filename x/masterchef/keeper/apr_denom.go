@@ -103,8 +103,8 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				return math.LegacyZeroDec(), nil
 			}
 
-			// Mutiply by 52 to get yearly rewards
-			yearlyDexRewardAmount := usdcAmount.Mul(math.LegacyNewDec(52))
+			// Mutiply by 365 to get yearly rewards
+			yearlyDexRewardAmount := usdcAmount.Mul(math.LegacyNewDec(365))
 
 			apr := yearlyDexRewardAmount.
 				Quo(edenDenomPrice).
