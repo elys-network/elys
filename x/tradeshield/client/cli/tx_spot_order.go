@@ -1,10 +1,11 @@
 package cli
 
 import (
-	"cosmossdk.io/math"
 	"encoding/json"
 	"io/ioutil"
 	"strconv"
+
+	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -35,8 +36,8 @@ func CmdCreateSpotOrder() *cobra.Command {
 			}
 			orderTargetDenom := args[2]
 			orderPrice := types.OrderPrice{
-				BaseDenom:  orderAmount.Denom,
-				QuoteDenom: orderTargetDenom,
+				BaseDenom:  orderTargetDenom,
+				QuoteDenom: orderAmount.Denom,
 				Rate:       math.LegacyMustNewDecFromStr(args[3]),
 			}
 
