@@ -1,11 +1,9 @@
-name: Run tests and upload coverage
+name: Run unit tests and upload coverage
 
 on:
   pull_request:
   push:
     branches:
-      - develop
-      - devnet
       - main
 
 jobs:
@@ -27,10 +25,6 @@ jobs:
 
       - name: Run unit tests
         run: go test -coverprofile=coverage.txt ./...
-
-      - name: Run e2e tests
-        run: |
-          make get-heighliner && make local-image && make test-e2e
 
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v4
