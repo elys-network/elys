@@ -144,17 +144,5 @@ func validateInflationEntry(inflation *InflationEntry) error {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "ics staking rewards must be positive")
 	}
 
-	if inflation.CommunityFund <= 0 {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "community fund must be positive")
-	}
-
-	if inflation.StrategicReserve <= 0 {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "strategic reserve must be positive")
-	}
-
-	if inflation.TeamTokensVested <= 0 {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "team tokens vested must be positive")
-	}
-
 	return nil
 }

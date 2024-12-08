@@ -21,9 +21,6 @@ func TestMsgUpdateGenesisInflation_ValidateBasic(t *testing.T) {
 				Inflation: &InflationEntry{
 					LmRewards:         1000,
 					IcsStakingRewards: 500,
-					CommunityFund:     300,
-					StrategicReserve:  200,
-					TeamTokensVested:  100,
 				},
 				SeedVesting:           100,
 				StrategicSalesVesting: 200,
@@ -36,9 +33,6 @@ func TestMsgUpdateGenesisInflation_ValidateBasic(t *testing.T) {
 				Inflation: &InflationEntry{
 					LmRewards:         1000,
 					IcsStakingRewards: 500,
-					CommunityFund:     300,
-					StrategicReserve:  200,
-					TeamTokensVested:  100,
 				},
 				SeedVesting:           100,
 				StrategicSalesVesting: 200,

@@ -47,9 +47,6 @@ func (suite *MasterchefKeeperTestSuite) TestABCI_EndBlocker() {
 		Inflation: &tokenomicstypes.InflationEntry{
 			LmRewards:         9999999,
 			IcsStakingRewards: 9999999,
-			CommunityFund:     9999999,
-			StrategicReserve:  9999999,
-			TeamTokensVested:  9999999,
 		},
 	}
 
@@ -64,9 +61,6 @@ func (suite *MasterchefKeeperTestSuite) TestABCI_EndBlocker() {
 		Inflation: &tokenomicstypes.InflationEntry{
 			LmRewards:         9999999,
 			IcsStakingRewards: 9999999,
-			CommunityFund:     9999999,
-			StrategicReserve:  9999999,
-			TeamTokensVested:  9999999,
 		},
 	}
 	_, err = srv.CreateTimeBasedInflation(suite.ctx, expected)

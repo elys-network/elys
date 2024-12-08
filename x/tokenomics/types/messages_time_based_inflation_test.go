@@ -24,9 +24,6 @@ func TestMsgCreateTimeBasedInflation_ValidateBasic(t *testing.T) {
 				Inflation: &InflationEntry{
 					LmRewards:         1000,
 					IcsStakingRewards: 500,
-					CommunityFund:     300,
-					StrategicReserve:  200,
-					TeamTokensVested:  100,
 				},
 			},
 			err: sdkerrors.ErrInvalidAddress,
@@ -40,9 +37,6 @@ func TestMsgCreateTimeBasedInflation_ValidateBasic(t *testing.T) {
 				Inflation: &InflationEntry{
 					LmRewards:         1000,
 					IcsStakingRewards: 500,
-					CommunityFund:     300,
-					StrategicReserve:  200,
-					TeamTokensVested:  100,
 				},
 			},
 		},
@@ -56,9 +50,6 @@ func TestMsgCreateTimeBasedInflation_ValidateBasic(t *testing.T) {
 				Inflation: &InflationEntry{
 					LmRewards:         1000,
 					IcsStakingRewards: 500,
-					CommunityFund:     300,
-					StrategicReserve:  200,
-					TeamTokensVested:  100,
 				},
 			},
 			err: sdkerrors.ErrInvalidRequest,
@@ -73,9 +64,6 @@ func TestMsgCreateTimeBasedInflation_ValidateBasic(t *testing.T) {
 				Inflation: &InflationEntry{
 					LmRewards:         1000,
 					IcsStakingRewards: 500,
-					CommunityFund:     300,
-					StrategicReserve:  200,
-					TeamTokensVested:  100,
 				},
 			},
 			err: sdkerrors.ErrInvalidRequest,
@@ -120,9 +108,6 @@ func TestMsgUpdateTimeBasedInflation_ValidateBasic(t *testing.T) {
 				Inflation: &InflationEntry{
 					LmRewards:         1000,
 					IcsStakingRewards: 500,
-					CommunityFund:     300,
-					StrategicReserve:  200,
-					TeamTokensVested:  100,
 				},
 			},
 			err: sdkerrors.ErrInvalidAddress,
@@ -136,9 +121,6 @@ func TestMsgUpdateTimeBasedInflation_ValidateBasic(t *testing.T) {
 				Inflation: &InflationEntry{
 					LmRewards:         1000,
 					IcsStakingRewards: 500,
-					CommunityFund:     300,
-					StrategicReserve:  200,
-					TeamTokensVested:  100,
 				},
 			},
 		},

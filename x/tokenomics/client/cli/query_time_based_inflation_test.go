@@ -2,9 +2,10 @@ package cli_test
 
 import (
 	"fmt"
-	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"strconv"
 	"testing"
+
+	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -32,9 +33,6 @@ func networkWithTimeBasedInflationObjects(t *testing.T, n int) (*network.Network
 			Inflation: &types.InflationEntry{
 				LmRewards:         9999999,
 				IcsStakingRewards: 9999999,
-				CommunityFund:     9999999,
-				StrategicReserve:  9999999,
-				TeamTokensVested:  9999999,
 			},
 		}
 		nullify.Fill(&timeBasedInflation)
