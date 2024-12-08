@@ -526,6 +526,16 @@ func (app *ElysApp) AutoCliOpts() autocli.AppOptions {
 	for _, m := range app.mm.Modules {
 		if moduleWithName, ok := m.(module.HasName); ok {
 			moduleName := moduleWithName.Name()
+
+			switch moduleName {
+			case "feeibc":
+				moduleName = "ibc-fee"
+			case "transfer":
+				moduleName = "ibc-transfer"
+			case "interchainaccounts":
+				moduleName = "interchain-accounts"
+			}
+
 			if appModule, ok := moduleWithName.(appmodule.AppModule); ok {
 				modules[moduleName] = appModule
 			}
