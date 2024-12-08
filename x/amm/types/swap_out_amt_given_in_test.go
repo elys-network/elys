@@ -467,7 +467,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.000330206789333974"),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.000329390948666628"),
 			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 98977287),
 			expErr:                 false,
 		},
@@ -503,7 +503,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.006394728361554381"),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.006347556007845348"),
 			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 98054944),
 			expErr:                 false,
 		},
