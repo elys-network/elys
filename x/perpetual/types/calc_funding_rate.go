@@ -4,7 +4,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 )
 
-// CalculateFundingRate calculates and returns the funding rate based on long and short amounts
+// CalcFundingRate calculates and returns the funding rate based on long and short amounts
 func CalcFundingRate(longAmount, shortAmount sdkmath.Int, baseRate, maxRate, minRate sdkmath.LegacyDec) sdkmath.LegacyDec {
 	var ratio sdkmath.LegacyDec
 
