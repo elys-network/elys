@@ -467,8 +467,8 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.000330206789333974"),
-			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 99868002),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.000329390948666628"),
+			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 98977287),
 			expErr:                 false,
 		},
 		// scenario2 - oracle based
@@ -503,8 +503,8 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.006394728361554381"),
-			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 99229503),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.006347556007845348"),
+			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 98054944),
 			expErr:                 false,
 		},
 		// scenario3 - oracle based
@@ -540,7 +540,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			outTokenDenom:          "uusdt",
 			swapFee:                sdkmath.LegacyZeroDec(),
 			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0.001558845726811990"),
-			expTokenOut:            sdk.NewInt64Coin("uusdt", 99868706),
+			expTokenOut:            sdk.NewInt64Coin("uusdt", 98687060),
 			expErr:                 false,
 		},
 		// scenario1 - non-oracle based

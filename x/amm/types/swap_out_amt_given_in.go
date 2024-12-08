@@ -245,8 +245,8 @@ func (p *Pool) SwapOutAmtGivenIn(
 	if err != nil {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
-	outAmountAfterSlippage := oracleOutAmount.Sub(slippageAmount)
-	slippage = slippageAmount.Quo(oracleOutAmount)
+	outAmountAfterSlippage := oracleOutAmount.Sub(slippageAmount.Mul(externalLiquidityRatio))
+	slippage = slippageAmount.Mul(externalLiquidityRatio).Quo(oracleOutAmount)
 
 	// oracleOutAmount = 100 ATOM
 	// BalancerOutAmount = 95 ATOM
