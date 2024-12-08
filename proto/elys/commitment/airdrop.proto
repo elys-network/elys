@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package elys.commitment;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/elys-network/elys/x/commitment/types";
+
+message AtomStaker {
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message NftHolder {
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Cadet {
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Governor {
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}

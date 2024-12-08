@@ -4,6 +4,7 @@ package elys.commitment;
 import "gogoproto/gogo.proto";
 import "elys/commitment/params.proto";
 import "elys/commitment/commitments.proto";
+import "elys/commitment/airdrop.proto";
 
 option go_package = "github.com/elys-network/elys/x/commitment/types";
 
@@ -11,4 +12,9 @@ option go_package = "github.com/elys-network/elys/x/commitment/types";
 message GenesisState {
   Params params = 1 [ (gogoproto.nullable) = false ];
   repeated Commitments commitments = 2;
+
+  repeated AtomStaker atom_stakers = 3;
+  repeated NftHolder nft_holders = 4;
+  repeated Cadet cadets = 5;
+  repeated Governor governors = 6;
 }
