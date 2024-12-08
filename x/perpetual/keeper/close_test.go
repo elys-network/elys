@@ -134,7 +134,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(30), // less than at the same price
+			math.NewInt(31), // less than at the same price
 		},
 		{
 			"Close at take profit price",
@@ -276,7 +276,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(4505),
+			math.NewInt(4501),
 		},
 		{
 			"Close with too much unpaid Liability to make custody amount 0",

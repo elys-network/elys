@@ -1,14 +1,12 @@
 name: Test Software Upgrade
 
 on:
-  workflow_dispatch:
-  # FIXME: disable as we move to PSS, we need to update those settings to work with PSS
-  # pull_request:
-  # push:
-  #   branches:
-  #     - develop
-  #     - devnet
-  #     - main
+  pull_request:
+  push:
+    branches:
+      - develop
+      - devnet
+      - main
 
 jobs:
   create-new-snapshot:
@@ -58,7 +56,10 @@ jobs:
 
       - name: Retrieve post upgrade snapshot generator binary
         run: |
-          POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION=v0.6.2
+          # Get latest release version using GitHub API
+          POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION=$(curl -s https://api.github.com/repos/elys-network/post-upgrade-snapshot-generator/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+          echo "Latest post-upgrade-snapshot-generator version: $POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION"
+
           DOWNLOAD_URL=https://github.com/elys-network/post-upgrade-snapshot-generator/releases/download/${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}-linux-amd64
           POST_UPGRADE_SNAPSHOT_GENERATOR_PATH=/tmp/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}
           curl -L $DOWNLOAD_URL -o $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH && chmod +x $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH
@@ -92,7 +93,7 @@ jobs:
 
       - name: Retrieve info.json and set snapshot path
         run: |
-          DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/info.json
+          DOWNLOAD_URL=https://snapshots.elys.network/info.json
           curl -L $DOWNLOAD_URL -o /tmp/info.json
           echo "Info.json downloaded to check snapshot version."
 
@@ -116,7 +117,7 @@ jobs:
           fi
 
           # set snapshot download url
-          SNAPSHOT_DOWNLOAD_URL=https://snapshots-testnet.stake-town.com/elys/elystestnet-1_latest.tar.lz4
+          SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/snapshot.tar.lz4
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
 
           # set snapshot file path
