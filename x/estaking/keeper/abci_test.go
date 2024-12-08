@@ -139,9 +139,6 @@ func (suite *EstakingKeeperTestSuite) TestAbci() {
 					Inflation: &ttypes.InflationEntry{
 						IcsStakingRewards: 1000,
 						LmRewards:         0,
-						CommunityFund:     0,
-						StrategicReserve:  0,
-						TeamTokensVested:  0,
 					},
 					Description: "test",
 					Authority:   suite.app.GovKeeper.GetAuthority(),
@@ -168,9 +165,6 @@ func (suite *EstakingKeeperTestSuite) TestAbci() {
 					Inflation: &ttypes.InflationEntry{
 						IcsStakingRewards: 1000,
 						LmRewards:         0,
-						CommunityFund:     0,
-						StrategicReserve:  0,
-						TeamTokensVested:  0,
 					},
 					Description: "test",
 					Authority:   suite.app.GovKeeper.GetAuthority(),

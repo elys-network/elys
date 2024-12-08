@@ -33,9 +33,6 @@ func TestGenesisState_Validate(t *testing.T) {
 					Inflation: &types.InflationEntry{
 						LmRewards:         10,
 						IcsStakingRewards: 10,
-						CommunityFund:     10,
-						StrategicReserve:  10,
-						TeamTokensVested:  10,
 					},
 					SeedVesting:           94,
 					StrategicSalesVesting: 51,

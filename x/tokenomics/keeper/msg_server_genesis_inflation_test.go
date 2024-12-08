@@ -18,9 +18,6 @@ func TestGenesisInflationMsgServerUpdate(t *testing.T) {
 	inflation := &types.InflationEntry{
 		LmRewards:         10,
 		IcsStakingRewards: 10,
-		CommunityFund:     10,
-		StrategicReserve:  10,
-		TeamTokensVested:  10,
 	}
 
 	for _, tc := range []struct {

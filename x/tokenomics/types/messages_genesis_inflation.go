@@ -33,15 +33,6 @@ func (msg *MsgUpdateGenesisInflation) ValidateBasic() error {
 	if msg.Inflation.IcsStakingRewards <= 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "ics staking rewards must be positive")
 	}
-	if msg.Inflation.CommunityFund <= 0 {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "community fund must be positive")
-	}
-	if msg.Inflation.StrategicReserve <= 0 {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "strategic reserve must be positive")
-	}
-	if msg.Inflation.TeamTokensVested <= 0 {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "team tokens vested must be positive")
-	}
 
 	// Validate SeedVesting is positive
 	if msg.SeedVesting <= 0 {
