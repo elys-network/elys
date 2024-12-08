@@ -60,3 +60,31 @@ func (k Keeper) GetAllTimeBasedInflation(ctx sdk.Context) (list []types.TimeBase
 
 	return
 }
+
+// UpdateAllLegacyTimeBasedInflation updates all timeBasedInflation
+func (k Keeper) UpdateAllLegacyTimeBasedInflation(ctx sdk.Context) (list []types.LegacyTimeBasedInflation) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.TimeBasedInflationKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyTimeBasedInflation
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+
+		var new_val types.TimeBasedInflation
+		new_val.Authority = val.Authority
+		new_val.StartBlockHeight = val.StartBlockHeight
+		new_val.EndBlockHeight = val.EndBlockHeight
+		new_val.Description = val.Description
+		new_val.Inflation = &types.InflationEntry{
+			LmRewards:         val.Inflation.LmRewards,
+			IcsStakingRewards: val.Inflation.IcsStakingRewards,
+		}
+
+		b := k.cdc.MustMarshal(&new_val)
+		store.Set(iterator.Key(), b)
+	}
+
+	return
+}

@@ -12,3 +12,11 @@ message TimeBasedInflation {
   InflationEntry inflation = 4;
   string authority = 5;
 }
+
+message LegacyTimeBasedInflation {
+  uint64 start_block_height = 1;
+  uint64 end_block_height = 2;
+  string description = 3;
+  LegacyInflationEntry inflation = 4;
+  string authority = 5;
+}
