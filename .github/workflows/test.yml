@@ -1,11 +1,9 @@
-name: Run tests and upload coverage
+name: Run unit tests and upload coverage
 
 on:
   pull_request:
   push:
     branches:
-      - develop
-      - devnet
       - main
 
 jobs:
@@ -25,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
-      - name: Run tests
+      - name: Run unit tests
         run: go test -coverprofile=coverage.txt ./...
 
       - name: Upload results to Codecov

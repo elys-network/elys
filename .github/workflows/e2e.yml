@@ -1,0 +1,21 @@
+name: Run e2e tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run e2e tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run e2e tests
+        run: |
+          make get-heighliner && make local-image && make test-e2e
