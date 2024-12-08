@@ -19,6 +19,13 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	return
 }
 
+// SetParams set the params
+func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	b := k.cdc.MustMarshal(&params)
+	store.Set(types.ParamsKeyPrefix, b)
+}
+
 func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
@@ -29,18 +36,4 @@ func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
 
 	k.cdc.MustUnmarshal(b, &params)
 	return
-}
-
-// SetParams set the params
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	b := k.cdc.MustMarshal(&params)
-	store.Set(types.ParamsKeyPrefix, b)
-}
-
-// SetLegacyParams set the params
-func (k Keeper) SetLegacyParams(ctx sdk.Context, params types.LegacyParams) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	b := k.cdc.MustMarshal(&params)
-	store.Set(types.ParamsKeyPrefix, b)
 }

@@ -57,8 +57,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			inTokenDenom:           "uusdt",
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.000330373444662133"),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 100134081),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.000331056400904022"),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 101043562),
 			expErr:                 false,
 		},
 		// scenario2 - oracle based
@@ -93,8 +93,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			inTokenDenom:           "uusdt",
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.006401354515992492"),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 100776445),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.006413552900341021"),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 102008668),
 			expErr:                 false,
 		},
 		// scenario3 - oracle based
@@ -129,8 +129,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			inTokenDenom:           ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0.000831185594279234"),
-			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 100134830),
+			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0.001558845726811990"),
+			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 101348300),
 			expErr:                 false,
 		},
 		// scenario1 - non-oracle based
@@ -216,7 +216,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 					UseOracle: tc.useOracle,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
-				TotalShares: sdk.Coin{},
+				TotalShares: sdk.NewCoin(types.GetPoolShareDenom(1), sdkmath.ZeroInt()),
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdkmath.ZeroInt(),
 			}
@@ -225,7 +225,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			params.WeightBreakingFeeMultiplier = sdkmath.LegacyNewDecWithPrec(2, 4)
 			params.WeightBreakingFeeExponent = sdkmath.LegacyNewDecWithPrec(25, 1) // 2.5
 			params.WeightRecoveryFeePortion = sdkmath.LegacyNewDecWithPrec(50, 2)  // 50%
-			tokenOut, _, _, weightBonus, err := pool.SwapInAmtGivenOut(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenOut}, tc.inTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, sdkmath.LegacyOneDec(), params)
+			tokenOut, _, _, weightBonus, _, err := pool.SwapInAmtGivenOut(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenOut}, tc.inTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, sdkmath.LegacyOneDec(), params)
 			if tc.expErr {
 				suite.Require().Error(err)
 				suite.Require().EqualError(err, "amount too low")

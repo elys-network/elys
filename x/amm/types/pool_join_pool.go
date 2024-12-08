@@ -121,20 +121,20 @@ func (p *Pool) JoinPool(
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
 	params Params,
-) (numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, err error) {
+) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
 		numShares, tokensJoined, err := p.CalcJoinPoolNoSwapShares(tokensIn)
 		if err != nil {
-			return sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
 		if err != nil {
-			return sdkmath.Int{}, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}, err
+			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}, err
 		}
-		return numShares, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
+		return tokensJoined, numShares, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 	}
 
 	if !p.PoolParams.UseOracle {
@@ -152,37 +152,37 @@ func (p *Pool) JoinPool(
 
 		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
 		if err != nil {
-			return sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
 		if err != nil {
-			return sdkmath.Int{}, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}, err
+			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}, err
 		}
-		return numShares, totalSlippage, sdkmath.LegacyZeroDec(), nil
+		return tokensJoined, numShares, totalSlippage, sdkmath.LegacyZeroDec(), nil
 	}
 
 	joinValueWithoutSlippage, err := p.CalcJoinValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, tokensIn)
 	if err != nil {
-		return sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
 	accountedAssets := p.GetAccountedBalance(ctx, accountedPoolKeeper, p.PoolAssets)
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accountedAssets)
 	tvl, err := p.TVL(ctx, oracleKeeper, accountedPoolKeeper)
 	if err != nil {
-		return sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
 	// Ensure tvl is not zero to avoid division by zero
 	if tvl.IsZero() {
-		return sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
+		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
 	}
 
-	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx, tokensIn, sdk.Coins{}, accountedAssets)
+	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx, tokensIn, sdk.NewCoins(), accountedAssets)
 	if err != nil {
-		return sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
@@ -194,12 +194,19 @@ func (p *Pool) JoinPool(
 	targetWeightOut := sdkmath.LegacyOneDec().Sub(targetWeightIn)
 
 	// weight breaking fee as in Plasma pool
-	weightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenInDenom)
-	weightOut := sdkmath.LegacyOneDec().Sub(weightIn)
-	weightBreakingFee := GetWeightBreakingFee(weightIn, weightOut, targetWeightIn, targetWeightOut, distanceDiff, params)
+	finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenInDenom)
+	finalWeightOut := sdkmath.LegacyOneDec().Sub(finalWeightIn)
 
-	// weight recovery reward = weight breaking fee * weight recovery fee portion
-	weightRecoveryReward := weightBreakingFee.Mul(params.WeightRecoveryFeePortion)
+	initialAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
+		sdk.NewCoins(),
+		sdk.NewCoins(), accountedAssets,
+	)
+	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenInDenom)
+	initialWeightOut := sdkmath.LegacyOneDec().Sub(initialWeightIn)
+	weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
+
+	// weight recovery reward = weight breaking fee * weight breaking fee portion
+	weightRecoveryReward := weightBreakingFee.Mul(params.WeightBreakingFeePortion)
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus = weightBreakingFee.Neg()
@@ -216,9 +223,9 @@ func (p *Pool) JoinPool(
 	numShares = numSharesDec.RoundInt()
 	err = p.IncreaseLiquidity(numShares, tokensIn)
 	if err != nil {
-		return sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
 	// No slippage in oracle pool due to 1 hr lock
-	return numShares, sdkmath.LegacyZeroDec(), weightBalanceBonus, nil
+	return tokensIn, numShares, sdkmath.LegacyZeroDec(), weightBalanceBonus, nil
 }

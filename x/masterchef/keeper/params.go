@@ -29,15 +29,3 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 func (k Keeper) CheckBlockedAddress(params types.Params) bool {
 	return k.bankKeeper.BlockedAddr(sdk.MustAccAddressFromBech32(params.ProtocolRevenueAddress))
 }
-
-func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-
-	b := store.Get(types.ParamsKey)
-	if b == nil {
-		return
-	}
-
-	k.cdc.MustUnmarshal(b, &params)
-	return
-}

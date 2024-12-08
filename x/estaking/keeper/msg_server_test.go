@@ -136,6 +136,7 @@ func (suite *EstakingKeeperTestSuite) TestMsgServer() {
 				suite.Require().Nil(err)
 
 				delegations, err := suite.app.StakingKeeper.GetValidatorDelegations(suite.ctx, valAddr)
+				suite.Require().Nil(err)
 				suite.Require().True(len(delegations) > 0)
 				addr := sdk.MustAccAddressFromBech32(delegations[0].DelegatorAddress)
 

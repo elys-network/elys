@@ -9,25 +9,22 @@ import "cosmos_proto/cosmos.proto";
 option go_package = "github.com/elys-network/elys/x/estaking/types";
 
 message LegacyParams {
-  option (gogoproto.goproto_stringer) = false;
-
-  LegacyIncentiveInfo stake_incentives = 1;
+  IncentiveInfo stake_incentives = 1;
   string eden_commit_val = 2;
   string edenb_commit_val = 3;
   // Maximum eden reward apr for stakers - [0 - 0.3]
-  string max_eden_reward_apr_stakers = 5 [
+  string max_eden_reward_apr_stakers = 4 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string eden_boost_apr = 6 [
+  string eden_boost_apr = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // Tracking dex rewards given to stakers
-  LegacyDexRewardsTracker dex_rewards_stakers = 7
-      [ (gogoproto.nullable) = false ];
+  DexRewardsTracker dex_rewards_stakers = 6 [ (gogoproto.nullable) = false ];
 }
 
 // Params defines the parameters for the module.
@@ -46,6 +43,10 @@ message Params {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  // Tracking dex rewards given to stakers
-  DexRewardsTracker dex_rewards_stakers = 6 [ (gogoproto.nullable) = false ];
+  string provider_vesting_epoch_identifier = 6;
+  string provider_staking_rewards_portion = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

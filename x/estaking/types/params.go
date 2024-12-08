@@ -1,26 +1,25 @@
 package types
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"gopkg.in/yaml.v2"
+	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
 )
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		StakeIncentives:         nil,
-		EdenCommitVal:           "",
-		EdenbCommitVal:          "",
-		MaxEdenRewardAprStakers: sdkmath.LegacyNewDecWithPrec(3, 1), // 30%
-		EdenBoostApr:            sdkmath.LegacyOneDec(),
-		DexRewardsStakers: DexRewardsTracker{
-			NumBlocks: 1,
-			Amount:    sdkmath.LegacyZeroDec(),
-		},
+		StakeIncentives:                nil,
+		EdenCommitVal:                  "",
+		EdenbCommitVal:                 "",
+		MaxEdenRewardAprStakers:        sdkmath.LegacyNewDecWithPrec(3, 1), // 30%
+		EdenBoostApr:                   sdkmath.LegacyOneDec(),
+		ProviderVestingEpochIdentifier: epochsmoduletypes.TenDaysEpochID,
+		ProviderStakingRewardsPortion:  sdkmath.LegacyMustNewDecFromStr("0.25"),
 	}
 }
 
@@ -52,19 +51,14 @@ func (p Params) Validate() error {
 	if p.EdenBoostApr.IsNegative() {
 		return fmt.Errorf("EdenBoostApr cannot be negative: %s", p.EdenBoostApr.String())
 	}
-	if p.DexRewardsStakers.Amount.IsNil() {
-		return fmt.Errorf("DexRewardsStakers amount must not be nil")
+	if p.ProviderVestingEpochIdentifier == "" {
+		return fmt.Errorf("ProviderVestingEpochIdentifier must not be empty")
 	}
-	if p.DexRewardsStakers.Amount.IsNegative() {
-		return fmt.Errorf("DexRewardsStakers amount cannot be -ve")
+	if p.ProviderStakingRewardsPortion.IsNil() {
+		return fmt.Errorf("ProviderStakingRewardsPortion must not be nil")
 	}
-	if p.DexRewardsStakers.NumBlocks < 0 {
-		return fmt.Errorf("DexRewardsStakers NumBlocks cannot be -ve")
+	if p.ProviderStakingRewardsPortion.IsNegative() {
+		return fmt.Errorf("ProviderStakingRewardsPortion cannot be negative: %s", p.ProviderStakingRewardsPortion.String())
 	}
 	return nil
-}
-
-func (p LegacyParams) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
 }

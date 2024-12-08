@@ -47,7 +47,7 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store.Set(key, b)
 }
 
-// GetAllPool returns all pool
+// GetAllPools returns all pool
 func (k Keeper) GetAllPools(ctx sdk.Context) (list []types.Pool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iterator := storetypes.KVStorePrefixIterator(store, types.PoolKeyPrefix)

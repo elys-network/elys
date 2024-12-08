@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
@@ -143,5 +144,6 @@ func TestCancelVestNoVestingInfo(t *testing.T) {
 	// Execute the CancelVest function
 	_, err := msgServer.CancelVest(ctx, cancelVestMsg)
 	require.Error(t, err, "should throw an error when trying to cancel tokens with no vesting info")
-	require.True(t, types.ErrInvalidDenom.Is(err), "error should be invalid denom")
+	fmt.Println(err.Error())
+	require.True(t, types.ErrInsufficientVestingTokens.Is(err), "error should be invalid denom")
 }

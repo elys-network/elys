@@ -1,11 +1,11 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/app"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -14,7 +14,7 @@ import (
 
 // TestKeeper_ShowCommitments tests the ShowCommitments function
 func TestKeeper_ShowCommitments(t *testing.T) {
-	app := app.InitElysTestApp(true, t)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.CommitmentKeeper
@@ -57,7 +57,7 @@ func TestKeeper_ShowCommitments(t *testing.T) {
 
 // TestKeeper_ShowCommitmentsNilRequest tests the case where the request is nil
 func TestKeeper_ShowCommitmentsNilRequest(t *testing.T) {
-	app := app.InitElysTestApp(true, t)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.CommitmentKeeper
@@ -68,7 +68,7 @@ func TestKeeper_ShowCommitmentsNilRequest(t *testing.T) {
 
 // TestKeeper_NumberOfCommitments tests the NumberOfCommitments function
 func TestKeeper_NumberOfCommitments(t *testing.T) {
-	app := app.InitElysTestApp(true, t)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.CommitmentKeeper
@@ -101,7 +101,7 @@ func TestKeeper_NumberOfCommitments(t *testing.T) {
 	require.NotNil(t, actualRes)
 
 	expectedRes := &types.QueryNumberOfCommitmentsResponse{
-		Number: 2, // set to 2 because end block from AddEdenEdenBOnModule
+		Number: 3, // set to 3 because end block from estaking
 	}
 
 	require.Equal(t, expectedRes, actualRes)
@@ -109,7 +109,7 @@ func TestKeeper_NumberOfCommitments(t *testing.T) {
 
 // TestKeeper_NumberOfCommitmentsNilRequest tests the case where the request is nil
 func TestKeeper_NumberOfCommitmentsNilRequest(t *testing.T) {
-	app := app.InitElysTestApp(true, t)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.CommitmentKeeper
@@ -120,7 +120,7 @@ func TestKeeper_NumberOfCommitmentsNilRequest(t *testing.T) {
 
 // TestKeeper_CommittedTokensLocked tests the CommittedTokensLocked function
 func TestKeeper_CommittedTokensLocked(t *testing.T) {
-	app := app.InitElysTestApp(true, t)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.CommitmentKeeper
@@ -165,7 +165,7 @@ func TestKeeper_CommittedTokensLocked(t *testing.T) {
 
 // TestKeeper_CommittedTokensLockedNilRequest tests the case where the request is nil
 func TestKeeper_CommittedTokensLockedNilRequest(t *testing.T) {
-	app := app.InitElysTestApp(true, t)
+	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 
 	mk := app.CommitmentKeeper

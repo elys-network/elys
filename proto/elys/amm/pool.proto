@@ -47,6 +47,11 @@ message PoolExtraInfo {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  string lp_saved_apr = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message OraclePoolSlippageTrack {
@@ -55,5 +60,15 @@ message OraclePoolSlippageTrack {
   repeated cosmos.base.v1beta1.Coin tracked = 3 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+message WeightBreakingSlippage {
+  uint64 pool_id = 1;
+  string date = 2;
+  string amount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
   ];
 }

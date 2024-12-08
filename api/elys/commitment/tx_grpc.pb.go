@@ -41,6 +41,8 @@ type MsgClient interface {
 	ClaimVesting(ctx context.Context, in *MsgClaimVesting, opts ...grpc.CallOption) (*MsgClaimVestingResponse, error)
 	// UpdateVestingInfo add/update specific vesting info by denom on Params
 	UpdateVestingInfo(ctx context.Context, in *MsgUpdateVestingInfo, opts ...grpc.CallOption) (*MsgUpdateVestingInfoResponse, error)
+	// UpdateEnableVestNow add/update enable vest now on Params
+	UpdateEnableVestNow(ctx context.Context, in *MsgUpdateEnableVestNow, opts ...grpc.CallOption) (*MsgUpdateEnableVestNowResponse, error)
 	Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOption) (*MsgStakeResponse, error)
 	Unstake(ctx context.Context, in *MsgUnstake, opts ...grpc.CallOption) (*MsgUnstakeResponse, error)
 }
@@ -125,6 +127,15 @@ func (c *msgClient) UpdateVestingInfo(ctx context.Context, in *MsgUpdateVestingI
 	return out, nil
 }
 
+func (c *msgClient) UpdateEnableVestNow(ctx context.Context, in *MsgUpdateEnableVestNow, opts ...grpc.CallOption) (*MsgUpdateEnableVestNowResponse, error) {
+	out := new(MsgUpdateEnableVestNowResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/UpdateEnableVestNow", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOption) (*MsgStakeResponse, error) {
 	out := new(MsgStakeResponse)
 	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/Stake", in, out, opts...)
@@ -170,6 +181,8 @@ type MsgServer interface {
 	ClaimVesting(context.Context, *MsgClaimVesting) (*MsgClaimVestingResponse, error)
 	// UpdateVestingInfo add/update specific vesting info by denom on Params
 	UpdateVestingInfo(context.Context, *MsgUpdateVestingInfo) (*MsgUpdateVestingInfoResponse, error)
+	// UpdateEnableVestNow add/update enable vest now on Params
+	UpdateEnableVestNow(context.Context, *MsgUpdateEnableVestNow) (*MsgUpdateEnableVestNowResponse, error)
 	Stake(context.Context, *MsgStake) (*MsgStakeResponse, error)
 	Unstake(context.Context, *MsgUnstake) (*MsgUnstakeResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -202,6 +215,9 @@ func (UnimplementedMsgServer) ClaimVesting(context.Context, *MsgClaimVesting) (*
 }
 func (UnimplementedMsgServer) UpdateVestingInfo(context.Context, *MsgUpdateVestingInfo) (*MsgUpdateVestingInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateVestingInfo not implemented")
+}
+func (UnimplementedMsgServer) UpdateEnableVestNow(context.Context, *MsgUpdateEnableVestNow) (*MsgUpdateEnableVestNowResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateEnableVestNow not implemented")
 }
 func (UnimplementedMsgServer) Stake(context.Context, *MsgStake) (*MsgStakeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Stake not implemented")
@@ -366,6 +382,24 @@ func _Msg_UpdateVestingInfo_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateEnableVestNow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateEnableVestNow)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateEnableVestNow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/UpdateEnableVestNow",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateEnableVestNow(ctx, req.(*MsgUpdateEnableVestNow))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_Stake_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgStake)
 	if err := dec(in); err != nil {
@@ -440,6 +474,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateVestingInfo",
 			Handler:    _Msg_UpdateVestingInfo_Handler,
+		},
+		{
+			MethodName: "UpdateEnableVestNow",
+			Handler:    _Msg_UpdateEnableVestNow_Handler,
 		},
 		{
 			MethodName: "Stake",

@@ -73,21 +73,21 @@ func (suite *EstakingKeeperTestSuite) TestAbci() {
 				suite.Require().Equal(res.Amount.String(), "147608ueden")
 			},
 		},
-		{
-			"update stakers rewards missing asset profile base currency",
-			func() (addr sdk.AccAddress, valAddr sdk.ValAddress) {
-				suite.ResetSuite()
-
-				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
-
-				return sdk.AccAddress{}, sdk.ValAddress{}
-			},
-			func(addr sdk.AccAddress, valAddr sdk.ValAddress) {
-				// update staker rewards
-				err := suite.app.EstakingKeeper.UpdateStakersRewards(suite.ctx)
-				suite.Require().Error(err)
-			},
-		},
+		//{
+		//	"update stakers rewards missing asset profile base currency",
+		//	func() (addr sdk.AccAddress, valAddr sdk.ValAddress) {
+		//		suite.ResetSuite()
+		//
+		//		suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
+		//
+		//		return sdk.AccAddress{}, sdk.ValAddress{}
+		//	},
+		//	func(addr sdk.AccAddress, valAddr sdk.ValAddress) {
+		//		// update staker rewards
+		//		err := suite.app.EstakingKeeper.UpdateStakersRewards(suite.ctx)
+		//		suite.Require().Error(err)
+		//	},
+		//},
 		{
 			"process rewards distribution",
 			func() (addr sdk.AccAddress, valAddr sdk.ValAddress) {

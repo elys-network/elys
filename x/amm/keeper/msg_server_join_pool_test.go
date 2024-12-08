@@ -75,7 +75,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:  ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   math.NewInt(805987500000000000), // weight recovery direction - slippage enable
-			shareOutAmount:   math.NewInt(999500000000000000), // weight recovery direction - slippage disable
+			shareOutAmount:   math.NewInt(992205771365940052), // weight recovery direction - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -143,6 +143,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 				TotalWeight: math.ZeroInt(),
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 			// execute function
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
@@ -160,6 +161,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 				suite.Require().NoError(err)
 				suite.Require().Equal(resp.ShareAmountOut, tc.shareOutAmount)
 				suite.Require().Equal(sdk.Coins(resp.TokenIn).String(), tc.expTokenIn.String())
+				suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 				pools := suite.app.AmmKeeper.GetAllPool(suite.ctx)
 				suite.Require().Len(pools, 1)
@@ -257,6 +259,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 				TotalWeight: math.ZeroInt(),
 			}
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 			// Step 4: Simulate market price movement - adjust weights to 10:1
 			pool.PoolAssets[0].Weight = math.NewInt(10)
@@ -275,6 +278,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 				})
 
 			suite.Require().NoError(err)
+			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 			// Step 6: Validate if exploit was successful (It should fail)
 			// Calculate expected number of shares without weight balance bonus

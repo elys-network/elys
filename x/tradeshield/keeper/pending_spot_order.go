@@ -182,7 +182,7 @@ func (k Keeper) DeleteAllPendingSpotOrder(ctx sdk.Context) (list []types.SpotOrd
 	return
 }
 
-// ExecuteStopLossSpotOrder executes a stop loss order
+// ExecuteStopLossOrder executes a stop loss order
 func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
 	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
 	if err != nil {

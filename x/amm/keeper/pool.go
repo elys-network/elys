@@ -209,7 +209,7 @@ func (k Keeper) GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) 
 }
 
 // AddToPoolBalance Used in perpetual balance changes
-func (k Keeper) AddToPoolBalance(ctx sdk.Context, pool *types.Pool, addShares sdkmath.Int, coins sdk.Coins) error {
+func (k Keeper) AddToPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *types.Pool, addShares sdkmath.Int, coins sdk.Coins) error {
 	err := pool.IncreaseLiquidity(addShares, coins)
 	if err != nil {
 		return err
@@ -219,11 +219,39 @@ func (k Keeper) AddToPoolBalance(ctx sdk.Context, pool *types.Pool, addShares sd
 }
 
 // RemoveFromPoolBalance Used in perpetual balance changes
-func (k Keeper) RemoveFromPoolBalance(ctx sdk.Context, pool *types.Pool, removeShares sdkmath.Int, coins sdk.Coins) error {
+func (k Keeper) RemoveFromPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *types.Pool, removeShares sdkmath.Int, coins sdk.Coins) error {
 	err := pool.DecreaseLiquidity(removeShares, coins)
 	if err != nil {
 		return err
 	}
 	k.SetPool(ctx, *pool)
 	return k.RecordTotalLiquidityDecrease(ctx, coins)
+}
+
+// For migration only, fixes for amm mismatch has been added, to  verify if the fix is working we
+// will match the balances and do operations after
+func (k Keeper) MatchAmmBalances(ctx sdk.Context) error {
+	// Match pool balances and assets structure balances
+	pools := k.GetAllPool(ctx)
+	for _, pool := range pools {
+		if !pool.PoolParams.UseOracle {
+			balances := k.bankKeeper.GetAllBalances(ctx, sdk.MustAccAddressFromBech32(pool.GetAddress()))
+			for _, asset := range pool.PoolAssets {
+				for _, balance := range balances {
+					if asset.Token.Denom == balance.Denom {
+						if asset.Token.Amount.GT(balance.Amount) {
+							k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(asset.Token.Denom, asset.Token.Amount.Sub(balance.Amount))))
+							k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sdk.MustAccAddressFromBech32(pool.GetAddress()), sdk.NewCoins(sdk.NewCoin(asset.Token.Denom, asset.Token.Amount.Sub(balance.Amount))))
+						}
+
+						if asset.Token.Amount.LT(balance.Amount) {
+							k.bankKeeper.SendCoinsFromAccountToModule(ctx, sdk.MustAccAddressFromBech32(pool.GetAddress()), types.ModuleName, sdk.NewCoins(sdk.NewCoin(asset.Token.Denom, balance.Amount.Sub(asset.Token.Amount))))
+							k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(asset.Token.Denom, balance.Amount.Sub(asset.Token.Amount))))
+						}
+					}
+				}
+			}
+		}
+	}
+	return nil
 }
