@@ -33,6 +33,7 @@ func (suite *AmmKeeperTestSuite) TestOnCollectFee() {
 		poolInitBalance   sdk.Coins
 		expRevenueBalance sdk.Coins
 		expPass           bool
+		useOracle         bool
 	}{
 		{
 			desc:              "multiple fees collected",
@@ -40,6 +41,7 @@ func (suite *AmmKeeperTestSuite) TestOnCollectFee() {
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1999)},
 			expPass:           true,
+			useOracle:         false,
 		},
 		{
 			desc:              "zero fees collected",
@@ -47,6 +49,7 @@ func (suite *AmmKeeperTestSuite) TestOnCollectFee() {
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expRevenueBalance: sdk.Coins{},
 			expPass:           true,
+			useOracle:         false,
 		},
 		{
 			desc:              "base currency fee collected",
@@ -54,6 +57,15 @@ func (suite *AmmKeeperTestSuite) TestOnCollectFee() {
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
 			expPass:           true,
+			useOracle:         false,
+		},
+		{
+			desc:              "fee collected after weight recovery fee deduction",
+			fee:               sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900)},
+			expPass:           true,
+			useOracle:         true,
 		},
 	} {
 		suite.Run(tc.desc, func() {
@@ -87,7 +99,7 @@ func (suite *AmmKeeperTestSuite) TestOnCollectFee() {
 				RebalanceTreasury: treasuryAddr.String(),
 				PoolParams: types.PoolParams{
 					SwapFee:   sdkmath.LegacyZeroDec(),
-					UseOracle: false,
+					UseOracle: tc.useOracle,
 					FeeDenom:  ptypes.BaseCurrency,
 				},
 				TotalShares: sdk.NewCoin(types.GetPoolShareDenom(1), sdkmath.ZeroInt()),
@@ -148,6 +160,13 @@ func (suite *AmmKeeperTestSuite) TestSwapFeesToRevenueToken() {
 			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
 			expPass:           true,
+		},
+		{
+			desc:              "token not available in pools for swap",
+			fee:               sdk.Coins{sdk.NewInt64Coin("dummy", 1000)},
+			poolInitBalance:   sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			expRevenueBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
+			expPass:           false,
 		},
 	} {
 		suite.Run(tc.desc, func() {
