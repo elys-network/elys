@@ -40,4 +40,4 @@ if [ ${#multipliers} -lt 1 ]; then
 fi
 
 echo "!! Submit update-pool-info proposal !!"
-elysd tx incentive update-pool-info "$poolIds" "$multipliers" --title="title" --description="description" --deposit="10000000uelys" --from=treasury --chain-id=elysicstestnet-1 --broadcast-mode=block --yes --gas auto
+elysd tx incentive update-pool-info "$poolIds" "$multipliers" --title="title" --description="description" --deposit="10000000uelys" --from=treasury --yes --gas auto

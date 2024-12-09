@@ -2,15 +2,15 @@
 
 TREASURY=$(elysd keys show -a treasury --keyring-backend=test)
 
-elysd tx amm create-pool elysd tx amm create-pool 10uatom,10uusdt 10000uatom,10000uusdt --swap-fee=0.00 --exit-fee=0.00 --use-oracle=false --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
+elysd tx amm create-pool elysd tx amm create-pool 10uatom,10uusdt 10000uatom,10000uusdt --swap-fee=0.00 --exit-fee=0.00 --use-oracle=false --from=treasury --yes --gas=1000000
 
 # single asset add-liquidity
-elysd tx amm join-pool 1 2000uatom 90000000000000000 true --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
+elysd tx amm join-pool 1 2000uatom 90000000000000000 true --from=treasury --yes --gas=1000000
 # multiple asset add-liquidity
-elysd tx amm join-pool 1 2000uatom,2000uusdt 200000000000000000 true --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
+elysd tx amm join-pool 1 2000uatom,2000uusdt 200000000000000000 true --from=treasury --yes --gas=1000000
 
 # swap
-elysd tx amm swap-exact-amount-in 10uatom 1 1 uusdt --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
+elysd tx amm swap-exact-amount-in 10uatom 1 1 uusdt --from=treasury --yes --gas=1000000
 
 elysd query commitment show-commitments $TREASURY
 elysd query bank balances $TREASURY

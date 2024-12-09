@@ -2,13 +2,14 @@
 
 **Elys** is a blockchain built using Cosmos SDK and CometBFT. It is designed to be a fast, scalable, and secure blockchain that can be used to build decentralized applications.
 
-| Parameter    | Value                                                                    |
-| ------------ | ------------------------------------------------------------------------ |
-| Chain ID     | elysicstestnet-1                                                         |
-| Denomination | uelys                                                                    |
-| Decimals     | 6 (1 elys= 1000000uelys)                                                 |
-| Version      | [See latest version here](https://github.com/elys-network/elys/releases) |
-| RPC Endpoint | https://rpc.testnet.elys.network:443                                     |
+| Parameter            | Value                                                                    |
+| -------------------- | ------------------------------------------------------------------------ |
+| Chain Info           | [See network details here](https://github.com/elys-network/networks)     |
+| Denomination         | uelys                                                                    |
+| Decimals             | 6 (1 elys= 1000000uelys)                                                 |
+| Version              | [See latest version here](https://github.com/elys-network/elys/releases) |
+| TestNet RPC Endpoint | https://rpc.testnet.elys.network:443                                     |
+| TestNet API Endpoint | https://api.testnet.elys.network:443                                     |
 
 ## Localnet Setup Guide
 
@@ -161,32 +162,6 @@ make build
 You can also use the `make install` command to install the binary in the `bin` directory of your `GOPATH`.
 
 </details>
-
-### With Ignite (Experimental)
-
-To install the latest version of Elys binary, execute the following command on your machine:
-
-```
-curl https://get.ignite.com/elys-network/elys@latest! | sudo bash
-```
-
-## Development
-
-You can use `ignite-cli` to get you started with your development environment. To install `ignite-cli`, execute the following command on your machine:
-
-```
-curl https://get.ignite.com/ignite/ignite-cli@latest! | sudo bash
-```
-
-### Initialize
-
-To initialize and serve your development environment, execute the following command:
-
-```
-ignite chain serve -r
-```
-
-`serve` command installs dependencies, builds, initializes, and starts Elys in development. The `-r` flag rebuilds the binary before starting the chain.
 
 ## Validator Guide
 
