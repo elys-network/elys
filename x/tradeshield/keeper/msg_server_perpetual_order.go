@@ -179,11 +179,17 @@ func (k msgServer) CancelPerpetualOrder(goCtx context.Context, msg *types.MsgCan
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	// send the collateral amount back to the owner
-	ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
-	err := k.Keeper.bank.SendCoins(ctx, order.GetOrderAddress(), ownerAddress, sdk.NewCoins(order.Collateral))
-	if err != nil {
-		return nil, err
+	// Get all balances from the spot order address
+	orderAddress := order.GetOrderAddress()
+	balances := k.Keeper.bank.GetAllBalances(ctx, orderAddress)
+
+	// Send all available balances back to the owner if there are any
+	if !balances.IsZero() {
+		ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
+		err := k.Keeper.bank.SendCoins(ctx, orderAddress, ownerAddress, balances)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	k.RemovePendingPerpetualOrder(ctx, msg.OrderId)
