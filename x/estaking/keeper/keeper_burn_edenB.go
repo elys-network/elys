@@ -52,6 +52,15 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 		return nil
 	}
 
+	// Add event for burning edenB
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.TypeEvtBurnEdenB,
+			sdk.NewAttribute(types.AttributeDelegatorAddress, delegator.String()),
+			sdk.NewAttribute(types.AttributeAmount, edenBToBurn.String()),
+		),
+	)
+
 	// Burn EdenB in commitment module
 	err = k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
 	if err != nil {
@@ -89,9 +98,23 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator sdk.AccA
 	if edenCommittedAndElysStakedDec.GT(math.LegacyZeroDec()) {
 		edenBToBurn = unclaimedAmtDec.Quo(edenCommittedAndElysStakedDec).MulInt(totalEdenB)
 	}
+	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenBToBurn "+edenBToBurn.String(), edenBToBurn.String())
+	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  unclaimedAmtDec "+unclaimedAmtDec.String(), unclaimedAmtDec.String())
+	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenCommittedAndElysStakedDec "+edenCommittedAndElysStakedDec.String(), edenCommittedAndElysStakedDec.String())
+	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenCommitted "+edenCommitted.String(), edenCommitted.String())
+
 	if edenBToBurn.IsZero() {
 		return nil
 	}
+
+	// Add event for burning edenB
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.TypeEvtBurnEdenB,
+			sdk.NewAttribute(types.AttributeDelegatorAddress, delegator.String()),
+			sdk.NewAttribute(types.AttributeAmount, edenBToBurn.String()),
+		),
+	)
 
 	// Burn EdenB in commitment module
 	err = k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
