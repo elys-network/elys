@@ -14,5 +14,5 @@ elysd query commitment committed-tokens-locked $(elysd keys show -a treasury --k
 # - amount: "100000000"
 #   denom: stablestake/share
 
-elysd tx commitment commit-claimed-rewards 503544 ueden --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
-elysd tx commitment commit-claimed-rewards 1678547 uedenb --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx commitment commit-claimed-rewards 503544 ueden --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
+elysd tx commitment commit-claimed-rewards 1678547 uedenb --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000

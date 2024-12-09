@@ -10,24 +10,24 @@ elysd query stablestake borrow-ratio
 elysd query stablestake params
 
 # Open amm pool
-elysd tx amm create-pool 10uatom,10uusdc 10000000000uatom,10000000000uusdc --use-oracle=true --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx amm create-pool 10uatom,10uusdc 10000000000uatom,10000000000uusdc --use-oracle=true --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 
 # Put funds on stablestake
-elysd tx stablestake bond 100000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx stablestake bond 100000000 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 
 # Local test
-elysd tx gov submit-proposal proposal.json --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
-elysd tx gov vote 1 Yes --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
-elysd tx gov vote 3 Yes --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx gov submit-proposal proposal.json --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
+elysd tx gov vote 1 Yes --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
+elysd tx gov vote 3 Yes --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 elysd query gov proposals
 
 # Open position
-elysd tx leveragelp open 5.0 uusdc 5000000 1 0.0 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000 --fees=250uelys
+elysd tx leveragelp open 5.0 uusdc 5000000 1 0.0 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000 --fees=250uelys
 elysd tx leveragelp open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [flags]
 
 # Close position
-elysd tx leveragelp close 2 25000000000000000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
-elysd tx leveragelp close 1 500000000000000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx leveragelp close 2 25000000000000000000 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
+elysd tx leveragelp close 1 500000000000000000 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 elysd tx leveragelp close [position-id] [flags]
 
 # Query rewards
@@ -35,7 +35,7 @@ elysd query leveragelp rewards $(elysd keys show -a treasury --keyring-backend=t
 # {"rewards":[{"position_id":"1","reward":[{"denom":"ueden","amount":"3086835"}]}],"total_rewards":[{"denom":"ueden","amount":"3086835"}]}
 
 # Claim rewards
-elysd tx leveragelp claim-rewards 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx leveragelp claim-rewards 1 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 
 elysd query commitment show-commitments $(elysd keys show -a treasury --keyring-backend=test)
 elysd query commitment committed-tokens-locked $(elysd keys show -a treasury --keyring-backend=test)
@@ -86,11 +86,11 @@ pool:
   total_weight: "21474836480"
 
 # Open 50 USDC position
-elysd tx leveragelp open 5 ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65 50000000 2 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000 --node=https://rpc.testnet.elys.network:443 --fees=250uelys
+elysd tx leveragelp open 5 ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65 50000000 2 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000 --node=https://rpc.testnet.elys.network:443 --fees=250uelys
 
 
 # Put pool 2 on leveragelp (Testnet)
-elysd tx gov submit-proposal proposal.json --from=t2a --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000 --node=https://rpc.testnet.elys.network:443 --fees=250uelys
+elysd tx gov submit-proposal proposal.json --from=t2a --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000 --node=https://rpc.testnet.elys.network:443 --fees=250uelys
 ```
 {
   "title": "Enable ATOM/USDC pool (PoolId 2) on leveragelp",

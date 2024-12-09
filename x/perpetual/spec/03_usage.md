@@ -13,7 +13,7 @@ order: 3
 To open a long position with infinite profitability:
 
 ```shell
-elysd tx perpetual open long 5 uatom 100000000uusdc --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual open long 5 uatom 100000000uusdc --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 #### Finite Profitability
@@ -21,7 +21,7 @@ elysd tx perpetual open long 5 uatom 100000000uusdc --from=treasury --keyring-ba
 To open a short position with a specified take profit level:
 
 ```shell
-elysd tx perpetual open short 5 uatom 100000000uusdc --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual open short 5 uatom 100000000uusdc --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 ### Close a Position
@@ -29,7 +29,7 @@ elysd tx perpetual open short 5 uatom 100000000uusdc --take-profit 100 --from=tr
 To close an existing position:
 
 ```shell
-elysd tx perpetual close 1 10000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual close 1 10000000 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 ### Manage Whitelist
@@ -39,7 +39,7 @@ elysd tx perpetual close 1 10000000 --from=treasury --keyring-backend=test --cha
 To whitelist an address for trading in the perpetual module:
 
 ```shell
-elysd tx perpetual whitelist ADDRESS --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual whitelist ADDRESS --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 #### Dewhitelist an Address
@@ -47,7 +47,7 @@ elysd tx perpetual whitelist ADDRESS --from=treasury --keyring-backend=test --ch
 To remove an address from the whitelist:
 
 ```shell
-elysd tx perpetual dewhitelist ADDRESS --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual dewhitelist ADDRESS --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 ### Update Module Parameters
@@ -55,7 +55,7 @@ elysd tx perpetual dewhitelist ADDRESS --from=treasury --keyring-backend=test --
 To update the parameters of the perpetual module:
 
 ```shell
-elysd tx perpetual update-params [OPTIONS] --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual update-params [OPTIONS] --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 ## Query Commands
@@ -153,37 +153,37 @@ elysd query perpetual open-estimation [position] [leverage] [trading-asset] [col
 ### Open a Long Position
 
 ```shell
-elysd tx perpetual open long 5 uatom 100000000uusdc --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual open long 5 uatom 100000000uusdc --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 ### Open a Short Position with Take Profit
 
 ```shell
-elysd tx perpetual open short 5 uatom 100000000uusdc --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual open short 5 uatom 100000000uusdc --take-profit 100 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 ### Close a Position
 
 ```shell
-elysd tx perpetual close 1 10000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual close 1 10000000 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 ### Whitelist an Address
 
 ```shell
-elysd tx perpetual whitelist elys1qv4k64xr6nhcxgnzq0l8t8wy9s9d4s9d6w93lz --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual whitelist elys1qv4k64xr6nhcxgnzq0l8t8wy9s9d4s9d6w93lz --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 ### Dewhitelist an Address
 
 ```shell
-elysd tx perpetual dewhitelist elys1qv4k64xr6nhcxgnzq0l8t8wy9s9d4s9d6w93lz --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual dewhitelist elys1qv4k64xr6nhcxgnzq0l8t8wy9s9d4s9d6w93lz --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 ### Update Parameters
 
 ```shell
-elysd tx perpetual update-params --maxLeverage=10 --maintenanceMarginRatio=0.05 --fundingRateInterval=60 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual update-params --maxLeverage=10 --maintenanceMarginRatio=0.05 --fundingRateInterval=60 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 ### Query a Specific Position

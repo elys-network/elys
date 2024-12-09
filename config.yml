@@ -452,4 +452,4 @@ genesis:
         reward_portion_for_lps: "0.6"
         max_eden_reward_apr_lps: "0.5"
         protocol_revenue_address: "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3"
-  chain_id: elystestnet-1
+  chain_id: elysicstestnet-1

@@ -20,8 +20,8 @@ elysd query stablestake borrow-ratio
 # total_borrow: "0"
 # total_deposit: "100000000"
 
-elysd tx stablestake bond 100000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx stablestake bond 100000000 --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 
 
 # Testnet
-elysd tx stablestake bond 112131 --from=t2a --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000 --node=https://rpc.testnet.elys.network:443 --fees=250uelys
+elysd tx stablestake bond 112131 --from=t2a --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000 --node=https://rpc.testnet.elys.network:443 --fees=250uelys

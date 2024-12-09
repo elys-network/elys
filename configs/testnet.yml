@@ -237,4 +237,4 @@ genesis:
             communityFund: 9999999
             strategicReserve: 9999999
             teamTokensVested: 9999999
-  chain_id: elystestnet-1
+  chain_id: elysicstestnet-1

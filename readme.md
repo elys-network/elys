@@ -4,7 +4,7 @@
 
 | Parameter    | Value                                                                    |
 | ------------ | ------------------------------------------------------------------------ |
-| Chain ID     | elystestnet-1                                                            |
+| Chain ID     | elysicstestnet-1                                                         |
 | Denomination | uelys                                                                    |
 | Decimals     | 6 (1 elys= 1000000uelys)                                                 |
 | Version      | [See latest version here](https://github.com/elys-network/elys/releases) |
@@ -89,9 +89,9 @@ sudo apt-get install --yes make
 
 In order to generate proto files, install the dependencies below:
 
-* `buf`
-* `clang-format`
-* `protoc-gen-go-cosmos-orm`: `go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest`
+- `buf`
+- `clang-format`
+- `protoc-gen-go-cosmos-orm`: `go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest`
 
 Then run the following command:
 
@@ -191,10 +191,6 @@ ignite chain serve -r
 ## Validator Guide
 
 The validator guide is accessible [here](./validator.md).
-
-## Network Launch
-
-The network guide is accessible [here](./network.md).
 
 ## Architecture
 

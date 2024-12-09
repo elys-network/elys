@@ -21,11 +21,11 @@ elysd query stablestake borrow-ratio
 ### Bonding Tokens
 
 ```bash
-elysd tx stablestake bond 1000000000000uusdc --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx stablestake bond 1000000000000uusdc --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
 
 ### Unbonding Tokens
 
 ```bash
-elysd tx stablestake unbond 500000000000uusdc --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx stablestake unbond 500000000000uusdc --from=treasury --keyring-backend=test --chain-id=elysicstestnet-1 --yes --gas=1000000
 ```
