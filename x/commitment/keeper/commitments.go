@@ -10,7 +10,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -163,6 +162,7 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom str
 	if err != nil {
 		return err // never happens
 	}
+	k.SetCommitments(ctx, commitments)
 
 	amount = amount.Sub(claimedRemovalAmount)
 	if amount.IsZero() {
@@ -200,12 +200,4 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom str
 	}
 
 	return nil
-}
-
-func (k Keeper) BeginBlocker(ctx sdk.Context) {
-	if ctx.BlockHeight() == 67725 {
-		k.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, math.NewInt(1000000000000000000))))
-		recip := "elys1dd34v384hdfqgajkg0jzp0y5k6qlvhltt76qd5"
-		k.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sdk.MustAccAddressFromBech32(recip), sdk.NewCoins(sdk.NewCoin(ptypes.Eden, math.NewInt(1000000000000000000))))
-	}
 }

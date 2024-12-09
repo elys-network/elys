@@ -48,9 +48,18 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	if edenCommittedAndElysStakedDec.GT(math.LegacyZeroDec()) {
 		edenBToBurn = unstakedElysDec.Quo(edenCommittedAndElysStakedDec).MulInt(totalEdenB)
 	}
+	if edenCommittedAndElysStakedDec.IsZero() {
+		edenBToBurn = math.LegacyNewDecFromInt(totalEdenB)
+	}
 	if edenBToBurn.IsZero() {
 		return nil
 	}
+
+	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenBToBurn "+edenBToBurn.String(), edenBToBurn.String())
+	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  unclaimedAmtDec "+unstakedElysDec.String(), unstakedElysDec.String())
+	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenCommittedAndElysStakedDec "+edenCommittedAndElysStakedDec.String(), edenCommittedAndElysStakedDec.String())
+	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenCommitted "+edenCommitted.String(), edenCommitted.String())
+	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  elysStaked "+prevElysStaked.String(), prevElysStaked.String())
 
 	// Add event for burning edenB
 	ctx.EventManager().EmitEvent(
@@ -98,10 +107,9 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator sdk.AccA
 	if edenCommittedAndElysStakedDec.GT(math.LegacyZeroDec()) {
 		edenBToBurn = unclaimedAmtDec.Quo(edenCommittedAndElysStakedDec).MulInt(totalEdenB)
 	}
-	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenBToBurn "+edenBToBurn.String(), edenBToBurn.String())
-	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  unclaimedAmtDec "+unclaimedAmtDec.String(), unclaimedAmtDec.String())
-	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenCommittedAndElysStakedDec "+edenCommittedAndElysStakedDec.String(), edenCommittedAndElysStakedDec.String())
-	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenCommitted "+edenCommitted.String(), edenCommitted.String())
+	if edenCommittedAndElysStakedDec.IsZero() {
+		edenBToBurn = math.LegacyNewDecFromInt(totalEdenB)
+	}
 
 	if edenBToBurn.IsZero() {
 		return nil
