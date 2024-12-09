@@ -20,7 +20,7 @@ func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool) types.PoolExtraI
 	avg := k.GetWeightBreakingSlippageAvg(ctx, pool.PoolId)
 	apr := math.LegacyZeroDec()
 	if tvl.IsPositive() {
-		apr = avg.Mul(math.LegacyNewDec(52)).Quo(tvl)
+		apr = avg.Mul(math.LegacyNewDec(365)).Quo(tvl)
 	}
 	return types.PoolExtraInfo{
 		Tvl:          tvl,

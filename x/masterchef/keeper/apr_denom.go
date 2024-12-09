@@ -103,8 +103,12 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				return math.LegacyZeroDec(), nil
 			}
 
-			// Mutiply by 52 to get yearly rewards
-			yearlyDexRewardAmount := usdcAmount.Mul(math.LegacyNewDec(52))
+			// Mutiply by 365 to get yearly rewards
+			entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+			if !found {
+				return math.LegacyZeroDec(), assetprofiletypes.ErrAssetProfileNotFound
+			}
+			yearlyDexRewardAmount := usdcAmount.Mul(math.LegacyNewDec(365)).Quo(math.LegacyNewDec(int64(entry.Decimals)))
 
 			apr := yearlyDexRewardAmount.
 				Quo(edenDenomPrice).
