@@ -1,9 +1,10 @@
 package cli
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"strconv"
+
+	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -16,7 +17,7 @@ func CmdClose() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "close [mtp-id] [amount] [flags]",
 		Short:   "Close perpetual position",
-		Example: `elysd tx perpetual close 1 10000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Example: `elysd tx perpetual close 1 10000000 --from=bob --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)

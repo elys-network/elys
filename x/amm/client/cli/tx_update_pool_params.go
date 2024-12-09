@@ -16,7 +16,7 @@ func CmdUpdatePoolParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "update-pool-params [pool-id] [flags]",
 		Short:   "Update pool params",
-		Example: "elysd tx amm update-pool-params 1 --swap-fee=0.00 --exit-fee=0.00 --use-oracle=false --from=jack --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000",
+		Example: "elysd tx amm update-pool-params 1 --swap-fee=0.00 --exit-fee=0.00 --use-oracle=false --from=bob --yes --gas=1000000",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argPoolId, err := cast.ToUint64E(args[0])
