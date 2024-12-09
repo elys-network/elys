@@ -44,7 +44,7 @@ func TestAccountedPoolUpdate(t *testing.T) {
 	accountedPool := types.AccountedPool{
 		PoolId:           0,
 		TotalTokens:      []sdk.Coin{},
-		NonAmmPoolTokens: []sdk.Coin{},
+		NonAmmPoolTokens: []sdk.Coin{sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(1000))},
 	}
 
 	for _, asset := range ammPool.PoolAssets {
@@ -91,6 +91,18 @@ func TestAccountedPoolUpdate(t *testing.T) {
 			},
 		},
 	}
+
+	ammNotFound := ammPool
+	ammNotFound.PoolId = 1
+	err = apk.PerpetualUpdates(ctx, ammNotFound, perpetualPool, false)
+	require.Error(t, err)
+	ammNotFound.PoolId = 0
+	ammNotFound.PoolAssets = []ammtypes.PoolAsset{
+		{Token: sdk.NewCoin("dummy", sdkmath.NewInt(5000))},
+	}
+	err = apk.PerpetualUpdates(ctx, ammNotFound, perpetualPool, false)
+	require.Error(t, err)
+
 	// Update accounted pool
 	err = apk.PerpetualUpdates(ctx, ammPool, perpetualPool, false)
 	require.NoError(t, err)
@@ -98,6 +110,9 @@ func TestAccountedPoolUpdate(t *testing.T) {
 	apool, found := apk.GetAccountedPool(ctx, (uint64)(0))
 	require.Equal(t, found, true)
 	require.Equal(t, apool.PoolId, (uint64)(0))
+	nonAccPoolAmmBal, err := apool.GetNonAmmTokenBalance(ptypes.BaseCurrency)
+	require.NoError(t, err)
+	require.Equal(t, nonAccPoolAmmBal, sdkmath.NewInt(680))
 
 	usdcBalance := apk.GetAccountedBalance(ctx, (uint64)(0), ptypes.BaseCurrency)
 	require.Equal(t, usdcBalance, sdkmath.NewInt(1000+400-50+400-70))
