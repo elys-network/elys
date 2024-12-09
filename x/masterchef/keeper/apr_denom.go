@@ -104,11 +104,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			}
 
 			// Mutiply by 365 to get yearly rewards
-			denom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-			if !found {
-				return math.LegacyZeroDec(), assetprofiletypes.ErrAssetProfileNotFound
-			}
-			entry, found := k.assetProfileKeeper.GetEntry(ctx, denom)
+			entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 			if !found {
 				return math.LegacyZeroDec(), assetprofiletypes.ErrAssetProfileNotFound
 			}
