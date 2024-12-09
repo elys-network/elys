@@ -16,7 +16,7 @@ func CmdClaimRewards() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "claim-rewards [position-ids] [flags]",
 		Short:   "Claim rewards from leveragelp position",
-		Example: `elysd tx leveragelp claim-rewards 1,2 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Example: `elysd tx leveragelp claim-rewards 1,2 --from=bob --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)

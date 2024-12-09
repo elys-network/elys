@@ -1,9 +1,10 @@
 package cli
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"errors"
 	"strconv"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -16,7 +17,7 @@ func CmdOpen() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [stop-loss-price] [flags]",
 		Short:   "Open leveragelp position",
-		Example: `elysd tx leveragelp open 5 uusdc 100000000 1 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Example: `elysd tx leveragelp open 5 uusdc 100000000 1 --from=bob --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
