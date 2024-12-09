@@ -11,42 +11,39 @@ sh ./scripts/examples/oracle/start_band.sh
 
 ### Start elys chain
 
-```
-ignite chain init
-ignite chain serve --verbose
+```bash
+elysd init my-node --chain-id elys
+
+# Add a key for alice (if not exists)
+elysd keys add alice --keyring-backend test
+
+# Add genesis account
+elysd add-genesis-account alice 100000000stake --keyring-backend test
+
+# Generate genesis tx
+elysd gentx alice 100000000stake --chain-id elys --keyring-backend test
+
+# Collect genesis txs
+elysd collect-gentxs
+
+# Start the chain
+elysd start
 ```
 
 ### Start relayer
 
-#### Deposit balance to bandchain relayer account
-
-```
-ignite account show abc --address-prefix=band
-bandd tx bank send validator band12zyg3xanvupc6upytvsghhlkl8l9cm2rtzn57q 1000000uband --keyring-backend=test --chain-id=band-test -y --broadcast-mode=block --node=http://localhost:26658
-bandd query bank balances band12zyg3xanvupc6upytvsghhlkl8l9cm2rtzn57q --node=http://localhost:26658
-```
-
 #### Configure and setup relayer
 
-```
-rm -rf ~/.ignite/relayer
+```bash
+hermes config init
+hermes keys add --chain band-test --mnemonic-file band_mnemonic.txt
+hermes keys add --chain elys --mnemonic-file elys_mnemonic.txt
 
-ignite relayer configure -a \
---source-rpc "http://localhost:26658" \
---source-port "oracle" \
---source-gasprice "0.1uband" \
---source-gaslimit 5000000 \
---source-prefix "band" \
---source-version "bandchain-1" \
---target-rpc "http://localhost:26657" \
---target-faucet "http://localhost:4500" \
---target-port "oracle" \
---target-gasprice "0.0stake" \
---target-gaslimit 300000 \
---target-prefix "elys" \
---target-version "bandchain-1"
+# Create hermes config file with appropriate settings
+# Configure chains, ports, gas settings etc in ~/.hermes/config.toml
 
-ignite relayer connect
+# Start the relayer
+hermes start
 ```
 
 ### Send price request to bandchain
@@ -79,33 +76,52 @@ result:
 
 # Test band oracle with public testnet
 
-https://docs.ignite.com/v0.25.2/kb/band
-
 ### Start local elys chain
 
-ignite chain serve --verbose
+```bash
+elysd start
+```
 
 ### Setup relayer between local elys and public band testnet
 
-```
-rm -rf ~/.ignite/relayer
-ignite relayer configure -a \
---source-rpc "https://rpc.laozi-testnet6.bandchain.org:443" \
---source-faucet "https://laozi-testnet6.bandchain.org/faucet" \
---source-port "oracle" \
---source-gasprice "0.1uband" \
---source-gaslimit 5000000 \
---source-prefix "band" \
---source-version "bandchain-1" \
---target-rpc "http://localhost:26657" \
---target-faucet "http://localhost:4500" \
---target-port "oracle" \
---target-gasprice "0.0stake" \
---target-gaslimit 300000 \
---target-prefix "elys" \
---target-version "bandchain-1"
+```bash
+# Initialize Hermes config
+hermes config init
 
-ignite relayer connect
+# Add the chains to your config file (~/.hermes/config.toml):
+[[chains]]
+id = 'band-laozi-testnet6'
+rpc_addr = 'https://rpc.laozi-testnet6.bandchain.org:443'
+grpc_addr = 'https://laozi-testnet6.bandchain.org:9090'
+websocket_addr = 'wss://rpc.laozi-testnet6.bandchain.org/websocket'
+rpc_timeout = '10s'
+account_prefix = 'band'
+key_name = 'band-relayer'
+store_prefix = 'ibc'
+gas_price = { price = 0.1, denom = 'uband' }
+gas_limit = 5000000
+
+[[chains]]
+id = 'elys'
+rpc_addr = 'http://localhost:26657'
+grpc_addr = 'http://localhost:9090'
+websocket_addr = 'ws://localhost:26657/websocket'
+rpc_timeout = '10s'
+account_prefix = 'elys'
+key_name = 'elys-relayer'
+store_prefix = 'ibc'
+gas_price = { price = 0.0, denom = 'stake' }
+gas_limit = 300000
+
+# Add keys for both chains
+hermes keys add --chain band-laozi-testnet6 --mnemonic-file band_mnemonic.txt
+hermes keys add --chain elys --mnemonic-file elys_mnemonic.txt
+
+# Create the connection
+hermes create connection --a-chain elys --b-chain band-laozi-testnet6
+
+# Start the relayer
+hermes start
 ```
 
 ### Send price request to bandchain
