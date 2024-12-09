@@ -214,15 +214,15 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	swapFee := sdkmath.LegacyZeroDec()
 	tokenIn := sdk.NewInt64Coin(ptypes.BaseCurrency, 100000)
 	tokenOutMin := sdkmath.ZeroInt()
-	tokenOut := sdk.NewInt64Coin("uusdt", 99817)
+	tokenOut := sdk.NewInt64Coin("uusdt", 98918)
 	swapRoute := []types.SwapAmountInRoute{
 		{
 			PoolId:        1,
 			TokenOutDenom: "uusdt",
 		},
 	}
-	expSenderBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 99817)}
-	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 98924)}
+	expSenderBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 98918)}
+	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 90420)}
 
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())

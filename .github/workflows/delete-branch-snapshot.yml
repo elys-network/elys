@@ -12,7 +12,10 @@ jobs:
     steps:
       - name: Retrieve post upgrade snapshot generator binary
         run: |
-          POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION=v0.6.2
+          # Get latest release version using GitHub API
+          POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION=$(curl -s https://api.github.com/repos/elys-network/post-upgrade-snapshot-generator/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+          echo "Latest post-upgrade-snapshot-generator version: $POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION"
+
           DOWNLOAD_URL=https://github.com/elys-network/post-upgrade-snapshot-generator/releases/download/${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}-linux-amd64
           POST_UPGRADE_SNAPSHOT_GENERATOR_PATH=/tmp/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}
           curl -L $DOWNLOAD_URL -o $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH && chmod +x $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH

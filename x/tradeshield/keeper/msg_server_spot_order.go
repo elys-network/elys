@@ -25,11 +25,16 @@ func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSp
 
 	// if the order is market buy, execute it immediately
 	if msg.OrderType == types.SpotOrderType_MARKETBUY {
-		_, err := k.ExecuteMarketBuyOrder(ctx, pendingSpotOrder)
+		res, err := k.ExecuteMarketBuyOrder(ctx, pendingSpotOrder)
 		if err != nil {
 			return nil, err
 		}
-		return &types.MsgCreateSpotOrderResponse{}, nil
+
+		ctx.EventManager().EmitEvent(types.NewExecuteSpotOrderEvt(pendingSpotOrder, res))
+
+		return &types.MsgCreateSpotOrderResponse{
+			OrderId: pendingSpotOrder.OrderId,
+		}, nil
 	}
 
 	// add the order to the pending orders
@@ -88,11 +93,17 @@ func (k msgServer) CancelSpotOrder(goCtx context.Context, msg *types.MsgCancelSp
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	// send the order amount back to the owner
-	ownerAddress := sdk.MustAccAddressFromBech32(spotOrder.OwnerAddress)
-	err := k.Keeper.bank.SendCoins(ctx, spotOrder.GetOrderAddress(), ownerAddress, sdk.NewCoins(spotOrder.OrderAmount))
-	if err != nil {
-		return nil, err
+	// Get all balances from the spot order address
+	orderAddress := spotOrder.GetOrderAddress()
+	balances := k.Keeper.bank.GetAllBalances(ctx, orderAddress)
+
+	// Send all available balances back to the owner if there are any
+	if !balances.IsZero() {
+		ownerAddress := sdk.MustAccAddressFromBech32(spotOrder.OwnerAddress)
+		err := k.Keeper.bank.SendCoins(ctx, orderAddress, ownerAddress, balances)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	k.RemovePendingSpotOrder(ctx, msg.OrderId)

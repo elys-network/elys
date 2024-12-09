@@ -179,13 +179,13 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountIn() {
 			swapFeeOut:          sdkmath.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin("uusda", 10000),
 			tokenOutMin:         sdkmath.ZeroInt(),
-			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 9969),
+			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 9944),
 			weightBalanceBonus:  sdkmath.LegacyZeroDec(),
 			isOraclePool:        true,
 			useNewRecipient:     false,
-			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009969)},
+			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin("uusda", 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1009944)},
 			expRecipientBalance: sdk.Coins{},
-			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1009997), sdk.NewInt64Coin(ptypes.BaseCurrency, 990031)},
+			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin("uusda", 1009997), sdk.NewInt64Coin(ptypes.BaseCurrency, 990056)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin("uusda", 1000003), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:             true,
 			errMsg:              "",
@@ -353,7 +353,7 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountIn() {
 
 				track := suite.app.AmmKeeper.GetSlippageTrack(suite.ctx, 1, uint64(suite.ctx.BlockTime().Unix()))
 				if tc.isOraclePool {
-					suite.Require().Equal(track.Tracked.String(), "25uusdc")
+					suite.Require().Equal(track.Tracked.String(), "50uusdc")
 				} else {
 					suite.Require().Equal(track.Tracked.String(), "")
 				}

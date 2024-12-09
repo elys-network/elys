@@ -1,8 +1,9 @@
 package cli
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"errors"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -21,7 +22,7 @@ func CmdCreatePool() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "create-pool [weights] [initial-deposit] [fee-denom]",
 		Short:   "create a new pool and provide the liquidity to it",
-		Example: `elysd tx amm create-pool 100uatom,100uusdc 100000000000uatom,100000000000uusdc --swap-fee=0.00 --use-oracle=false  --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Example: `elysd tx amm create-pool 100uatom,100uusdc 100000000000uatom,100000000000uusdc --swap-fee=0.00 --use-oracle=false  --from=bob --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argWeights, err := sdk.ParseCoinsNormalized(args[0])

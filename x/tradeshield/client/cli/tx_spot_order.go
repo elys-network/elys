@@ -1,10 +1,11 @@
 package cli
 
 import (
-	"cosmossdk.io/math"
 	"encoding/json"
 	"io/ioutil"
 	"strconv"
+
+	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -35,8 +36,8 @@ func CmdCreateSpotOrder() *cobra.Command {
 			}
 			orderTargetDenom := args[2]
 			orderPrice := types.OrderPrice{
-				BaseDenom:  orderAmount.Denom,
-				QuoteDenom: orderTargetDenom,
+				BaseDenom:  orderTargetDenom,
+				QuoteDenom: orderAmount.Denom,
 				Rate:       math.LegacyMustNewDecFromStr(args[3]),
 			}
 
@@ -119,7 +120,7 @@ func CmdCancelSpotOrders() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "cancel-spot-orders [ids.json]",
 		Short:   "Cancel spot-orders",
-		Example: "elysd tx perpetual cancel-spot-orders ids.json --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000",
+		Example: "elysd tx perpetual cancel-spot-orders ids.json --from=bob --yes --gas=1000000",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ids, err := readPositionRequestJSON(args[0])

@@ -26,55 +26,54 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # FIXME: disabled software upgrade proposal as PSS is not yet enabled
-      # - name: Create software upgrade proposal
-      #   run: |
-      #     # helper functions
-      #     extract_txhash() { awk -F 'txhash: ' '/txhash:/{print $2; exit}'; }
-      #     extract_proposal_id() { awk -F 'key: proposal_id|value: ' '/key: proposal_id/ { getline; gsub(/"/, "", $2); print $2; exit }'; }
-      #     extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+450; exit }'; }
-      #     extract_checksum() { awk "/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print \$1; exit}"; }
+      - name: Create software upgrade proposal
+        run: |
+          # helper functions
+          extract_txhash() { awk -F 'txhash: ' '/txhash:/{print $2; exit}'; }
+          extract_proposal_id() { awk -F 'key: proposal_id|value: ' '/key: proposal_id/ { getline; gsub(/"/, "", $2); print $2; exit }'; }
+          extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+450; exit }'; }
+          extract_checksum() { awk "/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print \$1; exit}"; }
 
-      #     # environment variables
-      #     ELYSD=dist/elysd-linux-amd64_linux_amd64_v1/elysd
-      #     NODE=https://rpc.testnet.elys.network:443
-      #     OPTIONS="--node $NODE --chain-id elystestnet-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
+          # environment variables
+          ELYSD=dist/elysd-linux-amd64_linux_amd64_v1/elysd
+          NODE=https://rpc.testnet.elys.network:443
+          OPTIONS="--node $NODE --chain-id elysicstestnet-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
 
-      #     # save private keys to files
-      #     echo "${{ secrets.PRIVATE_KEY_1 }}" > /tmp/private_key_1.txt
-      #     echo "${{ secrets.PRIVATE_KEY_2 }}" > /tmp/private_key_2.txt
-      #     echo "${{ secrets.PRIVATE_KEY_3 }}" > /tmp/private_key_3.txt
-      #     echo "${{ secrets.PRIVATE_KEY_4 }}" > /tmp/private_key_4.txt
+          # save private keys to files
+          echo "${{ secrets.PRIVATE_KEY_1 }}" > /tmp/private_key_1.txt
+          echo "${{ secrets.PRIVATE_KEY_2 }}" > /tmp/private_key_2.txt
+          echo "${{ secrets.PRIVATE_KEY_3 }}" > /tmp/private_key_3.txt
+          echo "${{ secrets.PRIVATE_KEY_4 }}" > /tmp/private_key_4.txt
 
-      #     # recover keys
-      #     echo "${{ secrets.PASSPHRASE_1 }}" | ${ELYSD} keys import key_1 --keyring-backend test /tmp/private_key_1.txt
-      #     echo "${{ secrets.PASSPHRASE_2 }}" | ${ELYSD} keys import key_2 --keyring-backend test /tmp/private_key_2.txt
-      #     echo "${{ secrets.PASSPHRASE_3 }}" | ${ELYSD} keys import key_3 --keyring-backend test /tmp/private_key_3.txt
-      #     echo "${{ secrets.PASSPHRASE_4 }}" | ${ELYSD} keys import key_4 --keyring-backend test /tmp/private_key_4.txt
+          # recover keys
+          echo "${{ secrets.PASSPHRASE_1 }}" | ${ELYSD} keys import key_1 --keyring-backend test /tmp/private_key_1.txt
+          echo "${{ secrets.PASSPHRASE_2 }}" | ${ELYSD} keys import key_2 --keyring-backend test /tmp/private_key_2.txt
+          echo "${{ secrets.PASSPHRASE_3 }}" | ${ELYSD} keys import key_3 --keyring-backend test /tmp/private_key_3.txt
+          echo "${{ secrets.PASSPHRASE_4 }}" | ${ELYSD} keys import key_4 --keyring-backend test /tmp/private_key_4.txt
 
-      #     # get checksum
-      #     checksum=$(cat dist/sha256sum.txt | extract_checksum)
+          # get checksum
+          checksum=$(cat dist/sha256sum.txt | extract_checksum)
 
-      #     # query and upgrade height
-      #     height=$(${ELYSD} status --node $NODE | extract_and_calc_upgrade_height)
+          # query and upgrade height
+          height=$(${ELYSD} status --node $NODE | extract_and_calc_upgrade_height)
 
-      #     # create proposal
-      #     txhash=$(
-      #       ${ELYSD} software-upgrade-tx \
-      #         ${{ github.ref_name }} \
-      #         $height \
-      #         10000000uelys \
-      #         "Elys Network ${{ github.ref_name }} released. Focuses on enhancements and codebase improvements." \
-      #         "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${{ github.ref_name }}/elysd-${{ github.ref_name }}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
-      #         --from=key_1 \
-      #         $OPTIONS | extract_txhash
-      #     )
-      #     sleep 10
-      #     proposalid=$(${ELYSD} q tx $txhash --node $NODE | extract_proposal_id)
+          # create proposal
+          txhash=$(
+            ${ELYSD} software-upgrade-tx \
+              ${{ github.ref_name }} \
+              $height \
+              10000000uelys \
+              "Elys Network ${{ github.ref_name }} released. Focuses on enhancements and codebase improvements." \
+              "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${{ github.ref_name }}/elysd-${{ github.ref_name }}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
+              --from=key_1 \
+              $OPTIONS | extract_txhash
+          )
+          sleep 10
+          proposalid=$(${ELYSD} q tx $txhash --node $NODE | extract_proposal_id)
 
-      #     # vote on proposal
-      #     ${ELYSD} tx gov vote $proposalid yes --from=key_1 $OPTIONS
-      #     ${ELYSD} tx gov vote $proposalid yes --from=key_2 $OPTIONS
-      #     ${ELYSD} tx gov vote $proposalid yes --from=key_3 $OPTIONS
-      #     ${ELYSD} tx gov vote $proposalid yes --from=key_4 $OPTIONS
-      #     sleep 10
+          # vote on proposal
+          ${ELYSD} tx gov vote $proposalid yes --from=key_1 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=key_2 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=key_3 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=key_4 $OPTIONS
+          sleep 10
