@@ -55,12 +55,6 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 		return nil
 	}
 
-	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenBToBurn "+edenBToBurn.String(), edenBToBurn.String())
-	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  unclaimedAmtDec "+unstakedElysDec.String(), unstakedElysDec.String())
-	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenCommittedAndElysStakedDec "+edenCommittedAndElysStakedDec.String(), edenCommittedAndElysStakedDec.String())
-	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  edenCommitted "+edenCommitted.String(), edenCommitted.String())
-	ctx.Logger().Info("here is eden burdnedesnlhl lnlhjl;h;h  elysStaked "+prevElysStaked.String(), prevElysStaked.String())
-
 	// Add event for burning edenB
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
