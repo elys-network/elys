@@ -274,7 +274,7 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountOut() {
 
 				track := suite.app.AmmKeeper.GetSlippageTrack(suite.ctx, 1, uint64(suite.ctx.BlockTime().Unix()))
 				if tc.isOraclePool {
-					suite.Require().Equal(track.Tracked.String(), "11112uusda")
+					suite.Require().Equal(track.Tracked.String(), "22224uusda")
 				} else {
 					suite.Require().Equal(track.Tracked.String(), "")
 				}

@@ -318,12 +318,6 @@ func (p *Pool) SwapOutAmtGivenIn(
 	initialWeightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenOutDenom)
 	weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
 
-	if distanceDiff.IsPositive() {
-		if weightDistance.LT(params.ThresholdWeightDifference) {
-			weightBreakingFee = sdkmath.LegacyZeroDec()
-		}
-	}
-
 	// weightBreakingFeePerpetualFactor is 1 if not send by perpetual
 	weightBreakingFee = weightBreakingFee.Mul(weightBreakingFeePerpetualFactor)
 
