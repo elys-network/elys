@@ -3,7 +3,7 @@ package cli
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"os"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -104,7 +104,7 @@ func CmdAddPools() *cobra.Command {
 
 func readPoolJSON(filename string) (types.AddPool, error) {
 	var pool types.AddPool
-	bz, err := ioutil.ReadFile(filename)
+	bz, err := os.ReadFile(filename)
 	if err != nil {
 		return types.AddPool{}, err
 	}

@@ -2,7 +2,7 @@ package cli
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 	"strconv"
 
 	"cosmossdk.io/math"
@@ -148,7 +148,7 @@ func CmdCancelSpotOrders() *cobra.Command {
 
 func readPositionRequestJSON(filename string) ([]uint64, error) {
 	var positions []uint64
-	bz, err := ioutil.ReadFile(filename)
+	bz, err := os.ReadFile(filename)
 	if err != nil {
 		return []uint64{}, err
 	}

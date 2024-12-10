@@ -2,7 +2,7 @@ package cli
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -64,7 +64,7 @@ func CmdClosePositions() *cobra.Command {
 
 func readPositionRequestJSON(filename string) ([]types.PositionRequest, error) {
 	var positions []types.PositionRequest
-	bz, err := ioutil.ReadFile(filename)
+	bz, err := os.ReadFile(filename)
 	if err != nil {
 		return []types.PositionRequest{}, err
 	}
