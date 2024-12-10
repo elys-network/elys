@@ -165,6 +165,7 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom str
 
 	amount = amount.Sub(claimedRemovalAmount)
 	if amount.IsZero() {
+		k.SetCommitments(ctx, commitments)
 		return nil
 	}
 
