@@ -212,6 +212,7 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		DenomIn:   order.OrderPrice.BaseDenom,
 		DenomOut:  order.OrderPrice.QuoteDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err
@@ -253,6 +254,7 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 		DenomIn:   order.OrderPrice.BaseDenom,
 		DenomOut:  order.OrderPrice.QuoteDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err
@@ -294,6 +296,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		DenomIn:   order.OrderPrice.BaseDenom,
 		DenomOut:  order.OrderPrice.QuoteDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err
@@ -315,6 +318,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) (*
 		DenomIn:   order.OrderAmount.Denom,
 		DenomOut:  order.OrderTargetDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err

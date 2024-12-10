@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/json"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -58,10 +59,16 @@ func NewCancelPerpetualOrderEvt(order PerpetualOrder) sdk.Event {
 }
 
 func NewExecuteSpotOrderEvt(order SpotOrder, res *ammtypes.MsgSwapByDenomResponse) sdk.Event {
+	// convert order price to json string
+	orderPrice, err := json.Marshal(order.OrderPrice)
+	if err != nil {
+		panic(err)
+	}
+
 	return sdk.NewEvent(TypeEvtExecuteSpotOrder,
 		sdk.NewAttribute("order_type", order.OrderType.String()),
 		sdk.NewAttribute("order_id", strconv.FormatInt(int64(order.OrderId), 10)),
-		sdk.NewAttribute("order_price", order.OrderPrice.String()),
+		sdk.NewAttribute("order_price", string(orderPrice)),
 		sdk.NewAttribute("order_amount", order.OrderAmount.String()),
 		sdk.NewAttribute("owner_address", order.OwnerAddress),
 		sdk.NewAttribute("order_target_denom", order.OrderTargetDenom),
