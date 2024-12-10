@@ -161,7 +161,35 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 					PerpetualOrderIds: []uint64{1},
 				}
 			},
-			func() {},
+			func() {
+				// Get events from context
+				events := suite.ctx.EventManager().Events()
+
+				// Find the specific event we're looking for
+				var foundEvent sdk.Event
+				for _, event := range events {
+					if event.Type == types.TypeEvtExecuteLimitOpenPerpetualOrder {
+						foundEvent = event
+						break
+					}
+				}
+
+				// Assert event was emitted
+				suite.Require().NotNil(foundEvent)
+
+				// Check event attributes
+				suite.Require().Equal(types.TypeEvtExecuteLimitOpenPerpetualOrder, foundEvent.Type)
+
+				// Check specific attributes
+				for _, attr := range foundEvent.Attributes {
+					switch string(attr.Key) {
+					case "order_id":
+						suite.Require().Equal("1", string(attr.Value))
+					case "trigger_price":
+						suite.Require().Equal(string(attr.Value), "{\"trading_asset_denom\":\"uatom\",\"rate\":\"10.000000000000000000\"}")
+					}
+				}
+			},
 		},
 	}
 

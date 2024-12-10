@@ -82,12 +82,18 @@ func NewExecuteSpotOrderEvt(order SpotOrder, res *ammtypes.MsgSwapByDenomRespons
 }
 
 func NewExecuteLimitOpenPerpetualOrderEvt(order PerpetualOrder, positionId uint64) sdk.Event {
+	// convert trigger price to json string
+	triggerPrice, err := json.Marshal(order.TriggerPrice)
+	if err != nil {
+		panic(err)
+	}
+
 	return sdk.NewEvent(TypeEvtExecuteLimitOpenPerpetualOrder,
 		sdk.NewAttribute("order_id", strconv.FormatInt(int64(order.OrderId), 10)),
 		sdk.NewAttribute("owner_address", order.OwnerAddress),
 		sdk.NewAttribute("order_type", order.PerpetualOrderType.String()),
 		sdk.NewAttribute("position", order.Position.String()),
 		sdk.NewAttribute("position_id", strconv.FormatInt(int64(positionId), 10)),
-		sdk.NewAttribute("trigger_price", order.TriggerPrice.String()),
+		sdk.NewAttribute("trigger_price", string(triggerPrice)),
 	)
 }
