@@ -23,6 +23,7 @@ var (
 	CadetsKeyPrefix         = []byte{0x05}
 	GovernorKeyPrefix       = []byte{0x06}
 	AirdropClaimedKeyPrefix = []byte{0x07}
+	TotalClaimedKeyPrefix   = []byte{0x08}
 )
 
 func GetCommitmentsKey(creator sdk.AccAddress) []byte {

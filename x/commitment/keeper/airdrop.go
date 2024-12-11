@@ -8,6 +8,9 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
+const MaxElysAmount = 3_218_460_000_000
+const MaxEdenAmount = 3_316_344_000_000
+
 func (k Keeper) GetAtomStaker(ctx sdk.Context, address sdk.AccAddress) (val types.AtomStaker) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
@@ -189,4 +192,24 @@ func (k Keeper) GetAllAirdropClaimed(ctx sdk.Context) (list []*types.AirdropClai
 	}
 
 	return
+}
+
+func (k Keeper) GetTotalClaimed(ctx sdk.Context) (val types.TotalClaimed) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	b := store.Get(types.TotalClaimedKeyPrefix)
+
+	if b != nil {
+		k.cdc.MustUnmarshal(b, &val)
+	} else {
+		val.TotalEdenClaimed = math.ZeroInt()
+		val.TotalElysClaimed = math.ZeroInt()
+	}
+	return
+}
+
+func (k Keeper) SetTotalClaimed(ctx sdk.Context, totalClaimed types.TotalClaimed) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	b := k.cdc.MustMarshal(&totalClaimed)
+	store.Set(types.TotalClaimedKeyPrefix, b)
 }

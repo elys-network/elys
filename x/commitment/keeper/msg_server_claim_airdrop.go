@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/x/commitment/types"
@@ -59,9 +60,19 @@ func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdro
 	k.SetAirdropClaimed(ctx, sender)
 
 	// Update tracking of total claimed
-	params.TotalEdenClaimed = params.TotalEdenClaimed.Add(total_eden)
-	params.TotalElysClaimed = params.TotalElysClaimed.Add(total_elys)
-	k.SetParams(ctx, params)
+	total := k.GetTotalClaimed(ctx)
+	total.TotalElysClaimed = total.TotalElysClaimed.Add(total_elys)
+	total.TotalEdenClaimed = total.TotalEdenClaimed.Add(total_eden)
+	k.SetTotalClaimed(ctx, total)
+
+	// This will never be triggered
+	if total.TotalElysClaimed.GT(math.NewInt(MaxElysAmount)) {
+		return nil, types.ErrMaxElysAmountReached
+	}
+
+	if total.TotalEdenClaimed.GT(math.NewInt(MaxEdenAmount)) {
+		return nil, types.ErrMaxEdenAmountReached
+	}
 
 	return &types.MsgClaimAirdropResponse{
 		ElysAmount: total_elys,

@@ -1,7 +1,6 @@
 package migrations
 
 import (
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/commitment/types"
 )
@@ -15,8 +14,6 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		EnableVestNow:           legacy.EnableVestNow,
 		StartAirdropClaimHeight: legacy.StartAtomStakersHeight,
 		EndAirdropClaimHeight:   legacy.EndAtomStakersHeight,
-		TotalElysClaimed:        math.ZeroInt(),
-		TotalEdenClaimed:        math.ZeroInt(),
 	}
 	m.keeper.SetParams(ctx, newParams)
 

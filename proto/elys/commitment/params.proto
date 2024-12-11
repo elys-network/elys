@@ -37,16 +37,6 @@ message Params {
 
   uint64 start_airdrop_claim_height = 5;
   uint64 end_airdrop_claim_height = 6;
-  string total_elys_claimed = 7 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string total_eden_claimed = 8 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
 }
 
 message VestingInfo {

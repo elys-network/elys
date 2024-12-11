@@ -25,4 +25,6 @@ var (
 	ErrAirdropAlreadyClaimed          = errorsmod.Register(ModuleName, 1015, "airdrop already claimed")
 	ErrAirdropNotStarted              = errorsmod.Register(ModuleName, 1016, "airdrop not started")
 	ErrAirdropEnded                   = errorsmod.Register(ModuleName, 1017, "airdrop ended")
+	ErrMaxElysAmountReached           = errorsmod.Register(ModuleName, 1018, "maximum elys amount reached")
+	ErrMaxEdenAmountReached           = errorsmod.Register(ModuleName, 1019, "maximum eden amount reached")
 )
