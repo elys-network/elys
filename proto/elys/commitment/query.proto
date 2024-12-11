@@ -152,4 +152,5 @@ message QueryAirDropResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  bool claimed = 5;
 }
