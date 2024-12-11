@@ -101,7 +101,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 				// Find the specific event we're looking for
 				var foundEvent sdk.Event
 				for _, event := range events {
-					if event.Type == types.TypeEvtExecuteSpotOrder {
+					if event.Type == types.TypeEvtExecuteLimitBuySpotOrder {
 						foundEvent = event
 						break
 					}
@@ -111,7 +111,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 				suite.Require().NotNil(foundEvent)
 
 				// Check event attributes
-				suite.Require().Equal(types.TypeEvtExecuteSpotOrder, foundEvent.Type)
+				suite.Require().Equal(types.TypeEvtExecuteLimitBuySpotOrder, foundEvent.Type)
 
 				// Check specific attributes
 				for _, attr := range foundEvent.Attributes {

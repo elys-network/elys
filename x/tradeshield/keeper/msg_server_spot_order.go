@@ -30,7 +30,7 @@ func (k msgServer) CreateSpotOrder(goCtx context.Context, msg *types.MsgCreateSp
 			return nil, err
 		}
 
-		ctx.EventManager().EmitEvent(types.NewExecuteSpotOrderEvt(pendingSpotOrder, res))
+		ctx.EventManager().EmitEvent(types.NewExecuteMarketBuySpotOrderEvt(pendingSpotOrder, res))
 
 		return &types.MsgCreateSpotOrderResponse{
 			OrderId: pendingSpotOrder.OrderId,

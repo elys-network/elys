@@ -221,6 +221,9 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
 
+	// emit the event
+	ctx.EventManager().EmitEvent(types.NewExecuteStopLossSpotOrderEvt(order, res))
+
 	return res, nil
 }
 
@@ -262,6 +265,9 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
+
+	// emit the event
+	ctx.EventManager().EmitEvent(types.NewExecuteLimitSellSpotOrderEvt(order, res))
 
 	return res, nil
 }
@@ -305,6 +311,9 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
 
+	// emit the event
+	ctx.EventManager().EmitEvent(types.NewExecuteLimitBuySpotOrderEvt(order, res))
+
 	return res, nil
 }
 
@@ -323,6 +332,9 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) (*
 	if err != nil {
 		return res, err
 	}
+
+	// emit the event
+	ctx.EventManager().EmitEvent(types.NewExecuteMarketBuySpotOrderEvt(order, res))
 
 	return res, nil
 }
