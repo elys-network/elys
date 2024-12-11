@@ -22,11 +22,11 @@ func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdro
 	}
 
 	currentHeight := uint64(ctx.BlockHeight())
-	if currentHeight < params.StartAtomStakersHeight {
+	if currentHeight < params.StartAirdropClaimHeight {
 		return nil, types.ErrAirdropNotStarted
 	}
 
-	if currentHeight > params.EndAtomStakersHeight {
+	if currentHeight > params.EndAirdropClaimHeight {
 		return nil, types.ErrAirdropEnded
 	}
 
