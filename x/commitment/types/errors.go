@@ -22,4 +22,7 @@ var (
 	ErrVestNowIsNotEnabled            = errorsmod.Register(ModuleName, 1012, "instant vesting is not enabled at this stage")
 	ErrUnsupportedWithdrawMode        = errorsmod.Register(ModuleName, 1013, "unsupported withdraw mode")
 	ErrUnsupportedUncommitToken       = errorsmod.Register(ModuleName, 1014, "unsupported uncommit token")
+	ErrAirdropAlreadyClaimed          = errorsmod.Register(ModuleName, 1015, "airdrop already claimed")
+	ErrAirdropNotStarted              = errorsmod.Register(ModuleName, 1016, "airdrop not started")
+	ErrAirdropEnded                   = errorsmod.Register(ModuleName, 1017, "airdrop ended")
 )
