@@ -11,12 +11,12 @@ import (
 )
 
 // TODO: Update airdrop wallet address
-const airdropWallet = "cosmos1h9juh8mz997ndjmtzt3mk5z8l30qw3c39mlnvf"
+const AirdropWallet = "cosmos1h9juh8mz997ndjmtzt3mk5z8l30qw3c39mlnvf"
 
 func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdrop) (*types.MsgClaimAirdropResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	sender := sdk.MustAccAddressFromBech32(msg.Creator)
-	airdropWallet := sdk.MustAccAddressFromBech32(airdropWallet)
+	airdropWallet := sdk.MustAccAddressFromBech32(AirdropWallet)
 	params := k.GetParams(ctx)
 
 	if k.GetAirdropClaimed(ctx, sender).Claimed {
