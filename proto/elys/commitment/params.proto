@@ -15,6 +15,15 @@ message LegacyParams {
   ];
   uint64 number_of_commitments = 3;
   bool enable_vest_now = 4;
+
+  uint64 start_atom_stakers_height = 5;
+  uint64 end_atom_stakers_height = 6;
+  uint64 start_cadets_height = 7;
+  uint64 end_cadets_height = 8;
+  uint64 start_nft_holders_height = 9;
+  uint64 end_nft_holders_height = 10;
+  uint64 start_governors_height = 11;
+  uint64 end_governors_height = 12;
 }
 
 message Params {
@@ -26,14 +35,8 @@ message Params {
   uint64 number_of_commitments = 3;
   bool enable_vest_now = 4;
 
-  uint64 start_atom_stakers_height = 5;
-  uint64 end_atom_stakers_height = 6;
-  uint64 start_cadets_height = 7;
-  uint64 end_cadets_height = 8;
-  uint64 start_nft_holders_height = 9;
-  uint64 end_nft_holders_height = 10;
-  uint64 start_governors_height = 11;
-  uint64 end_governors_height = 12;
+  uint64 start_airdrop_claim_height = 5;
+  uint64 end_airdrop_claim_height = 6;
 }
 
 message VestingInfo {

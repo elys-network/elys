@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/commitment/types"
 	"google.golang.org/grpc/codes"
@@ -23,10 +24,12 @@ func (k Keeper) AirDrop(goCtx context.Context, req *types.QueryAirDropRequest) (
 	nftHolder := k.GetNFTHolder(ctx, address)
 	cadet := k.GetCadet(ctx, address)
 	governor := k.GetGovernor(ctx, address)
+	claimed := k.GetAirdropClaimed(ctx, address)
 	return &types.QueryAirDropResponse{
 		AtomStaking: atomStaker.Amount,
 		Cadet:       cadet.Amount,
 		NftHolder:   nftHolder.Amount,
 		Governor:    governor.Amount,
+		Claimed:     claimed.Claimed,
 	}, nil
 }
