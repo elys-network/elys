@@ -10,7 +10,8 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-const airdropWallet = ""
+// TODO: Update airdrop wallet address
+const airdropWallet = "cosmos1h9juh8mz997ndjmtzt3mk5z8l30qw3c39mlnvf"
 
 func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdrop) (*types.MsgClaimAirdropResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -35,7 +36,7 @@ func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdro
 	total_elys := k.GetNFTHolder(ctx, sender).Amount
 	total_elys = total_elys.Add(k.GetCadet(ctx, sender).Amount)
 	total_elys = total_elys.Add(k.GetGovernor(ctx, sender).Amount)
-	// TODO: Update airdrop wallet address
+
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, airdropWallet, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, total_elys)))
 	if err != nil {
 		return nil, err

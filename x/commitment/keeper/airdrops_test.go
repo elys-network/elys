@@ -94,3 +94,38 @@ func TestKeeper_Cadets(t *testing.T) {
 	all := keeper.GetAllCadets(ctx)
 	assert.Equal(t, len(all), 1)
 }
+
+func TestKeeper_AirdropClaimed(t *testing.T) {
+	keeper, ctx := keepertest.CommitmentKeeper(t)
+
+	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	val := types.AirdropClaimed{
+		Address: addr.String(),
+		Claimed: true,
+	}
+
+	keeper.SetAirdropClaimed(ctx, addr)
+
+	retrieved := keeper.GetAirdropClaimed(ctx, addr)
+	assert.Equal(t, val, retrieved)
+
+	retrievedNone := keeper.GetAirdropClaimed(ctx, sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()))
+	assert.Equal(t, false, retrievedNone.Claimed)
+
+	all := keeper.GetAllAirdropClaimed(ctx)
+	assert.Equal(t, len(all), 1)
+}
+
+func TestKeeper_TotalClaimed(t *testing.T) {
+	keeper, ctx := keepertest.CommitmentKeeper(t)
+
+	val := types.TotalClaimed{
+		TotalElysClaimed: math.NewInt(100),
+		TotalEdenClaimed: math.NewInt(200),
+	}
+
+	keeper.SetTotalClaimed(ctx, val)
+
+	retrieved := keeper.GetTotalClaimed(ctx)
+	assert.Equal(t, val, retrieved)
+}
