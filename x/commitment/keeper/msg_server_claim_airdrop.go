@@ -10,7 +10,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-const AirdropWallet = "elys1wk7jwkqt2h9cnpkst85j9n454e4y8znlgk842n"
+var AirdropWallet = "elys1wk7jwkqt2h9cnpkst85j9n454e4y8znlgk842n"
 
 func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdrop) (*types.MsgClaimAirdropResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)

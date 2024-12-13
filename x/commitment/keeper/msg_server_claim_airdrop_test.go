@@ -21,10 +21,10 @@ func TestAirdropClaim(t *testing.T) {
 	keeper := app.CommitmentKeeper
 
 	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
-
-	addr := simapp.AddTestAddrs(app, ctx, 2, sdkmath.NewInt(1000000))
+	addr := simapp.AddTestAddrs(app, ctx, 3, sdkmath.NewInt(1000000))
 	creator := addr[0]
 
+	commitmentkeeper.AirdropWallet = addr[2].String()
 	airdropAddress, _ := sdk.AccAddressFromBech32(commitmentkeeper.AirdropWallet)
 
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(2000))))
@@ -73,7 +73,7 @@ func TestAirdropClaim(t *testing.T) {
 	require.Equal(t, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(1001000))), balances)
 
 	walletBalances := app.BankKeeper.GetAllBalances(ctx, airdropAddress)
-	require.Equal(t, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(1000))), walletBalances)
+	require.Equal(t, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(1001000))), walletBalances)
 
 	require.Equal(t, sdkmath.NewInt(100), newCommitments.GetClaimedForDenom(ptypes.Eden))
 
