@@ -10,8 +10,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-// TODO: Update airdrop wallet address
-const AirdropWallet = "cosmos1h9juh8mz997ndjmtzt3mk5z8l30qw3c39mlnvf"
+const AirdropWallet = "elys1wk7jwkqt2h9cnpkst85j9n454e4y8znlgk842n"
 
 func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdrop) (*types.MsgClaimAirdropResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)

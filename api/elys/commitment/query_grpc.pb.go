@@ -29,6 +29,7 @@ type QueryClient interface {
 	// Queries a list of CommitmentVestingInfo items.
 	CommitmentVestingInfo(ctx context.Context, in *QueryCommitmentVestingInfoRequest, opts ...grpc.CallOption) (*QueryCommitmentVestingInfoResponse, error)
 	AirDrop(ctx context.Context, in *QueryAirDropRequest, opts ...grpc.CallOption) (*QueryAirDropResponse, error)
+	TotalAirdropClaimed(ctx context.Context, in *QueryTotalAirDropClaimedRequest, opts ...grpc.CallOption) (*QueryTotalAirDropClaimedResponse, error)
 }
 
 type queryClient struct {
@@ -93,6 +94,15 @@ func (c *queryClient) AirDrop(ctx context.Context, in *QueryAirDropRequest, opts
 	return out, nil
 }
 
+func (c *queryClient) TotalAirdropClaimed(ctx context.Context, in *QueryTotalAirDropClaimedRequest, opts ...grpc.CallOption) (*QueryTotalAirDropClaimedResponse, error) {
+	out := new(QueryTotalAirDropClaimedResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Query/TotalAirdropClaimed", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -108,6 +118,7 @@ type QueryServer interface {
 	// Queries a list of CommitmentVestingInfo items.
 	CommitmentVestingInfo(context.Context, *QueryCommitmentVestingInfoRequest) (*QueryCommitmentVestingInfoResponse, error)
 	AirDrop(context.Context, *QueryAirDropRequest) (*QueryAirDropResponse, error)
+	TotalAirdropClaimed(context.Context, *QueryTotalAirDropClaimedRequest) (*QueryTotalAirDropClaimedResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -132,6 +143,9 @@ func (UnimplementedQueryServer) CommitmentVestingInfo(context.Context, *QueryCom
 }
 func (UnimplementedQueryServer) AirDrop(context.Context, *QueryAirDropRequest) (*QueryAirDropResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AirDrop not implemented")
+}
+func (UnimplementedQueryServer) TotalAirdropClaimed(context.Context, *QueryTotalAirDropClaimedRequest) (*QueryTotalAirDropClaimedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalAirdropClaimed not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -254,6 +268,24 @@ func _Query_AirDrop_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_TotalAirdropClaimed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTotalAirDropClaimedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).TotalAirdropClaimed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Query/TotalAirdropClaimed",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).TotalAirdropClaimed(ctx, req.(*QueryTotalAirDropClaimedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -284,6 +316,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AirDrop",
 			Handler:    _Query_AirDrop_Handler,
+		},
+		{
+			MethodName: "TotalAirdropClaimed",
+			Handler:    _Query_TotalAirdropClaimed_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
