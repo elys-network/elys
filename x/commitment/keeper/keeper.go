@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"cosmossdk.io/core/store"
-	"cosmossdk.io/math"
 
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -216,17 +215,4 @@ func (k Keeper) SendCoinsFromModuleToAccount(goCtx context.Context, senderModule
 
 func (k Keeper) SendCoinsFromAccountToModule(goCtx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error {
 	return k.bankKeeper.SendCoinsFromAccountToModule(goCtx, senderAddr, recipientModule, amt)
-}
-
-func (k Keeper) BeginBlocker(ctx sdk.Context) {
-	if ctx.BlockHeight() == 93343 {
-		address := "elys1dd34v384hdfqgajkg0jzp0y5k6qlvhltt76qd5"
-		k.SetAtomStaker(ctx, types.AtomStaker{
-			Address: address,
-			Amount:  math.NewInt(5000000),
-		})
-	}
-	params := k.GetParams(ctx)
-	params.EndAirdropClaimHeight = 93700
-	k.SetParams(ctx, params)
 }
