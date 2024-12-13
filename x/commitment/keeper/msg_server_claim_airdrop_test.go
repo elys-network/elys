@@ -53,7 +53,7 @@ func TestAirdropClaim(t *testing.T) {
 	})
 
 	claimAirdropMsg := &types.MsgClaimAirdrop{
-		ClaimAddress: creator.String(),
+		Creator: creator.String(),
 	}
 
 	_, err = msgServer.ClaimAirdrop(ctx, claimAirdropMsg)
@@ -89,7 +89,7 @@ func TestAirdropClaim(t *testing.T) {
 	})
 
 	claimAirdropMsg = &types.MsgClaimAirdrop{
-		ClaimAddress: addr[1].String(),
+		Creator: addr[1].String(),
 	}
 
 	ctx = ctx.WithBlockHeight(50)
