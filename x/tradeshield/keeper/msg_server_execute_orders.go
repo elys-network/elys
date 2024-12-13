@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
@@ -23,30 +22,27 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 		}
 
 		var err error
-		var res *ammtypes.MsgSwapByDenomResponse
 
 		// dispatch based on the order type
 		switch spotOrder.OrderType {
 		case types.SpotOrderType_STOPLOSS:
 			// execute the stop loss order
-			res, err = k.ExecuteStopLossOrder(ctx, spotOrder)
+			_, err = k.ExecuteStopLossOrder(ctx, spotOrder)
 		case types.SpotOrderType_LIMITSELL:
 			// execute the limit sell order
-			res, err = k.ExecuteLimitSellOrder(ctx, spotOrder)
+			_, err = k.ExecuteLimitSellOrder(ctx, spotOrder)
 		case types.SpotOrderType_LIMITBUY:
 			// execute the limit buy order
-			res, err = k.ExecuteLimitBuyOrder(ctx, spotOrder)
+			_, err = k.ExecuteLimitBuyOrder(ctx, spotOrder)
 		case types.SpotOrderType_MARKETBUY:
 			// execute the market buy order
-			res, err = k.ExecuteMarketBuyOrder(ctx, spotOrder)
+			_, err = k.ExecuteMarketBuyOrder(ctx, spotOrder)
 		}
 
 		// log the error if any
 		if err != nil {
 			// Add log about error or not executed
 			spotLog = append(spotLog, fmt.Sprintf("Spot order Id:%d cannot be executed due to err: %s", spotOrderId, err.Error()))
-		} else {
-			ctx.EventManager().EmitEvent(types.NewExecuteSpotOrderEvt(spotOrder, res))
 		}
 	}
 

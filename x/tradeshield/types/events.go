@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/json"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,7 +13,10 @@ const (
 	TypeEvtCancelPerpetualOrder           = "tradeshield/cancel_perpetual_order"
 	TypeEvtExecuteOrders                  = "tradeshield/execute_orders"
 	TypeEvtExecuteLimitOpenPerpetualOrder = "tradeshield/execute_perpetual_limit_open_order"
-	TypeEvtExecuteSpotOrder               = "tradeshield/execute_spot_order"
+	TypeEvtExecuteLimitBuySpotOrder       = "tradeshield/execute_limit_buy_spot_order"
+	TypeEvtExecuteLimitSellSpotOrder      = "tradeshield/execute_limit_sell_spot_order"
+	TypeEvtExecuteStopLossSpotOrder       = "tradeshield/execute_stop_loss_spot_order"
+	TypeEvtExecuteMarketBuySpotOrder      = "tradeshield/execute_market_buy_spot_order"
 )
 
 func EmitCloseSpotOrderEvent(ctx sdk.Context, order SpotOrder) {
@@ -57,11 +61,86 @@ func NewCancelPerpetualOrderEvt(order PerpetualOrder) sdk.Event {
 	)
 }
 
-func NewExecuteSpotOrderEvt(order SpotOrder, res *ammtypes.MsgSwapByDenomResponse) sdk.Event {
-	return sdk.NewEvent(TypeEvtExecuteSpotOrder,
+func NewExecuteLimitBuySpotOrderEvt(order SpotOrder, res *ammtypes.MsgSwapByDenomResponse) sdk.Event {
+	// convert order price to json string
+	orderPrice, err := json.Marshal(order.OrderPrice)
+	if err != nil {
+		panic(err)
+	}
+
+	return sdk.NewEvent(TypeEvtExecuteLimitBuySpotOrder,
 		sdk.NewAttribute("order_type", order.OrderType.String()),
 		sdk.NewAttribute("order_id", strconv.FormatInt(int64(order.OrderId), 10)),
-		sdk.NewAttribute("order_price", order.OrderPrice.String()),
+		sdk.NewAttribute("order_price", string(orderPrice)),
+		sdk.NewAttribute("order_amount", order.OrderAmount.String()),
+		sdk.NewAttribute("owner_address", order.OwnerAddress),
+		sdk.NewAttribute("order_target_denom", order.OrderTargetDenom),
+		sdk.NewAttribute("date", order.Date.String()),
+		sdk.NewAttribute("amount", res.Amount.String()),
+		sdk.NewAttribute("spot_price", res.SpotPrice.String()),
+		sdk.NewAttribute("swap_fee", res.SwapFee.String()),
+		sdk.NewAttribute("discount", res.Discount.String()),
+		sdk.NewAttribute("recipient", res.Recipient),
+	)
+}
+
+func NewExecuteLimitSellSpotOrderEvt(order SpotOrder, res *ammtypes.MsgSwapByDenomResponse) sdk.Event {
+	// convert order price to json string
+	orderPrice, err := json.Marshal(order.OrderPrice)
+	if err != nil {
+		panic(err)
+	}
+
+	return sdk.NewEvent(TypeEvtExecuteLimitSellSpotOrder,
+		sdk.NewAttribute("order_type", order.OrderType.String()),
+		sdk.NewAttribute("order_id", strconv.FormatInt(int64(order.OrderId), 10)),
+		sdk.NewAttribute("order_price", string(orderPrice)),
+		sdk.NewAttribute("order_amount", order.OrderAmount.String()),
+		sdk.NewAttribute("owner_address", order.OwnerAddress),
+		sdk.NewAttribute("order_target_denom", order.OrderTargetDenom),
+		sdk.NewAttribute("date", order.Date.String()),
+		sdk.NewAttribute("amount", res.Amount.String()),
+		sdk.NewAttribute("spot_price", res.SpotPrice.String()),
+		sdk.NewAttribute("swap_fee", res.SwapFee.String()),
+		sdk.NewAttribute("discount", res.Discount.String()),
+		sdk.NewAttribute("recipient", res.Recipient),
+	)
+}
+
+func NewExecuteStopLossSpotOrderEvt(order SpotOrder, res *ammtypes.MsgSwapByDenomResponse) sdk.Event {
+	// convert order price to json string
+	orderPrice, err := json.Marshal(order.OrderPrice)
+	if err != nil {
+		panic(err)
+	}
+
+	return sdk.NewEvent(TypeEvtExecuteStopLossSpotOrder,
+		sdk.NewAttribute("order_type", order.OrderType.String()),
+		sdk.NewAttribute("order_id", strconv.FormatInt(int64(order.OrderId), 10)),
+		sdk.NewAttribute("order_price", string(orderPrice)),
+		sdk.NewAttribute("order_amount", order.OrderAmount.String()),
+		sdk.NewAttribute("owner_address", order.OwnerAddress),
+		sdk.NewAttribute("order_target_denom", order.OrderTargetDenom),
+		sdk.NewAttribute("date", order.Date.String()),
+		sdk.NewAttribute("amount", res.Amount.String()),
+		sdk.NewAttribute("spot_price", res.SpotPrice.String()),
+		sdk.NewAttribute("swap_fee", res.SwapFee.String()),
+		sdk.NewAttribute("discount", res.Discount.String()),
+		sdk.NewAttribute("recipient", res.Recipient),
+	)
+}
+
+func NewExecuteMarketBuySpotOrderEvt(order SpotOrder, res *ammtypes.MsgSwapByDenomResponse) sdk.Event {
+	// convert order price to json string
+	orderPrice, err := json.Marshal(order.OrderPrice)
+	if err != nil {
+		panic(err)
+	}
+
+	return sdk.NewEvent(TypeEvtExecuteMarketBuySpotOrder,
+		sdk.NewAttribute("order_type", order.OrderType.String()),
+		sdk.NewAttribute("order_id", strconv.FormatInt(int64(order.OrderId), 10)),
+		sdk.NewAttribute("order_price", string(orderPrice)),
 		sdk.NewAttribute("order_amount", order.OrderAmount.String()),
 		sdk.NewAttribute("owner_address", order.OwnerAddress),
 		sdk.NewAttribute("order_target_denom", order.OrderTargetDenom),
@@ -75,12 +154,18 @@ func NewExecuteSpotOrderEvt(order SpotOrder, res *ammtypes.MsgSwapByDenomRespons
 }
 
 func NewExecuteLimitOpenPerpetualOrderEvt(order PerpetualOrder, positionId uint64) sdk.Event {
+	// convert trigger price to json string
+	triggerPrice, err := json.Marshal(order.TriggerPrice)
+	if err != nil {
+		panic(err)
+	}
+
 	return sdk.NewEvent(TypeEvtExecuteLimitOpenPerpetualOrder,
 		sdk.NewAttribute("order_id", strconv.FormatInt(int64(order.OrderId), 10)),
 		sdk.NewAttribute("owner_address", order.OwnerAddress),
 		sdk.NewAttribute("order_type", order.PerpetualOrderType.String()),
 		sdk.NewAttribute("position", order.Position.String()),
 		sdk.NewAttribute("position_id", strconv.FormatInt(int64(positionId), 10)),
-		sdk.NewAttribute("trigger_price", order.TriggerPrice.String()),
+		sdk.NewAttribute("trigger_price", string(triggerPrice)),
 	)
 }

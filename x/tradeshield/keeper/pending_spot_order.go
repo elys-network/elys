@@ -212,6 +212,7 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		DenomIn:   order.OrderPrice.BaseDenom,
 		DenomOut:  order.OrderPrice.QuoteDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err
@@ -219,6 +220,9 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
+
+	// emit the event
+	ctx.EventManager().EmitEvent(types.NewExecuteStopLossSpotOrderEvt(order, res))
 
 	return res, nil
 }
@@ -253,6 +257,7 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 		DenomIn:   order.OrderPrice.BaseDenom,
 		DenomOut:  order.OrderPrice.QuoteDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err
@@ -260,6 +265,9 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
+
+	// emit the event
+	ctx.EventManager().EmitEvent(types.NewExecuteLimitSellSpotOrderEvt(order, res))
 
 	return res, nil
 }
@@ -294,6 +302,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		DenomIn:   order.OrderPrice.BaseDenom,
 		DenomOut:  order.OrderPrice.QuoteDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err
@@ -301,6 +310,9 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 
 	// Remove the order from the pending order list
 	k.RemovePendingSpotOrder(ctx, order.OrderId)
+
+	// emit the event
+	ctx.EventManager().EmitEvent(types.NewExecuteLimitBuySpotOrderEvt(order, res))
 
 	return res, nil
 }
@@ -315,10 +327,14 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, order types.SpotOrder) (*
 		DenomIn:   order.OrderAmount.Denom,
 		DenomOut:  order.OrderTargetDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
+		MaxAmount: order.OrderAmount,
 	})
 	if err != nil {
 		return res, err
 	}
+
+	// emit the event
+	ctx.EventManager().EmitEvent(types.NewExecuteMarketBuySpotOrderEvt(order, res))
 
 	return res, nil
 }
