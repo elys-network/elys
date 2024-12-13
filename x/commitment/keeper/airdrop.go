@@ -9,7 +9,7 @@ import (
 )
 
 const MaxElysAmount = 3_218_460_000_000
-const MaxEdenAmount = 3_316_344_000_000
+const MaxEdenAmount = 3_441_097_000_000
 
 func (k Keeper) GetAtomStaker(ctx sdk.Context, address sdk.AccAddress) (val types.AtomStaker) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))

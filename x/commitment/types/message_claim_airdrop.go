@@ -10,12 +10,12 @@ var _ sdk.Msg = &MsgCancelVest{}
 
 func NewMsgClaimAirdrop(creator string) *MsgClaimAirdrop {
 	return &MsgClaimAirdrop{
-		ClaimAddress: creator,
+		Creator: creator,
 	}
 }
 
 func (msg *MsgClaimAirdrop) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.ClaimAddress)
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
