@@ -53,6 +53,12 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/commitment/airdrop/{address}";
   }
+
+  rpc TotalAirdropClaimed(QueryTotalAirDropClaimedRequest)
+      returns (QueryTotalAirDropClaimedResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/commitment/total_airdrop_claimed";
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -148,6 +154,22 @@ message QueryAirDropResponse {
     (gogoproto.nullable) = false
   ];
   string governor = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  bool claimed = 5;
+}
+
+message QueryTotalAirDropClaimedRequest {}
+
+message QueryTotalAirDropClaimedResponse {
+  string total_elys_claimed = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_eden_claimed = 2 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false

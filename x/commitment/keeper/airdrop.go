@@ -8,6 +8,9 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
+const MaxElysAmount = 3_218_460_000_000
+const MaxEdenAmount = 3_441_097_000_000
+
 func (k Keeper) GetAtomStaker(ctx sdk.Context, address sdk.AccAddress) (val types.AtomStaker) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
@@ -150,4 +153,64 @@ func (k Keeper) GetAllCadets(ctx sdk.Context) (list []*types.Cadet) {
 	}
 
 	return
+}
+
+func (k Keeper) GetAirdropClaimed(ctx sdk.Context, address sdk.AccAddress) (val types.AirdropClaimed) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	b := store.Get(types.GetAirdropClaimedKey(address))
+
+	if b != nil {
+		k.cdc.MustUnmarshal(b, &val)
+	} else {
+		val.Claimed = false
+		val.Address = address.String()
+	}
+	return
+}
+
+func (k Keeper) SetAirdropClaimed(ctx sdk.Context, address sdk.AccAddress) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetAirdropClaimedKey(address)
+	val := types.AirdropClaimed{
+		Address: address.String(),
+		Claimed: true,
+	}
+	b := k.cdc.MustMarshal(&val)
+	store.Set(key, b)
+}
+
+func (k Keeper) GetAllAirdropClaimed(ctx sdk.Context) (list []*types.AirdropClaimed) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.AirdropClaimedKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.AirdropClaimed
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, &val)
+	}
+
+	return
+}
+
+func (k Keeper) GetTotalClaimed(ctx sdk.Context) (val types.TotalClaimed) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	b := store.Get(types.TotalClaimedKeyPrefix)
+
+	if b != nil {
+		k.cdc.MustUnmarshal(b, &val)
+	} else {
+		val.TotalEdenClaimed = math.ZeroInt()
+		val.TotalElysClaimed = math.ZeroInt()
+	}
+	return
+}
+
+func (k Keeper) SetTotalClaimed(ctx sdk.Context, totalClaimed types.TotalClaimed) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	b := k.cdc.MustMarshal(&totalClaimed)
+	store.Set(types.TotalClaimedKeyPrefix, b)
 }
