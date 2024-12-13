@@ -164,6 +164,7 @@ func (k Keeper) GetAirdropClaimed(ctx sdk.Context, address sdk.AccAddress) (val 
 		k.cdc.MustUnmarshal(b, &val)
 	} else {
 		val.Claimed = false
+		val.Address = address.String()
 	}
 	return
 }
