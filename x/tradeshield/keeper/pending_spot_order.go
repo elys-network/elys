@@ -149,7 +149,7 @@ func GetPendingSpotOrderIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
-// GetAllPendingSpotOrder returns all pendingSpotOrder
+// GetAllSortedSpotOrder returns all sortedSpotOrder
 func (k Keeper) GetAllSortedSpotOrder(ctx sdk.Context) (list [][]uint64, err error) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.SortedSpotOrderKey)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})

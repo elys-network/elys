@@ -65,10 +65,18 @@ func (EarnType) EnumDescriptor() ([]byte, []int) {
 }
 
 type LegacyParams struct {
-	VestingInfos        []VestingInfo                            `protobuf:"bytes,1,rep,name=vesting_infos,json=vestingInfos,proto3" json:"vesting_infos"`
-	TotalCommitted      github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,2,rep,name=total_committed,json=totalCommitted,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"total_committed"`
-	NumberOfCommitments uint64                                   `protobuf:"varint,3,opt,name=number_of_commitments,json=numberOfCommitments,proto3" json:"number_of_commitments,omitempty"`
-	EnableVestNow       bool                                     `protobuf:"varint,4,opt,name=enable_vest_now,json=enableVestNow,proto3" json:"enable_vest_now,omitempty"`
+	VestingInfos           []VestingInfo                            `protobuf:"bytes,1,rep,name=vesting_infos,json=vestingInfos,proto3" json:"vesting_infos"`
+	TotalCommitted         github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,2,rep,name=total_committed,json=totalCommitted,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"total_committed"`
+	NumberOfCommitments    uint64                                   `protobuf:"varint,3,opt,name=number_of_commitments,json=numberOfCommitments,proto3" json:"number_of_commitments,omitempty"`
+	EnableVestNow          bool                                     `protobuf:"varint,4,opt,name=enable_vest_now,json=enableVestNow,proto3" json:"enable_vest_now,omitempty"`
+	StartAtomStakersHeight uint64                                   `protobuf:"varint,5,opt,name=start_atom_stakers_height,json=startAtomStakersHeight,proto3" json:"start_atom_stakers_height,omitempty"`
+	EndAtomStakersHeight   uint64                                   `protobuf:"varint,6,opt,name=end_atom_stakers_height,json=endAtomStakersHeight,proto3" json:"end_atom_stakers_height,omitempty"`
+	StartCadetsHeight      uint64                                   `protobuf:"varint,7,opt,name=start_cadets_height,json=startCadetsHeight,proto3" json:"start_cadets_height,omitempty"`
+	EndCadetsHeight        uint64                                   `protobuf:"varint,8,opt,name=end_cadets_height,json=endCadetsHeight,proto3" json:"end_cadets_height,omitempty"`
+	StartNftHoldersHeight  uint64                                   `protobuf:"varint,9,opt,name=start_nft_holders_height,json=startNftHoldersHeight,proto3" json:"start_nft_holders_height,omitempty"`
+	EndNftHoldersHeight    uint64                                   `protobuf:"varint,10,opt,name=end_nft_holders_height,json=endNftHoldersHeight,proto3" json:"end_nft_holders_height,omitempty"`
+	StartGovernorsHeight   uint64                                   `protobuf:"varint,11,opt,name=start_governors_height,json=startGovernorsHeight,proto3" json:"start_governors_height,omitempty"`
+	EndGovernorsHeight     uint64                                   `protobuf:"varint,12,opt,name=end_governors_height,json=endGovernorsHeight,proto3" json:"end_governors_height,omitempty"`
 }
 
 func (m *LegacyParams) Reset()         { *m = LegacyParams{} }
@@ -132,19 +140,69 @@ func (m *LegacyParams) GetEnableVestNow() bool {
 	return false
 }
 
+func (m *LegacyParams) GetStartAtomStakersHeight() uint64 {
+	if m != nil {
+		return m.StartAtomStakersHeight
+	}
+	return 0
+}
+
+func (m *LegacyParams) GetEndAtomStakersHeight() uint64 {
+	if m != nil {
+		return m.EndAtomStakersHeight
+	}
+	return 0
+}
+
+func (m *LegacyParams) GetStartCadetsHeight() uint64 {
+	if m != nil {
+		return m.StartCadetsHeight
+	}
+	return 0
+}
+
+func (m *LegacyParams) GetEndCadetsHeight() uint64 {
+	if m != nil {
+		return m.EndCadetsHeight
+	}
+	return 0
+}
+
+func (m *LegacyParams) GetStartNftHoldersHeight() uint64 {
+	if m != nil {
+		return m.StartNftHoldersHeight
+	}
+	return 0
+}
+
+func (m *LegacyParams) GetEndNftHoldersHeight() uint64 {
+	if m != nil {
+		return m.EndNftHoldersHeight
+	}
+	return 0
+}
+
+func (m *LegacyParams) GetStartGovernorsHeight() uint64 {
+	if m != nil {
+		return m.StartGovernorsHeight
+	}
+	return 0
+}
+
+func (m *LegacyParams) GetEndGovernorsHeight() uint64 {
+	if m != nil {
+		return m.EndGovernorsHeight
+	}
+	return 0
+}
+
 type Params struct {
-	VestingInfos           []VestingInfo                            `protobuf:"bytes,1,rep,name=vesting_infos,json=vestingInfos,proto3" json:"vesting_infos"`
-	TotalCommitted         github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,2,rep,name=total_committed,json=totalCommitted,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"total_committed"`
-	NumberOfCommitments    uint64                                   `protobuf:"varint,3,opt,name=number_of_commitments,json=numberOfCommitments,proto3" json:"number_of_commitments,omitempty"`
-	EnableVestNow          bool                                     `protobuf:"varint,4,opt,name=enable_vest_now,json=enableVestNow,proto3" json:"enable_vest_now,omitempty"`
-	StartAtomStakersHeight uint64                                   `protobuf:"varint,5,opt,name=start_atom_stakers_height,json=startAtomStakersHeight,proto3" json:"start_atom_stakers_height,omitempty"`
-	EndAtomStakersHeight   uint64                                   `protobuf:"varint,6,opt,name=end_atom_stakers_height,json=endAtomStakersHeight,proto3" json:"end_atom_stakers_height,omitempty"`
-	StartCadetsHeight      uint64                                   `protobuf:"varint,7,opt,name=start_cadets_height,json=startCadetsHeight,proto3" json:"start_cadets_height,omitempty"`
-	EndCadetsHeight        uint64                                   `protobuf:"varint,8,opt,name=end_cadets_height,json=endCadetsHeight,proto3" json:"end_cadets_height,omitempty"`
-	StartNftHoldersHeight  uint64                                   `protobuf:"varint,9,opt,name=start_nft_holders_height,json=startNftHoldersHeight,proto3" json:"start_nft_holders_height,omitempty"`
-	EndNftHoldersHeight    uint64                                   `protobuf:"varint,10,opt,name=end_nft_holders_height,json=endNftHoldersHeight,proto3" json:"end_nft_holders_height,omitempty"`
-	StartGovernorsHeight   uint64                                   `protobuf:"varint,11,opt,name=start_governors_height,json=startGovernorsHeight,proto3" json:"start_governors_height,omitempty"`
-	EndGovernorsHeight     uint64                                   `protobuf:"varint,12,opt,name=end_governors_height,json=endGovernorsHeight,proto3" json:"end_governors_height,omitempty"`
+	VestingInfos            []VestingInfo                            `protobuf:"bytes,1,rep,name=vesting_infos,json=vestingInfos,proto3" json:"vesting_infos"`
+	TotalCommitted          github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,2,rep,name=total_committed,json=totalCommitted,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"total_committed"`
+	NumberOfCommitments     uint64                                   `protobuf:"varint,3,opt,name=number_of_commitments,json=numberOfCommitments,proto3" json:"number_of_commitments,omitempty"`
+	EnableVestNow           bool                                     `protobuf:"varint,4,opt,name=enable_vest_now,json=enableVestNow,proto3" json:"enable_vest_now,omitempty"`
+	StartAirdropClaimHeight uint64                                   `protobuf:"varint,5,opt,name=start_airdrop_claim_height,json=startAirdropClaimHeight,proto3" json:"start_airdrop_claim_height,omitempty"`
+	EndAirdropClaimHeight   uint64                                   `protobuf:"varint,6,opt,name=end_airdrop_claim_height,json=endAirdropClaimHeight,proto3" json:"end_airdrop_claim_height,omitempty"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
@@ -208,58 +266,16 @@ func (m *Params) GetEnableVestNow() bool {
 	return false
 }
 
-func (m *Params) GetStartAtomStakersHeight() uint64 {
+func (m *Params) GetStartAirdropClaimHeight() uint64 {
 	if m != nil {
-		return m.StartAtomStakersHeight
+		return m.StartAirdropClaimHeight
 	}
 	return 0
 }
 
-func (m *Params) GetEndAtomStakersHeight() uint64 {
+func (m *Params) GetEndAirdropClaimHeight() uint64 {
 	if m != nil {
-		return m.EndAtomStakersHeight
-	}
-	return 0
-}
-
-func (m *Params) GetStartCadetsHeight() uint64 {
-	if m != nil {
-		return m.StartCadetsHeight
-	}
-	return 0
-}
-
-func (m *Params) GetEndCadetsHeight() uint64 {
-	if m != nil {
-		return m.EndCadetsHeight
-	}
-	return 0
-}
-
-func (m *Params) GetStartNftHoldersHeight() uint64 {
-	if m != nil {
-		return m.StartNftHoldersHeight
-	}
-	return 0
-}
-
-func (m *Params) GetEndNftHoldersHeight() uint64 {
-	if m != nil {
-		return m.EndNftHoldersHeight
-	}
-	return 0
-}
-
-func (m *Params) GetStartGovernorsHeight() uint64 {
-	if m != nil {
-		return m.StartGovernorsHeight
-	}
-	return 0
-}
-
-func (m *Params) GetEndGovernorsHeight() uint64 {
-	if m != nil {
-		return m.EndGovernorsHeight
+		return m.EndAirdropClaimHeight
 	}
 	return 0
 }
@@ -343,54 +359,57 @@ func init() {
 func init() { proto.RegisterFile("elys/commitment/params.proto", fileDescriptor_92e317feaf73ff7e) }
 
 var fileDescriptor_92e317feaf73ff7e = []byte{
-	// 748 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x55, 0xdd, 0x4e, 0x5a, 0x49,
-	0x1c, 0xe7, 0x00, 0xba, 0x32, 0xa0, 0xc8, 0x28, 0x2e, 0x1a, 0x45, 0xe2, 0x26, 0x1b, 0xe2, 0xc6,
-	0x73, 0xfc, 0xd8, 0xcd, 0x66, 0x2f, 0x05, 0x5d, 0x24, 0x41, 0x34, 0x87, 0xdd, 0x26, 0xed, 0xcd,
-	0x64, 0xe0, 0x0c, 0x70, 0x02, 0x67, 0x86, 0x9c, 0x19, 0x40, 0xd2, 0x97, 0xe8, 0x6b, 0xb4, 0xd7,
-	0x7d, 0x87, 0x7a, 0x69, 0x7a, 0xd5, 0xf4, 0xc2, 0x36, 0xfa, 0x00, 0x7d, 0x85, 0x66, 0x66, 0x0e,
-	0x1f, 0x7e, 0x24, 0x7d, 0x81, 0x5e, 0xe9, 0xfc, 0x3e, 0xe6, 0xff, 0x91, 0xdf, 0x1c, 0xc0, 0x26,
-	0xe9, 0x8e, 0xb8, 0xd5, 0x60, 0x9e, 0xe7, 0x0a, 0x8f, 0x50, 0x61, 0xf5, 0xb0, 0x8f, 0x3d, 0x6e,
-	0xf6, 0x7c, 0x26, 0x18, 0x4c, 0x4a, 0xd6, 0x9c, 0xb2, 0x1b, 0xab, 0x2d, 0xd6, 0x62, 0x8a, 0xb3,
-	0xe4, 0x7f, 0x5a, 0xb6, 0xb1, 0xde, 0x60, 0xdc, 0x63, 0x1c, 0x69, 0x42, 0x1f, 0x02, 0x2a, 0xab,
-	0x4f, 0x56, 0x1d, 0x73, 0x62, 0x0d, 0x0e, 0xea, 0x44, 0xe0, 0x03, 0xab, 0xc1, 0x5c, 0xaa, 0xf9,
-	0x9d, 0xb7, 0x61, 0x90, 0xa8, 0x90, 0x16, 0x6e, 0x8c, 0x2e, 0x55, 0x61, 0x58, 0x02, 0x8b, 0x03,
-	0xc2, 0x85, 0x4b, 0x5b, 0xc8, 0xa5, 0x4d, 0xc6, 0x33, 0x46, 0x2e, 0x92, 0x8f, 0x1f, 0x6e, 0x9a,
-	0x8f, 0x5a, 0x31, 0x5f, 0x68, 0x55, 0x99, 0x36, 0x59, 0x21, 0x7a, 0x7d, 0xbb, 0x1d, 0xb2, 0x13,
-	0x83, 0x29, 0xc4, 0xa1, 0x00, 0x49, 0xc1, 0x04, 0xee, 0x22, 0xed, 0x11, 0xc4, 0xc9, 0x84, 0xd5,
-	0x55, 0xeb, 0x66, 0xd0, 0xa1, 0xec, 0xc9, 0x0c, 0x7a, 0x32, 0x8b, 0xcc, 0xa5, 0x85, 0x7d, 0x79,
-	0xcf, 0xbb, 0x2f, 0xdb, 0xf9, 0x96, 0x2b, 0xda, 0xfd, 0xba, 0x2c, 0x17, 0x8c, 0x13, 0xfc, 0xd9,
-	0xe3, 0x4e, 0xc7, 0x12, 0xa3, 0x1e, 0xe1, 0xca, 0xc0, 0xed, 0x25, 0x55, 0xa3, 0x38, 0x2e, 0x01,
-	0x0f, 0x41, 0x9a, 0xf6, 0xbd, 0x3a, 0xf1, 0x11, 0x6b, 0xa2, 0x69, 0xb7, 0x3c, 0x13, 0xc9, 0x19,
-	0xf9, 0xa8, 0xbd, 0xa2, 0xc9, 0x8b, 0x66, 0x71, 0x4a, 0xc1, 0xdf, 0x41, 0x92, 0x50, 0x5c, 0xef,
-	0x12, 0x24, 0x07, 0x40, 0x94, 0x0d, 0x33, 0xd1, 0x9c, 0x91, 0x5f, 0xb0, 0x17, 0x35, 0x2c, 0x27,
-	0xad, 0xb2, 0xe1, 0xce, 0x87, 0x39, 0x30, 0xff, 0x73, 0x4b, 0x3f, 0xd8, 0x12, 0xfc, 0x07, 0xac,
-	0x73, 0x81, 0x7d, 0x81, 0xb0, 0x60, 0x1e, 0xe2, 0x02, 0x77, 0x88, 0xcf, 0x51, 0x9b, 0xb8, 0xad,
-	0xb6, 0xc8, 0xcc, 0xa9, 0xfb, 0xd7, 0x94, 0xe0, 0x58, 0x30, 0xaf, 0xa6, 0xe9, 0x33, 0xc5, 0xc2,
-	0xbf, 0xc0, 0xaf, 0x84, 0x3a, 0xcf, 0x1a, 0xe7, 0x95, 0x71, 0x95, 0x50, 0xe7, 0xa9, 0xcd, 0x04,
-	0x2b, 0xba, 0x62, 0x03, 0x3b, 0x44, 0x4c, 0x2c, 0xbf, 0x28, 0x4b, 0x4a, 0x51, 0x45, 0xc5, 0x04,
-	0xfa, 0x5d, 0x90, 0x92, 0x65, 0x1e, 0xaa, 0x17, 0x94, 0x3a, 0x49, 0xa8, 0xf3, 0x40, 0xfb, 0x37,
-	0xc8, 0xe8, 0xbb, 0x69, 0x53, 0xa0, 0x36, 0xeb, 0x3a, 0x33, 0x3d, 0xc5, 0x94, 0x25, 0xad, 0xf8,
-	0x6a, 0x53, 0x9c, 0x69, 0x36, 0x30, 0x1e, 0x81, 0x35, 0x59, 0xe4, 0x19, 0x1b, 0xd0, 0x3b, 0x26,
-	0xd4, 0x79, 0x62, 0xfa, 0x13, 0xe8, 0xd5, 0xa0, 0x16, 0x1b, 0x10, 0x9f, 0xb2, 0xa9, 0x29, 0xae,
-	0xe7, 0x57, 0x6c, 0x69, 0x4c, 0x06, 0xae, 0x7d, 0x20, 0xf7, 0xf2, 0xd4, 0x93, 0x50, 0x1e, 0x48,
-	0xa8, 0xf3, 0xc8, 0xb1, 0xf3, 0xcd, 0x00, 0xf1, 0x99, 0x64, 0xc2, 0x2d, 0x00, 0x64, 0xcc, 0x90,
-	0x43, 0x28, 0xf3, 0x32, 0x46, 0xce, 0xc8, 0xc7, 0xec, 0x98, 0x44, 0x4e, 0x24, 0x00, 0x7f, 0x9b,
-	0xa6, 0x5d, 0x2b, 0xc2, 0x4a, 0x31, 0x4e, 0xb2, 0x16, 0x6d, 0x01, 0x40, 0xfb, 0x1e, 0xaa, 0x77,
-	0x59, 0xa3, 0xa3, 0x83, 0x14, 0xb1, 0x63, 0xb4, 0xef, 0x15, 0x14, 0x00, 0x6b, 0x20, 0x39, 0xce,
-	0x0d, 0x6a, 0xe2, 0x86, 0x60, 0xbe, 0x8a, 0x4f, 0xac, 0xf0, 0x87, 0x4c, 0xf3, 0xe7, 0xdb, 0xed,
-	0xb4, 0xce, 0x2e, 0x77, 0x3a, 0xa6, 0xcb, 0x2c, 0x0f, 0x8b, 0xb6, 0x59, 0xa6, 0xe2, 0xe3, 0xfb,
-	0x3d, 0x10, 0x3c, 0x84, 0x32, 0x15, 0xb6, 0xea, 0xa3, 0xca, 0x86, 0xff, 0xaa, 0x1b, 0x60, 0x1e,
-	0x2c, 0xcb, 0x9a, 0x1e, 0xbe, 0x42, 0x41, 0x2f, 0x5c, 0x45, 0x2c, 0x62, 0x2f, 0xd1, 0xbe, 0x77,
-	0x8e, 0xaf, 0x82, 0x21, 0xf9, 0xee, 0x6b, 0xb0, 0x70, 0x8a, 0x7d, 0xfa, 0xdf, 0xa8, 0x47, 0x60,
-	0x12, 0xc4, 0x8f, 0x2b, 0x15, 0x74, 0x69, 0x5f, 0x94, 0xec, 0xe3, 0xf3, 0xe5, 0x10, 0x5c, 0x06,
-	0x89, 0xff, 0x6b, 0x27, 0xc5, 0x09, 0x62, 0x48, 0xe4, 0xb4, 0xf2, 0xb2, 0x36, 0x41, 0xc2, 0x0a,
-	0x39, 0x39, 0xad, 0x4e, 0x90, 0x08, 0x4c, 0x81, 0x45, 0x89, 0x14, 0x26, 0x50, 0x14, 0xa6, 0x41,
-	0xaa, 0x72, 0x89, 0xce, 0xcb, 0xd5, 0x72, 0xb5, 0x34, 0x81, 0xe7, 0x0a, 0xe5, 0xeb, 0xbb, 0xac,
-	0x71, 0x73, 0x97, 0x35, 0xbe, 0xde, 0x65, 0x8d, 0x37, 0xf7, 0xd9, 0xd0, 0xcd, 0x7d, 0x36, 0xf4,
-	0xe9, 0x3e, 0x1b, 0x7a, 0x65, 0xcd, 0x3c, 0x61, 0xf9, 0xe9, 0xd8, 0xa3, 0x44, 0x0c, 0x99, 0xdf,
-	0x51, 0x07, 0xeb, 0x6a, 0xf6, 0x87, 0x41, 0xbd, 0xe7, 0xfa, 0xbc, 0xfa, 0x6c, 0x1f, 0x7d, 0x0f,
-	0x00, 0x00, 0xff, 0xff, 0xf2, 0x9d, 0x1b, 0x84, 0x38, 0x06, 0x00, 0x00,
+	// 787 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x55, 0xdf, 0x4e, 0x2a, 0x47,
+	0x18, 0x67, 0x05, 0xad, 0x0c, 0x28, 0x32, 0x8a, 0xa2, 0x51, 0x24, 0x36, 0x69, 0x88, 0x8d, 0xbb,
+	0xfe, 0x69, 0xd3, 0x34, 0xbd, 0x12, 0xb4, 0x48, 0x82, 0x68, 0x96, 0xb6, 0x49, 0x7b, 0x33, 0x19,
+	0x76, 0x07, 0xd8, 0xc0, 0xce, 0x90, 0x9d, 0x01, 0x24, 0x7d, 0x89, 0xde, 0xf6, 0x15, 0x7a, 0xdd,
+	0x87, 0xf0, 0xa6, 0x89, 0xe9, 0x55, 0xd3, 0x0b, 0xcf, 0x89, 0x3e, 0xc0, 0x79, 0x85, 0x93, 0x99,
+	0x59, 0xfe, 0x28, 0x26, 0xe7, 0x05, 0xce, 0x95, 0xce, 0xef, 0xcf, 0x7c, 0xdf, 0x7c, 0xdf, 0x8f,
+	0x2c, 0xd8, 0x25, 0xdd, 0x11, 0xb7, 0x1c, 0xe6, 0xfb, 0x9e, 0xf0, 0x09, 0x15, 0x56, 0x0f, 0x07,
+	0xd8, 0xe7, 0x66, 0x2f, 0x60, 0x82, 0xc1, 0x94, 0x64, 0xcd, 0x29, 0xbb, 0xb3, 0xd1, 0x62, 0x2d,
+	0xa6, 0x38, 0x4b, 0xfe, 0xa7, 0x65, 0x3b, 0xdb, 0x0e, 0xe3, 0x3e, 0xe3, 0x48, 0x13, 0xfa, 0x10,
+	0x52, 0x39, 0x7d, 0xb2, 0x1a, 0x98, 0x13, 0x6b, 0x70, 0xd2, 0x20, 0x02, 0x9f, 0x58, 0x0e, 0xf3,
+	0xa8, 0xe6, 0x0f, 0xfe, 0x59, 0x04, 0xc9, 0x2a, 0x69, 0x61, 0x67, 0x74, 0xab, 0x0a, 0xc3, 0x32,
+	0x58, 0x19, 0x10, 0x2e, 0x3c, 0xda, 0x42, 0x1e, 0x6d, 0x32, 0x9e, 0x35, 0xf2, 0xd1, 0x42, 0xe2,
+	0x74, 0xd7, 0x7c, 0xd5, 0x8a, 0xf9, 0x8b, 0x56, 0x55, 0x68, 0x93, 0x15, 0x63, 0xf7, 0x8f, 0xfb,
+	0x11, 0x3b, 0x39, 0x98, 0x42, 0x1c, 0x0a, 0x90, 0x12, 0x4c, 0xe0, 0x2e, 0xd2, 0x1e, 0x41, 0xdc,
+	0xec, 0x82, 0xba, 0x6a, 0xdb, 0x0c, 0x3b, 0x94, 0x3d, 0x99, 0x61, 0x4f, 0x66, 0x89, 0x79, 0xb4,
+	0x78, 0x2c, 0xef, 0xf9, 0xeb, 0xdd, 0x7e, 0xa1, 0xe5, 0x89, 0x76, 0xbf, 0x21, 0xcb, 0x85, 0xcf,
+	0x09, 0xff, 0x1c, 0x71, 0xb7, 0x63, 0x89, 0x51, 0x8f, 0x70, 0x65, 0xe0, 0xf6, 0xaa, 0xaa, 0x51,
+	0x1a, 0x97, 0x80, 0xa7, 0x20, 0x43, 0xfb, 0x7e, 0x83, 0x04, 0x88, 0x35, 0xd1, 0xb4, 0x5b, 0x9e,
+	0x8d, 0xe6, 0x8d, 0x42, 0xcc, 0x5e, 0xd7, 0xe4, 0x4d, 0xb3, 0x34, 0xa5, 0xe0, 0x57, 0x20, 0x45,
+	0x28, 0x6e, 0x74, 0x09, 0x92, 0x0f, 0x40, 0x94, 0x0d, 0xb3, 0xb1, 0xbc, 0x51, 0x58, 0xb6, 0x57,
+	0x34, 0x2c, 0x5f, 0x5a, 0x63, 0x43, 0xf8, 0x3d, 0xd8, 0xe6, 0x02, 0x07, 0x02, 0x61, 0xc1, 0x7c,
+	0xc4, 0x05, 0xee, 0x90, 0x80, 0xa3, 0x36, 0xf1, 0x5a, 0x6d, 0x91, 0x5d, 0x54, 0xf7, 0x6f, 0x2a,
+	0xc1, 0xb9, 0x60, 0x7e, 0x5d, 0xd3, 0x57, 0x8a, 0x85, 0xdf, 0x82, 0x2d, 0x42, 0xdd, 0x37, 0x8d,
+	0x4b, 0xca, 0xb8, 0x41, 0xa8, 0x3b, 0x6f, 0x33, 0xc1, 0xba, 0xae, 0xe8, 0x60, 0x97, 0x88, 0x89,
+	0xe5, 0x0b, 0x65, 0x49, 0x2b, 0xaa, 0xa4, 0x98, 0x50, 0x7f, 0x08, 0xd2, 0xb2, 0xcc, 0x4b, 0xf5,
+	0xb2, 0x52, 0xa7, 0x08, 0x75, 0x5f, 0x68, 0xbf, 0x03, 0x59, 0x7d, 0x37, 0x6d, 0x0a, 0xd4, 0x66,
+	0x5d, 0x77, 0xa6, 0xa7, 0xb8, 0xb2, 0x64, 0x14, 0x5f, 0x6b, 0x8a, 0x2b, 0xcd, 0x86, 0xc6, 0x33,
+	0xb0, 0x29, 0x8b, 0xbc, 0x61, 0x03, 0x7a, 0xc6, 0x84, 0xba, 0x73, 0xa6, 0x6f, 0x80, 0x1e, 0x0d,
+	0x6a, 0xb1, 0x01, 0x09, 0x28, 0x9b, 0x9a, 0x12, 0xfa, 0xfd, 0x8a, 0x2d, 0x8f, 0xc9, 0xd0, 0x75,
+	0x0c, 0xe4, 0x5c, 0xe6, 0x3d, 0x49, 0xe5, 0x81, 0x84, 0xba, 0xaf, 0x1c, 0x07, 0x7f, 0x46, 0xc1,
+	0xd2, 0xe7, 0x24, 0x7f, 0x2a, 0xc9, 0x3f, 0x80, 0x9d, 0x30, 0xc9, 0x5e, 0xe0, 0x06, 0xac, 0x87,
+	0x9c, 0x2e, 0xf6, 0xfc, 0x97, 0x51, 0xde, 0xd2, 0x51, 0xd6, 0x82, 0x92, 0xe4, 0xa7, 0xc1, 0x51,
+	0x59, 0x7e, 0xcb, 0xaa, 0xc3, 0x9c, 0x91, 0x61, 0x9e, 0x33, 0x1e, 0x7c, 0x30, 0x40, 0x62, 0x66,
+	0xd6, 0x70, 0x0f, 0x00, 0x39, 0x38, 0xe4, 0x12, 0xca, 0xfc, 0xac, 0x91, 0x37, 0x0a, 0x71, 0x3b,
+	0x2e, 0x91, 0x0b, 0x09, 0xc0, 0x2f, 0xa7, 0xfb, 0xd3, 0x8a, 0x05, 0xa5, 0x18, 0xef, 0x46, 0x8b,
+	0xf6, 0x00, 0xa0, 0x7d, 0x1f, 0x35, 0xba, 0xcc, 0xe9, 0xe8, 0xd1, 0x44, 0xed, 0x38, 0xed, 0xfb,
+	0x45, 0x05, 0xc0, 0x3a, 0x48, 0x8d, 0x27, 0x81, 0x9a, 0xd8, 0x11, 0x2c, 0x50, 0x03, 0x89, 0x17,
+	0xbf, 0x96, 0xfb, 0xf9, 0xff, 0x71, 0x3f, 0xa3, 0xb7, 0xc1, 0xdd, 0x8e, 0xe9, 0x31, 0xcb, 0xc7,
+	0xa2, 0x6d, 0x56, 0xa8, 0xf8, 0xf7, 0xef, 0x23, 0x10, 0xae, 0xb6, 0x42, 0x85, 0xad, 0xfa, 0xa8,
+	0xb1, 0xe1, 0x8f, 0xea, 0x06, 0x58, 0x00, 0x6b, 0xb2, 0xa6, 0x8f, 0xef, 0x50, 0xd8, 0x0b, 0x57,
+	0x33, 0x8b, 0xda, 0xab, 0xb4, 0xef, 0x5f, 0xe3, 0xbb, 0xf0, 0x91, 0xfc, 0xf0, 0x77, 0xb0, 0x7c,
+	0x89, 0x03, 0xfa, 0xd3, 0xa8, 0x47, 0x60, 0x0a, 0x24, 0xce, 0xab, 0x55, 0x74, 0x6b, 0xdf, 0x94,
+	0xed, 0xf3, 0xeb, 0xb5, 0x08, 0x5c, 0x03, 0xc9, 0x9f, 0xeb, 0x17, 0xa5, 0x09, 0x62, 0x48, 0xe4,
+	0xb2, 0xfa, 0x6b, 0x7d, 0x82, 0x2c, 0x28, 0xe4, 0xe2, 0xb2, 0x36, 0x41, 0xa2, 0x30, 0x0d, 0x56,
+	0x24, 0x52, 0x9c, 0x40, 0x31, 0x98, 0x01, 0xe9, 0xea, 0x2d, 0xba, 0xae, 0xd4, 0x2a, 0xb5, 0xf2,
+	0x04, 0x5e, 0x2c, 0x56, 0xee, 0x9f, 0x72, 0xc6, 0xc3, 0x53, 0xce, 0x78, 0xff, 0x94, 0x33, 0xfe,
+	0x78, 0xce, 0x45, 0x1e, 0x9e, 0x73, 0x91, 0xff, 0x9e, 0x73, 0x91, 0xdf, 0xac, 0x99, 0x50, 0xca,
+	0x1f, 0xc3, 0x11, 0x25, 0x62, 0xc8, 0x82, 0x8e, 0x3a, 0x58, 0x77, 0xb3, 0x9f, 0x23, 0x95, 0xd0,
+	0xc6, 0x92, 0xfa, 0x58, 0x9c, 0x7d, 0x0c, 0x00, 0x00, 0xff, 0xff, 0x56, 0x14, 0x4c, 0x1d, 0xae,
+	0x06, 0x00, 0x00,
 }
 
 func (m *LegacyParams) Marshal() (dAtA []byte, err error) {
@@ -413,6 +432,46 @@ func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.EndGovernorsHeight != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.EndGovernorsHeight))
+		i--
+		dAtA[i] = 0x60
+	}
+	if m.StartGovernorsHeight != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.StartGovernorsHeight))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.EndNftHoldersHeight != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.EndNftHoldersHeight))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.StartNftHoldersHeight != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.StartNftHoldersHeight))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.EndCadetsHeight != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.EndCadetsHeight))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.StartCadetsHeight != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.StartCadetsHeight))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.EndAtomStakersHeight != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.EndAtomStakersHeight))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.StartAtomStakersHeight != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.StartAtomStakersHeight))
+		i--
+		dAtA[i] = 0x28
+	}
 	if m.EnableVestNow {
 		i--
 		if m.EnableVestNow {
@@ -479,43 +538,13 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.EndGovernorsHeight != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.EndGovernorsHeight))
-		i--
-		dAtA[i] = 0x60
-	}
-	if m.StartGovernorsHeight != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.StartGovernorsHeight))
-		i--
-		dAtA[i] = 0x58
-	}
-	if m.EndNftHoldersHeight != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.EndNftHoldersHeight))
-		i--
-		dAtA[i] = 0x50
-	}
-	if m.StartNftHoldersHeight != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.StartNftHoldersHeight))
-		i--
-		dAtA[i] = 0x48
-	}
-	if m.EndCadetsHeight != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.EndCadetsHeight))
-		i--
-		dAtA[i] = 0x40
-	}
-	if m.StartCadetsHeight != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.StartCadetsHeight))
-		i--
-		dAtA[i] = 0x38
-	}
-	if m.EndAtomStakersHeight != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.EndAtomStakersHeight))
+	if m.EndAirdropClaimHeight != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.EndAirdropClaimHeight))
 		i--
 		dAtA[i] = 0x30
 	}
-	if m.StartAtomStakersHeight != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.StartAtomStakersHeight))
+	if m.StartAirdropClaimHeight != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.StartAirdropClaimHeight))
 		i--
 		dAtA[i] = 0x28
 	}
@@ -657,6 +686,30 @@ func (m *LegacyParams) Size() (n int) {
 	if m.EnableVestNow {
 		n += 2
 	}
+	if m.StartAtomStakersHeight != 0 {
+		n += 1 + sovParams(uint64(m.StartAtomStakersHeight))
+	}
+	if m.EndAtomStakersHeight != 0 {
+		n += 1 + sovParams(uint64(m.EndAtomStakersHeight))
+	}
+	if m.StartCadetsHeight != 0 {
+		n += 1 + sovParams(uint64(m.StartCadetsHeight))
+	}
+	if m.EndCadetsHeight != 0 {
+		n += 1 + sovParams(uint64(m.EndCadetsHeight))
+	}
+	if m.StartNftHoldersHeight != 0 {
+		n += 1 + sovParams(uint64(m.StartNftHoldersHeight))
+	}
+	if m.EndNftHoldersHeight != 0 {
+		n += 1 + sovParams(uint64(m.EndNftHoldersHeight))
+	}
+	if m.StartGovernorsHeight != 0 {
+		n += 1 + sovParams(uint64(m.StartGovernorsHeight))
+	}
+	if m.EndGovernorsHeight != 0 {
+		n += 1 + sovParams(uint64(m.EndGovernorsHeight))
+	}
 	return n
 }
 
@@ -684,29 +737,11 @@ func (m *Params) Size() (n int) {
 	if m.EnableVestNow {
 		n += 2
 	}
-	if m.StartAtomStakersHeight != 0 {
-		n += 1 + sovParams(uint64(m.StartAtomStakersHeight))
+	if m.StartAirdropClaimHeight != 0 {
+		n += 1 + sovParams(uint64(m.StartAirdropClaimHeight))
 	}
-	if m.EndAtomStakersHeight != 0 {
-		n += 1 + sovParams(uint64(m.EndAtomStakersHeight))
-	}
-	if m.StartCadetsHeight != 0 {
-		n += 1 + sovParams(uint64(m.StartCadetsHeight))
-	}
-	if m.EndCadetsHeight != 0 {
-		n += 1 + sovParams(uint64(m.EndCadetsHeight))
-	}
-	if m.StartNftHoldersHeight != 0 {
-		n += 1 + sovParams(uint64(m.StartNftHoldersHeight))
-	}
-	if m.EndNftHoldersHeight != 0 {
-		n += 1 + sovParams(uint64(m.EndNftHoldersHeight))
-	}
-	if m.StartGovernorsHeight != 0 {
-		n += 1 + sovParams(uint64(m.StartGovernorsHeight))
-	}
-	if m.EndGovernorsHeight != 0 {
-		n += 1 + sovParams(uint64(m.EndGovernorsHeight))
+	if m.EndAirdropClaimHeight != 0 {
+		n += 1 + sovParams(uint64(m.EndAirdropClaimHeight))
 	}
 	return n
 }
@@ -769,163 +804,6 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: LegacyParams: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VestingInfos", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.VestingInfos = append(m.VestingInfos, VestingInfo{})
-			if err := m.VestingInfos[len(m.VestingInfos)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TotalCommitted", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.TotalCommitted = append(m.TotalCommitted, types.Coin{})
-			if err := m.TotalCommitted[len(m.TotalCommitted)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NumberOfCommitments", wireType)
-			}
-			m.NumberOfCommitments = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.NumberOfCommitments |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EnableVestNow", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.EnableVestNow = bool(v != 0)
-		default:
-			iNdEx = preIndex
-			skippy, err := skipParams(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthParams
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Params) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowParams
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Params: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1183,6 +1061,201 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.EndGovernorsHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipParams(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthParams
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Params) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowParams
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Params: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VestingInfos", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VestingInfos = append(m.VestingInfos, VestingInfo{})
+			if err := m.VestingInfos[len(m.VestingInfos)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TotalCommitted", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TotalCommitted = append(m.TotalCommitted, types.Coin{})
+			if err := m.TotalCommitted[len(m.TotalCommitted)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NumberOfCommitments", wireType)
+			}
+			m.NumberOfCommitments = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.NumberOfCommitments |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EnableVestNow", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.EnableVestNow = bool(v != 0)
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartAirdropClaimHeight", wireType)
+			}
+			m.StartAirdropClaimHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StartAirdropClaimHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EndAirdropClaimHeight", wireType)
+			}
+			m.EndAirdropClaimHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.EndAirdropClaimHeight |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
