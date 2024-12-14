@@ -27,4 +27,7 @@ var (
 	ErrAirdropEnded                   = errorsmod.Register(ModuleName, 1017, "airdrop ended")
 	ErrMaxElysAmountReached           = errorsmod.Register(ModuleName, 1018, "maximum elys amount reached")
 	ErrMaxEdenAmountReached           = errorsmod.Register(ModuleName, 1019, "maximum eden amount reached")
+	ErrKolNotFound                    = errorsmod.Register(ModuleName, 1020, "kol not found")
+	ErrKolAlreadyClaimed              = errorsmod.Register(ModuleName, 1021, "elys already claimed")
+	ErrKolRefunded                    = errorsmod.Register(ModuleName, 1022, "cannot claim elys, refund has been processed")
 )
