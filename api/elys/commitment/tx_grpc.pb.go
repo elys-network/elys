@@ -46,6 +46,7 @@ type MsgClient interface {
 	Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOption) (*MsgStakeResponse, error)
 	Unstake(ctx context.Context, in *MsgUnstake, opts ...grpc.CallOption) (*MsgUnstakeResponse, error)
 	ClaimAirdrop(ctx context.Context, in *MsgClaimAirdrop, opts ...grpc.CallOption) (*MsgClaimAirdropResponse, error)
+	ClaimKol(ctx context.Context, in *MsgClaimKol, opts ...grpc.CallOption) (*MsgClaimKolResponse, error)
 }
 
 type msgClient struct {
@@ -164,6 +165,15 @@ func (c *msgClient) ClaimAirdrop(ctx context.Context, in *MsgClaimAirdrop, opts 
 	return out, nil
 }
 
+func (c *msgClient) ClaimKol(ctx context.Context, in *MsgClaimKol, opts ...grpc.CallOption) (*MsgClaimKolResponse, error) {
+	out := new(MsgClaimKolResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/ClaimKol", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -196,6 +206,7 @@ type MsgServer interface {
 	Stake(context.Context, *MsgStake) (*MsgStakeResponse, error)
 	Unstake(context.Context, *MsgUnstake) (*MsgUnstakeResponse, error)
 	ClaimAirdrop(context.Context, *MsgClaimAirdrop) (*MsgClaimAirdropResponse, error)
+	ClaimKol(context.Context, *MsgClaimKol) (*MsgClaimKolResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -238,6 +249,9 @@ func (UnimplementedMsgServer) Unstake(context.Context, *MsgUnstake) (*MsgUnstake
 }
 func (UnimplementedMsgServer) ClaimAirdrop(context.Context, *MsgClaimAirdrop) (*MsgClaimAirdropResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClaimAirdrop not implemented")
+}
+func (UnimplementedMsgServer) ClaimKol(context.Context, *MsgClaimKol) (*MsgClaimKolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClaimKol not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -468,6 +482,24 @@ func _Msg_ClaimAirdrop_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_ClaimKol_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgClaimKol)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ClaimKol(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/ClaimKol",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ClaimKol(ctx, req.(*MsgClaimKol))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -522,6 +554,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ClaimAirdrop",
 			Handler:    _Msg_ClaimAirdrop_Handler,
+		},
+		{
+			MethodName: "ClaimKol",
+			Handler:    _Msg_ClaimKol_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

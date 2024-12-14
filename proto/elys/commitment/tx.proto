@@ -53,6 +53,8 @@ service Msg {
   rpc Unstake(MsgUnstake) returns (MsgUnstakeResponse);
 
   rpc ClaimAirdrop(MsgClaimAirdrop) returns (MsgClaimAirdropResponse);
+
+  rpc ClaimKol(MsgClaimKol) returns (MsgClaimKolResponse);
 }
 
 message MsgCommitClaimedRewards {
@@ -220,6 +222,25 @@ message MsgClaimAirdropResponse {
     (gogoproto.nullable) = false
   ];
   string eden_amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgClaimKol {
+  option (cosmos.msg.v1.signer) = "claim_address";
+  option (amino.name) = "commitment/MsgClaimAirdrop";
+  string claim_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MsgClaimKolResponse {
+  string elys_amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string vested_elys_amount = 2 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
