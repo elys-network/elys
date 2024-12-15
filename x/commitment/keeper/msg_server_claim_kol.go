@@ -23,6 +23,15 @@ func (k msgServer) ClaimKol(goCtx context.Context, msg *types.MsgClaimKol) (*typ
 		return nil, types.ErrKolNotFound
 	}
 
+	if msg.Refund {
+		kol.Refunded = true
+		k.SetKol(ctx, kol)
+		return &types.MsgClaimKolResponse{
+			ElysAmount:       math.ZeroInt(),
+			VestedElysAmount: math.ZeroInt(),
+		}, nil
+	}
+
 	if kol.Claimed {
 		return nil, types.ErrKolAlreadyClaimed
 	}
@@ -31,7 +40,8 @@ func (k msgServer) ClaimKol(goCtx context.Context, msg *types.MsgClaimKol) (*typ
 		return nil, types.ErrKolRefunded
 	}
 
-	//TODO: If price touches 1, set permanent block on refunds
+	// TODO: If price touches 1, set permanent block on refunds
+	// Disable refund from FE
 
 	currentHeight := uint64(ctx.BlockHeight())
 	if currentHeight < params.StartAirdropClaimHeight {
