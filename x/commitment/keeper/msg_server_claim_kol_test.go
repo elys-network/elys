@@ -25,16 +25,16 @@ func TestClaimKol(t *testing.T) {
 	creator := addr[0]
 
 	commitmentkeeper.KolWallet = addr[2].String()
-	airdropAddress, _ := sdk.AccAddressFromBech32(commitmentkeeper.AirdropWallet)
+	kolAddress, _ := sdk.AccAddressFromBech32(commitmentkeeper.KolWallet)
 
 	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(2000))))
 	require.NoError(t, err)
-	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, airdropAddress, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(2000))))
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, kolAddress, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(2000))))
 	require.NoError(t, err)
 
 	keeper.SetKol(ctx, types.KolList{
 		Address:  creator.String(),
-		Amount:   sdkmath.NewInt(100),
+		Amount:   sdkmath.NewInt(1000),
 		Claimed:  false,
 		Refunded: false,
 	})
@@ -47,33 +47,46 @@ func TestClaimKol(t *testing.T) {
 	_, err = msgServer.ClaimKol(ctx, claimKolMsg)
 	require.NoError(t, err)
 
-	// Test for elys + eden rewards
+	// should be 12.5% of total amount and claimed should be true
 	balances := app.BankKeeper.GetAllBalances(ctx, creator)
-	require.Equal(t, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(1001000))), balances)
+	require.Equal(t, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(1000125))), balances)
 
-	walletBalances := app.BankKeeper.GetAllBalances(ctx, airdropAddress)
-	require.Equal(t, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(1001000))), walletBalances)
+	walletBalances := app.BankKeeper.GetAllBalances(ctx, kolAddress)
+	require.Equal(t, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(1001875))), walletBalances)
+
+	_, err = msgServer.ClaimKol(ctx, claimKolMsg)
+	require.True(t, types.ErrKolAlreadyClaimed.Is(err), "error should be invalid denom")
 
 	// Wrong block height
-	// params := keeper.GetParams(ctx)
-	// params.StartAirdropClaimHeight = 100
-	// params.EndAirdropClaimHeight = 200
-	// keeper.SetParams(ctx, params)
+	params := keeper.GetParams(ctx)
+	params.StartAirdropClaimHeight = 100
+	params.EndAirdropClaimHeight = 200
+	keeper.SetParams(ctx, params)
 
-	// keeper.SetAtomStaker(ctx, types.AtomStaker{
-	// 	Address: addr[1].String(),
-	// 	Amount:  sdkmath.NewInt(100),
-	// })
+	keeper.SetKol(ctx, types.KolList{
+		Address:  addr[1].String(),
+		Amount:   sdkmath.NewInt(1000),
+		Claimed:  false,
+		Refunded: false,
+	})
 
-	// claimAirdropMsg = &types.MsgClaimAirdrop{
-	// 	ClaimAddress: addr[1].String(),
-	// }
+	claimKolMsg = &types.MsgClaimKol{
+		ClaimAddress: addr[1].String(),
+		Refund:       false,
+	}
 
-	// ctx = ctx.WithBlockHeight(50)
-	// _, err = msgServer.ClaimAirdrop(ctx, claimAirdropMsg)
-	// require.True(t, types.ErrAirdropNotStarted.Is(err), "error should be invalid denom")
+	ctx = ctx.WithBlockHeight(50)
+	_, err = msgServer.ClaimKol(ctx, claimKolMsg)
+	require.True(t, types.ErrAirdropNotStarted.Is(err), "error should be invalid denom")
 
-	// ctx = ctx.WithBlockHeight(250)
-	// _, err = msgServer.ClaimAirdrop(ctx, claimAirdropMsg)
-	// require.True(t, types.ErrAirdropEnded.Is(err), "error should be invalid denom")
+	ctx = ctx.WithBlockHeight(120)
+	claimKolMsg.Refund = true
+	_, err = msgServer.ClaimKol(ctx, claimKolMsg)
+	require.NoError(t, err)
+
+	kol := keeper.GetKol(ctx, addr[1])
+	require.True(t, kol.Refunded)
+
+	_, err = msgServer.ClaimKol(ctx, claimKolMsg)
+	require.True(t, types.ErrKolRefunded.Is(err), "error should be invalid denom")
 }
