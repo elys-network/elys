@@ -49,26 +49,26 @@ func (k msgServer) ClaimKol(goCtx context.Context, msg *types.MsgClaimKol) (*typ
 	}
 
 	total_elys := kol.Amount
+	// 12.5% of total_amount will go directly to claimer
+	// 87.5% of total_amount will be vested
+	liquid_elys := math.LegacyNewDecFromInt(total_elys).Mul(math.LegacyMustNewDecFromStr("0.125")).TruncateInt()
 
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, kolWallet, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, total_elys)))
-	if err != nil {
-		return nil, err
+	if liquid_elys.IsPositive() {
+		err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, kolWallet, types.ModuleName, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, liquid_elys)))
+		if err != nil {
+			return nil, err
+		}
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, liquid_elys)))
+		if err != nil {
+			return nil, err
+		}
 	}
-
-	// 15% of total_amount will go directly to claimer
-	// 85% of total_amount will be vested
-	liquid_elys := math.LegacyNewDecFromInt(total_elys).Mul(math.LegacyMustNewDecFromStr("0.15")).TruncateInt()
-	// TODO: Handle vesting
-	//vested_elys := total_elys.Sub(liquid_elys)
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, liquid_elys)))
-	if err != nil {
-		return nil, err
-	}
-
-	// Create a new vesting schedule
 
 	kol.Claimed = true
 	k.SetKol(ctx, kol)
 
-	return &types.MsgClaimKolResponse{}, nil
+	return &types.MsgClaimKolResponse{
+		ElysAmount:       liquid_elys,
+		VestedElysAmount: total_elys.Sub(liquid_elys),
+	}, nil
 }
