@@ -18,6 +18,10 @@ func (k msgServer) ClaimAirdrop(goCtx context.Context, msg *types.MsgClaimAirdro
 	airdropWallet := sdk.MustAccAddressFromBech32(AirdropWallet)
 	params := k.GetParams(ctx)
 
+	if !params.EnableClaim {
+		return nil, types.ErrClaimNotEnabled
+	}
+
 	if k.GetAirdropClaimed(ctx, sender).Claimed {
 		return nil, types.ErrAirdropAlreadyClaimed
 	}

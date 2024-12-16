@@ -30,4 +30,5 @@ var (
 	ErrKolNotFound                    = errorsmod.Register(ModuleName, 1020, "kol not found")
 	ErrKolAlreadyClaimed              = errorsmod.Register(ModuleName, 1021, "elys already claimed")
 	ErrKolRefunded                    = errorsmod.Register(ModuleName, 1022, "cannot claim elys, refund has been processed")
+	ErrClaimNotEnabled                = errorsmod.Register(ModuleName, 1023, "claim not enabled")
 )

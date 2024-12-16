@@ -18,6 +18,10 @@ func (k msgServer) ClaimKol(goCtx context.Context, msg *types.MsgClaimKol) (*typ
 	kolWallet := sdk.MustAccAddressFromBech32(KolWallet)
 	params := k.GetParams(ctx)
 
+	if !params.EnableClaim {
+		return nil, types.ErrClaimNotEnabled
+	}
+
 	kol := k.GetKol(ctx, sender)
 	if kol.Amount.IsZero() {
 		return nil, types.ErrKolNotFound
