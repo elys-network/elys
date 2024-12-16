@@ -43,6 +43,7 @@ type MsgClient interface {
 	UpdateVestingInfo(ctx context.Context, in *MsgUpdateVestingInfo, opts ...grpc.CallOption) (*MsgUpdateVestingInfoResponse, error)
 	// UpdateEnableVestNow add/update enable vest now on Params
 	UpdateEnableVestNow(ctx context.Context, in *MsgUpdateEnableVestNow, opts ...grpc.CallOption) (*MsgUpdateEnableVestNowResponse, error)
+	UpdateAirdropParams(ctx context.Context, in *MsgUpdateAirdropParams, opts ...grpc.CallOption) (*MsgUpdateAirdropParamsResponse, error)
 	Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOption) (*MsgStakeResponse, error)
 	Unstake(ctx context.Context, in *MsgUnstake, opts ...grpc.CallOption) (*MsgUnstakeResponse, error)
 	ClaimAirdrop(ctx context.Context, in *MsgClaimAirdrop, opts ...grpc.CallOption) (*MsgClaimAirdropResponse, error)
@@ -138,6 +139,15 @@ func (c *msgClient) UpdateEnableVestNow(ctx context.Context, in *MsgUpdateEnable
 	return out, nil
 }
 
+func (c *msgClient) UpdateAirdropParams(ctx context.Context, in *MsgUpdateAirdropParams, opts ...grpc.CallOption) (*MsgUpdateAirdropParamsResponse, error) {
+	out := new(MsgUpdateAirdropParamsResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/UpdateAirdropParams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOption) (*MsgStakeResponse, error) {
 	out := new(MsgStakeResponse)
 	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/Stake", in, out, opts...)
@@ -203,6 +213,7 @@ type MsgServer interface {
 	UpdateVestingInfo(context.Context, *MsgUpdateVestingInfo) (*MsgUpdateVestingInfoResponse, error)
 	// UpdateEnableVestNow add/update enable vest now on Params
 	UpdateEnableVestNow(context.Context, *MsgUpdateEnableVestNow) (*MsgUpdateEnableVestNowResponse, error)
+	UpdateAirdropParams(context.Context, *MsgUpdateAirdropParams) (*MsgUpdateAirdropParamsResponse, error)
 	Stake(context.Context, *MsgStake) (*MsgStakeResponse, error)
 	Unstake(context.Context, *MsgUnstake) (*MsgUnstakeResponse, error)
 	ClaimAirdrop(context.Context, *MsgClaimAirdrop) (*MsgClaimAirdropResponse, error)
@@ -240,6 +251,9 @@ func (UnimplementedMsgServer) UpdateVestingInfo(context.Context, *MsgUpdateVesti
 }
 func (UnimplementedMsgServer) UpdateEnableVestNow(context.Context, *MsgUpdateEnableVestNow) (*MsgUpdateEnableVestNowResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateEnableVestNow not implemented")
+}
+func (UnimplementedMsgServer) UpdateAirdropParams(context.Context, *MsgUpdateAirdropParams) (*MsgUpdateAirdropParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAirdropParams not implemented")
 }
 func (UnimplementedMsgServer) Stake(context.Context, *MsgStake) (*MsgStakeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Stake not implemented")
@@ -428,6 +442,24 @@ func _Msg_UpdateEnableVestNow_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateAirdropParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateAirdropParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateAirdropParams(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/UpdateAirdropParams",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateAirdropParams(ctx, req.(*MsgUpdateAirdropParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_Stake_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgStake)
 	if err := dec(in); err != nil {
@@ -542,6 +574,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateEnableVestNow",
 			Handler:    _Msg_UpdateEnableVestNow_Handler,
+		},
+		{
+			MethodName: "UpdateAirdropParams",
+			Handler:    _Msg_UpdateAirdropParams_Handler,
 		},
 		{
 			MethodName: "Stake",

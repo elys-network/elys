@@ -3,11 +3,14 @@ package cli
 import (
 	"errors"
 
+	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	v1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -15,12 +18,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdUpdateEnableVestNow() *cobra.Command {
+const FlagEnableClaim = "enable-claim"
+
+func CmdUpdateAirdropParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-enable-vest-now",
-		Short: "Broadcast message update-enable-vest-now",
-		Args:  cobra.ExactArgs(0),
+		Use:   "update-airdrop-params",
+		Short: "Broadcast message update-airdrop-params start-height end-height",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			startHeight, found := math.NewIntFromString(args[0])
+			if !found {
+				return errorsmod.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
+			}
+
+			endHeight, found := math.NewIntFromString(args[1])
+			if !found {
+				return errorsmod.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
+			}
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -46,7 +60,7 @@ func CmdUpdateEnableVestNow() *cobra.Command {
 				return err
 			}
 
-			enableVestNow, err := cmd.Flags().GetBool(FlagEnableVestNow)
+			enableClaim, err := cmd.Flags().GetBool(FlagEnableClaim)
 			if err != nil {
 				return err
 			}
@@ -57,9 +71,11 @@ func CmdUpdateEnableVestNow() *cobra.Command {
 			}
 
 			govAddress := sdk.AccAddress(address.Module(govtypes.ModuleName))
-			msg := types.NewMsgUpdateEnableVestNow(
+			msg := types.NewMsgUpdateAirdropParams(
 				govAddress.String(),
-				enableVestNow,
+				enableClaim,
+				startHeight.Uint64(),
+				endHeight.Uint64(),
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -85,12 +101,12 @@ func CmdUpdateEnableVestNow() *cobra.Command {
 	}
 
 	cmd.Flags().Bool(FlagExpedited, false, "expedited")
-	cmd.Flags().Bool(FlagEnableVestNow, false, "enable-vest-now")
+	cmd.Flags().Bool(FlagEnableClaim, false, "enable-claim")
 	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
 	cmd.Flags().String(cli.FlagSummary, "", "summary of proposal")
 	cmd.Flags().String(cli.FlagMetadata, "", "metadata of proposal")
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-	_ = cmd.MarkFlagRequired(FlagEnableVestNow)
+	_ = cmd.MarkFlagRequired(FlagEnableClaim)
 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
 	_ = cmd.MarkFlagRequired(cli.FlagSummary)
 	_ = cmd.MarkFlagRequired(cli.FlagMetadata)

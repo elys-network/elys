@@ -49,6 +49,9 @@ service Msg {
   rpc UpdateEnableVestNow(MsgUpdateEnableVestNow)
       returns (MsgUpdateEnableVestNowResponse);
 
+  rpc UpdateAirdropParams(MsgUpdateAirdropParams)
+      returns (MsgUpdateAirdropParamsResponse);
+
   rpc Stake(MsgStake) returns (MsgStakeResponse);
   rpc Unstake(MsgUnstake) returns (MsgUnstakeResponse);
 
@@ -247,3 +250,14 @@ message MsgClaimKolResponse {
     (gogoproto.nullable) = false
   ];
 }
+
+message MsgUpdateAirdropParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "commitment/MsgUpdateAirdropParams";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  bool enable_claim = 2;
+  uint64 start_airdrop_claim_height = 3;
+  uint64 end_airdrop_claim_height = 4;
+}
+
+message MsgUpdateAirdropParamsResponse {}
