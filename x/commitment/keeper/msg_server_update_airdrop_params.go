@@ -20,6 +20,8 @@ func (k msgServer) UpdateAirdropParams(goCtx context.Context, msg *types.MsgUpda
 	params.EnableClaim = msg.EnableClaim
 	params.StartAirdropClaimHeight = msg.StartAirdropClaimHeight
 	params.EndAirdropClaimHeight = msg.EndAirdropClaimHeight
+	params.StartKolClaimHeight = msg.StartKolClaimHeight
+	params.EndKolClaimHeight = msg.EndKolClaimHeight
 	k.SetParams(ctx, params)
 
 	return &types.MsgUpdateAirdropParamsResponse{}, nil

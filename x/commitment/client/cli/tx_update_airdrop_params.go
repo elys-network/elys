@@ -23,15 +23,25 @@ const FlagEnableClaim = "enable-claim"
 func CmdUpdateAirdropParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-airdrop-params",
-		Short: "Broadcast message update-airdrop-params start-height end-height",
-		Args:  cobra.ExactArgs(2),
+		Short: "Broadcast message update-airdrop-params start-airdrop-height end-airdrop-height start-kol-height end-kol-height",
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			startHeight, found := math.NewIntFromString(args[0])
+			startAirdropHeight, found := math.NewIntFromString(args[0])
 			if !found {
 				return errorsmod.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
 			}
 
-			endHeight, found := math.NewIntFromString(args[1])
+			endAirdropHeight, found := math.NewIntFromString(args[1])
+			if !found {
+				return errorsmod.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
+			}
+
+			startKolHeight, found := math.NewIntFromString(args[2])
+			if !found {
+				return errorsmod.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
+			}
+
+			endKolHeight, found := math.NewIntFromString(args[3])
 			if !found {
 				return errorsmod.Wrap(sdkerrors.ErrInvalidType, "cannot convert string to int")
 			}
@@ -74,8 +84,10 @@ func CmdUpdateAirdropParams() *cobra.Command {
 			msg := types.NewMsgUpdateAirdropParams(
 				govAddress.String(),
 				enableClaim,
-				startHeight.Uint64(),
-				endHeight.Uint64(),
+				startAirdropHeight.Uint64(),
+				endAirdropHeight.Uint64(),
+				startKolHeight.Uint64(),
+				endKolHeight.Uint64(),
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

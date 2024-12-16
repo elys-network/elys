@@ -8,12 +8,14 @@ import (
 
 var _ sdk.Msg = &MsgUpdateEnableVestNow{}
 
-func NewMsgUpdateAirdropParams(govAddress string, enableClaim bool, startHeight uint64, endHeight uint64) MsgUpdateAirdropParams {
+func NewMsgUpdateAirdropParams(govAddress string, enableClaim bool, startAirdropHeight uint64, endAirdropHeight uint64, startKolHeight uint64, endKolHeight uint64) MsgUpdateAirdropParams {
 	return MsgUpdateAirdropParams{
 		Authority:               govAddress,
 		EnableClaim:             enableClaim,
-		StartAirdropClaimHeight: startHeight,
-		EndAirdropClaimHeight:   endHeight,
+		StartAirdropClaimHeight: startAirdropHeight,
+		EndAirdropClaimHeight:   endAirdropHeight,
+		StartKolClaimHeight:     startKolHeight,
+		EndKolClaimHeight:       endKolHeight,
 	}
 
 }

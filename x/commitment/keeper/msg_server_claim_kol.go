@@ -22,6 +22,15 @@ func (k msgServer) ClaimKol(goCtx context.Context, msg *types.MsgClaimKol) (*typ
 		return nil, types.ErrClaimNotEnabled
 	}
 
+	currentHeight := uint64(ctx.BlockHeight())
+	if currentHeight < params.StartKolClaimHeight {
+		return nil, types.ErrAirdropNotStarted
+	}
+
+	if currentHeight > params.EndKolClaimHeight {
+		return nil, types.ErrAirdropEnded
+	}
+
 	kol := k.GetKol(ctx, sender)
 	if kol.Amount.IsZero() {
 		return nil, types.ErrKolNotFound
@@ -42,11 +51,6 @@ func (k msgServer) ClaimKol(goCtx context.Context, msg *types.MsgClaimKol) (*typ
 			ElysAmount:       math.ZeroInt(),
 			VestedElysAmount: math.ZeroInt(),
 		}, nil
-	}
-
-	currentHeight := uint64(ctx.BlockHeight())
-	if currentHeight < params.StartAirdropClaimHeight {
-		return nil, types.ErrAirdropNotStarted
 	}
 
 	total_elys := kol.Amount

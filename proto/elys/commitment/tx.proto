@@ -258,6 +258,8 @@ message MsgUpdateAirdropParams {
   bool enable_claim = 2;
   uint64 start_airdrop_claim_height = 3;
   uint64 end_airdrop_claim_height = 4;
+  uint64 start_kol_claim_height = 5;
+  uint64 end_kol_claim_height = 6;
 }
 
 message MsgUpdateAirdropParamsResponse {}

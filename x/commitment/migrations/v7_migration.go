@@ -14,6 +14,8 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		EnableVestNow:           legacy.EnableVestNow,
 		StartAirdropClaimHeight: legacy.StartAtomStakersHeight,
 		EndAirdropClaimHeight:   legacy.EndAtomStakersHeight,
+		StartKolClaimHeight:     legacy.StartAtomStakersHeight,
+		EndKolClaimHeight:       legacy.EndAtomStakersHeight,
 		EnableClaim:             false,
 	}
 	m.keeper.SetParams(ctx, newParams)
