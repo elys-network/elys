@@ -28,31 +28,36 @@ jobs:
 
       - name: Create software upgrade proposal
         run: |
+          # Get latest release version using GitHub API
+          ELYS_VERSION=$(curl -s https://api.github.com/repos/elys-network/elys/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+          echo "Latest elys version: $ELYS_VERSION"
+
+          # Download latest binary
+          DOWNLOAD_BINARY_URL=https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/elysd-${ELYS_VERSION}-linux-amd64
+          DOWNLOAD_SHA256_URL=https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/sha256sum.txt
+          ELYSD=/tmp/elysd-${ELYS_VERSION}
+          SHA256SUM=/tmp/sha256sum.txt
+          curl -L $DOWNLOAD_BINARY_URL -o $ELYSD && chmod +x $ELYSD
+          curl -L $DOWNLOAD_SHA256_URL -o $SHA256SUM
+
           # helper functions
           extract_txhash() { awk -F 'txhash: ' '/txhash:/{print $2; exit}'; }
           extract_proposal_id() { awk -F 'key: proposal_id|value: ' '/key: proposal_id/ { getline; gsub(/"/, "", $2); print $2; exit }'; }
           extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+450; exit }'; }
-          extract_checksum() { awk "/elysd-${{ github.ref_name }}-linux-amd64.tar.gz/ {print \$1; exit}"; }
+          extract_checksum() { awk "/elysd-${ELYS_VERSION}-linux-amd64.tar.gz/ {print \$1; exit}"; }
 
           # environment variables
-          ELYSD=dist/elysd-linux-amd64_linux_amd64_v1/elysd
           NODE=https://rpc.testnet.elys.network:443
           OPTIONS="--node $NODE --chain-id elysicstestnet-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
 
-          # save private keys to files
-          echo "${{ secrets.PRIVATE_KEY_1 }}" > /tmp/private_key_1.txt
-          echo "${{ secrets.PRIVATE_KEY_2 }}" > /tmp/private_key_2.txt
-          echo "${{ secrets.PRIVATE_KEY_3 }}" > /tmp/private_key_3.txt
-          echo "${{ secrets.PRIVATE_KEY_4 }}" > /tmp/private_key_4.txt
-
-          # recover keys
-          echo "${{ secrets.PASSPHRASE_1 }}" | ${ELYSD} keys import key_1 --keyring-backend test /tmp/private_key_1.txt
-          echo "${{ secrets.PASSPHRASE_2 }}" | ${ELYSD} keys import key_2 --keyring-backend test /tmp/private_key_2.txt
-          echo "${{ secrets.PASSPHRASE_3 }}" | ${ELYSD} keys import key_3 --keyring-backend test /tmp/private_key_3.txt
-          echo "${{ secrets.PASSPHRASE_4 }}" | ${ELYSD} keys import key_4 --keyring-backend test /tmp/private_key_4.txt
+          # import proposers key
+          ${ELYSD} keys import-hex proposer1 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_1 }}
+          ${ELYSD} keys import-hex proposer2 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_2 }}
+          ${ELYSD} keys import-hex proposer3 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_3 }}
+          ${ELYSD} keys import-hex proposer4 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_4 }}
 
           # get checksum
-          checksum=$(cat dist/sha256sum.txt | extract_checksum)
+          checksum=$(cat $SHA256SUM | extract_checksum)
 
           # query and upgrade height
           height=$(${ELYSD} status --node $NODE | extract_and_calc_upgrade_height)
@@ -60,20 +65,21 @@ jobs:
           # create proposal
           txhash=$(
             ${ELYSD} software-upgrade-tx \
-              ${{ github.ref_name }} \
+              $ELYS_VERSION \
               $height \
               10000000uelys \
-              "Elys Network ${{ github.ref_name }} released. Focuses on enhancements and codebase improvements." \
-              "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${{ github.ref_name }}/elysd-${{ github.ref_name }}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
-              --from=key_1 \
+              "Elys Network $ELYS_VERSION released. Focuses on enhancements and codebase improvements." \
+              "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/elysd-${ELYS_VERSION}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
+              false \
+              --from=proposer1 \
               $OPTIONS | extract_txhash
           )
           sleep 10
           proposalid=$(${ELYSD} q tx $txhash --node $NODE | extract_proposal_id)
 
           # vote on proposal
-          ${ELYSD} tx gov vote $proposalid yes --from=key_1 $OPTIONS
-          ${ELYSD} tx gov vote $proposalid yes --from=key_2 $OPTIONS
-          ${ELYSD} tx gov vote $proposalid yes --from=key_3 $OPTIONS
-          ${ELYSD} tx gov vote $proposalid yes --from=key_4 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=proposer1 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=proposer2 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=proposer3 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=proposer4 $OPTIONS
           sleep 10

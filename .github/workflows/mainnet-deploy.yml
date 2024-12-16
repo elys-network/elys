@@ -18,9 +18,12 @@ jobs:
           echo "Latest elys version: $ELYS_VERSION"
 
           # Download latest binary
-          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/elysd-${ELYS_VERSION}-linux-amd64
+          DOWNLOAD_BINARY_URL=https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/elysd-${ELYS_VERSION}-linux-amd64
+          DOWNLOAD_SHA256_URL=https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/sha256sum.txt
           ELYSD=/tmp/elysd-${ELYS_VERSION}
-          curl -L $DOWNLOAD_URL -o $ELYSD && chmod +x $ELYSD
+          SHA256SUM=/tmp/sha256sum.txt
+          curl -L $DOWNLOAD_BINARY_URL -o $ELYSD && chmod +x $ELYSD
+          curl -L $DOWNLOAD_SHA256_URL -o $SHA256SUM
 
           # helper functions
           extract_txhash() { awk -F 'txhash: ' '/txhash:/{print $2; exit}'; }
@@ -36,7 +39,7 @@ jobs:
           ${ELYSD} keys import-hex proposer ${{ secrets.MAINNET_PROPOSER_PRIVATE_KEY }}
 
           # get checksum
-          checksum=$(cat dist/sha256sum.txt | extract_checksum)
+          checksum=$(cat $SHA256SUM | extract_checksum)
 
           # query and upgrade height
           height=$(${ELYSD} status --node $NODE | extract_and_calc_upgrade_height)
@@ -49,6 +52,7 @@ jobs:
               0uelys \
               "Elys Network ${ELYS_VERSION} released. Focuses on enhancements and codebase improvements." \
               "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/elysd-${ELYS_VERSION}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
+              true \
               --from=proposer \
               $OPTIONS | extract_txhash
           )
