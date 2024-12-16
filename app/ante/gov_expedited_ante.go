@@ -1,7 +1,6 @@
 package ante
 
 import (
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -57,21 +56,21 @@ func (g GovExpeditedProposalsDecorator) isWhitelisted(msgType string) bool {
 }
 
 func (g GovExpeditedProposalsDecorator) validateExpeditedGovProp(prop *govv1.MsgSubmitProposal) error {
-	msgs := prop.GetMessages()
-	if len(msgs) == 0 {
-		return fmt.Errorf("unsupported expedited proposal type")
-	}
-	for _, message := range msgs {
-		// in case of legacy content submitted using govv1.MsgSubmitProposal
-		if sdkMsg, isLegacy := message.GetCachedValue().(*govv1.MsgExecLegacyContent); isLegacy {
-			if !g.isWhitelisted(sdkMsg.Content.TypeUrl) {
-				return fmt.Errorf("unsupported expedited proposal type: invalid Msg type: %s", sdkMsg.Content.TypeUrl)
-			}
-			continue
-		}
-		if !g.isWhitelisted(message.TypeUrl) {
-			return fmt.Errorf("unsupported expedited proposal type: invalid Msg type: %s", message.TypeUrl)
-		}
-	}
+	//msgs := prop.GetMessages()
+	//if len(msgs) == 0 {
+	//	return fmt.Errorf("unsupported expedited proposal type")
+	//}
+	//for _, message := range msgs {
+	//	// in case of legacy content submitted using govv1.MsgSubmitProposal
+	//	if sdkMsg, isLegacy := message.GetCachedValue().(*govv1.MsgExecLegacyContent); isLegacy {
+	//		if !g.isWhitelisted(sdkMsg.Content.TypeUrl) {
+	//			return fmt.Errorf("unsupported expedited proposal type: invalid Msg type: %s", sdkMsg.Content.TypeUrl)
+	//		}
+	//		continue
+	//	}
+	//	if !g.isWhitelisted(message.TypeUrl) {
+	//		return fmt.Errorf("unsupported expedited proposal type: invalid Msg type: %s", message.TypeUrl)
+	//	}
+	//}
 	return nil
 }
