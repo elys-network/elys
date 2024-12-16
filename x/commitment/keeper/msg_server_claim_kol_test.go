@@ -20,6 +20,10 @@ func TestClaimKol(t *testing.T) {
 	// Create a test context and keeper
 	keeper := app.CommitmentKeeper
 
+	params := keeper.GetParams(ctx)
+	params.EnableClaim = true
+	keeper.SetParams(ctx, params)
+
 	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
 	addr := simapp.AddTestAddrs(app, ctx, 3, sdkmath.NewInt(1000000))
 	creator := addr[0]
@@ -58,7 +62,6 @@ func TestClaimKol(t *testing.T) {
 	require.True(t, types.ErrKolAlreadyClaimed.Is(err), "error should be invalid denom")
 
 	// Wrong block height
-	params := keeper.GetParams(ctx)
 	params.StartAirdropClaimHeight = 100
 	params.EndAirdropClaimHeight = 200
 	keeper.SetParams(ctx, params)
