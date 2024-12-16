@@ -7104,6 +7104,954 @@ func (x *fastReflection_QueryTotalAirDropClaimedResponse) ProtoMethods() *protoi
 	}
 }
 
+var (
+	md_QueryKolRequest         protoreflect.MessageDescriptor
+	fd_QueryKolRequest_address protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_commitment_query_proto_init()
+	md_QueryKolRequest = File_elys_commitment_query_proto.Messages().ByName("QueryKolRequest")
+	fd_QueryKolRequest_address = md_QueryKolRequest.Fields().ByName("address")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryKolRequest)(nil)
+
+type fastReflection_QueryKolRequest QueryKolRequest
+
+func (x *QueryKolRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryKolRequest)(x)
+}
+
+func (x *QueryKolRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_commitment_query_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryKolRequest_messageType fastReflection_QueryKolRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryKolRequest_messageType{}
+
+type fastReflection_QueryKolRequest_messageType struct{}
+
+func (x fastReflection_QueryKolRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryKolRequest)(nil)
+}
+func (x fastReflection_QueryKolRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryKolRequest)
+}
+func (x fastReflection_QueryKolRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryKolRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryKolRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryKolRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryKolRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryKolRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryKolRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryKolRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryKolRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryKolRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryKolRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Address != "" {
+		value := protoreflect.ValueOfString(x.Address)
+		if !f(fd_QueryKolRequest_address, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryKolRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.commitment.QueryKolRequest.address":
+		return x.Address != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolRequest"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryKolRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.commitment.QueryKolRequest.address":
+		x.Address = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolRequest"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryKolRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.commitment.QueryKolRequest.address":
+		value := x.Address
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolRequest"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryKolRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.commitment.QueryKolRequest.address":
+		x.Address = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolRequest"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryKolRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.commitment.QueryKolRequest.address":
+		panic(fmt.Errorf("field address of message elys.commitment.QueryKolRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolRequest"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryKolRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.commitment.QueryKolRequest.address":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolRequest"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryKolRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.commitment.QueryKolRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryKolRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryKolRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryKolRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryKolRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryKolRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Address)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryKolRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Address) > 0 {
+			i -= len(x.Address)
+			copy(dAtA[i:], x.Address)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryKolRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryKolRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryKolRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Address = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryKolResponse             protoreflect.MessageDescriptor
+	fd_QueryKolResponse_elys_amount protoreflect.FieldDescriptor
+	fd_QueryKolResponse_claimed     protoreflect.FieldDescriptor
+	fd_QueryKolResponse_refunded    protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_commitment_query_proto_init()
+	md_QueryKolResponse = File_elys_commitment_query_proto.Messages().ByName("QueryKolResponse")
+	fd_QueryKolResponse_elys_amount = md_QueryKolResponse.Fields().ByName("elys_amount")
+	fd_QueryKolResponse_claimed = md_QueryKolResponse.Fields().ByName("claimed")
+	fd_QueryKolResponse_refunded = md_QueryKolResponse.Fields().ByName("refunded")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryKolResponse)(nil)
+
+type fastReflection_QueryKolResponse QueryKolResponse
+
+func (x *QueryKolResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryKolResponse)(x)
+}
+
+func (x *QueryKolResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_commitment_query_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryKolResponse_messageType fastReflection_QueryKolResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryKolResponse_messageType{}
+
+type fastReflection_QueryKolResponse_messageType struct{}
+
+func (x fastReflection_QueryKolResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryKolResponse)(nil)
+}
+func (x fastReflection_QueryKolResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryKolResponse)
+}
+func (x fastReflection_QueryKolResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryKolResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryKolResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryKolResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryKolResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryKolResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryKolResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryKolResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryKolResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryKolResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryKolResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.ElysAmount != "" {
+		value := protoreflect.ValueOfString(x.ElysAmount)
+		if !f(fd_QueryKolResponse_elys_amount, value) {
+			return
+		}
+	}
+	if x.Claimed != false {
+		value := protoreflect.ValueOfBool(x.Claimed)
+		if !f(fd_QueryKolResponse_claimed, value) {
+			return
+		}
+	}
+	if x.Refunded != false {
+		value := protoreflect.ValueOfBool(x.Refunded)
+		if !f(fd_QueryKolResponse_refunded, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryKolResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.commitment.QueryKolResponse.elys_amount":
+		return x.ElysAmount != ""
+	case "elys.commitment.QueryKolResponse.claimed":
+		return x.Claimed != false
+	case "elys.commitment.QueryKolResponse.refunded":
+		return x.Refunded != false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolResponse"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryKolResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.commitment.QueryKolResponse.elys_amount":
+		x.ElysAmount = ""
+	case "elys.commitment.QueryKolResponse.claimed":
+		x.Claimed = false
+	case "elys.commitment.QueryKolResponse.refunded":
+		x.Refunded = false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolResponse"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryKolResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.commitment.QueryKolResponse.elys_amount":
+		value := x.ElysAmount
+		return protoreflect.ValueOfString(value)
+	case "elys.commitment.QueryKolResponse.claimed":
+		value := x.Claimed
+		return protoreflect.ValueOfBool(value)
+	case "elys.commitment.QueryKolResponse.refunded":
+		value := x.Refunded
+		return protoreflect.ValueOfBool(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolResponse"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryKolResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.commitment.QueryKolResponse.elys_amount":
+		x.ElysAmount = value.Interface().(string)
+	case "elys.commitment.QueryKolResponse.claimed":
+		x.Claimed = value.Bool()
+	case "elys.commitment.QueryKolResponse.refunded":
+		x.Refunded = value.Bool()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolResponse"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryKolResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.commitment.QueryKolResponse.elys_amount":
+		panic(fmt.Errorf("field elys_amount of message elys.commitment.QueryKolResponse is not mutable"))
+	case "elys.commitment.QueryKolResponse.claimed":
+		panic(fmt.Errorf("field claimed of message elys.commitment.QueryKolResponse is not mutable"))
+	case "elys.commitment.QueryKolResponse.refunded":
+		panic(fmt.Errorf("field refunded of message elys.commitment.QueryKolResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolResponse"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryKolResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.commitment.QueryKolResponse.elys_amount":
+		return protoreflect.ValueOfString("")
+	case "elys.commitment.QueryKolResponse.claimed":
+		return protoreflect.ValueOfBool(false)
+	case "elys.commitment.QueryKolResponse.refunded":
+		return protoreflect.ValueOfBool(false)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.QueryKolResponse"))
+		}
+		panic(fmt.Errorf("message elys.commitment.QueryKolResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryKolResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.commitment.QueryKolResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryKolResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryKolResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryKolResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryKolResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryKolResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.ElysAmount)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Claimed {
+			n += 2
+		}
+		if x.Refunded {
+			n += 2
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryKolResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Refunded {
+			i--
+			if x.Refunded {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x18
+		}
+		if x.Claimed {
+			i--
+			if x.Claimed {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x10
+		}
+		if len(x.ElysAmount) > 0 {
+			i -= len(x.ElysAmount)
+			copy(dAtA[i:], x.ElysAmount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ElysAmount)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryKolResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryKolResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryKolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ElysAmount", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ElysAmount = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Claimed", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Claimed = bool(v != 0)
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Refunded", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Refunded = bool(v != 0)
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -7714,6 +8662,92 @@ func (x *QueryTotalAirDropClaimedResponse) GetTotalEdenClaimed() string {
 	return ""
 }
 
+type QueryKolRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (x *QueryKolRequest) Reset() {
+	*x = QueryKolRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_commitment_query_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryKolRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryKolRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryKolRequest.ProtoReflect.Descriptor instead.
+func (*QueryKolRequest) Descriptor() ([]byte, []int) {
+	return file_elys_commitment_query_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *QueryKolRequest) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+type QueryKolResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ElysAmount string `protobuf:"bytes,1,opt,name=elys_amount,json=elysAmount,proto3" json:"elys_amount,omitempty"`
+	Claimed    bool   `protobuf:"varint,2,opt,name=claimed,proto3" json:"claimed,omitempty"`
+	Refunded   bool   `protobuf:"varint,3,opt,name=refunded,proto3" json:"refunded,omitempty"`
+}
+
+func (x *QueryKolResponse) Reset() {
+	*x = QueryKolResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_commitment_query_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryKolResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryKolResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryKolResponse.ProtoReflect.Descriptor instead.
+func (*QueryKolResponse) Descriptor() ([]byte, []int) {
+	return file_elys_commitment_query_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *QueryKolResponse) GetElysAmount() string {
+	if x != nil {
+		return x.ElysAmount
+	}
+	return ""
+}
+
+func (x *QueryKolResponse) GetClaimed() bool {
+	if x != nil {
+		return x.Claimed
+	}
+	return false
+}
+
+func (x *QueryKolResponse) GetRefunded() bool {
+	if x != nil {
+		return x.Refunded
+	}
+	return false
+}
+
 var File_elys_commitment_query_proto protoreflect.FileDescriptor
 
 var file_elys_commitment_query_proto_rawDesc = []byte{
@@ -7864,7 +8898,21 @@ var file_elys_commitment_query_proto_rawDesc = []byte{
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
 	0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49,
 	0x6e, 0x74, 0x52, 0x10, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x45, 0x64, 0x65, 0x6e, 0x43, 0x6c, 0x61,
-	0x69, 0x6d, 0x65, 0x64, 0x32, 0xdc, 0x09, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x81,
+	0x69, 0x6d, 0x65, 0x64, 0x22, 0x45, 0x0a, 0x0f, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4b, 0x6f, 0x6c,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x32, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69,
+	0x6e, 0x67, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x96, 0x01, 0x0a, 0x10,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x4b, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x4c, 0x0a, 0x0b, 0x65, 0x6c, 0x79, 0x73, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49,
+	0x6e, 0x74, 0x52, 0x0a, 0x65, 0x6c, 0x79, 0x73, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x18,
+	0x0a, 0x07, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x07, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x65, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x72, 0x65, 0x66, 0x75,
+	0x6e, 0x64, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x72, 0x65, 0x66, 0x75,
+	0x6e, 0x64, 0x65, 0x64, 0x32, 0xdd, 0x0a, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x81,
 	0x01, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73,
 	0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x51, 0x75, 0x65, 0x72,
 	0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24,
@@ -7942,18 +8990,26 @@ var file_elys_commitment_query_proto_rawDesc = []byte{
 	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
 	0x79, 0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2f, 0x74, 0x6f,
 	0x74, 0x61, 0x6c, 0x5f, 0x61, 0x69, 0x72, 0x64, 0x72, 0x6f, 0x70, 0x5f, 0x63, 0x6c, 0x61, 0x69,
-	0x6d, 0x65, 0x64, 0x42, 0xb0, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x42, 0x0a, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x30, 0x67, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f,
-	0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0xa2, 0x02, 0x03, 0x45, 0x43,
-	0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d,
-	0x65, 0x6e, 0x74, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6f, 0x6d, 0x6d, 0x69,
-	0x74, 0x6d, 0x65, 0x6e, 0x74, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6f, 0x6d,
-	0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64,
-	0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6f, 0x6d, 0x6d,
-	0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6d, 0x65, 0x64, 0x12, 0x7f, 0x0a, 0x03, 0x4b, 0x6f, 0x6c, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x4b, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x4b, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x33, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2d, 0x12, 0x2b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d,
+	0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2f, 0x6b, 0x6f, 0x6c, 0x2f, 0x7b, 0x61, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x7d, 0x42, 0xb0, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x42, 0x0a, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x30, 0x67, 0x69, 0x74, 0x68,
+	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
+	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79,
+	0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0xa2, 0x02, 0x03, 0x45,
+	0x43, 0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74,
+	0x6d, 0x65, 0x6e, 0x74, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6f, 0x6d, 0x6d,
+	0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6f,
+	0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
+	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6f, 0x6d,
+	0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -7968,7 +9024,7 @@ func file_elys_commitment_query_proto_rawDescGZIP() []byte {
 	return file_elys_commitment_query_proto_rawDescData
 }
 
-var file_elys_commitment_query_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_elys_commitment_query_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_elys_commitment_query_proto_goTypes = []interface{}{
 	(*QueryParamsRequest)(nil),                 // 0: elys.commitment.QueryParamsRequest
 	(*QueryParamsResponse)(nil),                // 1: elys.commitment.QueryParamsResponse
@@ -7985,15 +9041,17 @@ var file_elys_commitment_query_proto_goTypes = []interface{}{
 	(*QueryAirDropResponse)(nil),               // 12: elys.commitment.QueryAirDropResponse
 	(*QueryTotalAirDropClaimedRequest)(nil),    // 13: elys.commitment.QueryTotalAirDropClaimedRequest
 	(*QueryTotalAirDropClaimedResponse)(nil),   // 14: elys.commitment.QueryTotalAirDropClaimedResponse
-	(*Params)(nil),                             // 15: elys.commitment.Params
-	(*Commitments)(nil),                        // 16: elys.commitment.Commitments
-	(*v1beta1.Coin)(nil),                       // 17: cosmos.base.v1beta1.Coin
+	(*QueryKolRequest)(nil),                    // 15: elys.commitment.QueryKolRequest
+	(*QueryKolResponse)(nil),                   // 16: elys.commitment.QueryKolResponse
+	(*Params)(nil),                             // 17: elys.commitment.Params
+	(*Commitments)(nil),                        // 18: elys.commitment.Commitments
+	(*v1beta1.Coin)(nil),                       // 19: cosmos.base.v1beta1.Coin
 }
 var file_elys_commitment_query_proto_depIdxs = []int32{
-	15, // 0: elys.commitment.QueryParamsResponse.params:type_name -> elys.commitment.Params
-	16, // 1: elys.commitment.QueryShowCommitmentsResponse.commitments:type_name -> elys.commitment.Commitments
-	17, // 2: elys.commitment.QueryCommittedTokensLockedResponse.locked_committed:type_name -> cosmos.base.v1beta1.Coin
-	17, // 3: elys.commitment.QueryCommittedTokensLockedResponse.total_committed:type_name -> cosmos.base.v1beta1.Coin
+	17, // 0: elys.commitment.QueryParamsResponse.params:type_name -> elys.commitment.Params
+	18, // 1: elys.commitment.QueryShowCommitmentsResponse.commitments:type_name -> elys.commitment.Commitments
+	19, // 2: elys.commitment.QueryCommittedTokensLockedResponse.locked_committed:type_name -> cosmos.base.v1beta1.Coin
+	19, // 3: elys.commitment.QueryCommittedTokensLockedResponse.total_committed:type_name -> cosmos.base.v1beta1.Coin
 	10, // 4: elys.commitment.QueryCommitmentVestingInfoResponse.vesting_details:type_name -> elys.commitment.VestingDetails
 	0,  // 5: elys.commitment.Query.Params:input_type -> elys.commitment.QueryParamsRequest
 	2,  // 6: elys.commitment.Query.ShowCommitments:input_type -> elys.commitment.QueryShowCommitmentsRequest
@@ -8002,15 +9060,17 @@ var file_elys_commitment_query_proto_depIdxs = []int32{
 	8,  // 9: elys.commitment.Query.CommitmentVestingInfo:input_type -> elys.commitment.QueryCommitmentVestingInfoRequest
 	11, // 10: elys.commitment.Query.AirDrop:input_type -> elys.commitment.QueryAirDropRequest
 	13, // 11: elys.commitment.Query.TotalAirdropClaimed:input_type -> elys.commitment.QueryTotalAirDropClaimedRequest
-	1,  // 12: elys.commitment.Query.Params:output_type -> elys.commitment.QueryParamsResponse
-	3,  // 13: elys.commitment.Query.ShowCommitments:output_type -> elys.commitment.QueryShowCommitmentsResponse
-	7,  // 14: elys.commitment.Query.CommittedTokensLocked:output_type -> elys.commitment.QueryCommittedTokensLockedResponse
-	5,  // 15: elys.commitment.Query.NumberOfCommitments:output_type -> elys.commitment.QueryNumberOfCommitmentsResponse
-	9,  // 16: elys.commitment.Query.CommitmentVestingInfo:output_type -> elys.commitment.QueryCommitmentVestingInfoResponse
-	12, // 17: elys.commitment.Query.AirDrop:output_type -> elys.commitment.QueryAirDropResponse
-	14, // 18: elys.commitment.Query.TotalAirdropClaimed:output_type -> elys.commitment.QueryTotalAirDropClaimedResponse
-	12, // [12:19] is the sub-list for method output_type
-	5,  // [5:12] is the sub-list for method input_type
+	15, // 12: elys.commitment.Query.Kol:input_type -> elys.commitment.QueryKolRequest
+	1,  // 13: elys.commitment.Query.Params:output_type -> elys.commitment.QueryParamsResponse
+	3,  // 14: elys.commitment.Query.ShowCommitments:output_type -> elys.commitment.QueryShowCommitmentsResponse
+	7,  // 15: elys.commitment.Query.CommittedTokensLocked:output_type -> elys.commitment.QueryCommittedTokensLockedResponse
+	5,  // 16: elys.commitment.Query.NumberOfCommitments:output_type -> elys.commitment.QueryNumberOfCommitmentsResponse
+	9,  // 17: elys.commitment.Query.CommitmentVestingInfo:output_type -> elys.commitment.QueryCommitmentVestingInfoResponse
+	12, // 18: elys.commitment.Query.AirDrop:output_type -> elys.commitment.QueryAirDropResponse
+	14, // 19: elys.commitment.Query.TotalAirdropClaimed:output_type -> elys.commitment.QueryTotalAirDropClaimedResponse
+	16, // 20: elys.commitment.Query.Kol:output_type -> elys.commitment.QueryKolResponse
+	13, // [13:21] is the sub-list for method output_type
+	5,  // [5:13] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name
 	5,  // [5:5] is the sub-list for extension extendee
 	0,  // [0:5] is the sub-list for field type_name
@@ -8204,6 +9264,30 @@ func file_elys_commitment_query_proto_init() {
 				return nil
 			}
 		}
+		file_elys_commitment_query_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryKolRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_commitment_query_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryKolResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -8211,7 +9295,7 @@ func file_elys_commitment_query_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_commitment_query_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

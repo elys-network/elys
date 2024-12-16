@@ -43,9 +43,11 @@ type MsgClient interface {
 	UpdateVestingInfo(ctx context.Context, in *MsgUpdateVestingInfo, opts ...grpc.CallOption) (*MsgUpdateVestingInfoResponse, error)
 	// UpdateEnableVestNow add/update enable vest now on Params
 	UpdateEnableVestNow(ctx context.Context, in *MsgUpdateEnableVestNow, opts ...grpc.CallOption) (*MsgUpdateEnableVestNowResponse, error)
+	UpdateAirdropParams(ctx context.Context, in *MsgUpdateAirdropParams, opts ...grpc.CallOption) (*MsgUpdateAirdropParamsResponse, error)
 	Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOption) (*MsgStakeResponse, error)
 	Unstake(ctx context.Context, in *MsgUnstake, opts ...grpc.CallOption) (*MsgUnstakeResponse, error)
 	ClaimAirdrop(ctx context.Context, in *MsgClaimAirdrop, opts ...grpc.CallOption) (*MsgClaimAirdropResponse, error)
+	ClaimKol(ctx context.Context, in *MsgClaimKol, opts ...grpc.CallOption) (*MsgClaimKolResponse, error)
 }
 
 type msgClient struct {
@@ -137,6 +139,15 @@ func (c *msgClient) UpdateEnableVestNow(ctx context.Context, in *MsgUpdateEnable
 	return out, nil
 }
 
+func (c *msgClient) UpdateAirdropParams(ctx context.Context, in *MsgUpdateAirdropParams, opts ...grpc.CallOption) (*MsgUpdateAirdropParamsResponse, error) {
+	out := new(MsgUpdateAirdropParamsResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/UpdateAirdropParams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOption) (*MsgStakeResponse, error) {
 	out := new(MsgStakeResponse)
 	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/Stake", in, out, opts...)
@@ -158,6 +169,15 @@ func (c *msgClient) Unstake(ctx context.Context, in *MsgUnstake, opts ...grpc.Ca
 func (c *msgClient) ClaimAirdrop(ctx context.Context, in *MsgClaimAirdrop, opts ...grpc.CallOption) (*MsgClaimAirdropResponse, error) {
 	out := new(MsgClaimAirdropResponse)
 	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/ClaimAirdrop", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ClaimKol(ctx context.Context, in *MsgClaimKol, opts ...grpc.CallOption) (*MsgClaimKolResponse, error) {
+	out := new(MsgClaimKolResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/ClaimKol", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -193,9 +213,11 @@ type MsgServer interface {
 	UpdateVestingInfo(context.Context, *MsgUpdateVestingInfo) (*MsgUpdateVestingInfoResponse, error)
 	// UpdateEnableVestNow add/update enable vest now on Params
 	UpdateEnableVestNow(context.Context, *MsgUpdateEnableVestNow) (*MsgUpdateEnableVestNowResponse, error)
+	UpdateAirdropParams(context.Context, *MsgUpdateAirdropParams) (*MsgUpdateAirdropParamsResponse, error)
 	Stake(context.Context, *MsgStake) (*MsgStakeResponse, error)
 	Unstake(context.Context, *MsgUnstake) (*MsgUnstakeResponse, error)
 	ClaimAirdrop(context.Context, *MsgClaimAirdrop) (*MsgClaimAirdropResponse, error)
+	ClaimKol(context.Context, *MsgClaimKol) (*MsgClaimKolResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -230,6 +252,9 @@ func (UnimplementedMsgServer) UpdateVestingInfo(context.Context, *MsgUpdateVesti
 func (UnimplementedMsgServer) UpdateEnableVestNow(context.Context, *MsgUpdateEnableVestNow) (*MsgUpdateEnableVestNowResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateEnableVestNow not implemented")
 }
+func (UnimplementedMsgServer) UpdateAirdropParams(context.Context, *MsgUpdateAirdropParams) (*MsgUpdateAirdropParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAirdropParams not implemented")
+}
 func (UnimplementedMsgServer) Stake(context.Context, *MsgStake) (*MsgStakeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Stake not implemented")
 }
@@ -238,6 +263,9 @@ func (UnimplementedMsgServer) Unstake(context.Context, *MsgUnstake) (*MsgUnstake
 }
 func (UnimplementedMsgServer) ClaimAirdrop(context.Context, *MsgClaimAirdrop) (*MsgClaimAirdropResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClaimAirdrop not implemented")
+}
+func (UnimplementedMsgServer) ClaimKol(context.Context, *MsgClaimKol) (*MsgClaimKolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClaimKol not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -414,6 +442,24 @@ func _Msg_UpdateEnableVestNow_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateAirdropParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateAirdropParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateAirdropParams(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/UpdateAirdropParams",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateAirdropParams(ctx, req.(*MsgUpdateAirdropParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_Stake_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgStake)
 	if err := dec(in); err != nil {
@@ -468,6 +514,24 @@ func _Msg_ClaimAirdrop_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_ClaimKol_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgClaimKol)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ClaimKol(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/ClaimKol",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ClaimKol(ctx, req.(*MsgClaimKol))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -512,6 +576,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateEnableVestNow_Handler,
 		},
 		{
+			MethodName: "UpdateAirdropParams",
+			Handler:    _Msg_UpdateAirdropParams_Handler,
+		},
+		{
 			MethodName: "Stake",
 			Handler:    _Msg_Stake_Handler,
 		},
@@ -522,6 +590,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ClaimAirdrop",
 			Handler:    _Msg_ClaimAirdrop_Handler,
+		},
+		{
+			MethodName: "ClaimKol",
+			Handler:    _Msg_ClaimKol_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

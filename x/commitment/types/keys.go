@@ -24,6 +24,7 @@ var (
 	GovernorKeyPrefix       = []byte{0x06}
 	AirdropClaimedKeyPrefix = []byte{0x07}
 	TotalClaimedKeyPrefix   = []byte{0x08}
+	KolKeyPrefix            = []byte{0x09}
 )
 
 func GetCommitmentsKey(creator sdk.AccAddress) []byte {
@@ -48,4 +49,8 @@ func GetGovernorKey(addr sdk.AccAddress) []byte {
 
 func GetAirdropClaimedKey(addr sdk.AccAddress) []byte {
 	return append(AirdropClaimedKeyPrefix, address.MustLengthPrefix(addr)...)
+}
+
+func GetkolKey(addr sdk.AccAddress) []byte {
+	return append(KolKeyPrefix, address.MustLengthPrefix(addr)...)
 }

@@ -49,10 +49,15 @@ service Msg {
   rpc UpdateEnableVestNow(MsgUpdateEnableVestNow)
       returns (MsgUpdateEnableVestNowResponse);
 
+  rpc UpdateAirdropParams(MsgUpdateAirdropParams)
+      returns (MsgUpdateAirdropParamsResponse);
+
   rpc Stake(MsgStake) returns (MsgStakeResponse);
   rpc Unstake(MsgUnstake) returns (MsgUnstakeResponse);
 
   rpc ClaimAirdrop(MsgClaimAirdrop) returns (MsgClaimAirdropResponse);
+
+  rpc ClaimKol(MsgClaimKol) returns (MsgClaimKolResponse);
 }
 
 message MsgCommitClaimedRewards {
@@ -225,3 +230,36 @@ message MsgClaimAirdropResponse {
     (gogoproto.nullable) = false
   ];
 }
+
+message MsgClaimKol {
+  option (cosmos.msg.v1.signer) = "claim_address";
+  option (amino.name) = "commitment/MsgClaimAirdrop";
+  string claim_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  bool refund = 2;
+}
+
+message MsgClaimKolResponse {
+  string elys_amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string vested_elys_amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgUpdateAirdropParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "commitment/MsgUpdateAirdropParams";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  bool enable_claim = 2;
+  uint64 start_airdrop_claim_height = 3;
+  uint64 end_airdrop_claim_height = 4;
+  uint64 start_kol_claim_height = 5;
+  uint64 end_kol_claim_height = 6;
+}
+
+message MsgUpdateAirdropParamsResponse {}

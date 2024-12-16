@@ -5,6 +5,99 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
+var KolClaim = []types.KolList{
+	{
+		Address:  "elys1qu7qgunsa2mc9qyvpxwkv88vgmj7y0nkq53kwr",
+		Amount:   math.NewInt(8572000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1r5zs3ft9krvw9q37llf3g5y390eh0ypu0rnk23",
+		Amount:   math.NewInt(17143000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1cqqetdpr4k3meyfukdv90lkydtj56fjum69vq7",
+		Amount:   math.NewInt(17143000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1cart66t2fdayj9f9cvely4kqueh2ffhrrs2gxd",
+		Amount:   math.NewInt(17143000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys13qdskd8su2pntqp56kzjzvw3reld2cyhlg54s4",
+		Amount:   math.NewInt(17143000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1e3e3qc32xk7reqnfugk40mxt8h3s8fhyzwevgk",
+		Amount:   math.NewInt(8572000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys15m2662rky8uf6wtat3pcw9hmznrvph6vss8v5m",
+		Amount:   math.NewInt(5715000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys19qwhgvxpu3nf72s9atqzt974fs7m079vazehgr",
+		Amount:   math.NewInt(8572000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1j7re4ffsg9yswltr87a52s99g6xj9jfuz7704z",
+		Amount:   math.NewInt(17143000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1parr7czd3qdvl4jv9ukn426lcy29udnex9epyc",
+		Amount:   math.NewInt(28572000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1lftz4jn0dg3s05ggvuvwqk34nqvz9a6hcjhpxt",
+		Amount:   math.NewInt(17143000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1c9x4t22z23xy3cp0st2qry33dv9suzrq7jsr8s",
+		Amount:   math.NewInt(8572000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys10ysvzamken98w7rdj7wv2ueky73ajlkzksvu3u",
+		Amount:   math.NewInt(5715000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1ph7gwddzsmcvlv5nn6fn9qpg3q7vewldragdfn",
+		Amount:   math.NewInt(28572000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1cz27lkynjv8uwmwhdn3vn9ypagwwsqqqsgchnv",
+		Amount:   math.NewInt(142858000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+}
+
 var AtomStakers = []types.AtomStaker{
 	{
 		Address: "elys1v07nar5zt2g64nms0cj0a9gshhjhzapy6ta2w8",

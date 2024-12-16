@@ -214,3 +214,41 @@ func (k Keeper) SetTotalClaimed(ctx sdk.Context, totalClaimed types.TotalClaimed
 	b := k.cdc.MustMarshal(&totalClaimed)
 	store.Set(types.TotalClaimedKeyPrefix, b)
 }
+
+func (k Keeper) GetKol(ctx sdk.Context, address sdk.AccAddress) (val types.KolList) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	b := store.Get(types.GetkolKey(address))
+
+	if b != nil {
+		k.cdc.MustUnmarshal(b, &val)
+	} else {
+		val.Address = address.String()
+		val.Amount = math.ZeroInt()
+		val.Claimed = false
+		val.Refunded = false
+	}
+	return
+}
+
+func (k Keeper) SetKol(ctx sdk.Context, val types.KolList) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetkolKey(sdk.MustAccAddressFromBech32(val.Address))
+	b := k.cdc.MustMarshal(&val)
+	store.Set(key, b)
+}
+
+func (k Keeper) GetAllKol(ctx sdk.Context) (list []*types.KolList) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.CadetsKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.KolList
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, &val)
+	}
+
+	return
+}
