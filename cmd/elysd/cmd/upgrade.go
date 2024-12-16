@@ -19,9 +19,9 @@ import (
 // SoftwareUpgradeTxCmd implements submitting a proposal transaction command for chain upgrade.
 func SoftwareUpgradeTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "software-upgrade-tx [name] [height] [deposit] [description] [info]",
+		Use:   "software-upgrade-tx [name] [height] [deposit] [description] [info] [expedited]",
 		Short: "cmd to submit software upgrade proposal",
-		Args:  cobra.ExactArgs(5),
+		Args:  cobra.ExactArgs(6),
 		Long:  "",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -40,6 +40,10 @@ func SoftwareUpgradeTxCmd() *cobra.Command {
 			}
 			description := args[3]
 			info := args[4]
+			expedited, err := strconv.ParseBool(args[5])
+			if err != nil {
+				return err
+			}
 
 			softwareUpgrade := &upgradetypes.MsgSoftwareUpgrade{
 				Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -52,7 +56,7 @@ func SoftwareUpgradeTxCmd() *cobra.Command {
 				},
 			}
 
-			msg, err := v1.NewMsgSubmitProposal([]sdk.Msg{softwareUpgrade}, deposit, clientCtx.GetFromAddress().String(), "", name, description, false)
+			msg, err := v1.NewMsgSubmitProposal([]sdk.Msg{softwareUpgrade}, deposit, clientCtx.GetFromAddress().String(), "", name, description, expedited)
 			if err != nil {
 				return fmt.Errorf("invalid message: %w", err)
 			}
