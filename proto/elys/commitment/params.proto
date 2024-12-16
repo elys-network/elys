@@ -37,6 +37,7 @@ message Params {
 
   uint64 start_airdrop_claim_height = 5;
   uint64 end_airdrop_claim_height = 6;
+  bool enable_claim = 7;
 }
 
 message VestingInfo {

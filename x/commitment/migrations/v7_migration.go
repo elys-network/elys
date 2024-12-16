@@ -14,12 +14,18 @@ func (m Migrator) V7Migration(ctx sdk.Context) error {
 		EnableVestNow:           legacy.EnableVestNow,
 		StartAirdropClaimHeight: legacy.StartAtomStakersHeight,
 		EndAirdropClaimHeight:   legacy.EndAtomStakersHeight,
+		EnableClaim:             false,
 	}
 	m.keeper.SetParams(ctx, newParams)
 
 	// Add missing wallet addresses to atom stakers DS
 	for _, staker := range AtomStakers {
 		m.keeper.SetAtomStaker(ctx, staker)
+	}
+
+	// Add kol addresses to kol DS
+	for _, kol := range KolClaim {
+		m.keeper.SetKol(ctx, kol)
 	}
 
 	return nil
