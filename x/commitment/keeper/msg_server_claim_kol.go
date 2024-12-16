@@ -10,7 +10,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-var KolWallet = "elys1wk7jwkqt2h9cnpkst85j9n454e4y8znlgk842n"
+var KolWallet = "elys1ykrphaysp9u5m8379f3d7pr9k7t0xq757lr9vj"
 
 func (k msgServer) ClaimKol(goCtx context.Context, msg *types.MsgClaimKol) (*types.MsgClaimKolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
