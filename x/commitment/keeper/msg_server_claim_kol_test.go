@@ -62,8 +62,8 @@ func TestClaimKol(t *testing.T) {
 	require.True(t, types.ErrKolAlreadyClaimed.Is(err), "error should be invalid denom")
 
 	// Wrong block height
-	params.StartAirdropClaimHeight = 100
-	params.EndAirdropClaimHeight = 200
+	params.StartKolClaimHeight = 100
+	params.EndKolClaimHeight = 200
 	keeper.SetParams(ctx, params)
 
 	keeper.SetKol(ctx, types.KolList{
@@ -80,7 +80,7 @@ func TestClaimKol(t *testing.T) {
 
 	ctx = ctx.WithBlockHeight(50)
 	_, err = msgServer.ClaimKol(ctx, claimKolMsg)
-	require.True(t, types.ErrAirdropNotStarted.Is(err), "error should be invalid denom")
+	require.True(t, types.ErrAirdropNotStarted.Is(err), "error should be airdop not started")
 
 	ctx = ctx.WithBlockHeight(120)
 	claimKolMsg.Refund = true
