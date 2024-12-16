@@ -6,6 +6,28 @@ import (
 )
 
 var KolClaim = []types.KolList{
+	// Testnet addresses
+	// TODO: Remove for mainnet
+	{
+		Address:  "elys1u8c28343vvhwgwhf29w6hlcz73hvq7lwxmrl46",
+		Amount:   math.NewInt(8572000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1va67r6h8y489kz89rgpqtlysrv6pd6hckr3pe4",
+		Amount:   math.NewInt(17143000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	{
+		Address:  "elys1zu4tahdxl0d585wpnu03nne4wkleyz5qdllh60",
+		Amount:   math.NewInt(17143000000),
+		Claimed:  false,
+		Refunded: false,
+	},
+	// ------------------------------------------
+
 	{
 		Address:  "elys1qu7qgunsa2mc9qyvpxwkv88vgmj7y0nkq53kwr",
 		Amount:   math.NewInt(8572000000),
@@ -99,6 +121,22 @@ var KolClaim = []types.KolList{
 }
 
 var AtomStakers = []types.AtomStaker{
+	// Testnet addresses
+	// TODO: Remove for mainnet
+	{
+		Address: "elys1u8c28343vvhwgwhf29w6hlcz73hvq7lwxmrl46",
+		Amount:  math.NewInt(17610000),
+	},
+	{
+		Address: "elys1va67r6h8y489kz89rgpqtlysrv6pd6hckr3pe4",
+		Amount:  math.NewInt(30000000),
+	},
+	{
+		Address: "elys1zu4tahdxl0d585wpnu03nne4wkleyz5qdllh60",
+		Amount:  math.NewInt(30000000),
+	},
+	// ------------------------------------------
+
 	{
 		Address: "elys1v07nar5zt2g64nms0cj0a9gshhjhzapy6ta2w8",
 		Amount:  math.NewInt(17610000),
