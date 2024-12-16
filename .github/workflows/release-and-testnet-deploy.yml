@@ -1,4 +1,4 @@
-name: Create release
+name: Create release and TestNet deploy
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   release:
-    name: Create release
+    name: Create release and TestNet deploy
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
