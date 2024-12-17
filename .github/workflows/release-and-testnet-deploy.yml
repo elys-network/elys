@@ -48,13 +48,13 @@ jobs:
 
           # environment variables
           NODE=https://rpc.testnet.elys.network:443
-          OPTIONS="--node $NODE --chain-id elysicstestnet-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
+          OPTIONS="--node $NODE --chain-id elysicstestnet-1 --keyring-backend=test -b=sync --fees=20000uelys --gas=300000 -y"
 
           # import proposers key
-          ${ELYSD} keys import-hex proposer1 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_1 }}
-          ${ELYSD} keys import-hex proposer2 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_2 }}
-          ${ELYSD} keys import-hex proposer3 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_3 }}
-          ${ELYSD} keys import-hex proposer4 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_4 }}
+          ${ELYSD} keys import-hex proposer1 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_1 }} --keyring-backend=test
+          ${ELYSD} keys import-hex proposer2 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_2 }} --keyring-backend=test
+          ${ELYSD} keys import-hex proposer3 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_3 }} --keyring-backend=test
+          ${ELYSD} keys import-hex proposer4 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_4 }} --keyring-backend=test
 
           # get checksum
           checksum=$(cat $SHA256SUM | extract_checksum)
