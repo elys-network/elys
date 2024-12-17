@@ -233,7 +233,7 @@ message MsgClaimAirdropResponse {
 
 message MsgClaimKol {
   option (cosmos.msg.v1.signer) = "claim_address";
-  option (amino.name) = "commitment/MsgClaimAirdrop";
+  option (amino.name) = "commitment/MsgClaimKol";
   string claim_address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   bool refund = 2;
 }
