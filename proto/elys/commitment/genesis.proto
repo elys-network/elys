@@ -17,4 +17,5 @@ message GenesisState {
   repeated NftHolder nft_holders = 4;
   repeated Cadet cadets = 5;
   repeated Governor governors = 6;
+  repeated KolList kol_list = 7;
 }

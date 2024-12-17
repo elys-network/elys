@@ -27,7 +27,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, val := range genState.Cadets {
 		k.SetCadet(ctx, *val)
 	}
-
+	for _, val := range genState.KolList {
+		k.SetKol(ctx, *val)
+	}
 }
 
 // ExportGenesis returns the module's exported genesis
@@ -41,6 +43,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Cadets = k.GetAllCadets(ctx)
 	genesis.Governors = k.GetAllGovernors(ctx)
 	genesis.NftHolders = k.GetAllNFTHolders(ctx)
+	genesis.KolList = k.GetAllKol(ctx)
 
 	// this line is used by starport scaffolding # genesis/module/export
 
