@@ -343,6 +343,15 @@ func (app *ElysApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+	if ctx.BlockHeight() == 115786 || ctx.BlockHeight() == 115787 {
+		params := app.OracleKeeper.GetParams(ctx)
+
+		// increase life time in blocks while we are setting up pools and will be decreased with gov proposal later on
+		params.LifeTimeInBlocks = 150
+
+		app.OracleKeeper.SetParams(ctx, params)
+	}
+
 	return app.mm.BeginBlock(ctx)
 }
 
