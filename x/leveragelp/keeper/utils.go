@@ -43,6 +43,9 @@ func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 		return errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset")
 	}
 
+	// print pool health
+	fmt.Printf("pool health: %s\n", pool.Health.String())
+
 	if !pool.Health.IsNil() && pool.Health.LTE(k.GetPoolOpenThreshold(ctx)) {
 		return errorsmod.Wrap(types.ErrInvalidPosition, "pool health too low to open new positions")
 	}

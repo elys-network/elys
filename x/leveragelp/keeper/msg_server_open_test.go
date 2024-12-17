@@ -94,6 +94,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 		expectErr            bool
 		expectErrMsg         string
 		prerequisiteFunction func()
+		postValidateFunc     func(msg *types.MsgOpen)
 	}{
 		{"failed user authorization",
 			&types.MsgOpen{
@@ -109,6 +110,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			func() {
 				suite.EnableWhiteListing()
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"no positions allowed",
 			&types.MsgOpen{
@@ -125,6 +127,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.DisableWhiteListing()
 				suite.SetMaxOpenPositions(0)
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{name: "Max positions reached",
 			input: &types.MsgOpen{
@@ -139,6 +142,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			expectErrMsg: "cannot open new positions, open positions 0 - max positions 0: max open",
 			prerequisiteFunction: func() {
 			},
+			postValidateFunc: func(msg *types.MsgOpen) {},
 		},
 		{name: "Pool not found",
 			input: &types.MsgOpen{
@@ -154,6 +158,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			prerequisiteFunction: func() {
 				suite.SetMaxOpenPositions(3)
 			},
+			postValidateFunc: func(msg *types.MsgOpen) {},
 		},
 		{name: "base currency not found",
 			input: &types.MsgOpen{
@@ -172,6 +177,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
 				suite.SetMaxOpenPositions(20)
 			},
+			postValidateFunc: func(msg *types.MsgOpen) {},
 		},
 		{name: "AMM Pool not found",
 			input: &types.MsgOpen{
@@ -187,6 +193,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			prerequisiteFunction: func() {
 				suite.SetupCoinPrices(suite.ctx)
 			},
+			postValidateFunc: func(msg *types.MsgOpen) {},
 		},
 		{name: "Pool not enabled",
 			input: &types.MsgOpen{
@@ -205,6 +212,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				amm_pool := ammtypes.Pool{PoolId: 2, Address: ammtypes.NewPoolAddress(2).String(), TotalShares: sdk.Coin{Amount: sdkmath.NewInt(100)}}
 				suite.app.AmmKeeper.SetPool(suite.ctx, amm_pool)
 			},
+			postValidateFunc: func(msg *types.MsgOpen) {},
 		},
 		{"Collateral asset not equal to base currency",
 			&types.MsgOpen{
@@ -220,6 +228,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			func() {
 				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"Base currency not found",
 			&types.MsgOpen{
@@ -234,6 +243,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			types.ErrOnlyBaseCurrencyAllowed.Error(),
 			func() {
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"First open position but leads to low pool health",
 			&types.MsgOpen{
@@ -250,6 +260,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.AddCoinPrices(suite.ctx, []string{ptypes.BaseCurrency})
 				suite.SetPoolThreshold(sdkmath.LegacyOneDec())
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"Low Balance of creator",
 			&types.MsgOpen{
@@ -265,6 +276,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			func() {
 				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"Borrowing more than allowed",
 			&types.MsgOpen{
@@ -280,6 +292,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			func() {
 				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"Position safety factor too low",
 			&types.MsgOpen{
@@ -295,6 +308,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			func() {
 				suite.SetSafetyFactor(sdkmath.LegacyOneDec().MulInt64(10))
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"Open new Position with leverage <=1",
 			&types.MsgOpen{
@@ -309,6 +323,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			"",
 			func() {
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"Open Position",
 			&types.MsgOpen{
@@ -328,6 +343,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.SetSafetyFactor(sdkmath.LegacyMustNewDecFromStr("1.1"))
 				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"Add on already open position Long but with different leverage 10",
 			&types.MsgOpen{
@@ -342,6 +358,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			"",
 			func() {
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"Add on already open position Long but with different leverage 20",
 			&types.MsgOpen{
@@ -356,6 +373,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			"",
 			func() {
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"Add on already open position Long but with different leverage 1, increase position health",
 			&types.MsgOpen{
@@ -371,6 +389,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			func() {
 				suite.SetSafetyFactor(sdkmath.LegacyMustNewDecFromStr("2.0"))
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"Add on already open position Long but with different leverage 30",
 			&types.MsgOpen{
@@ -385,6 +404,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 			types.ErrPositionUnhealthy.Error(),
 			func() {
 			},
+			func(msg *types.MsgOpen) {},
 		},
 		{"Low pool health to open position",
 			&types.MsgOpen{
@@ -401,6 +421,35 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.SetSafetyFactor(sdkmath.LegacyMustNewDecFromStr("1.0"))
 				suite.SetPoolThreshold(sdkmath.LegacyOneDec())
 			},
+			func(msg *types.MsgOpen) {},
+		},
+		{"Unbond with position open",
+			&types.MsgOpen{
+				Creator:          addresses[0].String(),
+				CollateralAsset:  ptypes.BaseCurrency,
+				CollateralAmount: sdkmath.NewInt(100_000_000),
+				AmmPoolId:        1,
+				Leverage:         sdkmath.LegacyMustNewDecFromStr("10.0"),
+				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
+			},
+			false,
+			"",
+			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices(suite.ctx)
+				initializeForOpen(suite, addresses, asset1, asset2)
+				suite.SetSafetyFactor(sdkmath.LegacyMustNewDecFromStr("0.1"))
+				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
+			},
+			func(msg *types.MsgOpen) {
+				amount := sdkmath.NewInt(500_000_000_000_000)
+				stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
+				_, err := stableStakeMsgServer.Unbond(suite.ctx, &stabletypes.MsgUnbond{
+					Creator: addresses[1].String(),
+					Amount:  amount,
+				})
+				suite.Require().NoError(err)
+			},
 		},
 	}
 
@@ -413,6 +462,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
+				tc.postValidateFunc(tc.input)
 				// The new value of the portfolio after the hook is called.
 				portfolio_new, _ := suite.app.TierKeeper.GetPortfolio(suite.ctx, sdk.MustAccAddressFromBech32(tc.input.Creator), suite.app.TierKeeper.GetDateFromContext(suite.ctx))
 				// Initially, there were no entries for the portfolio
