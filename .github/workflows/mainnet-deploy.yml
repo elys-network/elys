@@ -36,7 +36,7 @@ jobs:
           OPTIONS="--node $NODE --chain-id elys-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
 
           # import proposer key
-          ${ELYSD} keys import-hex proposer ${{ secrets.MAINNET_PROPOSER_PRIVATE_KEY }}
+          ${ELYSD} keys import-hex proposer ${{ secrets.MAINNET_PROPOSER_PRIVATE_KEY }} --keyring-backend=test
 
           # get checksum
           checksum=$(cat $SHA256SUM | extract_checksum)
