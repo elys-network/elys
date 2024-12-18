@@ -9,6 +9,7 @@ import (
 
 	"cosmossdk.io/client/v2/autocli"
 	"cosmossdk.io/core/appmodule"
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
@@ -54,6 +55,7 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	"github.com/elys-network/elys/app/ante"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -350,6 +352,52 @@ func (app *ElysApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
 		params.LifeTimeInBlocks = 1000000
 
 		app.OracleKeeper.SetParams(ctx, params)
+
+		// set expired price data
+		provider := "elys1zwexzk6ns5ermvag5fc0gtyvrnxyaz9kzaflqf"
+		source := "elys"
+		timestamp := uint64(1734521734)
+
+		app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
+			Asset:       "USDC",
+			BlockHeight: uint64(ctx.BlockHeight()),
+			Price:       math.LegacyMustNewDecFromStr("0.999900000000000000"),
+			Provider:    provider,
+			Source:      source,
+			Timestamp:   timestamp,
+		})
+		app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
+			Asset:       "USDT",
+			BlockHeight: uint64(ctx.BlockHeight()),
+			Price:       math.LegacyMustNewDecFromStr("0.999773901853266436"),
+			Provider:    provider,
+			Source:      source,
+			Timestamp:   timestamp,
+		})
+		app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
+			Asset:       "ATOM",
+			BlockHeight: uint64(ctx.BlockHeight()),
+			Price:       math.LegacyMustNewDecFromStr("8.612625204543694528"),
+			Provider:    provider,
+			Source:      source,
+			Timestamp:   timestamp,
+		})
+		app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
+			Asset:       "TIA",
+			BlockHeight: uint64(ctx.BlockHeight()),
+			Price:       math.LegacyMustNewDecFromStr("6.34"),
+			Provider:    provider,
+			Source:      source,
+			Timestamp:   timestamp,
+		})
+		app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
+			Asset:       "AKT",
+			BlockHeight: uint64(ctx.BlockHeight()),
+			Price:       math.LegacyMustNewDecFromStr("3.44"),
+			Provider:    provider,
+			Source:      source,
+			Timestamp:   timestamp,
+		})
 	}
 
 	return app.mm.BeginBlock(ctx)
