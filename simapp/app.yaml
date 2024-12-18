@@ -1,0 +1,47 @@
+modules:
+  - name: runtime
+    config:
+      "@type": cosmos.app.runtime.v1alpha1.Module
+      app_name: SimApp
+      pre_blockers: [ upgrade ]
+      begin_blockers: [ capability, staking, ibc ]
+      end_blockers: [ staking ]
+      init_genesis: [ capability, auth, bank, staking, ibc, genutil, transfer, upgrade ]
+      override_store_keys:
+        - module_name: auth
+          kv_store_key: acc
+  - name: auth
+    config:
+      "@type": cosmos.auth.module.v1.Module
+      bech32_prefix: elys
+      module_account_permissions:
+        - account: fee_collector
+        - account: bonded_tokens_pool
+          permissions: [ burner, staking ]
+        - account: not_bonded_tokens_pool
+          permissions: [ burner, staking ]
+        - account: transfer
+          permissions: [ burner, minter ]
+  - name: bank
+    config:
+      "@type": cosmos.bank.module.v1.Module
+      blocked_module_accounts_override:
+        [ auth, distribution, bonded_tokens_pool, not_bonded_tokens_pool ]
+  - name: consensus
+    config:
+      "@type": cosmos.consensus.module.v1.Module
+  - name: genutil
+    config:
+      "@type": cosmos.genutil.module.v1.Module
+  - name: params
+    config:
+      "@type": cosmos.params.module.v1.Module
+  - name: staking
+    config:
+      "@type": cosmos.staking.module.v1.Module
+  - name: tx
+    config:
+      "@type": cosmos.tx.config.v1.Config
+  - name: upgrade
+    config:
+      "@type": cosmos.upgrade.module.v1.Module

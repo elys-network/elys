@@ -41,15 +41,29 @@ DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bu
 DOCKERNET_HOME=./dockernet
 DOCKERNET_COMPOSE_FILE=$(DOCKERNET_HOME)/docker-compose.yml
 
+# Set STATIC variable (default to 0 for dynamic builds, 1 for static builds)
+STATIC ?= 0
+
+# Linker flags
 ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=$(NAME) \
-		  -X github.com/cosmos/cosmos-sdk/version.AppName=$(NAME) \
-		  -X github.com/cosmos/cosmos-sdk/version.ServerName=$(BINARY) \
-		  -X github.com/cosmos/cosmos-sdk/version.ClientName=$(BINARY) \
-		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
-		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
-		  -X github.com/cosmos/cosmos-sdk/types.DBBackend=$(DBENGINE) \
-		  -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,$(DBENGINE)
+          -X github.com/cosmos/cosmos-sdk/version.AppName=$(NAME) \
+          -X github.com/cosmos/cosmos-sdk/version.ServerName=$(BINARY) \
+          -X github.com/cosmos/cosmos-sdk/version.ClientName=$(BINARY) \
+          -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
+          -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
+          -X github.com/cosmos/cosmos-sdk/types.DBBackend=$(DBENGINE) \
+          -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,osusergo,$(DBENGINE)
+
+# Add static linking flags if STATIC=1
+ifeq ($(STATIC),1)
+	ldflags += -extldflags "-static"
+	CGO_ENABLED := 0
+else
+	CGO_ENABLED := 1
+endif
+
 BUILD_FLAGS := -ldflags '$(ldflags)' -tags '$(GOTAGS)'
+
 
 
 PROTO_VERSION=0.14.0
@@ -92,6 +106,12 @@ build-all: $(BUILDDIR)/
 	@GOFLAGS=$(GOFLAGS) GOOS=linux GOARCH=arm64 go build $(BUILD_FLAGS) -o $(BUILDDIR)/$(BINARY)-linux-arm64 ./cmd/$(BINARY)
 	@GOFLAGS=$(GOFLAGS) GOOS=darwin GOARCH=amd64 go build $(BUILD_FLAGS) -o $(BUILDDIR)/$(BINARY)-darwin-amd64 ./cmd/$(BINARY)
 
+## build-simd: Build the binary with simd
+build-simd:
+	@echo "🤖 Building simd..."
+	@cd simapp && make build 1> /dev/null
+	@echo "✅ Completed build!"
+
 ## do-checksum: Generate checksums for all binaries
 do-checksum:
 	@cd build && sha256sum $(BINARY)-linux-amd64 $(BINARY)-linux-arm64 $(BINARY)-darwin-amd64 > $(BINARY)_checksum
@@ -99,7 +119,7 @@ do-checksum:
 ## build-with-checksum: Build binaries for all platforms and generate checksums
 build-with-checksum: build-all do-checksum
 
-.PHONY: install build build-all do-checksum build-with-checksum $(BUILDDIR)/
+.PHONY: install build build-all build-simd do-checksum build-with-checksum $(BUILDDIR)/
 
 ## mocks: Generate mocks
 mocks:
@@ -110,10 +130,32 @@ mocks:
 	fi
 	@go generate ./...
 
+## get-heighliner: Get heighliner
+get-heighliner:
+	@echo "🤖 Getting heighliner..."
+	@go install github.com/strangelove-ventures/heighliner@latest
+
+## local-image: Build local docker image
+local-image:
+ifeq (,$(shell which heighliner))
+	@echo heighliner not found. https://github.com/strangelove-ventures/heighliner
+else
+	@echo "🤖 Building image..."
+	@heighliner build --chain elys --local 1 -f chains.yaml > /dev/null
+	@echo "✅ Completed build!"
+endif
+
 ## test-unit: Run unit tests
 test-unit:
-	@echo Running unit tests...
-	@GOFLAGS=$(GOFLAGS) go test -race -failfast -v ./...
+	@echo "🤖 Running unit tests..."
+	@go test -cover -coverprofile=coverage.out -race -failfast -v ./...
+	@echo "✅ Completed unit tests!"
+
+## test-e2e: Run e2e tests
+test-e2e:
+	@echo "🤖 Running e2e tests..."
+	@cd e2e && go test -timeout 15m -race -v ./...
+	@echo "✅ Completed e2e tests!"
 
 ## ci-test-unit: Run unit tests
 ci-test-unit:
@@ -126,7 +168,7 @@ clean:
 	@rm -rf $(BUILDDIR) 2> /dev/null
 	@go clean ./...
 
-.PHONY: mocks test-unit ci-test-unit clean
+.PHONY: mocks local-image test-unit test-e2e ci-test-unit clean
 
 ## go-mod-cache: Retrieve the go modules and store them in the local cache
 go-mod-cache: go.sum
