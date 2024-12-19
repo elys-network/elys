@@ -41,12 +41,12 @@ func (k Keeper) GetAllPrices(goCtx context.Context, req *types.QueryGetAllPrices
 		if strings.HasPrefix(assetEntry.Denom, "amm/pool") || strings.HasPrefix(assetEntry.Denom, "stablestake") {
 			continue
 		}
-
+		denom := assetEntry.Denom
 		if assetEntry.Denom == ptypes.Eden {
-			assetEntry.Denom = ptypes.Elys
+			denom = ptypes.Elys
 		}
-		tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenom(ctx, assetEntry.Denom).Mul(oracle.Pow10(assetEntry.Decimals))
-		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, assetEntry.Denom, assetEntry.Decimals).Mul(oracle.Pow10(assetEntry.Decimals))
+		tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom).Mul(oracle.Pow10(assetEntry.Decimals))
+		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, denom, assetEntry.Decimals).Mul(oracle.Pow10(assetEntry.Decimals))
 		prices = append(prices, &types.Price{
 			Denom:       assetEntry.Denom,
 			OraclePrice: tokenPriceOracle,
