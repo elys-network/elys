@@ -58,6 +58,9 @@ func TestCommitClaimedRewardsWithEden(t *testing.T) {
 	assert.Len(t, commitments.CommittedTokens, 1, "Incorrect number of committed tokens")
 	assert.Equal(t, denom, commitments.CommittedTokens[0].Denom, "Incorrect denom")
 	assert.Equal(t, commitAmount, commitments.CommittedTokens[0].Amount, "Incorrect amount")
+
+	_, err = msgServer.CommitClaimedRewards(ctx, &msg)
+	require.NoError(t, err)
 }
 
 func TestCommitClaimedRewardsWithEdenB(t *testing.T) {
@@ -102,6 +105,9 @@ func TestCommitClaimedRewardsWithEdenB(t *testing.T) {
 	assert.Len(t, commitments.CommittedTokens, 1, "Incorrect number of committed tokens")
 	assert.Equal(t, denom, commitments.CommittedTokens[0].Denom, "Incorrect denom")
 	assert.Equal(t, commitAmount, commitments.CommittedTokens[0].Amount, "Incorrect amount")
+
+	_, err = msgServer.CommitClaimedRewards(ctx, &msg)
+	require.NoError(t, err)
 }
 
 // TestCommitClaimedRewardsWithInvalidDenom tests the CommitClaimedRewards function with an invalid denom

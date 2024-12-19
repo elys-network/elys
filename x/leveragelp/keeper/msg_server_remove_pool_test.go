@@ -22,6 +22,16 @@ func (suite *KeeperTestSuite) TestRemove_Pool() {
 		expectErrMsg         string
 		prerequisiteFunction func()
 	}{
+		{name: "Amm pool not found",
+			input: &types.MsgRemovePool{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Id:        2,
+			},
+			expectErr:    true,
+			expectErrMsg: "pool does not exist",
+			prerequisiteFunction: func() {
+			},
+		},
 		{name: "not allowed invalid authority",
 			input: &types.MsgRemovePool{
 				Authority: addresses[0].String(),

@@ -110,6 +110,13 @@ func TestKeeper_UnstakeWithElysNegativeAmount(t *testing.T) {
 		ValidatorAddress: "cosmosvaloper1x8efhljzvs52u5xa6m7crcwes7v9u0nlwdgw30",
 	})
 	require.Error(t, err)
+	_, err = msgServer.Unstake(ctx, &types.MsgUnstake{
+		Creator:          creator,
+		Asset:            denom,
+		Amount:           sdkmath.NewInt(0),
+		ValidatorAddress: "cosmosvaloper1x8efhljzvs52u5xa6m7crcwes7v9u0nlwdgw30",
+	})
+	require.Error(t, err)
 }
 
 // TestKeeper_UnstakeWithUncommit tests the Unstake function with uncommitting tokens and invalid validator address

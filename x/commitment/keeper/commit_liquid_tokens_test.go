@@ -24,11 +24,23 @@ func TestCommitLiquidTokens(t *testing.T) {
 
 	// Set assetprofile entry for denom
 	denom := "amm/pool/1"
+	err := keeper.CommitLiquidTokens(ctx, creator, denom, sdkmath.NewInt(100), 0)
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "asset profile not found for denom")
+
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: denom, CommitEnabled: false})
+	err = keeper.CommitLiquidTokens(ctx, creator, denom, sdkmath.NewInt(100), 0)
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "commitment disabled for denom")
+
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{BaseDenom: denom, CommitEnabled: true})
+	err = keeper.CommitLiquidTokens(ctx, creator, denom, sdkmath.NewInt(100), 0)
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "unable to send deposit tokens")
 
 	// Add initial funds to creator's account
 	coins := sdk.NewCoins(sdk.NewCoin(denom, sdkmath.NewInt(200)))
-	err := app.BankKeeper.MintCoins(ctx, types.ModuleName, coins)
+	err = app.BankKeeper.MintCoins(ctx, types.ModuleName, coins)
 	require.NoError(t, err)
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, coins)
 	require.NoError(t, err)

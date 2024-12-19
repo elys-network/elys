@@ -67,6 +67,19 @@ func (suite *KeeperTestSuite) TestAdd_Pool() {
 		expectErrMsg         string
 		prerequisiteFunction func()
 	}{
+		{name: "Amm pool not found",
+			input: &types.MsgAddPool{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Pool: types.AddPool{
+					AmmPoolId:   10,
+					LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
+				},
+			},
+			expectErr:    true,
+			expectErrMsg: "amm pool not found",
+			prerequisiteFunction: func() {
+			},
+		},
 		{name: "not allowed",
 			input: &types.MsgAddPool{
 				Authority: addresses[0].String(),
@@ -91,6 +104,34 @@ func (suite *KeeperTestSuite) TestAdd_Pool() {
 			expectErr:            false,
 			expectErrMsg:         "",
 			prerequisiteFunction: func() {},
+		},
+		{name: "Already exist",
+			input: &types.MsgAddPool{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Pool: types.AddPool{
+					AmmPoolId:   1,
+					LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
+				},
+			},
+			expectErr:            true,
+			expectErrMsg:         "pool already exists",
+			prerequisiteFunction: func() {},
+		},
+		{name: "amm pool does not use oracle",
+			input: &types.MsgAddPool{
+				Authority: "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn",
+				Pool: types.AddPool{
+					AmmPoolId:   1,
+					LeverageMax: sdkmath.LegacyMustNewDecFromStr("10"),
+				},
+			},
+			expectErr:    true,
+			expectErrMsg: "amm pool does not use oracle",
+			prerequisiteFunction: func() {
+				ammPool, _ := suite.app.AmmKeeper.GetPool(suite.ctx, 1)
+				ammPool.PoolParams.UseOracle = false
+				suite.app.AmmKeeper.SetPool(suite.ctx, ammPool)
+			},
 		},
 	}
 

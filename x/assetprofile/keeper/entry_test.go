@@ -16,6 +16,7 @@ func createNEntry(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Entry {
 	items := make([]types.Entry, n)
 	for i := range items {
 		items[i].BaseDenom = strconv.Itoa(i)
+		items[i].Denom = strconv.Itoa(i)
 
 		keeper.SetEntry(ctx, items[i])
 	}
@@ -28,6 +29,21 @@ func TestEntryGet(t *testing.T) {
 	for _, item := range items {
 		rst, found := keeper.GetEntry(ctx,
 			item.BaseDenom,
+		)
+		require.True(t, found)
+		require.Equal(t,
+			nullify.Fill(&item),
+			nullify.Fill(&rst),
+		)
+	}
+}
+
+func TestEntryGetByDenom(t *testing.T) {
+	keeper, ctx := keepertest.AssetprofileKeeper(t)
+	items := createNEntry(keeper, ctx, 1)
+	for _, item := range items {
+		rst, found := keeper.GetEntryByDenom(ctx,
+			item.Denom,
 		)
 		require.True(t, found)
 		require.Equal(t,

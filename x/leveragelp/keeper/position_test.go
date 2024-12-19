@@ -1,15 +1,20 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	simapp "github.com/elys-network/elys/app"
+	"github.com/elys-network/elys/x/leveragelp/keeper"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	paramtypes "github.com/elys-network/elys/x/parameter/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func TestSetGetPosition(t *testing.T) {
@@ -208,4 +213,99 @@ func TestIteratePoolPosIdsStopLossSorted(t *testing.T) {
 		}
 		leveragelp.SetPosition(ctx, &position)
 	}
+}
+
+func createNPositions(keeper *keeper.Keeper, ctx sdk.Context, n int, ammPoolId uint64, addr []sdk.AccAddress) []types.Position {
+	items := make([]types.Position, n)
+	for i := range items {
+		items[i] = types.Position{
+			Address:   addr[i].String(),
+			Id:        uint64(i),
+			AmmPoolId: ammPoolId,
+		}
+		keeper.SetPosition(ctx, &items[i])
+	}
+	return items
+}
+
+func TestGetPositionsForPool(t *testing.T) {
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
+	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(1000000))
+	positions := createNPositions(app.LeveragelpKeeper, ctx, 1, 1, addr)
+
+	for _, tc := range []struct {
+		desc       string
+		ammPoolId  uint64
+		pagination *query.PageRequest
+		expected   *types.Position
+		err        error
+	}{
+		{
+			desc:      "FirstPage",
+			ammPoolId: 1,
+			pagination: &query.PageRequest{
+				Limit: 2,
+			},
+			expected: &positions[0],
+		},
+		{
+			desc:      "InvalidPageSize",
+			ammPoolId: 1,
+			pagination: &query.PageRequest{
+				Limit: types.MaxPageLimit + 1,
+			},
+			err: status.Error(codes.InvalidArgument, fmt.Sprintf("page size greater than max %d", types.MaxPageLimit)),
+		},
+		{
+			desc:      "NoPagination",
+			ammPoolId: 1,
+			expected:  &positions[0],
+		},
+	} {
+		t.Run(tc.desc, func(t *testing.T) {
+			positions, pageRes, err := app.LeveragelpKeeper.GetPositionsForPool(ctx, tc.ammPoolId, tc.pagination)
+			if tc.err != nil {
+				require.ErrorIs(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+				require.NotNil(t, pageRes)
+				require.Equal(t, tc.expected.Id, positions[0].Id)
+			}
+		})
+	}
+}
+
+func TestGetAllPositions(t *testing.T) {
+	app := simapp.InitElysTestApp(true, t)
+	ctx := app.BaseApp.NewContext(true)
+	addr := simapp.AddTestAddrs(app, ctx, 5, math.NewInt(1000000))
+	positions := createNPositions(app.LeveragelpKeeper, ctx, 5, 1, addr)
+
+	for _, tc := range []struct {
+		desc     string
+		expected []types.Position
+	}{
+		{
+			desc:     "AllPositions",
+			expected: positions,
+		},
+	} {
+		t.Run(tc.desc, func(t *testing.T) {
+			positions := app.LeveragelpKeeper.GetAllPositions(ctx)
+
+			expectedIDs := extractIDs(tc.expected)
+			positionIDs := extractIDs(positions)
+
+			require.ElementsMatch(t, expectedIDs, positionIDs)
+		})
+	}
+}
+
+func extractIDs(positions []types.Position) []uint64 {
+	ids := make([]uint64, len(positions))
+	for i, pos := range positions {
+		ids[i] = pos.Id
+	}
+	return ids
 }

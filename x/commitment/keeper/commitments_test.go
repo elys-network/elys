@@ -6,10 +6,26 @@ import (
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
+	"github.com/elys-network/elys/x/commitment/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
+
+func createNCommitments(keeper *keeper.Keeper, ctx sdk.Context, n int) []*types.Commitments {
+	items := make([]*types.Commitments, n)
+	for i := range items {
+		items[i] = &types.Commitments{
+			Creator: sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String(),
+		}
+		keeper.SetCommitments(ctx, *items[i])
+	}
+	return items
+}
 
 func TestKeeper_SetGetRemoveCommitments(t *testing.T) {
 	keeper, ctx := keepertest.CommitmentKeeper(t)
@@ -53,6 +69,49 @@ func TestKeeper_GetAllCommitments(t *testing.T) {
 	// Test GetAllCommitments
 	retrievedCommitments := keeper.GetAllCommitments(ctx)
 	assert.Equal(t, commitments, retrievedCommitments)
+}
+
+func TestKeeper_GetAllCommitmentsWithPagination(t *testing.T) {
+	keeper, ctx := keepertest.CommitmentKeeper(t)
+	commitments := createNCommitments(keeper, ctx, 2)
+
+	for _, tc := range []struct {
+		desc       string
+		pagination *query.PageRequest
+		expected   []*types.Commitments
+		err        error
+	}{
+		{
+			desc: "FirstPage",
+			pagination: &query.PageRequest{
+				Limit:  2,
+				Offset: 0,
+			},
+			expected: commitments[:2],
+		},
+		{
+			desc: "InvalidPageSize",
+			pagination: &query.PageRequest{
+				Limit: types.MaxPageLimit + 1,
+			},
+			err: status.Error(codes.InvalidArgument, "page size greater than max 10000"),
+		},
+		{
+			desc:     "NoPagination",
+			expected: commitments,
+		},
+	} {
+		t.Run(tc.desc, func(t *testing.T) {
+			commitments, pageRes, err := keeper.GetAllCommitmentsWithPagination(ctx, tc.pagination)
+			if tc.err != nil {
+				require.ErrorIs(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+				require.NotNil(t, pageRes)
+				require.ElementsMatch(t, tc.expected, commitments)
+			}
+		})
+	}
 }
 
 // TestKeeper_IterateCommitments tests the IterateCommitments function

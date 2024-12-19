@@ -110,9 +110,44 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 		InterestRateHour:    sdkmath.LegacyMustNewDecFromStr("0.000017123287671233"),
 		InterestRateHourUsd: sdkmath.LegacyZeroDec(),
 	}
+	_, err = k.QueryPositionsForAddress(suite.ctx, nil)
+	suite.Require().Error(err)
+	_, err = k.QueryPositionsForAddress(suite.ctx, &types.PositionsForAddressRequest{Address: "invalid", Pagination: nil})
+	suite.Require().Error(err)
 	pos_for_address_res, _ := k.QueryPositionsForAddress(suite.ctx, &types.PositionsForAddressRequest{Address: addr.String(), Pagination: nil})
 
 	suite.Require().Equal(expected.Position, pos_for_address_res.Positions[0].Position)
 	suite.Require().True(expected.InterestRateHour.Equal(pos_for_address_res.Positions[0].InterestRateHour))
 	suite.Require().True(expected.InterestRateHourUsd.Equal(pos_for_address_res.Positions[0].InterestRateHourUsd))
+
+	_, err = k.QueryPositions(suite.ctx, nil)
+	suite.Require().Error(err)
+	positions, err := k.QueryPositions(suite.ctx, &types.PositionsRequest{Pagination: nil})
+	suite.Require().NoError(err)
+	suite.Require().Equal(1, len(positions.Positions))
+	suite.Require().Equal(expected.Position, positions.Positions[0])
+
+	_, err = k.QueryPositionsByPool(suite.ctx, nil)
+	suite.Require().Error(err)
+	positions_by_pool, err := k.QueryPositionsByPool(suite.ctx, &types.PositionsByPoolRequest{AmmPoolId: 1, Pagination: nil})
+	suite.Require().NoError(err)
+	suite.Require().Equal(1, len(positions.Positions))
+	suite.Require().Equal(expected.Position, positions_by_pool.Positions[0])
+
+	_, err = k.GetStatus(suite.ctx, nil)
+	suite.Require().Error(err)
+	status, err := k.GetStatus(suite.ctx, &types.StatusRequest{})
+	suite.Require().NoError(err)
+	suite.Require().Equal(status.OpenPositionCount, uint64(1))
+	suite.Require().Equal(status.LifetimePositionCount, uint64(1))
+
+	// Query liquidation price
+	liquidationPrice, err := k.LiquidationPrice(suite.ctx, &types.QueryLiquidationPriceRequest{Address: addr.String(), PositionId: position.Id})
+	suite.Require().NoError(err)
+	suite.Require().Equal(liquidationPrice.Price.String(), "0.088000000000000000")
+
+	// Query liquidation Rewards
+	rewards, err := k.Rewards(suite.ctx, &types.QueryRewardsRequest{Address: addr.String(), Ids: []uint64{1}})
+	suite.Require().NoError(err)
+	suite.Require().Equal(rewards.TotalRewards.Len(), 0)
 }

@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/elys-network/elys/testutil/keeper"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/elys-network/elys/testutil/nullify"
 	"github.com/elys-network/elys/x/assetprofile/types"
@@ -117,4 +118,54 @@ func TestEntryQueryPaginated(t *testing.T) {
 		_, err := keeper.EntryAll(ctx, nil)
 		require.ErrorIs(t, err, status.Error(codes.InvalidArgument, "invalid request"))
 	})
+}
+
+func TestEntryByDenom(t *testing.T) {
+	keeper, ctx := keeper.AssetprofileKeeper(t)
+	msgs := createNEntry(keeper, ctx, 2)
+	for _, tc := range []struct {
+		desc     string
+		request  *types.QueryEntryByDenomRequest
+		response *types.QueryEntryByDenomResponse
+		err      error
+	}{
+		{
+			desc: "First",
+			request: &types.QueryEntryByDenomRequest{
+				Denom: msgs[0].Denom,
+			},
+			response: &types.QueryEntryByDenomResponse{Entry: msgs[0]},
+		},
+		{
+			desc: "Second",
+			request: &types.QueryEntryByDenomRequest{
+				Denom: msgs[1].Denom,
+			},
+			response: &types.QueryEntryByDenomResponse{Entry: msgs[1]},
+		},
+		{
+			desc: "KeyNotFound",
+			request: &types.QueryEntryByDenomRequest{
+				Denom: strconv.Itoa(100000),
+			},
+			err: status.Error(codes.NotFound, "not found"),
+		},
+		{
+			desc: "InvalidRequest",
+			err:  status.Error(codes.InvalidArgument, "invalid request"),
+		},
+	} {
+		t.Run(tc.desc, func(t *testing.T) {
+			response, err := keeper.EntryByDenom(ctx, tc.request)
+			if tc.err != nil {
+				require.ErrorIs(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+				require.Equal(t,
+					nullify.Fill(tc.response),
+					nullify.Fill(response),
+				)
+			}
+		})
+	}
 }

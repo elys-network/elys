@@ -297,7 +297,8 @@ func (suite *KeeperTestSuite) TestClose() {
 		suite.Run(tc.name, func() {
 			portfolio_old, found := suite.app.TierKeeper.GetPortfolio(suite.ctx, sdk.MustAccAddressFromBech32(tc.input.Creator), suite.app.TierKeeper.GetDateFromContext(suite.ctx))
 			tc.prerequisiteFunction()
-			_, err := suite.app.LeveragelpKeeper.Close(suite.ctx, tc.input)
+			msgSrvr := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
+			_, err := msgSrvr.Close(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
