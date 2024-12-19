@@ -55,6 +55,7 @@ type PerpetualKeeper interface {
 // AssetProfileKeeper defines the expected interface needed to retrieve denom info
 type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
+	GetAllEntry(ctx sdk.Context) (list []assetprofiletypes.Entry)
 	// GetUsdcDenom returns USDC denom
 	GetUsdcDenom(ctx sdk.Context) (string, bool)
 	// GetEntryByDenom returns a entry from its denom value
