@@ -180,7 +180,7 @@ func (im IBCModule) OnRecvPacket(
 			im.keeper.Logger(ctx).Error(fmt.Sprintf("Packet from %s had amm routing info but transferhook amm routing is disabled", data.Sender))
 			return channeltypes.NewErrorAcknowledgement(types.ErrPacketForwardingInactive)
 		}
-		im.keeper.Logger(ctx).Info(fmt.Sprintf("Forwaring packet from %s to amm", data.Sender))
+		im.keeper.Logger(ctx).Info(fmt.Sprintf("Forwarding packet from %s to amm", data.Sender))
 
 		// swap operation
 		if err := im.keeper.Swap(ctx, packet, data, routingInfo); err != nil {
