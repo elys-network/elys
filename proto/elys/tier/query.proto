@@ -210,13 +210,17 @@ message QueryGetAmmPriceRequest {
   int32 decimal = 2;
 }
 
-message QueryGetAmmPriceResponse {
+// We use a submessage to avoid the issue with the gRPC codec
+// https://github.com/cosmos/cosmos-sdk/issues/18430
+message GetAmmPriceResponseResult {
   string total = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 }
+
+message QueryGetAmmPriceResponse { GetAmmPriceResponseResult result = 1; }
 
 message QueryGetConsolidatedPriceRequest { string denom = 1; }
 
