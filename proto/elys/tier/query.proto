@@ -205,11 +205,13 @@ message QueryGetAmmPriceRequest {
 }
 
 message QueryGetAmmPriceResponse {
-  string total = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  // removed cosmos.Dec because it fails with GRPC queries
+  // string total = 1 [
+  //   (cosmos_proto.scalar) = "cosmos.Dec",
+  //   (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+  //   (gogoproto.nullable) = false
+  // ];
+  string total = 1;
 }
 
 message QueryGetConsolidatedPriceRequest { string denom = 1; }

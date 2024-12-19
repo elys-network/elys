@@ -18,6 +18,6 @@ func (k Keeper) GetAmmPrice(goCtx context.Context, req *types.QueryGetAmmPriceRe
 	resp := k.amm.CalcAmmPrice(ctx, req.Denom, uint64(req.Decimal))
 
 	return &types.QueryGetAmmPriceResponse{
-		Total: resp,
+		Total: resp.String(),
 	}, nil
 }
