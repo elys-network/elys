@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	keeper "github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
@@ -12,9 +13,10 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 	addr := suite.AddAccounts(3, nil)
 
 	testCases := []struct {
-		name                 string
-		expectErrMsg         string
-		prerequisiteFunction func() *types.MsgExecuteOrders
+		name                  string
+		expectErrMsg          string
+		prerequisiteFunction  func() *types.MsgExecuteOrders
+		postrequisiteFunction func()
 	}{
 		{
 			"Spot Order not found",
@@ -26,6 +28,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 					PerpetualOrderIds: []uint64{1},
 				}
 			},
+			func() {},
 		},
 		{
 			"Perpetual order not found",
@@ -52,9 +55,77 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 					PerpetualOrderIds: []uint64{1},
 				}
 			},
+			func() {},
 		},
 		{
-			"Success: Execute Orders",
+			"Success: Execute Spot Order",
+			"",
+			func() *types.MsgExecuteOrders {
+				suite.SetupCoinPrices()
+
+				_ = suite.CreateNewAmmPool(addr[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
+
+				openOrderMsg := &types.MsgCreateSpotOrder{
+					OwnerAddress: addr[2].String(),
+					OrderType:    types.SpotOrderType_LIMITBUY,
+					OrderPrice: types.OrderPrice{
+						BaseDenom:  "uusdc",
+						QuoteDenom: "uatom",
+						Rate:       math.LegacyNewDec(10),
+					},
+					OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
+					OrderTargetDenom: "uatom",
+				}
+				msgSrvr := keeper.NewMsgServerImpl(suite.app.TradeshieldKeeper)
+				_, err := msgSrvr.CreateSpotOrder(suite.ctx, openOrderMsg)
+				suite.Require().NoError(err)
+
+				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+					Asset:     "ATOM",
+					Price:     math.LegacyNewDec(5),
+					Source:    "elys",
+					Provider:  oracleProvider.String(),
+					Timestamp: uint64(suite.ctx.BlockTime().Unix()),
+				})
+
+				return &types.MsgExecuteOrders{
+					Creator:           addr[2].String(),
+					SpotOrderIds:      []uint64{1},
+					PerpetualOrderIds: []uint64{},
+				}
+			},
+			func() {
+				// Get events from context
+				events := suite.ctx.EventManager().Events()
+
+				// Find the specific event we're looking for
+				var foundEvent sdk.Event
+				for _, event := range events {
+					if event.Type == types.TypeEvtExecuteLimitBuySpotOrder {
+						foundEvent = event
+						break
+					}
+				}
+
+				// Assert event was emitted
+				suite.Require().NotNil(foundEvent)
+
+				// Check event attributes
+				suite.Require().Equal(types.TypeEvtExecuteLimitBuySpotOrder, foundEvent.Type)
+
+				// Check specific attributes
+				for _, attr := range foundEvent.Attributes {
+					switch string(attr.Key) {
+					case "order_id":
+						suite.Require().Equal("1", string(attr.Value))
+					case "order_price":
+						suite.Require().Equal(string(attr.Value), "{\"base_denom\":\"uusdc\",\"quote_denom\":\"uatom\",\"rate\":\"5.000000000000000000\"}")
+					}
+				}
+			},
+		},
+		{
+			"Success: Execute Perpetual Order",
 			"",
 			func() *types.MsgExecuteOrders {
 				_, _, _ = suite.SetPerpetualPool(1)
@@ -86,8 +157,37 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 
 				return &types.MsgExecuteOrders{
 					Creator:           addr[2].String(),
-					SpotOrderIds:      []uint64{1},
+					SpotOrderIds:      []uint64{},
 					PerpetualOrderIds: []uint64{1},
+				}
+			},
+			func() {
+				// Get events from context
+				events := suite.ctx.EventManager().Events()
+
+				// Find the specific event we're looking for
+				var foundEvent sdk.Event
+				for _, event := range events {
+					if event.Type == types.TypeEvtExecuteLimitOpenPerpetualOrder {
+						foundEvent = event
+						break
+					}
+				}
+
+				// Assert event was emitted
+				suite.Require().NotNil(foundEvent)
+
+				// Check event attributes
+				suite.Require().Equal(types.TypeEvtExecuteLimitOpenPerpetualOrder, foundEvent.Type)
+
+				// Check specific attributes
+				for _, attr := range foundEvent.Attributes {
+					switch string(attr.Key) {
+					case "order_id":
+						suite.Require().Equal("1", string(attr.Value))
+					case "trigger_price":
+						suite.Require().Equal(string(attr.Value), "{\"trading_asset_denom\":\"uatom\",\"rate\":\"10.000000000000000000\"}")
+					}
 				}
 			},
 		},
@@ -104,6 +204,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 			} else {
 				suite.Require().NoError(err)
 			}
+			tc.postrequisiteFunction()
 		})
 	}
 }

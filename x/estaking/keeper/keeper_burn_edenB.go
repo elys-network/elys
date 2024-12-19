@@ -48,9 +48,21 @@ func (k Keeper) BurnEdenBFromElysUnstaking(ctx sdk.Context, delegator sdk.AccAdd
 	if edenCommittedAndElysStakedDec.GT(math.LegacyZeroDec()) {
 		edenBToBurn = unstakedElysDec.Quo(edenCommittedAndElysStakedDec).MulInt(totalEdenB)
 	}
+	if edenCommittedAndElysStakedDec.IsZero() {
+		edenBToBurn = math.LegacyNewDecFromInt(totalEdenB)
+	}
 	if edenBToBurn.IsZero() {
 		return nil
 	}
+
+	// Add event for burning edenB
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.TypeEvtBurnEdenB,
+			sdk.NewAttribute(types.AttributeDelegatorAddress, delegator.String()),
+			sdk.NewAttribute(types.AttributeAmount, edenBToBurn.String()),
+		),
+	)
 
 	// Burn EdenB in commitment module
 	err = k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())
@@ -89,9 +101,22 @@ func (k Keeper) BurnEdenBFromEdenUncommitted(ctx sdk.Context, delegator sdk.AccA
 	if edenCommittedAndElysStakedDec.GT(math.LegacyZeroDec()) {
 		edenBToBurn = unclaimedAmtDec.Quo(edenCommittedAndElysStakedDec).MulInt(totalEdenB)
 	}
+	if edenCommittedAndElysStakedDec.IsZero() {
+		edenBToBurn = math.LegacyNewDecFromInt(totalEdenB)
+	}
+
 	if edenBToBurn.IsZero() {
 		return nil
 	}
+
+	// Add event for burning edenB
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.TypeEvtBurnEdenB,
+			sdk.NewAttribute(types.AttributeDelegatorAddress, delegator.String()),
+			sdk.NewAttribute(types.AttributeAmount, edenBToBurn.String()),
+		),
+	)
 
 	// Burn EdenB in commitment module
 	err = k.commKeeper.BurnEdenBoost(ctx, delegator, ptypes.EdenB, edenBToBurn.TruncateInt())

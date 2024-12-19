@@ -1,16 +1,13 @@
-name: Deploy in devnet
+name: DevNet deploy
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     concurrency:
-      group: deploy-devnet  # Group for limiting concurrent runs
-      cancel-in-progress: false  # Queue new jobs instead of canceling if one is already running
+      group: deploy-devnet # Group for limiting concurrent runs
+      cancel-in-progress: false # Queue new jobs instead of canceling if one is already running
     environment: devnet
     env:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
@@ -100,7 +97,7 @@ jobs:
           echo "${{ secrets.PRIVATE_KEY_FUJI }}" > /tmp/private_key_fuji.txt
           echo "${{ secrets.PRIVATE_KEY_MALLORCA }}" > /tmp/private_key_mallorca.txt
           echo "${{ secrets.PRIVATE_KEY_BORA }}" > /tmp/private_key_bora.txt
-          
+
           # recover keys
           echo "${{ secrets.PASSPHRASE_FUJI }}"     | $ELYSD keys import fuji     --keyring-backend test /tmp/private_key_fuji.txt
           echo "${{ secrets.PASSPHRASE_MALLORCA }}" | $ELYSD keys import mallorca --keyring-backend test /tmp/private_key_mallorca.txt

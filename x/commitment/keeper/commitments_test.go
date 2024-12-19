@@ -205,13 +205,13 @@ func TestKeeper_BurnEdenBoost(t *testing.T) {
 		{
 			name:            "deduct amount is greater than claimed amount",
 			claimedAmount:   math.NewInt(100),
-			committedTokens: math.NewInt(100),
-			deductAmount:    math.NewInt(200),
+			committedTokens: math.NewInt(0),
+			deductAmount:    math.NewInt(100),
 			expectedError:   false,
 		},
 		{
 			name:            "deduct amount is greater than claimed amount with no committed tokens",
-			claimedAmount:   math.NewInt(100),
+			claimedAmount:   math.NewInt(200),
 			committedTokens: math.NewInt(0),
 			deductAmount:    math.NewInt(200),
 			expectedError:   false,
@@ -252,8 +252,14 @@ func TestKeeper_BurnEdenBoost(t *testing.T) {
 			commitments.AddCommittedTokens("denom", tt.committedTokens, 0)
 			keeper.SetCommitments(ctx, commitments)
 
+			comm := keeper.GetCommitments(ctx, addr)
+			totalPrev := comm.Claimed.AmountOf("denom").Add(comm.GetCommittedAmountForDenom("denom"))
+
 			// Test BurnEdenBoost
 			err := keeper.BurnEdenBoost(ctx, addr, "denom", tt.deductAmount)
+			comm = keeper.GetCommitments(ctx, addr)
+			total := comm.Claimed.AmountOf("denom").Add(comm.GetCommittedAmountForDenom("denom"))
+			assert.Equal(t, tt.deductAmount.String(), totalPrev.Sub(total).String())
 			if tt.expectedError {
 				assert.Error(t, err)
 			} else {

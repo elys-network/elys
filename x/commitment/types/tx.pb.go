@@ -1080,6 +1080,298 @@ func (m *MsgUnstakeResponse) GetResult() string {
 	return ""
 }
 
+type MsgClaimAirdrop struct {
+	ClaimAddress string `protobuf:"bytes,1,opt,name=claim_address,json=claimAddress,proto3" json:"claim_address,omitempty"`
+}
+
+func (m *MsgClaimAirdrop) Reset()         { *m = MsgClaimAirdrop{} }
+func (m *MsgClaimAirdrop) String() string { return proto.CompactTextString(m) }
+func (*MsgClaimAirdrop) ProtoMessage()    {}
+func (*MsgClaimAirdrop) Descriptor() ([]byte, []int) {
+	return fileDescriptor_eda78aafe7eb119c, []int{22}
+}
+func (m *MsgClaimAirdrop) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgClaimAirdrop) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgClaimAirdrop.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgClaimAirdrop) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgClaimAirdrop.Merge(m, src)
+}
+func (m *MsgClaimAirdrop) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgClaimAirdrop) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgClaimAirdrop.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgClaimAirdrop proto.InternalMessageInfo
+
+func (m *MsgClaimAirdrop) GetClaimAddress() string {
+	if m != nil {
+		return m.ClaimAddress
+	}
+	return ""
+}
+
+type MsgClaimAirdropResponse struct {
+	ElysAmount cosmossdk_io_math.Int `protobuf:"bytes,1,opt,name=elys_amount,json=elysAmount,proto3,customtype=cosmossdk.io/math.Int" json:"elys_amount"`
+	EdenAmount cosmossdk_io_math.Int `protobuf:"bytes,2,opt,name=eden_amount,json=edenAmount,proto3,customtype=cosmossdk.io/math.Int" json:"eden_amount"`
+}
+
+func (m *MsgClaimAirdropResponse) Reset()         { *m = MsgClaimAirdropResponse{} }
+func (m *MsgClaimAirdropResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgClaimAirdropResponse) ProtoMessage()    {}
+func (*MsgClaimAirdropResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_eda78aafe7eb119c, []int{23}
+}
+func (m *MsgClaimAirdropResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgClaimAirdropResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgClaimAirdropResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgClaimAirdropResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgClaimAirdropResponse.Merge(m, src)
+}
+func (m *MsgClaimAirdropResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgClaimAirdropResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgClaimAirdropResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgClaimAirdropResponse proto.InternalMessageInfo
+
+type MsgClaimKol struct {
+	ClaimAddress string `protobuf:"bytes,1,opt,name=claim_address,json=claimAddress,proto3" json:"claim_address,omitempty"`
+	Refund       bool   `protobuf:"varint,2,opt,name=refund,proto3" json:"refund,omitempty"`
+}
+
+func (m *MsgClaimKol) Reset()         { *m = MsgClaimKol{} }
+func (m *MsgClaimKol) String() string { return proto.CompactTextString(m) }
+func (*MsgClaimKol) ProtoMessage()    {}
+func (*MsgClaimKol) Descriptor() ([]byte, []int) {
+	return fileDescriptor_eda78aafe7eb119c, []int{24}
+}
+func (m *MsgClaimKol) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgClaimKol) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgClaimKol.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgClaimKol) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgClaimKol.Merge(m, src)
+}
+func (m *MsgClaimKol) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgClaimKol) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgClaimKol.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgClaimKol proto.InternalMessageInfo
+
+func (m *MsgClaimKol) GetClaimAddress() string {
+	if m != nil {
+		return m.ClaimAddress
+	}
+	return ""
+}
+
+func (m *MsgClaimKol) GetRefund() bool {
+	if m != nil {
+		return m.Refund
+	}
+	return false
+}
+
+type MsgClaimKolResponse struct {
+	ElysAmount       cosmossdk_io_math.Int `protobuf:"bytes,1,opt,name=elys_amount,json=elysAmount,proto3,customtype=cosmossdk.io/math.Int" json:"elys_amount"`
+	VestedElysAmount cosmossdk_io_math.Int `protobuf:"bytes,2,opt,name=vested_elys_amount,json=vestedElysAmount,proto3,customtype=cosmossdk.io/math.Int" json:"vested_elys_amount"`
+}
+
+func (m *MsgClaimKolResponse) Reset()         { *m = MsgClaimKolResponse{} }
+func (m *MsgClaimKolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgClaimKolResponse) ProtoMessage()    {}
+func (*MsgClaimKolResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_eda78aafe7eb119c, []int{25}
+}
+func (m *MsgClaimKolResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgClaimKolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgClaimKolResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgClaimKolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgClaimKolResponse.Merge(m, src)
+}
+func (m *MsgClaimKolResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgClaimKolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgClaimKolResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgClaimKolResponse proto.InternalMessageInfo
+
+type MsgUpdateAirdropParams struct {
+	Authority               string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	EnableClaim             bool   `protobuf:"varint,2,opt,name=enable_claim,json=enableClaim,proto3" json:"enable_claim,omitempty"`
+	StartAirdropClaimHeight uint64 `protobuf:"varint,3,opt,name=start_airdrop_claim_height,json=startAirdropClaimHeight,proto3" json:"start_airdrop_claim_height,omitempty"`
+	EndAirdropClaimHeight   uint64 `protobuf:"varint,4,opt,name=end_airdrop_claim_height,json=endAirdropClaimHeight,proto3" json:"end_airdrop_claim_height,omitempty"`
+	StartKolClaimHeight     uint64 `protobuf:"varint,5,opt,name=start_kol_claim_height,json=startKolClaimHeight,proto3" json:"start_kol_claim_height,omitempty"`
+	EndKolClaimHeight       uint64 `protobuf:"varint,6,opt,name=end_kol_claim_height,json=endKolClaimHeight,proto3" json:"end_kol_claim_height,omitempty"`
+}
+
+func (m *MsgUpdateAirdropParams) Reset()         { *m = MsgUpdateAirdropParams{} }
+func (m *MsgUpdateAirdropParams) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateAirdropParams) ProtoMessage()    {}
+func (*MsgUpdateAirdropParams) Descriptor() ([]byte, []int) {
+	return fileDescriptor_eda78aafe7eb119c, []int{26}
+}
+func (m *MsgUpdateAirdropParams) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateAirdropParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateAirdropParams.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateAirdropParams) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateAirdropParams.Merge(m, src)
+}
+func (m *MsgUpdateAirdropParams) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateAirdropParams) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateAirdropParams.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateAirdropParams proto.InternalMessageInfo
+
+func (m *MsgUpdateAirdropParams) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateAirdropParams) GetEnableClaim() bool {
+	if m != nil {
+		return m.EnableClaim
+	}
+	return false
+}
+
+func (m *MsgUpdateAirdropParams) GetStartAirdropClaimHeight() uint64 {
+	if m != nil {
+		return m.StartAirdropClaimHeight
+	}
+	return 0
+}
+
+func (m *MsgUpdateAirdropParams) GetEndAirdropClaimHeight() uint64 {
+	if m != nil {
+		return m.EndAirdropClaimHeight
+	}
+	return 0
+}
+
+func (m *MsgUpdateAirdropParams) GetStartKolClaimHeight() uint64 {
+	if m != nil {
+		return m.StartKolClaimHeight
+	}
+	return 0
+}
+
+func (m *MsgUpdateAirdropParams) GetEndKolClaimHeight() uint64 {
+	if m != nil {
+		return m.EndKolClaimHeight
+	}
+	return 0
+}
+
+type MsgUpdateAirdropParamsResponse struct {
+}
+
+func (m *MsgUpdateAirdropParamsResponse) Reset()         { *m = MsgUpdateAirdropParamsResponse{} }
+func (m *MsgUpdateAirdropParamsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateAirdropParamsResponse) ProtoMessage()    {}
+func (*MsgUpdateAirdropParamsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_eda78aafe7eb119c, []int{27}
+}
+func (m *MsgUpdateAirdropParamsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateAirdropParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateAirdropParamsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateAirdropParamsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateAirdropParamsResponse.Merge(m, src)
+}
+func (m *MsgUpdateAirdropParamsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateAirdropParamsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateAirdropParamsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateAirdropParamsResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgCommitClaimedRewards)(nil), "elys.commitment.MsgCommitClaimedRewards")
 	proto.RegisterType((*MsgCommitClaimedRewardsResponse)(nil), "elys.commitment.MsgCommitClaimedRewardsResponse")
@@ -1103,78 +1395,103 @@ func init() {
 	proto.RegisterType((*MsgStakeResponse)(nil), "elys.commitment.MsgStakeResponse")
 	proto.RegisterType((*MsgUnstake)(nil), "elys.commitment.MsgUnstake")
 	proto.RegisterType((*MsgUnstakeResponse)(nil), "elys.commitment.MsgUnstakeResponse")
+	proto.RegisterType((*MsgClaimAirdrop)(nil), "elys.commitment.MsgClaimAirdrop")
+	proto.RegisterType((*MsgClaimAirdropResponse)(nil), "elys.commitment.MsgClaimAirdropResponse")
+	proto.RegisterType((*MsgClaimKol)(nil), "elys.commitment.MsgClaimKol")
+	proto.RegisterType((*MsgClaimKolResponse)(nil), "elys.commitment.MsgClaimKolResponse")
+	proto.RegisterType((*MsgUpdateAirdropParams)(nil), "elys.commitment.MsgUpdateAirdropParams")
+	proto.RegisterType((*MsgUpdateAirdropParamsResponse)(nil), "elys.commitment.MsgUpdateAirdropParamsResponse")
 }
 
 func init() { proto.RegisterFile("elys/commitment/tx.proto", fileDescriptor_eda78aafe7eb119c) }
 
 var fileDescriptor_eda78aafe7eb119c = []byte{
-	// 1045 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x57, 0xcf, 0x6f, 0xe3, 0x44,
-	0x14, 0xae, 0xbb, 0x6d, 0xba, 0x79, 0xda, 0x6e, 0x1b, 0x6f, 0xba, 0x4d, 0xdd, 0x6d, 0xda, 0xba,
-	0x50, 0x42, 0x50, 0xe2, 0xa5, 0x8b, 0x38, 0xe4, 0x80, 0x20, 0x65, 0x91, 0x2a, 0x48, 0x0e, 0xde,
-	0x1f, 0x87, 0xbd, 0x04, 0x27, 0x9e, 0x75, 0xad, 0xc4, 0x33, 0xc5, 0xe3, 0x34, 0xed, 0x0d, 0x71,
-	0xe4, 0x02, 0x12, 0xff, 0x07, 0xea, 0xa1, 0x12, 0x27, 0x4e, 0x5c, 0x96, 0xdb, 0xd2, 0x13, 0x42,
-	0x62, 0x85, 0xda, 0x43, 0x0f, 0xfc, 0x13, 0x68, 0xc6, 0x63, 0xc7, 0x76, 0x9c, 0x4d, 0xb5, 0x17,
-	0x8a, 0xb8, 0xb4, 0x9e, 0xf7, 0xbe, 0xf9, 0xe6, 0x7d, 0x9f, 0x27, 0x2f, 0x2f, 0x50, 0x40, 0xbd,
-	0x63, 0xaa, 0x75, 0x88, 0xe3, 0xd8, 0x9e, 0x83, 0xb0, 0xa7, 0x79, 0x47, 0xd5, 0x03, 0x97, 0x78,
-	0x44, 0x5e, 0x60, 0x99, 0xea, 0x30, 0xa3, 0xe4, 0x2d, 0x62, 0x11, 0x9e, 0xd3, 0xd8, 0x93, 0x0f,
-	0x53, 0x96, 0x3b, 0x84, 0x3a, 0x84, 0x6a, 0x0e, 0xb5, 0xb4, 0xc3, 0xf7, 0xd9, 0x3f, 0x91, 0xc8,
-	0x19, 0x8e, 0x8d, 0x89, 0xc6, 0xff, 0x8a, 0xd0, 0x8a, 0x8f, 0x6d, 0xf9, 0x24, 0xfe, 0xc2, 0x4f,
-	0xa9, 0x7f, 0x4a, 0xb0, 0xdc, 0xa0, 0xd6, 0x2e, 0x3f, 0x6e, 0xb7, 0x67, 0xd8, 0x0e, 0x32, 0x75,
-	0x34, 0x30, 0x5c, 0x93, 0xca, 0x3b, 0x30, 0xd7, 0x71, 0x91, 0xe1, 0x11, 0xb7, 0x20, 0x6d, 0x48,
-	0xa5, 0x6c, 0xbd, 0x70, 0x76, 0x5a, 0xc9, 0x8b, 0xed, 0x9f, 0x98, 0xa6, 0x8b, 0x28, 0x7d, 0xe4,
-	0xb9, 0x36, 0xb6, 0xf4, 0x00, 0x28, 0xef, 0x42, 0xc6, 0x70, 0x48, 0x1f, 0x7b, 0x85, 0x69, 0xbe,
-	0xe5, 0xbd, 0x17, 0xaf, 0xd6, 0xa7, 0xfe, 0x78, 0xb5, 0xbe, 0xe4, 0x6f, 0xa3, 0x66, 0xb7, 0x6a,
-	0x13, 0xcd, 0x31, 0xbc, 0xfd, 0xea, 0x1e, 0xf6, 0xce, 0x4e, 0x2b, 0x20, 0xf8, 0xf6, 0xb0, 0xa7,
-	0x8b, 0xad, 0x72, 0x1e, 0x66, 0x4d, 0x84, 0x89, 0x53, 0xb8, 0xc1, 0x38, 0x74, 0x7f, 0x51, 0x7b,
-	0xf0, 0xcd, 0xe5, 0x49, 0x39, 0x38, 0xe8, 0xdb, 0xcb, 0x93, 0xb2, 0x1a, 0xb1, 0x6f, 0x8c, 0x06,
-	0x75, 0x13, 0xd6, 0xc7, 0xa4, 0x74, 0x44, 0x0f, 0x08, 0xa6, 0x48, 0xfd, 0x4d, 0x82, 0x5c, 0x83,
-	0x5a, 0x4f, 0xb0, 0x4f, 0xf7, 0x98, 0x74, 0x11, 0xbe, 0x76, 0xe2, 0x2b, 0x49, 0xf1, 0xf7, 0xe2,
-	0xe2, 0xe3, 0xd5, 0xab, 0xab, 0xb0, 0x32, 0x12, 0x0c, 0x05, 0xff, 0x2c, 0xc1, 0x5c, 0x83, 0x5a,
-	0x4f, 0x11, 0xf5, 0xae, 0x9b, 0xcc, 0xad, 0xa4, 0x4c, 0x39, 0x2e, 0x93, 0xd5, 0xac, 0xe6, 0x60,
-	0x41, 0x3c, 0x86, 0x92, 0x7e, 0x95, 0x60, 0x9e, 0xbd, 0x67, 0x03, 0x77, 0x50, 0xef, 0x3a, 0x0a,
-	0x7b, 0x37, 0x29, 0xac, 0x90, 0xb8, 0xbc, 0x61, 0xe5, 0xea, 0x32, 0x2c, 0xc5, 0x02, 0xa1, 0x48,
-	0xc2, 0x75, 0xf3, 0x5b, 0xcc, 0xe2, 0x36, 0xb6, 0xe4, 0xfb, 0x90, 0xa1, 0x08, 0x9b, 0x68, 0xb2,
-	0x48, 0x81, 0xab, 0x95, 0x59, 0x21, 0x62, 0xc1, 0xea, 0x50, 0x12, 0x75, 0x44, 0xd8, 0xd5, 0x15,
-	0xbf, 0x37, 0x44, 0x42, 0x61, 0x2d, 0xbf, 0x48, 0x00, 0xe2, 0x25, 0x34, 0xc9, 0xe0, 0xba, 0xb9,
-	0xbd, 0x9d, 0x74, 0x7b, 0x69, 0xf4, 0x1a, 0x35, 0xc9, 0x40, 0xcd, 0x83, 0x3c, 0x5c, 0x85, 0xda,
-	0x7e, 0x9a, 0x86, 0x3c, 0xfb, 0xf4, 0x1c, 0x98, 0x86, 0x87, 0x84, 0xf0, 0x3d, 0xfc, 0x9c, 0xc8,
-	0x1f, 0x42, 0xd6, 0xe8, 0x7b, 0xfb, 0xc4, 0xb5, 0xbd, 0xe3, 0x89, 0x3a, 0x87, 0x50, 0x79, 0x0d,
-	0xa0, 0x6d, 0x50, 0xd4, 0xf2, 0x2b, 0xe5, 0x6a, 0xf5, 0x2c, 0x8b, 0x7c, 0xca, 0x02, 0xf2, 0x16,
-	0xcc, 0x1f, 0xfa, 0xa7, 0xb4, 0xa2, 0x5a, 0x6e, 0x89, 0xa0, 0x0f, 0x5a, 0x03, 0xc0, 0x7d, 0xa7,
-	0xd5, 0xee, 0x91, 0x4e, 0x97, 0x16, 0x66, 0x36, 0xa4, 0xd2, 0x0d, 0x3d, 0x8b, 0xfb, 0x4e, 0x9d,
-	0x07, 0xe4, 0x6d, 0x58, 0x60, 0xf0, 0x16, 0x26, 0x83, 0xd6, 0x73, 0xa3, 0xc3, 0x5e, 0xc4, 0x2c,
-	0xc7, 0x70, 0xea, 0x26, 0x19, 0x7c, 0xc6, 0x83, 0x72, 0x09, 0x16, 0x19, 0x8d, 0x63, 0x1c, 0xb5,
-	0x04, 0x3d, 0x2d, 0x64, 0x38, 0xf0, 0x36, 0xee, 0x3b, 0x0d, 0xe3, 0x48, 0xe8, 0xa5, 0xb5, 0x1d,
-	0xe6, 0xe1, 0x50, 0x04, 0x73, 0x71, 0x3d, 0xd1, 0x73, 0x92, 0x06, 0xa9, 0x45, 0xb8, 0x97, 0x16,
-	0x0f, 0x9d, 0xfd, 0x51, 0x82, 0xbb, 0x21, 0xe0, 0x21, 0x36, 0xda, 0x3d, 0x14, 0xdc, 0xa0, 0x37,
-	0xf5, 0x76, 0x1b, 0x16, 0x10, 0x27, 0x6a, 0x05, 0xfa, 0xb9, 0xc1, 0x37, 0xf5, 0x79, 0x14, 0xe5,
-	0xaf, 0x7d, 0x30, 0x2a, 0x67, 0x33, 0x4d, 0x4e, 0xac, 0x2a, 0x75, 0x03, 0x8a, 0xe9, 0x99, 0x64,
-	0xe7, 0x61, 0xe1, 0x2f, 0xec, 0xaf, 0xfa, 0xb6, 0xf9, 0x5f, 0xeb, 0x3c, 0xc3, 0xca, 0x45, 0xe7,
-	0x19, 0x06, 0x42, 0x91, 0xdf, 0x4d, 0xc3, 0xcd, 0x06, 0xb5, 0x1e, 0x79, 0x46, 0x17, 0xfd, 0xab,
-	0xfa, 0x0c, 0x4a, 0x91, 0x17, 0xe8, 0xe3, 0x0b, 0xb9, 0x09, 0xb9, 0x43, 0xa3, 0x67, 0x9b, 0xec,
-	0x9c, 0x96, 0xe1, 0x1f, 0xcf, 0x3f, 0x1f, 0xd9, 0xfa, 0xe6, 0xd9, 0x69, 0x65, 0x4d, 0x10, 0x3d,
-	0x0d, 0x30, 0xf1, 0x0a, 0x17, 0x0f, 0x13, 0xf1, 0xda, 0x5b, 0x49, 0xbf, 0xee, 0xc4, 0xfd, 0xe2,
-	0x26, 0xa8, 0x1f, 0xc1, 0x62, 0xf0, 0x1c, 0xb8, 0x24, 0xcb, 0x30, 0xd3, 0x21, 0x26, 0xe2, 0xae,
-	0xcc, 0xe8, 0xfc, 0x59, 0xbe, 0x0b, 0x19, 0x17, 0xd1, 0x7e, 0x4f, 0x08, 0xd7, 0xc5, 0x4a, 0xfd,
-	0x61, 0x9a, 0xf7, 0xcf, 0x27, 0x98, 0xfe, 0x1f, 0x3c, 0x9d, 0xd4, 0x8f, 0x85, 0x0d, 0xea, 0xc7,
-	0xbc, 0x1f, 0x8b, 0xd5, 0x9b, 0xf8, 0xba, 0xf3, 0xf7, 0x1c, 0xdc, 0x68, 0x50, 0x4b, 0x76, 0x21,
-	0x9f, 0x3a, 0xd3, 0x96, 0xaa, 0x89, 0xf1, 0xba, 0x3a, 0x66, 0x3c, 0x54, 0xee, 0x5f, 0x15, 0x19,
-	0xd6, 0xf9, 0x25, 0xdc, 0x4e, 0x0c, 0x91, 0x6a, 0x1a, 0x47, 0x1c, 0xa3, 0x94, 0x27, 0x63, 0xc2,
-	0x13, 0xea, 0x30, 0xc3, 0x87, 0x9b, 0x42, 0xda, 0x1e, 0x96, 0x51, 0x36, 0xc6, 0x65, 0x42, 0x8e,
-	0xcf, 0x61, 0x2e, 0xe8, 0xb9, 0xab, 0xe3, 0xc0, 0x4d, 0x32, 0x50, 0xb6, 0x5e, 0x93, 0x0c, 0xc9,
-	0x1e, 0x03, 0x44, 0x3a, 0x5f, 0x71, 0xdc, 0x16, 0x3f, 0xaf, 0x6c, 0xbf, 0x3e, 0x1f, 0x65, 0x8d,
-	0x4c, 0x72, 0xa9, 0xac, 0xc3, 0x7c, 0x3a, 0xeb, 0xe8, 0xf8, 0x24, 0x3f, 0x83, 0x5b, 0xb1, 0xd9,
-	0x29, 0xd5, 0xaa, 0x28, 0x42, 0x29, 0x4d, 0x42, 0x84, 0xdc, 0x36, 0xe4, 0x46, 0xc7, 0x85, 0xb7,
-	0x53, 0xdf, 0x6c, 0x12, 0xa6, 0x54, 0xae, 0x04, 0x0b, 0x8f, 0x22, 0x70, 0x27, 0xed, 0xfb, 0xf3,
-	0x9d, 0xf1, 0x2c, 0x31, 0xa0, 0xa2, 0x5d, 0x11, 0x18, 0x1e, 0xf8, 0x10, 0x66, 0xfd, 0xc6, 0xbf,
-	0x92, 0xb6, 0x93, 0xa7, 0x94, 0xcd, 0xb1, 0xa9, 0xe8, 0xbd, 0x0b, 0xba, 0xdd, 0x6a, 0xfa, 0x95,
-	0xe7, 0xc9, 0xf4, 0x7b, 0x97, 0x68, 0x09, 0xca, 0xec, 0xd7, 0x97, 0x27, 0x65, 0xa9, 0xbe, 0xf7,
-	0xe2, 0xbc, 0x28, 0xbd, 0x3c, 0x2f, 0x4a, 0x7f, 0x9d, 0x17, 0xa5, 0xef, 0x2f, 0x8a, 0x53, 0x2f,
-	0x2f, 0x8a, 0x53, 0xbf, 0x5f, 0x14, 0xa7, 0x9e, 0x69, 0x96, 0xed, 0xed, 0xf7, 0xdb, 0x8c, 0x46,
-	0x63, 0x7c, 0x15, 0x8c, 0xbc, 0x01, 0x71, 0xbb, 0x7c, 0xa1, 0x1d, 0xc5, 0x7e, 0x79, 0x1f, 0x1f,
-	0x20, 0xda, 0xce, 0xf0, 0xdf, 0xc3, 0x0f, 0xfe, 0x09, 0x00, 0x00, 0xff, 0xff, 0x37, 0x9f, 0x6a,
-	0x8b, 0x99, 0x0f, 0x00, 0x00,
+	// 1346 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x58, 0xcb, 0x6f, 0xdc, 0xd4,
+	0x17, 0x8e, 0xf3, 0x6a, 0x73, 0x9a, 0x34, 0x89, 0x33, 0x49, 0x26, 0x6e, 0x3b, 0x49, 0xdc, 0xfe,
+	0xf2, 0x0b, 0x41, 0x19, 0xf7, 0x81, 0x40, 0x0a, 0x02, 0xd1, 0x94, 0x22, 0xa2, 0x74, 0x46, 0x68,
+	0xfa, 0x90, 0xe8, 0xc6, 0x38, 0xe3, 0x5b, 0xc7, 0x1a, 0xfb, 0xde, 0xe0, 0xeb, 0xc9, 0xa4, 0x3b,
+	0x04, 0x42, 0x42, 0x6c, 0x40, 0xea, 0xff, 0x81, 0xba, 0x28, 0x62, 0x05, 0x1b, 0x36, 0x65, 0x57,
+	0xba, 0x42, 0x48, 0x54, 0xa8, 0x5d, 0xf4, 0xdf, 0x40, 0xf7, 0x61, 0x8f, 0xed, 0xf1, 0xcc, 0x84,
+	0x20, 0x44, 0x10, 0x9b, 0x76, 0xee, 0x79, 0x7c, 0xe7, 0x7c, 0xdf, 0xbd, 0xbe, 0x8f, 0x40, 0x11,
+	0x79, 0xf7, 0xa9, 0x51, 0x27, 0xbe, 0xef, 0x86, 0x3e, 0xc2, 0xa1, 0x11, 0x1e, 0x94, 0xf7, 0x02,
+	0x12, 0x12, 0x75, 0x92, 0x79, 0xca, 0x6d, 0x8f, 0x56, 0x70, 0x88, 0x43, 0xb8, 0xcf, 0x60, 0xbf,
+	0x44, 0x98, 0x36, 0x5f, 0x27, 0xd4, 0x27, 0xd4, 0xf0, 0xa9, 0x63, 0xec, 0x5f, 0x62, 0xff, 0x49,
+	0xc7, 0xb4, 0xe5, 0xbb, 0x98, 0x18, 0xfc, 0x5f, 0x69, 0x5a, 0x10, 0xb1, 0xa6, 0x00, 0x11, 0x03,
+	0xe1, 0xd2, 0x7f, 0x53, 0x60, 0xbe, 0x42, 0x9d, 0x6b, 0xbc, 0xdc, 0x35, 0xcf, 0x72, 0x7d, 0x64,
+	0xd7, 0x50, 0xcb, 0x0a, 0x6c, 0xaa, 0x5e, 0x86, 0x13, 0xf5, 0x00, 0x59, 0x21, 0x09, 0x8a, 0xca,
+	0x92, 0xb2, 0x3a, 0xb6, 0x59, 0x7c, 0xfa, 0x68, 0xbd, 0x20, 0xd3, 0xaf, 0xda, 0x76, 0x80, 0x28,
+	0xbd, 0x19, 0x06, 0x2e, 0x76, 0x6a, 0x51, 0xa0, 0x7a, 0x0d, 0x46, 0x2d, 0x9f, 0x34, 0x71, 0x58,
+	0x1c, 0xe4, 0x29, 0xaf, 0x3e, 0x7e, 0xb6, 0x38, 0xf0, 0xeb, 0xb3, 0xc5, 0x59, 0x91, 0x46, 0xed,
+	0x46, 0xd9, 0x25, 0x86, 0x6f, 0x85, 0xbb, 0xe5, 0x2d, 0x1c, 0x3e, 0x7d, 0xb4, 0x0e, 0x12, 0x6f,
+	0x0b, 0x87, 0x35, 0x99, 0xaa, 0x16, 0x60, 0xc4, 0x46, 0x98, 0xf8, 0xc5, 0x21, 0x86, 0x51, 0x13,
+	0x83, 0x8d, 0x2b, 0x9f, 0xbe, 0x7c, 0xb8, 0x16, 0x15, 0xfa, 0xf2, 0xe5, 0xc3, 0x35, 0x3d, 0x21,
+	0x5f, 0x17, 0x0e, 0xfa, 0x32, 0x2c, 0x76, 0x71, 0xd5, 0x10, 0xdd, 0x23, 0x98, 0x22, 0xfd, 0x67,
+	0x05, 0xa6, 0x2b, 0xd4, 0xb9, 0x8d, 0x05, 0xdc, 0x2d, 0xd2, 0x40, 0xf8, 0xd8, 0x91, 0x5f, 0xcf,
+	0x92, 0x3f, 0x9b, 0x26, 0x9f, 0xee, 0x5e, 0x3f, 0x03, 0x0b, 0x1d, 0xc6, 0x98, 0xf0, 0xf7, 0x0a,
+	0x9c, 0xa8, 0x50, 0xe7, 0x0e, 0xa2, 0xe1, 0x71, 0xa3, 0x79, 0x3e, 0x4b, 0x53, 0x4d, 0xd3, 0x64,
+	0x3d, 0xeb, 0xd3, 0x30, 0x29, 0x7f, 0xc6, 0x94, 0x7e, 0x52, 0x60, 0x82, 0xcd, 0xb3, 0x85, 0xeb,
+	0xc8, 0x3b, 0x8e, 0xc4, 0x5e, 0xc9, 0x12, 0x2b, 0x66, 0x16, 0x6f, 0xdc, 0xb9, 0x3e, 0x0f, 0xb3,
+	0x29, 0x43, 0x4c, 0x92, 0x70, 0xde, 0x7c, 0x15, 0x33, 0xbb, 0x8b, 0x1d, 0xf5, 0x22, 0x8c, 0x52,
+	0x84, 0x6d, 0xd4, 0x9f, 0xa4, 0x8c, 0xdb, 0x58, 0x63, 0x8d, 0xc8, 0x01, 0xeb, 0x43, 0xcb, 0xf4,
+	0x91, 0x40, 0xd7, 0x17, 0xc4, 0xde, 0x90, 0x30, 0xc5, 0xbd, 0xfc, 0xa8, 0x00, 0xc8, 0x49, 0xa8,
+	0x92, 0xd6, 0x71, 0x53, 0x7b, 0x25, 0xab, 0xf6, 0x6c, 0xe7, 0x32, 0xaa, 0x92, 0x96, 0x5e, 0x00,
+	0xb5, 0x3d, 0x8a, 0xb9, 0x7d, 0x37, 0x08, 0x05, 0xf6, 0xf5, 0xec, 0xd9, 0x56, 0x88, 0x24, 0xf1,
+	0x2d, 0x7c, 0x8f, 0xa8, 0xaf, 0xc3, 0x98, 0xd5, 0x0c, 0x77, 0x49, 0xe0, 0x86, 0xf7, 0xfb, 0xf2,
+	0x6c, 0x87, 0xaa, 0xe7, 0x00, 0x76, 0x2c, 0x8a, 0x4c, 0xd1, 0x29, 0x67, 0x5b, 0x1b, 0x63, 0x96,
+	0x77, 0x99, 0x41, 0x3d, 0x0f, 0x13, 0xfb, 0xa2, 0x8a, 0x99, 0xe4, 0x32, 0x2e, 0x8d, 0x22, 0xe8,
+	0x1c, 0x00, 0x6e, 0xfa, 0xe6, 0x8e, 0x47, 0xea, 0x0d, 0x5a, 0x1c, 0x5e, 0x52, 0x56, 0x87, 0x6a,
+	0x63, 0xb8, 0xe9, 0x6f, 0x72, 0x83, 0xba, 0x02, 0x93, 0x2c, 0xdc, 0xc4, 0xa4, 0x65, 0xde, 0xb3,
+	0xea, 0x6c, 0x22, 0x46, 0x78, 0x0c, 0x87, 0xae, 0x92, 0xd6, 0x7b, 0xdc, 0xa8, 0xae, 0xc2, 0x14,
+	0x83, 0xf1, 0xad, 0x03, 0x53, 0xc2, 0xd3, 0xe2, 0x28, 0x0f, 0x3c, 0x8d, 0x9b, 0x7e, 0xc5, 0x3a,
+	0x90, 0x7c, 0xe9, 0xc6, 0x65, 0xa6, 0x61, 0x9b, 0x04, 0x53, 0x71, 0x31, 0xb3, 0xe7, 0x64, 0x05,
+	0xd2, 0x4b, 0x70, 0x36, 0xcf, 0x1e, 0x2b, 0xfb, 0x8d, 0x02, 0x73, 0x71, 0xc0, 0x75, 0x6c, 0xed,
+	0x78, 0x28, 0x5a, 0x41, 0x47, 0xd5, 0x76, 0x05, 0x26, 0x11, 0x07, 0x32, 0x23, 0xfe, 0x5c, 0xe0,
+	0x93, 0xb5, 0x09, 0x94, 0xc4, 0xdf, 0x78, 0xad, 0x93, 0xce, 0x72, 0x1e, 0x9d, 0x54, 0x57, 0xfa,
+	0x12, 0x94, 0xf2, 0x3d, 0xd9, 0x9d, 0x87, 0x99, 0x6f, 0xb8, 0x1f, 0x37, 0x5d, 0xfb, 0xdf, 0xb6,
+	0xf3, 0xb4, 0x3b, 0x97, 0x3b, 0x4f, 0xdb, 0x10, 0x93, 0xfc, 0x6a, 0x10, 0x4e, 0x56, 0xa8, 0x73,
+	0x33, 0xb4, 0x1a, 0xe8, 0x1f, 0xe5, 0x67, 0x51, 0x8a, 0xc2, 0x88, 0x1f, 0x1f, 0xa8, 0x55, 0x98,
+	0xde, 0xb7, 0x3c, 0xd7, 0x66, 0x75, 0x4c, 0x4b, 0x94, 0xe7, 0xdf, 0xc7, 0xd8, 0xe6, 0xf2, 0xd3,
+	0x47, 0xeb, 0xe7, 0x24, 0xd0, 0x9d, 0x28, 0x26, 0xdd, 0xe1, 0xd4, 0x7e, 0xc6, 0xbe, 0x71, 0x21,
+	0xab, 0xd7, 0x4c, 0x5a, 0x2f, 0x2e, 0x82, 0xfe, 0x36, 0x4c, 0x45, 0xbf, 0x23, 0x95, 0x54, 0x15,
+	0x86, 0xeb, 0xc4, 0x46, 0x5c, 0x95, 0xe1, 0x1a, 0xff, 0xad, 0xce, 0xc1, 0x68, 0x80, 0x68, 0xd3,
+	0x93, 0xc4, 0x6b, 0x72, 0xa4, 0x3f, 0x18, 0xe4, 0xfb, 0xe7, 0x6d, 0x4c, 0xff, 0x0b, 0x9a, 0xf6,
+	0xdb, 0x8f, 0xa5, 0x0c, 0xfa, 0x3b, 0x7c, 0x3f, 0x96, 0xa3, 0x23, 0xe9, 0xfa, 0x99, 0xd2, 0x3e,
+	0x24, 0xaf, 0xba, 0x81, 0x1d, 0x90, 0x3d, 0xf5, 0x2d, 0x98, 0xa8, 0xb3, 0x71, 0xcc, 0xa4, 0x9f,
+	0xc4, 0xe3, 0x3c, 0x3c, 0x6a, 0xfe, 0x12, 0x6b, 0x3e, 0x8d, 0xd0, 0xed, 0xe0, 0x94, 0x15, 0xf5,
+	0x6f, 0x95, 0xf6, 0xc9, 0x29, 0x6d, 0x31, 0x9b, 0x1b, 0x70, 0x8a, 0xdd, 0xf0, 0x4d, 0x39, 0x77,
+	0xca, 0x9f, 0x9f, 0x3b, 0x60, 0xf9, 0x57, 0xc5, 0xfc, 0x31, 0x34, 0x1b, 0x61, 0xf3, 0xe8, 0x2b,
+	0x01, 0x58, 0xbe, 0x40, 0xd3, 0x1f, 0x28, 0x70, 0x2a, 0xea, 0x7b, 0x9b, 0x78, 0x7f, 0x51, 0x39,
+	0x31, 0x49, 0xf7, 0x9a, 0xd8, 0x96, 0x5b, 0xb2, 0x1c, 0x89, 0xcb, 0x6c, 0xa7, 0xa2, 0x73, 0x39,
+	0x8a, 0x6e, 0x13, 0x4f, 0xff, 0x41, 0x81, 0x99, 0xc4, 0xf8, 0x6f, 0x52, 0xf2, 0x43, 0x50, 0xd9,
+	0x09, 0x82, 0x6c, 0x33, 0x09, 0x7a, 0x04, 0x41, 0xa7, 0x04, 0xcc, 0xf5, 0x18, 0x5a, 0xff, 0x7c,
+	0x28, 0x71, 0xec, 0xc9, 0xf5, 0xf0, 0x81, 0x15, 0x58, 0x3e, 0x3d, 0xf2, 0xb1, 0xb7, 0x0c, 0xe3,
+	0xf2, 0xd8, 0xe3, 0x32, 0x4a, 0x81, 0x4f, 0x09, 0x1b, 0x57, 0x4a, 0x7d, 0x13, 0x34, 0x1a, 0x5a,
+	0x41, 0x68, 0x5a, 0xa2, 0xa2, 0x88, 0x34, 0x77, 0x91, 0xeb, 0xec, 0x8a, 0xef, 0x7d, 0xb8, 0x36,
+	0xcf, 0x23, 0x64, 0x4b, 0x3c, 0xed, 0x7d, 0xee, 0x56, 0xdf, 0x80, 0x22, 0xc2, 0x76, 0x7e, 0xea,
+	0x30, 0x4f, 0x9d, 0x45, 0xd8, 0xce, 0x49, 0xbc, 0x02, 0x73, 0xa2, 0x6a, 0x83, 0x78, 0xe9, 0xb4,
+	0x11, 0x9e, 0x36, 0xc3, 0xbd, 0xdb, 0xc4, 0x4b, 0x26, 0x19, 0x50, 0x60, 0xd5, 0x3a, 0x52, 0x46,
+	0x79, 0xca, 0x34, 0xc2, 0x76, 0x3a, 0xe1, 0xd0, 0xa7, 0x79, 0x4a, 0xec, 0xd4, 0x69, 0x9e, 0xf2,
+	0x44, 0x4b, 0xea, 0xf2, 0x17, 0x00, 0x43, 0x15, 0xea, 0xa8, 0x01, 0x14, 0x72, 0x9f, 0xc4, 0xab,
+	0xe5, 0xcc, 0xeb, 0xbc, 0xdc, 0xe5, 0x75, 0xa9, 0x5d, 0x3c, 0x6c, 0x64, 0xbc, 0x9c, 0x3f, 0x82,
+	0xd3, 0x99, 0x37, 0xa8, 0x9e, 0x87, 0x91, 0x8e, 0xd1, 0xd6, 0xfa, 0xc7, 0xc4, 0x15, 0x36, 0x61,
+	0x98, 0xbf, 0x8d, 0x8a, 0x79, 0x39, 0xcc, 0xa3, 0x2d, 0x75, 0xf3, 0xc4, 0x18, 0xdb, 0x70, 0x22,
+	0xba, 0xb2, 0x9d, 0xe9, 0x16, 0x5c, 0x25, 0x2d, 0xed, 0x7c, 0x0f, 0x67, 0x0c, 0x76, 0x0b, 0x20,
+	0x71, 0x71, 0x2a, 0x75, 0x4b, 0x11, 0x7e, 0x6d, 0xa5, 0xb7, 0x3f, 0x89, 0x9a, 0x78, 0x08, 0xe6,
+	0xa2, 0xb6, 0xfd, 0xf9, 0xa8, 0x9d, 0xaf, 0x2f, 0xf5, 0x2e, 0x8c, 0xa7, 0x9e, 0x5e, 0xb9, 0x52,
+	0x25, 0x23, 0xb4, 0xd5, 0x7e, 0x11, 0x31, 0xb6, 0x0b, 0xd3, 0x9d, 0xaf, 0x8d, 0xff, 0xe5, 0xce,
+	0x6c, 0x36, 0x4c, 0x5b, 0x3f, 0x54, 0x58, 0x5c, 0x8a, 0xc0, 0x4c, 0xde, 0xf5, 0xfb, 0xff, 0xdd,
+	0x51, 0x52, 0x81, 0x9a, 0x71, 0xc8, 0xc0, 0xce, 0x82, 0xe9, 0x8d, 0xaf, 0x47, 0xc1, 0x54, 0x60,
+	0xaf, 0x82, 0xb9, 0xdf, 0xb0, 0x7a, 0x1d, 0x46, 0xc4, 0x45, 0x75, 0x21, 0x2f, 0x93, 0xbb, 0xb4,
+	0xe5, 0xae, 0xae, 0xe4, 0x42, 0x8f, 0x6e, 0x67, 0x67, 0xf2, 0xbf, 0x31, 0xee, 0xcc, 0x5f, 0xe8,
+	0xd9, 0x2b, 0x4c, 0xb4, 0x78, 0xa2, 0x2b, 0x49, 0xf7, 0xc5, 0x23, 0x23, 0x7a, 0x2c, 0x9e, 0xec,
+	0x85, 0xa2, 0x0a, 0x27, 0xe3, 0x03, 0xfb, 0x6c, 0xd7, 0xac, 0x6d, 0xe2, 0x69, 0x17, 0x7a, 0x79,
+	0x23, 0x3c, 0x6d, 0xe4, 0x93, 0x97, 0x0f, 0xd7, 0x94, 0xcd, 0xad, 0xc7, 0xcf, 0x4b, 0xca, 0x93,
+	0xe7, 0x25, 0xe5, 0xf7, 0xe7, 0x25, 0xe5, 0xeb, 0x17, 0xa5, 0x81, 0x27, 0x2f, 0x4a, 0x03, 0xbf,
+	0xbc, 0x28, 0x0d, 0xdc, 0x35, 0x1c, 0x37, 0xdc, 0x6d, 0xee, 0x30, 0x1c, 0x83, 0x01, 0xae, 0x63,
+	0x14, 0xb6, 0x48, 0xd0, 0xe0, 0x03, 0xe3, 0x20, 0xf5, 0x57, 0xcd, 0xfb, 0x7b, 0x88, 0xee, 0x8c,
+	0xf2, 0xbf, 0x35, 0x5e, 0xf9, 0x23, 0x00, 0x00, 0xff, 0xff, 0x94, 0xb8, 0xeb, 0x7b, 0xf5, 0x14,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1214,8 +1531,11 @@ type MsgClient interface {
 	UpdateVestingInfo(ctx context.Context, in *MsgUpdateVestingInfo, opts ...grpc.CallOption) (*MsgUpdateVestingInfoResponse, error)
 	// UpdateEnableVestNow add/update enable vest now on Params
 	UpdateEnableVestNow(ctx context.Context, in *MsgUpdateEnableVestNow, opts ...grpc.CallOption) (*MsgUpdateEnableVestNowResponse, error)
+	UpdateAirdropParams(ctx context.Context, in *MsgUpdateAirdropParams, opts ...grpc.CallOption) (*MsgUpdateAirdropParamsResponse, error)
 	Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOption) (*MsgStakeResponse, error)
 	Unstake(ctx context.Context, in *MsgUnstake, opts ...grpc.CallOption) (*MsgUnstakeResponse, error)
+	ClaimAirdrop(ctx context.Context, in *MsgClaimAirdrop, opts ...grpc.CallOption) (*MsgClaimAirdropResponse, error)
+	ClaimKol(ctx context.Context, in *MsgClaimKol, opts ...grpc.CallOption) (*MsgClaimKolResponse, error)
 }
 
 type msgClient struct {
@@ -1307,6 +1627,15 @@ func (c *msgClient) UpdateEnableVestNow(ctx context.Context, in *MsgUpdateEnable
 	return out, nil
 }
 
+func (c *msgClient) UpdateAirdropParams(ctx context.Context, in *MsgUpdateAirdropParams, opts ...grpc.CallOption) (*MsgUpdateAirdropParamsResponse, error) {
+	out := new(MsgUpdateAirdropParamsResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/UpdateAirdropParams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOption) (*MsgStakeResponse, error) {
 	out := new(MsgStakeResponse)
 	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/Stake", in, out, opts...)
@@ -1319,6 +1648,24 @@ func (c *msgClient) Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOp
 func (c *msgClient) Unstake(ctx context.Context, in *MsgUnstake, opts ...grpc.CallOption) (*MsgUnstakeResponse, error) {
 	out := new(MsgUnstakeResponse)
 	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/Unstake", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ClaimAirdrop(ctx context.Context, in *MsgClaimAirdrop, opts ...grpc.CallOption) (*MsgClaimAirdropResponse, error) {
+	out := new(MsgClaimAirdropResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/ClaimAirdrop", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ClaimKol(ctx context.Context, in *MsgClaimKol, opts ...grpc.CallOption) (*MsgClaimKolResponse, error) {
+	out := new(MsgClaimKolResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Msg/ClaimKol", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1352,8 +1699,11 @@ type MsgServer interface {
 	UpdateVestingInfo(context.Context, *MsgUpdateVestingInfo) (*MsgUpdateVestingInfoResponse, error)
 	// UpdateEnableVestNow add/update enable vest now on Params
 	UpdateEnableVestNow(context.Context, *MsgUpdateEnableVestNow) (*MsgUpdateEnableVestNowResponse, error)
+	UpdateAirdropParams(context.Context, *MsgUpdateAirdropParams) (*MsgUpdateAirdropParamsResponse, error)
 	Stake(context.Context, *MsgStake) (*MsgStakeResponse, error)
 	Unstake(context.Context, *MsgUnstake) (*MsgUnstakeResponse, error)
+	ClaimAirdrop(context.Context, *MsgClaimAirdrop) (*MsgClaimAirdropResponse, error)
+	ClaimKol(context.Context, *MsgClaimKol) (*MsgClaimKolResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -1387,11 +1737,20 @@ func (*UnimplementedMsgServer) UpdateVestingInfo(ctx context.Context, req *MsgUp
 func (*UnimplementedMsgServer) UpdateEnableVestNow(ctx context.Context, req *MsgUpdateEnableVestNow) (*MsgUpdateEnableVestNowResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateEnableVestNow not implemented")
 }
+func (*UnimplementedMsgServer) UpdateAirdropParams(ctx context.Context, req *MsgUpdateAirdropParams) (*MsgUpdateAirdropParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAirdropParams not implemented")
+}
 func (*UnimplementedMsgServer) Stake(ctx context.Context, req *MsgStake) (*MsgStakeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Stake not implemented")
 }
 func (*UnimplementedMsgServer) Unstake(ctx context.Context, req *MsgUnstake) (*MsgUnstakeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Unstake not implemented")
+}
+func (*UnimplementedMsgServer) ClaimAirdrop(ctx context.Context, req *MsgClaimAirdrop) (*MsgClaimAirdropResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClaimAirdrop not implemented")
+}
+func (*UnimplementedMsgServer) ClaimKol(ctx context.Context, req *MsgClaimKol) (*MsgClaimKolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClaimKol not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -1560,6 +1919,24 @@ func _Msg_UpdateEnableVestNow_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateAirdropParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateAirdropParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateAirdropParams(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/UpdateAirdropParams",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateAirdropParams(ctx, req.(*MsgUpdateAirdropParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_Stake_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgStake)
 	if err := dec(in); err != nil {
@@ -1592,6 +1969,42 @@ func _Msg_Unstake_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).Unstake(ctx, req.(*MsgUnstake))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ClaimAirdrop_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgClaimAirdrop)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ClaimAirdrop(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/ClaimAirdrop",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ClaimAirdrop(ctx, req.(*MsgClaimAirdrop))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ClaimKol_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgClaimKol)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ClaimKol(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Msg/ClaimKol",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ClaimKol(ctx, req.(*MsgClaimKol))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1637,12 +2050,24 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateEnableVestNow_Handler,
 		},
 		{
+			MethodName: "UpdateAirdropParams",
+			Handler:    _Msg_UpdateAirdropParams_Handler,
+		},
+		{
 			MethodName: "Stake",
 			Handler:    _Msg_Stake_Handler,
 		},
 		{
 			MethodName: "Unstake",
 			Handler:    _Msg_Unstake_Handler,
+		},
+		{
+			MethodName: "ClaimAirdrop",
+			Handler:    _Msg_ClaimAirdrop_Handler,
+		},
+		{
+			MethodName: "ClaimKol",
+			Handler:    _Msg_ClaimKol_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -2445,6 +2870,245 @@ func (m *MsgUnstakeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgClaimAirdrop) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgClaimAirdrop) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgClaimAirdrop) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ClaimAddress) > 0 {
+		i -= len(m.ClaimAddress)
+		copy(dAtA[i:], m.ClaimAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ClaimAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgClaimAirdropResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgClaimAirdropResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgClaimAirdropResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.EdenAmount.Size()
+		i -= size
+		if _, err := m.EdenAmount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.ElysAmount.Size()
+		i -= size
+		if _, err := m.ElysAmount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgClaimKol) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgClaimKol) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgClaimKol) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Refund {
+		i--
+		if m.Refund {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.ClaimAddress) > 0 {
+		i -= len(m.ClaimAddress)
+		copy(dAtA[i:], m.ClaimAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ClaimAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgClaimKolResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgClaimKolResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgClaimKolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.VestedElysAmount.Size()
+		i -= size
+		if _, err := m.VestedElysAmount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.ElysAmount.Size()
+		i -= size
+		if _, err := m.ElysAmount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateAirdropParams) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateAirdropParams) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateAirdropParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.EndKolClaimHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.EndKolClaimHeight))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.StartKolClaimHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.StartKolClaimHeight))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.EndAirdropClaimHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.EndAirdropClaimHeight))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.StartAirdropClaimHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.StartAirdropClaimHeight))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.EnableClaim {
+		i--
+		if m.EnableClaim {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateAirdropParamsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateAirdropParamsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateAirdropParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -2785,6 +3449,98 @@ func (m *MsgUnstakeResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	return n
+}
+
+func (m *MsgClaimAirdrop) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ClaimAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgClaimAirdropResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.ElysAmount.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = m.EdenAmount.Size()
+	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgClaimKol) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ClaimAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Refund {
+		n += 2
+	}
+	return n
+}
+
+func (m *MsgClaimKolResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.ElysAmount.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = m.VestedElysAmount.Size()
+	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgUpdateAirdropParams) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.EnableClaim {
+		n += 2
+	}
+	if m.StartAirdropClaimHeight != 0 {
+		n += 1 + sovTx(uint64(m.StartAirdropClaimHeight))
+	}
+	if m.EndAirdropClaimHeight != 0 {
+		n += 1 + sovTx(uint64(m.EndAirdropClaimHeight))
+	}
+	if m.StartKolClaimHeight != 0 {
+		n += 1 + sovTx(uint64(m.StartKolClaimHeight))
+	}
+	if m.EndKolClaimHeight != 0 {
+		n += 1 + sovTx(uint64(m.EndKolClaimHeight))
+	}
+	return n
+}
+
+func (m *MsgUpdateAirdropParamsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -5060,6 +5816,654 @@ func (m *MsgUnstakeResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Result = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgClaimAirdrop) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgClaimAirdrop: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgClaimAirdrop: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClaimAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClaimAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgClaimAirdropResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgClaimAirdropResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgClaimAirdropResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ElysAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ElysAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EdenAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.EdenAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgClaimKol) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgClaimKol: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgClaimKol: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClaimAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClaimAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Refund", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Refund = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgClaimKolResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgClaimKolResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgClaimKolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ElysAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ElysAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VestedElysAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.VestedElysAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateAirdropParams) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateAirdropParams: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateAirdropParams: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EnableClaim", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.EnableClaim = bool(v != 0)
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartAirdropClaimHeight", wireType)
+			}
+			m.StartAirdropClaimHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StartAirdropClaimHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EndAirdropClaimHeight", wireType)
+			}
+			m.EndAirdropClaimHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.EndAirdropClaimHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartKolClaimHeight", wireType)
+			}
+			m.StartKolClaimHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StartKolClaimHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EndKolClaimHeight", wireType)
+			}
+			m.EndKolClaimHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.EndKolClaimHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateAirdropParamsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateAirdropParamsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateAirdropParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
