@@ -25,7 +25,7 @@ func (k msgServer) Vest(goCtx context.Context, msg *types.MsgVest) (*types.MsgVe
 
 // Vesting token
 // Check if vesting entity count is not exceeding the maximum and if it is fine, creates a new vesting entity
-// Deduct from unclaimed bucket. If it is insufficent, deduct from committed bucket as well.
+// Deduct from unclaimed bucket. If it is insufficient, deduct from committed bucket as well.
 func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.Int, creator sdk.AccAddress) error {
 	vestingInfo, _ := k.GetVestingInfo(ctx, denom)
 

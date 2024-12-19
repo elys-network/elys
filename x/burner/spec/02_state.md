@@ -16,7 +16,7 @@ The `x/burner` module keeps the following `objects in state`:
 
 A `History` defines several variables:
 
-1. `timestamp` keeps the time the event occured
+1. `timestamp` keeps the time the event occurred
 2. `denom` keeps the token denom used
 3. `amount` keeps the amount of tokens burnt
 
