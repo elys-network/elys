@@ -1,4 +1,4 @@
-name: MainNet deploy
+name: MainNet deploy in 2 hours
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   release:
-    name: Deploy to MainNet
+    name: Deploy to MainNet in 2 hours
     runs-on: ubuntu-latest
     steps:
       - name: Create software upgrade proposal
@@ -49,12 +49,16 @@ jobs:
             ${ELYSD} software-upgrade-tx \
               ${ELYS_VERSION} \
               $height \
-              0uelys \
+              5000000000uelys \
               "Elys Network ${ELYS_VERSION} released. Focuses on enhancements and codebase improvements." \
               "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/elysd-${ELYS_VERSION}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
               true \
               --from=proposer \
               $OPTIONS | extract_txhash
           )
+          echo "txhash: $txhash"
+
           sleep 10
+
           proposalid=$(${ELYSD} q tx $txhash --node $NODE | extract_proposal_id)
+          echo "proposalid: $proposalid"
