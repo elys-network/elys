@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	oracle "github.com/elys-network/elys/x/oracle/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tier/types"
 	"google.golang.org/grpc/codes"
@@ -37,11 +38,15 @@ func (k Keeper) GetAllPrices(goCtx context.Context, req *types.QueryGetAllPrices
 
 	assetentries := k.assetProfileKeeper.GetAllEntry(ctx)
 	for _, assetEntry := range assetentries {
+		if strings.HasPrefix(assetEntry.Denom, "amm/pool") || strings.HasPrefix(assetEntry.Denom, "stablestake") {
+			continue
+		}
+
 		if assetEntry.Denom == ptypes.Eden {
 			assetEntry.Denom = ptypes.Elys
 		}
-		tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenom(ctx, assetEntry.Denom).Mul(sdkmath.LegacyNewDec(int64(assetEntry.Decimals)))
-		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, assetEntry.Denom, assetEntry.Decimals).Mul(sdkmath.LegacyNewDec(int64(assetEntry.Decimals)))
+		tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenom(ctx, assetEntry.Denom).Mul(oracle.Pow10(assetEntry.Decimals))
+		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, assetEntry.Denom, assetEntry.Decimals).Mul(oracle.Pow10(assetEntry.Decimals))
 		prices = append(prices, &types.Price{
 			Denom:       assetEntry.Denom,
 			OraclePrice: tokenPriceOracle,
