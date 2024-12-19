@@ -73,7 +73,7 @@ func NewAppModule(
 	}
 }
 
-// BeginBlocker mirror functionality of cosmos-sdk/distribution BeginBlocker
+// BeginBlock mirror functionality of cosmos-sdk/distribution BeginBlocker
 // however it allocates no proposer reward
 func (am AppModule) BeginBlock(goCtx context.Context) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)

@@ -195,7 +195,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdatePerpetualOrder() {
 				}
 			},
 		},
-		// TODO: Add checks in code for triggerprice comparision with TakeProfitPrice and StopLossPrice
+		// TODO: Add checks in code for triggerprice comparison with TakeProfitPrice and StopLossPrice
 		// Update Rate with >15 should not pass, but passing here
 		{
 			"Success: Update Perpetual Open Order",
