@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
@@ -9,6 +10,10 @@ import (
 func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.MsgUnbondResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	return k.Keeper.Unbond(ctx, msg)
+}
+
+func (k Keeper) Unbond(ctx sdk.Context, msg *types.MsgUnbond) (*types.MsgUnbondResponse, error) {
 	params := k.GetParams(ctx)
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	redemptionRate := k.GetRedemptionRate(ctx)
