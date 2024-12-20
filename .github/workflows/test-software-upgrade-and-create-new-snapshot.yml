@@ -47,8 +47,15 @@ jobs:
         run: |
           git fetch --tags
           LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            LATEST_TAG_KEY=${LATEST_TAG}-mainnet
+          else
+            LATEST_TAG_KEY=${LATEST_TAG}-testnet
+          fi
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "LATEST_TAG_KEY=$LATEST_TAG_KEY" >> $GITHUB_ENV
           echo "Latest tag: $LATEST_TAG"
+          echo "Latest tag key: $LATEST_TAG_KEY"
 
       - name: Retrieve latest binary
         run: |
@@ -93,7 +100,7 @@ jobs:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
-          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG }}
+          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
           lookup-only: true
           aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
@@ -200,7 +207,7 @@ jobs:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
-          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG }}
+          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
           aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
@@ -216,7 +223,7 @@ jobs:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
-          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG }}
+          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
           aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
