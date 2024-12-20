@@ -103,27 +103,5 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 			},
 		},
-		// Tx: &autocliv1.ServiceCommandDescriptor{
-		// 	Service:              amm.Msg_ServiceDesc.ServiceName,
-		// 	EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
-		// 	RpcCommandOptions: []*autocliv1.RpcCommandOptions{
-		// 		{
-		// 			RpcMethod:      "Bond",
-		// 			Use:            "bond [amount]",
-		// 			Short:          "Bond coins to the stablestake module",
-		// 			PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}},
-		// 		},
-		// 		{
-		// 			RpcMethod:      "Unbond",
-		// 			Use:            "unbond [amount]",
-		// 			Short:          "Unbond coins from the stablestake module",
-		// 			PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}},
-		// 		},
-		// 		{
-		// 			RpcMethod: "UpdateParams",
-		// 			Skip:      true, // skipped because authority gated
-		// 		},
-		// 	},
-		// },
 	}
 }
