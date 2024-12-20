@@ -105,7 +105,12 @@ jobs:
 
       - name: Retrieve info.json and set snapshot path
         run: |
-          INFO_DOWNLOAD_URL=https://snapshots.elys.network/info.json
+          # set info.json download url, use mainnet info.json for main branch otherwise use testnet info.json
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            INFO_DOWNLOAD_URL=https://snapshots.elys.network/info-mainnet.json
+          else
+            INFO_DOWNLOAD_URL=https://snapshots.elys.network/info-testnet.json
+          fi
           curl -L $INFO_DOWNLOAD_URL -o /tmp/info.json
           echo "Info.json downloaded to check snapshot version."
 
