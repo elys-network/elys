@@ -126,7 +126,11 @@ jobs:
           echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
           echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
 
-          APPLIED_URL=https://api.testnet.elys.network/cosmos/upgrade/v1beta1/applied_plan/${LATEST_TAG}
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            APPLIED_URL=https://api.elys.network/cosmos/upgrade/v1beta1/applied_plan/${LATEST_TAG}
+          else
+            APPLIED_URL=https://api.testnet.elys.network/cosmos/upgrade/v1beta1/applied_plan/${LATEST_TAG}
+          fi
           curl -L $APPLIED_URL -o /tmp/applied.json
           echo "Applied.json downloaded to check snapshot version."
 
