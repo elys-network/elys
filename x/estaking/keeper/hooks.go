@@ -3,6 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/x/estaking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -12,6 +13,10 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amoun
 
 	if !amount.AmountOf(ptypes.Eden).IsZero() {
 		edenValAddr, err := sdk.ValAddressFromBech32(params.EdenCommitVal)
+		if err != nil {
+			return err
+		}
+		_, err = k.WithdrawAllRewards(ctx, &types.MsgWithdrawAllRewards{DelegatorAddress: creator.String()})
 		if err != nil {
 			return err
 		}
