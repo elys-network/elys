@@ -12,7 +12,6 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	perptypes "github.com/elys-network/elys/x/perpetual/types"
 
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
@@ -248,19 +247,6 @@ func (suite *MasterchefKeeperTestSuite) TestCollectDEXRevenue() {
 	suite.Require().Equal(collectedAmt, sdk.Coins{sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(3000))})
 	// It should be 1950=3000*0.65 usdc
 	suite.Require().Equal(rewardForLpsAmt, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdkmath.NewInt(1800))})
-}
-
-func (suite *MasterchefKeeperTestSuite) TestCollectPerpRevenue() {
-
-	addr := authtypes.NewModuleAddress(perptypes.ModuleName)
-	// Fill in perpetual revenue wallet
-	suite.MintTokenToAddress(addr, sdkmath.NewInt(3000), ptypes.BaseCurrency)
-
-	fees, err := suite.app.MasterchefKeeper.CollectPerpRevenue(suite.ctx, ptypes.BaseCurrency)
-	suite.Require().NoError(err)
-
-	// It should be 1950=3000*0.65 usdc
-	suite.Require().Equal(fees, sdk.DecCoins{sdk.NewDecCoin(ptypes.BaseCurrency, sdkmath.NewInt(1800))})
 }
 
 func (suite *MasterchefKeeperTestSuite) TestExternalRewardsDistribution() {

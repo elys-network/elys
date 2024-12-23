@@ -11,7 +11,6 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	perpetualmoduletypes "github.com/elys-network/elys/x/perpetual/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
@@ -168,11 +167,6 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	if err != nil {
 		return err
 	}
-	perpRevenue, err := k.CollectPerpRevenue(ctx, baseCurrency)
-	if err != nil {
-		return err
-	}
-	gasFeesForLpsDec = gasFeesForLpsDec.Add(perpRevenue...)
 	_, _, rewardsPerPool, err := k.CollectDEXRevenue(ctx)
 	if err != nil {
 		return err
@@ -426,76 +420,6 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 		}
 	}
 	return gasFeesForLpsDec, nil
-}
-
-// Collect all Perpetual module revenues to Perpetual revenue wallet,
-// transfer collected fees from perpetual moduleto the distribution module account
-// Coins are not in usdc, so convert them to usdc
-func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) (sdk.DecCoins, error) {
-	fundAddr := authtypes.NewModuleAddress(perpetualmoduletypes.ModuleName)
-	params := k.GetParams(ctx)
-	estakingParams := k.estakingKeeper.GetParams(ctx)
-	// Transfer revenue to a single wallet of Perpetual revenue wallet.
-	fees, err := k.ConvertGasFeesToUsdc(ctx, baseCurrency, fundAddr)
-	if err != nil {
-		return sdk.DecCoins{}, err
-	}
-	if fees.IsZero() {
-		return sdk.DecCoins{}, nil
-	}
-	// Calculate each portion of Gas fees collected - stakers, LPs
-	perpFeeCollectedDec := sdk.NewDecCoinsFromCoins(fees...)
-
-	perpFeesForLpsDec := perpFeeCollectedDec.MulDecTruncate(params.RewardPortionForLps)
-	perpFeesForStakersDec := perpFeeCollectedDec.MulDecTruncate(params.RewardPortionForStakers)
-	perpFeesForProtocolDec := perpFeeCollectedDec.Sub(perpFeesForLpsDec).Sub(perpFeesForStakersDec)
-
-	k.AddFeeInfo(ctx, perpFeesForLpsDec.AmountOf(baseCurrency), perpFeesForStakersDec.AmountOf(baseCurrency), perpFeesForProtocolDec.AmountOf(baseCurrency), true)
-
-	lpsGasFeeCoins, _ := perpFeesForLpsDec.TruncateDecimal()
-	protocolGasFeeCoins, _ := perpFeesForProtocolDec.TruncateDecimal()
-	stakerCoins, _ := perpFeesForStakersDec.TruncateDecimal()
-
-	// Send coins from fund address to masterchef
-	if lpsGasFeeCoins.IsAllPositive() {
-		err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, fundAddr, types.ModuleName, lpsGasFeeCoins)
-		if err != nil {
-			return sdk.DecCoins{}, err
-		}
-	}
-
-	// Send coins to fee collector name
-	if perpFeesForStakersDec.IsAllPositive() {
-		// The distribution module picks from ccvconsumertypes.ConsumerRedistributeName
-		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerRedistributeName, stakerCoins)
-		if err != nil {
-			return sdk.DecCoins{}, err
-		}
-	}
-
-	// Send coins to protocol revenue address
-	if protocolGasFeeCoins.IsAllPositive() {
-		protocolRevenueAddress, err := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
-		if err != nil {
-			ctx.Logger().Error("Invalid protocol revenue address", "error", err)
-			return perpFeesForLpsDec, err
-		}
-
-		providerPortion := ammkeeper.PortionCoins(protocolGasFeeCoins, estakingParams.ProviderStakingRewardsPortion)
-		consumerPortion := protocolGasFeeCoins.Sub(providerPortion...)
-
-		// This will be sent to provider
-		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerToSendToProviderName, providerPortion)
-		if err != nil {
-			return sdk.DecCoins{}, err
-		}
-
-		err = k.bankKeeper.SendCoins(ctx, fundAddr, protocolRevenueAddress, consumerPortion)
-		if err != nil {
-			return sdk.DecCoins{}, err
-		}
-	}
-	return perpFeesForLpsDec, nil
 }
 
 // Collect all DEX revenues to DEX revenue wallet,
