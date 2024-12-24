@@ -2,6 +2,7 @@ package types
 
 import (
 	"cosmossdk.io/math"
+	"errors"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -35,7 +36,7 @@ func DefaultParams() Params {
 // Validate validates the set of params
 func (p Params) Validate() error {
 	if p.PoolCreationFee.IsNil() {
-		return fmt.Errorf("pool creation fee must not be empty")
+		return errors.New("pool creation fee must not be empty")
 	}
 	if p.PoolCreationFee.IsNegative() {
 		return fmt.Errorf("pool creation fee must be positive")
@@ -48,38 +49,38 @@ func (p Params) Validate() error {
 	}
 
 	if p.WeightBreakingFeeExponent.IsNil() {
-		return fmt.Errorf("weightBreakingFeeExponent must not be empty")
+		return errors.New("weightBreakingFeeExponent must not be empty")
 	}
 	if p.WeightBreakingFeeExponent.IsNegative() {
-		return fmt.Errorf("weightBreakingFeeExponent must be positive")
+		return errors.New("weightBreakingFeeExponent must be positive")
 	}
 
 	if p.WeightBreakingFeeMultiplier.IsNil() {
-		return fmt.Errorf("weightBreakingFeeMultiplier must not be empty")
+		return errors.New("weightBreakingFeeMultiplier must not be empty")
 	}
 	if p.WeightBreakingFeeMultiplier.IsNegative() {
-		return fmt.Errorf("weightBreakingFeeMultiplier must be positive")
+		return errors.New("weightBreakingFeeMultiplier must be positive")
 	}
 
 	if p.WeightBreakingFeePortion.IsNil() {
-		return fmt.Errorf("weightBreakingFeePortion must not be empty")
+		return errors.New("weightBreakingFeePortion must not be empty")
 	}
 	if p.WeightBreakingFeePortion.IsNegative() {
-		return fmt.Errorf("weightBreakingFeePortion must be positive")
+		return errors.New("weightBreakingFeePortion must be positive")
 	}
 
 	if p.WeightRecoveryFeePortion.IsNil() {
-		return fmt.Errorf("weightRecoveryFeePortion must not be empty")
+		return errors.New("weightRecoveryFeePortion must not be empty")
 	}
 	if p.WeightRecoveryFeePortion.IsNegative() {
-		return fmt.Errorf("weightRecoveryFeePortion must be positive")
+		return errors.New("weightRecoveryFeePortion must be positive")
 	}
 
 	if p.ThresholdWeightDifference.IsNil() {
-		return fmt.Errorf("thresholdWeightDifference must not be empty")
+		return errors.New("thresholdWeightDifference must not be empty")
 	}
 	if p.ThresholdWeightDifference.IsNegative() {
-		return fmt.Errorf("thresholdWeightDifference must be positive")
+		return errors.New("thresholdWeightDifference must be positive")
 	}
 	return nil
 }

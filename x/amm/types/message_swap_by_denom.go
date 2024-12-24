@@ -2,7 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"fmt"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -41,7 +41,7 @@ func (msg *MsgSwapByDenom) ValidateBasic() error {
 		return err
 	}
 	if msg.DenomIn == msg.DenomOut {
-		return fmt.Errorf("demom in cannot be same as denom out")
+		return errors.New("demom in cannot be same as denom out")
 	}
 	return nil
 }

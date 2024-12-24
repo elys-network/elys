@@ -104,7 +104,7 @@ func (p *Pool) SetInitialPoolAssets(PoolAssets []PoolAsset) error {
 	// TODO: Refactor this into PoolAsset.validate()
 	for _, asset := range PoolAssets {
 		if asset.Token.Amount.LTE(sdkmath.ZeroInt()) {
-			return fmt.Errorf("can't add the zero or negative balance of token")
+			return errors.New("can't add the zero or negative balance of token")
 		}
 
 		err := asset.validateWeight()
@@ -113,7 +113,7 @@ func (p *Pool) SetInitialPoolAssets(PoolAssets []PoolAsset) error {
 		}
 
 		if exists[asset.Token.Denom] {
-			return fmt.Errorf("same PoolAsset already exists")
+			return errors.New("same PoolAsset already exists")
 		}
 		exists[asset.Token.Denom] = true
 
@@ -172,7 +172,7 @@ func (p *Pool) UpdatePoolAssetBalance(coin sdk.Coin) error {
 	}
 
 	if coin.Amount.LTE(sdkmath.ZeroInt()) {
-		return fmt.Errorf("can't set the pool's balance of a token to be zero or negative")
+		return errors.New("can't set the pool's balance of a token to be zero or negative")
 	}
 
 	// Update the supply of the asset
@@ -215,7 +215,7 @@ func (p Pool) GetTotalPoolLiquidity() sdk.Coins {
 // Returns a pool asset, and its index. If err != nil, then the index will be valid.
 func (p Pool) GetPoolAssetAndIndex(denom string) (int, PoolAsset, error) {
 	if denom == "" {
-		return -1, PoolAsset{}, fmt.Errorf("you tried to find the PoolAsset with empty denom")
+		return -1, PoolAsset{}, errors.New("you tried to find the PoolAsset with empty denom")
 	}
 
 	if len(p.PoolAssets) == 0 {
@@ -362,5 +362,5 @@ func (pool Pool) GetAssetExternalLiquidityRatio(asset string) (sdkmath.LegacyDec
 			return poolAsset.ExternalLiquidityRatio, nil
 		}
 	}
-	return sdkmath.LegacyZeroDec(), fmt.Errorf("asset not found in the pool")
+	return sdkmath.LegacyZeroDec(), errors.New("asset not found in the pool")
 }
