@@ -60,5 +60,88 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 			},
 		},
+		Tx: &autocliv1.ServiceCommandDescriptor{
+			Service:              commitment.Msg_ServiceDesc.ServiceName,
+			EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod:      "CommitClaimedRewards",
+					Use:            "commit-claimed-rewards [amount] [denom]",
+					Short:          "Broadcast message commit-claimed-rewards",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom"}},
+				},
+				{
+					RpcMethod:      "UncommitTokens",
+					Use:            "uncommit-tokens [amount] [denom]",
+					Short:          "Broadcast message uncommit-tokens",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom"}},
+				},
+				{
+					RpcMethod:      "Vest",
+					Use:            "vest [amount] [denom]",
+					Short:          "Broadcast message vest",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom"}},
+				},
+				{
+					RpcMethod: "VestNow",
+					Use:       "vest-now [amount] [denom]",
+					Short:     "Broadcast message vest-now",
+					// Example:        `elysd tx amm swap-by-denom 0 1000uatom uusdc --from=bob --yes --gas=1000000`,
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom"}},
+				},
+				{
+					RpcMethod:      "VestLiquid",
+					Use:            "vest-liquid [amount] [denom]",
+					Short:          "Broadcast message vest-liquid",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom"}},
+				},
+				{
+					RpcMethod:      "CancelVest",
+					Use:            "cancel-vest [amount] [denom]",
+					Short:          "Broadcast message cancel_vest",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom"}},
+				},
+				{
+					RpcMethod: "ClaimVesting",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "UpdateVestingInfo",
+					Skip:      true, // authority gated
+				},
+				{
+					RpcMethod: "UpdateEnableVestNow",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "UpdateAirdropParams",
+					Skip:      true,
+				},
+				{
+					RpcMethod:      "Stake",
+					Use:            "stake [amount] [asset] [validator-address]",
+					Short:          "Stake Elys tokens",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "asset"}, {ProtoField: "validator_address"}},
+				},
+				{
+					RpcMethod:      "Unstake",
+					Use:            "unstake [amount] [asset] [validator-address]",
+					Short:          "Unstake Elys tokens",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "asset"}, {ProtoField: "validator_address"}},
+				},
+				{
+					RpcMethod:      "ClaimAirdrop",
+					Use:            "claim-airdrop [claim-address]",
+					Short:          "Broadcast message claim_airdrop",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "claim_address"}},
+				},
+				{
+					RpcMethod:      "ClaimKol",
+					Use:            "claim-kol [claim-address] [refund]",
+					Short:          "Broadcast message claim_kol",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "claim_address"}, {ProtoField: "refund"}},
+				},
+			},
+		},
 	}
 }
