@@ -103,5 +103,65 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 			},
 		},
+		Tx: &autocliv1.ServiceCommandDescriptor{
+			Service:              amm.Msg_ServiceDesc.ServiceName,
+			EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod:      "CreatePool",
+					Use:            "create-pool [pool_params] [pool_assets]...",
+					Short:          "create a new pool and provide the liquidity to it",
+					Example:        `elysd tx amm create-pool '{"swap_fee": "0","use_oracle": true, "fee_denom": "uusdc"}' '{"token": {"denom": "uusdc", "amount": "10000"}, "weight": "100", "external_liquidity_ratio": "0"}' --from=bob --yes --gas=1000000`,
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_params"}, {ProtoField: "pool_assets", Varargs: true}},
+				},
+				{
+					RpcMethod:      "JoinPool",
+					Use:            "join-pool [pool-id] [share-amount-out] [max-amounts-in]",
+					Short:          "join a new pool and provide the liquidity to it",
+					Example:        `elysd tx amm join-pool 1 1000000000000000 1000000utom 1000000uusdc ... --from=bob --yes --gas=1000000`,
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "share_amount_out"}, {ProtoField: "max_amounts_in", Varargs: true}},
+				},
+				{
+					RpcMethod:      "ExitPool",
+					Use:            "exit-pool [pool-id] [share-amount-in] [min-amounts-out]",
+					Short:          "exit a pool and withdraw the liquidity",
+					Example:        `elysd tx amm exit-pool 0 200000000000000000 1000uatom 1000uusdc ... --from=bob --yes --gas=1000000`,
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "share_amount_in"}, {ProtoField: "min_amounts_out", Varargs: true}},
+				},
+				{
+					RpcMethod:      "SwapExactAmountIn",
+					Use:            "swap-exact-amount-in [recipient] [token-in] [token-out-min-amount] [routes]",
+					Short:          "Swap an exact amount of tokens for a minimum of another token, similar to swapping a token on the trade screen GUI.",
+					Example:        `elysd tx amm swap-exact-amount-in elys1l0qs5yedfymc0z3n3r7x95h2dadmsvvgerer6k 1000uusdc 10000 '{"pool_id": 1, "token_out_denom": "uatom"}' --from=bob --yes --gas=1000000`,
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "recipient"}, {ProtoField: "token_in"}, {ProtoField: "token_out_min_amount"}, {ProtoField: "routes", Varargs: true}},
+				},
+				{
+					RpcMethod:      "SwapExactAmountOut",
+					Use:            "swap-exact-amount-out [recipient] [token_out] [token_in_max_amount] [routes]",
+					Short:          "Swap a maximum amount of tokens for an exact amount of another token, similar to swapping a token on the trade screen GUI.",
+					Example:        `elysd tx amm swap-exact-amount-out elys1mmqs5ys4fymc0z3ngr7xdeh2dadmsvvgerer6k 1000uatom 10000 '{"pool_id": 1, "token_in_denom": "uusdc"}' --from=bob --yes --gas=1000000`,
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "recipient"}, {ProtoField: "token_out"}, {ProtoField: "token_in_max_amount"}, {ProtoField: "routes", Varargs: true}},
+				},
+				{
+					RpcMethod:      "SwapByDenom",
+					Use:            "swap-by-denom [amount] [denom-in] [denom-out]",
+					Short:          "Swap an exact amount of tokens for a minimum of another token or a maximum amount of tokens for an exact amount on another token, similar to swapping a token on the trade screen GUI.",
+					Example:        `elysd tx amm swap-by-denom 0 1000uatom uusdc --from=bob --yes --gas=1000000`,
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom_in"}, {ProtoField: "denom_out"}},
+				},
+				{
+					RpcMethod: "FeedMultipleExternalLiquidity",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "UpdatePoolParams",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "UpdateParams",
+					Skip:      true,
+				},
+			},
+		},
 	}
 }
