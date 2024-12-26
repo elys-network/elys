@@ -64,5 +64,54 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 			},
 		},
+		Tx: &autocliv1.ServiceCommandDescriptor{
+			Service:              oracle.Msg_ServiceDesc.ServiceName,
+			EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod:      "FeedPrice",
+					Use:            "feed-price [feed_price]",
+					Short:          "Feed a new price",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "feed_price"}},
+				},
+				{
+					RpcMethod:      "SetPriceFeeder",
+					Use:            "set-price-feeder [isActive]",
+					Short:          "Set a price feeder",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "is_active"}},
+				},
+				{
+					RpcMethod:      "CreateAssetInfo",
+					Use:            "create-asset-info [denom] [display] [band-ticker] [elys-ticker] [decimal]",
+					Short:          "create a new asset info",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denom"}, {ProtoField: "display"}, {ProtoField: "band_ticker"}, {ProtoField: "elys_ticker"}, {ProtoField: "decimal"}},
+				},
+				{
+					RpcMethod: "DeletePriceFeeder",
+					Use:       "delete-price-feeder",
+					Short:     "Delete a priceFeeder",
+				},
+				{
+					RpcMethod: "FeedMultiplePrices",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "RemoveAssetInfo",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "AddPriceFeeders",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "RemovePriceFeeders",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "UpdateParams",
+					Skip:      true,
+				},
+			},
+		},
 	}
 }
