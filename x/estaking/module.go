@@ -6,19 +6,19 @@ import (
 	"fmt"
 
 	"cosmossdk.io/core/appmodule"
+	"github.com/elys-network/elys/x/estaking/client/cli"
 	"github.com/elys-network/elys/x/estaking/migrations"
+	"github.com/spf13/cobra"
 
 	// this line is used by starport scaffolding # 1
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/elys-network/elys/x/estaking/client/cli"
 	"github.com/elys-network/elys/x/estaking/keeper"
 	"github.com/elys-network/elys/x/estaking/types"
 )

@@ -31,5 +31,31 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 			},
 		},
+		Tx: &autocliv1.ServiceCommandDescriptor{
+			Service:              estaking.Msg_ServiceDesc.ServiceName,
+			EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod: "WithdrawReward",
+					Skip:      true,
+				},
+				{
+					RpcMethod:      "WithdrawAllRewards",
+					Use:            "withdraw-all-rewards [delegator-address]",
+					Short:          "Withdraw all rewards for delegations and Eden/EdenB commit",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "delegator_address"}},
+				},
+				{
+					RpcMethod:      "WithdrawElysStakingRewards",
+					Use:            "withdraw-elys-staking-rewards [delegator-address]",
+					Short:          "Withdraw rewards for delegations",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "delegator_address"}},
+				},
+				{
+					RpcMethod: "UpdateParams",
+					Skip:      true, // authority gated
+				},
+			},
+		},
 	}
 }
