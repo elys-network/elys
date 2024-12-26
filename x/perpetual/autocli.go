@@ -83,5 +83,62 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 			},
 		},
+		Tx: &autocliv1.ServiceCommandDescriptor{
+			Service:              perpetual.Msg_ServiceDesc.ServiceName,
+			EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod: "Open",
+					Use:       "open [position] [leverage] [pool-id] [trading-asset] [collateral]",
+					Short:     "Open perpetual position",
+					Example: `Infinte profitability:
+elysd tx perpetual open long 5 1 uatom 100000000uusdc --from=bob --yes --gas=1000000
+Finite profitability:
+elysd tx perpetual open short 5 1 uatom 100000000uusdc --take-profit 100 --stop-loss 10 --from=bob --yes --gas=1000000`,
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "position"}, {ProtoField: "leverage"}, {ProtoField: "pool_id"}, {ProtoField: "trading_asset"}, {ProtoField: "collateral"}},
+				},
+				{
+					RpcMethod:      "Close",
+					Use:            "close [mtp-id] [amount] [flags]",
+					Short:          "Close perpetual position",
+					Example:        `elysd tx perpetual close 1 10000000 --from=bob --yes --gas=1000000`,
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}, {ProtoField: "amount"}},
+				},
+				{
+					RpcMethod:      "Whitelist",
+					Use:            "whitelist [address]",
+					Short:          "Whitelist the provided address",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "whitelisted_address"}},
+				},
+				{
+					RpcMethod:      "Dewhitelist",
+					Use:            "dewhitelist [address]",
+					Short:          "Dewhitelist the provided address",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "whitelisted_address"}},
+				},
+				{
+					RpcMethod:      "UpdateStopLoss",
+					Use:            "update-stop-loss [price] [id]",
+					Short:          "Broadcast message update-stop-loss",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "price"}, {ProtoField: "id"}},
+				},
+				{
+					RpcMethod:      "ClosePositions",
+					Use:            "close-positions [liquidate] [stoploss] [take-profit]",
+					Short:          "Broadcast message close-positions",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "liquidate"}, {ProtoField: "stop_loss"}, {ProtoField: "take_profit"}},
+				},
+				{
+					RpcMethod:      "UpdateTakeProfitPrice",
+					Use:            "update-take-profit-price [price] [id]",
+					Short:          "Broadcast message update-take-profit-price",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "price"}, {ProtoField: "id"}},
+				},
+				{
+					RpcMethod: "UpdateParams",
+					Skip:      true, // authority gated
+				},
+			},
+		},
 	}
 }
