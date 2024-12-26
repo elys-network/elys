@@ -100,5 +100,39 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 			},
 		},
+		Tx: &autocliv1.ServiceCommandDescriptor{
+			Service:              masterchef.Msg_ServiceDesc.ServiceName,
+			EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod: "AddExternalRewardDenom",
+					Skip:      true, // authority gated
+				},
+				{
+					RpcMethod: "UpdateParams",
+					Skip:      true, // authority gated
+				},
+				{
+					RpcMethod: "UpdatePoolMultipliers",
+					Skip:      true, // authority gated
+				},
+				{
+					RpcMethod: "TogglePoolEdenRewards",
+					Skip:      true, // authority gated
+				},
+				{
+					RpcMethod:      "AddExternalIncentive",
+					Use:            "add-external-incentive [reward-denom] [pool-id] [from-block] [to-block] [amount-per-block]",
+					Short:          "Broadcast message add-external-incentive",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "reward_denom"}, {ProtoField: "pool_id"}, {ProtoField: "from_block"}, {ProtoField: "to_block"}, {ProtoField: "amount_per_block"}},
+				},
+				{
+					RpcMethod:      "ClaimRewards",
+					Use:            "claim-rewards [pool-ids]",
+					Short:          "claim rewards including external incentives",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_ids", Varargs: true}},
+				},
+			},
+		},
 	}
 }
