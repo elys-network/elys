@@ -101,5 +101,17 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 			},
 		},
+		Tx: &autocliv1.ServiceCommandDescriptor{
+			Service:              tier.Msg_ServiceDesc.ServiceName,
+			EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod:      "SetPortfolio",
+					Use:            "set-portfolio [user]",
+					Short:          "Broadcast message set-portfolio",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "user"}},
+				},
+			},
+		},
 	}
 }
