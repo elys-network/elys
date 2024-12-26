@@ -126,7 +126,7 @@ elysd tx perpetual open short 5 1 uatom 100000000uusdc --take-profit 100 --stop-
 					RpcMethod:      "ClosePositions",
 					Use:            "close-positions [liquidate] [stoploss] [take-profit]",
 					Short:          "Broadcast message close-positions",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "liquidate"}, {ProtoField: "stop_loss"}, {ProtoField: "take_profit"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "liquidate", Varargs: true}, {ProtoField: "stop_loss", Varargs: true}, {ProtoField: "take_profit", Varargs: true}},
 				},
 				{
 					RpcMethod:      "UpdateTakeProfitPrice",
