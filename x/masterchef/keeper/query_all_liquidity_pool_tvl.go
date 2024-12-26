@@ -19,15 +19,18 @@ func (k Keeper) AllLiquidityPoolTVL(goCtx context.Context, req *types.QueryAllLi
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	allPools := k.amm.GetAllPool(ctx)
-	totalTVL := math.LegacyZeroDec()
+	poolsTVL := math.LegacyZeroDec()
+	totalTVL := math.ZeroInt()
 
 	for _, pool := range allPools {
 		tvl, err := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
 			return nil, err
 		}
-		totalTVL = totalTVL.Add(tvl)
+
+		poolsTVL = poolsTVL.Add(tvl)
 	}
+	totalTVL = totalTVL.Add(poolsTVL.TruncateInt())
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
@@ -35,7 +38,11 @@ func (k Keeper) AllLiquidityPoolTVL(goCtx context.Context, req *types.QueryAllLi
 	}
 
 	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, entry.Denom)
-	totalTVL = totalTVL.Add(stableStakeTVL)
+	totalTVL = totalTVL.Add(stableStakeTVL.TruncateInt())
 
-	return &types.QueryAllLiquidityPoolTVLResponse{Total: totalTVL.TruncateInt()}, nil
+	return &types.QueryAllLiquidityPoolTVLResponse{
+		Total:       totalTVL,
+		Pools:       poolsTVL.TruncateInt(),
+		UsdcStaking: stableStakeTVL.TruncateInt(),
+	}, nil
 }

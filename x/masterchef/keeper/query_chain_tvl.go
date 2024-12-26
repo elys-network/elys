@@ -21,15 +21,17 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	allPools := k.amm.GetAllPool(ctx)
-	totalTVL := math.LegacyZeroDec()
+	poolsTVL := math.LegacyZeroDec()
+	totalTVL := math.ZeroInt()
 
 	for _, pool := range allPools {
 		tvl, err := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
 			return nil, err
 		}
-		totalTVL = totalTVL.Add(tvl)
+		poolsTVL = poolsTVL.Add(tvl)
 	}
+	totalTVL = totalTVL.Add(poolsTVL.TruncateInt())
 
 	baseCurrencyEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
@@ -37,18 +39,24 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 	}
 
 	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrencyEntry.Denom)
-	totalTVL = totalTVL.Add(stableStakeTVL)
+	totalTVL = totalTVL.Add(stableStakeTVL.TruncateInt())
 
 	elysPrice := k.amm.GetTokenPrice(ctx, ptypes.Elys, baseCurrencyEntry.Denom)
 
 	stakedElys := k.bankKeeper.GetBalance(ctx, authtypes.NewModuleAddress(stakingtypes.BondedPoolName), ptypes.Elys).Amount
 	stakedElysValue := elysPrice.MulInt(stakedElys)
-	totalTVL = totalTVL.Add(stakedElysValue)
+	totalTVL = totalTVL.Add(stakedElysValue.TruncateInt())
 
 	commitmentParams := k.commitmentKeeper.GetParams(ctx)
 	stakedEden := commitmentParams.TotalCommitted.AmountOf(ptypes.Eden)
 	stakedEdenValue := elysPrice.MulInt(stakedEden)
-	totalTVL = totalTVL.Add(stakedEdenValue)
+	totalTVL = totalTVL.Add(stakedEdenValue.TruncateInt())
 
-	return &types.QueryChainTVLResponse{Total: totalTVL.TruncateInt()}, nil
+	return &types.QueryChainTVLResponse{
+		Total:       totalTVL,
+		Pools:       poolsTVL.TruncateInt(),
+		UsdcStaking: stableStakeTVL.TruncateInt(),
+		StakedElys:  stakedElysValue.TruncateInt(),
+		StakedEden:  stakedEdenValue.TruncateInt(),
+	}, nil
 }
