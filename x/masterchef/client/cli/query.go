@@ -20,6 +20,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdQueryParams())
+	cmd.AddCommand(CmdChainTVL())
+	cmd.AddCommand(CmdAllLiquidityPoolTVL())
 	cmd.AddCommand(CmdQueryExternalIncentive())
 	cmd.AddCommand(CmdQueryPoolInfo())
 	cmd.AddCommand(CmdQueryPoolRewardInfo())

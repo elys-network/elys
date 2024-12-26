@@ -81,7 +81,40 @@ service Query {
   rpc PoolRewards(QueryPoolRewardsRequest) returns (QueryPoolRewardsResponse) {
     option (google.api.http).get = "/elys-network/elys/masterchef/pool_rewards";
   }
+
+  rpc AllLiquidityPoolTVL(QueryAllLiquidityPoolTVLRequest)
+      returns (QueryAllLiquidityPoolTVLResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/masterchef/all_liquidity_pool_tvl";
+  }
+
+  rpc ChainTVL(QueryChainTVLRequest) returns (QueryChainTVLResponse) {
+    option (google.api.http).get = "/elys-network/elys/masterchef/chain_tvl";
+  }
 }
+
+message QueryAllLiquidityPoolTVLRequest {}
+
+message QueryAllLiquidityPoolTVLResponse {
+
+  string total = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryChainTVLRequest {}
+
+message QueryChainTVLResponse {
+
+  string total = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 

@@ -35,6 +35,54 @@ func CmdQueryParams() *cobra.Command {
 	return cmd
 }
 
+func CmdChainTVL() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "chain_tvl",
+		Short: "show chain tvl",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.ChainTVL(context.Background(), &types.QueryChainTVLRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdAllLiquidityPoolTVL() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all_liquidity_pool_tvl",
+		Short: "show all pools tvl",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.AllLiquidityPoolTVL(context.Background(), &types.QueryAllLiquidityPoolTVLRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
 func CmdQueryStableStakeApr() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "stable-stake-apr",
