@@ -36,7 +36,11 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 			continue
 		}
 
-		err = k.CheckAndLiquidateUnhealthyPosition(ctx, &position, pool, ammPool, baseCurrency.Denom)
+		cachedCtx, write := ctx.CacheContext()
+		err = k.CheckAndLiquidateUnhealthyPosition(cachedCtx, &position, pool, ammPool, baseCurrency.Denom)
+		if err == nil {
+			write()
+		}
 		if err != nil {
 			// Add log about error or not liquidated
 			liqLog = append(liqLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
@@ -57,7 +61,11 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 			continue
 		}
 
-		err = k.CheckAndCloseAtStopLoss(ctx, &position, pool, baseCurrency.Denom)
+		cachedCtx, write := ctx.CacheContext()
+		err = k.CheckAndCloseAtStopLoss(cachedCtx, &position, pool, baseCurrency.Denom)
+		if err == nil {
+			write()
+		}
 		if err != nil {
 			// Add log about error or not closed
 			closeLog = append(closeLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))
@@ -78,7 +86,11 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 			continue
 		}
 
-		err = k.CheckAndCloseAtTakeProfit(ctx, &position, pool, baseCurrency.Denom)
+		cachedCtx, write := ctx.CacheContext()
+		err = k.CheckAndCloseAtTakeProfit(cachedCtx, &position, pool, baseCurrency.Denom)
+		if err == nil {
+			write()
+		}
 		if err != nil {
 			// Add log about error or not closed
 			takeProfitLog = append(takeProfitLog, fmt.Sprintf("Position: Address:%s Id:%d cannot be liquidated due to err: %s", position.Address, position.Id, err.Error()))

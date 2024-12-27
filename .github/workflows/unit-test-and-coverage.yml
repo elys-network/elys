@@ -1,4 +1,4 @@
-name: Run tests and upload coverage
+name: Run unit tests and upload coverage
 
 on:
   pull_request:

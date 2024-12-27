@@ -27,16 +27,32 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 		switch spotOrder.OrderType {
 		case types.SpotOrderType_STOPLOSS:
 			// execute the stop loss order
-			_, err = k.ExecuteStopLossOrder(ctx, spotOrder)
+			cachedCtx, write := ctx.CacheContext()
+			_, err = k.ExecuteStopLossOrder(cachedCtx, spotOrder)
+			if err == nil {
+				write()
+			}
 		case types.SpotOrderType_LIMITSELL:
 			// execute the limit sell order
-			_, err = k.ExecuteLimitSellOrder(ctx, spotOrder)
+			cachedCtx, write := ctx.CacheContext()
+			_, err = k.ExecuteLimitSellOrder(cachedCtx, spotOrder)
+			if err == nil {
+				write()
+			}
 		case types.SpotOrderType_LIMITBUY:
 			// execute the limit buy order
-			_, err = k.ExecuteLimitBuyOrder(ctx, spotOrder)
+			cachedCtx, write := ctx.CacheContext()
+			_, err = k.ExecuteLimitBuyOrder(cachedCtx, spotOrder)
+			if err == nil {
+				write()
+			}
 		case types.SpotOrderType_MARKETBUY:
 			// execute the market buy order
-			_, err = k.ExecuteMarketBuyOrder(ctx, spotOrder)
+			cachedCtx, write := ctx.CacheContext()
+			_, err = k.ExecuteMarketBuyOrder(cachedCtx, spotOrder)
+			if err == nil {
+				write()
+			}
 		}
 
 		// log the error if any
@@ -61,7 +77,11 @@ func (k msgServer) ExecuteOrders(goCtx context.Context, msg *types.MsgExecuteOrd
 		switch perpetualOrder.PerpetualOrderType {
 		case types.PerpetualOrderType_LIMITOPEN:
 			// execute the limit open order
-			err = k.ExecuteLimitOpenOrder(ctx, perpetualOrder)
+			cachedCtx, write := ctx.CacheContext()
+			err = k.ExecuteLimitOpenOrder(cachedCtx, perpetualOrder)
+			if err == nil {
+				write()
+			}
 			// Disable for v1
 			// case types.PerpetualOrderType_LIMITCLOSE:
 			// 	// execute the limit close order

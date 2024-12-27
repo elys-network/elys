@@ -1,4 +1,4 @@
-name: Test Software Upgrade
+name: Test Software Upgrade and Create New Snapshot
 
 on:
   pull_request:
@@ -19,6 +19,18 @@ jobs:
             echo "R2_ACCESS_KEY is not set."
             exit 1
           fi
+          if [ -z "${{ secrets.R2_SECRET_KEY }}" ]; then
+            echo "R2_SECRET_KEY is not set."
+            exit 1
+          fi
+          if [ -z "${{ secrets.R2_ENDPOINT }}" ]; then
+            echo "R2_ENDPOINT is not set."
+            exit 1
+          fi
+          if [ -z "${{ secrets.R2_BUCKET_NAME }}" ]; then
+            echo "R2_BUCKET_NAME is not set."
+            exit 1
+          fi
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,8 +47,15 @@ jobs:
         run: |
           git fetch --tags
           LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            LATEST_TAG_KEY=${LATEST_TAG}-mainnet
+          else
+            LATEST_TAG_KEY=${LATEST_TAG}-testnet
+          fi
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "LATEST_TAG_KEY=$LATEST_TAG_KEY" >> $GITHUB_ENV
           echo "Latest tag: $LATEST_TAG"
+          echo "Latest tag key: $LATEST_TAG_KEY"
 
       - name: Retrieve latest binary
         run: |
@@ -81,7 +100,7 @@ jobs:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
-          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG }}
+          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
           lookup-only: true
           aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
@@ -93,8 +112,13 @@ jobs:
 
       - name: Retrieve info.json and set snapshot path
         run: |
-          DOWNLOAD_URL=https://snapshots.elys.network/info.json
-          curl -L $DOWNLOAD_URL -o /tmp/info.json
+          # set info.json download url, use mainnet info.json for main branch otherwise use testnet info.json
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            INFO_DOWNLOAD_URL=https://snapshots.elys.network/info-mainnet.json
+          else
+            INFO_DOWNLOAD_URL=https://snapshots.elys.network/info-testnet.json
+          fi
+          curl -L $INFO_DOWNLOAD_URL -o /tmp/info.json
           echo "Info.json downloaded to check snapshot version."
 
           # retrieve blockHeight field value from info.json
@@ -102,7 +126,11 @@ jobs:
           echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
           echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
 
-          APPLIED_URL=https://api.testnet.elys.network/cosmos/upgrade/v1beta1/applied_plan/${LATEST_TAG}
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            APPLIED_URL=https://api.elys.network/cosmos/upgrade/v1beta1/applied_plan/${LATEST_TAG}
+          else
+            APPLIED_URL=https://api.testnet.elys.network/cosmos/upgrade/v1beta1/applied_plan/${LATEST_TAG}
+          fi
           curl -L $APPLIED_URL -o /tmp/applied.json
           echo "Applied.json downloaded to check snapshot version."
 
@@ -116,66 +144,25 @@ jobs:
             exit 1
           fi
 
-          # set snapshot download url
-          SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/snapshot.tar.lz4
+          # set snapshot download url, use mainnet snapshot for main branch otherwise use testnet snapshot
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/snapshot-mainnet.tar.lz4
+            # set snapshot file path
+            SNAPSHOT_FILE_PATH=/tmp/snapshot-mainnet.tar.lz4
+          else
+            SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/snapshot-testnet.tar.lz4
+            # set snapshot file path
+            SNAPSHOT_FILE_PATH=/tmp/snapshot-testnet.tar.lz4
+          fi
           echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
 
-          # set snapshot file path
-          SNAPSHOT_FILE_PATH=/tmp/snapshot.tar.lz4
           echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_ENV
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
-
-      - name: Check snapshot from cache exists
-        uses: elys-network/actions-cache-s3/restore@eba1d2b54699fda7ee03d826049bc67dcf514887
-        id: cache-snapshot-exists
-        with:
-          path: |
-            ${{ env.SNAPSHOT_FILE_PATH }}
-          key: ${{ runner.os }}-snapshot-${{ env.LATEST_TAG }}
-          lookup-only: true
-          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
-          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
-          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: auto
-          aws-s3-bucket-endpoint: false
-          aws-s3-force-path-style: true
         if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
       - name: Download snapshot
         run: |
           curl -L $SNAPSHOT_DOWNLOAD_URL -o $SNAPSHOT_FILE_PATH
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true' && steps.cache-snapshot-exists.outputs.cache-hit != 'true'
-
-      - name: Save snapshot to cache
-        uses: elys-network/actions-cache-s3/save@eba1d2b54699fda7ee03d826049bc67dcf514887
-        with:
-          path: |
-            ${{ env.SNAPSHOT_FILE_PATH }}
-          key: ${{ runner.os }}-snapshot-${{ env.LATEST_TAG }}
-          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
-          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
-          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: auto
-          aws-s3-bucket-endpoint: false
-          aws-s3-force-path-style: true
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true' && steps.cache-snapshot-exists.outputs.cache-hit != 'true'
-
-      - name: Restore snapshot from cache
-        uses: elys-network/actions-cache-s3/restore@eba1d2b54699fda7ee03d826049bc67dcf514887
-        with:
-          path: |
-            ${{ env.SNAPSHOT_FILE_PATH }}
-          key: ${{ runner.os }}-snapshot-${{ env.LATEST_TAG }}
-          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
-          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
-          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
-          aws-region: auto
-          aws-s3-bucket-endpoint: false
-          aws-s3-force-path-style: true
-        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true' && steps.cache-snapshot-exists.outputs.cache-hit == 'true'
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
 
       - name: Chain snapshot and export
         run: |
@@ -224,7 +211,7 @@ jobs:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
-          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG }}
+          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
           aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
@@ -240,7 +227,7 @@ jobs:
           path: |
             /home/runner/.elys
             /home/runner/.elys2
-          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG }}
+          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
           aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
           aws-endpoint: ${{ secrets.R2_ENDPOINT }}
