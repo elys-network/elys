@@ -36,20 +36,20 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
-					RpcMethod: "WithdrawReward",
-					Skip:      true,
+					RpcMethod:      "WithdrawReward",
+					Use:            "withdraw-rewards [validator-address]",
+					Short:          "Withdraw rewards",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "validator_address"}},
 				},
 				{
-					RpcMethod:      "WithdrawAllRewards",
-					Use:            "withdraw-all-rewards [delegator-address]",
-					Short:          "Withdraw all rewards for delegations and Eden/EdenB commit",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "delegator_address"}},
+					RpcMethod: "WithdrawAllRewards",
+					Use:       "withdraw-all-rewards",
+					Short:     "Withdraw all rewards for delegations and Eden/EdenB commit",
 				},
 				{
-					RpcMethod:      "WithdrawElysStakingRewards",
-					Use:            "withdraw-elys-staking-rewards [delegator-address]",
-					Short:          "Withdraw rewards for delegations",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "delegator_address"}},
+					RpcMethod: "WithdrawElysStakingRewards",
+					Use:       "withdraw-elys-staking-rewards",
+					Short:     "Withdraw rewards for delegations",
 				},
 				{
 					RpcMethod: "UpdateParams",

@@ -42,7 +42,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "Price",
-					Use:            "show-price [asset]",
+					Use:            "show-price [asset] [source] [timestamp]",
 					Short:          "shows a price",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "asset"}, {ProtoField: "source"}, {ProtoField: "timestamp"}},
 				},
@@ -53,7 +53,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "PriceFeeder",
-					Use:            "show-price-feeder [index]",
+					Use:            "show-price-feeder [feeder]",
 					Short:          "shows a priceFeeder",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "feeder"}},
 				},
@@ -92,24 +92,26 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:     "Delete a priceFeeder",
 				},
 				{
-					RpcMethod: "FeedMultiplePrices",
-					Skip:      true,
+					RpcMethod:      "FeedMultiplePrices",
+					Use:            "feed-multiple-price [prices]",
+					Short:          "Feed multiple prices",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "feed_prices"}},
 				},
 				{
 					RpcMethod: "RemoveAssetInfo",
-					Skip:      true,
+					Skip:      true, //authority gated
 				},
 				{
 					RpcMethod: "AddPriceFeeders",
-					Skip:      true,
+					Skip:      true, //authority gated
 				},
 				{
 					RpcMethod: "RemovePriceFeeders",
-					Skip:      true,
+					Skip:      true, //authority gated
 				},
 				{
 					RpcMethod: "UpdateParams",
-					Skip:      true,
+					Skip:      true, //authority gated
 				},
 			},
 		},

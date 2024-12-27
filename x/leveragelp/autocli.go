@@ -144,10 +144,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "position"}, {ProtoField: "price"}},
 				},
 				{
-					RpcMethod:      "ClosePositions",
-					Use:            "close-positions [liquidate-position] [stoploss-position]",
-					Short:          "Broadcast message close-positions",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "liquidate"}, {ProtoField: "stop_loss"}},
+					RpcMethod: "ClosePositions",
+					Skip:      true, // use custom command
 				},
 				{
 					RpcMethod: "UpdateParams",
@@ -155,7 +153,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod: "AddPool",
-					Skip:      true,
+					Skip:      true, // authority gated
 				},
 			},
 		},

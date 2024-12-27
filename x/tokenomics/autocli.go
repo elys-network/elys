@@ -47,5 +47,44 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 			},
 		},
+		Tx: &autocliv1.ServiceCommandDescriptor{
+			Service:              tokenomics.Msg_ServiceDesc.ServiceName,
+			EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod: "CreateAirdrop",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "UpdateAirdrop",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "DeleteAirdrop",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "UpdateGenesisInflation",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "CreateTimeBasedInflation",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "UpdateTimeBasedInflation",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "DeleteTimeBasedInflation",
+					Skip:      true,
+				},
+				{
+					RpcMethod: "ClaimAirdrop",
+					Use:       "claim-airdrop",
+					Short:     "Broadcast message claim-airdrop",
+				},
+			},
+		},
 	}
 }

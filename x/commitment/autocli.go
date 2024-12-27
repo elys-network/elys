@@ -83,10 +83,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom"}},
 				},
 				{
-					RpcMethod: "VestNow",
-					Use:       "vest-now [amount] [denom]",
-					Short:     "Broadcast message vest-now",
-					// Example:        `elysd tx amm swap-by-denom 0 1000uatom uusdc --from=bob --yes --gas=1000000`,
+					RpcMethod:      "VestNow",
+					Use:            "vest-now [amount] [denom]",
+					Short:          "Broadcast message vest-now",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom"}},
 				},
 				{
@@ -103,7 +102,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod: "ClaimVesting",
-					Skip:      true,
+					Use:       "claim-vesting",
+					Short:     "Broadcast message claim_vesting",
 				},
 				{
 					RpcMethod: "UpdateVestingInfo",
@@ -111,11 +111,11 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod: "UpdateEnableVestNow",
-					Skip:      true,
+					Skip:      true, // authority gated
 				},
 				{
 					RpcMethod: "UpdateAirdropParams",
-					Skip:      true,
+					Skip:      true, // authority gated
 				},
 				{
 					RpcMethod:      "Stake",
@@ -130,16 +130,15 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "asset"}, {ProtoField: "validator_address"}},
 				},
 				{
-					RpcMethod:      "ClaimAirdrop",
-					Use:            "claim-airdrop [claim-address]",
-					Short:          "Broadcast message claim_airdrop",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "claim_address"}},
+					RpcMethod: "ClaimAirdrop",
+					Use:       "claim-airdrop",
+					Short:     "Broadcast message claim_airdrop",
 				},
 				{
 					RpcMethod:      "ClaimKol",
-					Use:            "claim-kol [claim-address] [refund]",
+					Use:            "claim-kol [refund]",
 					Short:          "Broadcast message claim_kol",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "claim_address"}, {ProtoField: "refund"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "refund"}},
 				},
 			},
 		},

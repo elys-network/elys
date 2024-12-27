@@ -51,7 +51,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod:      "JoinPoolEstimation",
 					Use:            "join-pool-estimation [pool_id] [tokens-in]",
 					Short:          "Query JoinPoolEstimation",
-					Example:        "elysd q amm join-pool-estimation 1 100token,100token2",
+					Example:        "elysd q amm join-pool-estimation 1 100token 100token2",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "amounts_in", Varargs: true}},
 				},
 				{
@@ -155,11 +155,11 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod: "UpdatePoolParams",
-					Skip:      true,
+					Skip:      true, // authority gated
 				},
 				{
 					RpcMethod: "UpdateParams",
-					Skip:      true,
+					Skip:      true, // authority gated
 				},
 			},
 		},

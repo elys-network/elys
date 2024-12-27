@@ -60,9 +60,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
 					RpcMethod:      "CreateSpotOrder",
-					Use:            "create-spot-order [order-type] [order-amount] [order-target-denom] [order-price] [owner-address]",
+					Use:            "create-spot-order [order-type] [order-amount] [order-target-denom] [order-price]",
 					Short:          "Create a new spot order",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "order_type"}, {ProtoField: "order_amount"}, {ProtoField: "order_target_denom"}, {ProtoField: "order_price"}, {ProtoField: "owner_address"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "order_type"}, {ProtoField: "order_amount"}, {ProtoField: "order_target_denom"}, {ProtoField: "order_price"}},
 				},
 				{
 					RpcMethod:      "UpdateSpotOrder",
@@ -118,10 +118,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Skip:      true, //	authority gated
 				},
 				{
-					RpcMethod:      "ExecuteOrders",
-					Use:            "execute-orders [perpetual-order-ids] [spot-order-ids]",
-					Short:          "Verify that submitted orders meet the criteria for execution and process those that do, while skipping those that don't.",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "perpetual_order_ids", Varargs: true}, {ProtoField: "spot_order_ids", Varargs: true}},
+					RpcMethod: "ExecuteOrders",
+					Skip:      true, // use custom command
 				},
 			},
 		},
