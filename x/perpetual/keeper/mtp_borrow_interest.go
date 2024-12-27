@@ -86,7 +86,7 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		k.EmitFundPayment(ctx, mtp, takeAmount, mtp.CustodyAsset, types.EventIncrementalPayFund)
 	}
 
-	err = pool.UpdateCustody(mtp.CustodyAsset, takeAmount, false, mtp.Position)
+	err = pool.UpdateCustody(mtp.CustodyAsset, borrowInterestPaymentInCustody, false, mtp.Position)
 	if err != nil {
 		return math.ZeroInt(), err
 	}
