@@ -1,6 +1,6 @@
 module github.com/elys-network/elys
 
-go 1.22.6
+go 1.22.7
 
 require (
 	cosmossdk.io/api v0.7.5

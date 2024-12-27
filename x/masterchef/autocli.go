@@ -90,6 +90,16 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Example:   "elysd q masterchef aprs",
 				},
 				{
+					RpcMethod: "AllLiquidityPoolTVL",
+					Use:       "all-liquidity-pool-tvl",
+					Short:     "show all pools tvl",
+				},
+				{
+					RpcMethod: "ChainTVL",
+					Use:       "chain-tvl",
+					Short:     "show chain tvl",
+				},
+				{
 					RpcMethod:      "PoolRewards",
 					Use:            "pool-rewards [pool-ids]",
 					Short:          "calculate pool rewards",
