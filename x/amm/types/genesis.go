@@ -1,7 +1,7 @@
 package types
 
 import (
-	"fmt"
+	"errors"
 )
 
 // DefaultIndex is the default global index
@@ -26,7 +26,7 @@ func (gs GenesisState) Validate() error {
 	for _, elem := range gs.PoolList {
 		index := string(PoolKey(elem.PoolId))
 		if _, ok := poolIndexMap[index]; ok {
-			return fmt.Errorf("duplicated index for pool")
+			return errors.New("duplicated index for pool")
 		}
 		poolIndexMap[index] = struct{}{}
 	}
@@ -36,7 +36,7 @@ func (gs GenesisState) Validate() error {
 	for _, elem := range gs.DenomLiquidityList {
 		index := string(DenomLiquidityKey(elem.Denom))
 		if _, ok := denomLiquidityIndexMap[index]; ok {
-			return fmt.Errorf("duplicated index for denomLiquidity")
+			return errors.New("duplicated index for denomLiquidity")
 		}
 		denomLiquidityIndexMap[index] = struct{}{}
 	}
