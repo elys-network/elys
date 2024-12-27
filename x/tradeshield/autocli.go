@@ -83,10 +83,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "spot_order_ids", Varargs: true}},
 				},
 				{
-					RpcMethod:      "CreatePerpetualOpenOrder",
-					Use:            "create-perpetual-open-order [position] [leverage] [pool-id] [trading-asset] [collateral] [trigger-price]",
-					Short:          "Create a new perpetual open order",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "position"}, {ProtoField: "leverage"}, {ProtoField: "pool_id"}, {ProtoField: "trading_asset"}, {ProtoField: "collateral"}, {ProtoField: "trigger_price"}},
+					RpcMethod: "CreatePerpetualOpenOrder",
+					Skip:      true, // use custom command
 				},
 				{
 					RpcMethod:      "CreatePerpetualCloseOrder",

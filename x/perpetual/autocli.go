@@ -11,7 +11,8 @@ import (
 func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 	return &autocliv1.ModuleOptions{
 		Query: &autocliv1.ServiceCommandDescriptor{
-			Service: perpetual.Query_ServiceDesc.ServiceName,
+			Service:              perpetual.Query_ServiceDesc.ServiceName,
+			EnhanceCustomCommand: true,
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
 					RpcMethod: "Params",
@@ -69,11 +70,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "id"}},
 				},
 				{
-					RpcMethod:      "OpenEstimation",
-					Use:            "open-estimation [position] [leverage] [trading-asset] [collateral] [pool-id]",
-					Short:          "Query open-estimation",
-					Example:        "elysd q perpetual open-estimation long 5 uatom 100000000uusdc 1",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "position"}, {ProtoField: "leverage"}, {ProtoField: "trading_asset"}, {ProtoField: "collateral"}, {ProtoField: "poolId"}},
+					RpcMethod: "OpenEstimation",
+					Skip:      true, // use custom command
 				},
 				{
 					RpcMethod:      "CloseEstimation",
@@ -89,13 +87,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
 					RpcMethod: "Open",
-					Use:       "open [position] [leverage] [pool-id] [trading-asset] [collateral]",
-					Short:     "Open perpetual position",
-					Example: `Infinte profitability:
-elysd tx perpetual open long 5 1 uatom 100000000uusdc --from=bob --yes --gas=1000000
-Finite profitability:
-elysd tx perpetual open short 5 1 uatom 100000000uusdc --take-profit 100 --stop-loss 10 --from=bob --yes --gas=1000000`,
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "position"}, {ProtoField: "leverage"}, {ProtoField: "pool_id"}, {ProtoField: "trading_asset"}, {ProtoField: "collateral"}},
+					Skip:      true, // use custom command
 				},
 				{
 					RpcMethod:      "Close",
@@ -117,20 +109,16 @@ elysd tx perpetual open short 5 1 uatom 100000000uusdc --take-profit 100 --stop-
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "whitelisted_address"}},
 				},
 				{
-					RpcMethod:      "UpdateStopLoss",
-					Use:            "update-stop-loss [price] [id]",
-					Short:          "Broadcast message update-stop-loss",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "price"}, {ProtoField: "id"}},
+					RpcMethod: "UpdateStopLoss",
+					Skip:      true, // use custom command
 				},
 				{
 					RpcMethod: "ClosePositions",
 					Skip:      true, // use custom command
 				},
 				{
-					RpcMethod:      "UpdateTakeProfitPrice",
-					Use:            "update-take-profit-price [price] [id]",
-					Short:          "Broadcast message update-take-profit-price",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "price"}, {ProtoField: "id"}},
+					RpcMethod: "UpdateTakeProfitPrice",
+					Skip:      true, // use custom command
 				},
 				{
 					RpcMethod: "UpdateParams",

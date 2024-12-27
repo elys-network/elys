@@ -69,10 +69,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
-					RpcMethod:      "FeedPrice",
-					Use:            "feed-price [feed_price]",
-					Short:          "Feed a new price",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "feed_price"}},
+					RpcMethod: "FeedPrice",
+					Skip:      true, // use custom command
 				},
 				{
 					RpcMethod:      "SetPriceFeeder",

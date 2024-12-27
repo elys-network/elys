@@ -11,7 +11,8 @@ import (
 func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 	return &autocliv1.ModuleOptions{
 		Query: &autocliv1.ServiceCommandDescriptor{
-			Service: leveragelp.Query_ServiceDesc.ServiceName,
+			Service:              leveragelp.Query_ServiceDesc.ServiceName,
+			EnhanceCustomCommand: true,
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
 					RpcMethod: "Params",
@@ -75,10 +76,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "address"}, {ProtoField: "position_id"}},
 				},
 				{
-					RpcMethod:      "OpenEst",
-					Use:            "open-estimation [amm_pool_id] [collateral_denom] [collateral_amount] [leverage]",
-					Short:          "Query open estimation",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amm_pool_id"}, {ProtoField: "collateral_asset"}, {ProtoField: "collateral_amount"}, {ProtoField: "leverage"}},
+					RpcMethod: "OpenEst",
+					Skip:      true, // use custom command
 				},
 				{
 					RpcMethod:      "CloseEst",
@@ -105,11 +104,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			EnhanceCustomCommand: false, // use custom commands only until cosmos sdk v0.51
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
-					RpcMethod:      "Open",
-					Use:            "open [leverage] [collateral-asset] [collateral-amount] [amm-pool-id] [stop-loss-price]",
-					Short:          "Open leveragelp position",
-					Example:        `elysd tx leveragelp open 5 uusdc 100000000 1 5.4 --from=bob --yes --gas=1000000`,
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "leverage"}, {ProtoField: "collateral_asset"}, {ProtoField: "collateral_amount"}, {ProtoField: "amm_pool_id"}, {ProtoField: "stop_loss_price"}},
+					RpcMethod: "Open",
+					Skip:      true, // use custom command
 				},
 				{
 					RpcMethod:      "Close",
@@ -138,10 +134,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "whitelisted_address"}},
 				},
 				{
-					RpcMethod:      "UpdateStopLoss",
-					Use:            "update-stop-loss [position-id] [price]",
-					Short:          "Broadcast message update-stop-loss",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "position"}, {ProtoField: "price"}},
+					RpcMethod: "UpdateStopLoss",
+					Skip:      true, // use custom command
 				},
 				{
 					RpcMethod: "ClosePositions",

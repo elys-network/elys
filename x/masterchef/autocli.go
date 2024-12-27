@@ -11,7 +11,8 @@ import (
 func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 	return &autocliv1.ModuleOptions{
 		Query: &autocliv1.ServiceCommandDescriptor{
-			Service: masterchef.Query_ServiceDesc.ServiceName,
+			Service:              masterchef.Query_ServiceDesc.ServiceName,
+			EnhanceCustomCommand: true,
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
 					RpcMethod: "Params",
@@ -79,11 +80,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:     "Query list-fee-info",
 				},
 				{
-					RpcMethod:      "Apr",
-					Use:            "apr [withdraw-type] [denom]",
-					Short:          "calculate APR",
-					Example:        "elysd q masterchef apr [withdraw-type] [denom]",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "withdraw_type"}, {ProtoField: "denom"}},
+					RpcMethod: "Apr",
+					Skip:      true, // use custom command
 				},
 				{
 					RpcMethod: "Aprs",
