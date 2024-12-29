@@ -705,6 +705,8 @@ func NewAppKeeper(
 	app.StablestakeKeeper.SetHooks(stablestakekeeper.NewMultiStableStakeHooks(
 		app.MasterchefKeeper.StableStakeHooks(),
 		app.TierKeeper.StableStakeHooks(),
+		// unbonding checks leverage pool health
+		app.LeveragelpKeeper.StableStakeHooks(),
 	))
 
 	app.LeveragelpKeeper.SetHooks(leveragelpmoduletypes.NewMultiLeverageLpHooks(
