@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	"cosmossdk.io/math"

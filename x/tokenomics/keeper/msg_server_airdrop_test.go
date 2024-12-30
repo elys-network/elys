@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"testing"
 	"time"

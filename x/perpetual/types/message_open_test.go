@@ -3,7 +3,7 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"fmt"
+	"errors"
 	"github.com/stretchr/testify/require"
 	"testing"
 
