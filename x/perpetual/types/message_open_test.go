@@ -149,7 +149,7 @@ func TestMsgOpen_ValidateBasic(t *testing.T) {
 				Leverage:        math.LegacyNewDec(200),
 				StopLossPrice:   math.LegacyNewDec(100),
 			},
-			want: fmt.Errorf("TakeProfitPrice cannot be >= StopLossPrice for SHORT"),
+			want: errors.New("TakeProfitPrice cannot be >= StopLossPrice for SHORT"),
 		},
 		{
 			title: "take profit price is less than stop loss price for long",
@@ -161,7 +161,7 @@ func TestMsgOpen_ValidateBasic(t *testing.T) {
 				Leverage:        math.LegacyNewDec(200),
 				StopLossPrice:   math.LegacyNewDec(100),
 			},
-			want: fmt.Errorf("TakeProfitPrice cannot be <= StopLossPrice for LONG"),
+			want: errors.New("TakeProfitPrice cannot be <= StopLossPrice for LONG"),
 		},
 		{
 			title: "successful",

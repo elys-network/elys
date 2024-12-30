@@ -38,7 +38,7 @@ func TestMsgJoinPool_ValidateBasic(t *testing.T) {
 				ShareAmountOut: math.NewInt(100),
 				MaxAmountsIn:   sdk.Coins{sdk.Coin{Denom: "uusdc", Amount: math.NewInt(-100)}},
 			},
-			err: fmt.Errorf("negative coin amount"),
+			err: errors.New("negative coin amount"),
 		},
 		{
 			name: "ShareAmount is Nil",

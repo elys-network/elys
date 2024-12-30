@@ -64,7 +64,7 @@ func (p Pool) NewPoolAssetsAfterSwap(ctx sdk.Context, inCoins sdk.Coins, outCoin
 		beforeAmount := asset.Token.Amount
 		amountAfterSwap := beforeAmount.Add(inCoins.AmountOf(denom)).Sub(outCoins.AmountOf(denom))
 		if amountAfterSwap.IsNegative() {
-			return poolAssets, fmt.Errorf("negative pool amount after swap")
+			return poolAssets, errors.New("negative pool amount after swap")
 		}
 		updatedAssets = append(updatedAssets, PoolAsset{
 			Token:  sdk.NewCoin(denom, amountAfterSwap),

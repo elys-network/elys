@@ -2,6 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
+	"errors"
 	"fmt"
 	"testing"
 
@@ -72,7 +73,7 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 					MinimumDeposit:       sdkmath.NewInt(100),
 				},
 			},
-			err: fmt.Errorf("RewardPercentage is negative"),
+			err: errors.New("RewardPercentage is negative"),
 		},
 	}
 	for _, tt := range tests {

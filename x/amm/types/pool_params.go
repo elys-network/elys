@@ -2,7 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
-	"fmt"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -12,7 +12,7 @@ var (
 
 func (params PoolParams) Validate() error {
 	if params.SwapFee.IsNil() {
-		return fmt.Errorf("swap_fee is nil")
+		return errors.New("swap_fee is nil")
 	}
 
 	if params.SwapFee.IsNegative() {
