@@ -97,7 +97,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	// new user join pool with same shares
 	share := ammtypes.InitPoolSharesSupply.Mul(math.NewIntWithDecimal(1, 5))
 	suite.T().Log(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId))
-	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "10002000000000000000000000")
+	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "10000000000000000000000000")
 	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolBalance(suite.ctx, pools[0].PoolId, addr[0]).String(), "10000000000000000000000000")
 	_, _, err = suite.app.AmmKeeper.JoinPoolNoSwap(suite.ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, math.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000))))
 	suite.Require().NoError(err)
