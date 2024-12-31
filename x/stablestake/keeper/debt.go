@@ -206,7 +206,7 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) er
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 
 	borrowed := params.TotalValue.Sub(balance.Amount).ToLegacyDec().Add(amount.Amount.ToLegacyDec())
-	maxAllowed := params.TotalValue.ToLegacyDec().Mul(params.MaxBorrowRatio)
+	maxAllowed := params.TotalValue.ToLegacyDec().Mul(params.MaxLeverageRatio)
 	if borrowed.GT(maxAllowed) {
 		return types.ErrMaxBorrowAmount
 	}

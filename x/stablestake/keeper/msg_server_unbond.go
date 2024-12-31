@@ -37,7 +37,7 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	redemptionAmount := shareCoin.Amount.ToLegacyDec().Mul(redemptionRate).RoundInt()
 
 	amountAfterRedemption := params.TotalValue.Sub(redemptionAmount)
-	maxAllowed := params.TotalValue.ToLegacyDec().Mul(params.MaxBorrowRatio).TruncateInt()
+	maxAllowed := params.TotalValue.ToLegacyDec().Mul(params.MaxLeverageRatio).TruncateInt()
 	if amountAfterRedemption.LT(maxAllowed) {
 		return nil, types.ErrInvalidWithdraw
 	}
