@@ -23,7 +23,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 	}{
 		{
 			desc:              "successful unbonding process",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 5000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			unbondAmount:      math.NewInt(1000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}.Sort(),
@@ -31,7 +31,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 		},
 		{
 			desc:              "lack of balance on the module",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 5000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
 			unbondAmount:      math.NewInt(1000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
@@ -39,7 +39,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 		},
 		{
 			desc:              "lack of sender balance",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 1000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 5000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			unbondAmount:      math.NewInt(10000000000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
@@ -85,8 +85,9 @@ func (suite *KeeperTestSuite) TestUnbond() {
 			suite.Require().NoError(err)
 
 			params := suite.app.StablestakeKeeper.GetParams(suite.ctx)
-			params.TotalValue = math.NewInt(1000_000)
+			params.TotalValue = math.NewInt(5000_000)
 			params.RedemptionRate = math.LegacyNewDec(1)
+			params.MaxLeverageRatio = math.LegacyMustNewDecFromStr("0.8")
 			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
