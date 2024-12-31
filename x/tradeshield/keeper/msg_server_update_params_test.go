@@ -1,9 +1,8 @@
 package keeper_test
 
 import (
-	"fmt"
-
 	"cosmossdk.io/math"
+	"errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	keeper "github.com/elys-network/elys/x/tradeshield/keeper"
@@ -22,7 +21,7 @@ func (suite *TradeshieldKeeperTestSuite) TestUpdateParams() {
 			name:      "invalid authority",
 			authority: "invalid_authority",
 			params:    types.Params{},
-			expected:  fmt.Errorf("invalid authority"),
+			expected:  errors.New("invalid authority"),
 		},
 		{
 			name:      "valid authority",

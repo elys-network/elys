@@ -1,9 +1,10 @@
 package ante
 
 import (
-	"cosmossdk.io/math"
+	"errors"
 	"fmt"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
@@ -116,7 +117,7 @@ func (g GovVoteDecorator) ValidateVoteMsgs(ctx sdk.Context, msgs []sdk.Msg) erro
 		for _, v := range execMsg.Msgs {
 			var innerMsg sdk.Msg
 			if err := g.cdc.UnpackAny(v, &innerMsg); err != nil {
-				return fmt.Errorf("cannot unmarshal authz exec msgs")
+				return errors.New("cannot unmarshal authz exec msgs")
 			}
 			if err := validMsg(innerMsg); err != nil {
 				return err

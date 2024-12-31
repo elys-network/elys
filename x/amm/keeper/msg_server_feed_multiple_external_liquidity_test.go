@@ -1,8 +1,7 @@
 package keeper_test
 
 import (
-	"fmt"
-
+	"errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	sdkmath "cosmossdk.io/math"
@@ -126,7 +125,7 @@ func (suite *AmmKeeperTestSuite) TestGetExternalLiquidityRatio() {
 				},
 			},
 			expectedResult: nil,
-			expectedError:  fmt.Errorf("asset profile not found for denom"),
+			expectedError:  errors.New("asset profile not found for denom"),
 		},
 		{
 			name: "division by zero",

@@ -2,7 +2,7 @@ package types
 
 import (
 	"cosmossdk.io/math"
-	"fmt"
+	"errors"
 	"testing"
 
 	"github.com/elys-network/elys/testutil/sample"
@@ -22,7 +22,7 @@ func TestMsgUnbond_ValidateBasic(t *testing.T) {
 				Creator: "invalid_address",
 				Amount:  math.NewInt(100),
 			},
-			err: fmt.Errorf("invalid creator address"),
+			err: errors.New("invalid creator address"),
 		}, {
 			name: "valid address",
 			msg: MsgUnbond{
@@ -36,7 +36,7 @@ func TestMsgUnbond_ValidateBasic(t *testing.T) {
 				Creator: sample.AccAddress(),
 				Amount:  math.NewInt(-100),
 			},
-			err: fmt.Errorf("amount should be positive"),
+			err: errors.New("amount should be positive"),
 		},
 		{
 			name: "nil amount",
@@ -44,7 +44,7 @@ func TestMsgUnbond_ValidateBasic(t *testing.T) {
 				Creator: sample.AccAddress(),
 				Amount:  math.Int{},
 			},
-			err: fmt.Errorf("amount cannot be nil"),
+			err: errors.New("amount cannot be nil"),
 		},
 		{
 			name: "zero amount",
@@ -52,7 +52,7 @@ func TestMsgUnbond_ValidateBasic(t *testing.T) {
 				Creator: sample.AccAddress(),
 				Amount:  math.NewInt(0),
 			},
-			err: fmt.Errorf("amount should be positive"),
+			err: errors.New("amount should be positive"),
 		},
 	}
 	for _, tt := range tests {
