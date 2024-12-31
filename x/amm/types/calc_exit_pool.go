@@ -1,11 +1,9 @@
 package types
 
 import (
-	"errors"
-	"fmt"
-
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -129,7 +127,7 @@ func CalcExitPool(
 		}
 		for _, asset := range newAssetPools {
 			if asset.Token.Amount.IsNegative() {
-				return sdk.Coins{}, sdkmath.LegacyZeroDec(), fmt.Errorf("out amount exceeds liquidity balance")
+				return sdk.Coins{}, sdkmath.LegacyZeroDec(), errors.New("out amount exceeds liquidity balance")
 			}
 		}
 

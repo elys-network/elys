@@ -2,7 +2,7 @@ package types_test
 
 import (
 	sdkmath "cosmossdk.io/math"
-	"fmt"
+	"errors"
 	"github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
@@ -41,7 +41,7 @@ func TestMsgCommitClaimedRewards_ValidateBasic(t *testing.T) {
 				Amount:  sdkmath.OneInt(),
 				Denom:   "@@@@@@",
 			},
-			err: fmt.Errorf("invalid denom"),
+			err: errors.New("invalid denom"),
 		},
 		{
 			name: "invalid amount - negative",

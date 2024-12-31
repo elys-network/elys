@@ -58,7 +58,7 @@ func (g GovExpeditedProposalsDecorator) isWhitelisted(msgType string) bool {
 func (g GovExpeditedProposalsDecorator) validateExpeditedGovProp(prop *govv1.MsgSubmitProposal) error {
 	//msgs := prop.GetMessages()
 	//if len(msgs) == 0 {
-	//	return fmt.Errorf("unsupported expedited proposal type")
+	//	return errors.New("unsupported expedited proposal type")
 	//}
 	//for _, message := range msgs {
 	//	// in case of legacy content submitted using govv1.MsgSubmitProposal

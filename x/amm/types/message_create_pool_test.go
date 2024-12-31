@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
@@ -96,7 +96,7 @@ func TestMsgCreatePool_ValidateBasic(t *testing.T) {
 					},
 				},
 			},
-			err: fmt.Errorf("invalid pool asset"),
+			err: errors.New("invalid pool asset"),
 		},
 		{
 			name: "valid address",
