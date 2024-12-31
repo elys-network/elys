@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"fmt"
+	"errors"
 	"strconv"
 	"testing"
 	"time"
@@ -61,7 +61,7 @@ func TestAirdropMsgServerUpdate(t *testing.T) {
 				Amount:    200,
 				Expiry:    uint64(time.Now().Unix()),
 			},
-			err: fmt.Errorf("invalid authority"),
+			err: errors.New("invalid authority"),
 		},
 		{
 			desc: "KeyNotFound",
@@ -120,7 +120,7 @@ func TestAirdropMsgServerDelete(t *testing.T) {
 				Authority: "B",
 				Intent:    strconv.Itoa(0),
 			},
-			err: fmt.Errorf("invalid authority"),
+			err: errors.New("invalid authority"),
 		},
 		{
 			desc: "KeyNotFound",

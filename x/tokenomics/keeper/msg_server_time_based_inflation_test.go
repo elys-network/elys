@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -83,7 +83,7 @@ func TestTimeBasedInflationMsgServerUpdate(t *testing.T) {
 				Description:      description,
 				Inflation:        inflation,
 			},
-			err: fmt.Errorf("invalid authority"),
+			err: errors.New("invalid authority"),
 		},
 		{
 			desc: "KeyNotFound",
@@ -150,7 +150,7 @@ func TestTimeBasedInflationMsgServerDelete(t *testing.T) {
 				StartBlockHeight: 0,
 				EndBlockHeight:   0,
 			},
-			err: fmt.Errorf("invalid authority"),
+			err: errors.New("invalid authority"),
 		},
 		{
 			desc: "KeyNotFound",

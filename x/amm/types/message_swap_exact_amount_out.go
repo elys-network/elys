@@ -3,7 +3,7 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	"fmt"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -52,7 +52,7 @@ func (msg *MsgSwapExactAmountOut) ValidateBasic() error {
 		return err
 	}
 	if msg.TokenOut.IsZero() {
-		return fmt.Errorf("token in is zero")
+		return errors.New("token in is zero")
 	}
 	return nil
 }

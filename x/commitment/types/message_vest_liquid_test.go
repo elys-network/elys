@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	"fmt"
+	"errors"
 	"github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"testing"
@@ -58,7 +58,7 @@ func TestMsgVestLiquid_ValidateBasic(t *testing.T) {
 				Amount:  math.NewInt(14),
 				Denom:   "",
 			},
-			err: fmt.Errorf("invalid denom"),
+			err: errors.New("invalid denom"),
 		},
 	}
 	for _, tt := range tests {
