@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
@@ -34,6 +35,12 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	}
 
 	redemptionAmount := shareCoin.Amount.ToLegacyDec().Mul(redemptionRate).RoundInt()
+
+	amountAfterRedemption := params.TotalValue.Sub(redemptionAmount)
+	maxAllowed := (params.TotalValue.ToLegacyDec().Mul(params.MaxLeverageRatio)).TruncateInt()
+	if amountAfterRedemption.LT(maxAllowed) {
+		return nil, types.ErrInvalidWithdraw
+	}
 
 	depositDenom := k.GetDepositDenom(ctx)
 	redemptionCoin := sdk.NewCoin(depositDenom, redemptionAmount)
