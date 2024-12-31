@@ -32,7 +32,7 @@ func NewParams() Params {
 		SafetyFactor:                        math.LegacyMustNewDecFromStr("1.025000000000000000"),
 		WeightBreakingFeeFactor:             math.LegacyMustNewDecFromStr("0.5"),
 		WhitelistingEnabled:                 false,
-		EnabledPools:                        []uint64{},
+		EnabledPools:                        []uint64(nil),
 	}
 }
 

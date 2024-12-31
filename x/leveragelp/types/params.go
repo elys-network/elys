@@ -17,7 +17,7 @@ func NewParams() Params {
 		WhitelistingEnabled: false,
 		FallbackEnabled:     true,
 		NumberPerBlock:      (int64)(1000),
-		EnabledPools:        []uint64{},
+		EnabledPools:        []uint64(nil),
 	}
 }
 
