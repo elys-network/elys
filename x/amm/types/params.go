@@ -3,7 +3,6 @@ package types
 import (
 	"cosmossdk.io/math"
 	"errors"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -39,7 +38,7 @@ func (p Params) Validate() error {
 		return errors.New("pool creation fee must not be empty")
 	}
 	if p.PoolCreationFee.IsNegative() {
-		return fmt.Errorf("pool creation fee must be positive")
+		return errors.New("pool creation fee must be positive")
 	}
 
 	for _, asset := range p.BaseAssets {

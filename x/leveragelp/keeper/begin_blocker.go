@@ -1,11 +1,11 @@
 package keeper
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
-
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -83,7 +83,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 	liab := debt.GetTotalLiablities()
 	if isHealthy || liab.IsZero() {
-		return true, false, h, fmt.Errorf("position is healthy to close")
+		return true, false, h, errors.New("position is healthy to close")
 	}
 
 	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount, true)
@@ -125,7 +125,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 
 	underStopLossPrice = !position.StopLossPrice.IsNil() && lpTokenPrice.LTE(position.StopLossPrice)
 	if !underStopLossPrice {
-		return underStopLossPrice, false, fmt.Errorf("position stop loss price is not <= lp token price")
+		return underStopLossPrice, false, errors.New("position stop loss price is not <= lp token price")
 	}
 
 	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount, false)

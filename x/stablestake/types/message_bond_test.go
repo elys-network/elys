@@ -2,7 +2,7 @@ package types
 
 import (
 	"cosmossdk.io/math"
-	"fmt"
+	"errors"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -37,7 +37,7 @@ func TestMsgBond_ValidateBasic(t *testing.T) {
 				Creator: sample.AccAddress(),
 				Amount:  math.NewInt(-100),
 			},
-			err: fmt.Errorf("amount should be positive"),
+			err: errors.New("amount should be positive"),
 		},
 		{
 			name: "nil amount",
@@ -45,7 +45,7 @@ func TestMsgBond_ValidateBasic(t *testing.T) {
 				Creator: sample.AccAddress(),
 				Amount:  math.Int{},
 			},
-			err: fmt.Errorf("amount cannot be nil"),
+			err: errors.New("amount cannot be nil"),
 		},
 		{
 			name: "zero amount",
@@ -53,7 +53,7 @@ func TestMsgBond_ValidateBasic(t *testing.T) {
 				Creator: sample.AccAddress(),
 				Amount:  math.NewInt(0),
 			},
-			err: fmt.Errorf("amount should be positive"),
+			err: errors.New("amount should be positive"),
 		},
 	}
 	for _, tt := range tests {

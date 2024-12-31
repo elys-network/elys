@@ -1,7 +1,7 @@
 package types
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
@@ -43,7 +43,7 @@ func TestMsgSwapByDenom_ValidateBasic(t *testing.T) {
 				DenomIn:  ptypes.ATOM,
 				DenomOut: ptypes.BaseCurrency,
 			},
-			err: fmt.Errorf("negative coin amount"),
+			err: errors.New("negative coin amount"),
 		},
 		{
 			name: "Invalid DenomIn",
@@ -53,7 +53,7 @@ func TestMsgSwapByDenom_ValidateBasic(t *testing.T) {
 				DenomIn:  "invalid denom in",
 				DenomOut: ptypes.BaseCurrency,
 			},
-			err: fmt.Errorf("invalid denom"),
+			err: errors.New("invalid denom"),
 		},
 		{
 			name: "Invalid Denomout",
@@ -63,7 +63,7 @@ func TestMsgSwapByDenom_ValidateBasic(t *testing.T) {
 				DenomIn:  ptypes.ATOM,
 				DenomOut: "invalid denom out",
 			},
-			err: fmt.Errorf("invalid denom"),
+			err: errors.New("invalid denom"),
 		},
 	}
 	for _, tt := range tests {
