@@ -24,6 +24,8 @@ service Msg {
   rpc ClosePositions(MsgClosePositions) returns (MsgClosePositionsResponse);
   rpc UpdateTakeProfitPrice(MsgUpdateTakeProfitPrice)
       returns (MsgUpdateTakeProfitPriceResponse);
+  rpc UpdateEnabledPools(MsgUpdateEnabledPools) returns (MsgUpdateEnabledPoolsResponse);
+
 }
 message MsgOpen {
   option (cosmos.msg.v1.signer) = "creator";
