@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -22,7 +23,7 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 	params := k.GetParams(ctx)
 
 	if !params.IsCreatorAllowed(msg.Sender) {
-		return nil, fmt.Errorf("sender is not allowed to create pool")
+		return nil, errors.New("sender is not allowed to create pool")
 	}
 
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)

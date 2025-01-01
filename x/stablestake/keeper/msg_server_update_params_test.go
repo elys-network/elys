@@ -2,7 +2,7 @@ package keeper_test
 
 import (
 	sdkmath "cosmossdk.io/math"
-	"fmt"
+	"errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/stablestake/keeper"
@@ -52,7 +52,7 @@ func (suite *KeeperTestSuite) TestUpdateParams() {
 				TotalValue:           sdkmath.OneInt(),
 				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
 			},
-			expected: fmt.Errorf("invalid authority"),
+			expected: errors.New("invalid authority"),
 		},
 	}
 

@@ -2,6 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
+	"errors"
 	"fmt"
 	"math"
 	"strconv"
@@ -52,7 +53,7 @@ func computeExp(x sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
 
 func computeLn(x sdkmath.LegacyDec) (result sdkmath.LegacyDec, err error) {
 	if x.LTE(sdkmath.LegacyZeroDec()) {
-		return sdkmath.LegacyDec{}, fmt.Errorf("x for computing it's Ln must be greater than 0")
+		return sdkmath.LegacyDec{}, errors.New("x for computing it's Ln must be greater than 0")
 	}
 	if x.Equal(sdkmath.LegacyOneDec()) {
 		return sdkmath.LegacyZeroDec(), nil
@@ -105,10 +106,10 @@ func computeLn(x sdkmath.LegacyDec) (result sdkmath.LegacyDec, err error) {
 // powerApproximation Check exponentialLogarithmicMethod and maclaurinSeriesApproximation to understand the limits of this function
 func powerApproximation(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
 	if !base.IsPositive() {
-		return sdkmath.LegacyDec{}, fmt.Errorf("base must be greater than 0")
+		return sdkmath.LegacyDec{}, errors.New("base must be greater than 0")
 	}
 	if exp.LT(sdkmath.LegacyZeroDec()) {
-		return sdkmath.LegacyDec{}, fmt.Errorf("exp must be greater than 0")
+		return sdkmath.LegacyDec{}, errors.New("exp must be greater than 0")
 	}
 	if exp.IsZero() {
 		return sdkmath.LegacyOneDec(), nil
@@ -165,7 +166,7 @@ func exponentialLogarithmicMethod(base sdkmath.LegacyDec, exp sdkmath.LegacyDec)
 // 0 <= exp < 1.
 func maclaurinSeriesApproximation(originalBase sdkmath.LegacyDec, exp sdkmath.LegacyDec, precision sdkmath.LegacyDec) sdkmath.LegacyDec {
 	if !originalBase.IsPositive() {
-		panic(fmt.Errorf("base must be greater than 0"))
+		panic(errors.New("base must be greater than 0"))
 	}
 
 	if exp.IsZero() {

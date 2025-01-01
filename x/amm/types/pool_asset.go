@@ -2,12 +2,13 @@ package types
 
 import (
 	"cosmossdk.io/math"
+	"errors"
 	"fmt"
 )
 
 func (asset PoolAsset) Validate() error {
 	if !asset.Token.IsValid() {
-		return fmt.Errorf("invalid pool asset token")
+		return errors.New("invalid pool asset token")
 	}
 
 	if asset.Weight.IsNil() || asset.Weight.IsNegative() {

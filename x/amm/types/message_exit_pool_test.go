@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -40,7 +40,7 @@ func TestMsgExitPool_ValidateBasic(t *testing.T) {
 				ShareAmountIn: math.NewInt(100),
 				MinAmountsOut: sdk.Coins{sdk.Coin{Denom: "uusdc", Amount: math.NewInt(-100)}},
 			},
-			err: fmt.Errorf("negative coin amount"),
+			err: errors.New("negative coin amount"),
 		},
 		{
 			name: "ShareAmount is Nil",
