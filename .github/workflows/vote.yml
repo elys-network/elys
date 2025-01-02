@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   release:
-    name: Deploy to TestNet in 48 hours
+    name: Vote
     runs-on: ubuntu-latest
     steps:
       - name: Create software upgrade proposal
