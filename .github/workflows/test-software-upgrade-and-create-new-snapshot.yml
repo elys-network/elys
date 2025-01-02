@@ -87,7 +87,7 @@ jobs:
       - name: Build new binary
         run: |
           # create new git tag
-          git tag -f v999.999.999
+          git tag -f v999999.999999.999999
           # build new elys binary
           make build
           NEW_BINARY_PATH=./build/elysd
