@@ -15,18 +15,18 @@ import (
 )
 
 const (
-	LocalNetVersion = "v999"
+	LocalNetVersion = "v999999"
 	NewMaxBytes     = 5 * 1024 * 1024 // 5MB
 )
 
 // make sure to update these when you upgrade the version
 var NextVersion = "vNEXT"
 
-// generate upgrade version from the current version (v999.999.999 => v999)
+// generate upgrade version from the current version (v999999.999999.999999 => v999999)
 func generateUpgradeVersion(currentVersion string) string {
 	// if current version empty then override it with localnet version
 	if currentVersion == "v" {
-		currentVersion = "v999.999.999"
+		currentVersion = "v999999.999999.999999"
 	}
 	parts := strings.Split(currentVersion, ".")
 	if len(parts) != 3 {

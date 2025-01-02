@@ -47,13 +47,18 @@ jobs:
           # query and upgrade height
           height=$(${ELYSD} status --node $NODE | extract_and_calc_upgrade_height)
 
+          # generate upgrade version
+          upgrade_version=$(echo ${ELYS_VERSION} | cut -d'.' -f1)
+          echo "current version: ${ELYS_VERSION}"
+          echo "upgrade_version: $upgrade_version"
+
           # create proposal
           txhash=$(
             ${ELYSD} software-upgrade-tx \
-              $ELYS_VERSION \
+              $upgrade_version \
               $height \
               10000000uelys \
-              "Elys Network $ELYS_VERSION released. Focuses on enhancements and codebase improvements." \
+              "Elys Network ${upgrade_version} released. Focuses on enhancements and codebase improvements." \
               "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/elysd-${ELYS_VERSION}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
               false \
               --from=proposer1 \
