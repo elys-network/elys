@@ -1,0 +1,60 @@
+name: TestNet deploy in 48 hours
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Deploy to TestNet in 48 hours
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create software upgrade proposal
+        run: |
+          # Get latest release version using GitHub API
+          ELYS_VERSION=$(curl -s https://api.github.com/repos/elys-network/elys/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+          echo "Latest elys version: $ELYS_VERSION"
+
+          # Download latest binary
+          DOWNLOAD_BINARY_URL=https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/elysd-${ELYS_VERSION}-linux-amd64
+          DOWNLOAD_SHA256_URL=https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/sha256sum.txt
+          ELYSD=/tmp/elysd-${ELYS_VERSION}
+          SHA256SUM=/tmp/sha256sum.txt
+          curl -L $DOWNLOAD_BINARY_URL -o $ELYSD && chmod +x $ELYSD
+          curl -L $DOWNLOAD_SHA256_URL -o $SHA256SUM
+
+          # helper functions
+          extract_txhash() { awk -F 'txhash: ' '/txhash:/{print $2; exit}'; }
+          extract_proposal_id() { awk -F 'key: proposal_id|value: ' '/key: proposal_id/ { getline; gsub(/"/, "", $2); print $2; exit }'; }
+          extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+50000; exit }'; }
+          extract_checksum() { awk "/elysd-${ELYS_VERSION}-linux-amd64.tar.gz/ {print \$1; exit}"; }
+
+          # environment variables
+          NODE=https://rpc.testnet.elys.network:443
+          OPTIONS="--node $NODE --chain-id elysicstestnet-1 --keyring-backend=test -b=sync --fees=20000uelys --gas=300000 -y"
+
+          # import proposers key
+          ${ELYSD} keys import-hex proposer1 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_1 }} --keyring-backend=test
+          ${ELYSD} keys import-hex proposer2 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_2 }} --keyring-backend=test
+          ${ELYSD} keys import-hex proposer3 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_3 }} --keyring-backend=test
+          ${ELYSD} keys import-hex proposer4 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_4 }} --keyring-backend=test
+
+          # get checksum
+          checksum=$(cat $SHA256SUM | extract_checksum)
+
+          # query and upgrade height
+          height=$(${ELYSD} status --node $NODE | extract_and_calc_upgrade_height)
+
+          # generate upgrade version
+          upgrade_version=$(echo ${ELYS_VERSION} | cut -d'.' -f1)
+          echo "current version: ${ELYS_VERSION}"
+          echo "upgrade_version: $upgrade_version"
+
+          # vote on proposal
+          ${ELYSD} tx gov vote 29 yes --from=proposer1 $OPTIONS
+          ${ELYSD} tx gov vote 29 yes --from=proposer2 $OPTIONS
+          ${ELYSD} tx gov vote 29 yes --from=proposer3 $OPTIONS
+          ${ELYSD} tx gov vote 29 yes --from=proposer4 $OPTIONS
+          sleep 10
