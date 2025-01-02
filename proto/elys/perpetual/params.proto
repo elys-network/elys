@@ -44,60 +44,54 @@ message LegacyParams {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string force_close_fund_percentage = 9 [
+  string borrow_interest_payment_fund_percentage = 9 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string force_close_fund_address = 10;
-  string incremental_borrow_interest_payment_fund_percentage = 11 [
+  string borrow_interest_payment_fund_address = 10;
+  string safety_factor = 11 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string incremental_borrow_interest_payment_fund_address = 12;
-  string safety_factor = 13 [
+  bool borrow_interest_payment_enabled = 12;
+  bool whitelisting_enabled = 13;
+  string perpetual_swap_fee = 14 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  bool incremental_borrow_interest_payment_enabled = 14;
-  bool whitelisting_enabled = 15;
-  string perpetual_swap_fee = 16 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  int64 max_limit_order = 17;
-  string fixed_funding_rate = 18 [
+  int64 max_limit_order = 15;
+  string fixed_funding_rate = 16 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // minimum value for take_profit_price/current price for long, should be
   // greater than 1
-  string minimum_long_take_profit_price_ratio = 19 [
+  string minimum_long_take_profit_price_ratio = 17 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // max value for take_profit_price/current price for long, should be greater
   // than 1
-  string maximum_long_take_profit_price_ratio = 20 [
+  string maximum_long_take_profit_price_ratio = 18 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // max value for take_profit_price/current price for short, should be less
   // than 1
-  string maximum_short_take_profit_price_ratio = 21 [
+  string maximum_short_take_profit_price_ratio = 19 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // No need for minimumShortTakeProfitPriceRatio as it will be 0, checked in
   // validate message
-  bool enable_take_profit_custody_liabilities = 22;
+  bool enable_take_profit_custody_liabilities = 20;
   // We create this and send this value to estimate swap ONLY when opening and
   // closing the position Ideally this value is set to half. When trader open a
   // position if they receive a weight balance bonus (which is half of weight
@@ -107,7 +101,7 @@ message LegacyParams {
   // because PoolParams.WeightRecoveryFeePortion can be different Also, if
   // trader has no bonus only fee, then overall we are only applying the fee
   // half time
-  string weight_breaking_fee_factor = 23 [
+  string weight_breaking_fee_factor = 21 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
@@ -213,4 +207,5 @@ message Params {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  repeated uint64 enabled_pools = 22;
 }

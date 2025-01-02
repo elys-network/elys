@@ -26,3 +26,10 @@ func NewMsgUpdateParams(signer string, params *Params) *MsgUpdateParams {
 		Params:    params,
 	}
 }
+
+func NewMsgUpdateEnabledPools(signer string, enabledPools []uint64) *MsgUpdateEnabledPools {
+	return &MsgUpdateEnabledPools{
+		Authority:    signer,
+		EnabledPools: enabledPools,
+	}
+}
