@@ -1,11 +1,12 @@
 package cli_test
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
-	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"strconv"
 	"testing"
+
+	"cosmossdk.io/math"
+	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"

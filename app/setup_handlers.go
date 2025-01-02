@@ -24,6 +24,10 @@ var NextVersion = "vNEXT"
 
 // generate upgrade version from the current version (v999.999.999 => v999)
 func generateUpgradeVersion(currentVersion string) string {
+	// if current version empty then override it with localnet version
+	if currentVersion == "v" {
+		currentVersion = "v999.999.999"
+	}
 	parts := strings.Split(currentVersion, ".")
 	if len(parts) != 3 {
 		panic(fmt.Sprintf("Invalid version format: %s. Expected format: vX.Y.Z", currentVersion))
