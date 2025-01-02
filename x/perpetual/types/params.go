@@ -1,8 +1,9 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
@@ -31,6 +32,7 @@ func NewParams() Params {
 		SafetyFactor:                        math.LegacyMustNewDecFromStr("1.025000000000000000"),
 		WeightBreakingFeeFactor:             math.LegacyMustNewDecFromStr("0.5"),
 		WhitelistingEnabled:                 false,
+		EnabledPools:                        []uint64(nil),
 	}
 }
 
@@ -115,5 +117,19 @@ func (p Params) Validate() error {
 		return err
 	}
 
+	if containsDuplicates(p.EnabledPools) {
+		return fmt.Errorf("array must not contain duplicate values")
+	}
 	return nil
+}
+
+func containsDuplicates(arr []uint64) bool {
+	valueMap := make(map[uint64]struct{})
+	for _, num := range arr {
+		if _, exists := valueMap[num]; exists {
+			return true
+		}
+		valueMap[num] = struct{}{}
+	}
+	return false
 }

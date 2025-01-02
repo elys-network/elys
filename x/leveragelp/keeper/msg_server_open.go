@@ -16,6 +16,18 @@ import (
 func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	enabledPools := k.GetParams(ctx).EnabledPools
+	found := false
+	for _, poolId := range enabledPools {
+		if poolId == msg.AmmPoolId {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolNotEnabled, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
+	}
+
 	return k.Keeper.Open(ctx, msg)
 }
 
