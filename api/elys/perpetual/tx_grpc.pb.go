@@ -26,6 +26,7 @@ type MsgClient interface {
 	UpdateStopLoss(ctx context.Context, in *MsgUpdateStopLoss, opts ...grpc.CallOption) (*MsgUpdateStopLossResponse, error)
 	ClosePositions(ctx context.Context, in *MsgClosePositions, opts ...grpc.CallOption) (*MsgClosePositionsResponse, error)
 	UpdateTakeProfitPrice(ctx context.Context, in *MsgUpdateTakeProfitPrice, opts ...grpc.CallOption) (*MsgUpdateTakeProfitPriceResponse, error)
+	UpdateMaxLeverageForPool(ctx context.Context, in *MsgUpdateMaxLeverageForPool, opts ...grpc.CallOption) (*MsgUpdateMaxLeverageForPoolResponse, error)
 }
 
 type msgClient struct {
@@ -108,6 +109,15 @@ func (c *msgClient) UpdateTakeProfitPrice(ctx context.Context, in *MsgUpdateTake
 	return out, nil
 }
 
+func (c *msgClient) UpdateMaxLeverageForPool(ctx context.Context, in *MsgUpdateMaxLeverageForPool, opts ...grpc.CallOption) (*MsgUpdateMaxLeverageForPoolResponse, error) {
+	out := new(MsgUpdateMaxLeverageForPoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.perpetual.Msg/UpdateMaxLeverageForPool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -120,6 +130,7 @@ type MsgServer interface {
 	UpdateStopLoss(context.Context, *MsgUpdateStopLoss) (*MsgUpdateStopLossResponse, error)
 	ClosePositions(context.Context, *MsgClosePositions) (*MsgClosePositionsResponse, error)
 	UpdateTakeProfitPrice(context.Context, *MsgUpdateTakeProfitPrice) (*MsgUpdateTakeProfitPriceResponse, error)
+	UpdateMaxLeverageForPool(context.Context, *MsgUpdateMaxLeverageForPool) (*MsgUpdateMaxLeverageForPoolResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -150,6 +161,9 @@ func (UnimplementedMsgServer) ClosePositions(context.Context, *MsgClosePositions
 }
 func (UnimplementedMsgServer) UpdateTakeProfitPrice(context.Context, *MsgUpdateTakeProfitPrice) (*MsgUpdateTakeProfitPriceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateTakeProfitPrice not implemented")
+}
+func (UnimplementedMsgServer) UpdateMaxLeverageForPool(context.Context, *MsgUpdateMaxLeverageForPool) (*MsgUpdateMaxLeverageForPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMaxLeverageForPool not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -308,6 +322,24 @@ func _Msg_UpdateTakeProfitPrice_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateMaxLeverageForPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateMaxLeverageForPool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateMaxLeverageForPool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.perpetual.Msg/UpdateMaxLeverageForPool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateMaxLeverageForPool(ctx, req.(*MsgUpdateMaxLeverageForPool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -346,6 +378,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateTakeProfitPrice",
 			Handler:    _Msg_UpdateTakeProfitPrice_Handler,
+		},
+		{
+			MethodName: "UpdateMaxLeverageForPool",
+			Handler:    _Msg_UpdateMaxLeverageForPool_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
