@@ -14,11 +14,109 @@ import (
 	sync "sync"
 )
 
+var _ protoreflect.List = (*_LegacyParams_3_list)(nil)
+
+type _LegacyParams_3_list struct {
+	list *[]string
+}
+
+func (x *_LegacyParams_3_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_LegacyParams_3_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_LegacyParams_3_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_LegacyParams_3_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_LegacyParams_3_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message LegacyParams at list field BaseAssets as it is not of Message kind"))
+}
+
+func (x *_LegacyParams_3_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_LegacyParams_3_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_LegacyParams_3_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_LegacyParams_9_list)(nil)
+
+type _LegacyParams_9_list struct {
+	list *[]string
+}
+
+func (x *_LegacyParams_9_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_LegacyParams_9_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_LegacyParams_9_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_LegacyParams_9_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_LegacyParams_9_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message LegacyParams at list field AllowedPoolCreators as it is not of Message kind"))
+}
+
+func (x *_LegacyParams_9_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_LegacyParams_9_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_LegacyParams_9_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_LegacyParams                                       protoreflect.MessageDescriptor
-	fd_LegacyParams_pool_creation_fee                     protoreflect.FieldDescriptor
-	fd_LegacyParams_slippage_track_duration               protoreflect.FieldDescriptor
-	fd_LegacyParams_enable_base_currency_paired_pool_only protoreflect.FieldDescriptor
+	md_LegacyParams                                protoreflect.MessageDescriptor
+	fd_LegacyParams_pool_creation_fee              protoreflect.FieldDescriptor
+	fd_LegacyParams_slippage_track_duration        protoreflect.FieldDescriptor
+	fd_LegacyParams_base_assets                    protoreflect.FieldDescriptor
+	fd_LegacyParams_weight_breaking_fee_exponent   protoreflect.FieldDescriptor
+	fd_LegacyParams_weight_breaking_fee_multiplier protoreflect.FieldDescriptor
+	fd_LegacyParams_weight_breaking_fee_portion    protoreflect.FieldDescriptor
+	fd_LegacyParams_weight_recovery_fee_portion    protoreflect.FieldDescriptor
+	fd_LegacyParams_threshold_weight_difference    protoreflect.FieldDescriptor
+	fd_LegacyParams_allowed_pool_creators          protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -26,7 +124,13 @@ func init() {
 	md_LegacyParams = File_elys_amm_params_proto.Messages().ByName("LegacyParams")
 	fd_LegacyParams_pool_creation_fee = md_LegacyParams.Fields().ByName("pool_creation_fee")
 	fd_LegacyParams_slippage_track_duration = md_LegacyParams.Fields().ByName("slippage_track_duration")
-	fd_LegacyParams_enable_base_currency_paired_pool_only = md_LegacyParams.Fields().ByName("enable_base_currency_paired_pool_only")
+	fd_LegacyParams_base_assets = md_LegacyParams.Fields().ByName("base_assets")
+	fd_LegacyParams_weight_breaking_fee_exponent = md_LegacyParams.Fields().ByName("weight_breaking_fee_exponent")
+	fd_LegacyParams_weight_breaking_fee_multiplier = md_LegacyParams.Fields().ByName("weight_breaking_fee_multiplier")
+	fd_LegacyParams_weight_breaking_fee_portion = md_LegacyParams.Fields().ByName("weight_breaking_fee_portion")
+	fd_LegacyParams_weight_recovery_fee_portion = md_LegacyParams.Fields().ByName("weight_recovery_fee_portion")
+	fd_LegacyParams_threshold_weight_difference = md_LegacyParams.Fields().ByName("threshold_weight_difference")
+	fd_LegacyParams_allowed_pool_creators = md_LegacyParams.Fields().ByName("allowed_pool_creators")
 }
 
 var _ protoreflect.Message = (*fastReflection_LegacyParams)(nil)
@@ -106,9 +210,45 @@ func (x *fastReflection_LegacyParams) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if x.EnableBaseCurrencyPairedPoolOnly != false {
-		value := protoreflect.ValueOfBool(x.EnableBaseCurrencyPairedPoolOnly)
-		if !f(fd_LegacyParams_enable_base_currency_paired_pool_only, value) {
+	if len(x.BaseAssets) != 0 {
+		value := protoreflect.ValueOfList(&_LegacyParams_3_list{list: &x.BaseAssets})
+		if !f(fd_LegacyParams_base_assets, value) {
+			return
+		}
+	}
+	if x.WeightBreakingFeeExponent != "" {
+		value := protoreflect.ValueOfString(x.WeightBreakingFeeExponent)
+		if !f(fd_LegacyParams_weight_breaking_fee_exponent, value) {
+			return
+		}
+	}
+	if x.WeightBreakingFeeMultiplier != "" {
+		value := protoreflect.ValueOfString(x.WeightBreakingFeeMultiplier)
+		if !f(fd_LegacyParams_weight_breaking_fee_multiplier, value) {
+			return
+		}
+	}
+	if x.WeightBreakingFeePortion != "" {
+		value := protoreflect.ValueOfString(x.WeightBreakingFeePortion)
+		if !f(fd_LegacyParams_weight_breaking_fee_portion, value) {
+			return
+		}
+	}
+	if x.WeightRecoveryFeePortion != "" {
+		value := protoreflect.ValueOfString(x.WeightRecoveryFeePortion)
+		if !f(fd_LegacyParams_weight_recovery_fee_portion, value) {
+			return
+		}
+	}
+	if x.ThresholdWeightDifference != "" {
+		value := protoreflect.ValueOfString(x.ThresholdWeightDifference)
+		if !f(fd_LegacyParams_threshold_weight_difference, value) {
+			return
+		}
+	}
+	if len(x.AllowedPoolCreators) != 0 {
+		value := protoreflect.ValueOfList(&_LegacyParams_9_list{list: &x.AllowedPoolCreators})
+		if !f(fd_LegacyParams_allowed_pool_creators, value) {
 			return
 		}
 	}
@@ -131,8 +271,20 @@ func (x *fastReflection_LegacyParams) Has(fd protoreflect.FieldDescriptor) bool 
 		return x.PoolCreationFee != ""
 	case "elys.amm.LegacyParams.slippage_track_duration":
 		return x.SlippageTrackDuration != uint64(0)
-	case "elys.amm.LegacyParams.enable_base_currency_paired_pool_only":
-		return x.EnableBaseCurrencyPairedPoolOnly != false
+	case "elys.amm.LegacyParams.base_assets":
+		return len(x.BaseAssets) != 0
+	case "elys.amm.LegacyParams.weight_breaking_fee_exponent":
+		return x.WeightBreakingFeeExponent != ""
+	case "elys.amm.LegacyParams.weight_breaking_fee_multiplier":
+		return x.WeightBreakingFeeMultiplier != ""
+	case "elys.amm.LegacyParams.weight_breaking_fee_portion":
+		return x.WeightBreakingFeePortion != ""
+	case "elys.amm.LegacyParams.weight_recovery_fee_portion":
+		return x.WeightRecoveryFeePortion != ""
+	case "elys.amm.LegacyParams.threshold_weight_difference":
+		return x.ThresholdWeightDifference != ""
+	case "elys.amm.LegacyParams.allowed_pool_creators":
+		return len(x.AllowedPoolCreators) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.LegacyParams"))
@@ -153,8 +305,20 @@ func (x *fastReflection_LegacyParams) Clear(fd protoreflect.FieldDescriptor) {
 		x.PoolCreationFee = ""
 	case "elys.amm.LegacyParams.slippage_track_duration":
 		x.SlippageTrackDuration = uint64(0)
-	case "elys.amm.LegacyParams.enable_base_currency_paired_pool_only":
-		x.EnableBaseCurrencyPairedPoolOnly = false
+	case "elys.amm.LegacyParams.base_assets":
+		x.BaseAssets = nil
+	case "elys.amm.LegacyParams.weight_breaking_fee_exponent":
+		x.WeightBreakingFeeExponent = ""
+	case "elys.amm.LegacyParams.weight_breaking_fee_multiplier":
+		x.WeightBreakingFeeMultiplier = ""
+	case "elys.amm.LegacyParams.weight_breaking_fee_portion":
+		x.WeightBreakingFeePortion = ""
+	case "elys.amm.LegacyParams.weight_recovery_fee_portion":
+		x.WeightRecoveryFeePortion = ""
+	case "elys.amm.LegacyParams.threshold_weight_difference":
+		x.ThresholdWeightDifference = ""
+	case "elys.amm.LegacyParams.allowed_pool_creators":
+		x.AllowedPoolCreators = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.LegacyParams"))
@@ -177,9 +341,33 @@ func (x *fastReflection_LegacyParams) Get(descriptor protoreflect.FieldDescripto
 	case "elys.amm.LegacyParams.slippage_track_duration":
 		value := x.SlippageTrackDuration
 		return protoreflect.ValueOfUint64(value)
-	case "elys.amm.LegacyParams.enable_base_currency_paired_pool_only":
-		value := x.EnableBaseCurrencyPairedPoolOnly
-		return protoreflect.ValueOfBool(value)
+	case "elys.amm.LegacyParams.base_assets":
+		if len(x.BaseAssets) == 0 {
+			return protoreflect.ValueOfList(&_LegacyParams_3_list{})
+		}
+		listValue := &_LegacyParams_3_list{list: &x.BaseAssets}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.amm.LegacyParams.weight_breaking_fee_exponent":
+		value := x.WeightBreakingFeeExponent
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.LegacyParams.weight_breaking_fee_multiplier":
+		value := x.WeightBreakingFeeMultiplier
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.LegacyParams.weight_breaking_fee_portion":
+		value := x.WeightBreakingFeePortion
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.LegacyParams.weight_recovery_fee_portion":
+		value := x.WeightRecoveryFeePortion
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.LegacyParams.threshold_weight_difference":
+		value := x.ThresholdWeightDifference
+		return protoreflect.ValueOfString(value)
+	case "elys.amm.LegacyParams.allowed_pool_creators":
+		if len(x.AllowedPoolCreators) == 0 {
+			return protoreflect.ValueOfList(&_LegacyParams_9_list{})
+		}
+		listValue := &_LegacyParams_9_list{list: &x.AllowedPoolCreators}
+		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.LegacyParams"))
@@ -204,8 +392,24 @@ func (x *fastReflection_LegacyParams) Set(fd protoreflect.FieldDescriptor, value
 		x.PoolCreationFee = value.Interface().(string)
 	case "elys.amm.LegacyParams.slippage_track_duration":
 		x.SlippageTrackDuration = value.Uint()
-	case "elys.amm.LegacyParams.enable_base_currency_paired_pool_only":
-		x.EnableBaseCurrencyPairedPoolOnly = value.Bool()
+	case "elys.amm.LegacyParams.base_assets":
+		lv := value.List()
+		clv := lv.(*_LegacyParams_3_list)
+		x.BaseAssets = *clv.list
+	case "elys.amm.LegacyParams.weight_breaking_fee_exponent":
+		x.WeightBreakingFeeExponent = value.Interface().(string)
+	case "elys.amm.LegacyParams.weight_breaking_fee_multiplier":
+		x.WeightBreakingFeeMultiplier = value.Interface().(string)
+	case "elys.amm.LegacyParams.weight_breaking_fee_portion":
+		x.WeightBreakingFeePortion = value.Interface().(string)
+	case "elys.amm.LegacyParams.weight_recovery_fee_portion":
+		x.WeightRecoveryFeePortion = value.Interface().(string)
+	case "elys.amm.LegacyParams.threshold_weight_difference":
+		x.ThresholdWeightDifference = value.Interface().(string)
+	case "elys.amm.LegacyParams.allowed_pool_creators":
+		lv := value.List()
+		clv := lv.(*_LegacyParams_9_list)
+		x.AllowedPoolCreators = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.LegacyParams"))
@@ -226,12 +430,32 @@ func (x *fastReflection_LegacyParams) Set(fd protoreflect.FieldDescriptor, value
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_LegacyParams) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.amm.LegacyParams.base_assets":
+		if x.BaseAssets == nil {
+			x.BaseAssets = []string{}
+		}
+		value := &_LegacyParams_3_list{list: &x.BaseAssets}
+		return protoreflect.ValueOfList(value)
+	case "elys.amm.LegacyParams.allowed_pool_creators":
+		if x.AllowedPoolCreators == nil {
+			x.AllowedPoolCreators = []string{}
+		}
+		value := &_LegacyParams_9_list{list: &x.AllowedPoolCreators}
+		return protoreflect.ValueOfList(value)
 	case "elys.amm.LegacyParams.pool_creation_fee":
 		panic(fmt.Errorf("field pool_creation_fee of message elys.amm.LegacyParams is not mutable"))
 	case "elys.amm.LegacyParams.slippage_track_duration":
 		panic(fmt.Errorf("field slippage_track_duration of message elys.amm.LegacyParams is not mutable"))
-	case "elys.amm.LegacyParams.enable_base_currency_paired_pool_only":
-		panic(fmt.Errorf("field enable_base_currency_paired_pool_only of message elys.amm.LegacyParams is not mutable"))
+	case "elys.amm.LegacyParams.weight_breaking_fee_exponent":
+		panic(fmt.Errorf("field weight_breaking_fee_exponent of message elys.amm.LegacyParams is not mutable"))
+	case "elys.amm.LegacyParams.weight_breaking_fee_multiplier":
+		panic(fmt.Errorf("field weight_breaking_fee_multiplier of message elys.amm.LegacyParams is not mutable"))
+	case "elys.amm.LegacyParams.weight_breaking_fee_portion":
+		panic(fmt.Errorf("field weight_breaking_fee_portion of message elys.amm.LegacyParams is not mutable"))
+	case "elys.amm.LegacyParams.weight_recovery_fee_portion":
+		panic(fmt.Errorf("field weight_recovery_fee_portion of message elys.amm.LegacyParams is not mutable"))
+	case "elys.amm.LegacyParams.threshold_weight_difference":
+		panic(fmt.Errorf("field threshold_weight_difference of message elys.amm.LegacyParams is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.LegacyParams"))
@@ -249,8 +473,22 @@ func (x *fastReflection_LegacyParams) NewField(fd protoreflect.FieldDescriptor) 
 		return protoreflect.ValueOfString("")
 	case "elys.amm.LegacyParams.slippage_track_duration":
 		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.amm.LegacyParams.enable_base_currency_paired_pool_only":
-		return protoreflect.ValueOfBool(false)
+	case "elys.amm.LegacyParams.base_assets":
+		list := []string{}
+		return protoreflect.ValueOfList(&_LegacyParams_3_list{list: &list})
+	case "elys.amm.LegacyParams.weight_breaking_fee_exponent":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.LegacyParams.weight_breaking_fee_multiplier":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.LegacyParams.weight_breaking_fee_portion":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.LegacyParams.weight_recovery_fee_portion":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.LegacyParams.threshold_weight_difference":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.LegacyParams.allowed_pool_creators":
+		list := []string{}
+		return protoreflect.ValueOfList(&_LegacyParams_9_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.LegacyParams"))
@@ -327,8 +565,37 @@ func (x *fastReflection_LegacyParams) ProtoMethods() *protoiface.Methods {
 		if x.SlippageTrackDuration != 0 {
 			n += 1 + runtime.Sov(uint64(x.SlippageTrackDuration))
 		}
-		if x.EnableBaseCurrencyPairedPoolOnly {
-			n += 2
+		if len(x.BaseAssets) > 0 {
+			for _, s := range x.BaseAssets {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		l = len(x.WeightBreakingFeeExponent)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.WeightBreakingFeeMultiplier)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.WeightBreakingFeePortion)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.WeightRecoveryFeePortion)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.ThresholdWeightDifference)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.AllowedPoolCreators) > 0 {
+			for _, s := range x.AllowedPoolCreators {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -359,15 +626,58 @@ func (x *fastReflection_LegacyParams) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.EnableBaseCurrencyPairedPoolOnly {
-			i--
-			if x.EnableBaseCurrencyPairedPoolOnly {
-				dAtA[i] = 1
-			} else {
-				dAtA[i] = 0
+		if len(x.AllowedPoolCreators) > 0 {
+			for iNdEx := len(x.AllowedPoolCreators) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.AllowedPoolCreators[iNdEx])
+				copy(dAtA[i:], x.AllowedPoolCreators[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AllowedPoolCreators[iNdEx])))
+				i--
+				dAtA[i] = 0x4a
 			}
+		}
+		if len(x.ThresholdWeightDifference) > 0 {
+			i -= len(x.ThresholdWeightDifference)
+			copy(dAtA[i:], x.ThresholdWeightDifference)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ThresholdWeightDifference)))
 			i--
-			dAtA[i] = 0x18
+			dAtA[i] = 0x42
+		}
+		if len(x.WeightRecoveryFeePortion) > 0 {
+			i -= len(x.WeightRecoveryFeePortion)
+			copy(dAtA[i:], x.WeightRecoveryFeePortion)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightRecoveryFeePortion)))
+			i--
+			dAtA[i] = 0x3a
+		}
+		if len(x.WeightBreakingFeePortion) > 0 {
+			i -= len(x.WeightBreakingFeePortion)
+			copy(dAtA[i:], x.WeightBreakingFeePortion)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBreakingFeePortion)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if len(x.WeightBreakingFeeMultiplier) > 0 {
+			i -= len(x.WeightBreakingFeeMultiplier)
+			copy(dAtA[i:], x.WeightBreakingFeeMultiplier)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBreakingFeeMultiplier)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.WeightBreakingFeeExponent) > 0 {
+			i -= len(x.WeightBreakingFeeExponent)
+			copy(dAtA[i:], x.WeightBreakingFeeExponent)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBreakingFeeExponent)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.BaseAssets) > 0 {
+			for iNdEx := len(x.BaseAssets) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.BaseAssets[iNdEx])
+				copy(dAtA[i:], x.BaseAssets[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BaseAssets[iNdEx])))
+				i--
+				dAtA[i] = 0x1a
+			}
 		}
 		if x.SlippageTrackDuration != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.SlippageTrackDuration))
@@ -482,10 +792,10 @@ func (x *fastReflection_LegacyParams) ProtoMethods() *protoiface.Methods {
 					}
 				}
 			case 3:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EnableBaseCurrencyPairedPoolOnly", wireType)
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BaseAssets", wireType)
 				}
-				var v int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -495,12 +805,216 @@ func (x *fastReflection_LegacyParams) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					v |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				x.EnableBaseCurrencyPairedPoolOnly = bool(v != 0)
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BaseAssets = append(x.BaseAssets, string(dAtA[iNdEx:postIndex]))
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBreakingFeeExponent", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.WeightBreakingFeeExponent = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBreakingFeeMultiplier", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.WeightBreakingFeeMultiplier = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBreakingFeePortion", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.WeightBreakingFeePortion = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightRecoveryFeePortion", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.WeightRecoveryFeePortion = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 8:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ThresholdWeightDifference", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ThresholdWeightDifference = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 9:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AllowedPoolCreators", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AllowedPoolCreators = append(x.AllowedPoolCreators, string(dAtA[iNdEx:postIndex]))
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -629,16 +1143,17 @@ func (x *_Params_9_list) IsValid() bool {
 }
 
 var (
-	md_Params                                protoreflect.MessageDescriptor
-	fd_Params_pool_creation_fee              protoreflect.FieldDescriptor
-	fd_Params_slippage_track_duration        protoreflect.FieldDescriptor
-	fd_Params_base_assets                    protoreflect.FieldDescriptor
-	fd_Params_weight_breaking_fee_exponent   protoreflect.FieldDescriptor
-	fd_Params_weight_breaking_fee_multiplier protoreflect.FieldDescriptor
-	fd_Params_weight_breaking_fee_portion    protoreflect.FieldDescriptor
-	fd_Params_weight_recovery_fee_portion    protoreflect.FieldDescriptor
-	fd_Params_threshold_weight_difference    protoreflect.FieldDescriptor
-	fd_Params_allowed_pool_creators          protoreflect.FieldDescriptor
+	md_Params                                      protoreflect.MessageDescriptor
+	fd_Params_pool_creation_fee                    protoreflect.FieldDescriptor
+	fd_Params_slippage_track_duration              protoreflect.FieldDescriptor
+	fd_Params_base_assets                          protoreflect.FieldDescriptor
+	fd_Params_weight_breaking_fee_exponent         protoreflect.FieldDescriptor
+	fd_Params_weight_breaking_fee_multiplier       protoreflect.FieldDescriptor
+	fd_Params_weight_breaking_fee_portion          protoreflect.FieldDescriptor
+	fd_Params_weight_recovery_fee_portion          protoreflect.FieldDescriptor
+	fd_Params_threshold_weight_difference          protoreflect.FieldDescriptor
+	fd_Params_allowed_pool_creators                protoreflect.FieldDescriptor
+	fd_Params_threshold_weight_difference_swap_fee protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -653,6 +1168,7 @@ func init() {
 	fd_Params_weight_recovery_fee_portion = md_Params.Fields().ByName("weight_recovery_fee_portion")
 	fd_Params_threshold_weight_difference = md_Params.Fields().ByName("threshold_weight_difference")
 	fd_Params_allowed_pool_creators = md_Params.Fields().ByName("allowed_pool_creators")
+	fd_Params_threshold_weight_difference_swap_fee = md_Params.Fields().ByName("threshold_weight_difference_swap_fee")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -774,6 +1290,12 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if x.ThresholdWeightDifferenceSwapFee != "" {
+		value := protoreflect.ValueOfString(x.ThresholdWeightDifferenceSwapFee)
+		if !f(fd_Params_threshold_weight_difference_swap_fee, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -807,6 +1329,8 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.ThresholdWeightDifference != ""
 	case "elys.amm.Params.allowed_pool_creators":
 		return len(x.AllowedPoolCreators) != 0
+	case "elys.amm.Params.threshold_weight_difference_swap_fee":
+		return x.ThresholdWeightDifferenceSwapFee != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.Params"))
@@ -841,6 +1365,8 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.ThresholdWeightDifference = ""
 	case "elys.amm.Params.allowed_pool_creators":
 		x.AllowedPoolCreators = nil
+	case "elys.amm.Params.threshold_weight_difference_swap_fee":
+		x.ThresholdWeightDifferenceSwapFee = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.Params"))
@@ -890,6 +1416,9 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 		}
 		listValue := &_Params_9_list{list: &x.AllowedPoolCreators}
 		return protoreflect.ValueOfList(listValue)
+	case "elys.amm.Params.threshold_weight_difference_swap_fee":
+		value := x.ThresholdWeightDifferenceSwapFee
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.Params"))
@@ -932,6 +1461,8 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		lv := value.List()
 		clv := lv.(*_Params_9_list)
 		x.AllowedPoolCreators = *clv.list
+	case "elys.amm.Params.threshold_weight_difference_swap_fee":
+		x.ThresholdWeightDifferenceSwapFee = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.Params"))
@@ -978,6 +1509,8 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field weight_recovery_fee_portion of message elys.amm.Params is not mutable"))
 	case "elys.amm.Params.threshold_weight_difference":
 		panic(fmt.Errorf("field threshold_weight_difference of message elys.amm.Params is not mutable"))
+	case "elys.amm.Params.threshold_weight_difference_swap_fee":
+		panic(fmt.Errorf("field threshold_weight_difference_swap_fee of message elys.amm.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.Params"))
@@ -1011,6 +1544,8 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 	case "elys.amm.Params.allowed_pool_creators":
 		list := []string{}
 		return protoreflect.ValueOfList(&_Params_9_list{list: &list})
+	case "elys.amm.Params.threshold_weight_difference_swap_fee":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.Params"))
@@ -1119,6 +1654,10 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
+		l = len(x.ThresholdWeightDifferenceSwapFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -1147,6 +1686,13 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.ThresholdWeightDifferenceSwapFee) > 0 {
+			i -= len(x.ThresholdWeightDifferenceSwapFee)
+			copy(dAtA[i:], x.ThresholdWeightDifferenceSwapFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ThresholdWeightDifferenceSwapFee)))
+			i--
+			dAtA[i] = 0x52
 		}
 		if len(x.AllowedPoolCreators) > 0 {
 			for iNdEx := len(x.AllowedPoolCreators) - 1; iNdEx >= 0; iNdEx-- {
@@ -1537,6 +2083,38 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				}
 				x.AllowedPoolCreators = append(x.AllowedPoolCreators, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
+			case 10:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ThresholdWeightDifferenceSwapFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ThresholdWeightDifferenceSwapFee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1591,9 +2169,15 @@ type LegacyParams struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PoolCreationFee                  string `protobuf:"bytes,1,opt,name=pool_creation_fee,json=poolCreationFee,proto3" json:"pool_creation_fee,omitempty"`
-	SlippageTrackDuration            uint64 `protobuf:"varint,2,opt,name=slippage_track_duration,json=slippageTrackDuration,proto3" json:"slippage_track_duration,omitempty"` // default 1 week: 604,800
-	EnableBaseCurrencyPairedPoolOnly bool   `protobuf:"varint,3,opt,name=enable_base_currency_paired_pool_only,json=enableBaseCurrencyPairedPoolOnly,proto3" json:"enable_base_currency_paired_pool_only,omitempty"`
+	PoolCreationFee             string   `protobuf:"bytes,1,opt,name=pool_creation_fee,json=poolCreationFee,proto3" json:"pool_creation_fee,omitempty"`
+	SlippageTrackDuration       uint64   `protobuf:"varint,2,opt,name=slippage_track_duration,json=slippageTrackDuration,proto3" json:"slippage_track_duration,omitempty"` // default 1 week: 604,800
+	BaseAssets                  []string `protobuf:"bytes,3,rep,name=base_assets,json=baseAssets,proto3" json:"base_assets,omitempty"`
+	WeightBreakingFeeExponent   string   `protobuf:"bytes,4,opt,name=weight_breaking_fee_exponent,json=weightBreakingFeeExponent,proto3" json:"weight_breaking_fee_exponent,omitempty"`
+	WeightBreakingFeeMultiplier string   `protobuf:"bytes,5,opt,name=weight_breaking_fee_multiplier,json=weightBreakingFeeMultiplier,proto3" json:"weight_breaking_fee_multiplier,omitempty"`
+	WeightBreakingFeePortion    string   `protobuf:"bytes,6,opt,name=weight_breaking_fee_portion,json=weightBreakingFeePortion,proto3" json:"weight_breaking_fee_portion,omitempty"`
+	WeightRecoveryFeePortion    string   `protobuf:"bytes,7,opt,name=weight_recovery_fee_portion,json=weightRecoveryFeePortion,proto3" json:"weight_recovery_fee_portion,omitempty"`
+	ThresholdWeightDifference   string   `protobuf:"bytes,8,opt,name=threshold_weight_difference,json=thresholdWeightDifference,proto3" json:"threshold_weight_difference,omitempty"`
+	AllowedPoolCreators         []string `protobuf:"bytes,9,rep,name=allowed_pool_creators,json=allowedPoolCreators,proto3" json:"allowed_pool_creators,omitempty"`
 }
 
 func (x *LegacyParams) Reset() {
@@ -1630,11 +2214,53 @@ func (x *LegacyParams) GetSlippageTrackDuration() uint64 {
 	return 0
 }
 
-func (x *LegacyParams) GetEnableBaseCurrencyPairedPoolOnly() bool {
+func (x *LegacyParams) GetBaseAssets() []string {
 	if x != nil {
-		return x.EnableBaseCurrencyPairedPoolOnly
+		return x.BaseAssets
 	}
-	return false
+	return nil
+}
+
+func (x *LegacyParams) GetWeightBreakingFeeExponent() string {
+	if x != nil {
+		return x.WeightBreakingFeeExponent
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetWeightBreakingFeeMultiplier() string {
+	if x != nil {
+		return x.WeightBreakingFeeMultiplier
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetWeightBreakingFeePortion() string {
+	if x != nil {
+		return x.WeightBreakingFeePortion
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetWeightRecoveryFeePortion() string {
+	if x != nil {
+		return x.WeightRecoveryFeePortion
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetThresholdWeightDifference() string {
+	if x != nil {
+		return x.ThresholdWeightDifference
+	}
+	return ""
+}
+
+func (x *LegacyParams) GetAllowedPoolCreators() []string {
+	if x != nil {
+		return x.AllowedPoolCreators
+	}
+	return nil
 }
 
 type Params struct {
@@ -1642,15 +2268,16 @@ type Params struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PoolCreationFee             string   `protobuf:"bytes,1,opt,name=pool_creation_fee,json=poolCreationFee,proto3" json:"pool_creation_fee,omitempty"`
-	SlippageTrackDuration       uint64   `protobuf:"varint,2,opt,name=slippage_track_duration,json=slippageTrackDuration,proto3" json:"slippage_track_duration,omitempty"` // default 1 week: 604,800
-	BaseAssets                  []string `protobuf:"bytes,3,rep,name=base_assets,json=baseAssets,proto3" json:"base_assets,omitempty"`
-	WeightBreakingFeeExponent   string   `protobuf:"bytes,4,opt,name=weight_breaking_fee_exponent,json=weightBreakingFeeExponent,proto3" json:"weight_breaking_fee_exponent,omitempty"`
-	WeightBreakingFeeMultiplier string   `protobuf:"bytes,5,opt,name=weight_breaking_fee_multiplier,json=weightBreakingFeeMultiplier,proto3" json:"weight_breaking_fee_multiplier,omitempty"`
-	WeightBreakingFeePortion    string   `protobuf:"bytes,6,opt,name=weight_breaking_fee_portion,json=weightBreakingFeePortion,proto3" json:"weight_breaking_fee_portion,omitempty"`
-	WeightRecoveryFeePortion    string   `protobuf:"bytes,7,opt,name=weight_recovery_fee_portion,json=weightRecoveryFeePortion,proto3" json:"weight_recovery_fee_portion,omitempty"`
-	ThresholdWeightDifference   string   `protobuf:"bytes,8,opt,name=threshold_weight_difference,json=thresholdWeightDifference,proto3" json:"threshold_weight_difference,omitempty"`
-	AllowedPoolCreators         []string `protobuf:"bytes,9,rep,name=allowed_pool_creators,json=allowedPoolCreators,proto3" json:"allowed_pool_creators,omitempty"`
+	PoolCreationFee                  string   `protobuf:"bytes,1,opt,name=pool_creation_fee,json=poolCreationFee,proto3" json:"pool_creation_fee,omitempty"`
+	SlippageTrackDuration            uint64   `protobuf:"varint,2,opt,name=slippage_track_duration,json=slippageTrackDuration,proto3" json:"slippage_track_duration,omitempty"` // default 1 week: 604,800
+	BaseAssets                       []string `protobuf:"bytes,3,rep,name=base_assets,json=baseAssets,proto3" json:"base_assets,omitempty"`
+	WeightBreakingFeeExponent        string   `protobuf:"bytes,4,opt,name=weight_breaking_fee_exponent,json=weightBreakingFeeExponent,proto3" json:"weight_breaking_fee_exponent,omitempty"`
+	WeightBreakingFeeMultiplier      string   `protobuf:"bytes,5,opt,name=weight_breaking_fee_multiplier,json=weightBreakingFeeMultiplier,proto3" json:"weight_breaking_fee_multiplier,omitempty"`
+	WeightBreakingFeePortion         string   `protobuf:"bytes,6,opt,name=weight_breaking_fee_portion,json=weightBreakingFeePortion,proto3" json:"weight_breaking_fee_portion,omitempty"`
+	WeightRecoveryFeePortion         string   `protobuf:"bytes,7,opt,name=weight_recovery_fee_portion,json=weightRecoveryFeePortion,proto3" json:"weight_recovery_fee_portion,omitempty"`
+	ThresholdWeightDifference        string   `protobuf:"bytes,8,opt,name=threshold_weight_difference,json=thresholdWeightDifference,proto3" json:"threshold_weight_difference,omitempty"`
+	AllowedPoolCreators              []string `protobuf:"bytes,9,rep,name=allowed_pool_creators,json=allowedPoolCreators,proto3" json:"allowed_pool_creators,omitempty"`
+	ThresholdWeightDifferenceSwapFee string   `protobuf:"bytes,10,opt,name=threshold_weight_difference_swap_fee,json=thresholdWeightDifferenceSwapFee,proto3" json:"threshold_weight_difference_swap_fee,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -1736,6 +2363,13 @@ func (x *Params) GetAllowedPoolCreators() []string {
 	return nil
 }
 
+func (x *Params) GetThresholdWeightDifferenceSwapFee() string {
+	if x != nil {
+		return x.ThresholdWeightDifferenceSwapFee
+	}
+	return ""
+}
+
 var File_elys_amm_params_proto protoreflect.FileDescriptor
 
 var file_elys_amm_params_proto_rawDesc = []byte{
@@ -1744,7 +2378,7 @@ var file_elys_amm_params_proto_rawDesc = []byte{
 	0x6d, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67,
 	0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x22, 0xf0, 0x01, 0x0a, 0x0c, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x50, 0x61, 0x72,
+	0x74, 0x6f, 0x22, 0xb7, 0x06, 0x0a, 0x0c, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x50, 0x61, 0x72,
 	0x61, 0x6d, 0x73, 0x12, 0x57, 0x0a, 0x11, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x63, 0x72, 0x65, 0x61,
 	0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b,
 	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
@@ -1754,72 +2388,117 @@ var file_elys_amm_params_proto_rawDesc = []byte{
 	0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x5f, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x5f, 0x64,
 	0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x15, 0x73,
 	0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x44, 0x75, 0x72, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x4f, 0x0a, 0x25, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x62,
-	0x61, 0x73, 0x65, 0x5f, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x63, 0x79, 0x5f, 0x70, 0x61, 0x69,
-	0x72, 0x65, 0x64, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x6f, 0x6e, 0x6c, 0x79, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x08, 0x52, 0x20, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x42, 0x61, 0x73, 0x65, 0x43,
-	0x75, 0x72, 0x72, 0x65, 0x6e, 0x63, 0x79, 0x50, 0x61, 0x69, 0x72, 0x65, 0x64, 0x50, 0x6f, 0x6f,
-	0x6c, 0x4f, 0x6e, 0x6c, 0x79, 0x22, 0xb1, 0x06, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x12, 0x57, 0x0a, 0x11, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x63, 0x72, 0x65, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f,
-	0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
-	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0f, 0x70, 0x6f, 0x6f, 0x6c, 0x43, 0x72,
-	0x65, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x65, 0x65, 0x12, 0x36, 0x0a, 0x17, 0x73, 0x6c, 0x69,
-	0x70, 0x70, 0x61, 0x67, 0x65, 0x5f, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x5f, 0x64, 0x75, 0x72, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x15, 0x73, 0x6c, 0x69, 0x70,
-	0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b, 0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x12, 0x1f, 0x0a, 0x0b, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x73,
-	0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0a, 0x62, 0x61, 0x73, 0x65, 0x41, 0x73, 0x73, 0x65,
-	0x74, 0x73, 0x12, 0x72, 0x0a, 0x1c, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x72, 0x65,
-	0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65,
-	0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1f, 0x0a, 0x0b, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x61, 0x73, 0x73,
+	0x65, 0x74, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0a, 0x62, 0x61, 0x73, 0x65, 0x41,
+	0x73, 0x73, 0x65, 0x74, 0x73, 0x12, 0x72, 0x0a, 0x1c, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f,
+	0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x65, 0x78, 0x70,
+	0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x19,
+	0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65,
+	0x65, 0x45, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x12, 0x76, 0x0a, 0x1e, 0x77, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x5f, 0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65,
+	0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
+	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61,
+	0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65,
+	0x72, 0x12, 0x70, 0x0a, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x72, 0x65, 0x61,
+	0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e,
+	0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x18, 0x77, 0x65, 0x69, 0x67, 0x68,
+	0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x50, 0x6f, 0x72, 0x74,
+	0x69, 0x6f, 0x6e, 0x12, 0x70, 0x0a, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x72, 0x65,
+	0x63, 0x6f, 0x76, 0x65, 0x72, 0x79, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x6f, 0x72, 0x74, 0x69,
+	0x6f, 0x6e, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
 	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
 	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
-	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x19, 0x77, 0x65, 0x69,
-	0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x45, 0x78,
-	0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x12, 0x76, 0x0a, 0x1e, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
-	0x5f, 0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x6d, 0x75,
-	0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x18, 0x77, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x79, 0x46, 0x65, 0x65, 0x50, 0x6f,
+	0x72, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x71, 0x0a, 0x1b, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f,
+	0x6c, 0x64, 0x5f, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x64, 0x69, 0x66, 0x66, 0x65, 0x72,
+	0x65, 0x6e, 0x63, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x19, 0x74,
+	0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x44, 0x69,
+	0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x12, 0x32, 0x0a, 0x15, 0x61, 0x6c, 0x6c, 0x6f,
+	0x77, 0x65, 0x64, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72,
+	0x73, 0x18, 0x09, 0x20, 0x03, 0x28, 0x09, 0x52, 0x13, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64,
+	0x50, 0x6f, 0x6f, 0x6c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x73, 0x22, 0xb5, 0x07, 0x0a,
+	0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x57, 0x0a, 0x11, 0x70, 0x6f, 0x6f, 0x6c, 0x5f,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e,
+	0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52,
+	0x0f, 0x70, 0x6f, 0x6f, 0x6c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x65, 0x65,
+	0x12, 0x36, 0x0a, 0x17, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x5f, 0x74, 0x72, 0x61,
+	0x63, 0x6b, 0x5f, 0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x04, 0x52, 0x15, 0x73, 0x6c, 0x69, 0x70, 0x70, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x63, 0x6b,
+	0x44, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1f, 0x0a, 0x0b, 0x62, 0x61, 0x73, 0x65,
+	0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0a, 0x62,
+	0x61, 0x73, 0x65, 0x41, 0x73, 0x73, 0x65, 0x74, 0x73, 0x12, 0x72, 0x0a, 0x1c, 0x77, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x5f, 0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65,
+	0x5f, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
+	0x65, 0x63, 0x52, 0x19, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69,
+	0x6e, 0x67, 0x46, 0x65, 0x65, 0x45, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x12, 0x76, 0x0a,
+	0x1e, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67,
+	0x5f, 0x66, 0x65, 0x65, 0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65, 0x72, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
+	0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69,
+	0x70, 0x6c, 0x69, 0x65, 0x72, 0x12, 0x70, 0x0a, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f,
+	0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x6f, 0x72,
+	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x18, 0x77,
+	0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65,
+	0x50, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x70, 0x0a, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68,
+	0x74, 0x5f, 0x72, 0x65, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x79, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70,
+	0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
+	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
+	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
+	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
+	0x18, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x79, 0x46,
+	0x65, 0x65, 0x50, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x71, 0x0a, 0x1b, 0x74, 0x68, 0x72,
+	0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x5f, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x64, 0x69,
+	0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
 	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
 	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79,
 	0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
-	0x63, 0x52, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e,
-	0x67, 0x46, 0x65, 0x65, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x69, 0x65, 0x72, 0x12, 0x70,
-	0x0a, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x72, 0x65, 0x61, 0x6b, 0x69, 0x6e,
-	0x67, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x06, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
-	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x18, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x72,
-	0x65, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x46, 0x65, 0x65, 0x50, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e,
-	0x12, 0x70, 0x0a, 0x1b, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x72, 0x65, 0x63, 0x6f, 0x76,
-	0x65, 0x72, 0x79, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x6f, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x18,
-	0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
-	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x18, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
-	0x52, 0x65, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x79, 0x46, 0x65, 0x65, 0x50, 0x6f, 0x72, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x71, 0x0a, 0x1b, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x5f,
-	0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x64, 0x69, 0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63,
-	0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
-	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
-	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x19, 0x74, 0x68, 0x72, 0x65,
-	0x73, 0x68, 0x6f, 0x6c, 0x64, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x44, 0x69, 0x66, 0x66, 0x65,
-	0x72, 0x65, 0x6e, 0x63, 0x65, 0x12, 0x32, 0x0a, 0x15, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64,
-	0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x73, 0x18, 0x09,
-	0x20, 0x03, 0x28, 0x09, 0x52, 0x13, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x50, 0x6f, 0x6f,
-	0x6c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x73, 0x42, 0x87, 0x01, 0x0a, 0x0c, 0x63, 0x6f,
-	0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f,
-	0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2f, 0x61, 0x6d, 0x6d, 0xa2, 0x02, 0x03, 0x45, 0x41, 0x58, 0xaa, 0x02, 0x08, 0x45, 0x6c, 0x79,
-	0x73, 0x2e, 0x41, 0x6d, 0x6d, 0xca, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d,
-	0xe2, 0x02, 0x14, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d,
-	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a,
-	0x41, 0x6d, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x63, 0x52, 0x19, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x57, 0x65, 0x69, 0x67,
+	0x68, 0x74, 0x44, 0x69, 0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x12, 0x32, 0x0a, 0x15,
+	0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x63, 0x72, 0x65,
+	0x61, 0x74, 0x6f, 0x72, 0x73, 0x18, 0x09, 0x20, 0x03, 0x28, 0x09, 0x52, 0x13, 0x61, 0x6c, 0x6c,
+	0x6f, 0x77, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x73,
+	0x12, 0x81, 0x01, 0x0a, 0x24, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x5f, 0x77,
+	0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x64, 0x69, 0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65,
+	0x5f, 0x73, 0x77, 0x61, 0x70, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
+	0x65, 0x63, 0x52, 0x20, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x57, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x44, 0x69, 0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x53, 0x77, 0x61,
+	0x70, 0x46, 0x65, 0x65, 0x42, 0x87, 0x01, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x61, 0x6d, 0x6d, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f,
+	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x6d, 0x6d, 0xa2,
+	0x02, 0x03, 0x45, 0x41, 0x58, 0xaa, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x41, 0x6d, 0x6d,
+	0xca, 0x02, 0x08, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0xe2, 0x02, 0x14, 0x45, 0x6c,
+	0x79, 0x73, 0x5c, 0x41, 0x6d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x74, 0x61, 0xea, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x41, 0x6d, 0x6d, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

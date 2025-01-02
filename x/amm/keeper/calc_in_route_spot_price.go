@@ -90,16 +90,16 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		// Apply discount to swap fee
 		swapFee = types.ApplyDiscount(swapFee, discount)
 
-		// Calculate the total discounted swap fee
-		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
-
 		// Estimate swap
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		cacheCtx, _ := ctx.CacheContext()
-		tokenOut, swapSlippage, _, weightBalanceBonus, _, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, sdkmath.LegacyOneDec())
+		tokenOut, swapSlippage, _, weightBalanceBonus, _, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, sdkmath.LegacyOneDec())
 		if err != nil {
 			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
+
+		// Calculate the total discounted swap fee
+		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
 		if tokenOut.IsZero() {
 			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), types.ErrAmountTooLow
