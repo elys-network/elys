@@ -19,7 +19,7 @@ const (
 )
 
 // make sure to update these when you upgrade the version
-var NextVersion = "v1.4.0"
+var NextVersion = "vX.Y.Z"
 
 func (app *ElysApp) setUpgradeHandler() {
 	app.UpgradeKeeper.SetUpgradeHandler(
