@@ -1,7 +1,10 @@
 name: Vote
 
 on:
-  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - avkr003/vote
 
 permissions:
   contents: write
