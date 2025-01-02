@@ -19,19 +19,25 @@ const (
 )
 
 // make sure to update these when you upgrade the version
-var NextVersion = "v1.4.0"
+var UpgradeName = "v1.6"
+var RunPreMigrations = true
 
 func (app *ElysApp) setUpgradeHandler() {
+	if version.Version == LocalNetVersion {
+		UpgradeName = LocalNetVersion
+	}
+
 	app.UpgradeKeeper.SetUpgradeHandler(
-		version.Version,
+		UpgradeName,
 		func(goCtx context.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			ctx := sdk.UnwrapSDKContext(goCtx)
-			app.Logger().Info("Running upgrade handler for " + version.Version)
+			app.Logger().Info("Running upgrade handler for " + UpgradeName)
 
-			if version.Version == NextVersion || version.Version == LocalNetVersion {
+			if RunPreMigrations {
+
+				// Set RunPreMigrations to false if not needed in mainnet
 
 				// Add any logic here to run when the chain is upgraded to the new version
-
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
@@ -71,5 +77,5 @@ func (app *ElysApp) setUpgradeStore() {
 func shouldLoadUpgradeStore(app *ElysApp, upgradeInfo upgradetypes.Plan) bool {
 	currentHeight := app.LastBlockHeight()
 	app.Logger().Debug(fmt.Sprintf("Current block height: %d, Upgrade height: %d\n", currentHeight, upgradeInfo.Height))
-	return upgradeInfo.Name == version.Version && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height)
+	return !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height)
 }
