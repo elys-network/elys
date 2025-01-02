@@ -336,6 +336,10 @@ func (p *Pool) SwapOutAmtGivenIn(
 		if initialWeightDistance.GT(params.ThresholdWeightDifference) {
 			weightBalanceBonus = weightRecoveryReward
 		}
+
+		if initialWeightDistance.GT(params.ThresholdWeightDifferenceSwapFee) {
+			swapFee = sdkmath.LegacyZeroDec()
+		}
 	}
 
 	if swapFee.GTE(sdkmath.LegacyOneDec()) {
