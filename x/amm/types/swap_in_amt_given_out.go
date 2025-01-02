@@ -51,7 +51,7 @@ func (p Pool) CalcGivenOutSlippage(
 func (p *Pool) SwapInAmtGivenOut(
 	ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool,
 	tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec, accPoolKeeper AccountedPoolKeeper, weightBreakingFeePerpetualFactor sdkmath.LegacyDec, params Params) (
-	tokenIn sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, oracleInAmount sdkmath.LegacyDec, err error,
+	tokenIn sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, oracleInAmount sdkmath.LegacyDec, swapFeeFinal sdkmath.LegacyDec, err error,
 ) {
 	// Fixed gas consumption per swap to prevent spam
 	ctx.GasMeter().ConsumeGas(BalancerGasFeeForSwap, "balancer swap computation")
@@ -60,24 +60,24 @@ func (p *Pool) SwapInAmtGivenOut(
 	if !p.PoolParams.UseOracle {
 		balancerInCoin, slippage, err := p.CalcInAmtGivenOut(ctx, oracleKeeper, snapshot, tokensOut, tokenInDenom, swapFee, accPoolKeeper)
 		if err != nil {
-			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
-		return balancerInCoin, slippage, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
+		return balancerInCoin, slippage, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 	}
 
 	tokenOut, poolAssetOut, poolAssetIn, err := p.parsePoolAssets(tokensOut, tokenInDenom)
 	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
 	// ensure token prices for in/out tokens set properly
 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
 	if inTokenPrice.IsZero() {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
 	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOut.Denom)
 	if outTokenPrice.IsZero() {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
 
 	accountedAssets := p.GetAccountedBalance(ctx, accPoolKeeper, p.PoolAssets)
@@ -91,11 +91,11 @@ func (p *Pool) SwapInAmtGivenOut(
 
 	externalLiquidityRatio, err := p.GetAssetExternalLiquidityRatio(tokenOut.Denom)
 	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	// Ensure externalLiquidityRatio is not zero to avoid division by zero
 	if externalLiquidityRatio.IsZero() {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
+		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
 	}
 
 	resizedAmount := sdkmath.LegacyNewDecFromInt(tokenOut.Amount).Quo(externalLiquidityRatio).RoundInt()
@@ -108,7 +108,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		accPoolKeeper,
 	)
 	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.Coin{}, sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	inAmountAfterSlippage := oracleInAmount.Add(slippageAmount.Mul(externalLiquidityRatio))
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
@@ -120,7 +120,7 @@ func (p *Pool) SwapInAmtGivenOut(
 		tokensOut, accountedAssets,
 	)
 	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.Coin{}, sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
@@ -166,7 +166,7 @@ func (p *Pool) SwapInAmtGivenOut(
 	}
 
 	if swapFee.GTE(sdkmath.LegacyOneDec()) {
-		return sdk.Coin{}, sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrTooMuchSwapFee
+		return sdk.Coin{}, sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrTooMuchSwapFee
 	}
 
 	// We deduct a swap fee on the input asset. The swap happens by following the invariant curve on the input * (1 - swap fee)
@@ -179,5 +179,5 @@ func (p *Pool) SwapInAmtGivenOut(
 		Ceil().TruncateInt() // We round up tokenInAmt, as this is whats charged for the swap, for the precise amount out.
 	// Otherwise, the pool would under-charge by this rounding error.
 	tokenIn = sdk.NewCoin(tokenInDenom, tokenAmountInInt)
-	return tokenIn, slippage, slippageAmount, weightBalanceBonus, oracleInAmount, nil
+	return tokenIn, slippage, slippageAmount, weightBalanceBonus, oracleInAmount, swapFee, nil
 }
