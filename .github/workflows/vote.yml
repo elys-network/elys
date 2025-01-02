@@ -1,4 +1,4 @@
-name: TestNet deploy in 48 hours
+name: Vote
 
 on:
   workflow_dispatch:
