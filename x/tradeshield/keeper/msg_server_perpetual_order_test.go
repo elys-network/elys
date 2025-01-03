@@ -33,11 +33,8 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 			func() *types.MsgCreatePerpetualOpenOrder {
 				_, _, _ = suite.SetPerpetualPool(1)
 				return &types.MsgCreatePerpetualOpenOrder{
-					OwnerAddress: addr[2].String(),
-					TriggerPrice: types.TriggerPrice{
-						TradingAssetDenom: "uatom",
-						Rate:              math.LegacyNewDec(10),
-					},
+					OwnerAddress:    addr[2].String(),
+					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
 					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
@@ -54,11 +51,8 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 			func() *types.MsgCreatePerpetualOpenOrder {
 
 				return &types.MsgCreatePerpetualOpenOrder{
-					OwnerAddress: addr[2].String(),
-					TriggerPrice: types.TriggerPrice{
-						TradingAssetDenom: "uatom",
-						Rate:              math.LegacyNewDec(10),
-					},
+					OwnerAddress:    addr[2].String(),
+					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(200)},
 					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
@@ -92,11 +86,8 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 				suite.Require().NoError(err)
 
 				return &types.MsgCreatePerpetualOpenOrder{
-					OwnerAddress: addr[2].String(),
-					TriggerPrice: types.TriggerPrice{
-						TradingAssetDenom: "uatom",
-						Rate:              math.LegacyNewDec(10),
-					},
+					OwnerAddress:    addr[2].String(),
+					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(200)},
 					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
@@ -112,11 +103,8 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerPerpetualOpenOrder() {
 			"take profit price cannot be less than equal to trading price for long",
 			func() *types.MsgCreatePerpetualOpenOrder {
 				return &types.MsgCreatePerpetualOpenOrder{
-					OwnerAddress: addr[0].String(),
-					TriggerPrice: types.TriggerPrice{
-						TradingAssetDenom: "uatom",
-						Rate:              math.LegacyNewDec(10),
-					},
+					OwnerAddress:    addr[0].String(),
+					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
 					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
@@ -172,11 +160,8 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdatePerpetualOrder() {
 				_, _, _ = suite.SetPerpetualPool(1)
 
 				openOrderMsg := &types.MsgCreatePerpetualOpenOrder{
-					OwnerAddress: addr[2].String(),
-					TriggerPrice: types.TriggerPrice{
-						TradingAssetDenom: "uatom",
-						Rate:              math.LegacyNewDec(10),
-					},
+					OwnerAddress:    addr[2].String(),
+					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
 					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
@@ -204,10 +189,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdatePerpetualOrder() {
 				return &types.MsgUpdatePerpetualOrder{
 					OwnerAddress: addr[2].String(),
 					OrderId:      1,
-					TriggerPrice: types.TriggerPrice{
-						TradingAssetDenom: "uatom",
-						Rate:              math.LegacyNewDec(12),
-					},
+					TriggerPrice: math.LegacyNewDec(12),
 				}
 			},
 		},
@@ -253,11 +235,8 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrder() {
 				_, _, _ = suite.SetPerpetualPool(1)
 
 				openOrderMsg := &types.MsgCreatePerpetualOpenOrder{
-					OwnerAddress: addr[2].String(),
-					TriggerPrice: types.TriggerPrice{
-						TradingAssetDenom: "uatom",
-						Rate:              math.LegacyNewDec(10),
-					},
+					OwnerAddress:    addr[2].String(),
+					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
 					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
@@ -335,11 +314,8 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelPerpetualOrders() {
 				_, _, _ = suite.SetPerpetualPool(1)
 
 				openOrderMsg := &types.MsgCreatePerpetualOpenOrder{
-					OwnerAddress: addr[2].String(),
-					TriggerPrice: types.TriggerPrice{
-						TradingAssetDenom: "uatom",
-						Rate:              math.LegacyNewDec(10),
-					},
+					OwnerAddress:    addr[2].String(),
+					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
 					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,

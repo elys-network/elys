@@ -35,13 +35,9 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 			"perpetual order not found",
 			func() *types.MsgExecuteOrders {
 				openOrderMsg := &types.MsgCreateSpotOrder{
-					OwnerAddress: addr[2].String(),
-					OrderType:    types.SpotOrderType_LIMITBUY,
-					OrderPrice: types.OrderPrice{
-						BaseDenom:  "uusdc",
-						QuoteDenom: "uatom",
-						Rate:       math.LegacyNewDec(5),
-					},
+					OwnerAddress:     addr[2].String(),
+					OrderType:        types.SpotOrderType_LIMITBUY,
+					OrderPrice:       math.LegacyNewDec(5),
 					OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
 					OrderTargetDenom: "uatom",
 				}
@@ -66,13 +62,9 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 				_ = suite.CreateNewAmmPool(addr[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
 
 				openOrderMsg := &types.MsgCreateSpotOrder{
-					OwnerAddress: addr[2].String(),
-					OrderType:    types.SpotOrderType_LIMITBUY,
-					OrderPrice: types.OrderPrice{
-						BaseDenom:  "uusdc",
-						QuoteDenom: "uatom",
-						Rate:       math.LegacyNewDec(10),
-					},
+					OwnerAddress:     addr[2].String(),
+					OrderType:        types.SpotOrderType_LIMITBUY,
+					OrderPrice:       math.LegacyNewDec(10),
 					OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
 					OrderTargetDenom: "uatom",
 				}
@@ -119,7 +111,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 					case "order_id":
 						suite.Require().Equal("1", string(attr.Value))
 					case "order_price":
-						suite.Require().Equal(string(attr.Value), "{\"base_denom\":\"uusdc\",\"quote_denom\":\"uatom\",\"rate\":\"5.000000000000000000\"}")
+						suite.Require().Equal(string(attr.Value), "\"5.000000000000000000\"")
 					}
 				}
 			},
@@ -130,11 +122,8 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 			func() *types.MsgExecuteOrders {
 				_, _, _ = suite.SetPerpetualPool(1)
 				openOrderMsg := &types.MsgCreatePerpetualOpenOrder{
-					OwnerAddress: addr[2].String(),
-					TriggerPrice: types.TriggerPrice{
-						TradingAssetDenom: "uatom",
-						Rate:              math.LegacyNewDec(10),
-					},
+					OwnerAddress:    addr[2].String(),
+					TriggerPrice:    math.LegacyNewDec(10),
 					Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(100)},
 					TradingAsset:    "uatom",
 					Position:        types.PerpetualPosition_LONG,
@@ -186,7 +175,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {
 					case "order_id":
 						suite.Require().Equal("1", string(attr.Value))
 					case "trigger_price":
-						suite.Require().Equal(string(attr.Value), "{\"trading_asset_denom\":\"uatom\",\"rate\":\"10.000000000000000000\"}")
+						suite.Require().Equal(string(attr.Value), "\"10.000000000000000000\"")
 					}
 				}
 			},

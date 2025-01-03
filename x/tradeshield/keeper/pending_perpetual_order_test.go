@@ -18,7 +18,7 @@ func (suite *TradeshieldKeeperTestSuite) createNPendingPerpetualOrder(n int) []t
 			OwnerAddress:       fmt.Sprintf("address%d", i),
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
-			TriggerPrice:       types.TriggerPrice{Rate: math.LegacyNewDec(1), TradingAssetDenom: "base"},
+			TriggerPrice:       math.LegacyNewDec(1),
 			Collateral:         sdk.Coin{Denom: "denom", Amount: math.NewInt(10)},
 			TradingAsset:       "asset",
 			Leverage:           math.LegacyNewDec(int64(i)),
@@ -76,17 +76,14 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitOpenOrder() {
 		OwnerAddress:       address[2].String(),
 		OrderId:            1,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
-		TriggerPrice: types.TriggerPrice{
-			TradingAssetDenom: "uatom",
-			Rate:              math.LegacyMustNewDecFromStr("10"),
-		},
-		Position:        types.PerpetualPosition_LONG,
-		Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-		TradingAsset:    "uatom",
-		Leverage:        math.LegacyNewDec(10),
-		TakeProfitPrice: math.LegacyNewDec(10),
-		StopLossPrice:   math.LegacyZeroDec(),
-		PoolId:          1,
+		TriggerPrice:       math.LegacyMustNewDecFromStr("10"),
+		Position:           types.PerpetualPosition_LONG,
+		Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
+		TradingAsset:       "uatom",
+		Leverage:           math.LegacyNewDec(10),
+		TakeProfitPrice:    math.LegacyNewDec(10),
+		StopLossPrice:      math.LegacyZeroDec(),
+		PoolId:             1,
 	}
 
 	// Fund orderAddress
@@ -113,17 +110,14 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitCloseOrder() {
 		OwnerAddress:       address[2].String(),
 		OrderId:            1,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
-		TriggerPrice: types.TriggerPrice{
-			TradingAssetDenom: "uatom",
-			Rate:              math.LegacyMustNewDecFromStr("10"),
-		},
-		Position:        types.PerpetualPosition_LONG,
-		Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-		TradingAsset:    "uatom",
-		Leverage:        math.LegacyNewDec(10),
-		TakeProfitPrice: math.LegacyNewDec(10),
-		StopLossPrice:   math.LegacyZeroDec(),
-		PoolId:          1,
+		TriggerPrice:       math.LegacyMustNewDecFromStr("10"),
+		Position:           types.PerpetualPosition_LONG,
+		Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
+		TradingAsset:       "uatom",
+		Leverage:           math.LegacyNewDec(10),
+		TakeProfitPrice:    math.LegacyNewDec(10),
+		StopLossPrice:      math.LegacyZeroDec(),
+		PoolId:             1,
 	}
 
 	// Fund orderAddress
@@ -136,7 +130,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitCloseOrder() {
 	suite.Require().NoError(err)
 
 	perpetualOrder.PerpetualOrderType = types.PerpetualOrderType_LIMITCLOSE
-	perpetualOrder.TriggerPrice.Rate = math.LegacyZeroDec()
+	perpetualOrder.TriggerPrice = math.LegacyZeroDec()
 	perpetualOrder.PositionId = 1
 	orderId := suite.app.TradeshieldKeeper.AppendPendingPerpetualOrder(suite.ctx, perpetualOrder)
 
@@ -159,17 +153,14 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketOpenOrder() {
 		OwnerAddress:       address[2].String(),
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
-		TriggerPrice: types.TriggerPrice{
-			TradingAssetDenom: "uatom",
-			Rate:              math.LegacyMustNewDecFromStr("10"),
-		},
-		Position:        types.PerpetualPosition_LONG,
-		Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-		TradingAsset:    "uatom",
-		Leverage:        math.LegacyNewDec(10),
-		TakeProfitPrice: math.LegacyNewDec(10),
-		StopLossPrice:   math.LegacyZeroDec(),
-		PoolId:          1,
+		TriggerPrice:       math.LegacyMustNewDecFromStr("10"),
+		Position:           types.PerpetualPosition_LONG,
+		Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
+		TradingAsset:       "uatom",
+		Leverage:           math.LegacyNewDec(10),
+		TakeProfitPrice:    math.LegacyNewDec(10),
+		StopLossPrice:      math.LegacyZeroDec(),
+		PoolId:             1,
 	})
 
 	order, _ := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, 1)
@@ -190,17 +181,14 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketCloseOrder() {
 		OwnerAddress:       address[2].String(),
 		OrderId:            0,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
-		TriggerPrice: types.TriggerPrice{
-			TradingAssetDenom: "uatom",
-			Rate:              math.LegacyMustNewDecFromStr("10"),
-		},
-		Position:        types.PerpetualPosition_LONG,
-		Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-		TradingAsset:    "uatom",
-		Leverage:        math.LegacyNewDec(10),
-		TakeProfitPrice: math.LegacyNewDec(10),
-		StopLossPrice:   math.LegacyZeroDec(),
-		PoolId:          1,
+		TriggerPrice:       math.LegacyMustNewDecFromStr("10"),
+		Position:           types.PerpetualPosition_LONG,
+		Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
+		TradingAsset:       "uatom",
+		Leverage:           math.LegacyNewDec(10),
+		TakeProfitPrice:    math.LegacyNewDec(10),
+		StopLossPrice:      math.LegacyZeroDec(),
+		PoolId:             1,
 	}
 	suite.app.TradeshieldKeeper.AppendPendingPerpetualOrder(suite.ctx, perpetualOrder)
 	order, _ := suite.app.TradeshieldKeeper.GetPendingPerpetualOrder(suite.ctx, 1)
@@ -208,7 +196,7 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketCloseOrder() {
 	suite.Require().NoError(err)
 
 	perpetualOrder.PerpetualOrderType = types.PerpetualOrderType_LIMITCLOSE
-	perpetualOrder.TriggerPrice.Rate = math.LegacyZeroDec()
+	perpetualOrder.TriggerPrice = math.LegacyZeroDec()
 	perpetualOrder.PositionId = 1
 	orderId := suite.app.TradeshieldKeeper.AppendPendingPerpetualOrder(suite.ctx, perpetualOrder)
 

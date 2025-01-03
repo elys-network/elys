@@ -1,8 +1,9 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -25,12 +26,8 @@ func TestMsgCreateSpotOrder_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgCreateSpotOrder{
-				OwnerAddress: sample.AccAddress(),
-				OrderPrice: OrderPrice{
-					BaseDenom:  "base_denom",
-					QuoteDenom: "quote_denom",
-					Rate:       sdkmath.LegacyOneDec(),
-				},
+				OwnerAddress:     sample.AccAddress(),
+				OrderPrice:       sdkmath.LegacyOneDec(),
 				OrderType:        SpotOrderType_LIMITBUY,
 				OrderAmount:      sdk.Coin{Denom: "base", Amount: sdkmath.OneInt()},
 				OrderTargetDenom: "base_denom",
@@ -66,11 +63,7 @@ func TestMsgUpdateSpotOrder_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateSpotOrder{
 				OwnerAddress: sample.AccAddress(),
 				OrderId:      1,
-				OrderPrice: OrderPrice{
-					BaseDenom:  "base_denom",
-					QuoteDenom: "quote_denom",
-					Rate:       sdkmath.LegacyOneDec(),
-				},
+				OrderPrice:   sdkmath.LegacyOneDec(),
 			},
 		},
 	}

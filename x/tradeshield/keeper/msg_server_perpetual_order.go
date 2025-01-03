@@ -78,7 +78,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		Collateral:      msg.Collateral,
 		TakeProfitPrice: msg.TakeProfitPrice,
 		PoolId:          msg.PoolId,
-		LimitPrice:      msg.TriggerPrice.Rate,
+		LimitPrice:      msg.TriggerPrice,
 	})
 	if err != nil {
 		return nil, err
@@ -146,7 +146,7 @@ func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpd
 
 	perpetualParams := k.perpetual.GetParams(ctx)
 
-	ratio := order.TakeProfitPrice.Quo(msg.TriggerPrice.Rate)
+	ratio := order.TakeProfitPrice.Quo(msg.TriggerPrice)
 	if order.Position == types.PerpetualPosition_LONG {
 		if ratio.LT(perpetualParams.MinimumLongTakeProfitPriceRatio) || ratio.GT(perpetualParams.MaximumLongTakeProfitPriceRatio) {
 			return nil, fmt.Errorf("invalid trigger price, take profit price should be between %s and %s times of current market price for long (current ratio: %s)", perpetualParams.MinimumLongTakeProfitPriceRatio.String(), perpetualParams.MaximumLongTakeProfitPriceRatio.String(), ratio.String())

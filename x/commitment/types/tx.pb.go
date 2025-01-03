@@ -2009,6 +2009,7 @@ func _Msg_ClaimKol_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+var Msg_serviceDesc = _Msg_serviceDesc
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.commitment.Msg",
 	HandlerType: (*MsgServer)(nil),

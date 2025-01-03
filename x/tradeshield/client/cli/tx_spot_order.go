@@ -35,11 +35,7 @@ func CmdCreateSpotOrder() *cobra.Command {
 				return err
 			}
 			orderTargetDenom := args[2]
-			orderPrice := types.OrderPrice{
-				BaseDenom:  orderTargetDenom,
-				QuoteDenom: orderAmount.Denom,
-				Rate:       math.LegacyMustNewDecFromStr(args[3]),
-			}
+			orderPrice := math.LegacyMustNewDecFromStr(args[3])
 
 			msg := types.NewMsgCreateSpotOrder(addr, orderType, orderPrice, orderAmount, orderTargetDenom)
 			if err := msg.ValidateBasic(); err != nil {
@@ -56,22 +52,23 @@ func CmdCreateSpotOrder() *cobra.Command {
 
 func CmdUpdateSpotOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-spot-order [id] [order]",
+		Use:   "update-spot-order [order-id] [order-price]",
 		Short: "Update a spot order",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			id, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return err
-			}
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			// TODO: Add order price definition in other task
-			msg := types.NewMsgUpdateSpotOrder(clientCtx.GetFromAddress().String(), id, types.OrderPrice{})
+			orderId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			orderPrice := math.LegacyMustNewDecFromStr(args[3])
+
+			msg := types.NewMsgUpdateSpotOrder(clientCtx.GetFromAddress().String(), orderId, orderPrice)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

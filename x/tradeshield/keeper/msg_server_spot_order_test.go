@@ -23,13 +23,9 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCreateSpotOrder() {
 				// sets amm pool with prices
 				_, _, _ = suite.SetPerpetualPool(1)
 				return &types.MsgCreateSpotOrder{
-					OwnerAddress: addr[2].String(),
-					OrderType:    types.SpotOrderType_MARKETBUY,
-					OrderPrice: types.OrderPrice{
-						BaseDenom:  "uusdc",
-						QuoteDenom: "uatom",
-						Rate:       math.LegacyNewDec(5),
-					},
+					OwnerAddress:     addr[2].String(),
+					OrderType:        types.SpotOrderType_MARKETBUY,
+					OrderPrice:       math.LegacyNewDec(5),
 					OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
 					OrderTargetDenom: "uatom",
 				}
@@ -41,13 +37,9 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCreateSpotOrder() {
 			"",
 			func() *types.MsgCreateSpotOrder {
 				return &types.MsgCreateSpotOrder{
-					OwnerAddress: addr[2].String(),
-					OrderType:    types.SpotOrderType_LIMITBUY,
-					OrderPrice: types.OrderPrice{
-						BaseDenom:  "uusdc",
-						QuoteDenom: "uatom",
-						Rate:       math.LegacyNewDec(5),
-					},
+					OwnerAddress:     addr[2].String(),
+					OrderType:        types.SpotOrderType_LIMITBUY,
+					OrderPrice:       math.LegacyNewDec(5),
 					OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
 					OrderTargetDenom: "uatom",
 				}
@@ -101,13 +93,9 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdateSpotOrder() {
 				_, _, _ = suite.SetPerpetualPool(1)
 
 				openOrderMsg := &types.MsgCreateSpotOrder{
-					OwnerAddress: addr[2].String(),
-					OrderType:    types.SpotOrderType_LIMITBUY,
-					OrderPrice: types.OrderPrice{
-						BaseDenom:  "uusdc",
-						QuoteDenom: "uatom",
-						Rate:       math.LegacyNewDec(5),
-					},
+					OwnerAddress:     addr[2].String(),
+					OrderType:        types.SpotOrderType_LIMITBUY,
+					OrderPrice:       math.LegacyNewDec(5),
 					OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
 					OrderTargetDenom: "uatom",
 				}
@@ -128,11 +116,7 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerUpdateSpotOrder() {
 				return &types.MsgUpdateSpotOrder{
 					OwnerAddress: addr[2].String(),
 					OrderId:      1,
-					OrderPrice: types.OrderPrice{
-						BaseDenom:  "uusdc",
-						QuoteDenom: "uatom",
-						Rate:       math.LegacyNewDec(12),
-					},
+					OrderPrice:   math.LegacyNewDec(12),
 				}
 			},
 		},
@@ -178,13 +162,9 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelSpotOrder() {
 				_, _, _ = suite.SetPerpetualPool(1)
 
 				openOrderMsg := &types.MsgCreateSpotOrder{
-					OwnerAddress: addr[2].String(),
-					OrderType:    types.SpotOrderType_LIMITBUY,
-					OrderPrice: types.OrderPrice{
-						BaseDenom:  "uusdc",
-						QuoteDenom: "uatom",
-						Rate:       math.LegacyNewDec(5),
-					},
+					OwnerAddress:     addr[2].String(),
+					OrderType:        types.SpotOrderType_LIMITBUY,
+					OrderPrice:       math.LegacyNewDec(5),
 					OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
 					OrderTargetDenom: "uatom",
 				}
@@ -257,13 +237,9 @@ func (suite *TradeshieldKeeperTestSuite) TestMsgServerCancelSpotOrders() {
 				_, _, _ = suite.SetPerpetualPool(1)
 
 				openOrderMsg := &types.MsgCreateSpotOrder{
-					OwnerAddress: addr[2].String(),
-					OrderType:    types.SpotOrderType_LIMITBUY,
-					OrderPrice: types.OrderPrice{
-						BaseDenom:  "uusdc",
-						QuoteDenom: "uatom",
-						Rate:       math.LegacyNewDec(5),
-					},
+					OwnerAddress:     addr[2].String(),
+					OrderType:        types.SpotOrderType_LIMITBUY,
+					OrderPrice:       math.LegacyNewDec(5),
 					OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
 					OrderTargetDenom: "uatom",
 				}
