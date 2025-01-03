@@ -15,17 +15,14 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualtOrder() {
 		OwnerAddress:       "valid_address",
 		OrderId:            1,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
-		TriggerPrice: types.TriggerPrice{
-			TradingAssetDenom: "uatom",
-			Rate:              math.LegacyMustNewDecFromStr("10"),
-		},
-		Position:        types.PerpetualPosition_LONG,
-		Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-		TradingAsset:    "uatom",
-		Leverage:        math.LegacyNewDec(10),
-		TakeProfitPrice: math.LegacyNewDec(10),
-		StopLossPrice:   math.LegacyZeroDec(),
-		PoolId:          1,
+		TriggerPrice:       math.LegacyMustNewDecFromStr("10"),
+		Position:           types.PerpetualPosition_LONG,
+		Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
+		TradingAsset:       "uatom",
+		Leverage:           math.LegacyNewDec(10),
+		TakeProfitPrice:    math.LegacyNewDec(10),
+		StopLossPrice:      math.LegacyZeroDec(),
+		PoolId:             1,
 	}
 
 	tests := []struct {
@@ -78,17 +75,14 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderAll() {
 		OwnerAddress:       "valid_address",
 		OrderId:            1,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
-		TriggerPrice: types.TriggerPrice{
-			TradingAssetDenom: "uatom",
-			Rate:              math.LegacyMustNewDecFromStr("10"),
-		},
-		Position:        types.PerpetualPosition_LONG,
-		Collateral:      sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
-		TradingAsset:    "uatom",
-		Leverage:        math.LegacyNewDec(10),
-		TakeProfitPrice: math.LegacyNewDec(10),
-		StopLossPrice:   math.LegacyZeroDec(),
-		PoolId:          1,
+		TriggerPrice:       math.LegacyMustNewDecFromStr("10"),
+		Position:           types.PerpetualPosition_LONG,
+		Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
+		TradingAsset:       "uatom",
+		Leverage:           math.LegacyNewDec(10),
+		TakeProfitPrice:    math.LegacyNewDec(10),
+		StopLossPrice:      math.LegacyZeroDec(),
+		PoolId:             1,
 	}
 
 	order2 := order
