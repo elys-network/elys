@@ -182,17 +182,32 @@ func (k Keeper) DeleteAllPendingSpotOrder(ctx sdk.Context) (list []types.SpotOrd
 	return
 }
 
+func (k Keeper) GetAllLegacyPendingSpotOrder(ctx sdk.Context) (list []types.LegacySpotOrder) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingSpotOrderKey)
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacySpotOrder
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
 // ExecuteStopLossOrder executes a stop loss order
 func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderAmount.Denom, order.OrderTargetDenom)
 	if err != nil {
 		return nil, err
 	}
 	if marketPrice.IsZero() {
-		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "denom in: %s, denom out: %s", order.OrderAmount.Denom, order.OrderTargetDenom)
 	}
 
-	if marketPrice.GT(order.OrderPrice.Rate) {
+	if marketPrice.GT(order.OrderPrice) {
 		// skip the order
 		return nil, nil
 	}
@@ -209,8 +224,8 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
-		DenomIn:   order.OrderPrice.BaseDenom,
-		DenomOut:  order.OrderPrice.QuoteDenom,
+		DenomIn:   order.OrderAmount.Denom,
+		DenomOut:  order.OrderTargetDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
@@ -229,15 +244,15 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 
 // ExecuteLimitSellOrder executes a limit sell order
 func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderAmount.Denom, order.OrderTargetDenom)
 	if err != nil {
 		return nil, err
 	}
 	if marketPrice.IsZero() {
-		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "denom in: %s, denom out: %s", order.OrderAmount.Denom, order.OrderTargetDenom)
 	}
 
-	if marketPrice.LT(order.OrderPrice.Rate) {
+	if marketPrice.LT(order.OrderPrice) {
 		// skip the order
 		return nil, nil
 	}
@@ -254,8 +269,8 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
-		DenomIn:   order.OrderPrice.BaseDenom,
-		DenomOut:  order.OrderPrice.QuoteDenom,
+		DenomIn:   order.OrderAmount.Denom,
+		DenomOut:  order.OrderTargetDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
@@ -274,15 +289,15 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 
 // ExecuteLimitBuyOrder executes a limit buy order
 func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderAmount.Denom, order.OrderTargetDenom)
 	if err != nil {
 		return nil, err
 	}
 	if marketPrice.IsZero() {
-		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "Base denom: %s, Quote denom: %s", order.OrderPrice.BaseDenom, order.OrderPrice.QuoteDenom)
+		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "denom in: %s, denom out: %s", order.OrderAmount.Denom, order.OrderTargetDenom)
 	}
 
-	if marketPrice.GT(order.OrderPrice.Rate) {
+	if marketPrice.GT(order.OrderPrice) {
 		// skip the order
 		return nil, nil
 	}
@@ -299,8 +314,8 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		Sender:    order.OwnerAddress,
 		Recipient: order.OwnerAddress,
 		Amount:    order.OrderAmount,
-		DenomIn:   order.OrderPrice.BaseDenom,
-		DenomOut:  order.OrderPrice.QuoteDenom,
+		DenomIn:   order.OrderAmount.Denom,
+		DenomOut:  order.OrderTargetDenom,
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
