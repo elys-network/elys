@@ -3,11 +3,12 @@ package cli_test
 import (
 	"bytes"
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
-	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"io"
 	"testing"
+
+	"cosmossdk.io/math"
+	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -40,7 +41,7 @@ func networkWithPoolObjects(t *testing.T, n int) (*network.Network, []types.Pool
 				},
 			},
 		}
-		pool := types.NewPool(ammPool)
+		pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("5.5"))
 		nullify.Fill(&pool)
 		state.PoolList = append(state.PoolList, pool)
 	}

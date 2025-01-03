@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/cosmos/cosmos-sdk/runtime"
 
 	"cosmossdk.io/store/prefix"
@@ -103,6 +104,7 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 		TotalLiabilities:                     totalLiabilities,
 		TotalLongOpenInterest:                val.GetTotalLongOpenInterest(),
 		TotalShortOpenInterest:               val.GetTotalShortOpenInterest(),
+		LeverageMax:                          val.LeverageMax,
 	}
 
 	return &types.QueryGetPoolResponse{Pool: pool}, nil

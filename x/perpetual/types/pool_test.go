@@ -1,9 +1,10 @@
 package types_test
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -28,7 +29,7 @@ func TestPool_UpdateLiabilitiesValid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: math.NewInt(0),
@@ -66,7 +67,7 @@ func TestPool_UpdateLiabilitiesInvalid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: math.NewInt(0),
@@ -100,7 +101,7 @@ func TestPool_UpdateTakeProfitLiabilitiesValid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:           math.NewInt(0),
@@ -139,7 +140,7 @@ func TestPool_UpdateTakeProfitLiabilitiesInvalid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities:           math.NewInt(0),
@@ -173,7 +174,7 @@ func TestPool_UpdateTakeProfitCustodyValid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			TakeProfitCustody: math.NewInt(0),
@@ -211,7 +212,7 @@ func TestPool_UpdateTakeProfitCustodyInvalid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			TakeProfitCustody: math.NewInt(0),
@@ -245,7 +246,7 @@ func TestPool_UpdateCustodyValid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: math.NewInt(0),
@@ -283,7 +284,7 @@ func TestPool_UpdateCustodyInvalid(t *testing.T) {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: math.NewInt(0),
@@ -318,7 +319,7 @@ func TestPool_InitiatePoolValid(t *testing.T) {
 		},
 	}
 	// Define the perpetual pool with assets
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 
 	denom := "testAsset"
 	assert.Equal(t, pool.AmmPoolId, (uint64)(1))

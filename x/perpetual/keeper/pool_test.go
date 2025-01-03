@@ -42,7 +42,7 @@ func createNPool(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Pool {
 			PoolAssets:  poolAssets,
 			TotalWeight: math.ZeroInt(),
 		}
-		items[i] = types.NewPool(ammPool)
+		items[i] = types.NewPool(ammPool, math.LegacyMustNewDecFromStr("10.5"))
 
 		keeper.SetPool(ctx, items[i])
 	}
@@ -61,9 +61,10 @@ func createNPoolResponse(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.
 			LastHeightBorrowInterestRateComputed: 0,
 			FundingRate:                          math.LegacyZeroDec(),
 			NetOpenInterest:                      math.ZeroInt(),
+			LeverageMax:                          math.LegacyMustNewDecFromStr("10"),
 		}
 		ammPool, _ := ammtypes.NewBalancerPool(uint64(i), ammtypes.PoolParams{}, []ammtypes.PoolAsset{}, ctx.BlockTime())
-		keeper.SetPool(ctx, types.NewPool(ammPool))
+		keeper.SetPool(ctx, types.NewPool(ammPool, math.LegacyMustNewDecFromStr("10")))
 	}
 	return items
 }

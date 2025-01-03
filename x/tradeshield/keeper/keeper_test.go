@@ -204,7 +204,7 @@ func (suite *TradeshieldKeeperTestSuite) SetPerpetualPool(poolId uint64) (types.
 	_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
 
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	k.SetPool(ctx, pool)
 
 	return pool, poolCreator, ammPool

@@ -8,7 +8,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
-func NewPool(ammPool ammtypes.Pool) Pool {
+func NewPool(ammPool ammtypes.Pool, leverageMax math.LegacyDec) Pool {
 	p := Pool{
 		AmmPoolId:                            ammPool.PoolId,
 		Health:                               math.LegacyOneDec(),
@@ -17,6 +17,7 @@ func NewPool(ammPool ammtypes.Pool) Pool {
 		PoolAssetsShort:                      []PoolAsset{},
 		LastHeightBorrowInterestRateComputed: 0,
 		FundingRate:                          math.LegacyZeroDec(),
+		LeverageMax:                          leverageMax,
 	}
 
 	for _, asset := range ammPool.PoolAssets {

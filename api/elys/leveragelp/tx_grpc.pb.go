@@ -28,6 +28,7 @@ type MsgClient interface {
 	Dewhitelist(ctx context.Context, in *MsgDewhitelist, opts ...grpc.CallOption) (*MsgDewhitelistResponse, error)
 	UpdateStopLoss(ctx context.Context, in *MsgUpdateStopLoss, opts ...grpc.CallOption) (*MsgUpdateStopLossResponse, error)
 	ClosePositions(ctx context.Context, in *MsgClosePositions, opts ...grpc.CallOption) (*MsgClosePositionsResponse, error)
+	UpdateMaxLeverageForPool(ctx context.Context, in *MsgUpdateMaxLeverageForPool, opts ...grpc.CallOption) (*MsgUpdateMaxLeverageForPoolResponse, error)
 	UpdateEnabledPools(ctx context.Context, in *MsgUpdateEnabledPools, opts ...grpc.CallOption) (*MsgUpdateEnabledPoolsResponse, error)
 }
 
@@ -129,6 +130,15 @@ func (c *msgClient) ClosePositions(ctx context.Context, in *MsgClosePositions, o
 	return out, nil
 }
 
+func (c *msgClient) UpdateMaxLeverageForPool(ctx context.Context, in *MsgUpdateMaxLeverageForPool, opts ...grpc.CallOption) (*MsgUpdateMaxLeverageForPoolResponse, error) {
+	out := new(MsgUpdateMaxLeverageForPoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.leveragelp.Msg/UpdateMaxLeverageForPool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UpdateEnabledPools(ctx context.Context, in *MsgUpdateEnabledPools, opts ...grpc.CallOption) (*MsgUpdateEnabledPoolsResponse, error) {
 	out := new(MsgUpdateEnabledPoolsResponse)
 	err := c.cc.Invoke(ctx, "/elys.leveragelp.Msg/UpdateEnabledPools", in, out, opts...)
@@ -152,6 +162,7 @@ type MsgServer interface {
 	Dewhitelist(context.Context, *MsgDewhitelist) (*MsgDewhitelistResponse, error)
 	UpdateStopLoss(context.Context, *MsgUpdateStopLoss) (*MsgUpdateStopLossResponse, error)
 	ClosePositions(context.Context, *MsgClosePositions) (*MsgClosePositionsResponse, error)
+	UpdateMaxLeverageForPool(context.Context, *MsgUpdateMaxLeverageForPool) (*MsgUpdateMaxLeverageForPoolResponse, error)
 	UpdateEnabledPools(context.Context, *MsgUpdateEnabledPools) (*MsgUpdateEnabledPoolsResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
@@ -189,6 +200,9 @@ func (UnimplementedMsgServer) UpdateStopLoss(context.Context, *MsgUpdateStopLoss
 }
 func (UnimplementedMsgServer) ClosePositions(context.Context, *MsgClosePositions) (*MsgClosePositionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClosePositions not implemented")
+}
+func (UnimplementedMsgServer) UpdateMaxLeverageForPool(context.Context, *MsgUpdateMaxLeverageForPool) (*MsgUpdateMaxLeverageForPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMaxLeverageForPool not implemented")
 }
 func (UnimplementedMsgServer) UpdateEnabledPools(context.Context, *MsgUpdateEnabledPools) (*MsgUpdateEnabledPoolsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateEnabledPools not implemented")
@@ -386,6 +400,24 @@ func _Msg_ClosePositions_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateMaxLeverageForPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateMaxLeverageForPool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateMaxLeverageForPool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.leveragelp.Msg/UpdateMaxLeverageForPool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateMaxLeverageForPool(ctx, req.(*MsgUpdateMaxLeverageForPool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_UpdateEnabledPools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateEnabledPools)
 	if err := dec(in); err != nil {
@@ -450,6 +482,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ClosePositions",
 			Handler:    _Msg_ClosePositions_Handler,
+		},
+		{
+			MethodName: "UpdateMaxLeverageForPool",
+			Handler:    _Msg_UpdateMaxLeverageForPool_Handler,
 		},
 		{
 			MethodName: "UpdateEnabledPools",

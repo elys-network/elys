@@ -60,4 +60,9 @@ message Pool {
   ];
   repeated cosmos.base.v1beta1.Coin fees_collected = 8
       [ (gogoproto.nullable) = false ];
+  string leverage_max = 9 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
