@@ -150,9 +150,9 @@ jobs:
 
           # set snapshot file path, use mainnet snapshot for main branch otherwise use testnet snapshot
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            SNAPSHOT_FILE_PATH=/tmp/snapshot-mainnet.tar.lz4
+            SNAPSHOT_FILE_PATH=/tmp/snapshot-mainnet.tar.gz
           else
-            SNAPSHOT_FILE_PATH=/tmp/snapshot-testnet.tar.lz4
+            SNAPSHOT_FILE_PATH=/tmp/snapshot-testnet.tar.gz
           fi
 
           echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_ENV
