@@ -36,6 +36,32 @@ message PoolAsset {
   ];
 }
 
+message LegacyPool {
+  uint64 amm_pool_id = 1;
+  string health = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  string borrow_interest_rate = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated PoolAsset pool_assets_long = 4 [ (gogoproto.nullable) = false ];
+  repeated PoolAsset pool_assets_short = 5 [ (gogoproto.nullable) = false ];
+  int64 last_height_borrow_interest_rate_computed = 6;
+  // funding rate, if positive longs pay shorts, if negative shorts pay longs
+  string funding_rate = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin fees_collected = 8
+      [ (gogoproto.nullable) = false ];
+}
+
 message Pool {
   uint64 amm_pool_id = 1;
   string health = 2 [
