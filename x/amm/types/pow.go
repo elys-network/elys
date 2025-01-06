@@ -1,8 +1,9 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	sdkmath "cosmossdk.io/math"
 )
 
 // Pow computes base^(exp)
@@ -36,4 +37,12 @@ func Pow(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) sdkmath.LegacyDec {
 	}
 
 	return integerPow.Mul(fractionalPow)
+}
+
+func Pow10(decimal uint64) (value sdkmath.LegacyDec) {
+	value = sdkmath.LegacyNewDec(1)
+	for i := 0; i < int(decimal); i++ {
+		value = value.Mul(sdkmath.LegacyNewDec(10))
+	}
+	return
 }

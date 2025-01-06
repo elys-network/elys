@@ -138,3 +138,15 @@ func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.Le
 	}
 	return price.Price.Quo(Pow10(info.Decimal))
 }
+
+func (k Keeper) GetRawAssetPriceFromDenom(ctx sdk.Context, denom string) (sdkmath.LegacyDec, uint64) {
+	info, found := k.GetAssetInfo(ctx, denom)
+	if !found {
+		return sdkmath.LegacyZeroDec(), 0
+	}
+	price, found := k.GetAssetPrice(ctx, info.Display)
+	if !found {
+		return sdkmath.LegacyZeroDec(), 0
+	}
+	return price.Price, info.Decimal
+}

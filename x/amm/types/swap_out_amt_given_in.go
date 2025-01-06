@@ -35,12 +35,12 @@ func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper
 	oraclePoolWeights := []AssetWeight{}
 	totalWeight := sdkmath.LegacyZeroDec()
 	for _, asset := range poolAssets {
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
+		tokenPrice, decimal := oracleKeeper.GetRawAssetPriceFromDenom(ctx, asset.Token.Denom)
 		if tokenPrice.IsZero() {
 			return oraclePoolWeights, fmt.Errorf("price for token not set: %s", asset.Token.Denom)
 		}
 		amount := asset.Token.Amount
-		weight := amount.ToLegacyDec().Mul(tokenPrice)
+		weight := amount.ToLegacyDec().Quo(Pow10(decimal)).Mul(tokenPrice)
 		oraclePoolWeights = append(oraclePoolWeights, AssetWeight{
 			Asset:  asset.Token.Denom,
 			Weight: weight,
@@ -150,16 +150,16 @@ func (p Pool) CalcGivenInSlippage(
 	}
 
 	// ensure token prices for in/out tokens set properly
-	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenIn.Denom)
+	inTokenPrice, inTokenDecimal := oracleKeeper.GetRawAssetPriceFromDenom(ctx, tokenIn.Denom)
 	if inTokenPrice.IsZero() {
 		return sdkmath.LegacyZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
-	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+	outTokenPrice, outTokenDecimal := oracleKeeper.GetRawAssetPriceFromDenom(ctx, tokenOutDenom)
 	if outTokenPrice.IsZero() {
 		return sdkmath.LegacyZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
 
-	oracleOutAmount := sdkmath.LegacyNewDecFromInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
+	oracleOutAmount := sdkmath.LegacyNewDecFromInt(tokenIn.Amount).Quo(Pow10(inTokenDecimal)).Mul(Pow10(outTokenDecimal)).Mul(inTokenPrice).Quo(outTokenPrice)
 	balancerOut := sdkmath.LegacyNewDecFromInt(balancerOutCoin.Amount)
 	slippageAmount := oracleOutAmount.Sub(balancerOut)
 	if slippageAmount.IsNegative() {
@@ -205,11 +205,11 @@ func (p *Pool) SwapOutAmtGivenIn(
 	}
 
 	// ensure token prices for in/out tokens set properly
-	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenIn.Denom)
+	inTokenPrice, inTokenDecimal := oracleKeeper.GetRawAssetPriceFromDenom(ctx, tokenIn.Denom)
 	if inTokenPrice.IsZero() {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
-	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+	outTokenPrice, outTokenDecimal := oracleKeeper.GetRawAssetPriceFromDenom(ctx, tokenOutDenom)
 	if outTokenPrice.IsZero() {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
@@ -221,7 +221,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 	// balancer slippage amount = Max(oracleOutAmount-balancerOutAmount, 0)
 	// resizedAmount = tokenIn / externalLiquidityRatio
 	// actualSlippageAmount = balancer slippage(resizedAmount)
-	oracleOutAmount = sdkmath.LegacyNewDecFromInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
+	oracleOutAmount = sdkmath.LegacyNewDecFromInt(tokenIn.Amount).Quo(Pow10(inTokenDecimal)).Mul(Pow10(outTokenDecimal)).Mul(inTokenPrice).Quo(outTokenPrice)
 
 	externalLiquidityRatio, err := p.GetAssetExternalLiquidityRatio(tokenOutDenom)
 	if err != nil {

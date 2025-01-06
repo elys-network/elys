@@ -90,19 +90,11 @@ func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdkm
 	}
 
 	routes := resp.InRoute
-	tokenIn := sdk.NewCoin(denom, sdkmath.NewInt(Pow10(decimal).TruncateInt64()))
+	tokenIn := sdk.NewCoin(denom, sdkmath.NewInt(types.Pow10(decimal).TruncateInt64()))
 	discount := sdkmath.LegacyNewDec(1)
 	spotPrice, _, _, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, sdkmath.LegacyZeroDec())
 	if err != nil {
 		return sdkmath.LegacyZeroDec()
 	}
 	return spotPrice.Mul(usdcPrice)
-}
-
-func Pow10(decimal uint64) (value sdkmath.LegacyDec) {
-	value = sdkmath.LegacyNewDec(1)
-	for i := 0; i < int(decimal); i++ {
-		value = value.Mul(sdkmath.LegacyNewDec(10))
-	}
-	return
 }

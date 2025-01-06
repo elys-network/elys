@@ -39,6 +39,7 @@ type BankKeeper interface {
 type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec
+	GetRawAssetPriceFromDenom(ctx sdk.Context, denom string) (sdkmath.LegacyDec, uint64)
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
 

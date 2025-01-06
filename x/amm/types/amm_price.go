@@ -1,8 +1,9 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -27,14 +28,14 @@ func (p *Pool) GetTokenARate(
 		), nil
 	}
 
-	priceA := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenA)
+	priceA, decimalA := oracleKeeper.GetRawAssetPriceFromDenom(ctx, tokenA)
 	if priceA.IsZero() {
 		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenA)
 	}
-	priceB := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenB)
+	priceB, decimalB := oracleKeeper.GetRawAssetPriceFromDenom(ctx, tokenB)
 	if priceB.IsZero() {
 		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenB)
 	}
 
-	return priceA.Quo(priceB), nil
+	return priceA.Mul(Pow10(decimalB)).Quo(Pow10(decimalA).Mul(priceB)), nil
 }
