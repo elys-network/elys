@@ -1,9 +1,10 @@
 package keeper
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"strconv"
+
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -70,15 +71,15 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 
 func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolId uint64, msg *types.MsgOpen) (*types.Position, error) {
 	collateralAmountDec := sdkmath.LegacyNewDecFromInt(msg.CollateralAmount)
-	// Determine the maximum leverage available and compute the effective leverage to be used.
-	maxLeverage := k.GetMaxLeverageParam(ctx)
-	leverage := sdkmath.LegacyMinDec(msg.Leverage, maxLeverage)
 
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
+
+	// Determine the maximum leverage available for this pool and compute the effective leverage to be used.
+	leverage := sdkmath.LegacyMinDec(msg.Leverage, pool.LeverageMax)
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
