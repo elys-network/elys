@@ -87,7 +87,7 @@ jobs:
       - name: Build new binary
         run: |
           # create new git tag
-          git tag -f v999.999.999
+          git tag -f v999999.999999.999999
           # build new elys binary
           make build
           NEW_BINARY_PATH=./build/elysd
@@ -110,20 +110,24 @@ jobs:
           aws-s3-bucket-endpoint: false
           aws-s3-force-path-style: true
 
-      - name: Retrieve info.json and set snapshot path
+      - name: Retrieve snapshot info and set snapshot path
         run: |
-          # set info.json download url, use mainnet info.json for main branch otherwise use testnet info.json
+          # use mainnet for main branch otherwise use testnet snapshot data
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            INFO_DOWNLOAD_URL=https://snapshots.elys.network/info-mainnet.json
+            url="https://tools.highstakes.ch/snapshots/elys-mainnet"
           else
-            INFO_DOWNLOAD_URL=https://snapshots.elys.network/info-testnet.json
+            url="https://tools.highstakes.ch/snapshots/elys"
           fi
-          curl -L $INFO_DOWNLOAD_URL -o /tmp/info.json
-          echo "Info.json downloaded to check snapshot version."
 
-          # retrieve blockHeight field value from info.json
-          SNAPSHOT_BLOCK_HEIGHT=$(cat /tmp/info.json | awk -F'"' '/"blockHeight":/{print $4}')
+          html_content=$(curl -s "$url")
+
+          SNAPSHOT_DOWNLOAD_URL=$(echo "$html_content" | grep -oP '(?<=<a class="a_custom" href=")[^"]*' | tail -n 1)
+          SNAPSHOT_BLOCK_HEIGHT=$(echo "$html_content" | grep -oP '(?<=<td style="font-weight: bold;"><label style="color: black">)\d+(?=</label></td>)' | tail -n 1)
+
+          echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
           echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
+
+          echo "Snapshot download URL: $SNAPSHOT_DOWNLOAD_URL"
           echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
 
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
@@ -144,17 +148,12 @@ jobs:
             exit 1
           fi
 
-          # set snapshot download url, use mainnet snapshot for main branch otherwise use testnet snapshot
+          # set snapshot file path, use mainnet snapshot for main branch otherwise use testnet snapshot
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/snapshot-mainnet.tar.lz4
-            # set snapshot file path
-            SNAPSHOT_FILE_PATH=/tmp/snapshot-mainnet.tar.lz4
+            SNAPSHOT_FILE_PATH=/tmp/snapshot-mainnet.tar.gz
           else
-            SNAPSHOT_DOWNLOAD_URL=https://snapshots.elys.network/snapshot-testnet.tar.lz4
-            # set snapshot file path
-            SNAPSHOT_FILE_PATH=/tmp/snapshot-testnet.tar.lz4
+            SNAPSHOT_FILE_PATH=/tmp/snapshot-testnet.tar.gz
           fi
-          echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
 
           echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_ENV
         if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
