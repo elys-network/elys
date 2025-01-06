@@ -27,6 +27,7 @@ message InterestBlock {
   ];
   int64 block_time = 2;
   uint64 block_height = 3;
+  uint64 pool_id = 4;
 }
 
 message LegacyInterestBlock {

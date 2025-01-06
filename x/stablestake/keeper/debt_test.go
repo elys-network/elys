@@ -74,15 +74,15 @@ func (suite *KeeperTestSuite) TestDebt() {
 			params.InterestRate = math.LegacyNewDec(10)
 			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
 
-			err = suite.app.StablestakeKeeper.Borrow(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)))
+			err = suite.app.StablestakeKeeper.Borrow(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)), 1)
 			suite.Require().NoError(err)
 			suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 
 			// Pay partial
-			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10)))
+			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10)), 1)
 			suite.Require().NoError(err)
 
-			res := suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, sender)
+			res := suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, sender, 1)
 			suite.Require().Equal(res.Borrowed.String(), "1000")
 			suite.Require().Equal(res.InterestStacked.String(), "10000")
 			suite.Require().Equal(res.InterestPaid.String(), "10")
@@ -90,9 +90,9 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.Require().Len(allDebts, 1)
 
 			// Pay rest, ensure we don't pay multiple times
-			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10990)))
+			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10990)), 1)
 			suite.Require().NoError(err)
-			res = suite.app.StablestakeKeeper.GetDebt(suite.ctx, sender)
+			res = suite.app.StablestakeKeeper.GetDebt(suite.ctx, sender, 1)
 			suite.Require().Equal(res.Borrowed.String(), "0")
 			suite.Require().Equal(res.InterestStacked.String(), "0")
 			suite.Require().Equal(res.InterestPaid.String(), "0")

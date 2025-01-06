@@ -50,3 +50,46 @@ func (k Keeper) InterestRateComputation(ctx sdk.Context) sdkmath.LegacyDec {
 
 	return newInterestRate
 }
+
+func (k Keeper) InterestRateComputationForPool(ctx sdk.Context, pool types.Pool) sdkmath.LegacyDec {
+	if pool.TotalValue.IsZero() {
+		return pool.InterestRate
+	}
+
+	interestRateMax := pool.InterestRateMax
+	interestRateMin := pool.InterestRateMin
+	interestRateIncrease := pool.InterestRateIncrease
+	interestRateDecrease := pool.InterestRateDecrease
+	healthGainFactor := pool.HealthGainFactor
+	prevInterestRate := pool.InterestRate
+
+	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
+	depositDenom := pool.GetDepositDenom()
+	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
+	borrowed := pool.TotalValue.Sub(balance.Amount)
+	targetInterestRate := healthGainFactor.
+		Mul(borrowed.ToLegacyDec()).
+		Quo(pool.TotalValue.ToLegacyDec())
+
+	interestRateChange := targetInterestRate.Sub(prevInterestRate)
+	interestRate := prevInterestRate
+	if interestRateChange.GTE(interestRateDecrease.Mul(sdkmath.LegacyNewDec(-1))) && interestRateChange.LTE(interestRateIncrease) {
+		interestRate = targetInterestRate
+	} else if interestRateChange.GT(interestRateIncrease) {
+		interestRate = prevInterestRate.Add(interestRateIncrease)
+	} else if interestRateChange.LT(interestRateDecrease.Mul(sdkmath.LegacyNewDec(-1))) {
+		interestRate = prevInterestRate.Sub(interestRateDecrease)
+	}
+
+	newInterestRate := interestRate
+
+	if interestRate.GT(interestRateMin) && interestRate.LT(interestRateMax) {
+		newInterestRate = interestRate
+	} else if interestRate.LTE(interestRateMin) {
+		newInterestRate = interestRateMin
+	} else if interestRate.GTE(interestRateMax) {
+		newInterestRate = interestRateMax
+	}
+
+	return newInterestRate
+}

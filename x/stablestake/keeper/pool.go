@@ -2,10 +2,27 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
+
+func (k Keeper) GetAllPools(ctx sdk.Context) (pools []types.Pool) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	iterator := storetypes.KVStorePrefixIterator(store, types.DebtPrefixKey)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		pool := types.Pool{}
+		k.cdc.MustUnmarshal(iterator.Value(), &pool)
+
+		pools = append(pools, pool)
+	}
+
+	return
+}
 
 // GetPools get pool as types.Pool
 func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (pool types.Pool) {
