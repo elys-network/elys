@@ -35,7 +35,7 @@ func (msg *MsgCreateSpotOrder) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order amount denom (%s)", err)
 	}
 
-	// check that orde amount denom is not the same as the order target denom
+	// check that order amount denom is not the same as the order target denom
 	if msg.OrderAmount.Denom == msg.OrderTargetDenom {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "order amount denom cannot be the same as the order target denom")
 	}
