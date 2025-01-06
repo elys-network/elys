@@ -10,7 +10,7 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-// Update params through gov proposal
+// Update max leverage for a pool through gov proposal
 func (k msgServer) UpdateMaxLeverageForPool(goCtx context.Context, msg *types.MsgUpdateMaxLeverageForPool) (*types.MsgUpdateMaxLeverageForPoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
