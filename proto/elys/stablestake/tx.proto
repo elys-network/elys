@@ -26,6 +26,7 @@ message MsgBond {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 3;
 }
 
 message MsgBondResponse {}
@@ -39,6 +40,7 @@ message MsgUnbond {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  uint64 pool_id = 3;
 }
 
 message MsgUnbondResponse {}
