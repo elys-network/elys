@@ -57,6 +57,7 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 				TotalLiabilities:                     totalLiabilities,
 				TotalLongOpenInterest:                pool.GetTotalLongOpenInterest(),
 				TotalShortOpenInterest:               pool.GetTotalShortOpenInterest(),
+				LeverageMax:                          pool.LeverageMax,
 			})
 		}
 
