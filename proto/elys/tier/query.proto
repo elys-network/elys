@@ -278,16 +278,8 @@ message QueryGetUsersPoolDataResponse {
 
 message Price {
   string denom = 1;
-  string oracle_price = 2 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string amm_price = 3 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string oracle_price = 2;
+  string amm_price = 3;
 }
 
 message QueryGetAllPricesRequest {

@@ -40,6 +40,7 @@ require (
 	cloud.google.com/go/compute/metadata v0.5.0 // indirect
 	cloud.google.com/go/iam v1.1.9 // indirect
 	cloud.google.com/go/storage v1.41.0 // indirect
+	github.com/gogo/protobuf v1.3.3 // indirect
 	github.com/golang/protobuf v1.5.4
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	google.golang.org/genproto v0.0.0-20240701130421-f6361c86f094 // indirect
@@ -52,6 +53,7 @@ require (
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0-20240904212233-8cb681e31589
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3
+	github.com/regen-network/regen-ledger/types/v2 v2.3.1
 	golang.org/x/tools v0.22.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240814211410-ddb44dafa142
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
@@ -131,7 +133,6 @@ require (
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/gofrs/uuid/v5 v5.0.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
-	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.2.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
@@ -261,6 +262,8 @@ replace (
 
 	// TODO Remove it: https://github.com/cosmos/cosmos-sdk/issues/10409
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.1
+
+	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )

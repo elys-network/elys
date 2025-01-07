@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	elystypes "github.com/elys-network/elys/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
@@ -37,7 +38,7 @@ type BankKeeper interface {
 type OracleKeeper interface {
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) math.LegacyDec
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) elystypes.Dec34
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
 
@@ -81,6 +82,7 @@ type AmmKeeper interface {
 	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
 	CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) math.LegacyDec
 	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) math.LegacyDec
+	CalcAmmPriceAsDec34(ctx sdk.Context, denom string, decimal uint64) elystypes.Dec34
 }
 
 type EstakingKeeper interface {

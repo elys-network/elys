@@ -6,6 +6,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	elystypes "github.com/elys-network/elys/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
@@ -97,7 +98,7 @@ type AmmKeeper interface {
 // OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) math.LegacyDec
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) elystypes.Dec34
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
 

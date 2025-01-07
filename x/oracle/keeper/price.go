@@ -1,11 +1,11 @@
 package keeper
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
@@ -119,22 +119,15 @@ func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (types.Price, bool)
 	return k.GetLatestPriceFromAnySource(ctx, asset)
 }
 
-func Pow10(decimal uint64) (value sdkmath.LegacyDec) {
-	value = sdkmath.LegacyNewDec(1)
-	for i := 0; i < int(decimal); i++ {
-		value = value.Mul(sdkmath.LegacyNewDec(10))
-	}
-	return
-}
-
-func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec {
+func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) elystypes.Dec34 {
 	info, found := k.GetAssetInfo(ctx, denom)
 	if !found {
-		return sdkmath.LegacyZeroDec()
+		return elystypes.ZeroDec34()
 	}
 	price, found := k.GetAssetPrice(ctx, info.Display)
 	if !found {
-		return sdkmath.LegacyZeroDec()
+		return elystypes.ZeroDec34()
 	}
-	return price.Price.Quo(Pow10(info.Decimal))
+
+	return elystypes.NewDec34FromLegacyDec(price.Price).Quo(types.Pow10(info.Decimal))
 }
