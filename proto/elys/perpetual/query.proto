@@ -280,11 +280,7 @@ message QueryOpenEstimationResponse {
   cosmos.base.v1beta1.Coin estimated_pnl = 10 [ (gogoproto.nullable) = false ];
   cosmos.base.v1beta1.Coin available_liquidity = 11
       [ (gogoproto.nullable) = false ];
-  string slippage = 12 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string slippage = 12;
   string borrow_interest_rate = 13 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -307,11 +303,7 @@ message QueryOpenEstimationResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string weight_breaking_fee = 19 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string weight_breaking_fee = 19;
 }
 
 message PoolResponse {
@@ -414,14 +406,6 @@ message QueryCloseEstimationResponse {
   ];
   cosmos.base.v1beta1.Coin custody = 11 [ (gogoproto.nullable) = false ];
   cosmos.base.v1beta1.Coin collateral = 12 [ (gogoproto.nullable) = false ];
-  string weight_breaking_fee = 13 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string slippage = 14 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string weight_breaking_fee = 13;
+  string slippage = 14;
 }

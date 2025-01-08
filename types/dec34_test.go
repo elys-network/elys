@@ -93,6 +93,26 @@ func TestDec34(t *testing.T) {
 	// Test ToLegacyDec
 	legacyResult := three.ToLegacyDec()
 	require.Equal(t, math.LegacyNewDec(3), legacyResult)
+	require.Equal(t,
+		NewDec34FromString("1000000000000000000000000000000000000123456789.000000000000000000").ToLegacyDec().String(),
+		math.LegacyMustNewDecFromStr("1000000000000000000000000000000000000123456789.000000000000000000").String(),
+	)
+	require.Equal(t,
+		NewDec34FromString("1.000000000000000000000").ToLegacyDec().String(),
+		math.LegacyMustNewDecFromStr("1.000000000000000000").String(),
+	)
+	require.Equal(t,
+		NewDec34FromString("123.456000000000000000000").ToLegacyDec().String(),
+		math.LegacyMustNewDecFromStr("123.456000000000000000").String(),
+	)
+	require.Equal(t,
+		NewDec34FromString("0.000000000000000000000").ToLegacyDec().String(),
+		math.LegacyMustNewDecFromStr("0").String(),
+	)
+	require.Equal(t,
+		NewDec34FromString("96346.39698847304510148894982122764").ToLegacyDec().String(),
+		math.LegacyMustNewDecFromStr("96346.396988473045101488").String(),
+	)
 
 	// Test ToInt
 	intResult := three.ToInt()

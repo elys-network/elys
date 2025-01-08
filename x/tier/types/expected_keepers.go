@@ -77,10 +77,10 @@ type AmmKeeper interface {
 		routes []*ammtypes.SwapAmountInRoute,
 		discount math.LegacyDec,
 		overrideSwapFee math.LegacyDec,
-	) (math.LegacyDec, math.LegacyDec, sdk.Coin, math.LegacyDec, math.LegacyDec, sdk.Coin, math.LegacyDec, math.LegacyDec, error)
+	) (elystypes.Dec34, elystypes.Dec34, sdk.Coin, math.LegacyDec, math.LegacyDec, sdk.Coin, elystypes.Dec34, elystypes.Dec34, error)
 	Balance(goCtx context.Context, req *ammtypes.QueryBalanceRequest) (*ammtypes.QueryBalanceResponse, error)
-	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
-	CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) math.LegacyDec
+	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) elystypes.Dec34
+	CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) elystypes.Dec34
 	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) elystypes.Dec34
 }
 

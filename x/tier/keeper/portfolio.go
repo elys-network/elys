@@ -59,7 +59,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if found {
 		edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
-		totalVesting = totalVesting.Mul(elystypes.NewDec34FromLegacyDec(edenDenomPrice))
+		totalVesting = totalVesting.Mul(edenDenomPrice)
 	}
 	totalValue = totalValue.Add(commit).Add(delegations).Add(unbondings).Add(totalVesting)
 
@@ -228,11 +228,11 @@ func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (el
 
 	for _, perpetual := range perpetuals {
 		if perpetual.Mtp.Position == perpetualtypes.Position_LONG {
-			totalAssets = totalAssets.Add(elystypes.NewDec34FromLegacyDec(k.amm.CalculateUSDValue(ctx, perpetual.Mtp.GetTradingAsset(), perpetual.Mtp.Custody)))
-			totalLiability = totalLiability.Add(elystypes.NewDec34FromLegacyDec(k.amm.CalculateUSDValue(ctx, usdcDenom, perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability))))
+			totalAssets = totalAssets.Add(k.amm.CalculateUSDValue(ctx, perpetual.Mtp.GetTradingAsset(), perpetual.Mtp.Custody))
+			totalLiability = totalLiability.Add(k.amm.CalculateUSDValue(ctx, usdcDenom, perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability)))
 		} else {
-			totalAssets = totalAssets.Add(elystypes.NewDec34FromLegacyDec(k.amm.CalculateUSDValue(ctx, usdcDenom, perpetual.Mtp.Custody)))
-			totalLiability = totalLiability.Add(elystypes.NewDec34FromLegacyDec(k.amm.CalculateUSDValue(ctx, perpetual.Mtp.LiabilitiesAsset, perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability))))
+			totalAssets = totalAssets.Add(k.amm.CalculateUSDValue(ctx, usdcDenom, perpetual.Mtp.Custody))
+			totalLiability = totalLiability.Add(k.amm.CalculateUSDValue(ctx, perpetual.Mtp.LiabilitiesAsset, perpetual.Mtp.Liabilities.Add(perpetual.Mtp.BorrowInterestUnpaidLiability)))
 		}
 	}
 	netValue = totalAssets.Sub(totalLiability)
@@ -301,7 +301,7 @@ func (k Keeper) RetrieveTradeshieldTotal(ctx sdk.Context, user sdk.AccAddress) e
 		for _, order := range perpetualOrders {
 			balances := k.bankKeeper.GetAllBalances(ctx, order.GetOrderAddress())
 			for _, balance := range balances {
-				totalValue = totalValue.Add(elystypes.NewDec34FromLegacyDec(k.amm.CalculateUSDValue(ctx, balance.Denom, balance.Amount)))
+				totalValue = totalValue.Add(k.amm.CalculateUSDValue(ctx, balance.Denom, balance.Amount))
 			}
 		}
 	}
@@ -312,7 +312,7 @@ func (k Keeper) RetrieveTradeshieldTotal(ctx sdk.Context, user sdk.AccAddress) e
 		for _, order := range spotOrders {
 			balances := k.bankKeeper.GetAllBalances(ctx, order.GetOrderAddress())
 			for _, balance := range balances {
-				totalValue = totalValue.Add(elystypes.NewDec34FromLegacyDec(k.amm.CalculateUSDValue(ctx, balance.Denom, balance.Amount)))
+				totalValue = totalValue.Add(k.amm.CalculateUSDValue(ctx, balance.Denom, balance.Amount))
 			}
 		}
 	}
