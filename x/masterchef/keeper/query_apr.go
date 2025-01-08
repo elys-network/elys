@@ -21,5 +21,5 @@ func (k Keeper) Apr(goCtx context.Context, req *types.QueryAprRequest) (*types.Q
 		return nil, err
 	}
 
-	return &types.QueryAprResponse{Apr: apr}, nil
+	return &types.QueryAprResponse{Apr: apr.String()}, nil
 }

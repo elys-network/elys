@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -74,37 +74,37 @@ func (k Keeper) PoolRewards(goCtx context.Context, req *types.QueryPoolRewardsRe
 }
 
 // Generate earn pool struct
-func (k *Keeper) generatePoolRewards(ctx sdk.Context, ammPool *ammtypes.Pool, externalRewardsAprs map[uint64]math.LegacyDec) types.PoolRewards {
+func (k *Keeper) generatePoolRewards(ctx sdk.Context, ammPool *ammtypes.Pool, externalRewardsAprs map[uint64]elystypes.Dec34) types.PoolRewards {
 	// Get rewards amount
 	rewardsUsd, rewardCoins := k.GetDailyRewardsAmountForPool(ctx, ammPool.PoolId)
 	edenForward := sdk.NewCoin(ptypes.Eden, k.ForwardEdenCalc(ctx, ammPool.PoolId).RoundInt())
 	tvl, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
-	apr := rewardsUsd.Mul(math.LegacyNewDec(365))
+	apr := rewardsUsd.MulInt64(365)
 	if err != nil {
-		apr = math.LegacyZeroDec()
+		apr = elystypes.ZeroDec34()
 	} else {
 		apr = apr.Quo(tvl)
 	}
 
 	return types.PoolRewards{
 		PoolId:             ammPool.PoolId,
-		RewardsUsd:         rewardsUsd,
+		RewardsUsd:         rewardsUsd.ToLegacyDec(),
 		RewardCoins:        rewardCoins,
 		EdenForward:        edenForward,
-		RewardsUsdApr:      apr,
-		ExternalRewardsApr: externalRewardsAprs[ammPool.PoolId],
+		RewardsUsdApr:      apr.ToLegacyDec(),
+		ExternalRewardsApr: externalRewardsAprs[ammPool.PoolId].ToLegacyDec(),
 	}
 }
 
-func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]math.LegacyDec {
+func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]elystypes.Dec34 {
 	externalIncentives := k.GetAllExternalIncentives(ctx)
-	rewardsPerPool := make(map[uint64]math.LegacyDec)
+	rewardsPerPool := make(map[uint64]elystypes.Dec34)
 	curBlockHeight := ctx.BlockHeight()
 	totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 
 	for _, externalIncentive := range externalIncentives {
 		if externalIncentive.FromBlock < curBlockHeight && curBlockHeight <= externalIncentive.ToBlock {
-			totalAmount := math.LegacyNewDecFromInt(externalIncentive.AmountPerBlock.Mul(math.NewInt(totalBlocksPerYear)))
+			totalAmount := elystypes.NewDec34FromInt(externalIncentive.AmountPerBlock).MulInt64(totalBlocksPerYear)
 			price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, externalIncentive.RewardDenom)
 
 			rewardsPerPool[externalIncentive.PoolId] = rewardsPerPool[externalIncentive.PoolId].Add(totalAmount.Mul(price))
@@ -121,7 +121,7 @@ func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]math.Lega
 		}
 		totalLiquidity, err := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
-			rewardsPerPool[key] = math.LegacyZeroDec()
+			rewardsPerPool[key] = elystypes.ZeroDec34()
 		}
 		externalRewardsApr := value.Quo(totalLiquidity)
 		rewardsPerPool[key] = externalRewardsApr

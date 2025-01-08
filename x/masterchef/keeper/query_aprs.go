@@ -69,15 +69,15 @@ func (k Keeper) Aprs(goCtx context.Context, req *types.QueryAprsRequest) (*types
 	}
 
 	return &types.QueryAprsResponse{
-		UsdcAprUsdc:  usdcAprUsdc,
-		EdenAprUsdc:  edenAprUsdc,
-		UsdcAprEdenb: usdcAprEdenb,
-		EdenAprEdenb: edenAprEdenb,
-		UsdcAprEden:  usdcAprEden,
-		EdenAprEden:  edenAprEden,
-		EdenbAprEden: edenbAprEden,
-		UsdcAprElys:  usdcAprElys,
-		EdenAprElys:  edenAprElys,
-		EdenbAprElys: edenbAprElys,
+		UsdcAprUsdc:  usdcAprUsdc.String(),
+		EdenAprUsdc:  edenAprUsdc.String(),
+		UsdcAprEdenb: usdcAprEdenb.String(),
+		EdenAprEdenb: edenAprEdenb.String(),
+		UsdcAprEden:  usdcAprEden.String(),
+		EdenAprEden:  edenAprEden.String(),
+		EdenbAprEden: edenbAprEden.String(),
+		UsdcAprElys:  usdcAprElys.String(),
+		EdenAprElys:  edenAprElys.String(),
+		EdenbAprElys: edenbAprElys.String(),
 	}, nil
 }

@@ -80,9 +80,9 @@ type AmmKeeper interface {
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
 
-	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec) (sdk.Coin, math.LegacyDec, error)
-	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
-	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec
+	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec) (sdk.Coin, elystypes.Dec34, error)
+	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) elystypes.Dec34
+	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) elystypes.Dec34
 	InternalSwapExactAmountIn(
 		ctx sdk.Context,
 		sender sdk.AccAddress,
@@ -118,7 +118,7 @@ type AssetProfileKeeper interface {
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stabletypes.Params)
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)
-	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, baseCurrency string) math.LegacyDec
+	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, baseCurrency string) elystypes.Dec34
 }
 
 // TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)

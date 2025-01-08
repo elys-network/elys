@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	elystypes "github.com/elys-network/elys/types"
@@ -10,11 +9,11 @@ import (
 )
 
 // Estimate the price : eg, 1 Eden -> x usdc
-func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec {
+func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) elystypes.Dec34 {
 	// Find a pool that can convert tokenIn to usdc
 	pool, found := k.GetBestPoolWithDenoms(ctx, []string{tokenInDenom, baseCurrency}, false)
 	if !found {
-		return math.LegacyZeroDec()
+		return elystypes.ZeroDec34()
 	}
 
 	// Executes the swap in the pool and stores the output. Updates pool assets but
@@ -23,7 +22,7 @@ func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 
 	rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, &snapshot, tokenInDenom, baseCurrency, k.accountedPoolKeeper)
 	if err != nil {
-		return math.LegacyZeroDec()
+		return elystypes.ZeroDec34()
 	}
 
 	return rate
@@ -32,9 +31,8 @@ func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) elystypes.Dec34 {
 	// Calc ueden / uusdc rate
 	edenUsdcRate := k.EstimatePrice(ctx, ptypes.Elys, baseCurrency)
-	edenUsdcRateDec34 := elystypes.NewDec34FromLegacyDec(edenUsdcRate)
-	if edenUsdcRateDec34.IsZero() {
-		edenUsdcRateDec34 = elystypes.OneDec34()
+	if edenUsdcRate.IsZero() {
+		edenUsdcRate = elystypes.OneDec34()
 	}
 	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 	if usdcDenomPrice.IsZero() {
@@ -45,7 +43,7 @@ func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) elystype
 		}
 		usdcDenomPrice = elystypes.NewDec34WithPrec(1, usdcDecimal)
 	}
-	return edenUsdcRateDec34.Mul(usdcDenomPrice)
+	return edenUsdcRate.Mul(usdcDenomPrice)
 }
 
 func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) elystypes.Dec34 {
@@ -56,7 +54,6 @@ func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 
 	// Calc tokenIn / uusdc rate
 	tokenUsdcRate := k.EstimatePrice(ctx, tokenInDenom, baseCurrency)
-	tokenUsdcRateDec34 := elystypes.NewDec34FromLegacyDec(tokenUsdcRate)
 	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 	if usdcDenomPrice.IsZero() {
 		usdcDecimal := int32(6)
@@ -66,7 +63,7 @@ func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 		}
 		usdcDenomPrice = elystypes.NewDec34WithPrec(1, usdcDecimal)
 	}
-	return tokenUsdcRateDec34.Mul(usdcDenomPrice)
+	return tokenUsdcRate.Mul(usdcDenomPrice)
 }
 
 func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) elystypes.Dec34 {
@@ -78,7 +75,7 @@ func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.
 	if tokenPrice.IsZero() {
 		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	}
-	return elystypes.NewDec34FromInt(amount).Mul(tokenPrice)
+	return tokenPrice.MulInt(amount)
 }
 
 func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) elystypes.Dec34 {
@@ -99,8 +96,7 @@ func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) elys
 	if err != nil {
 		return elystypes.ZeroDec34()
 	}
-	spotPriceDec34 := elystypes.NewDec34FromLegacyDec(spotPrice)
-	return spotPriceDec34.Mul(usdcPrice)
+	return spotPrice.Mul(usdcPrice)
 }
 
 func Pow10AsLegacyDec(decimal uint64) (value sdkmath.LegacyDec) {

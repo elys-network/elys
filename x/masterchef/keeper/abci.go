@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
+	elystypes "github.com/elys-network/elys/types"
 	ammkeeper "github.com/elys-network/elys/x/amm/keeper"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -29,11 +30,11 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 	return nil
 }
 
-func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
+func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) elystypes.Dec34 {
 	if poolId == stabletypes.PoolId {
 		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 		if !found {
-			return math.LegacyZeroDec()
+			return elystypes.ZeroDec34()
 		}
 		return k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
 	}
@@ -41,11 +42,11 @@ func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
 	if found {
 		tvl, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
-			return math.LegacyZeroDec()
+			return elystypes.ZeroDec34()
 		}
 		return tvl
 	}
-	return math.LegacyZeroDec()
+	return elystypes.ZeroDec34()
 }
 
 func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
@@ -54,7 +55,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 	totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 
 	externalIncentives := k.GetAllExternalIncentives(ctx)
-	externalIncentiveAprs := make(map[uint64]math.LegacyDec)
+	externalIncentiveAprs := make(map[uint64]elystypes.Dec34)
 	for _, externalIncentive := range externalIncentives {
 		pool, found := k.GetPoolInfo(ctx, externalIncentive.PoolId)
 		if !found {
@@ -81,19 +82,17 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 				yearlyIncentiveRewardsTotal := externalIncentive.AmountPerBlock.
 					Mul(math.NewInt(totalBlocksPerYear))
 
-				apr := yearlyIncentiveRewardsTotal.ToLegacyDec().
-					Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
-					Quo(tvl)
-				externalIncentive.Apr = apr
+				apr := k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency).MulInt(yearlyIncentiveRewardsTotal).Quo(tvl)
+				externalIncentive.Apr = apr.ToLegacyDec()
 				k.SetExternalIncentive(ctx, externalIncentive)
 				poolExternalApr, ok := externalIncentiveAprs[pool.PoolId]
 				if !ok {
-					poolExternalApr = math.LegacyZeroDec()
+					poolExternalApr = elystypes.ZeroDec34()
 				}
 
 				poolExternalApr = poolExternalApr.Add(apr)
 				externalIncentiveAprs[pool.PoolId] = poolExternalApr
-				pool.ExternalIncentiveApr = poolExternalApr
+				pool.ExternalIncentiveApr = poolExternalApr.ToLegacyDec()
 				k.SetPoolInfo(ctx, pool)
 			}
 		}
@@ -205,13 +204,13 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	for _, pool := range k.GetAllPoolInfos(ctx) {
 		var err error
 		tvl := k.GetPoolTVL(ctx, pool.PoolId)
-		proxyTVL := tvl.Mul(pool.Multiplier)
+		proxyTVL := tvl.MulLegacyDec(pool.Multiplier)
 		if proxyTVL.IsZero() {
 			continue
 		}
 
-		poolShare := math.LegacyZeroDec()
-		poolShareEdenEnable := math.LegacyZeroDec()
+		poolShare := elystypes.ZeroDec34()
+		poolShareEdenEnable := elystypes.ZeroDec34()
 		if totalProxyTVL.IsPositive() {
 			poolShare = proxyTVL.Quo(totalProxyTVL)
 		}
@@ -221,20 +220,19 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		}
 
 		// Calculate new Eden for this pool
-		newEdenAllocatedForPool := math.LegacyZeroDec()
+		newEdenAllocatedForPool := elystypes.ZeroDec34()
 
 		// Maximum eden APR - 30% by default
-		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
-			Mul(proxyTVL).
+		poolMaxEdenAmount := proxyTVL.MulLegacyDec(params.MaxEdenRewardAprLps).
 			QuoInt64(totalBlocksPerYear).
 			Quo(edenDenomPrice)
 
 		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 		if pool.EnableEdenRewards {
 			newEdenAllocatedForPool = poolShareEdenEnable.MulInt(lpsEdenAmount)
-			newEdenAllocatedForPool = math.LegacyMinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
+			newEdenAllocatedForPool = elystypes.MinDec34(newEdenAllocatedForPool, poolMaxEdenAmount)
 			if newEdenAllocatedForPool.IsPositive() {
-				err = k.commitmentKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.TruncateInt())})
+				err = k.commitmentKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.ToInt())})
 				if err != nil {
 					return err
 				}
@@ -242,7 +240,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		}
 
 		// Get gas fee rewards per pool
-		gasRewardsAllocatedForPool := poolShare.Mul(gasFeeUsdcAmountForLps)
+		gasRewardsAllocatedForPool := poolShare.MulLegacyDec(gasFeeUsdcAmountForLps)
 
 		// ------------------- DEX rewards calculation -------------------
 		// ---------------------------------------------------------------
@@ -253,14 +251,14 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			dexRewardsAllocatedForPool = math.LegacyNewDec(0)
 		}
 
-		k.AddEdenInfo(ctx, newEdenAllocatedForPool)
+		k.AddEdenInfo(ctx, newEdenAllocatedForPool.ToLegacyDec())
 
 		// Distribute Eden
 		if pool.EnableEdenRewards {
-			k.UpdateAccPerShare(ctx, pool.PoolId, ptypes.Eden, newEdenAllocatedForPool.TruncateInt())
+			k.UpdateAccPerShare(ctx, pool.PoolId, ptypes.Eden, newEdenAllocatedForPool.ToInt())
 		}
 		// Distribute Gas fees + Dex rewards (USDC)
-		k.UpdateAccPerShare(ctx, pool.PoolId, k.GetBaseCurrencyDenom(ctx), gasRewardsAllocatedForPool.Add(dexRewardsAllocatedForPool).TruncateInt())
+		k.UpdateAccPerShare(ctx, pool.PoolId, k.GetBaseCurrencyDenom(ctx), gasRewardsAllocatedForPool.AddLegacyDec(dexRewardsAllocatedForPool).ToInt())
 
 		// Track pool rewards accumulation
 		edenReward := newEdenAllocatedForPool
@@ -271,8 +269,8 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			uint64(ctx.BlockTime().Unix()),
 			ctx.BlockHeight(),
 			dexRewardsAllocatedForPool,
-			gasRewardsAllocatedForPool,
-			edenReward,
+			gasRewardsAllocatedForPool.ToLegacyDec(),
+			edenReward.ToLegacyDec(),
 		)
 		params := k.parameterKeeper.GetParams(ctx)
 		dataLifetime := params.RewardsDataLifetime
@@ -288,7 +286,8 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			pool.EdenApr = newEdenAllocatedForPool.
 				MulInt64(totalBlocksPerYear).
 				Mul(edenDenomPrice).
-				Quo(tvl)
+				Quo(tvl).
+				ToLegacyDec()
 		} else {
 			pool.EdenApr = math.LegacyZeroDec()
 		}
@@ -297,7 +296,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	}
 
 	// Update APR for amm pools
-	k.UpdateAmmPoolAPR(ctx, totalBlocksPerYear, totalProxyTVL, edenDenomPrice)
+	k.UpdateAmmPoolAPR(ctx, totalBlocksPerYear, totalProxyTVL.ToLegacyDec(), edenDenomPrice.ToLegacyDec())
 
 	return nil
 }
@@ -405,7 +404,7 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 			ctx.Logger().Error("Invalid protocol revenue address", "error", err)
 			return gasFeesForLpsDec, err
 		}
-		providerPortion := ammkeeper.PortionCoins(protocolGasFeeCoins, estakingParams.ProviderStakingRewardsPortion)
+		providerPortion := ammkeeper.PortionCoins(protocolGasFeeCoins, elystypes.NewDec34FromLegacyDec(estakingParams.ProviderStakingRewardsPortion))
 		consumerPortion := protocolGasFeeCoins.Sub(providerPortion...)
 
 		// This will be sent to provider
@@ -482,7 +481,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 
 		// Send coins to protocol revenue address
 		if protocolRevenueCoins.IsAllPositive() {
-			providerPortion := ammkeeper.PortionCoins(protocolRevenueCoins, estakingParams.ProviderStakingRewardsPortion)
+			providerPortion := ammkeeper.PortionCoins(protocolRevenueCoins, elystypes.NewDec34FromLegacyDec(estakingParams.ProviderStakingRewardsPortion))
 			consumerPortion := stakerRevenueCoins.Sub(providerPortion...)
 
 			// This will be sent to provider
@@ -518,7 +517,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 }
 
 // Calculate Proxy TVL
-func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) (math.LegacyDec, math.LegacyDec) {
+func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) (elystypes.Dec34, elystypes.Dec34) {
 	// Ensure stablestakePoolParams exist
 	stableStakePoolId := uint64(stabletypes.PoolId)
 	_, found := k.GetPoolInfo(ctx, stableStakePoolId)
@@ -526,11 +525,11 @@ func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) (math.Le
 		k.InitStableStakePoolParams(ctx, stableStakePoolId)
 	}
 
-	multipliedShareSum := math.LegacyZeroDec()
-	multipliedShareSumOnlyEden := math.LegacyZeroDec()
+	multipliedShareSum := elystypes.ZeroDec34()
+	multipliedShareSumOnlyEden := elystypes.ZeroDec34()
 	for _, pool := range k.GetAllPoolInfos(ctx) {
 		tvl := k.GetPoolTVL(ctx, pool.PoolId)
-		proxyTVL := tvl.Mul(pool.Multiplier)
+		proxyTVL := tvl.MulLegacyDec(pool.Multiplier)
 
 		// Calculate total pool share by TVL and multiplier
 		multipliedShareSum = multipliedShareSum.Add(proxyTVL)
@@ -635,30 +634,35 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 		}
 
 		if firstAccum.Timestamp == lastAccum.Timestamp {
-			poolInfo.DexApr = lastAccum.DexReward.
+			poolInfo.DexApr = usdcDenomPrice.
+				MulLegacyDec(lastAccum.DexReward).
 				MulInt64(totalBlocksPerYear).
-				Mul(usdcDenomPrice).
-				Quo(tvl)
+				Quo(tvl).
+				ToLegacyDec()
 
-			poolInfo.GasApr = lastAccum.GasReward.
+			poolInfo.GasApr = usdcDenomPrice.
+				MulLegacyDec(lastAccum.GasReward).
 				MulInt64(totalBlocksPerYear).
-				Mul(usdcDenomPrice).
-				Quo(tvl)
+				Quo(tvl).
+				ToLegacyDec()
 		} else {
 			duration := lastAccum.Timestamp - firstAccum.Timestamp
 			secondsInYear := int64(86400 * 360)
 
-			poolInfo.DexApr = lastAccum.DexReward.Sub(firstAccum.DexReward).
-				MulInt64(secondsInYear).
-				QuoInt64(int64(duration)).
-				Mul(usdcDenomPrice).
-				Quo(tvl)
-
-			poolInfo.GasApr = lastAccum.GasReward.Sub(firstAccum.GasReward).
-				MulInt64(secondsInYear).
-				QuoInt64(int64(duration)).
-				Mul(usdcDenomPrice).
-				Quo(tvl)
+			poolInfo.DexApr = usdcDenomPrice.
+				MulLegacyDec(lastAccum.DexReward.
+					Sub(firstAccum.DexReward).
+					MulInt64(secondsInYear).
+					QuoInt64(int64(duration))).
+				Quo(tvl).
+				ToLegacyDec()
+			poolInfo.GasApr = usdcDenomPrice.
+				MulLegacyDec(lastAccum.GasReward.
+					Sub(firstAccum.GasReward).
+					MulInt64(secondsInYear).
+					QuoInt64(int64(duration))).
+				Quo(tvl).
+				ToLegacyDec()
 		}
 		k.SetPoolInfo(ctx, poolInfo)
 		return false

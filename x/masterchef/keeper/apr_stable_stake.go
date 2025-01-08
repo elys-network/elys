@@ -4,13 +4,14 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStableStakeAprRequest) (sdkmath.LegacyDec, error) {
+func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStableStakeAprRequest) (elystypes.Dec34, error) {
 	// Fetch incentive params
 	params := k.GetParams(ctx)
 
@@ -21,22 +22,22 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 	if query.Denom == ptypes.Eden {
 		lpIncentive := params.LpIncentives
 		if lpIncentive == nil || lpIncentive.EdenAmountPerYear.IsNil() {
-			return sdkmath.LegacyZeroDec(), nil
+			return elystypes.ZeroDec34(), nil
 		}
 
 		totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 		if totalBlocksPerYear == 0 {
-			return sdkmath.LegacyZeroDec(), nil
+			return elystypes.ZeroDec34(), nil
 		}
 
 		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 		if !found {
-			return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+			return elystypes.ZeroDec34(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 		}
 
 		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
 		if stableTvl.IsZero() {
-			return sdkmath.LegacyZeroDec(), nil
+			return elystypes.ZeroDec34(), nil
 		}
 
 		// Calculate total Proxy TVL
@@ -49,24 +50,24 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		// Get pool info from incentive param
 		poolInfo, found := k.GetPoolInfo(ctx, uint64(stabletypes.PoolId))
 		if !found {
-			return sdkmath.LegacyZeroDec(), nil
+			return elystypes.ZeroDec34(), nil
 		}
 
 		// Calculate Proxy TVL share considering multiplier
-		proxyTVL := stableTvl.Mul(poolInfo.Multiplier)
+		proxyTVL := stableTvl.MulLegacyDec(poolInfo.Multiplier)
 		if totalProxyTVL.IsZero() {
-			return sdkmath.LegacyZeroDec(), nil
+			return elystypes.ZeroDec34(), nil
 		}
 		stableStakePoolShare := proxyTVL.Quo(totalProxyTVL)
 
-		stableStakeEdenAmount := sdkmath.LegacyNewDecFromInt(edenAmount).Mul(stableStakePoolShare)
+		stableStakeEdenAmount := stableStakePoolShare.MulInt(edenAmount)
 
 		params := k.GetParams(ctx)
-		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
-			Mul(proxyTVL).
+		poolMaxEdenAmount := proxyTVL.
+			MulLegacyDec(params.MaxEdenRewardAprLps).
 			QuoInt64(totalBlocksPerYear).
 			Quo(edenDenomPrice)
-		stableStakeEdenAmount = sdkmath.LegacyMinDec(stableStakeEdenAmount, poolMaxEdenAmount)
+		stableStakeEdenAmount = elystypes.MinDec34(stableStakeEdenAmount, poolMaxEdenAmount)
 
 		// Eden Apr for usdc earn program
 		apr := stableStakeEdenAmount.
@@ -78,11 +79,11 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		params := k.stableKeeper.GetParams(ctx)
 		res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{})
 		if err != nil {
-			return sdkmath.LegacyZeroDec(), err
+			return elystypes.ZeroDec34(), err
 		}
-		apr := params.InterestRate.Mul(res.BorrowRatio)
+		apr := elystypes.NewDec34FromLegacyDec(params.InterestRate).MulLegacyDec(res.BorrowRatio)
 		return apr, nil
 	}
 
-	return sdkmath.LegacyZeroDec(), nil
+	return elystypes.ZeroDec34(), nil
 }

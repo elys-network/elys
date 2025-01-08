@@ -138,72 +138,32 @@ message QueryCalculateDiscountResponse {
 message QueryLeverageLpTotalRequest { string user = 1; }
 
 message QueryLeverageLpTotalResponse {
-  string total_value = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string total_borrows = 2 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string total_value = 1;
+  string total_borrows = 2;
 }
 
 message QueryRewardsTotalRequest { string user = 1; }
 
-message QueryRewardsTotalResponse {
-  string total = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
+message QueryRewardsTotalResponse { string total = 1; }
 
 message QueryStakedPoolRequest { string user = 1; }
 
-message QueryStakedPoolResponse {
-  string total = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
+message QueryStakedPoolResponse { string total = 1; }
 
 message QueryPerpetualRequest { string user = 1; }
 
 message QueryPerpetualResponse {
-  string total_value = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string total_borrows = 2 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string total_value = 1;
+  string total_borrows = 2;
 }
 
 message QueryLiquidTotalRequest { string user = 1; }
 
-message QueryLiquidTotalResponse {
-  string total = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
+message QueryLiquidTotalResponse { string total = 1; }
 
 message QueryLockedOrderRequest { string user = 1; }
 
-message QueryLockedOrderResponse {
-  string total = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
+message QueryLockedOrderResponse { string total = 1; }
 
 message QueryGetAmmPriceRequest {
   string denom = 1;
@@ -212,59 +172,25 @@ message QueryGetAmmPriceRequest {
 
 // We use a submessage to avoid the issue with the gRPC codec
 // https://github.com/cosmos/cosmos-sdk/issues/18430
-message GetAmmPriceResponseResult {
-  string total = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
+message GetAmmPriceResponseResult { string total = 1; }
 
 message QueryGetAmmPriceResponse { GetAmmPriceResponseResult result = 1; }
 
 message QueryGetConsolidatedPriceRequest { string denom = 1; }
 
 message QueryGetConsolidatedPriceResponse {
-  string amm_price = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string oracle_price = 2 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string oracle_price_dec = 3 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string amm_price = 1;
+  string oracle_price = 2;
+  string oracle_price_dec = 3;
 }
 
 message QueryStakedRequest { string user = 1; }
 
 message QueryStakedResponse {
-  string commitments = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string delegations = 2 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string unbondings = 3 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string total_vested = 4 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string commitments = 1;
+  string delegations = 2;
+  string unbondings = 3;
+  string total_vested = 4;
 }
 
 message QueryGetUsersPoolDataRequest {

@@ -42,12 +42,12 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 		InRoute:            inRoute,
 		OutRoute:           outRoute,
 		Amount:             amount,
-		SpotPrice:          spotPrice,
+		SpotPrice:          spotPrice.String(),
 		SwapFee:            swapFee,
 		Discount:           discount,
 		AvailableLiquidity: availableLiquidity,
-		Slippage:           slippage,
-		WeightBalanceRatio: weightBonus,
-		PriceImpact:        priceImpact,
+		Slippage:           slippage.String(),
+		WeightBalanceRatio: weightBonus.String(),
+		PriceImpact:        priceImpact.String(),
 	}, nil
 }

@@ -5,6 +5,7 @@ import (
 	"cosmossdk.io/store/prefix"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -56,29 +57,29 @@ func (k Keeper) TrackWeightBreakingSlippage(ctx sdk.Context, poolId uint64, toke
 	track := types.WeightBreakingSlippage{
 		PoolId: poolId,
 		Date:   ctx.BlockTime().Format("2006-01-02"),
-		Amount: price.Mul(math.LegacyNewDecFromInt(token.Amount)),
+		Amount: price.MulInt(token.Amount).ToLegacyDec(),
 	}
 	k.AddWeightAndSlippageFee(ctx, track)
 }
 
 // Returns last 7 days avg for weight breaking and slippage
-func (k Keeper) GetWeightBreakingSlippageAvg(ctx sdk.Context, poolId uint64) math.LegacyDec {
+func (k Keeper) GetWeightBreakingSlippageAvg(ctx sdk.Context, poolId uint64) elystypes.Dec34 {
 	start := ctx.BlockTime()
 	count := math.ZeroInt()
-	total := math.LegacyZeroDec()
+	total := elystypes.ZeroDec34()
 
 	for i := 0; i < 7; i++ {
 		date := start.AddDate(0, 0, i*-1).Format("2006-01-02")
 		info := k.GetWeightAndSlippageFee(ctx, poolId, date)
 
 		if info.Amount.IsPositive() {
-			total = total.Add(info.Amount)
+			total = total.AddLegacyDec(info.Amount)
 			count = count.Add(math.OneInt())
 		}
 	}
 
 	if count.IsZero() {
-		return math.LegacyZeroDec()
+		return elystypes.ZeroDec34()
 	}
-	return total.Quo(math.LegacyNewDecFromInt(count))
+	return total.QuoInt(count)
 }

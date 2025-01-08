@@ -1,14 +1,16 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 
+	sdkmath "cosmossdk.io/math"
+
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 )
 
 func GetPoolShareDenom(poolId uint64) string {
@@ -64,24 +66,24 @@ func ApplyDiscount(swapFee sdkmath.LegacyDec, discount sdkmath.LegacyDec) sdkmat
 // GetWeightBreakingFee When distanceDiff > 0, pool is getting worse so we calculate WBF based on final weight
 // When distanceDiff < 0, pool is improving, we need to use initial weights. Say target is 50:50, initially pool is 80:20 and now after it is becoming 30:70,
 // this is improving the pool but with finalWeightOut/finalWeightIn it will be 30/70 which doesn't provide enough bonus to user
-func GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut sdkmath.LegacyDec, distanceDiff sdkmath.LegacyDec, params Params) sdkmath.LegacyDec {
-	weightBreakingFee := sdkmath.LegacyZeroDec()
+func GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff elystypes.Dec34, params Params) elystypes.Dec34 {
+	weightBreakingFee := elystypes.ZeroDec34()
 	if !params.WeightBreakingFeeMultiplier.IsZero() {
 		// (45/55*60/40) ^ 2.5
 		if distanceDiff.IsPositive() {
 			if !finalWeightOut.IsZero() && !finalWeightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() {
-				weightBreakingFee = params.WeightBreakingFeeMultiplier.
-					Mul(Pow(finalWeightIn.Mul(targetWeightOut).Quo(finalWeightOut).Quo(targetWeightIn), params.WeightBreakingFeeExponent))
+				weightBreakingFee = elystypes.NewDec34FromLegacyDec(params.WeightBreakingFeeMultiplier).
+					Mul(PowDec34(finalWeightIn.Mul(targetWeightOut).Quo(finalWeightOut).Quo(targetWeightIn), elystypes.NewDec34FromLegacyDec(params.WeightBreakingFeeExponent)))
 			}
 		} else {
 			if !initialWeightOut.IsZero() && !initialWeightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() {
-				weightBreakingFee = params.WeightBreakingFeeMultiplier.
-					Mul(Pow(initialWeightOut.Mul(targetWeightIn).Quo(initialWeightIn).Quo(targetWeightOut), params.WeightBreakingFeeExponent))
+				weightBreakingFee = elystypes.NewDec34FromLegacyDec(params.WeightBreakingFeeMultiplier).
+					Mul(PowDec34(initialWeightOut.Mul(targetWeightIn).Quo(initialWeightIn).Quo(targetWeightOut), elystypes.NewDec34FromLegacyDec(params.WeightBreakingFeeExponent)))
 			}
 		}
 
-		if weightBreakingFee.GT(sdkmath.LegacyNewDecWithPrec(99, 2)) {
-			weightBreakingFee = sdkmath.LegacyNewDecWithPrec(99, 2)
+		if weightBreakingFee.GT(elystypes.NewDec34WithPrec(99, 2)) {
+			weightBreakingFee = elystypes.NewDec34WithPrec(99, 2)
 		}
 	}
 	return weightBreakingFee

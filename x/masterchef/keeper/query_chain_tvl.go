@@ -2,12 +2,14 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -21,7 +23,7 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	allPools := k.amm.GetAllPool(ctx)
-	poolsTVL := math.LegacyZeroDec()
+	poolsTVL := elystypes.ZeroDec34()
 	totalTVL := math.ZeroInt()
 
 	for _, pool := range allPools {
@@ -31,7 +33,7 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		}
 		poolsTVL = poolsTVL.Add(tvl)
 	}
-	totalTVL = totalTVL.Add(poolsTVL.TruncateInt())
+	totalTVL = totalTVL.Add(poolsTVL.ToInt())
 
 	baseCurrencyEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
@@ -39,24 +41,24 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 	}
 
 	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrencyEntry.Denom)
-	totalTVL = totalTVL.Add(stableStakeTVL.TruncateInt())
+	totalTVL = totalTVL.Add(stableStakeTVL.ToInt())
 
 	elysPrice := k.amm.GetTokenPrice(ctx, ptypes.Elys, baseCurrencyEntry.Denom)
 
 	stakedElys := k.bankKeeper.GetBalance(ctx, authtypes.NewModuleAddress(stakingtypes.BondedPoolName), ptypes.Elys).Amount
 	stakedElysValue := elysPrice.MulInt(stakedElys)
-	totalTVL = totalTVL.Add(stakedElysValue.TruncateInt())
+	totalTVL = totalTVL.Add(stakedElysValue.ToInt())
 
 	commitmentParams := k.commitmentKeeper.GetParams(ctx)
 	stakedEden := commitmentParams.TotalCommitted.AmountOf(ptypes.Eden)
 	stakedEdenValue := elysPrice.MulInt(stakedEden)
-	totalTVL = totalTVL.Add(stakedEdenValue.TruncateInt())
+	totalTVL = totalTVL.Add(stakedEdenValue.ToInt())
 
 	return &types.QueryChainTVLResponse{
 		Total:       totalTVL,
-		Pools:       poolsTVL.TruncateInt(),
-		UsdcStaking: stableStakeTVL.TruncateInt(),
-		StakedElys:  stakedElysValue.TruncateInt(),
-		StakedEden:  stakedEdenValue.TruncateInt(),
+		Pools:       poolsTVL.ToInt(),
+		UsdcStaking: stableStakeTVL.ToInt(),
+		StakedElys:  stakedElysValue.ToInt(),
+		StakedEden:  stakedEdenValue.ToInt(),
 	}, nil
 }

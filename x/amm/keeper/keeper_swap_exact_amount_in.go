@@ -59,16 +59,16 @@ func (k Keeper) InternalSwapExactAmountIn(
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// Also emits a swap event and updates related liquidity metrics.
-	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, swapFee, math.ZeroInt(), oracleOutAmount.TruncateInt(), weightBalanceBonus, false)
+	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, swapFee, math.ZeroInt(), oracleOutAmount.ToInt(), weightBalanceBonus, false)
 	if err != nil {
 		return math.Int{}, err
 	}
 
 	// track slippage
-	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenOutCoin.Denom, slippageAmount.RoundInt()))
+	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenOutCoin.Denom, slippageAmount.ToInt()))
 
 	if pool.PoolParams.UseOracle {
-		k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenOutCoin.Denom, slippageAmount.RoundInt()))
+		k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenOutCoin.Denom, slippageAmount.ToInt()))
 	}
 
 	return tokenOutAmount, nil

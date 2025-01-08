@@ -5,6 +5,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -17,10 +18,10 @@ func (k Keeper) SwapOutAmtGivenIn(
 	tokenOutDenom string,
 	swapFee sdkmath.LegacyDec,
 	weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
-) (tokenOut sdk.Coin, slippage sdkmath.LegacyDec, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, oracleOutAmount sdkmath.LegacyDec, swapFeeFinal sdkmath.LegacyDec, err error) {
+) (tokenOut sdk.Coin, slippage, slippageAmount, weightBalanceBonus, oracleOutAmount elystypes.Dec34, swapFeeFinal sdkmath.LegacyDec, err error) {
 	ammPool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("invalid pool: %d", poolId)
+		return sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdkmath.LegacyZeroDec(), fmt.Errorf("invalid pool: %d", poolId)
 	}
 	params := k.GetParams(ctx)
 	return ammPool.SwapOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper, weightBreakingFeePerpetualFactor, params)

@@ -1,80 +1,35 @@
 package types
 
 import (
+	"errors"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 )
 
-func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper, pool Pool, exitingShares sdkmath.Int, tokenOutDenom string) (sdkmath.LegacyDec, error) {
+func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper, pool Pool, exitingShares sdkmath.Int, tokenOutDenom string) (elystypes.Dec34, error) {
 	tvl, err := pool.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), err
+		return elystypes.ZeroDec34(), err
 	}
 
 	totalShares := pool.GetTotalShares()
-	var refundedShares sdkmath.LegacyDec
-	refundedShares = sdkmath.LegacyNewDecFromInt(exitingShares)
+	refundedShares := elystypes.NewDec34FromInt(exitingShares)
 
 	// Ensure totalShares is not zero to avoid division by zero
 	if totalShares.IsZero() {
-		return sdkmath.LegacyZeroDec(), ErrAmountTooLow
+		return elystypes.ZeroDec34(), ErrAmountTooLow
 	}
 
-	exitValue := tvl.Mul(refundedShares).Quo(sdkmath.LegacyNewDecFromInt(totalShares.Amount))
+	exitValue := tvl.Mul(refundedShares).Quo(elystypes.NewDec34FromInt(totalShares.Amount))
 
 	if exitingShares.GTE(totalShares.Amount) {
-		return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return elystypes.ZeroDec34(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
 	return exitValue, nil
-
-	// Note: Disable slippage handling for oracle pool due to 1 hour lockup on oracle lp
-	// shareOutRatio := refundedShares.QuoInt(totalShares.Amount)
-	// // exitedCoins = shareOutRatio * pool liquidity
-	// exitedCoins := sdk.Coins{}
-	// poolLiquidity := pool.GetTotalPoolLiquidity()
-
-	// for _, asset := range poolLiquidity {
-	// 	// round down here, due to not wanting to over-exit
-	// 	exitAmt := shareOutRatio.MulInt(asset.Amount).TruncateInt()
-	// 	if exitAmt.LTE(sdkmath.ZeroInt()) {
-	// 		continue
-	// 	}
-	// 	if exitAmt.GTE(asset.Amount) {
-	// 		return sdkmath.LegacyZeroDec(), errors.New("too many shares out")
-	// 	}
-	// 	exitedCoins = exitedCoins.Add(sdk.NewCoin(asset.Denom, exitAmt))
-	// }
-
-	// slippageValue := sdkmath.LegacyZeroDec()
-	// for _, exitedCoin := range exitedCoins {
-	// 	if exitedCoin.Denom == tokenOutDenom {
-	// 		continue
-	// 	}
-	// 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, exitedCoin.Denom)
-	// 	if inTokenPrice.IsZero() {
-	// 		return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", exitedCoin.Denom)
-	// 	}
-	// 	resizedAmount := sdkmath.LegacyNewDecFromInt(exitedCoin.Amount).
-	// 		Quo(pool.PoolParams.ExternalLiquidityRatio).RoundInt()
-	// 	slippageAmount, err := pool.CalcGivenInSlippage(
-	// 		ctx,
-	// 		oracleKeeper,
-	// 		&pool,
-	// 		sdk.Coins{sdk.NewCoin(exitedCoin.Denom, resizedAmount)},
-	// 		tokenOutDenom,
-	// 		accPoolKeeper,
-	// 	)
-	// 	if err != nil {
-	// 		return sdkmath.LegacyZeroDec(), err
-	// 	}
-
-	// 	slippageValue = slippageValue.Add(slippageAmount.Mul(inTokenPrice))
-	// }
-	// exitValueWithoutSlippage := exitValue.Sub(slippageValue)
-	// return exitValueWithoutSlippage, nil
 }
 
 // CalcExitPool returns how many tokens should come out, when exiting k LP shares against a "standard" CFMM
@@ -86,10 +41,10 @@ func CalcExitPool(
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
 	params Params,
-) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, err error) {
+) (exitCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, err error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
-		return sdk.Coins{}, sdkmath.LegacyZeroDec(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return sdk.Coins{}, elystypes.ZeroDec34(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
 	// refundedShares = exitingShares * (1 - exit fee)
@@ -108,26 +63,26 @@ func CalcExitPool(
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
 		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom)
 		if err != nil {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), err
+			return sdk.Coins{}, elystypes.ZeroDec34(), err
 		}
 
 		// Ensure tokenPrice is not zero to avoid division by zero
 		if tokenPrice.IsZero() {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), ErrAmountTooLow
+			return sdk.Coins{}, elystypes.ZeroDec34(), ErrAmountTooLow
 		}
 
 		oracleOutAmount := exitValueWithoutSlippage.Quo(tokenPrice)
 
 		newAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
 			sdk.Coins{},
-			sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.RoundInt())}, accountedAssets,
+			sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.ToInt())}, accountedAssets,
 		)
 		if err != nil {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), err
+			return sdk.Coins{}, elystypes.ZeroDec34(), err
 		}
 		for _, asset := range newAssetPools {
 			if asset.Token.Amount.IsNegative() {
-				return sdk.Coins{}, sdkmath.LegacyZeroDec(), errors.New("out amount exceeds liquidity balance")
+				return sdk.Coins{}, elystypes.ZeroDec34(), errors.New("out amount exceeds liquidity balance")
 			}
 		}
 
@@ -136,20 +91,20 @@ func CalcExitPool(
 
 		// target weight
 		targetWeightOut := GetDenomNormalizedWeight(pool.PoolAssets, tokenOutDenom)
-		targetWeightIn := sdkmath.LegacyOneDec().Sub(targetWeightOut)
+		targetWeightIn := elystypes.OneDec34().Sub(targetWeightOut)
 
 		// weight breaking fee as in Plasma pool
 		finalWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, newAssetPools, tokenOutDenom)
-		finalWeightIn := sdkmath.LegacyOneDec().Sub(finalWeightOut)
+		finalWeightIn := elystypes.OneDec34().Sub(finalWeightOut)
 		initialAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
 			sdk.NewCoins(),
 			sdk.NewCoins(), accountedAssets,
 		)
 		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, initialAssetPools, tokenOutDenom)
-		initialWeightIn := sdkmath.LegacyOneDec().Sub(initialWeightOut)
+		initialWeightIn := elystypes.OneDec34().Sub(initialWeightOut)
 		weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
 
-		tokenOutAmount := oracleOutAmount.Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).RoundInt()
+		tokenOutAmount := oracleOutAmount.Mul(elystypes.OneDec34().Sub(weightBreakingFee)).ToInt()
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBreakingFee.Neg(), nil
 	}
 
@@ -160,10 +115,10 @@ func CalcExitPool(
 			continue
 		}
 		if exitAmt.GTE(asset.Amount) {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), errors.New("too many shares out")
+			return sdk.Coins{}, elystypes.ZeroDec34(), errors.New("too many shares out")
 		}
 		exitedCoins = exitedCoins.Add(sdk.NewCoin(asset.Denom, exitAmt))
 	}
 
-	return exitedCoins, sdkmath.LegacyZeroDec(), nil
+	return exitedCoins, elystypes.ZeroDec34(), nil
 }

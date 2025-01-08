@@ -3,6 +3,7 @@ package keeper
 import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -21,7 +22,7 @@ func (k Keeper) UpdatePoolForSwap(
 	swapFee sdkmath.LegacyDec,
 	oracleInAmount sdkmath.Int,
 	oracleOutAmount sdkmath.Int,
-	weightBalanceBonus sdkmath.LegacyDec,
+	weightBalanceBonus elystypes.Dec34,
 	givenOut bool,
 ) error {
 	tokensIn := sdk.Coins{tokenIn}
@@ -51,16 +52,17 @@ func (k Keeper) UpdatePoolForSwap(
 
 	// apply swap fee when weight balance bonus is not available
 	swapFeeInCoins := sdk.Coins{}
-	if swapFee.IsPositive() {
+	swapFeeDec34 := elystypes.NewDec34FromLegacyDec(swapFee)
+	if swapFeeDec34.IsPositive() {
 		if givenOut {
 			takeFeesFrom := sdk.NewCoins(sdk.NewCoin(tokenIn.Denom, oracleInAmount))
 			if !pool.PoolParams.UseOracle {
 				takeFeesFrom = tokensIn
 			}
 			// if swapInGivenOut, use oracleIn amount to get swap fees
-			swapFeeInCoins = PortionCoins(takeFeesFrom, swapFee)
+			swapFeeInCoins = PortionCoins(takeFeesFrom, swapFeeDec34)
 		} else {
-			swapFeeInCoins = PortionCoins(tokensIn, swapFee)
+			swapFeeInCoins = PortionCoins(tokensIn, swapFeeDec34)
 		}
 	}
 
@@ -91,12 +93,12 @@ func (k Keeper) UpdatePoolForSwap(
 		params := k.GetParams(ctx)
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		// we are multiplying here by params.WeightBreakingFeePortion as we didn't multiply in pool.SwapIn/OutGiveOut/In for weight breaking fee
-		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.WeightBreakingFeePortion)
+		weightRecoveryFee := weightBalanceBonus.Abs().MulLegacyDec(params.WeightBreakingFeePortion)
 
 		if givenOut {
-			weightRecoveryFeeAmount = oracleInAmount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			weightRecoveryFeeAmount = weightRecoveryFee.MulInt(oracleInAmount).ToInt()
 		} else {
-			weightRecoveryFeeAmount = tokenIn.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			weightRecoveryFeeAmount = weightRecoveryFee.MulInt(tokenIn.Amount).ToInt()
 		}
 
 		if weightRecoveryFeeAmount.IsPositive() {
@@ -115,11 +117,11 @@ func (k Keeper) UpdatePoolForSwap(
 
 			// Track amount in pool
 			weightRecoveryFeeAmountForPool := sdkmath.ZeroInt()
-			weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(sdkmath.LegacyOneDec().Sub(params.WeightBreakingFeePortion))
+			weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(elystypes.OneDec34().SubLegacyDec(params.WeightBreakingFeePortion))
 			if givenOut {
-				weightRecoveryFeeAmountForPool = oracleInAmount.ToLegacyDec().Mul(weightRecoveryFeeForPool).RoundInt()
+				weightRecoveryFeeAmountForPool = weightRecoveryFeeForPool.MulInt(oracleInAmount).ToInt()
 			} else {
-				weightRecoveryFeeAmountForPool = tokenIn.Amount.ToLegacyDec().Mul(weightRecoveryFeeForPool).RoundInt()
+				weightRecoveryFeeAmountForPool = weightRecoveryFeeForPool.MulInt(tokenIn.Amount).ToInt()
 			}
 			k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, weightRecoveryFeeAmountForPool))
 		}
@@ -135,9 +137,9 @@ func (k Keeper) UpdatePoolForSwap(
 		bonusTokenAmount := sdkmath.ZeroInt()
 		// bonus token amount is the tokenOut amount times weightBalanceBonus
 		if givenOut {
-			bonusTokenAmount = tokenOut.Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+			bonusTokenAmount = weightBalanceBonus.MulInt(tokenOut.Amount).ToInt()
 		} else {
-			bonusTokenAmount = oracleOutAmount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+			bonusTokenAmount = weightBalanceBonus.MulInt(oracleOutAmount).ToInt()
 		}
 
 		// if treasury balance is less than bonusTokenAmount, set bonusTokenAmount to treasury balance

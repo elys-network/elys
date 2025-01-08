@@ -6,6 +6,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -112,7 +113,7 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 	// Get all pools
 	pools := k.GetAllPool(ctx)
 
-	maxTvl := sdkmath.LegacyNewDec(-1)
+	maxTvl := elystypes.MinusOneDec34()
 	bestPool := types.Pool{}
 	for _, p := range pools {
 		// If usesOracle is false, function filters in all pools.
@@ -145,7 +146,7 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 
 		poolTvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
-			poolTvl = sdkmath.LegacyZeroDec()
+			poolTvl = elystypes.ZeroDec34()
 		}
 
 		// If all denoms are found in this pool, return the pool id

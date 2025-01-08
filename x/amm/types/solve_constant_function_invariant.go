@@ -2,6 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
+	elystypes "github.com/elys-network/elys/types"
 )
 
 // solveConstantFunctionInvariant solves the constant function of an AMM
@@ -19,11 +20,11 @@ func solveConstantFunctionInvariant(
 	tokenBalanceFixedAfter,
 	tokenWeightFixed,
 	tokenBalanceUnknownBefore,
-	tokenWeightUnknown sdkmath.LegacyDec,
-) (sdkmath.LegacyDec, error) {
+	tokenWeightUnknown elystypes.Dec34,
+) (elystypes.Dec34, error) {
 	// Ensure tokenWeightUnknown is not zero to avoid division by zero
 	if tokenWeightUnknown.IsZero() {
-		return sdkmath.LegacyZeroDec(), ErrAmountTooLow
+		return elystypes.ZeroDec34(), ErrAmountTooLow
 	}
 
 	// weightRatio = (weightX/weightY)
@@ -31,15 +32,15 @@ func solveConstantFunctionInvariant(
 
 	// Ensure tokenBalanceFixedAfter is not zero to avoid division by zero
 	if tokenBalanceFixedAfter.IsZero() || tokenBalanceFixedAfter.IsNegative() {
-		return sdkmath.LegacyZeroDec(), ErrAmountTooLow
+		return elystypes.ZeroDec34(), ErrAmountTooLow
 	}
 
 	// y = balanceXBefore/balanceXAfter
 	y := tokenBalanceFixedBefore.Quo(tokenBalanceFixedAfter)
 
 	// amountY = balanceY * (1 - (y ^ weightRatio))
-	yToWeightRatio := Pow(y, weightRatio)
-	paranthetical := sdkmath.LegacyOneDec().Sub(yToWeightRatio)
+	yToWeightRatio := PowDec34(y, weightRatio)
+	paranthetical := elystypes.OneDec34().Sub(yToWeightRatio)
 	amountY := tokenBalanceUnknownBefore.Mul(paranthetical)
 	return amountY, nil
 }
@@ -57,8 +58,8 @@ func CalculateTokenARate(tokenBalanceA, tokenWeightA, tokenBalanceB, tokenWeight
 
 // feeRatio returns the fee ratio that is defined as follows:
 // 1 - ((1 - normalizedTokenWeightOut) * spreadFactor)
-func feeRatio(normalizedWeight, spreadFactor sdkmath.LegacyDec) sdkmath.LegacyDec {
-	return sdkmath.LegacyOneDec().Sub((sdkmath.LegacyOneDec().Sub(normalizedWeight)).Mul(spreadFactor))
+func feeRatio(normalizedWeight, spreadFactor elystypes.Dec34) elystypes.Dec34 {
+	return elystypes.OneDec34().Sub((elystypes.OneDec34().Sub(normalizedWeight)).Mul(spreadFactor))
 }
 
 // balancer notation: pAo - pool shares amount out, given single asset in
@@ -68,8 +69,8 @@ func calcPoolSharesOutGivenSingleAssetIn(
 	normalizedTokenWeightIn,
 	poolShares,
 	tokenAmountIn,
-	spreadFactor sdkmath.LegacyDec,
-) (sdkmath.LegacyDec, error) {
+	spreadFactor elystypes.Dec34,
+) (elystypes.Dec34, error) {
 	// deduct spread factor on the in asset.
 	// We don't charge spread factor on the token amount that we imagine as unswapped (the normalized weight).
 	// So effective_swapfee = spread factor * (1 - normalized_token_weight)
@@ -89,9 +90,9 @@ func calcPoolSharesOutGivenSingleAssetIn(
 		tokenBalanceIn,
 		normalizedTokenWeightIn,
 		poolShares,
-		sdkmath.LegacyOneDec())
+		elystypes.OneDec34())
 	if err != nil {
-		return sdkmath.LegacyDec{}, err
+		return elystypes.ZeroDec34(), err
 	}
 	poolAmountOut = poolAmountOut.Neg()
 	return poolAmountOut, nil

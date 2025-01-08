@@ -196,13 +196,7 @@ message QueryLiquidationPriceRequest {
   uint64 position_id = 2;
 }
 
-message QueryLiquidationPriceResponse {
-  string price = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
+message QueryLiquidationPriceResponse { string price = 1; }
 
 message QueryOpenEstRequest {
   string collateral_asset = 1;

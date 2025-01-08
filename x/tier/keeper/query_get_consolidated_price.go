@@ -22,9 +22,9 @@ func (k Keeper) GetConsolidatedPrice(goCtx context.Context, req *types.QueryGetC
 	oracle, amm, oracleDec := k.RetrieveConsolidatedPrice(ctx, req.Denom)
 
 	return &types.QueryGetConsolidatedPriceResponse{
-		AmmPrice:       amm,
-		OraclePrice:    oracle,
-		OraclePriceDec: oracleDec,
+		AmmPrice:       amm.String(),
+		OraclePrice:    oracle.String(),
+		OraclePriceDec: oracleDec.String(),
 	}, nil
 }
 
@@ -45,8 +45,8 @@ func (k Keeper) GetAllPrices(goCtx context.Context, req *types.QueryGetAllPrices
 		if assetEntry.Denom == ptypes.Eden {
 			denom = ptypes.Elys
 		}
-		tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenomAsDec34(ctx, denom).Mul(oracletypes.Pow10AsDec34(assetEntry.Decimals))
-		tokenPriceAmm := k.amm.CalcAmmPriceAsDec34(ctx, denom, assetEntry.Decimals).Mul(oracletypes.Pow10AsDec34(assetEntry.Decimals))
+		tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom).Mul(oracletypes.Pow10(assetEntry.Decimals))
+		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, denom, assetEntry.Decimals).Mul(oracletypes.Pow10(assetEntry.Decimals))
 		prices = append(prices, &types.Price{
 			Denom:       assetEntry.Denom,
 			OraclePrice: tokenPriceOracle.String(),

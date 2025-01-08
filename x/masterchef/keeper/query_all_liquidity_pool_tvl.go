@@ -2,10 +2,12 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -19,7 +21,7 @@ func (k Keeper) AllLiquidityPoolTVL(goCtx context.Context, req *types.QueryAllLi
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	allPools := k.amm.GetAllPool(ctx)
-	poolsTVL := math.LegacyZeroDec()
+	poolsTVL := elystypes.ZeroDec34()
 	totalTVL := math.ZeroInt()
 
 	for _, pool := range allPools {
@@ -30,7 +32,7 @@ func (k Keeper) AllLiquidityPoolTVL(goCtx context.Context, req *types.QueryAllLi
 
 		poolsTVL = poolsTVL.Add(tvl)
 	}
-	totalTVL = totalTVL.Add(poolsTVL.TruncateInt())
+	totalTVL = totalTVL.Add(poolsTVL.ToInt())
 
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
@@ -38,11 +40,11 @@ func (k Keeper) AllLiquidityPoolTVL(goCtx context.Context, req *types.QueryAllLi
 	}
 
 	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, entry.Denom)
-	totalTVL = totalTVL.Add(stableStakeTVL.TruncateInt())
+	totalTVL = totalTVL.Add(stableStakeTVL.ToInt())
 
 	return &types.QueryAllLiquidityPoolTVLResponse{
 		Total:       totalTVL,
-		Pools:       poolsTVL.TruncateInt(),
-		UsdcStaking: stableStakeTVL.TruncateInt(),
+		Pools:       poolsTVL.ToInt(),
+		UsdcStaking: stableStakeTVL.ToInt(),
 	}, nil
 }

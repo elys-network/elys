@@ -19,7 +19,7 @@ func (k Keeper) Perpetual(goCtx context.Context, req *types.QueryPerpetualReques
 	total, borrow, _ := k.RetrievePerpetualTotal(ctx, sender)
 
 	return &types.QueryPerpetualResponse{
-		TotalValue:   total,
-		TotalBorrows: borrow,
+		TotalValue:   total.String(),
+		TotalBorrows: borrow.String(),
 	}, nil
 }

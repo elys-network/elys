@@ -81,8 +81,7 @@ type AmmKeeper interface {
 	Balance(goCtx context.Context, req *ammtypes.QueryBalanceRequest) (*ammtypes.QueryBalanceResponse, error)
 	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
 	CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) math.LegacyDec
-	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) math.LegacyDec
-	CalcAmmPriceAsDec34(ctx sdk.Context, denom string, decimal uint64) elystypes.Dec34
+	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) elystypes.Dec34
 }
 
 type EstakingKeeper interface {

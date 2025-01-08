@@ -5,6 +5,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -25,8 +26,8 @@ func (k Keeper) JoinPoolEstimation(goCtx context.Context, req *types.QueryJoinPo
 	return &types.QueryJoinPoolEstimationResponse{
 		ShareAmountOut:     sdk.NewCoin(shareDenom, sharesOut),
 		AmountsIn:          tokensIn,
-		Slippage:           slippage,
-		WeightBalanceRatio: weightBalanceBonus,
+		Slippage:           slippage.String(),
+		WeightBalanceRatio: weightBalanceBonus.String(),
 	}, nil
 }
 
@@ -34,11 +35,11 @@ func (k Keeper) JoinPoolEst(
 	ctx sdk.Context,
 	poolId uint64,
 	tokenInMaxs sdk.Coins,
-) (tokensIn sdk.Coins, sharesOut math.Int, slippage math.LegacyDec, weightBalanceBonus math.LegacyDec, err error) {
+) (tokensIn sdk.Coins, sharesOut math.Int, slippage elystypes.Dec34, weightBalanceBonus elystypes.Dec34, err error) {
 	// all pools handled within this method are pointer references, `JoinPool` directly updates the pools
 	pool, poolExists := k.GetPool(ctx, poolId)
 	if !poolExists {
-		return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), types.ErrInvalidPoolId
+		return nil, math.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), types.ErrInvalidPoolId
 	}
 
 	if !pool.PoolParams.UseOracle {
@@ -46,7 +47,7 @@ func (k Keeper) JoinPoolEst(
 		if len(tokensIn) != 1 {
 			numShares, tokensIn, err := pool.CalcJoinPoolNoSwapShares(tokenInMaxs)
 			if err != nil {
-				return tokensIn, numShares, math.LegacyZeroDec(), math.LegacyZeroDec(), err
+				return tokensIn, numShares, elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 			}
 		}
 
@@ -55,7 +56,7 @@ func (k Keeper) JoinPoolEst(
 		cacheCtx, _ := ctx.CacheContext()
 		tokensJoined, sharesOut, slippage, weightBalanceBonus, err := pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params)
 		if err != nil {
-			return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
+			return nil, math.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 		}
 
 		return tokensJoined, sharesOut, slippage, weightBalanceBonus, err
@@ -67,7 +68,7 @@ func (k Keeper) JoinPoolEst(
 	cacheCtx, _ := ctx.CacheContext()
 	tokensJoined, sharesOut, slippage, weightBalanceBonus, err := pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params)
 	if err != nil {
-		return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
+		return nil, math.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 	}
 
 	return tokensJoined, sharesOut, slippage, weightBalanceBonus, err

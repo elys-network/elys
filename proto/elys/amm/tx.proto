@@ -201,11 +201,7 @@ message MsgSwapByDenomResponse {
   cosmos.base.v1beta1.Coin amount = 1 [ (gogoproto.nullable) = false ];
   repeated SwapAmountInRoute in_route = 2;
   repeated SwapAmountOutRoute out_route = 3;
-  string spot_price = 4 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string spot_price = 4;
   string swap_fee = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",

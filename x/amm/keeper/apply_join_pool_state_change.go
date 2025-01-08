@@ -3,6 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -12,7 +13,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	joiner sdk.AccAddress,
 	numShares math.Int,
 	joinCoins sdk.Coins,
-	weightBalanceBonus math.LegacyDec,
+	weightBalanceBonus elystypes.Dec34,
 ) error {
 	if err := k.bankKeeper.SendCoins(ctx, joiner, sdk.MustAccAddressFromBech32(pool.GetAddress()), joinCoins); err != nil {
 		return err
