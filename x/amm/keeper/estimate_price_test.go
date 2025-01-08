@@ -19,7 +19,7 @@ func (suite *AmmKeeperTestSuite) TestEstimatePrice() {
 			},
 			func() {
 				price := suite.app.AmmKeeper.GetTokenPrice(suite.ctx, ptypes.BaseCurrency, ptypes.BaseCurrency)
-				suite.Require().Equal(math.LegacyZeroDec(), price)
+				suite.Require().Equal(elystypes.ZeroDec34().String(), price.String())
 			},
 		},
 		{
@@ -30,7 +30,7 @@ func (suite *AmmKeeperTestSuite) TestEstimatePrice() {
 			},
 			func() {
 				price := suite.app.AmmKeeper.GetTokenPrice(suite.ctx, ptypes.BaseCurrency, ptypes.BaseCurrency)
-				suite.Require().Equal(math.LegacyMustNewDecFromStr("0.000001000000000000"), price)
+				suite.Require().Equal(elystypes.NewDec34FromString("0.000001000000000000").String(), price.String())
 			},
 		},
 		{
@@ -42,7 +42,7 @@ func (suite *AmmKeeperTestSuite) TestEstimatePrice() {
 			func() {
 				suite.app.OracleKeeper.RemoveAssetInfo(suite.ctx, ptypes.BaseCurrency)
 				price := suite.app.AmmKeeper.GetTokenPrice(suite.ctx, ptypes.BaseCurrency, ptypes.BaseCurrency)
-				suite.Require().Equal(math.LegacyMustNewDecFromStr("0.000000000000000000"), price)
+				suite.Require().Equal(elystypes.ZeroDec34().String(), price.String())
 			},
 		},
 	}
@@ -68,8 +68,8 @@ func (suite *AmmKeeperTestSuite) TestCalculateUSDValue() {
 				suite.SetupCoinPrices()
 			},
 			func() {
-				value := suite.app.AmmKeeper.CalculateUSDValue(suite.ctx, ptypes.ATOM, math.NewInt(1000))
-				suite.Require().Equal(value.String(), elystypes.NewDec34FromString("0.001").String())
+				value := suite.app.AmmKeeper.CalculateUSDValue(suite.ctx, ptypes.BaseCurrency, math.NewInt(1000))
+				suite.Require().Equal(value.String(), elystypes.NewDec34FromString("0.001000000000000000").String())
 			},
 		},
 		{

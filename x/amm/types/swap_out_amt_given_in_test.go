@@ -139,11 +139,11 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.BaseCurrency,
-					Weight: elystypes.ZeroDec34(),
+					Weight: elystypes.NewDec34FromString("0.000000000000000000"),
 				},
 				{
 					Asset:  "uusdt",
-					Weight: elystypes.ZeroDec34(),
+					Weight: elystypes.NewDec34FromString("0.000000000000000000"),
 				},
 			},
 			expError: false,

@@ -1,14 +1,16 @@
 package types_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"testing"
 	"time"
 
+	sdkmath "cosmossdk.io/math"
+
 	errorsmod "cosmossdk.io/errors"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
@@ -19,7 +21,7 @@ func (suite *TestSuite) TestPoolTVL() {
 		desc       string
 		poolAssets []types.PoolAsset
 		useOracle  bool
-		expTVL     sdkmath.LegacyDec
+		expTVL     elystypes.Dec34
 		expError   bool
 	}{
 		{
@@ -35,7 +37,7 @@ func (suite *TestSuite) TestPoolTVL() {
 				},
 			},
 			useOracle: true,
-			expTVL:    sdkmath.LegacyNewDec(2000),
+			expTVL:    elystypes.NewDec34FromString("2000.000000000000000000"),
 			expError:  false,
 		},
 		{
@@ -51,7 +53,7 @@ func (suite *TestSuite) TestPoolTVL() {
 				},
 			},
 			useOracle: true,
-			expTVL:    sdkmath.LegacyNewDec(0),
+			expTVL:    elystypes.ZeroDec34(),
 			expError:  true,
 		},
 		{
@@ -67,7 +69,7 @@ func (suite *TestSuite) TestPoolTVL() {
 				},
 			},
 			useOracle: false,
-			expTVL:    sdkmath.LegacyNewDec(0),
+			expTVL:    elystypes.ZeroDec34(),
 			expError:  false,
 		},
 		{
@@ -83,7 +85,7 @@ func (suite *TestSuite) TestPoolTVL() {
 				},
 			},
 			useOracle: false,
-			expTVL:    sdkmath.LegacyNewDec(2000),
+			expTVL:    elystypes.NewDec34FromString("2000.000000000000000000"),
 			expError:  false,
 		},
 	} {
