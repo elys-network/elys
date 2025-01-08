@@ -5,6 +5,7 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -18,7 +19,7 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 		swapFee             sdkmath.LegacyDec
 		tokenIn             sdk.Coin
 		tokenOut            sdk.Coin
-		weightBalanceBonus  sdkmath.LegacyDec
+		weightBalanceBonus  elystypes.Dec34
 		expSenderBalance    sdk.Coins
 		expPoolBalance      sdk.Coins
 		expTreasuryBalance  sdk.Coins
@@ -32,7 +33,7 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 			swapFee:             sdkmath.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdkmath.LegacyZeroDec(),
+			weightBalanceBonus:  elystypes.ZeroDec34(),
 			expSenderBalance:    sdk.Coins{},
 			expPoolBalance:      sdk.Coins{},
 			expTreasuryBalance:  sdk.Coins{},
@@ -46,7 +47,7 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 			swapFee:             sdkmath.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdkmath.LegacyZeroDec(),
+			weightBalanceBonus:  elystypes.ZeroDec34(),
 			expSenderBalance:    sdk.Coins{},
 			expPoolBalance:      sdk.Coins{},
 			expTreasuryBalance:  sdk.Coins{},
@@ -60,7 +61,7 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 			swapFee:             sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdkmath.LegacyZeroDec(),
+			weightBalanceBonus:  elystypes.ZeroDec34(),
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 989902)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
@@ -74,7 +75,7 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 			swapFee:             sdkmath.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdkmath.LegacyZeroDec(),
+			weightBalanceBonus:  elystypes.ZeroDec34(),
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
@@ -88,7 +89,7 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 			swapFee:             sdkmath.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdkmath.LegacyNewDecWithPrec(3, 1), // 30% bonus
+			weightBalanceBonus:  elystypes.NewDec34WithPrec(3, 1), // 30% bonus
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
@@ -102,7 +103,7 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 			swapFee:             sdkmath.LegacyZeroDec(),
 			tokenIn:             sdk.NewInt64Coin(ptypes.Elys, 10000),
 			tokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
-			weightBalanceBonus:  sdkmath.LegacyNewDecWithPrec(3, 1), // 30% bonus
+			weightBalanceBonus:  elystypes.NewDec34WithPrec(3, 1), // 30% bonus
 			expSenderBalance:    sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 990000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPoolBalance:      sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)},
 			expTreasuryBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100)},

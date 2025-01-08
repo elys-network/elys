@@ -6,6 +6,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -73,7 +74,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 				joinCoins := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)), sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(100000)))
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, sdkmath.LegacyZeroDec())
+				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, elystypes.ZeroDec34())
 				suite.Require().NoError(err)
 			},
 		},
@@ -137,7 +138,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 				)
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, sdkmath.LegacyZeroDec())
+				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, elystypes.ZeroDec34())
 				suite.Require().Error(err)
 			},
 		},
@@ -204,7 +205,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 
 				// must panic
 				suite.Require().Panics(func() {
-					err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, sdkmath.NewInt(-1000), joinCoins, sdkmath.LegacyZeroDec())
+					err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, sdkmath.NewInt(-1000), joinCoins, elystypes.ZeroDec34())
 					suite.Require().Error(err)
 				})
 			},
@@ -282,7 +283,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 				)
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, sdkmath.LegacyNewDecWithPrec(10, 2))
+				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, elystypes.NewDec34WithPrec(10, 2))
 				suite.Require().NoError(err)
 			},
 		},

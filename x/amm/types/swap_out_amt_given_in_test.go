@@ -8,6 +8,7 @@ import (
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
@@ -35,7 +36,7 @@ func TestNormalizedWeights(t *testing.T) {
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.Elys,
-					Weight: sdkmath.LegacyZeroDec(),
+					Weight: elystypes.ZeroDec34(),
 				},
 			},
 		},
@@ -54,11 +55,11 @@ func TestNormalizedWeights(t *testing.T) {
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.Elys,
-					Weight: sdkmath.LegacyZeroDec(),
+					Weight: elystypes.ZeroDec34(),
 				},
 				{
 					Asset:  ptypes.Eden,
-					Weight: sdkmath.LegacyOneDec(),
+					Weight: elystypes.OneDec34(),
 				},
 			},
 		},
@@ -77,11 +78,11 @@ func TestNormalizedWeights(t *testing.T) {
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.Elys,
-					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
+					Weight: elystypes.NewDec34WithPrec(5, 1),
 				},
 				{
 					Asset:  ptypes.Eden,
-					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
+					Weight: elystypes.NewDec34WithPrec(5, 1),
 				},
 			},
 		},
@@ -114,11 +115,11 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.BaseCurrency,
-					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
+					Weight: elystypes.NewDec34WithPrec(5, 1),
 				},
 				{
 					Asset:  "uusdt",
-					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
+					Weight: elystypes.NewDec34WithPrec(5, 1),
 				},
 			},
 			expError: false,
@@ -138,11 +139,11 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.BaseCurrency,
-					Weight: sdkmath.LegacyZeroDec(),
+					Weight: elystypes.ZeroDec34(),
 				},
 				{
 					Asset:  "uusdt",
-					Weight: sdkmath.LegacyZeroDec(),
+					Weight: elystypes.ZeroDec34(),
 				},
 			},
 			expError: false,

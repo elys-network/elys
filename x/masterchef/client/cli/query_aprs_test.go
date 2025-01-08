@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"io"
 
-	sdkmath "cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/cosmos/gogoproto/proto"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/masterchef/client/cli"
 	"github.com/elys-network/elys/x/masterchef/types"
 )
@@ -32,10 +32,10 @@ func (s *CLITestSuite) TestAprs() {
 			"valid query",
 			func() client.Context {
 				bz, _ := s.encCfg.Codec.Marshal(&types.QueryAprsResponse{
-					UsdcAprUsdc:  sdkmath.LegacyOneDec(),
-					EdenAprUsdc:  sdkmath.LegacyOneDec(),
-					UsdcAprEdenb: sdkmath.LegacyOneDec(),
-					EdenAprEdenb: sdkmath.LegacyOneDec(),
+					UsdcAprUsdc:  elystypes.OneDec34().String(),
+					EdenAprUsdc:  elystypes.OneDec34().String(),
+					UsdcAprEdenb: elystypes.OneDec34().String(),
+					EdenAprEdenb: elystypes.OneDec34().String(),
 				})
 				c := clitestutil.NewMockCometRPC(abci.ResponseQuery{
 					Value: bz,
@@ -46,10 +46,10 @@ func (s *CLITestSuite) TestAprs() {
 				fmt.Sprintf("--%s=json", flags.FlagOutput),
 			},
 			&types.QueryAprsResponse{
-				UsdcAprUsdc:  sdkmath.LegacyOneDec(),
-				EdenAprUsdc:  sdkmath.LegacyOneDec(),
-				UsdcAprEdenb: sdkmath.LegacyOneDec(),
-				EdenAprEdenb: sdkmath.LegacyOneDec(),
+				UsdcAprUsdc:  elystypes.OneDec34().String(),
+				EdenAprUsdc:  elystypes.OneDec34().String(),
+				UsdcAprEdenb: elystypes.OneDec34().String(),
+				EdenAprEdenb: elystypes.OneDec34().String(),
 			},
 			false,
 		},

@@ -6,6 +6,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	simapp "github.com/elys-network/elys/app"
+	elystypes "github.com/elys-network/elys/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -86,7 +87,7 @@ func (suite *MasterchefKeeperTestSuite) TestApr() {
 				Denom:        "ueden",
 			},
 			response: &types.QueryAprResponse{
-				Apr: sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				Apr: elystypes.NewDec34FromString("0.299999999999999995").String(),
 			},
 			err: nil,
 		},
@@ -123,16 +124,16 @@ func (suite *MasterchefKeeperTestSuite) TestAprs() {
 			desc:    "valid request",
 			request: &types.QueryAprsRequest{},
 			response: &types.QueryAprsResponse{
-				UsdcAprUsdc:  sdkmath.LegacyZeroDec(),
-				EdenAprUsdc:  sdkmath.LegacyZeroDec(),
-				UsdcAprEdenb: sdkmath.LegacyZeroDec(),
-				EdenAprEdenb: sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
-				UsdcAprEden:  sdkmath.LegacyZeroDec(),
-				EdenAprEden:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
-				EdenbAprEden: sdkmath.LegacyOneDec(),
-				UsdcAprElys:  sdkmath.LegacyZeroDec(),
-				EdenAprElys:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
-				EdenbAprElys: sdkmath.LegacyOneDec(),
+				UsdcAprUsdc:  elystypes.ZeroDec34().String(),
+				EdenAprUsdc:  elystypes.ZeroDec34().String(),
+				UsdcAprEdenb: elystypes.ZeroDec34().String(),
+				EdenAprEdenb: elystypes.NewDec34FromString("0.299999999999999995").String(),
+				UsdcAprEden:  elystypes.ZeroDec34().String(),
+				EdenAprEden:  elystypes.NewDec34FromString("0.299999999999999995").String(),
+				EdenbAprEden: elystypes.OneDec34().String(),
+				UsdcAprElys:  elystypes.ZeroDec34().String(),
+				EdenAprElys:  elystypes.NewDec34FromString("0.299999999999999995").String(),
+				EdenbAprElys: elystypes.OneDec34().String(),
 			},
 			err: nil,
 		},

@@ -285,8 +285,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			totalShares := pool.TotalShares.Amount
 			joinValueWithoutSlippage, _ := pool.CalcJoinValueWithoutSlippage(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.senderInitBalance)
 			tvl, _ := pool.TVL(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper)
-			expectedNumShares := totalShares.ToLegacyDec().
-				Mul(joinValueWithoutSlippage).Quo(tvl).RoundInt()
+			expectedNumShares := joinValueWithoutSlippage.MulInt(totalShares).Quo(tvl).ToInt()
 
 			// Number of shares must be lesser or equal to expected
 			suite.Require().GreaterOrEqual(expectedNumShares.String(), resp.ShareAmountOut.String(), "Exploit detected: Sender received more shares than expected")

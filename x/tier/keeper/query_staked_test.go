@@ -37,5 +37,5 @@ func (suite *TierKeeperTestSuite) TestQueryStaked() {
 		User: sender.String(),
 	})
 	suite.Require().NoError(err)
-	suite.Require().Equal(r.Commitments.TruncateInt(), math.NewInt(100))
+	suite.Require().Equal(r.Commitments, math.NewInt(100))
 }

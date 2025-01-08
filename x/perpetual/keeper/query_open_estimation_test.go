@@ -17,6 +17,7 @@ import (
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	simapp "github.com/elys-network/elys/app"
+	elystypes "github.com/elys-network/elys/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -125,13 +126,13 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 		LiquidationPrice:   math.LegacyMustNewDecFromStr("4.109403218632940267"),
 		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(996_567_670)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, math.NewInt(600000000000)),
-		Slippage:           math.LegacyMustNewDecFromStr("0.001289500000000000"),
+		Slippage:           elystypes.NewDec34FromString("0.001289500000000000").String(),
 		BorrowInterestRate: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        math.LegacyMustNewDecFromStr("-0.002293467959253724"),
 		Custody:            sdk.NewCoin(ptypes.ATOM, math.NewInt(99_771_178)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(400_000_000)),
-		WeightBreakingFee:  math.LegacyZeroDec(),
+		WeightBreakingFee:  elystypes.ZeroDec34().String(),
 	}, res)
 }
 
@@ -248,13 +249,13 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(399210740)),
 		HourlyInterestRate: math.LegacyZeroDec(),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
-		Slippage:           math.LegacyMustNewDecFromStr("0.001502510000000000"),
+		Slippage:           elystypes.NewDec34FromString("0.001502510000000000").String(),
 		BorrowInterestRate: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        math.LegacyMustNewDecFromStr("-0.003946300000000000"),
 		Custody:            sdk.NewCoin(ptypes.ATOM, math.NewInt(50_000_000)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(200789260)),
-		WeightBreakingFee:  math.LegacyMustNewDecFromStr("0.001435619047211834"),
+		WeightBreakingFee:  elystypes.NewDec34FromString("0.001435619047211834").String(),
 	}, res)
 }
 
@@ -373,13 +374,13 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		HourlyInterestRate: math.LegacyZeroDec(),
 		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(19217754574)),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, math.NewInt(600_000_000000)),
-		Slippage:           math.LegacyMustNewDecFromStr("0.025099947050000000"),
+		Slippage:           elystypes.NewDec34FromString("0.025099947050000000").String(),
 		BorrowInterestRate: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        math.LegacyMustNewDecFromStr("-0.026772948058280545"),
 		Custody:            sdk.NewCoin(ptypes.ATOM, math.NewInt(2218508320)),
 		Liabilities:        sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(9000000000)),
-		WeightBreakingFee:  math.LegacyZeroDec(),
+		WeightBreakingFee:  elystypes.ZeroDec34().String(),
 	}, res)
 }
 
@@ -509,16 +510,16 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 		OpenPrice:          math.LegacyMustNewDecFromStr("4.980019973117105182"),
 		TakeProfitPrice:    tradingAssetPrice.QuoInt64(3),
 		LiquidationPrice:   math.LegacyMustNewDecFromStr("6.073195089167201442"),
-		EstimatedPnl:       sdk.Coin{ptypes.BaseCurrency, math.NewInt(266131729)},
+		EstimatedPnl:       sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(266131729)),
 		HourlyInterestRate: math.LegacyZeroDec(),
 		AvailableLiquidity: sdk.NewCoin(ptypes.ATOM, math.NewInt(10000000000)),
-		Slippage:           math.LegacyMustNewDecFromStr("0.003008025000000000"),
+		Slippage:           elystypes.NewDec34FromString("0.003008025000000000").String(),
 		BorrowInterestRate: math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		FundingRate:        math.LegacyMustNewDecFromStr("0.000000000000000000"),
 		PriceImpact:        math.LegacyMustNewDecFromStr("0.003996005376578964"),
 		Custody:            sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(500000000)),
 		Liabilities:        sdk.NewCoin(ptypes.ATOM, math.NewInt(80320963)),
-		WeightBreakingFee:  math.LegacyZeroDec(),
+		WeightBreakingFee:  elystypes.ZeroDec34().String(),
 	}
 	require.Equal(t, expectedRes, res)
 }
