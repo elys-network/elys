@@ -80,6 +80,8 @@ func TestDec34(t *testing.T) {
 
 	// Test QuoInt64
 	require.Equal(t, OneDec34().String(), NewDec34FromInt64(100).QuoInt64(100).String())
+	require.Equal(t, NewDec34FromString("0.1585489599188229325215626585489599").String(), NewDec34FromInt64(1000000).Quo(NewDec34FromString("6307200")).String())
+	require.Equal(t, NewDec34FromString("0.1585489599188229325215626585489599").String(), NewDec34FromInt64(1000000).QuoInt(math.NewInt(6307200)).String())
 
 	// Test QuoLegacyDec
 	require.Equal(t, OneDec34().String(), NewDec34FromInt64(100).QuoLegacyDec(math.LegacyNewDec(100)).String())

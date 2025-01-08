@@ -87,7 +87,7 @@ func (suite *MasterchefKeeperTestSuite) TestApr() {
 				Denom:        "ueden",
 			},
 			response: &types.QueryAprResponse{
-				Apr: elystypes.NewDec34FromString("0.299999999999999995").String(),
+				Apr: elystypes.NewDec34FromString("0.3000000000000000000000000000").String(),
 			},
 			err: nil,
 		},

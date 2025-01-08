@@ -97,7 +97,7 @@ func (d Dec34) Quo(other Dec34) Dec34 {
 }
 
 func (d Dec34) QuoInt(i math.Int) Dec34 {
-	y, err := regenmath.Dec(d).QuoInteger(regenmath.Dec(NewDec34FromInt(i)))
+	y, err := regenmath.Dec(d).Quo(regenmath.Dec(NewDec34FromInt(i)))
 	if err != nil {
 		panic(err)
 	}
