@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	elystypes "github.com/elys-network/elys/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -68,7 +69,7 @@ func (suite *AmmKeeperTestSuite) TestCalculateUSDValue() {
 			},
 			func() {
 				value := suite.app.AmmKeeper.CalculateUSDValue(suite.ctx, ptypes.ATOM, math.NewInt(1000))
-				suite.Require().Equal(value, math.LegacyMustNewDecFromStr("0.001"))
+				suite.Require().Equal(value.String(), elystypes.NewDec34FromString("0.001").String())
 			},
 		},
 		{
@@ -79,7 +80,7 @@ func (suite *AmmKeeperTestSuite) TestCalculateUSDValue() {
 			},
 			func() {
 				value := suite.app.AmmKeeper.CalculateUSDValue(suite.ctx, "dummy", math.NewInt(1000))
-				suite.Require().Equal(value.String(), math.LegacyZeroDec().String())
+				suite.Require().Equal(value.String(), elystypes.ZeroDec34().String())
 			},
 		},
 	}

@@ -1,7 +1,6 @@
 package types
 
 import (
-	"fmt"
 	"math/big"
 
 	"cosmossdk.io/math"
@@ -187,10 +186,6 @@ func (d Dec34) ToLegacyDec() math.LegacyDec {
 	if err != nil {
 		panic(err)
 	}
-	// print coefficient and exponent
-	fmt.Println("original:", z.Text('f'))
-	fmt.Println("coefficient:", z.Coeff.String())
-	fmt.Println("exponent:", z.Exponent)
 	// override exponent and coefficient if exponent is less than -18 to fit into 18 decimal places
 	if z.Exponent < -18 {
 		delta := -18 - z.Exponent

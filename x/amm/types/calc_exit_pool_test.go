@@ -22,7 +22,7 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 		pool           types.Pool
 		exitingShares  sdkmath.Int
 		tokenOutDenom  string
-		expectedValue  sdkmath.LegacyDec
+		expectedValue  elystypes.Dec34
 		expectedErrMsg string
 	}{
 		{
@@ -43,7 +43,7 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 			},
 			sdkmath.NewInt(10),
 			"tokenA",
-			sdkmath.LegacyNewDec(2000),
+			elystypes.NewDec34FromInt64(2000),
 			"",
 		},
 		{
@@ -64,7 +64,7 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 			},
 			sdkmath.NewInt(10),
 			"tokenA",
-			sdkmath.LegacyZeroDec(),
+			elystypes.ZeroDec34(),
 			"amount too low",
 		},
 		{
@@ -85,7 +85,7 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 			},
 			sdkmath.NewInt(100),
 			"tokenA",
-			sdkmath.LegacyZeroDec(),
+			elystypes.ZeroDec34(),
 			"shares is larger than the max amount",
 		},
 	}
@@ -122,7 +122,7 @@ func TestCalcExitPool(t *testing.T) {
 		tokenOutDenom  string
 		params         types.Params
 		expectedCoins  sdk.Coins
-		expectedBonus  sdkmath.LegacyDec
+		expectedBonus  elystypes.Dec34
 		expectedErrMsg string
 	}{
 		{
@@ -144,7 +144,7 @@ func TestCalcExitPool(t *testing.T) {
 				WeightBreakingFeeMultiplier: sdkmath.LegacyMustNewDecFromStr("0.0005"),
 			},
 			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(100))},
-			sdkmath.LegacyZeroDec(),
+			elystypes.ZeroDec34(),
 			"",
 		},
 		{
@@ -158,7 +158,7 @@ func TestCalcExitPool(t *testing.T) {
 			"tokenA",
 			types.Params{},
 			sdk.Coins{},
-			sdkmath.LegacyZeroDec(),
+			elystypes.ZeroDec34(),
 			"shares is larger than the max amount",
 		},
 		{
@@ -174,7 +174,7 @@ func TestCalcExitPool(t *testing.T) {
 			"tokenA",
 			types.Params{},
 			sdk.Coins{},
-			sdkmath.LegacyZeroDec(),
+			elystypes.ZeroDec34(),
 			"amount too low",
 		},
 		{
@@ -191,7 +191,7 @@ func TestCalcExitPool(t *testing.T) {
 			"",
 			types.Params{},
 			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(100))},
-			sdkmath.LegacyZeroDec(),
+			elystypes.ZeroDec34(),
 			"",
 		},
 	}
