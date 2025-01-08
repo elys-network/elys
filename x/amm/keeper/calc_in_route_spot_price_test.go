@@ -99,7 +99,7 @@ func (suite *AmmKeeperTestSuite) TestCalcInRouteSpotPrice() {
 	}
 	spotPrice, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())
 	suite.Require().NoError(err)
-	suite.Require().Equal(spotPrice.String(), sdkmath.LegacyOneDec().String())
+	suite.Require().Equal(spotPrice.ToLegacyDec().String(), sdkmath.LegacyOneDec().String())
 
 	// Test no routes
 	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, nil, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())

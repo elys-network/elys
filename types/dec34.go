@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	"math/big"
 
 	"cosmossdk.io/math"
@@ -39,7 +40,7 @@ func NewDec34FromInt64(i int64) Dec34 {
 }
 
 func NewDec34WithPrec(i int64, prec int32) Dec34 {
-	return Dec34(regenmath.NewDecFinite(i, prec))
+	return Dec34(regenmath.NewDecFinite(i, -prec))
 }
 
 func ZeroDec34() Dec34     { return NewDec34FromInt64(0) }
@@ -186,6 +187,10 @@ func (d Dec34) ToLegacyDec() math.LegacyDec {
 	if err != nil {
 		panic(err)
 	}
+	// print coefficient and exponent
+	fmt.Println("original:", z.Text('f'))
+	fmt.Println("coefficient:", z.Coeff.String())
+	fmt.Println("exponent:", z.Exponent)
 	// override exponent and coefficient if exponent is less than -18 to fit into 18 decimal places
 	if z.Exponent < -18 {
 		delta := -18 - z.Exponent
@@ -195,7 +200,7 @@ func (d Dec34) ToLegacyDec() math.LegacyDec {
 		z.Exponent = -18
 	}
 	// construct legacy dec from apd.Decimal
-	return math.LegacyMustNewDecFromStr(z.String())
+	return math.LegacyMustNewDecFromStr(z.Text('f'))
 }
 
 func (d Dec34) ToInt() math.Int {

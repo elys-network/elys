@@ -64,26 +64,25 @@ func TestDec34(t *testing.T) {
 	require.Equal(t, NewDec34FromInt64(6), prod)
 
 	// Test MulInt
-	require.Equal(t, NewDec34FromInt64(10000).String(), NewDec34WithPrec(1, 2).MulInt(math.NewInt(100)).String())
+	require.Equal(t, NewDec34FromInt64(10000).String(), OneDec34().MulInt(math.NewInt(10000)).String())
 
 	// Test MulInt64
-	require.Equal(t, NewDec34FromInt64(10000).String(), NewDec34WithPrec(1, 2).MulInt64(100).String())
+	require.Equal(t, NewDec34FromInt64(10000).String(), OneDec34().MulInt64(10000).String())
 
 	// Test MulLegacyDec
-	require.Equal(t, NewDec34FromString("10000.0000000000000000").String(), NewDec34WithPrec(1, 2).MulLegacyDec(math.LegacyNewDec(100)).String())
+	require.Equal(t, NewDec34FromString("10000.000000000000000000").String(), OneDec34().MulLegacyDec(math.LegacyNewDec(10000)).String())
 
 	// Test Quo
-	quot := three.Quo(two)
-	require.Equal(t, "1.5", quot.String())
+	require.Equal(t, "1.5", three.Quo(two).String())
 
 	// Test QuoInt
-	require.Equal(t, NewDec34FromInt64(1).String(), NewDec34WithPrec(1, 2).QuoInt(math.NewInt(100)).String())
+	require.Equal(t, OneDec34().String(), NewDec34FromInt64(100).QuoInt(math.NewInt(100)).String())
 
 	// Test QuoInt64
-	require.Equal(t, NewDec34FromInt64(1).String(), NewDec34WithPrec(1, 2).QuoInt64(100).String())
+	require.Equal(t, OneDec34().String(), NewDec34FromInt64(100).QuoInt64(100).String())
 
 	// Test QuoLegacyDec
-	require.Equal(t, OneDec34().String(), NewDec34WithPrec(1, 2).QuoLegacyDec(math.LegacyNewDec(100)).String())
+	require.Equal(t, OneDec34().String(), NewDec34FromInt64(100).QuoLegacyDec(math.LegacyNewDec(100)).String())
 
 	// Test division by zero panic
 	require.Panics(t, func() {
@@ -91,8 +90,7 @@ func TestDec34(t *testing.T) {
 	})
 
 	// Test ToLegacyDec
-	legacyResult := three.ToLegacyDec()
-	require.Equal(t, math.LegacyNewDec(3), legacyResult)
+	require.Equal(t, math.LegacyNewDec(3), three.ToLegacyDec())
 	require.Equal(t,
 		NewDec34FromString("1000000000000000000000000000000000000123456789.000000000000000000").ToLegacyDec().String(),
 		math.LegacyMustNewDecFromStr("1000000000000000000000000000000000000123456789.000000000000000000").String(),
@@ -112,6 +110,10 @@ func TestDec34(t *testing.T) {
 	require.Equal(t,
 		NewDec34FromString("96346.39698847304510148894982122764").ToLegacyDec().String(),
 		math.LegacyMustNewDecFromStr("96346.396988473045101488").String(),
+	)
+	require.Equal(t,
+		NewDec34FromString("0.0000002").ToLegacyDec().String(),
+		math.LegacyMustNewDecFromStr("0.0000002").String(),
 	)
 
 	// Test ToInt
@@ -142,7 +144,8 @@ func TestDec34(t *testing.T) {
 
 	// Test NewDec34WithPrec
 	require.Equal(t, NewDec34WithPrec(1, 2).String(), NewDec34WithPrec(1, 2).String())
-	require.Equal(t, NewDec34FromInt64(100).String(), NewDec34WithPrec(1, 2).Mul(NewDec34WithPrec(1, 0)).String())
+	require.Equal(t, NewDec34FromInt64(100).String(), OneDec34().Mul(NewDec34WithPrec(100, 0)).String())
+	require.Equal(t, NewDec34FromString("0.010000000000000000").String(), math.LegacyNewDecWithPrec(1, 2).String())
 
 	// Test NewDec34FromString
 	require.Equal(t, NewDec34FromString("1.234567890123456789").String(), NewDec34FromString("1.234567890123456789").String())

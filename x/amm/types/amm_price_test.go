@@ -5,6 +5,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/amm/types/mocks"
 	"github.com/stretchr/testify/mock"
@@ -22,7 +23,7 @@ func TestGetTokenARate(t *testing.T) {
 		pool           *types.Pool
 		tokenA         string
 		tokenB         string
-		expectedRate   sdkmath.LegacyDec
+		expectedRate   elystypes.Dec34
 		expectedErrMsg string
 	}{
 		{
@@ -37,91 +38,91 @@ func TestGetTokenARate(t *testing.T) {
 			},
 			"tokenA",
 			"tokenB",
-			sdkmath.LegacyNewDec(4).Quo(sdkmath.LegacyNewDec(3)),
+			elystypes.FourDec34().Quo(elystypes.ThreeDec34()),
 			"",
 		},
 		{
 			"oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(10))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(5))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 			},
 			"tokenA",
 			"tokenB",
-			sdkmath.LegacyNewDec(2),
+			elystypes.TwoDec34(),
 			"",
 		},
 		{
 			"token price not set for tokenA",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "unknownToken").Return(sdkmath.LegacyZeroDec())
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "unknownToken").Return(elystypes.ZeroDec34())
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 			},
 			"unknownToken",
 			"tokenB",
-			sdkmath.LegacyZeroDec(),
+			elystypes.ZeroDec34(),
 			"token price not set: unknownToken",
 		},
 		{
 			"token price not set for tokenB",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(5))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "unknownToken").Return(sdkmath.LegacyZeroDec())
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(5))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "unknownToken").Return(elystypes.ZeroDec34())
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 			},
 			"tokenA",
 			"unknownToken",
-			sdkmath.LegacyZeroDec(),
+			elystypes.ZeroDec34(),
 			"token price not set: unknownToken",
 		},
 		{
 			"Success with oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(5))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(2))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(5))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(2))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 			},
 			"tokenA",
 			"tokenB",
-			sdkmath.LegacyNewDec(5).Quo(sdkmath.LegacyNewDec(2)),
+			elystypes.FiveDec34().Quo(elystypes.TwoDec34()),
 			"",
 		},
 		{
 			"Success with oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(5))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(2))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(5))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(2))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 			},
 			"tokenA",
 			"tokenB",
-			sdkmath.LegacyNewDec(5).Quo(sdkmath.LegacyNewDec(2)),
+			elystypes.FiveDec34().Quo(elystypes.TwoDec34()),
 			"",
 		},
 		{
 			"Success with oracle pricing with price less than 1",
 			func(oracleKeeper *mocks.OracleKeeper) {
 				// for 6 decimal tokens
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyMustNewDecFromStr("0.0000002"))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(1))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromString("0.0000002"))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.OneDec34())
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 			},
 			"tokenA",
 			"tokenB",
-			sdkmath.LegacyMustNewDecFromStr("0.0000002"),
+			elystypes.NewDec34FromString("0.0000002"),
 			"",
 		},
 	}
@@ -137,7 +138,7 @@ func TestGetTokenARate(t *testing.T) {
 				require.Contains(t, err.Error(), tc.expectedErrMsg)
 			} else {
 				require.NoError(t, err)
-				require.Equal(t, tc.expectedRate, rate)
+				require.Equal(t, tc.expectedRate.ToLegacyDec().String(), rate.ToLegacyDec().String())
 			}
 		})
 	}

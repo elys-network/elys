@@ -5,6 +5,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/amm/types/mocks"
 	"github.com/stretchr/testify/mock"
@@ -27,8 +28,8 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 		{
 			"successful exit value calculation",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(10))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(5))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
@@ -48,8 +49,8 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 		{
 			"total shares is zero",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(10))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(5))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
@@ -69,8 +70,8 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 		{
 			"exiting shares greater than total shares",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(10))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(5))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
@@ -127,7 +128,7 @@ func TestCalcExitPool(t *testing.T) {
 		{
 			"successful exit with oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyMustNewDecFromStr("0.00001"))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromString("0.00001"))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
 			},
 			types.Pool{
@@ -163,7 +164,7 @@ func TestCalcExitPool(t *testing.T) {
 		{
 			"exiting shares greater than total shares",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(0))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.ZeroDec34())
 			},
 			types.Pool{
 				PoolParams:  types.PoolParams{UseOracle: true},
