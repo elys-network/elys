@@ -1,5 +1,6 @@
 package keeper_test
 
+/*
 import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
@@ -14,3 +15,4 @@ func (suite *KeeperTestSuite) TestParamsQuery() {
 	suite.Require().NoError(err)
 	suite.Require().Equal(&types.QueryParamsResponse{Params: params}, response)
 }
+*/

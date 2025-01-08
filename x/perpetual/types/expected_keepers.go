@@ -8,7 +8,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 type AccountKeeper interface {

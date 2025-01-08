@@ -9,10 +9,10 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametertypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 // CommitmentKeeper
