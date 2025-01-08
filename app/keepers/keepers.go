@@ -483,7 +483,6 @@ func NewAppKeeper(
 		app.BankKeeper,
 		app.DistrKeeper,
 		app.StakingKeeper,
-		nil,
 		distrtypes.ModuleName,
 		cast.ToBool(appOpts.Get("telemetry.enabled")),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),

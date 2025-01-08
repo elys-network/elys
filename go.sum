@@ -2546,6 +2546,10 @@ github.com/oasisprotocol/curve25519-voi v0.0.0-20230904125328-1f23a7beb09a h1:dl
 github.com/oasisprotocol/curve25519-voi v0.0.0-20230904125328-1f23a7beb09a/go.mod h1:hVoHR2EVESiICEMbg137etN/Lx+lSrHPTD39Z/uE+2s=
 github.com/ojo-network/ojo v0.5.1-rc3.0.20250108173705-173a9e9b5634 h1:n41mULpn9DCOmul8r8boIyC1/A9JJKNFQ9jQRly7uNk=
 github.com/ojo-network/ojo v0.5.1-rc3.0.20250108173705-173a9e9b5634/go.mod h1:Vg+kFS788VzLNJyKOMaEUiMfGcz8jTWqLc36JmysHYA=
+github.com/ojo-network/ojo v0.5.1-rc3.0.20250108195945-ec052ff8bd74 h1:7SrSmS6F2YxmUeqKKDs5XXxMLeSlRBt9ETLoFgKtZ+4=
+github.com/ojo-network/ojo v0.5.1-rc3.0.20250108195945-ec052ff8bd74/go.mod h1:Vg+kFS788VzLNJyKOMaEUiMfGcz8jTWqLc36JmysHYA=
+github.com/ojo-network/ojo v0.5.1-rc3.0.20250108200902-e8f43014132b h1:N+775lsc/FNK8XwSCjvAO5aElIAhJvayKxl/ytTDBUI=
+github.com/ojo-network/ojo v0.5.1-rc3.0.20250108200902-e8f43014132b/go.mod h1:Vg+kFS788VzLNJyKOMaEUiMfGcz8jTWqLc36JmysHYA=
 github.com/ojo-network/ojo-evm/relayer v0.0.0-20240904192312-acda927a5d24 h1:t0E41HkLJJmyh8rCwNjGQPoHfQSH4QHDTg51UawFKyA=
 github.com/ojo-network/ojo-evm/relayer v0.0.0-20240904192312-acda927a5d24/go.mod h1:dW6/pQ+hNtC6955jQUR1cUJrGWcQ6fNEjeSLJCJPz3A=
 github.com/ojo-network/price-feeder v0.2.1-rc1 h1:m9vgR9DYuXhM5f2DQX/wewihzkPVAVdVjZgtr/gB6bs=

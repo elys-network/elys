@@ -99,6 +99,7 @@ var maccPerms = map[string][]string{
 	stakingtypes.BondedPoolName:                   {authtypes.Burner, authtypes.Staking},
 	stakingtypes.NotBondedPoolName:                {authtypes.Burner, authtypes.Staking},
 	govtypes.ModuleName:                           {authtypes.Burner},
+	oracletypes.ModuleName:                        {authtypes.Minter},
 	ibctransfertypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:                        nil,
 	ccvconsumertypes.ConsumerRedistributeName:     {authtypes.Burner},
