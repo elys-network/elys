@@ -82,6 +82,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  sdkmath.NewInt(10000),
+		PoolId:  1,
 	})
 	suite.Require().NoError(err)
 

@@ -11,7 +11,7 @@ import (
 func (k Keeper) GetAllPools(ctx sdk.Context) (pools []types.Pool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
-	iterator := storetypes.KVStorePrefixIterator(store, types.DebtPrefixKey)
+	iterator := storetypes.KVStorePrefixIterator(store, types.PoolPrefixKey)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -25,16 +25,16 @@ func (k Keeper) GetAllPools(ctx sdk.Context) (pools []types.Pool) {
 }
 
 // GetPools get pool as types.Pool
-func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (pool types.Pool) {
+func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (pool types.Pool, found bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(types.GetPoolKey(poolId))
 	if b == nil {
-		return
+		return types.Pool{}, false
 	}
 
 	k.cdc.MustUnmarshal(b, &pool)
-	return
+	return pool, true
 }
 
 func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
@@ -46,7 +46,7 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 func (k Keeper) GetPoolByDenom(ctx sdk.Context, denom string) (types.Pool, bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
-	iterator := storetypes.KVStorePrefixIterator(store, types.DebtPrefixKey)
+	iterator := storetypes.KVStorePrefixIterator(store, types.PoolPrefixKey)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {

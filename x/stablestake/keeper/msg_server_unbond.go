@@ -9,7 +9,10 @@ import (
 
 func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.MsgUnbondResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	pool := k.GetPool(ctx, msg.PoolId)
+	pool, found := k.GetPool(ctx, msg.PoolId)
+	if !found {
+		return nil, types.ErrPoolNotFound
+	}
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	redemptionRate := k.GetRedemptionRateForPool(ctx, pool)

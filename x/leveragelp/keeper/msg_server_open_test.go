@@ -58,6 +58,7 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
+		PoolId:  1,
 	}
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
@@ -113,7 +114,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 		{"no positions allowed",
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
-				CollateralAsset:  "stake",
+				CollateralAsset:  "uusdc",
 				CollateralAmount: sdkmath.NewInt(1000000000),
 				AmmPoolId:        1,
 				Leverage:         sdkmath.LegacyMustNewDecFromStr("10.0"),
@@ -216,7 +217,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			types.ErrOnlyBaseCurrencyAllowed.Error(),
+			types.ErrPoolNotCreatedForBorrow.Error(),
 			func() {
 				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
 			},
@@ -231,7 +232,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			types.ErrOnlyBaseCurrencyAllowed.Error(),
+			types.ErrPoolNotCreatedForBorrow.Error(),
 			func() {
 			},
 		},

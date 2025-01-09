@@ -14,7 +14,10 @@ import (
 
 func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBondResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	pool := k.GetPool(ctx, msg.PoolId)
+	pool, found := k.GetPool(ctx, msg.PoolId)
+	if !found {
+		return nil, types.ErrPoolNotFound
+	}
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	redemptionRate := k.GetRedemptionRateForPool(ctx, pool)
@@ -44,7 +47,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 		return nil, err
 	}
 
-	_, found := k.assetProfileKeeper.GetEntry(ctx, shareDenom)
+	_, found = k.assetProfileKeeper.GetEntry(ctx, shareDenom)
 	if !found {
 		// Set an entity to assetprofile
 		entry := assetprofiletypes.Entry{

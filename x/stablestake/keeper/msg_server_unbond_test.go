@@ -84,7 +84,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 			)
 			suite.Require().NoError(err)
 
-			pool := suite.app.StablestakeKeeper.GetPool(suite.ctx, 1)
+			pool, _ := suite.app.StablestakeKeeper.GetPool(suite.ctx, 1)
 			pool.TotalValue = math.NewInt(5000_000)
 			pool.RedemptionRate = math.LegacyNewDec(1)
 			pool.MaxLeverageRatio = math.LegacyMustNewDecFromStr("0.8")

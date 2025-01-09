@@ -47,7 +47,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 
 			suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
 
-			storedPool := suite.app.StablestakeKeeper.GetPool(suite.ctx, 1)
+			storedPool, _ := suite.app.StablestakeKeeper.GetPool(suite.ctx, 1)
 			require.Equal(suite.T(), tt.interestRate, storedPool.InterestRate)
 			require.Equal(suite.T(), tt.redemptionRate, storedPool.RedemptionRate)
 		})

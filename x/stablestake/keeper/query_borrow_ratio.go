@@ -18,7 +18,10 @@ func (k Keeper) BorrowRatio(goCtx context.Context, req *types.QueryBorrowRatioRe
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	pool := k.GetPool(ctx, req.PoolId)
+	pool, found := k.GetPool(ctx, req.PoolId)
+	if !found {
+		return nil, types.ErrPoolNotFound
+	}
 
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 

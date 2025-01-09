@@ -84,6 +84,7 @@ func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  math.NewInt(amount * 10),
+		PoolId:  1,
 	})
 	suite.Require().NoError(err)
 

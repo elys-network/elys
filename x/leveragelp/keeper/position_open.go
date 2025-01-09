@@ -21,6 +21,7 @@ func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen, borrowPool uint64)
 	position := types.NewPosition(msg.Creator, sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount), msg.AmmPoolId)
 	position.Id = k.GetPositionCount(ctx) + 1
 	position.StopLossPrice = msg.StopLossPrice
+	position.BorrowPoolId = borrowPool
 	k.SetPositionCount(ctx, position.Id)
 
 	openCount := k.GetOpenPositionCount(ctx)

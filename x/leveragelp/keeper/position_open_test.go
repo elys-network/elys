@@ -85,6 +85,7 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  sdkmath.NewInt(50000),
+		PoolId:  1,
 	})
 	suite.Require().NoError(err)
 
