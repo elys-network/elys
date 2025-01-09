@@ -21,14 +21,29 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 	}
 
 	poolId := mtp.AmmPoolId
-	_, found := k.GetPool(ctx, poolId)
+	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
+	}
+
+	ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "amm pool not found")
+	}
+
+	repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
+	if err != nil {
+		return nil, err
 	}
 
 	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 	if err != nil {
 		return nil, err
+	}
+
+	if forceClosed {
+		k.EmitForceClose(ctx, "update_stop_loss", mtp, repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice)
+		return &types.MsgUpdateStopLossResponse{}, nil
 	}
 
 	if mtp.Position == types.Position_LONG {
@@ -48,10 +63,15 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 		return nil, err
 	}
 
-	event := sdk.NewEvent(types.EventOpen,
-		sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),
-		sdk.NewAttribute("address", mtp.Address),
+	event := sdk.NewEvent(types.EventUpdateStopLoss,
+		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
+		sdk.NewAttribute("owner", mtp.Address),
 		sdk.NewAttribute("stop_loss", mtp.StopLossPrice.String()),
+		sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
+		sdk.NewAttribute("interest_amount", interestAmt.String()),
+		sdk.NewAttribute("insurance_amount", insuranceAmt.String()),
+		sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
+		sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
 

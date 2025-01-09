@@ -11,21 +11,6 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (suite *PerpetualKeeperTestSuite) TestForceCloseShort_PoolNotFound() {
-
-	ctx := suite.ctx
-	k := suite.app.PerpetualKeeper
-	mtp := &types.MTP{
-		AmmPoolId: 8000,
-	}
-
-	pool := &types.Pool{}
-
-	_, err := k.ForceCloseShort(ctx, mtp, pool, false, ptypes.BaseCurrency)
-
-	suite.Require().ErrorIs(err, types.ErrPoolDoesNotExist)
-}
-
 func (suite *PerpetualKeeperTestSuite) TestForceCloseShort_Successful() {
 
 	ctx := suite.ctx
@@ -73,7 +58,7 @@ func (suite *PerpetualKeeperTestSuite) TestForceCloseShort_Successful() {
 
 	suite.Require().Nil(err)
 
-	_, err = k.ForceCloseShort(ctx, &mtp, &pool, false, ptypes.BaseCurrency)
+	_, _, err = k.ForceClose(ctx, &mtp, &pool, &ammPool)
 
 	suite.Require().Nil(err)
 }

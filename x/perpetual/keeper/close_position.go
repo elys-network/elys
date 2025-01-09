@@ -1,44 +1,40 @@
 package keeper
 
 import (
-	"fmt"
-
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency string) (*types.MTP, math.Int, math.LegacyDec, error) {
+func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose) (types.MTP, math.Int, math.LegacyDec, math.Int, math.Int, math.Int, math.Int, bool, bool, error) {
 	// Retrieve MTP
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	mtp, err := k.GetMTP(ctx, creator, msg.Id)
 	if err != nil {
-		return nil, math.ZeroInt(), math.LegacyZeroDec(), err
+		return types.MTP{}, math.ZeroInt(), math.LegacyZeroDec(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), false, false, err
+	}
+
+	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
+	if !found {
+		return mtp, math.ZeroInt(), math.LegacyZeroDec(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), false, false, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", mtp.AmmPoolId))
 	}
 
 	// Retrieve AmmPool
 	ammPool, err := k.GetAmmPool(ctx, mtp.AmmPoolId)
 	if err != nil {
-		return nil, math.ZeroInt(), math.LegacyZeroDec(), err
+		return mtp, math.ZeroInt(), math.LegacyZeroDec(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), false, false, err
 	}
 
-	// This needs to be updated here to check user doesn't send more than required amount
-	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
-	// Retrieve Pool
-	pool, found := k.GetPool(ctx, mtp.AmmPoolId)
-	if !found {
-		return nil, math.ZeroInt(), math.LegacyZeroDec(), errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", mtp.AmmPoolId))
-	}
-
-	// Handle Borrow Interest if within epoch position SettleMTPBorrowInterestUnpaidLiability settles interest using mtp.Custody, mtp.Custody gets reduced
-	if _, err = k.SettleMTPBorrowInterestUnpaidLiability(ctx, &mtp, &pool, ammPool); err != nil {
-		return nil, math.ZeroInt(), math.LegacyZeroDec(), err
-	}
-
-	err = k.SettleFunding(ctx, &mtp, &pool, ammPool)
+	// this also handles edge case where bot is unable to close position in time.
+	repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
 	if err != nil {
-		return nil, math.ZeroInt(), math.LegacyZeroDec(), errorsmod.Wrapf(err, "error handling funding fee")
+		return types.MTP{}, math.ZeroInt(), math.LegacyZeroDec(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), false, false, err
+	}
+
+	if forceClosed {
+		return mtp, repayAmt, math.LegacyOneDec(), returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, nil
 	}
 
 	// Should be declared after SettleMTPBorrowInterestUnpaidLiability and settling funding
@@ -51,9 +47,9 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency
 	}
 
 	// Estimate swap and repay
-	repayAmt, err := k.EstimateAndRepay(ctx, &mtp, &pool, &ammPool, baseCurrency, closingRatio)
+	repayAmt, returnAmt, err = k.EstimateAndRepay(ctx, &mtp, &pool, &ammPool, closingRatio)
 	if err != nil {
-		return nil, math.ZeroInt(), math.LegacyZeroDec(), err
+		return mtp, math.ZeroInt(), math.LegacyZeroDec(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), allInterestsPaid, forceClosed, err
 	}
 
 	// EpochHooks after perpetual position closed
@@ -61,9 +57,9 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClose, baseCurrency
 		params := k.GetParams(ctx)
 		err = k.hooks.AfterPerpetualPositionClosed(ctx, ammPool, pool, creator, params.EnableTakeProfitCustodyLiabilities)
 		if err != nil {
-			return nil, math.Int{}, math.LegacyDec{}, err
+			return mtp, math.Int{}, math.LegacyDec{}, math.Int{}, math.Int{}, math.Int{}, math.Int{}, allInterestsPaid, forceClosed, err
 		}
 	}
 
-	return &mtp, repayAmt, closingRatio, nil
+	return mtp, repayAmt, closingRatio, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, nil
 }

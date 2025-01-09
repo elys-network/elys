@@ -1,7 +1,7 @@
 package types
 
 import (
-	"fmt"
+	"errors"
 
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
@@ -103,7 +103,7 @@ func (mtp MTP) GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice sdkmath.L
 	borrowInterestPaymentInCustody := sdkmath.ZeroInt()
 	if mtp.Position == Position_LONG {
 		if tradingAssetPrice.IsZero() {
-			return sdkmath.ZeroInt(), fmt.Errorf("trading asset price is zero")
+			return sdkmath.ZeroInt(), errors.New("trading asset price is zero")
 		}
 		// liabilities are in usdc, custody is in trading asset
 		borrowInterestPaymentInCustody = mtp.BorrowInterestUnpaidLiability.ToLegacyDec().Quo(tradingAssetPrice).TruncateInt()

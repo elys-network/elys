@@ -139,7 +139,7 @@ func NewExecuteMarketBuySpotOrderEvt(order SpotOrder, res *ammtypes.MsgSwapByDen
 
 	return sdk.NewEvent(TypeEvtExecuteMarketBuySpotOrder,
 		sdk.NewAttribute("order_type", order.OrderType.String()),
-		sdk.NewAttribute("order_id", strconv.FormatInt(int64(order.OrderId), 10)),
+		sdk.NewAttribute("order_id", strconv.FormatUint(order.OrderId, 10)),
 		sdk.NewAttribute("order_price", string(orderPrice)),
 		sdk.NewAttribute("order_amount", order.OrderAmount.String()),
 		sdk.NewAttribute("owner_address", order.OwnerAddress),

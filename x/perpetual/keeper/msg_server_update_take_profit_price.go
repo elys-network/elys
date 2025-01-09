@@ -26,13 +26,27 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	params := k.GetParams(ctx)
+	ammPool, err := k.GetAmmPool(ctx, pool.AmmPoolId)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "amm pool not found")
+	}
+
+	repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.MTPTriggerChecksAndUpdates(ctx, &mtp, &pool, &ammPool)
+	if err != nil {
+		return nil, err
+	}
 
 	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
 	if err != nil {
 		return nil, err
 	}
 
+	if forceClosed {
+		k.EmitForceClose(ctx, "update_take_profit", mtp, repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice)
+		return &types.MsgUpdateTakeProfitPriceResponse{}, nil
+	}
+
+	params := k.GetParams(ctx)
 	ratio := msg.Price.Quo(tradingAssetPrice)
 	if mtp.Position == types.Position_LONG {
 		if ratio.LT(params.MinimumLongTakeProfitPriceRatio) || ratio.GT(params.MaximumLongTakeProfitPriceRatio) {
@@ -71,23 +85,22 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 
 	k.SetPool(ctx, pool)
 
-	ammPool, err := k.GetAmmPool(ctx, poolId)
-	if err != nil {
-		return nil, err
-	}
-
 	if k.hooks != nil {
-		params := k.GetParams(ctx)
 		err = k.hooks.AfterPerpetualPositionModified(ctx, ammPool, pool, creator, params.EnableTakeProfitCustodyLiabilities)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	event := sdk.NewEvent(types.EventOpen,
-		sdk.NewAttribute("id", strconv.FormatInt(int64(mtp.Id), 10)),
-		sdk.NewAttribute("address", mtp.Address),
+	event := sdk.NewEvent(types.EventUpdateTakeProfitPrice,
+		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
+		sdk.NewAttribute("owner", mtp.Address),
 		sdk.NewAttribute("take_profit_price", mtp.TakeProfitPrice.String()),
+		sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
+		sdk.NewAttribute("interest_amount", interestAmt.String()),
+		sdk.NewAttribute("insurance_amount", insuranceAmt.String()),
+		sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
+		sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
 

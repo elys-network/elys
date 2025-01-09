@@ -146,13 +146,13 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 	params = mk.GetParams(ctx)
 	params.BorrowInterestPaymentFundAddress = addr[2].String()
 	params.BorrowInterestPaymentFundPercentage = sdkmath.LegacyMustNewDecFromStr("0.5")
-	mk.SetParams(ctx, &params)
-
+	err = mk.SetParams(ctx, &params)
+	suite.Require().NoError(err)
 	mtp := mtps[0]
 
 	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
 
-	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency)
+	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, &pool, ptypes.BaseCurrency)
 	suite.Require().NoError(err)
 
 	// Set borrow interest rate to 100% to test liquidation
@@ -187,7 +187,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 		StopLossPrice:                 sdkmath.LegacyZeroDec(),
 	}, mtp)
 
-	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency)
+	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, &pool, "")
 	suite.Require().NoError(err)
 
 	mtps = mk.GetAllMTPs(ctx)
@@ -328,7 +328,7 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 
 	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
 
-	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, ptypes.BaseCurrency)
+	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, pool, "")
 	require.Error(t, err)
 
 	// Set price above target price
@@ -341,7 +341,7 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 
-	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, ptypes.BaseCurrency)
+	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, pool, "")
 	require.NoError(t, err)
 
 	mtps = mk.GetAllMTPs(ctx)
@@ -501,7 +501,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	perpPool, _ := mk.GetPool(ctx, ammPool.PoolId)
 
-	err = mk.CheckAndCloseAtStopLoss(ctx, &mtp, perpPool, ptypes.BaseCurrency)
+	err = mk.CheckAndCloseAtStopLoss(ctx, &mtp, perpPool, ammPool, "")
 	suite.Require().NoError(err)
 
 	mtps = mk.GetAllMTPs(ctx)

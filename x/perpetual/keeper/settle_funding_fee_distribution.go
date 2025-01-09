@@ -2,13 +2,12 @@ package keeper
 
 import (
 	sdkmath "cosmossdk.io/math"
-	"fmt"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool ammtypes.Pool) error {
+func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool) error {
 
 	totalLongOpenInterest := pool.GetTotalLongOpenInterest()
 	totalShortOpenInterest := pool.GetTotalShortOpenInterest()
@@ -21,7 +20,7 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 	if mtp.Position == types.Position_LONG {
 		// Ensure liabilitiesLong is not zero to avoid division by zero
 		if totalLongOpenInterest.IsZero() {
-			return fmt.Errorf("totalCustodyLong in FundingFeeDistribution cannot be zero")
+			return errors.New("totalCustodyLong in FundingFeeDistribution cannot be zero")
 		}
 		fundingFeeShare = mtp.Custody.ToLegacyDec().Quo(totalLongOpenInterest.ToLegacyDec())
 		totalFund = short
