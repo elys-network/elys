@@ -73,12 +73,12 @@ func GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetW
 		if distanceDiff.IsPositive() {
 			if !finalWeightOut.IsZero() && !finalWeightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() {
 				weightBreakingFee = elystypes.NewDec34FromLegacyDec(params.WeightBreakingFeeMultiplier).
-					Mul(PowDec34(finalWeightIn.Mul(targetWeightOut).Quo(finalWeightOut).Quo(targetWeightIn), elystypes.NewDec34FromLegacyDec(params.WeightBreakingFeeExponent)))
+					Mul(elystypes.PowDec34(finalWeightIn.Mul(targetWeightOut).Quo(finalWeightOut).Quo(targetWeightIn), elystypes.NewDec34FromLegacyDec(params.WeightBreakingFeeExponent)))
 			}
 		} else {
 			if !initialWeightOut.IsZero() && !initialWeightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() {
 				weightBreakingFee = elystypes.NewDec34FromLegacyDec(params.WeightBreakingFeeMultiplier).
-					Mul(PowDec34(initialWeightOut.Mul(targetWeightIn).Quo(initialWeightIn).Quo(targetWeightOut), elystypes.NewDec34FromLegacyDec(params.WeightBreakingFeeExponent)))
+					Mul(elystypes.PowDec34(initialWeightOut.Mul(targetWeightIn).Quo(initialWeightIn).Quo(targetWeightOut), elystypes.NewDec34FromLegacyDec(params.WeightBreakingFeeExponent)))
 			}
 		}
 

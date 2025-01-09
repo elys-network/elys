@@ -5,6 +5,7 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -90,7 +91,7 @@ func (suite *AmmKeeperTestSuite) TestCalcInRouteSpotPrice() {
 	routes := []*types.SwapAmountInRoute{{PoolId: 1, TokenOutDenom: ptypes.BaseCurrency}}
 	spotPrice, _, _, totalDiscountedSwapFee, _, _, _, _, err := suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, sdkmath.LegacyZeroDec(), sdkmath.LegacyMustNewDecFromStr("0.1"))
 	suite.Require().NoError(err)
-	suite.Require().Equal(spotPrice.String(), sdkmath.LegacyOneDec().String())
+	suite.Require().Equal(spotPrice.String(), elystypes.OneDec34().String())
 	suite.Require().Equal(sdkmath.LegacyMustNewDecFromStr("0.1"), totalDiscountedSwapFee)
 
 	routes = []*types.SwapAmountInRoute{

@@ -9,6 +9,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	simapp "github.com/elys-network/elys/app"
+	elystypes "github.com/elys-network/elys/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -359,7 +360,7 @@ func (suite *MasterchefKeeperTestSuite) TestExternalRewardsDistribution() {
 
 	// Get Tvl for non-existent pool
 	res := suite.app.MasterchefKeeper.GetPoolTVL(suite.ctx, 1000)
-	suite.Require().Equal(res, sdkmath.LegacyZeroDec())
+	suite.Require().Equal(res, elystypes.ZeroDec34())
 
 	// increase timestamp
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))

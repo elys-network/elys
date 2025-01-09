@@ -7,6 +7,7 @@ import (
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -21,7 +22,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 		tokenOut               sdk.Coin
 		inTokenDenom           string
 		swapFee                sdkmath.LegacyDec
-		expRecoveryBonus       sdkmath.LegacyDec
+		expRecoveryBonus       elystypes.Dec34
 		expTokenIn             sdk.Coin
 		expErr                 bool
 	}{
@@ -57,8 +58,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			inTokenDenom:           "uusdt",
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.000331056400904022"),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 101043562),
+			expRecoveryBonus:       elystypes.NewDec34FromString("-0.0003310563933869157211503902584191568"),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 101043551),
 			expErr:                 false,
 		},
 		// scenario2 - oracle based
@@ -93,8 +94,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			inTokenDenom:           "uusdt",
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.006413552900341021"),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 102008668),
+			expRecoveryBonus:       elystypes.NewDec34FromString("-0.006413552800214017166854821505321781"),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 102008657),
 			expErr:                 false,
 		},
 		// scenario3 - oracle based
@@ -129,8 +130,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			inTokenDenom:           ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0.001558845726811990"),
-			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 101348300),
+			expRecoveryBonus:       elystypes.NewDec34FromString("0.001558845726811989564174701707355285"),
+			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 101348290),
 			expErr:                 false,
 		},
 		// scenario1 - non-oracle based
@@ -165,8 +166,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			inTokenDenom:           ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
-			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
-			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 36075037),
+			expRecoveryBonus:       elystypes.ZeroDec34(),
+			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 36075036),
 			expErr:                 false,
 		},
 
@@ -188,7 +189,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin("uusdt", 0),
 			inTokenDenom:           ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyNewDecWithPrec(1, 2),
-			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
+			expRecoveryBonus:       elystypes.ZeroDec34(),
 			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 0),
 			expErr:                 true,
 		},

@@ -26,7 +26,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 			desc:              "successful execution with positive swap fee",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
-			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10204),
+			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10203),
 			tokenInMax:        sdkmath.NewInt(10000000),
 			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			swapRoutes: []types.SwapAmountOutRoute{
@@ -35,14 +35,14 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 					TokenInDenom: ptypes.Elys,
 				},
 			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989796), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989797), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPass:          true,
 		},
 		{
 			desc:              "successful execution with zero swap fee",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdkmath.LegacyZeroDec(),
-			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10102),
+			tokenIn:           sdk.NewInt64Coin(ptypes.Elys, 10101),
 			tokenInMax:        sdkmath.NewInt(10000000),
 			tokenOut:          sdk.NewInt64Coin(ptypes.BaseCurrency, 10000),
 			swapRoutes: []types.SwapAmountOutRoute{
@@ -51,7 +51,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 					TokenInDenom: ptypes.Elys,
 				},
 			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989898), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 989899), sdk.NewInt64Coin(ptypes.BaseCurrency, 1010000)},
 			expPass:          true,
 		},
 		{
@@ -74,7 +74,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 			desc:              "multiple routes",
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdkmath.LegacyZeroDec(),
-			tokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 10206),
+			tokenIn:           sdk.NewInt64Coin(ptypes.BaseCurrency, 10204),
 			tokenInMax:        sdkmath.NewInt(10000000),
 			tokenOut:          sdk.NewInt64Coin("uusdt", 10000),
 			swapRoutes: []types.SwapAmountOutRoute{
@@ -87,7 +87,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapExactAmountOut() {
 					TokenInDenom: ptypes.Elys,
 				},
 			},
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 989794), sdk.NewInt64Coin("uusdt", 10000)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 989796), sdk.NewInt64Coin("uusdt", 10000)},
 			expPass:          true,
 		},
 	} {

@@ -1,8 +1,6 @@
 package types
 
 import (
-	"math/big"
-
 	"cosmossdk.io/math"
 	"github.com/cockroachdb/apd/v2"
 	regenmath "github.com/regen-network/regen-ledger/types/v2/math"
@@ -64,8 +62,24 @@ func MaxDec34(a, b Dec34) Dec34 {
 	return b
 }
 
+func PowDec34(base, exp Dec34) Dec34 {
+	b, _, _ := apd.NewFromString(base.String())
+	e, _, _ := apd.NewFromString(exp.String())
+	d := new(apd.Decimal)
+
+	// add enough precision to handle big decimal values
+	c := apd.BaseContext.WithPrecision(100)
+	_, err := c.Pow(d, b, e)
+	if err != nil {
+		panic(err)
+	}
+
+	return NewDec34FromString(d.Text('f'))
+}
+
 func (d Dec34) String() string {
-	return regenmath.Dec(d).String()
+	x, _ := regenmath.Dec(d).Reduce()
+	return x.String()
 }
 
 func (d Dec34) Mul(other Dec34) Dec34 {
@@ -175,26 +189,13 @@ func (d Dec34) Neg() Dec34 {
 }
 
 func (d Dec34) ToLegacyDec() math.LegacyDec {
-	// remove all trailing zeros
-	y, _ := regenmath.Dec(d).Reduce()
-	// if d is zero, return zero legacy dec
-	if y.IsZero() {
-		return math.LegacyZeroDec()
-	}
-	// convert to apd.Decimal
-	z, _, err := apd.NewFromString(y.String())
-	if err != nil {
-		panic(err)
-	}
-	// override exponent and coefficient if exponent is less than -18 to fit into 18 decimal places
-	if z.Exponent < -18 {
-		delta := -18 - z.Exponent
-		decs := big.NewInt(10)
-		decs.Exp(decs, big.NewInt(int64(delta)), nil)
-		z.Coeff.Quo(&z.Coeff, decs)
-		z.Exponent = -18
-	}
-	// construct legacy dec from apd.Decimal
+	y, _, _ := apd.NewFromString(d.String())
+	z := new(apd.Decimal)
+
+	// add enough precision to handle big decimal values
+	c := apd.BaseContext.WithPrecision(100)
+	c.Quantize(z, y, -18)
+
 	return math.LegacyMustNewDecFromStr(z.Text('f'))
 }
 

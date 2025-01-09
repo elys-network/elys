@@ -93,7 +93,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(203),
+			math.NewInt(202),
 		},
 		{
 			"Close with price greater than open price and less than take profit price",
@@ -134,7 +134,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(31), // less than at the same price
+			math.NewInt(29), // less than at the same price
 		},
 		{
 			"Close at take profit price",
@@ -175,7 +175,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(91),
+			math.NewInt(90),
 		},
 		{
 			"Close at stopLoss price",
@@ -216,7 +216,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(502),
+			math.NewInt(501),
 		},
 		{
 			"Sucess: close long position,at same price as open price",
@@ -247,7 +247,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(203),
+			math.NewInt(202),
 		},
 		{
 			"Success: close short position at same price as open price",
@@ -276,7 +276,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(4501),
+			math.NewInt(4503),
 		},
 		{
 			"Close with too much unpaid Liability to make custody amount 0",

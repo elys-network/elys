@@ -200,10 +200,10 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapByDenomWithOutRoute() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
 			tokenOut:          sdk.NewInt64Coin(ptypes.Elys, 10000),
-			expTokenIn:        sdk.NewInt64Coin(ptypes.BaseCurrency, 10204),
+			expTokenIn:        sdk.NewInt64Coin(ptypes.BaseCurrency, 10203),
 			tokenOutMax:       sdkmath.NewInt(1000000),
 			tokenDenomIn:      ptypes.BaseCurrency,
-			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 989796)},
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 989797)},
 			expPass:           true,
 		},
 		{
@@ -211,10 +211,10 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSwapByDenomWithOutRoute() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			swapFee:           sdkmath.LegacyZeroDec(),
 			tokenOut:          sdk.NewInt64Coin(ptypes.Elys, 10000),
-			expTokenIn:        sdk.NewInt64Coin(ptypes.BaseCurrency, 10102),
+			expTokenIn:        sdk.NewInt64Coin(ptypes.BaseCurrency, 10101),
 			tokenOutMax:       sdkmath.NewInt(1000000),
 			tokenDenomIn:      ptypes.BaseCurrency,
-			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 989898)},
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.Elys, 1010000), sdk.NewInt64Coin(ptypes.BaseCurrency, 989899)},
 			expPass:           true,
 		},
 	} {

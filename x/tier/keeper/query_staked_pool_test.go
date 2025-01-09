@@ -54,6 +54,6 @@ func (suite *TierKeeperTestSuite) TestQueryStakedPoolSuccessful() {
 	})
 
 	suite.Require().NoError(err)
-	suite.Require().Equal("59.999999999997483295", stakedPoolResponse.Total)
+	suite.Require().Equal("59.99999999999748335499999999999748", stakedPoolResponse.Total)
 
 }

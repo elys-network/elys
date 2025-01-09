@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
-	elystypes "github.com/elys-network/elys/types"
 )
 
 // Pow computes base^(exp)
@@ -38,8 +37,4 @@ func Pow(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) sdkmath.LegacyDec {
 	}
 
 	return integerPow.Mul(fractionalPow)
-}
-
-func PowDec34(base elystypes.Dec34, exp elystypes.Dec34) elystypes.Dec34 {
-	return elystypes.NewDec34FromLegacyDec(Pow(base.ToLegacyDec(), exp.ToLegacyDec()))
 }
