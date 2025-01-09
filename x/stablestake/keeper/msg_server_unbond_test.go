@@ -23,7 +23,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 	}{
 		{
 			desc:              "successful unbonding process",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 5000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenomForPool(1), 5000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			unbondAmount:      math.NewInt(1000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}.Sort(),
@@ -31,7 +31,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 		},
 		{
 			desc:              "lack of balance on the module",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 5000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenomForPool(1), 5000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
 			unbondAmount:      math.NewInt(1000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
@@ -39,7 +39,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 		},
 		{
 			desc:              "lack of sender balance",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 5000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenomForPool(1), 5000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			unbondAmount:      math.NewInt(10000000000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
@@ -62,7 +62,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tc.senderInitBalance)
 			suite.Require().NoError(err)
 
-			shareDenom := types.GetShareDenom()
+			shareDenom := types.GetShareDenomForPool(1)
 
 			// Set an entity to assetprofile
 			entry := assetprofiletypes.Entry{
@@ -84,11 +84,11 @@ func (suite *KeeperTestSuite) TestUnbond() {
 			)
 			suite.Require().NoError(err)
 
-			params := suite.app.StablestakeKeeper.GetParams(suite.ctx)
-			params.TotalValue = math.NewInt(5000_000)
-			params.RedemptionRate = math.LegacyNewDec(1)
-			params.MaxLeverageRatio = math.LegacyMustNewDecFromStr("0.8")
-			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
+			pool := suite.app.StablestakeKeeper.GetPool(suite.ctx, 1)
+			pool.TotalValue = math.NewInt(5000_000)
+			pool.RedemptionRate = math.LegacyNewDec(1)
+			pool.MaxLeverageRatio = math.LegacyMustNewDecFromStr("0.8")
+			suite.app.StablestakeKeeper.SetPool(suite.ctx, pool)
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 			_, err = msgServer.Unbond(
@@ -96,6 +96,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 				&types.MsgUnbond{
 					Creator: sender.String(),
 					Amount:  tc.unbondAmount,
+					PoolId:  1,
 				})
 			if !tc.expPass {
 				suite.Require().Error(err)

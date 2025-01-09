@@ -24,7 +24,7 @@ func (suite *KeeperTestSuite) TestDebt() {
 	}{
 		{
 			desc:              "successful debt process",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenomForPool(1), 1000000), sdk.NewInt64Coin(ptypes.BaseCurrency, 100000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			unbondAmount:      math.NewInt(1000000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}.Sort(),
@@ -47,7 +47,7 @@ func (suite *KeeperTestSuite) TestDebt() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tc.senderInitBalance)
 			suite.Require().NoError(err)
 
-			shareDenom := types.GetShareDenom()
+			shareDenom := types.GetShareDenomForPool(1)
 
 			// Set an entity to assetprofile
 			entry := assetprofiletypes.Entry{

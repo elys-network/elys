@@ -24,7 +24,7 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			bondAmount:        math.NewInt(10000),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 990000)}.Sort(),
-			expSenderCommit:   sdk.NewInt64Coin(types.GetShareDenom(), 10000),
+			expSenderCommit:   sdk.NewInt64Coin(types.GetShareDenomForPool(1), 10000),
 			expPass:           true,
 		},
 		{
@@ -54,6 +54,7 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 				&types.MsgBond{
 					Creator: sender.String(),
 					Amount:  tc.bondAmount,
+					PoolId:  1,
 				})
 			if !tc.expPass {
 				suite.Require().Error(err)
