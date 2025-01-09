@@ -56,7 +56,7 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {
-		err = k.hooks.AfterUnbond(ctx, creator, msg.Amount)
+		err = k.hooks.AfterUnbond(ctx, creator, msg.Amount, pool.PoolId)
 		if err != nil {
 			return nil, err
 		}

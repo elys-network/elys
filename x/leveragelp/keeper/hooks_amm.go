@@ -23,11 +23,10 @@ func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) 
 		Mul(leveragePool.LeveragedLpAmount.ToLegacyDec()).
 		Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
-	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
-	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, depositDenom)
-
+	// We check for all assets because now we allow any asset to be borrowed/lend
 	for _, asset := range ammPool.PoolAssets {
-		if asset.Token.Denom == depositDenom && price.MulInt(asset.Token.Amount).LT(leverageLpTvl) {
+		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
+		if price.MulInt(asset.Token.Amount).LT(leverageLpTvl) {
 			return types.ErrInsufficientUsdcAfterOp
 		}
 	}

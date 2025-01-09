@@ -85,7 +85,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {
-		err = k.hooks.AfterBond(ctx, creator, shareAmount)
+		err = k.hooks.AfterBond(ctx, creator, shareAmount, pool.PoolId)
 		if err != nil {
 			return nil, err
 		}
