@@ -10,6 +10,7 @@ import (
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -70,6 +71,20 @@ func (suite *MasterchefKeeperTestSuite) SetupApp() {
 		BlocksDistributed: 1000000,
 	}
 	suite.app.MasterchefKeeper.SetParams(suite.ctx, mkParams)
+
+	suite.app.StablestakeKeeper.SetPool(suite.ctx, stablestaketypes.Pool{
+		RedemptionRate:       sdkmath.LegacyOneDec(),
+		InterestRate:         sdkmath.LegacyMustNewDecFromStr("0.15"),
+		InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.17"),
+		InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.12"),
+		InterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+		InterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     sdkmath.LegacyOneDec(),
+		TotalValue:           sdkmath.ZeroInt(),
+		MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+		PoolId:               stablestaketypes.PoolId,
+		DepositDenom:         ptypes.BaseCurrency,
+	})
 }
 
 func (suite *MasterchefKeeperTestSuite) TestApr() {

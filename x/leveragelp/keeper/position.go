@@ -14,6 +14,7 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -352,4 +353,26 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 			}
 		}
 	}
+}
+
+func (k Keeper) SetAllPositions(ctx sdk.Context) {
+	iterator := k.GetPositionIterator(ctx)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.LegacyPosition
+		bytesValue := iterator.Value()
+		k.cdc.Unmarshal(bytesValue, &position)
+		k.SetPosition(ctx, &types.Position{
+			Id:                position.Id,
+			Address:           position.Address,
+			AmmPoolId:         position.AmmPoolId,
+			Collateral:        position.Collateral,
+			LeveragedLpAmount: position.LeveragedLpAmount,
+			PositionHealth:    position.PositionHealth,
+			StopLossPrice:     position.StopLossPrice,
+			Liabilities:       position.Liabilities,
+			BorrowPoolId:      stabletypes.PoolId,
+		})
+	}
+	return
 }
