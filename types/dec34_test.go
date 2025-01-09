@@ -214,20 +214,30 @@ func TestDec34(t *testing.T) {
 	require.Equal(t, NewDec34FromInt64(2), MaxDec34(NewDec34FromInt64(2), NewDec34FromInt64(1)))
 
 	// Test integer powers
-	require.Equal(t, "8", Pow(NewDec34FromInt64(2), NewDec34FromInt64(3)).String())
-	require.Equal(t, "16", Pow(NewDec34FromInt64(2), NewDec34FromInt64(4)).String())
-	require.Equal(t, "27", Pow(NewDec34FromInt64(3), NewDec34FromInt64(3)).String())
+	require.Equal(t, "8", PowDec34(NewDec34FromInt64(2), NewDec34FromInt64(3)).String())
+	require.Equal(t, "16", PowDec34(NewDec34FromInt64(2), NewDec34FromInt64(4)).String())
+	require.Equal(t, "27", PowDec34(NewDec34FromInt64(3), NewDec34FromInt64(3)).String())
 
 	// Test decimal powers
 	require.Equal(t, "1.414213562373095048801688724209698078569671875376948073176679737990732478462107038850387534327641573",
-		Pow(NewDec34FromInt64(2), NewDec34FromString("0.5")).String())
+		PowDec34(NewDec34FromInt64(2), NewDec34FromString("0.5")).String())
 	require.Equal(t, "3.162277660168379331998893544432718533719555139325216826857504852792594438639238221344248108379300295",
-		Pow(NewDec34FromInt64(10), NewDec34FromString("0.5")).String())
+		PowDec34(NewDec34FromInt64(10), NewDec34FromString("0.5")).String())
 
 	// Test powers with decimal base
-	require.Equal(t, "3.375", Pow(NewDec34FromString("1.5"), NewDec34FromInt64(3)).String())
+	require.Equal(t, "3.375", PowDec34(NewDec34FromString("1.5"), NewDec34FromInt64(3)).String())
 
 	// Test power of 1 and 0
-	require.Equal(t, "1", Pow(NewDec34FromInt64(5), NewDec34FromInt64(0)).String())
-	require.Equal(t, "5", Pow(NewDec34FromInt64(5), NewDec34FromInt64(1)).String())
+	require.Equal(t, "1", PowDec34(NewDec34FromInt64(5), NewDec34FromInt64(0)).String())
+	require.Equal(t, "5", PowDec34(NewDec34FromInt64(5), NewDec34FromInt64(1)).String())
+
+	// Test Pow method
+	require.Equal(t, "8", NewDec34FromInt64(2).Pow(NewDec34FromInt64(3)).String())
+	require.Equal(t, "16", NewDec34FromInt64(2).Pow(NewDec34FromInt64(4)).String())
+	require.Equal(t, "27", NewDec34FromInt64(3).Pow(NewDec34FromInt64(3)).String())
+
+	// Test PowLegacyDec method
+	require.Equal(t, "8", NewDec34FromInt64(2).PowLegacyDec(math.LegacyNewDec(3)).String())
+	require.Equal(t, "16", NewDec34FromInt64(2).PowLegacyDec(math.LegacyNewDec(4)).String())
+	require.Equal(t, "27", NewDec34FromInt64(3).PowLegacyDec(math.LegacyNewDec(3)).String())
 }

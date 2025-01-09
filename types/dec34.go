@@ -77,6 +77,14 @@ func PowDec34(base, exp Dec34) Dec34 {
 	return NewDec34FromString(d.Text('f'))
 }
 
+func (d Dec34) Pow(exp Dec34) Dec34 {
+	return PowDec34(d, exp)
+}
+
+func (d Dec34) PowLegacyDec(exp math.LegacyDec) Dec34 {
+	return PowDec34(d, NewDec34FromLegacyDec(exp))
+}
+
 func (d Dec34) String() string {
 	x, _ := regenmath.Dec(d).Reduce()
 	return x.String()

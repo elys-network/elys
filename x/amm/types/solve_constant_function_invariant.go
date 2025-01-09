@@ -39,7 +39,7 @@ func solveConstantFunctionInvariant(
 	y := tokenBalanceFixedBefore.Quo(tokenBalanceFixedAfter)
 
 	// amountY = balanceY * (1 - (y ^ weightRatio))
-	yToWeightRatio := elystypes.PowDec34(y, weightRatio)
+	yToWeightRatio := y.Pow(weightRatio)
 	paranthetical := elystypes.OneDec34().Sub(yToWeightRatio)
 	amountY := tokenBalanceUnknownBefore.Mul(paranthetical)
 	return amountY, nil
