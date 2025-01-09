@@ -67,12 +67,12 @@ func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 }
 
 func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) elystypes.Dec34 {
-	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
-	if !found {
-		return elystypes.ZeroDec34()
-	}
 	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
 	if tokenPrice.IsZero() {
+		asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
+		if !found {
+			return elystypes.ZeroDec34()
+		}
 		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	}
 	return tokenPrice.MulInt(amount)
