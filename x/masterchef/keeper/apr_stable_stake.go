@@ -34,7 +34,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 		}
 
-		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, stabletypes.PoolId)
 		if stableTvl.IsZero() {
 			return sdkmath.LegacyZeroDec(), nil
 		}

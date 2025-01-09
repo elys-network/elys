@@ -117,7 +117,8 @@ type AssetProfileKeeper interface {
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stabletypes.Params)
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)
-	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, baseCurrency string) math.LegacyDec
+	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, poolId uint64) math.LegacyDec
+	AllTVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper) math.LegacyDec
 }
 
 // TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)

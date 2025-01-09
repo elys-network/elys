@@ -30,12 +30,9 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 }
 
 func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
-	if poolId == stabletypes.PoolId {
-		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-		if !found {
-			return math.LegacyZeroDec()
-		}
-		return k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+	// if it is greater than this then use stablestake tvl
+	if poolId >= stabletypes.PoolId/2 {
+		return k.stableKeeper.TVL(ctx, k.oracleKeeper, poolId)
 	}
 	ammPool, found := k.amm.GetPool(ctx, poolId)
 	if found {
