@@ -288,3 +288,49 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poo
 	}
 	return nil
 }
+
+func (k Keeper) MoveAllInterest(ctx sdk.Context) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
+	iterator := storetypes.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		interest := types.LegacyInterestBlock{}
+		k.cdc.MustUnmarshal(iterator.Value(), &interest)
+
+		newInterest := types.InterestBlock{
+			BlockHeight:  interest.BlockHeight,
+			InterestRate: interest.InterestRate,
+			BlockTime:    interest.BlockTime,
+			PoolId:       types.PoolId,
+		}
+
+		store.Delete(iterator.Key())
+		k.SetInterestForPool(ctx, types.PoolId, interest.BlockHeight, newInterest)
+	}
+}
+
+func (k Keeper) MoveAllDebt(ctx sdk.Context) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.DebtPrefixKey)
+	iterator := storetypes.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		debt := types.LegacyDebt{}
+		k.cdc.MustUnmarshal(iterator.Value(), &debt)
+
+		newDebt := types.Debt{
+			Address:               debt.Address,
+			Borrowed:              debt.Borrowed,
+			InterestPaid:          debt.InterestPaid,
+			InterestStacked:       debt.InterestStacked,
+			BorrowTime:            debt.BorrowTime,
+			LastInterestCalcTime:  debt.LastInterestCalcTime,
+			LastInterestCalcBlock: debt.LastInterestCalcBlock,
+			PoolId:                types.PoolId,
+		}
+
+		store.Delete(iterator.Key())
+		k.SetDebt(ctx, newDebt)
+	}
+}

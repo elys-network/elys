@@ -31,7 +31,3 @@ func GetPoolKey(poolId uint64) []byte {
 func GetInterestKey(poolId uint64) []byte {
 	return append(InterestPrefixKey, sdk.Uint64ToBigEndian(poolId)...)
 }
-
-func GetDebtPrefixKey(poolId uint64) []byte {
-	return append(DebtPrefixKey, sdk.Uint64ToBigEndian(poolId)...)
-}

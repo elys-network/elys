@@ -37,4 +37,5 @@ message LegacyInterestBlock {
     (gogoproto.nullable) = false
   ];
   int64 block_time = 2;
+  uint64 block_height = 3;
 }
