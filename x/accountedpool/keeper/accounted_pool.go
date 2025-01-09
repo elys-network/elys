@@ -50,7 +50,7 @@ func (k Keeper) GetAllAccountedPool(ctx sdk.Context) (list []types.AccountedPool
 	return
 }
 
-// GetAllAccountedPool returns all accountedPool
+// GetAllLegacyAccountedPool returns all legacyAccountedPool
 func (k Keeper) GetAllLegacyAccountedPool(ctx sdk.Context) (list []types.LegacyAccountedPool) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.AccountedPoolKeyPrefix))
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
