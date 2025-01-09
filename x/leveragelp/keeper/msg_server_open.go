@@ -35,17 +35,20 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
-	params := k.stableKeeper.GetParams(ctx)
 	moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
 
-	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
+	borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, msg.CollateralAsset)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolNotCreatedForBorrow, fmt.Sprintf("Asset: %s", msg.CollateralAsset))
+	}
 
+	depositDenom := borrowPool.GetDepositDenom()
 	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := params.TotalValue.Sub(balance.Amount)
+	borrowed := borrowPool.TotalValue.Sub(balance.Amount)
 	borrowRatio := sdkmath.LegacyZeroDec()
-	if params.TotalValue.GT(sdkmath.ZeroInt()) {
+	if borrowPool.TotalValue.GT(sdkmath.ZeroInt()) {
 		borrowRatio = borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
-			Quo(params.TotalValue.ToLegacyDec())
+			Quo(borrowPool.TotalValue.ToLegacyDec())
 	}
 
 	var poolLeveragelpRatio sdkmath.LegacyDec
@@ -59,7 +62,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 	poolLeveragelpRatio = pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
-	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) || borrowRatio.GTE(params.MaxLeverageRatio) {
+	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) || borrowRatio.GTE(borrowPool.MaxLeverageRatio) {
 		return nil, errorsmod.Wrap(types.ErrMaxLeverageLpExists, "no new position can be open")
 	}
 
@@ -82,7 +85,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	position, err := k.OpenLong(ctx, msg)
+	position, err := k.OpenLong(ctx, msg, borrowPool.PoolId)
 	if err != nil {
 		return nil, err
 	}

@@ -38,6 +38,7 @@ message Position {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  uint64 borrow_pool_id = 9;
 }
 
 message LegacyPosition {

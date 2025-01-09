@@ -43,7 +43,7 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store.Set(types.GetPoolKey(pool.PoolId), b)
 }
 
-func (k Keeper) GetPoolIdByDenom(ctx sdk.Context, denom string) (uint64, bool) {
+func (k Keeper) GetPoolByDenom(ctx sdk.Context, denom string) (types.Pool, bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	iterator := storetypes.KVStorePrefixIterator(store, types.DebtPrefixKey)
@@ -54,10 +54,10 @@ func (k Keeper) GetPoolIdByDenom(ctx sdk.Context, denom string) (uint64, bool) {
 		k.cdc.MustUnmarshal(iterator.Value(), &pool)
 
 		if pool.DepositDenom == denom {
-			return pool.PoolId, true
+			return pool, true
 		}
 	}
-	return 0, false
+	return types.Pool{}, false
 }
 
 func (k Keeper) GetRedemptionRateForPool(ctx sdk.Context, pool types.Pool) math.LegacyDec {

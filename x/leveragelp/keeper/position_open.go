@@ -1,9 +1,10 @@
 package keeper
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"strconv"
+
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,7 +13,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, error) {
+func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen, borrowPool uint64) (*types.Position, error) {
 	// Initialize a new Leveragelp Trading Position (Position).
 	if msg.Leverage.LTE(sdkmath.LegacyOneDec()) {
 		return nil, types.ErrLeverageTooSmall
@@ -103,7 +104,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	// borrow leveragedAmount - collateralAmount
 	borrowCoin := sdk.NewCoin(msg.CollateralAsset, leveragedAmount.Sub(msg.CollateralAmount))
 	if borrowCoin.Amount.IsPositive() {
-		err = k.stableKeeper.Borrow(ctx, position.GetPositionAddress(), borrowCoin)
+		err = k.stableKeeper.Borrow(ctx, position.GetPositionAddress(), borrowCoin, position.BorrowPoolId)
 		if err != nil {
 			return nil, err
 		}

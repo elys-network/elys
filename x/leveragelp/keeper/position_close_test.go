@@ -95,7 +95,7 @@ func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position
 		CollateralAmount: math.NewInt(amount).QuoRaw(1000),
 		AmmPoolId:        1,
 		Leverage:         leverage,
-	})
+	}, 1)
 	suite.Require().NoError(err)
 	return position, leverage, pool
 }
@@ -189,7 +189,7 @@ func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, position.GetPositionAddress())
+	suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, position.GetPositionAddress(), position.BorrowPoolId)
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
@@ -208,7 +208,7 @@ func (suite *KeeperTestSuite) TestPositionHealth() {
 	suite.Require().Equal("1.250000000000000000", health.String())
 
 	//setting position debt/liablities to zero
-	debt := suite.app.StablestakeKeeper.GetDebt(suite.ctx, position.GetPositionAddress())
+	debt := suite.app.StablestakeKeeper.GetDebt(suite.ctx, position.GetPositionAddress(), position.BorrowPoolId)
 	debt.Borrowed = math.ZeroInt()
 	debt.InterestStacked = math.ZeroInt()
 	debt.InterestPaid = math.ZeroInt()

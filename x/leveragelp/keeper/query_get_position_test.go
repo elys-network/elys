@@ -93,7 +93,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 		AmmPoolId:        1,
 		Leverage:         sdkmath.LegacyNewDec(5),
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
-	})
+	}, 1)
 
 	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id})
 	updated_leverage := sdkmath.LegacyNewDec(5)

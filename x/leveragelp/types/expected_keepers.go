@@ -62,8 +62,8 @@ type StableStakeKeeper interface {
 	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error
 	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error
 	TVL(ctx sdk.Context, oracleKeeper stablestaketypes.OracleKeeper, baseCurrency string) sdkmath.LegacyDec
-	GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec, poolId uint64) sdkmath.Int
-	GetPoolIdByDenom(ctx sdk.Context, denom string) (uint64, bool)
+	GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec, poolId uint64) sdkmath.Int
+	GetPoolByDenom(ctx sdk.Context, denom string) (stablestaketypes.Pool, bool)
 }
 
 type CommitmentKeeper interface {
