@@ -32,7 +32,9 @@ message QueryParamsResponse {
 }
 
 // QueryBorrowRatioRequest is request type for the Query/BorrowRatio RPC method.
-message QueryBorrowRatioRequest {}
+message QueryBorrowRatioRequest {
+  uint64 pool_id = 1;
+}
 
 // QueryBorrowRatioResponse is response type for the Query/BorrowRatio RPC
 // method.

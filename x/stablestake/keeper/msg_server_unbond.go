@@ -9,12 +9,12 @@ import (
 
 func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.MsgUnbondResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	pool := k.GetPool(ctx, msg.PoolId)
 
-	params := k.GetParams(ctx)
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	redemptionRate := k.GetRedemptionRate(ctx)
+	redemptionRate := k.GetRedemptionRateForPool(ctx, pool)
 
-	shareDenom := types.GetShareDenom()
+	shareDenom := types.GetShareDenomForPool(pool.PoolId)
 
 	// Withdraw committed LP tokens
 	err := k.commitmentKeeper.UncommitTokens(ctx, creator, shareDenom, msg.Amount, false)
@@ -36,21 +36,21 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 
 	redemptionAmount := shareCoin.Amount.ToLegacyDec().Mul(redemptionRate).RoundInt()
 
-	amountAfterRedemption := params.TotalValue.Sub(redemptionAmount)
-	maxAllowed := (params.TotalValue.ToLegacyDec().Mul(params.MaxLeverageRatio)).TruncateInt()
+	amountAfterRedemption := pool.TotalValue.Sub(redemptionAmount)
+	maxAllowed := (pool.TotalValue.ToLegacyDec().Mul(pool.MaxLeverageRatio)).TruncateInt()
 	if amountAfterRedemption.LT(maxAllowed) {
 		return nil, types.ErrInvalidWithdraw
 	}
 
-	depositDenom := k.GetDepositDenom(ctx)
+	depositDenom := pool.GetDepositDenom()
 	redemptionCoin := sdk.NewCoin(depositDenom, redemptionAmount)
 	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, sdk.Coins{redemptionCoin})
 	if err != nil {
 		return nil, err
 	}
 
-	params.TotalValue = params.TotalValue.Sub(redemptionAmount)
-	k.SetParams(ctx, params)
+	pool.TotalValue = pool.TotalValue.Sub(redemptionAmount)
+	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {
 		err = k.hooks.AfterUnbond(ctx, creator, msg.Amount)

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,20 +18,21 @@ func (k Keeper) BorrowRatio(goCtx context.Context, req *types.QueryBorrowRatioRe
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	params := k.GetParams(ctx)
+	pool := k.GetPool(ctx, req.PoolId)
+
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 
-	depositDenom := k.GetDepositDenom(ctx)
+	depositDenom := pool.GetDepositDenom()
 
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := params.TotalValue.Sub(balance.Amount)
+	borrowed := pool.TotalValue.Sub(balance.Amount)
 	borrowRatio := sdkmath.LegacyZeroDec()
-	if params.TotalValue.GT(sdkmath.ZeroInt()) {
-		borrowRatio = borrowed.ToLegacyDec().Quo(params.TotalValue.ToLegacyDec())
+	if pool.TotalValue.GT(sdkmath.ZeroInt()) {
+		borrowRatio = borrowed.ToLegacyDec().Quo(pool.TotalValue.ToLegacyDec())
 	}
 
 	return &types.QueryBorrowRatioResponse{
-		TotalDeposit: params.TotalValue,
+		TotalDeposit: pool.TotalValue,
 		TotalBorrow:  borrowed,
 		BorrowRatio:  borrowRatio,
 	}, nil

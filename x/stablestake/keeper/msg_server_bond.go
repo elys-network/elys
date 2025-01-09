@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,19 +14,19 @@ import (
 
 func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBondResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	pool := k.GetPool(ctx, msg.PoolId)
 
-	params := k.GetParams(ctx)
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	redemptionRate := k.GetRedemptionRate(ctx)
+	redemptionRate := k.GetRedemptionRateForPool(ctx, pool)
 
-	depositDenom := k.GetDepositDenom(ctx)
+	depositDenom := pool.GetDepositDenom()
 	depositCoin := sdk.NewCoin(depositDenom, msg.Amount)
 	err := k.bk.SendCoinsFromAccountToModule(ctx, creator, types.ModuleName, sdk.Coins{depositCoin})
 	if err != nil {
 		return nil, err
 	}
 
-	shareDenom := types.GetShareDenom()
+	shareDenom := types.GetShareDenomForPool(pool.PoolId)
 	// Initial case
 	if redemptionRate.IsZero() {
 		redemptionRate = sdkmath.LegacyOneDec()
@@ -77,8 +78,8 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 		return nil, err
 	}
 
-	params.TotalValue = params.TotalValue.Add(msg.Amount)
-	k.SetParams(ctx, params)
+	pool.TotalValue = pool.TotalValue.Add(msg.Amount)
+	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {
 		err = k.hooks.AfterBond(ctx, creator, shareAmount)
