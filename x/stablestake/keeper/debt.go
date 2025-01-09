@@ -193,9 +193,12 @@ func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime
 			return newInterest
 		}
 	}
-	params := k.GetParams(ctx)
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return sdkmath.ZeroInt()
+	}
 	newInterest := borrowed.
-		Mul(params.InterestRate).
+		Mul(pool.InterestRate).
 		Mul(sdkmath.LegacyNewDec(ctx.BlockTime().Unix() - int64(startTime))).
 		Quo(sdkmath.LegacyNewDec(86400 * 365)).
 		RoundInt()
@@ -203,7 +206,10 @@ func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime
 }
 
 func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt) types.Debt {
-	params := k.GetParams(ctx)
+	pool, found := k.GetPool(ctx, debt.PoolId)
+	if !found {
+		return debt
+	}
 	newInterest := k.GetInterestForPool(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec(), debt.PoolId)
 
 	debt.InterestStacked = debt.InterestStacked.Add(newInterest)
@@ -211,8 +217,8 @@ func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt) types.De
 	debt.LastInterestCalcBlock = uint64(ctx.BlockHeight())
 	k.SetDebt(ctx, debt)
 
-	params.TotalValue = params.TotalValue.Add(newInterest)
-	k.SetParams(ctx, params)
+	pool.TotalValue = pool.TotalValue.Add(newInterest)
+	k.SetPool(ctx, pool)
 	return debt
 }
 
@@ -228,11 +234,10 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, po
 
 	// For security reasons, we should avoid borrowing more than 90% in total to the stablestake pool.
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
-	params := k.GetParams(ctx)
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 
-	borrowed := params.TotalValue.Sub(balance.Amount).ToLegacyDec().Add(amount.Amount.ToLegacyDec())
-	maxAllowed := params.TotalValue.ToLegacyDec().Mul(params.MaxLeverageRatio)
+	borrowed := pool.TotalValue.Sub(balance.Amount).ToLegacyDec().Add(amount.Amount.ToLegacyDec())
+	maxAllowed := pool.TotalValue.ToLegacyDec().Mul(pool.MaxLeverageRatio)
 	if borrowed.GT(maxAllowed) {
 		return types.ErrMaxBorrowAmount
 	}

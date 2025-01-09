@@ -69,10 +69,10 @@ func (suite *KeeperTestSuite) TestDebt() {
 			)
 			suite.Require().NoError(err)
 
-			params := suite.app.StablestakeKeeper.GetParams(suite.ctx)
-			params.TotalValue = math.NewInt(10)
-			params.InterestRate = math.LegacyNewDec(10)
-			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
+			pool, _ := suite.app.StablestakeKeeper.GetPool(suite.ctx, 1)
+			pool.TotalValue = math.NewInt(10)
+			pool.InterestRate = math.LegacyNewDec(10)
+			suite.app.StablestakeKeeper.SetPool(suite.ctx, pool)
 
 			err = suite.app.StablestakeKeeper.Borrow(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)), 1)
 			suite.Require().NoError(err)
