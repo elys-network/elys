@@ -48,6 +48,7 @@ import (
 
 	"github.com/elys-network/elys/app"
 	appparams "github.com/elys-network/elys/app/params"
+	"github.com/ojo-network/ojo/pricefeeder"
 )
 
 var tempDir = func() string {
@@ -206,6 +207,11 @@ func initRootCmd(rootCmd *cobra.Command,
 		txCommand(basicManager),
 		keys.Commands(),
 	)
+
+	// add price feeder flags
+	rootCmd.PersistentFlags().String(pricefeeder.FlagConfigPath, "", "Path to price feeder config file")
+	rootCmd.PersistentFlags().String(pricefeeder.FlagLogLevel, "", "Log level of price feeder process")
+	rootCmd.PersistentFlags().Bool(pricefeeder.FlagEnablePriceFeeder, false, "Enable the price feeder")
 }
 
 func addModuleInitFlags(startCmd *cobra.Command) {
@@ -311,7 +317,7 @@ func (a appCreator) newApp(
 		skipUpgradeHeights[int64(h)] = true
 	}
 
-	return app.NewElysApp(
+	app := app.NewElysApp(
 		logger,
 		db,
 		traceStore,
@@ -321,6 +327,15 @@ func (a appCreator) newApp(
 		appOpts,
 		baseappOptions...,
 	)
+
+	// load app config into oracle keeper price feeder
+	appConfig, err := pricefeeder.ReadConfigFromAppOpts(appOpts)
+	if err != nil {
+		panic(err)
+	}
+	app.OracleKeeper.PriceFeeder.AppConfig = appConfig
+
+	return app
 }
 
 // appExport creates a new simapp (optionally at a given height)
@@ -374,6 +389,7 @@ func initAppConfig() (string, interface{}) {
 
 	type CustomAppConfig struct {
 		serverconfig.Config
+		PriceFeeder pricefeeder.AppConfig `mapstructure:"pricefeeder"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default
@@ -395,7 +411,11 @@ func initAppConfig() (string, interface{}) {
 	// srvCfg.BaseConfig.IAVLDisableFastNode = true // disable fastnode by default
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
+		PriceFeeder: pricefeeder.AppConfig{
+			ConfigPath: "",
+			LogLevel:   "info",
+		},
 	}
-	customAppTemplate := serverconfig.DefaultConfigTemplate
+	customAppTemplate := serverconfig.DefaultConfigTemplate + pricefeeder.DefaultConfigTemplate
 	return customAppTemplate, customAppConfig
 }
