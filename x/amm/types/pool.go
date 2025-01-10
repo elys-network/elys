@@ -302,7 +302,7 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 	totalWeight := sdkmath.ZeroInt()
 	oracleAssetsWeight := sdkmath.ZeroInt()
 	for _, asset := range p.PoolAssets {
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
+		tokenPrice, decimals := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
 		totalWeight = totalWeight.Add(asset.Weight)
 		if tokenPrice.IsZero() {
 			if p.PoolParams.UseOracle {
@@ -316,7 +316,7 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 					amount = accountedPoolAmt
 				}
 			}
-			v := elystypes.NewDec34FromInt(amount).Mul(tokenPrice)
+			v := tokenPrice.MulInt(amount).QuoInt(OneTokenUnit(decimals))
 			oracleAssetsTVL = oracleAssetsTVL.Add(v)
 			oracleAssetsWeight = oracleAssetsWeight.Add(asset.Weight)
 		}
@@ -326,7 +326,7 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 		return elystypes.ZeroDec34(), nil
 	}
 
-	return oracleAssetsTVL.Mul(elystypes.NewDec34FromInt(totalWeight)).Quo(elystypes.NewDec34FromInt(oracleAssetsWeight)), nil
+	return oracleAssetsTVL.MulInt(totalWeight).QuoInt(oracleAssetsWeight), nil
 }
 
 func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (elystypes.Dec34, error) {

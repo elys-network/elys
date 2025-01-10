@@ -104,10 +104,10 @@ func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]elystypes
 
 	for _, externalIncentive := range externalIncentives {
 		if externalIncentive.FromBlock < curBlockHeight && curBlockHeight <= externalIncentive.ToBlock {
-			totalAmount := elystypes.NewDec34FromInt(externalIncentive.AmountPerBlock).MulInt64(totalBlocksPerYear)
-			price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, externalIncentive.RewardDenom)
+			totalAmount := externalIncentive.AmountPerBlock.MulRaw(totalBlocksPerYear)
+			price, decimals := k.oracleKeeper.GetAssetPriceFromDenom(ctx, externalIncentive.RewardDenom)
 
-			rewardsPerPool[externalIncentive.PoolId] = rewardsPerPool[externalIncentive.PoolId].Add(totalAmount.Mul(price))
+			rewardsPerPool[externalIncentive.PoolId] = rewardsPerPool[externalIncentive.PoolId].Add(price.MulInt(totalAmount).QuoInt(ammtypes.OneTokenUnit(decimals)))
 		}
 	}
 

@@ -4,6 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	elystypes "github.com/elys-network/elys/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -87,7 +88,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (ely
 
 			// Calc Eden price in usdc
 			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
-			edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+			edenDenomPrice, decimals := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 			if edenDenomPrice.IsZero() {
 				return elystypes.ZeroDec34(), nil
 			}
@@ -108,10 +109,10 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (ely
 			if !found {
 				return elystypes.ZeroDec34(), assetprofiletypes.ErrAssetProfileNotFound
 			}
-			yearlyDexRewardAmount := elystypes.NewDec34FromLegacyDec(usdcAmount).MulInt64(365).Quo(Pow10(entry.Decimals))
+			yearlyDexRewardAmount := elystypes.NewDec34FromLegacyDec(usdcAmount).MulInt64(365).QuoInt(ammtypes.OneTokenUnit(entry.Decimals))
 
 			apr := yearlyDexRewardAmount.
-				Quo(edenDenomPrice).
+				Quo(edenDenomPrice.QuoInt(ammtypes.OneTokenUnit(decimals))).
 				QuoInt(totalStakedSnapshot)
 
 			return apr, nil
@@ -151,18 +152,10 @@ func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (el
 	rewardCoins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, dailyEdenRewardsTotal.ToInt()))
 	rewardCoins = rewardCoins.Add(sdk.NewCoin(baseCurrency, dailyDexRewardsTotal.Add(dailyGasRewardsTotal).ToInt()))
 
-	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+	usdcDenomPrice, usdcDecimals := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	edenDenomPrice, edenDecimals := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
-	totalRewardsUsd := usdcDenomPrice.Mul(dailyDexRewardsTotal.Add(dailyGasRewardsTotal)).
-		Add(edenDenomPrice.Mul(dailyEdenRewardsTotal))
+	totalRewardsUsd := (usdcDenomPrice.Mul(dailyDexRewardsTotal.Add(dailyGasRewardsTotal)).QuoInt(ammtypes.OneTokenUnit(usdcDecimals))).
+		Add(edenDenomPrice.Mul(dailyEdenRewardsTotal).QuoInt(ammtypes.OneTokenUnit(edenDecimals)))
 	return totalRewardsUsd, rewardCoins
-}
-
-func Pow10(decimal uint64) (value elystypes.Dec34) {
-	value = elystypes.OneDec34()
-	for i := 0; i < int(decimal); i++ {
-		value = value.MulInt64(10)
-	}
-	return
 }

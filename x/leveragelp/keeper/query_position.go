@@ -4,7 +4,6 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	elystypes "github.com/elys-network/elys/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"google.golang.org/grpc/codes"
@@ -63,8 +62,8 @@ func (k Keeper) LiquidationPrice(goCtx context.Context, req *types.QueryLiquidat
 	// lpTokenPrice = totalDebt * params.SafetyFactor / lpTokenAmount
 	totalDebt := debt.GetTotalLiablities()
 	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-	liquidationPrice := elystypes.NewDec34FromLegacyDec(params.SafetyFactor).MulInt(totalDebt).Mul(usdcDenomPrice).MulInt(ammtypes.OneShare).QuoInt(position.LeveragedLpAmount)
+	usdcDenomPrice, decimals := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	liquidationPrice := usdcDenomPrice.MulLegacyDec(params.SafetyFactor).MulInt(totalDebt).MulInt(ammtypes.OneShare).QuoInt(ammtypes.OneTokenUnit(decimals)).QuoInt(position.LeveragedLpAmount)
 
 	return &types.QueryLiquidationPriceResponse{
 		Price: liquidationPrice.String(),

@@ -38,7 +38,7 @@ type BankKeeper interface {
 type OracleKeeper interface {
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) elystypes.Dec34
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) (elystypes.Dec34, uint64)
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
 
@@ -79,7 +79,7 @@ type AmmKeeper interface {
 		overrideSwapFee math.LegacyDec,
 	) (elystypes.Dec34, elystypes.Dec34, sdk.Coin, math.LegacyDec, math.LegacyDec, sdk.Coin, elystypes.Dec34, elystypes.Dec34, error)
 	Balance(goCtx context.Context, req *ammtypes.QueryBalanceRequest) (*ammtypes.QueryBalanceResponse, error)
-	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) elystypes.Dec34
+	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) (elystypes.Dec34, uint64)
 	CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) elystypes.Dec34
 	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) elystypes.Dec34
 }

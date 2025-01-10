@@ -82,7 +82,7 @@ func (_c *OracleKeeper_GetAssetPrice_Call) RunAndReturn(run func(types.Context, 
 }
 
 // GetAssetPriceFromDenom provides a mock function with given fields: ctx, denom
-func (_m *OracleKeeper) GetAssetPriceFromDenom(ctx types.Context, denom string) elystypes.Dec34 {
+func (_m *OracleKeeper) GetAssetPriceFromDenom(ctx types.Context, denom string) (elystypes.Dec34, uint64) {
 	ret := _m.Called(ctx, denom)
 
 	if len(ret) == 0 {
@@ -90,13 +90,23 @@ func (_m *OracleKeeper) GetAssetPriceFromDenom(ctx types.Context, denom string) 
 	}
 
 	var r0 elystypes.Dec34
+	var r1 uint64
+	if rf, ok := ret.Get(0).(func(types.Context, string) (elystypes.Dec34, uint64)); ok {
+		return rf(ctx, denom)
+	}
 	if rf, ok := ret.Get(0).(func(types.Context, string) elystypes.Dec34); ok {
 		r0 = rf(ctx, denom)
 	} else {
 		r0 = ret.Get(0).(elystypes.Dec34)
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(types.Context, string) uint64); ok {
+		r1 = rf(ctx, denom)
+	} else {
+		r1 = ret.Get(1).(uint64)
+	}
+
+	return r0, r1
 }
 
 // OracleKeeper_GetAssetPriceFromDenom_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAssetPriceFromDenom'
@@ -118,12 +128,12 @@ func (_c *OracleKeeper_GetAssetPriceFromDenom_Call) Run(run func(ctx types.Conte
 	return _c
 }
 
-func (_c *OracleKeeper_GetAssetPriceFromDenom_Call) Return(_a0 elystypes.Dec34) *OracleKeeper_GetAssetPriceFromDenom_Call {
-	_c.Call.Return(_a0)
+func (_c *OracleKeeper_GetAssetPriceFromDenom_Call) Return(_a0 elystypes.Dec34, _a1 uint64) *OracleKeeper_GetAssetPriceFromDenom_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *OracleKeeper_GetAssetPriceFromDenom_Call) RunAndReturn(run func(types.Context, string) elystypes.Dec34) *OracleKeeper_GetAssetPriceFromDenom_Call {
+func (_c *OracleKeeper_GetAssetPriceFromDenom_Call) RunAndReturn(run func(types.Context, string) (elystypes.Dec34, uint64)) *OracleKeeper_GetAssetPriceFromDenom_Call {
 	_c.Call.Return(run)
 	return _c
 }

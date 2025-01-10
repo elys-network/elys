@@ -5,6 +5,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	elystypes "github.com/elys-network/elys/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -45,7 +46,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 
 		edenAmount := lpIncentive.EdenAmountPerYear.Quo(sdkmath.NewInt(totalBlocksPerYear))
 
-		edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+		edenDenomPrice, decimals := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
 		// Get pool info from incentive param
 		poolInfo, found := k.GetPoolInfo(ctx, uint64(stabletypes.PoolId))
@@ -66,13 +67,14 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		poolMaxEdenAmount := proxyTVL.
 			MulLegacyDec(params.MaxEdenRewardAprLps).
 			QuoInt64(totalBlocksPerYear).
-			Quo(edenDenomPrice)
+			Quo(edenDenomPrice.QuoInt(ammtypes.OneTokenUnit(decimals)))
 		stableStakeEdenAmount = elystypes.MinDec34(stableStakeEdenAmount, poolMaxEdenAmount)
 
 		// Eden Apr for usdc earn program
 		apr := stableStakeEdenAmount.
 			MulInt64(totalBlocksPerYear).
 			Mul(edenDenomPrice).
+			QuoInt(ammtypes.OneTokenUnit(decimals)).
 			Quo(stableTvl)
 		return apr, nil
 	} else if query.Denom == ptypes.BaseCurrency {

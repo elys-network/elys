@@ -64,19 +64,20 @@ func (k Keeper) RemovePrice(ctx sdk.Context, asset, source string, timestamp uin
 }
 
 // GetAllPrice returns all price
-func (k Keeper) GetAllPrice(ctx sdk.Context) (list []types.Price) {
+func (k Keeper) GetAllPrice(ctx sdk.Context) []types.Price {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PriceKeyPrefix))
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
+	list := []types.Price{}
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Price
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
 
-	return
+	return list
 }
 
 // MigrateAllLegacyPrices migrates all legacy prices
@@ -98,8 +99,6 @@ func (k Keeper) MigrateAllLegacyPrices(ctx sdk.Context) {
 			BlockHeight: uint64(ctx.BlockHeight()),
 		})
 	}
-
-	return
 }
 
 func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (types.Price, bool) {
@@ -119,15 +118,15 @@ func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (types.Price, bool)
 	return k.GetLatestPriceFromAnySource(ctx, asset)
 }
 
-func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) elystypes.Dec34 {
+func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) (elystypes.Dec34, uint64) {
 	info, found := k.GetAssetInfo(ctx, denom)
 	if !found {
-		return elystypes.ZeroDec34()
+		return elystypes.ZeroDec34(), 0
 	}
 	price, found := k.GetAssetPrice(ctx, info.Display)
 	if !found {
-		return elystypes.ZeroDec34()
+		return elystypes.ZeroDec34(), 0
 	}
 
-	return elystypes.NewDec34FromLegacyDec(price.Price).Quo(types.Pow10(info.Decimal))
+	return elystypes.NewDec34FromLegacyDec(price.Price), info.Decimal
 }

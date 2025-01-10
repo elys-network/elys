@@ -47,35 +47,37 @@ func (k Keeper) RemovePool(ctx sdk.Context, poolId uint64) {
 }
 
 // GetAllPool returns all pool
-func (k Keeper) GetAllPool(ctx sdk.Context) (list []types.Pool) {
+func (k Keeper) GetAllPool(ctx sdk.Context) []types.Pool {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
+	list := []types.Pool{}
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Pool
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
 
-	return
+	return list
 }
 
 // GetAllLegacyPool returns all legacy pool
-func (k Keeper) GetAllLegacyPool(ctx sdk.Context) (list []types.LegacyPool) {
+func (k Keeper) GetAllLegacyPool(ctx sdk.Context) []types.LegacyPool {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
+	list := []types.LegacyPool{}
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.LegacyPool
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
 
-	return
+	return list
 }
 
 // GetLatestPool retrieves the latest pool item from the list of pools

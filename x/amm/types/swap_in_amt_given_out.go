@@ -27,17 +27,19 @@ func (p Pool) CalcGivenOutSlippage(
 	}
 
 	// ensure token prices for in/out tokens set properly
-	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
+	inTokenPrice, inTokenDecimals := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
 	if inTokenPrice.IsZero() {
 		return elystypes.ZeroDec34(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
-	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOut.Denom)
+	outTokenPrice, outTokenDecimals := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOut.Denom)
 	if outTokenPrice.IsZero() {
 		return elystypes.ZeroDec34(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
 
 	// in amount is calculated in this formula
-	oracleInAmount := elystypes.NewDec34FromInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
+	oracleInAmount := elystypes.NewDec34FromInt(tokenOut.Amount).
+		Mul(outTokenPrice.QuoInt(OneTokenUnit(outTokenDecimals))).
+		Quo(inTokenPrice.QuoInt(OneTokenUnit(inTokenDecimals)))
 	balancerIn := elystypes.NewDec34FromInt(balancerInCoin.Amount)
 	balancerSlippage := balancerIn.Sub(oracleInAmount)
 	if balancerSlippage.IsNegative() {
@@ -72,11 +74,11 @@ func (p *Pool) SwapInAmtGivenOut(
 	}
 
 	// ensure token prices for in/out tokens set properly
-	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
+	inTokenPrice, inTokenDecimals := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
 	if inTokenPrice.IsZero() {
 		return sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
-	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOut.Denom)
+	outTokenPrice, outTokenDecimals := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOut.Denom)
 	if outTokenPrice.IsZero() {
 		return sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
@@ -88,7 +90,9 @@ func (p *Pool) SwapInAmtGivenOut(
 	// balancer slippage amount = Max(oracleOutAmount-balancerOutAmount, 0)
 	// resizedAmount = tokenIn / externalLiquidityRatio
 	// actualSlippageAmount = balancer slippage(resizedAmount)
-	oracleInAmount = elystypes.NewDec34FromInt(tokenOut.Amount).Mul(outTokenPrice).Quo(inTokenPrice)
+	oracleInAmount = elystypes.NewDec34FromInt(tokenOut.Amount).
+		Mul(outTokenPrice.QuoInt(OneTokenUnit(outTokenDecimals))).
+		Quo(inTokenPrice.QuoInt(OneTokenUnit(inTokenDecimals)))
 
 	externalLiquidityRatio, err := p.GetAssetExternalLiquidityRatio(tokenOut.Denom)
 	if err != nil {
@@ -139,6 +143,9 @@ func (p *Pool) SwapInAmtGivenOut(
 		sdk.NewCoins(),
 		sdk.NewCoins(), accountedAssets,
 	)
+	if err != nil {
+		return sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdkmath.LegacyZeroDec(), err
+	}
 	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenInDenom)
 	initialWeightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenOut.Denom)
 	weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)

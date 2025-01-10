@@ -37,7 +37,7 @@ func (suite *TestSuite) TestPoolTVL() {
 				},
 			},
 			useOracle: true,
-			expTVL:    elystypes.NewDec34FromString("2000.000000000000000000"),
+			expTVL:    elystypes.NewDec34FromInt64(2000),
 			expError:  false,
 		},
 		{
@@ -85,7 +85,7 @@ func (suite *TestSuite) TestPoolTVL() {
 				},
 			},
 			useOracle: false,
-			expTVL:    elystypes.NewDec34FromString("2000.000000000000000000"),
+			expTVL:    elystypes.NewDec34FromInt64(2000),
 			expError:  false,
 		},
 	} {

@@ -6,6 +6,7 @@ import (
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -43,10 +44,10 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrencyEntry.Denom)
 	totalTVL = totalTVL.Add(stableStakeTVL.ToInt())
 
-	elysPrice := k.amm.GetTokenPrice(ctx, ptypes.Elys, baseCurrencyEntry.Denom)
+	elysPrice, decimals := k.amm.GetTokenPrice(ctx, ptypes.Elys, baseCurrencyEntry.Denom)
 
 	stakedElys := k.bankKeeper.GetBalance(ctx, authtypes.NewModuleAddress(stakingtypes.BondedPoolName), ptypes.Elys).Amount
-	stakedElysValue := elysPrice.MulInt(stakedElys)
+	stakedElysValue := elysPrice.MulInt(stakedElys).QuoInt(ammtypes.OneTokenUnit(decimals))
 	totalTVL = totalTVL.Add(stakedElysValue.ToInt())
 
 	commitmentParams := k.commitmentKeeper.GetParams(ctx)

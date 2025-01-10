@@ -44,8 +44,8 @@ func TestGetTokenARate(t *testing.T) {
 		{
 			"oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(10))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(5))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(10), uint64(0))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(5), uint64(0))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
@@ -58,7 +58,7 @@ func TestGetTokenARate(t *testing.T) {
 		{
 			"token price not set for tokenA",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "unknownToken").Return(elystypes.ZeroDec34())
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "unknownToken").Return(elystypes.ZeroDec34(), uint64(0))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
@@ -71,8 +71,8 @@ func TestGetTokenARate(t *testing.T) {
 		{
 			"token price not set for tokenB",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(5))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "unknownToken").Return(elystypes.ZeroDec34())
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(5), uint64(0))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "unknownToken").Return(elystypes.ZeroDec34(), uint64(0))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
@@ -85,8 +85,8 @@ func TestGetTokenARate(t *testing.T) {
 		{
 			"Success with oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(5))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(2))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(5), uint64(0))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(2), uint64(0))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
@@ -99,8 +99,8 @@ func TestGetTokenARate(t *testing.T) {
 		{
 			"Success with oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(5))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(2))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromInt64(5), uint64(0))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromInt64(2), uint64(0))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
@@ -114,8 +114,8 @@ func TestGetTokenARate(t *testing.T) {
 			"Success with oracle pricing with price less than 1",
 			func(oracleKeeper *mocks.OracleKeeper) {
 				// for 6 decimal tokens
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromString("0.0000002"))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.OneDec34())
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromString("0.0000002"), uint64(0))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.OneDec34(), uint64(0))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},

@@ -82,7 +82,12 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 				yearlyIncentiveRewardsTotal := externalIncentive.AmountPerBlock.
 					Mul(math.NewInt(totalBlocksPerYear))
 
-				apr := k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency).MulInt(yearlyIncentiveRewardsTotal).Quo(tvl)
+				tokenPrice, decimals := k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)
+
+				apr := tokenPrice.
+					MulInt(yearlyIncentiveRewardsTotal).
+					QuoInt(ammtypes.OneTokenUnit(decimals)).
+					Quo(tvl)
 				externalIncentive.Apr = apr.ToLegacyDec()
 				k.SetExternalIncentive(ctx, externalIncentive)
 				poolExternalApr, ok := externalIncentiveAprs[pool.PoolId]
@@ -195,7 +200,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	lpsEdenAmount := edenAmountPerYear.Quo(math.NewInt(totalBlocksPerYear))
 
 	// Ensure edenDenomPrice is not zero to avoid division by zero
-	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+	edenDenomPrice, decimals := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 	if edenDenomPrice.IsZero() {
 		return errorsmod.Wrap(types.ErrNoInflationaryParams, "invalid eden price")
 	}
@@ -225,7 +230,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		// Maximum eden APR - 30% by default
 		poolMaxEdenAmount := proxyTVL.MulLegacyDec(params.MaxEdenRewardAprLps).
 			QuoInt64(totalBlocksPerYear).
-			Quo(edenDenomPrice)
+			Quo(edenDenomPrice.QuoInt(ammtypes.OneTokenUnit(decimals)))
 
 		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 		if pool.EnableEdenRewards {
@@ -286,6 +291,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			pool.EdenApr = newEdenAllocatedForPool.
 				MulInt64(totalBlocksPerYear).
 				Mul(edenDenomPrice).
+				QuoInt(ammtypes.OneTokenUnit(decimals)).
 				Quo(tvl).
 				ToLegacyDec()
 		} else {
@@ -296,7 +302,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	}
 
 	// Update APR for amm pools
-	k.UpdateAmmPoolAPR(ctx, totalBlocksPerYear, totalProxyTVL.ToLegacyDec(), edenDenomPrice.ToLegacyDec())
+	k.UpdateAmmPoolAPR(ctx, totalBlocksPerYear, totalProxyTVL.ToLegacyDec())
 
 	return nil
 }
@@ -603,9 +609,9 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 }
 
 // Update APR for AMM pool
-func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL math.LegacyDec, edenDenomPrice math.LegacyDec) {
+func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL math.LegacyDec) {
 	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	usdcDenomPrice, decimals := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
 		tvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
@@ -637,12 +643,14 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 			poolInfo.DexApr = usdcDenomPrice.
 				MulLegacyDec(lastAccum.DexReward).
 				MulInt64(totalBlocksPerYear).
+				QuoInt(ammtypes.OneTokenUnit(decimals)).
 				Quo(tvl).
 				ToLegacyDec()
 
 			poolInfo.GasApr = usdcDenomPrice.
 				MulLegacyDec(lastAccum.GasReward).
 				MulInt64(totalBlocksPerYear).
+				QuoInt(ammtypes.OneTokenUnit(decimals)).
 				Quo(tvl).
 				ToLegacyDec()
 		} else {
@@ -654,6 +662,7 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 					Sub(firstAccum.DexReward).
 					MulInt64(secondsInYear).
 					QuoInt64(int64(duration))).
+				QuoInt(ammtypes.OneTokenUnit(decimals)).
 				Quo(tvl).
 				ToLegacyDec()
 			poolInfo.GasApr = usdcDenomPrice.
@@ -661,6 +670,7 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 					Sub(firstAccum.GasReward).
 					MulInt64(secondsInYear).
 					QuoInt64(int64(duration))).
+				QuoInt(ammtypes.OneTokenUnit(decimals)).
 				Quo(tvl).
 				ToLegacyDec()
 		}

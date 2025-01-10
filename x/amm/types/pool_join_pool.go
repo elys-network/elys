@@ -21,11 +21,11 @@ type InternalSwapRequest struct {
 func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins) (elystypes.Dec34, error) {
 	joinValue := elystypes.ZeroDec34()
 	for _, asset := range tokensIn {
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
+		tokenPrice, decimals := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
 		if tokenPrice.IsZero() {
 			return elystypes.ZeroDec34(), fmt.Errorf("token price not set: %s", asset.Denom)
 		}
-		v := tokenPrice.Mul(elystypes.NewDec34FromInt(asset.Amount))
+		v := tokenPrice.MulInt(asset.Amount).QuoInt(OneTokenUnit(decimals))
 		joinValue = joinValue.Add(v)
 	}
 	return joinValue, nil

@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tier/types"
 	"google.golang.org/grpc/codes"
@@ -45,8 +44,8 @@ func (k Keeper) GetAllPrices(goCtx context.Context, req *types.QueryGetAllPrices
 		if assetEntry.Denom == ptypes.Eden {
 			denom = ptypes.Elys
 		}
-		tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom).Mul(oracletypes.Pow10(assetEntry.Decimals))
-		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, denom, assetEntry.Decimals).Mul(oracletypes.Pow10(assetEntry.Decimals))
+		tokenPriceOracle, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, denom, assetEntry.Decimals)
 		prices = append(prices, &types.Price{
 			Denom:       assetEntry.Denom,
 			OraclePrice: tokenPriceOracle.String(),

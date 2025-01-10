@@ -61,7 +61,7 @@ type AssetProfileKeeper interface {
 
 type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) elystypes.Dec34
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) (elystypes.Dec34, uint64)
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }

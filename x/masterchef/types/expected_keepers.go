@@ -81,8 +81,8 @@ type AmmKeeper interface {
 	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
 
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec) (sdk.Coin, elystypes.Dec34, error)
-	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) elystypes.Dec34
-	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) elystypes.Dec34
+	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) (elystypes.Dec34, uint64)
+	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) (elystypes.Dec34, uint64)
 	InternalSwapExactAmountIn(
 		ctx sdk.Context,
 		sender sdk.AccAddress,
@@ -98,7 +98,7 @@ type AmmKeeper interface {
 // OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) elystypes.Dec34
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) (elystypes.Dec34, uint64)
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
 

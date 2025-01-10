@@ -39,7 +39,7 @@ type BankKeeper interface {
 //go:generate mockery --srcpkg . --name OracleKeeper --structname OracleKeeper --filename oracle_keeper.go --with-expecter
 type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) elystypes.Dec34
+	GetAssetPriceFromDenom(ctx sdk.Context, denom string) (elystypes.Dec34, uint64)
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
 
