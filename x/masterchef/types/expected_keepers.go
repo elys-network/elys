@@ -119,6 +119,7 @@ type StableStakeKeeper interface {
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)
 	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, poolId uint64) math.LegacyDec
 	AllTVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper) math.LegacyDec
+	IterateLiquidityPools(sdk.Context, func(stabletypes.Pool) bool)
 }
 
 // TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)

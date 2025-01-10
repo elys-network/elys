@@ -72,7 +72,7 @@ func (k Keeper) GetRedemptionRateForPool(ctx sdk.Context, pool types.Pool) math.
 
 func (k Keeper) GetLatestPool(ctx sdk.Context) (val types.Pool, found bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	iterator := storetypes.KVStorePrefixIterator(store, types.PoolPrefixKey)
+	iterator := storetypes.KVStoreReversePrefixIterator(store, types.PoolPrefixKey)
 	defer iterator.Close()
 
 	if !iterator.Valid() {
@@ -90,4 +90,22 @@ func (k Keeper) GetNextPoolId(ctx sdk.Context) uint64 {
 		return types.PoolId
 	}
 	return latestPool.PoolId - 1
+}
+
+// IterateLiquidty iterates over all LiquidityPools and performs a
+// callback.
+func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types.Pool) (stop bool)) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.PoolPrefixKey)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var pool types.Pool
+		k.cdc.MustUnmarshal(iterator.Value(), &pool)
+
+		if handlerFn(pool) {
+			break
+		}
+	}
 }
