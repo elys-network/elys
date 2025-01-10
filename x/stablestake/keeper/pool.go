@@ -69,3 +69,25 @@ func (k Keeper) GetRedemptionRateForPool(ctx sdk.Context, pool types.Pool) math.
 
 	return pool.TotalValue.ToLegacyDec().Quo(totalShares.Amount.ToLegacyDec())
 }
+
+func (k Keeper) GetLatestPool(ctx sdk.Context) (val types.Pool, found bool) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.PoolPrefixKey)
+	defer iterator.Close()
+
+	if !iterator.Valid() {
+		return val, false
+	}
+
+	k.cdc.MustUnmarshal(iterator.Value(), &val)
+	return val, true
+}
+
+// GetNextPoolId returns the next pool id.
+func (k Keeper) GetNextPoolId(ctx sdk.Context) uint64 {
+	latestPool, found := k.GetLatestPool(ctx)
+	if !found {
+		return types.PoolId
+	}
+	return latestPool.PoolId - 1
+}
