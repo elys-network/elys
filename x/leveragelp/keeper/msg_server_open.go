@@ -37,6 +37,8 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 	moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
 
+	// TODO: collateral asset should be one of the assets in the pool
+
 	borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, msg.CollateralAsset)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolNotCreatedForBorrow, fmt.Sprintf("Asset: %s", msg.CollateralAsset))

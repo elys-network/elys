@@ -17,6 +17,8 @@ func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
+	// TODO: Check if pool exists for same deposit denom
+
 	poolId := k.GetNextPoolId(ctx)
 	pool := types.Pool{
 		PoolId:               poolId,
