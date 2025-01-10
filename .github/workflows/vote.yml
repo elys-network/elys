@@ -56,8 +56,8 @@ jobs:
           echo "upgrade_version: $upgrade_version"
 
           # vote on proposal
-          ${ELYSD} tx gov vote 30 yes --from=proposer1 $OPTIONS
-          ${ELYSD} tx gov vote 30 yes --from=proposer2 $OPTIONS
-          ${ELYSD} tx gov vote 30 yes --from=proposer3 $OPTIONS
-          ${ELYSD} tx gov vote 30 yes --from=proposer4 $OPTIONS
+          ${ELYSD} tx gov vote 32 yes --from=proposer1 $OPTIONS
+          ${ELYSD} tx gov vote 32 yes --from=proposer2 $OPTIONS
+          ${ELYSD} tx gov vote 32 yes --from=proposer3 $OPTIONS
+          ${ELYSD} tx gov vote 32 yes --from=proposer4 $OPTIONS
           sleep 10
