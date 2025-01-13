@@ -33,7 +33,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 			"Pool health is low",
 			"pool (1) health too low to open new positions",
 			func() {
-				pool := types.NewPool(ammPool)
+				pool := types.NewPool(ammPool, sdkmath.LegacyMustNewDecFromStr("10.5"))
 				pool.Health = sdkmath.LegacyMustNewDecFromStr("0.5")
 				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 			},
