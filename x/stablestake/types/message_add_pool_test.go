@@ -6,6 +6,7 @@ import (
 	"cosmossdk.io/math"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -140,4 +141,35 @@ func TestMsgAddPool_ValidateBasic(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestNewMsgAddPool(t *testing.T) {
+
+	accAdress := sample.AccAddress()
+
+	got := types.NewMsgAddPool(
+		accAdress,
+		"ustake",
+		math.LegacyMustNewDecFromStr("0.03"),
+		math.LegacyMustNewDecFromStr("0.05"),
+		math.LegacyMustNewDecFromStr("0.01"),
+		math.LegacyMustNewDecFromStr("0.02"),
+		math.LegacyMustNewDecFromStr("0.01"),
+		math.LegacyMustNewDecFromStr("0.1"),
+		math.LegacyMustNewDecFromStr("0.7"),
+	)
+
+	want := &types.MsgAddPool{
+		Authority:            accAdress,
+		DepositDenom:         "ustake",
+		InterestRate:         math.LegacyMustNewDecFromStr("0.03"),
+		InterestRateMax:      math.LegacyMustNewDecFromStr("0.05"),
+		InterestRateMin:      math.LegacyMustNewDecFromStr("0.01"),
+		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.02"),
+		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     math.LegacyMustNewDecFromStr("0.1"),
+		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+	}
+
+	assert.Equal(t, want, got)
 }
