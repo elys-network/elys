@@ -199,7 +199,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: "denom does not exist in pool",
+			expectErrMsg: "asset not found in amm pool",
 			prerequisiteFunction: func() {
 				pool := types.NewPool(2, sdkmath.LegacyNewDec(60))
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
@@ -452,7 +452,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithoutBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			"token price not set",
+			"Asset: uusdc: asset not found in amm pool", // Can't join elys atom pool with usdc
 			func() {
 			},
 		},
@@ -466,7 +466,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithoutBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			"can't find the PoolAsset",
+			"Asset: uusdc: asset not found in amm pool",
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices(suite.ctx)
