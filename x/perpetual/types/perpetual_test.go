@@ -1,10 +1,11 @@
 package types_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"testing"
 
 	"github.com/elys-network/elys/x/perpetual/types"
 	"github.com/stretchr/testify/require"
@@ -23,7 +24,7 @@ func TestKeeper_GetPerpetualPoolBalances(t *testing.T) {
 			},
 		},
 	}
-	perpetualPool := types.NewPool(ammPool)
+	perpetualPool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	perpetualPool.PoolAssetsLong = []types.PoolAsset{
 		{
 			AssetDenom:            "testAsset",
