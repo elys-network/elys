@@ -152,7 +152,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 
 	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
 
-	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, &pool, ptypes.BaseCurrency)
+	err = mk.CheckAndLiquidatePosition(ctx, &mtp, perpPool, &pool, ptypes.BaseCurrency)
 	suite.Require().NoError(err)
 
 	// Set borrow interest rate to 100% to test liquidation
@@ -187,14 +187,14 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 		StopLossPrice:                 sdkmath.LegacyZeroDec(),
 	}, mtp)
 
-	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, &pool, "")
+	err = mk.CheckAndLiquidatePosition(ctx, &mtp, perpPool, &pool, "")
 	suite.Require().NoError(err)
 
 	mtps = mk.GetAllMTPs(ctx)
 	suite.Require().Equal(len(mtps), 0)
 }
 
-func TestCheckAndCloseAtTakeProfit(t *testing.T) {
+func TestCheckAndLiquidatePosition(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 	simapp.SetStakingParam(app, ctx)
@@ -328,7 +328,7 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 
 	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
 
-	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, pool, "")
+	err = mk.CheckAndLiquidatePosition(ctx, &mtp, perpPool, &pool, "")
 	require.Error(t, err)
 
 	// Set price above target price
@@ -341,7 +341,7 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 
-	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, pool, "")
+	err = mk.CheckAndLiquidatePosition(ctx, &mtp, perpPool, &pool, "")
 	require.NoError(t, err)
 
 	mtps = mk.GetAllMTPs(ctx)
@@ -501,7 +501,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	perpPool, _ := mk.GetPool(ctx, ammPool.PoolId)
 
-	err = mk.CheckAndCloseAtStopLoss(ctx, &mtp, perpPool, ammPool, "")
+	err = mk.CheckAndLiquidatePosition(ctx, &mtp, perpPool, &ammPool, "")
 	suite.Require().NoError(err)
 
 	mtps = mk.GetAllMTPs(ctx)

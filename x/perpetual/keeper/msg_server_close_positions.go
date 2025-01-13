@@ -29,7 +29,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		}
 
 		cachedCtx, write := ctx.CacheContext()
-		err = k.CheckAndLiquidateUnhealthyPosition(cachedCtx, &position, pool, &ammPool, msg.Creator)
+		err = k.CheckAndLiquidatePosition(cachedCtx, &position, pool, &ammPool, msg.Creator)
 		if err == nil {
 			write()
 		}
@@ -57,7 +57,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		}
 
 		cachedCtx, write := ctx.CacheContext()
-		err = k.CheckAndCloseAtStopLoss(cachedCtx, &position, pool, ammPool, msg.Creator)
+		err = k.CheckAndLiquidatePosition(cachedCtx, &position, pool, &ammPool, msg.Creator)
 		if err == nil {
 			write()
 		}
@@ -85,7 +85,7 @@ func (k msgServer) ClosePositions(goCtx context.Context, msg *types.MsgClosePosi
 		}
 
 		cachedCtx, write := ctx.CacheContext()
-		err = k.CheckAndCloseAtTakeProfit(cachedCtx, &position, pool, ammPool, msg.Creator)
+		err = k.CheckAndLiquidatePosition(cachedCtx, &position, pool, &ammPool, msg.Creator)
 		if err == nil {
 			write()
 		}

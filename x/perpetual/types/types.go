@@ -113,3 +113,25 @@ func (mtp MTP) GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice sdkmath.L
 	}
 	return borrowInterestPaymentInCustody, nil
 }
+
+func (mtp MTP) CheckForStopLoss(tradingAssetPrice sdkmath.LegacyDec) bool {
+	stopLossReached := false
+	if mtp.Position == Position_LONG {
+		stopLossReached = !mtp.StopLossPrice.IsNil() && tradingAssetPrice.LTE(mtp.StopLossPrice)
+	}
+	if mtp.Position == Position_SHORT {
+		stopLossReached = !mtp.StopLossPrice.IsNil() && tradingAssetPrice.GTE(mtp.StopLossPrice)
+	}
+	return stopLossReached
+}
+
+func (mtp MTP) CheckForTakeProfit(tradingAssetPrice sdkmath.LegacyDec) bool {
+	takeProfitReached := false
+	if mtp.Position == Position_LONG {
+		takeProfitReached = !mtp.TakeProfitPrice.IsNil() && tradingAssetPrice.GTE(mtp.TakeProfitPrice)
+	}
+	if mtp.Position == Position_SHORT {
+		takeProfitReached = !mtp.TakeProfitPrice.IsNil() && tradingAssetPrice.LTE(mtp.TakeProfitPrice)
+	}
+	return takeProfitReached
+}
