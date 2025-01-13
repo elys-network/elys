@@ -51,7 +51,6 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 
 func (suite *PerpetualKeeperTestSuite) TestMTPTriggerChecksAndUpdates() {
 	mtp, pool, ammPool, _ := suite.resetForMTPTriggerChecksAndUpdates()
-	//baseCurrencyEntry, _ := suite.app.AssetprofileKeeper.GetEntry(suite.ctx, ptypes.BaseCurrency)
 	// Define test cases
 	testCases := []struct {
 		name           string
