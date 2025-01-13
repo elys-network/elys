@@ -51,4 +51,7 @@ func TestInterestGet(t *testing.T) {
 	keeper.DeleteInterestForPool(ctx, ctx.BlockHeight()-1, 1)
 	all = keeper.GetAllInterestForPool(ctx, 1)
 	require.Equal(t, len(all), 10)
+
+	all = keeper.GetAllInterest(ctx)
+	require.Equal(t, len(all), 10)
 }

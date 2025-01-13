@@ -48,6 +48,9 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sender, tc.senderInitBalance)
 			suite.Require().NoError(err)
 
+			_, found := suite.app.StablestakeKeeper.GetPoolByDenom(suite.ctx, "uusdc")
+			suite.Require().True(found)
+
 			msgServer := keeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 			_, err = msgServer.Bond(
 				suite.ctx,

@@ -25,6 +25,13 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 			redemptionRate: sdkmath.LegacyZeroDec(),
 			expectedError:  nil,
 		},
+		{
+			name:           "begin blocker call with more height",
+			interestRate:   sdkmath.LegacyMustNewDecFromStr("0.17"),
+			redemptionRate: sdkmath.LegacyZeroDec(),
+			expectedError:  nil,
+			blockHeight:    25768000,
+		},
 	}
 
 	for _, tt := range tests {
