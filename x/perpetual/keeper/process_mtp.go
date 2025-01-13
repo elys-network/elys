@@ -17,7 +17,7 @@ func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool 
 		}
 	}()
 
-	repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.MTPTriggerChecksAndUpdates(ctx, mtp, &pool, ammPool)
+	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.MTPTriggerChecksAndUpdates(ctx, mtp, &pool, ammPool)
 	if err != nil {
 		return err
 	}
@@ -28,7 +28,7 @@ func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool 
 	}
 
 	if forceClosed {
-		k.EmitForceClose(ctx, "unhealthy", *mtp, repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
+		k.EmitForceClose(ctx, "unhealthy", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
 		return nil
 	}
 
@@ -37,7 +37,7 @@ func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool 
 		if err != nil {
 			return sdkerrors.Wrap(err, "error executing force close")
 		}
-		k.EmitForceClose(ctx, "stop_loss", *mtp, repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
+		k.EmitForceClose(ctx, "stop_loss", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
 		return nil
 	}
 
@@ -46,7 +46,7 @@ func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool 
 		if err != nil {
 			return sdkerrors.Wrap(err, "error executing force close")
 		}
-		k.EmitForceClose(ctx, "take_profit", *mtp, repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
+		k.EmitForceClose(ctx, "take_profit", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
 		return nil
 	}
 

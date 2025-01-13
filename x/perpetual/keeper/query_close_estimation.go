@@ -46,7 +46,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 	}
 
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
-	_, _, err = k.UpdateFundingFee(ctx, &mtp, &pool)
+	_, _, _, err = k.UpdateFundingFee(ctx, &mtp, &pool)
 	if err != nil {
 		return nil, err
 	}

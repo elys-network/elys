@@ -163,7 +163,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 
 	// Update interest first and then calculate health
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
-	_, _, err := k.UpdateFundingFee(ctx, &mtp, &pool)
+	_, _, _, err := k.UpdateFundingFee(ctx, &mtp, &pool)
 	if err != nil {
 		return nil, err
 	}

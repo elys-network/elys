@@ -7,7 +7,7 @@ import (
 )
 
 func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
-	closedMtp, repayAmount, closingRatio, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.ClosePosition(ctx, msg)
+	closedMtp, repayAmount, closingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.ClosePosition(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -28,6 +28,7 @@ func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResp
 			sdk.NewAttribute("repay_amount", repayAmount.String()),
 			sdk.NewAttribute("return_amount", returnAmt.String()),
 			sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
+			sdk.NewAttribute("funding_amount_distributed", fundingAmtDistributed.String()),
 			sdk.NewAttribute("interest_amount", interestAmt.String()),
 			sdk.NewAttribute("insurance_amount", insuranceAmt.String()),
 			sdk.NewAttribute("funding_fee_paid_custody", closedMtp.FundingFeePaidCustody.String()),

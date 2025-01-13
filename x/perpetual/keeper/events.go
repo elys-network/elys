@@ -8,7 +8,7 @@ import (
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, repayAmount, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec) {
+func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, repayAmount, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt math.Int, closer string, allInterestsPaid bool, tradingAssetPrice math.LegacyDec) {
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventForceClosed,
 		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
 		sdk.NewAttribute("owner", mtp.Address),
@@ -19,6 +19,7 @@ func (k Keeper) EmitForceClose(ctx sdk.Context, trigger string, mtp types.MTP, r
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
 		sdk.NewAttribute("return_amount", returnAmt.String()),
 		sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
+		sdk.NewAttribute("funding_amount_distributed", fundingAmtDistributed.String()),
 		sdk.NewAttribute("interest_amount", interestAmt.String()),
 		sdk.NewAttribute("insurance_amount", insuranceAmt.String()),
 		sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
