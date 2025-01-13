@@ -17,12 +17,16 @@ func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Authority)
 	}
 
-	// TODO: Check if pool exists for same deposit denom
+	found := k.HasPoolByDenom(ctx, msg.DepositDenom)
+	if found {
+		return nil, errorsmod.Wrapf(types.ErrPoolAlreadyExists, "pool with denom %s already exists", msg.DepositDenom)
+	}
 
 	poolId := k.GetNextPoolId(ctx)
 	pool := types.Pool{
 		PoolId:               poolId,
 		DepositDenom:         msg.DepositDenom,
+		RedemptionRate:       math.LegacyZeroDec(),
 		InterestRateDecrease: msg.InterestRateDecrease,
 		InterestRateIncrease: msg.InterestRateIncrease,
 		HealthGainFactor:     msg.HealthGainFactor,

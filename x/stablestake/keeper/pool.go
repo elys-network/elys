@@ -109,3 +109,21 @@ func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types
 		}
 	}
 }
+
+func (k Keeper) HasPoolByDenom(ctx sdk.Context, depositDenom string) bool {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	iterator := storetypes.KVStorePrefixIterator(store, types.PoolPrefixKey)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		pool := types.Pool{}
+		k.cdc.MustUnmarshal(iterator.Value(), &pool)
+
+		if pool.DepositDenom == depositDenom {
+			return true
+		}
+	}
+
+	return false
+}
