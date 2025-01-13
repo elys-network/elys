@@ -1,4 +1,4 @@
-name: MainNet deploy in 48 hours
+name: TestNet deploy in 48 hours
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   release:
-    name: Deploy to MainNet in 48 hours
+    name: Deploy to TestNet in 48 hours
     runs-on: ubuntu-latest
     steps:
       - name: Create software upgrade proposal
@@ -32,11 +32,14 @@ jobs:
           extract_checksum() { awk "/elysd-${ELYS_VERSION}-linux-amd64.tar.gz/ {print \$1; exit}"; }
 
           # environment variables
-          NODE=https://rpc.elys.network:443
-          OPTIONS="--node $NODE --chain-id elys-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
+          NODE=https://rpc.testnet.elys.network:443
+          OPTIONS="--node $NODE --chain-id elysicstestnet-1 --keyring-backend=test -b=sync --fees=20000uelys --gas=300000 -y"
 
-          # import proposer key
-          ${ELYSD} keys import-hex proposer ${{ secrets.MAINNET_PROPOSER_PRIVATE_KEY }} --keyring-backend=test
+          # import proposers key
+          ${ELYSD} keys import-hex proposer1 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_1 }} --keyring-backend=test
+          ${ELYSD} keys import-hex proposer2 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_2 }} --keyring-backend=test
+          ${ELYSD} keys import-hex proposer3 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_3 }} --keyring-backend=test
+          ${ELYSD} keys import-hex proposer4 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_4 }} --keyring-backend=test
 
           # get checksum
           checksum=$(cat $SHA256SUM | extract_checksum)
@@ -54,16 +57,19 @@ jobs:
             ${ELYSD} software-upgrade-tx \
               $upgrade_version \
               $height \
-              1000000000uelys \
+              10000000uelys \
               "Elys Network ${upgrade_version} released. Focuses on enhancements and codebase improvements." \
               "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/elysd-${ELYS_VERSION}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
               false \
-              --from=proposer \
+              --from=proposer1 \
               $OPTIONS | extract_txhash
           )
-          echo "txhash: $txhash"
-
           sleep 10
-
           proposalid=$(${ELYSD} q tx $txhash --node $NODE | extract_proposal_id)
-          echo "proposalid: $proposalid"
+
+          # vote on proposal
+          ${ELYSD} tx gov vote $proposalid yes --from=proposer1 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=proposer2 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=proposer3 $OPTIONS
+          ${ELYSD} tx gov vote $proposalid yes --from=proposer4 $OPTIONS
+          sleep 10
