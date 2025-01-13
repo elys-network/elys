@@ -2,7 +2,7 @@ package cli
 
 import (
 	"cosmossdk.io/math"
-	"fmt"
+	"errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -29,7 +29,7 @@ func CmdCloseEstimation() *cobra.Command {
 
 			reqClosingAmount, ok := math.NewIntFromString(args[2])
 			if !ok {
-				return fmt.Errorf("invalid closing amount")
+				return errors.New("invalid closing amount")
 			}
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
