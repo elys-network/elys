@@ -21,13 +21,6 @@ func (k Keeper) MTPTriggerChecksAndUpdates(ctx sdk.Context, mtp *types.MTP, pool
 	fundingFeeFullyPaid := true
 	interestFullyPaid := true
 
-	baseCurrencyEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, errors.New("unable to find base currency entry")
-	}
-
-	baseCurrency := baseCurrencyEntry.Denom
-
 	// Update interests
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, mtp)
 
@@ -65,6 +58,13 @@ func (k Keeper) MTPTriggerChecksAndUpdates(ctx sdk.Context, mtp *types.MTP, pool
 		}
 		return repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, nil
 	}
+
+	baseCurrencyEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return repayAmt, returnAmt, fundingFeeAmt, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, errors.New("unable to find base currency entry")
+	}
+
+	baseCurrency := baseCurrencyEntry.Denom
 
 	h, err := k.GetMTPHealth(ctx, *mtp, *ammPool, baseCurrency)
 	if err != nil {

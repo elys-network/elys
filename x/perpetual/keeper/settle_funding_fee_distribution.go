@@ -13,7 +13,7 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 	totalShortOpenInterest := pool.GetTotalShortOpenInterest()
 
 	// Total fund collected should be
-	long, short := k.GetFundingDistributionValue(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId)
+	long, short := k.GetFundingDistributionValue(ctx, mtp.LastFundingCalcBlock, pool.AmmPoolId)
 	var totalFund sdkmath.LegacyDec
 	// calc funding fee share
 	var fundingFeeShare sdkmath.LegacyDec

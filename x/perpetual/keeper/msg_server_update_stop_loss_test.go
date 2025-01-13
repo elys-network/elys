@@ -88,7 +88,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateStopLossPrice() {
 					Price:   math.LegacyNewDec(2),
 				}
 			},
-			"asset price uatom not found",
+			"price for outToken not set: uatom",
 		},
 		{
 			"success: Stop Loss price updated",
