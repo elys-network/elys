@@ -89,7 +89,7 @@ func (k Keeper) GetNextPoolId(ctx sdk.Context) uint64 {
 	if !found {
 		return types.PoolId
 	}
-	return latestPool.PoolId - 1
+	return latestPool.PoolId + 1
 }
 
 // IterateLiquidty iterates over all LiquidityPools and performs a
