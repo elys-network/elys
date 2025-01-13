@@ -334,3 +334,26 @@ func (k Keeper) MoveAllDebt(ctx sdk.Context) {
 		k.SetDebt(ctx, newDebt)
 	}
 }
+
+func (k Keeper) SetLegacyDebt(ctx sdk.Context, debt types.LegacyDebt) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetDebtKey(sdk.MustAccAddressFromBech32(debt.Address))
+	bz := k.cdc.MustMarshal(&debt)
+	store.Set(key, bz)
+}
+
+func (k Keeper) SetLegacyInterest(ctx sdk.Context, block uint64, interest types.LegacyInterestBlock) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
+	if store.Has(sdk.Uint64ToBigEndian(block - 1)) {
+		lastBlock := types.LegacyInterestBlock{}
+		bz := store.Get(sdk.Uint64ToBigEndian(block - 1))
+		k.cdc.MustUnmarshal(bz, &lastBlock)
+		interest.InterestRate = interest.InterestRate.Add(lastBlock.InterestRate)
+
+		bz = k.cdc.MustMarshal(&interest)
+		store.Set(sdk.Uint64ToBigEndian(block), bz)
+	} else {
+		bz := k.cdc.MustMarshal(&interest)
+		store.Set(sdk.Uint64ToBigEndian(block), bz)
+	}
+}

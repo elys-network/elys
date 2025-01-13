@@ -99,3 +99,67 @@ func (suite *KeeperTestSuite) TestDebt() {
 		})
 	}
 }
+
+func (suite *KeeperTestSuite) TestMoveAllInterest() {
+	suite.SetupTest()
+
+	legacyInterets := []types.LegacyInterestBlock{
+		{
+			InterestRate: math.LegacyNewDec(1),
+			BlockTime:    suite.ctx.BlockTime().Unix(),
+			BlockHeight:  uint64(suite.ctx.BlockHeight()),
+		},
+		{
+			InterestRate: math.LegacyNewDec(1),
+			BlockTime:    suite.ctx.BlockTime().Unix(),
+			BlockHeight:  uint64(suite.ctx.BlockHeight()) + 1,
+		},
+	}
+
+	suite.app.StablestakeKeeper.SetLegacyInterest(suite.ctx, legacyInterets[0].BlockHeight, legacyInterets[0])
+	suite.app.StablestakeKeeper.SetLegacyInterest(suite.ctx, legacyInterets[1].BlockHeight, legacyInterets[1])
+
+	suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
+
+	allInterests := suite.app.StablestakeKeeper.GetAllInterest(suite.ctx)
+	suite.Require().Len(allInterests, 2)
+
+	suite.Require().Equal(allInterests[0].PoolId, uint64(32767))
+	suite.Require().Equal(allInterests[1].PoolId, uint64(32767))
+}
+
+func (suite *KeeperTestSuite) TestMoveAllDebt() {
+	suite.SetupTest()
+
+	legacyDebts := []types.LegacyDebt{
+		{
+			Address:               sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String(),
+			Borrowed:              math.NewInt(1000),
+			InterestPaid:          math.NewInt(10),
+			InterestStacked:       math.NewInt(30),
+			BorrowTime:            uint64(suite.ctx.BlockTime().Unix()),
+			LastInterestCalcTime:  uint64(suite.ctx.BlockTime().Unix()),
+			LastInterestCalcBlock: uint64(suite.ctx.BlockHeight()),
+		},
+		{
+			Address:               sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String(),
+			Borrowed:              math.NewInt(5000),
+			InterestPaid:          math.NewInt(60),
+			InterestStacked:       math.NewInt(30),
+			BorrowTime:            uint64(suite.ctx.BlockTime().Unix()),
+			LastInterestCalcTime:  uint64(suite.ctx.BlockTime().Unix()),
+			LastInterestCalcBlock: uint64(suite.ctx.BlockHeight()),
+		},
+	}
+
+	suite.app.StablestakeKeeper.SetLegacyDebt(suite.ctx, legacyDebts[0])
+	suite.app.StablestakeKeeper.SetLegacyDebt(suite.ctx, legacyDebts[1])
+
+	suite.app.StablestakeKeeper.MoveAllDebt(suite.ctx)
+
+	allDebts := suite.app.StablestakeKeeper.GetAllDebts(suite.ctx)
+	suite.Require().Len(allDebts, 2)
+
+	suite.Require().Equal(allDebts[0].PoolId, uint64(32767))
+	suite.Require().Equal(allDebts[1].PoolId, uint64(32767))
+}
