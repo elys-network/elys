@@ -19,10 +19,10 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/elys-network/elys/testutil/network"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/client/cli"
 	"github.com/elys-network/elys/x/perpetual/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -125,7 +125,6 @@ func networkWithMTPObjects(t *testing.T, n int) (*network.Network, []*types.MtpA
 		},
 	}
 	stateOracle.Params = oracletypes.DefaultParams()
-	stateOracle.PortId = "portid"
 	stateOracle.AssetInfos = []oracletypes.AssetInfo{
 		{
 			Denom:      "ATOM",

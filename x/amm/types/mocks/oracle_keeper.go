@@ -4,7 +4,7 @@ package mocks
 
 import (
 	math "cosmossdk.io/math"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	mock "github.com/stretchr/testify/mock"
 
 	types "github.com/cosmos/cosmos-sdk/types"

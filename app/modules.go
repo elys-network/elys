@@ -73,8 +73,6 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	masterchefmodule "github.com/elys-network/elys/x/masterchef"
 	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
-	oraclemodule "github.com/elys-network/elys/x/oracle"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametermodule "github.com/elys-network/elys/x/parameter"
 	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
 	perpetualmodule "github.com/elys-network/elys/x/perpetual"
@@ -89,6 +87,8 @@ import (
 	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
 	"github.com/elys-network/elys/x/transferhook"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
+	oraclemodule "github.com/ojo-network/ojo/x/oracle"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 // module account permissions
@@ -99,6 +99,7 @@ var maccPerms = map[string][]string{
 	stakingtypes.BondedPoolName:                   {authtypes.Burner, authtypes.Staking},
 	stakingtypes.NotBondedPoolName:                {authtypes.Burner, authtypes.Staking},
 	govtypes.ModuleName:                           {authtypes.Burner},
+	oracletypes.ModuleName:                        {authtypes.Minter},
 	ibctransfertypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:                        nil,
 	ccvconsumertypes.ConsumerRedistributeName:     {authtypes.Burner},
