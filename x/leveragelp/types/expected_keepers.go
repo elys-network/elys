@@ -56,7 +56,6 @@ type BankKeeper interface {
 // StableStakeKeeper defines the expected interface needed on stablestake
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) stablestaketypes.Params
-	GetDepositDenom(ctx sdk.Context) string
 	GetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
 	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
 	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error
