@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,16 +16,25 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, err
 	}
 
-	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, existingMtp)
-
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
 
-	err = k.SettleFunding(ctx, existingMtp, &pool, ammPool)
+	repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.MTPTriggerChecksAndUpdates(ctx, existingMtp, &pool, &ammPool)
 	if err != nil {
-		return nil, errorsmod.Wrapf(err, "error handling funding fee")
+		return nil, err
+	}
+
+	if forceClosed {
+		tradingAssetPrice, err := k.GetAssetPrice(ctx, msg.TradingAsset)
+		if err != nil {
+			return nil, err
+		}
+		k.EmitForceClose(ctx, "open_consolidate", *existingMtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, msg.Creator, allInterestsPaid, tradingAssetPrice)
+		return &types.MsgOpenResponse{
+			Id: existingMtp.Id,
+		}, nil
 	}
 
 	existingMtp, err = k.OpenConsolidateMergeMtp(ctx, existingMtp, newMtp)
@@ -67,8 +77,6 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, err
 	}
 
-	k.EmitOpenEvent(ctx, existingMtp)
-
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
 		params := k.GetParams(ctx)
@@ -83,11 +91,25 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 		return nil, err
 	}
 
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventOpenConsolidate,
+		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(existingMtp.Id), 10)),
+		sdk.NewAttribute("owner", existingMtp.Address),
+		sdk.NewAttribute("position", existingMtp.Position.String()),
+		sdk.NewAttribute("amm_pool_id", strconv.FormatInt(int64(existingMtp.AmmPoolId), 10)),
+		sdk.NewAttribute("collateral_asset", existingMtp.CollateralAsset),
+		sdk.NewAttribute("collateral", existingMtp.Collateral.String()),
+		sdk.NewAttribute("liabilities", existingMtp.Liabilities.String()),
+		sdk.NewAttribute("custody", existingMtp.Custody.String()),
+		sdk.NewAttribute("mtp_health", existingMtp.MtpHealth.String()),
+		sdk.NewAttribute("stop_loss_price", existingMtp.StopLossPrice.String()),
+		sdk.NewAttribute("take_profit_price", existingMtp.TakeProfitPrice.String()),
+		sdk.NewAttribute("take_profit_borrow_factor", existingMtp.TakeProfitBorrowFactor.String()),
+		sdk.NewAttribute("funding_fee_paid_custody", existingMtp.FundingFeePaidCustody.String()),
+		sdk.NewAttribute("funding_fee_received_custody", existingMtp.FundingFeeReceivedCustody.String()),
+		sdk.NewAttribute("open_price", existingMtp.OpenPrice.String()),
+	))
+
 	return &types.MsgOpenResponse{
 		Id: existingMtp.Id,
 	}, nil
-}
-
-func (k Keeper) EmitOpenEvent(ctx sdk.Context, mtp *types.MTP) {
-	ctx.EventManager().EmitEvent(types.GenerateOpenEvent(mtp))
 }
