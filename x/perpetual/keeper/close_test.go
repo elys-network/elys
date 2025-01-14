@@ -59,7 +59,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Amount:  math.NewInt(500),
 				}
 			},
-			"asset uusdc not found",
+			"unable to find base currency entry",
 			math.NewInt(0),
 		},
 		{
@@ -279,7 +279,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 			math.NewInt(4503),
 		},
 		{
-			"Close with too much unpaid Liability to make custody amount 0",
+			"Force Close with too much unpaid Liability making custody amount 0",
 			func() *types.MsgClose {
 				suite.ResetSuite()
 
@@ -313,8 +313,8 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 					Amount:  math.NewInt(399),
 				}
 			},
-			"error handling funding fee",
-			math.NewInt(0),
+			"",
+			math.NewInt(203),
 		},
 		{
 			"Close short with Not Enough liquidity",
@@ -364,7 +364,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				suite.Require().Contains(err.Error(), tc.expectedErrMsg)
 			} else {
 				suite.Require().NoError(err)
-				suite.Require().Equal(tc.repayAmount, res.Amount)
+				suite.Require().Equal(res.Amount.String(), tc.repayAmount.String())
 			}
 		})
 	}

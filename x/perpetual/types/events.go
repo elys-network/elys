@@ -1,12 +1,10 @@
 package types
 
 const (
-	EventOpen                 = "perpetual/mtp_open"
-	EventClose                = "perpetual/mtp_close"
-	EventForceCloseUnhealthy  = "perpetual/mtp_force_close_unhealthy"
-	EventForceCloseStopLoss   = "perpetual/mtp_force_close_stopLoss"
-	EventForceCloseTakeprofit = "perpetual/mtp_force_close_takeprofit"
-	EventIncrementalPayFund   = "perpetual/incremental_pay_fund"
-	EventRepayFund            = "perpetual/repay_fund"
-	EventClosePositions       = "perpetual/close_positions"
+	EventOpen                  = "perpetual/mtp_open"
+	EventUpdateStopLoss        = "perpetual/update_stop_loss"
+	EventUpdateTakeProfitPrice = "perpetual/update_take_profit_price"
+	EventOpenConsolidate       = "perpetual/mtp_open_consolidate"
+	EventClose                 = "perpetual/mtp_close"
+	EventForceClosed           = "perpetual/mtp_force_closed"
 )
