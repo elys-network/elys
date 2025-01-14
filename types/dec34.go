@@ -11,7 +11,7 @@ type Dec34 regenmath.Dec
 func NewDec34FromString(s string) Dec34 {
 	y, err := regenmath.NewDecFromString(s)
 	if err != nil {
-		return ZeroDec34()
+		panic(err)
 	}
 	return Dec34(y)
 }
@@ -19,7 +19,7 @@ func NewDec34FromString(s string) Dec34 {
 func NewDec34FromLegacyDec(d math.LegacyDec) Dec34 {
 	y, err := regenmath.NewDecFromString(d.String())
 	if err != nil {
-		return ZeroDec34()
+		panic(err)
 	}
 	return Dec34(y)
 }
@@ -27,7 +27,7 @@ func NewDec34FromLegacyDec(d math.LegacyDec) Dec34 {
 func NewDec34FromInt(i math.Int) Dec34 {
 	y, err := regenmath.NewDecFromString(i.String())
 	if err != nil {
-		return ZeroDec34()
+		panic(err)
 	}
 	return Dec34(y)
 }

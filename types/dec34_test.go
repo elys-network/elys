@@ -240,4 +240,24 @@ func TestDec34(t *testing.T) {
 	require.Equal(t, "8", NewDec34FromInt64(2).PowLegacyDec(math.LegacyNewDec(3)).String())
 	require.Equal(t, "16", NewDec34FromInt64(2).PowLegacyDec(math.LegacyNewDec(4)).String())
 	require.Equal(t, "27", NewDec34FromInt64(3).PowLegacyDec(math.LegacyNewDec(3)).String())
+
+	// Test panic cases for NewDec34FromString
+	require.Panics(t, func() {
+		NewDec34FromString("invalid.decimal.string")
+	})
+	require.Panics(t, func() {
+		NewDec34FromString("abc")
+	})
+
+	// Test panic cases for NewDec34FromLegacyDec
+	require.Panics(t, func() {
+		invalidLegacyDec := math.LegacyDec{}  // zero value, invalid state
+		NewDec34FromLegacyDec(invalidLegacyDec)
+	})
+
+	// Test panic cases for NewDec34FromInt
+	require.Panics(t, func() {
+		invalidInt := math.Int{}  // zero value, invalid state
+		NewDec34FromInt(invalidInt)
+	})
 }
