@@ -20,7 +20,7 @@ func TestMsgAddPool_ValidateBasic(t *testing.T) {
 		{
 			name: "valid message",
 			msg: types.MsgAddPool{
-				Authority:            sample.AccAddress(),
+				Sender:               sample.AccAddress(),
 				DepositDenom:         "ustake",
 				InterestRate:         math.LegacyMustNewDecFromStr("0.03"),
 				InterestRateMax:      math.LegacyMustNewDecFromStr("0.05"),
@@ -36,7 +36,7 @@ func TestMsgAddPool_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid authority address",
 			msg: types.MsgAddPool{
-				Authority:            "invalid_address",
+				Sender:               "invalid_address",
 				DepositDenom:         "stake",
 				InterestRate:         math.LegacyMustNewDecFromStr("0.03"),
 				InterestRateMax:      math.LegacyMustNewDecFromStr("0.05"),
@@ -52,7 +52,7 @@ func TestMsgAddPool_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid deposit denom",
 			msg: types.MsgAddPool{
-				Authority:            sample.AccAddress(),
+				Sender:               sample.AccAddress(),
 				DepositDenom:         "invalid denom",
 				InterestRate:         math.LegacyMustNewDecFromStr("0.03"),
 				InterestRateMax:      math.LegacyMustNewDecFromStr("0.05"),
@@ -68,7 +68,7 @@ func TestMsgAddPool_ValidateBasic(t *testing.T) {
 		{
 			name: "negative interest rate",
 			msg: types.MsgAddPool{
-				Authority:            sample.AccAddress(),
+				Sender:               sample.AccAddress(),
 				DepositDenom:         "stake",
 				InterestRate:         math.LegacyMustNewDecFromStr("-0.03"),
 				InterestRateMax:      math.LegacyMustNewDecFromStr("0.05"),
@@ -84,7 +84,7 @@ func TestMsgAddPool_ValidateBasic(t *testing.T) {
 		{
 			name: "interest rate max less than interest rate min",
 			msg: types.MsgAddPool{
-				Authority:            sample.AccAddress(),
+				Sender:               sample.AccAddress(),
 				DepositDenom:         "stake",
 				InterestRate:         math.LegacyMustNewDecFromStr("0.03"),
 				InterestRateMax:      math.LegacyMustNewDecFromStr("0.01"),
@@ -100,7 +100,7 @@ func TestMsgAddPool_ValidateBasic(t *testing.T) {
 		{
 			name: "negative health gain factor",
 			msg: types.MsgAddPool{
-				Authority:            sample.AccAddress(),
+				Sender:               sample.AccAddress(),
 				DepositDenom:         "stake",
 				InterestRate:         math.LegacyMustNewDecFromStr("0.03"),
 				InterestRateMax:      math.LegacyMustNewDecFromStr("0.05"),
@@ -116,7 +116,7 @@ func TestMsgAddPool_ValidateBasic(t *testing.T) {
 		{
 			name: "negative max leverage ratio",
 			msg: types.MsgAddPool{
-				Authority:            sample.AccAddress(),
+				Sender:               sample.AccAddress(),
 				DepositDenom:         "stake",
 				InterestRate:         math.LegacyMustNewDecFromStr("0.03"),
 				InterestRateMax:      math.LegacyMustNewDecFromStr("0.05"),
@@ -160,7 +160,7 @@ func TestNewMsgAddPool(t *testing.T) {
 	)
 
 	want := &types.MsgAddPool{
-		Authority:            accAdress,
+		Sender:               accAdress,
 		DepositDenom:         "ustake",
 		InterestRate:         math.LegacyMustNewDecFromStr("0.03"),
 		InterestRateMax:      math.LegacyMustNewDecFromStr("0.05"),

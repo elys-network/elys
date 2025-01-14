@@ -4,8 +4,10 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 
@@ -50,6 +52,20 @@ func (suite *KeeperTestSuite) SetupTest() {
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		PoolId:               1,
 		DepositDenom:         ptypes.BaseCurrency,
+	})
+
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+		Denom:   "uusdc",
+		Display: "USDC",
+		Decimal: 6,
+	})
+	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+		Asset:     "USDC",
+		Price:     math.LegacyOneDec(),
+		Source:    "elys",
+		Provider:  provider.String(),
+		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
 	})
 }
 

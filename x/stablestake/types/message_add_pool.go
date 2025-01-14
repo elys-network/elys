@@ -14,7 +14,7 @@ var _ sdk.Msg = &MsgAddPool{}
 func NewMsgAddPool(signer string, depositDenom string, interestRate math.LegacyDec, interestRateMax math.LegacyDec, interestRateMin math.LegacyDec, interestRateIncrease math.LegacyDec,
 	interestRateDecrease math.LegacyDec, healthFactor math.LegacyDec, maxLeverageRatio math.LegacyDec) *MsgAddPool {
 	return &MsgAddPool{
-		Authority:            signer,
+		Sender:               signer,
 		DepositDenom:         depositDenom,
 		InterestRate:         interestRate,
 		InterestRateMax:      interestRateMax,
@@ -27,7 +27,7 @@ func NewMsgAddPool(signer string, depositDenom string, interestRate math.LegacyD
 }
 
 func (msg *MsgAddPool) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Authority)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}

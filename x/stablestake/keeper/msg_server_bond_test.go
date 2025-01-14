@@ -59,6 +59,7 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 					Amount:  tc.bondAmount,
 					PoolId:  1,
 				})
+
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
@@ -73,6 +74,9 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 				suite.Require().Len(commitments.CommittedTokens, 1)
 				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), tc.expSenderCommit.Amount.String())
 				suite.Require().Equal(commitments.CommittedTokens[0].Denom, tc.expSenderCommit.Denom)
+
+				total := suite.app.StablestakeKeeper.AllTVL(suite.ctx, suite.app.OracleKeeper)
+				suite.Require().Equal(total, math.LegacyMustNewDecFromStr("0.01"))
 
 			}
 		})

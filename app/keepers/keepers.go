@@ -519,6 +519,7 @@ func NewAppKeeper(
 		app.BankKeeper,
 		app.CommitmentKeeper,
 		app.AssetprofileKeeper,
+		app.AmmKeeper,
 	)
 
 	app.CommitmentKeeper.SetHooks(
