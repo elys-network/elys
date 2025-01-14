@@ -1,9 +1,9 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"errors"
-	"fmt"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -12,15 +12,16 @@ import (
 // NewParams creates a new Params instance
 func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64, baseAssets []string) Params {
 	return Params{
-		PoolCreationFee:             poolCreationFee,
-		SlippageTrackDuration:       slippageTrackDuration,
-		BaseAssets:                  baseAssets,
-		WeightBreakingFeeExponent:   math.LegacyMustNewDecFromStr("2.5"),
-		WeightBreakingFeeMultiplier: math.LegacyMustNewDecFromStr("0.0005"),
-		WeightBreakingFeePortion:    math.LegacyMustNewDecFromStr("0.5"),
-		WeightRecoveryFeePortion:    math.LegacyMustNewDecFromStr("0.1"),
-		ThresholdWeightDifference:   math.LegacyMustNewDecFromStr("0.3"),
-		AllowedPoolCreators:         []string{authtypes.NewModuleAddress(govtypes.ModuleName).String()},
+		PoolCreationFee:                  poolCreationFee,
+		SlippageTrackDuration:            slippageTrackDuration,
+		BaseAssets:                       baseAssets,
+		WeightBreakingFeeExponent:        math.LegacyMustNewDecFromStr("2.5"),
+		WeightBreakingFeeMultiplier:      math.LegacyMustNewDecFromStr("0.0005"),
+		WeightBreakingFeePortion:         math.LegacyMustNewDecFromStr("0.5"),
+		WeightRecoveryFeePortion:         math.LegacyMustNewDecFromStr("0.1"),
+		ThresholdWeightDifference:        math.LegacyMustNewDecFromStr("0.3"),
+		AllowedPoolCreators:              []string{authtypes.NewModuleAddress(govtypes.ModuleName).String()},
+		ThresholdWeightDifferenceSwapFee: math.LegacyMustNewDecFromStr("1.0"),
 	}
 }
 
@@ -39,7 +40,7 @@ func (p Params) Validate() error {
 		return errors.New("pool creation fee must not be empty")
 	}
 	if p.PoolCreationFee.IsNegative() {
-		return fmt.Errorf("pool creation fee must be positive")
+		return errors.New("pool creation fee must be positive")
 	}
 
 	for _, asset := range p.BaseAssets {

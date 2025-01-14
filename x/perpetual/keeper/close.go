@@ -1,35 +1,46 @@
 package keeper
 
 import (
-	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"strconv"
 )
 
 func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-	baseCurrency := entry.Denom
-
-	closedMtp, repayAmount, closingRatio, err := k.ClosePosition(ctx, msg, baseCurrency)
+	closedMtp, repayAmount, closingRatio, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, err := k.ClosePosition(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
 
-	// Emit close event
-	k.EmitCloseEvent(ctx, closedMtp, repayAmount, closingRatio)
+	tradingAssetPrice, err := k.GetAssetPrice(ctx, closedMtp.TradingAsset)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(types.EventClose,
+			sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(closedMtp.Id), 10)),
+			sdk.NewAttribute("owner", closedMtp.Address),
+			sdk.NewAttribute("amm_pool_id", strconv.FormatInt(int64(closedMtp.AmmPoolId), 10)),
+			sdk.NewAttribute("collateral_asset", closedMtp.CollateralAsset),
+			sdk.NewAttribute("position", closedMtp.Position.String()),
+			sdk.NewAttribute("mtp_health", closedMtp.MtpHealth.String()), // should be there if it's partial close
+			sdk.NewAttribute("repay_amount", repayAmount.String()),
+			sdk.NewAttribute("return_amount", returnAmt.String()),
+			sdk.NewAttribute("funding_fee_amount", fundingFeeAmt.String()),
+			sdk.NewAttribute("funding_amount_distributed", fundingAmtDistributed.String()),
+			sdk.NewAttribute("interest_amount", interestAmt.String()),
+			sdk.NewAttribute("insurance_amount", insuranceAmt.String()),
+			sdk.NewAttribute("funding_fee_paid_custody", closedMtp.FundingFeePaidCustody.String()),
+			sdk.NewAttribute("funding_fee_received_custody", closedMtp.FundingFeeReceivedCustody.String()),
+			sdk.NewAttribute("closing_ratio", closingRatio.String()),
+			sdk.NewAttribute("trading_asset_price", tradingAssetPrice.String()),
+			sdk.NewAttribute("all_interests_paid", strconv.FormatBool(allInterestsPaid)), // Funding Fee is fully paid but interest amount is only partially paid then this will be false
+			sdk.NewAttribute("force_closed", strconv.FormatBool(forceClosed)),
+		))
 
 	return &types.MsgCloseResponse{
 		Id:     closedMtp.Id,
 		Amount: repayAmount,
 	}, nil
-}
-
-func (k Keeper) EmitCloseEvent(ctx sdk.Context, mtp *types.MTP, repayAmount sdkmath.Int, closingRatio sdkmath.LegacyDec) {
-	ctx.EventManager().EmitEvent(types.GenerateCloseEvent(mtp, repayAmount, closingRatio))
 }

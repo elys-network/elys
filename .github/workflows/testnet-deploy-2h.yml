@@ -1,31 +1,16 @@
-name: Create release and TestNet deploy
+name: TestNet deploy in 2 hours
 
 on:
-  push:
-    tags:
-      - v*
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   release:
-    name: Create release and TestNet deploy
+    name: Deploy to TestNet in 2 hours
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.inputs.release_tag }}
-
-      - name: Make release
-        run: |
-          sudo rm -rf dist
-          make release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create software upgrade proposal
         run: |
           # Get latest release version using GitHub API
@@ -43,7 +28,7 @@ jobs:
           # helper functions
           extract_txhash() { awk -F 'txhash: ' '/txhash:/{print $2; exit}'; }
           extract_proposal_id() { awk -F 'key: proposal_id|value: ' '/key: proposal_id/ { getline; gsub(/"/, "", $2); print $2; exit }'; }
-          extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+75000; exit }'; }
+          extract_and_calc_upgrade_height() { awk -F'"latest_block_height":"' '{ split($2,a,"\""); print a[1]+2600; exit }'; }
           extract_checksum() { awk "/elysd-${ELYS_VERSION}-linux-amd64.tar.gz/ {print \$1; exit}"; }
 
           # environment variables
@@ -62,15 +47,20 @@ jobs:
           # query and upgrade height
           height=$(${ELYSD} status --node $NODE | extract_and_calc_upgrade_height)
 
+          # generate upgrade version
+          upgrade_version=$(echo ${ELYS_VERSION} | cut -d'.' -f1)
+          echo "current version: ${ELYS_VERSION}"
+          echo "upgrade_version: $upgrade_version"
+
           # create proposal
           txhash=$(
             ${ELYSD} software-upgrade-tx \
-              $ELYS_VERSION \
+              $upgrade_version \
               $height \
               10000000uelys \
-              "Elys Network $ELYS_VERSION released. Focuses on enhancements and codebase improvements." \
+              "Elys Network ${upgrade_version} released. Focuses on enhancements and codebase improvements." \
               "{\"binaries\":{\"linux/amd64\":\"https://github.com/elys-network/elys/releases/download/${ELYS_VERSION}/elysd-${ELYS_VERSION}-linux-amd64.tar.gz?checksum=$checksum\"}}" \
-              false \
+              true \
               --from=proposer1 \
               $OPTIONS | extract_txhash
           )

@@ -52,6 +52,18 @@ func (k Keeper) CheckBaseAssetExist(ctx sdk.Context, denom string) bool {
 	return found
 }
 
+func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+
+	b := store.Get([]byte(types.ParamsKey))
+	if b == nil {
+		return
+	}
+
+	k.cdc.MustUnmarshal(b, &params)
+	return
+}
+
 func (k Keeper) V8Migrate(ctx sdk.Context) error {
 	baseCurrencyDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {

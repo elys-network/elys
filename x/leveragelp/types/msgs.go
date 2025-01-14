@@ -91,6 +91,13 @@ func NewMsgUpdateParams(signer string, params *Params) *MsgUpdateParams {
 	}
 }
 
+func NewMsgUpdateEnabledPools(signer string, enabledPools []uint64) *MsgUpdateEnabledPools {
+	return &MsgUpdateEnabledPools{
+		Authority:    signer,
+		EnabledPools: enabledPools,
+	}
+}
+
 func NewMsgWhitelist(signer string, whitelistedAddress string) *MsgWhitelist {
 	return &MsgWhitelist{
 		Authority:          signer,

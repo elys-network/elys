@@ -84,7 +84,7 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	stableMsgServer := stablestakekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
-		Amount:  sdkmath.NewInt(10000),
+		Amount:  sdkmath.NewInt(50000),
 	})
 	suite.Require().NoError(err)
 

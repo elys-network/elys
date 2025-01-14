@@ -1,8 +1,6 @@
 package types
 
-import (
-	"fmt"
-)
+import "errors"
 
 // DefaultIndex is the default global index
 const DefaultIndex uint64 = 1
@@ -25,7 +23,7 @@ func (gs GenesisState) Validate() error {
 	for _, elem := range gs.HistoryList {
 		index := string(HistoryKey(elem.Timestamp, elem.Denom))
 		if _, ok := historyIndexMap[index]; ok {
-			return fmt.Errorf("duplicated index for history")
+			return errors.New("duplicated index for history")
 		}
 		historyIndexMap[index] = struct{}{}
 	}

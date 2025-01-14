@@ -91,7 +91,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					Price:   math.LegacyNewDec(2),
 				}
 			},
-			"asset price uatom not found",
+			"price for outToken not set: uatom",
 		},
 		{
 			"success: take profit price updated",

@@ -149,6 +149,14 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "AddPool",
 					Skip:      true, // authority gated
 				},
+				{
+					RpcMethod: "UpdateEnabledPools",
+					Skip:      true, // authority gated
+				},
+				{
+					RpcMethod: "UpdateMaxLeverageForPool",
+					Skip:      true, // authority gated
+				},
 			},
 		},
 	}

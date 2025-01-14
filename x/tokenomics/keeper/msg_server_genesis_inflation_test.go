@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -43,7 +43,7 @@ func TestGenesisInflationMsgServerUpdate(t *testing.T) {
 				SeedVesting:           10,
 				StrategicSalesVesting: 5,
 			},
-			err: fmt.Errorf("invalid authority"),
+			err: errors.New("invalid authority"),
 		},
 	} {
 		t.Run(tc.desc, func(t *testing.T) {

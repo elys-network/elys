@@ -14,7 +14,33 @@ message LegacyParams {
     (gogoproto.nullable) = false
   ];
   uint64 slippage_track_duration = 2; // default 1 week: 604,800
-  bool enable_base_currency_paired_pool_only = 3;
+  repeated string base_assets = 3;
+  string weight_breaking_fee_exponent = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string weight_breaking_fee_multiplier = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string weight_breaking_fee_portion = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string weight_recovery_fee_portion = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string threshold_weight_difference = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated string allowed_pool_creators = 9;
 }
 
 message Params {
@@ -51,4 +77,9 @@ message Params {
     (gogoproto.nullable) = false
   ];
   repeated string allowed_pool_creators = 9;
+  string threshold_weight_difference_swap_fee = 10 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

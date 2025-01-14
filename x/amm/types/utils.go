@@ -2,6 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -114,7 +115,7 @@ func GetPoolAssetByDenom(assets []PoolAsset, denom string) (PoolAsset, bool) {
 // validates a pool asset, to check if it has a valid weight.
 func (pa PoolAsset) validateWeight() error {
 	if pa.Weight.LTE(sdkmath.ZeroInt()) {
-		return fmt.Errorf("a token's weight in the pool must be greater than 0")
+		return errors.New("a token's weight in the pool must be greater than 0")
 	}
 
 	// TODO: add validation for asset weight overflow:
