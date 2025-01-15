@@ -23,9 +23,7 @@ func (p Pool) CalcOutAmtGivenIn(
 		return sdk.Coin{}, elystypes.ZeroDec34(), err
 	}
 
-	swapFeeDec34 := elystypes.NewDec34FromLegacyDec(swapFee)
-
-	tokenAmountInAfterFee := elystypes.NewDec34FromInt(tokenIn.Amount).Mul(elystypes.OneDec34().Sub(swapFeeDec34))
+	tokenAmountInAfterFee := elystypes.NewDec34FromInt(tokenIn.Amount).Mul(elystypes.OneDec34().SubLegacyDec(swapFee))
 	poolTokenInBalance := elystypes.NewDec34FromInt(poolAssetIn.Token.Amount)
 	// accounted pool balance
 	acountedPoolAssetInAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetIn.Token.Denom)

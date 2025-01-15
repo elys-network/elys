@@ -80,13 +80,11 @@ func (p Pool) CalcInAmtGivenOut(
 		return sdk.Coin{}, elystypes.ZeroDec34(), ErrTooMuchSwapFee
 	}
 
-	swapFeeDec34 := elystypes.NewDec34FromLegacyDec(swapFee)
-
 	// We deduct a swap fee on the input asset. The swap happens by following the invariant curve on the input * (1 - swap fee)
 	// and then the swap fee is added to the pool.
 	// Thus in order to give X amount out, we solve the invariant for the invariant input. However invariant input = (1 - swapfee) * trade input.
 	// Therefore we divide by (1 - swapfee) here
-	tokenAmountInBeforeFee := tokenAmountIn.Quo(elystypes.OneDec34().Sub(swapFeeDec34))
+	tokenAmountInBeforeFee := tokenAmountIn.Quo(elystypes.OneDec34().SubLegacyDec(swapFee))
 
 	// We round up tokenInAmt, as this is whats charged for the swap, for the precise amount out.
 	// Otherwise, the pool would under-charge by this rounding error.

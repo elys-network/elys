@@ -314,7 +314,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(203),
+			math.NewInt(202),
 		},
 		{
 			"Close short with Not Enough liquidity",
