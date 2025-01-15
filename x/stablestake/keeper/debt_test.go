@@ -131,7 +131,7 @@ func (suite *KeeperTestSuite) TestMoveAllInterest() {
 func (suite *KeeperTestSuite) TestMoveAllDebt() {
 	suite.SetupTest()
 
-	legacyDebts := []types.LegacyDebt{
+	legacyDebts := []types.Debt{
 		{
 			Address:               sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String(),
 			Borrowed:              math.NewInt(1000),

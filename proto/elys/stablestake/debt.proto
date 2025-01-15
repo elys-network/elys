@@ -28,25 +28,3 @@ message Debt {
   uint64 last_interest_calc_block = 7;
   uint64 pool_id = 8;
 }
-
-message LegacyDebt {
-  string address = 1;
-  string borrowed = 2 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string interest_paid = 3 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string interest_stacked = 4 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  uint64 borrow_time = 5;
-  uint64 last_interest_calc_time = 6;
-  uint64 last_interest_calc_block = 7;
-}

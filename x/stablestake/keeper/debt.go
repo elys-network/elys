@@ -316,7 +316,7 @@ func (k Keeper) MoveAllDebt(ctx sdk.Context) {
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		debt := types.LegacyDebt{}
+		debt := types.Debt{}
 		k.cdc.MustUnmarshal(iterator.Value(), &debt)
 
 		newDebt := types.Debt{
@@ -335,7 +335,7 @@ func (k Keeper) MoveAllDebt(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) SetLegacyDebt(ctx sdk.Context, debt types.LegacyDebt) {
+func (k Keeper) SetLegacyDebt(ctx sdk.Context, debt types.Debt) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetDebtKey(sdk.MustAccAddressFromBech32(debt.Address))
 	bz := k.cdc.MustMarshal(&debt)
