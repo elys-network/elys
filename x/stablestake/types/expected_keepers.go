@@ -2,11 +2,17 @@ package types
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
+
+type AmmKeeper interface {
+	GetParams(ctx sdk.Context) (params ammtypes.Params)
+}
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {

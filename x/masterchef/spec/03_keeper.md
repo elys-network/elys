@@ -51,9 +51,9 @@ The `CalculateProxyTVL` function calculates the proxy total value locked (TVL) f
 
 Pool proxy TVL is calculated by using TVL and multiplier (`Pool TVL * Pool Multiplier`).
 
-### UpdateAmmPoolAPR
+### UpdateAmmStablePoolAPR
 
-The `UpdateAmmPoolAPR` function updates the APR for AMM pools.
+The `UpdateAmmStablePoolAPR` function updates the APR for AMM pools.
 
 APR calculation considers historical rewards data (24h) to prevent flash effect in APR per block.
 

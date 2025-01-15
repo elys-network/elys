@@ -80,7 +80,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 	params := k.GetParams(ctx)
 	isHealthy = position.PositionHealth.GT(params.SafetyFactor)
 
-	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
+	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 	liab := debt.GetTotalLiablities()
 	if isHealthy || liab.IsZero() {
 		return true, false, h, errors.New("position is healthy to close")

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -38,7 +39,7 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		return nil, status.Error(codes.NotFound, "asset profile not found")
 	}
 
-	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrencyEntry.Denom)
+	stableStakeTVL := k.stableKeeper.AllTVL(ctx, k.oracleKeeper)
 	totalTVL = totalTVL.Add(stableStakeTVL.TruncateInt())
 
 	elysPrice := k.amm.GetTokenPrice(ctx, ptypes.Elys, baseCurrencyEntry.Denom)

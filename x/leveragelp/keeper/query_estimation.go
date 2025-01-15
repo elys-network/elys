@@ -48,7 +48,7 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 	}
 
 	// Repay with interest
-	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 
 	// Ensure position.LeveragedLpAmount is not zero to avoid division by zero
 	if position.LeveragedLpAmount.IsZero() {

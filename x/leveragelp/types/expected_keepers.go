@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -55,13 +56,13 @@ type BankKeeper interface {
 // StableStakeKeeper defines the expected interface needed on stablestake
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) stablestaketypes.Params
-	GetDepositDenom(ctx sdk.Context) string
-	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
-	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
-	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
-	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
-	TVL(ctx sdk.Context, oracleKeeper stablestaketypes.OracleKeeper, baseCurrency string) sdkmath.LegacyDec
-	GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec) sdkmath.Int
+	GetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
+	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
+	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error
+	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error
+	TVL(ctx sdk.Context, oracleKeeper stablestaketypes.OracleKeeper, poolId uint64) sdkmath.LegacyDec
+	GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec, poolId uint64) sdkmath.Int
+	GetPoolByDenom(ctx sdk.Context, denom string) (stablestaketypes.Pool, bool)
 }
 
 type CommitmentKeeper interface {

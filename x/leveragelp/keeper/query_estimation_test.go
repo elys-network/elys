@@ -76,6 +76,7 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  sdkmath.NewInt(10000),
+		PoolId:  1,
 	})
 	suite.Require().NoError(err)
 
@@ -87,7 +88,7 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 		AmmPoolId:        1,
 		Leverage:         sdkmath.LegacyNewDec(5),
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
-	})
+	}, 1)
 
 	estimation, _ := k.CloseEst(suite.ctx, &types.QueryCloseEstRequest{
 		Owner:    addr.String(),
