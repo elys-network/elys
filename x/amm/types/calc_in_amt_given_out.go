@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -51,7 +53,7 @@ func (p Pool) CalcInAmtGivenOut(
 		poolTokenInBalance = elystypes.NewDec34FromInt(acountedPoolAssetInAmt)
 	}
 
-	poolPostSwapOutBalance := poolTokenOutBalance.Sub(elystypes.NewDec34FromInt(tokenOut.Amount))
+	poolPostSwapOutBalance := poolTokenOutBalance.SubInt(tokenOut.Amount)
 	// (x_0)(y_0) = (x_0 + in)(y_0 - out)
 	tokenAmountIn, err := solveConstantFunctionInvariant(
 		poolTokenOutBalance, poolPostSwapOutBalance,
@@ -86,9 +88,15 @@ func (p Pool) CalcInAmtGivenOut(
 	// Therefore we divide by (1 - swapfee) here
 	tokenAmountInBeforeFee := tokenAmountIn.Quo(elystypes.OneDec34().SubLegacyDec(swapFee))
 
+	// print tokenAmountInBeforeFee
+	fmt.Println("tokenAmountInBeforeFee", tokenAmountInBeforeFee.String())
+
 	// We round up tokenInAmt, as this is whats charged for the swap, for the precise amount out.
 	// Otherwise, the pool would under-charge by this rounding error.
 	tokenInAmt := tokenAmountInBeforeFee.ToInt()
+
+	// print tokenInAmt
+	fmt.Println("tokenInAmt", tokenInAmt.String())
 
 	if !tokenInAmt.IsPositive() {
 		return sdk.Coin{}, elystypes.ZeroDec34(), errorsmod.Wrapf(ErrInvalidMathApprox, "token amount must be positive")
