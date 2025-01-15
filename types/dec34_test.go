@@ -260,4 +260,11 @@ func TestDec34(t *testing.T) {
 		invalidInt := math.Int{}  // zero value, invalid state
 		NewDec34FromInt(invalidInt)
 	})
+
+	// Test Ceil method
+	require.Equal(t, NewDec34FromInt64(1).String(), NewDec34FromInt64(1).Ceil().String())
+	require.Equal(t, NewDec34FromInt64(2).String(), NewDec34FromString("1.5").Ceil().String())
+	require.Equal(t, NewDec34FromInt64(2).String(), NewDec34FromString("1.9").Ceil().String())
+	require.Equal(t, NewDec34FromInt64(2).String(), NewDec34FromString("1.999999999999999999").Ceil().String())
+	require.Equal(t, NewDec34FromInt64(3).String(), NewDec34FromString("2.000000000000000001").Ceil().String())
 }

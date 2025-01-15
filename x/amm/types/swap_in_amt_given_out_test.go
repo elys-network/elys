@@ -58,8 +58,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			inTokenDenom:           "uusdt",
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       elystypes.NewDec34FromString("-0.0003310563933869157211503902584191568"),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 101043551),
+			expRecoveryBonus:       elystypes.NewDec34FromString("-0.0003310564009040219593685405884609596"),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 101043561),
 			expErr:                 false,
 		},
 		// scenario2 - oracle based
@@ -94,8 +94,8 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			tokenOut:               sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			inTokenDenom:           "uusdt",
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       elystypes.NewDec34FromString("-0.006413552800214017166854821505321781"),
-			expTokenIn:             sdk.NewInt64Coin("uusdt", 102008657),
+			expRecoveryBonus:       elystypes.NewDec34FromString("-0.006413552900341021378891128886988564"),
+			expTokenIn:             sdk.NewInt64Coin("uusdt", 102008667),
 			expErr:                 false,
 		},
 		// scenario3 - oracle based
@@ -131,7 +131,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			inTokenDenom:           ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyZeroDec(),
 			expRecoveryBonus:       elystypes.NewDec34FromString("0.001558845726811989564174701707355285"),
-			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 101348290),
+			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 101348300),
 			expErr:                 false,
 		},
 		// scenario1 - non-oracle based
@@ -167,7 +167,7 @@ func (suite *TestSuite) TestSwapInAmtGivenOut() {
 			inTokenDenom:           ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
 			expRecoveryBonus:       elystypes.ZeroDec34(),
-			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 36075036),
+			expTokenIn:             sdk.NewInt64Coin(ptypes.BaseCurrency, 36075037),
 			expErr:                 false,
 		},
 

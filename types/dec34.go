@@ -197,14 +197,37 @@ func (d Dec34) Neg() Dec34 {
 }
 
 func (d Dec34) ToLegacyDec() math.LegacyDec {
-	y, _, _ := apd.NewFromString(d.String())
+	y, _, err := apd.NewFromString(d.String())
+	if err != nil {
+		panic(err)
+	}
 	z := new(apd.Decimal)
 
 	// add enough precision to handle big decimal values
 	c := apd.BaseContext.WithPrecision(100)
-	c.Quantize(z, y, -18)
+	_, err = c.Quantize(z, y, -18)
+	if err != nil {
+		panic(err)
+	}
 
 	return math.LegacyMustNewDecFromStr(z.Text('f'))
+}
+
+func (d Dec34) Ceil() Dec34 {
+	y, _, err := apd.NewFromString(d.String())
+	if err != nil {
+		panic(err)
+	}
+	z := new(apd.Decimal)
+
+	// add enough precision to handle big decimal values
+	c := apd.BaseContext.WithPrecision(100)
+	_, err = c.Ceil(z, y)
+	if err != nil {
+		panic(err)
+	}
+
+	return NewDec34FromString(z.Text('f'))
 }
 
 func (d Dec34) ToInt() math.Int {
