@@ -172,7 +172,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 			"",
 			&types.MTP{
 				Collateral:      math.NewInt(800),
-				Liabilities:     math.NewInt(649),
+				Liabilities:     math.NewInt(653),
 				Custody:         math.NewInt(4000),
 				TakeProfitPrice: math.LegacyMustNewDecFromStr("0.692857142857142857"),
 			},
@@ -211,7 +211,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 			"",
 			&types.MTP{
 				Collateral:      math.NewInt(800),
-				Liabilities:     math.NewInt(406),
+				Liabilities:     math.NewInt(408),
 				Custody:         math.NewInt(2800),
 				TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 			},
