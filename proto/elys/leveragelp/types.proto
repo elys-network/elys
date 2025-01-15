@@ -41,33 +41,6 @@ message Position {
   uint64 borrow_pool_id = 9;
 }
 
-message LegacyPosition {
-  string address = 1;
-  cosmos.base.v1beta1.Coin collateral = 2 [ (gogoproto.nullable) = false ];
-  string liabilities = 3 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ]; // For recording
-  string leveraged_lp_amount = 4 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string position_health = 5 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  uint64 id = 6;
-  uint64 amm_pool_id = 7;
-  string stop_loss_price = 8 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
-
 message QueryPosition {
   Position position = 1;
   string updated_leverage = 2 [

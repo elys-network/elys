@@ -103,7 +103,7 @@ func (suite *KeeperTestSuite) TestDebt() {
 func (suite *KeeperTestSuite) TestMoveAllInterest() {
 	suite.SetupTest()
 
-	legacyInterets := []types.LegacyInterestBlock{
+	legacyInterests := []types.InterestBlock{
 		{
 			InterestRate: math.LegacyNewDec(1),
 			BlockTime:    suite.ctx.BlockTime().Unix(),
@@ -116,8 +116,8 @@ func (suite *KeeperTestSuite) TestMoveAllInterest() {
 		},
 	}
 
-	suite.app.StablestakeKeeper.SetLegacyInterest(suite.ctx, legacyInterets[0].BlockHeight, legacyInterets[0])
-	suite.app.StablestakeKeeper.SetLegacyInterest(suite.ctx, legacyInterets[1].BlockHeight, legacyInterets[1])
+	suite.app.StablestakeKeeper.SetLegacyInterest(suite.ctx, legacyInterests[0].BlockHeight, legacyInterests[0])
+	suite.app.StablestakeKeeper.SetLegacyInterest(suite.ctx, legacyInterests[1].BlockHeight, legacyInterests[1])
 
 	suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
 

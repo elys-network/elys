@@ -295,18 +295,12 @@ func (k Keeper) MoveAllInterest(ctx sdk.Context) {
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		interest := types.LegacyInterestBlock{}
+		interest := types.InterestBlock{}
 		k.cdc.MustUnmarshal(iterator.Value(), &interest)
-
-		newInterest := types.InterestBlock{
-			BlockHeight:  interest.BlockHeight,
-			InterestRate: interest.InterestRate,
-			BlockTime:    interest.BlockTime,
-			PoolId:       types.PoolId,
-		}
+		interest.PoolId = types.PoolId
 
 		store.Delete(iterator.Key())
-		k.SetInterestForPool(ctx, types.PoolId, interest.BlockHeight, newInterest)
+		k.SetInterestForPool(ctx, types.PoolId, interest.BlockHeight, interest)
 	}
 }
 
@@ -318,20 +312,10 @@ func (k Keeper) MoveAllDebt(ctx sdk.Context) {
 	for ; iterator.Valid(); iterator.Next() {
 		debt := types.Debt{}
 		k.cdc.MustUnmarshal(iterator.Value(), &debt)
-
-		newDebt := types.Debt{
-			Address:               debt.Address,
-			Borrowed:              debt.Borrowed,
-			InterestPaid:          debt.InterestPaid,
-			InterestStacked:       debt.InterestStacked,
-			BorrowTime:            debt.BorrowTime,
-			LastInterestCalcTime:  debt.LastInterestCalcTime,
-			LastInterestCalcBlock: debt.LastInterestCalcBlock,
-			PoolId:                types.PoolId,
-		}
+		debt.PoolId = types.PoolId
 
 		store.Delete(iterator.Key())
-		k.SetDebt(ctx, newDebt)
+		k.SetDebt(ctx, debt)
 	}
 }
 
@@ -342,10 +326,10 @@ func (k Keeper) SetLegacyDebt(ctx sdk.Context, debt types.Debt) {
 	store.Set(key, bz)
 }
 
-func (k Keeper) SetLegacyInterest(ctx sdk.Context, block uint64, interest types.LegacyInterestBlock) {
+func (k Keeper) SetLegacyInterest(ctx sdk.Context, block uint64, interest types.InterestBlock) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
 	if store.Has(sdk.Uint64ToBigEndian(block - 1)) {
-		lastBlock := types.LegacyInterestBlock{}
+		lastBlock := types.InterestBlock{}
 		bz := store.Get(sdk.Uint64ToBigEndian(block - 1))
 		k.cdc.MustUnmarshal(bz, &lastBlock)
 		interest.InterestRate = interest.InterestRate.Add(lastBlock.InterestRate)

@@ -359,20 +359,10 @@ func (k Keeper) SetAllPositions(ctx sdk.Context) {
 	iterator := k.GetPositionIterator(ctx)
 
 	for ; iterator.Valid(); iterator.Next() {
-		var position types.LegacyPosition
+		var position types.Position
 		bytesValue := iterator.Value()
 		k.cdc.Unmarshal(bytesValue, &position)
-		k.SetPosition(ctx, &types.Position{
-			Id:                position.Id,
-			Address:           position.Address,
-			AmmPoolId:         position.AmmPoolId,
-			Collateral:        position.Collateral,
-			LeveragedLpAmount: position.LeveragedLpAmount,
-			PositionHealth:    position.PositionHealth,
-			StopLossPrice:     position.StopLossPrice,
-			Liabilities:       position.Liabilities,
-			BorrowPoolId:      stabletypes.PoolId,
-		})
+		position.BorrowPoolId = stabletypes.PoolId
+		k.SetPosition(ctx, &position)
 	}
-	return
 }
