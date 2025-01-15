@@ -117,7 +117,7 @@ jobs:
               "Elys Network version ${{env.VERSION}} released. Focuses on enhancements and codebase improvements." \
               "{\"binaries\":{\"linux/amd64\":\"https://snapshots.elys.network/releases/${{env.NAME_WITH_VERSION}}.tar.gz\"}}" \
                true \
-              --from=fuji\
+              --from=fuji \
               $OPTIONS | extract_txhash
           )             
           sleep 10
