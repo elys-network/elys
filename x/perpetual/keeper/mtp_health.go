@@ -10,11 +10,17 @@ import (
 // GetMTPHealth Health = custody / liabilities
 // It's responsibility of outer function to update mtp.BorrowInterestUnpaidLiability using UpdateMTPBorrowInterestUnpaidLiability
 func (k Keeper) GetMTPHealth(ctx sdk.Context, mtp types.MTP, ammPool ammtypes.Pool, baseCurrency string) (math.LegacyDec, error) {
+
+	if mtp.Custody.LTE(math.ZeroInt()) {
+		return math.LegacyZeroDec(), nil
+	}
+
 	if mtp.Liabilities.IsZero() {
 		return math.LegacyMaxSortableDec, nil
 	}
 
 	// For long this unit is base currency, for short this is in trading asset
+	// We do not consider here funding fee because it has been / should be already subtracted from mtp.Custody, the custody amt can be <= 0, then above it returns 0
 	totalLiabilities := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
 
 	// if short position, convert liabilities to base currency
