@@ -22,8 +22,10 @@ service Msg {
   rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
   rpc UpdateStopLoss(MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
   rpc ClosePositions(MsgClosePositions) returns (MsgClosePositionsResponse);
-  rpc UpdateTakeProfitPrice(MsgUpdateTakeProfitPrice) returns (MsgUpdateTakeProfitPriceResponse);
+  rpc UpdateTakeProfitPrice(MsgUpdateTakeProfitPrice)
+      returns (MsgUpdateTakeProfitPriceResponse);
   rpc UpdateEnabledPools(MsgUpdateEnabledPools) returns (MsgUpdateEnabledPoolsResponse);
+
 }
 message MsgOpen {
   option (cosmos.msg.v1.signer) = "creator";
