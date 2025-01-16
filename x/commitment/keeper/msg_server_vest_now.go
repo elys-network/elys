@@ -54,6 +54,9 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 		return nil, errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, "unable to send withdrawn tokens")
 	}
 
+	params.TotalEdenSupply = params.TotalEdenSupply.Sub(msg.Amount)
+	k.SetParams(ctx, params)
+
 	// Update the commitments
 	k.SetCommitments(ctx, commitments)
 

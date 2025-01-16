@@ -60,6 +60,9 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	// Update the unclaimed tokens amount
 	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, msg.Amount))
+	params := k.GetParams(ctx)
+	params.TotalEdenSupply = params.TotalEdenSupply.Add(msg.Amount)
+	k.SetParams(ctx, params)
 	k.SetCommitments(ctx, commitments)
 
 	// Emit blockchain event
