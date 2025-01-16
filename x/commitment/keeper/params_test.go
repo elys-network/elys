@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -33,7 +34,9 @@ func TestGetParams(t *testing.T) {
 	}
 
 	params := types.Params{
-		VestingInfos: vestingInfos,
+		VestingInfos:     vestingInfos,
+		TotalEdenSupply:  math.ZeroInt(),
+		TotalEdenbSupply: math.ZeroInt(),
 	}
 
 	k.SetParams(ctx, params)
@@ -54,8 +57,10 @@ func TestEncodeDecodeParams(t *testing.T) {
 	}
 
 	params := types.Params{
-		VestingInfos:   vestingInfos,
-		TotalCommitted: sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 10)},
+		VestingInfos:     vestingInfos,
+		TotalCommitted:   sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 10)},
+		TotalEdenSupply:  math.ZeroInt(),
+		TotalEdenbSupply: math.ZeroInt(),
 	}
 	encoded, err := codec.NewLegacyAmino().MarshalJSON(&params)
 	require.NoError(t, err)
@@ -86,7 +91,9 @@ func TestGetParamsNew(t *testing.T) {
 	}
 
 	params := types.Params{
-		VestingInfos: vestingInfos,
+		VestingInfos:     vestingInfos,
+		TotalEdenSupply:  math.ZeroInt(),
+		TotalEdenbSupply: math.ZeroInt(),
 	}
 
 	k.SetParams(ctx, params)
