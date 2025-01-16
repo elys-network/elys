@@ -6,6 +6,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -38,6 +39,8 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		return nil, status.Error(codes.NotFound, "asset profile not found")
 	}
 
+	baseCurrencyPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrencyEntry.Denom)
+
 	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrencyEntry.Denom)
 	totalTVL = totalTVL.Add(stableStakeTVL.TruncateInt())
 
@@ -52,11 +55,16 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 	stakedEdenValue := elysPrice.MulInt(stakedEden)
 	totalTVL = totalTVL.Add(stakedEdenValue.TruncateInt())
 
+	stableStakeParams := k.stableKeeper.GetParams(ctx)
+	stableStakeBalance := k.bankKeeper.GetBalance(ctx, authtypes.NewModuleAddress(stablestaketypes.ModuleName), baseCurrencyEntry.Denom)
+	borrowed := stableStakeParams.TotalValue.Sub(stableStakeBalance.Amount)
+
 	return &types.QueryChainTVLResponse{
 		Total:       totalTVL,
 		Pools:       poolsTVL.TruncateInt(),
 		UsdcStaking: stableStakeTVL.TruncateInt(),
 		StakedElys:  stakedElysValue.TruncateInt(),
 		StakedEden:  stakedEdenValue.TruncateInt(),
+		Borrowed:    sdk.NewCoins(sdk.NewCoin(baseCurrencyEntry.DisplayName, baseCurrencyPrice.MulInt(borrowed).TruncateInt())),
 	}, nil
 }

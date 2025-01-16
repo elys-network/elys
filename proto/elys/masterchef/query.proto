@@ -143,6 +143,10 @@ message QueryChainTVLResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  repeated cosmos.base.v1beta1.Coin borrowed = 6 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
