@@ -14,6 +14,9 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderForAddress() {
 		OrderId:          1,
 		OwnerAddress:     "valid_address",
 		OrderType:        types.SpotOrderType_LIMITBUY,
+		LegacyOrderPriceV1: types.LegacyOrderPrice{
+			Rate: math.LegacyNewDec(1),
+		},
 		OrderPrice:       math.LegacyNewDec(1),
 		OrderAmount:      sdk.NewCoin("base", math.NewInt(1)),
 		OrderTargetDenom: "quote",
@@ -24,6 +27,9 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderForAddress() {
 		OrderId:          2,
 		OwnerAddress:     "valid_address",
 		OrderType:        types.SpotOrderType_LIMITBUY,
+		LegacyOrderPriceV1: types.LegacyOrderPrice{
+			Rate: math.LegacyNewDec(1),
+		},
 		OrderPrice:       math.LegacyNewDec(1),
 		OrderAmount:      sdk.NewCoin("base", math.NewInt(1)),
 		OrderTargetDenom: "quote",

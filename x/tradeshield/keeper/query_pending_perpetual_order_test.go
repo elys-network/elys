@@ -15,6 +15,9 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualtOrder() {
 		OwnerAddress:       "valid_address",
 		OrderId:            1,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
+		LegacyTriggerPriceV1: types.LegacyTriggerPrice{
+			Rate: math.LegacyNewDec(1),
+		},
 		TriggerPrice:       math.LegacyMustNewDecFromStr("10"),
 		Position:           types.PerpetualPosition_LONG,
 		Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},
@@ -75,6 +78,9 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingPerpetualOrderAll() {
 		OwnerAddress:       "valid_address",
 		OrderId:            1,
 		PerpetualOrderType: types.PerpetualOrderType_LIMITOPEN,
+		LegacyTriggerPriceV1: types.LegacyTriggerPrice{
+			Rate: math.LegacyZeroDec(),
+		},
 		TriggerPrice:       math.LegacyMustNewDecFromStr("10"),
 		Position:           types.PerpetualPosition_LONG,
 		Collateral:         sdk.Coin{Denom: "uatom", Amount: math.NewInt(10)},

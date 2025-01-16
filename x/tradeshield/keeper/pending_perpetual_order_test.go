@@ -18,6 +18,9 @@ func (suite *TradeshieldKeeperTestSuite) createNPendingPerpetualOrder(n int) []t
 			OwnerAddress:       fmt.Sprintf("address%d", i),
 			PerpetualOrderType: types.PerpetualOrderType_LIMITCLOSE,
 			Position:           types.PerpetualPosition_LONG,
+			LegacyTriggerPriceV1: types.LegacyTriggerPrice{
+				Rate: math.LegacyNewDec(1),
+			},
 			TriggerPrice:       math.LegacyNewDec(1),
 			Collateral:         sdk.Coin{Denom: "denom", Amount: math.NewInt(10)},
 			TradingAsset:       "asset",

@@ -193,6 +193,7 @@ func (k Keeper) SetAllLegacySpotOrderPriceToNewOrderPriceStructure(ctx sdk.Conte
 		var order types.SpotOrder
 		k.cdc.MustUnmarshal(iterator.Value(), &order)
 		order.OrderPrice = order.LegacyOrderPriceV1.Rate
+		order.LegacyOrderPriceV1 = types.LegacyOrderPrice{}
 		store.Set(iterator.Key(), k.cdc.MustMarshal(&order))
 	}
 }

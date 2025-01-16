@@ -23,6 +23,9 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderGet() {
 	for _, item := range items {
 		got, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, item.OrderId)
 		item.OrderPrice = math.LegacyZeroDec()
+		item.LegacyOrderPriceV1 = types.LegacyOrderPrice{
+			Rate: math.LegacyZeroDec(),
+		}
 		suite.Require().True(found)
 		suite.Require().Equal(
 			nullify.Fill(&item),
