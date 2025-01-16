@@ -182,19 +182,19 @@ func (k Keeper) DeleteAllPendingSpotOrder(ctx sdk.Context) (list []types.SpotOrd
 	return
 }
 
-func (k Keeper) GetAllLegacyPendingSpotOrder(ctx sdk.Context) (list []types.LegacySpotOrder) {
+// SetAllLegacySpotOrderPriceToNewOrderPriceStructure set all legacy spot order price to new order price structure
+func (k Keeper) SetAllLegacySpotOrderPriceToNewOrderPriceStructure(ctx sdk.Context) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingSpotOrderKey)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.LegacySpotOrder
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
+		var order types.SpotOrder
+		k.cdc.MustUnmarshal(iterator.Value(), &order)
+		order.OrderPrice = order.LegacyOrderPriceV1.Rate
+		store.Set(iterator.Key(), k.cdc.MustMarshal(&order))
 	}
-
-	return
 }
 
 // ExecuteStopLossOrder executes a stop loss order

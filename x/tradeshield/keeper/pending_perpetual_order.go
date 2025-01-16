@@ -149,19 +149,19 @@ func (k Keeper) DeleteAllPendingPerpetualOrder(ctx sdk.Context) (list []types.Pe
 	return
 }
 
-func (k Keeper) GetAllLegacyPendingPerpetualOrder(ctx sdk.Context) (list []types.LegacyPerpetualOrder) {
+// SetAllLegacyPerpetualTriggerPriceToNewTriggerPriceStructure set all legacy perpetual trigger price to new trigger price structure
+func (k Keeper) SetAllLegacyPerpetualTriggerPriceToNewTriggerPriceStructure(ctx sdk.Context) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.LegacyPerpetualOrder
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
+		var order types.PerpetualOrder
+		k.cdc.MustUnmarshal(iterator.Value(), &order)
+		order.TriggerPrice = order.LegacyTriggerPriceV1.Rate
+		store.Set(iterator.Key(), k.cdc.MustMarshal(&order))
 	}
-
-	return
 }
 
 // GetPendingPerpetualOrderIDBytes returns the byte representation of the ID

@@ -138,122 +138,23 @@ func (m *Date) GetTimestamp() uint64 {
 	return 0
 }
 
-type LegacySpotOrder struct {
-	OrderType        SpotOrderType    `protobuf:"varint,1,opt,name=order_type,json=orderType,proto3,enum=elys.tradeshield.SpotOrderType" json:"order_type,omitempty"`
-	OrderId          uint64           `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
-	OrderPrice       LegacyOrderPrice `protobuf:"bytes,3,opt,name=order_price,json=orderPrice,proto3" json:"order_price"`
-	OrderAmount      types.Coin       `protobuf:"bytes,4,opt,name=order_amount,json=orderAmount,proto3" json:"order_amount"`
-	OwnerAddress     string           `protobuf:"bytes,5,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
-	OrderTargetDenom string           `protobuf:"bytes,6,opt,name=order_target_denom,json=orderTargetDenom,proto3" json:"order_target_denom,omitempty"`
-	Status           Status           `protobuf:"varint,7,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
-	Date             *Date            `protobuf:"bytes,8,opt,name=date,proto3" json:"date,omitempty"`
-}
-
-func (m *LegacySpotOrder) Reset()         { *m = LegacySpotOrder{} }
-func (m *LegacySpotOrder) String() string { return proto.CompactTextString(m) }
-func (*LegacySpotOrder) ProtoMessage()    {}
-func (*LegacySpotOrder) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f02c7f96dfee8f75, []int{1}
-}
-func (m *LegacySpotOrder) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *LegacySpotOrder) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_LegacySpotOrder.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *LegacySpotOrder) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LegacySpotOrder.Merge(m, src)
-}
-func (m *LegacySpotOrder) XXX_Size() int {
-	return m.Size()
-}
-func (m *LegacySpotOrder) XXX_DiscardUnknown() {
-	xxx_messageInfo_LegacySpotOrder.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_LegacySpotOrder proto.InternalMessageInfo
-
-func (m *LegacySpotOrder) GetOrderType() SpotOrderType {
-	if m != nil {
-		return m.OrderType
-	}
-	return SpotOrderType_STOPLOSS
-}
-
-func (m *LegacySpotOrder) GetOrderId() uint64 {
-	if m != nil {
-		return m.OrderId
-	}
-	return 0
-}
-
-func (m *LegacySpotOrder) GetOrderPrice() LegacyOrderPrice {
-	if m != nil {
-		return m.OrderPrice
-	}
-	return LegacyOrderPrice{}
-}
-
-func (m *LegacySpotOrder) GetOrderAmount() types.Coin {
-	if m != nil {
-		return m.OrderAmount
-	}
-	return types.Coin{}
-}
-
-func (m *LegacySpotOrder) GetOwnerAddress() string {
-	if m != nil {
-		return m.OwnerAddress
-	}
-	return ""
-}
-
-func (m *LegacySpotOrder) GetOrderTargetDenom() string {
-	if m != nil {
-		return m.OrderTargetDenom
-	}
-	return ""
-}
-
-func (m *LegacySpotOrder) GetStatus() Status {
-	if m != nil {
-		return m.Status
-	}
-	return Status_PENDING
-}
-
-func (m *LegacySpotOrder) GetDate() *Date {
-	if m != nil {
-		return m.Date
-	}
-	return nil
-}
-
 type SpotOrder struct {
-	OrderType        SpotOrderType               `protobuf:"varint,1,opt,name=order_type,json=orderType,proto3,enum=elys.tradeshield.SpotOrderType" json:"order_type,omitempty"`
-	OrderId          uint64                      `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
-	OrderPrice       cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=order_price,json=orderPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"order_price"`
-	OrderAmount      types.Coin                  `protobuf:"bytes,4,opt,name=order_amount,json=orderAmount,proto3" json:"order_amount"`
-	OwnerAddress     string                      `protobuf:"bytes,5,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
-	OrderTargetDenom string                      `protobuf:"bytes,6,opt,name=order_target_denom,json=orderTargetDenom,proto3" json:"order_target_denom,omitempty"`
-	Status           Status                      `protobuf:"varint,7,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
-	Date             *Date                       `protobuf:"bytes,8,opt,name=date,proto3" json:"date,omitempty"`
+	OrderType          SpotOrderType               `protobuf:"varint,1,opt,name=order_type,json=orderType,proto3,enum=elys.tradeshield.SpotOrderType" json:"order_type,omitempty"`
+	OrderId            uint64                      `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	LegacyOrderPriceV1 LegacyOrderPrice            `protobuf:"bytes,3,opt,name=legacy_order_price_v1,json=legacyOrderPriceV1,proto3" json:"legacy_order_price_v1"`
+	OrderPrice         cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=order_price,json=orderPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"order_price"`
+	OrderAmount        types.Coin                  `protobuf:"bytes,4,opt,name=order_amount,json=orderAmount,proto3" json:"order_amount"`
+	OwnerAddress       string                      `protobuf:"bytes,5,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	OrderTargetDenom   string                      `protobuf:"bytes,6,opt,name=order_target_denom,json=orderTargetDenom,proto3" json:"order_target_denom,omitempty"`
+	Status             Status                      `protobuf:"varint,7,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
+	Date               *Date                       `protobuf:"bytes,8,opt,name=date,proto3" json:"date,omitempty"`
 }
 
 func (m *SpotOrder) Reset()         { *m = SpotOrder{} }
 func (m *SpotOrder) String() string { return proto.CompactTextString(m) }
 func (*SpotOrder) ProtoMessage()    {}
 func (*SpotOrder) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f02c7f96dfee8f75, []int{2}
+	return fileDescriptor_f02c7f96dfee8f75, []int{1}
 }
 func (m *SpotOrder) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -296,6 +197,13 @@ func (m *SpotOrder) GetOrderId() uint64 {
 	return 0
 }
 
+func (m *SpotOrder) GetLegacyOrderPriceV1() LegacyOrderPrice {
+	if m != nil {
+		return m.LegacyOrderPriceV1
+	}
+	return LegacyOrderPrice{}
+}
+
 func (m *SpotOrder) GetOrderAmount() types.Coin {
 	if m != nil {
 		return m.OrderAmount
@@ -331,146 +239,28 @@ func (m *SpotOrder) GetDate() *Date {
 	return nil
 }
 
-type LegacyPerpetualOrder struct {
-	OrderId            uint64                      `protobuf:"varint,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
-	OwnerAddress       string                      `protobuf:"bytes,2,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
-	PerpetualOrderType PerpetualOrderType          `protobuf:"varint,3,opt,name=perpetual_order_type,json=perpetualOrderType,proto3,enum=elys.tradeshield.PerpetualOrderType" json:"perpetual_order_type,omitempty"`
-	Position           PerpetualPosition           `protobuf:"varint,4,opt,name=position,proto3,enum=elys.tradeshield.PerpetualPosition" json:"position,omitempty"`
-	TriggerPrice       LegacyTriggerPrice          `protobuf:"bytes,5,opt,name=trigger_price,json=triggerPrice,proto3" json:"trigger_price"`
-	Collateral         types.Coin                  `protobuf:"bytes,6,opt,name=collateral,proto3" json:"collateral"`
-	TradingAsset       string                      `protobuf:"bytes,7,opt,name=trading_asset,json=tradingAsset,proto3" json:"trading_asset,omitempty"`
-	Leverage           cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=leverage,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"leverage"`
-	TakeProfitPrice    cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=take_profit_price,json=takeProfitPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"take_profit_price"`
-	PositionId         uint64                      `protobuf:"varint,10,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
-	Status             Status                      `protobuf:"varint,11,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
-	StopLossPrice      cosmossdk_io_math.LegacyDec `protobuf:"bytes,12,opt,name=stop_loss_price,json=stopLossPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"stop_loss_price"`
-	PoolId             uint64                      `protobuf:"varint,13,opt,name=poolId,proto3" json:"poolId,omitempty"`
-}
-
-func (m *LegacyPerpetualOrder) Reset()         { *m = LegacyPerpetualOrder{} }
-func (m *LegacyPerpetualOrder) String() string { return proto.CompactTextString(m) }
-func (*LegacyPerpetualOrder) ProtoMessage()    {}
-func (*LegacyPerpetualOrder) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f02c7f96dfee8f75, []int{3}
-}
-func (m *LegacyPerpetualOrder) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *LegacyPerpetualOrder) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_LegacyPerpetualOrder.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *LegacyPerpetualOrder) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LegacyPerpetualOrder.Merge(m, src)
-}
-func (m *LegacyPerpetualOrder) XXX_Size() int {
-	return m.Size()
-}
-func (m *LegacyPerpetualOrder) XXX_DiscardUnknown() {
-	xxx_messageInfo_LegacyPerpetualOrder.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_LegacyPerpetualOrder proto.InternalMessageInfo
-
-func (m *LegacyPerpetualOrder) GetOrderId() uint64 {
-	if m != nil {
-		return m.OrderId
-	}
-	return 0
-}
-
-func (m *LegacyPerpetualOrder) GetOwnerAddress() string {
-	if m != nil {
-		return m.OwnerAddress
-	}
-	return ""
-}
-
-func (m *LegacyPerpetualOrder) GetPerpetualOrderType() PerpetualOrderType {
-	if m != nil {
-		return m.PerpetualOrderType
-	}
-	return PerpetualOrderType_LIMITOPEN
-}
-
-func (m *LegacyPerpetualOrder) GetPosition() PerpetualPosition {
-	if m != nil {
-		return m.Position
-	}
-	return PerpetualPosition_UNSPECIFIED
-}
-
-func (m *LegacyPerpetualOrder) GetTriggerPrice() LegacyTriggerPrice {
-	if m != nil {
-		return m.TriggerPrice
-	}
-	return LegacyTriggerPrice{}
-}
-
-func (m *LegacyPerpetualOrder) GetCollateral() types.Coin {
-	if m != nil {
-		return m.Collateral
-	}
-	return types.Coin{}
-}
-
-func (m *LegacyPerpetualOrder) GetTradingAsset() string {
-	if m != nil {
-		return m.TradingAsset
-	}
-	return ""
-}
-
-func (m *LegacyPerpetualOrder) GetPositionId() uint64 {
-	if m != nil {
-		return m.PositionId
-	}
-	return 0
-}
-
-func (m *LegacyPerpetualOrder) GetStatus() Status {
-	if m != nil {
-		return m.Status
-	}
-	return Status_PENDING
-}
-
-func (m *LegacyPerpetualOrder) GetPoolId() uint64 {
-	if m != nil {
-		return m.PoolId
-	}
-	return 0
-}
-
 type PerpetualOrder struct {
-	OrderId            uint64                      `protobuf:"varint,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
-	OwnerAddress       string                      `protobuf:"bytes,2,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
-	PerpetualOrderType PerpetualOrderType          `protobuf:"varint,3,opt,name=perpetual_order_type,json=perpetualOrderType,proto3,enum=elys.tradeshield.PerpetualOrderType" json:"perpetual_order_type,omitempty"`
-	Position           PerpetualPosition           `protobuf:"varint,4,opt,name=position,proto3,enum=elys.tradeshield.PerpetualPosition" json:"position,omitempty"`
-	TriggerPrice       cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=trigger_price,json=triggerPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"trigger_price"`
-	Collateral         types.Coin                  `protobuf:"bytes,6,opt,name=collateral,proto3" json:"collateral"`
-	TradingAsset       string                      `protobuf:"bytes,7,opt,name=trading_asset,json=tradingAsset,proto3" json:"trading_asset,omitempty"`
-	Leverage           cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=leverage,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"leverage"`
-	TakeProfitPrice    cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=take_profit_price,json=takeProfitPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"take_profit_price"`
-	PositionId         uint64                      `protobuf:"varint,10,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
-	Status             Status                      `protobuf:"varint,11,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
-	StopLossPrice      cosmossdk_io_math.LegacyDec `protobuf:"bytes,12,opt,name=stop_loss_price,json=stopLossPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"stop_loss_price"`
-	PoolId             uint64                      `protobuf:"varint,13,opt,name=poolId,proto3" json:"poolId,omitempty"`
+	OrderId              uint64                      `protobuf:"varint,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	OwnerAddress         string                      `protobuf:"bytes,2,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	PerpetualOrderType   PerpetualOrderType          `protobuf:"varint,3,opt,name=perpetual_order_type,json=perpetualOrderType,proto3,enum=elys.tradeshield.PerpetualOrderType" json:"perpetual_order_type,omitempty"`
+	Position             PerpetualPosition           `protobuf:"varint,4,opt,name=position,proto3,enum=elys.tradeshield.PerpetualPosition" json:"position,omitempty"`
+	LegacyTriggerPriceV1 LegacyTriggerPrice          `protobuf:"bytes,5,opt,name=legacy_trigger_price_v1,json=legacyTriggerPriceV1,proto3" json:"legacy_trigger_price_v1"`
+	TriggerPrice         cosmossdk_io_math.LegacyDec `protobuf:"bytes,14,opt,name=trigger_price,json=triggerPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"trigger_price"`
+	Collateral           types.Coin                  `protobuf:"bytes,6,opt,name=collateral,proto3" json:"collateral"`
+	TradingAsset         string                      `protobuf:"bytes,7,opt,name=trading_asset,json=tradingAsset,proto3" json:"trading_asset,omitempty"`
+	Leverage             cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=leverage,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"leverage"`
+	TakeProfitPrice      cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=take_profit_price,json=takeProfitPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"take_profit_price"`
+	PositionId           uint64                      `protobuf:"varint,10,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
+	Status               Status                      `protobuf:"varint,11,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
+	StopLossPrice        cosmossdk_io_math.LegacyDec `protobuf:"bytes,12,opt,name=stop_loss_price,json=stopLossPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"stop_loss_price"`
+	PoolId               uint64                      `protobuf:"varint,13,opt,name=poolId,proto3" json:"poolId,omitempty"`
 }
 
 func (m *PerpetualOrder) Reset()         { *m = PerpetualOrder{} }
 func (m *PerpetualOrder) String() string { return proto.CompactTextString(m) }
 func (*PerpetualOrder) ProtoMessage()    {}
 func (*PerpetualOrder) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f02c7f96dfee8f75, []int{4}
+	return fileDescriptor_f02c7f96dfee8f75, []int{2}
 }
 func (m *PerpetualOrder) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -527,6 +317,13 @@ func (m *PerpetualOrder) GetPosition() PerpetualPosition {
 	return PerpetualPosition_UNSPECIFIED
 }
 
+func (m *PerpetualOrder) GetLegacyTriggerPriceV1() LegacyTriggerPrice {
+	if m != nil {
+		return m.LegacyTriggerPriceV1
+	}
+	return LegacyTriggerPrice{}
+}
+
 func (m *PerpetualOrder) GetCollateral() types.Coin {
 	if m != nil {
 		return m.Collateral
@@ -574,7 +371,7 @@ func (m *PerpetualOrderExtraInfo) Reset()         { *m = PerpetualOrderExtraInfo
 func (m *PerpetualOrderExtraInfo) String() string { return proto.CompactTextString(m) }
 func (*PerpetualOrderExtraInfo) ProtoMessage()    {}
 func (*PerpetualOrderExtraInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f02c7f96dfee8f75, []int{5}
+	return fileDescriptor_f02c7f96dfee8f75, []int{3}
 }
 func (m *PerpetualOrderExtraInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -621,9 +418,7 @@ func init() {
 	proto.RegisterEnum("elys.tradeshield.Status", Status_name, Status_value)
 	proto.RegisterEnum("elys.tradeshield.PerpetualOrderType", PerpetualOrderType_name, PerpetualOrderType_value)
 	proto.RegisterType((*Date)(nil), "elys.tradeshield.Date")
-	proto.RegisterType((*LegacySpotOrder)(nil), "elys.tradeshield.LegacySpotOrder")
 	proto.RegisterType((*SpotOrder)(nil), "elys.tradeshield.SpotOrder")
-	proto.RegisterType((*LegacyPerpetualOrder)(nil), "elys.tradeshield.LegacyPerpetualOrder")
 	proto.RegisterType((*PerpetualOrder)(nil), "elys.tradeshield.PerpetualOrder")
 	proto.RegisterType((*PerpetualOrderExtraInfo)(nil), "elys.tradeshield.PerpetualOrderExtraInfo")
 }
@@ -631,68 +426,67 @@ func init() {
 func init() { proto.RegisterFile("elys/tradeshield/types.proto", fileDescriptor_f02c7f96dfee8f75) }
 
 var fileDescriptor_f02c7f96dfee8f75 = []byte{
-	// 965 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x57, 0x4f, 0x6f, 0x1b, 0x45,
-	0x14, 0xf7, 0xc6, 0xae, 0x63, 0x3f, 0xff, 0xc9, 0x76, 0x14, 0x85, 0x4d, 0xa9, 0x9c, 0xc8, 0xed,
-	0x21, 0x8a, 0xa8, 0xdd, 0x84, 0x1b, 0x42, 0x54, 0x8e, 0xbd, 0x42, 0x8b, 0xdc, 0xd8, 0x5a, 0x9b,
-	0x0a, 0x90, 0xc0, 0x1a, 0x7b, 0x27, 0xeb, 0x51, 0xd6, 0x3b, 0xcb, 0xce, 0xb8, 0x69, 0xfa, 0x29,
-	0x38, 0xc3, 0x57, 0x40, 0xe2, 0xc2, 0x57, 0x40, 0xea, 0xb1, 0xe2, 0x84, 0x38, 0x54, 0x28, 0xf9,
-	0x22, 0x68, 0x66, 0xd6, 0xc6, 0xa9, 0x03, 0x44, 0x46, 0xe2, 0xd2, 0xdc, 0x3c, 0xef, 0xcf, 0xef,
-	0xcd, 0xfb, 0xbd, 0xdf, 0xf3, 0xee, 0xc2, 0x7d, 0x12, 0x9c, 0xf3, 0xba, 0x88, 0xb1, 0x47, 0xf8,
-	0x98, 0x92, 0xc0, 0xab, 0x8b, 0xf3, 0x88, 0xf0, 0x5a, 0x14, 0x33, 0xc1, 0x90, 0x29, 0xbd, 0xb5,
-	0x05, 0xef, 0xbd, 0x4d, 0x9f, 0xf9, 0x4c, 0x39, 0xeb, 0xf2, 0x97, 0x8e, 0xbb, 0x57, 0x19, 0x31,
-	0x3e, 0x61, 0xbc, 0x3e, 0xc4, 0x9c, 0xd4, 0x9f, 0x1f, 0x0c, 0x89, 0xc0, 0x07, 0xf5, 0x11, 0xa3,
-	0x61, 0xe2, 0x5f, 0xae, 0xc2, 0x62, 0x8f, 0xc4, 0x89, 0x77, 0x5b, 0x67, 0x0f, 0x34, 0xac, 0x3e,
-	0x68, 0x57, 0xf5, 0x63, 0xc8, 0xb4, 0xb0, 0x20, 0x68, 0x0b, 0xb2, 0x63, 0x42, 0xfd, 0xb1, 0xb0,
-	0x8c, 0x5d, 0x63, 0x2f, 0xe3, 0x26, 0x27, 0x74, 0x1f, 0xf2, 0x82, 0x4e, 0x08, 0x17, 0x78, 0x12,
-	0x59, 0x6b, 0xca, 0xf5, 0x97, 0xa1, 0xfa, 0x63, 0x1a, 0x36, 0xda, 0xc4, 0xc7, 0xa3, 0xf3, 0x5e,
-	0xc4, 0x44, 0x47, 0x96, 0x44, 0x9f, 0x00, 0xa8, 0xda, 0x03, 0xd9, 0xa7, 0x42, 0x2b, 0x1f, 0xee,
-	0xd4, 0xde, 0xee, 0xb3, 0x36, 0x4f, 0xe8, 0x9f, 0x47, 0xc4, 0xcd, 0xb3, 0xd9, 0x4f, 0xb4, 0x0d,
-	0x39, 0x9d, 0x4f, 0xbd, 0xa4, 0xe0, 0xba, 0x3a, 0x3b, 0x1e, 0x72, 0xa0, 0xa0, 0x5d, 0x51, 0x4c,
-	0x47, 0xc4, 0x4a, 0xef, 0x1a, 0x7b, 0x85, 0xc3, 0xea, 0x32, 0xb6, 0xbe, 0x92, 0x42, 0xef, 0xca,
-	0xc8, 0xa3, 0xcc, 0xab, 0x37, 0x3b, 0x29, 0x57, 0xdf, 0x4b, 0x59, 0xd0, 0x11, 0x14, 0x35, 0x14,
-	0x9e, 0xb0, 0x69, 0x28, 0xac, 0x8c, 0xc2, 0xda, 0xae, 0x25, 0xe4, 0x48, 0x9e, 0x6b, 0x09, 0xcf,
-	0xb5, 0x26, 0xa3, 0x61, 0x02, 0xa1, 0xeb, 0x37, 0x54, 0x0e, 0x7a, 0x00, 0x25, 0x76, 0x16, 0x4a,
-	0x0c, 0xcf, 0x8b, 0x09, 0xe7, 0xd6, 0x9d, 0x5d, 0x63, 0x2f, 0xef, 0x16, 0x95, 0xb1, 0xa1, 0x6d,
-	0xe8, 0x03, 0x40, 0x09, 0x1d, 0x38, 0xf6, 0x89, 0x18, 0x78, 0x24, 0x64, 0x13, 0x2b, 0xab, 0x22,
-	0x4d, 0xdd, 0xb5, 0x72, 0xb4, 0xa4, 0x1d, 0x3d, 0x86, 0x2c, 0x17, 0x58, 0x4c, 0xb9, 0xb5, 0xae,
-	0x88, 0xb3, 0xae, 0x21, 0x4e, 0xf9, 0xdd, 0x24, 0x0e, 0xed, 0x43, 0xc6, 0xc3, 0x82, 0x58, 0x39,
-	0xd5, 0xc0, 0xd6, 0x72, 0xbc, 0x1c, 0xaf, 0xab, 0x62, 0xaa, 0x3f, 0xa5, 0x21, 0xff, 0xbf, 0x0c,
-	0xca, 0x5d, 0x1e, 0x54, 0xfe, 0xe8, 0x40, 0x32, 0xf8, 0xfb, 0x9b, 0x9d, 0xf7, 0x35, 0xc7, 0xdc,
-	0x3b, 0xad, 0x51, 0x56, 0x9f, 0x60, 0x31, 0x4e, 0x06, 0xd6, 0x22, 0xa3, 0x5f, 0x7f, 0x7e, 0x04,
-	0xc9, 0x08, 0x5a, 0x64, 0x74, 0x3b, 0xb1, 0xef, 0xb3, 0xb0, 0xa9, 0xc9, 0xe9, 0x92, 0x38, 0x22,
-	0x62, 0x8a, 0x03, 0x3d, 0xbc, 0x45, 0xf2, 0x8d, 0xab, 0xe4, 0x2f, 0x35, 0xb9, 0x76, 0x4d, 0x93,
-	0xcf, 0x60, 0x33, 0x9a, 0x21, 0x0e, 0x16, 0x64, 0x90, 0x56, 0x4d, 0x3c, 0x5c, 0xbe, 0xd4, 0xd5,
-	0xfa, 0x4a, 0x0b, 0x28, 0x5a, 0xb2, 0xa1, 0x27, 0x90, 0x8b, 0x18, 0xa7, 0x82, 0xb2, 0x50, 0x4d,
-	0xa8, 0x7c, 0xf8, 0xe0, 0x1f, 0xb0, 0xba, 0x49, 0xa8, 0x3b, 0x4f, 0x42, 0x1d, 0x28, 0x89, 0x98,
-	0xfa, 0xfe, 0x5c, 0x3c, 0x77, 0x14, 0x4d, 0x0f, 0xff, 0x6e, 0xcb, 0xfb, 0x3a, 0x78, 0x71, 0xcf,
-	0x8b, 0x62, 0xc1, 0x86, 0x9e, 0x00, 0x8c, 0x58, 0x10, 0x60, 0x41, 0x62, 0x1c, 0xa8, 0x31, 0xde,
-	0x40, 0x35, 0x0b, 0x29, 0x92, 0x4f, 0x59, 0x96, 0x86, 0xfe, 0x00, 0x73, 0x4e, 0x84, 0x1a, 0x74,
-	0x5e, 0x56, 0x51, 0xc6, 0x86, 0xb4, 0xa1, 0xa7, 0x90, 0x0b, 0xc8, 0x73, 0x12, 0x63, 0x5f, 0x0f,
-	0x76, 0x25, 0xb9, 0xcf, 0x21, 0xd0, 0xd7, 0x70, 0x57, 0xe0, 0x53, 0x22, 0xff, 0xb1, 0x4f, 0xa8,
-	0x48, 0x98, 0xc8, 0xaf, 0x8a, 0xbb, 0x21, 0xb1, 0xba, 0x0a, 0x4a, 0x73, 0xb2, 0x03, 0x85, 0x19,
-	0xe1, 0x52, 0x40, 0xa0, 0x04, 0x04, 0x33, 0x93, 0xe3, 0x2d, 0xa8, 0xba, 0x70, 0x43, 0x55, 0x7f,
-	0x09, 0x1b, 0x5c, 0xb0, 0x68, 0x10, 0x30, 0xce, 0x93, 0xfb, 0x16, 0x57, 0xbd, 0x6f, 0x49, 0x22,
-	0xb5, 0x19, 0xe7, 0xfa, 0xb6, 0x5b, 0x90, 0x8d, 0x18, 0x0b, 0x1c, 0xcf, 0x2a, 0xe9, 0x67, 0x93,
-	0x3e, 0x55, 0x7f, 0xc8, 0x42, 0xf9, 0x5d, 0x59, 0x8b, 0x67, 0xd7, 0xad, 0xc5, 0x4a, 0xe4, 0xde,
-	0x6e, 0xc7, 0xbb, 0xb1, 0x1d, 0xbf, 0xa4, 0xe1, 0xbd, 0xab, 0xea, 0xb4, 0x5f, 0x88, 0x18, 0x3b,
-	0xe1, 0x09, 0x43, 0x0e, 0x6c, 0xbc, 0x25, 0x73, 0xb5, 0x2d, 0x85, 0xc3, 0xdd, 0x7f, 0x53, 0xb8,
-	0x5b, 0xbe, 0xaa, 0x6e, 0xd4, 0x82, 0xd2, 0x9c, 0x2c, 0x4e, 0x5f, 0x12, 0xb5, 0x56, 0x37, 0xd0,
-	0x50, 0x71, 0x96, 0xd5, 0xa3, 0x2f, 0x09, 0xfa, 0x06, 0xee, 0x06, 0xf4, 0xdb, 0x29, 0xf5, 0xb0,
-	0x02, 0xfa, 0x8f, 0xaf, 0x0d, 0xe6, 0x02, 0x96, 0x26, 0xa9, 0x0f, 0xc5, 0x93, 0x69, 0xa8, 0x54,
-	0x1a, 0xcb, 0x67, 0x6f, 0x66, 0x55, 0xe8, 0x42, 0x02, 0xe3, 0xca, 0x97, 0xe6, 0x11, 0x6c, 0x0e,
-	0x59, 0x1c, 0xb3, 0xb3, 0x01, 0x0d, 0x05, 0x89, 0x09, 0x17, 0x1a, 0x7d, 0xe5, 0xdd, 0x44, 0x1a,
-	0xce, 0x49, 0xd0, 0x64, 0x91, 0xfd, 0x8f, 0x20, 0xab, 0xc5, 0x84, 0x0a, 0xb0, 0xde, 0xb5, 0x8f,
-	0x5b, 0xce, 0xf1, 0xa7, 0x66, 0x0a, 0x15, 0x21, 0x67, 0x7f, 0x61, 0x37, 0x3f, 0xef, 0xdb, 0x2d,
-	0xd3, 0x90, 0xa7, 0x66, 0xe3, 0xb8, 0x69, 0xb7, 0xed, 0x96, 0xb9, 0x86, 0xd6, 0x21, 0xdd, 0x68,
-	0xb7, 0xcd, 0xf4, 0xbe, 0x0d, 0x68, 0xf9, 0x0f, 0x0a, 0x95, 0x20, 0xdf, 0x76, 0x9e, 0x3a, 0xfd,
-	0x4e, 0xd7, 0x3e, 0x36, 0x53, 0xa8, 0x0c, 0xa0, 0x8e, 0xcd, 0x76, 0xa7, 0x67, 0x9b, 0x06, 0x32,
-	0xa1, 0xd8, 0xeb, 0x77, 0xba, 0xed, 0x4e, 0xaf, 0xd7, 0xb5, 0xdd, 0xae, 0xb9, 0x76, 0xf4, 0xd9,
-	0xab, 0x8b, 0x8a, 0xf1, 0xfa, 0xa2, 0x62, 0xfc, 0x71, 0x51, 0x31, 0xbe, 0xbb, 0xac, 0xa4, 0x5e,
-	0x5f, 0x56, 0x52, 0xbf, 0x5d, 0x56, 0x52, 0x5f, 0x3d, 0xf6, 0xa9, 0x18, 0x4f, 0x87, 0xb5, 0x11,
-	0x9b, 0xd4, 0xa5, 0x72, 0x1e, 0x85, 0x44, 0x9c, 0xb1, 0xf8, 0x54, 0x1d, 0xea, 0x2f, 0x96, 0xbf,
-	0x7b, 0x86, 0x59, 0xf5, 0xdd, 0xf1, 0xe1, 0x9f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xe7, 0xe4, 0x8c,
-	0x72, 0x18, 0x0d, 0x00, 0x00,
+	// 960 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x56, 0xdb, 0x6e, 0x1a, 0x47,
+	0x18, 0x66, 0x0d, 0xc6, 0xe6, 0xe7, 0xe0, 0xcd, 0xc8, 0x75, 0xd6, 0x69, 0x84, 0x2d, 0x92, 0x0b,
+	0xcb, 0x6a, 0x20, 0xb8, 0x77, 0x55, 0xd5, 0x08, 0xc3, 0xaa, 0xa2, 0x22, 0x06, 0x2d, 0xd4, 0xea,
+	0x41, 0x2d, 0x1a, 0xd8, 0xf1, 0x32, 0xf2, 0xb2, 0xb3, 0xdd, 0x19, 0xec, 0x38, 0xcf, 0xd0, 0x8b,
+	0x3e, 0x4c, 0x5f, 0xa1, 0x52, 0x2e, 0xa3, 0x5e, 0x55, 0xbd, 0x88, 0x2a, 0xfb, 0x3d, 0xaa, 0x6a,
+	0x66, 0x16, 0x77, 0x31, 0x69, 0x6b, 0xd1, 0x3b, 0xfe, 0xd3, 0xf7, 0x9f, 0xbe, 0x7f, 0x58, 0x78,
+	0x4c, 0xfc, 0x2b, 0x5e, 0x13, 0x11, 0x76, 0x09, 0x9f, 0x50, 0xe2, 0xbb, 0x35, 0x71, 0x15, 0x12,
+	0x5e, 0x0d, 0x23, 0x26, 0x18, 0x32, 0xa5, 0xb5, 0x9a, 0xb0, 0x3e, 0xda, 0xf6, 0x98, 0xc7, 0x94,
+	0xb1, 0x26, 0x7f, 0x69, 0xbf, 0x47, 0xe5, 0x31, 0xe3, 0x53, 0xc6, 0x6b, 0x23, 0xcc, 0x49, 0xed,
+	0xa2, 0x3e, 0x22, 0x02, 0xd7, 0x6b, 0x63, 0x46, 0x83, 0xd8, 0xbe, 0x9c, 0x85, 0x45, 0x2e, 0x89,
+	0x62, 0xeb, 0xae, 0x8e, 0x1e, 0x6a, 0x58, 0x2d, 0x68, 0x53, 0xe5, 0x53, 0xc8, 0xb4, 0xb0, 0x20,
+	0x68, 0x07, 0xb2, 0x13, 0x42, 0xbd, 0x89, 0xb0, 0x8c, 0x7d, 0xe3, 0x20, 0xe3, 0xc4, 0x12, 0x7a,
+	0x0c, 0x39, 0x41, 0xa7, 0x84, 0x0b, 0x3c, 0x0d, 0xad, 0x35, 0x65, 0xfa, 0x5b, 0x51, 0xf9, 0x31,
+	0x03, 0xb9, 0x7e, 0xc8, 0x44, 0x57, 0x26, 0x43, 0x9f, 0x01, 0xa8, 0xac, 0x43, 0xd9, 0xa1, 0xc2,
+	0x29, 0x1d, 0xed, 0x55, 0xef, 0x76, 0x58, 0xbd, 0x0d, 0x18, 0x5c, 0x85, 0xc4, 0xc9, 0xb1, 0xf9,
+	0x4f, 0xb4, 0x0b, 0x9b, 0x3a, 0x9e, 0xba, 0x71, 0xaa, 0x0d, 0x25, 0xb7, 0x5d, 0xf4, 0x2d, 0x7c,
+	0xe0, 0x13, 0x0f, 0x8f, 0xaf, 0x86, 0xda, 0x23, 0x8c, 0xe8, 0x98, 0x0c, 0x2f, 0xea, 0x56, 0x7a,
+	0xdf, 0x38, 0xc8, 0x1f, 0x55, 0x96, 0xb3, 0x74, 0x94, 0xbb, 0xca, 0xd3, 0x93, 0xce, 0xc7, 0x99,
+	0x37, 0xef, 0xf6, 0x52, 0x0e, 0xf2, 0xef, 0xe8, 0x4f, 0xeb, 0xc8, 0x81, 0x7c, 0x02, 0xd5, 0xca,
+	0xed, 0x1b, 0x07, 0xb9, 0xe3, 0xba, 0x74, 0xff, 0xfd, 0xdd, 0xde, 0x87, 0x7a, 0x5c, 0xdc, 0x3d,
+	0xaf, 0x52, 0x56, 0x9b, 0x62, 0x31, 0x89, 0xa1, 0x5b, 0x64, 0xfc, 0xeb, 0xcf, 0xcf, 0x20, 0x9e,
+	0x66, 0x8b, 0x8c, 0x1d, 0xdd, 0xbd, 0x42, 0x45, 0xc7, 0x50, 0xd0, 0x98, 0x78, 0xca, 0x66, 0x81,
+	0xb0, 0x32, 0xaa, 0xce, 0xdd, 0x6a, 0xec, 0x2e, 0xf7, 0x58, 0x8d, 0xf7, 0x58, 0x6d, 0x32, 0x1a,
+	0xc4, 0xe5, 0xe9, 0x42, 0x1a, 0x2a, 0x06, 0x3d, 0x81, 0x22, 0xbb, 0x0c, 0x24, 0x86, 0xeb, 0x46,
+	0x84, 0x73, 0x6b, 0x5d, 0x56, 0xe6, 0x14, 0x94, 0xb2, 0xa1, 0x75, 0xe8, 0x23, 0x40, 0xf1, 0xd0,
+	0x71, 0xe4, 0x11, 0x31, 0x74, 0x49, 0xc0, 0xa6, 0x56, 0x56, 0x79, 0x9a, 0x7a, 0xb6, 0xca, 0xd0,
+	0x92, 0x7a, 0xf4, 0x1c, 0xb2, 0x5c, 0x60, 0x31, 0xe3, 0xd6, 0x86, 0x5a, 0x8f, 0xf5, 0x9e, 0xf5,
+	0x28, 0xbb, 0x13, 0xfb, 0xa1, 0x43, 0xc8, 0xb8, 0x58, 0x10, 0x6b, 0x53, 0x35, 0xb0, 0xb3, 0xec,
+	0x2f, 0xe9, 0xe3, 0x28, 0x9f, 0xca, 0x9f, 0x59, 0x28, 0xf5, 0x48, 0x14, 0x12, 0x31, 0xc3, 0xbe,
+	0xe6, 0x44, 0x72, 0xa7, 0xc6, 0xe2, 0x4e, 0x97, 0xda, 0x5b, 0x7b, 0x4f, 0x7b, 0xa7, 0xb0, 0x1d,
+	0xce, 0x11, 0x87, 0x09, 0x76, 0xa5, 0x55, 0xf9, 0x4f, 0x97, 0xcb, 0x59, 0xcc, 0xaf, 0x28, 0x86,
+	0xc2, 0x25, 0x1d, 0x7a, 0x01, 0x9b, 0x21, 0xe3, 0x54, 0x50, 0x16, 0xa8, 0xdd, 0x94, 0x8e, 0x9e,
+	0xfc, 0x0b, 0x56, 0x2f, 0x76, 0x75, 0x6e, 0x83, 0x10, 0x86, 0x87, 0x31, 0x23, 0x45, 0x44, 0x3d,
+	0x2f, 0xc9, 0xc9, 0x75, 0x35, 0xaa, 0xa7, 0xff, 0xc4, 0xc9, 0x81, 0xf6, 0x4f, 0xb2, 0x72, 0xdb,
+	0x5f, 0xb2, 0x9c, 0xd6, 0xd1, 0x29, 0x14, 0x17, 0xb0, 0xad, 0xd2, 0xaa, 0xcc, 0x2c, 0x88, 0x04,
+	0x32, 0x7a, 0x01, 0x30, 0x66, 0xbe, 0x8f, 0x05, 0x89, 0xb0, 0xaf, 0xa8, 0x72, 0x0f, 0x66, 0x26,
+	0x42, 0xe4, 0xe6, 0x64, 0x5b, 0x34, 0xf0, 0x86, 0x98, 0x73, 0x22, 0x14, 0x99, 0x72, 0x32, 0x8b,
+	0x52, 0x36, 0xa4, 0x0e, 0xbd, 0x84, 0x4d, 0x9f, 0x5c, 0x90, 0x08, 0x7b, 0x9a, 0x3c, 0x2b, 0x15,
+	0x7e, 0x0b, 0x81, 0xbe, 0x83, 0x07, 0x02, 0x9f, 0x13, 0xf9, 0x86, 0x9d, 0x51, 0xf1, 0x7f, 0x4f,
+	0x75, 0x4b, 0x62, 0xf5, 0x14, 0x94, 0x9e, 0xc9, 0x1e, 0xe4, 0xe7, 0xab, 0x95, 0x54, 0x05, 0x45,
+	0x55, 0x98, 0xab, 0xda, 0x6e, 0xe2, 0x72, 0xf2, 0xf7, 0xbc, 0x9c, 0xaf, 0x61, 0x8b, 0x0b, 0x16,
+	0x0e, 0x7d, 0xc6, 0x79, 0x5c, 0x6f, 0x61, 0xd5, 0x7a, 0x8b, 0x12, 0xa9, 0xc3, 0x38, 0xd7, 0xd5,
+	0xee, 0x40, 0x36, 0x64, 0xcc, 0x6f, 0xbb, 0x56, 0x51, 0xbf, 0xd6, 0x5a, 0xaa, 0xfc, 0x92, 0x86,
+	0x87, 0x8b, 0x07, 0x60, 0xbf, 0x12, 0x11, 0x6e, 0x07, 0x67, 0x0c, 0xb5, 0x61, 0xeb, 0xce, 0x25,
+	0xa9, 0x83, 0xcc, 0x1f, 0xed, 0xff, 0xd7, 0x11, 0x39, 0xa5, 0xc5, 0x03, 0x42, 0x2d, 0x28, 0xde,
+	0x0e, 0x8b, 0xd3, 0xd7, 0x44, 0x5d, 0xee, 0x3d, 0x38, 0x54, 0x98, 0x47, 0xf5, 0xe9, 0x6b, 0x82,
+	0xbe, 0x87, 0x07, 0x3e, 0xfd, 0x61, 0x46, 0x5d, 0xac, 0x80, 0xf4, 0x84, 0xd2, 0xab, 0x4e, 0xc8,
+	0x4c, 0x60, 0xe9, 0x21, 0x0d, 0xa0, 0x70, 0x36, 0x0b, 0x14, 0x4b, 0x23, 0xf9, 0x82, 0x65, 0x56,
+	0x85, 0xce, 0xc7, 0x30, 0x8e, 0xfc, 0xa3, 0x1c, 0xc3, 0xf6, 0x88, 0x45, 0x11, 0xbb, 0x1c, 0xd2,
+	0x40, 0x90, 0x88, 0x70, 0xa1, 0xd1, 0xd7, 0x57, 0x45, 0x47, 0x1a, 0xae, 0x1d, 0xa3, 0xc9, 0x24,
+	0x87, 0x9f, 0x40, 0x56, 0x93, 0x09, 0xe5, 0x61, 0xa3, 0x67, 0x9f, 0xb4, 0xda, 0x27, 0x9f, 0x9b,
+	0x29, 0x54, 0x80, 0x4d, 0xfb, 0x2b, 0xbb, 0xf9, 0xe5, 0xc0, 0x6e, 0x99, 0x86, 0x94, 0x9a, 0x8d,
+	0x93, 0xa6, 0xdd, 0xb1, 0x5b, 0xe6, 0x1a, 0xda, 0x80, 0x74, 0xa3, 0xd3, 0x31, 0xd3, 0x87, 0x36,
+	0xa0, 0xe5, 0x37, 0x10, 0x15, 0x21, 0xd7, 0x69, 0xbf, 0x6c, 0x0f, 0xba, 0x3d, 0xfb, 0xc4, 0x4c,
+	0xa1, 0x12, 0x80, 0x12, 0x9b, 0x9d, 0x6e, 0xdf, 0x36, 0x0d, 0x64, 0x42, 0xa1, 0x3f, 0xe8, 0xf6,
+	0x3a, 0xdd, 0x7e, 0xbf, 0x67, 0x3b, 0x3d, 0x73, 0xed, 0xf8, 0x8b, 0x37, 0xd7, 0x65, 0xe3, 0xed,
+	0x75, 0xd9, 0xf8, 0xe3, 0xba, 0x6c, 0xfc, 0x74, 0x53, 0x4e, 0xbd, 0xbd, 0x29, 0xa7, 0x7e, 0xbb,
+	0x29, 0xa7, 0xbe, 0x79, 0xee, 0x51, 0x31, 0x99, 0x8d, 0xaa, 0x63, 0x36, 0xad, 0x49, 0xe6, 0x3c,
+	0x0b, 0x88, 0xb8, 0x64, 0xd1, 0xb9, 0x12, 0x6a, 0xaf, 0x96, 0xbf, 0x75, 0x46, 0x59, 0xf5, 0xad,
+	0xf1, 0xf1, 0x5f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xf2, 0xc9, 0x0e, 0x65, 0x0c, 0x09, 0x00, 0x00,
 }
 
 func (m *Date) Marshal() (dAtA []byte, err error) {
@@ -728,90 +522,6 @@ func (m *Date) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *LegacySpotOrder) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *LegacySpotOrder) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *LegacySpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Date != nil {
-		{
-			size, err := m.Date.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTypes(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x42
-	}
-	if m.Status != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.Status))
-		i--
-		dAtA[i] = 0x38
-	}
-	if len(m.OrderTargetDenom) > 0 {
-		i -= len(m.OrderTargetDenom)
-		copy(dAtA[i:], m.OrderTargetDenom)
-		i = encodeVarintTypes(dAtA, i, uint64(len(m.OrderTargetDenom)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if len(m.OwnerAddress) > 0 {
-		i -= len(m.OwnerAddress)
-		copy(dAtA[i:], m.OwnerAddress)
-		i = encodeVarintTypes(dAtA, i, uint64(len(m.OwnerAddress)))
-		i--
-		dAtA[i] = 0x2a
-	}
-	{
-		size, err := m.OrderAmount.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintTypes(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x22
-	{
-		size, err := m.OrderPrice.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintTypes(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x1a
-	if m.OrderId != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.OrderId))
-		i--
-		dAtA[i] = 0x10
-	}
-	if m.OrderType != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.OrderType))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
 func (m *SpotOrder) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -832,6 +542,16 @@ func (m *SpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	{
+		size := m.OrderPrice.Size()
+		i -= size
+		if _, err := m.OrderPrice.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTypes(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x4a
 	if m.Date != nil {
 		{
 			size, err := m.Date.MarshalToSizedBuffer(dAtA[:i])
@@ -874,11 +594,11 @@ func (m *SpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x22
 	{
-		size := m.OrderPrice.Size()
-		i -= size
-		if _, err := m.OrderPrice.MarshalTo(dAtA[i:]); err != nil {
+		size, err := m.LegacyOrderPriceV1.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
 			return 0, err
 		}
+		i -= size
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
@@ -890,123 +610,6 @@ func (m *SpotOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	if m.OrderType != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.OrderType))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *LegacyPerpetualOrder) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *LegacyPerpetualOrder) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *LegacyPerpetualOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.PoolId != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.PoolId))
-		i--
-		dAtA[i] = 0x68
-	}
-	{
-		size := m.StopLossPrice.Size()
-		i -= size
-		if _, err := m.StopLossPrice.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTypes(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x62
-	if m.Status != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.Status))
-		i--
-		dAtA[i] = 0x58
-	}
-	if m.PositionId != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.PositionId))
-		i--
-		dAtA[i] = 0x50
-	}
-	{
-		size := m.TakeProfitPrice.Size()
-		i -= size
-		if _, err := m.TakeProfitPrice.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTypes(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x4a
-	{
-		size := m.Leverage.Size()
-		i -= size
-		if _, err := m.Leverage.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTypes(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x42
-	if len(m.TradingAsset) > 0 {
-		i -= len(m.TradingAsset)
-		copy(dAtA[i:], m.TradingAsset)
-		i = encodeVarintTypes(dAtA, i, uint64(len(m.TradingAsset)))
-		i--
-		dAtA[i] = 0x3a
-	}
-	{
-		size, err := m.Collateral.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintTypes(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x32
-	{
-		size, err := m.TriggerPrice.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintTypes(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x2a
-	if m.Position != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.Position))
-		i--
-		dAtA[i] = 0x20
-	}
-	if m.PerpetualOrderType != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.PerpetualOrderType))
-		i--
-		dAtA[i] = 0x18
-	}
-	if len(m.OwnerAddress) > 0 {
-		i -= len(m.OwnerAddress)
-		copy(dAtA[i:], m.OwnerAddress)
-		i = encodeVarintTypes(dAtA, i, uint64(len(m.OwnerAddress)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.OrderId != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.OrderId))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -1033,6 +636,16 @@ func (m *PerpetualOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	{
+		size := m.TriggerPrice.Size()
+		i -= size
+		if _, err := m.TriggerPrice.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTypes(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x72
 	if m.PoolId != 0 {
 		i = encodeVarintTypes(dAtA, i, uint64(m.PoolId))
 		i--
@@ -1096,11 +709,11 @@ func (m *PerpetualOrder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x32
 	{
-		size := m.TriggerPrice.Size()
-		i -= size
-		if _, err := m.TriggerPrice.MarshalTo(dAtA[i:]); err != nil {
+		size, err := m.LegacyTriggerPriceV1.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
 			return 0, err
 		}
+		i -= size
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
@@ -1231,40 +844,6 @@ func (m *Date) Size() (n int) {
 	return n
 }
 
-func (m *LegacySpotOrder) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.OrderType != 0 {
-		n += 1 + sovTypes(uint64(m.OrderType))
-	}
-	if m.OrderId != 0 {
-		n += 1 + sovTypes(uint64(m.OrderId))
-	}
-	l = m.OrderPrice.Size()
-	n += 1 + l + sovTypes(uint64(l))
-	l = m.OrderAmount.Size()
-	n += 1 + l + sovTypes(uint64(l))
-	l = len(m.OwnerAddress)
-	if l > 0 {
-		n += 1 + l + sovTypes(uint64(l))
-	}
-	l = len(m.OrderTargetDenom)
-	if l > 0 {
-		n += 1 + l + sovTypes(uint64(l))
-	}
-	if m.Status != 0 {
-		n += 1 + sovTypes(uint64(m.Status))
-	}
-	if m.Date != nil {
-		l = m.Date.Size()
-		n += 1 + l + sovTypes(uint64(l))
-	}
-	return n
-}
-
 func (m *SpotOrder) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1277,7 +856,7 @@ func (m *SpotOrder) Size() (n int) {
 	if m.OrderId != 0 {
 		n += 1 + sovTypes(uint64(m.OrderId))
 	}
-	l = m.OrderPrice.Size()
+	l = m.LegacyOrderPriceV1.Size()
 	n += 1 + l + sovTypes(uint64(l))
 	l = m.OrderAmount.Size()
 	n += 1 + l + sovTypes(uint64(l))
@@ -1296,51 +875,8 @@ func (m *SpotOrder) Size() (n int) {
 		l = m.Date.Size()
 		n += 1 + l + sovTypes(uint64(l))
 	}
-	return n
-}
-
-func (m *LegacyPerpetualOrder) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.OrderId != 0 {
-		n += 1 + sovTypes(uint64(m.OrderId))
-	}
-	l = len(m.OwnerAddress)
-	if l > 0 {
-		n += 1 + l + sovTypes(uint64(l))
-	}
-	if m.PerpetualOrderType != 0 {
-		n += 1 + sovTypes(uint64(m.PerpetualOrderType))
-	}
-	if m.Position != 0 {
-		n += 1 + sovTypes(uint64(m.Position))
-	}
-	l = m.TriggerPrice.Size()
+	l = m.OrderPrice.Size()
 	n += 1 + l + sovTypes(uint64(l))
-	l = m.Collateral.Size()
-	n += 1 + l + sovTypes(uint64(l))
-	l = len(m.TradingAsset)
-	if l > 0 {
-		n += 1 + l + sovTypes(uint64(l))
-	}
-	l = m.Leverage.Size()
-	n += 1 + l + sovTypes(uint64(l))
-	l = m.TakeProfitPrice.Size()
-	n += 1 + l + sovTypes(uint64(l))
-	if m.PositionId != 0 {
-		n += 1 + sovTypes(uint64(m.PositionId))
-	}
-	if m.Status != 0 {
-		n += 1 + sovTypes(uint64(m.Status))
-	}
-	l = m.StopLossPrice.Size()
-	n += 1 + l + sovTypes(uint64(l))
-	if m.PoolId != 0 {
-		n += 1 + sovTypes(uint64(m.PoolId))
-	}
 	return n
 }
 
@@ -1363,7 +899,7 @@ func (m *PerpetualOrder) Size() (n int) {
 	if m.Position != 0 {
 		n += 1 + sovTypes(uint64(m.Position))
 	}
-	l = m.TriggerPrice.Size()
+	l = m.LegacyTriggerPriceV1.Size()
 	n += 1 + l + sovTypes(uint64(l))
 	l = m.Collateral.Size()
 	n += 1 + l + sovTypes(uint64(l))
@@ -1386,6 +922,8 @@ func (m *PerpetualOrder) Size() (n int) {
 	if m.PoolId != 0 {
 		n += 1 + sovTypes(uint64(m.PoolId))
 	}
+	l = m.TriggerPrice.Size()
+	n += 1 + l + sovTypes(uint64(l))
 	return n
 }
 
@@ -1504,279 +1042,6 @@ func (m *Date) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *LegacySpotOrder) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: LegacySpotOrder: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: LegacySpotOrder: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrderType", wireType)
-			}
-			m.OrderType = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.OrderType |= SpotOrderType(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
-			}
-			m.OrderId = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.OrderId |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrderPrice", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.OrderPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrderAmount", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.OrderAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OwnerAddress", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OwnerAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrderTargetDenom", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OrderTargetDenom = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
-			}
-			m.Status = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Status |= Status(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Date", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Date == nil {
-				m.Date = &Date{}
-			}
-			if err := m.Date.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
 func (m *SpotOrder) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1846,9 +1111,9 @@ func (m *SpotOrder) Unmarshal(dAtA []byte) error {
 			}
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrderPrice", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyOrderPriceV1", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -1858,23 +1123,22 @@ func (m *SpotOrder) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTypes
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTypes
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.OrderPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LegacyOrderPriceV1.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2030,280 +1294,9 @@ func (m *SpotOrder) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTypes(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *LegacyPerpetualOrder) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTypes
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: LegacyPerpetualOrder: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: LegacyPerpetualOrder: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
-			}
-			m.OrderId = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.OrderId |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OwnerAddress", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OwnerAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PerpetualOrderType", wireType)
-			}
-			m.PerpetualOrderType = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.PerpetualOrderType |= PerpetualOrderType(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
-			}
-			m.Position = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Position |= PerpetualPosition(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TriggerPrice", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.TriggerPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Collateral", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.Collateral.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TradingAsset", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.TradingAsset = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Leverage", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.Leverage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		case 9:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TakeProfitPrice", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderPrice", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2331,101 +1324,10 @@ func (m *LegacyPerpetualOrder) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.TakeProfitPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.OrderPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 10:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PositionId", wireType)
-			}
-			m.PositionId = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.PositionId |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 11:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
-			}
-			m.Status = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Status |= Status(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 12:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StopLossPrice", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTypes
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTypes
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.StopLossPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 13:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
-			}
-			m.PoolId = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTypes
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.PoolId |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTypes(dAtA[iNdEx:])
@@ -2567,9 +1469,9 @@ func (m *PerpetualOrder) Unmarshal(dAtA []byte) error {
 			}
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TriggerPrice", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyTriggerPriceV1", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -2579,23 +1481,22 @@ func (m *PerpetualOrder) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthTypes
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthTypes
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.TriggerPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LegacyTriggerPriceV1.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2823,6 +1724,40 @@ func (m *PerpetualOrder) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 14:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TriggerPrice", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.TriggerPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTypes(dAtA[iNdEx:])
