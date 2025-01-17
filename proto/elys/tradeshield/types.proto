@@ -24,7 +24,7 @@ message Date {
 message SpotOrder {
   SpotOrderType order_type = 1;
   uint64 order_id = 2;
-  LegacyOrderPrice legacy_order_price_v1 = 3 [ (gogoproto.nullable) = false ];
+  LegacyOrderPriceV1 legacy_order_price_v1 = 3 [ (gogoproto.nullable) = false ];
   string order_price = 9 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -50,7 +50,7 @@ message PerpetualOrder {
   string owner_address = 2;
   PerpetualOrderType perpetual_order_type = 3;
   PerpetualPosition position = 4;
-  LegacyTriggerPrice legacy_trigger_price_v1 = 5
+  LegacyTriggerPriceV1 legacy_trigger_price_v1 = 5
       [ (gogoproto.nullable) = false ];
   string trigger_price = 14 [
     (cosmos_proto.scalar) = "cosmos.Dec",

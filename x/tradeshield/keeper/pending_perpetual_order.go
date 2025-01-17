@@ -160,7 +160,7 @@ func (k Keeper) SetAllLegacyPerpetualTriggerPriceToNewTriggerPriceStructure(ctx 
 		var order types.PerpetualOrder
 		k.cdc.MustUnmarshal(iterator.Value(), &order)
 		order.TriggerPrice = order.LegacyTriggerPriceV1.Rate
-		order.LegacyTriggerPriceV1 = types.LegacyTriggerPrice{}
+		order.LegacyTriggerPriceV1 = types.LegacyTriggerPriceV1{}
 		store.Set(iterator.Key(), k.cdc.MustMarshal(&order))
 	}
 }

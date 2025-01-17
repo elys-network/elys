@@ -15,7 +15,7 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrder() {
 		OrderId:          1,
 		OwnerAddress:     "valid_address",
 		OrderType:        types.SpotOrderType_LIMITBUY,
-		LegacyOrderPriceV1: types.LegacyOrderPrice{
+		LegacyOrderPriceV1: types.LegacyOrderPriceV1{
 			Rate: math.LegacyNewDec(1),
 		},
 		OrderPrice:       math.LegacyNewDec(1),
@@ -69,7 +69,7 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderAll() {
 		OrderId:          1,
 		OwnerAddress:     "valid_address",
 		OrderType:        types.SpotOrderType_LIMITBUY,
-		LegacyOrderPriceV1: types.LegacyOrderPrice{
+		LegacyOrderPriceV1: types.LegacyOrderPriceV1{
 			Rate: math.LegacyNewDec(1),
 		},
 		OrderPrice:       math.LegacyNewDec(1),

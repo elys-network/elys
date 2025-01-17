@@ -16,29 +16,29 @@ import (
 )
 
 var (
-	md_LegacyOrderPrice             protoreflect.MessageDescriptor
-	fd_LegacyOrderPrice_base_denom  protoreflect.FieldDescriptor
-	fd_LegacyOrderPrice_quote_denom protoreflect.FieldDescriptor
-	fd_LegacyOrderPrice_rate        protoreflect.FieldDescriptor
+	md_LegacyOrderPriceV1             protoreflect.MessageDescriptor
+	fd_LegacyOrderPriceV1_base_denom  protoreflect.FieldDescriptor
+	fd_LegacyOrderPriceV1_quote_denom protoreflect.FieldDescriptor
+	fd_LegacyOrderPriceV1_rate        protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_tradeshield_order_proto_init()
-	md_LegacyOrderPrice = File_elys_tradeshield_order_proto.Messages().ByName("LegacyOrderPrice")
-	fd_LegacyOrderPrice_base_denom = md_LegacyOrderPrice.Fields().ByName("base_denom")
-	fd_LegacyOrderPrice_quote_denom = md_LegacyOrderPrice.Fields().ByName("quote_denom")
-	fd_LegacyOrderPrice_rate = md_LegacyOrderPrice.Fields().ByName("rate")
+	md_LegacyOrderPriceV1 = File_elys_tradeshield_order_proto.Messages().ByName("LegacyOrderPriceV1")
+	fd_LegacyOrderPriceV1_base_denom = md_LegacyOrderPriceV1.Fields().ByName("base_denom")
+	fd_LegacyOrderPriceV1_quote_denom = md_LegacyOrderPriceV1.Fields().ByName("quote_denom")
+	fd_LegacyOrderPriceV1_rate = md_LegacyOrderPriceV1.Fields().ByName("rate")
 }
 
-var _ protoreflect.Message = (*fastReflection_LegacyOrderPrice)(nil)
+var _ protoreflect.Message = (*fastReflection_LegacyOrderPriceV1)(nil)
 
-type fastReflection_LegacyOrderPrice LegacyOrderPrice
+type fastReflection_LegacyOrderPriceV1 LegacyOrderPriceV1
 
-func (x *LegacyOrderPrice) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_LegacyOrderPrice)(x)
+func (x *LegacyOrderPriceV1) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_LegacyOrderPriceV1)(x)
 }
 
-func (x *LegacyOrderPrice) slowProtoReflect() protoreflect.Message {
+func (x *LegacyOrderPriceV1) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_tradeshield_order_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -50,43 +50,43 @@ func (x *LegacyOrderPrice) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_LegacyOrderPrice_messageType fastReflection_LegacyOrderPrice_messageType
-var _ protoreflect.MessageType = fastReflection_LegacyOrderPrice_messageType{}
+var _fastReflection_LegacyOrderPriceV1_messageType fastReflection_LegacyOrderPriceV1_messageType
+var _ protoreflect.MessageType = fastReflection_LegacyOrderPriceV1_messageType{}
 
-type fastReflection_LegacyOrderPrice_messageType struct{}
+type fastReflection_LegacyOrderPriceV1_messageType struct{}
 
-func (x fastReflection_LegacyOrderPrice_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_LegacyOrderPrice)(nil)
+func (x fastReflection_LegacyOrderPriceV1_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_LegacyOrderPriceV1)(nil)
 }
-func (x fastReflection_LegacyOrderPrice_messageType) New() protoreflect.Message {
-	return new(fastReflection_LegacyOrderPrice)
+func (x fastReflection_LegacyOrderPriceV1_messageType) New() protoreflect.Message {
+	return new(fastReflection_LegacyOrderPriceV1)
 }
-func (x fastReflection_LegacyOrderPrice_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_LegacyOrderPrice
+func (x fastReflection_LegacyOrderPriceV1_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_LegacyOrderPriceV1
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_LegacyOrderPrice) Descriptor() protoreflect.MessageDescriptor {
-	return md_LegacyOrderPrice
+func (x *fastReflection_LegacyOrderPriceV1) Descriptor() protoreflect.MessageDescriptor {
+	return md_LegacyOrderPriceV1
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_LegacyOrderPrice) Type() protoreflect.MessageType {
-	return _fastReflection_LegacyOrderPrice_messageType
+func (x *fastReflection_LegacyOrderPriceV1) Type() protoreflect.MessageType {
+	return _fastReflection_LegacyOrderPriceV1_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_LegacyOrderPrice) New() protoreflect.Message {
-	return new(fastReflection_LegacyOrderPrice)
+func (x *fastReflection_LegacyOrderPriceV1) New() protoreflect.Message {
+	return new(fastReflection_LegacyOrderPriceV1)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_LegacyOrderPrice) Interface() protoreflect.ProtoMessage {
-	return (*LegacyOrderPrice)(x)
+func (x *fastReflection_LegacyOrderPriceV1) Interface() protoreflect.ProtoMessage {
+	return (*LegacyOrderPriceV1)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -94,22 +94,22 @@ func (x *fastReflection_LegacyOrderPrice) Interface() protoreflect.ProtoMessage 
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_LegacyOrderPrice) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_LegacyOrderPriceV1) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.BaseDenom != "" {
 		value := protoreflect.ValueOfString(x.BaseDenom)
-		if !f(fd_LegacyOrderPrice_base_denom, value) {
+		if !f(fd_LegacyOrderPriceV1_base_denom, value) {
 			return
 		}
 	}
 	if x.QuoteDenom != "" {
 		value := protoreflect.ValueOfString(x.QuoteDenom)
-		if !f(fd_LegacyOrderPrice_quote_denom, value) {
+		if !f(fd_LegacyOrderPriceV1_quote_denom, value) {
 			return
 		}
 	}
 	if x.Rate != "" {
 		value := protoreflect.ValueOfString(x.Rate)
-		if !f(fd_LegacyOrderPrice_rate, value) {
+		if !f(fd_LegacyOrderPriceV1_rate, value) {
 			return
 		}
 	}
@@ -126,19 +126,19 @@ func (x *fastReflection_LegacyOrderPrice) Range(f func(protoreflect.FieldDescrip
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_LegacyOrderPrice) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_LegacyOrderPriceV1) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.tradeshield.LegacyOrderPrice.base_denom":
+	case "elys.tradeshield.LegacyOrderPriceV1.base_denom":
 		return x.BaseDenom != ""
-	case "elys.tradeshield.LegacyOrderPrice.quote_denom":
+	case "elys.tradeshield.LegacyOrderPriceV1.quote_denom":
 		return x.QuoteDenom != ""
-	case "elys.tradeshield.LegacyOrderPrice.rate":
+	case "elys.tradeshield.LegacyOrderPriceV1.rate":
 		return x.Rate != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPriceV1 does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -148,19 +148,19 @@ func (x *fastReflection_LegacyOrderPrice) Has(fd protoreflect.FieldDescriptor) b
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyOrderPrice) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_LegacyOrderPriceV1) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.tradeshield.LegacyOrderPrice.base_denom":
+	case "elys.tradeshield.LegacyOrderPriceV1.base_denom":
 		x.BaseDenom = ""
-	case "elys.tradeshield.LegacyOrderPrice.quote_denom":
+	case "elys.tradeshield.LegacyOrderPriceV1.quote_denom":
 		x.QuoteDenom = ""
-	case "elys.tradeshield.LegacyOrderPrice.rate":
+	case "elys.tradeshield.LegacyOrderPriceV1.rate":
 		x.Rate = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPriceV1 does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -170,22 +170,22 @@ func (x *fastReflection_LegacyOrderPrice) Clear(fd protoreflect.FieldDescriptor)
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_LegacyOrderPrice) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyOrderPriceV1) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.tradeshield.LegacyOrderPrice.base_denom":
+	case "elys.tradeshield.LegacyOrderPriceV1.base_denom":
 		value := x.BaseDenom
 		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.LegacyOrderPrice.quote_denom":
+	case "elys.tradeshield.LegacyOrderPriceV1.quote_denom":
 		value := x.QuoteDenom
 		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.LegacyOrderPrice.rate":
+	case "elys.tradeshield.LegacyOrderPriceV1.rate":
 		value := x.Rate
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPrice does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPriceV1 does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -199,19 +199,19 @@ func (x *fastReflection_LegacyOrderPrice) Get(descriptor protoreflect.FieldDescr
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyOrderPrice) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_LegacyOrderPriceV1) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.tradeshield.LegacyOrderPrice.base_denom":
+	case "elys.tradeshield.LegacyOrderPriceV1.base_denom":
 		x.BaseDenom = value.Interface().(string)
-	case "elys.tradeshield.LegacyOrderPrice.quote_denom":
+	case "elys.tradeshield.LegacyOrderPriceV1.quote_denom":
 		x.QuoteDenom = value.Interface().(string)
-	case "elys.tradeshield.LegacyOrderPrice.rate":
+	case "elys.tradeshield.LegacyOrderPriceV1.rate":
 		x.Rate = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPriceV1 does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -225,48 +225,48 @@ func (x *fastReflection_LegacyOrderPrice) Set(fd protoreflect.FieldDescriptor, v
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyOrderPrice) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyOrderPriceV1) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.tradeshield.LegacyOrderPrice.base_denom":
-		panic(fmt.Errorf("field base_denom of message elys.tradeshield.LegacyOrderPrice is not mutable"))
-	case "elys.tradeshield.LegacyOrderPrice.quote_denom":
-		panic(fmt.Errorf("field quote_denom of message elys.tradeshield.LegacyOrderPrice is not mutable"))
-	case "elys.tradeshield.LegacyOrderPrice.rate":
-		panic(fmt.Errorf("field rate of message elys.tradeshield.LegacyOrderPrice is not mutable"))
+	case "elys.tradeshield.LegacyOrderPriceV1.base_denom":
+		panic(fmt.Errorf("field base_denom of message elys.tradeshield.LegacyOrderPriceV1 is not mutable"))
+	case "elys.tradeshield.LegacyOrderPriceV1.quote_denom":
+		panic(fmt.Errorf("field quote_denom of message elys.tradeshield.LegacyOrderPriceV1 is not mutable"))
+	case "elys.tradeshield.LegacyOrderPriceV1.rate":
+		panic(fmt.Errorf("field rate of message elys.tradeshield.LegacyOrderPriceV1 is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPriceV1 does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_LegacyOrderPrice) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyOrderPriceV1) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.tradeshield.LegacyOrderPrice.base_denom":
+	case "elys.tradeshield.LegacyOrderPriceV1.base_denom":
 		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.LegacyOrderPrice.quote_denom":
+	case "elys.tradeshield.LegacyOrderPriceV1.quote_denom":
 		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.LegacyOrderPrice.rate":
+	case "elys.tradeshield.LegacyOrderPriceV1.rate":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyOrderPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyOrderPriceV1 does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_LegacyOrderPrice) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_LegacyOrderPriceV1) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.tradeshield.LegacyOrderPrice", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.tradeshield.LegacyOrderPriceV1", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -274,7 +274,7 @@ func (x *fastReflection_LegacyOrderPrice) WhichOneof(d protoreflect.OneofDescrip
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_LegacyOrderPrice) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_LegacyOrderPriceV1) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -285,7 +285,7 @@ func (x *fastReflection_LegacyOrderPrice) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyOrderPrice) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_LegacyOrderPriceV1) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -297,7 +297,7 @@ func (x *fastReflection_LegacyOrderPrice) SetUnknown(fields protoreflect.RawFiel
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_LegacyOrderPrice) IsValid() bool {
+func (x *fastReflection_LegacyOrderPriceV1) IsValid() bool {
 	return x != nil
 }
 
@@ -307,9 +307,9 @@ func (x *fastReflection_LegacyOrderPrice) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_LegacyOrderPrice) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_LegacyOrderPriceV1) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*LegacyOrderPrice)
+		x := input.Message.Interface().(*LegacyOrderPriceV1)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -343,7 +343,7 @@ func (x *fastReflection_LegacyOrderPrice) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*LegacyOrderPrice)
+		x := input.Message.Interface().(*LegacyOrderPriceV1)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -394,7 +394,7 @@ func (x *fastReflection_LegacyOrderPrice) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*LegacyOrderPrice)
+		x := input.Message.Interface().(*LegacyOrderPriceV1)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -426,10 +426,10 @@ func (x *fastReflection_LegacyOrderPrice) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyOrderPrice: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyOrderPriceV1: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyOrderPrice: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyOrderPriceV1: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -564,27 +564,27 @@ func (x *fastReflection_LegacyOrderPrice) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_LegacyTriggerPrice                     protoreflect.MessageDescriptor
-	fd_LegacyTriggerPrice_trading_asset_denom protoreflect.FieldDescriptor
-	fd_LegacyTriggerPrice_rate                protoreflect.FieldDescriptor
+	md_LegacyTriggerPriceV1                     protoreflect.MessageDescriptor
+	fd_LegacyTriggerPriceV1_trading_asset_denom protoreflect.FieldDescriptor
+	fd_LegacyTriggerPriceV1_rate                protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_tradeshield_order_proto_init()
-	md_LegacyTriggerPrice = File_elys_tradeshield_order_proto.Messages().ByName("LegacyTriggerPrice")
-	fd_LegacyTriggerPrice_trading_asset_denom = md_LegacyTriggerPrice.Fields().ByName("trading_asset_denom")
-	fd_LegacyTriggerPrice_rate = md_LegacyTriggerPrice.Fields().ByName("rate")
+	md_LegacyTriggerPriceV1 = File_elys_tradeshield_order_proto.Messages().ByName("LegacyTriggerPriceV1")
+	fd_LegacyTriggerPriceV1_trading_asset_denom = md_LegacyTriggerPriceV1.Fields().ByName("trading_asset_denom")
+	fd_LegacyTriggerPriceV1_rate = md_LegacyTriggerPriceV1.Fields().ByName("rate")
 }
 
-var _ protoreflect.Message = (*fastReflection_LegacyTriggerPrice)(nil)
+var _ protoreflect.Message = (*fastReflection_LegacyTriggerPriceV1)(nil)
 
-type fastReflection_LegacyTriggerPrice LegacyTriggerPrice
+type fastReflection_LegacyTriggerPriceV1 LegacyTriggerPriceV1
 
-func (x *LegacyTriggerPrice) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_LegacyTriggerPrice)(x)
+func (x *LegacyTriggerPriceV1) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_LegacyTriggerPriceV1)(x)
 }
 
-func (x *LegacyTriggerPrice) slowProtoReflect() protoreflect.Message {
+func (x *LegacyTriggerPriceV1) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_tradeshield_order_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -596,43 +596,43 @@ func (x *LegacyTriggerPrice) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_LegacyTriggerPrice_messageType fastReflection_LegacyTriggerPrice_messageType
-var _ protoreflect.MessageType = fastReflection_LegacyTriggerPrice_messageType{}
+var _fastReflection_LegacyTriggerPriceV1_messageType fastReflection_LegacyTriggerPriceV1_messageType
+var _ protoreflect.MessageType = fastReflection_LegacyTriggerPriceV1_messageType{}
 
-type fastReflection_LegacyTriggerPrice_messageType struct{}
+type fastReflection_LegacyTriggerPriceV1_messageType struct{}
 
-func (x fastReflection_LegacyTriggerPrice_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_LegacyTriggerPrice)(nil)
+func (x fastReflection_LegacyTriggerPriceV1_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_LegacyTriggerPriceV1)(nil)
 }
-func (x fastReflection_LegacyTriggerPrice_messageType) New() protoreflect.Message {
-	return new(fastReflection_LegacyTriggerPrice)
+func (x fastReflection_LegacyTriggerPriceV1_messageType) New() protoreflect.Message {
+	return new(fastReflection_LegacyTriggerPriceV1)
 }
-func (x fastReflection_LegacyTriggerPrice_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_LegacyTriggerPrice
+func (x fastReflection_LegacyTriggerPriceV1_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_LegacyTriggerPriceV1
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_LegacyTriggerPrice) Descriptor() protoreflect.MessageDescriptor {
-	return md_LegacyTriggerPrice
+func (x *fastReflection_LegacyTriggerPriceV1) Descriptor() protoreflect.MessageDescriptor {
+	return md_LegacyTriggerPriceV1
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_LegacyTriggerPrice) Type() protoreflect.MessageType {
-	return _fastReflection_LegacyTriggerPrice_messageType
+func (x *fastReflection_LegacyTriggerPriceV1) Type() protoreflect.MessageType {
+	return _fastReflection_LegacyTriggerPriceV1_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_LegacyTriggerPrice) New() protoreflect.Message {
-	return new(fastReflection_LegacyTriggerPrice)
+func (x *fastReflection_LegacyTriggerPriceV1) New() protoreflect.Message {
+	return new(fastReflection_LegacyTriggerPriceV1)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_LegacyTriggerPrice) Interface() protoreflect.ProtoMessage {
-	return (*LegacyTriggerPrice)(x)
+func (x *fastReflection_LegacyTriggerPriceV1) Interface() protoreflect.ProtoMessage {
+	return (*LegacyTriggerPriceV1)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -640,16 +640,16 @@ func (x *fastReflection_LegacyTriggerPrice) Interface() protoreflect.ProtoMessag
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_LegacyTriggerPrice) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_LegacyTriggerPriceV1) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.TradingAssetDenom != "" {
 		value := protoreflect.ValueOfString(x.TradingAssetDenom)
-		if !f(fd_LegacyTriggerPrice_trading_asset_denom, value) {
+		if !f(fd_LegacyTriggerPriceV1_trading_asset_denom, value) {
 			return
 		}
 	}
 	if x.Rate != "" {
 		value := protoreflect.ValueOfString(x.Rate)
-		if !f(fd_LegacyTriggerPrice_rate, value) {
+		if !f(fd_LegacyTriggerPriceV1_rate, value) {
 			return
 		}
 	}
@@ -666,17 +666,17 @@ func (x *fastReflection_LegacyTriggerPrice) Range(f func(protoreflect.FieldDescr
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_LegacyTriggerPrice) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_LegacyTriggerPriceV1) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.tradeshield.LegacyTriggerPrice.trading_asset_denom":
+	case "elys.tradeshield.LegacyTriggerPriceV1.trading_asset_denom":
 		return x.TradingAssetDenom != ""
-	case "elys.tradeshield.LegacyTriggerPrice.rate":
+	case "elys.tradeshield.LegacyTriggerPriceV1.rate":
 		return x.Rate != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPriceV1 does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -686,17 +686,17 @@ func (x *fastReflection_LegacyTriggerPrice) Has(fd protoreflect.FieldDescriptor)
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyTriggerPrice) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_LegacyTriggerPriceV1) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.tradeshield.LegacyTriggerPrice.trading_asset_denom":
+	case "elys.tradeshield.LegacyTriggerPriceV1.trading_asset_denom":
 		x.TradingAssetDenom = ""
-	case "elys.tradeshield.LegacyTriggerPrice.rate":
+	case "elys.tradeshield.LegacyTriggerPriceV1.rate":
 		x.Rate = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPriceV1 does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -706,19 +706,19 @@ func (x *fastReflection_LegacyTriggerPrice) Clear(fd protoreflect.FieldDescripto
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_LegacyTriggerPrice) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyTriggerPriceV1) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.tradeshield.LegacyTriggerPrice.trading_asset_denom":
+	case "elys.tradeshield.LegacyTriggerPriceV1.trading_asset_denom":
 		value := x.TradingAssetDenom
 		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.LegacyTriggerPrice.rate":
+	case "elys.tradeshield.LegacyTriggerPriceV1.rate":
 		value := x.Rate
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPrice does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPriceV1 does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -732,17 +732,17 @@ func (x *fastReflection_LegacyTriggerPrice) Get(descriptor protoreflect.FieldDes
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyTriggerPrice) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_LegacyTriggerPriceV1) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.tradeshield.LegacyTriggerPrice.trading_asset_denom":
+	case "elys.tradeshield.LegacyTriggerPriceV1.trading_asset_denom":
 		x.TradingAssetDenom = value.Interface().(string)
-	case "elys.tradeshield.LegacyTriggerPrice.rate":
+	case "elys.tradeshield.LegacyTriggerPriceV1.rate":
 		x.Rate = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPriceV1 does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -756,44 +756,44 @@ func (x *fastReflection_LegacyTriggerPrice) Set(fd protoreflect.FieldDescriptor,
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyTriggerPrice) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyTriggerPriceV1) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.tradeshield.LegacyTriggerPrice.trading_asset_denom":
-		panic(fmt.Errorf("field trading_asset_denom of message elys.tradeshield.LegacyTriggerPrice is not mutable"))
-	case "elys.tradeshield.LegacyTriggerPrice.rate":
-		panic(fmt.Errorf("field rate of message elys.tradeshield.LegacyTriggerPrice is not mutable"))
+	case "elys.tradeshield.LegacyTriggerPriceV1.trading_asset_denom":
+		panic(fmt.Errorf("field trading_asset_denom of message elys.tradeshield.LegacyTriggerPriceV1 is not mutable"))
+	case "elys.tradeshield.LegacyTriggerPriceV1.rate":
+		panic(fmt.Errorf("field rate of message elys.tradeshield.LegacyTriggerPriceV1 is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPriceV1 does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_LegacyTriggerPrice) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_LegacyTriggerPriceV1) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.tradeshield.LegacyTriggerPrice.trading_asset_denom":
+	case "elys.tradeshield.LegacyTriggerPriceV1.trading_asset_denom":
 		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.LegacyTriggerPrice.rate":
+	case "elys.tradeshield.LegacyTriggerPriceV1.rate":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPrice"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyTriggerPriceV1"))
 		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPrice does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.tradeshield.LegacyTriggerPriceV1 does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_LegacyTriggerPrice) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_LegacyTriggerPriceV1) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.tradeshield.LegacyTriggerPrice", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.tradeshield.LegacyTriggerPriceV1", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -801,7 +801,7 @@ func (x *fastReflection_LegacyTriggerPrice) WhichOneof(d protoreflect.OneofDescr
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_LegacyTriggerPrice) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_LegacyTriggerPriceV1) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -812,7 +812,7 @@ func (x *fastReflection_LegacyTriggerPrice) GetUnknown() protoreflect.RawFields 
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyTriggerPrice) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_LegacyTriggerPriceV1) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -824,7 +824,7 @@ func (x *fastReflection_LegacyTriggerPrice) SetUnknown(fields protoreflect.RawFi
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_LegacyTriggerPrice) IsValid() bool {
+func (x *fastReflection_LegacyTriggerPriceV1) IsValid() bool {
 	return x != nil
 }
 
@@ -834,9 +834,9 @@ func (x *fastReflection_LegacyTriggerPrice) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_LegacyTriggerPrice) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_LegacyTriggerPriceV1) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*LegacyTriggerPrice)
+		x := input.Message.Interface().(*LegacyTriggerPriceV1)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -866,7 +866,7 @@ func (x *fastReflection_LegacyTriggerPrice) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*LegacyTriggerPrice)
+		x := input.Message.Interface().(*LegacyTriggerPriceV1)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -910,7 +910,7 @@ func (x *fastReflection_LegacyTriggerPrice) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*LegacyTriggerPrice)
+		x := input.Message.Interface().(*LegacyTriggerPriceV1)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -942,10 +942,10 @@ func (x *fastReflection_LegacyTriggerPrice) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyTriggerPrice: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyTriggerPriceV1: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyTriggerPrice: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyTriggerPriceV1: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -1162,7 +1162,7 @@ func (PerpetualPosition) EnumDescriptor() ([]byte, []int) {
 	return file_elys_tradeshield_order_proto_rawDescGZIP(), []int{1}
 }
 
-type LegacyOrderPrice struct {
+type LegacyOrderPriceV1 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -1172,8 +1172,8 @@ type LegacyOrderPrice struct {
 	Rate       string `protobuf:"bytes,3,opt,name=rate,proto3" json:"rate,omitempty"`
 }
 
-func (x *LegacyOrderPrice) Reset() {
-	*x = LegacyOrderPrice{}
+func (x *LegacyOrderPriceV1) Reset() {
+	*x = LegacyOrderPriceV1{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_tradeshield_order_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1181,39 +1181,39 @@ func (x *LegacyOrderPrice) Reset() {
 	}
 }
 
-func (x *LegacyOrderPrice) String() string {
+func (x *LegacyOrderPriceV1) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LegacyOrderPrice) ProtoMessage() {}
+func (*LegacyOrderPriceV1) ProtoMessage() {}
 
-// Deprecated: Use LegacyOrderPrice.ProtoReflect.Descriptor instead.
-func (*LegacyOrderPrice) Descriptor() ([]byte, []int) {
+// Deprecated: Use LegacyOrderPriceV1.ProtoReflect.Descriptor instead.
+func (*LegacyOrderPriceV1) Descriptor() ([]byte, []int) {
 	return file_elys_tradeshield_order_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *LegacyOrderPrice) GetBaseDenom() string {
+func (x *LegacyOrderPriceV1) GetBaseDenom() string {
 	if x != nil {
 		return x.BaseDenom
 	}
 	return ""
 }
 
-func (x *LegacyOrderPrice) GetQuoteDenom() string {
+func (x *LegacyOrderPriceV1) GetQuoteDenom() string {
 	if x != nil {
 		return x.QuoteDenom
 	}
 	return ""
 }
 
-func (x *LegacyOrderPrice) GetRate() string {
+func (x *LegacyOrderPriceV1) GetRate() string {
 	if x != nil {
 		return x.Rate
 	}
 	return ""
 }
 
-type LegacyTriggerPrice struct {
+type LegacyTriggerPriceV1 struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -1222,8 +1222,8 @@ type LegacyTriggerPrice struct {
 	Rate              string `protobuf:"bytes,3,opt,name=rate,proto3" json:"rate,omitempty"`
 }
 
-func (x *LegacyTriggerPrice) Reset() {
-	*x = LegacyTriggerPrice{}
+func (x *LegacyTriggerPriceV1) Reset() {
+	*x = LegacyTriggerPriceV1{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_tradeshield_order_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1231,25 +1231,25 @@ func (x *LegacyTriggerPrice) Reset() {
 	}
 }
 
-func (x *LegacyTriggerPrice) String() string {
+func (x *LegacyTriggerPriceV1) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LegacyTriggerPrice) ProtoMessage() {}
+func (*LegacyTriggerPriceV1) ProtoMessage() {}
 
-// Deprecated: Use LegacyTriggerPrice.ProtoReflect.Descriptor instead.
-func (*LegacyTriggerPrice) Descriptor() ([]byte, []int) {
+// Deprecated: Use LegacyTriggerPriceV1.ProtoReflect.Descriptor instead.
+func (*LegacyTriggerPriceV1) Descriptor() ([]byte, []int) {
 	return file_elys_tradeshield_order_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *LegacyTriggerPrice) GetTradingAssetDenom() string {
+func (x *LegacyTriggerPriceV1) GetTradingAssetDenom() string {
 	if x != nil {
 		return x.TradingAssetDenom
 	}
 	return ""
 }
 
-func (x *LegacyTriggerPrice) GetRate() string {
+func (x *LegacyTriggerPriceV1) GetRate() string {
 	if x != nil {
 		return x.Rate
 	}
@@ -1267,46 +1267,46 @@ var file_elys_tradeshield_order_proto_rawDesc = []byte{
 	0x61, 0x73, 0x65, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x63, 0x6f, 0x69, 0x6e,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x22, 0x99, 0x01, 0x0a, 0x10, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x4f, 0x72, 0x64, 0x65,
-	0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x62, 0x61, 0x73, 0x65,
-	0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1f, 0x0a, 0x0b, 0x71, 0x75, 0x6f, 0x74, 0x65, 0x5f, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x71, 0x75, 0x6f, 0x74,
-	0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x45, 0x0a, 0x04, 0x72, 0x61, 0x74, 0x65, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
-	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x04, 0x72, 0x61, 0x74, 0x65, 0x22, 0x8b, 0x01,
-	0x0a, 0x12, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x54, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50,
-	0x72, 0x69, 0x63, 0x65, 0x12, 0x2e, 0x0a, 0x13, 0x74, 0x72, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x5f,
-	0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x11, 0x74, 0x72, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x41, 0x73, 0x73, 0x65, 0x74, 0x44,
-	0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x45, 0x0a, 0x04, 0x72, 0x61, 0x74, 0x65, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
-	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x04, 0x72, 0x61, 0x74, 0x65, 0x2a, 0x49, 0x0a, 0x0d, 0x53,
-	0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0c, 0x0a, 0x08,
-	0x53, 0x54, 0x4f, 0x50, 0x4c, 0x4f, 0x53, 0x53, 0x10, 0x00, 0x12, 0x0d, 0x0a, 0x09, 0x4c, 0x49,
-	0x4d, 0x49, 0x54, 0x53, 0x45, 0x4c, 0x4c, 0x10, 0x01, 0x12, 0x0c, 0x0a, 0x08, 0x4c, 0x49, 0x4d,
-	0x49, 0x54, 0x42, 0x55, 0x59, 0x10, 0x02, 0x12, 0x0d, 0x0a, 0x09, 0x4d, 0x41, 0x52, 0x4b, 0x45,
-	0x54, 0x42, 0x55, 0x59, 0x10, 0x03, 0x2a, 0x39, 0x0a, 0x11, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0f, 0x0a, 0x0b, 0x55,
-	0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04,
-	0x4c, 0x4f, 0x4e, 0x47, 0x10, 0x01, 0x12, 0x09, 0x0a, 0x05, 0x53, 0x48, 0x4f, 0x52, 0x54, 0x10,
-	0x02, 0x42, 0xb6, 0x01, 0x0a, 0x14, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74,
-	0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x42, 0x0a, 0x4f, 0x72, 0x64, 0x65,
-	0x72, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x31, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72,
-	0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
-	0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xa2, 0x02, 0x03, 0x45, 0x54,
-	0x58, 0xaa, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68,
-	0x69, 0x65, 0x6c, 0x64, 0xca, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x54, 0x72, 0x61, 0x64,
-	0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xe2, 0x02, 0x1c, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x54,
-	0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65,
-	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x11, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x54,
-	0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x6f, 0x22, 0x9b, 0x01, 0x0a, 0x12, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x4f, 0x72, 0x64, 0x65,
+	0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x56, 0x31, 0x12, 0x1d, 0x0a, 0x0a, 0x62, 0x61, 0x73, 0x65,
+	0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x62, 0x61,
+	0x73, 0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1f, 0x0a, 0x0b, 0x71, 0x75, 0x6f, 0x74, 0x65,
+	0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x71, 0x75,
+	0x6f, 0x74, 0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x45, 0x0a, 0x04, 0x72, 0x61, 0x74, 0x65,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x04, 0x72, 0x61, 0x74, 0x65, 0x22,
+	0x8d, 0x01, 0x0a, 0x14, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x54, 0x72, 0x69, 0x67, 0x67, 0x65,
+	0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x56, 0x31, 0x12, 0x2e, 0x0a, 0x13, 0x74, 0x72, 0x61, 0x64,
+	0x69, 0x6e, 0x67, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x74, 0x72, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x41, 0x73,
+	0x73, 0x65, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x45, 0x0a, 0x04, 0x72, 0x61, 0x74, 0x65,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x04, 0x72, 0x61, 0x74, 0x65, 0x2a,
+	0x49, 0x0a, 0x0d, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65,
+	0x12, 0x0c, 0x0a, 0x08, 0x53, 0x54, 0x4f, 0x50, 0x4c, 0x4f, 0x53, 0x53, 0x10, 0x00, 0x12, 0x0d,
+	0x0a, 0x09, 0x4c, 0x49, 0x4d, 0x49, 0x54, 0x53, 0x45, 0x4c, 0x4c, 0x10, 0x01, 0x12, 0x0c, 0x0a,
+	0x08, 0x4c, 0x49, 0x4d, 0x49, 0x54, 0x42, 0x55, 0x59, 0x10, 0x02, 0x12, 0x0d, 0x0a, 0x09, 0x4d,
+	0x41, 0x52, 0x4b, 0x45, 0x54, 0x42, 0x55, 0x59, 0x10, 0x03, 0x2a, 0x39, 0x0a, 0x11, 0x50, 0x65,
+	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x0f, 0x0a, 0x0b, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00,
+	0x12, 0x08, 0x0a, 0x04, 0x4c, 0x4f, 0x4e, 0x47, 0x10, 0x01, 0x12, 0x09, 0x0a, 0x05, 0x53, 0x48,
+	0x4f, 0x52, 0x54, 0x10, 0x02, 0x42, 0xb6, 0x01, 0x0a, 0x14, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x42, 0x0a,
+	0x4f, 0x72, 0x64, 0x65, 0x72, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x31, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
+	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65,
+	0x6c, 0x79, 0x73, 0x2f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xa2,
+	0x02, 0x03, 0x45, 0x54, 0x58, 0xaa, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x54, 0x72, 0x61,
+	0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xca, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x5c,
+	0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xe2, 0x02, 0x1c, 0x45, 0x6c,
+	0x79, 0x73, 0x5c, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x5c, 0x47,
+	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x11, 0x45, 0x6c, 0x79,
+	0x73, 0x3a, 0x3a, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1324,10 +1324,10 @@ func file_elys_tradeshield_order_proto_rawDescGZIP() []byte {
 var file_elys_tradeshield_order_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_elys_tradeshield_order_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_elys_tradeshield_order_proto_goTypes = []interface{}{
-	(SpotOrderType)(0),         // 0: elys.tradeshield.SpotOrderType
-	(PerpetualPosition)(0),     // 1: elys.tradeshield.PerpetualPosition
-	(*LegacyOrderPrice)(nil),   // 2: elys.tradeshield.LegacyOrderPrice
-	(*LegacyTriggerPrice)(nil), // 3: elys.tradeshield.LegacyTriggerPrice
+	(SpotOrderType)(0),           // 0: elys.tradeshield.SpotOrderType
+	(PerpetualPosition)(0),       // 1: elys.tradeshield.PerpetualPosition
+	(*LegacyOrderPriceV1)(nil),   // 2: elys.tradeshield.LegacyOrderPriceV1
+	(*LegacyTriggerPriceV1)(nil), // 3: elys.tradeshield.LegacyTriggerPriceV1
 }
 var file_elys_tradeshield_order_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -1344,7 +1344,7 @@ func file_elys_tradeshield_order_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_elys_tradeshield_order_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LegacyOrderPrice); i {
+			switch v := v.(*LegacyOrderPriceV1); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1356,7 +1356,7 @@ func file_elys_tradeshield_order_proto_init() {
 			}
 		}
 		file_elys_tradeshield_order_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LegacyTriggerPrice); i {
+			switch v := v.(*LegacyTriggerPriceV1); i {
 			case 0:
 				return &v.state
 			case 1:

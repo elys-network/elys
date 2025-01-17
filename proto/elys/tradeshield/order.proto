@@ -8,7 +8,7 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/tradeshield/types";
 
-message LegacyOrderPrice {
+message LegacyOrderPriceV1 {
   string base_denom = 1;
   string quote_denom = 2;
   string rate = 3 [
@@ -26,7 +26,7 @@ enum SpotOrderType {
   MARKETBUY = 3;
 }
 
-message LegacyTriggerPrice {
+message LegacyTriggerPriceV1 {
   string trading_asset_denom = 1;
   string rate = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
