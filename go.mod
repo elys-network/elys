@@ -54,7 +54,7 @@ require (
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0-20240904212233-8cb681e31589
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
-	github.com/ojo-network/ojo v0.5.1-rc3.0.20250110154313-ca9102302e31
+	github.com/ojo-network/ojo v0.5.1-rc3.0.20250117233317-fbf273862777
 	golang.org/x/tools v0.24.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240814211410-ddb44dafa142
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
@@ -98,7 +98,6 @@ require (
 	github.com/cockroachdb/pebble v1.1.1 // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
-	github.com/containerd/continuity v0.4.3 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.15.1 // indirect
 	github.com/cosmos/btcutil v1.0.5 // indirect
 	github.com/cosmos/gogogateway v1.2.0 // indirect
@@ -204,11 +203,10 @@ require (
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/oasisprotocol/curve25519-voi v0.0.0-20230904125328-1f23a7beb09a // indirect
-	github.com/ojo-network/price-feeder v0.2.1-rc1 // indirect
+	github.com/ojo-network/price-feeder v0.2.1-rc1.0.20250117232754-30acbe5395e4 // indirect
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.0 // indirect
-	github.com/opencontainers/runc v1.1.14 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/petermattis/goid v0.0.0-20231207134359-e60b3f734c67 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
