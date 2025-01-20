@@ -177,9 +177,6 @@ func (k Keeper) SubEdenEdenBOnModule(ctx sdk.Context, moduleName string, amt sdk
 func (k Keeper) MintCoins(goCtx context.Context, moduleName string, amt sdk.Coins) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	amt, coinsChanged := k.AddEdenEdenBOnModule(ctx, moduleName, amt)
-	if amt.Empty() {
-		return nil
-	}
 
 	// Emit event to track Eden and EdenB mint amount
 	ctx.EventManager().EmitEvent(
@@ -189,6 +186,10 @@ func (k Keeper) MintCoins(goCtx context.Context, moduleName string, amt sdk.Coin
 			sdk.NewAttribute("coins", coinsChanged.String()),
 		),
 	)
+
+	if amt.Empty() {
+		return nil
+	}
 
 	return k.bankKeeper.MintCoins(ctx, moduleName, amt)
 }
@@ -201,9 +202,6 @@ func (k Keeper) BurnCoins(goCtx context.Context, moduleName string, amt sdk.Coin
 	if err != nil {
 		return err
 	}
-	if amt.Empty() {
-		return nil
-	}
 
 	// Emit event to track Eden and EdenB burn amount
 	ctx.EventManager().EmitEvent(
@@ -213,6 +211,10 @@ func (k Keeper) BurnCoins(goCtx context.Context, moduleName string, amt sdk.Coin
 			sdk.NewAttribute("coins", coinsChanged.String()),
 		),
 	)
+
+	if amt.Empty() {
+		return nil
+	}
 
 	return k.bankKeeper.BurnCoins(ctx, moduleName, amt)
 }
@@ -224,10 +226,6 @@ func (k Keeper) SendCoinsFromModuleToModule(goCtx context.Context, senderModule 
 		return err
 	}
 	amt, coinsChanged := k.AddEdenEdenBOnModule(ctx, recipientModule, amt)
-	if amt.Empty() {
-		return nil
-	}
-
 	// Emit event to track Eden and EdenB send amount
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -237,6 +235,9 @@ func (k Keeper) SendCoinsFromModuleToModule(goCtx context.Context, senderModule 
 			sdk.NewAttribute("coins", coinsChanged.String()),
 		),
 	)
+	if amt.Empty() {
+		return nil
+	}
 
 	return k.bankKeeper.SendCoinsFromModuleToModule(ctx, senderModule, recipientModule, amt)
 }
@@ -249,10 +250,6 @@ func (k Keeper) SendCoinsFromModuleToAccount(goCtx context.Context, senderModule
 	}
 
 	amt, coinsChanged := k.AddEdenEdenBOnAccount(ctx, recipientAddr, amt)
-	if amt.Empty() {
-		return nil
-	}
-
 	// Emit event to track Eden and EdenB send amount
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -262,6 +259,9 @@ func (k Keeper) SendCoinsFromModuleToAccount(goCtx context.Context, senderModule
 			sdk.NewAttribute("coins", coinsChanged.String()),
 		),
 	)
+	if amt.Empty() {
+		return nil
+	}
 
 	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, senderModule, recipientAddr, amt)
 }

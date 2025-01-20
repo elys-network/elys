@@ -40,16 +40,6 @@ message Params {
   bool enable_claim = 7;
   uint64 start_kol_claim_height = 8;
   uint64 end_kol_claim_height = 9;
-  string total_eden_supply = 10 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  string total_edenb_supply = 11 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
 }
 
 message VestingInfo {
