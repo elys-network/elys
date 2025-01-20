@@ -59,17 +59,18 @@ func (suite *PerpetualKeeperTestSuite) TestMTPTriggerChecksAndUpdates() {
 		expectedErrMsg string
 		repayAmount    math.Int
 	}{
-		//{
-		//	"asset profile not found",
-		//	func() {
-		//		suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
-		//	},
-		//	"unable to find base currency entry",
-		//	math.NewInt(0),
-		//},
 		{
-			"force close fails when unable to pay funding fee",
+			"asset profile not found",
 			func() {
+				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
+			},
+			"unable to find base currency entry",
+			math.NewInt(0),
+		},
+		{
+			"Success: force close when unable to pay funding fee",
+			func() {
+				mtp, pool, ammPool, _ = suite.resetForMTPTriggerChecksAndUpdates()
 				mtp.LastFundingCalcBlock = 1
 				mtp.LastFundingCalcTime = 1
 				suite.ctx = suite.ctx.WithBlockHeight(1).WithBlockTime(time.Now())
@@ -84,33 +85,10 @@ func (suite *PerpetualKeeperTestSuite) TestMTPTriggerChecksAndUpdates() {
 				pool.FundingRate = math.LegacyNewDec(1000_000)
 				pool.BorrowInterestRate = math.LegacyNewDec(1)
 				suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
-				suite.app.AssetprofileKeeper.RemoveEntry(suite.ctx, ptypes.BaseCurrency)
 			},
-			"error handling funding fee",
+			"",
 			math.NewInt(0),
 		},
-		//{
-		//	"Success: force close when unable to pay funding fee",
-		//	func() {
-		//		mtp, pool, ammPool, _ = suite.resetForMTPTriggerChecksAndUpdates()
-		//		mtp.LastFundingCalcBlock = 1
-		//		mtp.LastFundingCalcTime = 1
-		//		suite.ctx = suite.ctx.WithBlockHeight(1).WithBlockTime(time.Now())
-		//		suite.app.PerpetualKeeper.SetFundingRate(suite.ctx, 1, 1, types.FundingRateBlock{
-		//			FundingRateLong:    math.LegacyNewDec(10000),
-		//			FundingRateShort:   math.LegacyNewDec(10000),
-		//			FundingAmountShort: math.LegacyNewDec(10000),
-		//			FundingAmountLong:  math.LegacyNewDec(10000),
-		//			BlockHeight:        1,
-		//			BlockTime:          1,
-		//		})
-		//		pool.FundingRate = math.LegacyNewDec(1000_000)
-		//		pool.BorrowInterestRate = math.LegacyNewDec(1)
-		//		suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
-		//	},
-		//	"",
-		//	math.NewInt(0),
-		//},
 		{
 			"paying interest fail",
 			func() {
