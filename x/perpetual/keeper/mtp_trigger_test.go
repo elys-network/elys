@@ -89,7 +89,6 @@ func (suite *PerpetualKeeperTestSuite) TestMTPTriggerChecksAndUpdates() {
 			"error handling funding fee",
 			math.NewInt(0),
 		},
-		// TODO need to be fixed when funding fee distribution is fixed
 		//{
 		//	"Success: force close when unable to pay funding fee",
 		//	func() {
