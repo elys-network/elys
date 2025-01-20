@@ -39,6 +39,8 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		return nil, status.Error(codes.NotFound, "asset profile not found")
 	}
 
+	baseCurrencyPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrencyEntry.Denom)
+
 	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrencyEntry.Denom)
 	totalTVL = totalTVL.Add(stableStakeTVL.TruncateInt())
 
@@ -61,6 +63,6 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		UsdcStaking: stableStakeTVL.TruncateInt(),
 		StakedElys:  stakedElysValue.TruncateInt(),
 		StakedEden:  stakedEdenValue.TruncateInt(),
-		NetStakings: sdk.NewCoins(sdk.NewCoin(baseCurrencyEntry.DisplayName, stableStakeBalance.Amount)),
+		NetStakings: sdk.NewCoins(sdk.NewCoin(baseCurrencyEntry.DisplayName, (stableStakeBalance.Amount.ToLegacyDec().Mul(baseCurrencyPrice).TruncateInt()))),
 	}, nil
 }
