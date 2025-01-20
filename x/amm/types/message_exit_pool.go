@@ -3,6 +3,7 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -28,6 +29,10 @@ func (msg *MsgExitPool) ValidateBasic() error {
 		if err = coin.Validate(); err != nil {
 			return err
 		}
+	}
+
+	if msg.TokenOutDenom == "" {
+		return errors.New("exit in single token not allowed")
 	}
 
 	if msg.ShareAmountIn.IsNil() {
