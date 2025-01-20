@@ -874,6 +874,7 @@ func _Query_TimeBasedInflationAll_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.tokenomics.Query",
 	HandlerType: (*QueryServer)(nil),

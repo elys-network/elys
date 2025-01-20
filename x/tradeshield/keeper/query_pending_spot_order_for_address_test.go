@@ -11,28 +11,26 @@ import (
 func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderForAddress() {
 
 	order := types.SpotOrder{
-		OrderId:      1,
-		OwnerAddress: "valid_address",
-		OrderType:    types.SpotOrderType_LIMITBUY,
-		OrderPrice: types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       math.LegacyNewDec(1),
+		OrderId:          1,
+		OwnerAddress:     "valid_address",
+		OrderType:        types.SpotOrderType_LIMITBUY,
+		LegacyOrderPriceV1: types.LegacyOrderPriceV1{
+			Rate: math.LegacyNewDec(1),
 		},
+		OrderPrice:       math.LegacyNewDec(1),
 		OrderAmount:      sdk.NewCoin("base", math.NewInt(1)),
 		OrderTargetDenom: "quote",
 		Status:           types.Status_PENDING,
 	}
 
 	order2 := types.SpotOrder{
-		OrderId:      2,
-		OwnerAddress: "valid_address",
-		OrderType:    types.SpotOrderType_LIMITBUY,
-		OrderPrice: types.OrderPrice{
-			BaseDenom:  "base",
-			QuoteDenom: "quote",
-			Rate:       math.LegacyNewDec(1),
+		OrderId:          2,
+		OwnerAddress:     "valid_address",
+		OrderType:        types.SpotOrderType_LIMITBUY,
+		LegacyOrderPriceV1: types.LegacyOrderPriceV1{
+			Rate: math.LegacyNewDec(1),
 		},
+		OrderPrice:       math.LegacyNewDec(1),
 		OrderAmount:      sdk.NewCoin("base", math.NewInt(1)),
 		OrderTargetDenom: "quote",
 		Status:           types.Status_EXECUTED,
