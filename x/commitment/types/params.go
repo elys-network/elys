@@ -22,10 +22,8 @@ func DefaultParams() Params {
 				NumMaxVestings: 10000,
 			},
 		},
-		TotalCommitted:   sdk.Coins{},
-		EnableVestNow:    false,
-		TotalEdenSupply:  math.ZeroInt(),
-		TotalEdenbSupply: math.ZeroInt(),
+		TotalCommitted: sdk.Coins{},
+		EnableVestNow:  false,
 	}
 }
 

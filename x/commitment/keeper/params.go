@@ -79,9 +79,4 @@ func (k Keeper) V9_ParamsMigration(ctx sdk.Context) {
 		totalEden.Add(val.Claimed.AmountOf(ptypes.Eden))
 		totalEdenB.Add(val.Claimed.AmountOf(ptypes.EdenB))
 	}
-
-	params := k.GetParams(ctx)
-	params.TotalEdenSupply = totalEden
-	params.TotalEdenbSupply = totalEdenB
-	k.SetParams(ctx, params)
 }

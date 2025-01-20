@@ -7,23 +7,21 @@ import (
 	"github.com/elys-network/elys/x/commitment/types"
 )
 
-func (k Keeper) GetTotalEdenSupply(ctx sdk.Context, address sdk.AccAddress) (val types.AtomStaker) {
+func (k Keeper) GetTotalSupply(ctx sdk.Context) (val types.TotalSupply) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-
-	b := store.Get(types.GetAtomStakerKey(address))
+	b := store.Get(types.TotalSupplyKeyPrefix)
 
 	if b != nil {
 		k.cdc.MustUnmarshal(b, &val)
 	} else {
-		val.Address = address.String()
-		val.Amount = math.ZeroInt()
+		val.TotalEdenSupply = math.ZeroInt()
+		val.TotalEdenbSupply = math.ZeroInt()
 	}
 	return
 }
 
-func (k Keeper) SetTotalEdenSupply(ctx sdk.Context, val types.AtomStaker) {
+func (k Keeper) SetTotalSupply(ctx sdk.Context, val types.TotalSupply) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetAtomStakerKey(sdk.MustAccAddressFromBech32(val.Address))
 	b := k.cdc.MustMarshal(&val)
-	store.Set(key, b)
+	store.Set(types.TotalSupplyKeyPrefix, b)
 }

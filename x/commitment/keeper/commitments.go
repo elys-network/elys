@@ -147,8 +147,6 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom str
 	// Get the Commitments for the creator
 	commitments := k.GetCommitments(ctx, creator)
 
-	params := k.GetParams(ctx)
-
 	// if deduction amount is zero
 	if amount.IsZero() {
 		return nil
@@ -164,7 +162,9 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom str
 	if err != nil {
 		return err // never happens
 	}
-	params.TotalEdenbSupply = params.TotalEdenbSupply.Sub(claimedRemovalAmount)
+	prev := k.GetTotalSupply(ctx)
+	prev.TotalEdenbSupply = prev.TotalEdenbSupply.Sub(claimedRemovalAmount)
+	k.SetTotalSupply(ctx, prev)
 
 	amount = amount.Sub(claimedRemovalAmount)
 	if amount.IsZero() {
@@ -192,8 +192,10 @@ func (k Keeper) BurnEdenBoost(ctx sdk.Context, creator sdk.AccAddress, denom str
 	if err != nil {
 		return err
 	}
-	params.TotalEdenbSupply = params.TotalEdenbSupply.Sub(amount)
-	k.SetParams(ctx, params)
+	prev = k.GetTotalSupply(ctx)
+	prev.TotalEdenbSupply = prev.TotalEdenbSupply.Sub(amount)
+	k.SetTotalSupply(ctx, prev)
+
 	k.SetCommitments(ctx, commitments)
 
 	if k.hooks != nil {

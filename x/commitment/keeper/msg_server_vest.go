@@ -58,9 +58,9 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.I
 	commitments.VestingTokens = vestingTokens
 
 	if denom == ptypes.Eden {
-		params := k.GetParams(ctx)
-		params.TotalEdenSupply = params.TotalEdenSupply.Sub(amount)
-		k.SetParams(ctx, params)
+		prev := k.GetTotalSupply(ctx)
+		prev.TotalEdenSupply = prev.TotalEdenSupply.Sub(amount)
+		k.SetTotalSupply(ctx, prev)
 	}
 
 	// Update the commitments

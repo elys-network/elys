@@ -178,6 +178,11 @@ func (k Keeper) MintCoins(goCtx context.Context, moduleName string, amt sdk.Coin
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	amt, coinsChanged := k.AddEdenEdenBOnModule(ctx, moduleName, amt)
 
+	prev := k.GetTotalSupply(ctx)
+	prev.TotalEdenSupply = prev.TotalEdenSupply.Add(coinsChanged.AmountOf(ptypes.Eden))
+	prev.TotalEdenbSupply = prev.TotalEdenbSupply.Add(coinsChanged.AmountOf(ptypes.EdenB))
+	k.SetTotalSupply(ctx, prev)
+
 	// Emit event to track Eden and EdenB mint amount
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -198,10 +203,14 @@ func (k Keeper) BurnCoins(goCtx context.Context, moduleName string, amt sdk.Coin
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	amt, coinsChanged, err := k.SubEdenEdenBOnModule(ctx, moduleName, amt)
-
 	if err != nil {
 		return err
 	}
+
+	prev := k.GetTotalSupply(ctx)
+	prev.TotalEdenSupply = prev.TotalEdenSupply.Sub(coinsChanged.AmountOf(ptypes.Eden))
+	prev.TotalEdenbSupply = prev.TotalEdenbSupply.Sub(coinsChanged.AmountOf(ptypes.EdenB))
+	k.SetTotalSupply(ctx, prev)
 
 	// Emit event to track Eden and EdenB burn amount
 	ctx.EventManager().EmitEvent(
