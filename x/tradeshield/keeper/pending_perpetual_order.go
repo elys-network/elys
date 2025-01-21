@@ -149,19 +149,20 @@ func (k Keeper) DeleteAllPendingPerpetualOrder(ctx sdk.Context) (list []types.Pe
 	return
 }
 
-func (k Keeper) GetAllLegacyPendingPerpetualOrder(ctx sdk.Context) (list []types.LegacyPerpetualOrder) {
+// SetAllLegacyPerpetualTriggerPriceToNewTriggerPriceStructure set all legacy perpetual trigger price to new trigger price structure
+func (k Keeper) SetAllLegacyPerpetualTriggerPriceToNewTriggerPriceStructure(ctx sdk.Context) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PendingPerpetualOrderKey)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.LegacyPerpetualOrder
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
+		var order types.PerpetualOrder
+		k.cdc.MustUnmarshal(iterator.Value(), &order)
+		order.TriggerPrice = order.LegacyTriggerPriceV1.Rate
+		order.LegacyTriggerPriceV1 = types.LegacyTriggerPriceV1{}
+		store.Set(iterator.Key(), k.cdc.MustMarshal(&order))
 	}
-
-	return
 }
 
 // GetPendingPerpetualOrderIDBytes returns the byte representation of the ID
@@ -203,12 +204,12 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
-		if marketPrice.GT(order.TriggerPrice.Rate) {
+		if marketPrice.GT(order.TriggerPrice) {
 			// skip the order
 			return nil
 		}
 	case types.PerpetualPosition_SHORT:
-		if marketPrice.LT(order.TriggerPrice.Rate) {
+		if marketPrice.LT(order.TriggerPrice) {
 			// skip the order
 			return nil
 		}
@@ -252,12 +253,12 @@ func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrd
 
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
-		if marketPrice.LT(order.TriggerPrice.Rate) {
+		if marketPrice.LT(order.TriggerPrice) {
 			// skip the order
 			return nil
 		}
 	case types.PerpetualPosition_SHORT:
-		if marketPrice.GT(order.TriggerPrice.Rate) {
+		if marketPrice.GT(order.TriggerPrice) {
 			// skip the order
 			return nil
 		}
@@ -328,7 +329,7 @@ func (k Keeper) ConstructPerpetualOrderExtraInfo(ctx sdk.Context, order types.Pe
 			Collateral:      order.Collateral,
 			TakeProfitPrice: order.TakeProfitPrice,
 			PoolId:          order.PoolId,
-			LimitPrice:      order.TriggerPrice.Rate,
+			LimitPrice:      order.TriggerPrice,
 		})
 
 		// If error use zero values

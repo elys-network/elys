@@ -20,7 +20,9 @@ The TradeShield module will have the following parameters:
 
 The TradeShield module will replicate and extend the functionalities currently available in the TradeShield contract. The following functionalities will be supported:
 
-### Order Creation
+### Order Creation and Fund Management
+
+When a new order is created, the order amount is automatically moved from the user's address to a new order-specific address. This locks the funds and prevents them from being used in other transactions while the order is active. Users can retrieve their locked funds by canceling the order, but only if the order is still pending execution. Once an order is executed, the locked funds are used either for spot order AMM swaps or to open perpetual positions.
 
 1. **Spot Market Orders**
 
