@@ -128,7 +128,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		return underStopLossPrice, false, errors.New("position stop loss price is not <= lp token price")
 	}
 
-	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount, false)
+	repayAmount, err := k.ForceCloseLong(ctx, *position, pool, position.LeveragedLpAmount, true)
 	if err != nil {
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 		return underStopLossPrice, true, err
