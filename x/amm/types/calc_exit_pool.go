@@ -1,9 +1,10 @@
 package types
 
 import (
+	"errors"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -104,7 +105,6 @@ func CalcExitPool(
 	if pool.PoolParams.UseOracle && tokenOutDenom != "" {
 
 		accountedAssets := pool.GetAccountedBalance(ctx, accountedPoolKeeper, pool.PoolAssets)
-		initialWeightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, accountedAssets)
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
 		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom)
 		if err != nil {
@@ -131,23 +131,12 @@ func CalcExitPool(
 			}
 		}
 
-		weightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
-		distanceDiff := weightDistance.Sub(initialWeightDistance)
-
-		// target weight
-		targetWeightOut := GetDenomNormalizedWeight(pool.PoolAssets, tokenOutDenom)
-		targetWeightIn := sdkmath.LegacyOneDec().Sub(targetWeightOut)
-
-		// weight breaking fee as in Plasma pool
+		_, weightBreakingFee := pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenOutDenom, params, sdkmath.LegacyOneDec())
+		// apply percentage to fees, consider improvement or reduction of other token
+		// Other denom weight ratio to reduce the weight breaking fees
 		finalWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, newAssetPools, tokenOutDenom)
 		finalWeightIn := sdkmath.LegacyOneDec().Sub(finalWeightOut)
-		initialAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
-			sdk.NewCoins(),
-			sdk.NewCoins(), accountedAssets,
-		)
-		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, initialAssetPools, tokenOutDenom)
-		initialWeightIn := sdkmath.LegacyOneDec().Sub(initialWeightOut)
-		weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
+		weightBreakingFee = weightBreakingFee.Mul(finalWeightIn)
 
 		tokenOutAmount := oracleOutAmount.Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).RoundInt()
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBreakingFee.Neg(), nil

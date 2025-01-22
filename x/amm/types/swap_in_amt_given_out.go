@@ -122,33 +122,35 @@ func (p *Pool) SwapInAmtGivenOut(
 	if err != nil {
 		return sdk.Coin{}, sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
-	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
-	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
-	// target weight
-	// Asset weight remains same in new pool assets as in original pool assets
-	targetWeightIn := GetDenomNormalizedWeight(newAssetPools, tokenInDenom)
-	targetWeightOut := GetDenomNormalizedWeight(newAssetPools, tokenOut.Denom)
+	weightBalanceBonus, weightBreakingFee := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenInDenom, params, weightBreakingFeePerpetualFactor)
+	// weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
+	// distanceDiff := weightDistance.Sub(initialWeightDistance)
 
-	// weight breaking fee as in Plasma pool
-	finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenInDenom)
-	finalWeightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenOut.Denom)
-	initialAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
-		sdk.NewCoins(),
-		sdk.NewCoins(), accountedAssets,
-	)
-	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenInDenom)
-	initialWeightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenOut.Denom)
-	weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
+	// // target weight
+	// // Asset weight remains same in new pool assets as in original pool assets
+	// targetWeightIn := GetDenomNormalizedWeight(newAssetPools, tokenInDenom)
+	// targetWeightOut := GetDenomNormalizedWeight(newAssetPools, tokenOut.Denom)
 
-	// weightBreakingFeePerpetualFactor is 1 if not send by perpetual
-	weightBreakingFee = weightBreakingFee.Mul(weightBreakingFeePerpetualFactor)
+	// // weight breaking fee as in Plasma pool
+	// finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenInDenom)
+	// finalWeightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenOut.Denom)
+	// initialAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
+	// 	sdk.NewCoins(),
+	// 	sdk.NewCoins(), accountedAssets,
+	// )
+	// initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenInDenom)
+	// initialWeightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenOut.Denom)
+	// weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
 
-	// weight recovery reward = weight breaking fee * weight breaking fee portion
-	weightRecoveryReward := weightBreakingFee.Mul(params.WeightBreakingFeePortion)
+	// // weightBreakingFeePerpetualFactor is 1 if not send by perpetual
+	// weightBreakingFee = weightBreakingFee.Mul(weightBreakingFeePerpetualFactor)
 
-	// bonus is valid when distance is lower than original distance and when threshold weight reached
-	weightBalanceBonus = weightBreakingFee.Neg()
+	// // weight recovery reward = weight breaking fee * weight breaking fee portion
+	// weightRecoveryReward := weightBreakingFee.Mul(params.WeightBreakingFeePortion)
+
+	// // bonus is valid when distance is lower than original distance and when threshold weight reached
+	// weightBalanceBonus = weightBreakingFee.Neg()
 
 	// If swap is improving weight, set weight breaking fee to zero
 	if distanceDiff.IsNegative() {
