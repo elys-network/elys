@@ -131,7 +131,7 @@ func CalcExitPool(
 			}
 		}
 
-		_, weightBreakingFee := pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenOutDenom, params, sdkmath.LegacyOneDec())
+		_, weightBreakingFee, _ := pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenOutDenom, params, sdkmath.LegacyOneDec())
 		// apply percentage to fees, consider improvement or reduction of other token
 		// Other denom weight ratio to reduce the weight breaking fees
 		finalWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, newAssetPools, tokenOutDenom)

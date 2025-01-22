@@ -184,7 +184,7 @@ func (p *Pool) JoinPool(
 		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
-	weightBalanceBonus, weightBreakingFee := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokensIn[0].Denom, params, sdkmath.LegacyOneDec())
+	weightBalanceBonus, weightBreakingFee, _ := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokensIn[0].Denom, params, sdkmath.LegacyOneDec())
 	// apply percentage to fees, consider improvement or reduction of other token
 	// Other denom weight ratio to reduce the weight breaking fees
 	finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokensIn[0].Denom)

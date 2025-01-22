@@ -8,7 +8,8 @@ import (
 func (p *Pool) CalculateWeightFees(ctx sdk.Context, oracleKeeper OracleKeeper,
 	accountedAssets []PoolAsset,
 	finalAssetsPool []PoolAsset, tokenDenom string, params Params, weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
-) (sdkmath.LegacyDec, sdkmath.LegacyDec) {
+) (sdkmath.LegacyDec, sdkmath.LegacyDec, bool) {
+	swapFee := true
 
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accountedAssets)
 	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, finalAssetsPool)
@@ -43,7 +44,7 @@ func (p *Pool) CalculateWeightFees(ctx sdk.Context, oracleKeeper OracleKeeper,
 		}
 
 		if initialWeightDistance.GT(params.ThresholdWeightDifferenceSwapFee) {
-			swapFee = sdkmath.LegacyZeroDec()
+			swapFee = false
 		}
 	}
 	if initialWeightDistance.GT(params.ThresholdWeightDifference) && distanceDiff.IsNegative() {
@@ -52,5 +53,5 @@ func (p *Pool) CalculateWeightFees(ctx sdk.Context, oracleKeeper OracleKeeper,
 		weightBreakingFee = sdkmath.LegacyZeroDec()
 	}
 
-	return weightBalanceBonus, weightBreakingFee
+	return weightBalanceBonus, weightBreakingFee, swapFee
 }
