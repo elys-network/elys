@@ -46,11 +46,12 @@ func (p *Pool) CalculateWeightFees(ctx sdk.Context, oracleKeeper OracleKeeper,
 		if initialWeightDistance.GT(params.ThresholdWeightDifferenceSwapFee) {
 			swapFee = false
 		}
-	}
-	if initialWeightDistance.GT(params.ThresholdWeightDifference) && distanceDiff.IsNegative() {
-		weightBalanceBonus = weightRecoveryReward
-		// set weight breaking fee to zero if bonus is applied
-		weightBreakingFee = sdkmath.LegacyZeroDec()
+	} else {
+		// Weight getting worst but threshold is not reached so fees should not be charged
+		if initialWeightDistance.LT(params.ThresholdWeightDifference) {
+			weightBreakingFee = sdkmath.LegacyZeroDec()
+			weightBalanceBonus = sdkmath.LegacyZeroDec()
+		}
 	}
 
 	return weightBalanceBonus, weightBreakingFee, swapFee

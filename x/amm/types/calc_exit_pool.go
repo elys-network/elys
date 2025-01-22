@@ -15,8 +15,7 @@ func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, ac
 	}
 
 	totalShares := pool.GetTotalShares()
-	var refundedShares sdkmath.LegacyDec
-	refundedShares = sdkmath.LegacyNewDecFromInt(exitingShares)
+	refundedShares := sdkmath.LegacyNewDecFromInt(exitingShares)
 
 	// Ensure totalShares is not zero to avoid division by zero
 	if totalShares.IsZero() {
@@ -134,9 +133,9 @@ func CalcExitPool(
 		_, weightBreakingFee, _ := pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenOutDenom, params, sdkmath.LegacyOneDec())
 		// apply percentage to fees, consider improvement or reduction of other token
 		// Other denom weight ratio to reduce the weight breaking fees
-		finalWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, newAssetPools, tokenOutDenom)
-		finalWeightIn := sdkmath.LegacyOneDec().Sub(finalWeightOut)
-		weightBreakingFee = weightBreakingFee.Mul(finalWeightIn)
+		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
+		initialWeightIn := sdkmath.LegacyOneDec().Sub(initialWeightOut)
+		weightBreakingFee = weightBreakingFee.Mul(initialWeightIn)
 
 		tokenOutAmount := oracleOutAmount.Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).RoundInt()
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBreakingFee.Neg(), nil
