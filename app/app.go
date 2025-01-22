@@ -282,7 +282,7 @@ func NewElysApp(
 			ParameterKeeper: app.ParameterKeeper,
 			Cdc:             appCodec,
 			IBCKeeper:       app.IBCKeeper,
-			StakingKeeper:   app.StakingKeeper,
+			StakingKeeper:   &app.StakingKeeper.Keeper,
 			ConsumerKeeper:  app.ConsumerKeeper,
 		},
 	)

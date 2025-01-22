@@ -51,13 +51,9 @@ func (app *ElysApp) PreBlocker(ctx sdk.Context, req *cometabci.RequestFinalizeBl
 			return nil, err
 		}
 		for _, exchangeRateVote := range injectedVoteExtTx.ExchangeRateVotes {
-			valAddr, err := sdk.ValAddressFromBech32(exchangeRateVote.Voter)
-			if err != nil {
-				app.Logger().Error("failed to get voter address", "err", err)
-				continue
-			}
-			app.OracleKeeper.SetAggregateExchangeRateVote(ctx, valAddr, exchangeRateVote)
+			app.OracleKeeper.SetAggregateExchangeRateVote(ctx, exchangeRateVote.Voter, exchangeRateVote)
 		}
+
 	}
 
 	app.Logger().Info(
