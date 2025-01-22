@@ -356,7 +356,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 		ctx.EventManager().EmitEvents(sdk.Events{
 			sdk.NewEvent(
 				types.TypeEvtUsdcFee,
-				sdk.NewAttribute("fee_tokens", totalSwappedCoins.String()),
+				sdk.NewAttribute("amount", totalSwappedCoins.String()),
 			),
 		})
 	}
