@@ -27,6 +27,40 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 	k.SetPool(ctx, pool)
 
 	rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+	weightRecoveryFeeAmount := sdkmath.ZeroInt()
+	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
+	// send half (weight breaking fee portion) of weight breaking fee to rebalance treasury
+	if pool.PoolParams.UseOracle && weightBalanceBonus.IsNegative() {
+		params := k.GetParams(ctx)
+		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+		// we are multiplying here by params.WeightBreakingFeePortion as we didn't multiply in pool.Join/Exit for weight breaking fee
+		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.WeightBreakingFeePortion)
+
+		var weightRecoveryFeeAmounts sdk.Coins
+		for _, coin := range exitCoins {
+			weightRecoveryFeeAmount = coin.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			weightRecoveryFeeAmounts = append(weightRecoveryFeeAmounts, sdk.NewCoin(coin.Denom, weightRecoveryFeeAmount))
+
+			if weightRecoveryFeeAmount.IsPositive() {
+				// send weight recovery fee to rebalance treasury if weight recovery fee amount is positive¬
+				netWeightBreakingFeeCoins := sdk.Coins{sdk.NewCoin(coin.Denom, weightRecoveryFeeAmount)}
+
+				err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, netWeightBreakingFeeCoins)
+				if err != nil {
+					return err
+				}
+
+				err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), netWeightBreakingFeeCoins)
+				if err != nil {
+					return err
+				}
+
+				// Track amount in pool
+				weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(sdkmath.LegacyOneDec().Sub(params.WeightBreakingFeePortion))
+				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, sdkmath.Int(weightRecoveryFeeForPool.Mul(sdkmath.LegacyDec(weightRecoveryFeeAmount)))))
+			}
+		}
+	}
 
 	if weightBalanceBonus.IsPositive() {
 		// calculate treasury amounts to send as bonus
