@@ -1,9 +1,10 @@
 package types
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"

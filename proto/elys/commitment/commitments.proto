@@ -57,3 +57,16 @@ message VestingTokens {
   int64 start_block = 6;
   int64 vest_started_timestamp = 7;
 }
+
+message TotalSupply {
+  string total_eden_supply = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_edenb_supply = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
