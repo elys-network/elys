@@ -203,7 +203,7 @@ func (msg *MsgClaimRewards) ValidateBasic() error {
 func (msg *MsgUpdatePool) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
 	}
 
 	if msg.PoolId == 0 {
@@ -223,7 +223,7 @@ func (msg *MsgUpdatePool) ValidateBasic() error {
 func (msg *MsgUpdateEnabledPools) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
 	}
 
 	poolIdsMap := make(map[uint64]bool)
