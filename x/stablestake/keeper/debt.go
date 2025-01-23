@@ -12,7 +12,7 @@ import (
 
 func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) (debt types.Debt) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetDebtKey(addr)
+	key := types.GetDebtKey(addr, poolId)
 	bz := store.Get(key)
 	if len(bz) == 0 {
 		return types.Debt{
@@ -47,14 +47,14 @@ func (k Keeper) UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, p
 
 func (k Keeper) SetDebt(ctx sdk.Context, debt types.Debt) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetDebtKey(debt.GetOwnerAccount())
+	key := types.GetDebtKey(debt.GetOwnerAccount(), debt.PoolId)
 	bz := k.cdc.MustMarshal(&debt)
 	store.Set(key, bz)
 }
 
 func (k Keeper) DeleteDebt(ctx sdk.Context, debt types.Debt) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetDebtKey(debt.GetOwnerAccount())
+	key := types.GetDebtKey(debt.GetOwnerAccount(), debt.PoolId)
 	store.Delete(key)
 }
 
@@ -321,7 +321,7 @@ func (k Keeper) MoveAllDebt(ctx sdk.Context) {
 
 func (k Keeper) SetLegacyDebt(ctx sdk.Context, debt types.Debt) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetDebtKey(sdk.MustAccAddressFromBech32(debt.Address))
+	key := types.GetDebtKey(sdk.MustAccAddressFromBech32(debt.Address), debt.PoolId)
 	bz := k.cdc.MustMarshal(&debt)
 	store.Set(key, bz)
 }

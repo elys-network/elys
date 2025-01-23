@@ -20,8 +20,8 @@ var (
 	PoolPrefixKey     = []byte{0x04}
 )
 
-func GetDebtKey(owner sdk.AccAddress) []byte {
-	return append(DebtPrefixKey, address.MustLengthPrefix(owner)...)
+func GetDebtKey(owner sdk.AccAddress, poolId uint64) []byte {
+	return append(DebtPrefixKey, append(address.MustLengthPrefix(owner), sdk.Uint64ToBigEndian(poolId)...)...)
 }
 
 func GetPoolKey(poolId uint64) []byte {
