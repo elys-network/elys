@@ -6,6 +6,7 @@ import (
 	"cosmossdk.io/core/appmodule"
 	cometabci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/ojo-network/ojo/x/oracle/abci"
 	"github.com/ojo-network/ojo/x/oracle/types"
 )
@@ -52,6 +53,33 @@ func (app *ElysApp) PreBlocker(ctx sdk.Context, req *cometabci.RequestFinalizeBl
 		}
 		for _, exchangeRateVote := range injectedVoteExtTx.ExchangeRateVotes {
 			app.OracleKeeper.SetAggregateExchangeRateVote(ctx, exchangeRateVote.Voter, exchangeRateVote)
+		}
+
+		for _, externalLiquidity := range injectedVoteExtTx.ExternalLiquidity {
+			pool, found := app.AmmKeeper.GetPool(ctx, externalLiquidity.PoolId)
+			if !found {
+				app.Logger().Error("failed to get pool", "poolId", externalLiquidity.PoolId, "err", ammtypes.ErrInvalidPoolId)
+				continue
+			}
+
+			assetAmountDepthInfo := make([]ammtypes.AssetAmountDepth, 0)
+			for _, amountDepthInfo := range externalLiquidity.AmountDepthInfo {
+				assetAmountDepthInfo = append(assetAmountDepthInfo, ammtypes.AssetAmountDepth{
+					Asset:  amountDepthInfo.Asset,
+					Amount: amountDepthInfo.Amount,
+					Depth:  amountDepthInfo.Depth,
+				})
+			}
+
+			// Get external liquidity ratio for each of the asset separately
+			poolAssets, err := app.AmmKeeper.GetExternalLiquidityRatio(ctx, pool, assetAmountDepthInfo)
+			if err != nil {
+				app.Logger().Error("failed to get pool assets", "poolId", pool.PoolId, "err", ammtypes.ErrInvalidPoolId)
+				continue
+			}
+
+			pool.PoolAssets = poolAssets
+			app.AmmKeeper.SetPool(ctx, pool)
 		}
 
 	}
