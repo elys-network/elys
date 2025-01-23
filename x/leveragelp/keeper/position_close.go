@@ -13,7 +13,7 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 	}
 
 	// Exit liquidity with collateral token
-	exitCoins, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpAmount, sdk.Coins{}, position.Collateral.Denom, isLiquidation)
+	exitCoins, _, err := k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpAmount, sdk.Coins{}, position.Collateral.Denom, isLiquidation)
 	if err != nil {
 		return math.ZeroInt(), err
 	}
@@ -52,9 +52,11 @@ func (k Keeper) ForceCloseLong(ctx sdk.Context, position types.Position, pool ty
 
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
 
+	// TODO This means bot failed to close position on time, need to forcefully close the position
 	if userAmount.IsNegative() {
 		return math.ZeroInt(), types.ErrNegUserAmountAfterRepay
 	}
+
 	if userAmount.IsPositive() {
 		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), positionOwner, sdk.Coins{sdk.NewCoin(position.Collateral.Denom, userAmount)})
 		if err != nil {

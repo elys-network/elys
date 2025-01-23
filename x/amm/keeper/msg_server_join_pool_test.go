@@ -60,7 +60,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:  ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   math.NewInt(694444166666666666), // weight breaking fee - slippage enable
-			shareOutAmount:   math.NewInt(999057190958417937), // weight breaking fee - slippage disable
+			shareOutAmount:   math.NewInt(1000000000000000000), // weight breaking fee - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -75,7 +75,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:  ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   math.NewInt(805987500000000000), // weight recovery direction - slippage enable
-			shareOutAmount:   math.NewInt(996102885682970026), // weight recovery direction - slippage disable
+			shareOutAmount:   math.NewInt(1000000000000000000), // weight recovery direction - slippage disable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,

@@ -3,35 +3,44 @@ package keeper
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
 // EstimateAndRepay ammPool has to be pointer because RemoveFromPoolBalance (in Repay) updates pool assets
 // Important to send pointer mtp and pool
-func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, baseCurrency string, closingRatio math.LegacyDec) (math.Int, error) {
+func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Pool, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (math.Int, math.Int, error) {
 
 	if closingRatio.LTE(math.LegacyZeroDec()) || closingRatio.GT(math.LegacyOneDec()) {
-		return math.Int{}, fmt.Errorf("invalid closing ratio (%s)", closingRatio.String())
+		return math.Int{}, math.Int{}, fmt.Errorf("invalid closing ratio (%s)", closingRatio.String())
 	}
 
 	repayAmount, payingLiabilities, _, _, err := k.CalcRepayAmount(ctx, mtp, ammPool, closingRatio)
 	if err != nil {
-		return math.ZeroInt(), err
+		return math.ZeroInt(), math.ZeroInt(), err
 	}
 	returnAmount, err := k.CalcReturnAmount(*mtp, repayAmount, closingRatio)
 	if err != nil {
-		return math.ZeroInt(), err
+		return math.ZeroInt(), math.ZeroInt(), err
 	}
+
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return math.Int{}, math.Int{}, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	baseCurrency := entry.Denom
 
 	// Note: Long settlement is done in trading asset. And short settlement in usdc in Repay function
 	if err = k.Repay(ctx, mtp, pool, ammPool, returnAmount, payingLiabilities, closingRatio, baseCurrency); err != nil {
-		return math.ZeroInt(), err
+		return math.ZeroInt(), math.ZeroInt(), err
 	}
 
-	return repayAmount, nil
+	return repayAmount, returnAmount, nil
 }
 
 // CalcRepayAmount repay amount is in custody asset for liabilities with closing ratio

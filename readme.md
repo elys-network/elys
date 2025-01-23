@@ -10,6 +10,7 @@
 | Version              | [See latest version here](https://github.com/elys-network/elys/releases) |
 | MainNet RPC Endpoint | https://rpc.elys.network:443                                             |
 | MainNet API Endpoint | https://api.elys.network:443                                             |
+| MainNet Explorer     | https://explorer.elys.network ; https://elysscan.io                      |
 | TestNet RPC Endpoint | https://rpc.testnet.elys.network:443                                     |
 | TestNet API Endpoint | https://api.testnet.elys.network:443                                     |
 
@@ -36,7 +37,7 @@ This guide provides instructions on how to spin up a new localnet using the Elys
    Navigate into the cloned repository and build the binary using:
 
    ```bash
-   git tag -f v999.999.999 && make install
+   git tag -f v999999.999999.999999 && make install
    ```
 
    This command will install the `elysd` daemon.

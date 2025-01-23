@@ -1,7 +1,9 @@
 package keeper
 
 import (
+	"errors"
 	"fmt"
+	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -66,7 +68,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if existingMtp == nil {
 		// opening new position
 		if msg.Leverage.LTE(math.LegacyOneDec()) {
-			return nil, fmt.Errorf("cannot open new position with leverage <= 1")
+			return nil, errors.New("cannot open new position with leverage <= 1")
 		}
 		// Check if max positions are exceeded as we are opening new position, not updating old position
 		if err = k.CheckMaxOpenPositions(ctx); err != nil {
@@ -117,8 +119,6 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	k.EmitOpenEvent(ctx, mtp)
-
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	if k.hooks != nil {
 		// pool values has been updated
@@ -132,6 +132,24 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 			return nil, err
 		}
 	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventOpen,
+		sdk.NewAttribute("mtp_id", strconv.FormatInt(int64(mtp.Id), 10)),
+		sdk.NewAttribute("owner", mtp.Address),
+		sdk.NewAttribute("position", mtp.Position.String()),
+		sdk.NewAttribute("amm_pool_id", strconv.FormatInt(int64(mtp.AmmPoolId), 10)),
+		sdk.NewAttribute("collateral_asset", mtp.CollateralAsset),
+		sdk.NewAttribute("collateral", mtp.Collateral.String()),
+		sdk.NewAttribute("liabilities", mtp.Liabilities.String()),
+		sdk.NewAttribute("custody", mtp.Custody.String()),
+		sdk.NewAttribute("mtp_health", mtp.MtpHealth.String()),
+		sdk.NewAttribute("stop_loss_price", mtp.StopLossPrice.String()),
+		sdk.NewAttribute("take_profit_price", mtp.TakeProfitPrice.String()),
+		sdk.NewAttribute("take_profit_borrow_factor", mtp.TakeProfitBorrowFactor.String()),
+		sdk.NewAttribute("funding_fee_paid_custody", mtp.FundingFeePaidCustody.String()),
+		sdk.NewAttribute("funding_fee_received_custody", mtp.FundingFeeReceivedCustody.String()),
+		sdk.NewAttribute("open_price", mtp.OpenPrice.String()),
+	))
 
 	return &types.MsgOpenResponse{
 		Id: mtp.Id,

@@ -1,7 +1,7 @@
 package types
 
 import (
-	"fmt"
+	"errors"
 
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
@@ -103,7 +103,7 @@ func (mtp MTP) GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice sdkmath.L
 	borrowInterestPaymentInCustody := sdkmath.ZeroInt()
 	if mtp.Position == Position_LONG {
 		if tradingAssetPrice.IsZero() {
-			return sdkmath.ZeroInt(), fmt.Errorf("trading asset price is zero")
+			return sdkmath.ZeroInt(), errors.New("trading asset price is zero")
 		}
 		// liabilities are in usdc, custody is in trading asset
 		borrowInterestPaymentInCustody = mtp.BorrowInterestUnpaidLiability.ToLegacyDec().Quo(tradingAssetPrice).TruncateInt()
@@ -112,4 +112,26 @@ func (mtp MTP) GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice sdkmath.L
 		borrowInterestPaymentInCustody = mtp.BorrowInterestUnpaidLiability.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
 	}
 	return borrowInterestPaymentInCustody, nil
+}
+
+func (mtp MTP) CheckForStopLoss(tradingAssetPrice sdkmath.LegacyDec) bool {
+	stopLossReached := false
+	if mtp.Position == Position_LONG {
+		stopLossReached = !mtp.StopLossPrice.IsNil() && tradingAssetPrice.LTE(mtp.StopLossPrice)
+	}
+	if mtp.Position == Position_SHORT {
+		stopLossReached = !mtp.StopLossPrice.IsNil() && tradingAssetPrice.GTE(mtp.StopLossPrice)
+	}
+	return stopLossReached
+}
+
+func (mtp MTP) CheckForTakeProfit(tradingAssetPrice sdkmath.LegacyDec) bool {
+	takeProfitReached := false
+	if mtp.Position == Position_LONG {
+		takeProfitReached = !mtp.TakeProfitPrice.IsNil() && tradingAssetPrice.GTE(mtp.TakeProfitPrice)
+	}
+	if mtp.Position == Position_SHORT {
+		takeProfitReached = !mtp.TakeProfitPrice.IsNil() && tradingAssetPrice.LTE(mtp.TakeProfitPrice)
+	}
+	return takeProfitReached
 }

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
@@ -9,7 +10,8 @@ import (
 )
 
 func (k Keeper) OnLeverageLpEnablePool(ctx sdk.Context, ammPool ammtypes.Pool) error {
-	pool := types.NewPool(ammPool)
+	params := k.GetParams(ctx)
+	pool := types.NewPool(ammPool, params.LeverageMax)
 	k.SetPool(ctx, pool)
 	return nil
 }

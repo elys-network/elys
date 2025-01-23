@@ -169,7 +169,6 @@ func (p *Pool) JoinPool(
 	}
 
 	accountedAssets := p.GetAccountedBalance(ctx, accountedPoolKeeper, p.PoolAssets)
-	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accountedAssets)
 	tvl, err := p.TVL(ctx, oracleKeeper, accountedPoolKeeper)
 	if err != nil {
 		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
@@ -184,40 +183,13 @@ func (p *Pool) JoinPool(
 	if err != nil {
 		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
-	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
-	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
-	// we only allow
-	tokenInDenom := tokensIn[0].Denom
-	// target weight
-	targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenInDenom)
-	targetWeightOut := sdkmath.LegacyOneDec().Sub(targetWeightIn)
-
-	// weight breaking fee as in Plasma pool
-	finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenInDenom)
-	finalWeightOut := sdkmath.LegacyOneDec().Sub(finalWeightIn)
-
-	initialAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
-		sdk.NewCoins(),
-		sdk.NewCoins(), accountedAssets,
-	)
-	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenInDenom)
-	initialWeightOut := sdkmath.LegacyOneDec().Sub(initialWeightIn)
-	weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
+	weightBalanceBonus, weightBreakingFee, _ := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokensIn[0].Denom, params, sdkmath.LegacyOneDec())
 	// apply percentage to fees, consider improvement or reduction of other token
 	// Other denom weight ratio to reduce the weight breaking fees
-	weightBreakingFee = weightBreakingFee.Mul(finalWeightOut)
-
-	// weight recovery reward = weight breaking fee * weight breaking fee portion
-	weightRecoveryReward := weightBreakingFee.Mul(params.WeightBreakingFeePortion)
-
-	// bonus is valid when distance is lower than original distance and when threshold weight reached
-	weightBalanceBonus = weightBreakingFee.Neg()
-	if initialWeightDistance.GT(params.ThresholdWeightDifference) && distanceDiff.IsNegative() {
-		weightBalanceBonus = weightRecoveryReward
-		// set weight breaking fee to zero if bonus is applied
-		weightBreakingFee = sdkmath.LegacyZeroDec()
-	}
+	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedAssets, tokensIn[0].Denom)
+	initialWeightOut := sdkmath.LegacyOneDec().Sub(initialWeightIn)
+	weightBreakingFee = weightBreakingFee.Mul(initialWeightOut)
 
 	totalShares := p.GetTotalShares()
 	numSharesDec := sdkmath.LegacyNewDecFromInt(totalShares.Amount).
