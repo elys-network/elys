@@ -24,9 +24,10 @@ service Msg {
   rpc ClosePositions(MsgClosePositions) returns (MsgClosePositionsResponse);
   rpc UpdateTakeProfitPrice(MsgUpdateTakeProfitPrice)
       returns (MsgUpdateTakeProfitPriceResponse);
-  rpc UpdateMaxLeverageForPool(MsgUpdateMaxLeverageForPool) returns (MsgUpdateMaxLeverageForPoolResponse);
-  rpc UpdateEnabledPools(MsgUpdateEnabledPools) returns (MsgUpdateEnabledPoolsResponse);
-
+  rpc UpdateMaxLeverageForPool(MsgUpdateMaxLeverageForPool)
+      returns (MsgUpdateMaxLeverageForPoolResponse);
+  rpc UpdateEnabledPools(MsgUpdateEnabledPools)
+      returns (MsgUpdateEnabledPoolsResponse);
 }
 message MsgOpen {
   option (cosmos.msg.v1.signer) = "creator";

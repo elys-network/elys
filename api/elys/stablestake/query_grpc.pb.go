@@ -22,6 +22,10 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// BorrowRatio queries the borrow ratio compared to total deposit
 	BorrowRatio(ctx context.Context, in *QueryBorrowRatioRequest, opts ...grpc.CallOption) (*QueryBorrowRatioResponse, error)
+	// Queries a single pool given its index.
+	Pool(ctx context.Context, in *QueryGetPoolRequest, opts ...grpc.CallOption) (*QueryGetPoolResponse, error)
+	// Queries a list of all pools.
+	Pools(ctx context.Context, in *QueryAllPoolRequest, opts ...grpc.CallOption) (*QueryAllPoolResponse, error)
 }
 
 type queryClient struct {
@@ -50,6 +54,24 @@ func (c *queryClient) BorrowRatio(ctx context.Context, in *QueryBorrowRatioReque
 	return out, nil
 }
 
+func (c *queryClient) Pool(ctx context.Context, in *QueryGetPoolRequest, opts ...grpc.CallOption) (*QueryGetPoolResponse, error) {
+	out := new(QueryGetPoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/Pool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Pools(ctx context.Context, in *QueryAllPoolRequest, opts ...grpc.CallOption) (*QueryAllPoolResponse, error) {
+	out := new(QueryAllPoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/Pools", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -58,6 +80,10 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// BorrowRatio queries the borrow ratio compared to total deposit
 	BorrowRatio(context.Context, *QueryBorrowRatioRequest) (*QueryBorrowRatioResponse, error)
+	// Queries a single pool given its index.
+	Pool(context.Context, *QueryGetPoolRequest) (*QueryGetPoolResponse, error)
+	// Queries a list of all pools.
+	Pools(context.Context, *QueryAllPoolRequest) (*QueryAllPoolResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -70,6 +96,12 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 }
 func (UnimplementedQueryServer) BorrowRatio(context.Context, *QueryBorrowRatioRequest) (*QueryBorrowRatioResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BorrowRatio not implemented")
+}
+func (UnimplementedQueryServer) Pool(context.Context, *QueryGetPoolRequest) (*QueryGetPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Pool not implemented")
+}
+func (UnimplementedQueryServer) Pools(context.Context, *QueryAllPoolRequest) (*QueryAllPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Pools not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -120,6 +152,42 @@ func _Query_BorrowRatio_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Pool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetPoolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Pool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Query/Pool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Pool(ctx, req.(*QueryGetPoolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Pools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllPoolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Pools(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Query/Pools",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Pools(ctx, req.(*QueryAllPoolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +202,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BorrowRatio",
 			Handler:    _Query_BorrowRatio_Handler,
+		},
+		{
+			MethodName: "Pool",
+			Handler:    _Query_Pool_Handler,
+		},
+		{
+			MethodName: "Pools",
+			Handler:    _Query_Pools_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -23,6 +23,8 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgBond{},
 		&MsgUnbond{},
 		&MsgUpdateParams{},
+		&MsgAddPool{},
+		&MsgUpdatePool{},
 	)
 	// this line is used by starport scaffolding # 3
 

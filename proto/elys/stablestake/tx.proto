@@ -102,9 +102,7 @@ message MsgAddPool {
   ];
 }
 
-message MsgAddPoolResponse {
-  uint64 pool_id = 1;
-}
+message MsgAddPoolResponse { uint64 pool_id = 1; }
 
 message MsgUpdatePool {
   option (cosmos.msg.v1.signer) = "authority";
@@ -143,5 +141,4 @@ message MsgUpdatePool {
   uint64 pool_id = 8;
 }
 
-message MsgUpdatePoolResponse {
-}
+message MsgUpdatePoolResponse {}
