@@ -352,6 +352,14 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 		// Sum total swapped
 		totalSwappedCoins = totalSwappedCoins.Add(swappedCoins...)
 	}
+	if !totalSwappedCoins.IsZero() {
+		ctx.EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				types.TypeEvtUsdcFee,
+				sdk.NewAttribute("amount", totalSwappedCoins.String()),
+			),
+		})
+	}
 
 	return totalSwappedCoins, nil
 }

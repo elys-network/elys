@@ -9,7 +9,7 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (suite *KeeperTestSuite) TestMsgUpdateMaxLeverageForPool() {
+func (suite *KeeperTestSuite) TestMsgUpdatePool() {
 	suite.ResetSuite()
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	newPool := types.NewPool(1, sdkmath.LegacyMustNewDecFromStr("5.5"))
@@ -17,50 +17,50 @@ func (suite *KeeperTestSuite) TestMsgUpdateMaxLeverageForPool() {
 
 	testCases := []struct {
 		name             string
-		input            *types.MsgUpdateMaxLeverageForPool
+		input            *types.MsgUpdatePool
 		expectErr        bool
 		expectErrMsg     string
-		postValidateFunc func(msg *types.MsgUpdateMaxLeverageForPool)
+		postValidateFunc func(msg *types.MsgUpdatePool)
 	}{
 		{"invalid authority",
-			&types.MsgUpdateMaxLeverageForPool{
+			&types.MsgUpdatePool{
 				Authority:   addresses[0].String(),
 				PoolId:      1,
 				LeverageMax: sdkmath.LegacyMustNewDecFromStr("4.5"),
 			},
 			true,
 			"invalid authority",
-			func(msg *types.MsgUpdateMaxLeverageForPool) {},
+			func(msg *types.MsgUpdatePool) {},
 		},
 		{"pool not found",
-			&types.MsgUpdateMaxLeverageForPool{
+			&types.MsgUpdatePool{
 				Authority:   authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 				PoolId:      2,
 				LeverageMax: sdkmath.LegacyMustNewDecFromStr("4.5"),
 			},
 			true,
 			"pool does not exists for pool id 2",
-			func(msg *types.MsgUpdateMaxLeverageForPool) {},
+			func(msg *types.MsgUpdatePool) {},
 		},
 		{"Update max leverage for pool more than max leverage allowed",
-			&types.MsgUpdateMaxLeverageForPool{
+			&types.MsgUpdatePool{
 				Authority:   authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 				PoolId:      1,
 				LeverageMax: sdkmath.LegacyMustNewDecFromStr("11.5"),
 			},
 			true,
 			"max leverage allowed is less than the leverage max",
-			func(msg *types.MsgUpdateMaxLeverageForPool) {},
+			func(msg *types.MsgUpdatePool) {},
 		},
 		{"Happy flow",
-			&types.MsgUpdateMaxLeverageForPool{
+			&types.MsgUpdatePool{
 				Authority:   authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 				PoolId:      1,
 				LeverageMax: sdkmath.LegacyMustNewDecFromStr("9"),
 			},
 			false,
 			"",
-			func(msg *types.MsgUpdateMaxLeverageForPool) {
+			func(msg *types.MsgUpdatePool) {
 				pool, _ := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
 				suite.Require().Equal(sdkmath.LegacyMustNewDecFromStr("9"), pool.LeverageMax)
 			},
@@ -70,7 +70,7 @@ func (suite *KeeperTestSuite) TestMsgUpdateMaxLeverageForPool() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
-			_, err := msgServer.UpdateMaxLeverageForPool(suite.ctx, tc.input)
+			_, err := msgServer.UpdatePool(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
