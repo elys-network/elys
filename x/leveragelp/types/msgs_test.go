@@ -401,3 +401,115 @@ func TestMsgClaimRewards(t *testing.T) {
 		})
 	}
 }
+
+func TestMsgUpdatePool(t *testing.T) {
+	msg := types.MsgUpdatePool{
+		Authority:          "",
+		PoolId:             0,
+		LeverageMax:        sdkmath.LegacyDec{},
+		MaxLeveragelpRatio: sdkmath.LegacyDec{},
+	}
+
+	tests := []struct {
+		name   string
+		setter func()
+		errMsg string
+	}{
+		{
+			name: "invalid authority address",
+			setter: func() {
+				msg.Authority = "invalid_address"
+			},
+			errMsg: "invalid authority address",
+		},
+		{
+			name: "invalid pool id",
+			setter: func() {
+				msg.Authority = sample.AccAddress()
+				msg.PoolId = 0
+			},
+			errMsg: "invalid pool id",
+		},
+		{
+			name: "invalid LeverageMax",
+			setter: func() {
+				msg.PoolId = 1
+				msg.LeverageMax = sdkmath.LegacyZeroDec()
+			},
+			errMsg: "invalid leverage max",
+		},
+		{
+			name: "invalid MaxLeveragelpRatio",
+			setter: func() {
+				msg.LeverageMax = sdkmath.LegacyNewDec(2)
+				msg.MaxLeveragelpRatio = sdkmath.LegacyNewDec(-1)
+			},
+			errMsg: "invalid max leverage ratio",
+		},
+		{
+			name: "success",
+			setter: func() {
+				msg.MaxLeveragelpRatio = sdkmath.LegacyMustNewDecFromStr("0.2")
+			},
+			errMsg: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.setter()
+			err := msg.ValidateBasic()
+			if tt.errMsg != "" {
+				require.ErrorContains(t, err, tt.errMsg)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestMsgUpdateEnabledPools(t *testing.T) {
+	msg := types.MsgUpdateEnabledPools{
+		Authority:    "",
+		EnabledPools: nil,
+	}
+
+	tests := []struct {
+		name   string
+		setter func()
+		errMsg string
+	}{
+		{
+			name: "invalid authority address",
+			setter: func() {
+				msg.Authority = "invalid_address"
+			},
+			errMsg: "invalid authority address",
+		},
+		{
+			name: "repeated pool ids",
+			setter: func() {
+				msg.Authority = sample.AccAddress()
+				msg.EnabledPools = []uint64{1, 2, 1}
+			},
+			errMsg: "duplicate pool id",
+		},
+		{
+			name: "success",
+			setter: func() {
+				msg.EnabledPools = []uint64{1, 2}
+			},
+			errMsg: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.setter()
+			err := msg.ValidateBasic()
+			if tt.errMsg != "" {
+				require.ErrorContains(t, err, tt.errMsg)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
