@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
@@ -190,6 +191,43 @@ func (msg *MsgClaimRewards) ValidateBasic() error {
 
 	poolIdsMap := make(map[uint64]bool)
 	for _, id := range msg.Ids {
+		if poolIdsMap[id] {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "duplicate pool id %d", id)
+		} else {
+			poolIdsMap[id] = true
+		}
+	}
+	return nil
+}
+
+func (msg *MsgUpdatePool) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+	}
+
+	if msg.PoolId == 0 {
+		return errors.New("invalid pool id")
+	}
+
+	if msg.LeverageMax.IsNil() || msg.LeverageMax.LTE(math.LegacyOneDec()) {
+		return errors.New("invalid leverage max")
+	}
+
+	if msg.MaxLeveragelpRatio.IsNil() || msg.MaxLeveragelpRatio.IsNegative() {
+		return errors.New("invalid max leverage ratio")
+	}
+	return nil
+}
+
+func (msg *MsgUpdateEnabledPools) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+	}
+
+	poolIdsMap := make(map[uint64]bool)
+	for _, id := range msg.EnabledPools {
 		if poolIdsMap[id] {
 			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "duplicate pool id %d", id)
 		} else {

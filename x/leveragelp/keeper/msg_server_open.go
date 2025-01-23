@@ -35,17 +35,17 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
-	params := k.stableKeeper.GetParams(ctx)
+	stableStakeParams := k.stableKeeper.GetParams(ctx)
 	moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
 
 	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
 
 	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := params.TotalValue.Sub(balance.Amount)
+	borrowed := stableStakeParams.TotalValue.Sub(balance.Amount)
 	borrowRatio := sdkmath.LegacyZeroDec()
-	if params.TotalValue.GT(sdkmath.ZeroInt()) {
+	if stableStakeParams.TotalValue.GT(sdkmath.ZeroInt()) {
 		borrowRatio = borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
-			Quo(params.TotalValue.ToLegacyDec())
+			Quo(stableStakeParams.TotalValue.ToLegacyDec())
 	}
 
 	var poolLeveragelpRatio sdkmath.LegacyDec
@@ -59,7 +59,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 	poolLeveragelpRatio = pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
-	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) || borrowRatio.GTE(params.MaxLeverageRatio) {
+	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) || borrowRatio.GTE(stableStakeParams.MaxLeverageRatio) {
 		return nil, errorsmod.Wrap(types.ErrMaxLeverageLpExists, "no new position can be open")
 	}
 

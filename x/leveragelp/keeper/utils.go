@@ -37,14 +37,25 @@ func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) (*types.P
 	return nil, nil
 }
 
+// TODO simplify this design. Double check happening, one at pool level, one at global level
 func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset")
+		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "leverage lp pool: %d", poolId)
 	}
 
 	if !pool.Health.IsNil() && pool.Health.LTE(k.GetPoolOpenThreshold(ctx)) {
 		return errorsmod.Wrap(types.ErrInvalidPosition, "pool health too low to open new positions")
+	}
+	ammPool, found := k.amm.GetPool(ctx, poolId)
+	if !found {
+		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "amm pool: %d", poolId)
+	}
+
+	poolLeveragelpRatio := pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+
+	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) {
+		return errorsmod.Wrap(types.ErrMaxLeverageLpExists, "pool is unhealthy")
 	}
 	return nil
 }

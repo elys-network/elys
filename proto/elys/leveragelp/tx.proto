@@ -26,8 +26,7 @@ service Msg {
   rpc Dewhitelist(MsgDewhitelist) returns (MsgDewhitelistResponse);
   rpc UpdateStopLoss(MsgUpdateStopLoss) returns (MsgUpdateStopLossResponse);
   rpc ClosePositions(MsgClosePositions) returns (MsgClosePositionsResponse);
-  rpc UpdateMaxLeverageForPool(MsgUpdateMaxLeverageForPool)
-      returns (MsgUpdateMaxLeverageForPoolResponse);
+  rpc UpdatePool(MsgUpdatePool) returns (MsgUpdatePoolResponse);
   rpc UpdateEnabledPools(MsgUpdateEnabledPools)
       returns (MsgUpdateEnabledPoolsResponse);
 }
@@ -161,7 +160,7 @@ message MsgClosePositions {
 
 message MsgClosePositionsResponse {}
 
-message MsgUpdateMaxLeverageForPool {
+message MsgUpdatePool {
   option (cosmos.msg.v1.signer) = "authority";
   option (amino.name) = "leveragelp/MsgUpdateMaxLeverageForPool";
   // authority is the address that controls the module (defaults to x/gov unless
@@ -174,9 +173,14 @@ message MsgUpdateMaxLeverageForPool {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  string max_leveragelp_ratio = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message MsgUpdateMaxLeverageForPoolResponse {}
+message MsgUpdatePoolResponse {}
 message MsgUpdateEnabledPools {
   option (cosmos.msg.v1.signer) = "authority";
   option (amino.name) = "leveragelp/MsgUpdateEnabledPools";
