@@ -130,7 +130,7 @@ func CalcExitPool(
 			}
 		}
 
-		_, weightBreakingFee, _ := pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenOutDenom, params, sdkmath.LegacyOneDec())
+		weightBalanceBonus, weightBreakingFee, _ := pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenOutDenom, params, sdkmath.LegacyOneDec())
 		// apply percentage to fees, consider improvement or reduction of other token
 		// Other denom weight ratio to reduce the weight breaking fees
 		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
@@ -138,7 +138,7 @@ func CalcExitPool(
 		weightBreakingFee = weightBreakingFee.Mul(initialWeightIn)
 
 		tokenOutAmount := oracleOutAmount.Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).RoundInt()
-		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBreakingFee.Neg(), nil
+		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, nil
 	}
 
 	for _, asset := range poolLiquidity {
