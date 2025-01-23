@@ -6,6 +6,7 @@ const (
 	TypeEvtClaimRewards           = "claim_rewards"
 	TypeEvtSetPoolMultiplier      = "set_pool_multiplier"
 	TypeEvtSkipSwap               = "skip_conversion_of_fee"
+	TypeEvtUsdcFee                = "fee_collected_in_usdc"
 
 	AttributeRewardDenom    = "reward_denom"
 	AttributeMinAmount      = "min_amount"
