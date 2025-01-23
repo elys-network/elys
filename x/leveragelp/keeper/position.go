@@ -262,13 +262,6 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	debtDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 	debtValue := debtAmount.ToLegacyDec().Mul(debtDenomPrice)
 
-	leveragedLpAmount := sdkmath.ZeroInt()
-	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
-
-	for _, commitment := range commitments.CommittedTokens {
-		leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
-	}
-
 	ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), err
@@ -278,7 +271,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), err
 	}
-	positionValue := leveragedLpAmount.ToLegacyDec().Mul(ammTVL).Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+	positionValue := position.LeveragedLpAmount.ToLegacyDec().Mul(ammTVL).Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
 	health := positionValue.Quo(debtValue)
 
