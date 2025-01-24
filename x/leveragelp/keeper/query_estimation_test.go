@@ -9,6 +9,7 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	"time"
 )
 
 func (suite *KeeperTestSuite) TestQueryEstimation() {
@@ -89,11 +90,14 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
 	})
 
-	estimation, _ := k.CloseEst(suite.ctx, &types.QueryCloseEstRequest{
+	suite.AddBlockTime(time.Hour)
+
+	estimation, err := k.CloseEst(suite.ctx, &types.QueryCloseEstRequest{
 		Owner:    addr.String(),
 		Id:       position.Id,
 		LpAmount: sdkmath.NewInt(10000000000000000),
 	})
+	suite.Require().NoError(err)
 	// Total liability is 4000, so 800 is the liability for 10000000000000000 Lp amount
 	suite.Require().Equal(estimation.AmountRepaid.String(), "800")
 }

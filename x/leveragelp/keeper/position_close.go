@@ -37,7 +37,7 @@ func (k Keeper) RepayAndClose(ctx sdk.Context, position *types.Position, pool *t
 	lpSharesForRepay := repayValue.Mul(ammPool.TotalShares.Amount.ToLegacyDec()).Quo(ammPoolTVL).TruncateInt()
 
 	// Bot failed to close position here, Position is unhealthy, override closing ratio to 1
-	if !closingRatio.Equal(math.LegacyOneDec()) && lpSharesForRepay.GT(totalLpAmountToClose) {
+	if lpSharesForRepay.GT(totalLpAmountToClose) {
 		closingRatio = math.LegacyOneDec()
 		totalLpAmountToClose = position.LeveragedLpAmount
 		repayAmount = debt.GetTotalLiablities()
