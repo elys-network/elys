@@ -36,10 +36,8 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 		// we are multiplying here by params.WeightBreakingFeePortion as we didn't multiply in pool.Join/Exit for weight breaking fee
 		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.WeightBreakingFeePortion)
 
-		var weightRecoveryFeeAmounts sdk.Coins
 		for _, coin := range exitCoins {
 			weightRecoveryFeeAmount = coin.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
-			weightRecoveryFeeAmounts = append(weightRecoveryFeeAmounts, sdk.NewCoin(coin.Denom, weightRecoveryFeeAmount))
 
 			if weightRecoveryFeeAmount.IsPositive() {
 				// send weight recovery fee to rebalance treasury if weight recovery fee amount is positive¬

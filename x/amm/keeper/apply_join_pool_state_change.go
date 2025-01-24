@@ -35,36 +35,27 @@ func (k Keeper) ApplyJoinPoolStateChange(
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		// we are multiplying here by params.WeightBreakingFeePortion as we didn't multiply in pool.Join/Exit for weight breaking fee
 		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.WeightBreakingFeePortion)
+		for _, coin := range joinCoins {
+			weightRecoveryFeeAmount = coin.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
 
-		if givenOut {
-			weightRecoveryFeeAmount = oracleInAmount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
-		} else {
-			weightRecoveryFeeAmount = tokenIn.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
-		}
+			if weightRecoveryFeeAmount.IsPositive() {
+				// send weight recovery fee to rebalance treasury if weight recovery fee amount is positive¬
+				netWeightBreakingFeeCoins := sdk.Coins{sdk.NewCoin(coin.Denom, weightRecoveryFeeAmount)}
 
-		if weightRecoveryFeeAmount.IsPositive() {
-			// send weight recovery fee to rebalance treasury if weight recovery fee amount is positive¬
-			netWeightBreakingFeeCoins := sdk.Coins{sdk.NewCoin(tokenIn.Denom, weightRecoveryFeeAmount)}
+				err := k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, netWeightBreakingFeeCoins)
+				if err != nil {
+					return err
+				}
 
-			err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, netWeightBreakingFeeCoins)
-			if err != nil {
-				return err
+				err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), netWeightBreakingFeeCoins)
+				if err != nil {
+					return err
+				}
+
+				// Track amount in pool
+				weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(sdkmath.LegacyOneDec().Sub(params.WeightBreakingFeePortion))
+				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, sdkmath.Int(weightRecoveryFeeForPool.Mul(sdkmath.LegacyDec(weightRecoveryFeeAmount)))))
 			}
-
-			err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), netWeightBreakingFeeCoins)
-			if err != nil {
-				return err
-			}
-
-			// Track amount in pool
-			weightRecoveryFeeAmountForPool := sdkmath.ZeroInt()
-			weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(sdkmath.LegacyOneDec().Sub(params.WeightBreakingFeePortion))
-			if givenOut {
-				weightRecoveryFeeAmountForPool = oracleInAmount.ToLegacyDec().Mul(weightRecoveryFeeForPool).RoundInt()
-			} else {
-				weightRecoveryFeeAmountForPool = tokenIn.Amount.ToLegacyDec().Mul(weightRecoveryFeeForPool).RoundInt()
-			}
-			k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, weightRecoveryFeeAmountForPool))
 		}
 	}
 
