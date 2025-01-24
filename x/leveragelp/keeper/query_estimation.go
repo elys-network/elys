@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -35,32 +36,28 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
+	ctx, _ := sdk.UnwrapSDKContext(goCtx).CacheContext()
 	owner := sdk.MustAccAddressFromBech32(req.Owner)
 	position, err := k.GetPosition(ctx, owner, req.Id)
 	if err != nil {
 		return nil, err
 	}
+	pool, found := k.GetPool(ctx, position.AmmPoolId)
+	if !found {
+		return nil, errors.New("leverage lp pool not found")
+	}
 
-	exitCoins, weightBalanceBonus, err := k.amm.ExitPoolEst(ctx, position.AmmPoolId, req.LpAmount, position.Collateral.Denom)
+	closingRatio := req.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
+	finalClosingRatio, totalLpAmountToClose, coinsToRebalanceTreasury, repayAmount, finalUserRewards, err := k.RepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
 	}
 
-	// Repay with interest
-	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
-
-	// Ensure position.LeveragedLpAmount is not zero to avoid division by zero
-	if position.LeveragedLpAmount.IsZero() {
-		return nil, types.ErrAmountTooLow
-	}
-
-	repayAmount := debt.GetTotalLiablities().Mul(req.LpAmount).Quo(position.LeveragedLpAmount)
-	userAmount := exitCoins[0].Amount.Sub(repayAmount)
-
 	return &types.QueryCloseEstResponse{
-		Liability:          repayAmount,
-		WeightBalanceRatio: weightBalanceBonus,
-		AmountReturned:     userAmount,
+		AmountRepaid:      repayAmount,
+		FinalClosingRatio: finalClosingRatio,
+		ClosingLpAmount:   totalLpAmountToClose,
+		ExitFee:           coinsToRebalanceTreasury,
+		UserRewards:       finalUserRewards,
 	}, nil
 }

@@ -59,5 +59,12 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 		}
 	}
 
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventUnbond,
+		sdk.NewAttribute("address", msg.Creator),
+		sdk.NewAttribute("amount", msg.Amount.String()),
+		sdk.NewAttribute("shares_burnt", shareCoin.String()),
+		sdk.NewAttribute("redemption", redemptionCoin.String()),
+	))
+
 	return &types.MsgUnbondResponse{}, nil
 }

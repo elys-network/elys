@@ -1,10 +1,9 @@
 package types
 
 const (
-	EventOpen                   = "leveragelp/position_open"
-	EventClose                  = "leveragelp/position_close"
-	EventAddCollateral          = "leveragelp/add_collateral"
-	EventClosePositions         = "leveragelp/close_positions"
-	EventCloseUnhealthyPosition = "leveragelp/close_unhealthy_position"
-	EventClosePositionStopLoss  = "leveragelp/close_position_stop_loss"
+	EventOpen                   = "leverageLp_position_open"
+	EventClose                  = "leverageLp_position_close"
+	EventClosePositions         = "leverageLp_close_positions"
+	EventCloseUnhealthyPosition = "leverageLp_close_unhealthy_position"
+	EventClosePositionStopLoss  = "leverageLp_close_position_stop_loss"
 )
