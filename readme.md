@@ -10,6 +10,7 @@
 | Version              | [See latest version here](https://github.com/elys-network/elys/releases) |
 | MainNet RPC Endpoint | https://rpc.elys.network:443                                             |
 | MainNet API Endpoint | https://api.elys.network:443                                             |
+| MainNet Explorer     | https://explorer.elys.network ; https://elysscan.io                      |
 | TestNet RPC Endpoint | https://rpc.testnet.elys.network:443                                     |
 | TestNet API Endpoint | https://api.testnet.elys.network:443                                     |
 

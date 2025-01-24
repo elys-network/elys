@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"errors"
 	"fmt"
 
 	storetypes "cosmossdk.io/core/store"
@@ -37,14 +38,25 @@ func (k Keeper) CheckSamePosition(ctx sdk.Context, msg *types.MsgOpen) (*types.P
 	return nil, nil
 }
 
+// TODO simplify this design. Double check happening, one at pool level, one at global level
 func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid collateral asset")
+		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "leverage lp pool: %d", poolId)
 	}
 
 	if !pool.Health.IsNil() && pool.Health.LTE(k.GetPoolOpenThreshold(ctx)) {
-		return errorsmod.Wrap(types.ErrInvalidPosition, "pool health too low to open new positions")
+		return errors.New("pool health too low to open new positions")
+	}
+	ammPool, found := k.amm.GetPool(ctx, poolId)
+	if !found {
+		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "amm pool: %d", poolId)
+	}
+
+	poolLeveragelpRatio := pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+
+	if poolLeveragelpRatio.GT(pool.MaxLeveragelpRatio) {
+		return errorsmod.Wrap(types.ErrMaxLeverageLpExists, "pool is unhealthy")
 	}
 	return nil
 }
@@ -75,26 +87,35 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 		if !found {
 			return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 		}
-		exitCoins, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), position.LeveragedLpAmount, baseCurrency)
+
+		ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
 		if err != nil {
 			return nil, err
 		}
 
-		exitAmountAfterFee := exitCoins.AmountOf(baseCurrency)
+		ammTVL, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+		if err != nil {
+			return nil, err
+		}
+
+		debtDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+		debtValue := position.Liabilities.ToLegacyDec().Mul(debtDenomPrice)
+
+		positionValue := position.LeveragedLpAmount.ToLegacyDec().Mul(ammTVL).Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
 		updated_leverage := sdkmath.LegacyZeroDec()
-		denomimator := exitAmountAfterFee.ToLegacyDec().Sub(position.Liabilities.ToLegacyDec())
-		if denomimator.IsPositive() {
-			updated_leverage = exitAmountAfterFee.ToLegacyDec().Quo(denomimator)
+		denominator := positionValue.Sub(debtValue)
+		if denominator.IsPositive() {
+			updated_leverage = positionValue.Quo(denominator)
 		}
-		if position.Liabilities.IsPositive() {
-			position.PositionHealth = exitAmountAfterFee.ToLegacyDec().Quo(position.Liabilities.ToLegacyDec())
+		if debtValue.IsPositive() {
+			position.PositionHealth = positionValue.Quo(debtValue)
 		}
 
 		updatedLeveragePositions = append(updatedLeveragePositions, &types.QueryPosition{
 			Position:         position,
 			UpdatedLeverage:  updated_leverage,
-			PositionUsdValue: sdkmath.LegacyNewDecFromIntWithPrec(exitAmountAfterFee, 6),
+			PositionUsdValue: positionValue,
 		})
 	}
 	return updatedLeveragePositions, nil

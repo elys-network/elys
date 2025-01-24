@@ -645,7 +645,6 @@ func _Msg_WithdrawAllRewards_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-var Msg_serviceDesc = _Msg_serviceDesc
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.estaking.Msg",
 	HandlerType: (*MsgServer)(nil),
