@@ -87,5 +87,11 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 		}
 	}
 
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventBond,
+		sdk.NewAttribute("address", msg.Creator),
+		sdk.NewAttribute("amount", msg.Amount.String()),
+		sdk.NewAttribute("shares", sdk.NewCoin(shareDenom, shareAmount).String()),
+	))
+
 	return &types.MsgBondResponse{}, nil
 }

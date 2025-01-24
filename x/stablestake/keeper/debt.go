@@ -119,6 +119,9 @@ func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
 }
 
 func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec) sdkmath.Int {
+	if startBlock == uint64(ctx.BlockHeight()) {
+		return sdkmath.ZeroInt()
+	}
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
 	currentBlockKey := sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))
 	startBlockKey := sdk.Uint64ToBigEndian(startBlock)
@@ -214,6 +217,11 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) er
 	debt := k.UpdateInterestAndGetDebt(ctx, addr)
 	debt.Borrowed = debt.Borrowed.Add(amount.Amount)
 	k.SetDebt(ctx, debt)
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventBorrow,
+		sdk.NewAttribute("address", addr.String()),
+		sdk.NewAttribute("amount", amount.String()),
+	))
 	return k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{amount})
 }
 
@@ -251,5 +259,22 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) err
 	} else {
 		k.SetDebt(ctx, debt)
 	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventRepay,
+		sdk.NewAttribute("address", addr.String()),
+		sdk.NewAttribute("amount", amount.String()),
+		sdk.NewAttribute("borrowed_left", debt.Borrowed.String()),
+	))
+	return nil
+}
+
+func (k Keeper) CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress) error {
+	debt := k.UpdateInterestAndGetDebt(ctx, addr)
+	k.DeleteDebt(ctx, debt)
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventForceClosed,
+		sdk.NewAttribute("address", addr.String()),
+		sdk.NewAttribute("liabilities_unpaid", debt.GetTotalLiablities().String()),
+		sdk.NewAttribute("borrowed_unpaid", debt.Borrowed.String()),
+	))
 	return nil
 }

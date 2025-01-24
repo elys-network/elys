@@ -305,10 +305,8 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 			position := tc.prerequisiteFunction()
 			pool, found := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
 			suite.Require().True(found)
-			ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, 1)
-			suite.Require().True(found)
 
-			isHealthy, closeAttempted, _, err := suite.app.LeveragelpKeeper.CheckAndLiquidateUnhealthyPosition(suite.ctx, position, pool, ammPool)
+			isHealthy, closeAttempted, _, err := suite.app.LeveragelpKeeper.CheckAndLiquidateUnhealthyPosition(suite.ctx, position, pool)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

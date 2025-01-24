@@ -248,6 +248,9 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccA
 
 // GetPositionHealth Should not be used in queries as UpdateInterestAndGetDebt updates KVStore as well
 func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdkmath.LegacyDec, error) {
+	if position.LeveragedLpAmount.IsZero() {
+		return sdkmath.LegacyZeroDec(), nil
+	}
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 	debtAmount := debt.GetTotalLiablities()
 	if debtAmount.IsZero() {

@@ -13324,19 +13324,125 @@ func (x *fastReflection_QueryRewardsResponse) ProtoMethods() *protoiface.Methods
 	}
 }
 
+var _ protoreflect.List = (*_QueryCloseEstResponse_4_list)(nil)
+
+type _QueryCloseEstResponse_4_list struct {
+	list *[]*v1beta11.Coin
+}
+
+func (x *_QueryCloseEstResponse_4_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_QueryCloseEstResponse_4_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_QueryCloseEstResponse_4_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta11.Coin)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_QueryCloseEstResponse_4_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta11.Coin)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_QueryCloseEstResponse_4_list) AppendMutable() protoreflect.Value {
+	v := new(v1beta11.Coin)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryCloseEstResponse_4_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_QueryCloseEstResponse_4_list) NewElement() protoreflect.Value {
+	v := new(v1beta11.Coin)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryCloseEstResponse_4_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_QueryCloseEstResponse_5_list)(nil)
+
+type _QueryCloseEstResponse_5_list struct {
+	list *[]*v1beta11.Coin
+}
+
+func (x *_QueryCloseEstResponse_5_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_QueryCloseEstResponse_5_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_QueryCloseEstResponse_5_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta11.Coin)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_QueryCloseEstResponse_5_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta11.Coin)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_QueryCloseEstResponse_5_list) AppendMutable() protoreflect.Value {
+	v := new(v1beta11.Coin)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryCloseEstResponse_5_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_QueryCloseEstResponse_5_list) NewElement() protoreflect.Value {
+	v := new(v1beta11.Coin)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryCloseEstResponse_5_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_QueryCloseEstResponse                      protoreflect.MessageDescriptor
-	fd_QueryCloseEstResponse_liability            protoreflect.FieldDescriptor
-	fd_QueryCloseEstResponse_weight_balance_ratio protoreflect.FieldDescriptor
-	fd_QueryCloseEstResponse_amount_returned      protoreflect.FieldDescriptor
+	md_QueryCloseEstResponse                     protoreflect.MessageDescriptor
+	fd_QueryCloseEstResponse_amount_repaid       protoreflect.FieldDescriptor
+	fd_QueryCloseEstResponse_final_closing_ratio protoreflect.FieldDescriptor
+	fd_QueryCloseEstResponse_closing_lp_amount   protoreflect.FieldDescriptor
+	fd_QueryCloseEstResponse_exit_fee            protoreflect.FieldDescriptor
+	fd_QueryCloseEstResponse_user_rewards        protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_leveragelp_query_proto_init()
 	md_QueryCloseEstResponse = File_elys_leveragelp_query_proto.Messages().ByName("QueryCloseEstResponse")
-	fd_QueryCloseEstResponse_liability = md_QueryCloseEstResponse.Fields().ByName("liability")
-	fd_QueryCloseEstResponse_weight_balance_ratio = md_QueryCloseEstResponse.Fields().ByName("weight_balance_ratio")
-	fd_QueryCloseEstResponse_amount_returned = md_QueryCloseEstResponse.Fields().ByName("amount_returned")
+	fd_QueryCloseEstResponse_amount_repaid = md_QueryCloseEstResponse.Fields().ByName("amount_repaid")
+	fd_QueryCloseEstResponse_final_closing_ratio = md_QueryCloseEstResponse.Fields().ByName("final_closing_ratio")
+	fd_QueryCloseEstResponse_closing_lp_amount = md_QueryCloseEstResponse.Fields().ByName("closing_lp_amount")
+	fd_QueryCloseEstResponse_exit_fee = md_QueryCloseEstResponse.Fields().ByName("exit_fee")
+	fd_QueryCloseEstResponse_user_rewards = md_QueryCloseEstResponse.Fields().ByName("user_rewards")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryCloseEstResponse)(nil)
@@ -13404,21 +13510,33 @@ func (x *fastReflection_QueryCloseEstResponse) Interface() protoreflect.ProtoMes
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_QueryCloseEstResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Liability != "" {
-		value := protoreflect.ValueOfString(x.Liability)
-		if !f(fd_QueryCloseEstResponse_liability, value) {
+	if x.AmountRepaid != "" {
+		value := protoreflect.ValueOfString(x.AmountRepaid)
+		if !f(fd_QueryCloseEstResponse_amount_repaid, value) {
 			return
 		}
 	}
-	if x.WeightBalanceRatio != "" {
-		value := protoreflect.ValueOfString(x.WeightBalanceRatio)
-		if !f(fd_QueryCloseEstResponse_weight_balance_ratio, value) {
+	if x.FinalClosingRatio != "" {
+		value := protoreflect.ValueOfString(x.FinalClosingRatio)
+		if !f(fd_QueryCloseEstResponse_final_closing_ratio, value) {
 			return
 		}
 	}
-	if x.AmountReturned != "" {
-		value := protoreflect.ValueOfString(x.AmountReturned)
-		if !f(fd_QueryCloseEstResponse_amount_returned, value) {
+	if x.ClosingLpAmount != "" {
+		value := protoreflect.ValueOfString(x.ClosingLpAmount)
+		if !f(fd_QueryCloseEstResponse_closing_lp_amount, value) {
+			return
+		}
+	}
+	if len(x.ExitFee) != 0 {
+		value := protoreflect.ValueOfList(&_QueryCloseEstResponse_4_list{list: &x.ExitFee})
+		if !f(fd_QueryCloseEstResponse_exit_fee, value) {
+			return
+		}
+	}
+	if len(x.UserRewards) != 0 {
+		value := protoreflect.ValueOfList(&_QueryCloseEstResponse_5_list{list: &x.UserRewards})
+		if !f(fd_QueryCloseEstResponse_user_rewards, value) {
 			return
 		}
 	}
@@ -13437,12 +13555,16 @@ func (x *fastReflection_QueryCloseEstResponse) Range(f func(protoreflect.FieldDe
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_QueryCloseEstResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.leveragelp.QueryCloseEstResponse.liability":
-		return x.Liability != ""
-	case "elys.leveragelp.QueryCloseEstResponse.weight_balance_ratio":
-		return x.WeightBalanceRatio != ""
-	case "elys.leveragelp.QueryCloseEstResponse.amount_returned":
-		return x.AmountReturned != ""
+	case "elys.leveragelp.QueryCloseEstResponse.amount_repaid":
+		return x.AmountRepaid != ""
+	case "elys.leveragelp.QueryCloseEstResponse.final_closing_ratio":
+		return x.FinalClosingRatio != ""
+	case "elys.leveragelp.QueryCloseEstResponse.closing_lp_amount":
+		return x.ClosingLpAmount != ""
+	case "elys.leveragelp.QueryCloseEstResponse.exit_fee":
+		return len(x.ExitFee) != 0
+	case "elys.leveragelp.QueryCloseEstResponse.user_rewards":
+		return len(x.UserRewards) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.QueryCloseEstResponse"))
@@ -13459,12 +13581,16 @@ func (x *fastReflection_QueryCloseEstResponse) Has(fd protoreflect.FieldDescript
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryCloseEstResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.leveragelp.QueryCloseEstResponse.liability":
-		x.Liability = ""
-	case "elys.leveragelp.QueryCloseEstResponse.weight_balance_ratio":
-		x.WeightBalanceRatio = ""
-	case "elys.leveragelp.QueryCloseEstResponse.amount_returned":
-		x.AmountReturned = ""
+	case "elys.leveragelp.QueryCloseEstResponse.amount_repaid":
+		x.AmountRepaid = ""
+	case "elys.leveragelp.QueryCloseEstResponse.final_closing_ratio":
+		x.FinalClosingRatio = ""
+	case "elys.leveragelp.QueryCloseEstResponse.closing_lp_amount":
+		x.ClosingLpAmount = ""
+	case "elys.leveragelp.QueryCloseEstResponse.exit_fee":
+		x.ExitFee = nil
+	case "elys.leveragelp.QueryCloseEstResponse.user_rewards":
+		x.UserRewards = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.QueryCloseEstResponse"))
@@ -13481,15 +13607,27 @@ func (x *fastReflection_QueryCloseEstResponse) Clear(fd protoreflect.FieldDescri
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_QueryCloseEstResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.leveragelp.QueryCloseEstResponse.liability":
-		value := x.Liability
+	case "elys.leveragelp.QueryCloseEstResponse.amount_repaid":
+		value := x.AmountRepaid
 		return protoreflect.ValueOfString(value)
-	case "elys.leveragelp.QueryCloseEstResponse.weight_balance_ratio":
-		value := x.WeightBalanceRatio
+	case "elys.leveragelp.QueryCloseEstResponse.final_closing_ratio":
+		value := x.FinalClosingRatio
 		return protoreflect.ValueOfString(value)
-	case "elys.leveragelp.QueryCloseEstResponse.amount_returned":
-		value := x.AmountReturned
+	case "elys.leveragelp.QueryCloseEstResponse.closing_lp_amount":
+		value := x.ClosingLpAmount
 		return protoreflect.ValueOfString(value)
+	case "elys.leveragelp.QueryCloseEstResponse.exit_fee":
+		if len(x.ExitFee) == 0 {
+			return protoreflect.ValueOfList(&_QueryCloseEstResponse_4_list{})
+		}
+		listValue := &_QueryCloseEstResponse_4_list{list: &x.ExitFee}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.leveragelp.QueryCloseEstResponse.user_rewards":
+		if len(x.UserRewards) == 0 {
+			return protoreflect.ValueOfList(&_QueryCloseEstResponse_5_list{})
+		}
+		listValue := &_QueryCloseEstResponse_5_list{list: &x.UserRewards}
+		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.QueryCloseEstResponse"))
@@ -13510,12 +13648,20 @@ func (x *fastReflection_QueryCloseEstResponse) Get(descriptor protoreflect.Field
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryCloseEstResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.leveragelp.QueryCloseEstResponse.liability":
-		x.Liability = value.Interface().(string)
-	case "elys.leveragelp.QueryCloseEstResponse.weight_balance_ratio":
-		x.WeightBalanceRatio = value.Interface().(string)
-	case "elys.leveragelp.QueryCloseEstResponse.amount_returned":
-		x.AmountReturned = value.Interface().(string)
+	case "elys.leveragelp.QueryCloseEstResponse.amount_repaid":
+		x.AmountRepaid = value.Interface().(string)
+	case "elys.leveragelp.QueryCloseEstResponse.final_closing_ratio":
+		x.FinalClosingRatio = value.Interface().(string)
+	case "elys.leveragelp.QueryCloseEstResponse.closing_lp_amount":
+		x.ClosingLpAmount = value.Interface().(string)
+	case "elys.leveragelp.QueryCloseEstResponse.exit_fee":
+		lv := value.List()
+		clv := lv.(*_QueryCloseEstResponse_4_list)
+		x.ExitFee = *clv.list
+	case "elys.leveragelp.QueryCloseEstResponse.user_rewards":
+		lv := value.List()
+		clv := lv.(*_QueryCloseEstResponse_5_list)
+		x.UserRewards = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.QueryCloseEstResponse"))
@@ -13536,12 +13682,24 @@ func (x *fastReflection_QueryCloseEstResponse) Set(fd protoreflect.FieldDescript
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryCloseEstResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.leveragelp.QueryCloseEstResponse.liability":
-		panic(fmt.Errorf("field liability of message elys.leveragelp.QueryCloseEstResponse is not mutable"))
-	case "elys.leveragelp.QueryCloseEstResponse.weight_balance_ratio":
-		panic(fmt.Errorf("field weight_balance_ratio of message elys.leveragelp.QueryCloseEstResponse is not mutable"))
-	case "elys.leveragelp.QueryCloseEstResponse.amount_returned":
-		panic(fmt.Errorf("field amount_returned of message elys.leveragelp.QueryCloseEstResponse is not mutable"))
+	case "elys.leveragelp.QueryCloseEstResponse.exit_fee":
+		if x.ExitFee == nil {
+			x.ExitFee = []*v1beta11.Coin{}
+		}
+		value := &_QueryCloseEstResponse_4_list{list: &x.ExitFee}
+		return protoreflect.ValueOfList(value)
+	case "elys.leveragelp.QueryCloseEstResponse.user_rewards":
+		if x.UserRewards == nil {
+			x.UserRewards = []*v1beta11.Coin{}
+		}
+		value := &_QueryCloseEstResponse_5_list{list: &x.UserRewards}
+		return protoreflect.ValueOfList(value)
+	case "elys.leveragelp.QueryCloseEstResponse.amount_repaid":
+		panic(fmt.Errorf("field amount_repaid of message elys.leveragelp.QueryCloseEstResponse is not mutable"))
+	case "elys.leveragelp.QueryCloseEstResponse.final_closing_ratio":
+		panic(fmt.Errorf("field final_closing_ratio of message elys.leveragelp.QueryCloseEstResponse is not mutable"))
+	case "elys.leveragelp.QueryCloseEstResponse.closing_lp_amount":
+		panic(fmt.Errorf("field closing_lp_amount of message elys.leveragelp.QueryCloseEstResponse is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.QueryCloseEstResponse"))
@@ -13555,12 +13713,18 @@ func (x *fastReflection_QueryCloseEstResponse) Mutable(fd protoreflect.FieldDesc
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_QueryCloseEstResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.leveragelp.QueryCloseEstResponse.liability":
+	case "elys.leveragelp.QueryCloseEstResponse.amount_repaid":
 		return protoreflect.ValueOfString("")
-	case "elys.leveragelp.QueryCloseEstResponse.weight_balance_ratio":
+	case "elys.leveragelp.QueryCloseEstResponse.final_closing_ratio":
 		return protoreflect.ValueOfString("")
-	case "elys.leveragelp.QueryCloseEstResponse.amount_returned":
+	case "elys.leveragelp.QueryCloseEstResponse.closing_lp_amount":
 		return protoreflect.ValueOfString("")
+	case "elys.leveragelp.QueryCloseEstResponse.exit_fee":
+		list := []*v1beta11.Coin{}
+		return protoreflect.ValueOfList(&_QueryCloseEstResponse_4_list{list: &list})
+	case "elys.leveragelp.QueryCloseEstResponse.user_rewards":
+		list := []*v1beta11.Coin{}
+		return protoreflect.ValueOfList(&_QueryCloseEstResponse_5_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.QueryCloseEstResponse"))
@@ -13630,17 +13794,29 @@ func (x *fastReflection_QueryCloseEstResponse) ProtoMethods() *protoiface.Method
 		var n int
 		var l int
 		_ = l
-		l = len(x.Liability)
+		l = len(x.AmountRepaid)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.WeightBalanceRatio)
+		l = len(x.FinalClosingRatio)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.AmountReturned)
+		l = len(x.ClosingLpAmount)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.ExitFee) > 0 {
+			for _, e := range x.ExitFee {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.UserRewards) > 0 {
+			for _, e := range x.UserRewards {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -13671,24 +13847,56 @@ func (x *fastReflection_QueryCloseEstResponse) ProtoMethods() *protoiface.Method
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.AmountReturned) > 0 {
-			i -= len(x.AmountReturned)
-			copy(dAtA[i:], x.AmountReturned)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountReturned)))
+		if len(x.UserRewards) > 0 {
+			for iNdEx := len(x.UserRewards) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.UserRewards[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x2a
+			}
+		}
+		if len(x.ExitFee) > 0 {
+			for iNdEx := len(x.ExitFee) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.ExitFee[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x22
+			}
+		}
+		if len(x.ClosingLpAmount) > 0 {
+			i -= len(x.ClosingLpAmount)
+			copy(dAtA[i:], x.ClosingLpAmount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ClosingLpAmount)))
 			i--
 			dAtA[i] = 0x1a
 		}
-		if len(x.WeightBalanceRatio) > 0 {
-			i -= len(x.WeightBalanceRatio)
-			copy(dAtA[i:], x.WeightBalanceRatio)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightBalanceRatio)))
+		if len(x.FinalClosingRatio) > 0 {
+			i -= len(x.FinalClosingRatio)
+			copy(dAtA[i:], x.FinalClosingRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.FinalClosingRatio)))
 			i--
 			dAtA[i] = 0x12
 		}
-		if len(x.Liability) > 0 {
-			i -= len(x.Liability)
-			copy(dAtA[i:], x.Liability)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Liability)))
+		if len(x.AmountRepaid) > 0 {
+			i -= len(x.AmountRepaid)
+			copy(dAtA[i:], x.AmountRepaid)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountRepaid)))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -13743,7 +13951,7 @@ func (x *fastReflection_QueryCloseEstResponse) ProtoMethods() *protoiface.Method
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Liability", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountRepaid", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -13771,11 +13979,11 @@ func (x *fastReflection_QueryCloseEstResponse) ProtoMethods() *protoiface.Method
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Liability = string(dAtA[iNdEx:postIndex])
+				x.AmountRepaid = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightBalanceRatio", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FinalClosingRatio", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -13803,11 +14011,11 @@ func (x *fastReflection_QueryCloseEstResponse) ProtoMethods() *protoiface.Method
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.WeightBalanceRatio = string(dAtA[iNdEx:postIndex])
+				x.FinalClosingRatio = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountReturned", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ClosingLpAmount", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -13835,7 +14043,75 @@ func (x *fastReflection_QueryCloseEstResponse) ProtoMethods() *protoiface.Method
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.AmountReturned = string(dAtA[iNdEx:postIndex])
+				x.ClosingLpAmount = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExitFee", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ExitFee = append(x.ExitFee, &v1beta11.Coin{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.ExitFee[len(x.ExitFee)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UserRewards", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.UserRewards = append(x.UserRewards, &v1beta11.Coin{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.UserRewards[len(x.UserRewards)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -16104,9 +16380,11 @@ type QueryCloseEstResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Liability          string `protobuf:"bytes,1,opt,name=liability,proto3" json:"liability,omitempty"`
-	WeightBalanceRatio string `protobuf:"bytes,2,opt,name=weight_balance_ratio,json=weightBalanceRatio,proto3" json:"weight_balance_ratio,omitempty"`
-	AmountReturned     string `protobuf:"bytes,3,opt,name=amount_returned,json=amountReturned,proto3" json:"amount_returned,omitempty"`
+	AmountRepaid      string           `protobuf:"bytes,1,opt,name=amount_repaid,json=amountRepaid,proto3" json:"amount_repaid,omitempty"`
+	FinalClosingRatio string           `protobuf:"bytes,2,opt,name=final_closing_ratio,json=finalClosingRatio,proto3" json:"final_closing_ratio,omitempty"`
+	ClosingLpAmount   string           `protobuf:"bytes,3,opt,name=closing_lp_amount,json=closingLpAmount,proto3" json:"closing_lp_amount,omitempty"`
+	ExitFee           []*v1beta11.Coin `protobuf:"bytes,4,rep,name=exit_fee,json=exitFee,proto3" json:"exit_fee,omitempty"`
+	UserRewards       []*v1beta11.Coin `protobuf:"bytes,5,rep,name=user_rewards,json=userRewards,proto3" json:"user_rewards,omitempty"`
 }
 
 func (x *QueryCloseEstResponse) Reset() {
@@ -16129,25 +16407,39 @@ func (*QueryCloseEstResponse) Descriptor() ([]byte, []int) {
 	return file_elys_leveragelp_query_proto_rawDescGZIP(), []int{27}
 }
 
-func (x *QueryCloseEstResponse) GetLiability() string {
+func (x *QueryCloseEstResponse) GetAmountRepaid() string {
 	if x != nil {
-		return x.Liability
+		return x.AmountRepaid
 	}
 	return ""
 }
 
-func (x *QueryCloseEstResponse) GetWeightBalanceRatio() string {
+func (x *QueryCloseEstResponse) GetFinalClosingRatio() string {
 	if x != nil {
-		return x.WeightBalanceRatio
+		return x.FinalClosingRatio
 	}
 	return ""
 }
 
-func (x *QueryCloseEstResponse) GetAmountReturned() string {
+func (x *QueryCloseEstResponse) GetClosingLpAmount() string {
 	if x != nil {
-		return x.AmountReturned
+		return x.ClosingLpAmount
 	}
 	return ""
+}
+
+func (x *QueryCloseEstResponse) GetExitFee() []*v1beta11.Coin {
+	if x != nil {
+		return x.ExitFee
+	}
+	return nil
+}
+
+func (x *QueryCloseEstResponse) GetUserRewards() []*v1beta11.Coin {
+	if x != nil {
+		return x.UserRewards
+	}
+	return nil
 }
 
 type QueryCommittedTokensLockedRequest struct {
@@ -16460,25 +16752,39 @@ var file_elys_leveragelp_query_proto_rawDesc = []byte{
 	0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f,
 	0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x0c, 0x74, 0x6f, 0x74,
-	0x61, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x22, 0x9d, 0x02, 0x0a, 0x15, 0x51, 0x75,
+	0x61, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x22, 0xfd, 0x03, 0x0a, 0x15, 0x51, 0x75,
 	0x65, 0x72, 0x79, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x45, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x49, 0x0a, 0x09, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
-	0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x49, 0x6e, 0x74, 0x52, 0x09, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x12, 0x63,
-	0x0a, 0x14, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65,
-	0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
-	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
-	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x12, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x61,
-	0x74, 0x69, 0x6f, 0x12, 0x54, 0x0a, 0x0f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x72, 0x65,
-	0x74, 0x75, 0x72, 0x6e, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde,
-	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0e, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
-	0x74, 0x52, 0x65, 0x74, 0x75, 0x72, 0x6e, 0x65, 0x64, 0x22, 0x3d, 0x0a, 0x21, 0x51, 0x75, 0x65,
+	0x6e, 0x73, 0x65, 0x12, 0x50, 0x0a, 0x0d, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x72, 0x65,
+	0x70, 0x61, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0c, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x52,
+	0x65, 0x70, 0x61, 0x69, 0x64, 0x12, 0x61, 0x0a, 0x13, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x5f, 0x63,
+	0x6c, 0x6f, 0x73, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x11, 0x66, 0x69, 0x6e, 0x61, 0x6c, 0x43, 0x6c, 0x6f, 0x73,
+	0x69, 0x6e, 0x67, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x57, 0x0a, 0x11, 0x63, 0x6c, 0x6f, 0x73,
+	0x69, 0x6e, 0x67, 0x5f, 0x6c, 0x70, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49,
+	0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74,
+	0x52, 0x0f, 0x63, 0x6c, 0x6f, 0x73, 0x69, 0x6e, 0x67, 0x4c, 0x70, 0x41, 0x6d, 0x6f, 0x75, 0x6e,
+	0x74, 0x12, 0x66, 0x0a, 0x08, 0x65, 0x78, 0x69, 0x74, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x04, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73,
+	0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30,
+	0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
+	0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73,
+	0x52, 0x07, 0x65, 0x78, 0x69, 0x74, 0x46, 0x65, 0x65, 0x12, 0x6e, 0x0a, 0x0c, 0x75, 0x73, 0x65,
+	0x72, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00,
+	0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b,
+	0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x0b, 0x75, 0x73,
+	0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x22, 0x3d, 0x0a, 0x21, 0x51, 0x75, 0x65,
 	0x72, 0x79, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x74, 0x65, 0x64, 0x54, 0x6f, 0x6b, 0x65, 0x6e,
 	0x73, 0x4c, 0x6f, 0x63, 0x6b, 0x65, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18,
 	0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
@@ -16738,43 +17044,45 @@ var file_elys_leveragelp_query_proto_depIdxs = []int32{
 	36, // 17: elys.leveragelp.RewardInfo.reward:type_name -> cosmos.base.v1beta1.Coin
 	25, // 18: elys.leveragelp.QueryRewardsResponse.rewards:type_name -> elys.leveragelp.RewardInfo
 	36, // 19: elys.leveragelp.QueryRewardsResponse.total_rewards:type_name -> cosmos.base.v1beta1.Coin
-	36, // 20: elys.leveragelp.QueryCommittedTokensLockedResponse.locked_committed:type_name -> cosmos.base.v1beta1.Coin
-	36, // 21: elys.leveragelp.QueryCommittedTokensLockedResponse.total_committed:type_name -> cosmos.base.v1beta1.Coin
-	0,  // 22: elys.leveragelp.Query.Params:input_type -> elys.leveragelp.ParamsRequest
-	2,  // 23: elys.leveragelp.Query.QueryPositions:input_type -> elys.leveragelp.PositionsRequest
-	4,  // 24: elys.leveragelp.Query.QueryPositionsByPool:input_type -> elys.leveragelp.PositionsByPoolRequest
-	6,  // 25: elys.leveragelp.Query.GetStatus:input_type -> elys.leveragelp.StatusRequest
-	8,  // 26: elys.leveragelp.Query.QueryPositionsForAddress:input_type -> elys.leveragelp.PositionsForAddressRequest
-	10, // 27: elys.leveragelp.Query.GetWhitelist:input_type -> elys.leveragelp.WhitelistRequest
-	12, // 28: elys.leveragelp.Query.IsWhitelisted:input_type -> elys.leveragelp.IsWhitelistedRequest
-	14, // 29: elys.leveragelp.Query.Pool:input_type -> elys.leveragelp.QueryGetPoolRequest
-	16, // 30: elys.leveragelp.Query.Pools:input_type -> elys.leveragelp.QueryAllPoolRequest
-	37, // 31: elys.leveragelp.Query.Position:input_type -> elys.leveragelp.PositionRequest
-	19, // 32: elys.leveragelp.Query.LiquidationPrice:input_type -> elys.leveragelp.QueryLiquidationPriceRequest
-	21, // 33: elys.leveragelp.Query.OpenEst:input_type -> elys.leveragelp.QueryOpenEstRequest
-	23, // 34: elys.leveragelp.Query.CloseEst:input_type -> elys.leveragelp.QueryCloseEstRequest
-	24, // 35: elys.leveragelp.Query.Rewards:input_type -> elys.leveragelp.QueryRewardsRequest
-	28, // 36: elys.leveragelp.Query.CommittedTokensLocked:input_type -> elys.leveragelp.QueryCommittedTokensLockedRequest
-	1,  // 37: elys.leveragelp.Query.Params:output_type -> elys.leveragelp.ParamsResponse
-	3,  // 38: elys.leveragelp.Query.QueryPositions:output_type -> elys.leveragelp.PositionsResponse
-	5,  // 39: elys.leveragelp.Query.QueryPositionsByPool:output_type -> elys.leveragelp.PositionsByPoolResponse
-	7,  // 40: elys.leveragelp.Query.GetStatus:output_type -> elys.leveragelp.StatusResponse
-	9,  // 41: elys.leveragelp.Query.QueryPositionsForAddress:output_type -> elys.leveragelp.PositionsForAddressResponse
-	11, // 42: elys.leveragelp.Query.GetWhitelist:output_type -> elys.leveragelp.WhitelistResponse
-	13, // 43: elys.leveragelp.Query.IsWhitelisted:output_type -> elys.leveragelp.IsWhitelistedResponse
-	15, // 44: elys.leveragelp.Query.Pool:output_type -> elys.leveragelp.QueryGetPoolResponse
-	17, // 45: elys.leveragelp.Query.Pools:output_type -> elys.leveragelp.QueryAllPoolResponse
-	18, // 46: elys.leveragelp.Query.Position:output_type -> elys.leveragelp.PositionResponse
-	20, // 47: elys.leveragelp.Query.LiquidationPrice:output_type -> elys.leveragelp.QueryLiquidationPriceResponse
-	22, // 48: elys.leveragelp.Query.OpenEst:output_type -> elys.leveragelp.QueryOpenEstResponse
-	27, // 49: elys.leveragelp.Query.CloseEst:output_type -> elys.leveragelp.QueryCloseEstResponse
-	26, // 50: elys.leveragelp.Query.Rewards:output_type -> elys.leveragelp.QueryRewardsResponse
-	29, // 51: elys.leveragelp.Query.CommittedTokensLocked:output_type -> elys.leveragelp.QueryCommittedTokensLockedResponse
-	37, // [37:52] is the sub-list for method output_type
-	22, // [22:37] is the sub-list for method input_type
-	22, // [22:22] is the sub-list for extension type_name
-	22, // [22:22] is the sub-list for extension extendee
-	0,  // [0:22] is the sub-list for field type_name
+	36, // 20: elys.leveragelp.QueryCloseEstResponse.exit_fee:type_name -> cosmos.base.v1beta1.Coin
+	36, // 21: elys.leveragelp.QueryCloseEstResponse.user_rewards:type_name -> cosmos.base.v1beta1.Coin
+	36, // 22: elys.leveragelp.QueryCommittedTokensLockedResponse.locked_committed:type_name -> cosmos.base.v1beta1.Coin
+	36, // 23: elys.leveragelp.QueryCommittedTokensLockedResponse.total_committed:type_name -> cosmos.base.v1beta1.Coin
+	0,  // 24: elys.leveragelp.Query.Params:input_type -> elys.leveragelp.ParamsRequest
+	2,  // 25: elys.leveragelp.Query.QueryPositions:input_type -> elys.leveragelp.PositionsRequest
+	4,  // 26: elys.leveragelp.Query.QueryPositionsByPool:input_type -> elys.leveragelp.PositionsByPoolRequest
+	6,  // 27: elys.leveragelp.Query.GetStatus:input_type -> elys.leveragelp.StatusRequest
+	8,  // 28: elys.leveragelp.Query.QueryPositionsForAddress:input_type -> elys.leveragelp.PositionsForAddressRequest
+	10, // 29: elys.leveragelp.Query.GetWhitelist:input_type -> elys.leveragelp.WhitelistRequest
+	12, // 30: elys.leveragelp.Query.IsWhitelisted:input_type -> elys.leveragelp.IsWhitelistedRequest
+	14, // 31: elys.leveragelp.Query.Pool:input_type -> elys.leveragelp.QueryGetPoolRequest
+	16, // 32: elys.leveragelp.Query.Pools:input_type -> elys.leveragelp.QueryAllPoolRequest
+	37, // 33: elys.leveragelp.Query.Position:input_type -> elys.leveragelp.PositionRequest
+	19, // 34: elys.leveragelp.Query.LiquidationPrice:input_type -> elys.leveragelp.QueryLiquidationPriceRequest
+	21, // 35: elys.leveragelp.Query.OpenEst:input_type -> elys.leveragelp.QueryOpenEstRequest
+	23, // 36: elys.leveragelp.Query.CloseEst:input_type -> elys.leveragelp.QueryCloseEstRequest
+	24, // 37: elys.leveragelp.Query.Rewards:input_type -> elys.leveragelp.QueryRewardsRequest
+	28, // 38: elys.leveragelp.Query.CommittedTokensLocked:input_type -> elys.leveragelp.QueryCommittedTokensLockedRequest
+	1,  // 39: elys.leveragelp.Query.Params:output_type -> elys.leveragelp.ParamsResponse
+	3,  // 40: elys.leveragelp.Query.QueryPositions:output_type -> elys.leveragelp.PositionsResponse
+	5,  // 41: elys.leveragelp.Query.QueryPositionsByPool:output_type -> elys.leveragelp.PositionsByPoolResponse
+	7,  // 42: elys.leveragelp.Query.GetStatus:output_type -> elys.leveragelp.StatusResponse
+	9,  // 43: elys.leveragelp.Query.QueryPositionsForAddress:output_type -> elys.leveragelp.PositionsForAddressResponse
+	11, // 44: elys.leveragelp.Query.GetWhitelist:output_type -> elys.leveragelp.WhitelistResponse
+	13, // 45: elys.leveragelp.Query.IsWhitelisted:output_type -> elys.leveragelp.IsWhitelistedResponse
+	15, // 46: elys.leveragelp.Query.Pool:output_type -> elys.leveragelp.QueryGetPoolResponse
+	17, // 47: elys.leveragelp.Query.Pools:output_type -> elys.leveragelp.QueryAllPoolResponse
+	18, // 48: elys.leveragelp.Query.Position:output_type -> elys.leveragelp.PositionResponse
+	20, // 49: elys.leveragelp.Query.LiquidationPrice:output_type -> elys.leveragelp.QueryLiquidationPriceResponse
+	22, // 50: elys.leveragelp.Query.OpenEst:output_type -> elys.leveragelp.QueryOpenEstResponse
+	27, // 51: elys.leveragelp.Query.CloseEst:output_type -> elys.leveragelp.QueryCloseEstResponse
+	26, // 52: elys.leveragelp.Query.Rewards:output_type -> elys.leveragelp.QueryRewardsResponse
+	29, // 53: elys.leveragelp.Query.CommittedTokensLocked:output_type -> elys.leveragelp.QueryCommittedTokensLockedResponse
+	39, // [39:54] is the sub-list for method output_type
+	24, // [24:39] is the sub-list for method input_type
+	24, // [24:24] is the sub-list for extension type_name
+	24, // [24:24] is the sub-list for extension extendee
+	0,  // [0:24] is the sub-list for field type_name
 }
 
 func init() { file_elys_leveragelp_query_proto_init() }

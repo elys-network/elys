@@ -87,7 +87,7 @@ func (suite *KeeperTestSuite) SetCurrentHeight(h int64) {
 }
 
 func (suite *KeeperTestSuite) AddBlockTime(d time.Duration) {
-	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(d))
+	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(d)).WithBlockHeight(int64(d.Seconds() / 4))
 }
 
 func (suite *KeeperTestSuite) EnableWhiteListing() {
