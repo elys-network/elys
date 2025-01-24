@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"cosmossdk.io/math"
@@ -21,6 +22,7 @@ func DefaultParams() Params {
 		HealthGainFactor:     math.LegacyOneDec(),
 		TotalValue:           math.ZeroInt(),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+		MaxWithdrawRatio:     math.LegacyMustNewDecFromStr("0.7"),
 	}
 }
 
