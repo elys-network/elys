@@ -31,7 +31,7 @@ func (msg *MsgExitPool) ValidateBasic() error {
 		}
 	}
 
-	if msg.TokenOutDenom == "" {
+	if msg.TokenOutDenom != "" {
 		return errors.New("exit in single token not allowed")
 	}
 
