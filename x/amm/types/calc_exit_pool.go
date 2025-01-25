@@ -59,7 +59,6 @@ func CalcExitPool(
 	if pool.PoolParams.UseOracle && tokenOutDenom != "" {
 
 		accountedAssets := pool.GetAccountedBalance(ctx, accountedPoolKeeper, pool.PoolAssets)
-		initialWeightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, accountedAssets)
 		tokenPrice, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
 		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom)
 		if err != nil {
@@ -86,29 +85,15 @@ func CalcExitPool(
 			}
 		}
 
-		weightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
-		distanceDiff := weightDistance.Sub(initialWeightDistance)
-
-		// target weight
-		targetWeightOut := GetDenomNormalizedWeight(pool.PoolAssets, tokenOutDenom)
-		targetWeightIn := elystypes.OneDec34().Sub(targetWeightOut)
-
-		// weight breaking fee as in Plasma pool
-		finalWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, newAssetPools, tokenOutDenom)
-		finalWeightIn := elystypes.OneDec34().Sub(finalWeightOut)
-		initialAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
-			sdk.NewCoins(),
-			sdk.NewCoins(), accountedAssets,
-		)
-		if err != nil {
-			return sdk.Coins{}, elystypes.ZeroDec34(), err
-		}
-		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, initialAssetPools, tokenOutDenom)
+		weightBalanceBonus, weightBreakingFee, _ := pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenOutDenom, params, sdkmath.LegacyOneDec())
+		// apply percentage to fees, consider improvement or reduction of other token
+		// Other denom weight ratio to reduce the weight breaking fees
+		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
 		initialWeightIn := elystypes.OneDec34().Sub(initialWeightOut)
-		weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
+		weightBreakingFee = weightBreakingFee.Mul(initialWeightIn)
 
 		tokenOutAmount := oracleOutAmount.Mul(elystypes.OneDec34().Sub(weightBreakingFee)).ToInt()
-		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBreakingFee.Neg(), nil
+		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, nil
 	}
 
 	for _, asset := range poolLiquidity {

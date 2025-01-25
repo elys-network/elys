@@ -38,7 +38,7 @@ message MsgCreateSpotOrder {
   option (cosmos.msg.v1.signer) = "owner_address";
   option (amino.name) = "tradeshield/MsgCreateSpotOrder";
   SpotOrderType order_type = 1;
-  LegacyOrderPriceV1 legacy_order_price_v1 = 2 [ (gogoproto.nullable) = false ];
+  LegacyOrderPriceV1 legacy_order_price_v1 = 2;
   string order_price = 6 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",

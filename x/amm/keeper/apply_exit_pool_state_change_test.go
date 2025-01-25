@@ -7,6 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -81,7 +82,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 				suite.Require().True(lpTokenBalance.Amount.Equal(sdkmath.ZeroInt()))
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins, false)
+				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins, false, elystypes.ZeroDec34())
 				suite.Require().NoError(err)
 			},
 			func() {},
@@ -99,7 +100,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 
 				coins := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)), sdk.NewCoin("uusdt", sdkmath.NewInt(100000)))
 
-				err := suite.app.AmmKeeper.ApplyExitPoolStateChange(suite.ctx, pool, addr, pool.TotalShares.Amount, coins, false)
+				err := suite.app.AmmKeeper.ApplyExitPoolStateChange(suite.ctx, pool, addr, pool.TotalShares.Amount, coins, false, elystypes.ZeroDec34())
 				suite.Require().Error(err)
 			},
 			func() {},
@@ -170,7 +171,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 				coins = sdk.NewCoins(sdk.NewCoin("invalid_denom", sdkmath.NewInt(100000000)))
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, coins, false)
+				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, coins, false, elystypes.ZeroDec34())
 				suite.Require().Error(err)
 			},
 			func() {},

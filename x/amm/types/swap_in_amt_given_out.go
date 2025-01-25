@@ -84,7 +84,6 @@ func (p *Pool) SwapInAmtGivenOut(
 	}
 
 	accountedAssets := p.GetAccountedBalance(ctx, accPoolKeeper, p.PoolAssets)
-	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accountedAssets)
 
 	// in amount is calculated in this formula
 	// balancer slippage amount = Max(oracleOutAmount-balancerOutAmount, 0)
@@ -128,50 +127,10 @@ func (p *Pool) SwapInAmtGivenOut(
 	if err != nil {
 		return sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdkmath.LegacyZeroDec(), err
 	}
-	weightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, newAssetPools)
-	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
-	// target weight
-	// Asset weight remains same in new pool assets as in original pool assets
-	targetWeightIn := GetDenomNormalizedWeight(newAssetPools, tokenInDenom)
-	targetWeightOut := GetDenomNormalizedWeight(newAssetPools, tokenOut.Denom)
-
-	// weight breaking fee as in Plasma pool
-	finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenInDenom)
-	finalWeightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, newAssetPools, tokenOut.Denom)
-	initialAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
-		sdk.NewCoins(),
-		sdk.NewCoins(), accountedAssets,
-	)
-	if err != nil {
-		return sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdkmath.LegacyZeroDec(), err
-	}
-	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenInDenom)
-	initialWeightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, initialAssetPools, tokenOut.Denom)
-	weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
-
-	// weightBreakingFeePerpetualFactor is 1 if not send by perpetual
-	weightBreakingFee = weightBreakingFee.Mul(elystypes.NewDec34FromLegacyDec(weightBreakingFeePerpetualFactor))
-
-	// weight recovery reward = weight breaking fee * weight breaking fee portion
-	weightRecoveryReward := weightBreakingFee.Mul(elystypes.NewDec34FromLegacyDec(params.WeightBreakingFeePortion))
-
-	// bonus is valid when distance is lower than original distance and when threshold weight reached
-	weightBalanceBonus = weightBreakingFee.Neg()
-
-	// If swap is improving weight, set weight breaking fee to zero
-	if distanceDiff.IsNegative() {
-		weightBreakingFee = elystypes.ZeroDec34()
-		weightBalanceBonus = elystypes.ZeroDec34()
-
-		// set weight breaking fee to zero if bonus is applied
-		if initialWeightDistance.GT(elystypes.NewDec34FromLegacyDec(params.ThresholdWeightDifference)) {
-			weightBalanceBonus = weightRecoveryReward
-		}
-
-		if initialWeightDistance.GT(elystypes.NewDec34FromLegacyDec(params.ThresholdWeightDifferenceSwapFee)) {
-			swapFee = sdkmath.LegacyZeroDec()
-		}
+	weightBalanceBonus, weightBreakingFee, isSwapFee := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenInDenom, params, weightBreakingFeePerpetualFactor)
+	if !isSwapFee {
+		swapFee = sdkmath.LegacyZeroDec()
 	}
 
 	if swapFee.GTE(sdkmath.LegacyOneDec()) {

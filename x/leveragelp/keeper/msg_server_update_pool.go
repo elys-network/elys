@@ -11,7 +11,7 @@ import (
 )
 
 // Update max leverage for a pool through gov proposal
-func (k msgServer) UpdateMaxLeverageForPool(goCtx context.Context, msg *types.MsgUpdateMaxLeverageForPool) (*types.MsgUpdateMaxLeverageForPoolResponse, error) {
+func (k msgServer) UpdatePool(goCtx context.Context, msg *types.MsgUpdatePool) (*types.MsgUpdatePoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.authority != msg.Authority {
@@ -29,8 +29,9 @@ func (k msgServer) UpdateMaxLeverageForPool(goCtx context.Context, msg *types.Ms
 	}
 
 	pool.LeverageMax = msg.LeverageMax
+	pool.MaxLeveragelpRatio = msg.MaxLeveragelpRatio
 
 	k.SetPool(ctx, pool)
 
-	return &types.MsgUpdateMaxLeverageForPoolResponse{}, nil
+	return &types.MsgUpdatePoolResponse{}, nil
 }

@@ -119,11 +119,16 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(shares)
 	k.UpdatePoolHealth(ctx, &pool)
 
+	position.LeveragedLpAmount = position.LeveragedLpAmount.Add(shares)
+	position.Liabilities = position.Liabilities.Add(borrowCoin.Amount)
+	position.StopLossPrice = msg.StopLossPrice
+
 	// Get the Position health.
 	lr, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		return nil, err
 	}
+	position.PositionHealth = lr
 
 	// Check if the Position is unhealthy
 	safetyFactor := k.GetSafetyFactor(ctx)
@@ -132,11 +137,6 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	}
 
 	// Set Position
-	position.LeveragedLpAmount = position.LeveragedLpAmount.Add(shares)
-	position.Liabilities = position.Liabilities.Add(borrowCoin.Amount)
-	position.PositionHealth = lr
-	position.StopLossPrice = msg.StopLossPrice
-
 	k.SetPosition(ctx, position)
 
 	return position, nil

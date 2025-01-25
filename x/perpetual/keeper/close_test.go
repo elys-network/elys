@@ -216,7 +216,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(503),
+			math.NewInt(502),
 		},
 		{
 			"Sucess: close long position,at same price as open price",

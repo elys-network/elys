@@ -20,10 +20,11 @@ func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	amount := int64(10_000_000)
 	pool := types.Pool{
-		AmmPoolId:         1,
-		Health:            math.LegacyZeroDec(),
-		LeveragedLpAmount: math.ZeroInt(),
-		LeverageMax:       math.LegacyOneDec().MulInt64(10),
+		AmmPoolId:          1,
+		Health:             math.LegacyZeroDec(),
+		LeveragedLpAmount:  math.ZeroInt(),
+		LeverageMax:        math.LegacyOneDec().MulInt64(10),
+		MaxLeveragelpRatio: math.LegacyMustNewDecFromStr("0.6"),
 	}
 	poolInit := sdk.Coins{sdk.NewInt64Coin("uusdc", amount), sdk.NewInt64Coin("uusdt", amount)}
 

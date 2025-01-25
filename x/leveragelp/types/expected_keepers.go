@@ -33,7 +33,7 @@ type AmmKeeper interface {
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdkmath.LegacyDec) (sdk.Coin, elystypes.Dec34, error)
 	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec) (tokenIn sdk.Coin, slippage elystypes.Dec34, err error)
 	JoinPoolNoSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareOutAmount sdkmath.Int, tokenInMaxs sdk.Coins) (tokenIn sdk.Coins, sharesOut sdkmath.Int, err error)
-	ExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdkmath.Int, tokenOutMins sdk.Coins, tokenOutDenom string, isLiquidation bool) (exitCoins sdk.Coins, err error)
+	ExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdkmath.Int, tokenOutMins sdk.Coins, tokenOutDenom string, isLiquidation bool) (exitCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, err error)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
