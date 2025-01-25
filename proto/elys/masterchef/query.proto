@@ -206,13 +206,7 @@ message QueryUserPendingRewardResponse {
 
 message QueryStableStakeAprRequest { string denom = 1; }
 
-message QueryStableStakeAprResponse {
-  string apr = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
+message QueryStableStakeAprResponse { string apr = 1; }
 
 message QueryPoolAprsRequest { repeated uint64 pool_ids = 1; }
 
@@ -256,67 +250,21 @@ message QueryAprRequest {
   string denom = 2;
 }
 
-message QueryAprResponse {
-  string apr = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
+message QueryAprResponse { string apr = 1; }
 
 message QueryAprsRequest {}
 
 message QueryAprsResponse {
-  string usdc_apr_usdc = 1 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string eden_apr_usdc = 2 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string usdc_apr_edenb = 3 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string eden_apr_edenb = 4 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string usdc_apr_eden = 5 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string eden_apr_eden = 6 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string edenb_apr_eden = 7 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string usdc_apr_elys = 8 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string eden_apr_elys = 9 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string edenb_apr_elys = 10 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string usdc_apr_usdc = 1;
+  string eden_apr_usdc = 2;
+  string usdc_apr_edenb = 3;
+  string eden_apr_edenb = 4;
+  string usdc_apr_eden = 5;
+  string eden_apr_eden = 6;
+  string edenb_apr_eden = 7;
+  string usdc_apr_elys = 8;
+  string eden_apr_elys = 9;
+  string edenb_apr_elys = 10;
 }
 
 message QueryPoolRewardsRequest {

@@ -40,7 +40,7 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 		return nil, err
 	}
 
-	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+	tokenPrice, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
 	params := k.stablestakeKeeper.GetParams(ctx)
 
 	usersData := []*types.UserData{}
@@ -56,7 +56,7 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 
 		for _, commitment := range user.CommittedTokens {
 			if strings.HasPrefix(commitment.Denom, "stablestake/share") {
-				fiatValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice)
+				fiatValue := tokenPrice.MulLegacyDec(params.RedemptionRate).MulInt(commitment.Amount)
 				u.Pools = append(u.Pools, &types.Pool{
 					Pool:      "USDC",
 					PoolId:    commitment.Denom,

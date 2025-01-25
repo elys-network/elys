@@ -10,6 +10,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 )
 
 func (p *Pool) addToPoolAssetBalances(coins sdk.Coins) error {
@@ -260,8 +261,8 @@ func (pool Pool) GetMaximalNoSwapLPAmount(shareOutAmount sdkmath.Int) (neededLpL
 	totalSharesAmount := pool.GetTotalShares()
 	// shareRatio is the desired number of shares, divided by the total number of
 	// shares currently in the pool. It is intended to be used in scenarios where you want
-	shareRatio := sdkmath.LegacyNewDecFromBigInt(shareOutAmount.BigInt()).QuoInt(totalSharesAmount.Amount)
-	if shareRatio.LTE(sdkmath.LegacyZeroDec()) {
+	shareRatio := elystypes.NewDec34FromInt(shareOutAmount).QuoInt(totalSharesAmount.Amount)
+	if shareRatio.LTE(elystypes.ZeroDec34()) {
 		return sdk.Coins{}, errorsmod.Wrapf(ErrInvalidMathApprox, "Too few shares out wanted. "+
 			"(debug: getMaximalNoSwapLPAmount share ratio is zero or negative)")
 	}
@@ -271,7 +272,7 @@ func (pool Pool) GetMaximalNoSwapLPAmount(shareOutAmount sdkmath.Int) (neededLpL
 
 	for _, coin := range poolLiquidity {
 		// (coin.Amt * shareRatio).Ceil()
-		neededAmt := sdkmath.LegacyNewDecFromBigInt(coin.Amount.BigInt()).Mul(shareRatio).Ceil().RoundInt()
+		neededAmt := shareRatio.MulInt(coin.Amount).Ceil().ToInt()
 		if neededAmt.LTE(sdkmath.ZeroInt()) {
 			return sdk.Coins{}, errorsmod.Wrapf(ErrInvalidMathApprox, "Too few shares out wanted")
 		}
@@ -288,24 +289,24 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
 	params Params,
-) (exitedCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, err error) {
+) (exitedCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, err error) {
 	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom, params)
 }
 
-func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
+func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper) (elystypes.Dec34, error) {
 	// OracleAssetsTVL * TotalWeight / OracleAssetsWeight
 	// E.g. JUNO / USDT / USDC (30:30:30)
 	// TVL = USDC_USDT_liquidity * 90 / 60
 
-	oracleAssetsTVL := sdkmath.LegacyZeroDec()
+	oracleAssetsTVL := elystypes.ZeroDec34()
 	totalWeight := sdkmath.ZeroInt()
 	oracleAssetsWeight := sdkmath.ZeroInt()
 	for _, asset := range p.PoolAssets {
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
+		tokenPrice, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
 		totalWeight = totalWeight.Add(asset.Weight)
 		if tokenPrice.IsZero() {
 			if p.PoolParams.UseOracle {
-				return sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", asset.Token.Denom)
+				return elystypes.ZeroDec34(), fmt.Errorf("token price not set: %s", asset.Token.Denom)
 			}
 		} else {
 			amount := asset.Token.Amount
@@ -315,27 +316,27 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 					amount = accountedPoolAmt
 				}
 			}
-			v := amount.ToLegacyDec().Mul(tokenPrice)
+			v := tokenPrice.MulInt(amount)
 			oracleAssetsTVL = oracleAssetsTVL.Add(v)
 			oracleAssetsWeight = oracleAssetsWeight.Add(asset.Weight)
 		}
 	}
 
 	if oracleAssetsWeight.IsZero() {
-		return sdkmath.LegacyZeroDec(), nil
+		return elystypes.ZeroDec34(), nil
 	}
 
-	return oracleAssetsTVL.Mul(sdkmath.LegacyNewDecFromInt(totalWeight)).Quo(sdkmath.LegacyNewDecFromInt(oracleAssetsWeight)), nil
+	return oracleAssetsTVL.MulInt(totalWeight).QuoInt(oracleAssetsWeight), nil
 }
 
-func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
+func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (elystypes.Dec34, error) {
 	ammPoolTvl, err := p.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), err
+		return elystypes.ZeroDec34(), err
 	}
 	// Ensure ammPool.TotalShares is not zero to avoid division by zero
 	if p.TotalShares.IsZero() {
-		return sdkmath.LegacyOneDec(), nil
+		return elystypes.ZeroDec34(), nil
 	}
 	lpTokenPrice := ammPoolTvl.MulInt(OneShare).QuoInt(p.TotalShares.Amount)
 	return lpTokenPrice, nil

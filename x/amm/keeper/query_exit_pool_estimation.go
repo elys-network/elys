@@ -6,6 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -33,23 +34,23 @@ func (k Keeper) ExitPoolEst(
 	poolId uint64,
 	shareInAmount math.Int,
 	tokenOutDenom string,
-) (exitCoins sdk.Coins, weightBalanceBonus math.LegacyDec, err error) {
+) (exitCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, err error) {
 	pool, poolExists := k.GetPool(ctx, poolId)
 	if !poolExists {
-		return sdk.Coins{}, math.LegacyZeroDec(), types.ErrInvalidPoolId
+		return sdk.Coins{}, elystypes.ZeroDec34(), types.ErrInvalidPoolId
 	}
 
 	totalSharesAmount := pool.GetTotalShares()
 	if shareInAmount.GTE(totalSharesAmount.Amount) {
-		return sdk.Coins{}, math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrInvalidMathApprox, "Trying to exit >= the number of shares contained in the pool.")
+		return sdk.Coins{}, elystypes.ZeroDec34(), errorsmod.Wrapf(types.ErrInvalidMathApprox, "Trying to exit >= the number of shares contained in the pool.")
 	} else if shareInAmount.LTE(math.ZeroInt()) {
-		return sdk.Coins{}, math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrInvalidMathApprox, "Trying to exit a negative amount of shares")
+		return sdk.Coins{}, elystypes.ZeroDec34(), errorsmod.Wrapf(types.ErrInvalidMathApprox, "Trying to exit a negative amount of shares")
 	}
 
 	params := k.GetParams(ctx)
 	exitCoins, weightBalanceBonus, err = pool.CalcExitPoolCoinsFromShares(ctx, k.oracleKeeper, k.accountedPoolKeeper, shareInAmount, tokenOutDenom, params)
 	if err != nil {
-		return sdk.Coins{}, math.LegacyZeroDec(), err
+		return sdk.Coins{}, elystypes.ZeroDec34(), err
 	}
 
 	return exitCoins, weightBalanceBonus, nil

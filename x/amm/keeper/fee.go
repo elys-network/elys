@@ -4,13 +4,14 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func PortionCoins(coins sdk.Coins, portion sdkmath.LegacyDec) sdk.Coins {
+func PortionCoins(coins sdk.Coins, portion elystypes.Dec34) sdk.Coins {
 	portionCoins := sdk.Coins{}
 	for _, coin := range coins {
-		portionAmount := coin.Amount.ToLegacyDec().Mul(portion).RoundInt()
+		portionAmount := portion.MulInt(coin.Amount).ToInt()
 		portionCoins = portionCoins.Add(sdk.NewCoin(
 			coin.Denom, portionAmount,
 		))
@@ -23,7 +24,7 @@ func (k Keeper) OnCollectFee(ctx sdk.Context, pool types.Pool, fee sdk.Coins) er
 	revenueAmount := fee
 	if pool.PoolParams.UseOracle {
 		params := k.GetParams(ctx)
-		weightRecoveryFee := PortionCoins(fee, params.WeightRecoveryFeePortion)
+		weightRecoveryFee := PortionCoins(fee, elystypes.NewDec34FromLegacyDec(params.WeightRecoveryFeePortion))
 		revenueAmount = fee.Sub(weightRecoveryFee...)
 	}
 
@@ -66,7 +67,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 		// Also emits a swap event and updates related liquidity metrics.
-		err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, poolRevenueAddress, tokenIn, tokenOutCoin, sdkmath.LegacyZeroDec(), sdkmath.ZeroInt(), oracleOutAmount.TruncateInt(), sdkmath.LegacyZeroDec(), false)
+		err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, poolRevenueAddress, tokenIn, tokenOutCoin, sdkmath.LegacyZeroDec(), sdkmath.ZeroInt(), oracleOutAmount.ToInt(), elystypes.ZeroDec34(), false)
 		if err != nil {
 			return err
 		}

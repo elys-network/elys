@@ -56,13 +56,13 @@ func (k Keeper) InternalSwapExactAmountOut(
 		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
-	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, oracleInAmount.TruncateInt(), math.ZeroInt(), weightBalanceBonus, true)
+	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, oracleInAmount.ToInt(), math.ZeroInt(), weightBalanceBonus, true)
 	if err != nil {
 		return math.Int{}, err
 	}
 
 	// track slippage
-	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, slippageAmount.RoundInt()))
+	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, slippageAmount.ToInt()))
 
 	return tokenInAmount, nil
 }

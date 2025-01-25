@@ -5,6 +5,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 )
 
 // calcPoolOutGivenSingleIn - balance pAo.
@@ -13,18 +14,18 @@ func (p *Pool) calcSingleAssetJoin(tokenIn sdk.Coin, spreadFactor sdkmath.Legacy
 	if totalWeight.IsZero() {
 		return sdkmath.ZeroInt(), errors.New("pool misconfigured, total weight = 0")
 	}
-	normalizedWeight := sdkmath.LegacyNewDecFromInt(tokenInPoolAsset.Weight).Quo(sdkmath.LegacyNewDecFromInt(totalWeight))
+	normalizedWeight := elystypes.NewDec34FromInt(tokenInPoolAsset.Weight).Quo(elystypes.NewDec34FromInt(totalWeight))
 	poolShares, err := calcPoolSharesOutGivenSingleAssetIn(
-		sdkmath.LegacyNewDecFromInt(tokenInPoolAsset.Token.Amount),
+		elystypes.NewDec34FromInt(tokenInPoolAsset.Token.Amount),
 		normalizedWeight,
-		sdkmath.LegacyNewDecFromInt(totalShares),
-		sdkmath.LegacyNewDecFromInt(tokenIn.Amount),
-		spreadFactor,
+		elystypes.NewDec34FromInt(totalShares),
+		elystypes.NewDec34FromInt(tokenIn.Amount),
+		elystypes.NewDec34FromLegacyDec(spreadFactor),
 	)
 	if err != nil {
 		return sdkmath.ZeroInt(), err
 	}
-	return poolShares.TruncateInt(), nil
+	return poolShares.ToInt(), nil
 }
 
 // CalcSingleAssetJoinPoolShares calculates the number of shares created to join pool with the provided amount of `tokenIn`.

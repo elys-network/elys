@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -113,7 +114,7 @@ func (k Keeper) StableStakeApr(goCtx context.Context, req *types.QueryStableStak
 		return nil, err
 	}
 
-	return &types.QueryStableStakeAprResponse{Apr: apr}, nil
+	return &types.QueryStableStakeAprResponse{Apr: apr.String()}, nil
 }
 
 func (k Keeper) PoolAprs(goCtx context.Context, req *types.QueryPoolAprsRequest) (*types.QueryPoolAprsResponse, error) {

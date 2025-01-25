@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 
 	errorsmod "cosmossdk.io/errors"
@@ -259,8 +260,8 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 		return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	debtDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-	debtValue := debtAmount.ToLegacyDec().Mul(debtDenomPrice)
+	debtDenomPrice, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	debtValue := debtDenomPrice.MulInt(debtAmount)
 
 	ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
 	if err != nil {
@@ -271,11 +272,11 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), err
 	}
-	positionValue := position.LeveragedLpAmount.ToLegacyDec().Mul(ammTVL).Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+	positionValue := ammTVL.MulInt(position.LeveragedLpAmount).QuoInt(ammPool.TotalShares.Amount)
 
 	health := positionValue.Quo(debtValue)
 
-	return health, nil
+	return health.ToLegacyDec(), nil
 }
 
 func (k Keeper) GetPositionWithId(ctx sdk.Context, positionAddress sdk.AccAddress, Id uint64) (*types.Position, bool) {

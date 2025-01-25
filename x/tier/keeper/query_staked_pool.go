@@ -19,6 +19,6 @@ func (k Keeper) StakedPool(goCtx context.Context, req *types.QueryStakedPoolRequ
 	total := k.RetrievePoolTotal(ctx, sender)
 
 	return &types.QueryStakedPoolResponse{
-		Total: total,
+		Total: total.String(),
 	}, nil
 }

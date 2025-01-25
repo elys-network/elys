@@ -6,6 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -44,7 +45,7 @@ func (k Keeper) EstimateAndRepay(ctx sdk.Context, mtp *types.MTP, pool *types.Po
 }
 
 // CalcRepayAmount repay amount is in custody asset for liabilities with closing ratio
-func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (repayAmount, payingLiabilities math.Int, slippage, weightBreakingFee math.LegacyDec, err error) {
+func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtypes.Pool, closingRatio math.LegacyDec) (repayAmount, payingLiabilities math.Int, slippage, weightBreakingFee elystypes.Dec34, err error) {
 	// init repay amount
 	// For long this will be in trading asset (custody asset is trading asset)
 	// For short this will be in USDC (custody asset is USDC)
@@ -59,7 +60,7 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
 		repayAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
 		if err != nil {
-			return math.ZeroInt(), math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
+			return math.ZeroInt(), math.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 		}
 	}
 	if mtp.Position == types.Position_SHORT {
@@ -67,7 +68,7 @@ func (k Keeper) CalcRepayAmount(ctx sdk.Context, mtp *types.MTP, ammPool *ammtyp
 		liabilitiesWithClosingRatio := sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities)
 		repayAmount, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, liabilitiesWithClosingRatio, mtp.CustodyAsset, *ammPool, mtp.Address)
 		if err != nil {
-			return math.ZeroInt(), math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
+			return math.ZeroInt(), math.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 		}
 	}
 
