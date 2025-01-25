@@ -1,6 +1,8 @@
 package types
 
 import (
+	"strconv"
+
 	"cosmossdk.io/math"
 	"github.com/cockroachdb/apd/v2"
 	regenmath "github.com/regen-network/regen-ledger/types/v2/math"
@@ -68,7 +70,7 @@ func PowDec34(base, exp Dec34) Dec34 {
 	d := new(apd.Decimal)
 
 	// add enough precision to handle big decimal values
-	c := apd.BaseContext.WithPrecision(100)
+	c := apd.BaseContext.WithPrecision(34)
 	_, err := c.Pow(d, b, e)
 	if err != nil {
 		panic(err)
@@ -236,6 +238,14 @@ func (d Dec34) ToInt() math.Int {
 
 func (d Dec34) ToInt64() int64 {
 	y, err := regenmath.Dec(d).Int64()
+	if err != nil {
+		panic(err)
+	}
+	return y
+}
+
+func (d Dec34) Float64() float64 {
+	y, err := strconv.ParseFloat(d.String(), 64)
 	if err != nil {
 		panic(err)
 	}

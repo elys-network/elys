@@ -30,7 +30,7 @@ func (suite *AmmKeeperTestSuite) TestEstimatePrice() {
 			},
 			func() {
 				price, _ := suite.app.AmmKeeper.GetTokenPrice(suite.ctx, ptypes.BaseCurrency, ptypes.BaseCurrency)
-				suite.Require().Equal(elystypes.OneDec34().String(), price.String())
+				suite.Require().Equal(elystypes.NewDec34FromString("0.000001").String(), price.String())
 			},
 		},
 		{
@@ -69,7 +69,7 @@ func (suite *AmmKeeperTestSuite) TestCalculateUSDValue() {
 			},
 			func() {
 				value := suite.app.AmmKeeper.CalculateUSDValue(suite.ctx, ptypes.BaseCurrency, math.NewInt(1000))
-				suite.Require().Equal(value.String(), elystypes.NewDec34FromInt64(1000).String())
+				suite.Require().Equal(value.String(), elystypes.NewDec34FromString("0.001").String())
 			},
 		},
 		{

@@ -36,7 +36,7 @@ func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) (elystyp
 	}
 	usdcDenomPrice, decimals := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 	if usdcDenomPrice.IsZero() {
-		usdcDenomPrice = elystypes.OneDec34()
+		usdcDenomPrice = elystypes.NewDec34WithPrec(1, int32(decimals))
 	}
 	return edenUsdcRate.Mul(usdcDenomPrice), decimals
 }
@@ -51,19 +51,19 @@ func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 	tokenUsdcRate := k.EstimatePrice(ctx, tokenInDenom, baseCurrency)
 	usdcDenomPrice, decimals := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 	if usdcDenomPrice.IsZero() {
-		usdcDenomPrice = elystypes.OneDec34()
+		usdcDenomPrice = elystypes.NewDec34WithPrec(1, int32(decimals))
 	}
 	return tokenUsdcRate.Mul(usdcDenomPrice), decimals
 }
 
 func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) elystypes.Dec34 {
-	tokenPrice, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+	tokenPrice, decimals := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
 	if tokenPrice.IsZero() {
 		asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
 		if !found {
 			return elystypes.ZeroDec34()
 		}
-		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
+		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, decimals)
 	}
 	return tokenPrice.MulInt(amount)
 }
@@ -80,7 +80,7 @@ func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) elys
 	}
 
 	routes := resp.InRoute
-	tokenIn := sdk.NewCoin(denom, types.OneTokenUnit(decimal))
+	tokenIn := sdk.NewCoin(denom, types.BaseTokenAmount(decimal))
 	discount := sdkmath.LegacyNewDec(1)
 	spotPrice, _, _, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, sdkmath.LegacyZeroDec())
 	if err != nil {

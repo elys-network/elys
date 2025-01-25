@@ -88,7 +88,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (ely
 
 			// Calc Eden price in usdc
 			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
-			edenDenomPrice, decimals := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+			edenDenomPrice, _ := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 			if edenDenomPrice.IsZero() {
 				return elystypes.ZeroDec34(), nil
 			}
@@ -109,10 +109,10 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (ely
 			if !found {
 				return elystypes.ZeroDec34(), assetprofiletypes.ErrAssetProfileNotFound
 			}
-			yearlyDexRewardAmount := elystypes.NewDec34FromLegacyDec(usdcAmount).MulInt64(365).QuoInt(ammtypes.OneTokenUnit(entry.Decimals))
+			yearlyDexRewardAmount := elystypes.NewDec34FromLegacyDec(usdcAmount).MulInt64(365).QuoInt(ammtypes.BaseTokenAmount(entry.Decimals))
 
 			apr := yearlyDexRewardAmount.
-				Quo(edenDenomPrice.QuoInt(ammtypes.OneTokenUnit(decimals))).
+				Quo(edenDenomPrice).
 				QuoInt(totalStakedSnapshot)
 
 			return apr, nil
@@ -152,10 +152,10 @@ func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (el
 	rewardCoins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, dailyEdenRewardsTotal.ToInt()))
 	rewardCoins = rewardCoins.Add(sdk.NewCoin(baseCurrency, dailyDexRewardsTotal.Add(dailyGasRewardsTotal).ToInt()))
 
-	usdcDenomPrice, usdcDecimals := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-	edenDenomPrice, edenDecimals := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
+	usdcDenomPrice, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	edenDenomPrice, _ := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
-	totalRewardsUsd := (usdcDenomPrice.Mul(dailyDexRewardsTotal.Add(dailyGasRewardsTotal)).QuoInt(ammtypes.OneTokenUnit(usdcDecimals))).
-		Add(edenDenomPrice.Mul(dailyEdenRewardsTotal).QuoInt(ammtypes.OneTokenUnit(edenDecimals)))
+	totalRewardsUsd := (usdcDenomPrice.Mul(dailyDexRewardsTotal.Add(dailyGasRewardsTotal))).
+		Add(edenDenomPrice.Mul(dailyEdenRewardsTotal))
 	return totalRewardsUsd, rewardCoins
 }

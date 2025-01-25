@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	elystypes "github.com/elys-network/elys/types"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/oracle/types"
 )
 
@@ -128,5 +129,5 @@ func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) (elystypes
 		return elystypes.ZeroDec34(), 0
 	}
 
-	return elystypes.NewDec34FromLegacyDec(price.Price), info.Decimal
+	return elystypes.NewDec34FromLegacyDec(price.Price).QuoInt(ammtypes.BaseTokenAmount(info.Decimal)), info.Decimal
 }

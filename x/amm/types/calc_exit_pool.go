@@ -60,7 +60,7 @@ func CalcExitPool(
 
 		accountedAssets := pool.GetAccountedBalance(ctx, accountedPoolKeeper, pool.PoolAssets)
 		initialWeightDistance := pool.WeightDistanceFromTarget(ctx, oracleKeeper, accountedAssets)
-		tokenPrice, decimals := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+		tokenPrice, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
 		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom)
 		if err != nil {
 			return sdk.Coins{}, elystypes.ZeroDec34(), err
@@ -71,7 +71,7 @@ func CalcExitPool(
 			return sdk.Coins{}, elystypes.ZeroDec34(), ErrAmountTooLow
 		}
 
-		oracleOutAmount := exitValueWithoutSlippage.Quo(tokenPrice.QuoInt(OneTokenUnit(decimals)))
+		oracleOutAmount := exitValueWithoutSlippage.Quo(tokenPrice)
 
 		newAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
 			sdk.Coins{},
