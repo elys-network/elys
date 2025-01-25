@@ -23,6 +23,17 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "borrow-ratio",
 					Short:     "Query the borrow ratio",
 				},
+				{
+					RpcMethod:      "Pool",
+					Use:            "pool [pool-id]",
+					Short:          "Query the pool",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}},
+				},
+				{
+					RpcMethod: "AllPools",
+					Use:       "all-pools",
+					Short:     "Query all the pools",
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
