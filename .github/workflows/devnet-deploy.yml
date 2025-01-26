@@ -116,7 +116,8 @@ jobs:
               10000000uelys \
               "Elys Network version ${{env.VERSION}} released. Focuses on enhancements and codebase improvements." \
               "{\"binaries\":{\"linux/amd64\":\"https://snapshots.elys.network/releases/${{env.NAME_WITH_VERSION}}.tar.gz\"}}" \
-              --from=mallorca \
+               true \
+              --from=fuji \
               $OPTIONS | extract_txhash
           )             
           sleep 10
@@ -130,6 +131,6 @@ jobs:
 
           # vote on proposal
           $ELYSD tx gov vote $proposalid yes --from=fuji $OPTIONS
-          $ELYSD tx gov vote $proposalid yes --from=mallorca $OPTIONS
+          #$ELYSD tx gov vote $proposalid yes --from=mallorca $OPTIONS
           $ELYSD tx gov vote $proposalid yes --from=bora $OPTIONS
           sleep 10
