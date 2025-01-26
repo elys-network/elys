@@ -8,10 +8,10 @@ import (
 )
 
 func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
-	stablestakePool := k.stableKeeper.GetPool(ctx, ammPool.PoolId)
+	stablestakeAmmPool := k.stableKeeper.GetAmmPool(ctx, ammPool.PoolId)
 
 	for _, asset := range ammPool.PoolAssets {
-		for _, liabilties := range stablestakePool.TotalLiabilities {
+		for _, liabilties := range stablestakeAmmPool.TotalLiabilities {
 			if asset.Token.Denom == liabilties.Denom && asset.Token.Amount.LT(liabilties.Amount) {
 				return types.ErrInsufficientUsdcAfterOp
 			}

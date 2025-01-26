@@ -15,79 +15,79 @@ import (
 	sync "sync"
 )
 
-var _ protoreflect.List = (*_Pool_2_list)(nil)
+var _ protoreflect.List = (*_AmmPool_2_list)(nil)
 
-type _Pool_2_list struct {
+type _AmmPool_2_list struct {
 	list *[]*v1beta1.Coin
 }
 
-func (x *_Pool_2_list) Len() int {
+func (x *_AmmPool_2_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Pool_2_list) Get(i int) protoreflect.Value {
+func (x *_AmmPool_2_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_Pool_2_list) Set(i int, value protoreflect.Value) {
+func (x *_AmmPool_2_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Pool_2_list) Append(value protoreflect.Value) {
+func (x *_AmmPool_2_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Pool_2_list) AppendMutable() protoreflect.Value {
+func (x *_AmmPool_2_list) AppendMutable() protoreflect.Value {
 	v := new(v1beta1.Coin)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_Pool_2_list) Truncate(n int) {
+func (x *_AmmPool_2_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Pool_2_list) NewElement() protoreflect.Value {
+func (x *_AmmPool_2_list) NewElement() protoreflect.Value {
 	v := new(v1beta1.Coin)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_Pool_2_list) IsValid() bool {
+func (x *_AmmPool_2_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
-	md_Pool                   protoreflect.MessageDescriptor
-	fd_Pool_id                protoreflect.FieldDescriptor
-	fd_Pool_total_liabilities protoreflect.FieldDescriptor
+	md_AmmPool                   protoreflect.MessageDescriptor
+	fd_AmmPool_id                protoreflect.FieldDescriptor
+	fd_AmmPool_total_liabilities protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_stablestake_pool_proto_init()
-	md_Pool = File_elys_stablestake_pool_proto.Messages().ByName("Pool")
-	fd_Pool_id = md_Pool.Fields().ByName("id")
-	fd_Pool_total_liabilities = md_Pool.Fields().ByName("total_liabilities")
+	md_AmmPool = File_elys_stablestake_pool_proto.Messages().ByName("AmmPool")
+	fd_AmmPool_id = md_AmmPool.Fields().ByName("id")
+	fd_AmmPool_total_liabilities = md_AmmPool.Fields().ByName("total_liabilities")
 }
 
-var _ protoreflect.Message = (*fastReflection_Pool)(nil)
+var _ protoreflect.Message = (*fastReflection_AmmPool)(nil)
 
-type fastReflection_Pool Pool
+type fastReflection_AmmPool AmmPool
 
-func (x *Pool) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_Pool)(x)
+func (x *AmmPool) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_AmmPool)(x)
 }
 
-func (x *Pool) slowProtoReflect() protoreflect.Message {
+func (x *AmmPool) slowProtoReflect() protoreflect.Message {
 	mi := &file_elys_stablestake_pool_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -99,43 +99,43 @@ func (x *Pool) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Pool_messageType fastReflection_Pool_messageType
-var _ protoreflect.MessageType = fastReflection_Pool_messageType{}
+var _fastReflection_AmmPool_messageType fastReflection_AmmPool_messageType
+var _ protoreflect.MessageType = fastReflection_AmmPool_messageType{}
 
-type fastReflection_Pool_messageType struct{}
+type fastReflection_AmmPool_messageType struct{}
 
-func (x fastReflection_Pool_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_Pool)(nil)
+func (x fastReflection_AmmPool_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_AmmPool)(nil)
 }
-func (x fastReflection_Pool_messageType) New() protoreflect.Message {
-	return new(fastReflection_Pool)
+func (x fastReflection_AmmPool_messageType) New() protoreflect.Message {
+	return new(fastReflection_AmmPool)
 }
-func (x fastReflection_Pool_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_Pool
+func (x fastReflection_AmmPool_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_AmmPool
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_Pool) Descriptor() protoreflect.MessageDescriptor {
-	return md_Pool
+func (x *fastReflection_AmmPool) Descriptor() protoreflect.MessageDescriptor {
+	return md_AmmPool
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_Pool) Type() protoreflect.MessageType {
-	return _fastReflection_Pool_messageType
+func (x *fastReflection_AmmPool) Type() protoreflect.MessageType {
+	return _fastReflection_AmmPool_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_Pool) New() protoreflect.Message {
-	return new(fastReflection_Pool)
+func (x *fastReflection_AmmPool) New() protoreflect.Message {
+	return new(fastReflection_AmmPool)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_Pool) Interface() protoreflect.ProtoMessage {
-	return (*Pool)(x)
+func (x *fastReflection_AmmPool) Interface() protoreflect.ProtoMessage {
+	return (*AmmPool)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -143,16 +143,16 @@ func (x *fastReflection_Pool) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_Pool) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_AmmPool) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Id != uint64(0) {
 		value := protoreflect.ValueOfUint64(x.Id)
-		if !f(fd_Pool_id, value) {
+		if !f(fd_AmmPool_id, value) {
 			return
 		}
 	}
 	if len(x.TotalLiabilities) != 0 {
-		value := protoreflect.ValueOfList(&_Pool_2_list{list: &x.TotalLiabilities})
-		if !f(fd_Pool_total_liabilities, value) {
+		value := protoreflect.ValueOfList(&_AmmPool_2_list{list: &x.TotalLiabilities})
+		if !f(fd_AmmPool_total_liabilities, value) {
 			return
 		}
 	}
@@ -169,17 +169,17 @@ func (x *fastReflection_Pool) Range(f func(protoreflect.FieldDescriptor, protore
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_Pool) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_AmmPool) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "elys.stablestake.Pool.id":
+	case "elys.stablestake.AmmPool.id":
 		return x.Id != uint64(0)
-	case "elys.stablestake.Pool.total_liabilities":
+	case "elys.stablestake.AmmPool.total_liabilities":
 		return len(x.TotalLiabilities) != 0
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.Pool"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.AmmPool"))
 		}
-		panic(fmt.Errorf("message elys.stablestake.Pool does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.stablestake.AmmPool does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -189,17 +189,17 @@ func (x *fastReflection_Pool) Has(fd protoreflect.FieldDescriptor) bool {
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Pool) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_AmmPool) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "elys.stablestake.Pool.id":
+	case "elys.stablestake.AmmPool.id":
 		x.Id = uint64(0)
-	case "elys.stablestake.Pool.total_liabilities":
+	case "elys.stablestake.AmmPool.total_liabilities":
 		x.TotalLiabilities = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.Pool"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.AmmPool"))
 		}
-		panic(fmt.Errorf("message elys.stablestake.Pool does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.stablestake.AmmPool does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -209,22 +209,22 @@ func (x *fastReflection_Pool) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_Pool) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_AmmPool) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "elys.stablestake.Pool.id":
+	case "elys.stablestake.AmmPool.id":
 		value := x.Id
 		return protoreflect.ValueOfUint64(value)
-	case "elys.stablestake.Pool.total_liabilities":
+	case "elys.stablestake.AmmPool.total_liabilities":
 		if len(x.TotalLiabilities) == 0 {
-			return protoreflect.ValueOfList(&_Pool_2_list{})
+			return protoreflect.ValueOfList(&_AmmPool_2_list{})
 		}
-		listValue := &_Pool_2_list{list: &x.TotalLiabilities}
+		listValue := &_AmmPool_2_list{list: &x.TotalLiabilities}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.Pool"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.AmmPool"))
 		}
-		panic(fmt.Errorf("message elys.stablestake.Pool does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message elys.stablestake.AmmPool does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -238,19 +238,19 @@ func (x *fastReflection_Pool) Get(descriptor protoreflect.FieldDescriptor) proto
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Pool) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_AmmPool) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "elys.stablestake.Pool.id":
+	case "elys.stablestake.AmmPool.id":
 		x.Id = value.Uint()
-	case "elys.stablestake.Pool.total_liabilities":
+	case "elys.stablestake.AmmPool.total_liabilities":
 		lv := value.List()
-		clv := lv.(*_Pool_2_list)
+		clv := lv.(*_AmmPool_2_list)
 		x.TotalLiabilities = *clv.list
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.Pool"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.AmmPool"))
 		}
-		panic(fmt.Errorf("message elys.stablestake.Pool does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.stablestake.AmmPool does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -264,49 +264,49 @@ func (x *fastReflection_Pool) Set(fd protoreflect.FieldDescriptor, value protore
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Pool) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_AmmPool) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.stablestake.Pool.total_liabilities":
+	case "elys.stablestake.AmmPool.total_liabilities":
 		if x.TotalLiabilities == nil {
 			x.TotalLiabilities = []*v1beta1.Coin{}
 		}
-		value := &_Pool_2_list{list: &x.TotalLiabilities}
+		value := &_AmmPool_2_list{list: &x.TotalLiabilities}
 		return protoreflect.ValueOfList(value)
-	case "elys.stablestake.Pool.id":
-		panic(fmt.Errorf("field id of message elys.stablestake.Pool is not mutable"))
+	case "elys.stablestake.AmmPool.id":
+		panic(fmt.Errorf("field id of message elys.stablestake.AmmPool is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.Pool"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.AmmPool"))
 		}
-		panic(fmt.Errorf("message elys.stablestake.Pool does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.stablestake.AmmPool does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_Pool) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_AmmPool) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.stablestake.Pool.id":
+	case "elys.stablestake.AmmPool.id":
 		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.stablestake.Pool.total_liabilities":
+	case "elys.stablestake.AmmPool.total_liabilities":
 		list := []*v1beta1.Coin{}
-		return protoreflect.ValueOfList(&_Pool_2_list{list: &list})
+		return protoreflect.ValueOfList(&_AmmPool_2_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.Pool"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.stablestake.AmmPool"))
 		}
-		panic(fmt.Errorf("message elys.stablestake.Pool does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message elys.stablestake.AmmPool does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_Pool) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_AmmPool) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.stablestake.Pool", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in elys.stablestake.AmmPool", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -314,7 +314,7 @@ func (x *fastReflection_Pool) WhichOneof(d protoreflect.OneofDescriptor) protore
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_Pool) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_AmmPool) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -325,7 +325,7 @@ func (x *fastReflection_Pool) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Pool) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_AmmPool) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -337,7 +337,7 @@ func (x *fastReflection_Pool) SetUnknown(fields protoreflect.RawFields) {
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_Pool) IsValid() bool {
+func (x *fastReflection_AmmPool) IsValid() bool {
 	return x != nil
 }
 
@@ -347,9 +347,9 @@ func (x *fastReflection_Pool) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_Pool) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_AmmPool) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*Pool)
+		x := input.Message.Interface().(*AmmPool)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -380,7 +380,7 @@ func (x *fastReflection_Pool) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*Pool)
+		x := input.Message.Interface().(*AmmPool)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -431,7 +431,7 @@ func (x *fastReflection_Pool) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*Pool)
+		x := input.Message.Interface().(*AmmPool)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -463,10 +463,10 @@ func (x *fastReflection_Pool) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Pool: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: AmmPool: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Pool: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: AmmPool: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -570,7 +570,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Pool struct {
+type AmmPool struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -579,8 +579,8 @@ type Pool struct {
 	TotalLiabilities []*v1beta1.Coin `protobuf:"bytes,2,rep,name=total_liabilities,json=totalLiabilities,proto3" json:"total_liabilities,omitempty"`
 }
 
-func (x *Pool) Reset() {
-	*x = Pool{}
+func (x *AmmPool) Reset() {
+	*x = AmmPool{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_elys_stablestake_pool_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -588,25 +588,25 @@ func (x *Pool) Reset() {
 	}
 }
 
-func (x *Pool) String() string {
+func (x *AmmPool) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Pool) ProtoMessage() {}
+func (*AmmPool) ProtoMessage() {}
 
-// Deprecated: Use Pool.ProtoReflect.Descriptor instead.
-func (*Pool) Descriptor() ([]byte, []int) {
+// Deprecated: Use AmmPool.ProtoReflect.Descriptor instead.
+func (*AmmPool) Descriptor() ([]byte, []int) {
 	return file_elys_stablestake_pool_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Pool) GetId() uint64 {
+func (x *AmmPool) GetId() uint64 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-func (x *Pool) GetTotalLiabilities() []*v1beta1.Coin {
+func (x *AmmPool) GetTotalLiabilities() []*v1beta1.Coin {
 	if x != nil {
 		return x.TotalLiabilities
 	}
@@ -624,28 +624,28 @@ var file_elys_stablestake_pool_proto_rawDesc = []byte{
 	0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x1a, 0x1e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x76, 0x31,
 	0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x22, 0x90, 0x01, 0x0a, 0x04, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x78, 0x0a, 0x11, 0x74, 0x6f, 0x74,
-	0x61, 0x6c, 0x5f, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x18, 0x02,
-	0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61,
-	0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42,
-	0x30, 0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
-	0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e,
-	0x73, 0x52, 0x10, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x4c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74,
-	0x69, 0x65, 0x73, 0x42, 0xb5, 0x01, 0x0a, 0x14, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x73, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x42, 0x09, 0x50, 0x6f,
-	0x6f, 0x6c, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x31, 0x67, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f,
-	0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2f, 0x73, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0xa2, 0x02, 0x03, 0x45,
-	0x53, 0x58, 0xaa, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65,
-	0x73, 0x74, 0x61, 0x6b, 0x65, 0xca, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x53, 0x74, 0x61,
-	0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0xe2, 0x02, 0x1c, 0x45, 0x6c, 0x79, 0x73, 0x5c,
-	0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x5c, 0x47, 0x50, 0x42, 0x4d,
-	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x11, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a,
-	0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x22, 0x93, 0x01, 0x0a, 0x07, 0x41, 0x6d, 0x6d, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x78, 0x0a, 0x11,
+	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x69, 0x65,
+	0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f,
+	0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68,
+	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43,
+	0x6f, 0x69, 0x6e, 0x73, 0x52, 0x10, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x4c, 0x69, 0x61, 0x62, 0x69,
+	0x6c, 0x69, 0x74, 0x69, 0x65, 0x73, 0x42, 0xb5, 0x01, 0x0a, 0x14, 0x63, 0x6f, 0x6d, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x73, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x42,
+	0x09, 0x50, 0x6f, 0x6f, 0x6c, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x31, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
+	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65,
+	0x6c, 0x79, 0x73, 0x2f, 0x73, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0xa2,
+	0x02, 0x03, 0x45, 0x53, 0x58, 0xaa, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x53, 0x74, 0x61,
+	0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0xca, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x5c,
+	0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0xe2, 0x02, 0x1c, 0x45, 0x6c,
+	0x79, 0x73, 0x5c, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x5c, 0x47,
+	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x11, 0x45, 0x6c, 0x79,
+	0x73, 0x3a, 0x3a, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -662,11 +662,11 @@ func file_elys_stablestake_pool_proto_rawDescGZIP() []byte {
 
 var file_elys_stablestake_pool_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_elys_stablestake_pool_proto_goTypes = []interface{}{
-	(*Pool)(nil),         // 0: elys.stablestake.Pool
+	(*AmmPool)(nil),      // 0: elys.stablestake.AmmPool
 	(*v1beta1.Coin)(nil), // 1: cosmos.base.v1beta1.Coin
 }
 var file_elys_stablestake_pool_proto_depIdxs = []int32{
-	1, // 0: elys.stablestake.Pool.total_liabilities:type_name -> cosmos.base.v1beta1.Coin
+	1, // 0: elys.stablestake.AmmPool.total_liabilities:type_name -> cosmos.base.v1beta1.Coin
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -681,7 +681,7 @@ func file_elys_stablestake_pool_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_elys_stablestake_pool_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Pool); i {
+			switch v := v.(*AmmPool); i {
 			case 0:
 				return &v.state
 			case 1:

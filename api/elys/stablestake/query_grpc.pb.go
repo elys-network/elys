@@ -22,8 +22,8 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// BorrowRatio queries the borrow ratio compared to total deposit
 	BorrowRatio(ctx context.Context, in *QueryBorrowRatioRequest, opts ...grpc.CallOption) (*QueryBorrowRatioResponse, error)
-	Pool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
-	AllPools(ctx context.Context, in *QueryAllPoolsRequest, opts ...grpc.CallOption) (*QueryAllPoolsResponse, error)
+	Pool(ctx context.Context, in *QueryAmmPoolRequest, opts ...grpc.CallOption) (*QueryAmmPoolResponse, error)
+	AllPools(ctx context.Context, in *QueryAllAmmPoolsRequest, opts ...grpc.CallOption) (*QueryAllAmmPoolsResponse, error)
 }
 
 type queryClient struct {
@@ -52,8 +52,8 @@ func (c *queryClient) BorrowRatio(ctx context.Context, in *QueryBorrowRatioReque
 	return out, nil
 }
 
-func (c *queryClient) Pool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
-	out := new(QueryPoolResponse)
+func (c *queryClient) Pool(ctx context.Context, in *QueryAmmPoolRequest, opts ...grpc.CallOption) (*QueryAmmPoolResponse, error) {
+	out := new(QueryAmmPoolResponse)
 	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/Pool", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -61,8 +61,8 @@ func (c *queryClient) Pool(ctx context.Context, in *QueryPoolRequest, opts ...gr
 	return out, nil
 }
 
-func (c *queryClient) AllPools(ctx context.Context, in *QueryAllPoolsRequest, opts ...grpc.CallOption) (*QueryAllPoolsResponse, error) {
-	out := new(QueryAllPoolsResponse)
+func (c *queryClient) AllPools(ctx context.Context, in *QueryAllAmmPoolsRequest, opts ...grpc.CallOption) (*QueryAllAmmPoolsResponse, error) {
+	out := new(QueryAllAmmPoolsResponse)
 	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/AllPools", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -78,8 +78,8 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// BorrowRatio queries the borrow ratio compared to total deposit
 	BorrowRatio(context.Context, *QueryBorrowRatioRequest) (*QueryBorrowRatioResponse, error)
-	Pool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error)
-	AllPools(context.Context, *QueryAllPoolsRequest) (*QueryAllPoolsResponse, error)
+	Pool(context.Context, *QueryAmmPoolRequest) (*QueryAmmPoolResponse, error)
+	AllPools(context.Context, *QueryAllAmmPoolsRequest) (*QueryAllAmmPoolsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -93,10 +93,10 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 func (UnimplementedQueryServer) BorrowRatio(context.Context, *QueryBorrowRatioRequest) (*QueryBorrowRatioResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BorrowRatio not implemented")
 }
-func (UnimplementedQueryServer) Pool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error) {
+func (UnimplementedQueryServer) Pool(context.Context, *QueryAmmPoolRequest) (*QueryAmmPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Pool not implemented")
 }
-func (UnimplementedQueryServer) AllPools(context.Context, *QueryAllPoolsRequest) (*QueryAllPoolsResponse, error) {
+func (UnimplementedQueryServer) AllPools(context.Context, *QueryAllAmmPoolsRequest) (*QueryAllAmmPoolsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllPools not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
@@ -149,7 +149,7 @@ func _Query_BorrowRatio_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 func _Query_Pool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryPoolRequest)
+	in := new(QueryAmmPoolRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -161,13 +161,13 @@ func _Query_Pool_Handler(srv interface{}, ctx context.Context, dec func(interfac
 		FullMethod: "/elys.stablestake.Query/Pool",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Pool(ctx, req.(*QueryPoolRequest))
+		return srv.(QueryServer).Pool(ctx, req.(*QueryAmmPoolRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_AllPools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAllPoolsRequest)
+	in := new(QueryAllAmmPoolsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -179,7 +179,7 @@ func _Query_AllPools_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: "/elys.stablestake.Query/AllPools",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).AllPools(ctx, req.(*QueryAllPoolsRequest))
+		return srv.(QueryServer).AllPools(ctx, req.(*QueryAllAmmPoolsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

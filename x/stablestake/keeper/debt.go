@@ -196,9 +196,9 @@ func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt, poolId u
 	params.TotalValue = params.TotalValue.Add(newInterest)
 	k.SetParams(ctx, params)
 
-	pool := k.GetPool(ctx, poolId)
+	pool := k.GetAmmPool(ctx, poolId)
 	pool.AddLiabilities(sdk.NewCoin(debtDenom, newInterest))
-	k.SetPool(ctx, pool)
+	k.SetAmmPool(ctx, pool)
 
 	return debt
 }
@@ -224,9 +224,9 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, bo
 	debt.Borrowed = debt.Borrowed.Add(amount.Amount)
 	k.SetDebt(ctx, debt)
 
-	pool := k.GetPool(ctx, borrowingForPool)
+	pool := k.GetAmmPool(ctx, borrowingForPool)
 	pool.AddLiabilities(amount)
-	k.SetPool(ctx, pool)
+	k.SetAmmPool(ctx, pool)
 
 	return k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{amount})
 }
@@ -260,9 +260,9 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, rep
 		return types.ErrNegativeBorrowed
 	}
 
-	pool := k.GetPool(ctx, repayingForPool)
+	pool := k.GetAmmPool(ctx, repayingForPool)
 	pool.SubLiabilities(amount)
-	k.SetPool(ctx, pool)
+	k.SetAmmPool(ctx, pool)
 
 	if debt.Borrowed.IsZero() {
 		k.DeleteDebt(ctx, debt)
@@ -276,8 +276,8 @@ func (k Keeper) CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, unabl
 	debt := k.UpdateInterestAndGetDebt(ctx, addr, unableToPayForPool, debtDenom)
 	k.DeleteDebt(ctx, debt)
 
-	pool := k.GetPool(ctx, unableToPayForPool)
+	pool := k.GetAmmPool(ctx, unableToPayForPool)
 	pool.SubLiabilities(sdk.NewCoin(debtDenom, debt.GetTotalLiablities()))
-	k.SetPool(ctx, pool)
+	k.SetAmmPool(ctx, pool)
 	return nil
 }

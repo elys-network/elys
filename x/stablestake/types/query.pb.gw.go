@@ -70,7 +70,7 @@ func local_request_Query_BorrowRatio_0(ctx context.Context, marshaler runtime.Ma
 }
 
 func request_Query_Pool_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryPoolRequest
+	var protoReq QueryAmmPoolRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -97,7 +97,7 @@ func request_Query_Pool_0(ctx context.Context, marshaler runtime.Marshaler, clie
 }
 
 func local_request_Query_Pool_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryPoolRequest
+	var protoReq QueryAmmPoolRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -124,7 +124,7 @@ func local_request_Query_Pool_0(ctx context.Context, marshaler runtime.Marshaler
 }
 
 func request_Query_AllPools_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryAllPoolsRequest
+	var protoReq QueryAllAmmPoolsRequest
 	var metadata runtime.ServerMetadata
 
 	msg, err := client.AllPools(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -133,7 +133,7 @@ func request_Query_AllPools_0(ctx context.Context, marshaler runtime.Marshaler, 
 }
 
 func local_request_Query_AllPools_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryAllPoolsRequest
+	var protoReq QueryAllAmmPoolsRequest
 	var metadata runtime.ServerMetadata
 
 	msg, err := server.AllPools(ctx, &protoReq)
@@ -368,9 +368,9 @@ var (
 
 	pattern_Query_BorrowRatio_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "stablestake", "borrow-ratio"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Pool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "pool", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Pool_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"elys-network", "elys", "stablestake", "amm-pool", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_AllPools_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "stablestake", "all-pools"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AllPools_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"elys-network", "elys", "stablestake", "all-amm-pools"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

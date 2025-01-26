@@ -65,7 +65,7 @@ type StableStakeKeeper interface {
 	GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec) sdkmath.Int
 	GetDebtWithoutUpdatedInterest(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
 	AddPoolLiabilities(ctx sdk.Context, id uint64, coin sdk.Coin)
-	GetPool(ctx sdk.Context, id uint64) stablestaketypes.Pool
+	GetAmmPool(ctx sdk.Context, id uint64) stablestaketypes.AmmPool
 }
 
 type CommitmentKeeper interface {
