@@ -1278,6 +1278,57 @@ func (x *fastReflection_QueryChainTVLRequest) ProtoMethods() *protoiface.Methods
 	}
 }
 
+var _ protoreflect.List = (*_QueryChainTVLResponse_6_list)(nil)
+
+type _QueryChainTVLResponse_6_list struct {
+	list *[]*v1beta1.Coin
+}
+
+func (x *_QueryChainTVLResponse_6_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_QueryChainTVLResponse_6_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_QueryChainTVLResponse_6_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_QueryChainTVLResponse_6_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_QueryChainTVLResponse_6_list) AppendMutable() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryChainTVLResponse_6_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_QueryChainTVLResponse_6_list) NewElement() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryChainTVLResponse_6_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
 	md_QueryChainTVLResponse              protoreflect.MessageDescriptor
 	fd_QueryChainTVLResponse_total        protoreflect.FieldDescriptor
@@ -1285,6 +1336,7 @@ var (
 	fd_QueryChainTVLResponse_usdc_staking protoreflect.FieldDescriptor
 	fd_QueryChainTVLResponse_staked_elys  protoreflect.FieldDescriptor
 	fd_QueryChainTVLResponse_staked_eden  protoreflect.FieldDescriptor
+	fd_QueryChainTVLResponse_net_stakings protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -1295,6 +1347,7 @@ func init() {
 	fd_QueryChainTVLResponse_usdc_staking = md_QueryChainTVLResponse.Fields().ByName("usdc_staking")
 	fd_QueryChainTVLResponse_staked_elys = md_QueryChainTVLResponse.Fields().ByName("staked_elys")
 	fd_QueryChainTVLResponse_staked_eden = md_QueryChainTVLResponse.Fields().ByName("staked_eden")
+	fd_QueryChainTVLResponse_net_stakings = md_QueryChainTVLResponse.Fields().ByName("net_stakings")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryChainTVLResponse)(nil)
@@ -1392,6 +1445,12 @@ func (x *fastReflection_QueryChainTVLResponse) Range(f func(protoreflect.FieldDe
 			return
 		}
 	}
+	if len(x.NetStakings) != 0 {
+		value := protoreflect.ValueOfList(&_QueryChainTVLResponse_6_list{list: &x.NetStakings})
+		if !f(fd_QueryChainTVLResponse_net_stakings, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -1417,6 +1476,8 @@ func (x *fastReflection_QueryChainTVLResponse) Has(fd protoreflect.FieldDescript
 		return x.StakedElys != ""
 	case "elys.masterchef.QueryChainTVLResponse.staked_eden":
 		return x.StakedEden != ""
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		return len(x.NetStakings) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLResponse"))
@@ -1443,6 +1504,8 @@ func (x *fastReflection_QueryChainTVLResponse) Clear(fd protoreflect.FieldDescri
 		x.StakedElys = ""
 	case "elys.masterchef.QueryChainTVLResponse.staked_eden":
 		x.StakedEden = ""
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		x.NetStakings = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLResponse"))
@@ -1474,6 +1537,12 @@ func (x *fastReflection_QueryChainTVLResponse) Get(descriptor protoreflect.Field
 	case "elys.masterchef.QueryChainTVLResponse.staked_eden":
 		value := x.StakedEden
 		return protoreflect.ValueOfString(value)
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		if len(x.NetStakings) == 0 {
+			return protoreflect.ValueOfList(&_QueryChainTVLResponse_6_list{})
+		}
+		listValue := &_QueryChainTVLResponse_6_list{list: &x.NetStakings}
+		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLResponse"))
@@ -1504,6 +1573,10 @@ func (x *fastReflection_QueryChainTVLResponse) Set(fd protoreflect.FieldDescript
 		x.StakedElys = value.Interface().(string)
 	case "elys.masterchef.QueryChainTVLResponse.staked_eden":
 		x.StakedEden = value.Interface().(string)
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		lv := value.List()
+		clv := lv.(*_QueryChainTVLResponse_6_list)
+		x.NetStakings = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLResponse"))
@@ -1524,6 +1597,12 @@ func (x *fastReflection_QueryChainTVLResponse) Set(fd protoreflect.FieldDescript
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryChainTVLResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		if x.NetStakings == nil {
+			x.NetStakings = []*v1beta1.Coin{}
+		}
+		value := &_QueryChainTVLResponse_6_list{list: &x.NetStakings}
+		return protoreflect.ValueOfList(value)
 	case "elys.masterchef.QueryChainTVLResponse.total":
 		panic(fmt.Errorf("field total of message elys.masterchef.QueryChainTVLResponse is not mutable"))
 	case "elys.masterchef.QueryChainTVLResponse.pools":
@@ -1557,6 +1636,9 @@ func (x *fastReflection_QueryChainTVLResponse) NewField(fd protoreflect.FieldDes
 		return protoreflect.ValueOfString("")
 	case "elys.masterchef.QueryChainTVLResponse.staked_eden":
 		return protoreflect.ValueOfString("")
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		list := []*v1beta1.Coin{}
+		return protoreflect.ValueOfList(&_QueryChainTVLResponse_6_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLResponse"))
@@ -1646,6 +1728,12 @@ func (x *fastReflection_QueryChainTVLResponse) ProtoMethods() *protoiface.Method
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		if len(x.NetStakings) > 0 {
+			for _, e := range x.NetStakings {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -1674,6 +1762,22 @@ func (x *fastReflection_QueryChainTVLResponse) ProtoMethods() *protoiface.Method
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.NetStakings) > 0 {
+			for iNdEx := len(x.NetStakings) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.NetStakings[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x32
+			}
 		}
 		if len(x.StakedEden) > 0 {
 			i -= len(x.StakedEden)
@@ -1918,6 +2022,40 @@ func (x *fastReflection_QueryChainTVLResponse) ProtoMethods() *protoiface.Method
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.StakedEden = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field NetStakings", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.NetStakings = append(x.NetStakings, &v1beta1.Coin{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.NetStakings[len(x.NetStakings)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -16341,11 +16479,12 @@ type QueryChainTVLResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Total       string `protobuf:"bytes,1,opt,name=total,proto3" json:"total,omitempty"`
-	Pools       string `protobuf:"bytes,2,opt,name=pools,proto3" json:"pools,omitempty"`
-	UsdcStaking string `protobuf:"bytes,3,opt,name=usdc_staking,json=usdcStaking,proto3" json:"usdc_staking,omitempty"`
-	StakedElys  string `protobuf:"bytes,4,opt,name=staked_elys,json=stakedElys,proto3" json:"staked_elys,omitempty"`
-	StakedEden  string `protobuf:"bytes,5,opt,name=staked_eden,json=stakedEden,proto3" json:"staked_eden,omitempty"`
+	Total       string          `protobuf:"bytes,1,opt,name=total,proto3" json:"total,omitempty"`
+	Pools       string          `protobuf:"bytes,2,opt,name=pools,proto3" json:"pools,omitempty"`
+	UsdcStaking string          `protobuf:"bytes,3,opt,name=usdc_staking,json=usdcStaking,proto3" json:"usdc_staking,omitempty"`
+	StakedElys  string          `protobuf:"bytes,4,opt,name=staked_elys,json=stakedElys,proto3" json:"staked_elys,omitempty"`
+	StakedEden  string          `protobuf:"bytes,5,opt,name=staked_eden,json=stakedEden,proto3" json:"staked_eden,omitempty"`
+	NetStakings []*v1beta1.Coin `protobuf:"bytes,6,rep,name=net_stakings,json=netStakings,proto3" json:"net_stakings,omitempty"`
 }
 
 func (x *QueryChainTVLResponse) Reset() {
@@ -16401,6 +16540,13 @@ func (x *QueryChainTVLResponse) GetStakedEden() string {
 		return x.StakedEden
 	}
 	return ""
+}
+
+func (x *QueryChainTVLResponse) GetNetStakings() []*v1beta1.Coin {
+	if x != nil {
+		return x.NetStakings
+	}
+	return nil
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -17630,7 +17776,7 @@ var file_elys_masterchef_query_proto_rawDesc = []byte{
 	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0b, 0x75, 0x73, 0x64, 0x63, 0x53,
 	0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x22, 0x16, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43,
-	0x68, 0x61, 0x69, 0x6e, 0x54, 0x56, 0x4c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x89,
+	0x68, 0x61, 0x69, 0x6e, 0x54, 0x56, 0x4c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0xf9,
 	0x03, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x68, 0x61, 0x69, 0x6e, 0x54, 0x56, 0x4c,
 	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x41, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61,
 	0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
@@ -17655,7 +17801,14 @@ var file_elys_masterchef_query_proto_rawDesc = []byte{
 	0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
 	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74,
 	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0a,
-	0x73, 0x74, 0x61, 0x6b, 0x65, 0x64, 0x45, 0x64, 0x65, 0x6e, 0x22, 0x14, 0x0a, 0x12, 0x51, 0x75,
+	0x73, 0x74, 0x61, 0x6b, 0x65, 0x64, 0x45, 0x64, 0x65, 0x6e, 0x12, 0x6e, 0x0a, 0x0c, 0x6e, 0x65,
+	0x74, 0x5f, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76,
+	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f,
+	0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64,
+	0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x0b, 0x6e,
+	0x65, 0x74, 0x53, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x73, 0x22, 0x14, 0x0a, 0x12, 0x51, 0x75,
 	0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
 	0x22, 0x4c, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52,
 	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x35, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d,
@@ -18066,68 +18219,69 @@ var file_elys_masterchef_query_proto_goTypes = []interface{}{
 	(*QueryPoolRewardsRequest)(nil),          // 30: elys.masterchef.QueryPoolRewardsRequest
 	(*PoolRewards)(nil),                      // 31: elys.masterchef.PoolRewards
 	(*QueryPoolRewardsResponse)(nil),         // 32: elys.masterchef.QueryPoolRewardsResponse
-	(*Params)(nil),                           // 33: elys.masterchef.Params
-	(*ExternalIncentive)(nil),                // 34: elys.masterchef.ExternalIncentive
-	(*PoolInfo)(nil),                         // 35: elys.masterchef.PoolInfo
-	(*PoolRewardInfo)(nil),                   // 36: elys.masterchef.PoolRewardInfo
-	(*UserRewardInfo)(nil),                   // 37: elys.masterchef.UserRewardInfo
-	(*v1beta1.Coin)(nil),                     // 38: cosmos.base.v1beta1.Coin
+	(*v1beta1.Coin)(nil),                     // 33: cosmos.base.v1beta1.Coin
+	(*Params)(nil),                           // 34: elys.masterchef.Params
+	(*ExternalIncentive)(nil),                // 35: elys.masterchef.ExternalIncentive
+	(*PoolInfo)(nil),                         // 36: elys.masterchef.PoolInfo
+	(*PoolRewardInfo)(nil),                   // 37: elys.masterchef.PoolRewardInfo
+	(*UserRewardInfo)(nil),                   // 38: elys.masterchef.UserRewardInfo
 	(*FeeInfo)(nil),                          // 39: elys.masterchef.FeeInfo
 	(commitment.EarnType)(0),                 // 40: elys.commitment.EarnType
 	(*v1beta11.PageRequest)(nil),             // 41: cosmos.base.query.v1beta1.PageRequest
 }
 var file_elys_masterchef_query_proto_depIdxs = []int32{
-	33, // 0: elys.masterchef.QueryParamsResponse.params:type_name -> elys.masterchef.Params
-	34, // 1: elys.masterchef.QueryExternalIncentiveResponse.external_incentive:type_name -> elys.masterchef.ExternalIncentive
-	35, // 2: elys.masterchef.QueryPoolInfoResponse.pool_info:type_name -> elys.masterchef.PoolInfo
-	36, // 3: elys.masterchef.QueryPoolRewardInfoResponse.pool_reward_info:type_name -> elys.masterchef.PoolRewardInfo
-	37, // 4: elys.masterchef.QueryUserRewardInfoResponse.user_reward_info:type_name -> elys.masterchef.UserRewardInfo
-	38, // 5: elys.masterchef.RewardInfo.reward:type_name -> cosmos.base.v1beta1.Coin
-	15, // 6: elys.masterchef.QueryUserPendingRewardResponse.rewards:type_name -> elys.masterchef.RewardInfo
-	38, // 7: elys.masterchef.QueryUserPendingRewardResponse.total_rewards:type_name -> cosmos.base.v1beta1.Coin
-	21, // 8: elys.masterchef.QueryPoolAprsResponse.data:type_name -> elys.masterchef.PoolApr
-	39, // 9: elys.masterchef.QueryShowFeeInfoResponse.fee_info:type_name -> elys.masterchef.FeeInfo
-	39, // 10: elys.masterchef.QueryListFeeInfoResponse.fee_info:type_name -> elys.masterchef.FeeInfo
-	40, // 11: elys.masterchef.QueryAprRequest.withdraw_type:type_name -> elys.commitment.EarnType
-	41, // 12: elys.masterchef.QueryPoolRewardsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	38, // 13: elys.masterchef.PoolRewards.reward_coins:type_name -> cosmos.base.v1beta1.Coin
-	38, // 14: elys.masterchef.PoolRewards.eden_forward:type_name -> cosmos.base.v1beta1.Coin
-	31, // 15: elys.masterchef.QueryPoolRewardsResponse.pools:type_name -> elys.masterchef.PoolRewards
-	4,  // 16: elys.masterchef.Query.Params:input_type -> elys.masterchef.QueryParamsRequest
-	6,  // 17: elys.masterchef.Query.ExternalIncentive:input_type -> elys.masterchef.QueryExternalIncentiveRequest
-	8,  // 18: elys.masterchef.Query.PoolInfo:input_type -> elys.masterchef.QueryPoolInfoRequest
-	10, // 19: elys.masterchef.Query.PoolRewardInfo:input_type -> elys.masterchef.QueryPoolRewardInfoRequest
-	12, // 20: elys.masterchef.Query.UserRewardInfo:input_type -> elys.masterchef.QueryUserRewardInfoRequest
-	14, // 21: elys.masterchef.Query.UserPendingReward:input_type -> elys.masterchef.QueryUserPendingRewardRequest
-	17, // 22: elys.masterchef.Query.StableStakeApr:input_type -> elys.masterchef.QueryStableStakeAprRequest
-	19, // 23: elys.masterchef.Query.PoolAprs:input_type -> elys.masterchef.QueryPoolAprsRequest
-	22, // 24: elys.masterchef.Query.ShowFeeInfo:input_type -> elys.masterchef.QueryShowFeeInfoRequest
-	24, // 25: elys.masterchef.Query.ListFeeInfo:input_type -> elys.masterchef.QueryListFeeInfoRequest
-	26, // 26: elys.masterchef.Query.Apr:input_type -> elys.masterchef.QueryAprRequest
-	28, // 27: elys.masterchef.Query.Aprs:input_type -> elys.masterchef.QueryAprsRequest
-	30, // 28: elys.masterchef.Query.PoolRewards:input_type -> elys.masterchef.QueryPoolRewardsRequest
-	0,  // 29: elys.masterchef.Query.AllLiquidityPoolTVL:input_type -> elys.masterchef.QueryAllLiquidityPoolTVLRequest
-	2,  // 30: elys.masterchef.Query.ChainTVL:input_type -> elys.masterchef.QueryChainTVLRequest
-	5,  // 31: elys.masterchef.Query.Params:output_type -> elys.masterchef.QueryParamsResponse
-	7,  // 32: elys.masterchef.Query.ExternalIncentive:output_type -> elys.masterchef.QueryExternalIncentiveResponse
-	9,  // 33: elys.masterchef.Query.PoolInfo:output_type -> elys.masterchef.QueryPoolInfoResponse
-	11, // 34: elys.masterchef.Query.PoolRewardInfo:output_type -> elys.masterchef.QueryPoolRewardInfoResponse
-	13, // 35: elys.masterchef.Query.UserRewardInfo:output_type -> elys.masterchef.QueryUserRewardInfoResponse
-	16, // 36: elys.masterchef.Query.UserPendingReward:output_type -> elys.masterchef.QueryUserPendingRewardResponse
-	18, // 37: elys.masterchef.Query.StableStakeApr:output_type -> elys.masterchef.QueryStableStakeAprResponse
-	20, // 38: elys.masterchef.Query.PoolAprs:output_type -> elys.masterchef.QueryPoolAprsResponse
-	23, // 39: elys.masterchef.Query.ShowFeeInfo:output_type -> elys.masterchef.QueryShowFeeInfoResponse
-	25, // 40: elys.masterchef.Query.ListFeeInfo:output_type -> elys.masterchef.QueryListFeeInfoResponse
-	27, // 41: elys.masterchef.Query.Apr:output_type -> elys.masterchef.QueryAprResponse
-	29, // 42: elys.masterchef.Query.Aprs:output_type -> elys.masterchef.QueryAprsResponse
-	32, // 43: elys.masterchef.Query.PoolRewards:output_type -> elys.masterchef.QueryPoolRewardsResponse
-	1,  // 44: elys.masterchef.Query.AllLiquidityPoolTVL:output_type -> elys.masterchef.QueryAllLiquidityPoolTVLResponse
-	3,  // 45: elys.masterchef.Query.ChainTVL:output_type -> elys.masterchef.QueryChainTVLResponse
-	31, // [31:46] is the sub-list for method output_type
-	16, // [16:31] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	33, // 0: elys.masterchef.QueryChainTVLResponse.net_stakings:type_name -> cosmos.base.v1beta1.Coin
+	34, // 1: elys.masterchef.QueryParamsResponse.params:type_name -> elys.masterchef.Params
+	35, // 2: elys.masterchef.QueryExternalIncentiveResponse.external_incentive:type_name -> elys.masterchef.ExternalIncentive
+	36, // 3: elys.masterchef.QueryPoolInfoResponse.pool_info:type_name -> elys.masterchef.PoolInfo
+	37, // 4: elys.masterchef.QueryPoolRewardInfoResponse.pool_reward_info:type_name -> elys.masterchef.PoolRewardInfo
+	38, // 5: elys.masterchef.QueryUserRewardInfoResponse.user_reward_info:type_name -> elys.masterchef.UserRewardInfo
+	33, // 6: elys.masterchef.RewardInfo.reward:type_name -> cosmos.base.v1beta1.Coin
+	15, // 7: elys.masterchef.QueryUserPendingRewardResponse.rewards:type_name -> elys.masterchef.RewardInfo
+	33, // 8: elys.masterchef.QueryUserPendingRewardResponse.total_rewards:type_name -> cosmos.base.v1beta1.Coin
+	21, // 9: elys.masterchef.QueryPoolAprsResponse.data:type_name -> elys.masterchef.PoolApr
+	39, // 10: elys.masterchef.QueryShowFeeInfoResponse.fee_info:type_name -> elys.masterchef.FeeInfo
+	39, // 11: elys.masterchef.QueryListFeeInfoResponse.fee_info:type_name -> elys.masterchef.FeeInfo
+	40, // 12: elys.masterchef.QueryAprRequest.withdraw_type:type_name -> elys.commitment.EarnType
+	41, // 13: elys.masterchef.QueryPoolRewardsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	33, // 14: elys.masterchef.PoolRewards.reward_coins:type_name -> cosmos.base.v1beta1.Coin
+	33, // 15: elys.masterchef.PoolRewards.eden_forward:type_name -> cosmos.base.v1beta1.Coin
+	31, // 16: elys.masterchef.QueryPoolRewardsResponse.pools:type_name -> elys.masterchef.PoolRewards
+	4,  // 17: elys.masterchef.Query.Params:input_type -> elys.masterchef.QueryParamsRequest
+	6,  // 18: elys.masterchef.Query.ExternalIncentive:input_type -> elys.masterchef.QueryExternalIncentiveRequest
+	8,  // 19: elys.masterchef.Query.PoolInfo:input_type -> elys.masterchef.QueryPoolInfoRequest
+	10, // 20: elys.masterchef.Query.PoolRewardInfo:input_type -> elys.masterchef.QueryPoolRewardInfoRequest
+	12, // 21: elys.masterchef.Query.UserRewardInfo:input_type -> elys.masterchef.QueryUserRewardInfoRequest
+	14, // 22: elys.masterchef.Query.UserPendingReward:input_type -> elys.masterchef.QueryUserPendingRewardRequest
+	17, // 23: elys.masterchef.Query.StableStakeApr:input_type -> elys.masterchef.QueryStableStakeAprRequest
+	19, // 24: elys.masterchef.Query.PoolAprs:input_type -> elys.masterchef.QueryPoolAprsRequest
+	22, // 25: elys.masterchef.Query.ShowFeeInfo:input_type -> elys.masterchef.QueryShowFeeInfoRequest
+	24, // 26: elys.masterchef.Query.ListFeeInfo:input_type -> elys.masterchef.QueryListFeeInfoRequest
+	26, // 27: elys.masterchef.Query.Apr:input_type -> elys.masterchef.QueryAprRequest
+	28, // 28: elys.masterchef.Query.Aprs:input_type -> elys.masterchef.QueryAprsRequest
+	30, // 29: elys.masterchef.Query.PoolRewards:input_type -> elys.masterchef.QueryPoolRewardsRequest
+	0,  // 30: elys.masterchef.Query.AllLiquidityPoolTVL:input_type -> elys.masterchef.QueryAllLiquidityPoolTVLRequest
+	2,  // 31: elys.masterchef.Query.ChainTVL:input_type -> elys.masterchef.QueryChainTVLRequest
+	5,  // 32: elys.masterchef.Query.Params:output_type -> elys.masterchef.QueryParamsResponse
+	7,  // 33: elys.masterchef.Query.ExternalIncentive:output_type -> elys.masterchef.QueryExternalIncentiveResponse
+	9,  // 34: elys.masterchef.Query.PoolInfo:output_type -> elys.masterchef.QueryPoolInfoResponse
+	11, // 35: elys.masterchef.Query.PoolRewardInfo:output_type -> elys.masterchef.QueryPoolRewardInfoResponse
+	13, // 36: elys.masterchef.Query.UserRewardInfo:output_type -> elys.masterchef.QueryUserRewardInfoResponse
+	16, // 37: elys.masterchef.Query.UserPendingReward:output_type -> elys.masterchef.QueryUserPendingRewardResponse
+	18, // 38: elys.masterchef.Query.StableStakeApr:output_type -> elys.masterchef.QueryStableStakeAprResponse
+	20, // 39: elys.masterchef.Query.PoolAprs:output_type -> elys.masterchef.QueryPoolAprsResponse
+	23, // 40: elys.masterchef.Query.ShowFeeInfo:output_type -> elys.masterchef.QueryShowFeeInfoResponse
+	25, // 41: elys.masterchef.Query.ListFeeInfo:output_type -> elys.masterchef.QueryListFeeInfoResponse
+	27, // 42: elys.masterchef.Query.Apr:output_type -> elys.masterchef.QueryAprResponse
+	29, // 43: elys.masterchef.Query.Aprs:output_type -> elys.masterchef.QueryAprsResponse
+	32, // 44: elys.masterchef.Query.PoolRewards:output_type -> elys.masterchef.QueryPoolRewardsResponse
+	1,  // 45: elys.masterchef.Query.AllLiquidityPoolTVL:output_type -> elys.masterchef.QueryAllLiquidityPoolTVLResponse
+	3,  // 46: elys.masterchef.Query.ChainTVL:output_type -> elys.masterchef.QueryChainTVLResponse
+	32, // [32:47] is the sub-list for method output_type
+	17, // [17:32] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_elys_masterchef_query_proto_init() }
