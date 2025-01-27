@@ -272,12 +272,12 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, rep
 	return nil
 }
 
-func (k Keeper) CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, unableToPayForPool uint64, debtDenom string) error {
+func (k Keeper) CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, unableToPayForPool uint64, debtDenom string) {
 	debt := k.UpdateInterestAndGetDebt(ctx, addr, unableToPayForPool, debtDenom)
 	k.DeleteDebt(ctx, debt)
 
 	pool := k.GetAmmPool(ctx, unableToPayForPool)
 	pool.SubLiabilities(sdk.NewCoin(debtDenom, debt.GetTotalLiablities()))
 	k.SetAmmPool(ctx, pool)
-	return nil
+	return
 }

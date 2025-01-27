@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"github.com/elys-network/elys/testutil/sample"
 	"time"
 
 	"cosmossdk.io/math"
@@ -98,4 +99,32 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.Require().Equal(res.InterestPaid.String(), "0")
 		})
 	}
+}
+
+func (suite *KeeperTestSuite) TestCloseOnUnableToRepay() {
+	p := types.AmmPool{
+		Id:               1,
+		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000)},
+	}
+
+	suite.app.StablestakeKeeper.SetAmmPool(suite.ctx, p)
+
+	debt := types.Debt{
+		Address:               sample.AccAddress(),
+		Borrowed:              math.NewInt(100),
+		InterestPaid:          math.NewInt(10),
+		InterestStacked:       math.NewInt(50),
+		BorrowTime:            1,
+		LastInterestCalcTime:  1,
+		LastInterestCalcBlock: 1,
+	}
+	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
+	suite.app.StablestakeKeeper.CloseOnUnableToRepay(suite.ctx, debt.GetOwnerAccount(), 1, sdk.DefaultBondDenom)
+
+	r := suite.app.StablestakeKeeper.GetAmmPool(suite.ctx, 1)
+	suite.Assert().Equal(types.AmmPool{
+		Id:               1,
+		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 860)},
+	}, r)
+
 }
