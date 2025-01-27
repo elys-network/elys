@@ -190,7 +190,7 @@ func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, position.GetPositionAddress())
+	suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, position.GetPositionAddress(), position.AmmPoolId, position.Collateral.Denom)
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
