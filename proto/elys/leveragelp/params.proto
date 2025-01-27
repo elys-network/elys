@@ -53,9 +53,4 @@ message Params {
   bool fallback_enabled = 7;
   int64 number_per_block = 8; // Number of positions to process per block
   repeated uint64 enabled_pools = 9;
-  string exit_fee = 10 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
 }

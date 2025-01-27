@@ -18,7 +18,6 @@ func NewParams() Params {
 		FallbackEnabled:     true,
 		NumberPerBlock:      (int64)(1000),
 		EnabledPools:        []uint64(nil),
-		ExitFee:             sdkmath.LegacyMustNewDecFromStr("0.002"),
 	}
 }
 

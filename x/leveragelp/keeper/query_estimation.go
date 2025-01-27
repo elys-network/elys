@@ -48,7 +48,7 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 	}
 
 	closingRatio := req.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
-	finalClosingRatio, totalLpAmountToClose, coinsToRebalanceTreasury, repayAmount, finalUserRewards, err := k.RepayAndClose(ctx, &position, &pool, closingRatio, false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 		AmountRepaid:      repayAmount,
 		FinalClosingRatio: finalClosingRatio,
 		ClosingLpAmount:   totalLpAmountToClose,
-		ExitFee:           coinsToRebalanceTreasury,
+		CoinsForAmm:       coinsForAmm,
 		UserRewards:       finalUserRewards,
 	}, nil
 }

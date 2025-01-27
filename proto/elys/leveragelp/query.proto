@@ -284,7 +284,7 @@ message QueryCloseEstResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin exit_fee = 4 [
+  repeated cosmos.base.v1beta1.Coin coins_for_amm = 4 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];

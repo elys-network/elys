@@ -8,16 +8,25 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k Keeper) RepayAndClose(ctx sdk.Context, position *types.Position, pool *types.Pool, closingRatio math.LegacyDec, isLiquidation bool) (math.LegacyDec, math.Int, sdk.Coins, math.Int, sdk.Coins, error) {
+func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *types.Position, pool *types.Pool, closingRatio math.LegacyDec, isLiquidation bool) (math.LegacyDec, math.Int, sdk.Coins, math.Int, sdk.Coins, error) {
 	// Ensure position.LeveragedLpAmount is not zero to avoid division by zero
 	if position.LeveragedLpAmount.IsZero() {
 		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, types.ErrAmountTooLow
 	}
+	//
+	//if position.PositionHealth {
+	//
+	//}
+	//
+	//if position.StopLossPrice {
+	//
+	//}
 
 	if closingRatio.IsNil() || closingRatio.IsNegative() || closingRatio.IsZero() || closingRatio.GT(math.LegacyOneDec()) {
 		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, errors.New("invalid closing ratio for leverage lp")
 	}
 
+	// This will be the net amount that will be closed
 	totalLpAmountToClose := closingRatio.MulInt(position.LeveragedLpAmount).TruncateInt()
 
 	ammPool, found := k.amm.GetPool(ctx, position.AmmPoolId)
@@ -31,12 +40,13 @@ func (k Keeper) RepayAndClose(ctx sdk.Context, position *types.Position, pool *t
 	collateralDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Collateral.Denom)
 
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
+	// Amount required to pay back
 	repayAmount := debt.GetTotalLiablities().ToLegacyDec().Mul(closingRatio).TruncateInt() // Important to round up
 	repayValue := collateralDenomPrice.MulInt(repayAmount)
 
 	lpSharesForRepay := repayValue.Mul(ammPool.TotalShares.Amount.ToLegacyDec()).Quo(ammPoolTVL).TruncateInt()
 
-	// Bot failed to close position here, Position is unhealthy, override closing ratio to 1
+	// Bot failed to close position here, Position is unhealthy, override closing ratio to 1 and position health is < 1
 	if lpSharesForRepay.GT(totalLpAmountToClose) {
 		closingRatio = math.LegacyOneDec()
 		totalLpAmountToClose = position.LeveragedLpAmount
@@ -44,6 +54,28 @@ func (k Keeper) RepayAndClose(ctx sdk.Context, position *types.Position, pool *t
 		repayValue = collateralDenomPrice.MulInt(repayAmount)
 		lpSharesForRepay = position.LeveragedLpAmount
 	}
+
+	// we calculate weight breaking fee (-ve of weightBalanceBonus if there is one) that could have occurred
+	_, weightBalanceBonus, err := k.amm.ExitPoolEst(ctx, position.AmmPoolId, lpSharesForRepay, position.Collateral.Denom)
+	if err != nil {
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, err
+	}
+
+	percentageExitLeverageFee := math.LegacyZeroDec()
+	// weight breaking fee exists when weightBalanceBonus is negative
+	// There is anything left to pay if totalLpAmountToClose > lpSharesForRepay, also it prevents denominator going 0
+	if weightBalanceBonus.IsNegative() && totalLpAmountToClose.GT(lpSharesForRepay) {
+		weightBreakingFee := weightBalanceBonus.Abs()
+		weightBreakingFeeValue := repayValue.Mul(weightBreakingFee)
+
+		// weightBreakingFeeValue / ((totalLpAmountToClose - lpSharesForRepay) x LP Price)
+		percentageExitLeverageFee = weightBreakingFeeValue.Quo(totalLpAmountToClose.Sub(lpSharesForRepay).ToLegacyDec().Mul(ammPool.TotalShares.Amount.ToLegacyDec()).Quo(ammPoolTVL))
+
+		if percentageExitLeverageFee.GT(math.LegacyOneDec()) {
+			percentageExitLeverageFee = math.LegacyOneDec()
+		}
+	}
+	// TODO reduce liabilities from global
 
 	_, _, err = k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpSharesForRepay, sdk.Coins{}, position.Collateral.Denom, isLiquidation, false)
 	if err != nil {
@@ -65,10 +97,10 @@ func (k Keeper) RepayAndClose(ctx sdk.Context, position *types.Position, pool *t
 	}
 
 	// Position is healthy, position gets rewards in two tokens
-	var rewardCoins sdk.Coins
+	var coinsLeftAfterRepay sdk.Coins
 	if totalLpAmountToClose.GT(lpSharesForRepay) {
 		rewardShares := totalLpAmountToClose.Sub(lpSharesForRepay)
-		rewardCoins, _, err = k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, rewardShares, sdk.Coins{}, "", isLiquidation, false)
+		coinsLeftAfterRepay, _, err = k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, rewardShares, sdk.Coins{}, "", isLiquidation, false)
 		if err != nil {
 			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, err
 		}
@@ -77,33 +109,46 @@ func (k Keeper) RepayAndClose(ctx sdk.Context, position *types.Position, pool *t
 	// Set collateral to same % as reduction in LP position
 	collateralReduced := position.Collateral.Amount.ToLegacyDec().Mul(closingRatio).TruncateInt()
 	position.Collateral.Amount = position.Collateral.Amount.Sub(collateralReduced)
-
-	// Update the pool health.
-	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(totalLpAmountToClose)
-
 	// Update leveragedLpAmount
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Sub(totalLpAmountToClose)
 	position.PositionHealth, err = k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, err
 	}
+
 	// Update Liabilities
 	debt = k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress())
 	position.Liabilities = debt.GetTotalLiablities()
 
-	var coinsToRebalanceTreasury sdk.Coins
-	if len(rewardCoins) > 0 {
-		ammPoolRebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(ammPool.GetRebalanceTreasury())
-		exitFee := k.GetParams(ctx).ExitFee
-		coinsToRebalanceTreasury = ammkeeper.PortionCoins(rewardCoins, exitFee)
+	// Update the pool health.
+	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(totalLpAmountToClose)
 
-		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), ammPoolRebalanceTreasuryAddr, coinsToRebalanceTreasury)
+	var coinsForAmm sdk.Coins
+	if percentageExitLeverageFee.IsPositive() && len(coinsLeftAfterRepay) > 0 {
+		coinsForAmm = ammkeeper.PortionCoins(coinsLeftAfterRepay, percentageExitLeverageFee)
+		weightBreakingFeePortion := k.amm.GetParams(ctx).WeightBreakingFeePortion
+
+		coinsToAmmRebalancer := ammkeeper.PortionCoins(coinsLeftAfterRepay, weightBreakingFeePortion)
+		coinsToAmmPool := coinsForAmm.Sub(coinsToAmmRebalancer...)
+
+		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(ammPool.Address), coinsToAmmPool)
 		if err != nil {
 			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, err
 		}
+		err = k.amm.AddToPoolBalanceAndUpdateLiquidity(ctx, &ammPool, math.ZeroInt(), coinsToAmmPool)
+		if err != nil {
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, err
+		}
+
+		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(ammPool.RebalanceTreasury), coinsToAmmRebalancer)
+		if err != nil {
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, err
+		}
+
 	}
 
 	// anything left over in position balance goes to user
+	// We do not do finalUserRewards = coinsLeftAfterRepay.Sub(coinsForAmm) because there might be some rewards by leverageLP position owner
 	finalUserRewards := k.bankKeeper.GetAllBalances(ctx, position.GetPositionAddress())
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
 	if len(finalUserRewards) > 0 {
@@ -136,5 +181,5 @@ func (k Keeper) RepayAndClose(ctx sdk.Context, position *types.Position, pool *t
 		}
 	}
 
-	return closingRatio, totalLpAmountToClose, coinsToRebalanceTreasury, repayAmount, finalUserRewards, nil
+	return closingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, nil
 }

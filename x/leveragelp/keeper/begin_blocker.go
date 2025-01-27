@@ -85,7 +85,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 		return true, false, h, errors.New("position is healthy to close")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsToRebalanceTreasury, repayAmount, finalUserRewards, err := k.RepayAndClose(ctx, position, &pool, math.LegacyOneDec(), true)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, math.LegacyOneDec(), true)
 	if err != nil {
 		ctx.Logger().Debug(errorsmod.Wrap(err, "error executing liquidation").Error())
 		return isHealthy, true, h, err
@@ -95,7 +95,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 		sdk.NewAttribute("address", position.Address),
 		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
 		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
-		sdk.NewAttribute("exit_fee", coinsToRebalanceTreasury.String()),
+		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
 		sdk.NewAttribute("user_rewards", finalUserRewards.String()),
 	))
@@ -118,7 +118,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 	position.PositionHealth = h
 	k.SetPosition(ctx, position)
 
-	lpTokenPrice, err := ammPool.LpTokenPrice(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+	lpTokenPrice, err := ammPool.LpTokenPriceForShare(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	if err != nil {
 		return false, false, err
 	}
@@ -128,7 +128,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		return underStopLossPrice, false, errors.New("position stop loss price is not <= lp token price")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsToRebalanceTreasury, repayAmount, finalUserRewards, err := k.RepayAndClose(ctx, position, &pool, math.LegacyOneDec(), false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, math.LegacyOneDec(), false)
 	if err != nil {
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 		return underStopLossPrice, true, err
@@ -138,7 +138,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		sdk.NewAttribute("address", position.Address),
 		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
 		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
-		sdk.NewAttribute("exit_fee", coinsToRebalanceTreasury.String()),
+		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
 		sdk.NewAttribute("user_rewards", finalUserRewards.String()),
 	))

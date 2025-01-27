@@ -39,7 +39,7 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 
 	closingRatio := lpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
 
-	finalClosingRatio, totalLpAmountToClose, coinsToRebalanceTreasury, repayAmount, finalUserRewards, err := k.RepayAndClose(ctx, &position, &pool, closingRatio, false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		sdk.NewAttribute("address", position.Address),
 		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
 		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
-		sdk.NewAttribute("exit_fee", coinsToRebalanceTreasury.String()),
+		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
 		sdk.NewAttribute("user_rewards", finalUserRewards.String()),
 	))
