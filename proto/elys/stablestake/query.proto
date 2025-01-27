@@ -22,7 +22,7 @@ service Query {
         "/elys-network/elys/stablestake/borrow-ratio";
   }
 
-  rpc Pool(QueryAmmPoolRequest) returns (QueryAmmPoolResponse) {
+  rpc AmmPool(QueryAmmPoolRequest) returns (QueryAmmPoolResponse) {
     option (google.api.http).get =
         "/elys-network/elys/stablestake/amm-pool/{id}";
   }
