@@ -52,10 +52,7 @@ func CmdCreatePerpetualOpenOrder() *cobra.Command {
 				return err
 			}
 
-			triggerPrice := types.TriggerPrice{
-				TradingAssetDenom: tradingAsset,
-				Rate:              math.LegacyMustNewDecFromStr(args[5]),
-			}
+			triggerPrice := math.LegacyMustNewDecFromStr(args[5])
 
 			takeProfitPriceStr, err := cmd.Flags().GetString(perpcli.FlagTakeProfitPrice)
 			if err != nil {
@@ -127,10 +124,7 @@ func CmdCreatePerpetualCloseOrder() *cobra.Command {
 			addr := clientCtx.GetFromAddress().String()
 
 			// trading asset will be filled by message handler
-			triggerPrice := types.TriggerPrice{
-				TradingAssetDenom: "",
-				Rate:              math.LegacyMustNewDecFromStr(args[0]),
-			}
+			triggerPrice := math.LegacyMustNewDecFromStr(args[0])
 
 			positionId, err := strconv.ParseUint(args[1], 10, 64)
 			if err != nil {
@@ -152,22 +146,23 @@ func CmdCreatePerpetualCloseOrder() *cobra.Command {
 
 func CmdUpdatePerpetualOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-perpetual-order [id] [order]",
+		Use:   "update-perpetual-order [order-id] [trigger-price]",
 		Short: "Update a perpetual order",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			id, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return err
-			}
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			// TODO: Add order price definition in other task
-			msg := types.NewMsgUpdatePerpetualOrder(clientCtx.GetFromAddress().String(), id, types.TriggerPrice{})
+			orderId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			triggerPrice := math.LegacyMustNewDecFromStr(args[1])
+
+			msg := types.NewMsgUpdatePerpetualOrder(clientCtx.GetFromAddress().String(), orderId, triggerPrice)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

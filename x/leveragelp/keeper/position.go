@@ -259,21 +259,21 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 		return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	leveragedLpAmount := sdkmath.ZeroInt()
-	commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
+	debtDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	debtValue := debtAmount.ToLegacyDec().Mul(debtDenomPrice)
 
-	for _, commitment := range commitments.CommittedTokens {
-		leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
-	}
-
-	exitCoins, _, err := k.amm.ExitPoolEst(ctx, position.GetAmmPoolId(), leveragedLpAmount, baseCurrency)
+	ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), err
 	}
 
-	exitAmountAfterFee := exitCoins.AmountOf(baseCurrency)
+	ammTVL, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+	if err != nil {
+		return sdkmath.LegacyZeroDec(), err
+	}
+	positionValue := position.LeveragedLpAmount.ToLegacyDec().Mul(ammTVL).Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
-	health := exitAmountAfterFee.ToLegacyDec().Quo(debtAmount.ToLegacyDec())
+	health := positionValue.Quo(debtValue)
 
 	return health, nil
 }

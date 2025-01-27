@@ -34,15 +34,15 @@ func GenSpotKey(order SpotOrder) (string, error) {
 	}
 	return fmt.Sprintf("%s\n%s\n%s",
 		order.OrderType,
-		order.OrderPrice.BaseDenom,
-		order.OrderPrice.QuoteDenom), nil
+		order.OrderAmount.Denom,
+		order.OrderTargetDenom), nil
 }
 
 func GenPerpKey(order PerpetualOrder) string {
 	return fmt.Sprintf("%s\n%s\n%s",
 		order.Position,
 		order.PerpetualOrderType,
-		order.TriggerPrice.TradingAssetDenom)
+		order.TradingAsset)
 }
 
 func EncodeUint64Slice(slice []uint64) []byte {

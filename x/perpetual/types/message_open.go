@@ -1,9 +1,10 @@
 package types
 
 import (
+	"errors"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -38,7 +39,7 @@ func (msg *MsgOpen) ValidateBasic() error {
 	}
 
 	if msg.PoolId == 0 {
-		return fmt.Errorf("pool id cannot be 0")
+		return errors.New("pool id cannot be 0")
 	}
 
 	if !(msg.Leverage.GT(sdkmath.LegacyOneDec()) || msg.Leverage.IsZero()) {
@@ -59,10 +60,10 @@ func (msg *MsgOpen) ValidateBasic() error {
 		return err
 	}
 	if msg.Position == Position_LONG && !msg.StopLossPrice.IsZero() && msg.TakeProfitPrice.LTE(msg.StopLossPrice) {
-		return fmt.Errorf("TakeProfitPrice cannot be <= StopLossPrice for LONG")
+		return errors.New("TakeProfitPrice cannot be <= StopLossPrice for LONG")
 	}
 	if msg.Position == Position_SHORT && !msg.StopLossPrice.IsZero() && msg.TakeProfitPrice.GTE(msg.StopLossPrice) {
-		return fmt.Errorf("TakeProfitPrice cannot be >= StopLossPrice for SHORT")
+		return errors.New("TakeProfitPrice cannot be >= StopLossPrice for SHORT")
 	}
 	return nil
 }
