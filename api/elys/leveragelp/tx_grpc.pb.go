@@ -149,15 +149,9 @@ func (c *msgClient) ClosePositions(ctx context.Context, in *MsgClosePositions, o
 	return out, nil
 }
 
-<<<<<<< HEAD
-func (c *msgClient) UpdateMaxLeverageForPool(ctx context.Context, in *MsgUpdateMaxLeverageForPool, opts ...grpc.CallOption) (*MsgUpdateMaxLeverageForPoolResponse, error) {
-	out := new(MsgUpdateMaxLeverageForPoolResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateMaxLeverageForPool_FullMethodName, in, out, opts...)
-=======
 func (c *msgClient) UpdatePool(ctx context.Context, in *MsgUpdatePool, opts ...grpc.CallOption) (*MsgUpdatePoolResponse, error) {
 	out := new(MsgUpdatePoolResponse)
 	err := c.cc.Invoke(ctx, "/elys.leveragelp.Msg/UpdatePool", in, out, opts...)
->>>>>>> main
 	if err != nil {
 		return nil, err
 	}
@@ -435,11 +429,7 @@ func _Msg_UpdatePool_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-<<<<<<< HEAD
-		FullMethod: Msg_UpdateMaxLeverageForPool_FullMethodName,
-=======
 		FullMethod: "/elys.leveragelp.Msg/UpdatePool",
->>>>>>> main
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).UpdatePool(ctx, req.(*MsgUpdatePool))

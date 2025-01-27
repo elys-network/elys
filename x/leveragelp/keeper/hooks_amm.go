@@ -8,27 +8,13 @@ import (
 )
 
 func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
-	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
-	if !found {
-		// It is possible that this pool haven't been enabled
-		return nil
-	}
-
-	// This is kind of health check so we should only use real amm pool balance
-	tvl, err := ammPool.TVL(ctx, k.oracleKeeper, nil)
-	if err != nil {
-		return err
-	}
-	leverageLpTvl := tvl.
-		Mul(leveragePool.LeveragedLpAmount.ToLegacyDec()).
-		Quo(ammPool.TotalShares.Amount.ToLegacyDec())
-
-	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
-	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, depositDenom)
+	stablestakeAmmPool := k.stableKeeper.GetAmmPool(ctx, ammPool.PoolId)
 
 	for _, asset := range ammPool.PoolAssets {
-		if asset.Token.Denom == depositDenom && price.MulInt(asset.Token.Amount).LT(leverageLpTvl) {
-			return types.ErrInsufficientUsdcAfterOp
+		for _, liabilties := range stablestakeAmmPool.TotalLiabilities {
+			if asset.Token.Denom == liabilties.Denom && asset.Token.Amount.LT(liabilties.Amount) {
+				return types.ErrInsufficientUsdcAfterOp
+			}
 		}
 	}
 	return nil
