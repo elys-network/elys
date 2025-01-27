@@ -24,7 +24,7 @@ func TestJoinPoolEstimation(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.Equal(t, sdk.Coins(resp.AmountsIn).String(), "200denom1")
-	require.Equal(t, resp.ShareAmountOut.String(), "95445115010332227amm/pool/1")
+	require.Equal(t, resp.ShareAmountOut.String(), "95445115010332226amm/pool/1")
 
 	// Test multiple coins join pool
 	resp, err = k.JoinPoolEstimation(ctx, &types.QueryJoinPoolEstimationRequest{

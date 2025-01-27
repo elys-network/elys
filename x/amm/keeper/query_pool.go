@@ -5,10 +5,10 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/runtime"
 
-	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -18,14 +18,14 @@ func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool) types.PoolExtraI
 	tvl, _ := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	lpTokenPrice, _ := pool.LpTokenPrice(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	avg := k.GetWeightBreakingSlippageAvg(ctx, pool.PoolId)
-	apr := math.LegacyZeroDec()
+	apr := elystypes.ZeroDec34()
 	if tvl.IsPositive() {
-		apr = avg.Mul(math.LegacyNewDec(365)).Quo(tvl)
+		apr = avg.MulInt64(365).Quo(tvl)
 	}
 	return types.PoolExtraInfo{
-		Tvl:          tvl,
-		LpTokenPrice: lpTokenPrice,
-		LpSavedApr:   apr,
+		Tvl:          tvl.ToLegacyDec(),
+		LpTokenPrice: lpTokenPrice.ToLegacyDec(),
+		LpSavedApr:   apr.ToLegacyDec(),
 	}
 }
 

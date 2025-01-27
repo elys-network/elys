@@ -20,9 +20,9 @@ func (k Keeper) Staked(goCtx context.Context, req *types.QueryStakedRequest) (*t
 	com, del, unbon, totalVested := k.RetrieveStaked(ctx, sender)
 
 	return &types.QueryStakedResponse{
-		Commitments: com,
-		Delegations: del,
-		Unbondings:  unbon,
-		TotalVested: totalVested,
+		Commitments: com.String(),
+		Delegations: del.String(),
+		Unbondings:  unbon.String(),
+		TotalVested: totalVested.String(),
 	}, nil
 }

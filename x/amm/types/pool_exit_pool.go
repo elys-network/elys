@@ -3,16 +3,17 @@ package types
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 )
 
-func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string, params Params) (exitingCoins sdk.Coins, weightBalanceBonus math.LegacyDec, err error) {
+func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string, params Params) (exitingCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, err error) {
 	exitingCoins, weightBalanceBonus, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeper, exitingShares, tokenOutDenom, params)
 	if err != nil {
-		return sdk.Coins{}, math.LegacyZeroDec(), err
+		return sdk.Coins{}, elystypes.ZeroDec34(), err
 	}
 
 	if err := p.processExitPool(ctx, exitingCoins, exitingShares); err != nil {
-		return sdk.Coins{}, math.LegacyZeroDec(), err
+		return sdk.Coins{}, elystypes.ZeroDec34(), err
 	}
 
 	return exitingCoins, weightBalanceBonus, nil

@@ -29,6 +29,6 @@ func (k msgServer) ExitPool(goCtx context.Context, msg *types.MsgExitPool) (*typ
 
 	return &types.MsgExitPoolResponse{
 		TokenOut:           exitCoins,
-		WeightBalanceRatio: weightBalanceBonus,
+		WeightBalanceRatio: weightBalanceBonus.ToLegacyDec(),
 	}, nil
 }

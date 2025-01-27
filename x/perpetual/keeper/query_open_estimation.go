@@ -6,6 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -106,11 +107,11 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
 	// SHORT: collateralAsset is always usdc, and custody has to be in usdc, so custodyAmount = leveragedAmount
 	custodyAmount := leveragedAmount
-	slippage := math.LegacyZeroDec()
+	slippage := elystypes.ZeroDec34()
 	mtp.Collateral = req.Collateral.Amount
 	eta := proxyLeverage.Sub(math.LegacyOneDec())
 	liabilities := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
-	weightBreakingFee := math.LegacyZeroDec()
+	weightBreakingFee := elystypes.ZeroDec34()
 	if req.Position == types.Position_LONG {
 		//getting custody
 		if mtp.CollateralAsset == baseCurrency {
@@ -214,13 +215,13 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		LiquidationPrice:   liquidationPrice,
 		EstimatedPnl:       sdk.Coin{Denom: baseCurrency, Amount: estimatedPnLAmount},
 		AvailableLiquidity: availableLiquidity,
-		Slippage:           slippage,
+		Slippage:           slippage.String(),
 		PriceImpact:        priceImpact,
 		BorrowInterestRate: borrowInterestRate,
 		FundingRate:        fundingRate,
 		Custody:            sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
 		Liabilities:        sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
 		LimitPrice:         req.LimitPrice,
-		WeightBreakingFee:  weightBreakingFee,
+		WeightBreakingFee:  weightBreakingFee.String(),
 	}, nil
 }

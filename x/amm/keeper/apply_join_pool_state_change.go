@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -13,7 +14,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	joiner sdk.AccAddress,
 	numShares math.Int,
 	joinCoins sdk.Coins,
-	weightBalanceBonus math.LegacyDec,
+	weightBalanceBonus elystypes.Dec34,
 ) error {
 	if err := k.bankKeeper.SendCoins(ctx, joiner, sdk.MustAccAddressFromBech32(pool.GetAddress()), joinCoins); err != nil {
 		return err
@@ -34,9 +35,9 @@ func (k Keeper) ApplyJoinPoolStateChange(
 		params := k.GetParams(ctx)
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		// we are multiplying here by params.WeightBreakingFeePortion as we didn't multiply in pool.Join/Exit for weight breaking fee
-		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.WeightBreakingFeePortion)
+		weightRecoveryFee := weightBalanceBonus.Abs().MulLegacyDec(params.WeightBreakingFeePortion)
 		for _, coin := range joinCoins {
-			weightRecoveryFeeAmount = coin.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			weightRecoveryFeeAmount = weightRecoveryFee.MulInt(coin.Amount).ToInt()
 
 			if weightRecoveryFeeAmount.IsPositive() {
 				// send weight recovery fee to rebalance treasury if weight recovery fee amount is positive¬
@@ -53,8 +54,8 @@ func (k Keeper) ApplyJoinPoolStateChange(
 				}
 
 				// Track amount in pool
-				weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(sdkmath.LegacyOneDec().Sub(params.WeightBreakingFeePortion))
-				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, sdkmath.Int(weightRecoveryFeeForPool.Mul(sdkmath.LegacyDec(weightRecoveryFeeAmount)))))
+				weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(elystypes.OneDec34().SubLegacyDec(params.WeightBreakingFeePortion))
+				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, weightRecoveryFeeForPool.MulInt(weightRecoveryFeeAmount).ToInt()))
 			}
 		}
 	}

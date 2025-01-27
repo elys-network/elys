@@ -6,6 +6,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	elystypes "github.com/elys-network/elys/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 )
@@ -32,8 +33,8 @@ type BankKeeper interface {
 //go:generate mockery --srcpkg . --name AmmKeeper --structname AmmKeeper --filename amm_keeper.go --with-expecter
 type AmmKeeper interface {
 	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
-	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec
-	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdkmath.LegacyDec
+	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) elystypes.Dec34
+	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) elystypes.Dec34
 }
 
 // PerpetualKeeper defines the expected interface needed to open and close perpetual positions

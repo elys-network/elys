@@ -120,7 +120,7 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 		BorrowInterestUnpaidLiability: sdk.NewCoin(mtp.LiabilitiesAsset, unpaidInterestLiability),
 		ReturningAmount:               sdk.NewCoin(mtp.CustodyAsset, returnAmount),
 		PayingLiabilities:             sdk.NewCoin(mtp.LiabilitiesAsset, payingLiabilities),
-		WeightBreakingFee:             weightBreakingFee,
-		Slippage:                      slippage,
+		WeightBreakingFee:             weightBreakingFee.String(),
+		Slippage:                      slippage.String(),
 	}, nil
 }

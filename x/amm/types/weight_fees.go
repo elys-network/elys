@@ -3,12 +3,13 @@ package types
 import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 )
 
 func (p *Pool) CalculateWeightFees(ctx sdk.Context, oracleKeeper OracleKeeper,
 	accountedAssets []PoolAsset,
 	finalAssetsPool []PoolAsset, tokenDenom string, params Params, weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
-) (sdkmath.LegacyDec, sdkmath.LegacyDec, bool) {
+) (elystypes.Dec34, elystypes.Dec34, bool) {
 	swapFee := true
 
 	initialWeightDistance := p.WeightDistanceFromTarget(ctx, oracleKeeper, accountedAssets)
@@ -17,40 +18,40 @@ func (p *Pool) CalculateWeightFees(ctx sdk.Context, oracleKeeper OracleKeeper,
 
 	// target weight
 	targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenDenom)
-	targetWeightOut := sdkmath.LegacyOneDec().Sub(targetWeightIn)
+	targetWeightOut := elystypes.OneDec34().Sub(targetWeightIn)
 
 	// weight breaking fee as in Plasma pool
 	finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, finalAssetsPool, tokenDenom)
-	finalWeightOut := sdkmath.LegacyOneDec().Sub(finalWeightIn)
+	finalWeightOut := elystypes.OneDec34().Sub(finalWeightIn)
 
 	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedAssets, tokenDenom)
-	initialWeightOut := sdkmath.LegacyOneDec().Sub(initialWeightIn)
+	initialWeightOut := elystypes.OneDec34().Sub(initialWeightIn)
 	weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
 	// weightBreakingFeePerpetualFactor is 1 if not send by perpetual
-	weightBreakingFee = weightBreakingFee.Mul(weightBreakingFeePerpetualFactor)
+	weightBreakingFee = weightBreakingFee.MulLegacyDec(weightBreakingFeePerpetualFactor)
 	// weight recovery reward = weight breaking fee * weight breaking fee portion
-	weightRecoveryReward := weightBreakingFee.Mul(params.WeightBreakingFeePortion)
+	weightRecoveryReward := weightBreakingFee.MulLegacyDec(params.WeightBreakingFeePortion)
 
 	// bonus is valid when distance is lower than original distance and when threshold weight reached
 	weightBalanceBonus := weightBreakingFee.Neg()
 
 	if distanceDiff.IsNegative() {
-		weightBreakingFee = sdkmath.LegacyZeroDec()
-		weightBalanceBonus = sdkmath.LegacyZeroDec()
+		weightBreakingFee = elystypes.ZeroDec34()
+		weightBalanceBonus = elystypes.ZeroDec34()
 
 		// set weight breaking fee to zero if bonus is applied
-		if initialWeightDistance.GT(params.ThresholdWeightDifference) {
+		if initialWeightDistance.GT(elystypes.NewDec34FromLegacyDec(params.ThresholdWeightDifference)) {
 			weightBalanceBonus = weightRecoveryReward
 		}
 
-		if initialWeightDistance.GT(params.ThresholdWeightDifferenceSwapFee) {
+		if initialWeightDistance.GT(elystypes.NewDec34FromLegacyDec(params.ThresholdWeightDifferenceSwapFee)) {
 			swapFee = false
 		}
 	} else {
 		// Weight getting worst but threshold is not reached so fees should not be charged
-		if initialWeightDistance.LT(params.ThresholdWeightDifference) {
-			weightBreakingFee = sdkmath.LegacyZeroDec()
-			weightBalanceBonus = sdkmath.LegacyZeroDec()
+		if initialWeightDistance.LT(elystypes.NewDec34FromLegacyDec(params.ThresholdWeightDifference)) {
+			weightBreakingFee = elystypes.ZeroDec34()
+			weightBalanceBonus = elystypes.ZeroDec34()
 		}
 	}
 

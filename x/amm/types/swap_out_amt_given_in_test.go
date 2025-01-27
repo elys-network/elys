@@ -8,6 +8,7 @@ import (
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/stretchr/testify/require"
@@ -35,7 +36,7 @@ func TestNormalizedWeights(t *testing.T) {
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.Elys,
-					Weight: sdkmath.LegacyZeroDec(),
+					Weight: elystypes.ZeroDec34(),
 				},
 			},
 		},
@@ -54,11 +55,11 @@ func TestNormalizedWeights(t *testing.T) {
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.Elys,
-					Weight: sdkmath.LegacyZeroDec(),
+					Weight: elystypes.ZeroDec34(),
 				},
 				{
 					Asset:  ptypes.Eden,
-					Weight: sdkmath.LegacyOneDec(),
+					Weight: elystypes.OneDec34(),
 				},
 			},
 		},
@@ -77,11 +78,11 @@ func TestNormalizedWeights(t *testing.T) {
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.Elys,
-					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
+					Weight: elystypes.NewDec34WithPrec(5, 1),
 				},
 				{
 					Asset:  ptypes.Eden,
-					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
+					Weight: elystypes.NewDec34WithPrec(5, 1),
 				},
 			},
 		},
@@ -114,11 +115,11 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.BaseCurrency,
-					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
+					Weight: elystypes.NewDec34WithPrec(5, 1),
 				},
 				{
 					Asset:  "uusdt",
-					Weight: sdkmath.LegacyNewDecWithPrec(5, 1),
+					Weight: elystypes.NewDec34WithPrec(5, 1),
 				},
 			},
 			expError: false,
@@ -138,11 +139,11 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			poolWeights: []types.AssetWeight{
 				{
 					Asset:  ptypes.BaseCurrency,
-					Weight: sdkmath.LegacyZeroDec(),
+					Weight: elystypes.NewDec34FromString("0.000000000000000000"),
 				},
 				{
 					Asset:  "uusdt",
-					Weight: sdkmath.LegacyZeroDec(),
+					Weight: elystypes.NewDec34FromString("0.000000000000000000"),
 				},
 			},
 			expError: false,
@@ -330,7 +331,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 	for _, tc := range []struct {
 		desc        string
 		poolAssets  []types.PoolAsset
-		expDistance sdkmath.LegacyDec
+		expDistance elystypes.Dec34
 	}{
 		{
 			desc: "zero balance for one asset",
@@ -344,7 +345,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 					Weight: sdkmath.NewInt(50),
 				},
 			},
-			expDistance: sdkmath.LegacyNewDecWithPrec(5, 1),
+			expDistance: elystypes.NewDec34WithPrec(5, 1),
 		},
 		{
 			desc: "zero for all assets",
@@ -358,7 +359,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 					Weight: sdkmath.NewInt(50),
 				},
 			},
-			expDistance: sdkmath.LegacyNewDecWithPrec(5, 1),
+			expDistance: elystypes.NewDec34WithPrec(5, 1),
 		},
 		{
 			desc: "all positive",
@@ -372,7 +373,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 					Weight: sdkmath.NewInt(50),
 				},
 			},
-			expDistance: sdkmath.LegacyNewDecWithPrec(25, 2),
+			expDistance: elystypes.NewDec34WithPrec(25, 2),
 		},
 		{
 			desc: "zero distance",
@@ -386,7 +387,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 					Weight: sdkmath.NewInt(50),
 				},
 			},
-			expDistance: sdkmath.LegacyZeroDec(),
+			expDistance: elystypes.ZeroDec34(),
 		},
 	} {
 		suite.Run(tc.desc, func() {
@@ -416,7 +417,7 @@ func (suite *TestSuite) TestWeightDistanceFromTarget() {
 				TotalWeight: sdkmath.ZeroInt(),
 			}
 			distance := pool.WeightDistanceFromTarget(suite.ctx, suite.app.OracleKeeper, tc.poolAssets)
-			suite.Require().Equal(distance, tc.expDistance)
+			suite.Require().Equal(distance.String(), tc.expDistance.String())
 		})
 	}
 }
@@ -431,7 +432,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 		tokenIn                sdk.Coin
 		outTokenDenom          string
 		swapFee                sdkmath.LegacyDec
-		expRecoveryBonus       sdkmath.LegacyDec
+		expRecoveryBonus       elystypes.Dec34
 		expTokenOut            sdk.Coin
 		expErr                 bool
 	}{
@@ -467,7 +468,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0"),
+			expRecoveryBonus:       elystypes.ZeroDec34(),
 			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 99009900),
 			expErr:                 false,
 		},
@@ -503,7 +504,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("-0.006347556007845348"),
+			expRecoveryBonus:       elystypes.NewDec34FromString("-0.006347556007845347576004236722241546"),
 			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 98054944),
 			expErr:                 false,
 		},
@@ -539,7 +540,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			outTokenDenom:          "uusdt",
 			swapFee:                sdkmath.LegacyZeroDec(),
-			expRecoveryBonus:       sdkmath.LegacyMustNewDecFromStr("0.001558845726811990"),
+			expRecoveryBonus:       elystypes.NewDec34FromString("0.001558845726811989564174701707355285"),
 			expTokenOut:            sdk.NewInt64Coin("uusdt", 98687060),
 			expErr:                 false,
 		},
@@ -575,7 +576,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			outTokenDenom:          "uusdt",
 			swapFee:                sdkmath.LegacyNewDecWithPrec(1, 2), // 1%
-			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
+			expRecoveryBonus:       elystypes.ZeroDec34(),
 			expTokenOut:            sdk.NewInt64Coin("uusdt", 247913188),
 			expErr:                 false,
 		},
@@ -600,7 +601,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin(ptypes.BaseCurrency, 0),
 			outTokenDenom:          "uusdt",
 			swapFee:                sdkmath.LegacyNewDecWithPrec(1, 2),
-			expRecoveryBonus:       sdkmath.LegacyZeroDec(),
+			expRecoveryBonus:       elystypes.ZeroDec34(),
 			expTokenOut:            sdk.NewInt64Coin("uusdt", 0),
 			expErr:                 true,
 		},

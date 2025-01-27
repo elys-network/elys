@@ -10,6 +10,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	elystypes "github.com/elys-network/elys/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
@@ -98,24 +99,24 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 			return nil, err
 		}
 
-		debtDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-		debtValue := position.Liabilities.ToLegacyDec().Mul(debtDenomPrice)
+		debtDenomPrice, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+		debtValue := debtDenomPrice.MulInt(position.Liabilities)
 
-		positionValue := position.LeveragedLpAmount.ToLegacyDec().Mul(ammTVL).Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+		positionValue := ammTVL.MulInt(position.LeveragedLpAmount).QuoInt(ammPool.TotalShares.Amount)
 
-		updated_leverage := sdkmath.LegacyZeroDec()
+		updated_leverage := elystypes.ZeroDec34()
 		denominator := positionValue.Sub(debtValue)
 		if denominator.IsPositive() {
 			updated_leverage = positionValue.Quo(denominator)
 		}
 		if debtValue.IsPositive() {
-			position.PositionHealth = positionValue.Quo(debtValue)
+			position.PositionHealth = positionValue.Quo(debtValue).ToLegacyDec()
 		}
 
 		updatedLeveragePositions = append(updatedLeveragePositions, &types.QueryPosition{
 			Position:         position,
-			UpdatedLeverage:  updated_leverage,
-			PositionUsdValue: positionValue,
+			UpdatedLeverage:  updated_leverage.ToLegacyDec(),
+			PositionUsdValue: positionValue.ToLegacyDec(),
 		})
 	}
 	return updatedLeveragePositions, nil
@@ -129,10 +130,10 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 	for _, position := range positions {
 		var positionAndInterest types.PositionAndInterest
 		positionAndInterest.Position = position
-		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Position.Collateral.Denom)
+		price, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Position.Collateral.Denom)
 		interestRateHour := params.InterestRate.Quo(hours)
 		positionAndInterest.InterestRateHour = interestRateHour
-		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(sdkmath.LegacyDec(position.Position.Liabilities.Mul(price.RoundInt())))
+		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(sdkmath.LegacyDec(position.Position.Liabilities.Mul(price.ToInt())))
 		positions_and_interest = append(positions_and_interest, &positionAndInterest)
 	}
 

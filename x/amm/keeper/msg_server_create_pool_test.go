@@ -213,6 +213,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerCreatePool() {
 	} {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
+			suite.SetupAssetProfile()
 			suite.SetupStableCoinPrices()
 
 			a := suite.app.OracleKeeper.GetAllAssetInfo(suite.ctx)

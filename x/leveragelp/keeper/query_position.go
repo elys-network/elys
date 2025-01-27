@@ -62,10 +62,10 @@ func (k Keeper) LiquidationPrice(goCtx context.Context, req *types.QueryLiquidat
 	// lpTokenPrice = totalDebt * params.SafetyFactor / lpTokenAmount
 	totalDebt := debt.GetTotalLiablities()
 	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-	liquidationPrice := params.SafetyFactor.MulInt(totalDebt).Mul(usdcDenomPrice).MulInt(ammtypes.OneShare).QuoInt(position.LeveragedLpAmount)
+	usdcDenomPrice, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	liquidationPrice := usdcDenomPrice.MulLegacyDec(params.SafetyFactor).MulInt(totalDebt).MulInt(ammtypes.OneShare).QuoInt(position.LeveragedLpAmount)
 
 	return &types.QueryLiquidationPriceResponse{
-		Price: liquidationPrice,
+		Price: liquidationPrice.String(),
 	}, nil
 }

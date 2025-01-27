@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -23,12 +24,12 @@ func (k Keeper) SwapEstimation(goCtx context.Context, req *types.QuerySwapEstima
 	}
 
 	return &types.QuerySwapEstimationResponse{
-		SpotPrice:          spotPrice,
+		SpotPrice:          spotPrice.String(),
 		TokenOut:           tokenOut,
 		SwapFee:            swapFee,
 		Discount:           discount,
 		AvailableLiquidity: availableLiquidity,
-		Slippage:           slippage,
-		WeightBalanceRatio: weightBonus,
+		Slippage:           slippage.String(),
+		WeightBalanceRatio: weightBonus.String(),
 	}, nil
 }

@@ -19,6 +19,6 @@ func (k Keeper) LockedOrder(goCtx context.Context, req *types.QueryLockedOrderRe
 	total := k.RetrieveTradeshieldTotal(ctx, sender)
 
 	return &types.QueryLockedOrderResponse{
-		Total: total,
+		Total: total.String(),
 	}, nil
 }

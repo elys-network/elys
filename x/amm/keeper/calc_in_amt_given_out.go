@@ -4,6 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -15,11 +16,11 @@ func (k Keeper) CalcInAmtGivenOut(
 	oracle types.OracleKeeper,
 	snapshot *types.Pool,
 	tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec) (
-	tokenIn sdk.Coin, slippage sdkmath.LegacyDec, err error,
+	tokenIn sdk.Coin, slippage elystypes.Dec34, err error,
 ) {
 	p, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
+		return sdk.Coin{}, elystypes.ZeroDec34(), errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
 	}
 
 	return p.CalcInAmtGivenOut(ctx, oracle, snapshot, tokensOut, tokenInDenom, swapFee, k.accountedPoolKeeper)

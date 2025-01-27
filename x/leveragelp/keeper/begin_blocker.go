@@ -12,6 +12,7 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 )
 
 func (k Keeper) BeginBlocker(ctx sdk.Context) {
@@ -123,7 +124,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		return false, false, err
 	}
 
-	underStopLossPrice = !position.StopLossPrice.IsNil() && lpTokenPrice.LTE(position.StopLossPrice)
+	underStopLossPrice = !position.StopLossPrice.IsNil() && lpTokenPrice.LTE(elystypes.NewDec34FromLegacyDec(position.StopLossPrice))
 	if !underStopLossPrice {
 		return underStopLossPrice, false, errors.New("position stop loss price is not <= lp token price")
 	}

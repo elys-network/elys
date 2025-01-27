@@ -6,6 +6,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -46,35 +47,37 @@ func (k Keeper) RemovePool(ctx sdk.Context, poolId uint64) {
 }
 
 // GetAllPool returns all pool
-func (k Keeper) GetAllPool(ctx sdk.Context) (list []types.Pool) {
+func (k Keeper) GetAllPool(ctx sdk.Context) []types.Pool {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
+	list := []types.Pool{}
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Pool
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
 
-	return
+	return list
 }
 
 // GetAllLegacyPool returns all legacy pool
-func (k Keeper) GetAllLegacyPool(ctx sdk.Context) (list []types.LegacyPool) {
+func (k Keeper) GetAllLegacyPool(ctx sdk.Context) []types.LegacyPool {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
+	list := []types.LegacyPool{}
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.LegacyPool
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
 
-	return
+	return list
 }
 
 // GetLatestPool retrieves the latest pool item from the list of pools
@@ -112,7 +115,7 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 	// Get all pools
 	pools := k.GetAllPool(ctx)
 
-	maxTvl := sdkmath.LegacyNewDec(-1)
+	maxTvl := elystypes.MinusOneDec34()
 	bestPool := types.Pool{}
 	for _, p := range pools {
 		// If usesOracle is false, function filters in all pools.
@@ -145,7 +148,7 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 
 		poolTvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
-			poolTvl = sdkmath.LegacyZeroDec()
+			poolTvl = elystypes.ZeroDec34()
 		}
 
 		// If all denoms are found in this pool, return the pool id

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	oracle "github.com/elys-network/elys/x/oracle/keeper"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tier/types"
 	"google.golang.org/grpc/codes"
@@ -22,9 +22,9 @@ func (k Keeper) GetConsolidatedPrice(goCtx context.Context, req *types.QueryGetC
 	oracle, amm, oracleDec := k.RetrieveConsolidatedPrice(ctx, req.Denom)
 
 	return &types.QueryGetConsolidatedPriceResponse{
-		AmmPrice:       amm,
-		OraclePrice:    oracle,
-		OraclePriceDec: oracleDec,
+		AmmPrice:       amm.String(),
+		OraclePrice:    oracle.String(),
+		OraclePriceDec: oracleDec.String(),
 	}, nil
 }
 
@@ -45,12 +45,13 @@ func (k Keeper) GetAllPrices(goCtx context.Context, req *types.QueryGetAllPrices
 		if assetEntry.Denom == ptypes.Eden {
 			denom = ptypes.Elys
 		}
-		tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom).Mul(oracle.Pow10(assetEntry.Decimals))
-		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, denom, assetEntry.Decimals).Mul(oracle.Pow10(assetEntry.Decimals))
+		tokenPriceOracle, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+		tokenPriceOracle = tokenPriceOracle.MulInt(ammtypes.BaseTokenAmount(assetEntry.Decimals))
+		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, denom, assetEntry.Decimals).MulInt(ammtypes.BaseTokenAmount(assetEntry.Decimals))
 		prices = append(prices, &types.Price{
 			Denom:       assetEntry.Denom,
-			OraclePrice: tokenPriceOracle,
-			AmmPrice:    tokenPriceAmm,
+			OraclePrice: tokenPriceOracle.String(),
+			AmmPrice:    tokenPriceAmm.String(),
 		})
 	}
 
