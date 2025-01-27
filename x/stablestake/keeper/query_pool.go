@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) Pool(goCtx context.Context, req *types.QueryAmmPoolRequest) (*types.QueryAmmPoolResponse, error) {
+func (k Keeper) AmmPool(goCtx context.Context, req *types.QueryAmmPoolRequest) (*types.QueryAmmPoolResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -18,7 +18,7 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryAmmPoolRequest) (*ty
 	return &types.QueryAmmPoolResponse{AmmPool: k.GetAmmPool(ctx, req.Id)}, nil
 }
 
-func (k Keeper) AllPools(goCtx context.Context, req *types.QueryAllAmmPoolsRequest) (*types.QueryAllAmmPoolsResponse, error) {
+func (k Keeper) AllAmmPools(goCtx context.Context, req *types.QueryAllAmmPoolsRequest) (*types.QueryAllAmmPoolsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

@@ -27,7 +27,7 @@ service Query {
         "/elys-network/elys/stablestake/amm-pool/{id}";
   }
 
-  rpc AllPools(QueryAllAmmPoolsRequest) returns (QueryAllAmmPoolsResponse) {
+  rpc AllAmmPools(QueryAllAmmPoolsRequest) returns (QueryAllAmmPoolsResponse) {
     option (google.api.http).get =
         "/elys-network/elys/stablestake/all-amm-pools";
   }
