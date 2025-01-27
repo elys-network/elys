@@ -136,6 +136,7 @@ func CalcExitPool(
 		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
 		initialWeightIn := sdkmath.LegacyOneDec().Sub(initialWeightOut)
 		weightBreakingFee = weightBreakingFee.Mul(initialWeightIn)
+		weightBalanceBonus = weightBalanceBonus.Mul(initialWeightIn)
 
 		tokenOutAmount := oracleOutAmount.Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).RoundInt()
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, nil
