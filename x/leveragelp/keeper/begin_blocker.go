@@ -86,7 +86,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 
 	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, exitFeeOnClosingPosition, stopLossReached, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, math.LegacyOneDec(), true)
 	if err != nil {
-		ctx.Logger().Debug(errorsmod.Wrap(err, "error executing liquidation").Error())
+		ctx.Logger().Error(errorsmod.Wrap(err, "error executing liquidation for unhealthy").Error())
 		return isHealthy, true, h, err
 	}
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventAutomatedClosePosition,
