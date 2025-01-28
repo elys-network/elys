@@ -58,11 +58,14 @@ type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) stablestaketypes.Params
 	GetDepositDenom(ctx sdk.Context) string
 	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
-	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
-	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
-	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
+	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, debtDenom string) stablestaketypes.Debt
+	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error
+	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error
 	TVL(ctx sdk.Context, oracleKeeper stablestaketypes.OracleKeeper, baseCurrency string) sdkmath.LegacyDec
 	GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec) sdkmath.Int
+	GetDebtWithoutUpdatedInterest(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	AddPoolLiabilities(ctx sdk.Context, id uint64, coin sdk.Coin)
+	GetAmmPool(ctx sdk.Context, id uint64) stablestaketypes.AmmPool
 }
 
 type CommitmentKeeper interface {

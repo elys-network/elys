@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/stablestake/params.proto";
+import "elys/stablestake/pool.proto";
 import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
@@ -20,6 +21,16 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/stablestake/borrow-ratio";
   }
+
+  rpc AmmPool(QueryAmmPoolRequest) returns (QueryAmmPoolResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/stablestake/amm-pool/{id}";
+  }
+
+  rpc AllAmmPools(QueryAllAmmPoolsRequest) returns (QueryAllAmmPoolsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/stablestake/all-amm-pools";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -29,6 +40,18 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryAmmPoolRequest { uint64 id = 1; }
+
+message QueryAmmPoolResponse {
+  AmmPool amm_pool = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryAllAmmPoolsRequest {}
+
+message QueryAllAmmPoolsResponse {
+  repeated AmmPool amm_pools = 1 [ (gogoproto.nullable) = false ];
 }
 
 // QueryBorrowRatioRequest is request type for the Query/BorrowRatio RPC method.
