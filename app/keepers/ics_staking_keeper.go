@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sdkmath "cosmossdk.io/math"
+	"github.com/cometbft/cometbft/cmd/cometbft/commands/debug"
 	cmtprotocrypto "github.com/cometbft/cometbft/proto/tendermint/crypto"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	cmtjsonclient "github.com/cometbft/cometbft/rpc/jsonrpc/client"
@@ -16,10 +17,6 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-var (
-	cmtRPCEndpoint = "tcp://0.0.0.0:26657"
-)
-
 type ICSStakingKeeper struct {
 	stakingkeeper.Keeper
 }
@@ -28,6 +25,8 @@ type ICSStakingKeeper struct {
 func NewICSStakingKeeper(
 	keeper stakingkeeper.Keeper,
 ) ICSStakingKeeper {
+	_ = debug.DebugCmd
+
 	return ICSStakingKeeper{
 		Keeper: keeper,
 	}
@@ -38,6 +37,11 @@ func (k ICSStakingKeeper) GetPubKeyByConsAddr(ctx context.Context, addr sdk.Cons
 	var height *int64
 	page := 1
 	limit := 100
+
+	cmtRPCEndpoint, err := debug.DebugCmd.PersistentFlags().GetString("rpc-laddr")
+	if err != nil {
+		return cmtprotocrypto.PublicKey{}, err
+	}
 
 	cmtHTTPClient, err := cmtjsonclient.DefaultHTTPClient(cmtRPCEndpoint)
 	if err != nil {
@@ -77,6 +81,11 @@ func (k ICSStakingKeeper) GetBondedValidatorsByPower(ctx context.Context) ([]sta
 	var height *int64
 	page := 1
 	limit := 100
+
+	cmtRPCEndpoint, err := debug.DebugCmd.PersistentFlags().GetString("rpc-laddr")
+	if err != nil {
+		return nil, err
+	}
 
 	cmtHTTPClient, err := cmtjsonclient.DefaultHTTPClient(cmtRPCEndpoint)
 	if err != nil {
