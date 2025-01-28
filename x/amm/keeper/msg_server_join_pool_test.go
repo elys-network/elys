@@ -283,7 +283,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			// Step 6: Validate if exploit was successful (It should fail)
 			// Calculate expected number of shares without weight balance bonus
 			totalShares := pool.TotalShares.Amount
-			joinValueWithoutSlippage, _ := pool.CalcJoinValueWithoutSlippage(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.senderInitBalance)
+			joinValueWithoutSlippage, _, _ := pool.CalcJoinValueWithSlippage(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.senderInitBalance[0], math.LegacyOneDec())
 			tvl, _ := pool.TVL(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper)
 			expectedNumShares := totalShares.ToLegacyDec().
 				Mul(joinValueWithoutSlippage).Quo(tvl).RoundInt()
