@@ -241,7 +241,8 @@ jobs:
           ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} upgrade-to-new-binary \
             ${NEW_BINARY_PATH} \
             --timeout-next-block 100000 \
-            --timeout-wait-for-node 100000
+            --timeout-wait-for-node 100000 \
+            --pricefeeder.enable
 
       - name: Create new snapshot file
         run: |
