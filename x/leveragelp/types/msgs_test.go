@@ -38,7 +38,7 @@ func TestMsgClose(t *testing.T) {
 				msg.Creator = sample.AccAddress()
 				msg.LpAmount = sdkmath.OneInt().MulRaw(-1)
 			},
-			errMsg: "invalid lp amount: cannot be negative",
+			errMsg: "invalid lp amount: cannot be zero or negative",
 		},
 	}
 	for _, tt := range tests {
