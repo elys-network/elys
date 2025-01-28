@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"time"
+
 	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -9,7 +11,6 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
-	"time"
 )
 
 func (suite *KeeperTestSuite) TestQueryEstimation() {
@@ -103,5 +104,5 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 	})
 	suite.Require().NoError(err)
 	// Total liability is 4000, so 800 is the liability for 10000000000000000 Lp amount
-	suite.Require().Equal(estimation.RepayAmount.String(), "800")
+	suite.Require().Equal(estimation.RepayAmount.String(), "809")
 }

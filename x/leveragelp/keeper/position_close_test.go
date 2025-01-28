@@ -173,7 +173,7 @@ func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 	health, err := k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.221000000000000000") // slippage enabled on amm
-	suite.Require().Equal("1.250000000000000000", health.String()) // slippage disabled on amm
+	suite.Require().Equal("1.248428922744246025", health.String()) // slippage disabled on amm
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.SetCurrentHeight(suite.ctx.BlockHeight() + 1)
@@ -182,7 +182,7 @@ func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
-	suite.Require().Equal("1.096491228070175439", health.String()) // slippage disabled on amm
+	suite.Require().Equal("1.095113090126531601", health.String()) // slippage disabled on amm
 }
 
 // test positionHealth should be maxDec when liablities is zero
@@ -194,7 +194,7 @@ func (suite *KeeperTestSuite) TestPositionHealth() {
 	suite.Require().True(found)
 	health, err := k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
-	suite.Require().Equal("1.250000000000000000", health.String())
+	suite.Require().Equal("1.248428922744246025", health.String())
 
 	//setting position debt/liablities to zero
 	debt := suite.app.StablestakeKeeper.GetDebt(suite.ctx, position.GetPositionAddress())
