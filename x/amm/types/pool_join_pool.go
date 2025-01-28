@@ -42,7 +42,6 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKee
 	v := tokenPrice.Mul(sdkmath.LegacyNewDecFromInt(tokenIn.Amount))
 	joinValue = joinValue.Add(v)
 
-	slippageValue := sdkmath.LegacyZeroDec()
 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenIn.Denom)
 	if inTokenPrice.IsZero() {
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenIn.Denom)
@@ -73,7 +72,7 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKee
 	}
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
 
-	slippageValue = slippageValue.Add(slippageAmount.Mul(inTokenPrice))
+	slippageValue := slippageAmount.Mul(inTokenPrice)
 	slippage := slippageValue.Quo(joinValue)
 	joinValueWithSlippage := joinValue.Sub(slippageValue)
 
