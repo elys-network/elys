@@ -66,6 +66,10 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 		Denom:     "uusdt",
 		Liquidity: sdkmath.NewInt(100000),
 	})
+	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, 1)
+	suite.Require().True(found)
+	err = suite.app.PerpetualKeeper.OnLeverageLpEnablePool(suite.ctx, ammPool)
+	suite.Require().NoError(err)
 
 	usdcToken := sdk.NewInt64Coin("uusdc", 100000)
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})
@@ -99,5 +103,5 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 	})
 	suite.Require().NoError(err)
 	// Total liability is 4000, so 800 is the liability for 10000000000000000 Lp amount
-	suite.Require().Equal(estimation.AmountRepaid.String(), "800")
+	suite.Require().Equal(estimation.RepayAmount.String(), "800")
 }

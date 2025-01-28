@@ -35,8 +35,11 @@ func (msg *MsgClose) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	if msg.LpAmount.IsNegative() {
-		return fmt.Errorf("invalid lp amount: cannot be negative")
+	if msg.LpAmount.IsNil() {
+		return errors.New("invalid lp amount: cannot be nil")
+	}
+	if msg.LpAmount.IsNegative() || msg.LpAmount.IsZero() {
+		return errors.New("invalid lp amount: cannot be zero or negative")
 	}
 	return nil
 }

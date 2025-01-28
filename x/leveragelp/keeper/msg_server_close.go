@@ -4,6 +4,7 @@ import (
 	"context"
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"errors"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,50 +20,37 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		return nil, err
 	}
 
+	if position.LeveragedLpAmount.IsZero() {
+		return nil, types.ErrAmountTooLow
+	}
+
 	// Retrieve Pool
 	pool, found := k.GetPool(ctx, position.AmmPoolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
-	positionHealth, err := k.GetPositionHealth(ctx, position)
+	closingRatio := msg.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
+	if closingRatio.GT(math.LegacyOneDec()) {
+		return nil, errors.New("invalid closing ratio for leverage lp")
+	}
+
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, exitFeeOnClosingPosition, stopLossReached, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
-	}
-	safetyFactor := k.GetSafetyFactor(ctx)
-
-	// If lpAmount is lower than zero or position is unhealthy, close full amount
-	lpAmount := msg.LpAmount
-	if lpAmount.IsNil() || lpAmount.LTE(math.ZeroInt()) || positionHealth.LTE(safetyFactor) {
-		lpAmount = position.LeveragedLpAmount
-	}
-
-	closingRatio := lpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
-
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
-	if err != nil {
-		return nil, err
-	}
-
-	if k.hooks != nil {
-		ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
-		if err != nil {
-			return nil, err
-		}
-		err = k.hooks.AfterLeverageLpPositionClose(ctx, sdk.MustAccAddressFromBech32(msg.Creator), ammPool)
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
 		sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
-		sdk.NewAttribute("address", position.Address),
+		sdk.NewAttribute("address", msg.Creator),
 		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
 		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
 		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
 		sdk.NewAttribute("user_rewards", finalUserRewards.String()),
+		sdk.NewAttribute("exit_fee", exitFeeOnClosingPosition.String()),
+		sdk.NewAttribute("health", position.PositionHealth.String()),
+		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
 	))
 	return &types.MsgCloseResponse{}, nil
 }

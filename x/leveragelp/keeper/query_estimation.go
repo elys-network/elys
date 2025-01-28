@@ -42,22 +42,26 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 	if err != nil {
 		return nil, err
 	}
+	if req.LpAmount.GT(position.LeveragedLpAmount) {
+		return nil, errors.New("request lp amount is greater than position lp amount")
+	}
 	pool, found := k.GetPool(ctx, position.AmmPoolId)
 	if !found {
 		return nil, errors.New("leverage lp pool not found")
 	}
 
 	closingRatio := req.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, exitFeeOnClosingPosition, _, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.QueryCloseEstResponse{
-		AmountRepaid:      repayAmount,
+		RepayAmount:       repayAmount,
 		FinalClosingRatio: finalClosingRatio,
 		ClosingLpAmount:   totalLpAmountToClose,
-		CoinsForAmm:       coinsForAmm,
+		CoinsToAmm:        coinsForAmm,
 		UserRewards:       finalUserRewards,
+		ExitFee:           exitFeeOnClosingPosition,
 	}, nil
 }

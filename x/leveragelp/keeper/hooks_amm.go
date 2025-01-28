@@ -2,35 +2,37 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
 func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
+	stablestakeAmmPool := k.stableKeeper.GetAmmPool(ctx, ammPool.PoolId)
+	params := k.GetParams(ctx)
+
+	for _, asset := range ammPool.PoolAssets {
+		for _, liabilties := range stablestakeAmmPool.TotalLiabilities {
+			if asset.Token.Denom == liabilties.Denom && asset.Token.Amount.LT(liabilties.Amount) {
+				return types.ErrInsufficientUsdcAfterOp
+			}
+		}
+	}
+
 	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
 		// It is possible that this pool haven't been enabled
 		return nil
 	}
 
-	// This is kind of health check so we should only use real amm pool balance
-	tvl, err := ammPool.TVL(ctx, k.oracleKeeper, nil)
-	if err != nil {
-		return err
-	}
-	leverageLpTvl := tvl.
-		Mul(leveragePool.LeveragedLpAmount.ToLegacyDec()).
-		Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+	ratio := leveragePool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
-	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
-	price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, depositDenom)
-
-	for _, asset := range ammPool.PoolAssets {
-		if asset.Token.Denom == depositDenom && price.MulInt(asset.Token.Amount).LT(leverageLpTvl) {
-			return types.ErrInsufficientUsdcAfterOp
-		}
+	maxRatio := math.LegacyOneDec().Sub(params.PoolOpenThreshold).Add(params.ExitBuffer)
+	if ratio.GT(maxRatio) {
+		return fmt.Errorf("operation not allowed: pool leverage position becomes %s (> %s)", ratio.String(), maxRatio.String())
 	}
+
 	return nil
 }
 

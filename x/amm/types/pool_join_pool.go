@@ -190,6 +190,7 @@ func (p *Pool) JoinPool(
 	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedAssets, tokensIn[0].Denom)
 	initialWeightOut := sdkmath.LegacyOneDec().Sub(initialWeightIn)
 	weightBreakingFee = weightBreakingFee.Mul(initialWeightOut)
+	weightBalanceBonus = weightBalanceBonus.Mul(initialWeightOut)
 
 	totalShares := p.GetTotalShares()
 	numSharesDec := sdkmath.LegacyNewDecFromInt(totalShares.Amount).

@@ -74,6 +74,9 @@ func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position
 		Denom:     "uusdt",
 		Liquidity: math.NewInt(amount),
 	})
+	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, 1)
+	suite.Require().True(found)
+	err = suite.app.PerpetualKeeper.OnLeverageLpEnablePool(suite.ctx, ammPool)
 
 	usdcToken := sdk.NewInt64Coin("uusdc", amount*20)
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})
@@ -114,7 +117,7 @@ func (suite *KeeperTestSuite) TestForceCloseLong() {
 		Quo(math.LegacyNewDec(86400 * 365))).TruncateInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
-	_, _, _, repayAmountOut, _, err := k.RepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
+	_, _, _, repayAmountOut, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
@@ -132,7 +135,7 @@ func (suite *KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 		Quo(math.LegacyNewDec(86400 * 365))).RoundInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365 * 5))
-	_, _, _, repayAmountOut, _, err := k.RepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
+	_, _, _, repayAmountOut, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
 	suite.Require().NoError(err)
 	suite.Require().Greater(repayAmount.String(), repayAmountOut.String())
 }
@@ -152,7 +155,7 @@ func (suite *KeeperTestSuite) TestForceCloseLongPartial() {
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 	suite.SetCurrentHeight(suite.ctx.BlockHeight() + 1)
 	// close 50%
-	_, _, _, repayAmountOut, _, err := k.RepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec().QuoInt64(2), false)
+	_, _, _, repayAmountOut, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec().QuoInt64(2), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.Quo(math.NewInt(2)).String(), repayAmountOut.String())
 
@@ -175,7 +178,7 @@ func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.SetCurrentHeight(suite.ctx.BlockHeight() + 1)
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, position.GetPositionAddress())
+	suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, position.GetPositionAddress(), position.AmmPoolId, position.Collateral.Denom)
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
