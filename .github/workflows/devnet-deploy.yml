@@ -113,7 +113,7 @@ jobs:
             $ELYSD software-upgrade-tx \
               ${{env.VERSION}} \
               $height \
-              10000000uelys \
+              50000000uelys \
               "Elys Network version ${{env.VERSION}} released. Focuses on enhancements and codebase improvements." \
               "{\"binaries\":{\"linux/amd64\":\"https://snapshots.elys.network/releases/${{env.NAME_WITH_VERSION}}.tar.gz\"}}" \
                true \
