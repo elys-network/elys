@@ -91,7 +91,7 @@ jobs:
           # environment variables
           ELYSD=/tmp/elysd
           NODE=https://rpc.devnet.elys.network:443
-          OPTIONS="--node $NODE --chain-id elysdevnet-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
+          OPTIONS="--node $NODE --chain-id elysics-1 --keyring-backend=test -b=sync --fees=100000uelys --gas=300000 -y"
 
           # save private keys to files
           echo "${{ secrets.PRIVATE_KEY_FUJI }}" > /tmp/private_key_fuji.txt
