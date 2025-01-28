@@ -9,6 +9,11 @@ import (
 )
 
 func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
+	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		// It is possible that this pool haven't been enabled
+		return nil
+	}
 	stablestakeAmmPool := k.stableKeeper.GetAmmPool(ctx, ammPool.PoolId)
 	params := k.GetParams(ctx)
 
@@ -18,12 +23,6 @@ func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) 
 				return types.ErrInsufficientUsdcAfterOp
 			}
 		}
-	}
-
-	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
-	if !found {
-		// It is possible that this pool haven't been enabled
-		return nil
 	}
 
 	ratio := leveragePool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
