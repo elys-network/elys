@@ -86,6 +86,7 @@ func CalcExitPool(
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
 	params Params,
+	applyWeightBreakingFee bool,
 ) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, err error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
@@ -117,28 +118,35 @@ func CalcExitPool(
 
 		oracleOutAmount := exitValueWithoutSlippage.Quo(tokenPrice)
 
-		newAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
-			sdk.Coins{},
-			sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.RoundInt())}, accountedAssets,
-		)
-		if err != nil {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), err
-		}
-		for _, asset := range newAssetPools {
-			if asset.Token.Amount.IsNegative() {
-				return sdk.Coins{}, sdkmath.LegacyZeroDec(), errors.New("out amount exceeds liquidity balance")
+		tokenOutAmount := oracleOutAmount.RoundInt()
+		weightBalanceBonus = sdkmath.LegacyZeroDec()
+
+		if applyWeightBreakingFee {
+			newAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
+				sdk.Coins{},
+				sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.RoundInt())}, accountedAssets,
+			)
+			if err != nil {
+				return sdk.Coins{}, sdkmath.LegacyZeroDec(), err
 			}
+			for _, asset := range newAssetPools {
+				if asset.Token.Amount.IsNegative() {
+					return sdk.Coins{}, sdkmath.LegacyZeroDec(), errors.New("out amount exceeds liquidity balance")
+				}
+			}
+
+			var weightBreakingFee sdkmath.LegacyDec
+			weightBalanceBonus, weightBreakingFee, _ = pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenOutDenom, params, sdkmath.LegacyOneDec())
+			// apply percentage to fees, consider improvement or reduction of other token
+			// Other denom weight ratio to reduce the weight breaking fees
+			initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
+			initialWeightIn := sdkmath.LegacyOneDec().Sub(initialWeightOut)
+			weightBreakingFee = weightBreakingFee.Mul(initialWeightIn)
+			weightBalanceBonus = weightBalanceBonus.Mul(initialWeightIn)
+
+			tokenOutAmount = oracleOutAmount.Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).RoundInt()
 		}
 
-		weightBalanceBonus, weightBreakingFee, _ := pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenOutDenom, params, sdkmath.LegacyOneDec())
-		// apply percentage to fees, consider improvement or reduction of other token
-		// Other denom weight ratio to reduce the weight breaking fees
-		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
-		initialWeightIn := sdkmath.LegacyOneDec().Sub(initialWeightOut)
-		weightBreakingFee = weightBreakingFee.Mul(initialWeightIn)
-		weightBalanceBonus = weightBalanceBonus.Mul(initialWeightIn)
-
-		tokenOutAmount := oracleOutAmount.Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).RoundInt()
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, nil
 	}
 
