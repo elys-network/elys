@@ -51,6 +51,20 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
+			// devnet fix
+			if ctx.ChainID() == "elysics-1" {
+				ammPool, _ := app.AmmKeeper.GetPool(ctx, 1)
+				balacnes := app.BankKeeper.GetAllBalances(ctx, sdk.MustAccAddressFromBech32(ammPool.Address))
+				for _, balance := range balacnes {
+					for i, asset := range ammPool.PoolAssets {
+						if asset.Token.Denom == balance.Denom {
+							ammPool.PoolAssets[i].Token = balance
+						}
+					}
+				}
+				app.AmmKeeper.SetPool(ctx, ammPool)
+			}
+
 			if upgradeVersion == NextVersion || upgradeVersion == LocalNetVersion {
 
 				// Add any logic here to run when the chain is upgraded to the new version

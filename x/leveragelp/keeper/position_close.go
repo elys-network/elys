@@ -102,6 +102,8 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	if err != nil {
 		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 	}
+	// Updating ammPool
+	ammPool, _ = k.amm.GetPool(ctx, position.AmmPoolId)
 
 	// Important to add back exact same amount we reduced as Repay function subtracts the whatever amount that is actually paid back
 	k.stableKeeper.AddPoolLiabilities(ctx, position.AmmPoolId, sdk.NewCoin(position.Collateral.Denom, repayAmount))
@@ -128,6 +130,8 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		if err != nil {
 			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 		}
+		// Updating ammPool
+		ammPool, _ = k.amm.GetPool(ctx, position.AmmPoolId)
 	}
 
 	// Set collateral to same % as reduction in LP position
@@ -155,6 +159,8 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		coinsToAmmRebalancer := ammkeeper.PortionCoins(coinsForAmm, weightBreakingFeePortion)
 		coinsToAmmPool := coinsForAmm.Sub(coinsToAmmRebalancer...)
 
+		// Very important to fetch this again, Updating ammPool
+		ammPool, _ = k.amm.GetPool(ctx, position.AmmPoolId)
 		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(ammPool.Address), coinsToAmmPool)
 		if err != nil {
 			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
@@ -208,7 +214,8 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 	// Important to run hooks to updated accounted pool balances
 	if k.hooks != nil {
-		// Only place where ammPool values gets updated is in AddToPoolBalanceAndUpdateLiquidity which uses pointer, so this should be fine
+		// Updating ammPool
+		ammPool, _ = k.amm.GetPool(ctx, position.AmmPoolId)
 		err = k.hooks.AfterLeverageLpPositionClose(ctx, position.GetOwnerAddress(), ammPool)
 		if err != nil {
 			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
