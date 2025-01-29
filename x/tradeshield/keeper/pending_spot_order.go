@@ -200,7 +200,7 @@ func (k Keeper) SetAllLegacySpotOrderPriceToNewOrderPriceStructure(ctx sdk.Conte
 
 // ExecuteStopLossOrder executes a stop loss order
 func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderTargetDenom, order.OrderAmount.Denom)
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderAmount.Denom, order.OrderTargetDenom)
 	if err != nil {
 		return nil, err
 	}
@@ -245,7 +245,7 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 
 // ExecuteLimitSellOrder executes a limit sell order
 func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderTargetDenom, order.OrderAmount.Denom)
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderAmount.Denom, order.OrderTargetDenom)
 	if err != nil {
 		return nil, err
 	}
