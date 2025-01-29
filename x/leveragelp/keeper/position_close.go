@@ -8,11 +8,11 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *types.Position, pool *types.Pool, closingRatio math.LegacyDec, isLiquidation bool) (math.LegacyDec, math.Int, sdk.Coins, math.Int, sdk.Coins, math.LegacyDec, bool, error) {
+func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *types.Position, pool *types.Pool, closingRatio math.LegacyDec, isLiquidation bool) (math.LegacyDec, math.Int, sdk.Coins, math.Int, sdk.Coins, math.LegacyDec, bool, math.LegacyDec, error) {
 
 	positionHealth, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
-		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), false, err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), false, math.LegacyZeroDec(), err
 	}
 	safetyFactor := k.GetSafetyFactor(ctx)
 
@@ -22,13 +22,13 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 	ammPool, found := k.amm.GetPool(ctx, position.AmmPoolId)
 	if !found {
-		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), false, types.ErrAmmPoolNotFound
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), false, math.LegacyZeroDec(), types.ErrAmmPoolNotFound
 	}
 
 	// Note this price of One Share (multiplied by 1^18)
 	lpTokenPrice, err := ammPool.LpTokenPriceForShare(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	if err != nil {
-		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), false, err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), false, math.LegacyZeroDec(), err
 	}
 
 	stopLossReached := position.CheckStopLossReached(lpTokenPrice)
@@ -37,7 +37,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	}
 
 	if closingRatio.IsNil() || closingRatio.IsNegative() || closingRatio.IsZero() || closingRatio.GT(math.LegacyOneDec()) {
-		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, errors.New("invalid closing ratio for leverage lp")
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), errors.New("invalid closing ratio for leverage lp")
 	}
 
 	// This will be the net amount that will be closed
@@ -45,7 +45,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 	ammPoolTVL, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	if err != nil {
-		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 	}
 	collateralDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Collateral.Denom)
 
@@ -69,15 +69,16 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	// we calculate weight breaking fee (-ve of weightBalanceBonus if there is one) that could have occurred
 	_, weightBalanceBonus, err := k.amm.ExitPoolEst(ctx, position.AmmPoolId, lpSharesForRepay, position.Collateral.Denom)
 	if err != nil {
-		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 	}
 
 	exitFeeOnClosingPosition := math.LegacyZeroDec()
 	percentageExitLeverageFee := math.LegacyZeroDec()
+	weightBreakingFee := math.LegacyZeroDec()
 	// weight breaking fee exists when weightBalanceBonus is negative
 	// There is anything left to pay if totalLpAmountToClose > lpSharesForRepay, also it prevents denominator going 0
 	if weightBalanceBonus.IsNegative() {
-		weightBreakingFee := weightBalanceBonus.Abs()
+		weightBreakingFee = weightBalanceBonus.Abs()
 		weightBreakingFeeValue := repayValue.Mul(weightBreakingFee)
 
 		if totalLpAmountToClose.GT(lpSharesForRepay) {
@@ -99,7 +100,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 	_, _, err = k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpSharesForRepay, sdk.Coins{}, position.Collateral.Denom, isLiquidation, false)
 	if err != nil {
-		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 	}
 
 	// Important to add back exact same amount we reduced as Repay function subtracts the whatever amount that is actually paid back
@@ -115,7 +116,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	if repayAmount.IsPositive() {
 		err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount), position.AmmPoolId)
 		if err != nil {
-			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 		}
 	}
 
@@ -125,7 +126,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		sharesLeft := totalLpAmountToClose.Sub(lpSharesForRepay)
 		coinsLeftAfterRepay, _, err = k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, sharesLeft, sdk.Coins{}, "", isLiquidation, false)
 		if err != nil {
-			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 		}
 	}
 
@@ -136,7 +137,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Sub(totalLpAmountToClose)
 	position.PositionHealth, err = k.GetPositionHealth(ctx, *position)
 	if err != nil {
-		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 	}
 
 	// Update Liabilities
@@ -156,16 +157,16 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(ammPool.Address), coinsToAmmPool)
 		if err != nil {
-			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 		}
 		err = k.amm.AddToPoolBalanceAndUpdateLiquidity(ctx, &ammPool, math.ZeroInt(), coinsToAmmPool)
 		if err != nil {
-			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 		}
 
 		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(ammPool.RebalanceTreasury), coinsToAmmRebalancer)
 		if err != nil {
-			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 		}
 
 	}
@@ -177,7 +178,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	if len(finalUserTokens) > 0 {
 		err = k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), positionOwner, finalUserTokens)
 		if err != nil {
-			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 		}
 	}
 
@@ -189,18 +190,18 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		// As we have already exited the pool, we need to delete the position
 		err = k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, positionOwner)
 		if err != nil {
-			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 		}
 		err = k.DestroyPosition(ctx, positionOwner, position.Id)
 		if err != nil {
-			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 		}
 
 		// Delete Debt even if it's not paid fully, can happen only if bot fails to close and position health goes below 1
 		if position.Liabilities.IsPositive() {
 			err = k.stableKeeper.CloseOnUnableToRepay(ctx, position.GetPositionAddress(), position.AmmPoolId, position.Collateral.Denom)
 			if err != nil {
-				return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+				return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 			}
 		}
 	}
@@ -210,9 +211,9 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		// Only place where ammPool values gets updated is in AddToPoolBalanceAndUpdateLiquidity which uses pointer, so this should be fine
 		err = k.hooks.AfterLeverageLpPositionClose(ctx, position.GetOwnerAddress(), ammPool)
 		if err != nil {
-			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, err
+			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 		}
 	}
 
-	return closingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserTokens, exitFeeOnClosingPosition, stopLossReached, nil
+	return closingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserTokens, exitFeeOnClosingPosition, stopLossReached, weightBreakingFee, nil
 }
