@@ -13,6 +13,7 @@ func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 
 	b := store.Get(types.ParamKeyPrefix)
 	if b == nil {
+		// TODO fix this
 		return
 	}
 

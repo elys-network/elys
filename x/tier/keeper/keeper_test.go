@@ -230,7 +230,7 @@ func (suite *TierKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOr
 
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	k := suite.app.PerpetualKeeper
 	k.SetPool(suite.ctx, pool)
 

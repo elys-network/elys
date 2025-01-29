@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -60,7 +61,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:  ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   math.NewInt(694444166666666666), // weight breaking fee - slippage enable
-			shareOutAmount:   math.NewInt(999057190958417937), // weight breaking fee - slippage disable
+			shareOutAmount:   math.NewInt(833333000000000000), // weight breaking fee - slippage enable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -75,7 +76,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:  ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   math.NewInt(805987500000000000), // weight recovery direction - slippage enable
-			shareOutAmount:   math.NewInt(996102885682970026), // weight recovery direction - slippage disable
+			shareOutAmount:   math.NewInt(644790000000000000), // weight recovery direction - slippage enable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -248,12 +249,14 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 				TotalShares:       sdk.NewCoin("amm/pool/1", math.NewInt(2).Mul(types.OneShare)),
 				PoolAssets: []types.PoolAsset{
 					{
-						Token:  tc.poolInitBalance[0],
-						Weight: math.NewInt(1),
+						Token:                  tc.poolInitBalance[0],
+						Weight:                 math.NewInt(1),
+						ExternalLiquidityRatio: math.LegacyNewDec(1),
 					},
 					{
-						Token:  tc.poolInitBalance[1],
-						Weight: math.NewInt(1),
+						Token:                  tc.poolInitBalance[1],
+						Weight:                 math.NewInt(1),
+						ExternalLiquidityRatio: math.LegacyNewDec(1),
 					},
 				},
 				TotalWeight: math.ZeroInt(),
@@ -280,13 +283,17 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			suite.Require().NoError(err)
 			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
+			accountedAssets := pool.GetAccountedBalance(suite.ctx, suite.app.AccountedPoolKeeper, pool.PoolAssets)
+			initialWeightIn := types.GetDenomOracleAssetWeight(suite.ctx, 1, suite.app.OracleKeeper, accountedAssets, tc.senderInitBalance[0].Denom)
+			initialWeightOut := sdkmath.LegacyOneDec().Sub(initialWeightIn)
+
 			// Step 6: Validate if exploit was successful (It should fail)
 			// Calculate expected number of shares without weight balance bonus
 			totalShares := pool.TotalShares.Amount
-			joinValueWithoutSlippage, _ := pool.CalcJoinValueWithoutSlippage(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.senderInitBalance)
+			joinValueWithSlippage, _, _ := pool.CalcJoinValueWithSlippage(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.senderInitBalance[0], initialWeightOut)
 			tvl, _ := pool.TVL(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper)
 			expectedNumShares := totalShares.ToLegacyDec().
-				Mul(joinValueWithoutSlippage).Quo(tvl).RoundInt()
+				Mul(joinValueWithSlippage).Quo(tvl).RoundInt()
 
 			// Number of shares must be lesser or equal to expected
 			suite.Require().GreaterOrEqual(expectedNumShares.String(), resp.ShareAmountOut.String(), "Exploit detected: Sender received more shares than expected")

@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"github.com/elys-network/elys/testutil/sample"
 	"time"
 
 	"cosmossdk.io/math"
@@ -74,15 +75,15 @@ func (suite *KeeperTestSuite) TestDebt() {
 			params.InterestRate = math.LegacyNewDec(10)
 			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
 
-			err = suite.app.StablestakeKeeper.Borrow(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)))
+			err = suite.app.StablestakeKeeper.Borrow(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)), 1)
 			suite.Require().NoError(err)
-			suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
+			suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365)).WithBlockHeight(10)
 
 			// Pay partial
-			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10)))
+			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10)), 1)
 			suite.Require().NoError(err)
 
-			res := suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, sender)
+			res := suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, sender, 1, ptypes.BaseCurrency)
 			suite.Require().Equal(res.Borrowed.String(), "1000")
 			suite.Require().Equal(res.InterestStacked.String(), "10000")
 			suite.Require().Equal(res.InterestPaid.String(), "10")
@@ -90,7 +91,7 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.Require().Len(allDebts, 1)
 
 			// Pay rest, ensure we don't pay multiple times
-			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10990)))
+			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10990)), 1)
 			suite.Require().NoError(err)
 			res = suite.app.StablestakeKeeper.GetDebt(suite.ctx, sender)
 			suite.Require().Equal(res.Borrowed.String(), "0")
@@ -98,4 +99,32 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.Require().Equal(res.InterestPaid.String(), "0")
 		})
 	}
+}
+
+func (suite *KeeperTestSuite) TestCloseOnUnableToRepay() {
+	p := types.AmmPool{
+		Id:               1,
+		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000)},
+	}
+
+	suite.app.StablestakeKeeper.SetAmmPool(suite.ctx, p)
+
+	debt := types.Debt{
+		Address:               sample.AccAddress(),
+		Borrowed:              math.NewInt(100),
+		InterestPaid:          math.NewInt(10),
+		InterestStacked:       math.NewInt(50),
+		BorrowTime:            1,
+		LastInterestCalcTime:  1,
+		LastInterestCalcBlock: 1,
+	}
+	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
+	suite.app.StablestakeKeeper.CloseOnUnableToRepay(suite.ctx, debt.GetOwnerAccount(), 1, sdk.DefaultBondDenom)
+
+	r := suite.app.StablestakeKeeper.GetAmmPool(suite.ctx, 1)
+	suite.Assert().Equal(types.AmmPool{
+		Id:               1,
+		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 860)},
+	}, r)
+
 }

@@ -1,9 +1,10 @@
 package keeper
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"strconv"
+
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -70,15 +71,15 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 
 func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolId uint64, msg *types.MsgOpen) (*types.Position, error) {
 	collateralAmountDec := sdkmath.LegacyNewDecFromInt(msg.CollateralAmount)
-	// Determine the maximum leverage available and compute the effective leverage to be used.
-	maxLeverage := k.GetMaxLeverageParam(ctx)
-	leverage := sdkmath.LegacyMinDec(msg.Leverage, maxLeverage)
 
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
 	}
+
+	// Determine the maximum leverage available for this pool and compute the effective leverage to be used.
+	leverage := sdkmath.LegacyMinDec(msg.Leverage, pool.LeverageMax)
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
@@ -103,7 +104,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	// borrow leveragedAmount - collateralAmount
 	borrowCoin := sdk.NewCoin(msg.CollateralAsset, leveragedAmount.Sub(msg.CollateralAmount))
 	if borrowCoin.Amount.IsPositive() {
-		err = k.stableKeeper.Borrow(ctx, position.GetPositionAddress(), borrowCoin)
+		err = k.stableKeeper.Borrow(ctx, position.GetPositionAddress(), borrowCoin, position.AmmPoolId)
 		if err != nil {
 			return nil, err
 		}
@@ -118,11 +119,16 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(shares)
 	k.UpdatePoolHealth(ctx, &pool)
 
+	position.LeveragedLpAmount = position.LeveragedLpAmount.Add(shares)
+	position.Liabilities = position.Liabilities.Add(borrowCoin.Amount)
+	position.StopLossPrice = msg.StopLossPrice
+
 	// Get the Position health.
 	lr, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
 		return nil, err
 	}
+	position.PositionHealth = lr
 
 	// Check if the Position is unhealthy
 	safetyFactor := k.GetSafetyFactor(ctx)
@@ -131,11 +137,6 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	}
 
 	// Set Position
-	position.LeveragedLpAmount = position.LeveragedLpAmount.Add(shares)
-	position.Liabilities = position.Liabilities.Add(borrowCoin.Amount)
-	position.PositionHealth = lr
-	position.StopLossPrice = msg.StopLossPrice
-
 	k.SetPosition(ctx, position)
 
 	return position, nil

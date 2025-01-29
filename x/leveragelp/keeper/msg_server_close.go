@@ -2,6 +2,9 @@ package keeper
 
 import (
 	"context"
+	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
+	"errors"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,34 +14,43 @@ import (
 func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	return k.Keeper.Close(ctx, msg)
-}
-
-func (k Keeper) Close(ctx sdk.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
-	closedPosition, repayAmount, err := k.CloseLong(ctx, msg)
+	creator := sdk.MustAccAddressFromBech32(msg.Creator)
+	position, err := k.GetPosition(ctx, creator, msg.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	if k.hooks != nil {
-		ammPool, err := k.GetAmmPool(ctx, closedPosition.AmmPoolId)
-		if err != nil {
-			return nil, err
-		}
-		err = k.hooks.AfterLeverageLpPositionClose(ctx, sdk.MustAccAddressFromBech32(msg.Creator), ammPool)
-		if err != nil {
-			return nil, err
-		}
+	if position.LeveragedLpAmount.IsZero() {
+		return nil, types.ErrAmountTooLow
+	}
+
+	// Retrieve Pool
+	pool, found := k.GetPool(ctx, position.AmmPoolId)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
+	}
+
+	closingRatio := msg.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
+	if closingRatio.GT(math.LegacyOneDec()) {
+		return nil, errors.New("invalid closing ratio for leverage lp")
+	}
+
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, exitFeeOnClosingPosition, stopLossReached, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
+	if err != nil {
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventClose,
-		sdk.NewAttribute("id", strconv.FormatInt(int64(closedPosition.Id), 10)),
-		sdk.NewAttribute("address", closedPosition.Address),
-		sdk.NewAttribute("collateral", closedPosition.Collateral.String()),
+		sdk.NewAttribute("id", strconv.FormatUint(position.Id, 10)),
+		sdk.NewAttribute("address", msg.Creator),
+		sdk.NewAttribute("closing_ratio", finalClosingRatio.String()),
+		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
+		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("liabilities", closedPosition.Liabilities.String()),
-		sdk.NewAttribute("health", closedPosition.PositionHealth.String()),
+		sdk.NewAttribute("user_rewards", finalUserRewards.String()),
+		sdk.NewAttribute("exit_fee", exitFeeOnClosingPosition.String()),
+		sdk.NewAttribute("health", position.PositionHealth.String()),
+		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
 	))
-
 	return &types.MsgCloseResponse{}, nil
 }

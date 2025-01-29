@@ -19,6 +19,8 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgClaimRewards{}, "leveragelp/MsgClaimRewards")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateStopLoss{}, "leveragelp/MsgUpdateStopLoss")
 	legacy.RegisterAminoMsg(cdc, &MsgClosePositions{}, "leveragelp/MsgClosePositions")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePool{}, "leveragelp/MsgUpdatePool")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateEnabledPools{}, "leveragelp/MsgUpdateEnabledPools")
 
 	// this line is used by starport scaffolding # 2
 }
@@ -35,6 +37,8 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgClaimRewards{},
 		&MsgUpdateStopLoss{},
 		&MsgClosePositions{},
+		&MsgUpdatePool{},
+		&MsgUpdateEnabledPools{},
 	)
 	// this line is used by starport scaffolding # 3
 

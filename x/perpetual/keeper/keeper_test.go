@@ -93,7 +93,7 @@ func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, u
 	suite.AddAccounts(len(addr), addr)
 	poolCreator := addr[0]
 	ammPool := suite.CreateNewAmmPool(poolCreator, useOracle, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, baseTokenAmount, assetAmount)
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("10.5"))
 	suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
 	params.BorrowInterestRateMin = math.LegacyMustNewDecFromStr("0.12")
@@ -249,7 +249,7 @@ func (suite *PerpetualKeeperTestSuite) SetPerpetualPool(poolId uint64) (types.Po
 	_, err := leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
 
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11"))
 	k.SetPool(ctx, pool)
 
 	return pool, poolCreator, ammPool

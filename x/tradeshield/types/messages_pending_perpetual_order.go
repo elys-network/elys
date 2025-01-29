@@ -1,9 +1,10 @@
 package types
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -12,7 +13,7 @@ var _ sdk.Msg = &MsgCreatePerpetualOpenOrder{}
 
 func NewMsgCreatePerpetualOpenOrder(
 	ownerAddress string,
-	triggerPrice TriggerPrice,
+	triggerPrice math.LegacyDec,
 	collateral sdk.Coin,
 	tradingAsset string,
 	position PerpetualPosition,
@@ -40,11 +41,7 @@ func (msg *MsgCreatePerpetualOpenOrder) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 
-	if err = CheckLegacyDecNilAndNegative(msg.TriggerPrice.Rate, "TriggerPrice Rate"); err != nil {
-		return err
-	}
-
-	if err = sdk.ValidateDenom(msg.TriggerPrice.TradingAssetDenom); err != nil {
+	if err = CheckLegacyDecNilAndNegative(msg.TriggerPrice, "TriggerPrice Rate"); err != nil {
 		return err
 	}
 
@@ -91,7 +88,7 @@ var _ sdk.Msg = &MsgCreatePerpetualOpenOrder{}
 
 func NewMsgCreatePerpetualCloseOrder(
 	ownerAddress string,
-	triggerPrice TriggerPrice,
+	triggerPrice math.LegacyDec,
 	positionId uint64,
 ) *MsgCreatePerpetualCloseOrder {
 	return &MsgCreatePerpetualCloseOrder{
@@ -107,13 +104,8 @@ func (msg *MsgCreatePerpetualCloseOrder) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 
-	if err = CheckLegacyDecNilAndNegative(msg.TriggerPrice.Rate, "TriggerPrice Rate"); err != nil {
+	if err = CheckLegacyDecNilAndNegative(msg.TriggerPrice, "TriggerPrice Rate"); err != nil {
 		return err
-	}
-
-	err = sdk.ValidateDenom(msg.TriggerPrice.TradingAssetDenom)
-	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid trading asset denom (%s)", err)
 	}
 
 	// Validate PositionId
@@ -125,7 +117,7 @@ func (msg *MsgCreatePerpetualCloseOrder) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgUpdatePerpetualOrder{}
 
-func NewMsgUpdatePerpetualOrder(creator string, id uint64, triggerPrice TriggerPrice) *MsgUpdatePerpetualOrder {
+func NewMsgUpdatePerpetualOrder(creator string, id uint64, triggerPrice math.LegacyDec) *MsgUpdatePerpetualOrder {
 	return &MsgUpdatePerpetualOrder{
 		OrderId:      id,
 		OwnerAddress: creator,
@@ -139,13 +131,8 @@ func (msg *MsgUpdatePerpetualOrder) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	if err = CheckLegacyDecNilAndNegative(msg.TriggerPrice.Rate, "TriggerPrice Rate"); err != nil {
+	if err = CheckLegacyDecNilAndNegative(msg.TriggerPrice, "TriggerPrice Rate"); err != nil {
 		return err
-	}
-
-	err = sdk.ValidateDenom(msg.TriggerPrice.TradingAssetDenom)
-	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid trading asset denom (%s)", err)
 	}
 
 	// Validate Order ID

@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -18,6 +19,7 @@ type AccountKeeper interface {
 
 // AmmKeeper defines the expected interface needed to swap tokens
 type AmmKeeper interface {
+	GetParams(ctx sdk.Context) (params ammtypes.Params)
 	// GetPool returns a pool from its index
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
 	// Get all pools
@@ -27,11 +29,11 @@ type AmmKeeper interface {
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
-
+	AddToPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, addShares sdkmath.Int, coins sdk.Coins) error
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdkmath.LegacyDec) (sdk.Coin, sdkmath.LegacyDec, error)
 	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec) (tokenIn sdk.Coin, slippage sdkmath.LegacyDec, err error)
 	JoinPoolNoSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareOutAmount sdkmath.Int, tokenInMaxs sdk.Coins) (tokenIn sdk.Coins, sharesOut sdkmath.Int, err error)
-	ExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdkmath.Int, tokenOutMins sdk.Coins, tokenOutDenom string, isLiquidation bool) (exitCoins sdk.Coins, err error)
+	ExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdkmath.Int, tokenOutMins sdk.Coins, tokenOutDenom string, isLiquidation, applyWeightBreakingFee bool) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, err error)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
@@ -57,11 +59,16 @@ type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) stablestaketypes.Params
 	GetDepositDenom(ctx sdk.Context) string
 	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
-	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
-	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
-	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error
+	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, debtDenom string) stablestaketypes.Debt
+	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error
+	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error
 	TVL(ctx sdk.Context, oracleKeeper stablestaketypes.OracleKeeper, baseCurrency string) sdkmath.LegacyDec
 	GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec) sdkmath.Int
+	GetDebtWithoutUpdatedInterest(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	AddPoolLiabilities(ctx sdk.Context, id uint64, coin sdk.Coin)
+	SubtractPoolLiabilities(ctx sdk.Context, id uint64, coin sdk.Coin)
+	GetAmmPool(ctx sdk.Context, id uint64) stablestaketypes.AmmPool
+	CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, unableToPayForPool uint64, debtDenom string) error
 }
 
 type CommitmentKeeper interface {
