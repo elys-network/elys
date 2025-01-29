@@ -7,7 +7,7 @@ import (
 
 func (m Migrator) V18Migration(ctx sdk.Context) error {
 	legacyParams := m.keeper.GetParams(ctx)
-	legacyParams.ExitBuffer = math.LegacyMustNewDecFromStr("0.05")
+	legacyParams.ExitBuffer = math.LegacyMustNewDecFromStr("0.1")
 	err := m.keeper.SetParams(ctx, &legacyParams)
 	if err != nil {
 		return err

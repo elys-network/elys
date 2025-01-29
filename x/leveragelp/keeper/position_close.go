@@ -83,7 +83,8 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 		if totalLpAmountToClose.GT(lpSharesForRepay) {
 			// weightBreakingFeeValue / ((totalLpAmountToClose - lpSharesForRepay) x LP Price)
-			percentageExitLeverageFee = weightBreakingFeeValue.Quo(totalLpAmountToClose.Sub(lpSharesForRepay).ToLegacyDec().Mul(ammPool.TotalShares.Amount.ToLegacyDec()).Quo(ammPoolTVL))
+			denominator := (totalLpAmountToClose.Sub(lpSharesForRepay).ToLegacyDec()).Mul(ammPoolTVL).Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+			percentageExitLeverageFee = weightBreakingFeeValue.Quo(denominator)
 		}
 
 		if percentageExitLeverageFee.GT(math.LegacyOneDec()) {
