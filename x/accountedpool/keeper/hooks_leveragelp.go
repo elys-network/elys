@@ -7,7 +7,6 @@ import (
 	"github.com/elys-network/elys/x/accountedpool/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
-	"strconv"
 )
 
 func (k Keeper) OnLeverageLpPoolEnable(ctx sdk.Context, ammPool ammtypes.Pool) error {
@@ -35,10 +34,10 @@ func (k Keeper) OnLeverageLpPoolEnable(ctx sdk.Context, ammPool ammtypes.Pool) e
 	// Set accounted pool
 	k.SetAccountedPool(ctx, accountedPool)
 
-	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventLeverageLpEnable,
-		sdk.NewAttribute("pool_id", strconv.FormatUint(poolId, 10)),
-		sdk.NewAttribute("initial_tokens", sdk.Coins(accountedPool.TotalTokens).String()),
-	))
+	//ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventLeverageLpEnable,
+	//	sdk.NewAttribute("pool_id", strconv.FormatUint(poolId, 10)),
+	//	sdk.NewAttribute("initial_tokens", sdk.Coins(accountedPool.TotalTokens).String()),
+	//))
 
 	return nil
 }
@@ -58,9 +57,9 @@ func (k Keeper) OnLeverageLpPoolDisable(ctx sdk.Context, ammPool ammtypes.Pool) 
 
 	k.RemoveAccountedPool(ctx, ammPool.PoolId)
 
-	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventLeverageLpDisable,
-		sdk.NewAttribute("pool_id", strconv.FormatUint(ammPool.PoolId, 10)),
-	))
+	//ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventLeverageLpDisable,
+	//	sdk.NewAttribute("pool_id", strconv.FormatUint(ammPool.PoolId, 10)),
+	//))
 
 	return nil
 }

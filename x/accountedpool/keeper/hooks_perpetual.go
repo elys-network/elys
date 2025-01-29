@@ -5,7 +5,6 @@ import (
 	"github.com/elys-network/elys/x/accountedpool/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
-	"strconv"
 )
 
 func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetualPool perpetualtypes.Pool, EnableTakeProfitCustodyLiabilities bool) error {
@@ -15,7 +14,7 @@ func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetu
 		return types.ErrPoolDoesNotExist
 	}
 
-	var netTotalLiabilities, netTotalCustody, netTotalTakeProfitCustody, netTotalTakeProfitLiabilities sdk.Coins
+	//var netTotalLiabilities, netTotalCustody, netTotalTakeProfitCustody, netTotalTakeProfitLiabilities sdk.Coins
 	// Accounted pool balance = amm pool + (long liability - long profit taking liability) - (long custody - long profit taking custody) + (short liability - short profit taking liability ) - ( short custody - short profit taking custody)
 	// Accounted pool balance = amm pool + totalLiabilities - totalCustody + total profit taking custody - total profit taking liability
 	for i, asset := range accountedPool.TotalTokens {
@@ -29,10 +28,13 @@ func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetu
 		if EnableTakeProfitCustodyLiabilities {
 			accountedPoolAmt = accountedPoolAmt.Add(totalTakeProfitCustody).Sub(totalTakeProfitLiabilities)
 		}
-		netTotalCustody = netTotalCustody.Add(sdk.NewCoin(asset.Denom, totalCustody))
-		netTotalLiabilities = netTotalLiabilities.Add(sdk.NewCoin(asset.Denom, totalLiabilities))
-		netTotalTakeProfitCustody = netTotalTakeProfitCustody.Add(sdk.NewCoin(asset.Denom, totalTakeProfitCustody))
-		netTotalTakeProfitLiabilities = netTotalTakeProfitLiabilities.Add(sdk.NewCoin(asset.Denom, totalTakeProfitLiabilities))
+		if !totalLiabilities.IsZero() {
+
+		}
+		//netTotalCustody = netTotalCustody.Add(sdk.NewCoin(asset.Denom, totalCustody))
+		//netTotalLiabilities = netTotalLiabilities.Add(sdk.NewCoin(asset.Denom, totalLiabilities))
+		//netTotalTakeProfitCustody = netTotalTakeProfitCustody.Add(sdk.NewCoin(asset.Denom, totalTakeProfitCustody))
+		//netTotalTakeProfitLiabilities = netTotalTakeProfitLiabilities.Add(sdk.NewCoin(asset.Denom, totalTakeProfitLiabilities))
 
 		accountedPool.TotalTokens[i] = sdk.NewCoin(asset.Denom, accountedPoolAmt)
 
@@ -47,15 +49,15 @@ func (k Keeper) PerpetualUpdates(ctx sdk.Context, ammPool ammtypes.Pool, perpetu
 	// Update accounted pool
 	k.SetAccountedPool(ctx, accountedPool)
 
-	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventPerpetualUpdates,
-		sdk.NewAttribute("pool_id", strconv.FormatUint(ammPool.PoolId, 10)),
-		sdk.NewAttribute("net_total_custody", netTotalCustody.String()),
-		sdk.NewAttribute("net_total_take_profit_liabilities", netTotalLiabilities.String()),
-		sdk.NewAttribute("net_total_take_profit_custody", netTotalTakeProfitCustody.String()),
-		sdk.NewAttribute("net_total_take_profit_liabilities", netTotalTakeProfitLiabilities.String()),
-		sdk.NewAttribute("non_amm_token_balance", sdk.Coins(accountedPool.NonAmmPoolTokens).String()),
-		sdk.NewAttribute("total_tokens", sdk.Coins(accountedPool.TotalTokens).String()),
-	))
+	//ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventPerpetualUpdates,
+	//	sdk.NewAttribute("pool_id", strconv.FormatUint(ammPool.PoolId, 10)),
+	//	sdk.NewAttribute("net_total_custody", netTotalCustody.String()),
+	//	sdk.NewAttribute("net_total_take_profit_liabilities", netTotalLiabilities.String()),
+	//	sdk.NewAttribute("net_total_take_profit_custody", netTotalTakeProfitCustody.String()),
+	//	sdk.NewAttribute("net_total_take_profit_liabilities", netTotalTakeProfitLiabilities.String()),
+	//	sdk.NewAttribute("non_amm_token_balance", sdk.Coins(accountedPool.NonAmmPoolTokens).String()),
+	//	sdk.NewAttribute("total_tokens", sdk.Coins(accountedPool.TotalTokens).String()),
+	//))
 
 	return nil
 }
