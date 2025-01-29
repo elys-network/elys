@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -20,7 +19,6 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 	tokenInMaxAmount math.Int,
 	tokenOut sdk.Coin,
 ) (tokenInAmount math.Int, totalDiscountedSwapFee math.LegacyDec, discountOut math.LegacyDec, err error) {
-	isMultiHopRouted, routeSwapFee, sumOfSwapFees := false, math.LegacyDec{}, math.LegacyDec{}
 	route := types.SwapAmountOutRoutes(routes)
 	if err := route.Validate(); err != nil {
 		return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
@@ -33,22 +31,10 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		}
 	}()
 
-	if k.isElysRoutedMultihop(ctx, route, routes[0].TokenInDenom, tokenOut.Denom) {
-		isMultiHopRouted = true
-	}
-
 	// Initialize the total discounted swap fee
 	totalDiscountedSwapFee = math.LegacyZeroDec()
 
-	// Determine what the estimated input would be for each pool along the multi-hop route
-	// if we determined the route is an osmo multi-hop and both routes are incentivized,
-	// we utilize a separate function that calculates the discounted swap fees
-	var insExpected []math.Int
-	if isMultiHopRouted {
-		insExpected, err = k.createElysMultihopExpectedSwapOuts(ctx, routes, tokenOut, routeSwapFee, sumOfSwapFees)
-	} else {
-		insExpected, err = k.createMultihopExpectedSwapOuts(ctx, routes, tokenOut)
-	}
+	insExpected, err := k.createMultihopExpectedSwapOuts(ctx, routes, tokenOut)
 	if err != nil {
 		return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
@@ -84,7 +70,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		// 	return math.Int{}, fmt.Errorf("pool %d is not active", pool.GetId())
 		// }
 
-		swapFee := pool.GetPoolParams().SwapFee.Quo(sdkmath.LegacyNewDec(int64(len(routes))))
+		swapFee := pool.GetPoolParams().SwapFee.Quo(math.LegacyNewDec(int64(len(routes))))
 
 		// Apply discount to swap fee if applicable
 		swapFee = types.ApplyDiscount(swapFee, discount)

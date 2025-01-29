@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -54,7 +53,7 @@ func (k Keeper) RouteExactAmountIn(
 		// 	return math.Int{}, fmt.Errorf("pool %d is not active", pool.GetId())
 		// }
 
-		swapFee := pool.GetPoolParams().SwapFee.Quo(sdkmath.LegacyNewDec(int64(len(routes))))
+		swapFee := pool.GetPoolParams().SwapFee.Quo(math.LegacyNewDec(int64(len(routes))))
 
 		// Apply discount to swap fee if applicable
 		swapFee = types.ApplyDiscount(swapFee, discount)
