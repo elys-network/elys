@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -32,20 +33,8 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		}
 	}()
 
-	// in this loop, we check if:
-	// - the route is of length 2
-	// - route 1 and route 2 don't trade via the same pool
-	// - route 1 contains uosmo
-	// - both route 1 and route 2 are incentivized pools
-	// if all of the above is true, then we collect the additive and max fee between the two pools to later calculate the following:
-	// total_swap_fee = total_swap_fee = max(swapfee1, swapfee2)
-	// fee_per_pool = total_swap_fee * ((pool_fee) / (swapfee1 + swapfee2))
 	if k.isElysRoutedMultihop(ctx, route, routes[0].TokenInDenom, tokenOut.Denom) {
 		isMultiHopRouted = true
-		routeSwapFee, sumOfSwapFees, err = k.getElysRoutedMultihopTotalSwapFee(ctx, route)
-		if err != nil {
-			return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
-		}
 	}
 
 	// Initialize the total discounted swap fee
@@ -95,10 +84,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		// 	return math.Int{}, fmt.Errorf("pool %d is not active", pool.GetId())
 		// }
 
-		swapFee := pool.GetPoolParams().SwapFee
-		if isMultiHopRouted && sumOfSwapFees.IsPositive() {
-			swapFee = routeSwapFee.Mul((swapFee.Quo(sumOfSwapFees)))
-		}
+		swapFee := pool.GetPoolParams().SwapFee.Quo(sdkmath.LegacyNewDec(int64(len(routes))))
 
 		// Apply discount to swap fee if applicable
 		swapFee = types.ApplyDiscount(swapFee, discount)
