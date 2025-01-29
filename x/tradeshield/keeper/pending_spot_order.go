@@ -290,7 +290,7 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 
 // ExecuteLimitBuyOrder executes a limit buy order
 func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderAmount.Denom, order.OrderTargetDenom)
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderTargetDenom, order.OrderAmount.Denom)
 	if err != nil {
 		return nil, err
 	}
