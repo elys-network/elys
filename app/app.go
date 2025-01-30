@@ -9,6 +9,7 @@ import (
 
 	"cosmossdk.io/client/v2/autocli"
 	"cosmossdk.io/core/appmodule"
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
@@ -55,6 +56,7 @@ import (
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	"github.com/elys-network/elys/app/ante"
 	oracleabci "github.com/ojo-network/ojo/x/oracle/abci"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -354,6 +356,108 @@ func (app *ElysApp) Name() string { return app.BaseApp.Name() }
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+	// if ctx.BlockHeight() == 1077987 {
+		app.OracleKeeper.SetParams(ctx, oracletypes.DefaultParams())
+		params := app.OracleKeeper.GetParams(ctx)
+
+		const (
+			AtomDenom        string = "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9"
+			USDCDenom        string = "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349"
+			USDCExponent            = uint32(6)
+		)
+
+		defaultRewardBand := math.LegacyNewDecWithPrec(2, 2) // 0.02
+
+		params.AcceptList = oracletypes.DenomList{
+			{
+				BaseDenom:   USDCDenom,
+				SymbolDenom: oracletypes.USDCSymbol,
+				Exponent:    USDCExponent,
+			},
+			{
+				BaseDenom:   AtomDenom,
+				SymbolDenom: oracletypes.AtomSymbol,
+				Exponent:    oracletypes.AtomExponent,
+			},
+		}
+		params.MandatoryList = oracletypes.DenomList{
+			{
+				BaseDenom:   USDCDenom,
+				SymbolDenom: oracletypes.USDCSymbol,
+				Exponent:    USDCExponent,
+			},
+			{
+				BaseDenom:   AtomDenom,
+				SymbolDenom: oracletypes.AtomSymbol,
+				Exponent:    oracletypes.AtomExponent,
+			},
+		}
+		params.RewardBands = oracletypes.RewardBandList{
+			{
+				SymbolDenom: oracletypes.USDTSymbol,
+				RewardBand:  defaultRewardBand,
+			},
+			{
+				SymbolDenom: oracletypes.USDCSymbol,
+				RewardBand:  defaultRewardBand,
+			},
+			{
+				SymbolDenom: oracletypes.AtomSymbol,
+				RewardBand:  defaultRewardBand,
+			},
+		}
+		params.CurrencyPairProviders = oracletypes.CurrencyPairProvidersList{
+			// USDT
+			{
+				BaseDenom:  oracletypes.USDTSymbol,
+				Providers: []string{
+					"coinbase",
+					"kraken",
+					"crypto",
+				},
+				QuoteDenom: oracletypes.USDSymbol,
+			},
+			// USDC
+			{
+				BaseDenom:  oracletypes.USDCSymbol,
+				Providers: []string{
+					"kraken",
+				},
+				QuoteDenom: oracletypes.USDSymbol,
+			},
+			// ATOM
+			{
+				BaseDenom:  oracletypes.AtomSymbol,
+				BaseProxyDenom: oracletypes.AtomSymbol,
+				Providers: []string{
+					"binance",
+					"gate",
+					"coinbase",
+				},
+				QuoteDenom: oracletypes.USDTSymbol,
+				QuoteProxyDenom: oracletypes.USDCSymbol,
+				ExternLiquidityProvider: "binance",
+				PoolId: 1,
+			},
+		}
+		params.CurrencyDeviationThresholds = oracletypes.CurrencyDeviationThresholdList{
+			{
+				BaseDenom: oracletypes.USDTSymbol,
+				Threshold: "2",
+			},
+			{
+				BaseDenom: oracletypes.USDCSymbol,
+				Threshold: "2",
+			},
+			{
+				BaseDenom: oracletypes.AtomSymbol,
+				Threshold: "2",
+			},
+		}
+
+		app.OracleKeeper.SetParams(ctx, params)
+	// }
+
 	return app.mm.BeginBlock(ctx)
 }
 
