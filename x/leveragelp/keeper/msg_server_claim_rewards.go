@@ -16,6 +16,14 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 		if err != nil {
 			return nil, err
 		}
+
+		// Add trigger function
+		pool, _ := k.GetPool(ctx, position.AmmPoolId)
+		_, _, _, err = k.CheckAndLiquidateUnhealthyPosition(ctx, &position, pool)
+		if err != nil {
+			return nil, err
+		}
+
 		err = k.masterchefKeeper.ClaimRewards(ctx, position.GetPositionAddress(), []uint64{position.AmmPoolId}, sender)
 		if err != nil {
 			return nil, err
