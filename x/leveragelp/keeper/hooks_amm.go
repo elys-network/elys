@@ -2,13 +2,20 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
 func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
+	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
+	if !found {
+		// It is possible that this pool haven't been enabled
+		return nil
+	}
 	stablestakeAmmPool := k.stableKeeper.GetAmmPool(ctx, ammPool.PoolId)
+	params := k.GetParams(ctx)
 
 	for _, asset := range ammPool.PoolAssets {
 		for _, liabilties := range stablestakeAmmPool.TotalLiabilities {
@@ -17,6 +24,14 @@ func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) 
 			}
 		}
 	}
+
+	ratio := leveragePool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+
+	maxRatio := math.LegacyOneDec().Sub(params.PoolOpenThreshold).Add(params.ExitBuffer)
+	if ratio.GT(maxRatio) {
+		return fmt.Errorf("operation not allowed: pool leverage position becomes %s (> %s)", ratio.String(), maxRatio.String())
+	}
+
 	return nil
 }
 

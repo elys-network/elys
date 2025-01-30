@@ -14,7 +14,7 @@ func (k msgServer) ExitPool(goCtx context.Context, msg *types.MsgExitPool) (*typ
 	if err != nil {
 		return nil, err
 	}
-	exitCoins, weightBalanceBonus, err := k.Keeper.ExitPool(ctx, sender, msg.PoolId, msg.ShareAmountIn, msg.MinAmountsOut, msg.TokenOutDenom, false)
+	exitCoins, weightBalanceBonus, err := k.Keeper.ExitPool(ctx, sender, msg.PoolId, msg.ShareAmountIn, msg.MinAmountsOut, msg.TokenOutDenom, false, true)
 	if err != nil {
 		return nil, err
 	}

@@ -48,3 +48,9 @@ func (k Keeper) AddPoolLiabilities(ctx sdk.Context, id uint64, coin sdk.Coin) {
 	pool.AddLiabilities(coin)
 	k.SetAmmPool(ctx, pool)
 }
+
+func (k Keeper) SubtractPoolLiabilities(ctx sdk.Context, id uint64, coin sdk.Coin) {
+	pool := k.GetAmmPool(ctx, id)
+	pool.SubLiabilities(coin)
+	k.SetAmmPool(ctx, pool)
+}
