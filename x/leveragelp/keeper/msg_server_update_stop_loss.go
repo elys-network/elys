@@ -28,8 +28,8 @@ func (k msgServer) UpdateStopLoss(goCtx context.Context, msg *types.MsgUpdateSto
 	k.SetPosition(ctx, position)
 
 	// Add trigger function
-	_, _, _, err := k.CheckAndLiquidateUnhealthyPosition(ctx, position, pool)
-	if err != nil {
+	_, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(ctx, position, pool)
+	if closeAttempted && err != nil {
 		return nil, err
 	}
 
