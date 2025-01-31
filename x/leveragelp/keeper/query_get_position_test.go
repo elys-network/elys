@@ -97,7 +97,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 	}, 1)
 
 	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id})
-	updated_leverage := sdkmath.LegacyNewDec(5)
+	updated_leverage := sdkmath.LegacyMustNewDecFromStr("5.253192140666910528")
 
 	suite.Require().Equal(position, res.Position.Position)
 	suite.Require().Equal(updated_leverage, res.Position.UpdatedLeverage)
@@ -106,7 +106,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 		Position: &types.QueryPosition{
 			Position:         position,
 			UpdatedLeverage:  updated_leverage,
-			PositionUsdValue: sdkmath.LegacyNewDec(5000).Quo(sdkmath.LegacyNewDec(1000000)),
+			PositionUsdValue: sdkmath.LegacyMustNewDecFromStr("0.004940470091100279"),
 		},
 		InterestRateHour:    sdkmath.LegacyMustNewDecFromStr("0.000017123287671233"),
 		InterestRateHourUsd: sdkmath.LegacyZeroDec(),

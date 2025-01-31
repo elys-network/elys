@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -13,23 +15,24 @@ func (k Keeper) CheckAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool) erro
 		// It is possible that this pool haven't been enabled
 		return nil
 	}
+	stablestakeAmmPool := k.stableKeeper.GetAmmPool(ctx, ammPool.PoolId)
+	params := k.GetParams(ctx)
 
-	// This is kind of health check so we should only use real amm pool balance
-	tvl, err := ammPool.TVL(ctx, k.oracleKeeper, nil)
-	if err != nil {
-		return err
-	}
-	leverageLpTvl := tvl.
-		Mul(leveragePool.LeveragedLpAmount.ToLegacyDec()).
-		Quo(ammPool.TotalShares.Amount.ToLegacyDec())
-
-	// We check for all assets because now we allow any asset to be borrowed/lend
 	for _, asset := range ammPool.PoolAssets {
-		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
-		if price.MulInt(asset.Token.Amount).LT(leverageLpTvl) {
-			return types.ErrInsufficientUsdcAfterOp
+		for _, liabilties := range stablestakeAmmPool.TotalLiabilities {
+			if asset.Token.Denom == liabilties.Denom && asset.Token.Amount.LT(liabilties.Amount) {
+				return types.ErrInsufficientUsdcAfterOp
+			}
 		}
 	}
+
+	ratio := leveragePool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+
+	maxRatio := math.LegacyOneDec().Sub(params.PoolOpenThreshold).Add(params.ExitBuffer)
+	if ratio.GT(maxRatio) {
+		return fmt.Errorf("operation not allowed: pool leverage position becomes %s (> %s)", ratio.String(), maxRatio.String())
+	}
+
 	return nil
 }
 

@@ -39,9 +39,19 @@ func (k Keeper) GetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) typ
 	return debt
 }
 
+<<<<<<< HEAD
 func (k Keeper) UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) types.Debt {
 	debt := k.getDebt(ctx, addr, poolId)
 	debt = k.UpdateInterestStacked(ctx, debt)
+=======
+func (k Keeper) GetDebtWithoutUpdatedInterest(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
+	return k.getDebt(ctx, addr)
+}
+
+func (k Keeper) UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, debtDenom string) types.Debt {
+	debt := k.getDebt(ctx, addr)
+	debt = k.UpdateInterestStacked(ctx, debt, poolId, debtDenom)
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 	return debt
 }
 
@@ -140,8 +150,16 @@ func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
 	return interests
 }
 
+<<<<<<< HEAD
 func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec, poolId uint64) sdkmath.Int {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
+=======
+func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec) sdkmath.Int {
+	if startBlock == uint64(ctx.BlockHeight()) {
+		return sdkmath.ZeroInt()
+	}
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 	currentBlockKey := sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))
 	startBlockKey := sdk.Uint64ToBigEndian(startBlock)
 
@@ -205,18 +223,25 @@ func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime
 	return newInterest
 }
 
+<<<<<<< HEAD
 func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt) types.Debt {
 	pool, found := k.GetPool(ctx, debt.PoolId)
 	if !found {
 		return debt
 	}
 	newInterest := k.GetInterestForPool(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec(), debt.PoolId)
+=======
+func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt, poolId uint64, debtDenom string) types.Debt {
+	params := k.GetParams(ctx)
+	newInterest := k.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec())
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 
 	debt.InterestStacked = debt.InterestStacked.Add(newInterest)
 	debt.LastInterestCalcTime = uint64(ctx.BlockTime().Unix())
 	debt.LastInterestCalcBlock = uint64(ctx.BlockHeight())
 	k.SetDebt(ctx, debt)
 
+<<<<<<< HEAD
 	pool.TotalValue = pool.TotalValue.Add(newInterest)
 	k.SetPool(ctx, pool)
 	return debt
@@ -228,6 +253,18 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, po
 		return types.ErrPoolNotFound
 	}
 	depositDenom := pool.GetDepositDenom()
+=======
+	params.TotalValue = params.TotalValue.Add(newInterest)
+	k.SetParams(ctx, params)
+
+	k.AddPoolLiabilities(ctx, poolId, sdk.NewCoin(debtDenom, newInterest))
+
+	return debt
+}
+
+func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, borrowingForPool uint64) error {
+	depositDenom := k.GetDepositDenom(ctx)
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 	if depositDenom != amount.Denom {
 		return types.ErrInvalidBorrowDenom
 	}
@@ -242,18 +279,35 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, po
 		return types.ErrMaxBorrowAmount
 	}
 
+<<<<<<< HEAD
 	debt := k.UpdateInterestAndGetDebt(ctx, addr, poolId)
+=======
+	debt := k.UpdateInterestAndGetDebt(ctx, addr, borrowingForPool, amount.Denom)
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 	debt.Borrowed = debt.Borrowed.Add(amount.Amount)
+
 	k.SetDebt(ctx, debt)
+	k.AddPoolLiabilities(ctx, borrowingForPool, amount)
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventBorrow,
+		sdk.NewAttribute("address", addr.String()),
+		sdk.NewAttribute("amount", amount.String()),
+	))
+
 	return k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{amount})
 }
 
+<<<<<<< HEAD
 func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return types.ErrPoolNotFound
 	}
 	depositDenom := pool.GetDepositDenom()
+=======
+func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, repayingForPool uint64) error {
+	depositDenom := k.GetDepositDenom(ctx)
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 	if depositDenom != amount.Denom {
 		return types.ErrInvalidBorrowDenom
 	}
@@ -264,7 +318,11 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poo
 	}
 
 	// calculate latest interest stacked
+<<<<<<< HEAD
 	debt := k.UpdateInterestAndGetDebt(ctx, addr, poolId)
+=======
+	debt := k.UpdateInterestAndGetDebt(ctx, addr, repayingForPool, amount.Denom)
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 
 	// repay interest
 	interestPayAmount := debt.InterestStacked.Sub(debt.InterestPaid)
@@ -281,11 +339,33 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poo
 		return types.ErrNegativeBorrowed
 	}
 
+	k.SubtractPoolLiabilities(ctx, repayingForPool, amount)
+
 	if debt.Borrowed.IsZero() {
 		k.DeleteDebt(ctx, debt)
 	} else {
 		k.SetDebt(ctx, debt)
 	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventRepay,
+		sdk.NewAttribute("address", addr.String()),
+		sdk.NewAttribute("amount", amount.String()),
+		sdk.NewAttribute("borrowed_left", debt.Borrowed.String()),
+	))
+	return nil
+}
+
+func (k Keeper) CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, unableToPayForPool uint64, debtDenom string) error {
+	debt := k.UpdateInterestAndGetDebt(ctx, addr, unableToPayForPool, debtDenom)
+	k.DeleteDebt(ctx, debt)
+
+	k.SubtractPoolLiabilities(ctx, unableToPayForPool, sdk.NewCoin(debtDenom, debt.GetTotalLiablities()))
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventForceClosed,
+		sdk.NewAttribute("address", addr.String()),
+		sdk.NewAttribute("liabilities_unpaid", debt.GetTotalLiablities().String()),
+		sdk.NewAttribute("borrowed_unpaid", debt.Borrowed.String()),
+	))
 	return nil
 }
 

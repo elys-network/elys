@@ -39,8 +39,13 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 
 	redemptionAmount := shareCoin.Amount.ToLegacyDec().Mul(redemptionRate).RoundInt()
 
+<<<<<<< HEAD
 	amountAfterRedemption := pool.TotalValue.Sub(redemptionAmount)
 	maxAllowed := (pool.TotalValue.ToLegacyDec().Mul(pool.MaxLeverageRatio)).TruncateInt()
+=======
+	amountAfterRedemption := params.TotalValue.Sub(redemptionAmount)
+	maxAllowed := (params.TotalValue.ToLegacyDec().Mul(params.MaxWithdrawRatio)).TruncateInt()
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 	if amountAfterRedemption.LT(maxAllowed) {
 		return nil, types.ErrInvalidWithdraw
 	}
@@ -61,6 +66,13 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 			return nil, err
 		}
 	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventUnbond,
+		sdk.NewAttribute("address", msg.Creator),
+		sdk.NewAttribute("amount", msg.Amount.String()),
+		sdk.NewAttribute("shares_burnt", shareCoin.String()),
+		sdk.NewAttribute("redemption", redemptionCoin.String()),
+	))
 
 	return &types.MsgUnbondResponse{}, nil
 }

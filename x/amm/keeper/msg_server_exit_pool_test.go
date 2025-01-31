@@ -64,9 +64,9 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 			},
 			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),
 			tokenOutDenom: "uusdt",
-			minAmountsOut: sdk.Coins{sdk.NewInt64Coin("uusdt", 99935)},
+			minAmountsOut: sdk.Coins{sdk.NewInt64Coin("uusdt", 100000)},
 			// expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 95114)}, // slippage enabled
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 99935)}, // slippage disabled
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 100000)}, // slippage disabled
 			expPass:          true,
 		},
 		{
@@ -79,9 +79,9 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 			},
 			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),
 			tokenOutDenom: ptypes.BaseCurrency,
-			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99221)},
+			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000)},
 			// expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)}, // slippage enabled
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99221)}, // slippage disabled
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 100000)}, // slippage disabled
 			expPass:          true,
 		},
 	} {

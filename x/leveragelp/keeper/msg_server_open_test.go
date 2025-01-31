@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"errors"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -246,7 +248,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			types.ErrInvalidPosition.Wrapf("pool health too low to open new positions").Error(),
+			errors.New("pool health too low to open new positions").Error(),
 			func() {
 				suite.AddCoinPrices(suite.ctx, []string{ptypes.BaseCurrency})
 				suite.SetPoolThreshold(sdkmath.LegacyOneDec())
@@ -397,7 +399,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			types.ErrInvalidPosition.Wrapf("pool health too low to open new positions").Error(),
+			errors.New("pool health too low to open new positions").Error(),
 			func() {
 				suite.SetSafetyFactor(sdkmath.LegacyMustNewDecFromStr("1.0"))
 				suite.SetPoolThreshold(sdkmath.LegacyOneDec())

@@ -22,10 +22,32 @@ func (k Keeper) InterestRateComputationForPool(ctx sdk.Context, pool types.Pool)
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 	depositDenom := pool.GetDepositDenom()
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
+<<<<<<< HEAD
 	borrowed := pool.TotalValue.Sub(balance.Amount)
 	targetInterestRate := healthGainFactor.
 		Mul(borrowed.ToLegacyDec()).
 		Quo(pool.TotalValue.ToLegacyDec())
+=======
+
+	// rate = minRate + (min(borrowRatio, param * maxAllowed) / (param * maxAllowed)) * (maxRate - minRate)
+	borrowRatio := sdkmath.ZeroInt()
+	if params.TotalValue.IsPositive() {
+		borrowRatio = (params.TotalValue.Sub(balance.Amount)).Quo(params.TotalValue)
+	}
+
+	clampedBorrowRatio := borrowRatio.ToLegacyDec()
+	maxAllowed := params.MaxLeverageRatio.Mul(healthGainFactor)
+	if clampedBorrowRatio.GT(maxAllowed) {
+		clampedBorrowRatio = maxAllowed
+	}
+
+	if maxAllowed.IsZero() {
+		clampedBorrowRatio = sdkmath.LegacyZeroDec()
+		maxAllowed = sdkmath.LegacyOneDec()
+	}
+
+	targetInterestRate := interestRateMin.Add((clampedBorrowRatio.Quo(maxAllowed).Mul((interestRateMax.Sub(interestRateMin)))))
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 
 	interestRateChange := targetInterestRate.Sub(prevInterestRate)
 	interestRate := prevInterestRate

@@ -104,8 +104,8 @@ type LeverageLpKeeper interface {
 
 type StablestakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stablestaketypes.Params)
-	GetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
-	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
+	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, debtDenom string) stablestaketypes.Debt
 }
 
 type TradeshieldKeeper interface {

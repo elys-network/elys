@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -85,7 +86,7 @@ func TestKeeper_AddEdenEdenBOnAccount(t *testing.T) {
 	keeper.SetCommitments(ctx, commitments)
 
 	// Test AddEdenEdenBOnAccount
-	_ = keeper.AddEdenEdenBOnAccount(ctx, creator, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(50)), sdk.NewCoin(ptypes.EdenB, sdkmath.NewInt(50))))
+	_, _ = keeper.AddEdenEdenBOnAccount(ctx, creator, sdk.NewCoins(sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(50)), sdk.NewCoin(ptypes.EdenB, sdkmath.NewInt(50))))
 
 	// Check the updated commitments
 	commitments = keeper.GetCommitments(ctx, creator)
@@ -128,7 +129,7 @@ func TestKeeper_AddEdenEdenBOnModule(t *testing.T) {
 	keeper.SetCommitments(ctx, commitments)
 
 	// Test AddEdenEdenBOnModule
-	_ = keeper.AddEdenEdenBOnModule(
+	_, _ = keeper.AddEdenEdenBOnModule(
 		ctx, moduleName,
 		sdk.NewCoins(
 			sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(50)),
@@ -189,7 +190,7 @@ func TestKeeper_SubEdenEdenBOnModule_InsufficientClaimedTokens(t *testing.T) {
 	keeper.SetCommitments(ctx, commitments)
 
 	// Test SubEdenEdenBOnModule
-	_, err = keeper.SubEdenEdenBOnModule(
+	_, _, err = keeper.SubEdenEdenBOnModule(
 		ctx, moduleName,
 		sdk.NewCoins(
 			sdk.NewCoin(ptypes.Eden, sdkmath.NewInt(50)),

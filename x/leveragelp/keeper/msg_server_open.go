@@ -35,6 +35,10 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
+<<<<<<< HEAD
+=======
+	stableStakeParams := k.stableKeeper.GetParams(ctx)
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 	moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
 
 	borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, msg.CollateralAsset)
@@ -44,11 +48,11 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	depositDenom := borrowPool.GetDepositDenom()
 	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := borrowPool.TotalValue.Sub(balance.Amount)
+	borrowed := stableStakeParams.TotalValue.Sub(balance.Amount)
 	borrowRatio := sdkmath.LegacyZeroDec()
-	if borrowPool.TotalValue.GT(sdkmath.ZeroInt()) {
+	if stableStakeParams.TotalValue.GT(sdkmath.ZeroInt()) {
 		borrowRatio = borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
-			Quo(borrowPool.TotalValue.ToLegacyDec())
+			Quo(stableStakeParams.TotalValue.ToLegacyDec())
 	}
 
 	var poolLeveragelpRatio sdkmath.LegacyDec
@@ -74,7 +78,11 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	poolLeveragelpRatio = pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
+<<<<<<< HEAD
 	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) || borrowRatio.GTE(borrowPool.MaxLeverageRatio) {
+=======
+	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) || borrowRatio.GTE(stableStakeParams.MaxLeverageRatio) {
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 		return nil, errorsmod.Wrap(types.ErrMaxLeverageLpExists, "no new position can be open")
 	}
 
@@ -124,6 +132,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		sdk.NewAttribute("collateral", position.Collateral.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
+		sdk.NewAttribute("leverage_lp_amount", position.LeveragedLpAmount.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
 

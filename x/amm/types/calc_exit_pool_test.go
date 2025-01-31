@@ -141,6 +141,8 @@ func TestCalcExitPool(t *testing.T) {
 			"tokenA",
 			types.Params{
 				WeightBreakingFeeMultiplier: sdkmath.LegacyMustNewDecFromStr("0.0005"),
+				WeightBreakingFeePortion:    sdkmath.LegacyMustNewDecFromStr("0.5"),
+				ThresholdWeightDifference:   sdkmath.LegacyMustNewDecFromStr("0.2"),
 			},
 			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(100))},
 			sdkmath.LegacyZeroDec(),
@@ -155,7 +157,10 @@ func TestCalcExitPool(t *testing.T) {
 			},
 			sdkmath.NewInt(20),
 			"tokenA",
-			types.Params{},
+			types.Params{
+				WeightBreakingFeePortion:  sdkmath.LegacyMustNewDecFromStr("0.5"),
+				ThresholdWeightDifference: sdkmath.LegacyMustNewDecFromStr("0.2"),
+			},
 			sdk.Coins{},
 			sdkmath.LegacyZeroDec(),
 			"shares is larger than the max amount",
@@ -171,7 +176,10 @@ func TestCalcExitPool(t *testing.T) {
 			},
 			sdkmath.NewInt(10),
 			"tokenA",
-			types.Params{},
+			types.Params{
+				WeightBreakingFeePortion:  sdkmath.LegacyMustNewDecFromStr("0.5"),
+				ThresholdWeightDifference: sdkmath.LegacyMustNewDecFromStr("0.2"),
+			},
 			sdk.Coins{},
 			sdkmath.LegacyZeroDec(),
 			"amount too low",
@@ -188,7 +196,10 @@ func TestCalcExitPool(t *testing.T) {
 			},
 			sdkmath.NewInt(10),
 			"",
-			types.Params{},
+			types.Params{
+				WeightBreakingFeePortion:  sdkmath.LegacyMustNewDecFromStr("0.5"),
+				ThresholdWeightDifference: sdkmath.LegacyMustNewDecFromStr("0.2"),
+			},
 			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(100))},
 			sdkmath.LegacyZeroDec(),
 			"",
@@ -201,7 +212,7 @@ func TestCalcExitPool(t *testing.T) {
 			accKeeper := mocks.NewAccountedPoolKeeper(t)
 			tc.setupMock(oracleKeeper, accKeeper)
 
-			exitCoins, weightBalanceBonus, err := types.CalcExitPool(ctx, oracleKeeper, tc.pool, accKeeper, tc.exitingShares, tc.tokenOutDenom, tc.params)
+			exitCoins, weightBalanceBonus, err := types.CalcExitPool(ctx, oracleKeeper, tc.pool, accKeeper, tc.exitingShares, tc.tokenOutDenom, tc.params, true)
 			if tc.expectedErrMsg != "" {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tc.expectedErrMsg)

@@ -468,15 +468,16 @@ func (x *fastReflection_Date) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_SpotOrder                    protoreflect.MessageDescriptor
-	fd_SpotOrder_order_type         protoreflect.FieldDescriptor
-	fd_SpotOrder_order_id           protoreflect.FieldDescriptor
-	fd_SpotOrder_order_price        protoreflect.FieldDescriptor
-	fd_SpotOrder_order_amount       protoreflect.FieldDescriptor
-	fd_SpotOrder_owner_address      protoreflect.FieldDescriptor
-	fd_SpotOrder_order_target_denom protoreflect.FieldDescriptor
-	fd_SpotOrder_status             protoreflect.FieldDescriptor
-	fd_SpotOrder_date               protoreflect.FieldDescriptor
+	md_SpotOrder                       protoreflect.MessageDescriptor
+	fd_SpotOrder_order_type            protoreflect.FieldDescriptor
+	fd_SpotOrder_order_id              protoreflect.FieldDescriptor
+	fd_SpotOrder_legacy_order_price_v1 protoreflect.FieldDescriptor
+	fd_SpotOrder_order_price           protoreflect.FieldDescriptor
+	fd_SpotOrder_order_amount          protoreflect.FieldDescriptor
+	fd_SpotOrder_owner_address         protoreflect.FieldDescriptor
+	fd_SpotOrder_order_target_denom    protoreflect.FieldDescriptor
+	fd_SpotOrder_status                protoreflect.FieldDescriptor
+	fd_SpotOrder_date                  protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -484,6 +485,7 @@ func init() {
 	md_SpotOrder = File_elys_tradeshield_types_proto.Messages().ByName("SpotOrder")
 	fd_SpotOrder_order_type = md_SpotOrder.Fields().ByName("order_type")
 	fd_SpotOrder_order_id = md_SpotOrder.Fields().ByName("order_id")
+	fd_SpotOrder_legacy_order_price_v1 = md_SpotOrder.Fields().ByName("legacy_order_price_v1")
 	fd_SpotOrder_order_price = md_SpotOrder.Fields().ByName("order_price")
 	fd_SpotOrder_order_amount = md_SpotOrder.Fields().ByName("order_amount")
 	fd_SpotOrder_owner_address = md_SpotOrder.Fields().ByName("owner_address")
@@ -569,8 +571,14 @@ func (x *fastReflection_SpotOrder) Range(f func(protoreflect.FieldDescriptor, pr
 			return
 		}
 	}
-	if x.OrderPrice != nil {
-		value := protoreflect.ValueOfMessage(x.OrderPrice.ProtoReflect())
+	if x.LegacyOrderPriceV1 != nil {
+		value := protoreflect.ValueOfMessage(x.LegacyOrderPriceV1.ProtoReflect())
+		if !f(fd_SpotOrder_legacy_order_price_v1, value) {
+			return
+		}
+	}
+	if x.OrderPrice != "" {
+		value := protoreflect.ValueOfString(x.OrderPrice)
 		if !f(fd_SpotOrder_order_price, value) {
 			return
 		}
@@ -624,8 +632,10 @@ func (x *fastReflection_SpotOrder) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.OrderType != 0
 	case "elys.tradeshield.SpotOrder.order_id":
 		return x.OrderId != uint64(0)
+	case "elys.tradeshield.SpotOrder.legacy_order_price_v1":
+		return x.LegacyOrderPriceV1 != nil
 	case "elys.tradeshield.SpotOrder.order_price":
-		return x.OrderPrice != nil
+		return x.OrderPrice != ""
 	case "elys.tradeshield.SpotOrder.order_amount":
 		return x.OrderAmount != nil
 	case "elys.tradeshield.SpotOrder.owner_address":
@@ -656,8 +666,10 @@ func (x *fastReflection_SpotOrder) Clear(fd protoreflect.FieldDescriptor) {
 		x.OrderType = 0
 	case "elys.tradeshield.SpotOrder.order_id":
 		x.OrderId = uint64(0)
+	case "elys.tradeshield.SpotOrder.legacy_order_price_v1":
+		x.LegacyOrderPriceV1 = nil
 	case "elys.tradeshield.SpotOrder.order_price":
-		x.OrderPrice = nil
+		x.OrderPrice = ""
 	case "elys.tradeshield.SpotOrder.order_amount":
 		x.OrderAmount = nil
 	case "elys.tradeshield.SpotOrder.owner_address":
@@ -690,9 +702,12 @@ func (x *fastReflection_SpotOrder) Get(descriptor protoreflect.FieldDescriptor) 
 	case "elys.tradeshield.SpotOrder.order_id":
 		value := x.OrderId
 		return protoreflect.ValueOfUint64(value)
+	case "elys.tradeshield.SpotOrder.legacy_order_price_v1":
+		value := x.LegacyOrderPriceV1
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	case "elys.tradeshield.SpotOrder.order_price":
 		value := x.OrderPrice
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
+		return protoreflect.ValueOfString(value)
 	case "elys.tradeshield.SpotOrder.order_amount":
 		value := x.OrderAmount
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
@@ -732,8 +747,10 @@ func (x *fastReflection_SpotOrder) Set(fd protoreflect.FieldDescriptor, value pr
 		x.OrderType = (SpotOrderType)(value.Enum())
 	case "elys.tradeshield.SpotOrder.order_id":
 		x.OrderId = value.Uint()
+	case "elys.tradeshield.SpotOrder.legacy_order_price_v1":
+		x.LegacyOrderPriceV1 = value.Message().Interface().(*LegacyOrderPriceV1)
 	case "elys.tradeshield.SpotOrder.order_price":
-		x.OrderPrice = value.Message().Interface().(*OrderPrice)
+		x.OrderPrice = value.Interface().(string)
 	case "elys.tradeshield.SpotOrder.order_amount":
 		x.OrderAmount = value.Message().Interface().(*v1beta1.Coin)
 	case "elys.tradeshield.SpotOrder.owner_address":
@@ -764,11 +781,11 @@ func (x *fastReflection_SpotOrder) Set(fd protoreflect.FieldDescriptor, value pr
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_SpotOrder) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.tradeshield.SpotOrder.order_price":
-		if x.OrderPrice == nil {
-			x.OrderPrice = new(OrderPrice)
+	case "elys.tradeshield.SpotOrder.legacy_order_price_v1":
+		if x.LegacyOrderPriceV1 == nil {
+			x.LegacyOrderPriceV1 = new(LegacyOrderPriceV1)
 		}
-		return protoreflect.ValueOfMessage(x.OrderPrice.ProtoReflect())
+		return protoreflect.ValueOfMessage(x.LegacyOrderPriceV1.ProtoReflect())
 	case "elys.tradeshield.SpotOrder.order_amount":
 		if x.OrderAmount == nil {
 			x.OrderAmount = new(v1beta1.Coin)
@@ -783,6 +800,8 @@ func (x *fastReflection_SpotOrder) Mutable(fd protoreflect.FieldDescriptor) prot
 		panic(fmt.Errorf("field order_type of message elys.tradeshield.SpotOrder is not mutable"))
 	case "elys.tradeshield.SpotOrder.order_id":
 		panic(fmt.Errorf("field order_id of message elys.tradeshield.SpotOrder is not mutable"))
+	case "elys.tradeshield.SpotOrder.order_price":
+		panic(fmt.Errorf("field order_price of message elys.tradeshield.SpotOrder is not mutable"))
 	case "elys.tradeshield.SpotOrder.owner_address":
 		panic(fmt.Errorf("field owner_address of message elys.tradeshield.SpotOrder is not mutable"))
 	case "elys.tradeshield.SpotOrder.order_target_denom":
@@ -806,9 +825,11 @@ func (x *fastReflection_SpotOrder) NewField(fd protoreflect.FieldDescriptor) pro
 		return protoreflect.ValueOfEnum(0)
 	case "elys.tradeshield.SpotOrder.order_id":
 		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.tradeshield.SpotOrder.order_price":
-		m := new(OrderPrice)
+	case "elys.tradeshield.SpotOrder.legacy_order_price_v1":
+		m := new(LegacyOrderPriceV1)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.tradeshield.SpotOrder.order_price":
+		return protoreflect.ValueOfString("")
 	case "elys.tradeshield.SpotOrder.order_amount":
 		m := new(v1beta1.Coin)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
@@ -896,8 +917,12 @@ func (x *fastReflection_SpotOrder) ProtoMethods() *protoiface.Methods {
 		if x.OrderId != 0 {
 			n += 1 + runtime.Sov(uint64(x.OrderId))
 		}
-		if x.OrderPrice != nil {
-			l = options.Size(x.OrderPrice)
+		if x.LegacyOrderPriceV1 != nil {
+			l = options.Size(x.LegacyOrderPriceV1)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.OrderPrice)
+		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.OrderAmount != nil {
@@ -948,6 +973,13 @@ func (x *fastReflection_SpotOrder) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if len(x.OrderPrice) > 0 {
+			i -= len(x.OrderPrice)
+			copy(dAtA[i:], x.OrderPrice)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.OrderPrice)))
+			i--
+			dAtA[i] = 0x4a
+		}
 		if x.Date != nil {
 			encoded, err := options.Marshal(x.Date)
 			if err != nil {
@@ -995,8 +1027,8 @@ func (x *fastReflection_SpotOrder) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x22
 		}
-		if x.OrderPrice != nil {
-			encoded, err := options.Marshal(x.OrderPrice)
+		if x.LegacyOrderPriceV1 != nil {
+			encoded, err := options.Marshal(x.LegacyOrderPriceV1)
 			if err != nil {
 				return protoiface.MarshalOutput{
 					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1108,7 +1140,7 @@ func (x *fastReflection_SpotOrder) ProtoMethods() *protoiface.Methods {
 				}
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderPrice", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyOrderPriceV1", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -1135,12 +1167,44 @@ func (x *fastReflection_SpotOrder) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				if x.OrderPrice == nil {
-					x.OrderPrice = &OrderPrice{}
+				if x.LegacyOrderPriceV1 == nil {
+					x.LegacyOrderPriceV1 = &LegacyOrderPriceV1{}
 				}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.OrderPrice); err != nil {
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LegacyOrderPriceV1); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
+				iNdEx = postIndex
+			case 9:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderPrice", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.OrderPrice = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 4:
 				if wireType != 2 {
@@ -1333,1367 +1397,21 @@ func (x *fastReflection_SpotOrder) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_LegacyPerpetualOrder                      protoreflect.MessageDescriptor
-	fd_LegacyPerpetualOrder_order_id             protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_owner_address        protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_perpetual_order_type protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_position             protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_trigger_price        protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_collateral           protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_trading_asset        protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_leverage             protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_take_profit_price    protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_position_id          protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_status               protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_stop_loss_price      protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_position_size        protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_liquidation_price    protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_funding_rate         protoreflect.FieldDescriptor
-	fd_LegacyPerpetualOrder_borrow_interest_rate protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_elys_tradeshield_types_proto_init()
-	md_LegacyPerpetualOrder = File_elys_tradeshield_types_proto.Messages().ByName("LegacyPerpetualOrder")
-	fd_LegacyPerpetualOrder_order_id = md_LegacyPerpetualOrder.Fields().ByName("order_id")
-	fd_LegacyPerpetualOrder_owner_address = md_LegacyPerpetualOrder.Fields().ByName("owner_address")
-	fd_LegacyPerpetualOrder_perpetual_order_type = md_LegacyPerpetualOrder.Fields().ByName("perpetual_order_type")
-	fd_LegacyPerpetualOrder_position = md_LegacyPerpetualOrder.Fields().ByName("position")
-	fd_LegacyPerpetualOrder_trigger_price = md_LegacyPerpetualOrder.Fields().ByName("trigger_price")
-	fd_LegacyPerpetualOrder_collateral = md_LegacyPerpetualOrder.Fields().ByName("collateral")
-	fd_LegacyPerpetualOrder_trading_asset = md_LegacyPerpetualOrder.Fields().ByName("trading_asset")
-	fd_LegacyPerpetualOrder_leverage = md_LegacyPerpetualOrder.Fields().ByName("leverage")
-	fd_LegacyPerpetualOrder_take_profit_price = md_LegacyPerpetualOrder.Fields().ByName("take_profit_price")
-	fd_LegacyPerpetualOrder_position_id = md_LegacyPerpetualOrder.Fields().ByName("position_id")
-	fd_LegacyPerpetualOrder_status = md_LegacyPerpetualOrder.Fields().ByName("status")
-	fd_LegacyPerpetualOrder_stop_loss_price = md_LegacyPerpetualOrder.Fields().ByName("stop_loss_price")
-	fd_LegacyPerpetualOrder_position_size = md_LegacyPerpetualOrder.Fields().ByName("position_size")
-	fd_LegacyPerpetualOrder_liquidation_price = md_LegacyPerpetualOrder.Fields().ByName("liquidation_price")
-	fd_LegacyPerpetualOrder_funding_rate = md_LegacyPerpetualOrder.Fields().ByName("funding_rate")
-	fd_LegacyPerpetualOrder_borrow_interest_rate = md_LegacyPerpetualOrder.Fields().ByName("borrow_interest_rate")
-}
-
-var _ protoreflect.Message = (*fastReflection_LegacyPerpetualOrder)(nil)
-
-type fastReflection_LegacyPerpetualOrder LegacyPerpetualOrder
-
-func (x *LegacyPerpetualOrder) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_LegacyPerpetualOrder)(x)
-}
-
-func (x *LegacyPerpetualOrder) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_tradeshield_types_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_LegacyPerpetualOrder_messageType fastReflection_LegacyPerpetualOrder_messageType
-var _ protoreflect.MessageType = fastReflection_LegacyPerpetualOrder_messageType{}
-
-type fastReflection_LegacyPerpetualOrder_messageType struct{}
-
-func (x fastReflection_LegacyPerpetualOrder_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_LegacyPerpetualOrder)(nil)
-}
-func (x fastReflection_LegacyPerpetualOrder_messageType) New() protoreflect.Message {
-	return new(fastReflection_LegacyPerpetualOrder)
-}
-func (x fastReflection_LegacyPerpetualOrder_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_LegacyPerpetualOrder
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_LegacyPerpetualOrder) Descriptor() protoreflect.MessageDescriptor {
-	return md_LegacyPerpetualOrder
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_LegacyPerpetualOrder) Type() protoreflect.MessageType {
-	return _fastReflection_LegacyPerpetualOrder_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_LegacyPerpetualOrder) New() protoreflect.Message {
-	return new(fastReflection_LegacyPerpetualOrder)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_LegacyPerpetualOrder) Interface() protoreflect.ProtoMessage {
-	return (*LegacyPerpetualOrder)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_LegacyPerpetualOrder) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.OrderId != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.OrderId)
-		if !f(fd_LegacyPerpetualOrder_order_id, value) {
-			return
-		}
-	}
-	if x.OwnerAddress != "" {
-		value := protoreflect.ValueOfString(x.OwnerAddress)
-		if !f(fd_LegacyPerpetualOrder_owner_address, value) {
-			return
-		}
-	}
-	if x.PerpetualOrderType != 0 {
-		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.PerpetualOrderType))
-		if !f(fd_LegacyPerpetualOrder_perpetual_order_type, value) {
-			return
-		}
-	}
-	if x.Position != 0 {
-		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.Position))
-		if !f(fd_LegacyPerpetualOrder_position, value) {
-			return
-		}
-	}
-	if x.TriggerPrice != nil {
-		value := protoreflect.ValueOfMessage(x.TriggerPrice.ProtoReflect())
-		if !f(fd_LegacyPerpetualOrder_trigger_price, value) {
-			return
-		}
-	}
-	if x.Collateral != nil {
-		value := protoreflect.ValueOfMessage(x.Collateral.ProtoReflect())
-		if !f(fd_LegacyPerpetualOrder_collateral, value) {
-			return
-		}
-	}
-	if x.TradingAsset != "" {
-		value := protoreflect.ValueOfString(x.TradingAsset)
-		if !f(fd_LegacyPerpetualOrder_trading_asset, value) {
-			return
-		}
-	}
-	if x.Leverage != "" {
-		value := protoreflect.ValueOfString(x.Leverage)
-		if !f(fd_LegacyPerpetualOrder_leverage, value) {
-			return
-		}
-	}
-	if x.TakeProfitPrice != "" {
-		value := protoreflect.ValueOfString(x.TakeProfitPrice)
-		if !f(fd_LegacyPerpetualOrder_take_profit_price, value) {
-			return
-		}
-	}
-	if x.PositionId != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.PositionId)
-		if !f(fd_LegacyPerpetualOrder_position_id, value) {
-			return
-		}
-	}
-	if x.Status != 0 {
-		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.Status))
-		if !f(fd_LegacyPerpetualOrder_status, value) {
-			return
-		}
-	}
-	if x.StopLossPrice != "" {
-		value := protoreflect.ValueOfString(x.StopLossPrice)
-		if !f(fd_LegacyPerpetualOrder_stop_loss_price, value) {
-			return
-		}
-	}
-	if x.PositionSize != nil {
-		value := protoreflect.ValueOfMessage(x.PositionSize.ProtoReflect())
-		if !f(fd_LegacyPerpetualOrder_position_size, value) {
-			return
-		}
-	}
-	if x.LiquidationPrice != "" {
-		value := protoreflect.ValueOfString(x.LiquidationPrice)
-		if !f(fd_LegacyPerpetualOrder_liquidation_price, value) {
-			return
-		}
-	}
-	if x.FundingRate != "" {
-		value := protoreflect.ValueOfString(x.FundingRate)
-		if !f(fd_LegacyPerpetualOrder_funding_rate, value) {
-			return
-		}
-	}
-	if x.BorrowInterestRate != "" {
-		value := protoreflect.ValueOfString(x.BorrowInterestRate)
-		if !f(fd_LegacyPerpetualOrder_borrow_interest_rate, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_LegacyPerpetualOrder) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "elys.tradeshield.LegacyPerpetualOrder.order_id":
-		return x.OrderId != uint64(0)
-	case "elys.tradeshield.LegacyPerpetualOrder.owner_address":
-		return x.OwnerAddress != ""
-	case "elys.tradeshield.LegacyPerpetualOrder.perpetual_order_type":
-		return x.PerpetualOrderType != 0
-	case "elys.tradeshield.LegacyPerpetualOrder.position":
-		return x.Position != 0
-	case "elys.tradeshield.LegacyPerpetualOrder.trigger_price":
-		return x.TriggerPrice != nil
-	case "elys.tradeshield.LegacyPerpetualOrder.collateral":
-		return x.Collateral != nil
-	case "elys.tradeshield.LegacyPerpetualOrder.trading_asset":
-		return x.TradingAsset != ""
-	case "elys.tradeshield.LegacyPerpetualOrder.leverage":
-		return x.Leverage != ""
-	case "elys.tradeshield.LegacyPerpetualOrder.take_profit_price":
-		return x.TakeProfitPrice != ""
-	case "elys.tradeshield.LegacyPerpetualOrder.position_id":
-		return x.PositionId != uint64(0)
-	case "elys.tradeshield.LegacyPerpetualOrder.status":
-		return x.Status != 0
-	case "elys.tradeshield.LegacyPerpetualOrder.stop_loss_price":
-		return x.StopLossPrice != ""
-	case "elys.tradeshield.LegacyPerpetualOrder.position_size":
-		return x.PositionSize != nil
-	case "elys.tradeshield.LegacyPerpetualOrder.liquidation_price":
-		return x.LiquidationPrice != ""
-	case "elys.tradeshield.LegacyPerpetualOrder.funding_rate":
-		return x.FundingRate != ""
-	case "elys.tradeshield.LegacyPerpetualOrder.borrow_interest_rate":
-		return x.BorrowInterestRate != ""
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyPerpetualOrder"))
-		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyPerpetualOrder does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyPerpetualOrder) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "elys.tradeshield.LegacyPerpetualOrder.order_id":
-		x.OrderId = uint64(0)
-	case "elys.tradeshield.LegacyPerpetualOrder.owner_address":
-		x.OwnerAddress = ""
-	case "elys.tradeshield.LegacyPerpetualOrder.perpetual_order_type":
-		x.PerpetualOrderType = 0
-	case "elys.tradeshield.LegacyPerpetualOrder.position":
-		x.Position = 0
-	case "elys.tradeshield.LegacyPerpetualOrder.trigger_price":
-		x.TriggerPrice = nil
-	case "elys.tradeshield.LegacyPerpetualOrder.collateral":
-		x.Collateral = nil
-	case "elys.tradeshield.LegacyPerpetualOrder.trading_asset":
-		x.TradingAsset = ""
-	case "elys.tradeshield.LegacyPerpetualOrder.leverage":
-		x.Leverage = ""
-	case "elys.tradeshield.LegacyPerpetualOrder.take_profit_price":
-		x.TakeProfitPrice = ""
-	case "elys.tradeshield.LegacyPerpetualOrder.position_id":
-		x.PositionId = uint64(0)
-	case "elys.tradeshield.LegacyPerpetualOrder.status":
-		x.Status = 0
-	case "elys.tradeshield.LegacyPerpetualOrder.stop_loss_price":
-		x.StopLossPrice = ""
-	case "elys.tradeshield.LegacyPerpetualOrder.position_size":
-		x.PositionSize = nil
-	case "elys.tradeshield.LegacyPerpetualOrder.liquidation_price":
-		x.LiquidationPrice = ""
-	case "elys.tradeshield.LegacyPerpetualOrder.funding_rate":
-		x.FundingRate = ""
-	case "elys.tradeshield.LegacyPerpetualOrder.borrow_interest_rate":
-		x.BorrowInterestRate = ""
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyPerpetualOrder"))
-		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyPerpetualOrder does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_LegacyPerpetualOrder) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "elys.tradeshield.LegacyPerpetualOrder.order_id":
-		value := x.OrderId
-		return protoreflect.ValueOfUint64(value)
-	case "elys.tradeshield.LegacyPerpetualOrder.owner_address":
-		value := x.OwnerAddress
-		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.LegacyPerpetualOrder.perpetual_order_type":
-		value := x.PerpetualOrderType
-		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
-	case "elys.tradeshield.LegacyPerpetualOrder.position":
-		value := x.Position
-		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
-	case "elys.tradeshield.LegacyPerpetualOrder.trigger_price":
-		value := x.TriggerPrice
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.tradeshield.LegacyPerpetualOrder.collateral":
-		value := x.Collateral
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.tradeshield.LegacyPerpetualOrder.trading_asset":
-		value := x.TradingAsset
-		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.LegacyPerpetualOrder.leverage":
-		value := x.Leverage
-		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.LegacyPerpetualOrder.take_profit_price":
-		value := x.TakeProfitPrice
-		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.LegacyPerpetualOrder.position_id":
-		value := x.PositionId
-		return protoreflect.ValueOfUint64(value)
-	case "elys.tradeshield.LegacyPerpetualOrder.status":
-		value := x.Status
-		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
-	case "elys.tradeshield.LegacyPerpetualOrder.stop_loss_price":
-		value := x.StopLossPrice
-		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.LegacyPerpetualOrder.position_size":
-		value := x.PositionSize
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "elys.tradeshield.LegacyPerpetualOrder.liquidation_price":
-		value := x.LiquidationPrice
-		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.LegacyPerpetualOrder.funding_rate":
-		value := x.FundingRate
-		return protoreflect.ValueOfString(value)
-	case "elys.tradeshield.LegacyPerpetualOrder.borrow_interest_rate":
-		value := x.BorrowInterestRate
-		return protoreflect.ValueOfString(value)
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyPerpetualOrder"))
-		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyPerpetualOrder does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyPerpetualOrder) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "elys.tradeshield.LegacyPerpetualOrder.order_id":
-		x.OrderId = value.Uint()
-	case "elys.tradeshield.LegacyPerpetualOrder.owner_address":
-		x.OwnerAddress = value.Interface().(string)
-	case "elys.tradeshield.LegacyPerpetualOrder.perpetual_order_type":
-		x.PerpetualOrderType = (PerpetualOrderType)(value.Enum())
-	case "elys.tradeshield.LegacyPerpetualOrder.position":
-		x.Position = (PerpetualPosition)(value.Enum())
-	case "elys.tradeshield.LegacyPerpetualOrder.trigger_price":
-		x.TriggerPrice = value.Message().Interface().(*OrderPrice)
-	case "elys.tradeshield.LegacyPerpetualOrder.collateral":
-		x.Collateral = value.Message().Interface().(*v1beta1.Coin)
-	case "elys.tradeshield.LegacyPerpetualOrder.trading_asset":
-		x.TradingAsset = value.Interface().(string)
-	case "elys.tradeshield.LegacyPerpetualOrder.leverage":
-		x.Leverage = value.Interface().(string)
-	case "elys.tradeshield.LegacyPerpetualOrder.take_profit_price":
-		x.TakeProfitPrice = value.Interface().(string)
-	case "elys.tradeshield.LegacyPerpetualOrder.position_id":
-		x.PositionId = value.Uint()
-	case "elys.tradeshield.LegacyPerpetualOrder.status":
-		x.Status = (Status)(value.Enum())
-	case "elys.tradeshield.LegacyPerpetualOrder.stop_loss_price":
-		x.StopLossPrice = value.Interface().(string)
-	case "elys.tradeshield.LegacyPerpetualOrder.position_size":
-		x.PositionSize = value.Message().Interface().(*v1beta1.Coin)
-	case "elys.tradeshield.LegacyPerpetualOrder.liquidation_price":
-		x.LiquidationPrice = value.Interface().(string)
-	case "elys.tradeshield.LegacyPerpetualOrder.funding_rate":
-		x.FundingRate = value.Interface().(string)
-	case "elys.tradeshield.LegacyPerpetualOrder.borrow_interest_rate":
-		x.BorrowInterestRate = value.Interface().(string)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyPerpetualOrder"))
-		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyPerpetualOrder does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyPerpetualOrder) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "elys.tradeshield.LegacyPerpetualOrder.trigger_price":
-		if x.TriggerPrice == nil {
-			x.TriggerPrice = new(OrderPrice)
-		}
-		return protoreflect.ValueOfMessage(x.TriggerPrice.ProtoReflect())
-	case "elys.tradeshield.LegacyPerpetualOrder.collateral":
-		if x.Collateral == nil {
-			x.Collateral = new(v1beta1.Coin)
-		}
-		return protoreflect.ValueOfMessage(x.Collateral.ProtoReflect())
-	case "elys.tradeshield.LegacyPerpetualOrder.position_size":
-		if x.PositionSize == nil {
-			x.PositionSize = new(v1beta1.Coin)
-		}
-		return protoreflect.ValueOfMessage(x.PositionSize.ProtoReflect())
-	case "elys.tradeshield.LegacyPerpetualOrder.order_id":
-		panic(fmt.Errorf("field order_id of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.owner_address":
-		panic(fmt.Errorf("field owner_address of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.perpetual_order_type":
-		panic(fmt.Errorf("field perpetual_order_type of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.position":
-		panic(fmt.Errorf("field position of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.trading_asset":
-		panic(fmt.Errorf("field trading_asset of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.leverage":
-		panic(fmt.Errorf("field leverage of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.take_profit_price":
-		panic(fmt.Errorf("field take_profit_price of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.position_id":
-		panic(fmt.Errorf("field position_id of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.status":
-		panic(fmt.Errorf("field status of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.stop_loss_price":
-		panic(fmt.Errorf("field stop_loss_price of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.liquidation_price":
-		panic(fmt.Errorf("field liquidation_price of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.funding_rate":
-		panic(fmt.Errorf("field funding_rate of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	case "elys.tradeshield.LegacyPerpetualOrder.borrow_interest_rate":
-		panic(fmt.Errorf("field borrow_interest_rate of message elys.tradeshield.LegacyPerpetualOrder is not mutable"))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyPerpetualOrder"))
-		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyPerpetualOrder does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_LegacyPerpetualOrder) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "elys.tradeshield.LegacyPerpetualOrder.order_id":
-		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.tradeshield.LegacyPerpetualOrder.owner_address":
-		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.LegacyPerpetualOrder.perpetual_order_type":
-		return protoreflect.ValueOfEnum(0)
-	case "elys.tradeshield.LegacyPerpetualOrder.position":
-		return protoreflect.ValueOfEnum(0)
-	case "elys.tradeshield.LegacyPerpetualOrder.trigger_price":
-		m := new(OrderPrice)
-		return protoreflect.ValueOfMessage(m.ProtoReflect())
-	case "elys.tradeshield.LegacyPerpetualOrder.collateral":
-		m := new(v1beta1.Coin)
-		return protoreflect.ValueOfMessage(m.ProtoReflect())
-	case "elys.tradeshield.LegacyPerpetualOrder.trading_asset":
-		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.LegacyPerpetualOrder.leverage":
-		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.LegacyPerpetualOrder.take_profit_price":
-		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.LegacyPerpetualOrder.position_id":
-		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.tradeshield.LegacyPerpetualOrder.status":
-		return protoreflect.ValueOfEnum(0)
-	case "elys.tradeshield.LegacyPerpetualOrder.stop_loss_price":
-		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.LegacyPerpetualOrder.position_size":
-		m := new(v1beta1.Coin)
-		return protoreflect.ValueOfMessage(m.ProtoReflect())
-	case "elys.tradeshield.LegacyPerpetualOrder.liquidation_price":
-		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.LegacyPerpetualOrder.funding_rate":
-		return protoreflect.ValueOfString("")
-	case "elys.tradeshield.LegacyPerpetualOrder.borrow_interest_rate":
-		return protoreflect.ValueOfString("")
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.tradeshield.LegacyPerpetualOrder"))
-		}
-		panic(fmt.Errorf("message elys.tradeshield.LegacyPerpetualOrder does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_LegacyPerpetualOrder) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in elys.tradeshield.LegacyPerpetualOrder", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_LegacyPerpetualOrder) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_LegacyPerpetualOrder) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_LegacyPerpetualOrder) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_LegacyPerpetualOrder) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*LegacyPerpetualOrder)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		if x.OrderId != 0 {
-			n += 1 + runtime.Sov(uint64(x.OrderId))
-		}
-		l = len(x.OwnerAddress)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.PerpetualOrderType != 0 {
-			n += 1 + runtime.Sov(uint64(x.PerpetualOrderType))
-		}
-		if x.Position != 0 {
-			n += 1 + runtime.Sov(uint64(x.Position))
-		}
-		if x.TriggerPrice != nil {
-			l = options.Size(x.TriggerPrice)
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.Collateral != nil {
-			l = options.Size(x.Collateral)
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.TradingAsset)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Leverage)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.TakeProfitPrice)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.PositionId != 0 {
-			n += 1 + runtime.Sov(uint64(x.PositionId))
-		}
-		if x.Status != 0 {
-			n += 1 + runtime.Sov(uint64(x.Status))
-		}
-		l = len(x.StopLossPrice)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.PositionSize != nil {
-			l = options.Size(x.PositionSize)
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.LiquidationPrice)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.FundingRate)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.BorrowInterestRate)
-		if l > 0 {
-			n += 2 + l + runtime.Sov(uint64(l))
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*LegacyPerpetualOrder)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.BorrowInterestRate) > 0 {
-			i -= len(x.BorrowInterestRate)
-			copy(dAtA[i:], x.BorrowInterestRate)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BorrowInterestRate)))
-			i--
-			dAtA[i] = 0x1
-			i--
-			dAtA[i] = 0x82
-		}
-		if len(x.FundingRate) > 0 {
-			i -= len(x.FundingRate)
-			copy(dAtA[i:], x.FundingRate)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.FundingRate)))
-			i--
-			dAtA[i] = 0x7a
-		}
-		if len(x.LiquidationPrice) > 0 {
-			i -= len(x.LiquidationPrice)
-			copy(dAtA[i:], x.LiquidationPrice)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LiquidationPrice)))
-			i--
-			dAtA[i] = 0x72
-		}
-		if x.PositionSize != nil {
-			encoded, err := options.Marshal(x.PositionSize)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x6a
-		}
-		if len(x.StopLossPrice) > 0 {
-			i -= len(x.StopLossPrice)
-			copy(dAtA[i:], x.StopLossPrice)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.StopLossPrice)))
-			i--
-			dAtA[i] = 0x62
-		}
-		if x.Status != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Status))
-			i--
-			dAtA[i] = 0x58
-		}
-		if x.PositionId != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.PositionId))
-			i--
-			dAtA[i] = 0x50
-		}
-		if len(x.TakeProfitPrice) > 0 {
-			i -= len(x.TakeProfitPrice)
-			copy(dAtA[i:], x.TakeProfitPrice)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TakeProfitPrice)))
-			i--
-			dAtA[i] = 0x4a
-		}
-		if len(x.Leverage) > 0 {
-			i -= len(x.Leverage)
-			copy(dAtA[i:], x.Leverage)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Leverage)))
-			i--
-			dAtA[i] = 0x42
-		}
-		if len(x.TradingAsset) > 0 {
-			i -= len(x.TradingAsset)
-			copy(dAtA[i:], x.TradingAsset)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TradingAsset)))
-			i--
-			dAtA[i] = 0x3a
-		}
-		if x.Collateral != nil {
-			encoded, err := options.Marshal(x.Collateral)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x32
-		}
-		if x.TriggerPrice != nil {
-			encoded, err := options.Marshal(x.TriggerPrice)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x2a
-		}
-		if x.Position != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Position))
-			i--
-			dAtA[i] = 0x20
-		}
-		if x.PerpetualOrderType != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.PerpetualOrderType))
-			i--
-			dAtA[i] = 0x18
-		}
-		if len(x.OwnerAddress) > 0 {
-			i -= len(x.OwnerAddress)
-			copy(dAtA[i:], x.OwnerAddress)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.OwnerAddress)))
-			i--
-			dAtA[i] = 0x12
-		}
-		if x.OrderId != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.OrderId))
-			i--
-			dAtA[i] = 0x8
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*LegacyPerpetualOrder)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyPerpetualOrder: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LegacyPerpetualOrder: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
-				}
-				x.OrderId = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.OrderId |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 2:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OwnerAddress", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.OwnerAddress = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 3:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PerpetualOrderType", wireType)
-				}
-				x.PerpetualOrderType = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.PerpetualOrderType |= PerpetualOrderType(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 4:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Position", wireType)
-				}
-				x.Position = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.Position |= PerpetualPosition(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 5:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TriggerPrice", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if x.TriggerPrice == nil {
-					x.TriggerPrice = &OrderPrice{}
-				}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.TriggerPrice); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			case 6:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Collateral", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if x.Collateral == nil {
-					x.Collateral = &v1beta1.Coin{}
-				}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Collateral); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			case 7:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TradingAsset", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.TradingAsset = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 8:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Leverage", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Leverage = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 9:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TakeProfitPrice", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.TakeProfitPrice = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 10:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PositionId", wireType)
-				}
-				x.PositionId = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.PositionId |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 11:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
-				}
-				x.Status = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.Status |= Status(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 12:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StopLossPrice", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.StopLossPrice = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 13:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PositionSize", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if x.PositionSize == nil {
-					x.PositionSize = &v1beta1.Coin{}
-				}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.PositionSize); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			case 14:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidationPrice", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.LiquidationPrice = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 15:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FundingRate", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.FundingRate = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 16:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestRate", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.BorrowInterestRate = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var (
-	md_PerpetualOrder                      protoreflect.MessageDescriptor
-	fd_PerpetualOrder_order_id             protoreflect.FieldDescriptor
-	fd_PerpetualOrder_owner_address        protoreflect.FieldDescriptor
-	fd_PerpetualOrder_perpetual_order_type protoreflect.FieldDescriptor
-	fd_PerpetualOrder_position             protoreflect.FieldDescriptor
-	fd_PerpetualOrder_trigger_price        protoreflect.FieldDescriptor
-	fd_PerpetualOrder_collateral           protoreflect.FieldDescriptor
-	fd_PerpetualOrder_trading_asset        protoreflect.FieldDescriptor
-	fd_PerpetualOrder_leverage             protoreflect.FieldDescriptor
-	fd_PerpetualOrder_take_profit_price    protoreflect.FieldDescriptor
-	fd_PerpetualOrder_position_id          protoreflect.FieldDescriptor
-	fd_PerpetualOrder_status               protoreflect.FieldDescriptor
-	fd_PerpetualOrder_stop_loss_price      protoreflect.FieldDescriptor
-	fd_PerpetualOrder_poolId               protoreflect.FieldDescriptor
+	md_PerpetualOrder                         protoreflect.MessageDescriptor
+	fd_PerpetualOrder_order_id                protoreflect.FieldDescriptor
+	fd_PerpetualOrder_owner_address           protoreflect.FieldDescriptor
+	fd_PerpetualOrder_perpetual_order_type    protoreflect.FieldDescriptor
+	fd_PerpetualOrder_position                protoreflect.FieldDescriptor
+	fd_PerpetualOrder_legacy_trigger_price_v1 protoreflect.FieldDescriptor
+	fd_PerpetualOrder_trigger_price           protoreflect.FieldDescriptor
+	fd_PerpetualOrder_collateral              protoreflect.FieldDescriptor
+	fd_PerpetualOrder_trading_asset           protoreflect.FieldDescriptor
+	fd_PerpetualOrder_leverage                protoreflect.FieldDescriptor
+	fd_PerpetualOrder_take_profit_price       protoreflect.FieldDescriptor
+	fd_PerpetualOrder_position_id             protoreflect.FieldDescriptor
+	fd_PerpetualOrder_status                  protoreflect.FieldDescriptor
+	fd_PerpetualOrder_stop_loss_price         protoreflect.FieldDescriptor
+	fd_PerpetualOrder_poolId                  protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -2703,6 +1421,7 @@ func init() {
 	fd_PerpetualOrder_owner_address = md_PerpetualOrder.Fields().ByName("owner_address")
 	fd_PerpetualOrder_perpetual_order_type = md_PerpetualOrder.Fields().ByName("perpetual_order_type")
 	fd_PerpetualOrder_position = md_PerpetualOrder.Fields().ByName("position")
+	fd_PerpetualOrder_legacy_trigger_price_v1 = md_PerpetualOrder.Fields().ByName("legacy_trigger_price_v1")
 	fd_PerpetualOrder_trigger_price = md_PerpetualOrder.Fields().ByName("trigger_price")
 	fd_PerpetualOrder_collateral = md_PerpetualOrder.Fields().ByName("collateral")
 	fd_PerpetualOrder_trading_asset = md_PerpetualOrder.Fields().ByName("trading_asset")
@@ -2723,7 +1442,7 @@ func (x *PerpetualOrder) ProtoReflect() protoreflect.Message {
 }
 
 func (x *PerpetualOrder) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_tradeshield_types_proto_msgTypes[3]
+	mi := &file_elys_tradeshield_types_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2803,8 +1522,14 @@ func (x *fastReflection_PerpetualOrder) Range(f func(protoreflect.FieldDescripto
 			return
 		}
 	}
-	if x.TriggerPrice != nil {
-		value := protoreflect.ValueOfMessage(x.TriggerPrice.ProtoReflect())
+	if x.LegacyTriggerPriceV1 != nil {
+		value := protoreflect.ValueOfMessage(x.LegacyTriggerPriceV1.ProtoReflect())
+		if !f(fd_PerpetualOrder_legacy_trigger_price_v1, value) {
+			return
+		}
+	}
+	if x.TriggerPrice != "" {
+		value := protoreflect.ValueOfString(x.TriggerPrice)
 		if !f(fd_PerpetualOrder_trigger_price, value) {
 			return
 		}
@@ -2880,8 +1605,10 @@ func (x *fastReflection_PerpetualOrder) Has(fd protoreflect.FieldDescriptor) boo
 		return x.PerpetualOrderType != 0
 	case "elys.tradeshield.PerpetualOrder.position":
 		return x.Position != 0
+	case "elys.tradeshield.PerpetualOrder.legacy_trigger_price_v1":
+		return x.LegacyTriggerPriceV1 != nil
 	case "elys.tradeshield.PerpetualOrder.trigger_price":
-		return x.TriggerPrice != nil
+		return x.TriggerPrice != ""
 	case "elys.tradeshield.PerpetualOrder.collateral":
 		return x.Collateral != nil
 	case "elys.tradeshield.PerpetualOrder.trading_asset":
@@ -2922,8 +1649,10 @@ func (x *fastReflection_PerpetualOrder) Clear(fd protoreflect.FieldDescriptor) {
 		x.PerpetualOrderType = 0
 	case "elys.tradeshield.PerpetualOrder.position":
 		x.Position = 0
+	case "elys.tradeshield.PerpetualOrder.legacy_trigger_price_v1":
+		x.LegacyTriggerPriceV1 = nil
 	case "elys.tradeshield.PerpetualOrder.trigger_price":
-		x.TriggerPrice = nil
+		x.TriggerPrice = ""
 	case "elys.tradeshield.PerpetualOrder.collateral":
 		x.Collateral = nil
 	case "elys.tradeshield.PerpetualOrder.trading_asset":
@@ -2968,9 +1697,12 @@ func (x *fastReflection_PerpetualOrder) Get(descriptor protoreflect.FieldDescrip
 	case "elys.tradeshield.PerpetualOrder.position":
 		value := x.Position
 		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
+	case "elys.tradeshield.PerpetualOrder.legacy_trigger_price_v1":
+		value := x.LegacyTriggerPriceV1
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	case "elys.tradeshield.PerpetualOrder.trigger_price":
 		value := x.TriggerPrice
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
+		return protoreflect.ValueOfString(value)
 	case "elys.tradeshield.PerpetualOrder.collateral":
 		value := x.Collateral
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
@@ -3023,8 +1755,10 @@ func (x *fastReflection_PerpetualOrder) Set(fd protoreflect.FieldDescriptor, val
 		x.PerpetualOrderType = (PerpetualOrderType)(value.Enum())
 	case "elys.tradeshield.PerpetualOrder.position":
 		x.Position = (PerpetualPosition)(value.Enum())
+	case "elys.tradeshield.PerpetualOrder.legacy_trigger_price_v1":
+		x.LegacyTriggerPriceV1 = value.Message().Interface().(*LegacyTriggerPriceV1)
 	case "elys.tradeshield.PerpetualOrder.trigger_price":
-		x.TriggerPrice = value.Message().Interface().(*TriggerPrice)
+		x.TriggerPrice = value.Interface().(string)
 	case "elys.tradeshield.PerpetualOrder.collateral":
 		x.Collateral = value.Message().Interface().(*v1beta1.Coin)
 	case "elys.tradeshield.PerpetualOrder.trading_asset":
@@ -3061,11 +1795,11 @@ func (x *fastReflection_PerpetualOrder) Set(fd protoreflect.FieldDescriptor, val
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_PerpetualOrder) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.tradeshield.PerpetualOrder.trigger_price":
-		if x.TriggerPrice == nil {
-			x.TriggerPrice = new(TriggerPrice)
+	case "elys.tradeshield.PerpetualOrder.legacy_trigger_price_v1":
+		if x.LegacyTriggerPriceV1 == nil {
+			x.LegacyTriggerPriceV1 = new(LegacyTriggerPriceV1)
 		}
-		return protoreflect.ValueOfMessage(x.TriggerPrice.ProtoReflect())
+		return protoreflect.ValueOfMessage(x.LegacyTriggerPriceV1.ProtoReflect())
 	case "elys.tradeshield.PerpetualOrder.collateral":
 		if x.Collateral == nil {
 			x.Collateral = new(v1beta1.Coin)
@@ -3079,6 +1813,8 @@ func (x *fastReflection_PerpetualOrder) Mutable(fd protoreflect.FieldDescriptor)
 		panic(fmt.Errorf("field perpetual_order_type of message elys.tradeshield.PerpetualOrder is not mutable"))
 	case "elys.tradeshield.PerpetualOrder.position":
 		panic(fmt.Errorf("field position of message elys.tradeshield.PerpetualOrder is not mutable"))
+	case "elys.tradeshield.PerpetualOrder.trigger_price":
+		panic(fmt.Errorf("field trigger_price of message elys.tradeshield.PerpetualOrder is not mutable"))
 	case "elys.tradeshield.PerpetualOrder.trading_asset":
 		panic(fmt.Errorf("field trading_asset of message elys.tradeshield.PerpetualOrder is not mutable"))
 	case "elys.tradeshield.PerpetualOrder.leverage":
@@ -3114,9 +1850,11 @@ func (x *fastReflection_PerpetualOrder) NewField(fd protoreflect.FieldDescriptor
 		return protoreflect.ValueOfEnum(0)
 	case "elys.tradeshield.PerpetualOrder.position":
 		return protoreflect.ValueOfEnum(0)
-	case "elys.tradeshield.PerpetualOrder.trigger_price":
-		m := new(TriggerPrice)
+	case "elys.tradeshield.PerpetualOrder.legacy_trigger_price_v1":
+		m := new(LegacyTriggerPriceV1)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.tradeshield.PerpetualOrder.trigger_price":
+		return protoreflect.ValueOfString("")
 	case "elys.tradeshield.PerpetualOrder.collateral":
 		m := new(v1beta1.Coin)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
@@ -3216,8 +1954,12 @@ func (x *fastReflection_PerpetualOrder) ProtoMethods() *protoiface.Methods {
 		if x.Position != 0 {
 			n += 1 + runtime.Sov(uint64(x.Position))
 		}
-		if x.TriggerPrice != nil {
-			l = options.Size(x.TriggerPrice)
+		if x.LegacyTriggerPriceV1 != nil {
+			l = options.Size(x.LegacyTriggerPriceV1)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.TriggerPrice)
+		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.Collateral != nil {
@@ -3278,6 +2020,13 @@ func (x *fastReflection_PerpetualOrder) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if len(x.TriggerPrice) > 0 {
+			i -= len(x.TriggerPrice)
+			copy(dAtA[i:], x.TriggerPrice)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TriggerPrice)))
+			i--
+			dAtA[i] = 0x72
+		}
 		if x.PoolId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
 			i--
@@ -3335,8 +2084,8 @@ func (x *fastReflection_PerpetualOrder) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x32
 		}
-		if x.TriggerPrice != nil {
-			encoded, err := options.Marshal(x.TriggerPrice)
+		if x.LegacyTriggerPriceV1 != nil {
+			encoded, err := options.Marshal(x.LegacyTriggerPriceV1)
 			if err != nil {
 				return protoiface.MarshalOutput{
 					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -3511,7 +2260,7 @@ func (x *fastReflection_PerpetualOrder) ProtoMethods() *protoiface.Methods {
 				}
 			case 5:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TriggerPrice", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LegacyTriggerPriceV1", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -3538,12 +2287,44 @@ func (x *fastReflection_PerpetualOrder) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				if x.TriggerPrice == nil {
-					x.TriggerPrice = &TriggerPrice{}
+				if x.LegacyTriggerPriceV1 == nil {
+					x.LegacyTriggerPriceV1 = &LegacyTriggerPriceV1{}
 				}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.TriggerPrice); err != nil {
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LegacyTriggerPriceV1); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
+				iNdEx = postIndex
+			case 14:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TriggerPrice", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TriggerPrice = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 6:
 				if wireType != 2 {
@@ -3829,7 +2610,7 @@ func (x *PerpetualOrderExtraInfo) ProtoReflect() protoreflect.Message {
 }
 
 func (x *PerpetualOrderExtraInfo) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_tradeshield_types_proto_msgTypes[4]
+	mi := &file_elys_tradeshield_types_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4670,14 +3451,15 @@ type SpotOrder struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	OrderType        SpotOrderType `protobuf:"varint,1,opt,name=order_type,json=orderType,proto3,enum=elys.tradeshield.SpotOrderType" json:"order_type,omitempty"`
-	OrderId          uint64        `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
-	OrderPrice       *OrderPrice   `protobuf:"bytes,3,opt,name=order_price,json=orderPrice,proto3" json:"order_price,omitempty"`
-	OrderAmount      *v1beta1.Coin `protobuf:"bytes,4,opt,name=order_amount,json=orderAmount,proto3" json:"order_amount,omitempty"`
-	OwnerAddress     string        `protobuf:"bytes,5,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
-	OrderTargetDenom string        `protobuf:"bytes,6,opt,name=order_target_denom,json=orderTargetDenom,proto3" json:"order_target_denom,omitempty"`
-	Status           Status        `protobuf:"varint,7,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
-	Date             *Date         `protobuf:"bytes,8,opt,name=date,proto3" json:"date,omitempty"`
+	OrderType          SpotOrderType       `protobuf:"varint,1,opt,name=order_type,json=orderType,proto3,enum=elys.tradeshield.SpotOrderType" json:"order_type,omitempty"`
+	OrderId            uint64              `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	LegacyOrderPriceV1 *LegacyOrderPriceV1 `protobuf:"bytes,3,opt,name=legacy_order_price_v1,json=legacyOrderPriceV1,proto3" json:"legacy_order_price_v1,omitempty"`
+	OrderPrice         string              `protobuf:"bytes,9,opt,name=order_price,json=orderPrice,proto3" json:"order_price,omitempty"`
+	OrderAmount        *v1beta1.Coin       `protobuf:"bytes,4,opt,name=order_amount,json=orderAmount,proto3" json:"order_amount,omitempty"`
+	OwnerAddress       string              `protobuf:"bytes,5,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	OrderTargetDenom   string              `protobuf:"bytes,6,opt,name=order_target_denom,json=orderTargetDenom,proto3" json:"order_target_denom,omitempty"`
+	Status             Status              `protobuf:"varint,7,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
+	Date               *Date               `protobuf:"bytes,8,opt,name=date,proto3" json:"date,omitempty"`
 }
 
 func (x *SpotOrder) Reset() {
@@ -4714,11 +3496,18 @@ func (x *SpotOrder) GetOrderId() uint64 {
 	return 0
 }
 
-func (x *SpotOrder) GetOrderPrice() *OrderPrice {
+func (x *SpotOrder) GetLegacyOrderPriceV1() *LegacyOrderPriceV1 {
+	if x != nil {
+		return x.LegacyOrderPriceV1
+	}
+	return nil
+}
+
+func (x *SpotOrder) GetOrderPrice() string {
 	if x != nil {
 		return x.OrderPrice
 	}
-	return nil
+	return ""
 }
 
 func (x *SpotOrder) GetOrderAmount() *v1beta1.Coin {
@@ -4756,185 +3545,31 @@ func (x *SpotOrder) GetDate() *Date {
 	return nil
 }
 
-type LegacyPerpetualOrder struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	OrderId            uint64             `protobuf:"varint,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
-	OwnerAddress       string             `protobuf:"bytes,2,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
-	PerpetualOrderType PerpetualOrderType `protobuf:"varint,3,opt,name=perpetual_order_type,json=perpetualOrderType,proto3,enum=elys.tradeshield.PerpetualOrderType" json:"perpetual_order_type,omitempty"`
-	Position           PerpetualPosition  `protobuf:"varint,4,opt,name=position,proto3,enum=elys.tradeshield.PerpetualPosition" json:"position,omitempty"`
-	TriggerPrice       *OrderPrice        `protobuf:"bytes,5,opt,name=trigger_price,json=triggerPrice,proto3" json:"trigger_price,omitempty"`
-	Collateral         *v1beta1.Coin      `protobuf:"bytes,6,opt,name=collateral,proto3" json:"collateral,omitempty"`
-	TradingAsset       string             `protobuf:"bytes,7,opt,name=trading_asset,json=tradingAsset,proto3" json:"trading_asset,omitempty"`
-	Leverage           string             `protobuf:"bytes,8,opt,name=leverage,proto3" json:"leverage,omitempty"`
-	TakeProfitPrice    string             `protobuf:"bytes,9,opt,name=take_profit_price,json=takeProfitPrice,proto3" json:"take_profit_price,omitempty"`
-	PositionId         uint64             `protobuf:"varint,10,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
-	Status             Status             `protobuf:"varint,11,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
-	StopLossPrice      string             `protobuf:"bytes,12,opt,name=stop_loss_price,json=stopLossPrice,proto3" json:"stop_loss_price,omitempty"`
-	PositionSize       *v1beta1.Coin      `protobuf:"bytes,13,opt,name=position_size,json=positionSize,proto3" json:"position_size,omitempty"`
-	LiquidationPrice   string             `protobuf:"bytes,14,opt,name=liquidation_price,json=liquidationPrice,proto3" json:"liquidation_price,omitempty"`
-	FundingRate        string             `protobuf:"bytes,15,opt,name=funding_rate,json=fundingRate,proto3" json:"funding_rate,omitempty"`
-	BorrowInterestRate string             `protobuf:"bytes,16,opt,name=borrow_interest_rate,json=borrowInterestRate,proto3" json:"borrow_interest_rate,omitempty"`
-}
-
-func (x *LegacyPerpetualOrder) Reset() {
-	*x = LegacyPerpetualOrder{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_tradeshield_types_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *LegacyPerpetualOrder) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*LegacyPerpetualOrder) ProtoMessage() {}
-
-// Deprecated: Use LegacyPerpetualOrder.ProtoReflect.Descriptor instead.
-func (*LegacyPerpetualOrder) Descriptor() ([]byte, []int) {
-	return file_elys_tradeshield_types_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *LegacyPerpetualOrder) GetOrderId() uint64 {
-	if x != nil {
-		return x.OrderId
-	}
-	return 0
-}
-
-func (x *LegacyPerpetualOrder) GetOwnerAddress() string {
-	if x != nil {
-		return x.OwnerAddress
-	}
-	return ""
-}
-
-func (x *LegacyPerpetualOrder) GetPerpetualOrderType() PerpetualOrderType {
-	if x != nil {
-		return x.PerpetualOrderType
-	}
-	return PerpetualOrderType_LIMITOPEN
-}
-
-func (x *LegacyPerpetualOrder) GetPosition() PerpetualPosition {
-	if x != nil {
-		return x.Position
-	}
-	return PerpetualPosition_UNSPECIFIED
-}
-
-func (x *LegacyPerpetualOrder) GetTriggerPrice() *OrderPrice {
-	if x != nil {
-		return x.TriggerPrice
-	}
-	return nil
-}
-
-func (x *LegacyPerpetualOrder) GetCollateral() *v1beta1.Coin {
-	if x != nil {
-		return x.Collateral
-	}
-	return nil
-}
-
-func (x *LegacyPerpetualOrder) GetTradingAsset() string {
-	if x != nil {
-		return x.TradingAsset
-	}
-	return ""
-}
-
-func (x *LegacyPerpetualOrder) GetLeverage() string {
-	if x != nil {
-		return x.Leverage
-	}
-	return ""
-}
-
-func (x *LegacyPerpetualOrder) GetTakeProfitPrice() string {
-	if x != nil {
-		return x.TakeProfitPrice
-	}
-	return ""
-}
-
-func (x *LegacyPerpetualOrder) GetPositionId() uint64 {
-	if x != nil {
-		return x.PositionId
-	}
-	return 0
-}
-
-func (x *LegacyPerpetualOrder) GetStatus() Status {
-	if x != nil {
-		return x.Status
-	}
-	return Status_PENDING
-}
-
-func (x *LegacyPerpetualOrder) GetStopLossPrice() string {
-	if x != nil {
-		return x.StopLossPrice
-	}
-	return ""
-}
-
-func (x *LegacyPerpetualOrder) GetPositionSize() *v1beta1.Coin {
-	if x != nil {
-		return x.PositionSize
-	}
-	return nil
-}
-
-func (x *LegacyPerpetualOrder) GetLiquidationPrice() string {
-	if x != nil {
-		return x.LiquidationPrice
-	}
-	return ""
-}
-
-func (x *LegacyPerpetualOrder) GetFundingRate() string {
-	if x != nil {
-		return x.FundingRate
-	}
-	return ""
-}
-
-func (x *LegacyPerpetualOrder) GetBorrowInterestRate() string {
-	if x != nil {
-		return x.BorrowInterestRate
-	}
-	return ""
-}
-
 type PerpetualOrder struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	OrderId            uint64             `protobuf:"varint,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
-	OwnerAddress       string             `protobuf:"bytes,2,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
-	PerpetualOrderType PerpetualOrderType `protobuf:"varint,3,opt,name=perpetual_order_type,json=perpetualOrderType,proto3,enum=elys.tradeshield.PerpetualOrderType" json:"perpetual_order_type,omitempty"`
-	Position           PerpetualPosition  `protobuf:"varint,4,opt,name=position,proto3,enum=elys.tradeshield.PerpetualPosition" json:"position,omitempty"`
-	TriggerPrice       *TriggerPrice      `protobuf:"bytes,5,opt,name=trigger_price,json=triggerPrice,proto3" json:"trigger_price,omitempty"`
-	Collateral         *v1beta1.Coin      `protobuf:"bytes,6,opt,name=collateral,proto3" json:"collateral,omitempty"`
-	TradingAsset       string             `protobuf:"bytes,7,opt,name=trading_asset,json=tradingAsset,proto3" json:"trading_asset,omitempty"`
-	Leverage           string             `protobuf:"bytes,8,opt,name=leverage,proto3" json:"leverage,omitempty"`
-	TakeProfitPrice    string             `protobuf:"bytes,9,opt,name=take_profit_price,json=takeProfitPrice,proto3" json:"take_profit_price,omitempty"`
-	PositionId         uint64             `protobuf:"varint,10,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
-	Status             Status             `protobuf:"varint,11,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
-	StopLossPrice      string             `protobuf:"bytes,12,opt,name=stop_loss_price,json=stopLossPrice,proto3" json:"stop_loss_price,omitempty"`
-	PoolId             uint64             `protobuf:"varint,13,opt,name=poolId,proto3" json:"poolId,omitempty"`
+	OrderId              uint64                `protobuf:"varint,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	OwnerAddress         string                `protobuf:"bytes,2,opt,name=owner_address,json=ownerAddress,proto3" json:"owner_address,omitempty"`
+	PerpetualOrderType   PerpetualOrderType    `protobuf:"varint,3,opt,name=perpetual_order_type,json=perpetualOrderType,proto3,enum=elys.tradeshield.PerpetualOrderType" json:"perpetual_order_type,omitempty"`
+	Position             PerpetualPosition     `protobuf:"varint,4,opt,name=position,proto3,enum=elys.tradeshield.PerpetualPosition" json:"position,omitempty"`
+	LegacyTriggerPriceV1 *LegacyTriggerPriceV1 `protobuf:"bytes,5,opt,name=legacy_trigger_price_v1,json=legacyTriggerPriceV1,proto3" json:"legacy_trigger_price_v1,omitempty"`
+	TriggerPrice         string                `protobuf:"bytes,14,opt,name=trigger_price,json=triggerPrice,proto3" json:"trigger_price,omitempty"`
+	Collateral           *v1beta1.Coin         `protobuf:"bytes,6,opt,name=collateral,proto3" json:"collateral,omitempty"`
+	TradingAsset         string                `protobuf:"bytes,7,opt,name=trading_asset,json=tradingAsset,proto3" json:"trading_asset,omitempty"`
+	Leverage             string                `protobuf:"bytes,8,opt,name=leverage,proto3" json:"leverage,omitempty"`
+	TakeProfitPrice      string                `protobuf:"bytes,9,opt,name=take_profit_price,json=takeProfitPrice,proto3" json:"take_profit_price,omitempty"`
+	PositionId           uint64                `protobuf:"varint,10,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
+	Status               Status                `protobuf:"varint,11,opt,name=status,proto3,enum=elys.tradeshield.Status" json:"status,omitempty"`
+	StopLossPrice        string                `protobuf:"bytes,12,opt,name=stop_loss_price,json=stopLossPrice,proto3" json:"stop_loss_price,omitempty"`
+	PoolId               uint64                `protobuf:"varint,13,opt,name=poolId,proto3" json:"poolId,omitempty"`
 }
 
 func (x *PerpetualOrder) Reset() {
 	*x = PerpetualOrder{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_tradeshield_types_proto_msgTypes[3]
+		mi := &file_elys_tradeshield_types_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4948,7 +3583,7 @@ func (*PerpetualOrder) ProtoMessage() {}
 
 // Deprecated: Use PerpetualOrder.ProtoReflect.Descriptor instead.
 func (*PerpetualOrder) Descriptor() ([]byte, []int) {
-	return file_elys_tradeshield_types_proto_rawDescGZIP(), []int{3}
+	return file_elys_tradeshield_types_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *PerpetualOrder) GetOrderId() uint64 {
@@ -4979,11 +3614,18 @@ func (x *PerpetualOrder) GetPosition() PerpetualPosition {
 	return PerpetualPosition_UNSPECIFIED
 }
 
-func (x *PerpetualOrder) GetTriggerPrice() *TriggerPrice {
+func (x *PerpetualOrder) GetLegacyTriggerPriceV1() *LegacyTriggerPriceV1 {
+	if x != nil {
+		return x.LegacyTriggerPriceV1
+	}
+	return nil
+}
+
+func (x *PerpetualOrder) GetTriggerPrice() string {
 	if x != nil {
 		return x.TriggerPrice
 	}
-	return nil
+	return ""
 }
 
 func (x *PerpetualOrder) GetCollateral() *v1beta1.Coin {
@@ -5057,7 +3699,7 @@ type PerpetualOrderExtraInfo struct {
 func (x *PerpetualOrderExtraInfo) Reset() {
 	*x = PerpetualOrderExtraInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_tradeshield_types_proto_msgTypes[4]
+		mi := &file_elys_tradeshield_types_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5071,7 +3713,7 @@ func (*PerpetualOrderExtraInfo) ProtoMessage() {}
 
 // Deprecated: Use PerpetualOrderExtraInfo.ProtoReflect.Descriptor instead.
 func (*PerpetualOrderExtraInfo) Descriptor() ([]byte, []int) {
-	return file_elys_tradeshield_types_proto_rawDescGZIP(), []int{4}
+	return file_elys_tradeshield_types_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *PerpetualOrderExtraInfo) GetPerpetualOrder() *PerpetualOrder {
@@ -5125,201 +3767,145 @@ var file_elys_tradeshield_types_proto_rawDesc = []byte{
 	0x3c, 0x0a, 0x04, 0x44, 0x61, 0x74, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x68, 0x65, 0x69, 0x67, 0x68,
 	0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12,
 	0x1c, 0x0a, 0x09, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x04, 0x52, 0x09, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x22, 0xa0, 0x03,
+	0x28, 0x04, 0x52, 0x09, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x22, 0x8e, 0x04,
 	0x0a, 0x09, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x3e, 0x0a, 0x0a, 0x6f,
 	0x72, 0x64, 0x65, 0x72, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
 	0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65,
 	0x6c, 0x64, 0x2e, 0x53, 0x70, 0x6f, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65,
 	0x52, 0x09, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x6f,
 	0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x6f,
-	0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x43, 0x0a, 0x0b, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f,
-	0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4f,
-	0x72, 0x64, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
-	0x0a, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x42, 0x0a, 0x0c, 0x6f,
-	0x72, 0x64, 0x65, 0x72, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e,
-	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde,
-	0x1f, 0x00, 0x52, 0x0b, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12,
-	0x23, 0x0a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
-	0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x41, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x12, 0x2c, 0x0a, 0x12, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x74, 0x61,
-	0x72, 0x67, 0x65, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x10, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x44, 0x65, 0x6e,
-	0x6f, 0x6d, 0x12, 0x30, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x07, 0x20, 0x01,
-	0x28, 0x0e, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73,
-	0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74,
-	0x61, 0x74, 0x75, 0x73, 0x12, 0x2a, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x65, 0x18, 0x08, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x16, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73,
-	0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x44, 0x61, 0x74, 0x65, 0x52, 0x04, 0x64, 0x61, 0x74, 0x65,
-	0x22, 0xd5, 0x08, 0x0a, 0x14, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x50, 0x65, 0x72, 0x70, 0x65,
-	0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64,
-	0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x6f, 0x72, 0x64,
-	0x65, 0x72, 0x49, 0x64, 0x12, 0x23, 0x0a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x6f, 0x77, 0x6e,
-	0x65, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x56, 0x0a, 0x14, 0x70, 0x65, 0x72,
-	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x74, 0x79, 0x70,
-	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74,
-	0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65,
-	0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x52, 0x12, 0x70,
-	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x54, 0x79, 0x70,
-	0x65, 0x12, 0x3f, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x0e, 0x32, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65,
-	0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
-	0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x41, 0x0a, 0x0d, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x5f, 0x70, 0x72,
-	0x69, 0x63, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4f, 0x72, 0x64,
-	0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x0c, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72,
-	0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x3f, 0x0a, 0x0a, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65,
-	0x72, 0x61, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
-	0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0a, 0x63, 0x6f, 0x6c, 0x6c,
-	0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x12, 0x23, 0x0a, 0x0d, 0x74, 0x72, 0x61, 0x64, 0x69, 0x6e,
-	0x67, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x74,
-	0x72, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x41, 0x73, 0x73, 0x65, 0x74, 0x12, 0x4d, 0x0a, 0x08, 0x6c,
-	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
-	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
-	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
-	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
-	0x52, 0x08, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x12, 0x5d, 0x0a, 0x11, 0x74, 0x61,
-	0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18,
-	0x09, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
-	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0f, 0x74, 0x61, 0x6b, 0x65, 0x50, 0x72,
-	0x6f, 0x66, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x6f, 0x73,
-	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a,
-	0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x30, 0x0a, 0x06, 0x73, 0x74,
-	0x61, 0x74, 0x75, 0x73, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x53, 0x74,
-	0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x59, 0x0a, 0x0f,
-	0x73, 0x74, 0x6f, 0x70, 0x5f, 0x6c, 0x6f, 0x73, 0x73, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18,
-	0x0c, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
-	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0d, 0x73, 0x74, 0x6f, 0x70, 0x4c, 0x6f,
-	0x73, 0x73, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x44, 0x0a, 0x0d, 0x70, 0x6f, 0x73, 0x69, 0x74,
-	0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19,
-	0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62,
-	0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
-	0x0c, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x5e, 0x0a,
-	0x11, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x70, 0x72, 0x69,
-	0x63, 0x65, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
-	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
-	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
-	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x6c, 0x69, 0x71,
-	0x75, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x54, 0x0a,
-	0x0c, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x0f, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
-	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52,
-	0x61, 0x74, 0x65, 0x12, 0x63, 0x0a, 0x14, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e,
-	0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x10, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
-	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65,
-	0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x22, 0x8e, 0x06, 0x0a, 0x0e, 0x50, 0x65, 0x72,
-	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x6f,
-	0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x6f,
-	0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x23, 0x0a, 0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f,
-	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x6f,
-	0x77, 0x6e, 0x65, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x56, 0x0a, 0x14, 0x70,
-	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x74,
-	0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x50, 0x65, 0x72,
-	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x52,
-	0x12, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x54,
-	0x79, 0x70, 0x65, 0x12, 0x3f, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61,
-	0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x08, 0x70, 0x6f, 0x73, 0x69,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x49, 0x0a, 0x0d, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x5f,
-	0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x54,
-	0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f,
-	0x00, 0x52, 0x0c, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12,
-	0x3f, 0x0a, 0x0a, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x18, 0x06, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73,
-	0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04,
-	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0a, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c,
-	0x12, 0x23, 0x0a, 0x0d, 0x74, 0x72, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x61, 0x73, 0x73, 0x65,
-	0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x74, 0x72, 0x61, 0x64, 0x69, 0x6e, 0x67,
-	0x41, 0x73, 0x73, 0x65, 0x74, 0x12, 0x4d, 0x0a, 0x08, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67,
-	0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
-	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
-	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x6c, 0x65, 0x76, 0x65,
-	0x72, 0x61, 0x67, 0x65, 0x12, 0x5d, 0x0a, 0x11, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f,
-	0x66, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
-	0x65, 0x63, 0x52, 0x0f, 0x74, 0x61, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x50, 0x72,
-	0x69, 0x63, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
-	0x69, 0x64, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69,
-	0x6f, 0x6e, 0x49, 0x64, 0x12, 0x30, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x0b,
-	0x20, 0x01, 0x28, 0x0e, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64,
-	0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06,
-	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x59, 0x0a, 0x0f, 0x73, 0x74, 0x6f, 0x70, 0x5f, 0x6c,
-	0x6f, 0x73, 0x73, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x42,
-	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
-	0x65, 0x63, 0x52, 0x0d, 0x73, 0x74, 0x6f, 0x70, 0x4c, 0x6f, 0x73, 0x73, 0x50, 0x72, 0x69, 0x63,
-	0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x18, 0x0d, 0x20, 0x01, 0x28,
-	0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x22, 0xc5, 0x03, 0x0a, 0x17, 0x50, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x45, 0x78, 0x74, 0x72,
-	0x61, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x49, 0x0a, 0x0f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
-	0x61, 0x6c, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c,
-	0x64, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72,
-	0x52, 0x0e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72,
-	0x12, 0x44, 0x0a, 0x0d, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x69, 0x7a,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f,
-	0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0c, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69,
-	0x6f, 0x6e, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x5e, 0x0a, 0x11, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
-	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x54, 0x0a, 0x0c, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e,
-	0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde,
-	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
-	0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52,
-	0x0b, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x61, 0x74, 0x65, 0x12, 0x63, 0x0a, 0x14,
-	0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f,
-	0x72, 0x61, 0x74, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x5d, 0x0a, 0x15, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79,
+	0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x76, 0x31, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61,
+	0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x4f,
+	0x72, 0x64, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x56, 0x31, 0x42, 0x04, 0xc8, 0xde, 0x1f,
+	0x00, 0x52, 0x12, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x50, 0x72,
+	0x69, 0x63, 0x65, 0x56, 0x31, 0x12, 0x52, 0x0a, 0x0b, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x70,
+	0x72, 0x69, 0x63, 0x65, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
 	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
 	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
-	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x62,
-	0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74,
-	0x65, 0x2a, 0x3a, 0x0a, 0x06, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x0b, 0x0a, 0x07, 0x50,
-	0x45, 0x4e, 0x44, 0x49, 0x4e, 0x47, 0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x45, 0x58, 0x45, 0x43,
-	0x55, 0x54, 0x45, 0x44, 0x10, 0x01, 0x12, 0x0c, 0x0a, 0x08, 0x43, 0x41, 0x4e, 0x43, 0x45, 0x4c,
-	0x45, 0x44, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x41, 0x4c, 0x4c, 0x10, 0x03, 0x2a, 0x45, 0x0a,
-	0x12, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x54,
-	0x79, 0x70, 0x65, 0x12, 0x0d, 0x0a, 0x09, 0x4c, 0x49, 0x4d, 0x49, 0x54, 0x4f, 0x50, 0x45, 0x4e,
-	0x10, 0x00, 0x12, 0x0e, 0x0a, 0x0a, 0x4c, 0x49, 0x4d, 0x49, 0x54, 0x43, 0x4c, 0x4f, 0x53, 0x45,
-	0x10, 0x01, 0x12, 0x10, 0x0a, 0x0c, 0x53, 0x54, 0x4f, 0x50, 0x4c, 0x4f, 0x53, 0x53, 0x50, 0x45,
-	0x52, 0x50, 0x10, 0x02, 0x42, 0xb6, 0x01, 0x0a, 0x14, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x42, 0x0a, 0x54,
-	0x79, 0x70, 0x65, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x31, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
-	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xa2, 0x02,
-	0x03, 0x45, 0x54, 0x58, 0xaa, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x54, 0x72, 0x61, 0x64,
-	0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xca, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x54,
-	0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xe2, 0x02, 0x1c, 0x45, 0x6c, 0x79,
-	0x73, 0x5c, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x5c, 0x47, 0x50,
-	0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x11, 0x45, 0x6c, 0x79, 0x73,
-	0x3a, 0x3a, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0a, 0x6f,
+	0x72, 0x64, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x42, 0x0a, 0x0c, 0x6f, 0x72, 0x64,
+	0x65, 0x72, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
+	0x52, 0x0b, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x23, 0x0a,
+	0x0d, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x12, 0x2c, 0x0a, 0x12, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x74, 0x61, 0x72, 0x67,
+	0x65, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10,
+	0x6f, 0x72, 0x64, 0x65, 0x72, 0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
+	0x12, 0x30, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0e,
+	0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
+	0x65, 0x6c, 0x64, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74,
+	0x75, 0x73, 0x12, 0x2a, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x16, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69,
+	0x65, 0x6c, 0x64, 0x2e, 0x44, 0x61, 0x74, 0x65, 0x52, 0x04, 0x64, 0x61, 0x74, 0x65, 0x22, 0x80,
+	0x07, 0x0a, 0x0e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65,
+	0x72, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x23, 0x0a, 0x0d,
+	0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0c, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x12, 0x56, 0x0a, 0x14, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x6f,
+	0x72, 0x64, 0x65, 0x72, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65,
+	0x6c, 0x64, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65,
+	0x72, 0x54, 0x79, 0x70, 0x65, 0x52, 0x12, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c,
+	0x4f, 0x72, 0x64, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x3f, 0x0a, 0x08, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x23, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x50,
+	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e,
+	0x52, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x63, 0x0a, 0x17, 0x6c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x5f, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x5f, 0x70, 0x72, 0x69,
+	0x63, 0x65, 0x5f, 0x76, 0x31, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x4c,
+	0x65, 0x67, 0x61, 0x63, 0x79, 0x54, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63,
+	0x65, 0x56, 0x31, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x14, 0x6c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x54, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x56, 0x31, 0x12,
+	0x56, 0x0a, 0x0d, 0x74, 0x72, 0x69, 0x67, 0x67, 0x65, 0x72, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65,
+	0x18, 0x0e, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x74, 0x72, 0x69, 0x67, 0x67,
+	0x65, 0x72, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x3f, 0x0a, 0x0a, 0x63, 0x6f, 0x6c, 0x6c, 0x61,
+	0x74, 0x65, 0x72, 0x61, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61,
+	0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0a, 0x63, 0x6f,
+	0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x12, 0x23, 0x0a, 0x0d, 0x74, 0x72, 0x61, 0x64,
+	0x69, 0x6e, 0x67, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0c, 0x74, 0x72, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x41, 0x73, 0x73, 0x65, 0x74, 0x12, 0x4d, 0x0a,
+	0x08, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
+	0x65, 0x63, 0x52, 0x08, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x12, 0x5d, 0x0a, 0x11,
+	0x74, 0x61, 0x6b, 0x65, 0x5f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63,
+	0x65, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
+	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
+	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0f, 0x74, 0x61, 0x6b, 0x65,
+	0x50, 0x72, 0x6f, 0x66, 0x69, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x70,
+	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x0a, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x30, 0x0a, 0x06,
+	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x18, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e,
+	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x59,
+	0x0a, 0x0f, 0x73, 0x74, 0x6f, 0x70, 0x5f, 0x6c, 0x6f, 0x73, 0x73, 0x5f, 0x70, 0x72, 0x69, 0x63,
+	0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
+	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
+	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0d, 0x73, 0x74, 0x6f, 0x70,
+	0x4c, 0x6f, 0x73, 0x73, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x6f, 0x6f,
+	0x6c, 0x49, 0x64, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49,
+	0x64, 0x22, 0xc5, 0x03, 0x0a, 0x17, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f,
+	0x72, 0x64, 0x65, 0x72, 0x45, 0x78, 0x74, 0x72, 0x61, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x49, 0x0a,
+	0x0f, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72,
+	0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x0e, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
+	0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x44, 0x0a, 0x0d, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00,
+	0x52, 0x0c, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x5e,
+	0x0a, 0x11, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x70, 0x72,
+	0x69, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
+	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x6c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x54,
+	0x0a, 0x0c, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67,
+	0x52, 0x61, 0x74, 0x65, 0x12, 0x63, 0x0a, 0x14, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x69,
+	0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74,
+	0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x2a, 0x3a, 0x0a, 0x06, 0x53, 0x74, 0x61,
+	0x74, 0x75, 0x73, 0x12, 0x0b, 0x0a, 0x07, 0x50, 0x45, 0x4e, 0x44, 0x49, 0x4e, 0x47, 0x10, 0x00,
+	0x12, 0x0c, 0x0a, 0x08, 0x45, 0x58, 0x45, 0x43, 0x55, 0x54, 0x45, 0x44, 0x10, 0x01, 0x12, 0x0c,
+	0x0a, 0x08, 0x43, 0x41, 0x4e, 0x43, 0x45, 0x4c, 0x45, 0x44, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03,
+	0x41, 0x4c, 0x4c, 0x10, 0x03, 0x2a, 0x45, 0x0a, 0x12, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75,
+	0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0d, 0x0a, 0x09, 0x4c,
+	0x49, 0x4d, 0x49, 0x54, 0x4f, 0x50, 0x45, 0x4e, 0x10, 0x00, 0x12, 0x0e, 0x0a, 0x0a, 0x4c, 0x49,
+	0x4d, 0x49, 0x54, 0x43, 0x4c, 0x4f, 0x53, 0x45, 0x10, 0x01, 0x12, 0x10, 0x0a, 0x0c, 0x53, 0x54,
+	0x4f, 0x50, 0x4c, 0x4f, 0x53, 0x53, 0x50, 0x45, 0x52, 0x50, 0x10, 0x02, 0x42, 0xb6, 0x01, 0x0a,
+	0x14, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73,
+	0x68, 0x69, 0x65, 0x6c, 0x64, 0x42, 0x0a, 0x54, 0x79, 0x70, 0x65, 0x73, 0x50, 0x72, 0x6f, 0x74,
+	0x6f, 0x50, 0x01, 0x5a, 0x31, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
+	0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x74, 0x72, 0x61, 0x64, 0x65,
+	0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xa2, 0x02, 0x03, 0x45, 0x54, 0x58, 0xaa, 0x02, 0x10, 0x45,
+	0x6c, 0x79, 0x73, 0x2e, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65, 0x6c, 0x64, 0xca,
+	0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x68, 0x69, 0x65,
+	0x6c, 0x64, 0xe2, 0x02, 0x1c, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73,
+	0x68, 0x69, 0x65, 0x6c, 0x64, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0xea, 0x02, 0x11, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73,
+	0x68, 0x69, 0x65, 0x6c, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -5335,45 +3921,38 @@ func file_elys_tradeshield_types_proto_rawDescGZIP() []byte {
 }
 
 var file_elys_tradeshield_types_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_elys_tradeshield_types_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_elys_tradeshield_types_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_elys_tradeshield_types_proto_goTypes = []interface{}{
 	(Status)(0),                     // 0: elys.tradeshield.Status
 	(PerpetualOrderType)(0),         // 1: elys.tradeshield.PerpetualOrderType
 	(*Date)(nil),                    // 2: elys.tradeshield.Date
 	(*SpotOrder)(nil),               // 3: elys.tradeshield.SpotOrder
-	(*LegacyPerpetualOrder)(nil),    // 4: elys.tradeshield.LegacyPerpetualOrder
-	(*PerpetualOrder)(nil),          // 5: elys.tradeshield.PerpetualOrder
-	(*PerpetualOrderExtraInfo)(nil), // 6: elys.tradeshield.PerpetualOrderExtraInfo
-	(SpotOrderType)(0),              // 7: elys.tradeshield.SpotOrderType
-	(*OrderPrice)(nil),              // 8: elys.tradeshield.OrderPrice
-	(*v1beta1.Coin)(nil),            // 9: cosmos.base.v1beta1.Coin
-	(PerpetualPosition)(0),          // 10: elys.tradeshield.PerpetualPosition
-	(*TriggerPrice)(nil),            // 11: elys.tradeshield.TriggerPrice
+	(*PerpetualOrder)(nil),          // 4: elys.tradeshield.PerpetualOrder
+	(*PerpetualOrderExtraInfo)(nil), // 5: elys.tradeshield.PerpetualOrderExtraInfo
+	(SpotOrderType)(0),              // 6: elys.tradeshield.SpotOrderType
+	(*LegacyOrderPriceV1)(nil),      // 7: elys.tradeshield.LegacyOrderPriceV1
+	(*v1beta1.Coin)(nil),            // 8: cosmos.base.v1beta1.Coin
+	(PerpetualPosition)(0),          // 9: elys.tradeshield.PerpetualPosition
+	(*LegacyTriggerPriceV1)(nil),    // 10: elys.tradeshield.LegacyTriggerPriceV1
 }
 var file_elys_tradeshield_types_proto_depIdxs = []int32{
-	7,  // 0: elys.tradeshield.SpotOrder.order_type:type_name -> elys.tradeshield.SpotOrderType
-	8,  // 1: elys.tradeshield.SpotOrder.order_price:type_name -> elys.tradeshield.OrderPrice
-	9,  // 2: elys.tradeshield.SpotOrder.order_amount:type_name -> cosmos.base.v1beta1.Coin
+	6,  // 0: elys.tradeshield.SpotOrder.order_type:type_name -> elys.tradeshield.SpotOrderType
+	7,  // 1: elys.tradeshield.SpotOrder.legacy_order_price_v1:type_name -> elys.tradeshield.LegacyOrderPriceV1
+	8,  // 2: elys.tradeshield.SpotOrder.order_amount:type_name -> cosmos.base.v1beta1.Coin
 	0,  // 3: elys.tradeshield.SpotOrder.status:type_name -> elys.tradeshield.Status
 	2,  // 4: elys.tradeshield.SpotOrder.date:type_name -> elys.tradeshield.Date
-	1,  // 5: elys.tradeshield.LegacyPerpetualOrder.perpetual_order_type:type_name -> elys.tradeshield.PerpetualOrderType
-	10, // 6: elys.tradeshield.LegacyPerpetualOrder.position:type_name -> elys.tradeshield.PerpetualPosition
-	8,  // 7: elys.tradeshield.LegacyPerpetualOrder.trigger_price:type_name -> elys.tradeshield.OrderPrice
-	9,  // 8: elys.tradeshield.LegacyPerpetualOrder.collateral:type_name -> cosmos.base.v1beta1.Coin
-	0,  // 9: elys.tradeshield.LegacyPerpetualOrder.status:type_name -> elys.tradeshield.Status
-	9,  // 10: elys.tradeshield.LegacyPerpetualOrder.position_size:type_name -> cosmos.base.v1beta1.Coin
-	1,  // 11: elys.tradeshield.PerpetualOrder.perpetual_order_type:type_name -> elys.tradeshield.PerpetualOrderType
-	10, // 12: elys.tradeshield.PerpetualOrder.position:type_name -> elys.tradeshield.PerpetualPosition
-	11, // 13: elys.tradeshield.PerpetualOrder.trigger_price:type_name -> elys.tradeshield.TriggerPrice
-	9,  // 14: elys.tradeshield.PerpetualOrder.collateral:type_name -> cosmos.base.v1beta1.Coin
-	0,  // 15: elys.tradeshield.PerpetualOrder.status:type_name -> elys.tradeshield.Status
-	5,  // 16: elys.tradeshield.PerpetualOrderExtraInfo.perpetual_order:type_name -> elys.tradeshield.PerpetualOrder
-	9,  // 17: elys.tradeshield.PerpetualOrderExtraInfo.position_size:type_name -> cosmos.base.v1beta1.Coin
-	18, // [18:18] is the sub-list for method output_type
-	18, // [18:18] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	1,  // 5: elys.tradeshield.PerpetualOrder.perpetual_order_type:type_name -> elys.tradeshield.PerpetualOrderType
+	9,  // 6: elys.tradeshield.PerpetualOrder.position:type_name -> elys.tradeshield.PerpetualPosition
+	10, // 7: elys.tradeshield.PerpetualOrder.legacy_trigger_price_v1:type_name -> elys.tradeshield.LegacyTriggerPriceV1
+	8,  // 8: elys.tradeshield.PerpetualOrder.collateral:type_name -> cosmos.base.v1beta1.Coin
+	0,  // 9: elys.tradeshield.PerpetualOrder.status:type_name -> elys.tradeshield.Status
+	4,  // 10: elys.tradeshield.PerpetualOrderExtraInfo.perpetual_order:type_name -> elys.tradeshield.PerpetualOrder
+	8,  // 11: elys.tradeshield.PerpetualOrderExtraInfo.position_size:type_name -> cosmos.base.v1beta1.Coin
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_elys_tradeshield_types_proto_init() }
@@ -5408,18 +3987,6 @@ func file_elys_tradeshield_types_proto_init() {
 			}
 		}
 		file_elys_tradeshield_types_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LegacyPerpetualOrder); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_elys_tradeshield_types_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*PerpetualOrder); i {
 			case 0:
 				return &v.state
@@ -5431,7 +3998,7 @@ func file_elys_tradeshield_types_proto_init() {
 				return nil
 			}
 		}
-		file_elys_tradeshield_types_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_elys_tradeshield_types_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*PerpetualOrderExtraInfo); i {
 			case 0:
 				return &v.state
@@ -5450,7 +4017,7 @@ func file_elys_tradeshield_types_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_tradeshield_types_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   5,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

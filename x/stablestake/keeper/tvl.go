@@ -15,6 +15,7 @@ func (k Keeper) TVL(ctx sdk.Context, oracleKeeper types.OracleKeeper, poolId uin
 	price := oracleKeeper.GetAssetPriceFromDenom(ctx, pool.DepositDenom)
 	return price.MulInt(totalDeposit)
 }
+<<<<<<< HEAD
 
 func (k Keeper) AllTVL(ctx sdk.Context, oracleKeeper types.OracleKeeper) math.LegacyDec {
 	allPools := k.GetAllPools(ctx)
@@ -31,3 +32,5 @@ func (k Keeper) ShareDenomPrice(ctx sdk.Context, oracleKeeper types.OracleKeeper
 	price := oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 	return price.Mul(redemptionRate)
 }
+=======
+>>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11

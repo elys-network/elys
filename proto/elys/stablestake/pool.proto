@@ -3,6 +3,7 @@ package elys.stablestake;
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
 
@@ -54,4 +55,12 @@ message Pool {
     (gogoproto.nullable) = false
   ];
   uint64 pool_id = 11;
+}
+
+message AmmPool {
+  uint64 id = 1;
+  repeated cosmos.base.v1beta1.Coin total_liabilities = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
