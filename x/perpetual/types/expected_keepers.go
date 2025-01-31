@@ -63,4 +63,6 @@ type OracleKeeper interface {
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) math.LegacyDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
+	SetPool(ctx sdk.Context, pool oracletypes.Pool)
+	SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
 }
