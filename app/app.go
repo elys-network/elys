@@ -456,6 +456,21 @@ func (app *ElysApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
 		}
 
 		app.OracleKeeper.SetParams(ctx, params)
+
+		app.OracleKeeper.SetAssetInfo(ctx, oracletypes.AssetInfo{
+			Denom: USDCDenom,
+			Display: oracletypes.USDCSymbol,
+			BandTicker: oracletypes.USDCSymbol,
+			ElysTicker: oracletypes.USDCSymbol,
+			Decimal: uint64(USDCExponent),
+		})
+		app.OracleKeeper.SetAssetInfo(ctx, oracletypes.AssetInfo{
+			Denom: AtomDenom,
+			Display: oracletypes.AtomSymbol,
+			BandTicker: oracletypes.AtomSymbol,
+			ElysTicker: oracletypes.AtomSymbol,
+			Decimal: uint64(oracletypes.AtomExponent),
+		})
 	// }
 
 	return app.mm.BeginBlock(ctx)
