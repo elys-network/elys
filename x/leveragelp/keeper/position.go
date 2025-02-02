@@ -253,7 +253,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 	if position.LeveragedLpAmount.IsZero() {
 		return sdkmath.LegacyZeroDec(), nil
 	}
-	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.AmmPoolId, position.Collateral.Denom)
+	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
 	debtAmount := debt.GetTotalLiablities()
 	if debtAmount.IsZero() {
 		return sdkmath.LegacyMaxSortableDec, nil
@@ -323,7 +323,7 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 			}
 
 			// Repay any balance, delete position
-			debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.AmmPoolId, position.Collateral.Denom)
+			debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
 			repayAmount := debt.GetTotalLiablities()
 
 			// Check if position has enough coins to repay else repay partial
@@ -336,7 +336,7 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 			}
 
 			if repayAmount.IsPositive() {
-				k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount), position.AmmPoolId)
+				k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount), position.BorrowPoolId, position.AmmPoolId)
 			} else {
 				userAmount = bal.Amount
 			}
@@ -378,7 +378,7 @@ func (k Keeper) V18MigratonPoolLiabilities(ctx sdk.Context) {
 		var position types.Position
 		k.cdc.MustUnmarshal(iterator.Value(), &position)
 		position.BorrowPoolId = stabletypes.PoolId
-		debt := k.stableKeeper.GetDebtWithoutUpdatedInterest(ctx, position.GetPositionAddress())
+		debt := k.stableKeeper.GetDebtWithoutUpdatedInterest(ctx, position.GetPositionAddress(), stabletypes.PoolId)
 		k.stableKeeper.AddPoolLiabilities(ctx, position.AmmPoolId, sdk.NewCoin(position.Collateral.Denom, debt.GetTotalLiablities()))
 		k.SetPosition(ctx, &position)
 

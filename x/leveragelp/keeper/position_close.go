@@ -50,7 +50,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	}
 	collateralDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Collateral.Denom)
 
-	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.AmmPoolId, position.Collateral.Denom)
+	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
 	// Amount required to pay back
 	repayAmount := debt.GetTotalLiablities().ToLegacyDec().Mul(closingRatio).TruncateInt()
 	repayValue := collateralDenomPrice.MulInt(repayAmount)
@@ -117,7 +117,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	}
 
 	if repayAmount.IsPositive() {
-		err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount), position.AmmPoolId)
+		err = k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, repayAmount), position.BorrowPoolId, position.AmmPoolId)
 		if err != nil {
 			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 		}
@@ -146,7 +146,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	}
 
 	// Update Liabilities
-	debt = k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.AmmPoolId, position.Collateral.Denom)
+	debt = k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.BorrowPoolId)
 	position.Liabilities = debt.GetTotalLiablities()
 
 	// Update the pool health.
@@ -206,7 +206,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 		// Delete Debt even if it's not paid fully, can happen only if bot fails to close and position health goes below 1
 		if position.Liabilities.IsPositive() {
-			err = k.stableKeeper.CloseOnUnableToRepay(ctx, position.GetPositionAddress(), position.AmmPoolId, position.Collateral.Denom)
+			err = k.stableKeeper.CloseOnUnableToRepay(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
 			if err != nil {
 				return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), err
 			}

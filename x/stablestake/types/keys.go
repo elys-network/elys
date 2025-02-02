@@ -17,11 +17,8 @@ var (
 	DebtPrefixKey     = []byte{0x01}
 	InterestPrefixKey = []byte{0x02}
 	ParamKeyPrefix    = []byte{0x03}
-<<<<<<< HEAD
 	PoolPrefixKey     = []byte{0x04}
-=======
 	AmmPoolKeyPrefix  = []byte{0x04}
->>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 )
 
 func GetDebtKey(owner sdk.AccAddress, poolId uint64) []byte {

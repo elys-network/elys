@@ -57,18 +57,17 @@ type BankKeeper interface {
 // StableStakeKeeper defines the expected interface needed on stablestake
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) stablestaketypes.Params
-	GetDepositDenom(ctx sdk.Context) string
-	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
-	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, debtDenom string) stablestaketypes.Debt
-	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error
-	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64) error
-	TVL(ctx sdk.Context, oracleKeeper stablestaketypes.OracleKeeper, baseCurrency string) sdkmath.LegacyDec
-	GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec) sdkmath.Int
-	GetDebtWithoutUpdatedInterest(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	GetDebt(ctx sdk.Context, addr sdk.AccAddress, borrowPoolId uint64) stablestaketypes.Debt
+	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, borrowingForPool uint64) stablestaketypes.Debt
+	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64, borrowingForPool uint64) error
+	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64, repayingForPool uint64) error
+	TVL(ctx sdk.Context, oracleKeeper stablestaketypes.OracleKeeper, poolId uint64) sdkmath.LegacyDec
+	GetDebtWithoutUpdatedInterest(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
+	GetPoolByDenom(ctx sdk.Context, denom string) (stablestaketypes.Pool, bool)
 	AddPoolLiabilities(ctx sdk.Context, id uint64, coin sdk.Coin)
 	SubtractPoolLiabilities(ctx sdk.Context, id uint64, coin sdk.Coin)
 	GetAmmPool(ctx sdk.Context, id uint64) stablestaketypes.AmmPool
-	CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, unableToPayForPool uint64, debtDenom string) error
+	CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, unableToPayForPool uint64) error
 }
 
 type CommitmentKeeper interface {

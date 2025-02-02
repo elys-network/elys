@@ -35,10 +35,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
-<<<<<<< HEAD
-=======
 	stableStakeParams := k.stableKeeper.GetParams(ctx)
->>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 	moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
 
 	borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, msg.CollateralAsset)
@@ -78,11 +75,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	poolLeveragelpRatio = pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
-<<<<<<< HEAD
-	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) || borrowRatio.GTE(borrowPool.MaxLeverageRatio) {
-=======
 	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) || borrowRatio.GTE(stableStakeParams.MaxLeverageRatio) {
->>>>>>> 267bed94a9ef69af6b2214edf6bf602090c98a11
 		return nil, errorsmod.Wrap(types.ErrMaxLeverageLpExists, "no new position can be open")
 	}
 
