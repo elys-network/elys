@@ -220,7 +220,7 @@ func TestCalcExitPool(t *testing.T) {
 				ThresholdWeightDifference: sdkmath.LegacyMustNewDecFromStr("0.2"),
 				WeightBreakingFeeExponent: sdkmath.LegacyMustNewDecFromStr("0.5"),
 			},
-			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(100))},
+			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(100)), sdk.NewCoin("tokenB", sdkmath.NewInt(200))},
 			sdkmath.LegacyZeroDec(),
 			"",
 		},
