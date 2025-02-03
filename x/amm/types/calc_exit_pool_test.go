@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCalcExitValueWithoutSlippage(t *testing.T) {
+func TestCalcExitValueWithSlippage(t *testing.T) {
 	ctx := sdk.Context{}
 
 	// Define test cases
@@ -95,7 +95,7 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 			accKeeper := mocks.NewAccountedPoolKeeper(t)
 			tc.setupMock(oracleKeeper, accKeeper)
 
-			value, err := types.CalcExitValueWithoutSlippage(ctx, oracleKeeper, accKeeper, tc.pool, tc.exitingShares, tc.tokenOutDenom)
+			value, _, err := types.CalcExitValueWithSlippage(ctx, oracleKeeper, accKeeper, tc.pool, tc.exitingShares, tc.tokenOutDenom, sdkmath.LegacyOneDec())
 			if tc.expectedErrMsg != "" {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tc.expectedErrMsg)
