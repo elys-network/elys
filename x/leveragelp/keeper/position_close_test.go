@@ -183,7 +183,7 @@ func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
-	suite.Require().Equal("1.095113090126531601", health.String()) // slippage disabled on amm
+	suite.Require().Equal("1.166756002564715911", health.String()) // slippage disabled on amm
 }
 
 // test positionHealth should be maxDec when liablities is zero

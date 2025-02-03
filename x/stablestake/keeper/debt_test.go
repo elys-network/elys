@@ -103,23 +103,9 @@ func (suite *KeeperTestSuite) TestDebt() {
 }
 
 func (suite *KeeperTestSuite) TestCloseOnUnableToRepay() {
-	pool := types.Pool{
-		RedemptionRate:       math.LegacyOneDec(),
-		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
-		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
-		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
-		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
-		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
-		HealthGainFactor:     math.LegacyOneDec(),
-		TotalValue:           math.ZeroInt(),
-		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
-		PoolId:               1,
-		DepositDenom:         ptypes.BaseCurrency,
-	}
-	suite.app.StablestakeKeeper.SetPool(suite.ctx, pool)
 	borrowingPool := types.AmmPool{
 		Id:               1,
-		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000)},
+		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
 	}
 
 	suite.app.StablestakeKeeper.SetAmmPool(suite.ctx, borrowingPool)
@@ -130,17 +116,18 @@ func (suite *KeeperTestSuite) TestCloseOnUnableToRepay() {
 		InterestPaid:          math.NewInt(10),
 		InterestStacked:       math.NewInt(50),
 		BorrowTime:            1,
-		LastInterestCalcTime:  1,
+		LastInterestCalcTime:  uint64(suite.ctx.BlockTime().Unix()) - 1,
 		LastInterestCalcBlock: 1,
 		PoolId:                1,
 	}
+
 	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
 	suite.app.StablestakeKeeper.CloseOnUnableToRepay(suite.ctx, debt.GetOwnerAccount(), 1, 1)
 
 	r := suite.app.StablestakeKeeper.GetAmmPool(suite.ctx, 1)
 	suite.Assert().Equal(types.AmmPool{
 		Id:               1,
-		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 860)},
+		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 860)},
 	}, r)
 
 }
