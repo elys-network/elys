@@ -283,7 +283,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			&types.MsgClose{
 				Creator:  addresses[0].String(),
 				Id:       1,
-				LpAmount: sdkmath.LegacyMustNewDecFromStr("9745408547619047617").TruncateInt(),
+				LpAmount: sdkmath.LegacyMustNewDecFromStr("8472689380952380945").TruncateInt(),
 			},
 			false,
 			"",
