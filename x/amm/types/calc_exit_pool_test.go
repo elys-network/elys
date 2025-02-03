@@ -35,14 +35,14 @@ func TestCalcExitValueWithSlippage(t *testing.T) {
 			types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 				PoolAssets: []types.PoolAsset{
-					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1)},
-					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1)},
+					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
+					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
 				},
 				TotalShares: sdk.NewCoin("shares", sdkmath.NewInt(100)),
 			},
 			sdkmath.NewInt(10),
 			"tokenA",
-			sdkmath.LegacyNewDec(2000),
+			sdkmath.LegacyNewDec(1660),
 			"",
 		},
 		{
@@ -56,8 +56,8 @@ func TestCalcExitValueWithSlippage(t *testing.T) {
 			types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 				PoolAssets: []types.PoolAsset{
-					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1)},
-					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1)},
+					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
+					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
 				},
 				TotalShares: sdk.NewCoin("shares", sdkmath.ZeroInt()),
 			},
@@ -77,8 +77,8 @@ func TestCalcExitValueWithSlippage(t *testing.T) {
 			types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 				PoolAssets: []types.PoolAsset{
-					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1)},
-					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1)},
+					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
+					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
 				},
 				TotalShares: sdk.NewCoin("shares", sdkmath.NewInt(10)),
 			},

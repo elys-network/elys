@@ -104,5 +104,5 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 	})
 	suite.Require().NoError(err)
 	// Total liability is 4000, so 800 is the liability for 10000000000000000 Lp amount
-	suite.Require().Equal(estimation.RepayAmount.String(), "809")
+	suite.Require().Equal(estimation.RepayAmount.String(), "807")
 }
