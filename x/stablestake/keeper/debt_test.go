@@ -129,5 +129,4 @@ func (suite *KeeperTestSuite) TestCloseOnUnableToRepay() {
 		Id:               1,
 		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 860)},
 	}, r)
-
 }
