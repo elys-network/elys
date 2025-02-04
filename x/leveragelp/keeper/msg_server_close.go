@@ -36,7 +36,7 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		return nil, errors.New("invalid closing ratio for leverage lp")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFeeOnClosingPosition, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFeeOnClosingPosition, swapFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
 	}
@@ -53,6 +53,7 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
 		sdk.NewAttribute("exit_slippage_fee", exitSlippageFeeOnClosingPosition.String()),
+		sdk.NewAttribute("exit_swap_fee", swapFee.String()),
 	))
 	return &types.MsgCloseResponse{}, nil
 }

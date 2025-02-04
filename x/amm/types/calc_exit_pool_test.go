@@ -133,7 +133,7 @@ func TestCalcExitPool(t *testing.T) {
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
 			types.Pool{
-				PoolParams: types.PoolParams{UseOracle: true},
+				PoolParams: types.PoolParams{UseOracle: true, SwapFee: sdkmath.LegacyZeroDec()},
 				PoolAssets: []types.PoolAsset{
 					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
 					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
@@ -231,7 +231,7 @@ func TestCalcExitPool(t *testing.T) {
 			accKeeper := mocks.NewAccountedPoolKeeper(t)
 			tc.setupMock(oracleKeeper, accKeeper)
 
-			exitCoins, weightBalanceBonus, _, err := types.CalcExitPool(ctx, oracleKeeper, tc.pool, accKeeper, tc.exitingShares, tc.tokenOutDenom, tc.params, true)
+			exitCoins, weightBalanceBonus, _, _, err := types.CalcExitPool(ctx, oracleKeeper, tc.pool, accKeeper, tc.exitingShares, tc.tokenOutDenom, tc.params, true)
 			if tc.expectedErrMsg != "" {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tc.expectedErrMsg)

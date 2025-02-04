@@ -48,12 +48,14 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 		TotalShares: sdk.NewCoin("amm/pool/1", sdkmath.NewInt(2).Mul(ammtypes.OneShare)),
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  poolInit[0],
-				Weight: sdkmath.NewInt(10),
+				Token:                  poolInit[0],
+				Weight:                 sdkmath.NewInt(10),
+				ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
 			},
 			{
-				Token:  poolInit[1],
-				Weight: sdkmath.NewInt(10),
+				Token:                  poolInit[1],
+				Weight:                 sdkmath.NewInt(10),
+				ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
 			},
 		},
 		TotalWeight: sdkmath.NewInt(20),
