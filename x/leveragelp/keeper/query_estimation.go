@@ -18,7 +18,7 @@ func (k Keeper) OpenEst(goCtx context.Context, req *types.QueryOpenEstRequest) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	leveragedAmount := req.Leverage.MulInt(req.CollateralAmount).TruncateInt()
 	leverageCoin := sdk.NewCoin(req.CollateralAsset, leveragedAmount)
-	_, shares, _, weightBalanceBonus, err := k.amm.JoinPoolEst(ctx, req.AmmPoolId, sdk.Coins{leverageCoin})
+	_, shares, _, weightBalanceBonus, _, err := k.amm.JoinPoolEst(ctx, req.AmmPoolId, sdk.Coins{leverageCoin})
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 	}
 
 	closingRatio := req.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, _, weightBreakingFee, exitSlippageFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, _, weightBreakingFee, exitSlippageFee, swapFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
 	}
@@ -65,5 +65,6 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 		ExitWeightFee:     exitFeeOnClosingPosition,
 		WeightBreakingFee: weightBreakingFee,
 		ExitSlippageFee:   exitSlippageFee,
+		ExitSwapFee:       swapFee,
 	}, nil
 }
