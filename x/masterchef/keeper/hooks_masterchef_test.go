@@ -175,11 +175,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	suite.Require().Len(res.TotalRewards, 0)
 
 	// first user exit pool
-<<<<<<< HEAD
 	_, _, _, _, err = suite.app.AmmKeeper.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false, true)
-=======
-	_, _, _, err = suite.app.AmmKeeper.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false, true)
->>>>>>> 795633a795e37c87e673f1ed5581cd68ea04d4b3
 	suite.Require().NoError(err)
 
 	// check rewards after 100 block

@@ -13,7 +13,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 	positionHealth, err := k.GetPositionHealth(ctx, *position)
 	if err != nil {
-		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), false, math.LegacyZeroDec(), math.LegacyZeroDec(), err
+		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), false, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
 	safetyFactor := k.GetSafetyFactor(ctx)
 
