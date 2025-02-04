@@ -117,7 +117,7 @@ func (suite *KeeperTestSuite) TestForceCloseLong() {
 		Quo(math.LegacyNewDec(86400 * 365))).TruncateInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
-	_, _, _, repayAmountOut, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
@@ -135,7 +135,7 @@ func (suite *KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 		Quo(math.LegacyNewDec(86400 * 365))).RoundInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365 * 5))
-	_, _, _, repayAmountOut, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
 	suite.Require().NoError(err)
 	suite.Require().Greater(repayAmount.String(), repayAmountOut.String())
 }
@@ -155,7 +155,7 @@ func (suite *KeeperTestSuite) TestForceCloseLongPartial() {
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 	suite.SetCurrentHeight(suite.ctx.BlockHeight() + 1)
 	// close 50%
-	_, _, _, repayAmountOut, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec().QuoInt64(2), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec().QuoInt64(2), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.Quo(math.NewInt(2)).String(), repayAmountOut.String())
 

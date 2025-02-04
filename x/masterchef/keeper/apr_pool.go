@@ -19,18 +19,20 @@ func (k Keeper) CalculatePoolAprs(ctx sdk.Context, ids []uint64) []types.PoolApr
 		poolInfo, found := k.GetPoolInfo(ctx, poolId)
 		if !found {
 			data = append(data, types.PoolApr{
-				PoolId:   poolId,
-				UsdcApr:  sdkmath.LegacyZeroDec(),
-				EdenApr:  sdkmath.LegacyZeroDec(),
-				TotalApr: sdkmath.LegacyZeroDec(),
+				PoolId:     poolId,
+				UsdcDexApr: sdkmath.LegacyZeroDec(),
+				UsdcGasApr: sdkmath.LegacyZeroDec(),
+				EdenApr:    sdkmath.LegacyZeroDec(),
+				TotalApr:   sdkmath.LegacyZeroDec(),
 			})
 			continue
 		}
 		data = append(data, types.PoolApr{
-			PoolId:   poolId,
-			UsdcApr:  poolInfo.DexApr,
-			EdenApr:  poolInfo.EdenApr,
-			TotalApr: poolInfo.DexApr.Add(poolInfo.EdenApr),
+			PoolId:     poolId,
+			UsdcDexApr: poolInfo.DexApr,
+			UsdcGasApr: poolInfo.GasApr,
+			EdenApr:    poolInfo.EdenApr,
+			TotalApr:   poolInfo.DexApr.Add(poolInfo.GasApr).Add(poolInfo.EdenApr),
 		})
 	}
 
