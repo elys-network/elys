@@ -45,7 +45,7 @@ func (suite *AmmKeeperTestSuite) TestExitPool() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			exiter, poolId, inShares, minTokensOut, tokenOutDenom, isLiq := tc.setup()
-			_, _, err := suite.app.AmmKeeper.ExitPool(suite.ctx, exiter, poolId, inShares, minTokensOut, tokenOutDenom, isLiq, true)
+			_, _, _, err := suite.app.AmmKeeper.ExitPool(suite.ctx, exiter, poolId, inShares, minTokensOut, tokenOutDenom, isLiq, true)
 			if tc.expectedErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectedErrMsg)

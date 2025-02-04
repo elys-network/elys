@@ -182,6 +182,16 @@ message QueryExitPoolEstimationRequest {
 message QueryExitPoolEstimationResponse {
   repeated cosmos.base.v1beta1.Coin amounts_out = 1
       [ (gogoproto.nullable) = false ];
+  string weight_balance_ratio = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string slippage = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QuerySwapEstimationResponse {
