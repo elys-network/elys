@@ -153,16 +153,22 @@ func (p *Pool) JoinPool(
 		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
-	weightBalanceBonus, weightBreakingFee, _ := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokensIn[0].Denom, params, sdkmath.LegacyOneDec())
+	weightBalanceBonus, weightBreakingFee, isSwapFee := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokensIn[0].Denom, params, sdkmath.LegacyOneDec())
 	// apply percentage to fees, consider improvement or reduction of other token
 	// Other denom weight ratio to reduce the weight breaking fees
 	weightBreakingFee = weightBreakingFee.Mul(initialWeightOut)
 	weightBalanceBonus = weightBalanceBonus.Mul(initialWeightOut)
 
+	swapFee := sdkmath.LegacyZeroDec()
+	if isSwapFee {
+		swapFee = p.GetPoolParams().SwapFee.Mul(initialWeightOut)
+	}
+
 	totalShares := p.GetTotalShares()
 	numSharesDec := sdkmath.LegacyNewDecFromInt(totalShares.Amount).
 		Mul(joinValueWithSlippage).Quo(tvl).
-		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee))
+		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
+		Mul(sdkmath.LegacyOneDec().Sub(swapFee))
 	numShares = numSharesDec.RoundInt()
 	err = p.IncreaseLiquidity(numShares, tokensIn)
 	if err != nil {

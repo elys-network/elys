@@ -87,10 +87,10 @@ func CalcExitPool(
 	tokenOutDenom string,
 	params Params,
 	applyWeightBreakingFee bool,
-) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, err error) {
+) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, err error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
-		return sdk.Coins{}, sdkmath.LegacyZeroDec(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
 	// refundedShares = exitingShares * (1 - exit fee)
@@ -108,18 +108,19 @@ func CalcExitPool(
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
 		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom)
 		if err != nil {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), err
+			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
 		// Ensure tokenPrice is not zero to avoid division by zero
 		if tokenPrice.IsZero() {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), ErrAmountTooLow
+			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
 		}
 
 		oracleOutAmount := exitValueWithoutSlippage.Quo(tokenPrice)
 
 		tokenOutAmount := oracleOutAmount.RoundInt()
 		weightBalanceBonus = sdkmath.LegacyZeroDec()
+		isSwapFee := true
 
 		if applyWeightBreakingFee {
 			newAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
@@ -127,12 +128,12 @@ func CalcExitPool(
 				sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.RoundInt())}, accountedAssets,
 			)
 			if err != nil {
-				return sdk.Coins{}, sdkmath.LegacyZeroDec(), err
+				return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 			}
 			var tokenInDenom string
 			for _, asset := range newAssetPools {
 				if asset.Token.Amount.IsNegative() {
-					return sdk.Coins{}, sdkmath.LegacyZeroDec(), errors.New("out amount exceeds liquidity balance")
+					return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errors.New("out amount exceeds liquidity balance")
 				}
 
 				// As we have two asset pool so other asset will be tokenIn
@@ -142,7 +143,7 @@ func CalcExitPool(
 			}
 
 			var weightBreakingFee sdkmath.LegacyDec
-			weightBalanceBonus, weightBreakingFee, _ = pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenInDenom, params, sdkmath.LegacyOneDec())
+			weightBalanceBonus, weightBreakingFee, isSwapFee = pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenInDenom, params, sdkmath.LegacyOneDec())
 			// apply percentage to fees, consider improvement or reduction of other token
 			// Other denom weight ratio to reduce the weight breaking fees
 			initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
@@ -150,10 +151,17 @@ func CalcExitPool(
 			weightBreakingFee = weightBreakingFee.Mul(initialWeightIn)
 			weightBalanceBonus = weightBalanceBonus.Mul(initialWeightIn)
 
-			tokenOutAmount = oracleOutAmount.Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).RoundInt()
+			swapFee := sdkmath.LegacyZeroDec()
+			if isSwapFee {
+				swapFee = pool.GetPoolParams().SwapFee.Mul(initialWeightIn)
+			}
+
+			tokenOutAmount = oracleOutAmount.
+				Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
+				Mul(sdkmath.LegacyOneDec().Sub(swapFee)).RoundInt()
 		}
 
-		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, nil
+		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, swapFee, nil
 	}
 
 	for _, asset := range poolLiquidity {
@@ -163,10 +171,10 @@ func CalcExitPool(
 			continue
 		}
 		if exitAmt.GTE(asset.Amount) {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), errors.New("too many shares out")
+			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errors.New("too many shares out")
 		}
 		exitedCoins = exitedCoins.Add(sdk.NewCoin(asset.Denom, exitAmt))
 	}
 
-	return exitedCoins, sdkmath.LegacyZeroDec(), nil
+	return exitedCoins, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 }
