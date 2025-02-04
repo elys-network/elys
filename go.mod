@@ -18,7 +18,6 @@ require (
 	cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/tx v0.13.5
 	cosmossdk.io/x/upgrade v0.1.4
-	github.com/bandprotocol/bandchain-packet v0.0.2
 	github.com/cometbft/cometbft v0.38.12 // not using v0.38.11 due to vulnerabiltiy https://osv.dev/vulnerability/GHSA-g5xx-c4hv-9ccc https://osv.dev/vulnerability/GO-2024-3112
 	github.com/cometbft/cometbft-db v0.12.0 // indirect
 	github.com/cosmos/cosmos-db v1.0.2
