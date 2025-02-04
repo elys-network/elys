@@ -34,18 +34,17 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKee
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token out denom not found")
 	}
 
-	joinValue := sdkmath.LegacyZeroDec()
-	tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenIn.Denom)
-	if tokenPrice.IsZero() {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenIn.Denom)
+	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+	if outTokenPrice.IsZero() {
+		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenOutDenom)
 	}
-	v := tokenPrice.Mul(sdkmath.LegacyNewDecFromInt(tokenIn.Amount))
-	joinValue = joinValue.Add(v)
 
 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenIn.Denom)
 	if inTokenPrice.IsZero() {
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenIn.Denom)
 	}
+
+	joinValue := inTokenPrice.Mul(sdkmath.LegacyNewDecFromInt(tokenIn.Amount))
 
 	externalLiquidityRatio, err := p.GetAssetExternalLiquidityRatio(tokenOutDenom)
 	if err != nil {
@@ -71,8 +70,8 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKee
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
+	slippageValue := slippageAmount.Mul(outTokenPrice)
 
-	slippageValue := slippageAmount.Mul(inTokenPrice)
 	slippage := slippageValue.Quo(joinValue)
 	joinValueWithSlippage := joinValue.Sub(slippageValue)
 

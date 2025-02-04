@@ -36,7 +36,7 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		return nil, errors.New("invalid closing ratio for leverage lp")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, finalUserRewards, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFeeOnClosingPosition, swapFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFeeOnClosingPosition, swapFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		sdk.NewAttribute("lp_amount_closed", totalLpAmountToClose.String()),
 		sdk.NewAttribute("coins_to_amm", coinsForAmm.String()),
 		sdk.NewAttribute("repay_amount", repayAmount.String()),
-		sdk.NewAttribute("user_rewards", finalUserRewards.String()),
+		sdk.NewAttribute("user_return_tokens", userReturnTokens.String()),
 		sdk.NewAttribute("exit_fee", exitFeeOnClosingPosition.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
 		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
