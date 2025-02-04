@@ -18,7 +18,7 @@ func (k Keeper) OpenEst(goCtx context.Context, req *types.QueryOpenEstRequest) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	leveragedAmount := req.Leverage.MulInt(req.CollateralAmount).TruncateInt()
 	leverageCoin := sdk.NewCoin(req.CollateralAsset, leveragedAmount)
-	_, shares, _, weightBalanceBonus, err := k.amm.JoinPoolEst(ctx, req.AmmPoolId, sdk.Coins{leverageCoin})
+	_, shares, _, weightBalanceBonus, _, err := k.amm.JoinPoolEst(ctx, req.AmmPoolId, sdk.Coins{leverageCoin})
 	if err != nil {
 		return nil, err
 	}
