@@ -289,7 +289,7 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	tokenOutDenom string,
 	params Params,
 	applyWeightBreakingFee bool,
-) (exitedCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, err error) {
+) (exitedCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, slippage sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, err error) {
 	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom, params, applyWeightBreakingFee)
 }
 
