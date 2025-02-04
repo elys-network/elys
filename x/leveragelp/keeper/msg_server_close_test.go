@@ -274,7 +274,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			},
 			func() {
 				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
-				actualShares, ok := sdkmath.NewIntFromString("9745408547619047617")
+				actualShares, ok := sdkmath.NewIntFromString("9742023612276190491")
 				suite.Require().True(ok)
 				suite.Require().Equal(position.LeveragedLpAmount.String(), actualShares.String())
 			},
@@ -283,7 +283,7 @@ func (suite *KeeperTestSuite) TestClose() {
 			&types.MsgClose{
 				Creator:  addresses[0].String(),
 				Id:       1,
-				LpAmount: sdkmath.LegacyMustNewDecFromStr("9745408547619047617").TruncateInt(),
+				LpAmount: sdkmath.LegacyMustNewDecFromStr("9742023612276190491").TruncateInt(),
 			},
 			false,
 			"",

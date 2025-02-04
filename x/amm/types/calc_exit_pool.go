@@ -166,7 +166,7 @@ func CalcExitPool(
 			weightBreakingFee = weightBreakingFee.Mul(initialWeightIn)
 			weightBalanceBonus = weightBalanceBonus.Mul(initialWeightIn)
 
-			swapFee := sdkmath.LegacyZeroDec()
+			swapFee = sdkmath.LegacyZeroDec()
 			if isSwapFee {
 				swapFee = pool.GetPoolParams().SwapFee.Mul(initialWeightIn)
 			}
