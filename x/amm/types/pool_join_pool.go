@@ -34,18 +34,17 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKee
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token out denom not found")
 	}
 
-	joinValue := sdkmath.LegacyZeroDec()
-	tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenIn.Denom)
-	if tokenPrice.IsZero() {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenIn.Denom)
+	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+	if outTokenPrice.IsZero() {
+		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenOutDenom)
 	}
-	v := tokenPrice.Mul(sdkmath.LegacyNewDecFromInt(tokenIn.Amount))
-	joinValue = joinValue.Add(v)
 
 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenIn.Denom)
 	if inTokenPrice.IsZero() {
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenIn.Denom)
 	}
+
+	joinValue := inTokenPrice.Mul(sdkmath.LegacyNewDecFromInt(tokenIn.Amount))
 
 	externalLiquidityRatio, err := p.GetAssetExternalLiquidityRatio(tokenOutDenom)
 	if err != nil {
@@ -71,8 +70,8 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKee
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
+	slippageValue := slippageAmount.Mul(outTokenPrice)
 
-	slippageValue := slippageAmount.Mul(inTokenPrice)
 	slippage := slippageValue.Quo(joinValue)
 	joinValueWithSlippage := joinValue.Sub(slippageValue)
 
@@ -86,20 +85,20 @@ func (p *Pool) JoinPool(
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
 	params Params,
-) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, err error) {
+) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
 		numShares, tokensJoined, err := p.CalcJoinPoolNoSwapShares(tokensIn)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}, err
+			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}, sdkmath.LegacyZeroDec(), err
 		}
-		return tokensJoined, numShares, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
+		return tokensJoined, numShares, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 	}
 
 	if !p.PoolParams.UseOracle {
@@ -117,15 +116,15 @@ func (p *Pool) JoinPool(
 
 		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}, err
+			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}, sdkmath.LegacyZeroDec(), err
 		}
-		return tokensJoined, numShares, totalSlippage, sdkmath.LegacyZeroDec(), nil
+		return tokensJoined, numShares, totalSlippage, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 	}
 
 	accountedAssets := p.GetAccountedBalance(ctx, accountedPoolKeeper, p.PoolAssets)
@@ -135,39 +134,45 @@ func (p *Pool) JoinPool(
 
 	joinValueWithSlippage, slippage, err := p.CalcJoinValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, tokensIn[0], initialWeightOut)
 	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
 	tvl, err := p.TVL(ctx, oracleKeeper, accountedPoolKeeper)
 	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
 	// Ensure tvl is not zero to avoid division by zero
 	if tvl.IsZero() {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
+		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
 	}
 
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx, tokensIn, sdk.NewCoins(), accountedAssets)
 	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
-	weightBalanceBonus, weightBreakingFee, _ := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokensIn[0].Denom, params, sdkmath.LegacyOneDec())
+	weightBalanceBonus, weightBreakingFee, isSwapFee := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokensIn[0].Denom, params, sdkmath.LegacyOneDec())
 	// apply percentage to fees, consider improvement or reduction of other token
 	// Other denom weight ratio to reduce the weight breaking fees
 	weightBreakingFee = weightBreakingFee.Mul(initialWeightOut)
 	weightBalanceBonus = weightBalanceBonus.Mul(initialWeightOut)
 
+	swapFee = sdkmath.LegacyZeroDec()
+	if isSwapFee {
+		swapFee = p.GetPoolParams().SwapFee.Mul(initialWeightOut)
+	}
+
 	totalShares := p.GetTotalShares()
 	numSharesDec := sdkmath.LegacyNewDecFromInt(totalShares.Amount).
 		Mul(joinValueWithSlippage).Quo(tvl).
-		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee))
+		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
+		Mul(sdkmath.LegacyOneDec().Sub(swapFee))
 	numShares = numSharesDec.RoundInt()
 	err = p.IncreaseLiquidity(numShares, tokensIn)
 	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
-	return tokensIn, numShares, slippage, weightBalanceBonus, nil
+	return tokensIn, numShares, slippage, weightBalanceBonus, swapFee, nil
 }
