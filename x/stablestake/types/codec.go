@@ -12,6 +12,9 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgBond{}, "stablestake/MsgBond")
 	legacy.RegisterAminoMsg(cdc, &MsgUnbond{}, "stablestake/MsgUnbond")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "stablestake/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgAddPool{}, "stablestake/MsgAddPool")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdatePool{}, "stablestake/MsgUpdatePool")
+
 	// this line is used by starport scaffolding # 2
 }
 
@@ -20,6 +23,8 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgBond{},
 		&MsgUnbond{},
 		&MsgUpdateParams{},
+		&MsgAddPool{},
+		&MsgUpdatePool{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

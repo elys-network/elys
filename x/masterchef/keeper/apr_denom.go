@@ -71,7 +71,9 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 	} else if query.Denom == ptypes.BaseCurrency {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {
 			params := k.stableKeeper.GetParams(ctx)
-			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{})
+			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{
+				PoolId: stabletypes.PoolId,
+			})
 			if err != nil {
 				return math.LegacyZeroDec(), err
 			}

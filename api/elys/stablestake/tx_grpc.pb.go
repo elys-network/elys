@@ -21,6 +21,8 @@ type MsgClient interface {
 	Bond(ctx context.Context, in *MsgBond, opts ...grpc.CallOption) (*MsgBondResponse, error)
 	Unbond(ctx context.Context, in *MsgUnbond, opts ...grpc.CallOption) (*MsgUnbondResponse, error)
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	AddPool(ctx context.Context, in *MsgAddPool, opts ...grpc.CallOption) (*MsgAddPoolResponse, error)
+	UpdatePool(ctx context.Context, in *MsgUpdatePool, opts ...grpc.CallOption) (*MsgUpdatePoolResponse, error)
 }
 
 type msgClient struct {
@@ -58,6 +60,24 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
+func (c *msgClient) AddPool(ctx context.Context, in *MsgAddPool, opts ...grpc.CallOption) (*MsgAddPoolResponse, error) {
+	out := new(MsgAddPoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Msg/AddPool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdatePool(ctx context.Context, in *MsgUpdatePool, opts ...grpc.CallOption) (*MsgUpdatePoolResponse, error) {
+	out := new(MsgUpdatePoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Msg/UpdatePool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -65,6 +85,8 @@ type MsgServer interface {
 	Bond(context.Context, *MsgBond) (*MsgBondResponse, error)
 	Unbond(context.Context, *MsgUnbond) (*MsgUnbondResponse, error)
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	AddPool(context.Context, *MsgAddPool) (*MsgAddPoolResponse, error)
+	UpdatePool(context.Context, *MsgUpdatePool) (*MsgUpdatePoolResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -80,6 +102,12 @@ func (UnimplementedMsgServer) Unbond(context.Context, *MsgUnbond) (*MsgUnbondRes
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (UnimplementedMsgServer) AddPool(context.Context, *MsgAddPool) (*MsgAddPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddPool not implemented")
+}
+func (UnimplementedMsgServer) UpdatePool(context.Context, *MsgUpdatePool) (*MsgUpdatePoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePool not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -148,6 +176,42 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_AddPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddPool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AddPool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Msg/AddPool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AddPool(ctx, req.(*MsgAddPool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdatePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdatePool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdatePool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Msg/UpdatePool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdatePool(ctx, req.(*MsgUpdatePool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -166,6 +230,14 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
+		},
+		{
+			MethodName: "AddPool",
+			Handler:    _Msg_AddPool_Handler,
+		},
+		{
+			MethodName: "UpdatePool",
+			Handler:    _Msg_UpdatePool_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
