@@ -99,6 +99,7 @@ func CalcExitPool(
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
 	params Params,
+	takerFees sdkmath.LegacyDec,
 	applyFee bool,
 ) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, slippage sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, err error) {
 	totalShares := pool.GetTotalShares()
