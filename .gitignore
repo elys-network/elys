@@ -20,3 +20,4 @@ scripts/csv/.env
 price-feeder
 *-skip
 __debug*
+price-feeder.toml
