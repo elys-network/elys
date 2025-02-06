@@ -49,6 +49,36 @@ func (k Keeper) UpdatePoolForSwap(
 		return err
 	}
 
+	// Taker fees
+	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
+	takerFeesInCoins := sdk.Coins{}
+	if takerFees.IsPositive() {
+		if givenOut {
+			takeFeesFrom := sdk.NewCoins(sdk.NewCoin(tokenIn.Denom, oracleInAmount))
+			if !pool.PoolParams.UseOracle {
+				takeFeesFrom = tokensIn
+			}
+			// if swapInGivenOut, use oracleIn amount to get taker fees
+			takerFeesInCoins = PortionCoins(takeFeesFrom, takerFees)
+		} else {
+			takerFeesInCoins = PortionCoins(tokensIn, takerFees)
+		}
+	}
+
+	// send taker fee to protocol treasury
+	if takerFeesInCoins.IsAllPositive() {
+		protocolAddress := k.parameterKeeper.GetParams(ctx).protocolAddress
+		err = k.bankKeeper.SendCoins(ctx, poolAddr, protocolAddress, takerFeesInCoins)
+		if err != nil {
+			return err
+		}
+
+		err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), takerFeesInCoins)
+		if err != nil {
+			return err
+		}
+	}
+
 	// apply swap fee when weight balance bonus is not available
 	swapFeeInCoins := sdk.Coins{}
 	if swapFee.IsPositive() {

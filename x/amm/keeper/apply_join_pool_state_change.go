@@ -80,6 +80,27 @@ func (k Keeper) ApplyJoinPoolStateChange(
 		}
 	}
 
+	// Taker fees
+	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
+	takerFeesInCoins := sdk.Coins{}
+	if takerFees.IsPositive() {
+		takerFeesInCoins = PortionCoins(joinCoins, takerFees)
+	}
+
+	// send taker fee to protocol treasury
+	if takerFeesInCoins.IsAllPositive() {
+		protocolAddress := k.parameterKeeper.GetParams(ctx).protocolAddress
+		err := k.bankKeeper.SendCoins(ctx, poolAddr, protocolAddress, takerFeesInCoins)
+		if err != nil {
+			return err
+		}
+
+		err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), takerFeesInCoins)
+		if err != nil {
+			return err
+		}
+	}
+
 	types.EmitAddLiquidityEvent(ctx, joiner, pool.GetPoolId(), joinCoins)
 	if k.hooks != nil {
 		err := k.hooks.AfterJoinPool(ctx, joiner, pool, joinCoins, numShares)
