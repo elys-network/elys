@@ -91,9 +91,6 @@ func (suite *KeeperTestSuite) TestDebt() {
 			allDebts := suite.app.StablestakeKeeper.GetAllDebts(suite.ctx)
 			suite.Require().Len(allDebts, 1)
 
-			suite.app.StablestakeKeeper.MoveAllDebt(suite.ctx)
-			suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
-
 			// Pay rest, ensure we don't pay multiple times
 			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10990)), 1, 1)
 			suite.Require().NoError(err)
@@ -101,6 +98,9 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.Require().Equal(res.Borrowed.String(), "0")
 			suite.Require().Equal(res.InterestStacked.String(), "0")
 			suite.Require().Equal(res.InterestPaid.String(), "0")
+
+			suite.app.StablestakeKeeper.MoveAllDebt(suite.ctx)
+			suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
 		})
 	}
 }
