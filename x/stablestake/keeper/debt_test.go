@@ -51,9 +51,6 @@ func (suite *KeeperTestSuite) TestDebt() {
 
 			shareDenom := types.GetShareDenomForPool(1)
 
-			suite.app.StablestakeKeeper.MoveAllDebt(suite.ctx)
-			suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
-
 			// Set an entity to assetprofile
 			entry := assetprofiletypes.Entry{
 				Authority:       authtypes.NewModuleAddress(types.ModuleName).String(),
@@ -93,6 +90,9 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.Require().Equal(res.InterestPaid.String(), "10")
 			allDebts := suite.app.StablestakeKeeper.GetAllDebts(suite.ctx)
 			suite.Require().Len(allDebts, 1)
+
+			suite.app.StablestakeKeeper.MoveAllDebt(suite.ctx)
+			suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
 
 			// Pay rest, ensure we don't pay multiple times
 			err = suite.app.StablestakeKeeper.Repay(suite.ctx, sender, sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10990)), 1, 1)
