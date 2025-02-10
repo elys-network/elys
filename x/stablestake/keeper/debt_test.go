@@ -51,6 +51,9 @@ func (suite *KeeperTestSuite) TestDebt() {
 
 			shareDenom := types.GetShareDenomForPool(1)
 
+			suite.app.StablestakeKeeper.MoveAllDebt(suite.ctx)
+			suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
+
 			// Set an entity to assetprofile
 			entry := assetprofiletypes.Entry{
 				Authority:       authtypes.NewModuleAddress(types.ModuleName).String(),

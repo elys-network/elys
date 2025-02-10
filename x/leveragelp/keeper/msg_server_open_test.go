@@ -168,7 +168,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: "invalid pool id",
+			expectErrMsg: "pool does not exist",
 			prerequisiteFunction: func() {
 				pool := types.NewPool(2, sdkmath.LegacyMustNewDecFromStr("10"))
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
@@ -186,7 +186,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: "invalid pool id",
+			expectErrMsg: "pool does not exist",
 			prerequisiteFunction: func() {
 				suite.SetupCoinPrices(suite.ctx)
 			},
