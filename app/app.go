@@ -283,6 +283,9 @@ func NewElysApp(
 			IBCKeeper:       app.IBCKeeper,
 			StakingKeeper:   app.StakingKeeper,
 			ConsumerKeeper:  app.ConsumerKeeper,
+			WasmConfig:            &wasmConfig,
+			WasmKeeper:            &app.WasmKeeper,
+			TXCounterStoreService: runtime.NewKVStoreService(keys[wasmTypes.StoreKey]),
 		},
 	)
 	if err != nil {
