@@ -55,3 +55,49 @@ func TestInterestGet(t *testing.T) {
 	all = keeper.GetAllInterest(ctx)
 	require.Equal(t, len(all), 10)
 }
+
+func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
+	for _, tc := range []struct {
+		desc    string
+		pool    types.Pool
+		expPass bool
+		want    sdkmath.LegacyDec
+	}{
+		{
+			desc: "interest calculation with zero total value",
+			pool: types.Pool{
+				TotalValue:           sdkmath.NewInt(0),
+				InterestRate:         sdkmath.LegacyNewDec(5),
+				InterestRateMax:      sdkmath.LegacyNewDec(10),
+				InterestRateMin:      sdkmath.LegacyNewDec(1),
+				InterestRateIncrease: sdkmath.LegacyNewDec(1),
+				InterestRateDecrease: sdkmath.LegacyNewDec(1),
+				HealthGainFactor:     sdkmath.LegacyNewDec(1),
+			},
+			expPass: true,
+			want:    sdkmath.LegacyNewDec(5),
+		},
+		{
+			desc: "interest calculation with zero max leverage",
+			pool: types.Pool{
+				TotalValue:           sdkmath.NewInt(0),
+				InterestRate:         sdkmath.LegacyNewDec(5),
+				InterestRateMax:      sdkmath.LegacyNewDec(10),
+				InterestRateMin:      sdkmath.LegacyNewDec(1),
+				InterestRateIncrease: sdkmath.LegacyNewDec(1),
+				InterestRateDecrease: sdkmath.LegacyNewDec(1),
+				HealthGainFactor:     sdkmath.LegacyNewDec(1),
+				MaxLeverageRatio:     sdkmath.LegacyZeroDec(),
+			},
+			expPass: true,
+			want:    sdkmath.LegacyNewDec(5),
+		},
+	} {
+		suite.Run(tc.desc, func() {
+			suite.SetupTest()
+
+			got := suite.app.StablestakeKeeper.InterestRateComputationForPool(suite.ctx, tc.pool)
+			suite.Require().Equal(tc.want, got)
+		})
+	}
+}
