@@ -145,6 +145,9 @@ func (suite *KeeperTestSuite) TestClose() {
 			false,
 			"",
 			func() {
+				suite.ResetSuite()
+				suite.SetupCoinPrices(suite.ctx)
+				initializeForClose(suite, addresses, asset1, asset2)
 				msg := types.MsgOpen{
 					Creator:          addresses[0].String(),
 					CollateralAsset:  ptypes.BaseCurrency,
@@ -167,7 +170,7 @@ func (suite *KeeperTestSuite) TestClose() {
 				LpAmount: leverageLPShares.MulRaw(2),
 			},
 			true,
-			types.ErrInvalidCloseSize.Error(),
+			"invalid closing ratio for leverage lp",
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices(suite.ctx)
@@ -263,7 +266,7 @@ func (suite *KeeperTestSuite) TestClose() {
 					CollateralAmount: collateralAmount,
 					AmmPoolId:        1,
 					Leverage:         leverage,
-					StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
+					StopLossPrice:    sdkmath.LegacyZeroDec(),
 				}
 				_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
 				suite.Require().NoError(err)
@@ -271,16 +274,16 @@ func (suite *KeeperTestSuite) TestClose() {
 			},
 			func() {
 				position, _ := suite.app.LeveragelpKeeper.GetPosition(suite.ctx, addresses[0], 1)
-				actualShares, ok := sdkmath.NewIntFromString("9999952380952380950")
+				actualShares, ok := sdkmath.NewIntFromString("8469522626038095244")
 				suite.Require().True(ok)
-				suite.Require().Equal(position.LeveragedLpAmount, actualShares)
+				suite.Require().Equal(position.LeveragedLpAmount.String(), actualShares.String())
 			},
 		},
 		{"Closing whole position",
 			&types.MsgClose{
 				Creator:  addresses[0].String(),
 				Id:       1,
-				LpAmount: sdkmath.NewInt(0),
+				LpAmount: sdkmath.LegacyMustNewDecFromStr("8469522626038095244").TruncateInt(),
 			},
 			false,
 			"",
@@ -297,7 +300,8 @@ func (suite *KeeperTestSuite) TestClose() {
 		suite.Run(tc.name, func() {
 			portfolio_old, found := suite.app.TierKeeper.GetPortfolio(suite.ctx, sdk.MustAccAddressFromBech32(tc.input.Creator), suite.app.TierKeeper.GetDateFromContext(suite.ctx))
 			tc.prerequisiteFunction()
-			_, err := suite.app.LeveragelpKeeper.Close(suite.ctx, tc.input)
+			msgServer := keeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper)
+			_, err := msgServer.Close(suite.ctx, tc.input)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)

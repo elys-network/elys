@@ -23,6 +23,7 @@ func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64, baseAsset
 		ThresholdWeightDifference:        math.LegacyMustNewDecFromStr("0.3"),
 		AllowedPoolCreators:              []string{authtypes.NewModuleAddress(govtypes.ModuleName).String()},
 		ThresholdWeightDifferenceSwapFee: math.LegacyMustNewDecFromStr("1.0"),
+		LpLockupDuration:                 3600,
 	}
 }
 
