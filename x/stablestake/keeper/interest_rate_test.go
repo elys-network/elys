@@ -13,7 +13,7 @@ import (
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
-func createNInterest(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.InterestBlock, int64) {
+func CreateNInterest(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.InterestBlock, int64) {
 	items := make([]types.InterestBlock, n)
 	ctx = ctx.WithBlockHeight(1000)
 	curBlock := ctx.BlockHeight()
@@ -29,7 +29,7 @@ func createNInterest(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.Int
 
 func TestInterestGet(t *testing.T) {
 	keeper, ctx := keepertest.StablestakeKeeper(t)
-	_, lastBlock := createNInterest(keeper, ctx, 10)
+	_, lastBlock := CreateNInterest(keeper, ctx, 10)
 	ctx = ctx.WithBlockHeight(lastBlock)
 
 	// 1st case

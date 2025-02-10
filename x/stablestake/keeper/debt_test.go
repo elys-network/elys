@@ -98,9 +98,6 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.Require().Equal(res.Borrowed.String(), "0")
 			suite.Require().Equal(res.InterestStacked.String(), "0")
 			suite.Require().Equal(res.InterestPaid.String(), "0")
-
-			suite.app.StablestakeKeeper.MoveAllDebt(suite.ctx)
-			suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
 		})
 	}
 }
@@ -132,4 +129,32 @@ func (suite *KeeperTestSuite) TestCloseOnUnableToRepay() {
 		Id:               1,
 		TotalLiabilities: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 860)},
 	}, r)
+}
+
+func (suite *KeeperTestSuite) TestMove() {
+	debt := types.Debt{
+		Address:               sample.AccAddress(),
+		Borrowed:              math.NewInt(100),
+		InterestPaid:          math.NewInt(10),
+		InterestStacked:       math.NewInt(50),
+		BorrowTime:            1,
+		LastInterestCalcTime:  uint64(suite.ctx.BlockTime().Unix()) - 1,
+		LastInterestCalcBlock: 1,
+	}
+	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
+	suite.app.StablestakeKeeper.MoveAllDebt(suite.ctx)
+
+	debts := suite.app.StablestakeKeeper.GetAllDebts(suite.ctx)
+	suite.Require().Len(debts, 1)
+	suite.Require().Equal(uint64(types.PoolId), debts[0].PoolId)
+
+	interest := types.InterestBlock{
+		InterestRate: math.LegacyNewDec(10),
+		BlockTime:    suite.ctx.BlockTime().Unix(),
+		BlockHeight:  uint64(suite.ctx.BlockHeight()),
+	}
+	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, 1, interest.BlockHeight, interest)
+	suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
+	interests := suite.app.StablestakeKeeper.GetAllInterest(suite.ctx)
+	suite.Require().Equal(uint64(types.PoolId), interests[0].PoolId)
 }
