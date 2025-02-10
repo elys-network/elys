@@ -106,6 +106,11 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	// We subtract here because CheckAmmUsdcBalance in hooks will validate if there is enough amount to pay liabilities, since we're exiting this one, it needs reduced value
 	k.stableKeeper.SubtractPoolLiabilities(ctx, position.AmmPoolId, sdk.NewCoin(position.Collateral.Denom, repayAmount))
 
+	// Subtract amount that is being reduced from lp pool as it gets checked in CheckAmmUsdcBalance
+	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(lpSharesForRepay)
+	// pool is set here
+	k.UpdatePoolHealth(ctx, pool)
+
 	_, _, _, _, err = k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, lpSharesForRepay, sdk.Coins{}, position.Collateral.Denom, isLiquidation, false)
 	if err != nil {
 		return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
@@ -134,7 +139,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	var coinsLeftAfterRepay sdk.Coins
 	sharesLeft := math.ZeroInt()
 	if totalLpAmountToClose.GT(lpSharesForRepay) {
-		sharesLeft := totalLpAmountToClose.Sub(lpSharesForRepay)
+		sharesLeft = totalLpAmountToClose.Sub(lpSharesForRepay)
 		coinsLeftAfterRepay, _, _, _, err = k.amm.ExitPool(ctx, position.GetPositionAddress(), position.AmmPoolId, sharesLeft, sdk.Coins{}, "", isLiquidation, false)
 		if err != nil {
 			return math.LegacyZeroDec(), math.ZeroInt(), sdk.Coins{}, math.ZeroInt(), sdk.Coins{}, math.LegacyZeroDec(), stopLossReached, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err

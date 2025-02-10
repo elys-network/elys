@@ -168,7 +168,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: "pool does not exis",
+			expectErrMsg: "invalid pool id",
 			prerequisiteFunction: func() {
 				pool := types.NewPool(2, sdkmath.LegacyMustNewDecFromStr("10"))
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
@@ -186,7 +186,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: "pool does not exis",
+			expectErrMsg: "invalid pool id",
 			prerequisiteFunction: func() {
 				suite.SetupCoinPrices(suite.ctx)
 			},
@@ -279,7 +279,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			"pool is already leveraged at maximum value",
+			"stable stake pool max borrow capacity used up",
 			func() {
 				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
 			},
