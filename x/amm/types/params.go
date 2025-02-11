@@ -87,10 +87,10 @@ func (p Params) Validate() error {
 	}
 
 	if p.MinSlippage.IsNil() {
-		return errors.New("thresholdWeightDifference must not be empty")
+		return errors.New("MinSlippage must not be empty")
 	}
 	if p.MinSlippage.IsNegative() {
-		return errors.New("thresholdWeightDifference must be positive")
+		return errors.New("MinSlippage must be positive")
 	}
 	if p.MinSlippage.GT(math.LegacyMustNewDecFromStr("0.01")) {
 		return errors.New("MinSlippage must be less than 1%")
