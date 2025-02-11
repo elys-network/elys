@@ -23,6 +23,7 @@ func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64, baseAsset
 		AllowedPoolCreators:              []string{authtypes.NewModuleAddress(govtypes.ModuleName).String()},
 		ThresholdWeightDifferenceSwapFee: math.LegacyMustNewDecFromStr("1.0"),
 		LpLockupDuration:                 3600,
+		MinSlippage:                      math.LegacyMustNewDecFromStr("0.001"),
 	}
 }
 
@@ -83,6 +84,16 @@ func (p Params) Validate() error {
 	}
 	if p.ThresholdWeightDifference.IsNegative() {
 		return errors.New("thresholdWeightDifference must be positive")
+	}
+
+	if p.MinSlippage.IsNil() {
+		return errors.New("thresholdWeightDifference must not be empty")
+	}
+	if p.MinSlippage.IsNegative() {
+		return errors.New("thresholdWeightDifference must be positive")
+	}
+	if p.MinSlippage.GT(math.LegacyMustNewDecFromStr("0.01")) {
+		return errors.New("MinSlippage must be less than 1%")
 	}
 	return nil
 }
