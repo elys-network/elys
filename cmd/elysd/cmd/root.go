@@ -10,6 +10,7 @@ import (
 	"cosmossdk.io/client/v2/autocli"
 	"cosmossdk.io/log"
 	confixcmd "cosmossdk.io/tools/confix/cmd"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	tmcfg "github.com/cometbft/cometbft/config"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	dbm "github.com/cosmos/cosmos-db"
@@ -74,6 +75,7 @@ func NewRootCmd() *cobra.Command {
 		map[int64]bool{},
 		tempDirectory,
 		initAppOptions,
+		[]wasmkeeper.Option{},
 	)
 
 	initClientCtx := client.Context{}.
@@ -319,6 +321,7 @@ func (a appCreator) newApp(
 		skipUpgradeHeights,
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		appOpts,
+		[]wasmkeeper.Option{},
 		baseappOptions...,
 	)
 }
@@ -356,6 +359,7 @@ func (a appCreator) appExport(
 		map[int64]bool{},
 		homePath,
 		appOpts,
+		[]wasmkeeper.Option{},
 	)
 
 	if height != -1 {
