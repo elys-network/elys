@@ -25,6 +25,9 @@ import (
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	wasm "github.com/CosmWasm/wasmd/x/wasm"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -129,6 +132,7 @@ func NewElysApp(
 	skipUpgradeHeights map[int64]bool,
 	homePath string,
 	appOpts servertypes.AppOptions,
+	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *ElysApp {
 
@@ -185,6 +189,7 @@ func NewElysApp(
 		logger,
 		appOpts,
 		AccountAddressPrefix,
+		wasmOpts,
 	)
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -265,6 +270,11 @@ func NewElysApp(
 	app.MountTransientStores(app.GetTransientStoreKey())
 	app.MountMemoryStores(app.GetMemoryStoreKey())
 
+	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	if err != nil {
+		panic(fmt.Sprintf("error while reading wasm config: %s", err))
+	}
+
 	anteHandler, err := ante.NewAnteHandler(
 		ante.HandlerOptions{
 
@@ -285,7 +295,7 @@ func NewElysApp(
 			ConsumerKeeper:  app.ConsumerKeeper,
 			WasmConfig:            &wasmConfig,
 			WasmKeeper:            &app.WasmKeeper,
-			TXCounterStoreService: runtime.NewKVStoreService(keys[wasmTypes.StoreKey]),
+			TXCounterStoreService: runtime.NewKVStoreService(app.AppKeepers.GetKVStoreKey()[wasmTypes.StoreKey]),
 		},
 	)
 	if err != nil {

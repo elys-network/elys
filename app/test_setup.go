@@ -9,6 +9,7 @@ import (
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmttypes "github.com/cometbft/cometbft/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -54,6 +55,7 @@ func InitiateNewElysApp(t *testing.T) *ElysApp {
 		map[int64]bool{},
 		t.TempDir(),
 		appOptions,
+		[]wasmkeeper.Option{},
 	)
 
 	return app
