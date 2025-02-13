@@ -2,6 +2,7 @@ package types
 
 import (
 	"errors"
+	"slices"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -114,10 +115,5 @@ func (p Params) Validate() error {
 }
 
 func (p Params) IsCreatorAllowed(creator string) bool {
-	for _, allowedCreator := range p.AllowedPoolCreators {
-		if allowedCreator == creator {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(p.AllowedPoolCreators, creator)
 }
