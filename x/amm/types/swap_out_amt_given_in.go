@@ -248,6 +248,11 @@ func (p *Pool) SwapOutAmtGivenIn(
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
 	slippage = slippageAmount.Quo(oracleOutAmount)
 
+	if slippage.LT(params.MinSlippage) {
+		slippage = params.MinSlippage
+		slippageAmount = oracleOutAmount.Mul(params.MinSlippage)
+	}
+
 	// oracleOutAmount = 100 ATOM
 	// BalancerOutAmount = 95 ATOM
 	// balancerSlippageAmount = 5

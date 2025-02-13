@@ -1,10 +1,11 @@
 package types_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestDefaultParams(t *testing.T) {
@@ -37,6 +38,30 @@ func TestParamsValidation(t *testing.T) {
 				params.PoolCreationFee = math.NewInt(1).MulRaw(-1)
 			},
 			err: "pool creation fee must be positive",
+		},
+		{
+			name: "MinSlippage is nil",
+			setter: func() {
+				params = types.DefaultParams()
+				params.MinSlippage = math.LegacyDec{}
+			},
+			err: "MinSlippage must not be empty",
+		},
+		{
+			name: "MinSlippage < 0",
+			setter: func() {
+				params = types.DefaultParams()
+				params.MinSlippage = math.LegacyNewDec(1).Neg()
+			},
+			err: "MinSlippage must be positive",
+		},
+		{
+			name: "MinSlippage > 0.1",
+			setter: func() {
+				params = types.DefaultParams()
+				params.MinSlippage = math.LegacyMustNewDecFromStr("0.02")
+			},
+			err: "MinSlippage must be less than 1%",
 		},
 	}
 	for _, tt := range tests {
