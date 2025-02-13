@@ -19,9 +19,9 @@ func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64, baseAsset
 		WeightBreakingFeeMultiplier:      math.LegacyMustNewDecFromStr("0.0005"),
 		WeightBreakingFeePortion:         math.LegacyMustNewDecFromStr("0.5"),
 		WeightRecoveryFeePortion:         math.LegacyMustNewDecFromStr("0.1"),
-		ThresholdWeightDifference:        math.LegacyMustNewDecFromStr("0.3"),
+		ThresholdWeightDifference:        math.LegacyMustNewDecFromStr("0.1"),
 		AllowedPoolCreators:              []string{authtypes.NewModuleAddress(govtypes.ModuleName).String()},
-		ThresholdWeightDifferenceSwapFee: math.LegacyMustNewDecFromStr("1.0"),
+		ThresholdWeightDifferenceSwapFee: math.LegacyMustNewDecFromStr("0.15"),
 		LpLockupDuration:                 3600,
 	}
 }
@@ -66,7 +66,7 @@ func (p Params) Validate() error {
 	if p.WeightBreakingFeeMultiplier.IsNegative() {
 		return errors.New("weightBreakingFeeMultiplier must be positive")
 	}
-	if p.WeightBreakingFeeMultiplier.GT(math.LegacyMustNewDecFromStr("0.0001")) {
+	if p.WeightBreakingFeeMultiplier.GT(math.LegacyMustNewDecFromStr("0.001")) {
 		return errors.New("weightBreakingFeeMultiplier must be less than 0.01%")
 	}
 
