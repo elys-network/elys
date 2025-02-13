@@ -30,12 +30,8 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 }
 
 func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
-	if poolId == stabletypes.PoolId {
-		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-		if !found {
-			return math.LegacyZeroDec()
-		}
-		return k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+	if poolId >= stabletypes.PoolId {
+		return k.stableKeeper.TVL(ctx, k.oracleKeeper, poolId)
 	}
 	ammPool, found := k.amm.GetPool(ctx, poolId)
 	if found {
@@ -297,7 +293,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	}
 
 	// Update APR for amm pools
-	k.UpdateAmmPoolAPR(ctx, totalBlocksPerYear, totalProxyTVL, edenDenomPrice)
+	k.UpdateAmmStablePoolAPR(ctx, totalBlocksPerYear, totalProxyTVL, edenDenomPrice)
 
 	return nil
 }
@@ -611,8 +607,8 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 	return true
 }
 
-// Update APR for AMM pool
-func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL math.LegacyDec, edenDenomPrice math.LegacyDec) {
+// Update APR for AMM pools and stable stake pools
+func (k Keeper) UpdateAmmStablePoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL math.LegacyDec, edenDenomPrice math.LegacyDec) {
 	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 
@@ -621,6 +617,59 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 		if err != nil {
 			return false
 		}
+
+		// Get pool Id
+		poolId := p.GetPoolId()
+
+		// Get pool info from incentive param
+		poolInfo, found := k.GetPoolInfo(ctx, poolId)
+		if !found {
+			k.InitPoolParams(ctx, poolId)
+			poolInfo, _ = k.GetPoolInfo(ctx, poolId)
+		}
+
+		if tvl.IsZero() {
+			return false
+		}
+
+		firstAccum := k.FirstPoolRewardsAccum(ctx, poolId)
+		lastAccum := k.LastPoolRewardsAccum(ctx, poolId)
+		if lastAccum.Timestamp == 0 {
+			return false
+		}
+
+		if firstAccum.Timestamp == lastAccum.Timestamp {
+			poolInfo.DexApr = lastAccum.DexReward.
+				MulInt64(totalBlocksPerYear).
+				Mul(usdcDenomPrice).
+				Quo(tvl)
+
+			poolInfo.GasApr = lastAccum.GasReward.
+				MulInt64(totalBlocksPerYear).
+				Mul(usdcDenomPrice).
+				Quo(tvl)
+		} else {
+			duration := lastAccum.Timestamp - firstAccum.Timestamp
+			secondsInYear := int64(86400 * 360)
+
+			poolInfo.DexApr = lastAccum.DexReward.Sub(firstAccum.DexReward).
+				MulInt64(secondsInYear).
+				QuoInt64(int64(duration)).
+				Mul(usdcDenomPrice).
+				Quo(tvl)
+
+			poolInfo.GasApr = lastAccum.GasReward.Sub(firstAccum.GasReward).
+				MulInt64(secondsInYear).
+				QuoInt64(int64(duration)).
+				Mul(usdcDenomPrice).
+				Quo(tvl)
+		}
+		k.SetPoolInfo(ctx, poolInfo)
+		return false
+	})
+
+	k.stableKeeper.IterateLiquidityPools(ctx, func(p stabletypes.Pool) bool {
+		tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, p.PoolId)
 
 		// Get pool Id
 		poolId := p.GetPoolId()
