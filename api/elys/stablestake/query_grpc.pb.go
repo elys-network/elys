@@ -22,6 +22,8 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// BorrowRatio queries the borrow ratio compared to total deposit
 	BorrowRatio(ctx context.Context, in *QueryBorrowRatioRequest, opts ...grpc.CallOption) (*QueryBorrowRatioResponse, error)
+	AmmPool(ctx context.Context, in *QueryAmmPoolRequest, opts ...grpc.CallOption) (*QueryAmmPoolResponse, error)
+	AllAmmPools(ctx context.Context, in *QueryAllAmmPoolsRequest, opts ...grpc.CallOption) (*QueryAllAmmPoolsResponse, error)
 }
 
 type queryClient struct {
@@ -50,6 +52,24 @@ func (c *queryClient) BorrowRatio(ctx context.Context, in *QueryBorrowRatioReque
 	return out, nil
 }
 
+func (c *queryClient) AmmPool(ctx context.Context, in *QueryAmmPoolRequest, opts ...grpc.CallOption) (*QueryAmmPoolResponse, error) {
+	out := new(QueryAmmPoolResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/AmmPool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) AllAmmPools(ctx context.Context, in *QueryAllAmmPoolsRequest, opts ...grpc.CallOption) (*QueryAllAmmPoolsResponse, error) {
+	out := new(QueryAllAmmPoolsResponse)
+	err := c.cc.Invoke(ctx, "/elys.stablestake.Query/AllAmmPools", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -58,6 +78,8 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// BorrowRatio queries the borrow ratio compared to total deposit
 	BorrowRatio(context.Context, *QueryBorrowRatioRequest) (*QueryBorrowRatioResponse, error)
+	AmmPool(context.Context, *QueryAmmPoolRequest) (*QueryAmmPoolResponse, error)
+	AllAmmPools(context.Context, *QueryAllAmmPoolsRequest) (*QueryAllAmmPoolsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -70,6 +92,12 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 }
 func (UnimplementedQueryServer) BorrowRatio(context.Context, *QueryBorrowRatioRequest) (*QueryBorrowRatioResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BorrowRatio not implemented")
+}
+func (UnimplementedQueryServer) AmmPool(context.Context, *QueryAmmPoolRequest) (*QueryAmmPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AmmPool not implemented")
+}
+func (UnimplementedQueryServer) AllAmmPools(context.Context, *QueryAllAmmPoolsRequest) (*QueryAllAmmPoolsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllAmmPools not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -120,6 +148,42 @@ func _Query_BorrowRatio_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_AmmPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAmmPoolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AmmPool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Query/AmmPool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AmmPool(ctx, req.(*QueryAmmPoolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_AllAmmPools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllAmmPoolsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AllAmmPools(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.stablestake.Query/AllAmmPools",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AllAmmPools(ctx, req.(*QueryAllAmmPoolsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +198,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BorrowRatio",
 			Handler:    _Query_BorrowRatio_Handler,
+		},
+		{
+			MethodName: "AmmPool",
+			Handler:    _Query_AmmPool_Handler,
+		},
+		{
+			MethodName: "AllAmmPools",
+			Handler:    _Query_AllAmmPools_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

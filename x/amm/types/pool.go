@@ -288,8 +288,9 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
 	params Params,
-) (exitedCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, err error) {
-	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom, params)
+	applyWeightBreakingFee bool,
+) (exitedCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, slippage sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, err error) {
+	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom, params, applyWeightBreakingFee)
 }
 
 func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
@@ -328,7 +329,7 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 	return oracleAssetsTVL.Mul(sdkmath.LegacyNewDecFromInt(totalWeight)).Quo(sdkmath.LegacyNewDecFromInt(oracleAssetsWeight)), nil
 }
 
-func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
+func (p *Pool) LpTokenPriceForShare(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
 	ammPoolTvl, err := p.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), err
@@ -338,6 +339,19 @@ func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolK
 		return sdkmath.LegacyOneDec(), nil
 	}
 	lpTokenPrice := ammPoolTvl.MulInt(OneShare).QuoInt(p.TotalShares.Amount)
+	return lpTokenPrice, nil
+}
+
+func (p *Pool) LpTokenPriceForBaseUnits(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
+	ammPoolTvl, err := p.TVL(ctx, oracleKeeper, accPoolKeeper)
+	if err != nil {
+		return sdkmath.LegacyZeroDec(), err
+	}
+	// Ensure ammPool.TotalShares is not zero to avoid division by zero
+	if p.TotalShares.IsZero() {
+		return sdkmath.LegacyOneDec(), nil
+	}
+	lpTokenPrice := ammPoolTvl.Quo(p.TotalShares.Amount.ToLegacyDec())
 	return lpTokenPrice, nil
 }
 

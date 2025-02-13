@@ -7,7 +7,7 @@ import (
 
 func (p *Pool) CalculateWeightFees(ctx sdk.Context, oracleKeeper OracleKeeper,
 	accountedAssets []PoolAsset,
-	finalAssetsPool []PoolAsset, tokenDenom string, params Params, weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
+	finalAssetsPool []PoolAsset, tokenInDenom string, params Params, weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
 ) (sdkmath.LegacyDec, sdkmath.LegacyDec, bool) {
 	swapFee := true
 
@@ -16,14 +16,14 @@ func (p *Pool) CalculateWeightFees(ctx sdk.Context, oracleKeeper OracleKeeper,
 	distanceDiff := weightDistance.Sub(initialWeightDistance)
 
 	// target weight
-	targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenDenom)
+	targetWeightIn := GetDenomNormalizedWeight(p.PoolAssets, tokenInDenom)
 	targetWeightOut := sdkmath.LegacyOneDec().Sub(targetWeightIn)
 
 	// weight breaking fee as in Plasma pool
-	finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, finalAssetsPool, tokenDenom)
+	finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, finalAssetsPool, tokenInDenom)
 	finalWeightOut := sdkmath.LegacyOneDec().Sub(finalWeightIn)
 
-	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedAssets, tokenDenom)
+	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedAssets, tokenInDenom)
 	initialWeightOut := sdkmath.LegacyOneDec().Sub(initialWeightIn)
 	weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
 	// weightBreakingFeePerpetualFactor is 1 if not send by perpetual
@@ -48,7 +48,7 @@ func (p *Pool) CalculateWeightFees(ctx sdk.Context, oracleKeeper OracleKeeper,
 		}
 	} else {
 		// Weight getting worst but threshold is not reached so fees should not be charged
-		if initialWeightDistance.LT(params.ThresholdWeightDifference) {
+		if weightDistance.LT(params.ThresholdWeightDifference) {
 			weightBreakingFee = sdkmath.LegacyZeroDec()
 			weightBalanceBonus = sdkmath.LegacyZeroDec()
 		}

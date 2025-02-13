@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -48,19 +49,8 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 			Quo(stableStakeParams.TotalValue.ToLegacyDec())
 	}
 
-	var poolLeveragelpRatio sdkmath.LegacyDec
-	pool, found := k.GetPool(ctx, msg.AmmPoolId)
-	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
-	}
-	ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
-	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
-	}
-	poolLeveragelpRatio = pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
-
-	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) || borrowRatio.GTE(stableStakeParams.MaxLeverageRatio) {
-		return nil, errorsmod.Wrap(types.ErrMaxLeverageLpExists, "no new position can be open")
+	if borrowRatio.GTE(stableStakeParams.MaxLeverageRatio) {
+		return nil, errors.New("stable stake pool max borrow capacity used up")
 	}
 
 	// Check if it is the same direction position for the same trader.
@@ -93,7 +83,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	if k.hooks != nil {
 		// ammPool will have updated values for opening position
-		ammPool, found = k.amm.GetPool(ctx, msg.AmmPoolId)
+		ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
 		if !found {
 			return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
 		}
@@ -109,6 +99,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		sdk.NewAttribute("collateral", position.Collateral.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
+		sdk.NewAttribute("leverage_lp_amount", position.LeveragedLpAmount.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
 

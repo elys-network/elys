@@ -67,9 +67,14 @@ func (k Keeper) JoinPoolNoSwap(
 		}
 		params := k.GetParams(ctx)
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-		tokensJoined, sharesOut, _, weightBalanceBonus, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params)
+		tokensJoined, sharesOut, slippage, weightBalanceBonus, _, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params)
 		if err != nil {
 			return nil, sdkmath.ZeroInt(), err
+		}
+
+		if pool.PoolParams.UseOracle && len(tokensIn) == 1 {
+			slippageAmount := slippage.Mul(tokensIn[0].Amount.ToLegacyDec()).RoundInt()
+			k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokensIn[0].Denom, slippageAmount))
 		}
 
 		// sanity check, don't return error as not worth halting the LP. We know its not too much.
@@ -94,7 +99,7 @@ func (k Keeper) JoinPoolNoSwap(
 	params := k.GetParams(ctx)
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-	tokensJoined, sharesOut, _, weightBalanceBonus, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params)
+	tokensJoined, sharesOut, _, weightBalanceBonus, _, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params)
 	if err != nil {
 		return nil, sdkmath.ZeroInt(), err
 	}
