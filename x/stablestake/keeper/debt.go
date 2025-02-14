@@ -38,9 +38,13 @@ func (k Keeper) GetDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
 	return debt
 }
 
-func (k Keeper) UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
+func (k Keeper) GetDebtWithoutUpdatedInterest(ctx sdk.Context, addr sdk.AccAddress) types.Debt {
+	return k.getDebt(ctx, addr)
+}
+
+func (k Keeper) UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, debtDenom string) types.Debt {
 	debt := k.getDebt(ctx, addr)
-	debt = k.UpdateInterestStacked(ctx, debt)
+	debt = k.UpdateInterestStacked(ctx, debt, poolId, debtDenom)
 	return debt
 }
 
@@ -119,6 +123,9 @@ func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
 }
 
 func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec) sdkmath.Int {
+	if startBlock == uint64(ctx.BlockHeight()) {
+		return sdkmath.ZeroInt()
+	}
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
 	currentBlockKey := sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))
 	startBlockKey := sdk.Uint64ToBigEndian(startBlock)
@@ -180,7 +187,7 @@ func (k Keeper) GetInterest(ctx sdk.Context, startBlock uint64, startTime uint64
 	return newInterest
 }
 
-func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt) types.Debt {
+func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt, poolId uint64, debtDenom string) types.Debt {
 	params := k.GetParams(ctx)
 	newInterest := k.GetInterest(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec())
 
@@ -191,10 +198,13 @@ func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt) types.De
 
 	params.TotalValue = params.TotalValue.Add(newInterest)
 	k.SetParams(ctx, params)
+
+	k.AddPoolLiabilities(ctx, poolId, sdk.NewCoin(debtDenom, newInterest))
+
 	return debt
 }
 
-func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error {
+func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, borrowingForPool uint64) error {
 	depositDenom := k.GetDepositDenom(ctx)
 	if depositDenom != amount.Denom {
 		return types.ErrInvalidBorrowDenom
@@ -211,13 +221,21 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) er
 		return types.ErrMaxBorrowAmount
 	}
 
-	debt := k.UpdateInterestAndGetDebt(ctx, addr)
+	debt := k.UpdateInterestAndGetDebt(ctx, addr, borrowingForPool, amount.Denom)
 	debt.Borrowed = debt.Borrowed.Add(amount.Amount)
+
 	k.SetDebt(ctx, debt)
+	k.AddPoolLiabilities(ctx, borrowingForPool, amount)
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventBorrow,
+		sdk.NewAttribute("address", addr.String()),
+		sdk.NewAttribute("amount", amount.String()),
+	))
+
 	return k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{amount})
 }
 
-func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) error {
+func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, repayingForPool uint64) error {
 	depositDenom := k.GetDepositDenom(ctx)
 	if depositDenom != amount.Denom {
 		return types.ErrInvalidBorrowDenom
@@ -229,7 +247,7 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) err
 	}
 
 	// calculate latest interest stacked
-	debt := k.UpdateInterestAndGetDebt(ctx, addr)
+	debt := k.UpdateInterestAndGetDebt(ctx, addr, repayingForPool, amount.Denom)
 
 	// repay interest
 	interestPayAmount := debt.InterestStacked.Sub(debt.InterestPaid)
@@ -246,10 +264,32 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin) err
 		return types.ErrNegativeBorrowed
 	}
 
+	k.SubtractPoolLiabilities(ctx, repayingForPool, amount)
+
 	if debt.Borrowed.IsZero() {
 		k.DeleteDebt(ctx, debt)
 	} else {
 		k.SetDebt(ctx, debt)
 	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventRepay,
+		sdk.NewAttribute("address", addr.String()),
+		sdk.NewAttribute("amount", amount.String()),
+		sdk.NewAttribute("borrowed_left", debt.Borrowed.String()),
+	))
+	return nil
+}
+
+func (k Keeper) CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, unableToPayForPool uint64, debtDenom string) error {
+	debt := k.UpdateInterestAndGetDebt(ctx, addr, unableToPayForPool, debtDenom)
+	k.DeleteDebt(ctx, debt)
+
+	k.SubtractPoolLiabilities(ctx, unableToPayForPool, sdk.NewCoin(debtDenom, debt.GetTotalLiablities()))
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventForceClosed,
+		sdk.NewAttribute("address", addr.String()),
+		sdk.NewAttribute("liabilities_unpaid", debt.GetTotalLiablities().String()),
+		sdk.NewAttribute("borrowed_unpaid", debt.Borrowed.String()),
+	))
 	return nil
 }
