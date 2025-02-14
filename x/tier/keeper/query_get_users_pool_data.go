@@ -45,21 +45,21 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 
 		for _, commitment := range user.CommittedTokens {
 			if strings.HasPrefix(commitment.Denom, "stablestake/share") {
-				poolId, err := stablestaketypes.GetPoolIDFromPath(commitment.Denom)
+				stableId, err := stablestaketypes.GetPoolIDFromPath(commitment.Denom)
 				if err != nil {
 					continue
 				}
-				pool, found := k.stablestakeKeeper.GetPool(ctx, poolId)
+				borrowPool, found := k.stablestakeKeeper.GetPool(ctx, stableId)
 				if !found {
 					continue
 				}
-				redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateForPool(ctx, pool)
-				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, pool.GetDepositDenom())
+				redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateForPool(ctx, borrowPool)
+				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, borrowPool.GetDepositDenom())
 				fiatValue := commitment.Amount.ToLegacyDec().Mul(redemptionRate).Mul(tokenPrice)
 
 				u.Pools = append(u.Pools, &types.Pool{
-					Pool:      pool.DepositDenom,
-					PoolId:    strconv.FormatUint(pool.Id, 10),
+					Pool:      borrowPool.DepositDenom,
+					PoolId:    strconv.FormatUint(borrowPool.Id, 10),
 					FiatValue: fiatValue.String(),
 					Amount:    commitment.Amount,
 				})
@@ -75,11 +75,12 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 
 				poolTitle := ""
 				var pool ammtypes.Pool
+				var found bool
 				if p, ok := pools[poolId]; ok {
 					poolTitle = p.Title
 					pool = p.Pool
 				} else {
-					pool, found := k.amm.GetPool(ctx, poolId)
+					pool, found = k.amm.GetPool(ctx, poolId)
 					if !found {
 						continue
 					}
