@@ -63,6 +63,7 @@ func (app *ElysApp) setUpgradeHandler() {
 						Timestamp:   price.Timestamp,
 						BlockHeight: price.BlockHeight,
 					})
+					app.OracleKeeper.SetParams(ctx, ojooracletypes.DefaultParams())
 				}
 			}
 
