@@ -15,6 +15,9 @@ func GetShareDenomForPool(poolId uint64) string {
 
 // GetPoolIDFromPath retrieves the poolid from the given path in the format "stablestake/share/pool/poolid".
 func GetPoolIDFromPath(path string) (uint64, error) {
+	if path == "stablestake/share" {
+		return UsdcPoolId, nil
+	}
 	parts := strings.Split(path, "/")
 	if len(parts) != 4 || parts[0] != "stablestake" || parts[1] != "share" || parts[2] != "pool" {
 		return 0, fmt.Errorf("invalid path format")
