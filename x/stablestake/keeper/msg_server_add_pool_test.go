@@ -30,6 +30,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddPool() {
 				HealthGainFactor:     sdkmath.LegacyMustNewDecFromStr("0.01"),
 				TotalValue:           sdkmath.ZeroInt(),
 				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
+				MaxWithdrawRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
 				Id:                   2,
 			},
 			expPass:     true,
@@ -48,6 +49,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddPool() {
 				HealthGainFactor:     sdkmath.LegacyMustNewDecFromStr("0.01"),
 				TotalValue:           sdkmath.ZeroInt(),
 				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
+				MaxWithdrawRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
 				Id:                   2,
 			},
 			sender:      "",
@@ -66,6 +68,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddPool() {
 				HealthGainFactor:     sdkmath.LegacyMustNewDecFromStr("0.01"),
 				TotalValue:           sdkmath.ZeroInt(),
 				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
+				MaxWithdrawRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
 				Id:                   2,
 			},
 			sender:      "invalid_address",
@@ -93,6 +96,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddPool() {
 					InterestRateDecrease: tc.pool.InterestRateDecrease,
 					HealthGainFactor:     tc.pool.HealthGainFactor,
 					MaxLeverageRatio:     tc.pool.MaxLeverageRatio,
+					MaxWithdrawRatio:     tc.pool.MaxWithdrawRatio,
 				})
 
 			if tc.addMultiple {
@@ -108,6 +112,7 @@ func (suite *KeeperTestSuite) TestMsgServerAddPool() {
 						InterestRateDecrease: tc.pool.InterestRateDecrease,
 						HealthGainFactor:     tc.pool.HealthGainFactor,
 						MaxLeverageRatio:     tc.pool.MaxLeverageRatio,
+						MaxWithdrawRatio:     tc.pool.MaxWithdrawRatio,
 					})
 			}
 			if !tc.expPass {

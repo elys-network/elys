@@ -32,6 +32,7 @@ func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types
 		InterestRateIncrease: msg.InterestRateIncrease,
 		HealthGainFactor:     msg.HealthGainFactor,
 		MaxLeverageRatio:     msg.MaxLeverageRatio,
+		MaxWithdrawRatio:     msg.MaxWithdrawRatio,
 		InterestRateMax:      msg.InterestRateMax,
 		InterestRateMin:      msg.InterestRateMin,
 		InterestRate:         msg.InterestRate,
