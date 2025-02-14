@@ -216,12 +216,13 @@ func (suite *KeeperTestSuite) TestAllPools() {
 		HealthGainFactor:     math.LegacyOneDec(),
 		TotalValue:           math.ZeroInt(),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+		MaxWithdrawRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		Id:                   1,
 		DepositDenom:         ptypes.BaseCurrency,
 	}
 
 	poolResponse := types.PoolResponse{
-		RedemptionRate:       math.LegacyOneDec(),
+		RedemptionRate:       math.LegacyZeroDec(),
 		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
 		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
 		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
@@ -230,6 +231,7 @@ func (suite *KeeperTestSuite) TestAllPools() {
 		HealthGainFactor:     math.LegacyOneDec(),
 		TotalValue:           math.ZeroInt(),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+		MaxWithdrawRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		PoolId:               1,
 		DepositDenom:         ptypes.BaseCurrency,
 		BorrowRatio:          math.LegacyZeroDec(),

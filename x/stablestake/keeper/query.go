@@ -69,6 +69,7 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, pool types.Pool) types.PoolResponse
 		HealthGainFactor:     pool.HealthGainFactor,
 		TotalValue:           pool.TotalValue,
 		MaxLeverageRatio:     pool.MaxLeverageRatio,
+		MaxWithdrawRatio:     pool.MaxWithdrawRatio,
 		PoolId:               pool.Id,
 		TotalDeposit:         pool.TotalValue,
 		TotalBorrow:          borrowed,
