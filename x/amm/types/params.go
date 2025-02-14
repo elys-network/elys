@@ -2,6 +2,7 @@ package types
 
 import (
 	"errors"
+	"slices"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,9 +20,9 @@ func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64, baseAsset
 		WeightBreakingFeeMultiplier:      math.LegacyMustNewDecFromStr("0.0005"),
 		WeightBreakingFeePortion:         math.LegacyMustNewDecFromStr("0.5"),
 		WeightRecoveryFeePortion:         math.LegacyMustNewDecFromStr("0.1"),
-		ThresholdWeightDifference:        math.LegacyMustNewDecFromStr("0.3"),
+		ThresholdWeightDifference:        math.LegacyMustNewDecFromStr("0.1"),
 		AllowedPoolCreators:              []string{authtypes.NewModuleAddress(govtypes.ModuleName).String()},
-		ThresholdWeightDifferenceSwapFee: math.LegacyMustNewDecFromStr("1.0"),
+		ThresholdWeightDifferenceSwapFee: math.LegacyMustNewDecFromStr("0.15"),
 		LpLockupDuration:                 3600,
 		MinSlippage:                      math.LegacyMustNewDecFromStr("0.001"),
 	}
@@ -57,12 +58,18 @@ func (p Params) Validate() error {
 	if p.WeightBreakingFeeExponent.IsNegative() {
 		return errors.New("weightBreakingFeeExponent must be positive")
 	}
+	if p.WeightBreakingFeeExponent.GT(math.LegacyMustNewDecFromStr("3")) {
+		return errors.New("weightBreakingFeeExponent must be less than 3")
+	}
 
 	if p.WeightBreakingFeeMultiplier.IsNil() {
 		return errors.New("weightBreakingFeeMultiplier must not be empty")
 	}
 	if p.WeightBreakingFeeMultiplier.IsNegative() {
 		return errors.New("weightBreakingFeeMultiplier must be positive")
+	}
+	if p.WeightBreakingFeeMultiplier.GT(math.LegacyMustNewDecFromStr("0.001")) {
+		return errors.New("weightBreakingFeeMultiplier must be less than 0.01%")
 	}
 
 	if p.WeightBreakingFeePortion.IsNil() {
@@ -71,6 +78,9 @@ func (p Params) Validate() error {
 	if p.WeightBreakingFeePortion.IsNegative() {
 		return errors.New("weightBreakingFeePortion must be positive")
 	}
+	if p.WeightBreakingFeePortion.GT(math.LegacyMustNewDecFromStr("1")) {
+		return errors.New("weightBreakingFeePortion must be less than 1")
+	}
 
 	if p.WeightRecoveryFeePortion.IsNil() {
 		return errors.New("weightRecoveryFeePortion must not be empty")
@@ -78,12 +88,18 @@ func (p Params) Validate() error {
 	if p.WeightRecoveryFeePortion.IsNegative() {
 		return errors.New("weightRecoveryFeePortion must be positive")
 	}
+	if p.WeightRecoveryFeePortion.GT(math.LegacyMustNewDecFromStr("1")) {
+		return errors.New("weightRecoveryFeePortion must be less than 1")
+	}
 
 	if p.ThresholdWeightDifference.IsNil() {
 		return errors.New("thresholdWeightDifference must not be empty")
 	}
 	if p.ThresholdWeightDifference.IsNegative() {
 		return errors.New("thresholdWeightDifference must be positive")
+	}
+	if p.ThresholdWeightDifference.GT(math.LegacyMustNewDecFromStr("0.1")) {
+		return errors.New("thresholdWeightDifference must be less than 0.1%")
 	}
 
 	if p.MinSlippage.IsNil() {
@@ -95,14 +111,20 @@ func (p Params) Validate() error {
 	if p.MinSlippage.GT(math.LegacyMustNewDecFromStr("0.01")) {
 		return errors.New("MinSlippage must be less than 1%")
 	}
+
+	if p.ThresholdWeightDifferenceSwapFee.IsNil() {
+		return errors.New("thresholdWeightDifferenceSwapFee must not be empty")
+	}
+	if p.ThresholdWeightDifferenceSwapFee.IsNegative() {
+		return errors.New("thresholdWeightDifferenceSwapFee must be positive")
+	}
+	if p.ThresholdWeightDifferenceSwapFee.GT(math.LegacyMustNewDecFromStr("0.15")) {
+		return errors.New("thresholdWeightDifferenceSwapFee must be less than 0.15%")
+	}
+
 	return nil
 }
 
 func (p Params) IsCreatorAllowed(creator string) bool {
-	for _, allowedCreator := range p.AllowedPoolCreators {
-		if allowedCreator == creator {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(p.AllowedPoolCreators, creator)
 }
