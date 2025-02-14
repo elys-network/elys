@@ -113,6 +113,11 @@ func (p *Pool) SwapInAmtGivenOut(
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
 	slippage = slippageAmount.Quo(oracleInAmount)
 
+	if slippage.LT(params.MinSlippage) {
+		slippage = params.MinSlippage
+		slippageAmount = oracleInAmount.Mul(params.MinSlippage)
+	}
+
 	// calculate weight distance difference to calculate bonus/cut on the operation
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
 		sdk.Coins{sdk.NewCoin(tokenInDenom, inAmountAfterSlippage.TruncateInt())},
