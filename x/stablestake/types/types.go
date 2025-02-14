@@ -2,4 +2,4 @@ package types
 
 import "math"
 
-const PoolId = math.MaxInt16
+const UsdcPoolId = math.MaxInt16

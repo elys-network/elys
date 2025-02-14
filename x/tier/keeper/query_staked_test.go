@@ -28,6 +28,7 @@ func (suite *TierKeeperTestSuite) TestQueryStaked() {
 	_, err := msgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: sender.String(),
 		Amount:  math.NewInt(100000000),
+		PoolId:  1,
 	})
 	suite.Require().NoError(err)
 
