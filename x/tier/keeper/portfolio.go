@@ -108,30 +108,18 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 	for _, commitment := range commitments.CommittedTokens {
 		if !strings.HasPrefix(commitment.Denom, "amm/pool") {
 			if strings.HasPrefix(commitment.Denom, "stablestake/share") {
-				if commitment.Denom == "stablestake/share" {
-					usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-					if !found {
-						continue
-					}
-					tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-					redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateByDenom(ctx, commitment.Denom)
-					usdValue := commitment.Amount.ToLegacyDec().Mul(redemptionRate).Mul(tokenPrice)
-					totalCommit = totalCommit.Add(usdValue)
-				} else {
-					poolId, err := stablestaketypes.GetPoolIDFromPath(commitment.Denom)
-					if err != nil {
-						continue
-					}
-					pool, found := k.stablestakeKeeper.GetPool(ctx, poolId)
-					if !found {
-						continue
-					}
-					redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateForPool(ctx, pool)
-					tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, pool.GetDepositDenom())
-					usdValue := commitment.Amount.ToLegacyDec().Mul(redemptionRate).Mul(tokenPrice)
-					totalCommit = totalCommit.Add(usdValue)
+				poolId, err := stablestaketypes.GetPoolIDFromPath(commitment.Denom)
+				if err != nil {
+					continue
 				}
-				continue
+				pool, found := k.stablestakeKeeper.GetPool(ctx, poolId)
+				if !found {
+					continue
+				}
+				redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateForPool(ctx, pool)
+				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, pool.GetDepositDenom())
+				usdValue := commitment.Amount.ToLegacyDec().Mul(redemptionRate).Mul(tokenPrice)
+				totalCommit = totalCommit.Add(usdValue)
 			}
 			if commitment.Denom == ptypes.Eden {
 				commitment.Denom = ptypes.Elys
@@ -146,6 +134,7 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 			}
 			amount := commitment.Amount.ToLegacyDec()
 			totalCommit = totalCommit.Add(amount.Mul(tokenPrice))
+			continue
 		}
 	}
 
