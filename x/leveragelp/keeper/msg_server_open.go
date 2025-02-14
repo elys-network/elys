@@ -91,7 +91,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	position, err := k.OpenLong(ctx, msg, borrowPool.PoolId)
+	position, err := k.OpenLong(ctx, msg, borrowPool.Id)
 	if err != nil {
 		return nil, err
 	}

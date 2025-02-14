@@ -110,7 +110,8 @@ func (suite *KeeperTestSuite) TestForceCloseLong() {
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, leverage, pool := suite.OpenPosition(addr)
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour).Unix() - suite.ctx.BlockTime().Unix()
-	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
+	borrowPool, _ := suite.app.StablestakeKeeper.GetPoolByDenom(suite.ctx, "uusdc")
+	interestRate := borrowPool.InterestRate
 	borrowed := leverage.Sub(math.LegacyOneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).
@@ -128,7 +129,8 @@ func (suite *KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, leverage, pool := suite.OpenPosition(addr)
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour*24*365*5).Unix() - suite.ctx.BlockTime().Unix()
-	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
+	borrowPool, _ := suite.app.StablestakeKeeper.GetPoolByDenom(suite.ctx, "uusdc")
+	interestRate := borrowPool.InterestRate
 	borrowed := leverage.Sub(math.LegacyOneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).
@@ -147,7 +149,8 @@ func (suite *KeeperTestSuite) TestForceCloseLongPartial() {
 	position, leverage, pool := suite.OpenPosition(addr)
 	originalPosition := *position
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour).Unix() - suite.ctx.BlockTime().Unix()
-	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
+	borrowPool, _ := suite.app.StablestakeKeeper.GetPoolByDenom(suite.ctx, "uusdc")
+	interestRate := borrowPool.InterestRate
 	borrowed := leverage.Sub(math.LegacyOneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).

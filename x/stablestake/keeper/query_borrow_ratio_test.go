@@ -28,7 +28,7 @@ func (suite *KeeperTestSuite) TestBorrowRatio() {
 				pool := types.Pool{
 					TotalValue:   sdkmath.NewInt(1000),
 					DepositDenom: "token",
-					PoolId:       1,
+					Id:           1,
 				}
 				k.SetPool(ctx, pool)
 				// bootstrap balances
@@ -60,7 +60,7 @@ func (suite *KeeperTestSuite) TestBorrowRatio() {
 				pool := types.Pool{
 					TotalValue:   sdkmath.ZeroInt(),
 					DepositDenom: "token",
-					PoolId:       1,
+					Id:           1,
 				}
 				k.SetPool(ctx, pool)
 			},

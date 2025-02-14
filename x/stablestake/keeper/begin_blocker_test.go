@@ -38,7 +38,6 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 		suite.Run(tt.name, func() {
 			suite.app.StablestakeKeeper.SetPool(suite.ctx, types.Pool{
 				DepositDenom:         "uusdc",
-				RedemptionRate:       tt.redemptionRate,
 				InterestRate:         tt.interestRate,
 				InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.17"),
 				InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.12"),
@@ -47,7 +46,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 				HealthGainFactor:     sdkmath.LegacyOneDec(),
 				TotalValue:           sdkmath.NewInt(1000000),
 				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
-				PoolId:               1,
+				Id:                   1,
 			})
 
 			suite.ctx = suite.ctx.WithBlockHeight(tt.blockHeight).WithBlockTime(time.Now())
@@ -56,7 +55,6 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 
 			storedPool, _ := suite.app.StablestakeKeeper.GetPool(suite.ctx, 1)
 			require.Equal(suite.T(), tt.interestRate, storedPool.InterestRate)
-			require.Equal(suite.T(), tt.redemptionRate, storedPool.RedemptionRate)
 		})
 	}
 }

@@ -73,7 +73,6 @@ func (suite *MasterchefKeeperTestSuite) SetupApp() {
 	suite.app.MasterchefKeeper.SetParams(suite.ctx, mkParams)
 
 	suite.app.StablestakeKeeper.SetPool(suite.ctx, stablestaketypes.Pool{
-		RedemptionRate:       sdkmath.LegacyOneDec(),
 		InterestRate:         sdkmath.LegacyMustNewDecFromStr("0.15"),
 		InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.17"),
 		InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.12"),
@@ -82,7 +81,7 @@ func (suite *MasterchefKeeperTestSuite) SetupApp() {
 		HealthGainFactor:     sdkmath.LegacyOneDec(),
 		TotalValue:           sdkmath.ZeroInt(),
 		MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
-		PoolId:               stablestaketypes.PoolId,
+		Id:                   stablestaketypes.PoolId,
 		DepositDenom:         ptypes.BaseCurrency,
 	})
 }

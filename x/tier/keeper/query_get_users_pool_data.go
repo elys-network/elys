@@ -10,6 +10,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	"github.com/elys-network/elys/x/tier/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -40,9 +41,6 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 		return nil, err
 	}
 
-	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-	params := k.stablestakeKeeper.GetParams(ctx)
-
 	usersData := []*types.UserData{}
 
 	pools := map[uint64]detailPool{}
@@ -56,13 +54,36 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 
 		for _, commitment := range user.CommittedTokens {
 			if strings.HasPrefix(commitment.Denom, "stablestake/share") {
-				fiatValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice)
-				u.Pools = append(u.Pools, &types.Pool{
-					Pool:      "USDC",
-					PoolId:    commitment.Denom,
-					FiatValue: fiatValue.String(),
-					Amount:    commitment.Amount,
-				})
+				if commitment.Denom == "stablestake/share" {
+					tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+					redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateByDenom(ctx, commitment.Denom)
+					fiatValue := commitment.Amount.ToLegacyDec().Mul(redemptionRate).Mul(tokenPrice)
+					u.Pools = append(u.Pools, &types.Pool{
+						Pool:      "USDC",
+						PoolId:    commitment.Denom,
+						FiatValue: fiatValue.String(),
+						Amount:    commitment.Amount,
+					})
+				} else {
+					poolId, err := stablestaketypes.GetPoolIDFromPath(commitment.Denom)
+					if err != nil {
+						continue
+					}
+					pool, found := k.stablestakeKeeper.GetPool(ctx, poolId)
+					if !found {
+						continue
+					}
+					redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateForPool(ctx, pool)
+					tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, pool.GetDepositDenom())
+					fiatValue := commitment.Amount.ToLegacyDec().Mul(redemptionRate).Mul(tokenPrice)
+
+					u.Pools = append(u.Pools, &types.Pool{
+						Pool:      pool.DepositDenom,
+						PoolId:    strconv.FormatUint(pool.Id, 10),
+						FiatValue: fiatValue.String(),
+						Amount:    commitment.Amount,
+					})
+				}
 
 				continue
 			}

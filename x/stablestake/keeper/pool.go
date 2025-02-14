@@ -40,7 +40,7 @@ func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (pool types.Pool, found 
 func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	b := k.cdc.MustMarshal(&pool)
-	store.Set(types.GetPoolKey(pool.PoolId), b)
+	store.Set(types.GetPoolKey(pool.Id), b)
 }
 
 func (k Keeper) GetPoolByDenom(ctx sdk.Context, denom string) (types.Pool, bool) {
@@ -60,8 +60,23 @@ func (k Keeper) GetPoolByDenom(ctx sdk.Context, denom string) (types.Pool, bool)
 	return types.Pool{}, false
 }
 
-func (k Keeper) GetRedemptionRateForPool(ctx sdk.Context, pool types.Pool) math.LegacyDec {
-	totalShares := k.bk.GetSupply(ctx, types.GetShareDenomForPool(pool.PoolId))
+func (k Keeper) CalculateRedemptionRateForPool(ctx sdk.Context, pool types.Pool) math.LegacyDec {
+	totalShares := k.bk.GetSupply(ctx, types.GetShareDenomForPool(pool.Id))
+
+	if totalShares.Amount.IsZero() {
+		return math.LegacyZeroDec()
+	}
+
+	return pool.TotalValue.ToLegacyDec().Quo(totalShares.Amount.ToLegacyDec())
+}
+
+func (k Keeper) CalculateRedemptionRateByDenom(ctx sdk.Context, denom string) math.LegacyDec {
+	pool, found := k.GetPoolByDenom(ctx, denom)
+	if !found {
+		return math.LegacyZeroDec()
+	}
+
+	totalShares := k.bk.GetSupply(ctx, types.GetShareDenomForPool(pool.Id))
 
 	if totalShares.Amount.IsZero() {
 		return math.LegacyZeroDec()
@@ -89,7 +104,7 @@ func (k Keeper) GetNextPoolId(ctx sdk.Context) uint64 {
 	if !found {
 		return types.PoolId
 	}
-	return latestPool.PoolId + 1
+	return latestPool.Id + 1
 }
 
 // IterateLiquidty iterates over all LiquidityPools and performs a

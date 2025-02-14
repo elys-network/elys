@@ -15,9 +15,9 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	}
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	redemptionRate := k.GetRedemptionRateForPool(ctx, pool)
+	redemptionRate := k.CalculateRedemptionRateForPool(ctx, pool)
 
-	shareDenom := types.GetShareDenomForPool(pool.PoolId)
+	shareDenom := types.GetShareDenomForPool(pool.Id)
 
 	// Withdraw committed LP tokens
 	err := k.commitmentKeeper.UncommitTokens(ctx, creator, shareDenom, msg.Amount, false)
@@ -40,7 +40,7 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	redemptionAmount := shareCoin.Amount.ToLegacyDec().Mul(redemptionRate).RoundInt()
 
 	amountAfterRedemption := pool.TotalValue.Sub(redemptionAmount)
-	maxAllowed := (pool.TotalValue.ToLegacyDec().Mul(pool.MaxLeverageRatio)).TruncateInt()
+	maxAllowed := (pool.TotalValue.ToLegacyDec().Mul(pool.MaxWithdrawRatio)).TruncateInt()
 	if amountAfterRedemption.LT(maxAllowed) {
 		return nil, types.ErrInvalidWithdraw
 	}
@@ -56,7 +56,7 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {
-		err = k.hooks.AfterUnbond(ctx, creator, msg.Amount, pool.PoolId)
+		err = k.hooks.AfterUnbond(ctx, creator, msg.Amount, pool.Id)
 		if err != nil {
 			return nil, err
 		}

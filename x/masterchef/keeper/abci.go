@@ -669,10 +669,10 @@ func (k Keeper) UpdateAmmStablePoolAPR(ctx sdk.Context, totalBlocksPerYear int64
 	})
 
 	k.stableKeeper.IterateLiquidityPools(ctx, func(p stabletypes.Pool) bool {
-		tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, p.PoolId)
+		tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, p.Id)
 
 		// Get pool Id
-		poolId := p.GetPoolId()
+		poolId := p.GetId()
 
 		// Get pool info from incentive param
 		poolInfo, found := k.GetPoolInfo(ctx, poolId)

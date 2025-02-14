@@ -16,7 +16,7 @@ func (suite *KeeperTestSuite) TestCheckAmmPoolBalance() {
 	err := k.CheckAmmPoolBalance(suite.ctx, ammPool)
 	suite.Require().NoError(err)
 
-	usdcDenom := suite.app.StablestakeKeeper.GetParams(suite.ctx).DepositDenom
+	usdcDenom := suite.app.StablestakeKeeper.GetParams(suite.ctx).LegacyDepositDenom
 	suite.Require().Equal(ammPool.PoolAssets[0].Token.Denom, usdcDenom)
 
 	// assume usdc amount reduced to 1000 and check

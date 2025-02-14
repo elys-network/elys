@@ -20,7 +20,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	}
 
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	redemptionRate := k.GetRedemptionRateForPool(ctx, pool)
+	redemptionRate := k.CalculateRedemptionRateForPool(ctx, pool)
 
 	depositDenom := pool.GetDepositDenom()
 	depositCoin := sdk.NewCoin(depositDenom, msg.Amount)
@@ -29,7 +29,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 		return nil, err
 	}
 
-	shareDenom := types.GetShareDenomForPool(pool.PoolId)
+	shareDenom := types.GetShareDenomForPool(pool.Id)
 	// Initial case
 	if redemptionRate.IsZero() {
 		redemptionRate = sdkmath.LegacyOneDec()
@@ -85,7 +85,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {
-		err = k.hooks.AfterBond(ctx, creator, shareAmount, pool.PoolId)
+		err = k.hooks.AfterBond(ctx, creator, shareAmount, pool.Id)
 		if err != nil {
 			return nil, err
 		}

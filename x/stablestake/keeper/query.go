@@ -59,8 +59,8 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, pool types.Pool) types.PoolResponse
 	}
 
 	return types.PoolResponse{
+		RedemptionRate:       k.CalculateRedemptionRateForPool(ctx, pool),
 		DepositDenom:         pool.DepositDenom,
-		RedemptionRate:       pool.RedemptionRate,
 		InterestRate:         pool.InterestRate,
 		InterestRateMax:      pool.InterestRateMax,
 		InterestRateMin:      pool.InterestRateMin,
@@ -69,7 +69,7 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, pool types.Pool) types.PoolResponse
 		HealthGainFactor:     pool.HealthGainFactor,
 		TotalValue:           pool.TotalValue,
 		MaxLeverageRatio:     pool.MaxLeverageRatio,
-		PoolId:               pool.PoolId,
+		PoolId:               pool.Id,
 		TotalDeposit:         pool.TotalValue,
 		TotalBorrow:          borrowed,
 		BorrowRatio:          borrowRatio,

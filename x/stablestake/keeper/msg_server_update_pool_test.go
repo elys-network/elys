@@ -24,7 +24,6 @@ func (suite *KeeperTestSuite) TestUpdatePool() {
 			authority: sender.String(),
 			pool: types.Pool{
 				DepositDenom:         "stake",
-				RedemptionRate:       sdkmath.LegacyNewDec(1),
 				InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.1"),
 				InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.01"),
 				InterestRate:         sdkmath.LegacyMustNewDecFromStr("0.05"),
@@ -33,7 +32,7 @@ func (suite *KeeperTestSuite) TestUpdatePool() {
 				HealthGainFactor:     sdkmath.LegacyMustNewDecFromStr("0.01"),
 				TotalValue:           sdkmath.OneInt(),
 				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
-				PoolId:               1,
+				Id:                   1,
 			},
 			expected: nil,
 		},
@@ -42,7 +41,6 @@ func (suite *KeeperTestSuite) TestUpdatePool() {
 			authority: "invalid_authority",
 			pool: types.Pool{
 				DepositDenom:         "stake",
-				RedemptionRate:       sdkmath.LegacyNewDec(1),
 				InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.1"),
 				InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.01"),
 				InterestRate:         sdkmath.LegacyMustNewDecFromStr("0.05"),
@@ -51,7 +49,7 @@ func (suite *KeeperTestSuite) TestUpdatePool() {
 				HealthGainFactor:     sdkmath.LegacyMustNewDecFromStr("0.01"),
 				TotalValue:           sdkmath.OneInt(),
 				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.1"),
-				PoolId:               1,
+				Id:                   1,
 			},
 			expected: errors.New("invalid authority"),
 		},

@@ -124,7 +124,6 @@ func (suite *KeeperTestSuite) TestAllAmmPools() {
 
 func (suite *KeeperTestSuite) TestPool() {
 	p := types.Pool{
-		RedemptionRate:       math.LegacyOneDec(),
 		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
 		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
 		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
@@ -133,7 +132,7 @@ func (suite *KeeperTestSuite) TestPool() {
 		HealthGainFactor:     math.LegacyOneDec(),
 		TotalValue:           math.ZeroInt(),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
-		PoolId:               1,
+		Id:                   1,
 		DepositDenom:         ptypes.BaseCurrency,
 	}
 
@@ -209,7 +208,6 @@ func (suite *KeeperTestSuite) TestPool() {
 
 func (suite *KeeperTestSuite) TestAllPools() {
 	p := types.Pool{
-		RedemptionRate:       math.LegacyOneDec(),
 		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
 		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
 		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
@@ -218,7 +216,7 @@ func (suite *KeeperTestSuite) TestAllPools() {
 		HealthGainFactor:     math.LegacyOneDec(),
 		TotalValue:           math.ZeroInt(),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
-		PoolId:               1,
+		Id:                   1,
 		DepositDenom:         ptypes.BaseCurrency,
 	}
 

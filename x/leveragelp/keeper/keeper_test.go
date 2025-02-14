@@ -78,7 +78,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.SetLeverageParam(suite.ctx)
 
 	suite.app.StablestakeKeeper.SetPool(suite.ctx, stablestaketypes.Pool{
-		RedemptionRate:       math.LegacyOneDec(),
 		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
 		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
 		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
@@ -87,7 +86,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 		HealthGainFactor:     math.LegacyOneDec(),
 		TotalValue:           math.ZeroInt(),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
-		PoolId:               1,
+		Id:                   1,
 		DepositDenom:         ptypes.BaseCurrency,
 	})
 }

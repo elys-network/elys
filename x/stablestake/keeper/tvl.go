@@ -20,14 +20,7 @@ func (k Keeper) AllTVL(ctx sdk.Context, oracleKeeper types.OracleKeeper) math.Le
 	allPools := k.GetAllPools(ctx)
 	tvl := math.LegacyZeroDec()
 	for _, pool := range allPools {
-		tvl = tvl.Add(k.TVL(ctx, oracleKeeper, pool.PoolId))
+		tvl = tvl.Add(k.TVL(ctx, oracleKeeper, pool.Id))
 	}
 	return tvl
-}
-
-func (k Keeper) ShareDenomPrice(ctx sdk.Context, oracleKeeper types.OracleKeeper, baseCurrency string) math.LegacyDec {
-	params := k.GetParams(ctx)
-	redemptionRate := params.RedemptionRate
-	price := oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-	return price.Mul(redemptionRate)
 }

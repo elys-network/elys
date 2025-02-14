@@ -19,6 +19,7 @@ import (
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tradeshieldtypes "github.com/elys-network/elys/x/tradeshield/types"
 
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -107,14 +108,29 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 	for _, commitment := range commitments.CommittedTokens {
 		if !strings.HasPrefix(commitment.Denom, "amm/pool") {
 			if strings.HasPrefix(commitment.Denom, "stablestake/share") {
-				usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-				if !found {
-					continue
+				if commitment.Denom == "stablestake/share" {
+					usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+					if !found {
+						continue
+					}
+					tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+					redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateByDenom(ctx, commitment.Denom)
+					usdValue := commitment.Amount.ToLegacyDec().Mul(redemptionRate).Mul(tokenPrice)
+					totalCommit = totalCommit.Add(usdValue)
+				} else {
+					poolId, err := stablestaketypes.GetPoolIDFromPath(commitment.Denom)
+					if err != nil {
+						continue
+					}
+					pool, found := k.stablestakeKeeper.GetPool(ctx, poolId)
+					if !found {
+						continue
+					}
+					redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateForPool(ctx, pool)
+					tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, pool.GetDepositDenom())
+					usdValue := commitment.Amount.ToLegacyDec().Mul(redemptionRate).Mul(tokenPrice)
+					totalCommit = totalCommit.Add(usdValue)
 				}
-				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-				params := k.stablestakeKeeper.GetParams(ctx)
-				usdValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice)
-				totalCommit = totalCommit.Add(usdValue)
 				continue
 			}
 			if commitment.Denom == ptypes.Eden {

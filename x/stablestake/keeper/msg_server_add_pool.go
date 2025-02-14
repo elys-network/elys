@@ -26,9 +26,8 @@ func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types
 
 	poolId := k.GetNextPoolId(ctx)
 	pool := types.Pool{
-		PoolId:               poolId,
+		Id:                   poolId,
 		DepositDenom:         msg.DepositDenom,
-		RedemptionRate:       math.LegacyZeroDec(),
 		InterestRateDecrease: msg.InterestRateDecrease,
 		InterestRateIncrease: msg.InterestRateIncrease,
 		HealthGainFactor:     msg.HealthGainFactor,

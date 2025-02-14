@@ -14,7 +14,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		delBlock := ctx.BlockHeight() - int64(numBlocks)
 		pools := k.GetAllPools(ctx)
 		for _, pool := range pools {
-			k.DeleteInterestForPool(ctx, delBlock, pool.PoolId)
+			k.DeleteInterestForPool(ctx, delBlock, pool.Id)
 		}
 	}
 }
@@ -23,8 +23,7 @@ func (k Keeper) UpdateInterestForAllPools(ctx sdk.Context) {
 	pools := k.GetAllPools(ctx)
 	for _, pool := range pools {
 		pool.InterestRate = k.InterestRateComputationForPool(ctx, pool)
-		pool.RedemptionRate = k.GetRedemptionRateForPool(ctx, pool)
 		k.SetPool(ctx, pool)
-		k.SetInterestForPool(ctx, pool.PoolId, uint64(ctx.BlockHeight()), types.InterestBlock{InterestRate: pool.InterestRate, BlockTime: ctx.BlockTime().Unix(), BlockHeight: uint64(ctx.BlockHeight())})
+		k.SetInterestForPool(ctx, pool.Id, uint64(ctx.BlockHeight()), types.InterestBlock{InterestRate: pool.InterestRate, BlockTime: ctx.BlockTime().Unix(), BlockHeight: uint64(ctx.BlockHeight())})
 	}
 }
