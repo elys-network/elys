@@ -120,6 +120,7 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, pool.GetDepositDenom())
 				usdValue := commitment.Amount.ToLegacyDec().Mul(redemptionRate).Mul(tokenPrice)
 				totalCommit = totalCommit.Add(usdValue)
+				continue
 			}
 			if commitment.Denom == ptypes.Eden {
 				commitment.Denom = ptypes.Elys
@@ -134,7 +135,6 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 			}
 			amount := commitment.Amount.ToLegacyDec()
 			totalCommit = totalCommit.Add(amount.Mul(tokenPrice))
-			continue
 		}
 	}
 
