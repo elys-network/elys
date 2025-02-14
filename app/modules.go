@@ -73,8 +73,6 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	masterchefmodule "github.com/elys-network/elys/x/masterchef"
 	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
-	oraclemodule "github.com/elys-network/elys/x/oracle"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametermodule "github.com/elys-network/elys/x/parameter"
 	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
 	perpetualmodule "github.com/elys-network/elys/x/perpetual"
@@ -89,6 +87,8 @@ import (
 	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
 	"github.com/elys-network/elys/x/transferhook"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
+	oraclemodule "github.com/ojo-network/ojo/x/oracle"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 // module account permissions
@@ -99,6 +99,7 @@ var maccPerms = map[string][]string{
 	stakingtypes.BondedPoolName:                   {authtypes.Burner, authtypes.Staking},
 	stakingtypes.NotBondedPoolName:                {authtypes.Burner, authtypes.Staking},
 	govtypes.ModuleName:                           {authtypes.Burner},
+	oracletypes.ModuleName:                        {authtypes.Minter},
 	ibctransfertypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:                        nil,
 	ccvconsumertypes.ConsumerRedistributeName:     {authtypes.Burner},
@@ -141,7 +142,7 @@ func appModules(
 		// This needs consumer_redistribution_fraction MUST be 1 as we are totally controlling the rewards. Also, this needs  ccvconsumer EndBlocker to be run after estaking and masterchef as it will move funds from
 		// FeeCollector to ConsumerRedistributeName
 		exdistr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CommitmentKeeper, app.EstakingKeeper, &app.AssetprofileKeeper, ccvconsumertypes.ConsumerRedistributeName, app.GetSubspace(distrtypes.ModuleName)),
-		exstaking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		exstaking.NewAppModule(appCodec, &app.StakingKeeper.Keeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
@@ -201,7 +202,7 @@ func simulationModules(
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper, false),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		staking.NewAppModule(appCodec, &app.StakingKeeper.Keeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, nil, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
 		params.NewAppModule(app.ParamsKeeper),

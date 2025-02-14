@@ -22,10 +22,10 @@ import (
 	"github.com/elys-network/elys/x/tier/keeper"
 	"github.com/elys-network/elys/x/tier/types"
 
-	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	oraclekeeper "github.com/ojo-network/ojo/x/oracle/keeper"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/require"
 )
 
