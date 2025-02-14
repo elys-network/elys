@@ -87,6 +87,8 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	masterchefmodulekeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
+	legacyoraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
+	legacyoracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametermodulekeeper "github.com/elys-network/elys/x/parameter/keeper"
 	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
 	perpetualmodulekeeper "github.com/elys-network/elys/x/perpetual/keeper"
@@ -153,6 +155,7 @@ type AppKeepers struct {
 
 	EpochsKeeper        *epochsmodulekeeper.Keeper
 	AssetprofileKeeper  assetprofilemodulekeeper.Keeper
+	LegacyOracleKeepper legacyoraclekeeper.Keeper
 	OracleKeeper        oraclekeeper.Keeper
 	CommitmentKeeper    *commitmentmodulekeeper.Keeper
 	TokenomicsKeeper    tokenomicsmodulekeeper.Keeper
@@ -476,6 +479,15 @@ func NewAppKeeper(
 
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
+
+	app.LegacyOracleKeepper = *legacyoraclekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[legacyoracletypes.StoreKey]),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.PortKeeper,
+		app.ScopedOracleKeeper,
+	)
 
 	app.OracleKeeper = oraclekeeper.NewKeeper(
 		appCodec,
