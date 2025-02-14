@@ -15,7 +15,7 @@ func TestPoolAddress(t *testing.T) {
 	require.Equal(t, authtypes.NewModuleAddress(types.ModuleName), types.PoolAddress())
 }
 func TestShareDenom(t *testing.T) {
-	require.Equal(t, "stablestake/share", types.GetShareDenomForPool(types.PoolId))
+	require.Equal(t, "stablestake/share", types.GetShareDenomForPool(types.UsdcPoolId))
 }
 
 func TestAddLiabilities(t *testing.T) {

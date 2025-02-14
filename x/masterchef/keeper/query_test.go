@@ -81,7 +81,7 @@ func (suite *MasterchefKeeperTestSuite) SetupApp() {
 		HealthGainFactor:     sdkmath.LegacyOneDec(),
 		TotalValue:           sdkmath.ZeroInt(),
 		MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
-		Id:                   stablestaketypes.PoolId,
+		Id:                   stablestaketypes.UsdcPoolId,
 		DepositDenom:         ptypes.BaseCurrency,
 	})
 }

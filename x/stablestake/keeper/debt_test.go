@@ -146,7 +146,7 @@ func (suite *KeeperTestSuite) TestMove() {
 
 	debts := suite.app.StablestakeKeeper.GetAllDebts(suite.ctx)
 	suite.Require().Len(debts, 1)
-	suite.Require().Equal(uint64(types.PoolId), debts[0].PoolId)
+	suite.Require().Equal(uint64(types.UsdcPoolId), debts[0].PoolId)
 
 	interest := types.InterestBlock{
 		InterestRate: math.LegacyNewDec(10),
@@ -156,5 +156,5 @@ func (suite *KeeperTestSuite) TestMove() {
 	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, 1, interest.BlockHeight, interest)
 	suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
 	interests := suite.app.StablestakeKeeper.GetAllInterest(suite.ctx)
-	suite.Require().Equal(uint64(types.PoolId), interests[0].PoolId)
+	suite.Require().Equal(uint64(types.UsdcPoolId), interests[0].PoolId)
 }

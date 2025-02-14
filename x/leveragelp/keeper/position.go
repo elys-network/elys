@@ -365,7 +365,7 @@ func (k Keeper) SetAllPositions(ctx sdk.Context) {
 		var position types.Position
 		bytesValue := iterator.Value()
 		k.cdc.Unmarshal(bytesValue, &position)
-		position.BorrowPoolId = stabletypes.PoolId
+		position.BorrowPoolId = stabletypes.UsdcPoolId
 		k.SetPosition(ctx, &position)
 	}
 }
@@ -377,7 +377,7 @@ func (k Keeper) V18MigratonPoolLiabilities(ctx sdk.Context) {
 	for ; iterator.Valid(); iterator.Next() {
 		var position types.Position
 		k.cdc.MustUnmarshal(iterator.Value(), &position)
-		debt := k.stableKeeper.GetDebtWithoutUpdatedInterest(ctx, position.GetPositionAddress(), stabletypes.PoolId)
+		debt := k.stableKeeper.GetDebtWithoutUpdatedInterest(ctx, position.GetPositionAddress(), stabletypes.UsdcPoolId)
 		k.stableKeeper.AddPoolLiabilities(ctx, position.AmmPoolId, sdk.NewCoin(position.Collateral.Denom, debt.GetTotalLiablities()))
 		k.SetPosition(ctx, &position)
 

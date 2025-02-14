@@ -35,7 +35,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 		}
 
-		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, stabletypes.PoolId)
+		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, stabletypes.UsdcPoolId)
 		if stableTvl.IsZero() {
 			return sdkmath.LegacyZeroDec(), nil
 		}
@@ -48,7 +48,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
 		// Get pool info from incentive param
-		poolInfo, found := k.GetPoolInfo(ctx, uint64(stabletypes.PoolId))
+		poolInfo, found := k.GetPoolInfo(ctx, uint64(stabletypes.UsdcPoolId))
 		if !found {
 			return sdkmath.LegacyZeroDec(), nil
 		}

@@ -342,10 +342,10 @@ func (k Keeper) MoveAllInterest(ctx sdk.Context) {
 	for ; iterator.Valid(); iterator.Next() {
 		interest := types.InterestBlock{}
 		k.cdc.MustUnmarshal(iterator.Value(), &interest)
-		interest.PoolId = types.PoolId
+		interest.PoolId = types.UsdcPoolId
 
 		store.Delete(iterator.Key())
-		k.SetInterestForPool(ctx, types.PoolId, interest.BlockHeight, interest)
+		k.SetInterestForPool(ctx, types.UsdcPoolId, interest.BlockHeight, interest)
 	}
 }
 
@@ -357,7 +357,7 @@ func (k Keeper) MoveAllDebt(ctx sdk.Context) {
 	for ; iterator.Valid(); iterator.Next() {
 		debt := types.Debt{}
 		k.cdc.MustUnmarshal(iterator.Value(), &debt)
-		debt.PoolId = types.PoolId
+		debt.PoolId = types.UsdcPoolId
 
 		store.Delete(iterator.Key())
 		k.SetDebt(ctx, debt)

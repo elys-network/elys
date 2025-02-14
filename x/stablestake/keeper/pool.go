@@ -102,7 +102,7 @@ func (k Keeper) GetLatestPool(ctx sdk.Context) (val types.Pool, found bool) {
 func (k Keeper) GetNextPoolId(ctx sdk.Context) uint64 {
 	latestPool, found := k.GetLatestPool(ctx)
 	if !found {
-		return types.PoolId
+		return types.UsdcPoolId
 	}
 	return latestPool.Id + 1
 }

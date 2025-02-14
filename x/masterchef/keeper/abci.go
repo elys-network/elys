@@ -30,7 +30,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 }
 
 func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
-	if poolId >= stabletypes.PoolId {
+	if poolId >= stabletypes.UsdcPoolId {
 		return k.stableKeeper.TVL(ctx, k.oracleKeeper, poolId)
 	}
 	ammPool, found := k.amm.GetPool(ctx, poolId)
@@ -524,7 +524,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 // Calculate Proxy TVL
 func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) (math.LegacyDec, math.LegacyDec) {
 	// Ensure stablestakePoolParams exist
-	stableStakePoolId := uint64(stabletypes.PoolId)
+	stableStakePoolId := uint64(stabletypes.UsdcPoolId)
 	_, found := k.GetPoolInfo(ctx, stableStakePoolId)
 	if !found {
 		k.InitStableStakePoolParams(ctx, stableStakePoolId)

@@ -7,7 +7,7 @@ import (
 )
 
 func GetShareDenomForPool(poolId uint64) string {
-	if poolId == PoolId {
+	if poolId == UsdcPoolId {
 		return "stablestake/share"
 	}
 	return "stablestake/share/pool/" + strconv.FormatUint(poolId, 10)

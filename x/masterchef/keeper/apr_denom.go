@@ -75,7 +75,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				return math.LegacyZeroDec(), errorsmod.Wrap(types.ErrPoolNotFound, "pool not found")
 			}
 			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{
-				PoolId: stabletypes.PoolId,
+				PoolId: stabletypes.UsdcPoolId,
 			})
 			if err != nil {
 				return math.LegacyZeroDec(), err
