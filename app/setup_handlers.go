@@ -13,6 +13,7 @@ import (
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
@@ -51,6 +52,7 @@ func (app *ElysApp) setUpgradeHandler() {
 			if upgradeVersion == NextVersion || upgradeVersion == LocalNetVersion {
 
 				// Add any logic here to run when the chain is upgraded to the new version
+				app.Logger().Info("Migrating legacy oracle prices to new oracle")
 				prices := app.LegacyOracleKeepper.GetAllPrice(ctx)
 				for _, price := range prices {
 					app.OracleKeeper.SetPrice(ctx, ojooracletypes.Price{
@@ -83,8 +85,8 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{ojooracletypes.StoreKey},
-			// Deleted: []string{},
+			Added:   []string{ojooracletypes.StoreKey},
+			Deleted: []string{oracletypes.StoreKey},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 
