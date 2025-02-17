@@ -63,24 +63,30 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
-			if upgradeVersion == NextVersion || upgradeVersion == LocalNetVersion {
-
-				// Add any logic here to run when the chain is upgraded to the new version
-				app.Logger().Info("Migrating legacy oracle prices to new oracle")
-				prices := app.LegacyOracleKeepper.GetAllPrice(ctx)
-				for _, price := range prices {
-					app.OracleKeeper.SetPrice(ctx, ojooracletypes.Price{
-						Asset:       price.Asset,
-						Price:       price.Price,
-						Source:      price.Source,
-						Provider:    price.Provider,
-						Timestamp:   price.Timestamp,
-						BlockHeight: price.BlockHeight,
-					})
-					app.OracleKeeper.SetParams(ctx, ojooracletypes.DefaultParams())
-				}
+			// Add any logic here to run when the chain is upgraded to the new version
+			app.Logger().Info("Migrating legacy oracle prices to new oracle")
+			prices := app.LegacyOracleKeepper.GetAllPrice(ctx)
+			for _, price := range prices {
+				app.OracleKeeper.SetPrice(ctx, ojooracletypes.Price{
+					Asset:       price.Asset,
+					Price:       price.Price,
+					Source:      price.Source,
+					Provider:    price.Provider,
+					Timestamp:   price.Timestamp,
+					BlockHeight: price.BlockHeight,
+				})
+				app.OracleKeeper.SetParams(ctx, ojooracletypes.DefaultParams())
 			}
-
+			assetInfos := app.LegacyOracleKeepper.GetAllAssetInfo(ctx)
+			for _, assetInfo := range assetInfos {
+				app.OracleKeeper.SetAssetInfo(ctx, ojooracletypes.AssetInfo{
+					Denom:      assetInfo.Denom,
+					Display:    assetInfo.Display,
+					BandTicker: assetInfo.BandTicker,
+					ElysTicker: assetInfo.ElysTicker,
+					Decimal:    assetInfo.Decimal,
+				})
+			}
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
 	)
