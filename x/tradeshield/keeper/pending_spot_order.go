@@ -327,6 +327,13 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
+	tolerance := res.SwapFee.Add(res.Slippage)
+	if res.WeightBonus.IsNegative() {
+		tolerance = tolerance.Add(res.WeightBonus.Abs())
+	}
+	if tolerance.GT(sdkmath.LegacyMustNewDecFromStr("5")) {
+		return res, errorsmod.Wrapf(types.ErrHighTolerance, "tolerance: %s", tolerance)
+	}
 	if err != nil {
 		return res, err
 	}
