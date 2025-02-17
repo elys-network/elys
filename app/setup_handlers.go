@@ -127,5 +127,5 @@ func shouldLoadUpgradeStore(app *ElysApp, upgradeInfo upgradetypes.Plan) bool {
 	upgradeVersion := generateUpgradeVersion()
 	app.Logger().Debug("Current version", "version", version.Version)
 	app.Logger().Debug("Upgrade version", "version", upgradeVersion)
-	return !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height)
+	return upgradeInfo.Name == upgradeVersion && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height)
 }
