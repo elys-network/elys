@@ -71,5 +71,5 @@ func (k Keeper) JoinPoolEst(
 		return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
 
-	return tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, err
+	return tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, nil
 }

@@ -121,5 +121,5 @@ func (k Keeper) JoinPoolNoSwap(
 		return nil, sdkmath.Int{}, err
 	}
 
-	return tokensJoined, sharesOut, err
+	return tokensJoined, sharesOut, nil
 }
