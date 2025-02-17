@@ -16,7 +16,7 @@ import (
 
 func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool) types.PoolExtraInfo {
 	tvl, _ := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
-	lpTokenPrice, _ := pool.LpTokenPrice(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+	lpTokenPrice, _ := pool.LpTokenPriceForShare(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	avg := k.GetWeightBreakingSlippageAvg(ctx, pool.PoolId)
 	apr := math.LegacyZeroDec()
 	if tvl.IsPositive() {

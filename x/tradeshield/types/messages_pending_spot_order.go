@@ -2,6 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -9,7 +10,7 @@ import (
 var _ sdk.Msg = &MsgCreateSpotOrder{}
 
 func NewMsgCreateSpotOrder(ownerAddress string, orderType SpotOrderType,
-	orderPrice OrderPrice, orderAmount sdk.Coin,
+	orderPrice math.LegacyDec, orderAmount sdk.Coin,
 	orderTargetDenom string) *MsgCreateSpotOrder {
 	return &MsgCreateSpotOrder{
 		OrderType:        orderType,
@@ -26,15 +27,17 @@ func (msg *MsgCreateSpotOrder) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	if err = CheckLegacyDecNilAndNegative(msg.OrderPrice.Rate, "OrderPrice Rate"); err != nil {
+	if err = CheckLegacyDecNilAndNegative(msg.OrderPrice, "OrderPrice Rate"); err != nil {
 		return err
 	}
-	if err = sdk.ValidateDenom(msg.OrderPrice.BaseDenom); err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid base asset denom (%s)", err)
+
+	if err = sdk.ValidateDenom(msg.OrderAmount.Denom); err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order amount denom (%s)", err)
 	}
 
-	if err = sdk.ValidateDenom(msg.OrderPrice.QuoteDenom); err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid quote asset denom (%s)", err)
+	// check that order amount denom is not the same as the order target denom
+	if msg.OrderAmount.Denom == msg.OrderTargetDenom {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "order amount denom cannot be the same as the order target denom")
 	}
 
 	// Validate order amount
@@ -54,7 +57,7 @@ func (msg *MsgCreateSpotOrder) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgUpdateSpotOrder{}
 
-func NewMsgUpdateSpotOrder(creator string, id uint64, orderPrice OrderPrice) *MsgUpdateSpotOrder {
+func NewMsgUpdateSpotOrder(creator string, id uint64, orderPrice math.LegacyDec) *MsgUpdateSpotOrder {
 	return &MsgUpdateSpotOrder{
 		OrderId:      id,
 		OwnerAddress: creator,
@@ -68,16 +71,8 @@ func (msg *MsgUpdateSpotOrder) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 
-	if err = CheckLegacyDecNilAndNegative(msg.OrderPrice.Rate, "OrderPrice Rate"); err != nil {
+	if err = CheckLegacyDecNilAndNegative(msg.OrderPrice, "OrderPrice Rate"); err != nil {
 		return err
-	}
-
-	if err = sdk.ValidateDenom(msg.OrderPrice.BaseDenom); err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid base asset denom (%s)", err)
-	}
-
-	if err = sdk.ValidateDenom(msg.OrderPrice.QuoteDenom); err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid quote asset denom (%s)", err)
 	}
 
 	// Validate order ID

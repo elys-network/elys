@@ -64,7 +64,7 @@ func (k Keeper) GetFirstSwapExactAmountInRequest(ctx sdk.Context, sprefix []byte
 	return &val, sdk.BigEndianToUint64(key[len(key)-8:])
 }
 
-// SetSwapExactAmountInRequests stores swap exact amount out request
+// SetSwapExactAmountOutRequests stores swap exact amount out request
 func (k Keeper) SetSwapExactAmountOutRequests(ctx sdk.Context, msg *types.MsgSwapExactAmountOut, index uint64) {
 	store := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.KeyPrefix(types.TSwapExactAmountOutKey))
 	b := k.cdc.MustMarshal(msg)

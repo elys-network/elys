@@ -19,7 +19,6 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 	tokenInMaxAmount math.Int,
 	tokenOut sdk.Coin,
 ) (tokenInAmount math.Int, totalDiscountedSwapFee math.LegacyDec, discountOut math.LegacyDec, err error) {
-	isMultiHopRouted, routeSwapFee, sumOfSwapFees := false, math.LegacyDec{}, math.LegacyDec{}
 	route := types.SwapAmountOutRoutes(routes)
 	if err := route.Validate(); err != nil {
 		return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
@@ -32,34 +31,10 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		}
 	}()
 
-	// in this loop, we check if:
-	// - the route is of length 2
-	// - route 1 and route 2 don't trade via the same pool
-	// - route 1 contains uosmo
-	// - both route 1 and route 2 are incentivized pools
-	// if all of the above is true, then we collect the additive and max fee between the two pools to later calculate the following:
-	// total_swap_fee = total_swap_fee = max(swapfee1, swapfee2)
-	// fee_per_pool = total_swap_fee * ((pool_fee) / (swapfee1 + swapfee2))
-	if k.isElysRoutedMultihop(ctx, route, routes[0].TokenInDenom, tokenOut.Denom) {
-		isMultiHopRouted = true
-		routeSwapFee, sumOfSwapFees, err = k.getElysRoutedMultihopTotalSwapFee(ctx, route)
-		if err != nil {
-			return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
-		}
-	}
-
 	// Initialize the total discounted swap fee
 	totalDiscountedSwapFee = math.LegacyZeroDec()
 
-	// Determine what the estimated input would be for each pool along the multi-hop route
-	// if we determined the route is an osmo multi-hop and both routes are incentivized,
-	// we utilize a separate function that calculates the discounted swap fees
-	var insExpected []math.Int
-	if isMultiHopRouted {
-		insExpected, err = k.createElysMultihopExpectedSwapOuts(ctx, routes, tokenOut, routeSwapFee, sumOfSwapFees)
-	} else {
-		insExpected, err = k.createMultihopExpectedSwapOuts(ctx, routes, tokenOut)
-	}
+	insExpected, err := k.createMultihopExpectedSwapOuts(ctx, routes, tokenOut)
 	if err != nil {
 		return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
@@ -95,10 +70,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		// 	return math.Int{}, fmt.Errorf("pool %d is not active", pool.GetId())
 		// }
 
-		swapFee := pool.GetPoolParams().SwapFee
-		if isMultiHopRouted && sumOfSwapFees.IsPositive() {
-			swapFee = routeSwapFee.Mul((swapFee.Quo(sumOfSwapFees)))
-		}
+		swapFee := pool.GetPoolParams().SwapFee.Quo(math.LegacyNewDec(int64(len(routes))))
 
 		// Apply discount to swap fee if applicable
 		swapFee = types.ApplyDiscount(swapFee, discount)

@@ -19,6 +19,7 @@ import (
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tradeshieldtypes "github.com/elys-network/elys/x/tradeshield/types"
 
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -107,13 +108,17 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 	for _, commitment := range commitments.CommittedTokens {
 		if !strings.HasPrefix(commitment.Denom, "amm/pool") {
 			if strings.HasPrefix(commitment.Denom, "stablestake/share") {
-				usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+				poolId, err := stablestaketypes.GetPoolIDFromPath(commitment.Denom)
+				if err != nil {
+					continue
+				}
+				pool, found := k.stablestakeKeeper.GetPool(ctx, poolId)
 				if !found {
 					continue
 				}
-				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-				params := k.stablestakeKeeper.GetParams(ctx)
-				usdValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice)
+				redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateForPool(ctx, pool)
+				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, pool.GetDepositDenom())
+				usdValue := commitment.Amount.ToLegacyDec().Mul(redemptionRate).Mul(tokenPrice)
 				totalCommit = totalCommit.Add(usdValue)
 				continue
 			}
@@ -284,7 +289,7 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) (s
 			amount := position.LeveragedLpAmount.ToLegacyDec()
 			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
 			// USD value of debt
-			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPositionAddress())
+			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 			usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 			if !found {
 				continue

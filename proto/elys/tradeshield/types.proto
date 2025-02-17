@@ -24,7 +24,12 @@ message Date {
 message SpotOrder {
   SpotOrderType order_type = 1;
   uint64 order_id = 2;
-  OrderPrice order_price = 3 [ (gogoproto.nullable) = false ];
+  LegacyOrderPriceV1 legacy_order_price_v1 = 3 [ (gogoproto.nullable) = false ];
+  string order_price = 9 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
   cosmos.base.v1beta1.Coin order_amount = 4 [ (gogoproto.nullable) = false ];
   string owner_address = 5;
   string order_target_denom = 6;
@@ -40,55 +45,18 @@ enum PerpetualOrderType {
   STOPLOSSPERP = 2;
 }
 
-message LegacyPerpetualOrder {
-  uint64 order_id = 1;
-  string owner_address = 2;
-  PerpetualOrderType perpetual_order_type = 3;
-  PerpetualPosition position = 4;
-  OrderPrice trigger_price = 5;
-  cosmos.base.v1beta1.Coin collateral = 6 [ (gogoproto.nullable) = false ];
-  string trading_asset = 7;
-  string leverage = 8 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string take_profit_price = 9 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  uint64 position_id = 10;
-  Status status = 11;
-  string stop_loss_price = 12 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  cosmos.base.v1beta1.Coin position_size = 13 [ (gogoproto.nullable) = false ];
-  string liquidation_price = 14 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string funding_rate = 15 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string borrow_interest_rate = 16 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-}
-
 message PerpetualOrder {
   uint64 order_id = 1;
   string owner_address = 2;
   PerpetualOrderType perpetual_order_type = 3;
   PerpetualPosition position = 4;
-  TriggerPrice trigger_price = 5 [ (gogoproto.nullable) = false ];
+  LegacyTriggerPriceV1 legacy_trigger_price_v1 = 5
+      [ (gogoproto.nullable) = false ];
+  string trigger_price = 14 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
   cosmos.base.v1beta1.Coin collateral = 6 [ (gogoproto.nullable) = false ];
   string trading_asset = 7;
   string leverage = 8 [

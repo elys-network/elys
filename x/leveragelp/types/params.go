@@ -1,9 +1,8 @@
 package types
 
 import (
-	"fmt"
-
 	sdkmath "cosmossdk.io/math"
+	"fmt"
 )
 
 // NewParams creates a new Params instance
@@ -18,6 +17,7 @@ func NewParams() Params {
 		FallbackEnabled:     true,
 		NumberPerBlock:      (int64)(1000),
 		EnabledPools:        []uint64(nil),
+		ExitBuffer:          sdkmath.LegacyMustNewDecFromStr("0.05"),
 	}
 }
 
@@ -62,6 +62,10 @@ func (p Params) Validate() error {
 
 	if containsDuplicates(p.EnabledPools) {
 		return fmt.Errorf("array must not contain duplicate values")
+	}
+
+	if p.ExitBuffer.IsNil() {
+		return fmt.Errorf("exit buffer must be not nil")
 	}
 	return nil
 }

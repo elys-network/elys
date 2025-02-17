@@ -48,7 +48,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 			"perpetual pool does not exist",
 		},
 		{
-			"Mtp health will be low for the safety factor",
+			"Force Closed: Mtp health will be low for the safety factor",
 			func() (*types.MsgOpen, *types.MTP, *types.MTP) {
 				suite.ResetSuite()
 
@@ -81,7 +81,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 
 				return openPositionMsg, &mtp, &mtp
 			},
-			"mtp health would be too low for safety factor",
+			"",
 		},
 		{
 			"Sucess: MTP consolidation",

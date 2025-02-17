@@ -7,26 +7,40 @@ import (
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) InterestRateComputation(ctx sdk.Context) sdkmath.LegacyDec {
-	params := k.GetParams(ctx)
-	if params.TotalValue.IsZero() {
-		return params.InterestRate
+func (k Keeper) InterestRateComputationForPool(ctx sdk.Context, pool types.Pool) sdkmath.LegacyDec {
+	if pool.TotalValue.IsZero() {
+		return pool.InterestRate
 	}
 
-	interestRateMax := params.InterestRateMax
-	interestRateMin := params.InterestRateMin
-	interestRateIncrease := params.InterestRateIncrease
-	interestRateDecrease := params.InterestRateDecrease
-	healthGainFactor := params.HealthGainFactor
-	prevInterestRate := params.InterestRate
+	interestRateMax := pool.InterestRateMax
+	interestRateMin := pool.InterestRateMin
+	interestRateIncrease := pool.InterestRateIncrease
+	interestRateDecrease := pool.InterestRateDecrease
+	healthGainFactor := pool.HealthGainFactor
+	prevInterestRate := pool.InterestRate
 
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
-	depositDenom := k.GetDepositDenom(ctx)
+	depositDenom := pool.GetDepositDenom()
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := params.TotalValue.Sub(balance.Amount)
-	targetInterestRate := healthGainFactor.
-		Mul(borrowed.ToLegacyDec()).
-		Quo(params.TotalValue.ToLegacyDec())
+
+	// rate = minRate + (min(borrowRatio, param * maxAllowed) / (param * maxAllowed)) * (maxRate - minRate)
+	borrowRatio := sdkmath.ZeroInt()
+	if pool.TotalValue.IsPositive() {
+		borrowRatio = (pool.TotalValue.Sub(balance.Amount)).Quo(pool.TotalValue)
+	}
+
+	clampedBorrowRatio := borrowRatio.ToLegacyDec()
+	maxAllowed := pool.MaxLeverageRatio.Mul(healthGainFactor)
+	if clampedBorrowRatio.GT(maxAllowed) {
+		clampedBorrowRatio = maxAllowed
+	}
+
+	if maxAllowed.IsZero() {
+		clampedBorrowRatio = sdkmath.LegacyZeroDec()
+		maxAllowed = sdkmath.LegacyOneDec()
+	}
+
+	targetInterestRate := interestRateMin.Add((clampedBorrowRatio.Quo(maxAllowed).Mul((interestRateMax.Sub(interestRateMin)))))
 
 	interestRateChange := targetInterestRate.Sub(prevInterestRate)
 	interestRate := prevInterestRate

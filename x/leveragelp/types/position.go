@@ -57,3 +57,7 @@ func GetPositionAddress(positionId uint64) sdk.AccAddress {
 func (p Position) GetPositionAddress() sdk.AccAddress {
 	return GetPositionAddress(p.Id)
 }
+
+func (p Position) CheckStopLossReached(lpTokenPrice sdkmath.LegacyDec) bool {
+	return !p.StopLossPrice.IsNil() && lpTokenPrice.LTE(p.StopLossPrice)
+}
