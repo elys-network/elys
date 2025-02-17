@@ -1,13 +1,13 @@
 package keeper_test
 
 import (
+	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"testing"
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 
@@ -53,13 +53,13 @@ func (suite *KeeperTestSuite) SetupTest() {
 		DepositDenom:         ptypes.BaseCurrency,
 	})
 
-	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracletypes.AssetInfo{
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, ojooracletypes.AssetInfo{
 		Denom:   "uusdc",
 		Display: "USDC",
 		Decimal: 6,
 	})
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+	suite.app.OracleKeeper.SetPrice(suite.ctx, ojooracletypes.Price{
 		Asset:     "USDC",
 		Price:     math.LegacyOneDec(),
 		Source:    "elys",
