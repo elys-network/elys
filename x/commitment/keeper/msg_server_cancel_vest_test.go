@@ -159,11 +159,33 @@ func TestCancelVest_WithPreviousClaimed(t *testing.T) {
 	// check if the unclaimed tokens were updated correctly
 	require.Equal(t, sdkmath.NewInt(25), newCommitments.GetClaimedForDenom(ptypes.Eden))
 
-	// Try to cancel an amount that exceeds the unvested amount
-	cancelVestMsg.Amount = sdkmath.NewInt(100)
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 25)
+	cancelVestMsg.Amount = sdkmath.NewInt(20)
+
+	// Execute the CancelVest function
 	_, err = msgServer.CancelVest(ctx, cancelVestMsg)
-	require.Error(t, err, "should throw an error when trying to cancel more tokens than available")
-	require.True(t, types.ErrInsufficientVestingTokens.Is(err), "error should be insufficient vesting tokens")
+	require.NoError(t, err)
+
+	newCommitments = keeper.GetCommitments(ctx, creator)
+	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not updated correctly")
+	require.Equal(t, sdkmath.NewInt(14), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
+	require.Equal(t, sdkmath.NewInt(0), newCommitments.VestingTokens[0].ClaimedAmount, "claimed amount was not updated correctly")
+	require.Equal(t, int64(50), newCommitments.VestingTokens[0].NumBlocks, "NumBlocks not updated correctly")
+	// check if the unclaimed tokens were updated correctly, 25 from previous cancel + 20 from this cancel
+	require.Equal(t, sdkmath.NewInt(45), newCommitments.GetClaimedForDenom(ptypes.Eden))
+
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 25)
+
+	// Try to cancel total remaining amount
+	cancelVestMsg.Amount = sdkmath.NewInt(7)
+	_, err = msgServer.CancelVest(ctx, cancelVestMsg)
+	require.NoError(t, err)
+
+	newCommitments = keeper.GetCommitments(ctx, creator)
+	require.Len(t, newCommitments.VestingTokens, 0, "vesting tokens should be empty after cancelling all remaining amount")
+
+	// check if the unclaimed tokens were updated correctly, 25+20 from previous cancel + 7 from this cancel
+	require.Equal(t, sdkmath.NewInt(52), newCommitments.GetClaimedForDenom(ptypes.Eden))
 }
 
 // TestCancelVestIncorrectDenom tests the CancelVest function with an incorrect denom
