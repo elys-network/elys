@@ -60,13 +60,16 @@ func TestCancelVest(t *testing.T) {
 			{
 				Denom:         ptypes.Elys,
 				TotalAmount:   sdkmath.NewInt(100),
-				ClaimedAmount: sdkmath.NewInt(1),
+				ClaimedAmount: sdkmath.NewInt(0),
 				NumBlocks:     100,
 				StartBlock:    0,
 			},
 		},
 	}
 	keeper.SetCommitments(ctx, commitments)
+
+	// Increase the block height
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 25)
 
 	// Execute the CancelVest function
 	_, err := msgServer.CancelVest(ctx, cancelVestMsg)
@@ -75,8 +78,84 @@ func TestCancelVest(t *testing.T) {
 	// Check if the vesting tokens were updated correctly
 	newCommitments := keeper.GetCommitments(ctx, creator)
 	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not updated correctly")
-	require.Equal(t, sdkmath.NewInt(75), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
-	require.Equal(t, sdkmath.NewInt(1), newCommitments.VestingTokens[0].ClaimedAmount, "claimed amount was not updated correctly")
+	require.Equal(t, sdkmath.NewInt(50), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
+	require.Equal(t, sdkmath.NewInt(0), newCommitments.VestingTokens[0].ClaimedAmount, "claimed amount was not updated correctly")
+	// check if the unclaimed tokens were updated correctly
+	require.Equal(t, sdkmath.NewInt(25), newCommitments.GetClaimedForDenom(ptypes.Eden))
+
+	// Try to cancel an amount that exceeds the unvested amount
+	cancelVestMsg.Amount = sdkmath.NewInt(100)
+	_, err = msgServer.CancelVest(ctx, cancelVestMsg)
+	require.Error(t, err, "should throw an error when trying to cancel more tokens than available")
+	require.True(t, types.ErrInsufficientVestingTokens.Is(err), "error should be insufficient vesting tokens")
+}
+
+func TestCancelVest_WithPreviousClaimed(t *testing.T) {
+	app := app.InitElysTestApp(true, t)
+
+	ctx := app.BaseApp.NewContext(true)
+	// Create a test context and keeper
+	keeper := app.CommitmentKeeper
+
+	vestingInfos := []types.VestingInfo{
+		{
+			BaseDenom:      ptypes.Eden,
+			VestingDenom:   ptypes.Elys,
+			NumBlocks:      10,
+			VestNowFactor:  sdkmath.NewInt(90),
+			NumMaxVestings: 10,
+		},
+	}
+
+	params := types.Params{
+		VestingInfos: vestingInfos,
+	}
+
+	keeper.SetParams(ctx, params)
+
+	// Create a new account
+	creator, _ := sdk.AccAddressFromBech32("cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5")
+	acc := app.AccountKeeper.GetAccount(ctx, creator)
+	if acc == nil {
+		acc = app.AccountKeeper.NewAccountWithAddress(ctx, creator)
+		app.AccountKeeper.SetAccount(ctx, acc)
+	}
+	// Create a cancel vesting message
+	cancelVestMsg := &types.MsgCancelVest{
+		Creator: creator.String(),
+		Denom:   ptypes.Eden,
+		Amount:  sdkmath.NewInt(25),
+	}
+
+	// Set up the commitments for the creator
+	commitments := types.Commitments{
+		Creator: creator.String(),
+		VestingTokens: []*types.VestingTokens{
+			{
+				Denom:         ptypes.Elys,
+				TotalAmount:   sdkmath.NewInt(100),
+				ClaimedAmount: sdkmath.NewInt(20),
+				NumBlocks:     100,
+				StartBlock:    0,
+			},
+		},
+	}
+	keeper.SetCommitments(ctx, commitments)
+
+	msgServer := commitmentkeeper.NewMsgServerImpl(*keeper)
+	// Increase the block height
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 25)
+
+	// Execute the CancelVest function
+	_, err := msgServer.CancelVest(ctx, cancelVestMsg)
+	require.NoError(t, err)
+
+	// Check if the vesting tokens were updated correctly
+	newCommitments := keeper.GetCommitments(ctx, creator)
+	require.Len(t, newCommitments.VestingTokens, 1, "vesting tokens were not updated correctly")
+	// vested so far already claimed before cancelling
+	require.Equal(t, sdkmath.NewInt(50), newCommitments.VestingTokens[0].TotalAmount, "total amount was not updated correctly")
+	require.Equal(t, sdkmath.NewInt(0), newCommitments.VestingTokens[0].ClaimedAmount, "claimed amount was not updated correctly")
 	// check if the unclaimed tokens were updated correctly
 	require.Equal(t, sdkmath.NewInt(25), newCommitments.GetClaimedForDenom(ptypes.Eden))
 
