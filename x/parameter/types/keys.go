@@ -33,6 +33,9 @@ const (
 
 	// Return ok
 	RES_OK = uint64(200)
+
+	USDC_DISPLAY = "USDC"
+	USDT_DISPLAY = "USDT"
 )
 
 var _ binary.ByteOrder

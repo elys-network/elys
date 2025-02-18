@@ -4,7 +4,7 @@
 NAME?=elys
 BINARY?=$(NAME)d
 COMMIT:=$(shell git log -1 --format='%H')
-VERSION:=v999.999.999
+VERSION:=v999999.999999.999999
 GOFLAGS:=""
 
 # if rocksdb env variable is set, add the tag
