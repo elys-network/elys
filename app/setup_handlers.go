@@ -27,7 +27,7 @@ func generateUpgradeVersion() string {
 	currentVersion := version.Version
 	// if current version empty then override it with localnet version
 	if currentVersion == "v" {
-		currentVersion = "v999.999.999"
+		currentVersion = "v999999.999999.999999"
 	}
 	parts := strings.Split(currentVersion, ".")
 	// Needed for devnet
