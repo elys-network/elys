@@ -2,11 +2,11 @@ package app
 
 import (
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	leagacyOracletypes "github.com/elys-network/elys/x/oracle/types"
 	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
@@ -181,16 +181,18 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, plan upgradetypes.Plan) 
 	if err != nil {
 		return err
 	}
-	consensusParams.Abci.VoteExtensionsEnableHeight = ctx.BlockHeight() + 1
-	_, err = app.ConsensusParamsKeeper.UpdateParams(ctx, &consensustypes.MsgUpdateParams{
-		Authority: app.ConsensusParamsKeeper.GetAuthority(),
-		Block:     consensusParams.Block,
-		Evidence:  consensusParams.Evidence,
-		Validator: consensusParams.Validator,
-		Abci:      consensusParams.Abci,
-	})
-	if err != nil {
-		return err
+	if consensusParams.Abci.VoteExtensionsEnableHeight == 0 {
+		consensusParams.Abci.VoteExtensionsEnableHeight = plan.Height + 1
+		_, err = app.ConsensusParamsKeeper.UpdateParams(ctx, &consensustypes.MsgUpdateParams{
+			Authority: app.ConsensusParamsKeeper.GetAuthority(),
+			Block:     consensusParams.Block,
+			Evidence:  consensusParams.Evidence,
+			Validator: consensusParams.Validator,
+			Abci:      consensusParams.Abci,
+		})
+		if err != nil {
+			return err
+		}
 	}
 
 	// Add any logic here to run when the chain is upgraded to the new version
