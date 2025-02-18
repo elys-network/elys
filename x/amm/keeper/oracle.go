@@ -25,7 +25,7 @@ func (k Keeper) UpdateOraclePoolId(ctx sdk.Context, poolId uint64) error {
 		if !found {
 			return fmt.Errorf("asset info not found for pool asset %s", poolAsset.Token.Denom)
 		}
-		if assetInfo.Display != ptypes.USDC_DISPLAY && assetInfo.Display != ptypes.USDT_DISPLAY {
+		if assetInfo.Display != ptypes.USDC_DISPLAY {
 			baseDenom = assetInfo.Display
 		}
 	}
