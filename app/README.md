@@ -16,7 +16,7 @@
 
 `staking` -> `slashing`, `distr`, `estaking`
 `amm` -> `perpetual`, `leveragelp`, `masterchef`
-`epochs` -> `oracle`, `commitment`, `perpetual`
+`epochs` -> `commitment`, `perpetual`
 `perpetual` -> `accountedpool`
 `commitment` -> `estaking`
 `stablestake` -> `masterchef`
