@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -209,8 +210,14 @@ func initRootCmd(rootCmd *cobra.Command,
 	)
 
 	// add price feeder flags
-	rootCmd.PersistentFlags().String(pricefeeder.FlagConfigPath, "", "Path to price feeder config file")
-	rootCmd.PersistentFlags().String(pricefeeder.FlagLogLevel, "", "Log level of price feeder process")
+	home, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	defaultPriceFeederPath := home + "/.elys/price-feeder.toml"
+	rootCmd.PersistentFlags().String(pricefeeder.FlagConfigPath, defaultPriceFeederPath, "Path to price feeder config file")
+	rootCmd.PersistentFlags().String(pricefeeder.FlagLogLevel, "error", "Log level of price feeder process")
 	rootCmd.PersistentFlags().Bool(pricefeeder.FlagEnablePriceFeeder, false, "Enable the price feeder")
 }
 

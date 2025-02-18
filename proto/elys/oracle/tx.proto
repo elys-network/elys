@@ -18,4 +18,4 @@ import "cosmos_proto/cosmos.proto";
 option go_package = "github.com/elys-network/elys/x/oracle/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg { option (cosmos.msg.v1.service) = true; }
