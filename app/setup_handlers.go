@@ -12,9 +12,6 @@ import (
 
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
-
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 const (
@@ -63,30 +60,11 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
-			// Add any logic here to run when the chain is upgraded to the new version
-			app.Logger().Info("Migrating legacy oracle prices to new oracle")
-			prices := app.LegacyOracleKeepper.GetAllPrice(ctx)
-			for _, price := range prices {
-				app.OracleKeeper.SetPrice(ctx, ojooracletypes.Price{
-					Asset:       price.Asset,
-					Price:       price.Price,
-					Source:      price.Source,
-					Provider:    price.Provider,
-					Timestamp:   price.Timestamp,
-					BlockHeight: price.BlockHeight,
-				})
-				app.OracleKeeper.SetParams(ctx, ojooracletypes.DefaultParams())
+			err := app.ojoOracleMigration(ctx, plan)
+			if err != nil {
+				return nil, err
 			}
-			assetInfos := app.LegacyOracleKeepper.GetAllAssetInfo(ctx)
-			for _, assetInfo := range assetInfos {
-				app.OracleKeeper.SetAssetInfo(ctx, ojooracletypes.AssetInfo{
-					Denom:      assetInfo.Denom,
-					Display:    assetInfo.Display,
-					BandTicker: assetInfo.BandTicker,
-					ElysTicker: assetInfo.ElysTicker,
-					Decimal:    assetInfo.Decimal,
-				})
-			}
+
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
 	)
@@ -106,8 +84,9 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			Added:   []string{ojooracletypes.StoreKey},
-			Deleted: []string{oracletypes.StoreKey},
+			//Added:   []string{},
+			//Renamed: []storetypes.StoreRename{},
+			//Deleted: []string{},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 

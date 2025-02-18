@@ -101,6 +101,9 @@ type OracleKeeper interface {
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	SetPool(ctx sdk.Context, pool oracletypes.Pool)
 	SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
+	CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
+	SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
+	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }
 
 // AccountedPoolKeeper

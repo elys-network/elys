@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/json"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"strings"
 	"time"
 
@@ -10,7 +11,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/x/amm/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) sdkmath.LegacyDec {
@@ -195,27 +195,33 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	// Set amm and accounted pools in oracle kv store
 	ammPools := k.GetAllPool(ctx)
 	for _, ammPool := range ammPools {
-		oraclePool := oracletypes.Pool{
-			PoolId: ammPool.PoolId,
-		}
+		if ammPool.PoolParams.UseOracle {
+			oraclePool := oracletypes.Pool{
+				PoolId: ammPool.PoolId,
+			}
 
-		oracleAccountedPool := oracletypes.AccountedPool{
-			PoolId:      ammPool.PoolId,
-			TotalTokens: sdk.NewCoins(),
-		}
+			oracleAccountedPool := oracletypes.AccountedPool{
+				PoolId:      ammPool.PoolId,
+				TotalTokens: sdk.NewCoins(),
+			}
 
-		oraclePoolAssets := make([]oracletypes.PoolAsset, 0)
-		for _, poolAsset := range ammPool.PoolAssets {
-			oraclePoolAssets = append(oraclePoolAssets, oracletypes.PoolAsset{
-				Token:                  poolAsset.Token,
-				Weight:                 poolAsset.Weight,
-				ExternalLiquidityRatio: poolAsset.ExternalLiquidityRatio,
-			})
-			oracleAccountedPool.TotalTokens = append(oracleAccountedPool.TotalTokens, poolAsset.Token)
+			oraclePoolAssets := make([]oracletypes.PoolAsset, 0)
+			oracleAccountedPoolAssets := sdk.Coins{}
+			for _, poolAsset := range ammPool.PoolAssets {
+				oraclePoolAssets = append(oraclePoolAssets, oracletypes.PoolAsset{
+					Token:                  poolAsset.Token,
+					Weight:                 poolAsset.Weight,
+					ExternalLiquidityRatio: poolAsset.ExternalLiquidityRatio,
+				})
+				accountedPoolAmt := k.accountedPoolKeeper.GetAccountedBalance(ctx, ammPool.PoolId, poolAsset.Token.Denom)
+				oracleAccountedPoolAssets = append(oracleAccountedPoolAssets, sdk.NewCoin(poolAsset.Token.Denom, accountedPoolAmt))
+			}
+			oraclePool.PoolAssets = oraclePoolAssets
+			k.oracleKeeper.SetPool(ctx, oraclePool)
+
+			oracleAccountedPool.TotalTokens = oracleAccountedPoolAssets
+			k.oracleKeeper.SetAccountedPool(ctx, oracleAccountedPool)
 		}
-		oraclePool.PoolAssets = oraclePoolAssets
-		k.oracleKeeper.SetPool(ctx, oraclePool)
-		k.oracleKeeper.SetAccountedPool(ctx, oracleAccountedPool)
 	}
 
 	k.ClearOutdatedSlippageTrack(ctx)

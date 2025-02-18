@@ -65,4 +65,6 @@ type OracleKeeper interface {
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 	SetPool(ctx sdk.Context, pool oracletypes.Pool)
 	SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
+	CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
+	SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
 }
