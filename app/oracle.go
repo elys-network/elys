@@ -181,7 +181,7 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, plan upgradetypes.Plan) 
 	if err != nil {
 		return err
 	}
-	consensusParams.Abci.VoteExtensionsEnableHeight = plan.Height + 1
+	consensusParams.Abci.VoteExtensionsEnableHeight = ctx.BlockHeight() + 1
 	_, err = app.ConsensusParamsKeeper.UpdateParams(ctx, &consensustypes.MsgUpdateParams{
 		Authority: app.ConsensusParamsKeeper.GetAuthority(),
 		Block:     consensusParams.Block,
