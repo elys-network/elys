@@ -53,12 +53,12 @@ func TestMsgFeedMultipleExternalLiquidity_ValidateBasic(t *testing.T) {
 				Liquidity: []types.ExternalLiquidity{
 					{
 						AmountDepthInfo: []types.AssetAmountDepth{
-							{Asset: "invalid denom", Depth: sdkmath.LegacyNewDec(1000), Amount: sdkmath.LegacyNewDec(500)},
+							{Asset: "", Depth: sdkmath.LegacyNewDec(1000), Amount: sdkmath.LegacyNewDec(500)},
 						},
 					},
 				},
 			},
-			"invalid denom: invalid denom",
+			"asset cannot be empty",
 		},
 		{
 			"negative depth",
