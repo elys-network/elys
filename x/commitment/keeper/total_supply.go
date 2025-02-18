@@ -36,7 +36,6 @@ func (k Keeper) V10_SetSupply(ctx sdk.Context) {
 
 	totalEden := math.ZeroInt()
 	totalEdenB := math.ZeroInt()
-	totalVesting := math.ZeroInt()
 
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Commitments
@@ -48,10 +47,6 @@ func (k Keeper) V10_SetSupply(ctx sdk.Context) {
 			if token.Denom == ptypes.EdenB {
 				totalEdenB = totalEdenB.Add(token.Amount)
 			}
-		}
-
-		for _, vesting := range val.VestingTokens {
-			totalVesting = totalVesting.Add(vesting.TotalAmount)
 		}
 
 		totalEden = totalEden.Add(val.Claimed.AmountOf(ptypes.Eden))
