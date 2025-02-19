@@ -221,6 +221,7 @@ func TestNewMsgAddPool(t *testing.T) {
 		math.LegacyMustNewDecFromStr("0.01"),
 		math.LegacyMustNewDecFromStr("0.1"),
 		math.LegacyMustNewDecFromStr("0.7"),
+		math.LegacyMustNewDecFromStr("0.5"),
 	)
 
 	want := &types.MsgAddPool{
