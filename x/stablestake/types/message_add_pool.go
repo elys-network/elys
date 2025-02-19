@@ -12,7 +12,7 @@ import (
 var _ sdk.Msg = &MsgAddPool{}
 
 func NewMsgAddPool(signer string, depositDenom string, interestRate math.LegacyDec, interestRateMax math.LegacyDec, interestRateMin math.LegacyDec, interestRateIncrease math.LegacyDec,
-	interestRateDecrease math.LegacyDec, healthFactor math.LegacyDec, maxLeverageRatio math.LegacyDec) *MsgAddPool {
+	interestRateDecrease math.LegacyDec, healthFactor math.LegacyDec, maxLeverageRatio math.LegacyDec, maxWithdrawRatio math.LegacyDec) *MsgAddPool {
 	return &MsgAddPool{
 		Sender:               signer,
 		DepositDenom:         depositDenom,
@@ -23,6 +23,7 @@ func NewMsgAddPool(signer string, depositDenom string, interestRate math.LegacyD
 		InterestRateDecrease: interestRateDecrease,
 		HealthGainFactor:     healthFactor,
 		MaxLeverageRatio:     maxLeverageRatio,
+		MaxWithdrawRatio:     maxWithdrawRatio,
 	}
 }
 
