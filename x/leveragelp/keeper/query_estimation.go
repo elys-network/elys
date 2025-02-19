@@ -18,16 +18,21 @@ func (k Keeper) OpenEst(goCtx context.Context, req *types.QueryOpenEstRequest) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	leveragedAmount := req.Leverage.MulInt(req.CollateralAmount).TruncateInt()
 	leverageCoin := sdk.NewCoin(req.CollateralAsset, leveragedAmount)
-	_, shares, _, weightBalanceBonus, _, err := k.amm.JoinPoolEst(ctx, req.AmmPoolId, sdk.Coins{leverageCoin})
+	_, shares, slippage, weightBalanceBonus, swapFee, err := k.amm.JoinPoolEst(ctx, req.AmmPoolId, sdk.Coins{leverageCoin})
 	if err != nil {
 		return nil, err
 	}
-	params := k.stableKeeper.GetParams(ctx)
+	pool, found := k.stableKeeper.GetPoolByDenom(ctx, req.CollateralAsset)
+	if !found {
+		return nil, errors.New("borrow pool not found")
+	}
 
 	return &types.QueryOpenEstResponse{
 		PositionSize:       shares,
 		WeightBalanceRatio: weightBalanceBonus,
-		BorrowFee:          params.InterestRate,
+		BorrowFee:          pool.InterestRate,
+		Slippage:           slippage,
+		SwapFee:            swapFee,
 	}, nil
 }
 

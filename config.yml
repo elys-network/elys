@@ -1,0 +1,57 @@
+version: 1
+build:
+  main: ./cmd/elysd
+  binary: elysd
+  proto:
+    path: proto
+    third_party_paths:
+    - third_party/proto
+    - proto_vendor
+accounts:
+- name: alice
+  coins:
+  - 39000000000000uelys
+  mnemonic: entry garbage bike poem grunt negative easily annual miss happy license
+    blur false fringe program picture inner tape dismiss eagle include quality drill
+    master
+- name: bob
+  coins:
+  - 5500000000000uelys
+  mnemonic: surface hospital fix visa patch wrong wink scout pyramid erosion lawn pool
+    wild candy until name reject identify tobacco include century battle harbor wrist
+- name: faucet
+  coins:
+  - 5500000000000uelys
+  mnemonic: vanish bench swear surprise bone tilt draw focus ensure inject sphere raise
+    rural horror harvest eagle water consider virus leisure medal behave citizen bid
+faucet:
+  name: faucet
+  coins:
+  - 5500000000000uelys
+  coins_max:
+  - 1000000000uelys
+  host: 0.0.0.0:4500
+  port: 4500
+genesis:
+  app_state:
+    staking:
+      params:
+        bond_denom: uelys
+    assetprofile:
+      entry_list:
+      - base_denom: "uusdc"
+        decimals: 6
+        denom: "uusdc"
+        display_name: "USDC"
+        authority: "elys1zypqa76je7pxsdwkfah6mu9a583sju6xqtgupc"
+  consensus:
+    params:
+        abci:
+          vote_extensions_enable_height: "0"
+  chain_id: elys-testnet
+validators:
+- name: alice
+  bonded: 33500000000000uelys
+  app:
+    pricefeeder:
+      config_path: "./cmd/elysd/price-feeder.example.toml"

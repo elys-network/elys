@@ -13,7 +13,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, error) {
+func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen, borrowPool uint64) (*types.Position, error) {
 	// Initialize a new Leveragelp Trading Position (Position).
 	if msg.Leverage.LTE(sdkmath.LegacyOneDec()) {
 		return nil, types.ErrLeverageTooSmall
@@ -21,6 +21,7 @@ func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen) (*types.Position, 
 	position := types.NewPosition(msg.Creator, sdk.NewCoin(msg.CollateralAsset, msg.CollateralAmount), msg.AmmPoolId)
 	position.Id = k.GetPositionCount(ctx) + 1
 	position.StopLossPrice = msg.StopLossPrice
+	position.BorrowPoolId = borrowPool
 	k.SetPositionCount(ctx, position.Id)
 
 	openCount := k.GetOpenPositionCount(ctx)
@@ -104,7 +105,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	// borrow leveragedAmount - collateralAmount
 	borrowCoin := sdk.NewCoin(msg.CollateralAsset, leveragedAmount.Sub(msg.CollateralAmount))
 	if borrowCoin.Amount.IsPositive() {
-		err = k.stableKeeper.Borrow(ctx, position.GetPositionAddress(), borrowCoin, position.AmmPoolId)
+		err = k.stableKeeper.Borrow(ctx, position.GetPositionAddress(), borrowCoin, position.BorrowPoolId, position.AmmPoolId)
 		if err != nil {
 			return nil, err
 		}

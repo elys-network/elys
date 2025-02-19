@@ -16,9 +16,9 @@ func NewMultiStableStakeHooks(hooks ...types.StableStakeHooks) MultiStableStakeH
 }
 
 // Committed is called when staker committed his token
-func (mh MultiStableStakeHooks) AfterBond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int) error {
+func (mh MultiStableStakeHooks) AfterBond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int, poolId uint64) error {
 	for i := range mh {
-		err := mh[i].AfterBond(ctx, sender, shareAmount)
+		err := mh[i].AfterBond(ctx, sender, shareAmount, poolId)
 		if err != nil {
 			return err
 		}
@@ -27,9 +27,9 @@ func (mh MultiStableStakeHooks) AfterBond(ctx sdk.Context, sender sdk.AccAddress
 }
 
 // Committed is called when staker committed his token
-func (mh MultiStableStakeHooks) AfterUnbond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int) error {
+func (mh MultiStableStakeHooks) AfterUnbond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int, poolId uint64) error {
 	for i := range mh {
-		err := mh[i].AfterUnbond(ctx, sender, shareAmount)
+		err := mh[i].AfterUnbond(ctx, sender, shareAmount, poolId)
 		if err != nil {
 			return err
 		}

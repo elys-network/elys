@@ -36,20 +36,39 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
-	stableStakeParams := k.stableKeeper.GetParams(ctx)
 	moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
 
-	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
-
-	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := stableStakeParams.TotalValue.Sub(balance.Amount)
-	borrowRatio := sdkmath.LegacyZeroDec()
-	if stableStakeParams.TotalValue.GT(sdkmath.ZeroInt()) {
-		borrowRatio = borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
-			Quo(stableStakeParams.TotalValue.ToLegacyDec())
+	borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, msg.CollateralAsset)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolNotCreatedForBorrow, fmt.Sprintf("Asset: %s", msg.CollateralAsset))
 	}
 
-	if borrowRatio.GTE(stableStakeParams.MaxLeverageRatio) {
+	depositDenom := borrowPool.GetDepositDenom()
+	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
+	borrowed := borrowPool.TotalValue.Sub(balance.Amount)
+	borrowRatio := sdkmath.LegacyZeroDec()
+	if borrowPool.TotalValue.GT(sdkmath.ZeroInt()) {
+		borrowRatio = borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
+			Quo(borrowPool.TotalValue.ToLegacyDec())
+	}
+
+	ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
+	}
+
+	found = false
+	for _, asset := range ammPool.PoolAssets {
+		if asset.Token.Denom == msg.CollateralAsset {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrAssetNotSupported, fmt.Sprintf("Asset: %s", msg.CollateralAsset))
+	}
+
+	if borrowRatio.GTE(borrowPool.MaxLeverageRatio) {
 		return nil, errors.New("stable stake pool max borrow capacity used up")
 	}
 
@@ -72,7 +91,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	position, err := k.OpenLong(ctx, msg)
+	position, err := k.OpenLong(ctx, msg, borrowPool.Id)
 	if err != nil {
 		return nil, err
 	}

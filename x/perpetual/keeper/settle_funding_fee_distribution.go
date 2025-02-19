@@ -2,37 +2,20 @@ package keeper
 
 import (
 	sdkmath "cosmossdk.io/math"
-	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
 func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *types.Pool) (sdkmath.Int, error) {
 
-	totalLongOpenInterest := pool.GetTotalLongOpenInterest()
-	totalShortOpenInterest := pool.GetTotalShortOpenInterest()
-
 	// Total fund collected should be
-	long, short := k.GetFundingDistributionValue(ctx, mtp.LastFundingCalcBlock, pool.AmmPoolId)
-	var totalFund sdkmath.LegacyDec
-	// calc funding fee share
-	var fundingFeeShare sdkmath.LegacyDec
+	longCollectedShare, shortCollectedShare := k.GetFundingDistributionValue(ctx, mtp.LastFundingCalcBlock, pool.AmmPoolId)
 	amountDistributed := sdkmath.ZeroInt()
 	if mtp.Position == types.Position_LONG {
-		// Ensure liabilitiesLong is not zero to avoid division by zero
-		if totalLongOpenInterest.IsZero() {
-			return amountDistributed, errors.New("totalLongOpenInterest in FundingFeeDistribution cannot be zero")
-		}
-		fundingFeeShare = mtp.Custody.ToLegacyDec().Quo(totalLongOpenInterest.ToLegacyDec())
-		totalFund = short
-
-		// if funding fee share is zero, skip mtp
-		if fundingFeeShare.IsZero() || totalFund.IsZero() {
+		fundingFeeAmount := mtp.Custody.ToLegacyDec().Mul(shortCollectedShare)
+		if fundingFeeAmount.IsZero() {
 			return amountDistributed, nil
 		}
-
-		// calculate funding fee amount
-		fundingFeeAmount := totalFund.Mul(fundingFeeShare)
 
 		amountDistributed = fundingFeeAmount.TruncateInt()
 		// update mtp custody
@@ -53,20 +36,7 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 		// add payment to total funding fee paid in custody asset
 		mtp.FundingFeeReceivedCustody = mtp.FundingFeeReceivedCustody.Add(fundingFeeAmount.TruncateInt())
 	} else {
-		// Ensure liabilitiesShort is not zero to avoid division by zero
-		if totalShortOpenInterest.IsZero() {
-			return amountDistributed, errors.New("totalShortOpenInterest in FundingFeeDistribution cannot be zero")
-		}
-		fundingFeeShare = mtp.Liabilities.ToLegacyDec().Quo(totalShortOpenInterest.ToLegacyDec())
-		totalFund = long
-
-		// if funding fee share is zero, skip mtp
-		if fundingFeeShare.IsZero() || totalFund.IsZero() {
-			return amountDistributed, nil
-		}
-
-		// calculate funding fee amount
-		fundingFeeAmount := totalFund.Mul(fundingFeeShare).TruncateInt()
+		fundingFeeAmount := mtp.Liabilities.ToLegacyDec().Mul(longCollectedShare).TruncateInt()
 
 		// adding case for fundingFeeAmount being smaller tha 10^-18
 		if fundingFeeAmount.IsZero() {
