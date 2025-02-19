@@ -95,7 +95,7 @@ func TestCalcExitValueWithSlippage(t *testing.T) {
 			accKeeper := mocks.NewAccountedPoolKeeper(t)
 			tc.setupMock(oracleKeeper, accKeeper)
 
-			value, _, err := types.CalcExitValueWithSlippage(ctx, oracleKeeper, accKeeper, tc.pool, tc.exitingShares, tc.tokenOutDenom, sdkmath.LegacyOneDec(), true)
+			value, _, err := types.CalcExitValueWithSlippage(ctx, oracleKeeper, accKeeper, tc.pool, tc.exitingShares, tc.tokenOutDenom, sdkmath.LegacyOneDec(), true, types.DefaultParams())
 			if tc.expectedErrMsg != "" {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tc.expectedErrMsg)
@@ -147,6 +147,7 @@ func TestCalcExitPool(t *testing.T) {
 				WeightBreakingFeePortion:    sdkmath.LegacyMustNewDecFromStr("0.5"),
 				ThresholdWeightDifference:   sdkmath.LegacyMustNewDecFromStr("0.2"),
 				WeightBreakingFeeExponent:   sdkmath.LegacyMustNewDecFromStr("0.5"),
+				MinSlippage:                 sdkmath.LegacyMustNewDecFromStr("0.001"),
 			},
 			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(190))},
 			sdkmath.LegacyZeroDec(),
@@ -170,6 +171,7 @@ func TestCalcExitPool(t *testing.T) {
 				WeightBreakingFeePortion:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				ThresholdWeightDifference: sdkmath.LegacyMustNewDecFromStr("0.2"),
 				WeightBreakingFeeExponent: sdkmath.LegacyMustNewDecFromStr("0.5"),
+				MinSlippage:               sdkmath.LegacyMustNewDecFromStr("0.001"),
 			},
 			sdk.Coins{},
 			sdkmath.LegacyZeroDec(),
@@ -196,6 +198,7 @@ func TestCalcExitPool(t *testing.T) {
 				WeightBreakingFeePortion:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				ThresholdWeightDifference: sdkmath.LegacyMustNewDecFromStr("0.2"),
 				WeightBreakingFeeExponent: sdkmath.LegacyMustNewDecFromStr("0.5"),
+				MinSlippage:               sdkmath.LegacyMustNewDecFromStr("0.001"),
 			},
 			sdk.Coins{},
 			sdkmath.LegacyZeroDec(),
@@ -218,6 +221,7 @@ func TestCalcExitPool(t *testing.T) {
 				WeightBreakingFeePortion:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				ThresholdWeightDifference: sdkmath.LegacyMustNewDecFromStr("0.2"),
 				WeightBreakingFeeExponent: sdkmath.LegacyMustNewDecFromStr("0.5"),
+				MinSlippage:               sdkmath.LegacyMustNewDecFromStr("0.001"),
 			},
 			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(100)), sdk.NewCoin("tokenB", sdkmath.NewInt(200))},
 			sdkmath.LegacyZeroDec(),

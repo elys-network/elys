@@ -1,14 +1,15 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
+func (k Keeper) CheckAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
 	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
 		// It is possible that this pool haven't been enabled
@@ -47,12 +48,12 @@ func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool am
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
 func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount math.Int, exitCoins sdk.Coins) error {
-	return k.CheckAmmPoolUsdcBalance(ctx, ammPool)
+	return k.CheckAmmPoolBalance(ctx, ammPool)
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
 func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, input sdk.Coins, output sdk.Coins) error {
-	return k.CheckAmmPoolUsdcBalance(ctx, ammPool)
+	return k.CheckAmmPoolBalance(ctx, ammPool)
 }
 
 // Hooks wrapper struct for tvl keeper

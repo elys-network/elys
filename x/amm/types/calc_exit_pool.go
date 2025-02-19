@@ -9,7 +9,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper, pool Pool, exitingShares sdkmath.Int, tokenOutDenom string, weightMultiplier sdkmath.LegacyDec, applyFee bool) (sdkmath.LegacyDec, sdkmath.LegacyDec, error) {
+func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper,
+	pool Pool, exitingShares sdkmath.Int, tokenOutDenom string,
+	weightMultiplier sdkmath.LegacyDec, applyFee bool, params Params) (sdkmath.LegacyDec, sdkmath.LegacyDec, error) {
 	tvl, err := pool.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
@@ -81,6 +83,13 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 
 	slippageValue := slippageAmount.Mul(outTokenPrice)
 	slippage := slippageValue.Quo(exitValue)
+
+	minSlippage := params.MinSlippage.Mul(weightMultiplier)
+	if slippage.LT(minSlippage) {
+		slippage = minSlippage
+		slippageValue = exitValue.Mul(minSlippage)
+	}
+
 	exitValueWithSlippage := exitValue.Sub(slippageValue)
 
 	if exitingShares.GTE(totalShares.Amount) {
@@ -124,7 +133,7 @@ func CalcExitPool(
 		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
 		initialWeightIn := sdkmath.LegacyOneDec().Sub(initialWeightOut)
 
-		exitValueWithSlippage, slippage, err := CalcExitValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom, initialWeightIn, applyFee)
+		exitValueWithSlippage, slippage, err := CalcExitValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom, initialWeightIn, applyFee, params)
 		if err != nil {
 			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}

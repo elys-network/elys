@@ -21,13 +21,16 @@ func (suite *KeeperTestSuite) TestBorrowRatio() {
 	}{
 		{
 			name: "valid request",
-			req:  &types.QueryBorrowRatioRequest{},
+			req: &types.QueryBorrowRatioRequest{
+				PoolId: 1,
+			},
 			setup: func(ctx sdk.Context, k keeper.Keeper) {
-				params := types.Params{
+				pool := types.Pool{
 					TotalValue:   sdkmath.NewInt(1000),
 					DepositDenom: "token",
+					Id:           1,
 				}
-				k.SetParams(ctx, params)
+				k.SetPool(ctx, pool)
 				// bootstrap balances
 				err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.NewCoins(sdk.NewCoin("token", sdkmath.NewInt(500))))
 				suite.Require().NoError(err)
@@ -50,13 +53,16 @@ func (suite *KeeperTestSuite) TestBorrowRatio() {
 		},
 		{
 			name: "zero total value",
-			req:  &types.QueryBorrowRatioRequest{},
+			req: &types.QueryBorrowRatioRequest{
+				PoolId: 1,
+			},
 			setup: func(ctx sdk.Context, k keeper.Keeper) {
-				params := types.Params{
+				pool := types.Pool{
 					TotalValue:   sdkmath.ZeroInt(),
 					DepositDenom: "token",
+					Id:           1,
 				}
-				k.SetParams(ctx, params)
+				k.SetPool(ctx, pool)
 			},
 			expectedError: nil,
 			expectedResp: &types.QueryBorrowRatioResponse{
