@@ -234,6 +234,7 @@ func TestNewMsgAddPool(t *testing.T) {
 		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
 		HealthGainFactor:     math.LegacyMustNewDecFromStr("0.1"),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+		MaxWithdrawRatio:     math.LegacyMustNewDecFromStr("0.5"),
 	}
 
 	assert.Equal(t, want, got)
