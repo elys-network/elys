@@ -740,7 +740,6 @@ func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
 		if balance.Denom == ptypes.Elys {
 			continue
 		}
-		// Swap the order amount with the target denom
 		_, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
 			Sender:    collectionAddressString,
 			Recipient: collectionAddressString,
