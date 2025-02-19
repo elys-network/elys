@@ -50,5 +50,5 @@ message Params {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string protocol_revenue_address = 7;
+  string taker_fee_collection_address = 7;
 }

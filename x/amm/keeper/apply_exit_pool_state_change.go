@@ -90,7 +90,10 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 
 	// send taker fee to protocol treasury
 	if takerFeesInCoins.IsAllPositive() {
-		protocolAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).ProtocolRevenueAddress)
+		protocolAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress)
+		if err != nil {
+			return err
+		}
 		err = k.bankKeeper.SendCoins(ctx, poolAddr, protocolAddress, takerFeesInCoins)
 		if err != nil {
 			return err

@@ -3,6 +3,7 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
@@ -26,6 +27,9 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 	}
 	// distribute external rewards
 	k.ProcessExternalRewardsDistribution(ctx)
+
+	// convert balances in taker address to elys and burn them
+	k.ProcessTakerFee(ctx)
 	return nil
 }
 
@@ -720,4 +724,48 @@ func (k Keeper) UpdateAmmStablePoolAPR(ctx sdk.Context, totalBlocksPerYear int64
 		k.SetPoolInfo(ctx, poolInfo)
 		return false
 	})
+}
+
+func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
+	collectionAddressString := k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress
+	// Convert balances in taker address to elys
+	collectionAddress, err := sdk.AccAddressFromBech32(collectionAddressString)
+	if err != nil {
+		ctx.Logger().Error("Invalid taker fee collection address", "error", err)
+		return
+	}
+
+	balances := k.bankKeeper.GetAllBalances(ctx, collectionAddress)
+	for _, balance := range balances {
+		if balance.Denom == ptypes.Elys {
+			continue
+		}
+		// Swap the order amount with the target denom
+		_, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+			Sender:    collectionAddressString,
+			Recipient: collectionAddressString,
+			Amount:    sdk.NewCoin(balance.Denom, balance.Amount),
+			DenomIn:   balance.Denom,
+			DenomOut:  ptypes.Elys,
+			MinAmount: sdk.NewCoin(ptypes.Elys, sdkmath.ZeroInt()),
+		})
+		if err != nil {
+			ctx.Logger().Error("Failed to swap taker fee", "error", err)
+			continue
+		}
+	}
+
+	elysBalance := k.bankKeeper.GetBalance(ctx, collectionAddress, ptypes.Elys)
+	if elysBalance.IsPositive() {
+		err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, collectionAddress, types.ModuleName, sdk.NewCoins(elysBalance))
+		if err != nil {
+			ctx.Logger().Error("Failed to send taker fee to masterchef", "error", err)
+		} else {
+			// burn elys token
+			err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(elysBalance))
+			if err != nil {
+				ctx.Logger().Error("Failed to burn taker fee", "error", err)
+			}
+		}
+	}
 }
