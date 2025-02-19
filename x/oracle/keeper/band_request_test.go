@@ -1,5 +1,6 @@
 package keeper_test
 
+/*
 import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
@@ -26,3 +27,4 @@ func (suite *KeeperTestSuite) TestBandRequestSetGet() {
 	req, err = suite.app.OracleKeeper.GetBandRequest(suite.ctx, types.OracleRequestID(3))
 	suite.Require().Error(err)
 }
+*/

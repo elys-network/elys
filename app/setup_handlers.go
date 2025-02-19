@@ -60,10 +60,9 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
-			if upgradeVersion == NextVersion || upgradeVersion == LocalNetVersion {
-
-				// Add any logic here to run when the chain is upgraded to the new version
-
+			err := app.ojoOracleMigration(ctx, plan)
+			if err != nil {
+				return nil, err
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
@@ -85,8 +84,9 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			// Added: []string{},
-			// Deleted: []string{},
+			//Added:   []string{},
+			//Renamed: []storetypes.StoreRename{},
+			//Deleted: []string{},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/json"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"strings"
 	"time"
 
@@ -189,6 +190,38 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	if len(msgs) > 0 {
 		bz, _ := json.Marshal(msgs)
 		k.Logger(ctx).Debug("Executed swap requests: " + string(bz))
+	}
+
+	// Set amm and accounted pools in oracle kv store
+	ammPools := k.GetAllPool(ctx)
+	for _, ammPool := range ammPools {
+		if ammPool.PoolParams.UseOracle {
+			oraclePool := oracletypes.Pool{
+				PoolId: ammPool.PoolId,
+			}
+
+			oracleAccountedPool := oracletypes.AccountedPool{
+				PoolId:      ammPool.PoolId,
+				TotalTokens: sdk.NewCoins(),
+			}
+
+			oraclePoolAssets := make([]oracletypes.PoolAsset, 0)
+			oracleAccountedPoolAssets := sdk.Coins{}
+			for _, poolAsset := range ammPool.PoolAssets {
+				oraclePoolAssets = append(oraclePoolAssets, oracletypes.PoolAsset{
+					Token:                  poolAsset.Token,
+					Weight:                 poolAsset.Weight,
+					ExternalLiquidityRatio: poolAsset.ExternalLiquidityRatio,
+				})
+				accountedPoolAmt := k.accountedPoolKeeper.GetAccountedBalance(ctx, ammPool.PoolId, poolAsset.Token.Denom)
+				oracleAccountedPoolAssets = append(oracleAccountedPoolAssets, sdk.NewCoin(poolAsset.Token.Denom, accountedPoolAmt))
+			}
+			oraclePool.PoolAssets = oraclePoolAssets
+			k.oracleKeeper.SetPool(ctx, oraclePool)
+
+			oracleAccountedPool.TotalTokens = oracleAccountedPoolAssets
+			k.oracleKeeper.SetAccountedPool(ctx, oracleAccountedPool)
+		}
 	}
 
 	k.ClearOutdatedSlippageTrack(ctx)
