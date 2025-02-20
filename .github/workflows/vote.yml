@@ -16,7 +16,6 @@ jobs:
     steps:
       - name: Create software upgrade proposal
         run: |
-          docker pull ghcr.io/goreleaser/goreleaser-cross:v1.22
           # Get latest release version using GitHub API
           ELYS_VERSION=$(curl -s https://api.github.com/repos/elys-network/elys/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
           echo "Latest elys version: $ELYS_VERSION"
@@ -57,8 +56,8 @@ jobs:
           echo "upgrade_version: $upgrade_version"
 
           # vote on proposal
-          ${ELYSD} tx gov vote 43 yes --from=proposer1 $OPTIONS
-          ${ELYSD} tx gov vote 43 yes --from=proposer2 $OPTIONS
-          ${ELYSD} tx gov vote 43 yes --from=proposer3 $OPTIONS
-          ${ELYSD} tx gov vote 43 yes --from=proposer4 $OPTIONS
+          ${ELYSD} tx gov vote 44 yes --from=proposer1 $OPTIONS
+          ${ELYSD} tx gov vote 44 yes --from=proposer2 $OPTIONS
+          ${ELYSD} tx gov vote 44 yes --from=proposer3 $OPTIONS
+          ${ELYSD} tx gov vote 44 yes --from=proposer4 $OPTIONS
           sleep 10
