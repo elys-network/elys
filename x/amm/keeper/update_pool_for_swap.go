@@ -19,6 +19,7 @@ func (k Keeper) UpdatePoolForSwap(
 	tokenIn sdk.Coin,
 	tokenOut sdk.Coin,
 	swapFee sdkmath.LegacyDec,
+	slippageAmount sdkmath.LegacyDec,
 	oracleInAmount sdkmath.Int,
 	oracleOutAmount sdkmath.Int,
 	weightBalanceBonus sdkmath.LegacyDec,
@@ -126,13 +127,13 @@ func (k Keeper) UpdatePoolForSwap(
 
 	}
 
+	bonusTokenAmount := sdkmath.ZeroInt()
 	// calculate bonus token amount if weightBalanceBonus is positive
 	if pool.PoolParams.UseOracle && weightBalanceBonus.IsPositive() {
 		// get treasury balance
 		rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
 
-		bonusTokenAmount := sdkmath.ZeroInt()
 		// bonus token amount is the tokenOut amount times weightBalanceBonus
 		if givenOut {
 			bonusTokenAmount = tokenOut.Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
@@ -157,6 +158,21 @@ func (k Keeper) UpdatePoolForSwap(
 
 	k.SetPool(ctx, pool)
 
+	// convert the fees into usdc
+	swapFeeValueInUsdc := k.ConvertCoinsToUsdcValue(ctx, swapFeeInCoins)
+
+	slippageCoin := sdk.NewCoin(tokenIn.Denom, slippageAmount.RoundInt())
+	slippageAmountInUsdc := k.ConvertCoinsToUsdcValue(ctx, sdk.Coins{slippageCoin})
+
+	weightRecoveryFeeCoin := sdk.NewCoin(tokenIn.Denom, weightRecoveryFeeAmount)
+	weightRecoveryFeeAmountInUsdc := k.ConvertCoinsToUsdcValue(ctx, sdk.Coins{weightRecoveryFeeCoin})
+
+	bonusTokenCoin := sdk.NewCoin(tokenOut.Denom, bonusTokenAmount)
+	bonusTokenAmountInUsdc := k.ConvertCoinsToUsdcValue(ctx, sdk.Coins{bonusTokenCoin})
+
+	// emit swap fees event
+	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUsdc, slippageAmountInUsdc, weightRecoveryFeeAmountInUsdc, bonusTokenAmountInUsdc)
+
 	// emit swap event
 	types.EmitSwapEvent(ctx, sender, recipient, pool.GetPoolId(), tokensIn, tokensOut)
 	if k.hooks != nil {
@@ -167,4 +183,18 @@ func (k Keeper) UpdatePoolForSwap(
 	}
 
 	return nil
+}
+
+func (k Keeper) ConvertCoinsToUsdcValue(
+	ctx sdk.Context,
+	coins sdk.Coins,
+) string {
+	totalValueInUsdc := sdkmath.ZeroInt()
+	for _, coin := range coins {
+		coinPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, coin.Denom)
+		valueInUsdc := coinPrice.MulInt(coin.Amount).TruncateInt()
+		totalValueInUsdc = totalValueInUsdc.Add(valueInUsdc)
+	}
+
+	return totalValueInUsdc.String()
 }
