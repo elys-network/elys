@@ -385,3 +385,50 @@ func (suite *MasterchefKeeperTestSuite) TestInitialParams() {
 	suite.Require().Equal(found, true)
 	suite.Require().Equal(poolInfo.PoolId, uint64(1))
 }
+
+func (suite *MasterchefKeeperTestSuite) TestProcessTakerFees() {
+	suite.ResetSuite(true)
+
+	// Generate 1 random account with 1000stake balanced
+	addr := simapp.AddTestAddrs(suite.app, suite.ctx, 1, sdkmath.NewInt(1000000))
+
+	// mint some tokens in taker address
+	takerAddress := suite.app.ParameterKeeper.GetParams(suite.ctx).TakerFeeCollectionAddress
+	suite.MintTokenToAddress(sdk.MustAccAddressFromBech32(takerAddress), sdkmath.NewInt(100), ptypes.BaseCurrency)
+	suite.MintTokenToAddress(addr[0], sdkmath.NewInt(100000), ptypes.BaseCurrency)
+
+	// Pool with 1000 ELYS and 1000 USDC
+	poolAssets := []ammtypes.PoolAsset{
+		{
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100000)),
+		},
+		{
+			Weight: sdkmath.NewInt(50),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),
+		},
+	}
+
+	argSwapFee := sdkmath.LegacyMustNewDecFromStr("0.01")
+
+	poolParams := ammtypes.PoolParams{
+		SwapFee: argSwapFee,
+	}
+
+	// Create a Elys+USDC pool
+	ammPool := suite.CreateNewAmmPool(addr[0], poolAssets, poolParams)
+	suite.Require().Equal(ammPool.PoolId, uint64(1))
+
+	pools := suite.app.AmmKeeper.GetAllPool(suite.ctx)
+	suite.Require().Equal(len(pools), 1)
+
+	elysSupplyBefore := suite.app.BankKeeper.GetSupply(suite.ctx, ptypes.Elys)
+	suite.Require().Equal(elysSupplyBefore.Amount.String(), "100000002000000")
+
+	// Process taker fees
+	suite.app.MasterchefKeeper.ProcessTakerFee(suite.ctx)
+
+	// Check elys supply is reduced
+	elysSupplyAfter := suite.app.BankKeeper.GetSupply(suite.ctx, ptypes.Elys)
+	suite.Require().Equal(elysSupplyAfter.Amount.String(), "100000002000000")
+}

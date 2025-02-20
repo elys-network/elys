@@ -2,10 +2,12 @@ package types
 
 import (
 	"context"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
+	parametertypes "github.com/elys-network/elys/x/parameter/types"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
@@ -69,4 +71,8 @@ type TierKeeper interface {
 	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, tier string, discount sdkmath.LegacyDec)
 
 	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec
+}
+
+type ParameterKeeper interface {
+	GetParams(ctx sdk.Context) (params parametertypes.Params)
 }
