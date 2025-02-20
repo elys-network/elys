@@ -16,6 +16,7 @@ jobs:
     steps:
       - name: Create software upgrade proposal
         run: |
+          docker pull ghcr.io/goreleaser/goreleaser-cross:v1.22.11
           # Get latest release version using GitHub API
           ELYS_VERSION=$(curl -s https://api.github.com/repos/elys-network/elys/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
           echo "Latest elys version: $ELYS_VERSION"
