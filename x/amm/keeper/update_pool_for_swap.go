@@ -158,17 +158,11 @@ func (k Keeper) UpdatePoolForSwap(
 
 	k.SetPool(ctx, pool)
 
-	// convert the fees into usdc
-	swapFeeValueInUSD := k.ConvertCoinsToUSDValue(ctx, swapFeeInCoins)
-
-	slippageCoin := sdk.NewCoin(tokenIn.Denom, slippageAmount.RoundInt())
-	slippageAmountInUSD := k.ConvertCoinsToUSDValue(ctx, sdk.Coins{slippageCoin})
-
-	weightRecoveryFeeCoin := sdk.NewCoin(tokenIn.Denom, weightRecoveryFeeAmount)
-	weightRecoveryFeeAmountInUSD := k.ConvertCoinsToUSDValue(ctx, sdk.Coins{weightRecoveryFeeCoin})
-
-	bonusTokenCoin := sdk.NewCoin(tokenOut.Denom, bonusTokenAmount)
-	bonusTokenAmountInUSD := k.ConvertCoinsToUSDValue(ctx, sdk.Coins{bonusTokenCoin})
+	// convert the fees into USD
+	swapFeeValueInUSD := k.ConvertCoinsToUsdcValue(ctx, swapFeeInCoins).String()
+	slippageAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, sdkmath.Int(slippageAmount)).String()
+	weightRecoveryFeeAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, weightRecoveryFeeAmount).String()
+	bonusTokenAmountInUSD := k.CalculateUSDValue(ctx, tokenOut.Denom, bonusTokenAmount).String()
 
 	// emit swap fees event
 	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUSD, slippageAmountInUSD, weightRecoveryFeeAmountInUSD, bonusTokenAmountInUSD)
@@ -183,18 +177,4 @@ func (k Keeper) UpdatePoolForSwap(
 	}
 
 	return nil
-}
-
-func (k Keeper) ConvertCoinsToUSDValue(
-	ctx sdk.Context,
-	coins sdk.Coins,
-) string {
-	totalValueInUSD := sdkmath.ZeroInt()
-	for _, coin := range coins {
-		coinPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, coin.Denom)
-		valueInUSD := coinPrice.MulInt(coin.Amount).TruncateInt()
-		totalValueInUSD = totalValueInUSD.Add(valueInUSD)
-	}
-
-	return totalValueInUSD.String()
 }
