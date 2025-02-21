@@ -64,7 +64,7 @@ func NewSwapEvent(sender, recipient sdk.AccAddress, poolId uint64, input sdk.Coi
 func NewSwapFeeEvent(swapFee string, slippage string, weightRecoveryFee string, providedBonusFee string) sdk.Event {
 	return sdk.NewEvent(
 		TypeEvtTokenSwappedFee,
-		sdk.NewAttribute("denom", "usdc"),
+		sdk.NewAttribute("denom", "USD"),
 		sdk.NewAttribute(AttributeKeySwapFee, swapFee),
 		sdk.NewAttribute(AttributeKeySlippage, slippage),
 		sdk.NewAttribute(AttributeKeyWeightRecoveryFee, weightRecoveryFee),
