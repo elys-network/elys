@@ -184,7 +184,7 @@ func (k Keeper) ClearOutdatedSlippageTrack(ctx sdk.Context) {
 
 // EndBlocker of amm module
 func (k Keeper) EndBlocker(ctx sdk.Context) {
-	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
+	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
 
 	msgs := k.ExecuteSwapRequests(ctx)
 	if len(msgs) > 0 {
@@ -193,6 +193,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	}
 
 	// Set amm and accounted pools in oracle kv store
+	// TODO this is being used for price feeder, migrate to query in price feeder and the remove this
 	ammPools := k.GetAllPool(ctx)
 	for _, ammPool := range ammPools {
 		if ammPool.PoolParams.UseOracle {
@@ -200,27 +201,16 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 				PoolId: ammPool.PoolId,
 			}
 
-			oracleAccountedPool := oracletypes.AccountedPool{
-				PoolId:      ammPool.PoolId,
-				TotalTokens: sdk.NewCoins(),
-			}
-
 			oraclePoolAssets := make([]oracletypes.PoolAsset, 0)
-			oracleAccountedPoolAssets := sdk.Coins{}
 			for _, poolAsset := range ammPool.PoolAssets {
 				oraclePoolAssets = append(oraclePoolAssets, oracletypes.PoolAsset{
 					Token:                  poolAsset.Token,
 					Weight:                 poolAsset.Weight,
 					ExternalLiquidityRatio: poolAsset.ExternalLiquidityRatio,
 				})
-				accountedPoolAmt := k.accountedPoolKeeper.GetAccountedBalance(ctx, ammPool.PoolId, poolAsset.Token.Denom)
-				oracleAccountedPoolAssets = append(oracleAccountedPoolAssets, sdk.NewCoin(poolAsset.Token.Denom, accountedPoolAmt))
 			}
 			oraclePool.PoolAssets = oraclePoolAssets
 			k.oracleKeeper.SetPool(ctx, oraclePool)
-
-			oracleAccountedPool.TotalTokens = oracleAccountedPoolAssets
-			k.oracleKeeper.SetAccountedPool(ctx, oracleAccountedPool)
 		}
 	}
 
