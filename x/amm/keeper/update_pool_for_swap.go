@@ -159,19 +159,19 @@ func (k Keeper) UpdatePoolForSwap(
 	k.SetPool(ctx, pool)
 
 	// convert the fees into usdc
-	swapFeeValueInUsdc := k.ConvertCoinsToUsdcValue(ctx, swapFeeInCoins)
+	swapFeeValueInUSD := k.ConvertCoinsToUSDValue(ctx, swapFeeInCoins)
 
 	slippageCoin := sdk.NewCoin(tokenIn.Denom, slippageAmount.RoundInt())
-	slippageAmountInUsdc := k.ConvertCoinsToUsdcValue(ctx, sdk.Coins{slippageCoin})
+	slippageAmountInUSD := k.ConvertCoinsToUSDValue(ctx, sdk.Coins{slippageCoin})
 
 	weightRecoveryFeeCoin := sdk.NewCoin(tokenIn.Denom, weightRecoveryFeeAmount)
-	weightRecoveryFeeAmountInUsdc := k.ConvertCoinsToUsdcValue(ctx, sdk.Coins{weightRecoveryFeeCoin})
+	weightRecoveryFeeAmountInUSD := k.ConvertCoinsToUSDValue(ctx, sdk.Coins{weightRecoveryFeeCoin})
 
 	bonusTokenCoin := sdk.NewCoin(tokenOut.Denom, bonusTokenAmount)
-	bonusTokenAmountInUsdc := k.ConvertCoinsToUsdcValue(ctx, sdk.Coins{bonusTokenCoin})
+	bonusTokenAmountInUSD := k.ConvertCoinsToUSDValue(ctx, sdk.Coins{bonusTokenCoin})
 
 	// emit swap fees event
-	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUsdc, slippageAmountInUsdc, weightRecoveryFeeAmountInUsdc, bonusTokenAmountInUsdc)
+	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUSD, slippageAmountInUSD, weightRecoveryFeeAmountInUSD, bonusTokenAmountInUSD)
 
 	// emit swap event
 	types.EmitSwapEvent(ctx, sender, recipient, pool.GetPoolId(), tokensIn, tokensOut)
@@ -185,16 +185,16 @@ func (k Keeper) UpdatePoolForSwap(
 	return nil
 }
 
-func (k Keeper) ConvertCoinsToUsdcValue(
+func (k Keeper) ConvertCoinsToUSDValue(
 	ctx sdk.Context,
 	coins sdk.Coins,
 ) string {
-	totalValueInUsdc := sdkmath.ZeroInt()
+	totalValueInUSD := sdkmath.ZeroInt()
 	for _, coin := range coins {
 		coinPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, coin.Denom)
-		valueInUsdc := coinPrice.MulInt(coin.Amount).TruncateInt()
-		totalValueInUsdc = totalValueInUsdc.Add(valueInUsdc)
+		valueInUSD := coinPrice.MulInt(coin.Amount).TruncateInt()
+		totalValueInUSD = totalValueInUSD.Add(valueInUSD)
 	}
 
-	return totalValueInUsdc.String()
+	return totalValueInUSD.String()
 }
