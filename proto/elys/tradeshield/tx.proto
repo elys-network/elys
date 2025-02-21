@@ -35,7 +35,7 @@ service Msg {
 }
 
 message MsgCreateSpotOrder {
-  option (cosmos.msg.v1.signer) = "owner_address";
+  option (cosmos.msg.v1.signer) = "sender";
   option (amino.name) = "tradeshield/MsgCreateSpotOrder";
   SpotOrderType order_type = 1;
   string order_price = 5 [
