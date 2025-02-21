@@ -60,7 +60,7 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
-			err := app.ojoOracleMigration(ctx, plan)
+			err := app.ojoOracleMigration(ctx, plan.Height+1)
 			if err != nil {
 				return nil, err
 			}

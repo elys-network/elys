@@ -510,6 +510,7 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[accountedpoolmoduletypes.StoreKey]),
 		app.BankKeeper,
+		app.OracleKeeper,
 	)
 
 	app.AmmKeeper = ammmodulekeeper.NewKeeper(
