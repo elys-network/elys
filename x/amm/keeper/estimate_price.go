@@ -66,6 +66,19 @@ func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 	return tokenUsdcRate.Mul(usdcDenomPrice)
 }
 
+func (k Keeper) ConvertCoinsToUsdcValue(
+	ctx sdk.Context,
+	coins sdk.Coins,
+) sdkmath.LegacyDec {
+	totalValueInUSD := sdkmath.LegacyZeroDec()
+	for _, coin := range coins {
+		valueInUSD := k.CalculateUSDValue(ctx, coin.Denom, coin.Amount)
+		totalValueInUSD = totalValueInUSD.Add(valueInUSD)
+	}
+
+	return totalValueInUSD
+}
+
 func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec {
 	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
 	if !found {
