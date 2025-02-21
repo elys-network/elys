@@ -394,7 +394,7 @@ func (suite *MasterchefKeeperTestSuite) TestProcessTakerFees() {
 
 	// mint some tokens in taker address
 	takerAddress := suite.app.ParameterKeeper.GetParams(suite.ctx).TakerFeeCollectionAddress
-	suite.MintTokenToAddress(sdk.MustAccAddressFromBech32(takerAddress), sdkmath.NewInt(100), ptypes.BaseCurrency)
+	suite.MintTokenToAddress(sdk.MustAccAddressFromBech32(takerAddress), sdkmath.NewInt(1000), ptypes.BaseCurrency)
 	suite.MintTokenToAddress(addr[0], sdkmath.NewInt(100000), ptypes.BaseCurrency)
 
 	// Pool with 1000 ELYS and 1000 USDC
@@ -427,8 +427,14 @@ func (suite *MasterchefKeeperTestSuite) TestProcessTakerFees() {
 
 	// Process taker fees
 	suite.app.MasterchefKeeper.ProcessTakerFee(suite.ctx)
+	suite.app.AmmKeeper.EndBlocker(suite.ctx)
+
+	balance := suite.app.BankKeeper.GetBalance(suite.ctx, sdk.MustAccAddressFromBech32(takerAddress), ptypes.BaseCurrency)
+	suite.Require().Equal(balance.Amount.String(), "0")
+
+	suite.app.MasterchefKeeper.ProcessTakerFee(suite.ctx)
 
 	// Check elys supply is reduced
 	elysSupplyAfter := suite.app.BankKeeper.GetSupply(suite.ctx, ptypes.Elys)
-	suite.Require().Equal(elysSupplyAfter.Amount.String(), "100000002000000")
+	suite.Require().Equal(elysSupplyAfter.Amount.String(), "100000001990992")
 }
