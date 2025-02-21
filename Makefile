@@ -4,7 +4,7 @@
 NAME?=elys
 BINARY?=$(NAME)d
 COMMIT:=$(shell git log -1 --format='%H')
-VERSION:=$(shell git describe --tags --match 'v*' --abbrev=8 | sed 's/-g/-/' | sed 's/-[0-9]*-/-/')
+VERSION:=v999999
 GOFLAGS:=""
 
 # if rocksdb env variable is set, add the tag
@@ -83,7 +83,7 @@ $(BUILDDIR)/:
 ## build: Build the binary
 build: check-version go.sum $(BUILDDIR)/
 	@echo Building Elysd binary...
-	@GOFLAGS=$(GOFLAGS) go build $(BUILD_FLAGS) -o $(BUILDDIR) ./cmd/$(BINARY)
+	@GOFLAGS=$(GOFLAGS) GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build $(BUILD_FLAGS) -o $(BUILDDIR) ./cmd/$(BINARY)
 
 ## build-all: Build binaries for all platforms
 build-all: $(BUILDDIR)/
