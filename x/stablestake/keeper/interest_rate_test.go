@@ -9,6 +9,7 @@ import (
 	keepertest "github.com/elys-network/elys/testutil/keeper"
 	"github.com/stretchr/testify/require"
 
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/stablestake/keeper"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
@@ -91,6 +92,23 @@ func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
 			},
 			expPass: true,
 			want:    sdkmath.LegacyNewDec(5),
+		},
+		{
+			desc: "interest calculation with zero max leverage",
+			pool: types.Pool{
+				TotalValue:           sdkmath.NewInt(10000),
+				InterestRate:         sdkmath.LegacyNewDec(12),
+				InterestRateMax:      sdkmath.LegacyNewDec(17),
+				InterestRateMin:      sdkmath.LegacyNewDec(12),
+				InterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				InterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+				HealthGainFactor:     sdkmath.LegacyNewDec(1),
+				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.8"),
+				Id:                   1,
+				DepositDenom:         ptypes.BaseCurrency,
+			},
+			expPass: true,
+			want:    sdkmath.LegacyMustNewDecFromStr("12.01"),
 		},
 	} {
 		suite.Run(tc.desc, func() {

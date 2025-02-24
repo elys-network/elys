@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
@@ -39,13 +40,15 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 
 	redemptionAmount := shareCoin.Amount.ToLegacyDec().Mul(redemptionRate).RoundInt()
 
-	amountAfterRedemption := pool.TotalValue.Sub(redemptionAmount)
-	maxAllowed := (pool.TotalValue.ToLegacyDec().Mul(pool.MaxWithdrawRatio)).TruncateInt()
-	if amountAfterRedemption.LT(maxAllowed) {
+	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
+	depositDenom := pool.GetDepositDenom()
+	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
+	borrowed := pool.TotalValue.Sub(balance.Amount)
+	borrowedRatio := (borrowed.ToLegacyDec().Quo(pool.TotalValue.Sub(redemptionAmount).ToLegacyDec()))
+	if borrowedRatio.GT(pool.MaxWithdrawRatio) {
 		return nil, types.ErrInvalidWithdraw
 	}
 
-	depositDenom := pool.GetDepositDenom()
 	redemptionCoin := sdk.NewCoin(depositDenom, redemptionAmount)
 	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, sdk.Coins{redemptionCoin})
 	if err != nil {
