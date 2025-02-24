@@ -110,10 +110,10 @@ func CalcExitPool(
 	params Params,
 	takerFees sdkmath.LegacyDec,
 	applyFee bool,
-) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, slippage sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, err error) {
+) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, slippage sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, weightMultiplier sdkmath.LegacyDec, err error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
-		return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
 	// refundedShares = exitingShares * (1 - exit fee)
@@ -135,12 +135,12 @@ func CalcExitPool(
 
 		exitValueWithSlippage, slippage, err := CalcExitValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom, initialWeightIn, applyFee, params)
 		if err != nil {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
 		// Ensure tokenPrice is not zero to avoid division by zero
 		if tokenPrice.IsZero() {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
+			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
 		}
 
 		oracleOutAmount := exitValueWithSlippage.Quo(tokenPrice)
@@ -155,12 +155,12 @@ func CalcExitPool(
 				sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.RoundInt())}, accountedAssets,
 			)
 			if err != nil {
-				return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+				return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 			}
 			var tokenInDenom string
 			for _, asset := range newAssetPools {
 				if asset.Token.Amount.IsNegative() {
-					return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errors.New("out amount exceeds liquidity balance")
+					return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errors.New("out amount exceeds liquidity balance")
 				}
 
 				// As we have two asset pool so other asset will be tokenIn
@@ -186,7 +186,7 @@ func CalcExitPool(
 				Mul(sdkmath.LegacyOneDec().Sub(swapFee)).RoundInt()
 		}
 
-		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, nil
+		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, initialWeightIn, nil
 	}
 
 	for _, asset := range poolLiquidity {
@@ -196,10 +196,10 @@ func CalcExitPool(
 			continue
 		}
 		if exitAmt.GTE(asset.Amount) {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errors.New("too many shares out")
+			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errors.New("too many shares out")
 		}
 		exitedCoins = exitedCoins.Add(sdk.NewCoin(asset.Denom, exitAmt))
 	}
 
-	return exitedCoins, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
+	return exitedCoins, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 }
