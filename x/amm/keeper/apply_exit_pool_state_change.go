@@ -84,7 +84,7 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 	// Taker fees
 	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
 	takerFeesInCoins := sdk.Coins{}
-	if takerFees.IsPositive() {
+	if pool.PoolParams.UseOracle && takerFees.IsPositive() {
 		takerFeesInCoins = PortionCoins(exitCoins, takerFees)
 	}
 

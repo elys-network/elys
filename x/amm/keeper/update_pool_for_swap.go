@@ -52,7 +52,7 @@ func (k Keeper) UpdatePoolForSwap(
 	// Taker fees
 	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
 	takerFeesInCoins := sdk.Coins{}
-	if takerFees.IsPositive() {
+	if pool.PoolParams.UseOracle && takerFees.IsPositive() {
 		if givenOut {
 			takeFeesFrom := sdk.NewCoins(sdk.NewCoin(tokenIn.Denom, oracleInAmount))
 			if !pool.PoolParams.UseOracle {
