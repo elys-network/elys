@@ -1,14 +1,11 @@
 package app
 
 import (
-	upgradetypes "cosmossdk.io/x/upgrade/types"
-	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
-
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	ammtypes "github.com/elys-network/elys/x/amm/types"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	leagacyOracletypes "github.com/elys-network/elys/x/oracle/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
@@ -42,10 +39,12 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteDenom: "USDT",
 		Providers: []string{
 			"binance",
-			//"okx",
-			//"bitget",
+			"okx",
+			"bitget",
 			"gate",
 		},
+		BaseProxyDenom:          "ATOM",
+		QuoteProxyDenom:         "USDC",
 		ExternLiquidityProvider: "binance",
 		PoolId:                  1,
 	},
@@ -69,6 +68,8 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"gate",
 		},
+		BaseProxyDenom:          "AKT",
+		QuoteProxyDenom:         "USDC",
 		ExternLiquidityProvider: "gate",
 		PoolId:                  3,
 	},
@@ -78,7 +79,6 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"binance",
 			"mexc",
-			"coinbase",
 			"gate",
 		},
 		BaseProxyDenom:          "TIA",
@@ -87,13 +87,22 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		PoolId:                  2,
 	},
 	{
+		BaseDenom:  "TIA",
+		QuoteDenom: "USD",
+		Providers: []string{
+			"coinbase",
+		},
+	},
+	{
 		BaseDenom:  "KAVA",
 		QuoteDenom: "USDT",
 		Providers: []string{
 			"binance",
 			"mexc",
-			//"bitget",
+			"bitget",
 		},
+		BaseProxyDenom:          "KAVA",
+		QuoteProxyDenom:         "USDC",
 		ExternLiquidityProvider: "binance",
 	},
 	{
@@ -102,8 +111,10 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"binance",
 			"mexc",
-			//"bitget",
+			"bitget",
 		},
+		BaseProxyDenom:          "SAGA",
+		QuoteProxyDenom:         "USDC",
 		ExternLiquidityProvider: "binance",
 	},
 	{
@@ -111,9 +122,11 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteDenom: "USDT",
 		Providers: []string{
 			"mexc",
-			//"bitget",
+			"bitget",
 			"gate",
 		},
+		BaseProxyDenom:          "XION",
+		QuoteProxyDenom:         "USDC",
 		ExternLiquidityProvider: "gate",
 	},
 	{
@@ -124,6 +137,8 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"mexc",
 			"gate",
 		},
+		BaseProxyDenom:          "SCRT",
+		QuoteProxyDenom:         "USDC",
 		ExternLiquidityProvider: "binance",
 	},
 	{
@@ -142,6 +157,8 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"gate",
 			"huobi",
 		},
+		BaseProxyDenom:          "OSMO",
+		QuoteProxyDenom:         "USDC",
 		ExternLiquidityProvider: "binance",
 	},
 	{
@@ -150,39 +167,62 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"mexc",
 			"binance",
-			//"bitget",
+			"bitget",
 		},
+		BaseProxyDenom:          "NTRN",
+		QuoteProxyDenom:         "USDC",
 		ExternLiquidityProvider: "binance",
+	},
+	{
+		BaseDenom:  "OM",
+		QuoteDenom: "USDT",
+		Providers: []string{
+			"binance",
+			"gate",
+			"okx",
+			"bitget",
+		},
+		BaseProxyDenom:          "OM",
+		QuoteProxyDenom:         "USDC",
+		ExternLiquidityProvider: "binance",
+	},
+	{
+		BaseDenom:       "BLD",
+		QuoteDenom:      "USDT",
+		BaseProxyDenom:  "BLD",
+		QuoteProxyDenom: "USDC",
+		Providers: []string{
+			"gate",
+			"huobi",
+		},
+		ExternLiquidityProvider: "gate",
 	},
 }
 
-func updateAndGetCurrencyProviders(ammPools []ammtypes.Pool, assetInfos []leagacyOracletypes.AssetInfo) []ojooracletypes.CurrencyPairProviders {
-	poolMap := make(map[string]uint64)
-	for _, assetInfo := range assetInfos {
-		for _, ammPool := range ammPools {
-			for _, poolAsset := range ammPool.PoolAssets {
-				if poolAsset.Token.Denom == assetInfo.Denom && assetInfo.Display != ptypes.USDC_DISPLAY {
-					poolMap[assetInfo.Display] = ammPool.PoolId
-				}
-			}
-		}
-	}
-	for i, _ := range currencyPairProviders {
-		poolId := poolMap[currencyPairProviders[i].BaseDenom]
-		if currencyPairProviders[i].ExternLiquidityProvider != "" {
-			currencyPairProviders[i].PoolId = poolId
-		}
-	}
-	return currencyPairProviders
+func addDenomToList(denom, display string, decimal uint64, denomList []ojooracletypes.Denom, rewardBand []ojooracletypes.RewardBand, deviationThreshold []ojooracletypes.CurrencyDeviationThreshold) ([]ojooracletypes.Denom, []ojooracletypes.RewardBand, []ojooracletypes.CurrencyDeviationThreshold) {
+	denomList = append(denomList, ojooracletypes.Denom{
+		BaseDenom:   denom,
+		SymbolDenom: display,
+		Exponent:    uint32(decimal),
+	})
+	deviationThreshold = append(deviationThreshold, ojooracletypes.CurrencyDeviationThreshold{
+		BaseDenom: display,
+		Threshold: "2",
+	})
+	rewardBand = append(rewardBand, ojooracletypes.RewardBand{
+		SymbolDenom: display,
+		RewardBand:  math.LegacyNewDecWithPrec(2, 2),
+	})
+	return denomList, rewardBand, deviationThreshold
 }
 
-func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, plan upgradetypes.Plan) error {
+func (app *ElysApp) enableVoteExtensions(ctx sdk.Context, height int64) error {
 	consensusParams, err := app.ConsensusParamsKeeper.ParamsStore.Get(ctx)
 	if err != nil {
 		return err
 	}
 	if consensusParams.Abci.VoteExtensionsEnableHeight == 0 {
-		consensusParams.Abci.VoteExtensionsEnableHeight = plan.Height + 1
+		consensusParams.Abci.VoteExtensionsEnableHeight = height
 		_, err = app.ConsensusParamsKeeper.UpdateParams(ctx, &consensustypes.MsgUpdateParams{
 			Authority: app.ConsensusParamsKeeper.GetAuthority(),
 			Block:     consensusParams.Block,
@@ -194,6 +234,14 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, plan upgradetypes.Plan) 
 			return err
 		}
 	}
+	return nil
+}
+
+func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, height int64) error {
+	err := app.enableVoteExtensions(ctx, height)
+	if err != nil {
+		return err
+	}
 
 	// Add any logic here to run when the chain is upgraded to the new version
 	app.Logger().Info("Migrating legacy oracle prices to new oracle")
@@ -203,36 +251,61 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, plan upgradetypes.Plan) 
 	priceFeeders := app.LegacyOracleKeepper.GetAllPriceFeeder(ctx)
 	allAmmPool := app.AmmKeeper.GetAllPool(ctx)
 
-	// Set Params
 	var denomList []ojooracletypes.Denom
-	// Need to add USDT as CEX provide prices in USDT
-	denomList = append(denomList, ojooracletypes.Denom{
-		BaseDenom:   "uusdt",
-		SymbolDenom: ptypes.USDT_DISPLAY,
-		Exponent:    6,
-	})
-	currencyPairs := updateAndGetCurrencyProviders(allAmmPool, assetInfos)
+	var rewardBand []ojooracletypes.RewardBand
+	usdtAssetInfo := leagacyOracletypes.AssetInfo{}
+	usdcAssetInfo := leagacyOracletypes.AssetInfo{}
 	var deviationThreshold []ojooracletypes.CurrencyDeviationThreshold
+
+	assetInfoMap := make(map[string]leagacyOracletypes.AssetInfo, len(assetInfos))
 	for _, assetInfo := range assetInfos {
-		if assetInfo.Denom != ptypes.Elys && assetInfo.Denom != ptypes.Eden && assetInfo.Denom != ptypes.EdenB {
-			denomList = append(denomList, ojooracletypes.Denom{
-				BaseDenom:   assetInfo.Denom,
-				SymbolDenom: assetInfo.Display,
-				Exponent:    uint32(assetInfo.Decimal),
-			})
-			deviationThreshold = append(deviationThreshold, ojooracletypes.CurrencyDeviationThreshold{
-				BaseDenom: assetInfo.Display,
-				Threshold: "2",
-			})
+		assetInfoMap[assetInfo.Denom] = assetInfo
+
+		if assetInfo.Display == ptypes.USDC_DISPLAY {
+			usdcAssetInfo = assetInfo
+
+		}
+
+		if assetInfo.Display == ptypes.USDT_DISPLAY {
+			usdtAssetInfo = assetInfo
 		}
 	}
+	if usdtAssetInfo.Denom == "" {
+		denomList, rewardBand, deviationThreshold = addDenomToList("uusdt", ptypes.USDT_DISPLAY, 6, denomList, rewardBand, deviationThreshold)
+	} else {
+		denomList, rewardBand, deviationThreshold = addDenomToList(usdtAssetInfo.Denom, usdtAssetInfo.Display, usdtAssetInfo.Decimal, denomList, rewardBand, deviationThreshold)
+	}
+	denomList, rewardBand, deviationThreshold = addDenomToList(usdcAssetInfo.Denom, usdcAssetInfo.Display, usdcAssetInfo.Decimal, denomList, rewardBand, deviationThreshold)
+
+	// Set all pool id for external liquidity factor
+	for _, ammPool := range allAmmPool {
+		// Only oracle pools
+		if ammPool.PoolParams.UseOracle {
+			for _, poolAsset := range ammPool.PoolAssets {
+				assetInfo := assetInfoMap[poolAsset.Token.Denom]
+				if assetInfo.Display != ptypes.USDC_DISPLAY && assetInfo.Display != ptypes.USDT_DISPLAY {
+
+					denomList, rewardBand, deviationThreshold = addDenomToList(assetInfo.Denom, assetInfo.Display, assetInfo.Decimal, denomList, rewardBand, deviationThreshold)
+
+					for i, _ := range currencyPairProviders {
+						if currencyPairProviders[i].BaseDenom == assetInfo.Display && currencyPairProviders[i].ExternLiquidityProvider != "" {
+							currencyPairProviders[i].PoolId = ammPool.PoolId
+							break
+						}
+					}
+				}
+			}
+		}
+	}
+
 	newParams := ojooracletypes.DefaultParams()
-	newParams.LifeTimeInBlocks = legacyParams.LifeTimeInBlocks
+	newParams.LifeTimeInBlocks = 2
 	newParams.PriceExpiryTime = legacyParams.PriceExpiryTime
 	newParams.MandatoryList = denomList
 	newParams.AcceptList = denomList
-	newParams.CurrencyPairProviders = currencyPairs
+	newParams.CurrencyPairProviders = currencyPairProviders
 	newParams.CurrencyDeviationThresholds = deviationThreshold
+	newParams.RewardBands = rewardBand
 	if err = newParams.Validate(); err != nil {
 		return err
 	}
