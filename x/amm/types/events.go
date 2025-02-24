@@ -7,21 +7,33 @@ import (
 )
 
 const (
-	TypeEvtPoolJoined   = "pool_joined"
-	TypeEvtPoolExited   = "pool_exited"
-	TypeEvtPoolCreated  = "pool_created"
-	TypeEvtTokenSwapped = "token_swapped"
+	TypeEvtPoolJoined      = "pool_joined"
+	TypeEvtPoolExited      = "pool_exited"
+	TypeEvtPoolCreated     = "pool_created"
+	TypeEvtTokenSwapped    = "token_swapped"
+	TypeEvtTokenSwappedFee = "token_swapped_fee"
 
 	AttributeValueCategory = ModuleName
 	AttributeKeyPoolId     = "pool_id"
 	AttributeKeyTokensIn   = "tokens_in"
 	AttributeKeyTokensOut  = "tokens_out"
 	AttributeKeyRecipient  = "recipient"
+
+	AttributeKeySwapFee           = "swap_fee"
+	AttributeKeySlippage          = "slippage"
+	AttributeKeyWeightRecoveryFee = "weight_recovery_fee"
+	AttributeKeyProvidedBonusFee  = "provided_bonus_fee"
 )
 
 func EmitSwapEvent(ctx sdk.Context, sender, recipient sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
 	ctx.EventManager().EmitEvents(sdk.Events{
 		NewSwapEvent(sender, recipient, poolId, input, output),
+	})
+}
+
+func EmitSwapFeesCollectedEvent(ctx sdk.Context, swapFee string, slippage string, weightRecoveryFee string, providedBonusFee string) {
+	ctx.EventManager().EmitEvents(sdk.Events{
+		NewSwapFeeEvent(swapFee, slippage, weightRecoveryFee, providedBonusFee),
 	})
 }
 
@@ -46,6 +58,17 @@ func NewSwapEvent(sender, recipient sdk.AccAddress, poolId uint64, input sdk.Coi
 		sdk.NewAttribute(AttributeKeyPoolId, strconv.FormatUint(poolId, 10)),
 		sdk.NewAttribute(AttributeKeyTokensIn, input.String()),
 		sdk.NewAttribute(AttributeKeyTokensOut, output.String()),
+	)
+}
+
+func NewSwapFeeEvent(swapFee string, slippage string, weightRecoveryFee string, providedBonusFee string) sdk.Event {
+	return sdk.NewEvent(
+		TypeEvtTokenSwappedFee,
+		sdk.NewAttribute("denom", "USD"),
+		sdk.NewAttribute(AttributeKeySwapFee, swapFee),
+		sdk.NewAttribute(AttributeKeySlippage, slippage),
+		sdk.NewAttribute(AttributeKeyWeightRecoveryFee, weightRecoveryFee),
+		sdk.NewAttribute(AttributeKeyProvidedBonusFee, providedBonusFee),
 	)
 }
 
