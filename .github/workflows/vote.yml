@@ -60,4 +60,5 @@ jobs:
           ${ELYSD} tx gov vote 45 yes --from=proposer2 $OPTIONS
           ${ELYSD} tx gov vote 45 yes --from=proposer3 $OPTIONS
           ${ELYSD} tx gov vote 45 yes --from=proposer4 $OPTIONS
+                   ${ELYSD} tx gov vote 45 yes --from=proposer4 $OPTIONS
           sleep 10
