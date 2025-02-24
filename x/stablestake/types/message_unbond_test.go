@@ -82,6 +82,7 @@ func TestNewMsgUnbond(t *testing.T) {
 	want := &MsgUnbond{
 		Creator: accAdress,
 		Amount:  amount,
+		PoolId:  UsdcPoolId,
 	}
 
 	assert.Equal(t, want, got)

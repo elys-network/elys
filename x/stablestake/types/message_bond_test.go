@@ -83,6 +83,7 @@ func TestNewMsgBond(t *testing.T) {
 	want := &MsgBond{
 		Creator: accAdress,
 		Amount:  amount,
+		PoolId:  UsdcPoolId,
 	}
 
 	assert.Equal(t, want, got)
