@@ -159,7 +159,7 @@ func (k Keeper) UpdatePoolForSwap(
 	k.SetPool(ctx, pool)
 
 	// convert the fees into USD
-	swapFeeValueInUSD := k.ConvertCoinsToUsdcValue(ctx, swapFeeInCoins).String()
+	swapFeeValueInUSD := k.CalculateCoinsUsdcValue(ctx, swapFeeInCoins).String()
 	slippageAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, sdkmath.Int(slippageAmount)).String()
 	weightRecoveryFeeAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, weightRecoveryFeeAmount).String()
 	bonusTokenAmountInUSD := k.CalculateUSDValue(ctx, tokenOut.Denom, bonusTokenAmount).String()
