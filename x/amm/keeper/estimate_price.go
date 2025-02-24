@@ -66,7 +66,7 @@ func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 	return tokenUsdcRate.Mul(usdcDenomPrice)
 }
 
-func (k Keeper) CalculateCoinsUsdcValue(
+func (k Keeper) CalculateCoinsUSDValue(
 	ctx sdk.Context,
 	coins sdk.Coins,
 ) sdkmath.LegacyDec {
