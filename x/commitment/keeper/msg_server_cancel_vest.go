@@ -25,6 +25,13 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 		return nil, errorsmod.Wrapf(types.ErrInvalidDenom, "denom: %s", ptypes.Eden)
 	}
 
+	// claim pending rewards
+	claimVestingMsg := types.MsgClaimVesting{Sender: msg.Creator}
+	_, err := k.Keeper.ClaimVesting(ctx, &claimVestingMsg)
+	if err != nil {
+		return nil, err
+	}
+
 	// Get the Commitments for the creator
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
 	commitments := k.GetCommitments(ctx, creator)
@@ -36,8 +43,17 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 		if vesting.Denom != ptypes.Elys || vesting.NumBlocks == 0 || vesting.TotalAmount.IsZero() {
 			continue
 		}
+
+		// rewards claimed, so claimedAmount = vestedSoFar
 		cancelAmount := sdkmath.MinInt(remainingToCancel, vesting.TotalAmount.Sub(vesting.ClaimedAmount))
-		vesting.TotalAmount = vesting.TotalAmount.Sub(cancelAmount)
+
+		vesting.TotalAmount = vesting.TotalAmount.Sub(vesting.ClaimedAmount).Sub(cancelAmount)
+		vesting.ClaimedAmount = sdkmath.ZeroInt()
+		// remaining blocks for the new vesting amount
+		vesting.NumBlocks = max(0, vesting.NumBlocks-(ctx.BlockHeight()-vesting.StartBlock))
+		vesting.StartBlock = ctx.BlockHeight()
+		vesting.VestStartedTimestamp = ctx.BlockTime().Unix()
+
 		// Update the num epochs for the reduced amount
 		commitments.VestingTokens[i] = vesting
 

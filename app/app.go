@@ -354,10 +354,6 @@ func (app *ElysApp) Name() string { return app.BaseApp.Name() }
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
-	v := app.OracleKeeper.CurrencyPairProviders(ctx)
-	fmt.Println("---------")
-	fmt.Println(v)
-	fmt.Println("---------")
 	return app.mm.BeginBlock(ctx)
 }
 
