@@ -14,6 +14,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	numShares math.Int,
 	joinCoins sdk.Coins,
 	weightBalanceBonus math.LegacyDec,
+	swapFee sdkmath.LegacyDec,
 ) error {
 	if err := k.bankKeeper.SendCoins(ctx, joiner, sdk.MustAccAddressFromBech32(pool.GetAddress()), joinCoins); err != nil {
 		return err
@@ -26,9 +27,33 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	k.SetPool(ctx, pool)
 
 	rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
+
+	swapFeeInCoins := sdk.Coins{}
+	if swapFee.IsPositive() {
+		swapFeeInCoins = PortionCoins(joinCoins, swapFee)
+	}
+
+	// send swap fee to rebalance treasury
+	if swapFeeInCoins.IsAllPositive() {
+		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+		err := k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, swapFeeInCoins)
+		if err != nil {
+			return err
+		}
+
+		err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), swapFeeInCoins)
+		if err != nil {
+			return err
+		}
+
+		err = k.OnCollectFee(ctx, pool, swapFeeInCoins)
+		if err != nil {
+			return err
+		}
+	}
 
 	weightRecoveryFeeAmount := sdkmath.ZeroInt()
-	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
 	// send half (weight breaking fee portion) of weight breaking fee to rebalance treasury
 	if pool.PoolParams.UseOracle && weightBalanceBonus.IsNegative() {
 		params := k.GetParams(ctx)

@@ -38,7 +38,7 @@ func (k Keeper) ExitPool(
 			exitCoins, tokenOutMins)
 	}
 
-	err = k.ApplyExitPoolStateChange(ctx, pool, sender, shareInAmount, exitCoins, isLiquidation, weightBalanceBonus)
+	err = k.ApplyExitPoolStateChange(ctx, pool, sender, shareInAmount, exitCoins, isLiquidation, weightBalanceBonus, swapFee)
 	if err != nil {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
