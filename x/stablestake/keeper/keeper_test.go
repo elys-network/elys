@@ -1,11 +1,15 @@
 package keeper_test
 
 import (
+	ojooracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	"testing"
+
 	"cosmossdk.io/math"
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
-	"testing"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -35,6 +39,33 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.SetStakingParam()
 	suite.SetStableStakeParam()
 	suite.SetupAssetProfile()
+
+	suite.app.StablestakeKeeper.SetPool(suite.ctx, stablestaketypes.Pool{
+		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
+		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
+		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
+		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
+		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     math.LegacyOneDec(),
+		TotalValue:           math.ZeroInt(),
+		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+		Id:                   1,
+		DepositDenom:         ptypes.BaseCurrency,
+	})
+
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, ojooracletypes.AssetInfo{
+		Denom:   "uusdc",
+		Display: "USDC",
+		Decimal: 6,
+	})
+	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+	suite.app.OracleKeeper.SetPrice(suite.ctx, ojooracletypes.Price{
+		Asset:     "USDC",
+		Price:     math.LegacyOneDec(),
+		Source:    "elys",
+		Provider:  provider.String(),
+		Timestamp: uint64(suite.ctx.BlockTime().Unix()),
+	})
 }
 
 func TestKeeperSuite(t *testing.T) {

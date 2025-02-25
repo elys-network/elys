@@ -19,7 +19,7 @@ type InternalSwapRequest struct {
 
 func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper, tokenIn sdk.Coin,
-	weightMultiplier sdkmath.LegacyDec) (sdkmath.LegacyDec, sdkmath.LegacyDec, error) {
+	weightMultiplier sdkmath.LegacyDec, params Params) (sdkmath.LegacyDec, sdkmath.LegacyDec, error) {
 
 	// As this is 2 token pool, tokenOut will be
 	tokenOutDenom := ""
@@ -73,6 +73,13 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKee
 	slippageValue := slippageAmount.Mul(outTokenPrice)
 
 	slippage := slippageValue.Quo(joinValue)
+
+	minSlippage := params.MinSlippage.Mul(weightMultiplier)
+	if slippage.LT(minSlippage) {
+		slippage = minSlippage
+		slippageValue = joinValue.Mul(minSlippage)
+	}
+
 	joinValueWithSlippage := joinValue.Sub(slippageValue)
 
 	return joinValueWithSlippage, slippage, nil
@@ -132,7 +139,7 @@ func (p *Pool) JoinPool(
 	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedAssets, tokensIn[0].Denom)
 	initialWeightOut := sdkmath.LegacyOneDec().Sub(initialWeightIn)
 
-	joinValueWithSlippage, slippage, err := p.CalcJoinValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, tokensIn[0], initialWeightOut)
+	joinValueWithSlippage, slippage, err := p.CalcJoinValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, tokensIn[0], initialWeightOut, params)
 	if err != nil {
 		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}

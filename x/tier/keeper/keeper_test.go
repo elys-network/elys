@@ -18,10 +18,10 @@ import (
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -49,6 +49,19 @@ func (suite *TierKeeperTestSuite) SetupTest() {
 	suite.SetupAssetProfile()
 	suite.SetupCoinPrices()
 	suite.SetAccount()
+
+	suite.app.StablestakeKeeper.SetPool(suite.ctx, stablestaketypes.Pool{
+		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
+		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
+		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
+		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
+		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     math.LegacyOneDec(),
+		TotalValue:           math.ZeroInt(),
+		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+		Id:                   1,
+		DepositDenom:         ptypes.BaseCurrency,
+	})
 }
 
 func (suite *TierKeeperTestSuite) ResetSuite() {
