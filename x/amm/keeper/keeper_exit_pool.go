@@ -28,7 +28,7 @@ func (k Keeper) ExitPool(
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrInvalidMathApprox, "Trying to exit a negative amount of shares")
 	}
 	params := k.GetParams(ctx)
-	exitCoins, weightBalanceBonus, slippage, swapFee, err = pool.ExitPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, shareInAmount, tokenOutDenom, params, applyWeightBreakingFee)
+	exitCoins, weightBalanceBonus, slippage, swapFee, slippageCoins, err := pool.ExitPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, shareInAmount, tokenOutDenom, params, applyWeightBreakingFee)
 	if err != nil {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
@@ -38,7 +38,7 @@ func (k Keeper) ExitPool(
 			exitCoins, tokenOutMins)
 	}
 
-	err = k.ApplyExitPoolStateChange(ctx, pool, sender, shareInAmount, exitCoins, isLiquidation, weightBalanceBonus, swapFee)
+	err = k.ApplyExitPoolStateChange(ctx, pool, sender, shareInAmount, exitCoins, isLiquidation, weightBalanceBonus, swapFee, slippageCoins)
 	if err != nil {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}

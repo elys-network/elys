@@ -6,7 +6,7 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exiter sdk.AccAddress, numShares sdkmath.Int, exitCoins sdk.Coins, isLiquidation bool, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec) error {
+func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exiter sdk.AccAddress, numShares sdkmath.Int, exitCoins sdk.Coins, isLiquidation bool, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, slippageCoins sdk.Coins) error {
 	// Withdraw exit amount of token from commitment module to exiter's wallet.
 	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
 
@@ -56,6 +56,7 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 	}
 
 	var weightRecoveryFeeAmount sdkmath.LegacyDec
+	weightRecoveryFeeCoins := sdk.Coins{}
 	// send half (weight breaking fee portion) of weight breaking fee to rebalance treasury
 	if pool.PoolParams.UseOracle && weightBalanceBonus.IsNegative() {
 		params := k.GetParams(ctx)
@@ -69,6 +70,7 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 			if weightRecoveryFeeAmount.IsPositive() {
 				// send weight recovery fee to rebalance treasury if weight recovery fee amount is positive¬
 				netWeightBreakingFeeCoins := sdk.Coins{sdk.NewCoin(coin.Denom, weightRecoveryFeeAmount.RoundInt())}
+				weightRecoveryFeeCoins = weightRecoveryFeeCoins.Add(netWeightBreakingFeeCoins...)
 
 				err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, netWeightBreakingFeeCoins)
 				if err != nil {
@@ -87,9 +89,10 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 		}
 	}
 
+	weightBalanceBonusCoins := sdk.Coins{}
 	if weightBalanceBonus.IsPositive() {
 		// calculate treasury amounts to send as bonus
-		weightBalanceBonusCoins := PortionCoins(exitCoins, weightBalanceBonus)
+		weightBalanceBonusCoins = PortionCoins(exitCoins, weightBalanceBonus)
 		for _, coin := range weightBalanceBonusCoins {
 			treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, coin.Denom).Amount
 			if treasuryTokenAmount.LT(coin.Amount) {
@@ -107,6 +110,15 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 			}
 		}
 	}
+
+	// convert the fees into USD
+	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins).String()
+	slippageAmountInUSD := k.CalculateCoinsUSDValue(ctx, slippageCoins).String()
+	weightRecoveryFeeAmountInUSD := k.CalculateCoinsUSDValue(ctx, weightRecoveryFeeCoins).String()
+	bonusTokenAmountInUSD := k.CalculateCoinsUSDValue(ctx, weightBalanceBonusCoins).String()
+
+	// emit swap fees event
+	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUSD, slippageAmountInUSD, weightRecoveryFeeAmountInUSD, bonusTokenAmountInUSD)
 
 	types.EmitRemoveLiquidityEvent(ctx, exiter, pool.GetPoolId(), exitCoins)
 	if k.hooks != nil {
