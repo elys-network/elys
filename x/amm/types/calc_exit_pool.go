@@ -11,10 +11,10 @@ import (
 
 func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper,
 	pool Pool, exitingShares sdkmath.Int, tokenOutDenom string,
-	weightMultiplier sdkmath.LegacyDec, applyFee bool, params Params) (sdkmath.LegacyDec, sdkmath.LegacyDec, error) {
+	weightMultiplier sdkmath.LegacyDec, applyFee bool, params Params) (sdkmath.LegacyDec, sdkmath.LegacyDec, sdkmath.LegacyDec, error) {
 	tvl, err := pool.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
 	// As this is 2 token pool, tokenOut will be
@@ -27,7 +27,7 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 	}
 	// Not possible, but we might require this when we have pools with assets more than 2
 	if tokenInDenom == "" {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token in denom not found")
+		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token in denom not found")
 	}
 
 	totalShares := pool.GetTotalShares()
@@ -35,28 +35,28 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 
 	// Ensure totalShares is not zero to avoid division by zero
 	if totalShares.IsZero() {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
+		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
 	}
 
 	exitValue := tvl.Mul(refundedShares).Quo(sdkmath.LegacyNewDecFromInt(totalShares.Amount))
 
 	if !applyFee {
-		return exitValue, sdkmath.LegacyZeroDec(), nil
+		return exitValue, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 	}
 
 	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
 	if inTokenPrice.IsZero() {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenInDenom)
+		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenInDenom)
 	}
 
 	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
 	if outTokenPrice.IsZero() {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenOutDenom)
+		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("token price not set: %s", tokenOutDenom)
 	}
 
 	externalLiquidityRatio, err := pool.GetAssetExternalLiquidityRatio(tokenOutDenom)
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	// Ensure externalLiquidityRatio is not zero to avoid division by zero
 	if externalLiquidityRatio.LT(sdkmath.LegacyOneDec()) {
@@ -77,7 +77,7 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 		accPoolKeeper,
 	)
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
 
@@ -93,10 +93,10 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 	exitValueWithSlippage := exitValue.Sub(slippageValue)
 
 	if exitingShares.GTE(totalShares.Amount) {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
-	return exitValueWithSlippage, slippage, nil
+	return exitValueWithSlippage, slippage, exitValue, nil
 }
 
 // CalcExitPool returns how many tokens should come out, when exiting k LP shares against a "standard" CFMM
@@ -132,7 +132,7 @@ func CalcExitPool(
 		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
 		initialWeightIn := sdkmath.LegacyOneDec().Sub(initialWeightOut)
 
-		exitValueWithSlippage, slippage, err := CalcExitValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom, initialWeightIn, applyFee, params)
+		exitValueWithSlippage, slippage, exitValueWithoutSlippage, err := CalcExitValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom, initialWeightIn, applyFee, params)
 		if err != nil {
 			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
@@ -143,8 +143,9 @@ func CalcExitPool(
 		}
 
 		oracleOutAmount := exitValueWithSlippage.Quo(tokenPrice)
+		oracleOutAmountWithoutSlippage := exitValueWithoutSlippage.Quo(tokenPrice)
 
-		tokenOutAmount := oracleOutAmount.RoundInt()
+		tokenOutAmount := oracleOutAmountWithoutSlippage.RoundInt()
 		weightBalanceBonus = sdkmath.LegacyZeroDec()
 		isSwapFee := true
 
@@ -183,6 +184,9 @@ func CalcExitPool(
 			tokenOutAmount = (oracleOutAmount.
 				Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
 				Mul(sdkmath.LegacyOneDec().Sub(swapFee))).RoundInt()
+		} else {
+			slippage = sdkmath.LegacyZeroDec()
+			swapFee = sdkmath.LegacyZeroDec()
 		}
 
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, nil
