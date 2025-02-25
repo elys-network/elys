@@ -30,8 +30,10 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
 
 	swapFeeInCoins := sdk.Coins{}
+	// As swapfee will always be positive only if there is single asset in exitCoins
 	if swapFee.IsPositive() {
-		swapFeeInCoins = PortionCoins(exitCoins, swapFee)
+		swapFeeAmount := (exitCoins[0].Amount.ToLegacyDec().Mul(swapFee)).Quo(sdkmath.LegacyOneDec().Sub(swapFee))
+		swapFeeInCoins = sdk.Coins{sdk.NewCoin(exitCoins[0].Denom, swapFeeAmount.RoundInt())}
 	}
 
 	// send swap fee to rebalance treasury
@@ -53,7 +55,7 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 		}
 	}
 
-	var weightRecoveryFeeAmount sdkmath.Int
+	var weightRecoveryFeeAmount sdkmath.LegacyDec
 	// send half (weight breaking fee portion) of weight breaking fee to rebalance treasury
 	if pool.PoolParams.UseOracle && weightBalanceBonus.IsNegative() {
 		params := k.GetParams(ctx)
@@ -62,11 +64,11 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.WeightBreakingFeePortion)
 
 		for _, coin := range exitCoins {
-			weightRecoveryFeeAmount = coin.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			weightRecoveryFeeAmount = (coin.Amount.ToLegacyDec().Mul(weightRecoveryFee)).Quo(sdkmath.LegacyOneDec().Sub(weightRecoveryFee))
 
 			if weightRecoveryFeeAmount.IsPositive() {
 				// send weight recovery fee to rebalance treasury if weight recovery fee amount is positive¬
-				netWeightBreakingFeeCoins := sdk.Coins{sdk.NewCoin(coin.Denom, weightRecoveryFeeAmount)}
+				netWeightBreakingFeeCoins := sdk.Coins{sdk.NewCoin(coin.Denom, weightRecoveryFeeAmount.RoundInt())}
 
 				err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, netWeightBreakingFeeCoins)
 				if err != nil {

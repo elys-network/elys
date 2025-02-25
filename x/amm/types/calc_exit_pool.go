@@ -180,9 +180,9 @@ func CalcExitPool(
 				swapFee = pool.GetPoolParams().SwapFee.Mul(initialWeightIn)
 			}
 
-			tokenOutAmount = oracleOutAmount.
+			tokenOutAmount = (oracleOutAmount.
 				Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
-				Mul(sdkmath.LegacyOneDec().Sub(swapFee)).RoundInt()
+				Mul(sdkmath.LegacyOneDec().Sub(swapFee))).RoundInt()
 		}
 
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, nil
