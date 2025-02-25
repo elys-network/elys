@@ -18,6 +18,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 		senderInitBalance sdk.Coins
 		moduleInitBalance sdk.Coins
 		unbondAmount      math.Int
+		maxWithdrawRatio  math.LegacyDec
 		expSenderBalance  sdk.Coins
 		expPass           bool
 	}{
@@ -26,6 +27,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 5000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			unbondAmount:      math.NewInt(1000000),
+			maxWithdrawRatio:  math.LegacyOneDec(),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}.Sort(),
 			expPass:           true,
 		},
@@ -34,6 +36,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 5000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000)},
 			unbondAmount:      math.NewInt(1000000),
+			maxWithdrawRatio:  math.LegacyOneDec(),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			expPass:           false,
 		},
@@ -42,7 +45,17 @@ func (suite *KeeperTestSuite) TestUnbond() {
 			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 5000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			unbondAmount:      math.NewInt(10000000000000),
+			maxWithdrawRatio:  math.LegacyOneDec(),
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			expPass:           false,
+		},
+		{
+			desc:              "max withdrawal amount",
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenomForPool(1), 5000000)},
+			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			unbondAmount:      math.NewInt(700000), // try to withdraw more than 90%
+			maxWithdrawRatio:  math.LegacyMustNewDecFromStr("0.9"),
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 500000)},
 			expPass:           false,
 		},
 	} {
