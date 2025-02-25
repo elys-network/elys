@@ -39,6 +39,9 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if err != nil {
 		return nil, err
 	}
+	if tradingAssetPrice.IsZero() {
+		return nil, errors.New("trading asset price is zero while opening perpetual")
+	}
 	ratio := msg.TakeProfitPrice.Quo(tradingAssetPrice)
 	if msg.Position == types.Position_LONG {
 		if ratio.LT(params.MinimumLongTakeProfitPriceRatio) || ratio.GT(params.MaximumLongTakeProfitPriceRatio) {
