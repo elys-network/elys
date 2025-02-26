@@ -177,8 +177,7 @@ func (p *Pool) JoinPool(
 	numSharesDec := sdkmath.LegacyNewDecFromInt(totalShares.Amount).
 		Mul(joinValueWithSlippage).Quo(tvl).
 		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
-		Mul(sdkmath.LegacyOneDec().Sub(swapFee)).
-		Quo(sdkmath.LegacyOneDec().Sub(takerFeesFinal))
+		Mul(sdkmath.LegacyOneDec().Sub(swapFee.Add(takerFeesFinal)))
 	numShares = numSharesDec.RoundInt()
 	err = p.IncreaseLiquidity(numShares, tokensIn)
 	if err != nil {

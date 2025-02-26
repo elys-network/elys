@@ -28,7 +28,7 @@ func (k Keeper) ExitPoolEstimation(goCtx context.Context, req *types.QueryExitPo
 		WeightBalanceRatio: weightBalanceBonus,
 		Slippage:           slippage,
 		SwapFee:            swapFee,
-		TakerFees:          takerFeesFinal,
+		TakerFee:           takerFeesFinal,
 	}, nil
 }
 
