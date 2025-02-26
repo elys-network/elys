@@ -57,7 +57,7 @@ func (k Keeper) InternalSwapExactAmountOut(
 		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
-	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, oracleInAmount.TruncateInt(), math.ZeroInt(), weightBalanceBonus, true)
+	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, oracleInAmount.TruncateInt(), math.ZeroInt(), weightBalanceBonus, takersFees, true)
 	if err != nil {
 		return math.Int{}, err
 	}

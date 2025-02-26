@@ -87,7 +87,6 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		exitFeeOnClosingPosition = weightBreakingFeeValue.Mul(ammPool.TotalShares.Amount.ToLegacyDec()).Quo(totalLpAmountToClose.ToLegacyDec().Mul(ammPoolTVL))
 	}
 
-	// panic("Swap fee: " + swapFee.String())
 	slippageValue := slippage.Mul(repayValue)
 	swapFeeValue := swapFee.Mul(repayValue)
 	exitSlippageFeeOnClosingPosition := (slippageValue).Mul(ammPool.TotalShares.Amount.ToLegacyDec()).Quo(totalLpAmountToClose.ToLegacyDec().Mul(ammPoolTVL))

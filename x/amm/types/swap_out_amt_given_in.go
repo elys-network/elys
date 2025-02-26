@@ -313,7 +313,6 @@ func (p *Pool) SwapOutAmtGivenIn(
 	if swapFee.GTE(sdkmath.LegacyOneDec()) {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrTooMuchSwapFee
 	}
-
 	tokenAmountOutInt := outAmountAfterSlippage.
 		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
 		Mul(sdkmath.LegacyOneDec().Sub(swapFee)).TruncateInt() // We ignore the decimal component, as we round down the token amount out.

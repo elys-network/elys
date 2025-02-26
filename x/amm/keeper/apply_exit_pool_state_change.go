@@ -6,7 +6,12 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exiter sdk.AccAddress, numShares sdkmath.Int, exitCoins sdk.Coins, isLiquidation bool, weightBalanceBonus sdkmath.LegacyDec, weightMultiplier sdkmath.LegacyDec) error {
+func (k Keeper) ApplyExitPoolStateChange(
+	ctx sdk.Context, pool types.Pool,
+	exiter sdk.AccAddress, numShares sdkmath.Int,
+	exitCoins sdk.Coins, isLiquidation bool,
+	weightBalanceBonus sdkmath.LegacyDec, takerFees sdkmath.LegacyDec,
+) error {
 	// Withdraw exit amount of token from commitment module to exiter's wallet.
 	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
 
@@ -82,7 +87,6 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 	}
 
 	// Taker fees
-	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees.Mul(weightMultiplier)
 	takerFeesInCoins := sdk.Coins{}
 	if pool.PoolParams.UseOracle && takerFees.IsPositive() {
 		takerFeesInCoins = PortionCoins(exitCoins, takerFees)

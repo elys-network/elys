@@ -5,8 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string, params Params, takerFees math.LegacyDec, applyWeightBreakingFee bool) (exitingCoins sdk.Coins, weightBalanceBonus math.LegacyDec, slippage math.LegacyDec, swapFee math.LegacyDec, weightMultiplier math.LegacyDec, err error) {
-	exitingCoins, weightBalanceBonus, slippage, swapFee, weightMultiplier, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeper, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
+func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string, params Params, takerFees math.LegacyDec, applyWeightBreakingFee bool) (exitingCoins sdk.Coins, weightBalanceBonus math.LegacyDec, slippage math.LegacyDec, swapFee math.LegacyDec, takerFeesFinal math.LegacyDec, err error) {
+	exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeper, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
 	if err != nil {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
@@ -15,7 +15,7 @@ func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoo
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
 
-	return exitingCoins, weightBalanceBonus, slippage, swapFee, weightMultiplier, nil
+	return exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, nil
 }
 
 // exitPool exits the pool given exitingCoins and exitingShares.

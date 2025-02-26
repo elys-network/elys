@@ -15,7 +15,7 @@ func (k Keeper) ExitPool(
 	tokenOutMins sdk.Coins,
 	tokenOutDenom string,
 	isLiquidation, applyWeightBreakingFee bool,
-) (exitCoins sdk.Coins, weightBalanceBonus math.LegacyDec, swapFee math.LegacyDec, slippage math.LegacyDec, weightMultiplier math.LegacyDec, err error) {
+) (exitCoins sdk.Coins, weightBalanceBonus math.LegacyDec, swapFee math.LegacyDec, slippage math.LegacyDec, takerFeesFinal math.LegacyDec, err error) {
 	pool, poolExists := k.GetPool(ctx, poolId)
 	if !poolExists {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), types.ErrInvalidPoolId
@@ -29,7 +29,7 @@ func (k Keeper) ExitPool(
 	}
 	params := k.GetParams(ctx)
 	takersFees := k.parameterKeeper.GetParams(ctx).TakerFees
-	exitCoins, weightBalanceBonus, slippage, swapFee, weightMultiplier, err = pool.ExitPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, shareInAmount, tokenOutDenom, params, takersFees, applyWeightBreakingFee)
+	exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, err = pool.ExitPool(ctx, k.oracleKeeper, k.accountedPoolKeeper, shareInAmount, tokenOutDenom, params, takersFees, applyWeightBreakingFee)
 	if err != nil {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
@@ -39,7 +39,7 @@ func (k Keeper) ExitPool(
 			exitCoins, tokenOutMins)
 	}
 
-	err = k.ApplyExitPoolStateChange(ctx, pool, sender, shareInAmount, exitCoins, isLiquidation, weightBalanceBonus, weightMultiplier)
+	err = k.ApplyExitPoolStateChange(ctx, pool, sender, shareInAmount, exitCoins, isLiquidation, weightBalanceBonus, takerFeesFinal)
 	if err != nil {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
@@ -49,5 +49,5 @@ func (k Keeper) ExitPool(
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
 
-	return exitCoins, weightBalanceBonus, slippage, swapFee, weightMultiplier, nil
+	return exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, nil
 }

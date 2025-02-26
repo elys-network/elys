@@ -22,6 +22,7 @@ func (k Keeper) UpdatePoolForSwap(
 	oracleInAmount sdkmath.Int,
 	oracleOutAmount sdkmath.Int,
 	weightBalanceBonus sdkmath.LegacyDec,
+	takerFees sdkmath.LegacyDec,
 	givenOut bool,
 ) error {
 	tokensIn := sdk.Coins{tokenIn}
@@ -50,7 +51,6 @@ func (k Keeper) UpdatePoolForSwap(
 	}
 
 	// Taker fees
-	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
 	takerFeesInCoins := sdk.Coins{}
 	if pool.PoolParams.UseOracle && takerFees.IsPositive() {
 		if givenOut {

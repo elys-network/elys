@@ -110,7 +110,7 @@ func CalcExitPool(
 	params Params,
 	takerFees sdkmath.LegacyDec,
 	applyFee bool,
-) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, slippage sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, weightMultiplier sdkmath.LegacyDec, err error) {
+) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, slippage sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, takerFeesFinal sdkmath.LegacyDec, err error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
 		return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
@@ -147,6 +147,7 @@ func CalcExitPool(
 
 		tokenOutAmount := oracleOutAmount.RoundInt()
 		weightBalanceBonus = sdkmath.LegacyZeroDec()
+		takerFeesFinal = sdkmath.LegacyZeroDec()
 		isSwapFee := true
 
 		if applyFee {
@@ -181,12 +182,15 @@ func CalcExitPool(
 				swapFee = pool.GetPoolParams().SwapFee.Mul(initialWeightIn)
 			}
 
-			tokenOutAmount = oracleOutAmount.
+			takerFeesFinal = takerFees.Mul(initialWeightIn)
+
+			tokenOutAmount = (oracleOutAmount.
 				Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
-				Mul(sdkmath.LegacyOneDec().Sub(swapFee)).RoundInt()
+				Mul(sdkmath.LegacyOneDec().Sub(swapFee)).
+				Mul(sdkmath.LegacyOneDec().Sub(takerFeesFinal))).RoundInt()
 		}
 
-		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, initialWeightIn, nil
+		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, takerFeesFinal, nil
 	}
 
 	for _, asset := range poolLiquidity {
