@@ -51,7 +51,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 		},
 		{
 			desc:              "max withdrawal amount",
-			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenomForPool(1), 5000000)},
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenom(), 5000000)},
 			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
 			unbondAmount:      math.NewInt(700000), // try to withdraw more than 90%
 			maxWithdrawRatio:  math.LegacyMustNewDecFromStr("0.9"),
@@ -101,6 +101,7 @@ func (suite *KeeperTestSuite) TestUnbond() {
 			params.TotalValue = math.NewInt(5000_000)
 			params.RedemptionRate = math.LegacyNewDec(1)
 			params.MaxLeverageRatio = math.LegacyMustNewDecFromStr("0.8")
+			params.MaxWithdrawRatio = tc.maxWithdrawRatio
 			suite.app.StablestakeKeeper.SetParams(suite.ctx, params)
 
 			msgServer := keeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
