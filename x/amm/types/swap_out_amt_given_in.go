@@ -315,7 +315,8 @@ func (p *Pool) SwapOutAmtGivenIn(
 	}
 	tokenAmountOutInt := outAmountAfterSlippage.
 		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
-		Mul(sdkmath.LegacyOneDec().Sub(swapFee)).TruncateInt() // We ignore the decimal component, as we round down the token amount out.
+		Mul(sdkmath.LegacyOneDec().Sub(swapFee).
+			Mul(sdkmath.LegacyOneDec().Sub(takerFees))).TruncateInt() // We ignore the decimal component, as we round down the token amount out.
 	oracleOutCoin := sdk.NewCoin(tokenOutDenom, tokenAmountOutInt)
 	return oracleOutCoin, slippage, slippageAmount, weightBalanceBonus, oracleOutAmount, swapFee, nil
 }

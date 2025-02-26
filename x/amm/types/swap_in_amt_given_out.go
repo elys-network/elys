@@ -143,6 +143,7 @@ func (p *Pool) SwapInAmtGivenOut(
 	tokenAmountInInt := inAmountAfterSlippage.
 		Quo(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
 		Quo(sdkmath.LegacyOneDec().Sub(swapFee)).
+		Quo(sdkmath.LegacyOneDec().Sub(takerFees)).
 		Ceil().TruncateInt() // We round up tokenInAmt, as this is whats charged for the swap, for the precise amount out.
 	// Otherwise, the pool would under-charge by this rounding error.
 	tokenIn = sdk.NewCoin(tokenInDenom, tokenAmountInInt)

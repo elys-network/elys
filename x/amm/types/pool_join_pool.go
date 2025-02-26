@@ -93,7 +93,7 @@ func (p *Pool) JoinPool(
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
 	params Params,
 	takerfees sdkmath.LegacyDec,
-) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, weightMultiplier sdkmath.LegacyDec, err error) {
+) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, takerFeesFinal sdkmath.LegacyDec, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
 		numShares, tokensJoined, err := p.CalcJoinPoolNoSwapShares(tokensIn)
@@ -171,16 +171,19 @@ func (p *Pool) JoinPool(
 		swapFee = p.GetPoolParams().SwapFee.Mul(initialWeightOut)
 	}
 
+	takerFeesFinal = takerfees.Mul(initialWeightOut)
+
 	totalShares := p.GetTotalShares()
 	numSharesDec := sdkmath.LegacyNewDecFromInt(totalShares.Amount).
 		Mul(joinValueWithSlippage).Quo(tvl).
 		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
-		Mul(sdkmath.LegacyOneDec().Sub(swapFee))
+		Mul(sdkmath.LegacyOneDec().Sub(swapFee)).
+		Quo(sdkmath.LegacyOneDec().Sub(takerFeesFinal))
 	numShares = numSharesDec.RoundInt()
 	err = p.IncreaseLiquidity(numShares, tokensIn)
 	if err != nil {
 		return sdk.NewCoins(), sdkmath.ZeroInt(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 	}
 
-	return tokensIn, numShares, slippage, weightBalanceBonus, swapFee, initialWeightOut, nil
+	return tokensIn, numShares, slippage, weightBalanceBonus, swapFee, takerFeesFinal, nil
 }

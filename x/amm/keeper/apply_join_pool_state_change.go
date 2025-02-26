@@ -83,7 +83,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 
 	// Taker fees
 	takerFeesInCoins := sdk.Coins{}
-	if pool.PoolParams.UseOracle && takerFees.IsPositive() && joinCoins.Len() == 1 {
+	if pool.PoolParams.UseOracle && takerFees.IsPositive() {
 		takerFeesInCoins = PortionCoins(joinCoins, takerFees)
 	}
 
