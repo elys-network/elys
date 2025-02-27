@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -209,21 +208,9 @@ func initRootCmd(rootCmd *cobra.Command,
 		keys.Commands(),
 	)
 
-	// add price feeder flags
-	home, err := os.UserHomeDir()
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	defaultPriceFeederPath := home + "/.elys/price-feeder.toml"
-	rootCmd.PersistentFlags().String(pricefeeder.FlagConfigPath, defaultPriceFeederPath, "Path to price feeder config file")
+	rootCmd.PersistentFlags().String(pricefeeder.FlagConfigPath, "", "Path to price feeder config file")
 	rootCmd.PersistentFlags().String(pricefeeder.FlagLogLevel, "error", "Log level of price feeder process")
 	rootCmd.PersistentFlags().Bool(pricefeeder.FlagEnablePriceFeeder, false, "Enable the price feeder")
-
-	//usdcDENOM, found := os.LookupEnv("USDC_DENOM")
-	//if !found || usdcDENOM == "" {
-	//	panic(errors.New("USDC denom (env variable) cannot be empty for price feeder to run"))
-	//}
 }
 
 func addModuleInitFlags(startCmd *cobra.Command) {
