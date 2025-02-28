@@ -4,7 +4,7 @@
 NAME?=elys
 BINARY?=$(NAME)d
 COMMIT:=$(shell git log -1 --format='%H')
-VERSION:=$(shell git describe --tags --match 'v*' --abbrev=8 | sed 's/-g/-/' | sed 's/-[0-9]*-/-/')
+VERSION:=v999999.999999.999999
 GOFLAGS:=""
 
 # if rocksdb env variable is set, add the tag
@@ -33,7 +33,8 @@ NOCOLOR=\033[0m
 GO_CURR_VERSION=$(shell echo -e "Current Go version: $(LGREEN)$(GO_MAJOR_VERSION).$(GREEN)$(GO_MINOR_VERSION)$(NOCOLOR)")
 GO_VERSION_ERR_MSG=$(shell echo -e '$(RED)❌ ERROR$(NOCOLOR): Go version $(LGREEN)$(GO_MINIMUM_MAJOR_VERSION).$(GREEN)$(GO_MINIMUM_MINOR_VERSION)$(NOCOLOR)+ is required')
 
-GO_VERSION := $(shell cat go.mod | grep -E 'go [0-9].[0-9]+' | cut -d ' ' -f 2)
+#GO_VERSION := $(shell cat go.mod | grep -E 'go [0-9].[0-9]+' | cut -d ' ' -f 2)
+GO_VERSION := 1.22
 
 BUILDDIR ?= $(CURDIR)/build
 DOCKER := $(shell which docker)

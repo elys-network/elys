@@ -85,6 +85,7 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  sdkmath.NewInt(50000),
+		PoolId:  1,
 	})
 	suite.Require().NoError(err)
 
@@ -96,7 +97,7 @@ func (suite *KeeperTestSuite) TestOpenLong() {
 		AmmPoolId:        1,
 		Leverage:         sdkmath.LegacyNewDec(5),
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
-	})
+	}, 1)
 	suite.Require().NoError(err)
 	suite.Require().Equal(position.Address, addr.String())
 	suite.Require().Equal(position.Collateral.String(), "1000uusdc")

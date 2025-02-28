@@ -92,9 +92,8 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	masterchefmodulekeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
-	oraclemodule "github.com/elys-network/elys/x/oracle"
-	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	legacyoraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
+	legacyoracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametermodulekeeper "github.com/elys-network/elys/x/parameter/keeper"
 	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
 	perpetualmodulekeeper "github.com/elys-network/elys/x/perpetual/keeper"
@@ -110,6 +109,9 @@ import (
 	"github.com/elys-network/elys/x/transferhook"
 	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
+	oraclekeeper "github.com/ojo-network/ojo/x/oracle/keeper"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	"github.com/spf13/cast"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -122,7 +124,7 @@ type AppKeepers struct {
 	AccountKeeper    authkeeper.AccountKeeper
 	BankKeeper       bankkeeper.Keeper
 	CapabilityKeeper *capabilitykeeper.Keeper
-	StakingKeeper    *stakingkeeper.Keeper
+	StakingKeeper    ICSStakingKeeper
 	SlashingKeeper   slashingkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
 	GovKeeper        *govkeeper.Keeper
@@ -147,7 +149,7 @@ type AppKeepers struct {
 	ConsumerKeeper ccvconsumerkeeper.Keeper
 	ConsumerModule ccvconsumer.AppModule // Have to declare this here for IBC router
 
-	WasmKeeper          wasmkeeper.Keeper
+	WasmKeeper wasmkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
@@ -161,6 +163,7 @@ type AppKeepers struct {
 
 	EpochsKeeper        *epochsmodulekeeper.Keeper
 	AssetprofileKeeper  assetprofilemodulekeeper.Keeper
+	LegacyOracleKeepper legacyoraclekeeper.Keeper
 	OracleKeeper        oraclekeeper.Keeper
 	CommitmentKeeper    *commitmentmodulekeeper.Keeper
 	TokenomicsKeeper    tokenomicsmodulekeeper.Keeper
@@ -303,14 +306,16 @@ func NewAppKeeper(
 		app.AccountKeeper,
 	)
 
-	app.StakingKeeper = stakingkeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
-		app.AccountKeeper,
-		app.BankKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
-		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+	app.StakingKeeper = NewICSStakingKeeper(
+		*stakingkeeper.NewKeeper(
+			appCodec,
+			runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
+			app.AccountKeeper,
+			app.BankKeeper,
+			authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+			authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+			authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+		),
 	)
 
 	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
@@ -341,7 +346,7 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[estakingmoduletypes.StoreKey]),
 		app.ParameterKeeper,
-		app.StakingKeeper,
+		&app.StakingKeeper.Keeper,
 		app.CommitmentKeeper,
 		&app.DistrKeeper,
 		app.AssetprofileKeeper,
@@ -519,16 +524,26 @@ func NewAppKeeper(
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
 
-	app.OracleKeeper = *oraclekeeper.NewKeeper(
+	app.LegacyOracleKeepper = *legacyoraclekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[legacyoracletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.IBCKeeper.ChannelKeeper,
 		app.IBCKeeper.PortKeeper,
 		app.ScopedOracleKeeper,
 	)
 
-	oracleIBCModule := oraclemodule.NewIBCModule(app.OracleKeeper)
+	app.OracleKeeper = oraclekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.DistrKeeper,
+		app.StakingKeeper,
+		distrtypes.ModuleName,
+		cast.ToBool(appOpts.Get("telemetry.enabled")),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 
 	app.EpochsKeeper = epochsmodulekeeper.NewKeeper(
 		appCodec,
@@ -539,6 +554,7 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[accountedpoolmoduletypes.StoreKey]),
 		app.BankKeeper,
+		app.OracleKeeper,
 	)
 
 	app.AmmKeeper = ammmodulekeeper.NewKeeper(
@@ -563,6 +579,7 @@ func NewAppKeeper(
 		app.BankKeeper,
 		app.CommitmentKeeper,
 		app.AssetprofileKeeper,
+		app.AmmKeeper,
 	)
 
 	app.CommitmentKeeper.SetHooks(
@@ -749,7 +766,6 @@ func NewAppKeeper(
 		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
 		AddRoute(ibctransfertypes.ModuleName, transferStack).
 		AddRoute(wasmTypes.ModuleName, wasmStack).
-		AddRoute(oracletypes.ModuleName, oracleIBCModule).
 		AddRoute(ccvconsumertypes.ModuleName, app.ConsumerModule)
 
 	app.IBCKeeper.SetRouter(ibcRouter)
@@ -797,7 +813,6 @@ func NewAppKeeper(
 	app.EpochsKeeper = app.EpochsKeeper.SetHooks(
 		epochsmoduletypes.NewMultiEpochHooks(
 			// insert epoch hooks receivers here
-			app.OracleKeeper.Hooks(),
 			app.CommitmentKeeper.Hooks(),
 			app.BurnerKeeper.Hooks(),
 			app.PerpetualKeeper.EpochHooks(),

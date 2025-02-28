@@ -82,6 +82,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  sdkmath.NewInt(10000),
+		PoolId:  1,
 	})
 	suite.Require().NoError(err)
 
@@ -93,7 +94,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 		AmmPoolId:        1,
 		Leverage:         sdkmath.LegacyNewDec(5),
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
-	})
+	}, 1)
 
 	res, _ := k.Position(suite.ctx, &types.PositionRequest{Address: addr.String(), Id: position.Id})
 	updated_leverage := sdkmath.LegacyMustNewDecFromStr("5.253192140666910528")

@@ -13,10 +13,10 @@ import (
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tradeshieldtypes "github.com/elys-network/elys/x/tradeshield/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -104,8 +104,11 @@ type LeverageLpKeeper interface {
 
 type StablestakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stablestaketypes.Params)
-	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
-	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, debtDenom string) stablestaketypes.Debt
+	GetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
+	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, borrowingForPool uint64) stablestaketypes.Debt
+	CalculateRedemptionRateByDenom(ctx sdk.Context, denom string) math.LegacyDec
+	GetPool(ctx sdk.Context, poolId uint64) (pool stablestaketypes.Pool, found bool)
+	CalculateRedemptionRateForPool(ctx sdk.Context, pool stablestaketypes.Pool) math.LegacyDec
 }
 
 type TradeshieldKeeper interface {

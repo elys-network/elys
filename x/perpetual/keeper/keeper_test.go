@@ -18,10 +18,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
-	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	oraclekeeper "github.com/ojo-network/ojo/x/oracle/keeper"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )

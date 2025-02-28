@@ -61,7 +61,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPool() {
 				FeeDenom:  ptypes.BaseCurrency,
 			},
 			// shareOutAmount:   math.NewInt(694444166666666666), // weight breaking fee - slippage enable
-			shareOutAmount:   math.NewInt(833333000000000000), // weight breaking fee - slippage enable
+			shareOutAmount:   math.NewInt(832154489169426942), // weight breaking fee - slippage enable
 			expSenderBalance: sdk.Coins{},
 			expTokenIn:       sdk.Coins{sdk.NewInt64Coin("uusdt", 1000000)},
 			expPass:          true,
@@ -290,7 +290,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			// Step 6: Validate if exploit was successful (It should fail)
 			// Calculate expected number of shares without weight balance bonus
 			totalShares := pool.TotalShares.Amount
-			joinValueWithSlippage, _, _ := pool.CalcJoinValueWithSlippage(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.senderInitBalance[0], initialWeightOut)
+			joinValueWithSlippage, _, _ := pool.CalcJoinValueWithSlippage(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.senderInitBalance[0], initialWeightOut, types.DefaultParams())
 			tvl, _ := pool.TVL(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper)
 			expectedNumShares := totalShares.ToLegacyDec().
 				Mul(joinValueWithSlippage).Quo(tvl).RoundInt()

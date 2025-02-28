@@ -65,6 +65,7 @@ func initializeForUpdateStopLoss(suite *KeeperTestSuite, addresses []sdk.AccAddr
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
+		PoolId:  1,
 	}
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
