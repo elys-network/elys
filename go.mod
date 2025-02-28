@@ -51,7 +51,7 @@ require (
 require (
 	github.com/bufbuild/buf v1.15.1
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0-20240904212233-8cb681e31589
+	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3
 	golang.org/x/tools v0.23.0
@@ -70,6 +70,8 @@ require (
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
 	github.com/99designs/keyring v1.2.2 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
+	github.com/CosmWasm/wasmd v0.51.0 // indirect
+	github.com/CosmWasm/wasmvm/v2 v2.0.0 // indirect
 	github.com/DataDog/datadog-go v3.2.0+incompatible // indirect
 	github.com/DataDog/zstd v1.5.5 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
@@ -145,6 +147,7 @@ require (
 	github.com/google/flatbuffers v2.0.8+incompatible // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/go-containerregistry v0.13.0 // indirect
+	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/orderedcode v0.0.1 // indirect
 	github.com/google/pprof v0.0.0-20230228050547-1710fef4ab10 // indirect
 	github.com/google/s2a-go v0.1.7 // indirect
