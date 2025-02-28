@@ -19,10 +19,11 @@ func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64, baseAsset
 		WeightBreakingFeeMultiplier:      math.LegacyMustNewDecFromStr("0.0005"),
 		WeightBreakingFeePortion:         math.LegacyMustNewDecFromStr("0.5"),
 		WeightRecoveryFeePortion:         math.LegacyMustNewDecFromStr("0.1"),
-		ThresholdWeightDifference:        math.LegacyMustNewDecFromStr("0.3"),
+		ThresholdWeightDifference:        math.LegacyMustNewDecFromStr("0.1"),
 		AllowedPoolCreators:              []string{authtypes.NewModuleAddress(govtypes.ModuleName).String()},
-		ThresholdWeightDifferenceSwapFee: math.LegacyMustNewDecFromStr("1.0"),
+		ThresholdWeightDifferenceSwapFee: math.LegacyMustNewDecFromStr("0.15"),
 		LpLockupDuration:                 3600,
+		MinSlippage:                      math.LegacyMustNewDecFromStr("0.001"),
 	}
 }
 
@@ -84,6 +85,30 @@ func (p Params) Validate() error {
 	if p.ThresholdWeightDifference.IsNegative() {
 		return errors.New("thresholdWeightDifference must be positive")
 	}
+	if p.ThresholdWeightDifference.GT(math.LegacyMustNewDecFromStr("0.1")) {
+		return errors.New("thresholdWeightDifference must be less than 0.1%")
+	}
+
+	if p.MinSlippage.IsNil() {
+		return errors.New("MinSlippage must not be empty")
+	}
+	if p.MinSlippage.IsNegative() {
+		return errors.New("MinSlippage must be positive")
+	}
+	if p.MinSlippage.GT(math.LegacyMustNewDecFromStr("0.01")) {
+		return errors.New("MinSlippage must be less than 1%")
+	}
+
+	if p.ThresholdWeightDifferenceSwapFee.IsNil() {
+		return errors.New("thresholdWeightDifferenceSwapFee must not be empty")
+	}
+	if p.ThresholdWeightDifferenceSwapFee.IsNegative() {
+		return errors.New("thresholdWeightDifferenceSwapFee must be positive")
+	}
+	if p.ThresholdWeightDifferenceSwapFee.GT(math.LegacyMustNewDecFromStr("0.15")) {
+		return errors.New("thresholdWeightDifferenceSwapFee must be less than 0.15%")
+	}
+
 	return nil
 }
 
