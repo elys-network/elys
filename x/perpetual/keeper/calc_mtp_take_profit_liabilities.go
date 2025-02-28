@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -24,6 +25,9 @@ func (k Keeper) CalcMTPTakeProfitLiability(ctx sdk.Context, mtp types.MTP) (math
 	} else {
 		//  takeProfitCustody is in base currency, so convert to liabilities asset which is trading asset
 		// We are not using takeProfitLiabilities anywhere at the moment so weight balance bonus doesn't matter here
+		if tradingAssetPrice.IsZero() {
+			return math.ZeroInt(), errors.New("trading asset price is zero while calculating takeProfitLiabilities")
+		}
 		takeProfitLiabilities = mtp.TakeProfitCustody.ToLegacyDec().Quo(tradingAssetPrice).TruncateInt()
 	}
 

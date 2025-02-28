@@ -5,7 +5,7 @@ import (
 	"errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	keeper "github.com/elys-network/elys/x/tradeshield/keeper"
+	"github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 

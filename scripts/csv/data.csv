@@ -1,9 +1,0 @@
-﻿Non-linear eden allocation
-
-poolId,poolName,multiplier,eden_next_allocation
-0,juno,0.750,
-1,evmos,0.750,
-2,akt,0.750,
-3,major molecule,1.250,
-4,elys,1.250,
-,,,144104

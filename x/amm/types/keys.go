@@ -2,7 +2,7 @@ package types
 
 import (
 	"encoding/binary"
-	fmt "fmt"
+	"fmt"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
