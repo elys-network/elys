@@ -336,13 +336,17 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, height int64) error {
 	}
 	//Migrate AssetInfos
 	for _, assetInfo := range assetInfos {
-		app.OracleKeeper.SetAssetInfo(ctx, ojooracletypes.AssetInfo{
+
+		ojoAsset := ojooracletypes.AssetInfo{
 			Denom:      assetInfo.Denom,
 			Display:    assetInfo.Display,
 			BandTicker: assetInfo.BandTicker,
 			ElysTicker: assetInfo.ElysTicker,
 			Decimal:    assetInfo.Decimal,
-		})
+		}
+
+		app.Logger().Info("SET_ASSET_INFO", ojoAsset)
+		app.OracleKeeper.SetAssetInfo(ctx, ojoAsset)
 		app.LegacyOracleKeepper.RemoveAssetInfo(ctx, assetInfo.Denom)
 	}
 
