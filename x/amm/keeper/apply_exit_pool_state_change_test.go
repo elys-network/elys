@@ -81,7 +81,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 				suite.Require().True(lpTokenBalance.Amount.Equal(sdkmath.ZeroInt()))
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins, false, sdkmath.LegacyZeroDec(), sdkmath.LegacyOneDec())
+				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins, false, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())
 				suite.Require().NoError(err)
 			},
 			func() {},
