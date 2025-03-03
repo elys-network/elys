@@ -88,7 +88,7 @@ func (k Keeper) ApplyExitPoolStateChange(
 
 	// Taker fees
 	takerFeesInCoins := sdk.Coins{}
-	if pool.PoolParams.UseOracle && takerFees.IsPositive() {
+	if takerFees.IsPositive() {
 		takerFeesInCoins = PortionCoins(exitCoins, takerFees)
 	}
 

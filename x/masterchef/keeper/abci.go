@@ -765,6 +765,14 @@ func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
 			if err != nil {
 				ctx.Logger().Error("Failed to burn taker fee", "error", err)
 			}
+
+			// event for burning taker fees
+			ctx.EventManager().EmitEvents(sdk.Events{
+				sdk.NewEvent(
+					types.TypeEvtTakerFeeBurn,
+					sdk.NewAttribute("amount", elysBalance.String()),
+				),
+			})
 		}
 	}
 }
