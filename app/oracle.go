@@ -345,7 +345,13 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, height int64) error {
 			Decimal:    assetInfo.Decimal,
 		}
 
-		app.Logger().Info("SET_ASSET_INFO", ojoAsset)
+		app.Logger().Info("SET_ASSET_INFO",
+			"Denom", ojoAsset.Denom,
+			"Display", ojoAsset.Display,
+			"BandTicker", ojoAsset.BandTicker,
+			"ElysTicker", ojoAsset.ElysTicker,
+			"Decimal", ojoAsset.Decimal,
+		)
 		app.OracleKeeper.SetAssetInfo(ctx, ojoAsset)
 		app.LegacyOracleKeepper.RemoveAssetInfo(ctx, assetInfo.Denom)
 	}
