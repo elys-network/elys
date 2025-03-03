@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"encoding/json"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 	"strings"
 	"time"
+
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 
 	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/telemetry"
