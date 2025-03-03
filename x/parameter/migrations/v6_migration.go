@@ -9,7 +9,7 @@ import (
 func (m Migrator) V6Migration(ctx sdk.Context) error {
 	// reset params
 	params := m.keeper.GetParams(ctx)
-	params.TakerFees = math.LegacyZeroDec()
+	params.TakerFees = math.LegacyMustNewDecFromStr("0.001")
 
 	takerAddr := authtypes.NewModuleAddress("taker_fee_collection")
 	params.TakerFeeCollectionAddress = takerAddr.String()
