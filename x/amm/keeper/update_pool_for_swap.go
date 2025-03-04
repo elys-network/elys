@@ -19,6 +19,7 @@ func (k Keeper) UpdatePoolForSwap(
 	tokenIn sdk.Coin,
 	tokenOut sdk.Coin,
 	swapFee sdkmath.LegacyDec,
+	slippageAmount sdkmath.LegacyDec,
 	oracleInAmount sdkmath.Int,
 	oracleOutAmount sdkmath.Int,
 	weightBalanceBonus sdkmath.LegacyDec,
@@ -159,13 +160,13 @@ func (k Keeper) UpdatePoolForSwap(
 
 	}
 
+	bonusTokenAmount := sdkmath.ZeroInt()
 	// calculate bonus token amount if weightBalanceBonus is positive
 	if pool.PoolParams.UseOracle && weightBalanceBonus.IsPositive() {
 		// get treasury balance
 		rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
 
-		bonusTokenAmount := sdkmath.ZeroInt()
 		// bonus token amount is the tokenOut amount times weightBalanceBonus
 		if givenOut {
 			bonusTokenAmount = tokenOut.Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
@@ -189,6 +190,15 @@ func (k Keeper) UpdatePoolForSwap(
 	}
 
 	k.SetPool(ctx, pool)
+
+	// convert the fees into USD
+	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins).String()
+	slippageAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, sdkmath.Int(slippageAmount)).String()
+	weightRecoveryFeeAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, weightRecoveryFeeAmount).String()
+	bonusTokenAmountInUSD := k.CalculateUSDValue(ctx, tokenOut.Denom, bonusTokenAmount).String()
+
+	// emit swap fees event
+	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUSD, slippageAmountInUSD, weightRecoveryFeeAmountInUSD, bonusTokenAmountInUSD)
 
 	// emit swap event
 	types.EmitSwapEvent(ctx, sender, recipient, pool.GetPoolId(), tokensIn, tokensOut)
