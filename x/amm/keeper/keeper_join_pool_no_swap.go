@@ -94,7 +94,7 @@ func (k Keeper) JoinPoolNoSwap(
 			return nil, sdkmath.Int{}, err
 		}
 
-		return tokensJoined, sharesOut, err
+		return tokensJoined, sharesOut, nil
 	}
 
 	params := k.GetParams(ctx)
@@ -123,5 +123,5 @@ func (k Keeper) JoinPoolNoSwap(
 		return nil, sdkmath.Int{}, err
 	}
 
-	return tokensJoined, sharesOut, err
+	return tokensJoined, sharesOut, nil
 }
