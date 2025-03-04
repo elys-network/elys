@@ -298,6 +298,14 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, height int64) error {
 		}
 	}
 
+	for _, denomElement := range denomList {
+		app.Logger().Info("DENOM_ELEMENT",
+			"BaseDenom", denomElement.BaseDenom,
+			"Exponent", denomElement.Exponent,
+			"SymbolDenom", denomElement.SymbolDenom,
+		)
+	}
+
 	newParams := ojooracletypes.DefaultParams()
 	newParams.LifeTimeInBlocks = 2
 	newParams.PriceExpiryTime = legacyParams.PriceExpiryTime
@@ -306,6 +314,7 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, height int64) error {
 	newParams.CurrencyPairProviders = currencyPairProviders
 	newParams.CurrencyDeviationThresholds = deviationThreshold
 	newParams.RewardBands = rewardBand
+
 	if err = newParams.Validate(); err != nil {
 		return err
 	}
