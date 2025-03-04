@@ -8,9 +8,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen, borrowPool uint64) (*types.Position, error) {
@@ -82,15 +80,6 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	// Determine the maximum leverage available for this pool and compute the effective leverage to be used.
 	leverage := sdkmath.LegacyMinDec(msg.Leverage, pool.LeverageMax)
 
-	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	if !found {
-		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-
-	if msg.CollateralAsset != baseCurrency {
-		return nil, types.ErrOnlyBaseCurrencyAllowed
-	}
-
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
 	leveragedAmount := sdkmath.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
 
@@ -118,6 +107,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 
 	// Update the pool health.
 	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(shares)
+	pool.UpdateAssetLeveragedAmount(ctx, position.Collateral.Denom, shares, true)
 	k.UpdatePoolHealth(ctx, &pool)
 
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Add(shares)
