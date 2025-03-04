@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package elys.clob;
+
+option go_package = "github.com/elys-network/elys/x/clob/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+enum OrderType {
+  ORDER_TYPE_UNSPECIFIED = 0;
+  ORDER_TYPE_LIMIT_BUY = 1;
+  ORDER_TYPE_LIMIT_SELL = 2;
+  ORDER_TYPE_MARKET_BUY = 3;
+  ORDER_TYPE_MARKET_SELL = 4;
+}
+
+// key = market_id + is_long + price + block_height
+message PerpetualOrder {
+  uint64 market_id = 1;
+  OrderType order_type = 2;
+  string price = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 block_height = 4;
+  string owner = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 sub_account_id = 6;
+  // There are two kinds of selling that can happen. 1. I don't own any futures
+  // and I am placing a limit order. This is 0.
+  // 2. I own some future already and I am selling it, in this case this is > 0
+  // Similarly for buy side
+  uint64 perpetual_id = 7;
+  string collateral = 8 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string leverage = 9 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string filled = 10 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}

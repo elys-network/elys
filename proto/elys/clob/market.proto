@@ -1,0 +1,111 @@
+syntax = "proto3";
+package elys.clob;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/elys-network/elys/x/clob/types";
+
+enum PerpetualMarketStatus {
+  MARKET_STATUS_UNSPECIFIED = 0;
+  MARKET_STATUS_ACTIVE = 1;
+  MARKET_STATUS_PAUSED = 2;
+  MARKET_STATUS_DEMOLISHED = 3;
+  MARKET_STATUS_EXPIRED = 4;
+}
+
+message PerpetualMarket {
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 id = 1;
+  string base_denom = 2;
+  string quote_denom = 3;
+  string initial_margin_ratio = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string maintenance_margin_ratio = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // maker_fee_rate defines the maker fee rate of a derivative market
+  string maker_fee_rate = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // taker_fee_rate defines the taker fee rate of a derivative market
+  string taker_fee_rate = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // relayer_fee_share_rate defines the percentage of the transaction fee shared
+  // with the relayer in a derivative market
+  string relayer_fee_share_rate = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // Status of the market
+  PerpetualMarketStatus status = 9;
+  // min_price_tick_size defines the minimum tick size that the price and margin
+  // required for orders in the market
+  string min_price_tick_size = 10 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // min_quantity_tick_size defines the minimum tick size of the quantity
+  // required for orders in the market
+  string min_quantity_tick_size = 11 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  // min_notional defines the minimum notional (in quote asset) required for
+  // orders in the market
+  string min_notional = 17 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  // current market admin
+  string admin = 18;
+
+  repeated string allowed_collateral = 19;
+
+  string total_long = 20 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_short = 21 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  uint64 counter = 22;
+}
+
+message MarketPrice {
+  uint64 market_id = 1;
+  string last_price = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string best_buy_price = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string best_sell_price = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}

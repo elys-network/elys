@@ -1,6 +1,7 @@
 package keepers
 
 import (
+	clobmoduletypes "github.com/elys-network/elys/x/clob/types"
 	"os"
 
 	"cosmossdk.io/log"
@@ -77,6 +78,7 @@ import (
 	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 	burnermodulekeeper "github.com/elys-network/elys/x/burner/keeper"
 	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
+	clobmodulekeeper "github.com/elys-network/elys/x/clob/keeper"
 	commitmentmodulekeeper "github.com/elys-network/elys/x/commitment/keeper"
 	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
 	epochsmodulekeeper "github.com/elys-network/elys/x/epochs/keeper"
@@ -169,6 +171,7 @@ type AppKeepers struct {
 	TierKeeper          *tiermodulekeeper.Keeper
 	TradeshieldKeeper   tradeshieldmodulekeeper.Keeper
 
+	ClobKeeper clobmodulekeeper.Keeper
 	// FIXME: disabled to avoid dependency with wasm
 	// HooksICS4Wrapper ibchooks.ICS4Middleware
 }
@@ -759,6 +762,14 @@ func NewAppKeeper(
 		),
 	)
 
+	app.ClobKeeper = *clobmodulekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[clobmoduletypes.StoreKey]),
+		runtime.NewTransientStoreService(app.tkeys[clobmoduletypes.TStoreKey]),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.BankKeeper,
+		app.OracleKeeper,
+	)
 	return app
 
 }

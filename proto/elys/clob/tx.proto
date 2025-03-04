@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package elys.clob;
+
+option go_package = "github.com/elys-network/elys/x/clob/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "elys/clob/params.proto";
+import "elys/clob/order.proto";
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  rpc Deposit(MsgDeposit) returns (MsgDepositResponse);
+
+  rpc CreatePerpetualMarket(MsgCreatPerpetualMarket)
+      returns (MsgCreatPerpetualMarketResponse);
+
+  rpc CreateLimitOrder(MsgCreateLimitOrder)
+      returns (MsgCreateLimitOrderResponse);
+}
+
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "clob/MsgUpdateParams";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  Params params = 2 [ (gogoproto.nullable) = false ];
+}
+
+message MsgUpdateParamsResponse {}
+
+message MsgDeposit {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "clob/MsgDeposit";
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 sub_account_id = 2;
+  cosmos.base.v1beta1.Coin coin = 3 [ (gogoproto.nullable) = false ];
+}
+
+message MsgDepositResponse {}
+
+message MsgCreatPerpetualMarket {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "clob/MsgCreatPerpetualMarket";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string base_denom = 2;
+  string quote_denom = 3;
+  string initial_margin_ratio = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string maintenance_margin_ratio = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // maker_fee_rate defines the maker fee rate of a derivative market
+  string maker_fee_rate = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // taker_fee_rate defines the taker fee rate of a derivative market
+  string taker_fee_rate = 7 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // relayer_fee_share_rate defines the percentage of the transaction fee shared
+  // with the relayer in a derivative market
+  string relayer_fee_share_rate = 8 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string min_price_tick_size = 9 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  // min_quantity_tick_size defines the minimum tick size of the quantity
+  // required for orders in the market
+  string min_quantity_tick_size = 10 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  // min_notional defines the minimum notional (in quote asset) required for
+  // orders in the market
+  string min_notional = 11 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  repeated string allowed_collateral = 12;
+}
+
+message MsgCreatPerpetualMarketResponse {
+  uint64 id = 1;
+  string creator = 2;
+}
+
+message MsgCreateLimitOrder {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "clob/MsgCreateLimitOrder";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 sub_account_id = 2;
+  uint64 market_id = 3;
+  string collateral = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string leverage = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  OrderType order_type = 6;
+  // Should be 0 if its a market order
+  string price = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 perpetual_id = 8;
+}
+
+message MsgCreateLimitOrderResponse {}

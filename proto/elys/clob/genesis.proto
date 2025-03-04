@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package elys.clob;
+
+import "gogoproto/gogo.proto";
+import "elys/clob/params.proto";
+import "elys/clob/market.proto";
+import "elys/clob/order.proto";
+import "elys/clob/perpetual.proto";
+import "elys/clob/subaccount.proto";
+
+option go_package = "github.com/elys-network/elys/x/clob/types";
+
+// GenesisState defines the clob module's genesis state.
+message GenesisState {
+  Params params = 1 [ (gogoproto.nullable) = false ];
+  repeated SubAccount sub_accounts = 2 [ (gogoproto.nullable) = false ];
+  repeated PerpetualMarket perpetual_markets = 3
+      [ (gogoproto.nullable) = false ];
+  repeated Perpetual perpetuals = 4 [ (gogoproto.nullable) = false ];
+  repeated PerpetualOwner perpetual_owners = 5 [ (gogoproto.nullable) = false ];
+  // Based on market id, it will have order book for all assets
+  repeated PerpetualOrder order_books = 6;
+  repeated MarketPrice market_prices = 7;
+  repeated PerpetualCounter perpetual_counters = 8;
+}

@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package elys.clob;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "elys/clob/params.proto";
+import "elys/clob/market.proto";
+import "elys/clob/subaccount.proto";
+import "elys/clob/order.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/elys-network/elys/x/clob/types";
+
+// Query defines the gRPC querier service.
+service Query {
+
+  rpc Params(ParamsRequest) returns (ParamsResponse) {
+    option (google.api.http).get = "/elys-network/elys/clob/params";
+  }
+
+  rpc AllMarkets(AllMarketsRequest) returns (AllMarketsResponse) {
+    option (google.api.http).get = "/elys-network/elys/clob/all-markets";
+  }
+
+  rpc SubAccounts(SubAccountsRequest) returns (SubAccountsResponse) {
+    option (google.api.http).get = "/elys-network/elys/clob/params";
+  }
+
+  rpc MarketOrders(MarketOrdersRequest) returns (MarketOrdersResponse) {
+    option (google.api.http).get = "/elys-network/elys/clob/all-markets";
+  }
+}
+
+message ParamsRequest {}
+
+message ParamsResponse { Params params = 1 [ (gogoproto.nullable) = false ]; }
+
+message AllMarketsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message AllMarketsResponse {
+  repeated PerpetualMarket perpetual_markets = 1
+      [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message SubAccountsRequest {
+  string address = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message SubAccountsResponse {
+  cosmos.base.query.v1beta1.PageResponse pagination = 1;
+  repeated SubAccount subAccounts = 2 [ (gogoproto.nullable) = false ];
+}
+
+message MarketOrdersRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  uint64 market_id = 2;
+  bool is_buy = 3;
+}
+
+message MarketOrdersResponse {
+  repeated PerpetualOrder orders = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}

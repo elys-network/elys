@@ -61,6 +61,8 @@ import (
 	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 	burnermodule "github.com/elys-network/elys/x/burner"
 	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
+	clobmodule "github.com/elys-network/elys/x/clob"
+	clobmoduletypes "github.com/elys-network/elys/x/clob/types"
 	commitmentmodule "github.com/elys-network/elys/x/commitment"
 	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
 	epochsmodule "github.com/elys-network/elys/x/epochs"
@@ -169,6 +171,8 @@ func appModules(
 		perpetualmodule.NewAppModule(appCodec, app.PerpetualKeeper, app.AccountKeeper, app.BankKeeper),
 		tiermodule.NewAppModule(appCodec, *app.TierKeeper, app.AccountKeeper, app.BankKeeper),
 		tradeshieldmodule.NewAppModule(appCodec, app.TradeshieldKeeper, app.AccountKeeper, app.BankKeeper),
+
+		clobmodule.NewAppModule(appCodec, app.ClobKeeper),
 	}
 }
 
@@ -283,6 +287,8 @@ func orderBeginBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+
+		clobmoduletypes.ModuleName,
 	}
 }
 
@@ -338,6 +344,8 @@ func orderEndBlockers() []string {
 
 		// Must be called after estaking and masterchef
 		ccvconsumertypes.ModuleName,
+
+		clobmoduletypes.ModuleName,
 	}
 }
 
@@ -389,6 +397,8 @@ func orderInitBlockers() []string {
 		estakingmoduletypes.ModuleName,
 		tiermoduletypes.ModuleName,
 		tradeshieldmoduletypes.ModuleName,
+
+		clobmoduletypes.ModuleName,
 		// crisis needs to be last so that the genesis state is consistent
 		// when it checks invariants
 		crisistypes.ModuleName,

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package elys.clob;
+
+option go_package = "github.com/elys-network/elys/x/clob/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+message SubAccount {
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 id = 2;
+  repeated cosmos.base.v1beta1.Coin available_balance = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin total_balance = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  uint64 trade_nounce = 5;
+  repeated uint64 perpetual_id = 6;
+}

@@ -28,6 +28,7 @@ import (
 	ammmoduletypes "github.com/elys-network/elys/x/amm/types"
 	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
 	burnermoduletypes "github.com/elys-network/elys/x/burner/types"
+	clobmoduletypes "github.com/elys-network/elys/x/clob/types"
 	commitmentmoduletypes "github.com/elys-network/elys/x/commitment/types"
 	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
 	estakingmoduletypes "github.com/elys-network/elys/x/estaking/types"
@@ -86,10 +87,15 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		estakingmoduletypes.StoreKey,
 		tiermoduletypes.StoreKey,
 		tradeshieldmoduletypes.StoreKey,
+		clobmoduletypes.StoreKey,
 	)
 
 	// Define transient store keys
-	appKeepers.tkeys = storetypes.NewTransientStoreKeys(paramstypes.TStoreKey, ammmoduletypes.TStoreKey)
+	appKeepers.tkeys = storetypes.NewTransientStoreKeys(
+		paramstypes.TStoreKey,
+		ammmoduletypes.TStoreKey,
+		clobmoduletypes.TStoreKey,
+	)
 
 	// MemKeys are for information that is stored only in RAM.
 	appKeepers.memKeys = storetypes.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
