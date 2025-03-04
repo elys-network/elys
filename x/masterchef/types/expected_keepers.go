@@ -127,6 +127,7 @@ type StableStakeKeeper interface {
 	AllTVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper) math.LegacyDec
 	IterateLiquidityPools(sdk.Context, func(stabletypes.Pool) bool)
 	GetPoolByDenom(ctx sdk.Context, denom string) (stabletypes.Pool, bool)
+	GetPool(ctx sdk.Context, poolId uint64) (pool stabletypes.Pool, found bool)
 }
 
 // TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)
