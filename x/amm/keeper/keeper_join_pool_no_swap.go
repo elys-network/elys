@@ -66,8 +66,9 @@ func (k Keeper) JoinPoolNoSwap(
 			tokensIn = neededLpLiquidity
 		}
 		params := k.GetParams(ctx)
+		takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-		tokensJoined, sharesOut, _, weightBalanceBonus, swapFee, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params)
+		tokensJoined, sharesOut, _, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params, takerFees)
 		if err != nil {
 			return nil, sdkmath.ZeroInt(), err
 		}
@@ -79,7 +80,8 @@ func (k Keeper) JoinPoolNoSwap(
 		}
 		// slippage will be 0 as tokensIn.Len() != 1
 		slippageCoins := sdk.Coins{}
-		err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus, swapFee, slippageCoins)
+
+		err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus, takerFeesFinal, swapFee, slippageCoins)
 		if err != nil {
 			return nil, sdkmath.Int{}, err
 		}
@@ -93,9 +95,10 @@ func (k Keeper) JoinPoolNoSwap(
 	}
 
 	params := k.GetParams(ctx)
+	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params)
+	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
 	if err != nil {
 		return nil, sdkmath.ZeroInt(), err
 	}
@@ -115,7 +118,7 @@ func (k Keeper) JoinPoolNoSwap(
 			shareOutAmount, sharesOut))
 	}
 
-	err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus, swapFee, slippageCoins)
+	err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus, takerFeesFinal, swapFee, slippageCoins)
 	if err != nil {
 		return nil, sdkmath.Int{}, err
 	}

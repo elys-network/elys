@@ -14,6 +14,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	numShares math.Int,
 	joinCoins sdk.Coins,
 	weightBalanceBonus math.LegacyDec,
+	takerFees math.LegacyDec,
 	swapFee sdkmath.LegacyDec,
 	slippageCoins sdk.Coins,
 ) error {
@@ -106,6 +107,29 @@ func (k Keeper) ApplyJoinPoolStateChange(
 			if err := k.bankKeeper.SendCoins(ctx, rebalanceTreasuryAddr, joiner, weightBalanceBonusCoins); err != nil {
 				return err
 			}
+		}
+	}
+
+	// Taker fees
+	takerFeesInCoins := sdk.Coins{}
+	if takerFees.IsPositive() {
+		takerFeesInCoins = PortionCoins(joinCoins, takerFees)
+	}
+
+	// send taker fee to protocol treasury
+	if takerFeesInCoins.IsAllPositive() {
+		protocolAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress)
+		if err != nil {
+			return err
+		}
+		err = k.bankKeeper.SendCoins(ctx, poolAddr, protocolAddress, takerFeesInCoins)
+		if err != nil {
+			return err
+		}
+
+		err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), takerFeesInCoins)
+		if err != nil {
+			return err
 		}
 	}
 

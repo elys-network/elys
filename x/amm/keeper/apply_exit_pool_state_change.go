@@ -6,7 +6,13 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exiter sdk.AccAddress, numShares sdkmath.Int, exitCoins sdk.Coins, isLiquidation bool, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, slippageCoins sdk.Coins) error {
+func (k Keeper) ApplyExitPoolStateChange(
+	ctx sdk.Context, pool types.Pool,
+	exiter sdk.AccAddress, numShares sdkmath.Int,
+	exitCoins sdk.Coins, isLiquidation bool,
+	weightBalanceBonus sdkmath.LegacyDec, takerFees sdkmath.LegacyDec,
+	swapFee sdkmath.LegacyDec, slippageCoins sdk.Coins,
+) error {
 	// Withdraw exit amount of token from commitment module to exiter's wallet.
 	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
 
@@ -108,6 +114,29 @@ func (k Keeper) ApplyExitPoolStateChange(ctx sdk.Context, pool types.Pool, exite
 			if err := k.bankKeeper.SendCoins(ctx, rebalanceTreasuryAddr, exiter, weightBalanceBonusCoins); err != nil {
 				return err
 			}
+		}
+	}
+
+	// Taker fees
+	takerFeesInCoins := sdk.Coins{}
+	if takerFees.IsPositive() {
+		takerFeesInCoins = PortionCoins(exitCoins, takerFees)
+	}
+
+	// send taker fee to protocol treasury
+	if takerFeesInCoins.IsAllPositive() {
+		protocolAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress)
+		if err != nil {
+			return err
+		}
+		err = k.bankKeeper.SendCoins(ctx, poolAddr, protocolAddress, takerFeesInCoins)
+		if err != nil {
+			return err
+		}
+
+		err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), takerFeesInCoins)
+		if err != nil {
+			return err
 		}
 	}
 

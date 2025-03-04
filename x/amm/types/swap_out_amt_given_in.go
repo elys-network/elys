@@ -181,6 +181,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 	accPoolKeeper AccountedPoolKeeper,
 	weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
 	params Params,
+	takerFees sdkmath.LegacyDec,
 ) (tokenOut sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, oracleOutAmount sdkmath.LegacyDec, swapFeeFinal sdkmath.LegacyDec, err error) {
 
 	// Fixed gas consumption per swap to prevent spam
@@ -312,10 +313,9 @@ func (p *Pool) SwapOutAmtGivenIn(
 	if swapFee.GTE(sdkmath.LegacyOneDec()) {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrTooMuchSwapFee
 	}
-
 	tokenAmountOutInt := outAmountAfterSlippage.
 		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
-		Mul(sdkmath.LegacyOneDec().Sub(swapFee)).TruncateInt() // We ignore the decimal component, as we round down the token amount out.
+		Mul(sdkmath.LegacyOneDec().Sub(swapFee.Add(takerFees))).TruncateInt() // We ignore the decimal component, as we round down the token amount out.
 	oracleOutCoin := sdk.NewCoin(tokenOutDenom, tokenAmountOutInt)
 	return oracleOutCoin, slippage, slippageAmount, weightBalanceBonus, oracleOutAmount, swapFee, nil
 }
