@@ -10,6 +10,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
@@ -84,6 +85,7 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
+			Added: []string{wasmTypes.StoreKey},
 			//Added:   []string{},
 			//Renamed: []storetypes.StoreRename{},
 			//Deleted: []string{},
