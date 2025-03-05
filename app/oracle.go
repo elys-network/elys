@@ -80,6 +80,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"binance",
 			"mexc",
 			"gate",
+			"crypto",
 		},
 		BaseProxyDenom:          "TIA",
 		QuoteProxyDenom:         "USDC",
@@ -92,6 +93,15 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"coinbase",
 		},
+	},
+	{
+		BaseDenom:  "AXL",
+		QuoteDenom: "USDT",
+		Providers: []string{
+			"binance",
+		},
+		BaseProxyDenom:  "AXL",
+		QuoteProxyDenom: "USDC",
 	},
 	{
 		BaseDenom:  "KAVA",
@@ -112,6 +122,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"binance",
 			"mexc",
 			"bitget",
+			"gate",
 		},
 		BaseProxyDenom:          "SAGA",
 		QuoteProxyDenom:         "USDC",
@@ -168,6 +179,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"mexc",
 			"binance",
 			"bitget",
+			"gate",
 		},
 		BaseProxyDenom:          "NTRN",
 		QuoteProxyDenom:         "USDC",
@@ -296,14 +308,6 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, height int64) error {
 				}
 			}
 		}
-	}
-
-	for _, denomElement := range denomList {
-		app.Logger().Info("DENOM_ELEMENT",
-			"BaseDenom", denomElement.BaseDenom,
-			"Exponent", denomElement.Exponent,
-			"SymbolDenom", denomElement.SymbolDenom,
-		)
 	}
 
 	newParams := ojooracletypes.DefaultParams()
