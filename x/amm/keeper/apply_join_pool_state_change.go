@@ -138,9 +138,10 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	slippageAmountInUSD := k.CalculateCoinsUSDValue(ctx, slippageCoins).String()
 	weightRecoveryFeeAmountInUSD := k.CalculateCoinsUSDValue(ctx, weightRecoveryFeeCoins).String()
 	bonusTokenAmountInUSD := k.CalculateCoinsUSDValue(ctx, weightBalanceBonusCoins).String()
+	takerFeesAmountInUSD := k.CalculateCoinsUSDValue(ctx, takerFeesInCoins).String()
 
 	// emit swap fees event
-	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUSD, slippageAmountInUSD, weightRecoveryFeeAmountInUSD, bonusTokenAmountInUSD)
+	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUSD, slippageAmountInUSD, weightRecoveryFeeAmountInUSD, bonusTokenAmountInUSD, takerFeesAmountInUSD)
 
 	types.EmitAddLiquidityEvent(ctx, joiner, pool.GetPoolId(), joinCoins)
 	if k.hooks != nil {

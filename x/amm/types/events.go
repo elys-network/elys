@@ -23,6 +23,7 @@ const (
 	AttributeKeySlippage          = "slippage"
 	AttributeKeyWeightRecoveryFee = "weight_recovery_fee"
 	AttributeKeyProvidedBonusFee  = "provided_bonus_fee"
+	AttributeTakerFees            = "taker_fees"
 )
 
 func EmitSwapEvent(ctx sdk.Context, sender, recipient sdk.AccAddress, poolId uint64, input sdk.Coins, output sdk.Coins) {
@@ -31,9 +32,9 @@ func EmitSwapEvent(ctx sdk.Context, sender, recipient sdk.AccAddress, poolId uin
 	})
 }
 
-func EmitSwapFeesCollectedEvent(ctx sdk.Context, swapFee string, slippage string, weightRecoveryFee string, providedBonusFee string) {
+func EmitSwapFeesCollectedEvent(ctx sdk.Context, swapFee string, slippage string, weightRecoveryFee string, providedBonusFee string, takerFees string) {
 	ctx.EventManager().EmitEvents(sdk.Events{
-		NewSwapFeeEvent(swapFee, slippage, weightRecoveryFee, providedBonusFee),
+		NewSwapFeeEvent(swapFee, slippage, weightRecoveryFee, providedBonusFee, takerFees),
 	})
 }
 
@@ -61,7 +62,7 @@ func NewSwapEvent(sender, recipient sdk.AccAddress, poolId uint64, input sdk.Coi
 	)
 }
 
-func NewSwapFeeEvent(swapFee string, slippage string, weightRecoveryFee string, providedBonusFee string) sdk.Event {
+func NewSwapFeeEvent(swapFee string, slippage string, weightRecoveryFee string, providedBonusFee string, takerFees string) sdk.Event {
 	return sdk.NewEvent(
 		TypeEvtTokenSwappedFee,
 		sdk.NewAttribute("denom", "USD"),
@@ -69,6 +70,7 @@ func NewSwapFeeEvent(swapFee string, slippage string, weightRecoveryFee string, 
 		sdk.NewAttribute(AttributeKeySlippage, slippage),
 		sdk.NewAttribute(AttributeKeyWeightRecoveryFee, weightRecoveryFee),
 		sdk.NewAttribute(AttributeKeyProvidedBonusFee, providedBonusFee),
+		sdk.NewAttribute(AttributeTakerFees, takerFees),
 	)
 }
 
