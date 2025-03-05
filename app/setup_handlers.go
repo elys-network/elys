@@ -46,7 +46,7 @@ func generateUpgradeVersion() string {
 	//	return fmt.Sprintf("v%s-%s", majorVersion, rcVersion)
 	//}
 	//return fmt.Sprintf("v%s", majorVersion)
-	return "v2.1.0"
+	return "v2.2.0"
 }
 
 func (app *ElysApp) setUpgradeHandler() {
