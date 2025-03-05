@@ -33,6 +33,20 @@ func (k Keeper) ExitPool(
 	if err != nil {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
+	// Check treasury and update weightBalance
+	if weightBalanceBonus.IsPositive() && exitCoins.Len() == 1 {
+		// get treasury balance
+		rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, exitCoins[0].Denom).Amount
+
+		bonusTokenAmount := exitCoins[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+
+		// if treasury balance is less than bonusTokenAmount, set bonusTokenAmount to treasury balance
+		if treasuryTokenAmount.LT(bonusTokenAmount) {
+			weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(exitCoins[0].Amount.ToLegacyDec())
+		}
+	}
+
 	if !tokenOutMins.DenomsSubsetOf(exitCoins) || tokenOutMins.IsAnyGT(exitCoins) {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrLimitMinAmount,
 			"Exit pool returned %s , minimum tokens out specified as %s",

@@ -67,9 +67,23 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		// Estimate swap
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		cacheCtx, _ := ctx.CacheContext()
-		tokenOut, swapSlippage, _, weightBalanceBonus, _, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, sdkmath.LegacyOneDec())
+		tokenOut, swapSlippage, _, weightBalanceBonus, oracleOutAmount, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, sdkmath.LegacyOneDec())
 		if err != nil {
 			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		}
+
+		// Check treasury and update weightBalance
+		if weightBalanceBonus.IsPositive() {
+			// get treasury balance
+			rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+			treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
+
+			bonusTokenAmount := oracleOutAmount.Mul(weightBalanceBonus).TruncateInt()
+
+			// if treasury balance is less than bonusTokenAmount, set bonusTokenAmount to treasury balance
+			if treasuryTokenAmount.LT(bonusTokenAmount) {
+				weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(oracleOutAmount)
+			}
 		}
 
 		// Calculate the total discounted swap fee
