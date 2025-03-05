@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keeper "github.com/elys-network/elys/x/tradeshield/keeper"
+	"github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
 	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
