@@ -76,13 +76,11 @@ func (k Keeper) JoinPoolEst(
 
 	// Check treasury and update weightBalance
 	if weightBalanceBonus.IsPositive() && tokensJoined.Len() == 1 {
-		// get treasury balance
 		rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokensJoined[0].Denom).Amount
 
 		bonusTokenAmount := tokensJoined[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
 
-		// if treasury balance is less than bonusTokenAmount, set bonusTokenAmount to treasury balance
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
 			weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(tokensJoined[0].Amount.ToLegacyDec())
 		}

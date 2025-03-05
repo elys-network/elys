@@ -81,7 +81,6 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 
 			bonusTokenAmount := oracleOutAmount.Mul(weightBalanceBonus).TruncateInt()
 
-			// if treasury balance is less than bonusTokenAmount, set bonusTokenAmount to treasury balance
 			if treasuryTokenAmount.LT(bonusTokenAmount) {
 				weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(oracleOutAmount)
 			}
