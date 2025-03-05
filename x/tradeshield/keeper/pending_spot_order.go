@@ -275,11 +275,17 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
-	tolerance := res.SwapFee.Add(res.Slippage)
-	if res.WeightBonus.IsNegative() {
-		tolerance = tolerance.Add(res.WeightBonus.Abs())
+
+	params := k.GetParams(ctx)
+	expectedAmount := marketPrice.Mul(order.OrderAmount.Amount.ToLegacyDec())
+	gotAmount := res.Amount.Amount.ToLegacyDec()
+	tolerance := sdkmath.LegacyZeroDec()
+
+	if gotAmount.LT(expectedAmount) {
+		tolerance = (expectedAmount.Sub(gotAmount)).Quo(expectedAmount)
 	}
-	if tolerance.GT(sdkmath.LegacyMustNewDecFromStr("5")) {
+
+	if tolerance.GT(params.Tolerance) {
 		return res, errorsmod.Wrapf(types.ErrHighTolerance, "tolerance: %s", tolerance)
 	}
 	if err != nil {
@@ -327,11 +333,17 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
-	tolerance := res.SwapFee.Add(res.Slippage)
-	if res.WeightBonus.IsNegative() {
-		tolerance = tolerance.Add(res.WeightBonus.Abs())
+
+	params := k.GetParams(ctx)
+	expectedAmount := marketPrice.Mul(order.OrderAmount.Amount.ToLegacyDec())
+	gotAmount := res.Amount.Amount.ToLegacyDec()
+	tolerance := sdkmath.LegacyZeroDec()
+
+	if gotAmount.LT(expectedAmount) {
+		tolerance = (expectedAmount.Sub(gotAmount)).Quo(expectedAmount)
 	}
-	if tolerance.GT(sdkmath.LegacyMustNewDecFromStr("5")) {
+
+	if tolerance.GT(params.Tolerance) {
 		return res, errorsmod.Wrapf(types.ErrHighTolerance, "tolerance: %s", tolerance)
 	}
 	if err != nil {
