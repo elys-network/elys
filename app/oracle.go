@@ -95,15 +95,6 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		},
 	},
 	{
-		BaseDenom:  "AXL",
-		QuoteDenom: "USDT",
-		Providers: []string{
-			"binance",
-		},
-		BaseProxyDenom:  "AXL",
-		QuoteProxyDenom: "USDC",
-	},
-	{
 		BaseDenom:  "KAVA",
 		QuoteDenom: "USDT",
 		Providers: []string{
