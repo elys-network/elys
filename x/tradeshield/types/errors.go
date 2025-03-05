@@ -13,4 +13,5 @@ var (
 	ErrSizeZero               = errors.Register(ModuleName, 1104, "zero order ids ")
 	ErrInvalidStatus          = errors.Register(ModuleName, 1105, "invalid status")
 	ErrZeroMarketPrice        = errors.Register(ModuleName, 1106, "market price is zero")
+	ErrHighTolerance          = errors.Register(ModuleName, 1107, "high tolerance")
 )

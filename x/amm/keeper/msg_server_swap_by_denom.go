@@ -30,7 +30,7 @@ func (k Keeper) SwapByDenom(ctx sdk.Context, msg *types.MsgSwapByDenom) (*types.
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	inRoute, outRoute, _, spotPrice, _, _, _, _, _, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Sender, sdkmath.LegacyZeroDec(), 0)
+	inRoute, outRoute, _, spotPrice, _, _, _, slippage, weightBonus, _, err := k.CalcSwapEstimationByDenom(ctx, msg.Amount, msg.DenomIn, msg.DenomOut, baseCurrency, msg.Sender, sdkmath.LegacyZeroDec(), 0)
 	if err != nil {
 		return nil, err
 	}
@@ -63,13 +63,15 @@ func (k Keeper) SwapByDenom(ctx sdk.Context, msg *types.MsgSwapByDenom) (*types.
 		}
 
 		return &types.MsgSwapByDenomResponse{
-			Amount:    sdk.NewCoin(msg.DenomOut, res.TokenOutAmount),
-			InRoute:   inRoute,
-			OutRoute:  nil,
-			SpotPrice: spotPrice,
-			SwapFee:   res.SwapFee,
-			Discount:  res.Discount,
-			Recipient: res.Recipient,
+			Amount:      sdk.NewCoin(msg.DenomOut, res.TokenOutAmount),
+			InRoute:     inRoute,
+			OutRoute:    nil,
+			SpotPrice:   spotPrice,
+			SwapFee:     res.SwapFee,
+			Discount:    res.Discount,
+			Recipient:   res.Recipient,
+			Slippage:    slippage,
+			WeightBonus: weightBonus,
 		}, nil
 	}
 
