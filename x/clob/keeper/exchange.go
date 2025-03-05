@@ -6,19 +6,35 @@ import (
 )
 
 func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
-	buyerPerpetual := types.Perpetual{}
+	var buyerPerpetual types.Perpetual
 	var err error
-	if trade.BuyerPerpetualId != 0 {
-		buyerPerpetual, err = k.GetPerpetual(ctx, trade.BuyerPerpetualId)
+	buyerPerpetualOwner, buyerAlreadyOwn := k.GetPerpetualOwner(ctx, trade.BuyerSubAccount.Id, trade.BuyerSubAccount.GetOwnerAccAddress(), trade.MarketId)
+	if buyerAlreadyOwn {
+		deleteBuyerPerpetual := false
+		buyerPerpetual, err = k.GetPerpetual(ctx, trade.MarketId, buyerPerpetualOwner.PerpetualId)
 		if err != nil {
 			return err
 		}
-		buyerPerpetual.EntryPrice = buyerPerpetual.EntryPrice.Mul(buyerPerpetual.Quantity).Add(trade.Quantity.Mul(trade.Price)).Quo(buyerPerpetual.Quantity.Add(trade.Quantity))
-		buyerPerpetual.Quantity = buyerPerpetual.Quantity.Add(trade.Quantity)
+		if buyerPerpetual.IsLong {
+			buyerPerpetual.EntryPrice = buyerPerpetual.EntryPrice.Mul(buyerPerpetual.Quantity).Add(trade.Quantity.Mul(trade.Price)).Quo(buyerPerpetual.Quantity.Add(trade.Quantity))
+			buyerPerpetual.Quantity = buyerPerpetual.Quantity.Add(trade.Quantity)
+		} else {
+			buyerPerpetual.Quantity = buyerPerpetual.Quantity.Sub(trade.Quantity)
+			deleteBuyerPerpetual = buyerPerpetual.Quantity.IsZero()
+			if buyerPerpetual.Quantity.IsNegative() {
+				buyerPerpetual.Quantity = buyerPerpetual.Quantity.Abs()
+				buyerPerpetual.IsLong = true
+			}
+		}
+		if deleteBuyerPerpetual {
+			k.DeletePerpetual(ctx, buyerPerpetual)
+		} else {
+			k.SetPerpetual(ctx, buyerPerpetual)
+		}
 	} else {
-		buyerId := k.GetAndUpdatePerpetualCounter(ctx, trade.MarketId)
+		id := k.GetAndUpdatePerpetualCounter(ctx, trade.MarketId)
 		buyerPerpetual = types.Perpetual{
-			Id:           buyerId,
+			Id:           id,
 			MarketId:     trade.MarketId,
 			IsLong:       true,
 			EntryPrice:   trade.Price,
@@ -27,29 +43,61 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 			Quantity:     trade.Quantity,
 			Collateral:   trade.BuyerCollateral,
 		}
+		buyerPerpetualOwner = types.PerpetualOwner{
+			Owner:        buyerPerpetual.Owner,
+			SubAccountId: trade.BuyerSubAccount.Id,
+			MarketId:     trade.MarketId,
+			PerpetualId:  buyerPerpetual.Id,
+		}
+		k.SetPerpetual(ctx, buyerPerpetual)
+		k.SetPerpetualOwner(ctx, buyerPerpetualOwner)
 	}
-	sellerPerpetual := types.Perpetual{}
-	if trade.SellerPerpetualId != 0 {
-		sellerPerpetual, err = k.GetPerpetual(ctx, trade.SellerPerpetualId)
+
+	var sellerPerpetual types.Perpetual
+
+	sellerPerpetualOwner, sellerAlreadyOwn := k.GetPerpetualOwner(ctx, trade.SellerSubAccount.Id, trade.SellerSubAccount.GetOwnerAccAddress(), trade.MarketId)
+	if sellerAlreadyOwn {
+		deleteSellerPerpetual := false
+		sellerPerpetual, err = k.GetPerpetual(ctx, trade.MarketId, sellerPerpetualOwner.PerpetualId)
 		if err != nil {
 			return err
 		}
-		sellerPerpetual.EntryPrice = sellerPerpetual.EntryPrice.Mul(sellerPerpetual.Quantity).Add(trade.Quantity.Mul(trade.Price)).Quo(sellerPerpetual.Quantity.Add(trade.Quantity))
-		sellerPerpetual.Quantity = sellerPerpetual.Quantity.Add(trade.Quantity)
+		if sellerPerpetual.IsLong {
+			sellerPerpetual.EntryPrice = sellerPerpetual.EntryPrice.Mul(sellerPerpetual.Quantity).Add(trade.Quantity.Mul(trade.Price)).Quo(sellerPerpetual.Quantity.Add(trade.Quantity))
+			sellerPerpetual.Quantity = sellerPerpetual.Quantity.Add(trade.Quantity)
+		} else {
+			sellerPerpetual.Quantity = sellerPerpetual.Quantity.Sub(trade.Quantity)
+			deleteSellerPerpetual = sellerPerpetual.Quantity.IsZero()
+			if sellerPerpetual.Quantity.IsNegative() {
+				sellerPerpetual.Quantity = sellerPerpetual.Quantity.Abs()
+				sellerPerpetual.IsLong = true
+			}
+		}
+		if deleteSellerPerpetual {
+			k.DeletePerpetual(ctx, sellerPerpetual)
+		} else {
+			k.SetPerpetual(ctx, sellerPerpetual)
+		}
 	} else {
-		sellerId := k.GetAndUpdatePerpetualCounter(ctx, trade.MarketId)
+		id := k.GetAndUpdatePerpetualCounter(ctx, trade.MarketId)
 		sellerPerpetual = types.Perpetual{
-			Id:           sellerId,
+			Id:           id,
 			MarketId:     trade.MarketId,
-			IsLong:       false,
+			IsLong:       true,
 			EntryPrice:   trade.Price,
 			Owner:        trade.SellerSubAccount.Owner,
 			SubAccountId: trade.SellerSubAccount.Id,
 			Quantity:     trade.Quantity,
 			Collateral:   trade.SellerCollateral,
 		}
+		sellerPerpetualOwner = types.PerpetualOwner{
+			Owner:        sellerPerpetual.Owner,
+			SubAccountId: trade.SellerSubAccount.Id,
+			MarketId:     trade.MarketId,
+			PerpetualId:  sellerPerpetual.Id,
+		}
+		k.SetPerpetual(ctx, sellerPerpetual)
+		k.SetPerpetualOwner(ctx, sellerPerpetualOwner)
 	}
-	k.SetPerpetual(ctx, buyerPerpetual)
-	k.SetPerpetual(ctx, sellerPerpetual)
 	return nil
 }

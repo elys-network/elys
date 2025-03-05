@@ -8,18 +8,18 @@ import (
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-func (k Keeper) GetPerpetualOwner(ctx sdk.Context, subAccountId uint64, owner sdk.AccAddress, marketId uint64) (types.PerpetualOwner, error) {
+func (k Keeper) GetPerpetualOwner(ctx sdk.Context, subAccountId uint64, owner sdk.AccAddress, marketId uint64) (types.PerpetualOwner, bool) {
 	key := types.GetPerpetualOwnerKey(subAccountId, owner, marketId)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
 	if b == nil {
-		return types.PerpetualOwner{}, types.ErrPerpetualOwnerNotFound
+		return types.PerpetualOwner{}, false
 	}
 
 	var v types.PerpetualOwner
 	k.cdc.MustUnmarshal(b, &v)
-	return v, nil
+	return v, true
 }
 
 func (k Keeper) GetAllSubAccountPerpetuals(ctx sdk.Context) []types.PerpetualOwner {
@@ -46,8 +46,8 @@ func (k Keeper) SetPerpetualOwner(ctx sdk.Context, v types.PerpetualOwner) {
 	store.Set(key, b)
 }
 
-func (k Keeper) GetPerpetual(ctx sdk.Context, id uint64) (types.Perpetual, error) {
-	key := types.GetPerpetualKey(id)
+func (k Keeper) GetPerpetual(ctx sdk.Context, marketId, id uint64) (types.Perpetual, error) {
+	key := types.GetPerpetualKey(marketId, id)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
@@ -79,24 +79,30 @@ func (k Keeper) GetAllPerpetuals(ctx sdk.Context) []types.Perpetual {
 
 func (k Keeper) SetPerpetual(ctx sdk.Context, p types.Perpetual) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualKey(p.Id)
+	key := types.GetPerpetualKey(p.MarketId, p.Id)
 	b := k.cdc.MustMarshal(&p)
 	store.Set(key, b)
 }
 
-func (k Keeper) GetAndUpdatePerpetualCounter(ctx sdk.Context, id uint64) uint64 {
-	key := types.GetPerpetualCounterKey(id)
+func (k Keeper) DeletePerpetual(ctx sdk.Context, p types.Perpetual) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetPerpetualKey(p.MarketId, p.Id)
+	store.Delete(key)
+}
+
+func (k Keeper) GetAndUpdatePerpetualCounter(ctx sdk.Context, marketId uint64) uint64 {
+	key := types.GetPerpetualCounterKey(marketId)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
 	if b == nil {
 		v := types.PerpetualCounter{
-			MarketId: id,
-			Counter:  1,
+			MarketId: marketId,
+			Counter:  2,
 		}
 		b = k.cdc.MustMarshal(&v)
 		store.Set(key, b)
-		return 0
+		return 1
 	}
 
 	var v types.PerpetualCounter

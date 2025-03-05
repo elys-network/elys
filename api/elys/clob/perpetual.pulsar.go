@@ -14,52 +14,6 @@ import (
 	sync "sync"
 )
 
-var _ protoreflect.List = (*_PerpetualOwner_4_list)(nil)
-
-type _PerpetualOwner_4_list struct {
-	list *[]uint64
-}
-
-func (x *_PerpetualOwner_4_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_PerpetualOwner_4_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfUint64((*x.list)[i])
-}
-
-func (x *_PerpetualOwner_4_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Uint()
-	concreteValue := valueUnwrapped
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_PerpetualOwner_4_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Uint()
-	concreteValue := valueUnwrapped
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_PerpetualOwner_4_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message PerpetualOwner at list field PerpetualId as it is not of Message kind"))
-}
-
-func (x *_PerpetualOwner_4_list) Truncate(n int) {
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_PerpetualOwner_4_list) NewElement() protoreflect.Value {
-	v := uint64(0)
-	return protoreflect.ValueOfUint64(v)
-}
-
-func (x *_PerpetualOwner_4_list) IsValid() bool {
-	return x.list != nil
-}
-
 var (
 	md_PerpetualOwner                protoreflect.MessageDescriptor
 	fd_PerpetualOwner_owner          protoreflect.FieldDescriptor
@@ -160,8 +114,8 @@ func (x *fastReflection_PerpetualOwner) Range(f func(protoreflect.FieldDescripto
 			return
 		}
 	}
-	if len(x.PerpetualId) != 0 {
-		value := protoreflect.ValueOfList(&_PerpetualOwner_4_list{list: &x.PerpetualId})
+	if x.PerpetualId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PerpetualId)
 		if !f(fd_PerpetualOwner_perpetual_id, value) {
 			return
 		}
@@ -188,7 +142,7 @@ func (x *fastReflection_PerpetualOwner) Has(fd protoreflect.FieldDescriptor) boo
 	case "elys.clob.PerpetualOwner.market_id":
 		return x.MarketId != uint64(0)
 	case "elys.clob.PerpetualOwner.perpetual_id":
-		return len(x.PerpetualId) != 0
+		return x.PerpetualId != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualOwner"))
@@ -212,7 +166,7 @@ func (x *fastReflection_PerpetualOwner) Clear(fd protoreflect.FieldDescriptor) {
 	case "elys.clob.PerpetualOwner.market_id":
 		x.MarketId = uint64(0)
 	case "elys.clob.PerpetualOwner.perpetual_id":
-		x.PerpetualId = nil
+		x.PerpetualId = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualOwner"))
@@ -239,11 +193,8 @@ func (x *fastReflection_PerpetualOwner) Get(descriptor protoreflect.FieldDescrip
 		value := x.MarketId
 		return protoreflect.ValueOfUint64(value)
 	case "elys.clob.PerpetualOwner.perpetual_id":
-		if len(x.PerpetualId) == 0 {
-			return protoreflect.ValueOfList(&_PerpetualOwner_4_list{})
-		}
-		listValue := &_PerpetualOwner_4_list{list: &x.PerpetualId}
-		return protoreflect.ValueOfList(listValue)
+		value := x.PerpetualId
+		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualOwner"))
@@ -271,9 +222,7 @@ func (x *fastReflection_PerpetualOwner) Set(fd protoreflect.FieldDescriptor, val
 	case "elys.clob.PerpetualOwner.market_id":
 		x.MarketId = value.Uint()
 	case "elys.clob.PerpetualOwner.perpetual_id":
-		lv := value.List()
-		clv := lv.(*_PerpetualOwner_4_list)
-		x.PerpetualId = *clv.list
+		x.PerpetualId = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualOwner"))
@@ -294,18 +243,14 @@ func (x *fastReflection_PerpetualOwner) Set(fd protoreflect.FieldDescriptor, val
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_PerpetualOwner) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "elys.clob.PerpetualOwner.perpetual_id":
-		if x.PerpetualId == nil {
-			x.PerpetualId = []uint64{}
-		}
-		value := &_PerpetualOwner_4_list{list: &x.PerpetualId}
-		return protoreflect.ValueOfList(value)
 	case "elys.clob.PerpetualOwner.owner":
 		panic(fmt.Errorf("field owner of message elys.clob.PerpetualOwner is not mutable"))
 	case "elys.clob.PerpetualOwner.sub_account_id":
 		panic(fmt.Errorf("field sub_account_id of message elys.clob.PerpetualOwner is not mutable"))
 	case "elys.clob.PerpetualOwner.market_id":
 		panic(fmt.Errorf("field market_id of message elys.clob.PerpetualOwner is not mutable"))
+	case "elys.clob.PerpetualOwner.perpetual_id":
+		panic(fmt.Errorf("field perpetual_id of message elys.clob.PerpetualOwner is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualOwner"))
@@ -326,8 +271,7 @@ func (x *fastReflection_PerpetualOwner) NewField(fd protoreflect.FieldDescriptor
 	case "elys.clob.PerpetualOwner.market_id":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.clob.PerpetualOwner.perpetual_id":
-		list := []uint64{}
-		return protoreflect.ValueOfList(&_PerpetualOwner_4_list{list: &list})
+		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.PerpetualOwner"))
@@ -407,12 +351,8 @@ func (x *fastReflection_PerpetualOwner) ProtoMethods() *protoiface.Methods {
 		if x.MarketId != 0 {
 			n += 1 + runtime.Sov(uint64(x.MarketId))
 		}
-		if len(x.PerpetualId) > 0 {
-			l = 0
-			for _, e := range x.PerpetualId {
-				l += runtime.Sov(uint64(e))
-			}
-			n += 1 + runtime.Sov(uint64(l)) + l
+		if x.PerpetualId != 0 {
+			n += 1 + runtime.Sov(uint64(x.PerpetualId))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -443,25 +383,10 @@ func (x *fastReflection_PerpetualOwner) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.PerpetualId) > 0 {
-			var pksize2 int
-			for _, num := range x.PerpetualId {
-				pksize2 += runtime.Sov(uint64(num))
-			}
-			i -= pksize2
-			j1 := i
-			for _, num := range x.PerpetualId {
-				for num >= 1<<7 {
-					dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
-					num >>= 7
-					j1++
-				}
-				dAtA[j1] = uint8(num)
-				j1++
-			}
-			i = runtime.EncodeVarint(dAtA, i, uint64(pksize2))
+		if x.PerpetualId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PerpetualId))
 			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x20
 		}
 		if x.MarketId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.MarketId))
@@ -600,80 +525,23 @@ func (x *fastReflection_PerpetualOwner) ProtoMethods() *protoiface.Methods {
 					}
 				}
 			case 4:
-				if wireType == 0 {
-					var v uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-						}
-						if iNdEx >= l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						v |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PerpetualId", wireType)
+				}
+				x.PerpetualId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
 					}
-					x.PerpetualId = append(x.PerpetualId, v)
-				} else if wireType == 2 {
-					var packedLen int
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-						}
-						if iNdEx >= l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						packedLen |= int(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					if packedLen < 0 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-					}
-					postIndex := iNdEx + packedLen
-					if postIndex < 0 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-					}
-					if postIndex > l {
+					if iNdEx >= l {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 					}
-					var elementCount int
-					var count int
-					for _, integer := range dAtA[iNdEx:postIndex] {
-						if integer < 128 {
-							count++
-						}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PerpetualId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
 					}
-					elementCount = count
-					if elementCount != 0 && len(x.PerpetualId) == 0 {
-						x.PerpetualId = make([]uint64, 0, elementCount)
-					}
-					for iNdEx < postIndex {
-						var v uint64
-						for shift := uint(0); ; shift += 7 {
-							if shift >= 64 {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-							}
-							if iNdEx >= l {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-							}
-							b := dAtA[iNdEx]
-							iNdEx++
-							v |= uint64(b&0x7F) << shift
-							if b < 0x80 {
-								break
-							}
-						}
-						x.PerpetualId = append(x.PerpetualId, v)
-					}
-				} else {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PerpetualId", wireType)
 				}
 			default:
 				iNdEx = preIndex
@@ -2040,10 +1908,10 @@ type PerpetualOwner struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Owner        string   `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
-	SubAccountId uint64   `protobuf:"varint,2,opt,name=sub_account_id,json=subAccountId,proto3" json:"sub_account_id,omitempty"`
-	MarketId     uint64   `protobuf:"varint,3,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	PerpetualId  []uint64 `protobuf:"varint,4,rep,packed,name=perpetual_id,json=perpetualId,proto3" json:"perpetual_id,omitempty"`
+	Owner        string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+	SubAccountId uint64 `protobuf:"varint,2,opt,name=sub_account_id,json=subAccountId,proto3" json:"sub_account_id,omitempty"`
+	MarketId     uint64 `protobuf:"varint,3,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
+	PerpetualId  uint64 `protobuf:"varint,4,opt,name=perpetual_id,json=perpetualId,proto3" json:"perpetual_id,omitempty"`
 }
 
 func (x *PerpetualOwner) Reset() {
@@ -2087,14 +1955,14 @@ func (x *PerpetualOwner) GetMarketId() uint64 {
 	return 0
 }
 
-func (x *PerpetualOwner) GetPerpetualId() []uint64 {
+func (x *PerpetualOwner) GetPerpetualId() uint64 {
 	if x != nil {
 		return x.PerpetualId
 	}
-	return nil
+	return 0
 }
 
-// key = id
+// key = market_id + id
 type Perpetual struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2248,7 +2116,7 @@ var file_elys_clob_perpetual_proto_rawDesc = []byte{
 	0x12, 0x1b, 0x0a, 0x09, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20,
 	0x01, 0x28, 0x04, 0x52, 0x08, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x49, 0x64, 0x12, 0x21, 0x0a,
 	0x0c, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x04, 0x20,
-	0x03, 0x28, 0x04, 0x52, 0x0b, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x49, 0x64,
+	0x01, 0x28, 0x04, 0x52, 0x0b, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x49, 0x64,
 	0x22, 0x9d, 0x03, 0x0a, 0x09, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x12, 0x0e,
 	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1b,
 	0x0a, 0x09, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,

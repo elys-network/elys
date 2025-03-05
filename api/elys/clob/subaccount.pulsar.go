@@ -117,52 +117,6 @@ func (x *_SubAccount_4_list) IsValid() bool {
 	return x.list != nil
 }
 
-var _ protoreflect.List = (*_SubAccount_6_list)(nil)
-
-type _SubAccount_6_list struct {
-	list *[]uint64
-}
-
-func (x *_SubAccount_6_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_SubAccount_6_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfUint64((*x.list)[i])
-}
-
-func (x *_SubAccount_6_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Uint()
-	concreteValue := valueUnwrapped
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_SubAccount_6_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Uint()
-	concreteValue := valueUnwrapped
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_SubAccount_6_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message SubAccount at list field PerpetualId as it is not of Message kind"))
-}
-
-func (x *_SubAccount_6_list) Truncate(n int) {
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_SubAccount_6_list) NewElement() protoreflect.Value {
-	v := uint64(0)
-	return protoreflect.ValueOfUint64(v)
-}
-
-func (x *_SubAccount_6_list) IsValid() bool {
-	return x.list != nil
-}
-
 var (
 	md_SubAccount                   protoreflect.MessageDescriptor
 	fd_SubAccount_owner             protoreflect.FieldDescriptor
@@ -170,7 +124,6 @@ var (
 	fd_SubAccount_available_balance protoreflect.FieldDescriptor
 	fd_SubAccount_total_balance     protoreflect.FieldDescriptor
 	fd_SubAccount_trade_nounce      protoreflect.FieldDescriptor
-	fd_SubAccount_perpetual_id      protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -181,7 +134,6 @@ func init() {
 	fd_SubAccount_available_balance = md_SubAccount.Fields().ByName("available_balance")
 	fd_SubAccount_total_balance = md_SubAccount.Fields().ByName("total_balance")
 	fd_SubAccount_trade_nounce = md_SubAccount.Fields().ByName("trade_nounce")
-	fd_SubAccount_perpetual_id = md_SubAccount.Fields().ByName("perpetual_id")
 }
 
 var _ protoreflect.Message = (*fastReflection_SubAccount)(nil)
@@ -279,12 +231,6 @@ func (x *fastReflection_SubAccount) Range(f func(protoreflect.FieldDescriptor, p
 			return
 		}
 	}
-	if len(x.PerpetualId) != 0 {
-		value := protoreflect.ValueOfList(&_SubAccount_6_list{list: &x.PerpetualId})
-		if !f(fd_SubAccount_perpetual_id, value) {
-			return
-		}
-	}
 }
 
 // Has reports whether a field is populated.
@@ -310,8 +256,6 @@ func (x *fastReflection_SubAccount) Has(fd protoreflect.FieldDescriptor) bool {
 		return len(x.TotalBalance) != 0
 	case "elys.clob.SubAccount.trade_nounce":
 		return x.TradeNounce != uint64(0)
-	case "elys.clob.SubAccount.perpetual_id":
-		return len(x.PerpetualId) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.SubAccount"))
@@ -338,8 +282,6 @@ func (x *fastReflection_SubAccount) Clear(fd protoreflect.FieldDescriptor) {
 		x.TotalBalance = nil
 	case "elys.clob.SubAccount.trade_nounce":
 		x.TradeNounce = uint64(0)
-	case "elys.clob.SubAccount.perpetual_id":
-		x.PerpetualId = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.SubAccount"))
@@ -377,12 +319,6 @@ func (x *fastReflection_SubAccount) Get(descriptor protoreflect.FieldDescriptor)
 	case "elys.clob.SubAccount.trade_nounce":
 		value := x.TradeNounce
 		return protoreflect.ValueOfUint64(value)
-	case "elys.clob.SubAccount.perpetual_id":
-		if len(x.PerpetualId) == 0 {
-			return protoreflect.ValueOfList(&_SubAccount_6_list{})
-		}
-		listValue := &_SubAccount_6_list{list: &x.PerpetualId}
-		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.SubAccount"))
@@ -417,10 +353,6 @@ func (x *fastReflection_SubAccount) Set(fd protoreflect.FieldDescriptor, value p
 		x.TotalBalance = *clv.list
 	case "elys.clob.SubAccount.trade_nounce":
 		x.TradeNounce = value.Uint()
-	case "elys.clob.SubAccount.perpetual_id":
-		lv := value.List()
-		clv := lv.(*_SubAccount_6_list)
-		x.PerpetualId = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.SubAccount"))
@@ -453,12 +385,6 @@ func (x *fastReflection_SubAccount) Mutable(fd protoreflect.FieldDescriptor) pro
 		}
 		value := &_SubAccount_4_list{list: &x.TotalBalance}
 		return protoreflect.ValueOfList(value)
-	case "elys.clob.SubAccount.perpetual_id":
-		if x.PerpetualId == nil {
-			x.PerpetualId = []uint64{}
-		}
-		value := &_SubAccount_6_list{list: &x.PerpetualId}
-		return protoreflect.ValueOfList(value)
 	case "elys.clob.SubAccount.owner":
 		panic(fmt.Errorf("field owner of message elys.clob.SubAccount is not mutable"))
 	case "elys.clob.SubAccount.id":
@@ -490,9 +416,6 @@ func (x *fastReflection_SubAccount) NewField(fd protoreflect.FieldDescriptor) pr
 		return protoreflect.ValueOfList(&_SubAccount_4_list{list: &list})
 	case "elys.clob.SubAccount.trade_nounce":
 		return protoreflect.ValueOfUint64(uint64(0))
-	case "elys.clob.SubAccount.perpetual_id":
-		list := []uint64{}
-		return protoreflect.ValueOfList(&_SubAccount_6_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.SubAccount"))
@@ -584,13 +507,6 @@ func (x *fastReflection_SubAccount) ProtoMethods() *protoiface.Methods {
 		if x.TradeNounce != 0 {
 			n += 1 + runtime.Sov(uint64(x.TradeNounce))
 		}
-		if len(x.PerpetualId) > 0 {
-			l = 0
-			for _, e := range x.PerpetualId {
-				l += runtime.Sov(uint64(e))
-			}
-			n += 1 + runtime.Sov(uint64(l)) + l
-		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -619,26 +535,6 @@ func (x *fastReflection_SubAccount) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.PerpetualId) > 0 {
-			var pksize2 int
-			for _, num := range x.PerpetualId {
-				pksize2 += runtime.Sov(uint64(num))
-			}
-			i -= pksize2
-			j1 := i
-			for _, num := range x.PerpetualId {
-				for num >= 1<<7 {
-					dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
-					num >>= 7
-					j1++
-				}
-				dAtA[j1] = uint8(num)
-				j1++
-			}
-			i = runtime.EncodeVarint(dAtA, i, uint64(pksize2))
-			i--
-			dAtA[i] = 0x32
 		}
 		if x.TradeNounce != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.TradeNounce))
@@ -876,82 +772,6 @@ func (x *fastReflection_SubAccount) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
-			case 6:
-				if wireType == 0 {
-					var v uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-						}
-						if iNdEx >= l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						v |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					x.PerpetualId = append(x.PerpetualId, v)
-				} else if wireType == 2 {
-					var packedLen int
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-						}
-						if iNdEx >= l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						packedLen |= int(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					if packedLen < 0 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-					}
-					postIndex := iNdEx + packedLen
-					if postIndex < 0 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-					}
-					if postIndex > l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					var elementCount int
-					var count int
-					for _, integer := range dAtA[iNdEx:postIndex] {
-						if integer < 128 {
-							count++
-						}
-					}
-					elementCount = count
-					if elementCount != 0 && len(x.PerpetualId) == 0 {
-						x.PerpetualId = make([]uint64, 0, elementCount)
-					}
-					for iNdEx < postIndex {
-						var v uint64
-						for shift := uint(0); ; shift += 7 {
-							if shift >= 64 {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-							}
-							if iNdEx >= l {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-							}
-							b := dAtA[iNdEx]
-							iNdEx++
-							v |= uint64(b&0x7F) << shift
-							if b < 0x80 {
-								break
-							}
-						}
-						x.PerpetualId = append(x.PerpetualId, v)
-					}
-				} else {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PerpetualId", wireType)
-				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1010,7 +830,6 @@ type SubAccount struct {
 	AvailableBalance []*v1beta1.Coin `protobuf:"bytes,3,rep,name=available_balance,json=availableBalance,proto3" json:"available_balance,omitempty"`
 	TotalBalance     []*v1beta1.Coin `protobuf:"bytes,4,rep,name=total_balance,json=totalBalance,proto3" json:"total_balance,omitempty"`
 	TradeNounce      uint64          `protobuf:"varint,5,opt,name=trade_nounce,json=tradeNounce,proto3" json:"trade_nounce,omitempty"`
-	PerpetualId      []uint64        `protobuf:"varint,6,rep,packed,name=perpetual_id,json=perpetualId,proto3" json:"perpetual_id,omitempty"`
 }
 
 func (x *SubAccount) Reset() {
@@ -1068,13 +887,6 @@ func (x *SubAccount) GetTradeNounce() uint64 {
 	return 0
 }
 
-func (x *SubAccount) GetPerpetualId() []uint64 {
-	if x != nil {
-		return x.PerpetualId
-	}
-	return nil
-}
-
 var File_elys_clob_subaccount_proto protoreflect.FileDescriptor
 
 var file_elys_clob_subaccount_proto_rawDesc = []byte{
@@ -1085,7 +897,7 @@ var file_elys_clob_subaccount_proto_rawDesc = []byte{
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d,
 	0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
 	0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x63, 0x6f,
-	0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xfe, 0x02, 0x0a, 0x0a, 0x53, 0x75, 0x62,
+	0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xdb, 0x02, 0x0a, 0x0a, 0x53, 0x75, 0x62,
 	0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2e, 0x0a, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d,
 	0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
@@ -1107,19 +919,17 @@ var file_elys_clob_subaccount_proto_rawDesc = []byte{
 	0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x0c, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x42, 0x61, 0x6c, 0x61,
 	0x6e, 0x63, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x6e, 0x6f, 0x75,
 	0x6e, 0x63, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0b, 0x74, 0x72, 0x61, 0x64, 0x65,
-	0x4e, 0x6f, 0x75, 0x6e, 0x63, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74,
-	0x75, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x06, 0x20, 0x03, 0x28, 0x04, 0x52, 0x0b, 0x70, 0x65,
-	0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x49, 0x64, 0x42, 0x91, 0x01, 0x0a, 0x0d, 0x63, 0x6f,
-	0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x42, 0x0f, 0x53, 0x75, 0x62,
-	0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2a,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
-	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0xa2, 0x02, 0x03, 0x45, 0x43, 0x58,
-	0xaa, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c, 0x6f, 0x62, 0xca, 0x02, 0x09, 0x45,
-	0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02, 0x15, 0x45, 0x6c, 0x79, 0x73, 0x5c,
-	0x43, 0x6c, 0x6f, 0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
-	0xea, 0x02, 0x0a, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6c, 0x6f, 0x62, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x4e, 0x6f, 0x75, 0x6e, 0x63, 0x65, 0x42, 0x91, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x42, 0x0f, 0x53, 0x75, 0x62, 0x61, 0x63, 0x63,
+	0x6f, 0x75, 0x6e, 0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2a, 0x67, 0x69, 0x74,
+	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
+	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0xa2, 0x02, 0x03, 0x45, 0x43, 0x58, 0xaa, 0x02, 0x09,
+	0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c, 0x6f, 0x62, 0xca, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73,
+	0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02, 0x15, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f,
+	0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a,
+	0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6c, 0x6f, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (

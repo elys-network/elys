@@ -31,8 +31,14 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				{
 					RpcMethod:      "MarketOrders",
 					Use:            "market_orders [market_id] [is_buy]",
-					Short:          "Query all market orers",
+					Short:          "Query all market orders",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "market_id"}, {ProtoField: "is_buy"}},
+				},
+				{
+					RpcMethod:      "OwnerPerpetuals",
+					Use:            "owner_perpetuals [owner]",
+					Short:          "Query all owner perpetuals",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "owner"}},
 				},
 			},
 		},

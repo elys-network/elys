@@ -22,6 +22,23 @@ func (k Keeper) GetSubAccount(ctx sdk.Context, owner sdk.AccAddress, id uint64) 
 	return val, nil
 }
 
+func (k Keeper) GetAllOwnerSubAccount(ctx sdk.Context, addr sdk.AccAddress) []types.SubAccount {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetAddressSubAccountPrefixKey(addr))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	var list []types.SubAccount
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.SubAccount
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return list
+}
+
 func (k Keeper) GetAllSubAccount(ctx sdk.Context) []types.SubAccount {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.SubAccountPrefix)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})

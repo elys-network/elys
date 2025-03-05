@@ -32,7 +32,8 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64) error {
 			return err
 		}
 		if fullyFilled {
-			keysToDelete = append(keysToDelete, sdk.CopyBytes(buyOrderIterator.Key()))
+			// iterator.Key() gives key bytes without prefix
+			keysToDelete = append(keysToDelete, types.GetPerpetualOrderKey(buyOrder.MarketId, buyOrder.OrderType, buyOrder.Price, buyOrder.BlockHeight))
 		}
 	}
 
@@ -102,12 +103,12 @@ func (k Keeper) ExecuteBuyOrder(ctx sdk.Context, market types.PerpetualMarket, b
 			buyOrder.Filled = buyOrder.Filled.Add(tradeQuantity)
 
 			if sellOrderFilled {
-				keysToDelete = append(keysToDelete, sdk.CopyBytes(sellIterator.Key()))
+				keysToDelete = append(keysToDelete, types.GetPerpetualOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.Price, sellOrder.BlockHeight))
 				lowestSellPrice = k.GetLowestSellPrice(ctx, market.Id)
 			} else {
 				k.SetPerpetualOrder(ctx, sellOrder)
 			}
-			fmt.Println("SELL ORDER: ")
+			fmt.Println("SELL ORDER EXECUTED: ")
 			fmt.Println(sellOrder)
 
 			sellerSubAccount, err = k.GetSubAccount(ctx, sellOrder.GetOwnerAccAddress(), sellOrder.SubAccountId)
@@ -128,8 +129,8 @@ func (k Keeper) ExecuteBuyOrder(ctx sdk.Context, market types.PerpetualMarket, b
 			if err != nil {
 				return false, err
 			}
-			fmt.Println("BUY ORDER: ")
-			fmt.Println(buyOrder)
+			fmt.Println("BUY ORDER EXECUTED: ")
+			fmt.Println(*buyOrder)
 			if !buyOrderFilled {
 				k.SetPerpetualOrder(ctx, *buyOrder)
 			}

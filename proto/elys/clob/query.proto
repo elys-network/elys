@@ -9,6 +9,7 @@ import "elys/clob/params.proto";
 import "elys/clob/market.proto";
 import "elys/clob/subaccount.proto";
 import "elys/clob/order.proto";
+import "elys/clob/perpetual.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
@@ -30,6 +31,11 @@ service Query {
   }
 
   rpc MarketOrders(MarketOrdersRequest) returns (MarketOrdersResponse) {
+    option (google.api.http).get = "/elys-network/elys/clob/all-markets";
+  }
+
+  rpc OwnerPerpetuals(OwnerPerpetualsRequest)
+      returns (OwnerPerpetualsResponse) {
     option (google.api.http).get = "/elys-network/elys/clob/all-markets";
   }
 }
@@ -66,5 +72,15 @@ message MarketOrdersRequest {
 
 message MarketOrdersResponse {
   repeated PerpetualOrder orders = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message OwnerPerpetualsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  string owner = 2;
+}
+
+message OwnerPerpetualsResponse {
+  repeated Perpetual list = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

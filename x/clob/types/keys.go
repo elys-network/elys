@@ -48,8 +48,9 @@ func GetPerpetualMarketKey(id uint64) []byte {
 	return append(PerpetualMarketPrefix, sdk.Uint64ToBigEndian(id)...)
 }
 
-func GetPerpetualKey(id uint64) []byte {
-	return append(PerpetualPrefix, sdk.Uint64ToBigEndian(id)...)
+func GetPerpetualKey(marketId, id uint64) []byte {
+	key := append(PerpetualPrefix, sdk.Uint64ToBigEndian(marketId)...)
+	return append(key, sdk.Uint64ToBigEndian(id)...)
 }
 
 func GetPerpetualOwnerKey(subAccountId uint64, addr sdk.AccAddress, marketId uint64) []byte {

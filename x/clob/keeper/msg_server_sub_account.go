@@ -23,7 +23,7 @@ func (k Keeper) Deposit(goCtx context.Context, msg *types.MsgDeposit) (*types.Ms
 			AvailableBalance: sdk.Coins{},
 			TotalBalance:     sdk.Coins{},
 			TradeNounce:      0,
-			PerpetualId:      nil,
+			PerpetualIds:     nil,
 		}
 	}
 

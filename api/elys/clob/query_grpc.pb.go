@@ -22,6 +22,7 @@ type QueryClient interface {
 	AllMarkets(ctx context.Context, in *AllMarketsRequest, opts ...grpc.CallOption) (*AllMarketsResponse, error)
 	SubAccounts(ctx context.Context, in *SubAccountsRequest, opts ...grpc.CallOption) (*SubAccountsResponse, error)
 	MarketOrders(ctx context.Context, in *MarketOrdersRequest, opts ...grpc.CallOption) (*MarketOrdersResponse, error)
+	OwnerPerpetuals(ctx context.Context, in *OwnerPerpetualsRequest, opts ...grpc.CallOption) (*OwnerPerpetualsResponse, error)
 }
 
 type queryClient struct {
@@ -68,6 +69,15 @@ func (c *queryClient) MarketOrders(ctx context.Context, in *MarketOrdersRequest,
 	return out, nil
 }
 
+func (c *queryClient) OwnerPerpetuals(ctx context.Context, in *OwnerPerpetualsRequest, opts ...grpc.CallOption) (*OwnerPerpetualsResponse, error) {
+	out := new(OwnerPerpetualsResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Query/OwnerPerpetuals", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -76,6 +86,7 @@ type QueryServer interface {
 	AllMarkets(context.Context, *AllMarketsRequest) (*AllMarketsResponse, error)
 	SubAccounts(context.Context, *SubAccountsRequest) (*SubAccountsResponse, error)
 	MarketOrders(context.Context, *MarketOrdersRequest) (*MarketOrdersResponse, error)
+	OwnerPerpetuals(context.Context, *OwnerPerpetualsRequest) (*OwnerPerpetualsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -94,6 +105,9 @@ func (UnimplementedQueryServer) SubAccounts(context.Context, *SubAccountsRequest
 }
 func (UnimplementedQueryServer) MarketOrders(context.Context, *MarketOrdersRequest) (*MarketOrdersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MarketOrders not implemented")
+}
+func (UnimplementedQueryServer) OwnerPerpetuals(context.Context, *OwnerPerpetualsRequest) (*OwnerPerpetualsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OwnerPerpetuals not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -180,6 +194,24 @@ func _Query_MarketOrders_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_OwnerPerpetuals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OwnerPerpetualsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).OwnerPerpetuals(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.clob.Query/OwnerPerpetuals",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).OwnerPerpetuals(ctx, req.(*OwnerPerpetualsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -202,6 +234,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MarketOrders",
 			Handler:    _Query_MarketOrders_Handler,
+		},
+		{
+			MethodName: "OwnerPerpetuals",
+			Handler:    _Query_OwnerPerpetuals_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

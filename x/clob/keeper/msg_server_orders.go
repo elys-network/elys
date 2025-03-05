@@ -26,7 +26,7 @@ func (k Keeper) CreateLimitOrder(goCtx context.Context, msg *types.MsgCreateLimi
 	}
 
 	if msg.PerpetualId > 0 {
-		perpetual, err := k.GetPerpetual(ctx, msg.PerpetualId)
+		perpetual, err := k.GetPerpetual(ctx, msg.MarketId, msg.PerpetualId)
 		if err != nil {
 			return nil, err
 		}

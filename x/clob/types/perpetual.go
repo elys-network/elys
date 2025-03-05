@@ -16,6 +16,10 @@ func (perpetual Perpetual) GetHealth(currentPrice math.LegacyDec) math.LegacyDec
 	return h
 }
 
+func (perpetual Perpetual) GetOwnerAccAddress() sdk.AccAddress {
+	return sdk.MustAccAddressFromBech32(perpetual.Owner)
+}
+
 func (perpetual Perpetual) CheckEnoughMaintenence(subAccount SubAccount) bool {
 
 	return false

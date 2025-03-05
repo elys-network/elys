@@ -20,5 +20,4 @@ message SubAccount {
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   uint64 trade_nounce = 5;
-  repeated uint64 perpetual_id = 6;
 }
