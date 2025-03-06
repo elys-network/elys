@@ -69,5 +69,8 @@ func (k Keeper) ExitPoolEst(
 		}
 	}
 
+	// Add weight balance amount here, not added in execution as out amount will be changed and that will impact the transfers
+	exitCoins[0].Amount = exitCoins[0].Amount.Add(((exitCoins[0].Amount.ToLegacyDec()).Mul(weightBalanceBonus)).TruncateInt())
+
 	return exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, nil
 }
