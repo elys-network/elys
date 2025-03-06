@@ -2560,10 +2560,14 @@ github.com/ojo-network/ojo v0.5.1-rc3.0.20250227180903-244234cd4161 h1:QwOM4Duf9
 github.com/ojo-network/ojo v0.5.1-rc3.0.20250227180903-244234cd4161/go.mod h1:fn0g6VmVSDVThCf4/zqN1vGvTfCmS4hsMW64KD3YffA=
 github.com/ojo-network/ojo v0.5.1-rc3.0.20250303235837-7f09c21b9099 h1:YAGj/vEznlKdI2bHXoMzALqZ6Jgboc0ER7gQLUTdHNI=
 github.com/ojo-network/ojo v0.5.1-rc3.0.20250303235837-7f09c21b9099/go.mod h1:YgBLJR/tLXMNa3+ZqVLjjUxyaCu2mGoV0mK6ybRq824=
+github.com/ojo-network/ojo v0.5.1-rc3.0.20250305232734-1fe79235aedc h1:tFhPLfiGdhuIOr7eu+q28/fTtq9/wXXNA+CwmdKkLz0=
+github.com/ojo-network/ojo v0.5.1-rc3.0.20250305232734-1fe79235aedc/go.mod h1:5OLJl3Ie1Weqo0uwj4skoeeALYuZGI4yAUOw1Xmk0UQ=
 github.com/ojo-network/price-feeder v0.2.1-rc1.0.20250225232252-09e501993662 h1:J09oiGtwNH6LP+yI3KZDtIu6XOAVAz4nTQCz0Fz0Yuc=
 github.com/ojo-network/price-feeder v0.2.1-rc1.0.20250225232252-09e501993662/go.mod h1:zgwl5DnvtAB0A61U92OlMd2QGRUeAwVPamzYofs8YiM=
 github.com/ojo-network/price-feeder v0.2.1-rc1.0.20250303235415-11db4991f75b h1:mNnVl0qAxFpz/7od62pcgFtp9AA7LfRhdSO/XM1bD9g=
 github.com/ojo-network/price-feeder v0.2.1-rc1.0.20250303235415-11db4991f75b/go.mod h1:zgwl5DnvtAB0A61U92OlMd2QGRUeAwVPamzYofs8YiM=
+github.com/ojo-network/price-feeder v0.2.1-rc1.0.20250305232539-15b86c1b6214 h1:oMnpWhLAiwY9J7cPL0dqd/qiHTmEAxTRUGPi75Ng39A=
+github.com/ojo-network/price-feeder v0.2.1-rc1.0.20250305232539-15b86c1b6214/go.mod h1:zgwl5DnvtAB0A61U92OlMd2QGRUeAwVPamzYofs8YiM=
 github.com/oklog/oklog v0.3.2/go.mod h1:FCV+B7mhrz4o+ueLpx+KqkyXRGMWOYEvfiXtdGtbWGs=
 github.com/oklog/run v1.0.0/go.mod h1:dlhp/R75TPv97u0XWUtDeV/lRKWPKSdTuV0TZvrmrQA=
 github.com/oklog/run v1.1.0 h1:GEenZ1cK0+q0+wsJew9qUg/DyD8k3JzYsZAi5gYi2mA=
