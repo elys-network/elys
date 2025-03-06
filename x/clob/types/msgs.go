@@ -14,6 +14,10 @@ func (msg MsgDeposit) ValidateBasic() error {
 	return nil
 }
 
-func (msg MsgCreateLimitOrder) ValidateBasic() error {
+func (msg MsgPlaceLimitOrder) ValidateBasic() error {
+	return nil
+}
+
+func (msg MsgPlaceMarketOrder) ValidateBasic() error {
 	return nil
 }

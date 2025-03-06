@@ -6,7 +6,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
-func (market PerpetualMarket) ValidateMsgOpenPosition(msg MsgCreateLimitOrder) error {
+func (market PerpetualMarket) ValidateMsgOpenPosition(msg MsgPlaceLimitOrder) error {
 	if market.Id != msg.MarketId {
 		return ErrPerpetualMarketNotFound
 	}

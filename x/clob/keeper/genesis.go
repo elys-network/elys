@@ -29,7 +29,4 @@ func InitGenesis(ctx sdk.Context, k Keeper, data types.GenesisState) {
 	for _, v := range data.PerpetualCounters {
 		k.setPerpetualCounter(ctx, *v)
 	}
-	for _, v := range data.Escrows {
-		k.SetEscrow(ctx, *v)
-	}
 }

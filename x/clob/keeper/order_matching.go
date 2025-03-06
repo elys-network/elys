@@ -27,7 +27,7 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64) error {
 	for ; buyOrderIterator.Valid() && fullyFilled; buyOrderIterator.Next() {
 		var buyOrder types.PerpetualOrder
 		k.cdc.MustUnmarshal(buyOrderIterator.Value(), &buyOrder)
-		fullyFilled, err = k.ExecuteBuyOrder(ctx, market, &buyOrder, assetInfo)
+		fullyFilled, err = k.ExecuteLimitBuyOrder(ctx, market, &buyOrder, assetInfo)
 		if err != nil {
 			return err
 		}
@@ -48,7 +48,7 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64) error {
 	return nil
 }
 
-func (k Keeper) ExecuteBuyOrder(ctx sdk.Context, market types.PerpetualMarket, buyOrder *types.PerpetualOrder, assetInfo oracletypes.AssetInfo) (bool, error) {
+func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMarket, buyOrder *types.PerpetualOrder, assetInfo oracletypes.AssetInfo) (bool, error) {
 	if !buyOrder.IsBuy() {
 		return false, errors.New("order is not a buy order")
 	}
@@ -88,8 +88,8 @@ func (k Keeper) ExecuteBuyOrder(ctx sdk.Context, market types.PerpetualMarket, b
 			}
 
 			// remainingQuantity = buyOrderQuantity at trade price - already filled
-			buyOrderMaxQuantity := buyOrder.GetQuantity(assetInfo, tradePrice).Sub(buyOrder.Filled)
-			sellOrderMaxQuantity := sellOrder.GetQuantity(assetInfo, tradePrice).Sub(sellOrder.Filled)
+			buyOrderMaxQuantity := buyOrder.Amount.Sub(buyOrder.Filled)
+			sellOrderMaxQuantity := sellOrder.Amount.Sub(sellOrder.Filled)
 
 			tradeQuantity := math.LegacyMinDec(buyOrderMaxQuantity, sellOrderMaxQuantity)
 			if tradeQuantity.Equal(buyOrderMaxQuantity) {
@@ -116,15 +116,11 @@ func (k Keeper) ExecuteBuyOrder(ctx sdk.Context, market types.PerpetualMarket, b
 				return false, err
 			}
 			err = k.Exchange(ctx, types.Trade{
-				BuyerSubAccount:   buyerSubAccount,
-				SellerSubAccount:  sellerSubAccount,
-				MarketId:          market.Id,
-				Price:             tradePrice,
-				Quantity:          tradeQuantity,
-				BuyerCollateral:   buyOrder.Collateral,
-				SellerCollateral:  sellOrder.Collateral,
-				BuyerPerpetualId:  buyOrder.PerpetualId,
-				SellerPerpetualId: sellOrder.PerpetualId,
+				BuyerSubAccount:  buyerSubAccount,
+				SellerSubAccount: sellerSubAccount,
+				MarketId:         market.Id,
+				Price:            tradePrice,
+				Quantity:         tradeQuantity,
 			})
 			if err != nil {
 				return false, err

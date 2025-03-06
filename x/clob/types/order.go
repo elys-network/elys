@@ -1,9 +1,7 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
 func (order PerpetualOrder) IsBuy() bool {
@@ -17,11 +15,6 @@ func IsBuy(orderType OrderType) bool {
 	default:
 		return false
 	}
-}
-
-func (order PerpetualOrder) GetQuantity(assetInfo oracletypes.AssetInfo, tradePrice math.LegacyDec) math.LegacyDec {
-	denomPrice := tradePrice.Quo(math.LegacyNewDec(10).Power(assetInfo.Decimal))
-	return order.Collateral.ToLegacyDec().Mul(order.Leverage).Quo(denomPrice)
 }
 
 func (order PerpetualOrder) GetOwnerAccAddress() sdk.AccAddress {

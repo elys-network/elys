@@ -7,5 +7,4 @@ type Trade struct {
 	MarketId                          uint64
 	Price                             sdkmath.LegacyDec
 	Quantity                          sdkmath.LegacyDec
-	BuyerCollateral, SellerCollateral sdkmath.Int
 }

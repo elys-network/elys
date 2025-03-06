@@ -7,12 +7,6 @@ option go_package = "github.com/elys-network/elys/x/clob/types";
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-enum PerpetualType {
-  UNSPECIFIED = 0;
-  LONG = 1;
-  SHORT = 2;
-}
-
 // key = owner + sub_account_id  + market_id
 message PerpetualOwner {
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];

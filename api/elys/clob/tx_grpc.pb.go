@@ -21,7 +21,8 @@ type MsgClient interface {
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	Deposit(ctx context.Context, in *MsgDeposit, opts ...grpc.CallOption) (*MsgDepositResponse, error)
 	CreatePerpetualMarket(ctx context.Context, in *MsgCreatPerpetualMarket, opts ...grpc.CallOption) (*MsgCreatPerpetualMarketResponse, error)
-	CreateLimitOrder(ctx context.Context, in *MsgCreateLimitOrder, opts ...grpc.CallOption) (*MsgCreateLimitOrderResponse, error)
+	PlaceLimitOrder(ctx context.Context, in *MsgPlaceLimitOrder, opts ...grpc.CallOption) (*MsgPlaceLimitOrderResponse, error)
+	PlaceMarketOrder(ctx context.Context, in *MsgPlaceMarketOrder, opts ...grpc.CallOption) (*MsgPlaceMarketOrderResponse, error)
 }
 
 type msgClient struct {
@@ -59,9 +60,18 @@ func (c *msgClient) CreatePerpetualMarket(ctx context.Context, in *MsgCreatPerpe
 	return out, nil
 }
 
-func (c *msgClient) CreateLimitOrder(ctx context.Context, in *MsgCreateLimitOrder, opts ...grpc.CallOption) (*MsgCreateLimitOrderResponse, error) {
-	out := new(MsgCreateLimitOrderResponse)
-	err := c.cc.Invoke(ctx, "/elys.clob.Msg/CreateLimitOrder", in, out, opts...)
+func (c *msgClient) PlaceLimitOrder(ctx context.Context, in *MsgPlaceLimitOrder, opts ...grpc.CallOption) (*MsgPlaceLimitOrderResponse, error) {
+	out := new(MsgPlaceLimitOrderResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Msg/PlaceLimitOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) PlaceMarketOrder(ctx context.Context, in *MsgPlaceMarketOrder, opts ...grpc.CallOption) (*MsgPlaceMarketOrderResponse, error) {
+	out := new(MsgPlaceMarketOrderResponse)
+	err := c.cc.Invoke(ctx, "/elys.clob.Msg/PlaceMarketOrder", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +85,8 @@ type MsgServer interface {
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	Deposit(context.Context, *MsgDeposit) (*MsgDepositResponse, error)
 	CreatePerpetualMarket(context.Context, *MsgCreatPerpetualMarket) (*MsgCreatPerpetualMarketResponse, error)
-	CreateLimitOrder(context.Context, *MsgCreateLimitOrder) (*MsgCreateLimitOrderResponse, error)
+	PlaceLimitOrder(context.Context, *MsgPlaceLimitOrder) (*MsgPlaceLimitOrderResponse, error)
+	PlaceMarketOrder(context.Context, *MsgPlaceMarketOrder) (*MsgPlaceMarketOrderResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -92,8 +103,11 @@ func (UnimplementedMsgServer) Deposit(context.Context, *MsgDeposit) (*MsgDeposit
 func (UnimplementedMsgServer) CreatePerpetualMarket(context.Context, *MsgCreatPerpetualMarket) (*MsgCreatPerpetualMarketResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePerpetualMarket not implemented")
 }
-func (UnimplementedMsgServer) CreateLimitOrder(context.Context, *MsgCreateLimitOrder) (*MsgCreateLimitOrderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateLimitOrder not implemented")
+func (UnimplementedMsgServer) PlaceLimitOrder(context.Context, *MsgPlaceLimitOrder) (*MsgPlaceLimitOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PlaceLimitOrder not implemented")
+}
+func (UnimplementedMsgServer) PlaceMarketOrder(context.Context, *MsgPlaceMarketOrder) (*MsgPlaceMarketOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PlaceMarketOrder not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -162,20 +176,38 @@ func _Msg_CreatePerpetualMarket_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CreateLimitOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCreateLimitOrder)
+func _Msg_PlaceLimitOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPlaceLimitOrder)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CreateLimitOrder(ctx, in)
+		return srv.(MsgServer).PlaceLimitOrder(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.clob.Msg/CreateLimitOrder",
+		FullMethod: "/elys.clob.Msg/PlaceLimitOrder",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CreateLimitOrder(ctx, req.(*MsgCreateLimitOrder))
+		return srv.(MsgServer).PlaceLimitOrder(ctx, req.(*MsgPlaceLimitOrder))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_PlaceMarketOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPlaceMarketOrder)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PlaceMarketOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.clob.Msg/PlaceMarketOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PlaceMarketOrder(ctx, req.(*MsgPlaceMarketOrder))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -200,8 +232,12 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_CreatePerpetualMarket_Handler,
 		},
 		{
-			MethodName: "CreateLimitOrder",
-			Handler:    _Msg_CreateLimitOrder_Handler,
+			MethodName: "PlaceLimitOrder",
+			Handler:    _Msg_PlaceLimitOrder_Handler,
+		},
+		{
+			MethodName: "PlaceMarketOrder",
+			Handler:    _Msg_PlaceMarketOrder_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -11,12 +11,12 @@ import (
 	"strconv"
 )
 
-func CmdCreateLimitOrder() *cobra.Command {
+func CmdPlaceMarketOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "create-limit-order [sub-account-id] [market-id] [collateral] [leverage] [order-type] [price] [perpetual_id]",
+		Use:     "place-market-order [sub-account-id] [market-id] [quantity] [order-type] [leverage]",
 		Short:   "exit a new pool and withdraw the liquidity from it",
 		Example: `elysd tx amm exit-pool 0 1000uatom,1000uusdc 200000000000000000 --from=bob --yes --gas=1000000`,
-		Args:    cobra.RangeArgs(6, 7),
+		Args:    cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -34,35 +34,13 @@ func CmdCreateLimitOrder() *cobra.Command {
 				return err
 			}
 
-			collateral, ok := sdkmath.NewIntFromString(args[2])
-			if !ok {
-				return errors.New("invalid collateral")
-			}
-
-			leverage, err := sdkmath.LegacyNewDecFromStr(args[3])
+			quantity, err := sdkmath.LegacyNewDecFromStr(args[2])
 			if err != nil {
 				return err
-			}
-
-			price, err := sdkmath.LegacyNewDecFromStr(args[5])
-			if err != nil {
-				return err
-			}
-
-			perpetualId := uint64(0)
-			if args[6] != "" {
-				perpetualId, err = strconv.ParseUint(args[6], 10, 64)
-				if err != nil {
-					return err
-				}
 			}
 
 			var orderType types.OrderType
-			switch args[4] {
-			case "market_buy":
-				orderType = types.OrderType_ORDER_TYPE_MARKET_BUY
-			case "market_sell":
-				orderType = types.OrderType_ORDER_TYPE_MARKET_SELL
+			switch args[3] {
 			case "limit_buy":
 				orderType = types.OrderType_ORDER_TYPE_LIMIT_BUY
 			case "limit_sell":
@@ -70,19 +48,20 @@ func CmdCreateLimitOrder() *cobra.Command {
 			default:
 				return errors.New("invalid order type")
 			}
-
-			msg := types.MsgCreateLimitOrder{
+			leverage, err := sdkmath.LegacyNewDecFromStr(args[4])
+			if err != nil {
+				return err
+			}
+			msg := types.MsgPlaceMarketOrder{
 				Creator:      clientCtx.GetFromAddress().String(),
 				SubAccountId: subAccountId,
 				MarketId:     marketId,
-				Collateral:   collateral,
+				BaseQuantity: quantity,
 				Leverage:     leverage,
 				OrderType:    orderType,
-				Price:        price,
-				PerpetualId:  perpetualId,
 			}
 
-			if err := msg.ValidateBasic(); err != nil {
+			if err = msg.ValidateBasic(); err != nil {
 				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
