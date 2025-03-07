@@ -27,8 +27,13 @@ func (k Keeper) OwnerPerpetuals(goCtx context.Context, req *types.OwnerPerpetual
 	prefixStore := prefix.NewStore(store, key)
 
 	pageRes, err := query.Paginate(prefixStore, req.Pagination, func(key []byte, value []byte) error {
-		var p types.Perpetual
-		if err := k.cdc.Unmarshal(value, &p); err != nil {
+		var perpetualOwner types.PerpetualOwner
+		if err := k.cdc.Unmarshal(value, &perpetualOwner); err != nil {
+			return err
+		}
+
+		p, err := k.GetPerpetual(ctx, perpetualOwner.MarketId, perpetualOwner.PerpetualId)
+		if err != nil {
 			return err
 		}
 

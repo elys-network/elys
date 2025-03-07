@@ -8,7 +8,7 @@ import (
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-func (k Keeper) CreateLimitOrder(goCtx context.Context, msg *types.MsgCreateLimitOrder) (*types.MsgCreateLimitOrderResponse, error) {
+func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitOrder) (*types.MsgPlaceLimitOrderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	market, err := k.GetPerpetualMarket(ctx, msg.MarketId)
@@ -20,25 +20,9 @@ func (k Keeper) CreateLimitOrder(goCtx context.Context, msg *types.MsgCreateLimi
 		return nil, err
 	}
 
-	subAccount, err := k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.SubAccountId)
+	_, err = k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.SubAccountId)
 	if err != nil {
 		return nil, errorsmod.Wrapf(err, "subaccount id: %d", msg.SubAccountId)
-	}
-
-	if msg.PerpetualId > 0 {
-		perpetual, err := k.GetPerpetual(ctx, msg.MarketId, msg.PerpetualId)
-		if err != nil {
-			return nil, err
-		}
-		if perpetual.Owner != msg.Creator || perpetual.SubAccountId != msg.SubAccountId {
-			return nil, errors.New("not perpetual owner or subaccount does not holds it")
-		}
-	}
-
-	collateralAmount := msg.Collateral
-	err = k.SendFromSubAccount(ctx, subAccount, market.GetAccount(), sdk.NewCoins(sdk.NewCoin(market.QuoteDenom, collateralAmount)))
-	if err != nil {
-		return nil, err
 	}
 
 	order := types.PerpetualOrder{
@@ -48,11 +32,44 @@ func (k Keeper) CreateLimitOrder(goCtx context.Context, msg *types.MsgCreateLimi
 		BlockHeight:  uint64(ctx.BlockHeight()),
 		Owner:        msg.Creator,
 		SubAccountId: msg.SubAccountId,
-		PerpetualId:  msg.PerpetualId,
-		Leverage:     msg.Leverage,
-		Collateral:   msg.Collateral,
+		Amount:       msg.BaseQuantity,
 	}
 	k.SetPerpetualOrder(ctx, order)
+	return &types.MsgPlaceLimitOrderResponse{}, nil
+}
 
-	return &types.MsgCreateLimitOrderResponse{}, nil
+func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarketOrder) (*types.MsgPlaceMarketOrderResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	market, err := k.GetPerpetualMarket(ctx, msg.MarketId)
+	if err != nil {
+		return nil, err
+	}
+
+	//if err = market.ValidateMsgOpenPosition(*msg); err != nil {
+	//	return nil, err
+	//}
+
+	_, err = k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), msg.SubAccountId)
+	if err != nil {
+		return nil, errorsmod.Wrapf(err, "subaccount id: %d", msg.SubAccountId)
+	}
+
+	fullyFilled := false
+	switch msg.OrderType {
+	case types.OrderType_ORDER_TYPE_MARKET_BUY:
+		fullyFilled, err = k.ExecuteMarketBuyOrder(ctx, market, *msg)
+	case types.OrderType_ORDER_TYPE_MARKET_SELL:
+		fullyFilled, err = k.ExecuteMarketSellOrder(ctx, market, *msg)
+	default:
+		return nil, errorsmod.Wrapf(err, "unknown order type: %s", msg.OrderType)
+	}
+	if err != nil {
+		return nil, err
+	}
+	if !fullyFilled {
+		return nil, errors.New("market order cannot be fully filled")
+	}
+
+	return &types.MsgPlaceMarketOrderResponse{}, nil
 }

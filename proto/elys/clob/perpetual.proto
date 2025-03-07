@@ -19,23 +19,17 @@ message PerpetualOwner {
 message Perpetual {
   uint64 id = 1;
   uint64 market_id = 2;
-  bool is_long = 3;
-  string entry_price = 4 [
+  string entry_price = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string owner = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 sub_account_id = 5;
   // quantity of the order
-  string quantity = 7 [
-    (cosmos_proto.scalar) = "cosmos.LegacyDec",
+  string quantity = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string collateral = 8 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 }

@@ -1,19 +1,11 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (perpetualOwner PerpetualOwner) GetOwnerAccAddress() sdk.AccAddress {
 	return sdk.MustAccAddressFromBech32(perpetualOwner.Owner)
-}
-
-func (perpetual Perpetual) GetHealth(currentPrice math.LegacyDec) math.LegacyDec {
-	totalValue := currentPrice.Mul(perpetual.Quantity)
-	liabilities := totalValue.Sub(perpetual.Collateral.ToLegacyDec())
-	h := liabilities.Quo(totalValue)
-	return h
 }
 
 func (perpetual Perpetual) GetOwnerAccAddress() sdk.AccAddress {
@@ -23,4 +15,16 @@ func (perpetual Perpetual) GetOwnerAccAddress() sdk.AccAddress {
 func (perpetual Perpetual) CheckEnoughMaintenence(subAccount SubAccount) bool {
 
 	return false
+}
+
+func (perpetual Perpetual) IsLong() bool {
+	return perpetual.Quantity.IsPositive()
+}
+
+func (perpetual Perpetual) IsShort() bool {
+	return perpetual.Quantity.IsNegative()
+}
+
+func (perpetual Perpetual) IsZero() bool {
+	return perpetual.Quantity.IsZero()
 }

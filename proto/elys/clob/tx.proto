@@ -136,12 +136,7 @@ message MsgPlaceMarketOrder {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string leverage = 5 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  OrderType order_type = 6;
+  OrderType order_type = 5;
 }
 
 message MsgPlaceMarketOrderResponse {}
