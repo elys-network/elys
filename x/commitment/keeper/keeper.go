@@ -10,7 +10,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/elys-network/elys/x/commitment/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
@@ -37,7 +36,7 @@ type (
 
 		accountKeeper      types.AccountKeeper
 		bankKeeper         types.BankKeeper
-		stakingKeeper      *stakingkeeper.Keeper
+		stakingKeeper      types.StakingKeeper
 		assetProfileKeeper types.AssetProfileKeeper
 		authority          string
 	}
@@ -48,7 +47,7 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	stakingKeeper *stakingkeeper.Keeper,
+	stakingKeeper types.StakingKeeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	authority string,
 ) *Keeper {

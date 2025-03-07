@@ -22,12 +22,12 @@ var (
 )
 
 type ICSStakingKeeper struct {
-	*stakingkeeper.Keeper
+	stakingkeeper.Keeper
 }
 
 // NewICSStakingKeeper creates a new ICS Staking Keeper instance
 func NewICSStakingKeeper(
-	keeper *stakingkeeper.Keeper,
+	keeper stakingkeeper.Keeper,
 ) ICSStakingKeeper {
 	_ = debug.DebugCmd
 

@@ -41,7 +41,7 @@ func (app *ElysApp) ExportAppStateAndValidators(
 		return servertypes.ExportedApp{}, err
 	}
 
-	validators, err := staking.WriteValidators(ctx, app.StakingKeeper.Keeper)
+	validators, err := staking.WriteValidators(ctx, &app.StakingKeeper.Keeper)
 	return servertypes.ExportedApp{
 		AppState:        appState,
 		Validators:      validators,
