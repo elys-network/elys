@@ -33,12 +33,8 @@ func (k msgServer) Stake(goCtx context.Context, msg *types.MsgStake) (*types.Msg
 }
 
 func (k msgServer) performStakeElys(ctx sdk.Context, msg *types.MsgStake) error {
-	stakingKeeper, ok := k.stakingKeeper.(*stakingkeeper.Keeper)
-	if !ok {
-		return errorsmod.Wrap(errorsmod.Error{}, "staking keeper")
-	}
 
-	stakingMsgServer := stakingkeeper.NewMsgServerImpl(stakingKeeper)
+	stakingMsgServer := stakingkeeper.NewMsgServerImpl(k.stakingKeeper)
 
 	address, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
