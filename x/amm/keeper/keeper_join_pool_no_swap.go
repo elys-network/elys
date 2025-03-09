@@ -103,6 +103,25 @@ func (k Keeper) JoinPoolNoSwap(
 		return nil, sdkmath.ZeroInt(), err
 	}
 
+	// Check treasury and update weightBalance
+	var otherAsset types.PoolAsset
+	if weightBalanceBonus.IsPositive() && tokensJoined.Len() == 1 {
+		rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+		for _, asset := range pool.PoolAssets {
+			if asset.Token.Denom == tokensJoined[0].Denom {
+				continue
+			}
+			otherAsset = asset
+		}
+		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
+
+		bonusTokenAmount := tokensJoined[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+
+		if treasuryTokenAmount.LT(bonusTokenAmount) {
+			weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(tokensJoined[0].Amount.ToLegacyDec())
+		}
+	}
+
 	slippageCoins := sdk.Coins{}
 	if pool.PoolParams.UseOracle && len(tokenInMaxs) == 1 {
 		slippageAmount := slippage.Mul(tokenInMaxs[0].Amount.ToLegacyDec()).RoundInt()

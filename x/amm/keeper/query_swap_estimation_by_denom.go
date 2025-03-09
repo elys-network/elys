@@ -37,6 +37,8 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 	if err != nil {
 		return nil, err
 	}
+	// Add weight balance amount here, not added in execution as out amount will be changed and that will impact the transfers
+	amount.Amount = amount.Amount.Add(((amount.Amount.ToLegacyDec()).Mul(weightBonus)).TruncateInt())
 
 	return &types.QuerySwapEstimationByDenomResponse{
 		InRoute:            inRoute,
