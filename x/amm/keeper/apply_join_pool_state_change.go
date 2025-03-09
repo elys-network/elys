@@ -28,7 +28,6 @@ func (k Keeper) ApplyJoinPoolStateChange(
 
 	k.SetPool(ctx, pool)
 
-	rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
 
 	swapFeeInCoins := sdk.Coins{}
@@ -88,19 +87,26 @@ func (k Keeper) ApplyJoinPoolStateChange(
 		}
 	}
 
-	weightBalanceBonusCoins := sdk.Coins{}
-	if weightBalanceBonus.IsPositive() {
-		// calculate treasury amounts to send as bonus
-		weightBalanceBonusCoins = PortionCoins(joinCoins, weightBalanceBonus)
-		for _, coin := range weightBalanceBonusCoins {
-			treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, coin.Denom).Amount
-			if treasuryTokenAmount.LT(coin.Amount) {
-				// override coin amount by treasuryTokenAmount
-				weightBalanceBonusCoins = weightBalanceBonusCoins.
-					Sub(coin).                                        // remove the original coin
-					Add(sdk.NewCoin(coin.Denom, treasuryTokenAmount)) // add the treasuryTokenAmount
+	var weightBalanceBonusCoins sdk.Coins
+	var otherAsset types.PoolAsset
+	// Check treasury and update weightBalance
+	if weightBalanceBonus.IsPositive() && joinCoins.Len() == 1 {
+		rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+		for _, asset := range pool.PoolAssets {
+			if asset.Token.Denom == joinCoins[0].Denom {
+				continue
 			}
+			otherAsset = asset
 		}
+		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
+
+		bonusTokenAmount := joinCoins[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+
+		if treasuryTokenAmount.LT(bonusTokenAmount) {
+			weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(joinCoins[0].Amount.ToLegacyDec())
+		}
+
+		weightBalanceBonusCoins = sdk.Coins{sdk.NewCoin(otherAsset.Token.Denom, weightBalanceBonus.TruncateInt())}
 
 		// send bonus tokens to recipient if positive
 		if weightBalanceBonusCoins.IsAllPositive() {

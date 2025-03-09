@@ -57,20 +57,5 @@ func (k Keeper) ExitPoolEst(
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
 
-	// Check treasury and update weightBalance
-	if weightBalanceBonus.IsPositive() && exitCoins.Len() == 1 {
-		rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
-		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, exitCoins[0].Denom).Amount
-
-		bonusTokenAmount := exitCoins[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
-
-		if treasuryTokenAmount.LT(bonusTokenAmount) {
-			weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(exitCoins[0].Amount.ToLegacyDec())
-		}
-	}
-
-	// Add weight balance amount here, not added in execution as out amount will be changed and that will impact the transfers
-	exitCoins[0].Amount = exitCoins[0].Amount.Add(((exitCoins[0].Amount.ToLegacyDec()).Mul(weightBalanceBonus)).TruncateInt())
-
 	return exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, nil
 }
