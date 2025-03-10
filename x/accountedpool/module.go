@@ -159,6 +159,7 @@ func (am AppModule) BeginBlock(_ context.Context) error {
 }
 
 // EndBlock contains the logic that is automatically triggered at the end of each block
-func (am AppModule) EndBlock(_ context.Context) error {
+func (am AppModule) EndBlock(goCtx context.Context) error {
+	am.keeper.EndBlocker(sdk.UnwrapSDKContext(goCtx))
 	return nil
 }

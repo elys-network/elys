@@ -49,7 +49,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
 				suite.Require().NoError(err)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
 				// doing this before gives panic
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
@@ -89,7 +89,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
 				suite.Require().NoError(err)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
 				// doing this before gives panic
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
@@ -124,7 +124,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
 				suite.app.LeveragelpKeeper.RemovePool(suite.ctx, 1)
 				return position1
@@ -157,7 +157,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
 				suite.app.AmmKeeper.RemovePool(suite.ctx, 1)
 				return position1
@@ -190,7 +190,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
 				suite.app.LeveragelpKeeper.RemovePool(suite.ctx, 1)
 				return position1
@@ -223,7 +223,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
 				suite.app.AmmKeeper.RemovePool(suite.ctx, 1)
 				return position1
@@ -256,7 +256,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
 				return position1
 			},
@@ -288,7 +288,7 @@ func (suite *KeeperTestSuite) TestCloseositions() {
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
 				return position1
 			},

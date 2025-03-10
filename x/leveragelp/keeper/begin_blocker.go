@@ -84,7 +84,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 		return true, false, h, errors.New("position is healthy to close")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, math.LegacyOneDec(), true)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, math.LegacyOneDec(), true)
 	if err != nil {
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing liquidation for unhealthy").Error())
 		return isHealthy, true, h, err
@@ -102,6 +102,7 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
 		sdk.NewAttribute("exit_slippage_fee", exitSlippageFee.String()),
 		sdk.NewAttribute("exit_swap_fee", swapFee.String()),
+		sdk.NewAttribute("exit_taker_fee", takerFee.String()),
 	))
 	return isHealthy, true, h, nil
 }
@@ -132,7 +133,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		return underStopLossPrice, false, errors.New("position stop loss price is not <= lp token price")
 	}
 
-	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, math.LegacyOneDec(), false)
+	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, stopLossReached, _, exitSlippageFee, swapFee, exitFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, position, &pool, math.LegacyOneDec(), false)
 	if err != nil {
 		ctx.Logger().Error(errorsmod.Wrap(err, "error executing close for stopLossPrice").Error())
 		return underStopLossPrice, true, err
@@ -150,6 +151,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		sdk.NewAttribute("stop_loss_reached", strconv.FormatBool(stopLossReached)),
 		sdk.NewAttribute("exit_slippage_fee", exitSlippageFee.String()),
 		sdk.NewAttribute("exit_swap_fee", swapFee.String()),
+		sdk.NewAttribute("exit_taker_fee", exitFee.String()),
 	))
 	return underStopLossPrice, true, nil
 }

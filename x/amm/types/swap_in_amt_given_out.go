@@ -50,7 +50,7 @@ func (p Pool) CalcGivenOutSlippage(
 // Pool, and it's bank balances are updated in keeper.UpdatePoolForSwap
 func (p *Pool) SwapInAmtGivenOut(
 	ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool,
-	tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec, accPoolKeeper AccountedPoolKeeper, weightBreakingFeePerpetualFactor sdkmath.LegacyDec, params Params) (
+	tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec, accPoolKeeper AccountedPoolKeeper, weightBreakingFeePerpetualFactor sdkmath.LegacyDec, params Params, takerFees sdkmath.LegacyDec) (
 	tokenIn sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, oracleInAmount sdkmath.LegacyDec, swapFeeFinal sdkmath.LegacyDec, err error,
 ) {
 	// Fixed gas consumption per swap to prevent spam
@@ -142,7 +142,7 @@ func (p *Pool) SwapInAmtGivenOut(
 	// Therefore we divide by (1 - swapfee) here
 	tokenAmountInInt := inAmountAfterSlippage.
 		Quo(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
-		Quo(sdkmath.LegacyOneDec().Sub(swapFee)).
+		Quo(sdkmath.LegacyOneDec().Sub(swapFee.Add(takerFees))).
 		Ceil().TruncateInt() // We round up tokenInAmt, as this is whats charged for the swap, for the precise amount out.
 	// Otherwise, the pool would under-charge by this rounding error.
 	tokenIn = sdk.NewCoin(tokenInDenom, tokenAmountInInt)

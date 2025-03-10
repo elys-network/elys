@@ -25,6 +25,7 @@ func (k Keeper) InternalSwapExactAmountIn(
 	tokenOutDenom string,
 	tokenOutMinAmount math.Int,
 	swapFee math.LegacyDec,
+	takersFee math.LegacyDec,
 ) (tokenOutAmount math.Int, err error) {
 	if tokenIn.Denom == tokenOutDenom {
 		return math.Int{}, errors.New("cannot trade the same denomination in and out")
@@ -42,7 +43,7 @@ func (k Keeper) InternalSwapExactAmountIn(
 	// Executes the swap in the pool and stores the output. Updates pool assets but
 	// does not actually transfer any tokens to or from the pool.
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-	tokenOutCoin, _, slippageAmount, weightBalanceBonus, oracleOutAmount, swapFee, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper, math.LegacyOneDec(), params)
+	tokenOutCoin, _, slippageAmount, weightBalanceBonus, oracleOutAmount, swapFee, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper, math.LegacyOneDec(), params, takersFee)
 	if err != nil {
 		return math.Int{}, err
 	}
@@ -59,7 +60,7 @@ func (k Keeper) InternalSwapExactAmountIn(
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// Also emits a swap event and updates related liquidity metrics.
-	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, swapFee, math.ZeroInt(), oracleOutAmount.TruncateInt(), weightBalanceBonus, false)
+	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, swapFee, slippageAmount, math.ZeroInt(), oracleOutAmount.TruncateInt(), weightBalanceBonus, takersFee, false)
 	if err != nil {
 		return math.Int{}, err
 	}

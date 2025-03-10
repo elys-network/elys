@@ -71,6 +71,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		// }
 
 		swapFee := pool.GetPoolParams().SwapFee.Quo(math.LegacyNewDec(int64(len(routes))))
+		takersFee := k.parameterKeeper.GetParams(ctx).TakerFees.Quo(math.LegacyNewDec(int64(len(routes))))
 
 		// Apply discount to swap fee if applicable
 		swapFee = types.ApplyDiscount(swapFee, discount)
@@ -78,7 +79,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
-		_tokenInAmount, swapErr := k.InternalSwapExactAmountOut(ctx, sender, recipient, pool, route.TokenInDenom, insExpected[i], _tokenOut, swapFee)
+		_tokenInAmount, swapErr := k.InternalSwapExactAmountOut(ctx, sender, recipient, pool, route.TokenInDenom, insExpected[i], _tokenOut, swapFee, takersFee)
 		if swapErr != nil {
 			return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), swapErr
 		}

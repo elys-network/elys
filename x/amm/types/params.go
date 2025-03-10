@@ -2,6 +2,7 @@ package types
 
 import (
 	"errors"
+	"slices"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -57,12 +58,18 @@ func (p Params) Validate() error {
 	if p.WeightBreakingFeeExponent.IsNegative() {
 		return errors.New("weightBreakingFeeExponent must be positive")
 	}
+	if p.WeightBreakingFeeExponent.GT(math.LegacyMustNewDecFromStr("3")) {
+		return errors.New("weightBreakingFeeExponent must be less than 3")
+	}
 
 	if p.WeightBreakingFeeMultiplier.IsNil() {
 		return errors.New("weightBreakingFeeMultiplier must not be empty")
 	}
 	if p.WeightBreakingFeeMultiplier.IsNegative() {
 		return errors.New("weightBreakingFeeMultiplier must be positive")
+	}
+	if p.WeightBreakingFeeMultiplier.GT(math.LegacyMustNewDecFromStr("0.001")) {
+		return errors.New("weightBreakingFeeMultiplier must be less than 0.01%")
 	}
 
 	if p.WeightBreakingFeePortion.IsNil() {
@@ -71,12 +78,18 @@ func (p Params) Validate() error {
 	if p.WeightBreakingFeePortion.IsNegative() {
 		return errors.New("weightBreakingFeePortion must be positive")
 	}
+	if p.WeightBreakingFeePortion.GT(math.LegacyMustNewDecFromStr("1")) {
+		return errors.New("weightBreakingFeePortion must be less than 1")
+	}
 
 	if p.WeightRecoveryFeePortion.IsNil() {
 		return errors.New("weightRecoveryFeePortion must not be empty")
 	}
 	if p.WeightRecoveryFeePortion.IsNegative() {
 		return errors.New("weightRecoveryFeePortion must be positive")
+	}
+	if p.WeightRecoveryFeePortion.GT(math.LegacyMustNewDecFromStr("1")) {
+		return errors.New("weightRecoveryFeePortion must be less than 1")
 	}
 
 	if p.ThresholdWeightDifference.IsNil() {
@@ -113,10 +126,5 @@ func (p Params) Validate() error {
 }
 
 func (p Params) IsCreatorAllowed(creator string) bool {
-	for _, allowedCreator := range p.AllowedPoolCreators {
-		if allowedCreator == creator {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(p.AllowedPoolCreators, creator)
 }

@@ -10,12 +10,15 @@ import (
 
 func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.MsgUnbondResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	pool, found := k.GetPool(ctx, msg.PoolId)
+	if !found {
+		return nil, types.ErrPoolNotFound
+	}
 
-	params := k.GetParams(ctx)
 	creator := sdk.MustAccAddressFromBech32(msg.Creator)
-	redemptionRate := k.GetRedemptionRate(ctx)
+	redemptionRate := k.CalculateRedemptionRateForPool(ctx, pool)
 
-	shareDenom := types.GetShareDenom()
+	shareDenom := types.GetShareDenomForPool(pool.Id)
 
 	// Withdraw committed LP tokens
 	err := k.commitmentKeeper.UncommitTokens(ctx, creator, shareDenom, msg.Amount, false)
@@ -38,11 +41,11 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	redemptionAmount := shareCoin.Amount.ToLegacyDec().Mul(redemptionRate).RoundInt()
 
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
-	depositDenom := params.GetDepositDenom()
+	depositDenom := pool.GetDepositDenom()
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := params.TotalValue.Sub(balance.Amount)
-	borrowedRatio := (borrowed.ToLegacyDec().Quo(params.TotalValue.Sub(redemptionAmount).ToLegacyDec()))
-	if borrowedRatio.GT(params.MaxWithdrawRatio) {
+	borrowed := pool.TotalValue.Sub(balance.Amount)
+	borrowedRatio := (borrowed.ToLegacyDec().Quo(pool.TotalValue.Sub(redemptionAmount).ToLegacyDec()))
+	if borrowedRatio.GT(pool.MaxWithdrawRatio) {
 		return nil, types.ErrInvalidWithdraw
 	}
 
@@ -52,11 +55,11 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 		return nil, err
 	}
 
-	params.TotalValue = params.TotalValue.Sub(redemptionAmount)
-	k.SetParams(ctx, params)
+	pool.TotalValue = pool.TotalValue.Sub(redemptionAmount)
+	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {
-		err = k.hooks.AfterUnbond(ctx, creator, msg.Amount)
+		err = k.hooks.AfterUnbond(ctx, creator, msg.Amount, pool.Id)
 		if err != nil {
 			return nil, err
 		}

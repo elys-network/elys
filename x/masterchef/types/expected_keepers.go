@@ -9,10 +9,10 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ctypes "github.com/elys-network/elys/x/commitment/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametertypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 // CommitmentKeeper
@@ -91,7 +91,9 @@ type AmmKeeper interface {
 		tokenOutDenom string,
 		tokenOutMinAmount math.Int,
 		swapFee math.LegacyDec,
+		takersFee math.LegacyDec,
 	) (tokenOutAmount math.Int, err error)
+	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info
@@ -99,6 +101,11 @@ type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) math.LegacyDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
+	SetPool(ctx sdk.Context, pool oracletypes.Pool)
+	SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
+	CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
+	SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
+	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }
 
 // AccountedPoolKeeper
@@ -117,7 +124,11 @@ type AssetProfileKeeper interface {
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stabletypes.Params)
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)
-	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, baseCurrency string) math.LegacyDec
+	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, poolId uint64) math.LegacyDec
+	AllTVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper) math.LegacyDec
+	IterateLiquidityPools(sdk.Context, func(stabletypes.Pool) bool)
+	GetPoolByDenom(ctx sdk.Context, denom string) (stabletypes.Pool, bool)
+	GetPool(ctx sdk.Context, poolId uint64) (pool stabletypes.Pool, found bool)
 }
 
 // TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)

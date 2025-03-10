@@ -1,8 +1,9 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
@@ -21,17 +22,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: "invalid_address",
 				Params: &Params{
-					DepositDenom:         "stake",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
-					EpochLength:          1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
-					TotalValue:           sdkmath.NewInt(1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+					LegacyDepositDenom:         "stake",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
+					EpochLength:                1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
+					TotalValue:                 sdkmath.NewInt(1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 			err: sdkerrors.ErrInvalidAddress,
@@ -40,17 +41,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
 				Params: &Params{
-					DepositDenom:         "stake",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
-					EpochLength:          1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
-					TotalValue:           sdkmath.NewInt(1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+					LegacyDepositDenom:         "stake",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
+					EpochLength:                1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
+					TotalValue:                 sdkmath.NewInt(1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 		},
@@ -59,17 +60,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
 				Params: &Params{
-					DepositDenom:         "",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
-					EpochLength:          1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
-					TotalValue:           sdkmath.NewInt(1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+					LegacyDepositDenom:         "",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
+					EpochLength:                1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
+					TotalValue:                 sdkmath.NewInt(1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 			err: ErrInvalidParams,
@@ -79,17 +80,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
 				Params: &Params{
-					DepositDenom:         "stake",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(-20, 1), // -2.0
-					EpochLength:          1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
-					TotalValue:           sdkmath.NewInt(1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+					LegacyDepositDenom:         "stake",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(-20, 1), // -2.0
+					EpochLength:                1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
+					TotalValue:                 sdkmath.NewInt(1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 			err: ErrInvalidParams,
@@ -99,17 +100,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
 				Params: &Params{
-					DepositDenom:         "stake",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
-					EpochLength:          -1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
-					TotalValue:           sdkmath.NewInt(1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+					LegacyDepositDenom:         "stake",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
+					EpochLength:                -1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
+					TotalValue:                 sdkmath.NewInt(1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 			err: ErrInvalidParams,
@@ -119,17 +120,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
 				Params: &Params{
-					DepositDenom:         "stake",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
-					EpochLength:          1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(-3, 2), // -0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2),  // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2),  // 0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1),  // 0.1
-					TotalValue:           sdkmath.NewInt(1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+					LegacyDepositDenom:         "stake",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
+					EpochLength:                1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(-3, 2), // -0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2),  // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2),  // 0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1),  // 0.1
+					TotalValue:                 sdkmath.NewInt(1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 			err: ErrInvalidParams,
@@ -139,17 +140,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
 				Params: &Params{
-					DepositDenom:         "stake",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
-					EpochLength:          1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2),  // 0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2),  // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(-1, 2), // -0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2),  // 0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1),  // 0.1
-					TotalValue:           sdkmath.NewInt(1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+					LegacyDepositDenom:         "stake",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
+					EpochLength:                1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2),  // 0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2),  // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(-1, 2), // -0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2),  // 0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1),  // 0.1
+					TotalValue:                 sdkmath.NewInt(1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 			err: ErrInvalidParams,
@@ -159,17 +160,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
 				Params: &Params{
-					DepositDenom:         "stake",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
-					EpochLength:          1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2),  // 0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2),  // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(-2, 2), // -0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1),  // 0.1
-					TotalValue:           sdkmath.NewInt(1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+					LegacyDepositDenom:         "stake",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
+					EpochLength:                1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2),  // 0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2),  // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(-2, 2), // -0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1),  // 0.1
+					TotalValue:                 sdkmath.NewInt(1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 			err: ErrInvalidParams,
@@ -179,17 +180,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
 				Params: &Params{
-					DepositDenom:         "stake",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
-					EpochLength:          1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2),  // 0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2),  // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2),  // 0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(-1, 2), // -0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1),  // 0.1
-					TotalValue:           sdkmath.NewInt(1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+					LegacyDepositDenom:         "stake",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
+					EpochLength:                1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2),  // 0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2),  // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2),  // 0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(-1, 2), // -0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1),  // 0.1
+					TotalValue:                 sdkmath.NewInt(1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 			err: ErrInvalidParams,
@@ -199,17 +200,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
 				Params: &Params{
-					DepositDenom:         "stake",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
-					EpochLength:          1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2),  // 0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2),  // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2),  // 0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(-1, 1), // -0.1
-					TotalValue:           sdkmath.NewInt(1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+					LegacyDepositDenom:         "stake",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
+					EpochLength:                1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2),  // 0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2),  // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2),  // 0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2),  // 0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(-1, 1), // -0.1
+					TotalValue:                 sdkmath.NewInt(1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 			err: ErrInvalidParams,
@@ -219,17 +220,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
 				Params: &Params{
-					DepositDenom:         "stake",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
-					EpochLength:          1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
-					TotalValue:           sdkmath.NewInt(-1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+					LegacyDepositDenom:         "stake",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
+					EpochLength:                1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
+					TotalValue:                 sdkmath.NewInt(-1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				},
 			},
 			err: ErrInvalidParams,
@@ -239,17 +240,17 @@ func TestMsgUpdateParams_ValidateBasic(t *testing.T) {
 			msg: MsgUpdateParams{
 				Authority: sample.AccAddress(),
 				Params: &Params{
-					DepositDenom:         "stake",
-					RedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
-					EpochLength:          1000,
-					InterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
-					InterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
-					InterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					InterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
-					InterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
-					HealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
-					TotalValue:           sdkmath.NewInt(1000),
-					MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("-0.7"),
+					LegacyDepositDenom:         "stake",
+					LegacyRedemptionRate:       sdkmath.LegacyNewDecWithPrec(20, 1), // 2.0
+					EpochLength:                1000,
+					LegacyInterestRate:         sdkmath.LegacyNewDecWithPrec(3, 2), // 0.03
+					LegacyInterestRateMax:      sdkmath.LegacyNewDecWithPrec(5, 2), // 0.05
+					LegacyInterestRateMin:      sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyInterestRateIncrease: sdkmath.LegacyNewDecWithPrec(2, 2), // 0.02
+					LegacyInterestRateDecrease: sdkmath.LegacyNewDecWithPrec(1, 2), // 0.01
+					LegacyHealthGainFactor:     sdkmath.LegacyNewDecWithPrec(1, 1), // 0.1
+					TotalValue:                 sdkmath.NewInt(1000),
+					LegacyMaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("-0.7"),
 				},
 			},
 			err: ErrInvalidParams,

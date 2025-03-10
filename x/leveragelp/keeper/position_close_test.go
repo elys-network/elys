@@ -88,6 +88,7 @@ func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  math.NewInt(amount * 10),
+		PoolId:  1,
 	})
 	suite.Require().NoError(err)
 
@@ -99,7 +100,7 @@ func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position
 		CollateralAmount: math.NewInt(amount).QuoRaw(1000),
 		AmmPoolId:        1,
 		Leverage:         leverage,
-	})
+	}, 1)
 	suite.Require().NoError(err)
 	return position, leverage, pool
 }
@@ -109,7 +110,8 @@ func (suite *KeeperTestSuite) TestForceCloseLong() {
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, leverage, pool := suite.OpenPosition(addr)
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour).Unix() - suite.ctx.BlockTime().Unix()
-	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
+	borrowPool, _ := suite.app.StablestakeKeeper.GetPoolByDenom(suite.ctx, "uusdc")
+	interestRate := borrowPool.InterestRate
 	borrowed := leverage.Sub(math.LegacyOneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).
@@ -117,7 +119,7 @@ func (suite *KeeperTestSuite) TestForceCloseLong() {
 		Quo(math.LegacyNewDec(86400 * 365))).TruncateInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
-	_, _, _, repayAmountOut, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
@@ -127,7 +129,8 @@ func (suite *KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	position, leverage, pool := suite.OpenPosition(addr)
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour*24*365*5).Unix() - suite.ctx.BlockTime().Unix()
-	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
+	borrowPool, _ := suite.app.StablestakeKeeper.GetPoolByDenom(suite.ctx, "uusdc")
+	interestRate := borrowPool.InterestRate
 	borrowed := leverage.Sub(math.LegacyOneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).
@@ -135,7 +138,7 @@ func (suite *KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 		Quo(math.LegacyNewDec(86400 * 365))).RoundInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365 * 5))
-	_, _, _, repayAmountOut, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
 	suite.Require().NoError(err)
 	suite.Require().Greater(repayAmount.String(), repayAmountOut.String())
 }
@@ -146,7 +149,8 @@ func (suite *KeeperTestSuite) TestForceCloseLongPartial() {
 	position, leverage, pool := suite.OpenPosition(addr)
 	originalPosition := *position
 	timeDifference := suite.ctx.BlockTime().Add(time.Hour).Unix() - suite.ctx.BlockTime().Unix()
-	interestRate := suite.app.StablestakeKeeper.GetParams(suite.ctx).InterestRate
+	borrowPool, _ := suite.app.StablestakeKeeper.GetPoolByDenom(suite.ctx, "uusdc")
+	interestRate := borrowPool.InterestRate
 	borrowed := leverage.Sub(math.LegacyOneDec()).MulInt(position.Collateral.Amount)
 	repayAmount := borrowed.Add(borrowed.
 		Mul(interestRate).
@@ -155,7 +159,7 @@ func (suite *KeeperTestSuite) TestForceCloseLongPartial() {
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 	suite.SetCurrentHeight(suite.ctx.BlockHeight() + 1)
 	// close 50%
-	_, _, _, repayAmountOut, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec().QuoInt64(2), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec().QuoInt64(2), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.Quo(math.NewInt(2)).String(), repayAmountOut.String())
 
@@ -178,11 +182,11 @@ func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.SetCurrentHeight(suite.ctx.BlockHeight() + 1)
 	suite.app.StablestakeKeeper.BeginBlocker(suite.ctx)
-	suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, position.GetPositionAddress(), position.AmmPoolId, position.Collateral.Denom)
+	suite.app.StablestakeKeeper.UpdateInterestAndGetDebt(suite.ctx, position.GetPositionAddress(), 1, 1)
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
-	suite.Require().Equal("1.095113090126531601", health.String()) // slippage disabled on amm
+	suite.Require().Equal("1.166756002564715911", health.String()) // slippage disabled on amm
 }
 
 // test positionHealth should be maxDec when liablities is zero
@@ -197,7 +201,7 @@ func (suite *KeeperTestSuite) TestPositionHealth() {
 	suite.Require().Equal("1.248428922744246025", health.String())
 
 	//setting position debt/liablities to zero
-	debt := suite.app.StablestakeKeeper.GetDebt(suite.ctx, position.GetPositionAddress())
+	debt := suite.app.StablestakeKeeper.GetDebt(suite.ctx, position.GetPositionAddress(), position.BorrowPoolId)
 	debt.Borrowed = math.ZeroInt()
 	debt.InterestStacked = math.ZeroInt()
 	debt.InterestPaid = math.ZeroInt()

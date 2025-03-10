@@ -85,7 +85,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 	} {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
-			suite.SetupStableCoinPrices()
+			suite.SetupCoinPrices()
 			suite.SetAmmParams()
 			suite.SetupAssetProfile()
 

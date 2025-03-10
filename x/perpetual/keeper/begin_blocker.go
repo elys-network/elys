@@ -44,13 +44,23 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 		fundingAmountLong := types.CalcTakeAmount(totalLongOpenInterest, fundingRateLong).ToLegacyDec().Quo(math.LegacyNewDec(blocksPerYear))
 		fundingAmountShort := types.CalcTakeAmount(totalShortOpenInterest, fundingRateShort).ToLegacyDec().Quo(math.LegacyNewDec(blocksPerYear))
 
+		fundingShareLong := math.LegacyZeroDec()
+		if totalShortOpenInterest.IsPositive() {
+			fundingShareLong = fundingAmountLong.Quo(totalShortOpenInterest.ToLegacyDec())
+		}
+
+		fundingShareShort := math.LegacyZeroDec()
+		if totalLongOpenInterest.IsPositive() {
+			fundingShareShort = fundingAmountShort.Quo(totalLongOpenInterest.ToLegacyDec())
+		}
+
 		k.SetFundingRate(ctx, uint64(ctx.BlockHeight()), pool.AmmPoolId, types.FundingRateBlock{
-			BlockHeight:        ctx.BlockHeight(),
-			BlockTime:          ctx.BlockTime().Unix(),
-			FundingRateLong:    fundingRateLong,
-			FundingRateShort:   fundingRateShort,
-			FundingAmountShort: fundingAmountShort,
-			FundingAmountLong:  fundingAmountLong,
+			BlockHeight:       ctx.BlockHeight(),
+			BlockTime:         ctx.BlockTime().Unix(),
+			FundingRateLong:   fundingRateLong,
+			FundingRateShort:  fundingRateShort,
+			FundingShareShort: fundingShareShort,
+			FundingShareLong:  fundingShareLong,
 		})
 		k.SetPool(ctx, pool)
 	}

@@ -5,6 +5,6 @@ import (
 )
 
 func (m Migrator) V9Migration(ctx sdk.Context) error {
-	m.keeper.V9_SetSupply(ctx)
+	//m.keeper.V9_SetSupply(ctx)
 	return nil
 }

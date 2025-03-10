@@ -16,6 +16,7 @@ type (
 		cdc          codec.BinaryCodec
 		storeService storetypes.KVStoreService
 		bankKeeper   types.BankKeeper
+		oracleKeeper types.OracleKeeper
 	}
 )
 
@@ -23,11 +24,13 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeService storetypes.KVStoreService,
 	bk types.BankKeeper,
+	oracleKeeper types.OracleKeeper,
 ) *Keeper {
 	return &Keeper{
 		cdc:          cdc,
 		storeService: storeService,
 		bankKeeper:   bk,
+		oracleKeeper: oracleKeeper,
 	}
 }
 

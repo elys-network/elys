@@ -8,7 +8,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 type AccountKeeper interface {
@@ -29,8 +29,8 @@ type AmmKeeper interface {
 
 	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
 
-	SwapOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec, weightBreakingFeePerpetualFactor math.LegacyDec) (tokenOut sdk.Coin, slippage math.LegacyDec, slippageAmount math.LegacyDec, weightBalanceBonus, oracleOut math.LegacyDec, swapFeeFinal math.LegacyDec, err error)
-	SwapInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee math.LegacyDec, weightBreakingFeePerpetualFactor math.LegacyDec) (tokenIn sdk.Coin, slippage, slippageAmount math.LegacyDec, weightBalanceBonus, oracleIn math.LegacyDec, swapFeeFinal math.LegacyDec, err error)
+	SwapOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec, weightBreakingFeePerpetualFactor math.LegacyDec, takersFee math.LegacyDec) (tokenOut sdk.Coin, slippage math.LegacyDec, slippageAmount math.LegacyDec, weightBalanceBonus, oracleOut math.LegacyDec, swapFeeFinal math.LegacyDec, err error)
+	SwapInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee math.LegacyDec, weightBreakingFeePerpetualFactor math.LegacyDec, takersFee math.LegacyDec) (tokenIn sdk.Coin, slippage, slippageAmount math.LegacyDec, weightBalanceBonus, oracleIn math.LegacyDec, swapFeeFinal math.LegacyDec, err error)
 
 	AddToPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, addShares math.Int, coins sdk.Coins) error
 	RemoveFromPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, removeShares math.Int, coins sdk.Coins) error
@@ -63,4 +63,8 @@ type OracleKeeper interface {
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) math.LegacyDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
+	SetPool(ctx sdk.Context, pool oracletypes.Pool)
+	SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
+	CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
+	SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
 }

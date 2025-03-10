@@ -11,18 +11,18 @@ import (
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		DepositDenom:         "uusdc",
-		RedemptionRate:       math.LegacyOneDec(),
-		EpochLength:          1,
-		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
-		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
-		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
-		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
-		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
-		HealthGainFactor:     math.LegacyOneDec(),
-		TotalValue:           math.ZeroInt(),
-		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
-		MaxWithdrawRatio:     math.LegacyMustNewDecFromStr("0.7"),
+		LegacyDepositDenom:         "uusdc",
+		LegacyRedemptionRate:       math.LegacyOneDec(),
+		EpochLength:                1,
+		LegacyInterestRate:         math.LegacyMustNewDecFromStr("0.15"),
+		LegacyInterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
+		LegacyInterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
+		LegacyInterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
+		LegacyInterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
+		LegacyHealthGainFactor:     math.LegacyOneDec(),
+		TotalValue:                 math.ZeroInt(),
+		LegacyMaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+		LegacyMaxWithdrawRatio:     math.LegacyMustNewDecFromStr("0.7"),
 	}
 }
 
@@ -38,35 +38,35 @@ func CheckLegacyDecNilAndNegative(value math.LegacyDec, name string) error {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := sdk.ValidateDenom(p.DepositDenom); err != nil {
+	if err := sdk.ValidateDenom(p.LegacyDepositDenom); err != nil {
 		return err
 	}
 
-	if err := CheckLegacyDecNilAndNegative(p.RedemptionRate, "RedemptionRate"); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.LegacyRedemptionRate, "RedemptionRate"); err != nil {
 		return err
 	}
-	if err := CheckLegacyDecNilAndNegative(p.InterestRate, "InterestRate"); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.LegacyInterestRate, "InterestRate"); err != nil {
 		return err
 	}
-	if err := CheckLegacyDecNilAndNegative(p.InterestRateMax, "InterestRateMax"); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.LegacyInterestRateMax, "InterestRateMax"); err != nil {
 		return err
 	}
-	if err := CheckLegacyDecNilAndNegative(p.InterestRateMin, "InterestRateMin"); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.LegacyInterestRateMin, "InterestRateMin"); err != nil {
 		return err
 	}
-	if p.InterestRateMax.LT(p.InterestRateMin) {
+	if p.LegacyInterestRateMax.LT(p.LegacyInterestRateMin) {
 		return fmt.Errorf("InterestRateMax must be greater than InterestRateMin")
 	}
-	if err := CheckLegacyDecNilAndNegative(p.InterestRateIncrease, "InterestRateIncrease"); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.LegacyInterestRateIncrease, "InterestRateIncrease"); err != nil {
 		return err
 	}
-	if err := CheckLegacyDecNilAndNegative(p.InterestRateDecrease, "InterestRateDecrease"); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.LegacyInterestRateDecrease, "InterestRateDecrease"); err != nil {
 		return err
 	}
-	if err := CheckLegacyDecNilAndNegative(p.HealthGainFactor, "HealthGainFactor"); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.LegacyHealthGainFactor, "HealthGainFactor"); err != nil {
 		return err
 	}
-	if err := CheckLegacyDecNilAndNegative(p.MaxLeverageRatio, "MaxLeverageRatio"); err != nil {
+	if err := CheckLegacyDecNilAndNegative(p.LegacyMaxLeverageRatio, "MaxLeverageRatio"); err != nil {
 		return err
 	}
 
