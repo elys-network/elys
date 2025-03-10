@@ -212,7 +212,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				return &types.MsgClose{
 					Creator: positionCreator.String(),
 					Id:      position.Id,
-					Amount:  math.NewInt(399),
+					Amount:  math.NewInt(699),
 				}
 			},
 			"",
