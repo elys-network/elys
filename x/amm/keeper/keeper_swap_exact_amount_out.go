@@ -23,6 +23,7 @@ func (k Keeper) InternalSwapExactAmountOut(
 	tokenInMaxAmount math.Int,
 	tokenOut sdk.Coin,
 	swapFee math.LegacyDec,
+	takersFee math.LegacyDec,
 ) (tokenInAmount math.Int, err error) {
 	if tokenInDenom == tokenOut.Denom {
 		return math.Int{}, errors.New("cannot trade the same denomination in and out")
@@ -41,9 +42,8 @@ func (k Keeper) InternalSwapExactAmountOut(
 	}
 
 	params := k.GetParams(ctx)
-	takersFees := k.parameterKeeper.GetParams(ctx).TakerFees
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-	tokenIn, _, slippageAmount, weightBalanceBonus, oracleInAmount, swapFee, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, math.LegacyOneDec(), params, takersFees)
+	tokenIn, _, slippageAmount, weightBalanceBonus, oracleInAmount, swapFee, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, math.LegacyOneDec(), params, takersFee)
 	if err != nil {
 		return math.Int{}, err
 	}
@@ -57,7 +57,7 @@ func (k Keeper) InternalSwapExactAmountOut(
 		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
-	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, oracleInAmount.TruncateInt(), math.ZeroInt(), weightBalanceBonus, takersFees, true)
+	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, slippageAmount, oracleInAmount.TruncateInt(), math.ZeroInt(), weightBalanceBonus, takersFee, true)
 	if err != nil {
 		return math.Int{}, err
 	}

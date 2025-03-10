@@ -91,6 +91,7 @@ type AmmKeeper interface {
 		tokenOutDenom string,
 		tokenOutMinAmount math.Int,
 		swapFee math.LegacyDec,
+		takersFee math.LegacyDec,
 	) (tokenOutAmount math.Int, err error)
 	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
 }
