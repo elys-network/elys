@@ -93,7 +93,8 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 		sdk.NewEvent(
 			types.EventTypeCommitmentChanged,
 			sdk.NewAttribute(types.AttributeCreator, msg.Creator),
-			sdk.NewAttribute(types.AttributeAmount, totalCancelled.String()),
+			sdk.NewAttribute(types.AttributeAmount, msg.Amount.String()),
+			sdk.NewAttribute(types.AttributeCancelledAmount, totalCancelled.String()),
 			sdk.NewAttribute(types.AttributeDenom, ptypes.Eden),
 		),
 	)
