@@ -80,6 +80,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"binance",
 			"mexc",
 			"gate",
+			"crypto",
 		},
 		BaseProxyDenom:          "TIA",
 		QuoteProxyDenom:         "USDC",
@@ -112,6 +113,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"binance",
 			"mexc",
 			"bitget",
+			"gate",
 		},
 		BaseProxyDenom:          "SAGA",
 		QuoteProxyDenom:         "USDC",
@@ -168,6 +170,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 			"mexc",
 			"binance",
 			"bitget",
+			"gate",
 		},
 		BaseProxyDenom:          "NTRN",
 		QuoteProxyDenom:         "USDC",
@@ -306,6 +309,7 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, height int64) error {
 	newParams.CurrencyPairProviders = currencyPairProviders
 	newParams.CurrencyDeviationThresholds = deviationThreshold
 	newParams.RewardBands = rewardBand
+
 	if err = newParams.Validate(); err != nil {
 		return err
 	}
