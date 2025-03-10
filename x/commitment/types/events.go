@@ -8,7 +8,8 @@ const (
 	EventTypeBurnCoins         = "burn_coins"
 	EventTypeSendCoins         = "send_coins"
 
-	AttributeCreator = "creator"
-	AttributeAmount  = "token_amount"
-	AttributeDenom   = "token_denom"
+	AttributeCreator         = "creator"
+	AttributeAmount          = "token_amount"
+	AttributeCancelledAmount = "cancelled_amount"
+	AttributeDenom           = "token_denom"
 )
