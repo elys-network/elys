@@ -12,7 +12,7 @@ func (m Migrator) V9Migration(ctx sdk.Context) error {
 	params := m.keeper.GetParams(ctx)
 	pool := types.Pool{
 		Id:                   types.UsdcPoolId,
-		DepositDenom:         params.LegacyDepositDenom,
+		DepositDenom:         params.LegacyDepositDenom, // TODO update to deposit denom
 		InterestRateDecrease: params.LegacyInterestRateDecrease,
 		InterestRateIncrease: params.LegacyInterestRateIncrease,
 		HealthGainFactor:     params.LegacyHealthGainFactor,
