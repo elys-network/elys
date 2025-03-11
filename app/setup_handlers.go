@@ -58,10 +58,12 @@ func (app *ElysApp) setUpgradeHandler() {
 		func(goCtx context.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
-
-			err := app.ojoOracleMigration(ctx, plan.Height+1)
-			if err != nil {
-				return nil, err
+			oracleParams := app.OracleKeeper.GetParams(ctx)
+			if len(oracleParams.MandatoryList) == 0 {
+				err := app.ojoOracleMigration(ctx, plan.Height+1)
+				if err != nil {
+					return nil, err
+				}
 			}
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
