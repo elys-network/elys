@@ -1,8 +1,9 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	sdkmath "cosmossdk.io/math"
 )
 
 // NewParams creates a new Params instance
@@ -19,6 +20,7 @@ func NewParams() Params {
 		RewardPercentage:     sdkmath.LegacyZeroDec(),
 		MarginError:          sdkmath.LegacyZeroDec(),
 		MinimumDeposit:       sdkmath.ZeroInt(),
+		Tolerance:            sdkmath.LegacyMustNewDecFromStr("0.05"),
 	}
 }
 
