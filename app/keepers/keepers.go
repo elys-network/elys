@@ -307,7 +307,7 @@ func NewAppKeeper(
 	)
 
 	app.StakingKeeper = NewICSStakingKeeper(
-		*stakingkeeper.NewKeeper(
+		stakingkeeper.NewKeeper(
 			appCodec,
 			runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
 			app.AccountKeeper,
@@ -330,7 +330,7 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[commitmentmoduletypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.StakingKeeper,
+		app.StakingKeeper.Keeper,
 		app.AssetprofileKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -346,7 +346,7 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[estakingmoduletypes.StoreKey]),
 		app.ParameterKeeper,
-		&app.StakingKeeper.Keeper,
+		app.StakingKeeper.Keeper,
 		app.CommitmentKeeper,
 		&app.DistrKeeper,
 		app.AssetprofileKeeper,
@@ -661,7 +661,7 @@ func NewAppKeeper(
 		app.AccountKeeper,
 		app.BankKeeper,
 		// No need to send EstakingKeeper here as gov only does sk.IterateBondedValidatorsByPower, no need to give vp to Eden and EdenB
-		app.StakingKeeper,
+		app.StakingKeeper.Keeper,
 		app.DistrKeeper,
 		bApp.MsgServiceRouter(),
 		govConfig,
@@ -701,7 +701,7 @@ func NewAppKeeper(
 		app.EstakingKeeper,
 		app.MasterchefKeeper,
 		app.CommitmentKeeper,
-		app.StakingKeeper,
+		app.StakingKeeper.Keeper,
 		app.PerpetualKeeper,
 		app.LeveragelpKeeper,
 		app.StablestakeKeeper,

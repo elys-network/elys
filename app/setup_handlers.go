@@ -64,9 +64,12 @@ func (app *ElysApp) setUpgradeHandler() {
 
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
-			err := app.ojoOracleMigration(ctx, plan.Height+1)
-			if err != nil {
-				return nil, err
+			oracleParams := app.OracleKeeper.GetParams(ctx)
+			if len(oracleParams.MandatoryList) == 0 {
+				err := app.ojoOracleMigration(ctx, plan.Height+1)
+				if err != nil {
+					return nil, err
+				}
 			}
 
 			// Set cosmwasm params
