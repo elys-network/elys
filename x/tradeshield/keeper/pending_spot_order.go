@@ -335,7 +335,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 	})
 
 	params := k.GetParams(ctx)
-	expectedAmount := marketPrice.Mul(order.OrderAmount.Amount.ToLegacyDec())
+	expectedAmount := order.OrderAmount.Amount.ToLegacyDec().Quo(marketPrice)
 	gotAmount := res.Amount.Amount.ToLegacyDec()
 	tolerance := sdkmath.LegacyZeroDec()
 

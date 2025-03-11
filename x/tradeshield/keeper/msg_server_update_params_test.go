@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"errors"
+
+	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	keeper "github.com/elys-network/elys/x/tradeshield/keeper"
@@ -38,6 +39,7 @@ func (suite *TradeshieldKeeperTestSuite) TestUpdateParams() {
 				RewardPercentage:     math.LegacyMustNewDecFromStr("0.1"),
 				MarginError:          math.LegacyMustNewDecFromStr("0.05"),
 				MinimumDeposit:       math.NewInt(100000),
+				Tolerance:            math.LegacyMustNewDecFromStr("0.05"),
 			},
 			expected: nil,
 		},
