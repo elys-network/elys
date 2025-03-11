@@ -109,6 +109,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 
 	// Subtract amount that is being reduced from lp pool as it gets checked in CheckAmmUsdcBalance
 	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(lpSharesForRepay)
+	pool.UpdateAssetLeveragedAmount(ctx, position.Collateral.Denom, lpSharesForRepay, false)
 	// pool is set here
 	k.UpdatePoolHealth(ctx, pool)
 
@@ -166,6 +167,7 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 	// Update the pool health.
 	if sharesLeft.IsPositive() {
 		pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(sharesLeft)
+		pool.UpdateAssetLeveragedAmount(ctx, position.Collateral.Denom, sharesLeft, false)
 	}
 
 	var coinsForAmm sdk.Coins

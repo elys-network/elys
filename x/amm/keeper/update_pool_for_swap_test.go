@@ -16,6 +16,7 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 		poolInitBalance     sdk.Coins
 		treasuryInitBalance sdk.Coins
 		swapFee             sdkmath.LegacyDec
+		slippageAmount      sdkmath.LegacyDec
 		tokenIn             sdk.Coin
 		tokenOut            sdk.Coin
 		weightBalanceBonus  sdkmath.LegacyDec
@@ -163,7 +164,7 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
-			err = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, sender, tc.tokenIn, tc.tokenOut, tc.swapFee, tc.tokenIn.Amount, tc.tokenOut.Amount, tc.weightBalanceBonus, sdkmath.LegacyZeroDec(), false)
+			err = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, sender, tc.tokenIn, tc.tokenOut, tc.swapFee, sdkmath.LegacyZeroDec(), tc.tokenIn.Amount, tc.tokenOut.Amount, tc.weightBalanceBonus, sdkmath.LegacyZeroDec(), false)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {
