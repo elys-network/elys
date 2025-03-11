@@ -37,6 +37,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 	commitments := k.GetCommitments(ctx, creator)
 
 	remainingToCancel := msg.Amount
+	totalCancelled := sdkmath.ZeroInt()
 
 	for i := len(commitments.VestingTokens) - 1; i >= 0; i-- {
 		vesting := commitments.VestingTokens[i]
@@ -58,6 +59,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 		commitments.VestingTokens[i] = vesting
 
 		remainingToCancel = remainingToCancel.Sub(cancelAmount)
+		totalCancelled = totalCancelled.Add(cancelAmount)
 	}
 
 	newVestingTokens := []*types.VestingTokens{}
@@ -70,15 +72,19 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	commitments.VestingTokens = newVestingTokens
 
-	if !remainingToCancel.IsZero() {
+	if totalCancelled.IsZero() {
 		return nil, errorsmod.Wrapf(types.ErrInsufficientVestingTokens, "denom: %s, amount: %s", ptypes.Eden, msg.Amount)
 	}
+	ctx.Logger().Info("Successfully Cancelled vesting token",
+		"creator", msg.Creator,
+		"amount", totalCancelled.String(),
+		"denom", msg.Denom)
 
 	// Update the unclaimed tokens amount
-	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, msg.Amount))
+	commitments.AddClaimed(sdk.NewCoin(ptypes.Eden, totalCancelled))
 
 	prev := k.GetTotalSupply(ctx)
-	prev.TotalEdenSupply = prev.TotalEdenSupply.Add(msg.Amount)
+	prev.TotalEdenSupply = prev.TotalEdenSupply.Add(totalCancelled)
 	k.SetTotalSupply(ctx, prev)
 	k.SetCommitments(ctx, commitments)
 
@@ -88,6 +94,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 			types.EventTypeCommitmentChanged,
 			sdk.NewAttribute(types.AttributeCreator, msg.Creator),
 			sdk.NewAttribute(types.AttributeAmount, msg.Amount.String()),
+			sdk.NewAttribute(types.AttributeCancelledAmount, totalCancelled.String()),
 			sdk.NewAttribute(types.AttributeDenom, ptypes.Eden),
 		),
 	)

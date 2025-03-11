@@ -61,7 +61,7 @@ func (k Keeper) JoinPoolEst(
 			return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 		}
 
-		return tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err
+		return tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, nil
 	}
 
 	params := k.GetParams(ctx)
@@ -92,6 +92,5 @@ func (k Keeper) JoinPoolEst(
 			weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(tokensJoined[0].Amount.ToLegacyDec())
 		}
 	}
-
-	return tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err
+	return tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, nil
 }
