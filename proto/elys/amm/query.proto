@@ -94,6 +94,7 @@ service Query {
         "/elys-network/elys/amm/swap_estimation_by_denom";
   }
 
+  // Queries saved value for a pool and date
   rpc SavedValue(QuerySavedValueRequest) returns (QuerySavedValueResponse) {
     option (google.api.http).get =
         "/elys-network/elys/amm/saved_value/{pool_id}/{date}";

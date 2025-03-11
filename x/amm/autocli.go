@@ -101,6 +101,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Example:        "elysd q amm swap-estimation-by-denom 100uatom uatom uosmo",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom_in"}, {ProtoField: "denom_out"}},
 				},
+				{
+					RpcMethod:      "SavedValue",
+					Use:            "saved-value [pool-id] [date]",
+					Short:          "Query saved value",
+					Example:        "elysd q amm saved-value 1 2022-01-01",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "date"}},
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
