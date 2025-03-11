@@ -32,12 +32,7 @@ func (k msgServer) Unstake(goCtx context.Context, msg *types.MsgUnstake) (*types
 }
 
 func (k msgServer) performUnstakeElys(ctx sdk.Context, msg *types.MsgUnstake) error {
-	stakingKeeper, ok := k.stakingKeeper.(*stakingkeeper.Keeper)
-	if !ok {
-		return errorsmod.Wrap(errorsmod.Error{}, "staking keeper")
-	}
-
-	msgServer := stakingkeeper.NewMsgServerImpl(stakingKeeper)
+	stakingMsgServer := stakingkeeper.NewMsgServerImpl(k.stakingKeeper)
 
 	address, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -55,7 +50,7 @@ func (k msgServer) performUnstakeElys(ctx sdk.Context, msg *types.MsgUnstake) er
 	}
 	msgMsgUndelegate := stakingtypes.NewMsgUndelegate(address.String(), validator_address.String(), amount)
 
-	if _, err := msgServer.Undelegate(ctx, msgMsgUndelegate); err != nil { // Discard the response because it's empty
+	if _, err := stakingMsgServer.Undelegate(ctx, msgMsgUndelegate); err != nil { // Discard the response because it's empty
 		return errorsmod.Wrap(err, "elys unstake msg")
 	}
 
