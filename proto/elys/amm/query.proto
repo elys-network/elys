@@ -104,7 +104,10 @@ message QueryParamsResponse {
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryGetPoolRequest { uint64 pool_id = 1; }
+message QueryGetPoolRequest {
+  uint64 pool_id = 1;
+  uint64 days = 2;
+}
 
 message QueryGetPoolResponse {
   Pool pool = 1 [ (gogoproto.nullable) = false ];
@@ -112,7 +115,8 @@ message QueryGetPoolResponse {
 }
 
 message QueryAllPoolRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  uint64 days = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QueryAllPoolResponse {
