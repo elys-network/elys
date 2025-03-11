@@ -55,6 +55,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		// Get Pool swap fee
 		// Divide fees with the number of routes to incentivize multi-hop
 		swapFee := pool.GetPoolParams().SwapFee.Quo(sdkmath.LegacyNewDec(int64(len(routes))))
+		takersFee := k.parameterKeeper.GetParams(ctx).TakerFees.Quo(sdkmath.LegacyNewDec(int64(len(routes))))
 
 		// Override swap fee if applicable
 		if overrideSwapFee.IsPositive() {
@@ -67,7 +68,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		// Estimate swap
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		cacheCtx, _ := ctx.CacheContext()
-		tokenOut, swapSlippage, _, weightBalanceBonus, _, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, sdkmath.LegacyOneDec())
+		tokenOut, swapSlippage, _, weightBalanceBonus, _, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, sdkmath.LegacyOneDec(), takersFee)
 		if err != nil {
 			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
