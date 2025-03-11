@@ -232,6 +232,16 @@ message MsgSwapByDenomResponse {
     (gogoproto.nullable) = false
   ];
   string recipient = 7;
+  string slippage = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string weight_bonus = 9 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgUpdatePoolParams {
