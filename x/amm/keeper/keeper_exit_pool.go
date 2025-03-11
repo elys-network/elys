@@ -45,6 +45,12 @@ func (k Keeper) ExitPool(
 		}
 	}
 
+	if pool.PoolParams.UseOracle {
+		if slippageCoins.IsAllPositive() {
+			k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(slippageCoins[0].Denom, slippageCoins[0].Amount))
+		}
+	}
+
 	if !tokenOutMins.DenomsSubsetOf(exitCoins) || tokenOutMins.IsAnyGT(exitCoins) {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrLimitMinAmount,
 			"Exit pool returned %s , minimum tokens out specified as %s",
