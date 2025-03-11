@@ -84,8 +84,8 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			return apr, nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
-			// Get 7 days average rewards
-			usdcAmount := k.GetAvgStakerFeesCollected(ctx)
+			// Get x days average rewards
+			usdcAmount := k.GetAvgStakerFeesCollected(ctx, int(query.Days))
 			if usdcAmount.IsZero() {
 				return math.LegacyZeroDec(), nil
 			}

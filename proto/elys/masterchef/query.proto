@@ -268,6 +268,7 @@ message QueryListFeeInfoResponse {
 message QueryAprRequest {
   elys.commitment.EarnType withdraw_type = 1;
   string denom = 2;
+  uint64 days = 3;
 }
 
 message QueryAprResponse {

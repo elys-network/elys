@@ -93,13 +93,17 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/amm/swap_estimation_by_denom";
   }
+
+  rpc SavedValue(QuerySavedValueRequest) returns (QuerySavedValueResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/amm/saved_value/{pool_id}/{date}";
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-
   // params holds all the parameters of this module.
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
@@ -334,6 +338,19 @@ message QuerySwapEstimationByDenomResponse {
 message QueryAMMPriceRequest {
   cosmos.base.v1beta1.Coin token_in = 1 [ (gogoproto.nullable) = false ];
   string discount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QuerySavedValueRequest {
+  uint64 pool_id = 1;
+  string date = 2;
+}
+
+message QuerySavedValueResponse {
+  string value = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false

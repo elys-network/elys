@@ -44,6 +44,7 @@ type QueryClient interface {
 	OutRouteByDenom(ctx context.Context, in *QueryOutRouteByDenomRequest, opts ...grpc.CallOption) (*QueryOutRouteByDenomResponse, error)
 	// Queries a list of SwapEstimationByDenom items.
 	SwapEstimationByDenom(ctx context.Context, in *QuerySwapEstimationByDenomRequest, opts ...grpc.CallOption) (*QuerySwapEstimationByDenomResponse, error)
+	SavedValue(ctx context.Context, in *QuerySavedValueRequest, opts ...grpc.CallOption) (*QuerySavedValueResponse, error)
 }
 
 type queryClient struct {
@@ -180,6 +181,15 @@ func (c *queryClient) SwapEstimationByDenom(ctx context.Context, in *QuerySwapEs
 	return out, nil
 }
 
+func (c *queryClient) SavedValue(ctx context.Context, in *QuerySavedValueRequest, opts ...grpc.CallOption) (*QuerySavedValueResponse, error) {
+	out := new(QuerySavedValueResponse)
+	err := c.cc.Invoke(ctx, "/elys.amm.Query/SavedValue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -210,6 +220,7 @@ type QueryServer interface {
 	OutRouteByDenom(context.Context, *QueryOutRouteByDenomRequest) (*QueryOutRouteByDenomResponse, error)
 	// Queries a list of SwapEstimationByDenom items.
 	SwapEstimationByDenom(context.Context, *QuerySwapEstimationByDenomRequest) (*QuerySwapEstimationByDenomResponse, error)
+	SavedValue(context.Context, *QuerySavedValueRequest) (*QuerySavedValueResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -258,6 +269,9 @@ func (UnimplementedQueryServer) OutRouteByDenom(context.Context, *QueryOutRouteB
 }
 func (UnimplementedQueryServer) SwapEstimationByDenom(context.Context, *QuerySwapEstimationByDenomRequest) (*QuerySwapEstimationByDenomResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SwapEstimationByDenom not implemented")
+}
+func (UnimplementedQueryServer) SavedValue(context.Context, *QuerySavedValueRequest) (*QuerySavedValueResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SavedValue not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -524,6 +538,24 @@ func _Query_SwapEstimationByDenom_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_SavedValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySavedValueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).SavedValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.amm.Query/SavedValue",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).SavedValue(ctx, req.(*QuerySavedValueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -586,6 +618,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SwapEstimationByDenom",
 			Handler:    _Query_SwapEstimationByDenom_Handler,
+		},
+		{
+			MethodName: "SavedValue",
+			Handler:    _Query_SavedValue_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
