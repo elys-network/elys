@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	"cosmossdk.io/core/store"
 
@@ -36,7 +37,7 @@ type (
 
 		accountKeeper      types.AccountKeeper
 		bankKeeper         types.BankKeeper
-		stakingKeeper      types.StakingKeeper
+		stakingKeeper      *stakingkeeper.Keeper
 		assetProfileKeeper types.AssetProfileKeeper
 		authority          string
 	}
@@ -47,7 +48,7 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	stakingKeeper types.StakingKeeper,
+	stakingKeeper *stakingkeeper.Keeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	authority string,
 ) *Keeper {
