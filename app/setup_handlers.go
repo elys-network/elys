@@ -10,6 +10,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	errorsmod "cosmossdk.io/errors"
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -61,12 +62,23 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
+			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
+
 			err := app.ojoOracleMigration(ctx, plan.Height+1)
 			if err != nil {
 				return nil, err
 			}
 
-			return app.mm.RunMigrations(ctx, app.configurator, vm)
+			// Set cosmwasm params
+			wasmParams := wasmTypes.DefaultParams()
+			wasmParams.CodeUploadAccess = wasmTypes.AllowNobody
+			wasmParams.InstantiateDefaultPermission = wasmTypes.AccessTypeNobody
+			if err := app.WasmKeeper.SetParams(ctx, wasmParams); err != nil {
+				return vm, errorsmod.Wrapf(err, "unable to set CosmWasm params")
+			}
+			app.Logger().Info("Successfully set wasm Params in UpgradeHandler")
+
+			return vm, vmErr
 		},
 	)
 }
