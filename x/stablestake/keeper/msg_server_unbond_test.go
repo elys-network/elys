@@ -58,6 +58,15 @@ func (suite *KeeperTestSuite) TestUnbond() {
 			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 500000)},
 			expPass:           false,
 		},
+		{
+			desc:              "max withdrawal amount",
+			senderInitBalance: sdk.Coins{sdk.NewInt64Coin(types.GetShareDenomForPool(1), 5000000)},
+			moduleInitBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)},
+			unbondAmount:      math.NewInt(700000), // try to withdraw more than 90%
+			maxWithdrawRatio:  math.LegacyMustNewDecFromStr("0.9"),
+			expSenderBalance:  sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 500000)},
+			expPass:           false,
+		},
 	} {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()

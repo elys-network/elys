@@ -42,6 +42,7 @@ type DistrKeeper interface {
 	IncrementValidatorPeriod(ctx context.Context, val stakingtypes.ValidatorI) (uint64, error)
 	CalculateDelegationRewards(ctx context.Context, val stakingtypes.ValidatorI, del stakingtypes.DelegationI, endingPeriod uint64) (rewards sdk.DecCoins, err error)
 	GetDelegatorStartingInfo(ctx context.Context, val sdk.ValAddress, del sdk.AccAddress) (period disttypes.DelegatorStartingInfo, err error)
+	HasDelegatorStartingInfo(ctx context.Context, val sdk.ValAddress, del sdk.AccAddress) (bool, error)
 }
 
 // TokenomicsKeeper defines the expected tokenomics keeper used for simulations (noalias)
