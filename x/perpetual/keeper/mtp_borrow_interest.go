@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -59,6 +60,9 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 			unpaidInterestLiabilities = unpaidInterestCustody.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
 		} else {
 			// custody is in usdc, liabilities needs to be in trading asset,
+			if tradingAssetPrice.IsZero() {
+				return math.ZeroInt(), math.ZeroInt(), false, errors.New("trading asset price is zero in SettleMTPBorrowInterestUnpaidLiability")
+			}
 			borrowInterestPaymentInCustody = unpaidInterestCustody.ToLegacyDec().Quo(tradingAssetPrice).TruncateInt()
 		}
 		mtp.BorrowInterestUnpaidLiability = unpaidInterestLiabilities

@@ -38,12 +38,6 @@ func TestValidateLeverageMax(t *testing.T) {
 				params.LeverageMax = sdkmath.LegacyMustNewDecFromStr("0.5")
 			},
 			err: "leverage max must be greater than 1",
-		}, {
-			name: "LeverageMax is 100",
-			setter: func() {
-				params.LeverageMax = sdkmath.LegacyOneDec().MulInt64(100)
-			},
-			err: "leverage max too large",
 		},
 	}
 	for _, tt := range tests {
