@@ -92,10 +92,6 @@ func (k msgServer) WithdrawElysStakingRewards(goCtx context.Context, msg *types.
 	if err != nil {
 		return nil, err
 	}
-
-	if err != nil {
-		return nil, err
-	}
 	return &types.MsgWithdrawElysStakingRewardsResponse{Amount: rewards}, nil
 }
 
@@ -105,7 +101,7 @@ func (k Keeper) WithdrawAllRewards(goCtx context.Context, msg *types.MsgWithdraw
 	var amount sdk.Coins
 	var err error = nil
 	var rewards = sdk.Coins{}
-	err = k.IterateDelegations(ctx, delAddr, func(index int64, del stakingtypes.DelegationI) (stop bool) {
+	iterateError := k.IterateDelegations(ctx, delAddr, func(index int64, del stakingtypes.DelegationI) (stop bool) {
 		valAddr, errB := sdk.ValAddressFromBech32(del.GetValidatorAddr())
 		if errB != nil {
 			err = errB
@@ -127,7 +123,7 @@ func (k Keeper) WithdrawAllRewards(goCtx context.Context, msg *types.MsgWithdraw
 		})
 		return false
 	})
-	if err != nil {
+	if iterateError != nil {
 		return nil, err
 	}
 

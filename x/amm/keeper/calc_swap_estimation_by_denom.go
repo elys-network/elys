@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdkmath "cosmossdk.io/math"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -71,6 +72,10 @@ func (k Keeper) CalcSwapEstimationByDenom(
 
 	// Calculate price impact if decimals is not zero
 	if decimals != 0 {
+		if spotPrice.IsZero() {
+			err = errors.New("spot price is zero in CalcSwapEstimationByDenom")
+			return
+		}
 		priceImpact = spotPrice.Sub(impactedPrice).Quo(spotPrice)
 	}
 

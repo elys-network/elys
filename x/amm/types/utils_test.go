@@ -2,7 +2,7 @@ package types_test
 
 import (
 	"errors"
-	fmt "fmt"
+	"fmt"
 	"testing"
 
 	errorsmod "cosmossdk.io/errors"

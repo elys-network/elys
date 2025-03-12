@@ -2,11 +2,10 @@ package app
 
 import (
 	"context"
-	"fmt"
-	"strings"
-
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	"fmt"
+	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
