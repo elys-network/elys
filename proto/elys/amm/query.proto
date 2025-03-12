@@ -94,7 +94,7 @@ service Query {
         "/elys-network/elys/amm/swap_estimation_by_denom";
   }
 
-  // Queries saved value for a pool and date
+  // Queries WeightAndSlippageFee for a pool and date
   rpc WeightAndSlippageFee(QueryWeightAndSlippageFeeRequest)
       returns (QueryWeightAndSlippageFeeResponse) {
     option (google.api.http).get =
