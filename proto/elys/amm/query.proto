@@ -95,7 +95,8 @@ service Query {
   }
 
   // Queries saved value for a pool and date
-  rpc SavedValue(QuerySavedValueRequest) returns (QuerySavedValueResponse) {
+  rpc WeightAndSlippageFee(QueryWeightAndSlippageFeeRequest)
+      returns (QueryWeightAndSlippageFeeResponse) {
     option (google.api.http).get =
         "/elys-network/elys/amm/saved_value/{pool_id}/{date}";
   }
@@ -345,12 +346,12 @@ message QueryAMMPriceRequest {
   ];
 }
 
-message QuerySavedValueRequest {
+message QueryWeightAndSlippageFeeRequest {
   uint64 pool_id = 1;
   string date = 2;
 }
 
-message QuerySavedValueResponse {
+message QueryWeightAndSlippageFeeResponse {
   string value = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",

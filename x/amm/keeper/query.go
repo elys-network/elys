@@ -20,11 +20,11 @@ func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*t
 	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
 }
 
-func (k Keeper) SavedValue(goCtx context.Context, req *types.QuerySavedValueRequest) (*types.QuerySavedValueResponse, error) {
+func (k Keeper) WeightAndSlippageFee(goCtx context.Context, req *types.QueryWeightAndSlippageFeeRequest) (*types.QueryWeightAndSlippageFeeResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	return &types.QuerySavedValueResponse{Value: k.GetWeightAndSlippageFee(ctx, req.PoolId, req.Date).Amount}, nil
+	return &types.QueryWeightAndSlippageFeeResponse{Value: k.GetWeightAndSlippageFee(ctx, req.PoolId, req.Date).Amount}, nil
 }

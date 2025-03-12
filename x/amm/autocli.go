@@ -102,7 +102,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom_in"}, {ProtoField: "denom_out"}},
 				},
 				{
-					RpcMethod:      "SavedValue",
+					RpcMethod:      "WeightAndSlippageFee",
 					Use:            "saved-value [pool-id] [date]",
 					Short:          "Query saved value",
 					Example:        "elysd q amm saved-value 1 2022-01-01",

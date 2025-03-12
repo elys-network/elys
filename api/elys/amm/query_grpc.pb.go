@@ -44,7 +44,8 @@ type QueryClient interface {
 	OutRouteByDenom(ctx context.Context, in *QueryOutRouteByDenomRequest, opts ...grpc.CallOption) (*QueryOutRouteByDenomResponse, error)
 	// Queries a list of SwapEstimationByDenom items.
 	SwapEstimationByDenom(ctx context.Context, in *QuerySwapEstimationByDenomRequest, opts ...grpc.CallOption) (*QuerySwapEstimationByDenomResponse, error)
-	SavedValue(ctx context.Context, in *QuerySavedValueRequest, opts ...grpc.CallOption) (*QuerySavedValueResponse, error)
+	// Queries saved value for a pool and date
+	WeightAndSlippageFee(ctx context.Context, in *QueryWeightAndSlippageFeeRequest, opts ...grpc.CallOption) (*QueryWeightAndSlippageFeeResponse, error)
 }
 
 type queryClient struct {
@@ -181,9 +182,9 @@ func (c *queryClient) SwapEstimationByDenom(ctx context.Context, in *QuerySwapEs
 	return out, nil
 }
 
-func (c *queryClient) SavedValue(ctx context.Context, in *QuerySavedValueRequest, opts ...grpc.CallOption) (*QuerySavedValueResponse, error) {
-	out := new(QuerySavedValueResponse)
-	err := c.cc.Invoke(ctx, "/elys.amm.Query/SavedValue", in, out, opts...)
+func (c *queryClient) WeightAndSlippageFee(ctx context.Context, in *QueryWeightAndSlippageFeeRequest, opts ...grpc.CallOption) (*QueryWeightAndSlippageFeeResponse, error) {
+	out := new(QueryWeightAndSlippageFeeResponse)
+	err := c.cc.Invoke(ctx, "/elys.amm.Query/WeightAndSlippageFee", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -220,7 +221,8 @@ type QueryServer interface {
 	OutRouteByDenom(context.Context, *QueryOutRouteByDenomRequest) (*QueryOutRouteByDenomResponse, error)
 	// Queries a list of SwapEstimationByDenom items.
 	SwapEstimationByDenom(context.Context, *QuerySwapEstimationByDenomRequest) (*QuerySwapEstimationByDenomResponse, error)
-	SavedValue(context.Context, *QuerySavedValueRequest) (*QuerySavedValueResponse, error)
+	// Queries saved value for a pool and date
+	WeightAndSlippageFee(context.Context, *QueryWeightAndSlippageFeeRequest) (*QueryWeightAndSlippageFeeResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -270,8 +272,8 @@ func (UnimplementedQueryServer) OutRouteByDenom(context.Context, *QueryOutRouteB
 func (UnimplementedQueryServer) SwapEstimationByDenom(context.Context, *QuerySwapEstimationByDenomRequest) (*QuerySwapEstimationByDenomResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SwapEstimationByDenom not implemented")
 }
-func (UnimplementedQueryServer) SavedValue(context.Context, *QuerySavedValueRequest) (*QuerySavedValueResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SavedValue not implemented")
+func (UnimplementedQueryServer) WeightAndSlippageFee(context.Context, *QueryWeightAndSlippageFeeRequest) (*QueryWeightAndSlippageFeeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WeightAndSlippageFee not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -538,20 +540,20 @@ func _Query_SwapEstimationByDenom_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_SavedValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QuerySavedValueRequest)
+func _Query_WeightAndSlippageFee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryWeightAndSlippageFeeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).SavedValue(ctx, in)
+		return srv.(QueryServer).WeightAndSlippageFee(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elys.amm.Query/SavedValue",
+		FullMethod: "/elys.amm.Query/WeightAndSlippageFee",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).SavedValue(ctx, req.(*QuerySavedValueRequest))
+		return srv.(QueryServer).WeightAndSlippageFee(ctx, req.(*QueryWeightAndSlippageFeeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -620,8 +622,8 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_SwapEstimationByDenom_Handler,
 		},
 		{
-			MethodName: "SavedValue",
-			Handler:    _Query_SavedValue_Handler,
+			MethodName: "WeightAndSlippageFee",
+			Handler:    _Query_WeightAndSlippageFee_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -107,7 +107,7 @@ func (k Keeper) GetAllFeeInfos(ctx sdk.Context) (list []types.FeeInfo) {
 	return
 }
 
-// Returns last x days average of staker fees collected
+// Returns last 7 days average of staker fees collected
 func (k Keeper) GetAvgStakerFeesCollected(ctx sdk.Context, days int) sdkmath.LegacyDec {
 	start := ctx.BlockTime()
 	count := sdkmath.ZeroInt()
