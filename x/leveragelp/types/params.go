@@ -34,9 +34,6 @@ func (p Params) Validate() error {
 	if !p.LeverageMax.GT(sdkmath.LegacyOneDec()) {
 		return fmt.Errorf("leverage max must be greater than 1: %s", p.LeverageMax.String())
 	}
-	if p.LeverageMax.GT(sdkmath.LegacyNewDec(10)) {
-		return fmt.Errorf("leverage max too large: %s", p.LeverageMax.String())
-	}
 	if p.EpochLength <= 0 {
 		return fmt.Errorf("epoch length should be positive: %d", p.EpochLength)
 	}
