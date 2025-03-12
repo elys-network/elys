@@ -54,7 +54,6 @@ require (
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3
-	github.com/shopspring/decimal v1.4.0
 	golang.org/x/tools v0.23.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20241202173237-19429a94021a
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
