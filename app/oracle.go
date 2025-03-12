@@ -16,7 +16,6 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		Providers: []string{
 			"kraken",
 			"coinbase",
-			"crypto",
 		},
 	},
 	{
@@ -49,13 +48,6 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		PoolId:                  1,
 	},
 	{
-		BaseDenom:  "ATOM",
-		QuoteDenom: "USDC",
-		Providers: []string{
-			"mexc",
-		},
-	},
-	{
 		BaseDenom:  "AKT",
 		QuoteDenom: "USD",
 		Providers: []string{
@@ -78,9 +70,9 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteDenom: "USDT",
 		Providers: []string{
 			"binance",
-			"mexc",
+			"okx",
+			"bitget",
 			"gate",
-			"crypto",
 		},
 		BaseProxyDenom:          "TIA",
 		QuoteProxyDenom:         "USDC",
@@ -99,7 +91,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteDenom: "USDT",
 		Providers: []string{
 			"binance",
-			"mexc",
+			"gate",
 			"bitget",
 		},
 		BaseProxyDenom:          "KAVA",
@@ -111,7 +103,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteDenom: "USDT",
 		Providers: []string{
 			"binance",
-			"mexc",
+			"huobi",
 			"bitget",
 			"gate",
 		},
@@ -123,7 +115,6 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		BaseDenom:  "XION",
 		QuoteDenom: "USDT",
 		Providers: []string{
-			"mexc",
 			"bitget",
 			"gate",
 		},
@@ -136,7 +127,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteDenom: "USDT",
 		Providers: []string{
 			"binance",
-			"mexc",
+			"huobi",
 			"gate",
 		},
 		BaseProxyDenom:          "SCRT",
@@ -155,7 +146,7 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		QuoteDenom: "USDT",
 		Providers: []string{
 			"binance",
-			"mexc",
+			"bitget",
 			"gate",
 			"huobi",
 		},
@@ -167,7 +158,6 @@ var currencyPairProviders = []ojooracletypes.CurrencyPairProviders{
 		BaseDenom:  "NTRN",
 		QuoteDenom: "USDT",
 		Providers: []string{
-			"mexc",
 			"binance",
 			"bitget",
 			"gate",
