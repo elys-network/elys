@@ -310,6 +310,7 @@ func (k Keeper) Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poo
 		sdk.NewAttribute("address", addr.String()),
 		sdk.NewAttribute("amount", amount.String()),
 		sdk.NewAttribute("borrowed_left", debt.Borrowed.String()),
+		sdk.NewAttribute("interest_amt", interestPayAmount.String()),
 	))
 	return nil
 }
