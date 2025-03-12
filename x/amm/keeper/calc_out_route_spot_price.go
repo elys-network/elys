@@ -56,6 +56,17 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
+		if weightBalanceBonus.IsPositive() {
+			rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+			treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
+
+			bonusTokenAmount := tokenOut.Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+
+			if treasuryTokenAmount.LT(bonusTokenAmount) {
+				weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(tokenOut.Amount.ToLegacyDec())
+			}
+		}
+
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
