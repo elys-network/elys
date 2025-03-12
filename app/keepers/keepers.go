@@ -74,6 +74,7 @@ import (
 	ccvconsumerkeeper "github.com/cosmos/interchain-security/v6/x/ccv/consumer/keeper"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	ccv "github.com/cosmos/interchain-security/v6/x/ccv/types"
+	wasmbindingsclient "github.com/elys-network/elys/wasmbindings/client"
 	accountedpoolmodulekeeper "github.com/elys-network/elys/x/accountedpool/keeper"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
 	ammmodulekeeper "github.com/elys-network/elys/x/amm/keeper"
@@ -462,6 +463,15 @@ func NewAppKeeper(
 		panic(fmt.Sprintf("error while reading wasm config: %s", err))
 	}
 
+	bankKeeper := app.BankKeeper.(bankkeeper.BaseKeeper)
+	wasmOpts = append(
+		wasmbindingsclient.RegisterCustomPlugins(
+			app.AmmKeeper,
+			&app.AccountKeeper,
+			&bankKeeper,
+		),
+		wasmOpts...,
+	)
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	app.WasmKeeper = wasmkeeper.NewKeeper(
