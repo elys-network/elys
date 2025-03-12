@@ -93,18 +93,27 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/amm/swap_estimation_by_denom";
   }
+
+  // Queries WeightAndSlippageFee for a pool and date
+  rpc WeightAndSlippageFee(QueryWeightAndSlippageFeeRequest)
+      returns (QueryWeightAndSlippageFeeResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/amm/saved_value/{pool_id}/{date}";
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-
   // params holds all the parameters of this module.
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryGetPoolRequest { uint64 pool_id = 1; }
+message QueryGetPoolRequest {
+  uint64 pool_id = 1;
+  uint64 days = 2;
+}
 
 message QueryGetPoolResponse {
   Pool pool = 1 [ (gogoproto.nullable) = false ];
@@ -112,7 +121,8 @@ message QueryGetPoolResponse {
 }
 
 message QueryAllPoolRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  uint64 days = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QueryAllPoolResponse {
@@ -330,6 +340,19 @@ message QuerySwapEstimationByDenomResponse {
 message QueryAMMPriceRequest {
   cosmos.base.v1beta1.Coin token_in = 1 [ (gogoproto.nullable) = false ];
   string discount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryWeightAndSlippageFeeRequest {
+  uint64 pool_id = 1;
+  string date = 2;
+}
+
+message QueryWeightAndSlippageFeeResponse {
+  string value = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false

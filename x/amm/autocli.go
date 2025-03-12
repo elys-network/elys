@@ -101,6 +101,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Example:        "elysd q amm swap-estimation-by-denom 100uatom uatom uosmo",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "denom_in"}, {ProtoField: "denom_out"}},
 				},
+				{
+					RpcMethod:      "WeightAndSlippageFee",
+					Use:            "weight-and-slippage-fee [pool-id] [date]",
+					Short:          "Query weight and slippage fee",
+					Example:        "elysd q amm weight-and-slippage-fee 1 2022-01-01",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "date"}},
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{

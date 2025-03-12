@@ -69,7 +69,7 @@ type AmmKeeper interface {
 	GetAllPool(sdk.Context) []ammtypes.Pool
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
-	PoolExtraInfo(ctx sdk.Context, pool ammtypes.Pool) ammtypes.PoolExtraInfo
+	PoolExtraInfo(ctx sdk.Context, pool ammtypes.Pool, days int) ammtypes.PoolExtraInfo
 	InRouteByDenom(goCtx context.Context, req *ammtypes.QueryInRouteByDenomRequest) (*ammtypes.QueryInRouteByDenomResponse, error)
 	CalcInRouteSpotPrice(ctx sdk.Context,
 		tokenIn sdk.Coin,

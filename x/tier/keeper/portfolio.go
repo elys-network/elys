@@ -88,7 +88,7 @@ func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdkmath.
 			if !found {
 				continue
 			}
-			info := k.amm.PoolExtraInfo(ctx, pool)
+			info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
 			amount := commitment.Amount.ToLegacyDec()
 			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
 		}
@@ -285,7 +285,7 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) (s
 			if !found {
 				continue
 			}
-			info := k.amm.PoolExtraInfo(ctx, pool)
+			info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
 			amount := position.LeveragedLpAmount.ToLegacyDec()
 			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
 			// USD value of debt
