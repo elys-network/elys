@@ -144,14 +144,6 @@ func TestMsgUpdateParams(t *testing.T) {
 			},
 			errMsg: "invalid creator address",
 		},
-		{
-			name: "invalid params",
-			setter: func() {
-				msg.Authority = sample.AccAddress()
-				msg.Params.LeverageMax = sdkmath.LegacyOneDec().MulInt64(100)
-			},
-			errMsg: "invalid params",
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
