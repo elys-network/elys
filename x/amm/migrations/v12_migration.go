@@ -7,7 +7,7 @@ import (
 
 func (m Migrator) V12Migration(ctx sdk.Context) error {
 	legacyParams := m.keeper.GetLegacyParams(ctx)
-	legacyParams.MinSlippage = math.LegacyMustNewDecFromStr("0.00075")
+	legacyParams.MinSlippage = math.LegacyMustNewDecFromStr("0.001")
 
 	m.keeper.SetParams(ctx, legacyParams)
 	return nil
