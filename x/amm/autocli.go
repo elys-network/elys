@@ -20,20 +20,21 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "Pool",
-					Use:            "show-pool [pool-id]",
+					Use:            "show-pool [pool-id] [days]",
 					Short:          "shows a pool",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id", {ProtoField: "date"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "days"}},
 				},
 				{
-					RpcMethod: "PoolAll",
-					Use:       "list-pool",
-					Short:     "list all pool",
+					RpcMethod:      "PoolAll",
+					Use:            "list-pool [days]",
+					Short:          "list all pool",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "days"}},
 				},
 				{
 					RpcMethod:      "DenomLiquidity",
 					Use:            "show-denom-liquidity [denom]",
 					Short:          "shows a denom-liquidity",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denom"}, {ProtoField: "date"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denom"}},
 				},
 				{
 					RpcMethod: "DenomLiquidityAll",
