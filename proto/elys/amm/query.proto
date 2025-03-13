@@ -24,10 +24,11 @@ service Query {
   }
   // Queries a list of Pool items.
   rpc Pool(QueryGetPoolRequest) returns (QueryGetPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/amm/pool/{pool_id}";
+    option (google.api.http).get =
+        "/elys-network/elys/amm/pool/{pool_id}/{days}";
   }
   rpc PoolAll(QueryAllPoolRequest) returns (QueryAllPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/amm/pool";
+    option (google.api.http).get = "/elys-network/elys/amm/pool/{days}";
   }
   // Queries a list of DenomLiquidity items.
   rpc DenomLiquidity(QueryGetDenomLiquidityRequest)

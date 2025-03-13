@@ -44,7 +44,7 @@ type QueryClient interface {
 	OutRouteByDenom(ctx context.Context, in *QueryOutRouteByDenomRequest, opts ...grpc.CallOption) (*QueryOutRouteByDenomResponse, error)
 	// Queries a list of SwapEstimationByDenom items.
 	SwapEstimationByDenom(ctx context.Context, in *QuerySwapEstimationByDenomRequest, opts ...grpc.CallOption) (*QuerySwapEstimationByDenomResponse, error)
-	// Queries saved value for a pool and date
+	// Queries WeightAndSlippageFee for a pool and date
 	WeightAndSlippageFee(ctx context.Context, in *QueryWeightAndSlippageFeeRequest, opts ...grpc.CallOption) (*QueryWeightAndSlippageFeeResponse, error)
 }
 
@@ -221,7 +221,7 @@ type QueryServer interface {
 	OutRouteByDenom(context.Context, *QueryOutRouteByDenomRequest) (*QueryOutRouteByDenomResponse, error)
 	// Queries a list of SwapEstimationByDenom items.
 	SwapEstimationByDenom(context.Context, *QuerySwapEstimationByDenomRequest) (*QuerySwapEstimationByDenomResponse, error)
-	// Queries saved value for a pool and date
+	// Queries WeightAndSlippageFee for a pool and date
 	WeightAndSlippageFee(context.Context, *QueryWeightAndSlippageFeeRequest) (*QueryWeightAndSlippageFeeResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
