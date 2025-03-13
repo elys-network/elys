@@ -26,7 +26,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	store.Set([]byte(types.ParamsKey), b)
 }
 
-// GetParams get all parameters as types.Params
+// GetLegacyParams get all parameters as types.LegacyParams
 func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
