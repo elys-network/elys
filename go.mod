@@ -54,7 +54,7 @@ require (
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
-	github.com/ojo-network/ojo v0.5.1-rc3.0.20250310232233-342c76a99027
+	github.com/ojo-network/ojo v0.5.1-rc3.0.20250313023628-1d8e6e9fe190
 	golang.org/x/tools v0.24.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20241202173237-19429a94021a
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
@@ -207,7 +207,7 @@ require (
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/oasisprotocol/curve25519-voi v0.0.0-20230904125328-1f23a7beb09a // indirect
-	github.com/ojo-network/price-feeder v0.2.1-rc1.0.20250310232100-a73ab169dab0 // indirect
+	github.com/ojo-network/price-feeder v0.2.1-rc1.0.20250313023428-dfc9af66c245 // indirect
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.0 // indirect
