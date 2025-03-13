@@ -55,9 +55,11 @@ jobs:
           echo "current version: ${ELYS_VERSION}"
           echo "upgrade_version: $upgrade_version"
 
+          GOV_ID=51
+
           # vote on proposal
-          ${ELYSD} tx gov vote 51 yes --from=proposer1 $OPTIONS
-          ${ELYSD} tx gov vote 51 yes --from=proposer2 $OPTIONS
-          ${ELYSD} tx gov vote 51 yes --from=proposer3 $OPTIONS
-          ${ELYSD} tx gov vote 51 yes --from=proposer4 $OPTIONS
+          ${ELYSD} tx gov vote $GOV_ID yes --from=proposer1 $OPTIONS
+          ${ELYSD} tx gov vote $GOV_ID yes --from=proposer2 $OPTIONS
+          ${ELYSD} tx gov vote $GOV_ID yes --from=proposer3 $OPTIONS
+          ${ELYSD} tx gov vote $GOV_ID yes --from=proposer4 $OPTIONS
           sleep 10
