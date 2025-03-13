@@ -22,7 +22,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod:      "Pool",
 					Use:            "show-pool [pool-id]",
 					Short:          "shows a pool",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id", {ProtoField: "date"}},
 				},
 				{
 					RpcMethod: "PoolAll",
@@ -33,7 +33,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod:      "DenomLiquidity",
 					Use:            "show-denom-liquidity [denom]",
 					Short:          "shows a denom-liquidity",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denom"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denom"}, {ProtoField: "date"}},
 				},
 				{
 					RpcMethod: "DenomLiquidityAll",
