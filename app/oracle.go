@@ -292,7 +292,7 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, height int64) error {
 	}
 
 	newParams := ojooracletypes.DefaultParams()
-	newParams.LifeTimeInBlocks = 2
+	newParams.LifeTimeInBlocks = 24000 // Approximately 1 day
 	newParams.PriceExpiryTime = legacyParams.PriceExpiryTime
 	newParams.MandatoryList = denomList
 	newParams.AcceptList = denomList
