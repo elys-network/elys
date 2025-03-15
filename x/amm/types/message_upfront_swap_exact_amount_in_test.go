@@ -14,70 +14,55 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgSwapExactAmountIn_ValidateBasic(t *testing.T) {
+func TestMsgUpFromSwapExactAmountIn_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  types.MsgSwapExactAmountIn
+		msg  types.MsgUpFrontSwapExactAmountIn
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: types.MsgSwapExactAmountIn{
+			msg: types.MsgUpFrontSwapExactAmountIn{
 				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		},
 		{
 			name: "valid address",
-			msg: types.MsgSwapExactAmountIn{
+			msg: types.MsgUpFrontSwapExactAmountIn{
 				Sender:            sample.AccAddress(),
 				Routes:            nil,
 				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
 				TokenOutMinAmount: math.NewInt(10),
-				Recipient:         "",
 			},
-		},
-		{
-			name: "Invalid recipient address",
-			msg: types.MsgSwapExactAmountIn{
-				Sender:            sample.AccAddress(),
-				Routes:            nil,
-				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
-				TokenOutMinAmount: math.NewInt(1),
-				Recipient:         "cosmos1invalid",
-			},
-			err: sdkerrors.ErrInvalidAddress,
 		},
 		{
 			name: "Invalid TokenOutDenom in route",
-			msg: types.MsgSwapExactAmountIn{
+			msg: types.MsgUpFrontSwapExactAmountIn{
 				Sender:            sample.AccAddress(),
 				Routes:            []types.SwapAmountInRoute{{TokenOutDenom: "invalid denom"}},
 				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
 				TokenOutMinAmount: math.NewInt(1),
-				Recipient:         sample.AccAddress(),
 			},
 			err: errors.New("invalid denom"),
 		},
 		{
 			name: "Invalid TokenIn",
-			msg: types.MsgSwapExactAmountIn{
+			msg: types.MsgUpFrontSwapExactAmountIn{
 				Sender:            sample.AccAddress(),
 				Routes:            []types.SwapAmountInRoute{{TokenOutDenom: "uusdc"}},
 				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(-10)},
 				TokenOutMinAmount: math.NewInt(1),
-				Recipient:         sample.AccAddress(),
 			},
 			err: errors.New("negative coin amount"),
 		},
 		{
 			name: "Invalid TokenIn amount",
-			msg: types.MsgSwapExactAmountIn{
+			msg: types.MsgUpFrontSwapExactAmountIn{
 				Sender:            sample.AccAddress(),
 				Routes:            []types.SwapAmountInRoute{{TokenOutDenom: "uusdc"}},
 				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(0)},
 				TokenOutMinAmount: math.NewInt(1),
-				Recipient:         sample.AccAddress(),
 			},
 			err: errors.New("token in is zero"),
 		},
