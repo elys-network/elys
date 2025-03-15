@@ -52,7 +52,7 @@ func (k Keeper) CheckBaseAssetExist(ctx sdk.Context, denom string) bool {
 	return found
 }
 
-func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.LegacyParams) {
+func (k Keeper) GetLegacyParams(ctx sdk.Context) (params types.Params) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get([]byte(types.ParamsKey))
