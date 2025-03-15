@@ -49,6 +49,8 @@ require (
 )
 
 require (
+	github.com/CosmWasm/wasmd v0.53.2
+	github.com/CosmWasm/wasmvm/v2 v2.1.4
 	github.com/bufbuild/buf v1.31.0
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0
@@ -155,6 +157,7 @@ require (
 	github.com/google/flatbuffers v2.0.8+incompatible // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/go-containerregistry v0.19.1 // indirect
+	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/orderedcode v0.0.1 // indirect
 	github.com/google/pprof v0.0.0-20240727154555-813a5fbdbec8 // indirect
 	github.com/google/s2a-go v0.1.8 // indirect
@@ -229,6 +232,7 @@ require (
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sasha-s/go-deadlock v0.3.5 // indirect
+	github.com/shamaton/msgpack/v2 v2.2.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
