@@ -5,7 +5,7 @@ import (
 )
 
 func (m Migrator) V13Migration(ctx sdk.Context) error {
-	legacyParams := m.keeper.GetLegacyParams(ctx)
+	legacyParams := m.keeper.GetParams(ctx)
 
 	// allowedUpfrontSwapMakers is initialised as empty array
 
