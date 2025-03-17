@@ -56,6 +56,7 @@ func (k msgServer) VestNow(goCtx context.Context, msg *types.MsgVestNow) (*types
 
 	prev := k.GetTotalSupply(ctx)
 	prev.TotalEdenSupply = prev.TotalEdenSupply.Sub(msg.Amount)
+	prev.TotalEdenVested = prev.TotalEdenVested.Add(msg.Amount)
 	k.SetTotalSupply(ctx, prev)
 
 	// Update the commitments

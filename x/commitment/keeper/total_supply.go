@@ -18,6 +18,7 @@ func (k Keeper) GetTotalSupply(ctx sdk.Context) (val types.TotalSupply) {
 	} else {
 		val.TotalEdenSupply = math.ZeroInt()
 		val.TotalEdenbSupply = math.ZeroInt()
+		val.TotalEdenVested = math.ZeroInt()
 	}
 	return
 }
