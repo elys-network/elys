@@ -12,6 +12,7 @@ func TestGetParams(t *testing.T) {
 	k, ctx, _, _ := testkeeper.AmmKeeper(t)
 	params := types.DefaultParams()
 	params.BaseAssets = nil
+	params.AllowedUpfrontSwapMakers = nil
 	k.SetParams(ctx, params)
 
 	require.EqualValues(t, params, k.GetParams(ctx))

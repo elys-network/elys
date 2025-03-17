@@ -4,9 +4,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (m Migrator) V11Migration(ctx sdk.Context) error {
+func (m Migrator) V13Migration(ctx sdk.Context) error {
 	legacyParams := m.keeper.GetParams(ctx)
-	legacyParams.LpLockupDuration = 3600
+
+	// allowedUpfrontSwapMakers is initialised as empty array
 
 	m.keeper.SetParams(ctx, legacyParams)
 	return nil
