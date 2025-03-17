@@ -29,33 +29,28 @@ func (k Keeper) SetTotalSupply(ctx sdk.Context, val types.TotalSupply) {
 	store.Set(types.TotalSupplyKeyPrefix, b)
 }
 
-func (k Keeper) V10_SetSupply(ctx sdk.Context) {
+func (k Keeper) V11_SetVested(ctx sdk.Context) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iterator := storetypes.KVStorePrefixIterator(store, types.CommitmentsKeyPrefix)
 
 	defer iterator.Close()
 
-	totalEden := math.ZeroInt()
-	totalEdenB := math.ZeroInt()
-
+	totalEdenVested := math.ZeroInt()
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Commitments
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		for _, token := range val.CommittedTokens {
+		for _, token := range val.VestingTokens {
 			if token.Denom == ptypes.Eden {
-				totalEden = totalEden.Add(token.Amount)
-			}
-			if token.Denom == ptypes.EdenB {
-				totalEdenB = totalEdenB.Add(token.Amount)
+				totalEdenVested = totalEdenVested.Add(token.TotalAmount)
 			}
 		}
-
-		totalEden = totalEden.Add(val.Claimed.AmountOf(ptypes.Eden))
-		totalEdenB = totalEdenB.Add(val.Claimed.AmountOf(ptypes.EdenB))
 	}
 
+	total := k.GetTotalSupply(ctx)
+
 	k.SetTotalSupply(ctx, types.TotalSupply{
-		TotalEdenSupply:  totalEden,
-		TotalEdenbSupply: totalEdenB,
+		TotalEdenSupply:  total.TotalEdenSupply,
+		TotalEdenbSupply: total.TotalEdenbSupply,
+		TotalEdenVested:  totalEdenVested,
 	})
 }

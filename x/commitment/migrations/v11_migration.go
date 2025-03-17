@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (m Migrator) V10Migration(ctx sdk.Context) error {
-	//m.keeper.V10_SetSupply(ctx)
+func (m Migrator) V11Migration(ctx sdk.Context) error {
+	m.keeper.V11_SetVested(ctx)
 	return nil
 }
