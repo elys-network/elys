@@ -45,8 +45,10 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				continue
 			}
 
-			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(ctx, position, pool)
+			cacheContextForUnhealthy, writeForUnhealthy := ctx.CacheContext()
+			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(cacheContextForUnhealthy, position, pool)
 			if err == nil {
+				writeForUnhealthy()
 				continue
 			}
 			if isHealthy && !closeAttempted {
@@ -55,7 +57,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 					ctx.Logger().Error(fmt.Sprintf("error getting for amm pool %d: %s", position.AmmPoolId, poolErr.Error()))
 					continue
 				}
-				_, _, _ = k.CheckAndCloseAtStopLoss(ctx, position, pool, ammPool)
+				cacheContextForStopLoss, writeForStopLoss := ctx.CacheContext()
+				_, _, err = k.CheckAndCloseAtStopLoss(cacheContextForStopLoss, position, pool, ammPool)
+				if err == nil {
+					writeForStopLoss()
+				}
 			}
 		}
 	}
