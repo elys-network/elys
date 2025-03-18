@@ -70,7 +70,8 @@ func (k Keeper) TotalSupply(goCtx context.Context, req *types.QueryTotalSupplyRe
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	supply := k.GetTotalSupply(ctx)
 	return &types.QueryTotalSupplyResponse{
-		TotalEden:  supply.TotalEdenSupply,
-		TotalEdenb: supply.TotalEdenbSupply,
+		TotalEden:       supply.TotalEdenSupply,
+		TotalEdenb:      supply.TotalEdenbSupply,
+		TotalEdenVested: supply.TotalEdenVested,
 	}, nil
 }
