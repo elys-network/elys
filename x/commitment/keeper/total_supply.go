@@ -6,7 +6,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/commitment/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 func (k Keeper) GetTotalSupply(ctx sdk.Context) (val types.TotalSupply) {
@@ -40,9 +39,7 @@ func (k Keeper) V11_SetVested(ctx sdk.Context) {
 		var val types.Commitments
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		for _, token := range val.VestingTokens {
-			if token.Denom == ptypes.Eden {
-				totalEdenVested = totalEdenVested.Add(token.TotalAmount)
-			}
+			totalEdenVested = totalEdenVested.Add(token.TotalAmount)
 		}
 	}
 
