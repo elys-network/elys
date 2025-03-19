@@ -25,6 +25,7 @@ func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64, baseAsset
 		ThresholdWeightDifferenceSwapFee: math.LegacyMustNewDecFromStr("0.15"),
 		LpLockupDuration:                 3600,
 		MinSlippage:                      math.LegacyMustNewDecFromStr("0.001"),
+		AllowedUpfrontSwapMakers:         []string{},
 	}
 }
 
@@ -120,6 +121,12 @@ func (p Params) Validate() error {
 	}
 	if p.ThresholdWeightDifferenceSwapFee.GT(math.LegacyMustNewDecFromStr("0.15")) {
 		return errors.New("thresholdWeightDifferenceSwapFee must be less than 0.15%")
+	}
+
+	for _, swapMaker := range p.AllowedUpfrontSwapMakers {
+		if _, err := sdk.AccAddressFromBech32(swapMaker); err != nil {
+			return errors.New("invalid upfront swap maker address")
+		}
 	}
 
 	return nil
