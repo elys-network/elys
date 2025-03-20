@@ -31,6 +31,8 @@ func (oq *Querier) HandleQuery(ctx sdk.Context, query wasmbindingstypes.ElysQuer
 		return oq.queryDenomLiquidity(ctx, query.AmmDenomLiquidity)
 	case query.AmmDenomLiquidityAll != nil:
 		return oq.queryDenomLiquidityAll(ctx, query.AmmDenomLiquidityAll)
+	case query.AmmSwapEstimationExactAmountOut != nil:
+		return oq.QuerySwapEstimationExactAmountOut(ctx, query.AmmSwapEstimationExactAmountOut)
 	case query.AmmSwapEstimation != nil:
 		return oq.querySwapEstimation(ctx, query.AmmSwapEstimation)
 	case query.AmmSwapEstimationByDenom != nil:

@@ -25,6 +25,8 @@ func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, cont
 		return m.msgJoinPool(ctx, contractAddr, msg.AmmJoinPool)
 	case msg.AmmExitPool != nil:
 		return m.msgExitPool(ctx, contractAddr, msg.AmmExitPool)
+	case msg.AmmUpFrontSwapExactAmountIn != nil:
+		return m.msgUpFrontSwapExactAmountIn(ctx, contractAddr, msg.AmmUpFrontSwapExactAmountIn)
 	case msg.AmmSwapExactAmountIn != nil:
 		return m.msgSwapExactAmountIn(ctx, contractAddr, msg.AmmSwapExactAmountIn)
 	case msg.AmmSwapExactAmountOut != nil:

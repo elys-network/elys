@@ -46,17 +46,18 @@ type ElysQuery struct {
 	AmmPool    *ammtypes.QueryGetPoolRequest `json:"amm_pool,omitempty"`
 	AmmPoolAll *ammtypes.QueryAllPoolRequest `json:"amm_pool_all,omitempty"`
 	// AmmEarnMiningPoolAll     *ammtypes.QueryEarnPoolRequest              `json:"amm_earn_mining_pool_all,omitempty"`
-	AmmDenomLiquidity        *ammtypes.QueryGetDenomLiquidityRequest     `json:"amm_denom_liquidity,omitempty"`
-	AmmDenomLiquidityAll     *ammtypes.QueryAllDenomLiquidityRequest     `json:"amm_denom_liquidity_all,omitempty"`
-	AmmSwapEstimation        *ammtypes.QuerySwapEstimationRequest        `json:"amm_swap_estimation,omitempty"`
-	AmmSwapEstimationByDenom *ammtypes.QuerySwapEstimationByDenomRequest `json:"amm_swap_estimation_by_denom,omitempty"`
-	AmmJoinPoolEstimation    *ammtypes.QueryJoinPoolEstimationRequest    `json:"amm_join_pool_estimation,omitempty"`
-	AmmExitPoolEstimation    *ammtypes.QueryExitPoolEstimationRequest    `json:"amm_exit_pool_estimation,omitempty"`
-	AmmSlippageTrack         *ammtypes.QuerySlippageTrackRequest         `json:"amm_slippage_track,omitempty"`
-	AmmSlippageTrackAll      *ammtypes.QuerySlippageTrackAllRequest      `json:"amm_slippage_track_all,omitempty"`
-	AmmBalance               *ammtypes.QueryBalanceRequest               `json:"amm_balance,omitempty"`
-	AmmInRouteByDenom        *ammtypes.QueryInRouteByDenomRequest        `json:"amm_in_route_by_denom,omitempty"`
-	AmmOutRouteByDenom       *ammtypes.QueryOutRouteByDenomRequest       `json:"amm_out_route_by_denom,omitempty"`
+	AmmDenomLiquidity               *ammtypes.QueryGetDenomLiquidityRequest            `json:"amm_denom_liquidity,omitempty"`
+	AmmDenomLiquidityAll            *ammtypes.QueryAllDenomLiquidityRequest            `json:"amm_denom_liquidity_all,omitempty"`
+	AmmSwapEstimationExactAmountOut *ammtypes.QuerySwapEstimationExactAmountOutRequest `json:"amm_swap_estimation_exact_amount_out,omitempty"`
+	AmmSwapEstimation               *ammtypes.QuerySwapEstimationRequest               `json:"amm_swap_estimation,omitempty"`
+	AmmSwapEstimationByDenom        *ammtypes.QuerySwapEstimationByDenomRequest        `json:"amm_swap_estimation_by_denom,omitempty"`
+	AmmJoinPoolEstimation           *ammtypes.QueryJoinPoolEstimationRequest           `json:"amm_join_pool_estimation,omitempty"`
+	AmmExitPoolEstimation           *ammtypes.QueryExitPoolEstimationRequest           `json:"amm_exit_pool_estimation,omitempty"`
+	AmmSlippageTrack                *ammtypes.QuerySlippageTrackRequest                `json:"amm_slippage_track,omitempty"`
+	AmmSlippageTrackAll             *ammtypes.QuerySlippageTrackAllRequest             `json:"amm_slippage_track_all,omitempty"`
+	AmmBalance                      *ammtypes.QueryBalanceRequest                      `json:"amm_balance,omitempty"`
+	AmmInRouteByDenom               *ammtypes.QueryInRouteByDenomRequest               `json:"amm_in_route_by_denom,omitempty"`
+	AmmOutRouteByDenom              *ammtypes.QueryOutRouteByDenomRequest              `json:"amm_out_route_by_denom,omitempty"`
 
 	// auth queriers
 	AuthAddresses *authtypes.QueryAccountsRequest `json:"auth_addresses,omitempty"`
@@ -73,12 +74,13 @@ type CustomMessenger struct {
 
 type ElysMsg struct {
 	// amm messages
-	AmmCreatePool         *ammtypes.MsgCreatePool         `json:"amm_create_pool,omitempty"`
-	AmmJoinPool           *ammtypes.MsgJoinPool           `json:"amm_join_pool,omitempty"`
-	AmmExitPool           *ammtypes.MsgExitPool           `json:"amm_exit_pool,omitempty"`
-	AmmSwapExactAmountIn  *ammtypes.MsgSwapExactAmountIn  `json:"amm_swap_exact_amount_in,omitempty"`
-	AmmSwapExactAmountOut *ammtypes.MsgSwapExactAmountOut `json:"amm_swap_exact_amount_out,omitempty"`
-	AmmSwapByDenom        *ammtypes.MsgSwapByDenom        `json:"amm_swap_by_denom,omitempty"`
+	AmmCreatePool               *ammtypes.MsgCreatePool               `json:"amm_create_pool,omitempty"`
+	AmmJoinPool                 *ammtypes.MsgJoinPool                 `json:"amm_join_pool,omitempty"`
+	AmmExitPool                 *ammtypes.MsgExitPool                 `json:"amm_exit_pool,omitempty"`
+	AmmUpFrontSwapExactAmountIn *ammtypes.MsgUpFrontSwapExactAmountIn `json:"amm_upfront_swap_exact_amount_in,omitempty"`
+	AmmSwapExactAmountIn        *ammtypes.MsgSwapExactAmountIn        `json:"amm_swap_exact_amount_in,omitempty"`
+	AmmSwapExactAmountOut       *ammtypes.MsgSwapExactAmountOut       `json:"amm_swap_exact_amount_out,omitempty"`
+	AmmSwapByDenom              *ammtypes.MsgSwapByDenom              `json:"amm_swap_by_denom,omitempty"`
 }
 
 type RequestResponse struct {
