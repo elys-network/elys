@@ -26,3 +26,12 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	b := k.cdc.MustMarshal(&params)
 	store.Set(types.ParamKeyPrefix, b)
 }
+
+func (k Keeper) GetDepositDenom(ctx sdk.Context) string {
+	params := k.GetParams(ctx)
+	entry, found := k.assetProfileKeeper.GetEntry(ctx, params.LegacyDepositDenom)
+	if !found {
+		return params.LegacyDepositDenom
+	}
+	return entry.Denom
+}

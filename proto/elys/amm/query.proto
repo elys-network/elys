@@ -24,10 +24,11 @@ service Query {
   }
   // Queries a list of Pool items.
   rpc Pool(QueryGetPoolRequest) returns (QueryGetPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/amm/pool/{pool_id}";
+    option (google.api.http).get =
+        "/elys-network/elys/amm/pool/{pool_id}/{days}";
   }
   rpc PoolAll(QueryAllPoolRequest) returns (QueryAllPoolResponse) {
-    option (google.api.http).get = "/elys-network/elys/amm/pool";
+    option (google.api.http).get = "/elys-network/elys/amm/pool/{days}";
   }
   // Queries a list of DenomLiquidity items.
   rpc DenomLiquidity(QueryGetDenomLiquidityRequest)
@@ -39,10 +40,15 @@ service Query {
       returns (QueryAllDenomLiquidityResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/denom_liquidity";
   }
-  // Queries a list of SwapEstimation items.
+  // Queries a list of SwapEstimation items, uses swap exact amount in route.
   rpc SwapEstimation(QuerySwapEstimationRequest)
       returns (QuerySwapEstimationResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/swap_estimation";
+  }
+  // Queries a list of SwapEstimation items, uses swap exact amount out route.
+  rpc SwapEstimationExactAmountOut(QuerySwapEstimationExactAmountOutRequest)
+      returns (QuerySwapEstimationExactAmountOutResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/swap_estimation_exact_amount_out";
   }
   // Queries JoinPool estimation
   rpc JoinPoolEstimation(QueryJoinPoolEstimationRequest)
@@ -93,18 +99,27 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/amm/swap_estimation_by_denom";
   }
+
+  // Queries WeightAndSlippageFee for a pool and date
+  rpc WeightAndSlippageFee(QueryWeightAndSlippageFeeRequest)
+      returns (QueryWeightAndSlippageFeeResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/amm/saved_value/{pool_id}/{date}";
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-
   // params holds all the parameters of this module.
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryGetPoolRequest { uint64 pool_id = 1; }
+message QueryGetPoolRequest {
+  uint64 pool_id = 1;
+  uint64 days = 2;
+}
 
 message QueryGetPoolResponse {
   Pool pool = 1 [ (gogoproto.nullable) = false ];
@@ -112,7 +127,8 @@ message QueryGetPoolResponse {
 }
 
 message QueryAllPoolRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  uint64 days = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QueryAllPoolResponse {
@@ -139,6 +155,16 @@ message QueryAllDenomLiquidityResponse {
 message QuerySwapEstimationRequest {
   repeated SwapAmountInRoute routes = 1;
   cosmos.base.v1beta1.Coin token_in = 2 [ (gogoproto.nullable) = false ];
+  string discount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QuerySwapEstimationExactAmountOutRequest {
+  repeated SwapAmountOutRoute routes = 1;
+  cosmos.base.v1beta1.Coin token_out = 2 [ (gogoproto.nullable) = false ];
   string discount = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -221,6 +247,37 @@ message QuerySwapEstimationResponse {
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin token_out = 2 [ (gogoproto.nullable) = false ];
+  string swap_fee = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string discount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin available_liquidity = 5
+      [ (gogoproto.nullable) = false ];
+  string slippage = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string weight_balance_ratio = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QuerySwapEstimationExactAmountOutResponse {
+  string spot_price = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin token_in = 2 [ (gogoproto.nullable) = false ];
   string swap_fee = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -330,6 +387,19 @@ message QuerySwapEstimationByDenomResponse {
 message QueryAMMPriceRequest {
   cosmos.base.v1beta1.Coin token_in = 1 [ (gogoproto.nullable) = false ];
   string discount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryWeightAndSlippageFeeRequest {
+  uint64 pool_id = 1;
+  string date = 2;
+}
+
+message QueryWeightAndSlippageFeeResponse {
+  string value = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false

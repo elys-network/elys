@@ -99,7 +99,7 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 					}
 				}
 
-				info := k.amm.PoolExtraInfo(ctx, pool)
+				info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
 				fiatValue := commitment.Amount.ToLegacyDec().Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare)
 
 				poolID := strconv.FormatUint(pool.PoolId, 10)
