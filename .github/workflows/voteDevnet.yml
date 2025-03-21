@@ -36,7 +36,7 @@ jobs:
 
           # environment variables
           NODE=http://37.27.221.92:27657
-          OPTIONS="--node $NODE --chain-id elysicstestnet-1 --keyring-backend=test -b=sync --fees=20000uelys --gas=300000 -y"
+          OPTIONS="--node $NODE --chain-id elysics-1 --keyring-backend=test -b=sync --fees=20000uelys --gas=300000 -y"
 
           # import proposers key
           ${ELYSD} keys import-hex proposer1 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_1 }} --keyring-backend=test
