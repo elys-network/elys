@@ -73,22 +73,22 @@ func init() {
 	// elys queries
 
 	// amm
-	setWhitelistedQuery("elys.amm.Query/Params", &ammtypes.QueryParamsResponse{})
-	setWhitelistedQuery("elys.amm.Query/Pool", &ammtypes.QueryGetPoolResponse{})
-	setWhitelistedQuery("elys.amm.Query/PoolAll", &ammtypes.QueryAllPoolResponse{})
-	setWhitelistedQuery("elys.amm.Query/DenomLiquidity", &ammtypes.QueryGetDenomLiquidityResponse{})
-	setWhitelistedQuery("elys.amm.Query/DenomLiquidityAll", &ammtypes.QueryAllDenomLiquidityResponse{})
-	setWhitelistedQuery("elys.amm.Query/SwapEstimation", &ammtypes.QuerySwapEstimationResponse{})
-	setWhitelistedQuery("elys.amm.Query/SwapEstimationExactAmountOut", &ammtypes.QuerySwapEstimationExactAmountOutResponse{})
-	setWhitelistedQuery("elys.amm.Query/JoinPoolEstimation", &ammtypes.QueryJoinPoolEstimationResponse{})
-	setWhitelistedQuery("elys.amm.Query/ExitPoolEstimation", &ammtypes.QueryExitPoolEstimationResponse{})
-	setWhitelistedQuery("elys.amm.Query/SlippageTrack", &ammtypes.QuerySlippageTrackResponse{})
-	setWhitelistedQuery("elys.amm.Query/SlippageTrackAll", &ammtypes.QuerySlippageTrackAllResponse{})
-	setWhitelistedQuery("elys.amm.Query/Balance", &ammtypes.QueryBalanceResponse{})
-	setWhitelistedQuery("elys.amm.Query/InRouteByDenom", &ammtypes.QueryInRouteByDenomResponse{})
-	setWhitelistedQuery("elys.amm.Query/OutRouteByDenom", &ammtypes.QueryOutRouteByDenomResponse{})
-	setWhitelistedQuery("elys.amm.Query/SwapEstimationByDenom", &ammtypes.QuerySwapEstimationByDenomResponse{})
-	setWhitelistedQuery("elys.amm.Query/WeightAndSlippageFee", &ammtypes.QueryWeightAndSlippageFeeResponse{})
+	setWhitelistedQuery("/elys.amm.Query/Params", &ammtypes.QueryParamsResponse{})
+	setWhitelistedQuery("/elys.amm.Query/Pool", &ammtypes.QueryGetPoolResponse{})
+	setWhitelistedQuery("/elys.amm.Query/PoolAll", &ammtypes.QueryAllPoolResponse{})
+	setWhitelistedQuery("/elys.amm.Query/DenomLiquidity", &ammtypes.QueryGetDenomLiquidityResponse{})
+	setWhitelistedQuery("/elys.amm.Query/DenomLiquidityAll", &ammtypes.QueryAllDenomLiquidityResponse{})
+	setWhitelistedQuery("/elys.amm.Query/SwapEstimation", &ammtypes.QuerySwapEstimationResponse{})
+	setWhitelistedQuery("/elys.amm.Query/SwapEstimationExactAmountOut", &ammtypes.QuerySwapEstimationExactAmountOutResponse{})
+	setWhitelistedQuery("/elys.amm.Query/JoinPoolEstimation", &ammtypes.QueryJoinPoolEstimationResponse{})
+	setWhitelistedQuery("/elys.amm.Query/ExitPoolEstimation", &ammtypes.QueryExitPoolEstimationResponse{})
+	setWhitelistedQuery("/elys.amm.Query/SlippageTrack", &ammtypes.QuerySlippageTrackResponse{})
+	setWhitelistedQuery("/elys.amm.Query/SlippageTrackAll", &ammtypes.QuerySlippageTrackAllResponse{})
+	setWhitelistedQuery("/elys.amm.Query/Balance", &ammtypes.QueryBalanceResponse{})
+	setWhitelistedQuery("/elys.amm.Query/InRouteByDenom", &ammtypes.QueryInRouteByDenomResponse{})
+	setWhitelistedQuery("/elys.amm.Query/OutRouteByDenom", &ammtypes.QueryOutRouteByDenomResponse{})
+	setWhitelistedQuery("/elys.amm.Query/SwapEstimationByDenom", &ammtypes.QuerySwapEstimationByDenomResponse{})
+	setWhitelistedQuery("/elys.amm.Query/WeightAndSlippageFee", &ammtypes.QueryWeightAndSlippageFeeResponse{})
 }
 
 // IsWhitelistedQuery returns if the query is not whitelisted.
