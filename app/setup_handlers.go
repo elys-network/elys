@@ -46,7 +46,7 @@ func generateUpgradeVersion() string {
 	//	return fmt.Sprintf("v%s-%s", majorVersion, rcVersion)
 	//}
 	//return fmt.Sprintf("v%s", majorVersion)
-	return "v2.2.0"
+	return "v3-rc0"
 }
 
 func (app *ElysApp) setUpgradeHandler() {
@@ -59,12 +59,9 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
-			if upgradeVersion == NextVersion || upgradeVersion == LocalNetVersion {
-
-				// Add any logic here to run when the chain is upgraded to the new version
-
+			if ctx.ChainID() == "elysicstestnet-1" {
+				preCheck = true
 			}
-
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
 	)

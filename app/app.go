@@ -65,6 +65,8 @@ const (
 	Name                 = "elys"
 )
 
+var preCheck = false
+
 // this line is used by starport scaffolding
 
 func getGovProposalHandlers() []govclient.ProposalHandler {
@@ -343,7 +345,14 @@ func (app *ElysApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
-	return app.mm.BeginBlock(ctx)
+	if ctx.ChainID() == "elysicstestnet-1" && ctx.BlockHeight() >= 2377402 {
+		return app.mm.BeginBlock(ctx)
+	}
+	if !preCheck {
+		panic("rollback to 2377399 not done")
+	} else {
+		return app.mm.BeginBlock(ctx)
+	}
 }
 
 // EndBlocker application updates every end block
