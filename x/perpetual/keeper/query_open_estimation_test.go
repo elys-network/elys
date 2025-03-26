@@ -12,8 +12,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	"github.com/elys-network/elys/x/perpetual/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	simapp "github.com/elys-network/elys/app"

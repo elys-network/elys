@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	oracle "github.com/elys-network/elys/x/oracle/keeper"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tier/types"
-	oracle "github.com/ojo-network/ojo/x/oracle/keeper"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
