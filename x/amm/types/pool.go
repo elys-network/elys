@@ -289,8 +289,10 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
 	params Params,
-) (exitedCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, err error) {
-	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom, params)
+	takerFees sdkmath.LegacyDec,
+	applyWeightBreakingFee bool,
+) (exitedCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, slippage elystypes.Dec34, swapFee elystypes.Dec34, takerFeesFinal elystypes.Dec34, slippageCoins sdk.Coins, err error) {
+	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
 }
 
 func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper) (elystypes.Dec34, error) {
@@ -329,7 +331,7 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 	return oracleAssetsTVL.MulInt(totalWeight).QuoInt(oracleAssetsWeight), nil
 }
 
-func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (elystypes.Dec34, error) {
+func (p *Pool) LpTokenPriceForShare(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (elystypes.Dec34, error) {
 	ammPoolTvl, err := p.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
 		return elystypes.ZeroDec34(), err
@@ -339,6 +341,19 @@ func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolK
 		return elystypes.ZeroDec34(), nil
 	}
 	lpTokenPrice := ammPoolTvl.MulInt(OneShare).QuoInt(p.TotalShares.Amount)
+	return lpTokenPrice, nil
+}
+
+func (p *Pool) LpTokenPriceForBaseUnits(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (elystypes.Dec34, error) {
+	ammPoolTvl, err := p.TVL(ctx, oracleKeeper, accPoolKeeper)
+	if err != nil {
+		return elystypes.ZeroDec34(), err
+	}
+	// Ensure ammPool.TotalShares is not zero to avoid division by zero
+	if p.TotalShares.IsZero() {
+		return elystypes.ZeroDec34(), nil
+	}
+	lpTokenPrice := ammPoolTvl.Quo(elystypes.NewDec34FromInt(p.TotalShares.Amount))
 	return lpTokenPrice, nil
 }
 

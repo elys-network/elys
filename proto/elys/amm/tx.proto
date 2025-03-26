@@ -86,11 +86,9 @@ message MsgExitPool {
 message MsgExitPoolResponse {
   repeated cosmos.base.v1beta1.Coin token_out = 1
       [ (gogoproto.nullable) = false ];
-  string weight_balance_ratio = 2 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string weight_balance_ratio = 2;
+  string slippage = 3;
+  string swap_fee = 4;
 }
 
 message MsgSwapExactAmountIn {
@@ -218,6 +216,8 @@ message MsgSwapByDenomResponse {
     (gogoproto.nullable) = false
   ];
   string recipient = 7;
+  string slippage = 8;
+  string weight_bonus = 9;
 }
 
 message MsgUpdatePoolParams {

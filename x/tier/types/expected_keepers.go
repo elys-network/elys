@@ -5,7 +5,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	query "github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	elystypes "github.com/elys-network/elys/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
@@ -14,10 +14,10 @@ import (
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	leveragelptypes "github.com/elys-network/elys/x/leveragelp/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tradeshieldtypes "github.com/elys-network/elys/x/tradeshield/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -70,7 +70,7 @@ type AmmKeeper interface {
 	GetAllPool(sdk.Context) []ammtypes.Pool
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
-	PoolExtraInfo(ctx sdk.Context, pool ammtypes.Pool) ammtypes.PoolExtraInfo
+	PoolExtraInfo(ctx sdk.Context, pool ammtypes.Pool, days int) ammtypes.PoolExtraInfo
 	InRouteByDenom(goCtx context.Context, req *ammtypes.QueryInRouteByDenomRequest) (*ammtypes.QueryInRouteByDenomResponse, error)
 	CalcInRouteSpotPrice(ctx sdk.Context,
 		tokenIn sdk.Coin,
@@ -105,8 +105,11 @@ type LeverageLpKeeper interface {
 
 type StablestakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stablestaketypes.Params)
-	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
-	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	GetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
+	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, borrowingForPool uint64) stablestaketypes.Debt
+	CalculateRedemptionRateByDenom(ctx sdk.Context, denom string) math.LegacyDec
+	GetPool(ctx sdk.Context, poolId uint64) (pool stablestaketypes.Pool, found bool)
+	CalculateRedemptionRateForPool(ctx sdk.Context, pool stablestaketypes.Pool) math.LegacyDec
 }
 
 type TradeshieldKeeper interface {

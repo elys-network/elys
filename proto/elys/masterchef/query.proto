@@ -169,6 +169,11 @@ message QueryPoolInfoRequest { uint64 pool_id = 1; }
 
 message QueryPoolInfoResponse {
   PoolInfo pool_info = 1 [ (gogoproto.nullable) = false ];
+  string stable_apr = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryPoolRewardInfoRequest {
@@ -225,12 +230,17 @@ message PoolApr {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string usdc_apr = 3 [
+  string usdc_dex_apr = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string total_apr = 4 [
+  string usdc_gas_apr = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string total_apr = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
@@ -252,6 +262,7 @@ message QueryListFeeInfoResponse {
 message QueryAprRequest {
   elys.commitment.EarnType withdraw_type = 1;
   string denom = 2;
+  uint64 days = 3;
 }
 
 message QueryAprResponse { string apr = 1; }

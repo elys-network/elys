@@ -54,6 +54,7 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	"github.com/elys-network/elys/app/ante"
+	oracleabci "github.com/ojo-network/ojo/x/oracle/abci"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -281,13 +282,28 @@ func NewElysApp(
 			ParameterKeeper: app.ParameterKeeper,
 			Cdc:             appCodec,
 			IBCKeeper:       app.IBCKeeper,
-			StakingKeeper:   app.StakingKeeper,
+			StakingKeeper:   app.StakingKeeper.Keeper,
 			ConsumerKeeper:  app.ConsumerKeeper,
 		},
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
+
+	proposalHandler := oracleabci.NewProposalHandler(
+		app.Logger(),
+		app.OracleKeeper,
+		app.StakingKeeper,
+	)
+	app.SetPrepareProposal(proposalHandler.PrepareProposalHandler())
+	app.SetProcessProposal(proposalHandler.ProcessProposalHandler())
+
+	voteExtensionsHandler := oracleabci.NewVoteExtensionHandler(
+		app.Logger(),
+		app.OracleKeeper,
+	)
+	app.SetExtendVoteHandler(voteExtensionsHandler.ExtendVoteHandler())
+	app.SetVerifyVoteExtensionHandler(voteExtensionsHandler.VerifyVoteExtensionHandler())
 
 	// set ante and post handlers
 	app.SetAnteHandler(anteHandler)
@@ -335,11 +351,6 @@ func (app *ElysApp) setPostHandler() {
 
 // Name returns the name of the App
 func (app *ElysApp) Name() string { return app.BaseApp.Name() }
-
-// PreBlocker application updates every pre block
-func (app *ElysApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
-	return app.mm.PreBlock(ctx)
-}
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {

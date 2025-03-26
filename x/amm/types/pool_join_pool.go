@@ -18,17 +18,72 @@ type InternalSwapRequest struct {
 	OutToken string
 }
 
-func (p *Pool) CalcJoinValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins) (elystypes.Dec34, error) {
-	joinValue := elystypes.ZeroDec34()
-	for _, asset := range tokensIn {
-		tokenPrice, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Denom)
-		if tokenPrice.IsZero() {
-			return elystypes.ZeroDec34(), fmt.Errorf("token price not set: %s", asset.Denom)
+func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper,
+	accountedPoolKeeper AccountedPoolKeeper, tokenIn sdk.Coin,
+	weightMultiplier elystypes.Dec34, params Params) (elystypes.Dec34, elystypes.Dec34, error) {
+
+	// As this is 2 token pool, tokenOut will be
+	tokenOutDenom := ""
+	for _, asset := range p.PoolAssets {
+		if asset.Token.Denom == tokenIn.Denom {
+			continue
 		}
-		v := tokenPrice.MulInt(asset.Amount)
-		joinValue = joinValue.Add(v)
+		tokenOutDenom = asset.Token.Denom
 	}
-	return joinValue, nil
+	// Not possible, but we might require this when we have pools with assets more than 2
+	if tokenOutDenom == "" {
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), fmt.Errorf("token out denom not found")
+	}
+
+	outTokenPrice, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+	if outTokenPrice.IsZero() {
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), fmt.Errorf("token price not set: %s", tokenOutDenom)
+	}
+
+	inTokenPrice, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenIn.Denom)
+	if inTokenPrice.IsZero() {
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), fmt.Errorf("token price not set: %s", tokenIn.Denom)
+	}
+
+	joinValue := inTokenPrice.MulInt(tokenIn.Amount)
+
+	externalLiquidityRatio, err := p.GetAssetExternalLiquidityRatio(tokenOutDenom)
+	if err != nil {
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+	}
+	// Ensure externalLiquidityRatio is not zero to avoid division by zero
+	if externalLiquidityRatio.LT(sdkmath.LegacyOneDec()) {
+		externalLiquidityRatio = sdkmath.LegacyOneDec()
+	}
+
+	weightedAmount := weightMultiplier.MulInt(tokenIn.Amount)
+	resizedAmount := sdkmath.LegacyNewDecFromInt(weightedAmount.ToInt()).
+		Quo(externalLiquidityRatio).RoundInt()
+	slippageAmount, err := p.CalcGivenInSlippage(
+		ctx,
+		oracleKeeper,
+		p,
+		sdk.Coins{sdk.NewCoin(tokenIn.Denom, resizedAmount)},
+		tokenOutDenom,
+		accountedPoolKeeper,
+	)
+	if err != nil {
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+	}
+	slippageAmount = slippageAmount.Mul(elystypes.NewDec34FromLegacyDec(externalLiquidityRatio))
+	slippageValue := slippageAmount.Mul(outTokenPrice)
+
+	slippage := slippageValue.Quo(joinValue)
+
+	minSlippage := elystypes.NewDec34FromLegacyDec(params.MinSlippage).Mul(weightMultiplier)
+	if slippage.LT(minSlippage) {
+		slippage = minSlippage
+		slippageValue = joinValue.Mul(minSlippage)
+	}
+
+	joinValueWithSlippage := joinValue.Sub(slippageValue)
+
+	return joinValueWithSlippage, slippage, nil
 }
 
 // JoinPool calculates the number of shares needed for an all-asset join given tokensIn with swapFee applied.
@@ -38,20 +93,21 @@ func (p *Pool) JoinPool(
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
 	params Params,
-) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage elystypes.Dec34, weightBalanceBonus elystypes.Dec34, err error) {
+	takerfees elystypes.Dec34,
+) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage elystypes.Dec34, weightBalanceBonus elystypes.Dec34, swapFee elystypes.Dec34, takerFeesFinal elystypes.Dec34, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
 		numShares, tokensJoined, err := p.CalcJoinPoolNoSwapShares(tokensIn)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+			return sdk.NewCoins(), sdkmath.Int{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+			return sdk.NewCoins(), sdkmath.Int{}, elystypes.Dec34{}, elystypes.Dec34{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 		}
-		return tokensJoined, numShares, elystypes.ZeroDec34(), elystypes.ZeroDec34(), nil
+		return tokensJoined, numShares, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), nil
 	}
 
 	if !p.PoolParams.UseOracle {
@@ -69,55 +125,65 @@ func (p *Pool) JoinPool(
 
 		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+			return sdk.NewCoins(), sdkmath.Int{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
 		if err != nil {
-			return sdk.NewCoins(), sdkmath.Int{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+			return sdk.NewCoins(), sdkmath.Int{}, elystypes.Dec34{}, elystypes.Dec34{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 		}
-		return tokensJoined, numShares, totalSlippage, elystypes.ZeroDec34(), nil
-	}
-
-	joinValueWithoutSlippage, err := p.CalcJoinValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, tokensIn)
-	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+		return tokensJoined, numShares, totalSlippage, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), nil
 	}
 
 	accountedAssets := p.GetAccountedBalance(ctx, accountedPoolKeeper, p.PoolAssets)
+
+	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedAssets, tokensIn[0].Denom)
+	initialWeightOut := elystypes.OneDec34().Sub(initialWeightIn)
+
+	joinValueWithSlippage, slippage, err := p.CalcJoinValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, tokensIn[0], initialWeightOut, params)
+	if err != nil {
+		return sdk.NewCoins(), sdkmath.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+	}
+
 	tvl, err := p.TVL(ctx, oracleKeeper, accountedPoolKeeper)
 	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 	}
 
 	// Ensure tvl is not zero to avoid division by zero
 	if tvl.IsZero() {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), ErrAmountTooLow
+		return sdk.NewCoins(), sdkmath.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), ErrAmountTooLow
 	}
 
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx, tokensIn, sdk.NewCoins(), accountedAssets)
 	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 	}
 
-	weightBalanceBonus, weightBreakingFee, _ := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokensIn[0].Denom, params, sdkmath.LegacyOneDec())
+	weightBalanceBonus, weightBreakingFee, isSwapFee := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokensIn[0].Denom, params, sdkmath.LegacyOneDec())
 	// apply percentage to fees, consider improvement or reduction of other token
 	// Other denom weight ratio to reduce the weight breaking fees
-	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedAssets, tokensIn[0].Denom)
-	initialWeightOut := elystypes.OneDec34().Sub(initialWeightIn)
 	weightBreakingFee = weightBreakingFee.Mul(initialWeightOut)
+	weightBalanceBonus = weightBalanceBonus.Mul(initialWeightOut)
+
+	swapFee = elystypes.ZeroDec34()
+	if isSwapFee {
+		swapFee = elystypes.NewDec34FromLegacyDec(p.GetPoolParams().SwapFee).Mul(initialWeightOut)
+	}
+
+	takerFeesFinal = takerfees.Mul(initialWeightOut)
 
 	totalShares := p.GetTotalShares()
 	numSharesDec := elystypes.NewDec34FromInt(totalShares.Amount).
-		Mul(joinValueWithoutSlippage).Quo(tvl).
-		Mul(elystypes.OneDec34().Sub(weightBreakingFee))
+		Mul(joinValueWithSlippage).Quo(tvl).
+		Mul(elystypes.OneDec34().Sub(weightBreakingFee)).
+		Mul(elystypes.OneDec34().Sub(swapFee.Add(takerFeesFinal)))
 	numShares = numSharesDec.ToInt()
 	err = p.IncreaseLiquidity(numShares, tokensIn)
 	if err != nil {
-		return sdk.NewCoins(), sdkmath.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+		return sdk.NewCoins(), sdkmath.ZeroInt(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 	}
 
-	// No slippage in oracle pool due to 1 hr lock
-	return tokensIn, numShares, elystypes.ZeroDec34(), weightBalanceBonus, nil
+	return tokensIn, numShares, slippage, weightBalanceBonus, swapFee, takerFeesFinal, nil
 }

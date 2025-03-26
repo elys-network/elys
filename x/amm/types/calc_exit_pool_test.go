@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCalcExitValueWithoutSlippage(t *testing.T) {
+func TestCalcExitValueWithSlippage(t *testing.T) {
 	ctx := sdk.Context{}
 
 	// Define test cases
@@ -36,14 +36,14 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 			types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 				PoolAssets: []types.PoolAsset{
-					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1)},
-					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1)},
+					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
+					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
 				},
 				TotalShares: sdk.NewCoin("shares", sdkmath.NewInt(100)),
 			},
 			sdkmath.NewInt(10),
 			"tokenA",
-			elystypes.NewDec34FromInt64(2000),
+			elystypes.NewDec34FromInt64(1660),
 			"",
 		},
 		{
@@ -57,8 +57,8 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 			types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 				PoolAssets: []types.PoolAsset{
-					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1)},
-					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1)},
+					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
+					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
 				},
 				TotalShares: sdk.NewCoin("shares", sdkmath.ZeroInt()),
 			},
@@ -78,8 +78,8 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 			types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 				PoolAssets: []types.PoolAsset{
-					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1)},
-					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1)},
+					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
+					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
 				},
 				TotalShares: sdk.NewCoin("shares", sdkmath.NewInt(10)),
 			},
@@ -96,7 +96,7 @@ func TestCalcExitValueWithoutSlippage(t *testing.T) {
 			accKeeper := mocks.NewAccountedPoolKeeper(t)
 			tc.setupMock(oracleKeeper, accKeeper)
 
-			value, err := types.CalcExitValueWithoutSlippage(ctx, oracleKeeper, accKeeper, tc.pool, tc.exitingShares, tc.tokenOutDenom)
+			value, _, _, err := types.CalcExitValueWithSlippage(ctx, oracleKeeper, accKeeper, tc.pool, tc.exitingShares, tc.tokenOutDenom, elystypes.ZeroDec34(), true, types.DefaultParams())
 			if tc.expectedErrMsg != "" {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tc.expectedErrMsg)
@@ -130,11 +130,14 @@ func TestCalcExitPool(t *testing.T) {
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
 				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromString("0.00001"), uint64(0))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
+				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
 			types.Pool{
-				PoolParams: types.PoolParams{UseOracle: true},
+				PoolParams: types.PoolParams{UseOracle: true, SwapFee: sdkmath.LegacyZeroDec()},
 				PoolAssets: []types.PoolAsset{
-					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1)},
+					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
+					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
 				},
 				TotalShares: sdk.NewCoin("shares", sdkmath.NewInt(100)),
 			},
@@ -144,23 +147,32 @@ func TestCalcExitPool(t *testing.T) {
 				WeightBreakingFeeMultiplier: sdkmath.LegacyMustNewDecFromStr("0.0005"),
 				WeightBreakingFeePortion:    sdkmath.LegacyMustNewDecFromStr("0.5"),
 				ThresholdWeightDifference:   sdkmath.LegacyMustNewDecFromStr("0.2"),
+				WeightBreakingFeeExponent:   sdkmath.LegacyMustNewDecFromStr("0.5"),
+				MinSlippage:                 sdkmath.LegacyMustNewDecFromStr("0.001"),
 			},
-			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(100))},
+			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(190))},
 			elystypes.ZeroDec34(),
 			"",
 		},
 		{
 			"exiting shares greater than total shares",
-			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {},
+			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
+			},
 			types.Pool{
 				PoolParams:  types.PoolParams{UseOracle: true},
 				TotalShares: sdk.NewCoin("shares", sdkmath.NewInt(10)),
+				PoolAssets: []types.PoolAsset{
+					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
+					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
+				},
 			},
 			sdkmath.NewInt(20),
 			"tokenA",
 			types.Params{
 				WeightBreakingFeePortion:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				ThresholdWeightDifference: sdkmath.LegacyMustNewDecFromStr("0.2"),
+				WeightBreakingFeeExponent: sdkmath.LegacyMustNewDecFromStr("0.5"),
+				MinSlippage:               sdkmath.LegacyMustNewDecFromStr("0.001"),
 			},
 			sdk.Coins{},
 			elystypes.ZeroDec34(),
@@ -170,20 +182,28 @@ func TestCalcExitPool(t *testing.T) {
 			"exiting shares greater than total shares",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
 				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.ZeroDec34(), uint64(0))
+				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
+				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
 			types.Pool{
 				PoolParams:  types.PoolParams{UseOracle: true},
 				TotalShares: sdk.NewCoin("shares", sdkmath.NewInt(100)),
+				PoolAssets: []types.PoolAsset{
+					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
+					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1), ExternalLiquidityRatio: sdkmath.LegacyOneDec()},
+				},
 			},
 			sdkmath.NewInt(10),
 			"tokenA",
 			types.Params{
 				WeightBreakingFeePortion:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				ThresholdWeightDifference: sdkmath.LegacyMustNewDecFromStr("0.2"),
+				WeightBreakingFeeExponent: sdkmath.LegacyMustNewDecFromStr("0.5"),
+				MinSlippage:               sdkmath.LegacyMustNewDecFromStr("0.001"),
 			},
 			sdk.Coins{},
 			elystypes.ZeroDec34(),
-			"amount too low",
+			"token price not set",
 		},
 		{
 			"successful exit without oracle pricing",
@@ -192,6 +212,7 @@ func TestCalcExitPool(t *testing.T) {
 				PoolParams: types.PoolParams{UseOracle: false},
 				PoolAssets: []types.PoolAsset{
 					{Token: sdk.NewCoin("tokenA", sdkmath.NewInt(1000)), Weight: sdkmath.NewInt(1)},
+					{Token: sdk.NewCoin("tokenB", sdkmath.NewInt(2000)), Weight: sdkmath.NewInt(1)},
 				},
 				TotalShares: sdk.NewCoin("shares", sdkmath.NewInt(100)),
 			},
@@ -200,8 +221,10 @@ func TestCalcExitPool(t *testing.T) {
 			types.Params{
 				WeightBreakingFeePortion:  sdkmath.LegacyMustNewDecFromStr("0.5"),
 				ThresholdWeightDifference: sdkmath.LegacyMustNewDecFromStr("0.2"),
+				WeightBreakingFeeExponent: sdkmath.LegacyMustNewDecFromStr("0.5"),
+				MinSlippage:               sdkmath.LegacyMustNewDecFromStr("0.001"),
 			},
-			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(100))},
+			sdk.Coins{sdk.NewCoin("tokenA", sdkmath.NewInt(100)), sdk.NewCoin("tokenB", sdkmath.NewInt(200))},
 			elystypes.ZeroDec34(),
 			"",
 		},
@@ -213,7 +236,7 @@ func TestCalcExitPool(t *testing.T) {
 			accKeeper := mocks.NewAccountedPoolKeeper(t)
 			tc.setupMock(oracleKeeper, accKeeper)
 
-			exitCoins, weightBalanceBonus, err := types.CalcExitPool(ctx, oracleKeeper, tc.pool, accKeeper, tc.exitingShares, tc.tokenOutDenom, tc.params)
+			exitCoins, weightBalanceBonus, _, _, _, _, err := types.CalcExitPool(ctx, oracleKeeper, tc.pool, accKeeper, tc.exitingShares, tc.tokenOutDenom, tc.params, sdkmath.LegacyZeroDec(), true)
 			if tc.expectedErrMsg != "" {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tc.expectedErrMsg)

@@ -19,6 +19,7 @@ import (
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tradeshieldtypes "github.com/elys-network/elys/x/tradeshield/types"
 
 	elystypes "github.com/elys-network/elys/types"
@@ -88,8 +89,8 @@ func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) elystype
 			if !found {
 				continue
 			}
-			info := k.amm.PoolExtraInfo(ctx, pool)
-			totalValue = totalValue.Add(elystypes.NewDec34FromLegacyDec(info.LpTokenPrice).MulInt(commitment.Amount).QuoInt(ammtypes.OneShare))
+			info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
+			totalValue = totalValue.Add(elystypes.NewDec34FromLegacyDec((info.LpTokenPrice.MulInt(commitment.Amount)).QuoInt(ammtypes.OneShare)))
 		}
 	}
 
@@ -107,13 +108,17 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (elystypes.
 	for _, commitment := range commitments.CommittedTokens {
 		if !strings.HasPrefix(commitment.Denom, "amm/pool") {
 			if strings.HasPrefix(commitment.Denom, "stablestake/share") {
-				usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+				poolId, err := stablestaketypes.GetPoolIDFromPath(commitment.Denom)
+				if err != nil {
+					continue
+				}
+				pool, found := k.stablestakeKeeper.GetPool(ctx, poolId)
 				if !found {
 					continue
 				}
-				tokenPrice, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-				params := k.stablestakeKeeper.GetParams(ctx)
-				usdValue := tokenPrice.MulLegacyDec(params.RedemptionRate).MulInt(commitment.Amount)
+				redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateForPool(ctx, pool)
+				tokenPrice, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, pool.GetDepositDenom())
+				usdValue := tokenPrice.MulInt(commitment.Amount).MulLegacyDec(redemptionRate)
 				totalCommit = totalCommit.Add(usdValue)
 				continue
 			}
@@ -275,10 +280,10 @@ func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) (e
 			if !found {
 				continue
 			}
-			info := k.amm.PoolExtraInfo(ctx, pool)
-			totalValue = totalValue.Add(elystypes.NewDec34FromLegacyDec(info.LpTokenPrice).MulInt(position.LeveragedLpAmount).QuoInt(ammtypes.OneShare))
+			info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
+			totalValue = totalValue.Add((elystypes.NewDec34FromLegacyDec(info.LpTokenPrice).MulInt(position.LeveragedLpAmount)).QuoInt(ammtypes.OneShare))
 			// USD value of debt
-			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPositionAddress())
+			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 			usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 			if !found {
 				continue

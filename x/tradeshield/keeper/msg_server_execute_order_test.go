@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	keeper "github.com/elys-network/elys/x/tradeshield/keeper"
+	"github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
+	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 func (suite *TradeshieldKeeperTestSuite) TestMsgServerExecuteOrder() {

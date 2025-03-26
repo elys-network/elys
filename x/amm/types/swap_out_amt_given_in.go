@@ -184,6 +184,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 	accPoolKeeper AccountedPoolKeeper,
 	weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
 	params Params,
+	takerFees sdkmath.LegacyDec,
 ) (tokenOut sdk.Coin, slippage, slippageAmount elystypes.Dec34, weightBalanceBonus elystypes.Dec34, oracleOutAmount elystypes.Dec34, swapFeeFinal sdkmath.LegacyDec, err error) {
 
 	// Fixed gas consumption per swap to prevent spam
@@ -253,6 +254,11 @@ func (p *Pool) SwapOutAmtGivenIn(
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatioDec34)
 	slippage = slippageAmount.Quo(oracleOutAmount)
 
+	if slippage.LT(elystypes.NewDec34FromLegacyDec(params.MinSlippage)) {
+		slippage = elystypes.NewDec34FromLegacyDec(params.MinSlippage)
+		slippageAmount = oracleOutAmount.Mul(elystypes.NewDec34FromLegacyDec(params.MinSlippage))
+	}
+
 	// oracleOutAmount = 100 ATOM
 	// BalancerOutAmount = 95 ATOM
 	// balancerSlippageAmount = 5
@@ -312,12 +318,9 @@ func (p *Pool) SwapOutAmtGivenIn(
 	if swapFee.GTE(sdkmath.LegacyOneDec()) {
 		return sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdkmath.LegacyZeroDec(), ErrTooMuchSwapFee
 	}
-
-	swapFeeDec34 := elystypes.NewDec34FromLegacyDec(swapFee)
-
 	tokenAmountOutInt := outAmountAfterSlippage.
 		Mul(elystypes.OneDec34().Sub(weightBreakingFee)).
-		Mul(elystypes.OneDec34().Sub(swapFeeDec34)).ToInt() // We ignore the decimal component, as we round down the token amount out.
+		Mul(elystypes.OneDec34().Sub(elystypes.NewDec34FromLegacyDec(swapFee.Add(takerFees)))).ToInt() // We ignore the decimal component, as we round down the token amount out.
 	oracleOutCoin := sdk.NewCoin(tokenOutDenom, tokenAmountOutInt)
 	return oracleOutCoin, slippage, slippageAmount, weightBalanceBonus, oracleOutAmount, swapFee, nil
 }

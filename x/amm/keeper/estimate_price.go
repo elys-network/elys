@@ -68,6 +68,19 @@ func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.
 	return tokenPrice.MulInt(amount)
 }
 
+func (k Keeper) CalculateCoinsUSDValue(
+	ctx sdk.Context,
+	coins sdk.Coins,
+) elystypes.Dec34 {
+	totalValueInUSD := elystypes.ZeroDec34()
+	for _, coin := range coins {
+		valueInUSD := k.CalculateUSDValue(ctx, coin.Denom, coin.Amount)
+		totalValueInUSD = totalValueInUSD.Add(valueInUSD)
+	}
+
+	return totalValueInUSD
+}
+
 func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) elystypes.Dec34 {
 	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found || denom == usdcDenom {

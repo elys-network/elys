@@ -6,6 +6,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	elystypes "github.com/elys-network/elys/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
 
@@ -66,8 +67,9 @@ func (k Keeper) JoinPoolNoSwap(
 			tokensIn = neededLpLiquidity
 		}
 		params := k.GetParams(ctx)
+		takerFees := elystypes.NewDec34FromLegacyDec(k.parameterKeeper.GetParams(ctx).TakerFees)
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-		tokensJoined, sharesOut, _, weightBalanceBonus, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params)
+		tokensJoined, sharesOut, _, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params, takerFees)
 		if err != nil {
 			return nil, sdkmath.ZeroInt(), err
 		}
@@ -77,8 +79,10 @@ func (k Keeper) JoinPoolNoSwap(
 			ctx.Logger().Error(fmt.Sprintf("Expected to JoinPoolNoSwap >= %s shares, actually did %s shares",
 				shareOutAmount, sharesOut))
 		}
+		// slippage will be 0 as tokensIn.Len() != 1
+		slippageCoins := sdk.Coins{}
 
-		err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus)
+		err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus, takerFeesFinal, swapFee, slippageCoins)
 		if err != nil {
 			return nil, sdkmath.Int{}, err
 		}
@@ -88,15 +92,44 @@ func (k Keeper) JoinPoolNoSwap(
 			return nil, sdkmath.Int{}, err
 		}
 
-		return tokensJoined, sharesOut, err
+		return tokensJoined, sharesOut, nil
 	}
 
 	params := k.GetParams(ctx)
+	takerFees := elystypes.NewDec34FromLegacyDec(k.parameterKeeper.GetParams(ctx).TakerFees)
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-	tokensJoined, sharesOut, _, weightBalanceBonus, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params)
+	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
 	if err != nil {
 		return nil, sdkmath.ZeroInt(), err
+	}
+
+	// Check treasury and update weightBalance
+	var otherAsset types.PoolAsset
+	if weightBalanceBonus.IsPositive() && tokensJoined.Len() == 1 {
+		rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+		for _, asset := range pool.PoolAssets {
+			if asset.Token.Denom == tokensJoined[0].Denom {
+				continue
+			}
+			otherAsset = asset
+		}
+		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
+
+		bonusTokenAmount := weightBalanceBonus.MulInt(tokensJoined[0].Amount).ToInt()
+
+		if treasuryTokenAmount.LT(bonusTokenAmount) {
+			weightBalanceBonus = elystypes.NewDec34FromInt(treasuryTokenAmount).Quo(elystypes.NewDec34FromInt(tokensJoined[0].Amount))
+		}
+	}
+
+	slippageCoins := sdk.Coins{}
+	if pool.PoolParams.UseOracle && len(tokenInMaxs) == 1 {
+		slippageAmount := slippage.MulInt(tokenInMaxs[0].Amount).ToInt()
+		if slippageAmount.IsPositive() {
+			slippageCoins = sdk.NewCoins(sdk.NewCoin(tokenInMaxs[0].Denom, slippageAmount))
+			k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenInMaxs[0].Denom, slippageAmount))
+		}
 	}
 
 	// sanity check, don't return error as not worth halting the LP. We know its not too much.
@@ -105,7 +138,7 @@ func (k Keeper) JoinPoolNoSwap(
 			shareOutAmount, sharesOut))
 	}
 
-	err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus)
+	err = k.ApplyJoinPoolStateChange(ctx, pool, sender, sharesOut, tokensJoined, weightBalanceBonus, takerFeesFinal, swapFee, slippageCoins)
 	if err != nil {
 		return nil, sdkmath.Int{}, err
 	}
@@ -116,5 +149,5 @@ func (k Keeper) JoinPoolNoSwap(
 		return nil, sdkmath.Int{}, err
 	}
 
-	return tokensJoined, sharesOut, err
+	return tokensJoined, sharesOut, nil
 }

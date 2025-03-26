@@ -18,11 +18,12 @@ func (k Keeper) SwapOutAmtGivenIn(
 	tokenOutDenom string,
 	swapFee sdkmath.LegacyDec,
 	weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
+	takersFee sdkmath.LegacyDec,
 ) (tokenOut sdk.Coin, slippage, slippageAmount, weightBalanceBonus, oracleOutAmount elystypes.Dec34, swapFeeFinal sdkmath.LegacyDec, err error) {
 	ammPool, found := k.GetPool(ctx, poolId)
 	if !found {
 		return sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdkmath.LegacyZeroDec(), fmt.Errorf("invalid pool: %d", poolId)
 	}
 	params := k.GetParams(ctx)
-	return ammPool.SwapOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper, weightBreakingFeePerpetualFactor, params)
+	return ammPool.SwapOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper, weightBreakingFeePerpetualFactor, params, takersFee)
 }

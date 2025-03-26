@@ -1,36 +1,38 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
-func (k Keeper) CheckAmmPoolUsdcBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
+func (k Keeper) CheckAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
 	leveragePool, found := k.GetPool(ctx, ammPool.PoolId)
 	if !found {
 		// It is possible that this pool haven't been enabled
 		return nil
 	}
-
-	// This is kind of health check so we should only use real amm pool balance
-	tvl, err := ammPool.TVL(ctx, k.oracleKeeper, nil)
-	if err != nil {
-		return err
-	}
-	leverageLpTvl := tvl.
-		MulInt(leveragePool.LeveragedLpAmount).
-		QuoInt(ammPool.TotalShares.Amount)
-
-	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
-	price, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, depositDenom)
+	stablestakeAmmPool := k.stableKeeper.GetAmmPool(ctx, ammPool.PoolId)
+	params := k.GetParams(ctx)
 
 	for _, asset := range ammPool.PoolAssets {
-		if asset.Token.Denom == depositDenom && price.MulInt(asset.Token.Amount).LT(leverageLpTvl) {
-			return types.ErrInsufficientUsdcAfterOp
+		for _, liabilties := range stablestakeAmmPool.TotalLiabilities {
+			if asset.Token.Denom == liabilties.Denom && asset.Token.Amount.LT(liabilties.Amount) {
+				return types.ErrInsufficientUsdcAfterOp
+			}
 		}
 	}
+
+	ratio := leveragePool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+
+	maxRatio := math.LegacyOneDec().Sub(params.PoolOpenThreshold).Add(params.ExitBuffer)
+	if ratio.GT(maxRatio) {
+		return fmt.Errorf("operation not allowed: pool leverage position becomes %s (> %s)", ratio.String(), maxRatio.String())
+	}
+
 	return nil
 }
 
@@ -46,12 +48,12 @@ func (k Keeper) AfterJoinPool(ctx sdk.Context, sender sdk.AccAddress, ammPool am
 
 // AfterExitPool is called after ExitPool, ExitSwapShareAmountIn, and ExitSwapExternAmountOut
 func (k Keeper) AfterExitPool(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, shareInAmount math.Int, exitCoins sdk.Coins) error {
-	return k.CheckAmmPoolUsdcBalance(ctx, ammPool)
+	return k.CheckAmmPoolBalance(ctx, ammPool)
 }
 
 // AfterSwap is called after SwapExactAmountIn and SwapExactAmountOut
 func (k Keeper) AfterSwap(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool, input sdk.Coins, output sdk.Coins) error {
-	return k.CheckAmmPoolUsdcBalance(ctx, ammPool)
+	return k.CheckAmmPoolBalance(ctx, ammPool)
 }
 
 // Hooks wrapper struct for tvl keeper

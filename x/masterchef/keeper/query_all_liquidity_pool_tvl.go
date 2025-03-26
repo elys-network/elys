@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"cosmossdk.io/math"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	elystypes "github.com/elys-network/elys/types"
@@ -34,12 +33,7 @@ func (k Keeper) AllLiquidityPoolTVL(goCtx context.Context, req *types.QueryAllLi
 	}
 	totalTVL = totalTVL.Add(poolsTVL.ToInt())
 
-	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
-	if !found {
-		return nil, status.Error(codes.NotFound, "asset profile not found")
-	}
-
-	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, entry.Denom)
+	stableStakeTVL := k.stableKeeper.AllTVL(ctx, k.oracleKeeper)
 	totalTVL = totalTVL.Add(stableStakeTVL.ToInt())
 
 	return &types.QueryAllLiquidityPoolTVLResponse{

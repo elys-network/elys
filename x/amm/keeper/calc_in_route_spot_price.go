@@ -24,8 +24,6 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 	// The final token out denom
 	var tokenOutDenom string
 
-	isMultiHopRouted, routeSwapFee, sumOfSwapFees := false, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}
-
 	// convert routes []*types.SwapAmountInRoute to []types.SwapAmountInRoute
 	routesNoPtr := make([]types.SwapAmountInRoute, len(routes))
 	for i, route := range routes {
@@ -35,25 +33,6 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 	route := types.SwapAmountInRoutes(routesNoPtr)
 	if err := route.Validate(); err != nil {
 		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
-	}
-
-	// In this loop, we check if:
-	// - the route is of length 2
-	// - route 1 and route 2 don't trade via the same pool
-	// - route 1 contains uelys
-	// - both route 1 and route 2 are incentivized pools
-	//
-	// If all of the above is true, then we collect the additive and max fee between the
-	// two pools to later calculate the following:
-	// total_swap_fee = total_swap_fee = max(swapfee1, swapfee2)
-	// fee_per_pool = total_swap_fee * ((pool_fee) / (swapfee1 + swapfee2))
-	if k.isElysRoutedMultihop(ctx, route, routes[0].TokenOutDenom, tokenIn.Denom) {
-		isMultiHopRouted = true
-		var err error
-		routeSwapFee, sumOfSwapFees, err = k.getElysRoutedMultihopTotalSwapFee(ctx, route)
-		if err != nil {
-			return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
-		}
 	}
 
 	// Initialize the total discounted swap fee
@@ -75,13 +54,9 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		}
 
 		// Get Pool swap fee
-		swapFee := pool.GetPoolParams().SwapFee
-
-		// If we determined the route is an elys multi-hop and both routes are incentivized,
-		// we modify the swap fee accordingly.
-		if isMultiHopRouted && sumOfSwapFees.IsPositive() {
-			swapFee = routeSwapFee.Mul((swapFee.Quo(sumOfSwapFees)))
-		}
+		// Divide fees with the number of routes to incentivize multi-hop
+		swapFee := pool.GetPoolParams().SwapFee.Quo(sdkmath.LegacyNewDec(int64(len(routes))))
+		takersFee := k.parameterKeeper.GetParams(ctx).TakerFees.Quo(sdkmath.LegacyNewDec(int64(len(routes))))
 
 		// Override swap fee if applicable
 		if overrideSwapFee.IsPositive() {
@@ -94,9 +69,22 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		// Estimate swap
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		cacheCtx, _ := ctx.CacheContext()
-		tokenOut, swapSlippage, _, weightBalanceBonus, _, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, sdkmath.LegacyOneDec())
+		tokenOut, swapSlippage, _, weightBalanceBonus, oracleOutAmount, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, sdkmath.LegacyOneDec(), takersFee)
 		if err != nil {
 			return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+		}
+
+		// Check treasury and update weightBalance
+		if weightBalanceBonus.IsPositive() {
+			// get treasury balance
+			rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+			treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
+
+			bonusTokenAmount := oracleOutAmount.Mul(weightBalanceBonus).ToInt()
+
+			if treasuryTokenAmount.LT(bonusTokenAmount) {
+				weightBalanceBonus = elystypes.NewDec34FromInt(treasuryTokenAmount).Quo(oracleOutAmount)
+			}
 		}
 
 		// Calculate the total discounted swap fee

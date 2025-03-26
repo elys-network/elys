@@ -46,6 +46,7 @@ func (k Keeper) OnCollectFee(ctx sdk.Context, pool types.Pool, fee sdk.Coins) er
 func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk.Coins) error {
 	poolRevenueAddress := types.NewPoolRevenueAddress(pool.PoolId)
 	params := k.GetParams(ctx)
+	takersFees := k.parameterKeeper.GetParams(ctx).TakerFees
 	for _, tokenIn := range fee {
 		// skip for fee denom
 		if tokenIn.Denom == pool.PoolParams.FeeDenom {
@@ -54,7 +55,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-		tokenOutCoin, _, _, _, oracleOutAmount, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdkmath.LegacyZeroDec(), k.accountedPoolKeeper, sdkmath.LegacyOneDec(), params)
+		tokenOutCoin, _, slippageAmount, _, oracleOutAmount, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdkmath.LegacyZeroDec(), k.accountedPoolKeeper, sdkmath.LegacyOneDec(), params, takersFees)
 		if err != nil {
 			return err
 		}
@@ -67,7 +68,8 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 		// Also emits a swap event and updates related liquidity metrics.
-		err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, poolRevenueAddress, tokenIn, tokenOutCoin, sdkmath.LegacyZeroDec(), sdkmath.ZeroInt(), oracleOutAmount.ToInt(), elystypes.ZeroDec34(), false)
+		// err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, poolRevenueAddress, tokenIn, tokenOutCoin, sdkmath.LegacyZeroDec(), sdkmath.ZeroInt(), oracleOutAmount.ToInt(), elystypes.ZeroDec34(), false)
+		err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, poolRevenueAddress, tokenIn, tokenOutCoin, sdkmath.LegacyZeroDec(), slippageAmount, sdkmath.ZeroInt(), oracleOutAmount.ToInt(), elystypes.ZeroDec34(), sdkmath.LegacyZeroDec(), false)
 		if err != nil {
 			return err
 		}

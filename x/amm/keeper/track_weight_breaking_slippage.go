@@ -62,13 +62,13 @@ func (k Keeper) TrackWeightBreakingSlippage(ctx sdk.Context, poolId uint64, toke
 	k.AddWeightAndSlippageFee(ctx, track)
 }
 
-// Returns last 7 days avg for weight breaking and slippage
-func (k Keeper) GetWeightBreakingSlippageAvg(ctx sdk.Context, poolId uint64) elystypes.Dec34 {
+// Returns last x days avg for weight breaking and slippage
+func (k Keeper) GetWeightBreakingSlippageAvg(ctx sdk.Context, poolId uint64, days int) elystypes.Dec34 {
 	start := ctx.BlockTime()
 	count := math.ZeroInt()
 	total := elystypes.ZeroDec34()
 
-	for i := 0; i < 7; i++ {
+	for i := 0; i < days; i++ {
 		date := start.AddDate(0, 0, i*-1).Format("2006-01-02")
 		info := k.GetWeightAndSlippageFee(ctx, poolId, date)
 

@@ -53,8 +53,8 @@ func (p Pool) CalcGivenOutSlippage(
 // Pool, and it's bank balances are updated in keeper.UpdatePoolForSwap
 func (p *Pool) SwapInAmtGivenOut(
 	ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool,
-	tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec, accPoolKeeper AccountedPoolKeeper, weightBreakingFeePerpetualFactor sdkmath.LegacyDec, params Params) (
-	tokenIn sdk.Coin, slippage, slippageAmount elystypes.Dec34, weightBalanceBonus elystypes.Dec34, oracleInAmount elystypes.Dec34, swapFeeFinal sdkmath.LegacyDec, err error,
+	tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec, accPoolKeeper AccountedPoolKeeper, weightBreakingFeePerpetualFactor sdkmath.LegacyDec, params Params, takerFees sdkmath.LegacyDec) (
+	tokenIn sdk.Coin, slippage, slippageAmount, weightBalanceBonus, oracleInAmount elystypes.Dec34, swapFeeFinal sdkmath.LegacyDec, err error,
 ) {
 	// Fixed gas consumption per swap to prevent spam
 	ctx.GasMeter().ConsumeGas(BalancerGasFeeForSwap, "balancer swap computation")
@@ -119,6 +119,12 @@ func (p *Pool) SwapInAmtGivenOut(
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatioDec34)
 	slippage = slippageAmount.Quo(oracleInAmount)
 
+	minSlippage := elystypes.NewDec34FromLegacyDec(params.MinSlippage)
+	if slippage.LT(minSlippage) {
+		slippage = minSlippage
+		slippageAmount = oracleInAmount.Mul(minSlippage)
+	}
+
 	// calculate weight distance difference to calculate bonus/cut on the operation
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
 		sdk.Coins{sdk.NewCoin(tokenInDenom, inAmountAfterSlippage.ToInt())},
@@ -137,16 +143,14 @@ func (p *Pool) SwapInAmtGivenOut(
 		return sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdkmath.LegacyZeroDec(), ErrTooMuchSwapFee
 	}
 
-	swapFeeDec34 := elystypes.NewDec34FromLegacyDec(swapFee)
-
 	// We deduct a swap fee on the input asset. The swap happens by following the invariant curve on the input * (1 - swap fee)
 	// and then the swap fee is added to the pool.
 	// Thus in order to give X amount out, we solve the invariant for the invariant input. However invariant input = (1 - swapfee) * trade input.
 	// Therefore we divide by (1 - swapfee) here
 	tokenAmountInInt := inAmountAfterSlippage.
 		Quo(elystypes.OneDec34().Sub(weightBreakingFee)).
-		Quo(elystypes.OneDec34().Sub(swapFeeDec34)).
-		ToInt() // We round up tokenInAmt, as this is whats charged for the swap, for the precise amount out.
+		Quo(elystypes.OneDec34().Sub(elystypes.NewDec34FromLegacyDec(swapFee.Add(takerFees)))).
+		Ceil().ToInt() // We round up tokenInAmt, as this is whats charged for the swap, for the precise amount out.
 	// Otherwise, the pool would under-charge by this rounding error.
 	tokenIn = sdk.NewCoin(tokenInDenom, tokenAmountInInt)
 	return tokenIn, slippage, slippageAmount, weightBalanceBonus, oracleInAmount, swapFee, nil

@@ -201,7 +201,7 @@ func (k Keeper) SetAllLegacySpotOrderPriceToNewOrderPriceStructure(ctx sdk.Conte
 
 // ExecuteStopLossOrder executes a stop loss order
 func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderTargetDenom, order.OrderAmount.Denom)
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderAmount.Denom, order.OrderTargetDenom)
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +209,7 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		return nil, errorsmod.Wrapf(types.ErrZeroMarketPrice, "denom in: %s, denom out: %s", order.OrderAmount.Denom, order.OrderTargetDenom)
 	}
 
-	if marketPrice.GT(elystypes.NewDec34FromLegacyDec(order.OrderPrice)) {		// skip the order
+	if marketPrice.GT(elystypes.NewDec34FromLegacyDec(order.OrderPrice)) { // skip the order
 		return nil, nil
 	}
 
@@ -245,7 +245,7 @@ func (k Keeper) ExecuteStopLossOrder(ctx sdk.Context, order types.SpotOrder) (*a
 
 // ExecuteLimitSellOrder executes a limit sell order
 func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*ammtypes.MsgSwapByDenomResponse, error) {
-	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderTargetDenom, order.OrderAmount.Denom)
+	marketPrice, err := k.GetAssetPriceFromDenomInToDenomOut(ctx, order.OrderAmount.Denom, order.OrderTargetDenom)
 	if err != nil {
 		return nil, err
 	}
@@ -275,6 +275,20 @@ func (k Keeper) ExecuteLimitSellOrder(ctx sdk.Context, order types.SpotOrder) (*
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
+
+	params := k.GetParams(ctx)
+	expectedAmount := marketPrice.MulInt(order.OrderAmount.Amount)
+	gotAmount := elystypes.NewDec34FromInt(res.Amount.Amount)
+	// tolerance := sdkmath.LegacyZeroDec()
+	tolerance := elystypes.ZeroDec34()
+
+	if gotAmount.LT(expectedAmount) {
+		tolerance = (expectedAmount.Sub(gotAmount)).Quo(expectedAmount)
+	}
+
+	if tolerance.GT(elystypes.NewDec34FromLegacyDec(params.Tolerance)) {
+		return res, errorsmod.Wrapf(types.ErrHighTolerance, "tolerance: %s", tolerance)
+	}
 	if err != nil {
 		return res, err
 	}
@@ -320,6 +334,19 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, order types.SpotOrder) (*a
 		MinAmount: sdk.NewCoin(order.OrderTargetDenom, sdkmath.ZeroInt()),
 		MaxAmount: order.OrderAmount,
 	})
+
+	params := k.GetParams(ctx)
+	expectedAmount := elystypes.NewDec34FromInt(order.OrderAmount.Amount).Quo(marketPrice)
+	gotAmount := elystypes.NewDec34FromInt(res.Amount.Amount)
+	tolerance := elystypes.ZeroDec34()
+
+	if gotAmount.LT(expectedAmount) {
+		tolerance = (expectedAmount.Sub(gotAmount)).Quo(expectedAmount)
+	}
+
+	if tolerance.GT(elystypes.NewDec34FromLegacyDec(params.Tolerance)) {
+		return res, errorsmod.Wrapf(types.ErrHighTolerance, "tolerance: %s", tolerance)
+	}
 	if err != nil {
 		return res, err
 	}

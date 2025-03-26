@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
+	"errors"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -59,6 +60,7 @@ func initializeForOpen(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
+		PoolId:  1,
 	}
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err = stableStakeMsgServer.Bond(suite.ctx, &msgBond)
@@ -114,7 +116,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 		{"no positions allowed",
 			&types.MsgOpen{
 				Creator:          addresses[0].String(),
-				CollateralAsset:  "stake",
+				CollateralAsset:  "uusdc",
 				CollateralAmount: sdkmath.NewInt(1000000000),
 				AmmPoolId:        1,
 				Leverage:         sdkmath.LegacyMustNewDecFromStr("10.0"),
@@ -166,7 +168,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: "pool does not exis",
+			expectErrMsg: "pool does not exist",
 			prerequisiteFunction: func() {
 				pool := types.NewPool(2, sdkmath.LegacyMustNewDecFromStr("10"))
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
@@ -184,7 +186,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: "pool does not exis",
+			expectErrMsg: "pool does not exist",
 			prerequisiteFunction: func() {
 				suite.SetupCoinPrices(suite.ctx)
 			},
@@ -199,7 +201,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("100.0"),
 			},
 			expectErr:    true,
-			expectErrMsg: "denom does not exist in pool",
+			expectErrMsg: "asset not found in amm pool",
 			prerequisiteFunction: func() {
 				pool := types.NewPool(2, sdkmath.LegacyNewDec(60))
 				suite.app.LeveragelpKeeper.SetPool(suite.ctx, pool)
@@ -217,7 +219,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			types.ErrOnlyBaseCurrencyAllowed.Error(),
+			types.ErrPoolNotCreatedForBorrow.Error(),
 			func() {
 				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
 			},
@@ -232,7 +234,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			types.ErrOnlyBaseCurrencyAllowed.Error(),
+			types.ErrPoolNotCreatedForBorrow.Error(),
 			func() {
 			},
 		},
@@ -277,7 +279,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			"pool is already leveraged at maximum value",
+			"stable stake pool max borrow capacity used up",
 			func() {
 				suite.SetPoolThreshold(sdkmath.LegacyMustNewDecFromStr("0.2"))
 			},
@@ -452,7 +454,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithoutBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			"token price not set",
+			"Asset: uusdc: asset not found in amm pool", // Can't join elys atom pool with usdc
 			func() {
 			},
 		},
@@ -466,7 +468,7 @@ func (suite *KeeperTestSuite) TestOpen_PoolWithoutBaseCurrencyAsset() {
 				StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 			},
 			true,
-			"can't find the PoolAsset",
+			"Asset: uusdc: asset not found in amm pool",
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices(suite.ctx)

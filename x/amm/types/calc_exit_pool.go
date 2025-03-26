@@ -2,6 +2,7 @@ package types
 
 import (
 	"errors"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
@@ -9,10 +10,25 @@ import (
 	elystypes "github.com/elys-network/elys/types"
 )
 
-func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper, pool Pool, exitingShares sdkmath.Int, tokenOutDenom string) (elystypes.Dec34, error) {
+func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper,
+	pool Pool, exitingShares sdkmath.Int, tokenOutDenom string,
+	weightMultiplier elystypes.Dec34, applyFee bool, params Params) (elystypes.Dec34, elystypes.Dec34, sdk.Coins, error) {
 	tvl, err := pool.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
-		return elystypes.ZeroDec34(), err
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, err
+	}
+
+	// As this is 2 token pool, tokenOut will be
+	tokenInDenom := ""
+	for _, asset := range pool.PoolAssets {
+		if asset.Token.Denom == tokenOutDenom {
+			continue
+		}
+		tokenInDenom = asset.Token.Denom
+	}
+	// Not possible, but we might require this when we have pools with assets more than 2
+	if tokenInDenom == "" {
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, fmt.Errorf("token in denom not found")
 	}
 
 	totalShares := pool.GetTotalShares()
@@ -20,16 +36,70 @@ func CalcExitValueWithoutSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, ac
 
 	// Ensure totalShares is not zero to avoid division by zero
 	if totalShares.IsZero() {
-		return elystypes.ZeroDec34(), ErrAmountTooLow
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, ErrAmountTooLow
 	}
 
 	exitValue := tvl.Mul(refundedShares).Quo(elystypes.NewDec34FromInt(totalShares.Amount))
 
-	if exitingShares.GTE(totalShares.Amount) {
-		return elystypes.ZeroDec34(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+	if !applyFee {
+		return exitValue, elystypes.ZeroDec34(), sdk.Coins{}, nil
 	}
 
-	return exitValue, nil
+	inTokenPrice, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
+	if inTokenPrice.IsZero() {
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, fmt.Errorf("token price not set: %s", tokenInDenom)
+	}
+
+	outTokenPrice, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+	if outTokenPrice.IsZero() {
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, fmt.Errorf("token price not set: %s", tokenOutDenom)
+	}
+
+	externalLiquidityRatio, err := pool.GetAssetExternalLiquidityRatio(tokenOutDenom)
+	if err != nil {
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, err
+	}
+	// Ensure externalLiquidityRatio is not zero to avoid division by zero
+	if externalLiquidityRatio.LT(sdkmath.LegacyOneDec()) {
+		externalLiquidityRatio = sdkmath.LegacyOneDec()
+	}
+
+	// tokenIn amount will be
+	tokenInAmount := exitValue.Quo(inTokenPrice)
+	weightedAmount := tokenInAmount.Mul(weightMultiplier)
+	resizedAmount := sdkmath.LegacyNewDecFromInt(weightedAmount.ToInt()).
+		Quo(externalLiquidityRatio).RoundInt()
+	slippageAmount, err := pool.CalcGivenInSlippage(
+		ctx,
+		oracleKeeper,
+		&pool,
+		sdk.Coins{sdk.NewCoin(tokenInDenom, resizedAmount)},
+		tokenOutDenom,
+		accPoolKeeper,
+	)
+	if err != nil {
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, err
+	}
+	slippageAmount = slippageAmount.Mul(elystypes.NewDec34FromLegacyDec(externalLiquidityRatio))
+
+	slippageValue := slippageAmount.Mul(outTokenPrice)
+	slippage := slippageValue.Quo(exitValue)
+
+	minSlippage := elystypes.NewDec34FromLegacyDec(params.MinSlippage).Mul(weightMultiplier)
+	if slippage.LT(minSlippage) {
+		slippage = minSlippage
+		slippageValue = exitValue.Mul(minSlippage)
+	}
+
+	exitValueWithSlippage := exitValue.Sub(slippageValue)
+
+	if exitingShares.GTE(totalShares.Amount) {
+		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+	}
+
+	slippageCoins := sdk.Coins{sdk.NewCoin(tokenOutDenom, slippageAmount.ToInt())}
+
+	return exitValueWithSlippage, slippage, slippageCoins, nil
 }
 
 // CalcExitPool returns how many tokens should come out, when exiting k LP shares against a "standard" CFMM
@@ -41,10 +111,12 @@ func CalcExitPool(
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
 	params Params,
-) (exitCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, err error) {
+	takerFees sdkmath.LegacyDec,
+	applyFee bool,
+) (exitCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, slippage elystypes.Dec34, swapFee elystypes.Dec34, takerFeesFinal elystypes.Dec34, slippageCoins sdk.Coins, err error) {
 	totalShares := pool.GetTotalShares()
 	if exitingShares.GTE(totalShares.Amount) {
-		return sdk.Coins{}, elystypes.ZeroDec34(), errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
+		return sdk.Coins{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, errorsmod.Wrapf(ErrLimitMaxAmount, ErrMsgFormatSharesLargerThanMax, exitingShares, totalShares)
 	}
 
 	// refundedShares = exitingShares * (1 - exit fee)
@@ -60,40 +132,67 @@ func CalcExitPool(
 
 		accountedAssets := pool.GetAccountedBalance(ctx, accountedPoolKeeper, pool.PoolAssets)
 		tokenPrice, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
-		exitValueWithoutSlippage, err := CalcExitValueWithoutSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom)
+
+		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
+		initialWeightIn := elystypes.OneDec34().Sub(initialWeightOut)
+
+		exitValueWithSlippage, slippage, slippageCoins, err := CalcExitValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, pool, exitingShares, tokenOutDenom, initialWeightIn, applyFee, params)
 		if err != nil {
-			return sdk.Coins{}, elystypes.ZeroDec34(), err
+			return sdk.Coins{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, err
 		}
 
 		// Ensure tokenPrice is not zero to avoid division by zero
 		if tokenPrice.IsZero() {
-			return sdk.Coins{}, elystypes.ZeroDec34(), ErrAmountTooLow
+			return sdk.Coins{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, ErrAmountTooLow
 		}
 
-		oracleOutAmount := exitValueWithoutSlippage.Quo(tokenPrice)
+		oracleOutAmount := exitValueWithSlippage.Quo(tokenPrice)
 
-		newAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
-			sdk.Coins{},
-			sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.ToInt())}, accountedAssets,
-		)
-		if err != nil {
-			return sdk.Coins{}, elystypes.ZeroDec34(), err
-		}
-		for _, asset := range newAssetPools {
-			if asset.Token.Amount.IsNegative() {
-				return sdk.Coins{}, elystypes.ZeroDec34(), errors.New("out amount exceeds liquidity balance")
+		tokenOutAmount := oracleOutAmount.ToInt()
+		weightBalanceBonus = elystypes.ZeroDec34()
+		takerFeesFinal = elystypes.ZeroDec34()
+		isSwapFee := true
+		swapFee = elystypes.ZeroDec34()
+
+		if applyFee {
+			newAssetPools, err := pool.NewPoolAssetsAfterSwap(ctx,
+				sdk.Coins{},
+				sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.ToInt())}, accountedAssets,
+			)
+			if err != nil {
+				return sdk.Coins{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, err
 			}
+			var tokenInDenom string
+			for _, asset := range newAssetPools {
+				if asset.Token.Amount.IsNegative() {
+					return sdk.Coins{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, errors.New("out amount exceeds liquidity balance")
+				}
+
+				// As we have two asset pool so other asset will be tokenIn
+				if asset.Token.Denom != tokenOutDenom {
+					tokenInDenom = asset.Token.Denom
+				}
+			}
+
+			var weightBreakingFee elystypes.Dec34
+			weightBalanceBonus, weightBreakingFee, isSwapFee = pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenInDenom, params, sdkmath.LegacyOneDec())
+			// apply percentage to fees, consider improvement or reduction of other token
+			// Other denom weight ratio to reduce the weight breaking fees
+			weightBreakingFee = weightBreakingFee.Mul(initialWeightIn)
+			weightBalanceBonus = weightBalanceBonus.Mul(initialWeightIn)
+
+			if isSwapFee {
+				swapFee = elystypes.NewDec34FromLegacyDec(pool.GetPoolParams().SwapFee).Mul(initialWeightIn)
+			}
+
+			takerFeesFinal = elystypes.NewDec34FromLegacyDec(takerFees).Mul(initialWeightIn)
+
+			tokenOutAmount = (oracleOutAmount.
+				Mul(elystypes.OneDec34().Sub(weightBreakingFee)).
+				Mul(elystypes.OneDec34().Sub(swapFee.Add(takerFeesFinal)))).ToInt()
 		}
 
-		weightBalanceBonus, weightBreakingFee, _ := pool.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenOutDenom, params, sdkmath.LegacyOneDec())
-		// apply percentage to fees, consider improvement or reduction of other token
-		// Other denom weight ratio to reduce the weight breaking fees
-		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
-		initialWeightIn := elystypes.OneDec34().Sub(initialWeightOut)
-		weightBreakingFee = weightBreakingFee.Mul(initialWeightIn)
-
-		tokenOutAmount := oracleOutAmount.Mul(elystypes.OneDec34().Sub(weightBreakingFee)).ToInt()
-		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, nil
+		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, nil
 	}
 
 	for _, asset := range poolLiquidity {
@@ -103,10 +202,10 @@ func CalcExitPool(
 			continue
 		}
 		if exitAmt.GTE(asset.Amount) {
-			return sdk.Coins{}, elystypes.ZeroDec34(), errors.New("too many shares out")
+			return sdk.Coins{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, errors.New("too many shares out")
 		}
 		exitedCoins = exitedCoins.Add(sdk.NewCoin(asset.Denom, exitAmt))
 	}
 
-	return exitedCoins, elystypes.ZeroDec34(), nil
+	return exitedCoins, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, nil
 }

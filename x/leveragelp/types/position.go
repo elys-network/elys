@@ -1,10 +1,12 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 
+	sdkmath "cosmossdk.io/math"
+
 	errorsmod "cosmossdk.io/errors"
+	elystypes "github.com/elys-network/elys/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -56,4 +58,8 @@ func GetPositionAddress(positionId uint64) sdk.AccAddress {
 // Get Position address
 func (p Position) GetPositionAddress() sdk.AccAddress {
 	return GetPositionAddress(p.Id)
+}
+
+func (p Position) CheckStopLossReached(lpTokenPrice elystypes.Dec34) bool {
+	return !p.StopLossPrice.IsNil() && lpTokenPrice.LTE(elystypes.NewDec34FromLegacyDec(p.StopLossPrice))
 }

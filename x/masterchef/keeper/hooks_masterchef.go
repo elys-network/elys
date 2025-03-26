@@ -9,9 +9,11 @@ import (
 )
 
 func (k Keeper) GetPoolTotalCommit(ctx sdk.Context, poolId uint64) math.Int {
-	shareDenom := ammtypes.GetPoolShareDenom(poolId)
-	if poolId == stablestaketypes.PoolId {
-		shareDenom = stablestaketypes.GetShareDenom()
+	var shareDenom string
+	if poolId >= stablestaketypes.UsdcPoolId {
+		shareDenom = stablestaketypes.GetShareDenomForPool(poolId)
+	} else {
+		shareDenom = ammtypes.GetPoolShareDenom(poolId)
 	}
 
 	params := k.commitmentKeeper.GetParams(ctx)
@@ -20,8 +22,10 @@ func (k Keeper) GetPoolTotalCommit(ctx sdk.Context, poolId uint64) math.Int {
 
 func (k Keeper) GetPoolBalance(ctx sdk.Context, poolId uint64, user sdk.AccAddress) math.Int {
 	commitments := k.commitmentKeeper.GetCommitments(ctx, user)
-	shareDenom := stablestaketypes.GetShareDenom()
-	if poolId != stablestaketypes.PoolId {
+	var shareDenom string
+	if poolId >= stablestaketypes.UsdcPoolId {
+		shareDenom = stablestaketypes.GetShareDenomForPool(poolId)
+	} else {
 		shareDenom = ammtypes.GetPoolShareDenom(poolId)
 	}
 

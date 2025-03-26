@@ -18,12 +18,12 @@ func (k Keeper) StableStakeHooks() StableStakeHooks {
 	return StableStakeHooks{k}
 }
 
-func (h StableStakeHooks) AfterBond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int) error {
+func (h StableStakeHooks) AfterBond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int, poolId uint64) error {
 	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }
 
-func (h StableStakeHooks) AfterUnbond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int) error {
+func (h StableStakeHooks) AfterUnbond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int, poolId uint64) error {
 	h.k.RetrieveAllPortfolio(ctx, sender)
 	return nil
 }
