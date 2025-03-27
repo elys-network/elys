@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametertypes "github.com/elys-network/elys/x/parameter/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -41,10 +41,10 @@ type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
-	SetPool(ctx sdk.Context, pool oracletypes.Pool)
-	SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
-	CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
-	SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
+	//SetPool(ctx sdk.Context, pool oracletypes.Pool)
+	//SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
+	//CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
+	//SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }
 

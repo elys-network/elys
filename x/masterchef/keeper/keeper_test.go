@@ -9,8 +9,8 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/masterchef/keeper"
 	"github.com/elys-network/elys/x/masterchef/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
