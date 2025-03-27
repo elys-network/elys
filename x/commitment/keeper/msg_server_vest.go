@@ -60,6 +60,7 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.I
 	if denom == ptypes.Eden {
 		prev := k.GetTotalSupply(ctx)
 		prev.TotalEdenSupply = prev.TotalEdenSupply.Sub(amount)
+		prev.TotalEdenVested = prev.TotalEdenVested.Add(amount)
 		k.SetTotalSupply(ctx, prev)
 	}
 

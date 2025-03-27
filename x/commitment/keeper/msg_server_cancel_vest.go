@@ -85,6 +85,7 @@ func (k msgServer) CancelVest(goCtx context.Context, msg *types.MsgCancelVest) (
 
 	prev := k.GetTotalSupply(ctx)
 	prev.TotalEdenSupply = prev.TotalEdenSupply.Add(totalCancelled)
+	prev.TotalEdenVested = prev.TotalEdenVested.Sub(totalCancelled)
 	k.SetTotalSupply(ctx, prev)
 	k.SetCommitments(ctx, commitments)
 
