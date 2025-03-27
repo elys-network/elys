@@ -32,7 +32,7 @@ func TestMsgSwapExactAmountIn_ValidateBasic(t *testing.T) {
 			msg: types.MsgSwapExactAmountIn{
 				Sender:            sample.AccAddress(),
 				Routes:            nil,
-				TokenIn:           sdk.Coin{ptypes.ATOM, math.NewInt(10)},
+				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
 				TokenOutMinAmount: math.NewInt(10),
 				Recipient:         "",
 			},

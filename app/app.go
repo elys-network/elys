@@ -25,6 +25,9 @@ import (
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	wasm "github.com/CosmWasm/wasmd/x/wasm"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -54,7 +57,6 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	"github.com/elys-network/elys/app/ante"
-	oracleabci "github.com/ojo-network/ojo/x/oracle/abci"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -130,6 +132,7 @@ func NewElysApp(
 	skipUpgradeHeights map[int64]bool,
 	homePath string,
 	appOpts servertypes.AppOptions,
+	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *ElysApp {
 
@@ -186,6 +189,7 @@ func NewElysApp(
 		logger,
 		appOpts,
 		AccountAddressPrefix,
+		wasmOpts,
 	)
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -266,6 +270,11 @@ func NewElysApp(
 	app.MountTransientStores(app.GetTransientStoreKey())
 	app.MountMemoryStores(app.GetMemoryStoreKey())
 
+	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	if err != nil {
+		panic(fmt.Sprintf("error while reading wasm config: %s", err))
+	}
+
 	anteHandler, err := ante.NewAnteHandler(
 		ante.HandlerOptions{
 
@@ -278,32 +287,34 @@ func NewElysApp(
 				TxFeeChecker:    ante.CheckTxFeeWithValidatorMinGasPrices,
 			},
 
-			BankKeeper:      app.BankKeeper,
-			ParameterKeeper: app.ParameterKeeper,
-			Cdc:             appCodec,
-			IBCKeeper:       app.IBCKeeper,
-			StakingKeeper:   app.StakingKeeper.Keeper,
-			ConsumerKeeper:  app.ConsumerKeeper,
+			BankKeeper:            app.BankKeeper,
+			ParameterKeeper:       app.ParameterKeeper,
+			Cdc:                   appCodec,
+			IBCKeeper:             app.IBCKeeper,
+			StakingKeeper:         app.StakingKeeper.Keeper,
+			ConsumerKeeper:        app.ConsumerKeeper,
+			WasmConfig:            &wasmConfig,
+			TXCounterStoreService: runtime.NewKVStoreService(app.AppKeepers.GetKVStoreKey()[wasmTypes.StoreKey]),
 		},
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
 
-	proposalHandler := oracleabci.NewProposalHandler(
-		app.Logger(),
-		app.OracleKeeper,
-		app.StakingKeeper,
-	)
-	app.SetPrepareProposal(proposalHandler.PrepareProposalHandler())
-	app.SetProcessProposal(proposalHandler.ProcessProposalHandler())
-
-	voteExtensionsHandler := oracleabci.NewVoteExtensionHandler(
-		app.Logger(),
-		app.OracleKeeper,
-	)
-	app.SetExtendVoteHandler(voteExtensionsHandler.ExtendVoteHandler())
-	app.SetVerifyVoteExtensionHandler(voteExtensionsHandler.VerifyVoteExtensionHandler())
+	//proposalHandler := oracleabci.NewProposalHandler(
+	//	app.Logger(),
+	//	app.OracleKeeper,
+	//	app.StakingKeeper,
+	//)
+	//app.SetPrepareProposal(proposalHandler.PrepareProposalHandler())
+	//app.SetProcessProposal(proposalHandler.ProcessProposalHandler())
+	//
+	//voteExtensionsHandler := oracleabci.NewVoteExtensionHandler(
+	//	app.Logger(),
+	//	app.OracleKeeper,
+	//)
+	//app.SetExtendVoteHandler(voteExtensionsHandler.ExtendVoteHandler())
+	//app.SetVerifyVoteExtensionHandler(voteExtensionsHandler.VerifyVoteExtensionHandler())
 
 	// set ante and post handlers
 	app.SetAnteHandler(anteHandler)
@@ -329,6 +340,15 @@ func NewElysApp(
 		fmt.Fprintln(os.Stderr, err.Error())
 	}
 
+	if manager := app.SnapshotManager(); manager != nil {
+		err := manager.RegisterExtensions(
+			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
+		)
+		if err != nil {
+			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
+		}
+	}
+
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
 			tmos.Exit(fmt.Sprintf("failed to load latest version: %s", err))
@@ -351,6 +371,10 @@ func (app *ElysApp) setPostHandler() {
 
 // Name returns the name of the App
 func (app *ElysApp) Name() string { return app.BaseApp.Name() }
+
+func (app *ElysApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+	return app.mm.PreBlock(ctx)
+}
 
 // BeginBlocker application updates every begin block
 func (app *ElysApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
