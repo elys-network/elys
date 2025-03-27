@@ -15,6 +15,8 @@ import (
 	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/elys-network/elys/app/keepers"
+	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	"github.com/spf13/cast"
 
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -232,7 +234,28 @@ func NewElysApp(
 	app.mm.SetOrderInitGenesis(orderInitBlockers()...)
 
 	// Uncomment if you want to set a custom migration order here.
-	app.mm.SetOrderMigrations(orderInitBlockers()...)
+	allModules := []string{}
+	for _, m := range app.mm.Modules {
+		if moduleWithName, ok := m.(module.HasName); ok {
+			moduleName := moduleWithName.Name()
+			allModules = append(allModules, moduleName)
+		}
+	}
+	// Ensure "stablestake" appears before "leveragelp"
+	stablestakeIndex, leveragelpIndex := -1, -1
+	for i, name := range allModules {
+		if name == stablestaketypes.ModuleName {
+			stablestakeIndex = i
+		} else if name == leveragelpmoduletypes.ModuleName {
+			leveragelpIndex = i
+		}
+	}
+
+	// Swap positions if needed
+	if stablestakeIndex > leveragelpIndex && leveragelpIndex != -1 {
+		allModules[stablestakeIndex], allModules[leveragelpIndex] = allModules[leveragelpIndex], allModules[stablestakeIndex]
+	}
+	app.mm.SetOrderMigrations(allModules...)
 
 	app.mm.RegisterInvariants(app.CrisisKeeper)
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
