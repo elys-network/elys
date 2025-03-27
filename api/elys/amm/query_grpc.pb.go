@@ -26,8 +26,10 @@ type QueryClient interface {
 	// Queries a list of DenomLiquidity items.
 	DenomLiquidity(ctx context.Context, in *QueryGetDenomLiquidityRequest, opts ...grpc.CallOption) (*QueryGetDenomLiquidityResponse, error)
 	DenomLiquidityAll(ctx context.Context, in *QueryAllDenomLiquidityRequest, opts ...grpc.CallOption) (*QueryAllDenomLiquidityResponse, error)
-	// Queries a list of SwapEstimation items.
+	// Queries a list of SwapEstimation items, uses swap exact amount in route.
 	SwapEstimation(ctx context.Context, in *QuerySwapEstimationRequest, opts ...grpc.CallOption) (*QuerySwapEstimationResponse, error)
+	// Queries a list of SwapEstimation items, uses swap exact amount out route.
+	SwapEstimationExactAmountOut(ctx context.Context, in *QuerySwapEstimationExactAmountOutRequest, opts ...grpc.CallOption) (*QuerySwapEstimationExactAmountOutResponse, error)
 	// Queries JoinPool estimation
 	JoinPoolEstimation(ctx context.Context, in *QueryJoinPoolEstimationRequest, opts ...grpc.CallOption) (*QueryJoinPoolEstimationResponse, error)
 	// Queries ExistPool estimation
@@ -104,6 +106,15 @@ func (c *queryClient) DenomLiquidityAll(ctx context.Context, in *QueryAllDenomLi
 func (c *queryClient) SwapEstimation(ctx context.Context, in *QuerySwapEstimationRequest, opts ...grpc.CallOption) (*QuerySwapEstimationResponse, error) {
 	out := new(QuerySwapEstimationResponse)
 	err := c.cc.Invoke(ctx, "/elys.amm.Query/SwapEstimation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) SwapEstimationExactAmountOut(ctx context.Context, in *QuerySwapEstimationExactAmountOutRequest, opts ...grpc.CallOption) (*QuerySwapEstimationExactAmountOutResponse, error) {
+	out := new(QuerySwapEstimationExactAmountOutResponse)
+	err := c.cc.Invoke(ctx, "/elys.amm.Query/SwapEstimationExactAmountOut", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -203,8 +214,10 @@ type QueryServer interface {
 	// Queries a list of DenomLiquidity items.
 	DenomLiquidity(context.Context, *QueryGetDenomLiquidityRequest) (*QueryGetDenomLiquidityResponse, error)
 	DenomLiquidityAll(context.Context, *QueryAllDenomLiquidityRequest) (*QueryAllDenomLiquidityResponse, error)
-	// Queries a list of SwapEstimation items.
+	// Queries a list of SwapEstimation items, uses swap exact amount in route.
 	SwapEstimation(context.Context, *QuerySwapEstimationRequest) (*QuerySwapEstimationResponse, error)
+	// Queries a list of SwapEstimation items, uses swap exact amount out route.
+	SwapEstimationExactAmountOut(context.Context, *QuerySwapEstimationExactAmountOutRequest) (*QuerySwapEstimationExactAmountOutResponse, error)
 	// Queries JoinPool estimation
 	JoinPoolEstimation(context.Context, *QueryJoinPoolEstimationRequest) (*QueryJoinPoolEstimationResponse, error)
 	// Queries ExistPool estimation
@@ -247,6 +260,9 @@ func (UnimplementedQueryServer) DenomLiquidityAll(context.Context, *QueryAllDeno
 }
 func (UnimplementedQueryServer) SwapEstimation(context.Context, *QuerySwapEstimationRequest) (*QuerySwapEstimationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SwapEstimation not implemented")
+}
+func (UnimplementedQueryServer) SwapEstimationExactAmountOut(context.Context, *QuerySwapEstimationExactAmountOutRequest) (*QuerySwapEstimationExactAmountOutResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SwapEstimationExactAmountOut not implemented")
 }
 func (UnimplementedQueryServer) JoinPoolEstimation(context.Context, *QueryJoinPoolEstimationRequest) (*QueryJoinPoolEstimationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method JoinPoolEstimation not implemented")
@@ -392,6 +408,24 @@ func _Query_SwapEstimation_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).SwapEstimation(ctx, req.(*QuerySwapEstimationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_SwapEstimationExactAmountOut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySwapEstimationExactAmountOutRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).SwapEstimationExactAmountOut(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.amm.Query/SwapEstimationExactAmountOut",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).SwapEstimationExactAmountOut(ctx, req.(*QuerySwapEstimationExactAmountOutRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -588,6 +622,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SwapEstimation",
 			Handler:    _Query_SwapEstimation_Handler,
+		},
+		{
+			MethodName: "SwapEstimationExactAmountOut",
+			Handler:    _Query_SwapEstimationExactAmountOut_Handler,
 		},
 		{
 			MethodName: "JoinPoolEstimation",
