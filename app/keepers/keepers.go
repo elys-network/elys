@@ -92,8 +92,8 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	masterchefmodulekeeper "github.com/elys-network/elys/x/masterchef/keeper"
 	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
-	legacyoraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
-	legacyoracletypes "github.com/elys-network/elys/x/oracle/types"
+	oraclekeeper "github.com/elys-network/elys/x/oracle/keeper"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametermodulekeeper "github.com/elys-network/elys/x/parameter/keeper"
 	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
 	perpetualmodulekeeper "github.com/elys-network/elys/x/perpetual/keeper"
@@ -109,9 +109,6 @@ import (
 	"github.com/elys-network/elys/x/transferhook"
 	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
-	oraclekeeper "github.com/ojo-network/ojo/x/oracle/keeper"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
-	"github.com/spf13/cast"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -163,7 +160,6 @@ type AppKeepers struct {
 
 	EpochsKeeper        *epochsmodulekeeper.Keeper
 	AssetprofileKeeper  assetprofilemodulekeeper.Keeper
-	LegacyOracleKeepper legacyoraclekeeper.Keeper
 	OracleKeeper        oraclekeeper.Keeper
 	CommitmentKeeper    *commitmentmodulekeeper.Keeper
 	TokenomicsKeeper    tokenomicsmodulekeeper.Keeper
@@ -535,26 +531,26 @@ func NewAppKeeper(
 	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
 	app.ConsumerModule = ccvconsumer.NewAppModule(app.ConsumerKeeper, app.GetSubspace(ccvconsumertypes.ModuleName))
 
-	app.LegacyOracleKeepper = *legacyoraclekeeper.NewKeeper(
+	app.OracleKeeper = *oraclekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(app.keys[legacyoracletypes.StoreKey]),
+		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.IBCKeeper.ChannelKeeper,
 		app.IBCKeeper.PortKeeper,
 		app.ScopedOracleKeeper,
 	)
 
-	app.OracleKeeper = oraclekeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.DistrKeeper,
-		app.StakingKeeper,
-		distrtypes.ModuleName,
-		cast.ToBool(appOpts.Get("telemetry.enabled")),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
+	//app.OracleKeeper = oraclekeeper.NewKeeper(
+	//	appCodec,
+	//	runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
+	//	app.AccountKeeper,
+	//	app.BankKeeper,
+	//	app.DistrKeeper,
+	//	app.StakingKeeper,
+	//	distrtypes.ModuleName,
+	//	cast.ToBool(appOpts.Get("telemetry.enabled")),
+	//	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	//)
 
 	app.EpochsKeeper = epochsmodulekeeper.NewKeeper(
 		appCodec,

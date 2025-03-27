@@ -2,10 +2,11 @@ package app
 
 import (
 	"context"
-	storetypes "cosmossdk.io/store/types"
-	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"fmt"
 	"strings"
+
+	storetypes "cosmossdk.io/store/types"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -63,13 +64,13 @@ func (app *ElysApp) setUpgradeHandler() {
 
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
-			oracleParams := app.OracleKeeper.GetParams(ctx)
-			if len(oracleParams.MandatoryList) == 0 {
-				err := app.ojoOracleMigration(ctx, plan.Height+1)
-				if err != nil {
-					return nil, err
-				}
-			}
+			//oracleParams := app.OracleKeeper.GetParams(ctx)
+			//if len(oracleParams.MandatoryList) == 0 {
+			//	err := app.ojoOracleMigration(ctx, plan.Height+1)
+			//	if err != nil {
+			//		return nil, err
+			//	}
+			//}
 
 			// Set cosmwasm params
 			wasmParams := wasmTypes.DefaultParams()
