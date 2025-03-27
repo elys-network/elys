@@ -67,5 +67,5 @@ func (k Keeper) ExitPool(
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
 
-	return exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, nil
+	return exitCoins, weightBalanceBonus, swapFee, slippage, takerFeesFinal, nil
 }
