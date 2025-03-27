@@ -50,7 +50,7 @@ jobs:
 
           sudo wget https://github.com/CosmWasm/wasmvm/releases/download/${COSMWASM_VERSION}/libwasmvm_muslc.x86_64.a -O /usr/lib/libwasmvm.x86_64.a
 
-          sudo GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -mod=readonly -trimpath -o elysd -ldflags "-X github.com/cosmos/cosmos-sdk/version.Name=${NAME} \
+          sudo GOOS=linux GOARCH=amd64 go build -mod=readonly -trimpath -o elysd -ldflags "-X github.com/cosmos/cosmos-sdk/version.Name=${NAME} \
           -X github.com/cosmos/cosmos-sdk/version.AppName=${NAME} \
           -X github.com/cosmos/cosmos-sdk/version.ServerName=${BINARY} \
           -X github.com/cosmos/cosmos-sdk/version.ClientName=${BINARY} \
