@@ -2,7 +2,6 @@ package ante
 
 import (
 	corestoretypes "cosmossdk.io/core/store"
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
@@ -25,6 +24,5 @@ type HandlerOptions struct {
 	BankKeeper            bankkeeper.Keeper
 	ParameterKeeper       parameterkeeper.Keeper
 	WasmConfig            *wasmTypes.WasmConfig
-	WasmKeeper            *wasmkeeper.Keeper
 	TXCounterStoreService corestoretypes.KVStoreService
 }

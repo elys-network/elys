@@ -57,6 +57,7 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	"github.com/elys-network/elys/app/ante"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -293,7 +294,6 @@ func NewElysApp(
 			StakingKeeper:         app.StakingKeeper.Keeper,
 			ConsumerKeeper:        app.ConsumerKeeper,
 			WasmConfig:            &wasmConfig,
-			WasmKeeper:            &app.WasmKeeper,
 			TXCounterStoreService: runtime.NewKVStoreService(app.AppKeepers.GetKVStoreKey()[wasmTypes.StoreKey]),
 		},
 	)
