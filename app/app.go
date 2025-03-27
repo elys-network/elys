@@ -54,6 +54,7 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	"github.com/elys-network/elys/app/ante"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -231,7 +232,7 @@ func NewElysApp(
 	app.mm.SetOrderInitGenesis(orderInitBlockers()...)
 
 	// Uncomment if you want to set a custom migration order here.
-	// app.mm.SetOrderMigrations(custom order)
+	app.mm.SetOrderMigrations(orderInitBlockers()...)
 
 	app.mm.RegisterInvariants(app.CrisisKeeper)
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
