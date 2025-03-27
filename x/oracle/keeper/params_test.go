@@ -1,6 +1,5 @@
 package keeper_test
 
-/*
 import (
 	"github.com/elys-network/elys/x/oracle/types"
 )
@@ -12,4 +11,3 @@ func (suite *KeeperTestSuite) TestGetParams() {
 	k.SetParams(ctx, params)
 	suite.Require().Equal(params, k.GetParams(ctx))
 }
-*/

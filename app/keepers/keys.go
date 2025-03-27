@@ -24,6 +24,7 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
 	ammmoduletypes "github.com/elys-network/elys/x/amm/types"
 	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -33,6 +34,7 @@ import (
 	estakingmoduletypes "github.com/elys-network/elys/x/estaking/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	masterchefmoduletypes "github.com/elys-network/elys/x/masterchef/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	parametermoduletypes "github.com/elys-network/elys/x/parameter/types"
 	perpetualmoduletypes "github.com/elys-network/elys/x/perpetual/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
@@ -40,7 +42,6 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
 	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {
@@ -68,6 +69,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		group.StoreKey,
 		consensusparamtypes.StoreKey,
 		ccvconsumertypes.StoreKey,
+		wasmTypes.StoreKey,
 
 		epochsmoduletypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,
