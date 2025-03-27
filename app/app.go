@@ -15,6 +15,8 @@ import (
 	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/elys-network/elys/app/keepers"
+	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	"github.com/spf13/cast"
 
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -25,6 +27,9 @@ import (
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	wasm "github.com/CosmWasm/wasmd/x/wasm"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -54,6 +59,7 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 	"github.com/elys-network/elys/app/ante"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/elys-network/elys/docs"
@@ -128,6 +134,7 @@ func NewElysApp(
 	skipUpgradeHeights map[int64]bool,
 	homePath string,
 	appOpts servertypes.AppOptions,
+	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *ElysApp {
 
@@ -184,6 +191,7 @@ func NewElysApp(
 		logger,
 		appOpts,
 		AccountAddressPrefix,
+		wasmOpts,
 	)
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -231,7 +239,28 @@ func NewElysApp(
 	app.mm.SetOrderInitGenesis(orderInitBlockers()...)
 
 	// Uncomment if you want to set a custom migration order here.
-	// app.mm.SetOrderMigrations(custom order)
+	allModules := []string{}
+	for _, m := range app.mm.Modules {
+		if moduleWithName, ok := m.(module.HasName); ok {
+			moduleName := moduleWithName.Name()
+			allModules = append(allModules, moduleName)
+		}
+	}
+	// Ensure "stablestake" appears before "leveragelp"
+	stablestakeIndex, leveragelpIndex := -1, -1
+	for i, name := range allModules {
+		if name == stablestaketypes.ModuleName {
+			stablestakeIndex = i
+		} else if name == leveragelpmoduletypes.ModuleName {
+			leveragelpIndex = i
+		}
+	}
+
+	// Swap positions if needed
+	if stablestakeIndex > leveragelpIndex && leveragelpIndex != -1 {
+		allModules[stablestakeIndex], allModules[leveragelpIndex] = allModules[leveragelpIndex], allModules[stablestakeIndex]
+	}
+	app.mm.SetOrderMigrations(allModules...)
 
 	app.mm.RegisterInvariants(app.CrisisKeeper)
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
@@ -264,6 +293,11 @@ func NewElysApp(
 	app.MountTransientStores(app.GetTransientStoreKey())
 	app.MountMemoryStores(app.GetMemoryStoreKey())
 
+	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	if err != nil {
+		panic(fmt.Sprintf("error while reading wasm config: %s", err))
+	}
+
 	anteHandler, err := ante.NewAnteHandler(
 		ante.HandlerOptions{
 
@@ -276,12 +310,14 @@ func NewElysApp(
 				TxFeeChecker:    ante.CheckTxFeeWithValidatorMinGasPrices,
 			},
 
-			BankKeeper:      app.BankKeeper,
-			ParameterKeeper: app.ParameterKeeper,
-			Cdc:             appCodec,
-			IBCKeeper:       app.IBCKeeper,
-			StakingKeeper:   app.StakingKeeper.Keeper,
-			ConsumerKeeper:  app.ConsumerKeeper,
+			BankKeeper:            app.BankKeeper,
+			ParameterKeeper:       app.ParameterKeeper,
+			Cdc:                   appCodec,
+			IBCKeeper:             app.IBCKeeper,
+			StakingKeeper:         app.StakingKeeper.Keeper,
+			ConsumerKeeper:        app.ConsumerKeeper,
+			WasmConfig:            &wasmConfig,
+			TXCounterStoreService: runtime.NewKVStoreService(app.AppKeepers.GetKVStoreKey()[wasmTypes.StoreKey]),
 		},
 	)
 	if err != nil {
@@ -325,6 +361,15 @@ func NewElysApp(
 		// Once we switch to using protoreflect-based antehandlers, we might
 		// want to panic here instead of logging a warning.
 		fmt.Fprintln(os.Stderr, err.Error())
+	}
+
+	if manager := app.SnapshotManager(); manager != nil {
+		err := manager.RegisterExtensions(
+			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
+		)
+		if err != nil {
+			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
+		}
 	}
 
 	if loadLatest {
