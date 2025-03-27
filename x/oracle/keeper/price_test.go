@@ -1,6 +1,5 @@
 package keeper_test
 
-/*
 import (
 	sdkmath "cosmossdk.io/math"
 	"strconv"
@@ -121,4 +120,3 @@ func (suite *KeeperTestSuite) TestGetLatestPriceFromAnySource() {
 
 // TODO: add test GetAssetPrice
 // TODO: add test GetAssetPriceFromDenom
-*/
