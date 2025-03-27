@@ -16,6 +16,7 @@ jobs:
       VERSION:
       BINARY:
       DBENGINE: pebbledb
+      COSMWASM_VERSION:
       NAME_WITH_VERSION:
     steps:
       - name: Checking repository
@@ -39,8 +40,15 @@ jobs:
         with:
           go-version: "1.23"
       - name: Building elys binary
+        env:
+          CGO_ENABLED: 1
         run: |
           echo Building elysd binary
+          
+          COSMWASM_VERSION=$(go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
+          echo $COSMWASM_VERSION
+
+          sudo wget https://github.com/CosmWasm/wasmvm/releases/download/${COSMWASM_VERSION}/libwasmvm_muslc.x86_64.a -O /usr/lib/libwasmvm.x86_64.a
 
           sudo GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -mod=readonly -trimpath -o elysd -ldflags "-X github.com/cosmos/cosmos-sdk/version.Name=${NAME} \
           -X github.com/cosmos/cosmos-sdk/version.AppName=${NAME} \
@@ -50,7 +58,7 @@ jobs:
           -X github.com/cosmos/cosmos-sdk/version.Commit=${COMMIT} \
           -X github.com/cosmos/cosmos-sdk/types.DBBackend=${DBENGINE} \
           -X github.com/elys-network/elys/app.NextVersion=${VERSION} \
-          -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,osusergo,${DBENGINE} \
+          -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,${DBENGINE} \
           " -tags "ledger,${DBENGINE}" ./cmd/${BINARY}
           echo "Version of elysd: $(./elysd version)"
       - name: Compressing elys binary
