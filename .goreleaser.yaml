@@ -67,13 +67,21 @@ builds:
     binary: elysd
     hooks:
       pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
+        - wget -O /lib/libwasmvm_muslc.x86_64.a https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a
+        - echo "a4a3d09b36fabb65b119d5ba23442c23694401fcbee4451fe6b7e22e325a4bac /lib/libwasmvm_muslc.x86_64.a" | sha256sum -c
+        - cp /lib/libwasmvm_muslc.x86_64.a /lib/libwasmvm_muslc.a
+        - curl -LO https://musl.cc/x86_64-linux-musl-cross.tgz
+        - tar xf x86_64-linux-musl-cross.tgz
+        - mv x86_64-linux-musl-cross /opt/musl-cross
     goos:
       - linux
     goarch:
       - amd64
     env:
-      - CC=x86_64-linux-gnu-gcc
+      - CGO_ENABLED=1
+      - CC=/opt/musl-cross/bin/x86_64-linux-musl-gcc,x86_64-linux-gnu-gcc
+      - LD=/opt/musl-cross/bin/x86_64-linux-musl-ld
+      - CGO_LDFLAGS=-L/lib
     flags:
       - -mod=readonly
       - -trimpath
@@ -97,13 +105,21 @@ builds:
     binary: elysd
     hooks:
       pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.aarch64.a -O /usr/lib/aarch64-linux-gnu/libwasmvm_muslc.a
+        - wget -O /lib/libwasmvm_muslc.aarch64.a https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.aarch64.a
+        - echo "a4a3d09b36fabb65b119d5ba23442c23694401fcbee4451fe6b7e22e325a4bac /lib/libwasmvm_muslc.aarch64.a" | sha256sum -c
+        - cp /lib/libwasmvm_muslc.aarch64.a /lib/libwasmvm_muslc.a
+        - curl -LO https://musl.cc/aarch64-linux-musl-cross.tgz
+        - tar xf aarch64-linux-musl-cross.tgz
+        - mv aarch64-linux-musl-cross /opt/musl-cross
     goos:
       - linux
     goarch:
       - arm64
     env:
-      - CC=aarch64-linux-gnu-gcc
+      - CGO_ENABLED=1
+      - CC=/opt/musl-cross/bin/aarch64-linux-musl-gcc,aarch64-linux-gnu-gcc
+      - LD=/opt/musl-cross/bin/aarch64-linux-musl-ld
+      - CGO_LDFLAGS=-L/lib
     flags:
       - -mod=readonly
       - -trimpath
@@ -151,18 +167,21 @@ archives:
     format: binary
     files:
       - none*
+
 checksum:
-  name_template: "sha256sum.txt"
+  name_template: SHA256SUMS-v{{.Version}}.txt
   algorithm: sha256
+
 # Docs: https://goreleaser.com/customization/changelog/
 changelog:
-  disable: true
+  disable: false
+
 # Docs: https://goreleaser.com/customization/release/
 release:
   github:
     owner: elys-network
     name: elys
-  replace_existing_draft: true
+  replace_existing_draft: false
   header: |
     ## Description
 
