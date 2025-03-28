@@ -73,17 +73,17 @@ builds:
         - ls -lh /lib
         - curl -LO https://musl.cc/x86_64-linux-musl-cross.tgz
         - tar xf x86_64-linux-musl-cross.tgz
-        - mkdir -p /opt/musl-cross
-        - mv x86_64-linux-musl-*/* /opt/musl-cross/
-        - ls -lh /opt/musl-cross/bin
+        - mkdir -p /lib/musl-cross
+        - mv x86_64-linux-musl-cross /lib/musl-cross
+        - ls -lh /lib/musl-cross/bin
     goos:
       - linux
     goarch:
       - amd64
     env:
       - CGO_ENABLED=1
-      - CC=/opt/musl-cross/bin/x86_64-linux-musl-gcc
-      - LD=/opt/musl-cross/bin/x86_64-linux-musl-ld
+      - CC=/lib/musl-cross/bin/x86_64-linux-musl-gcc
+      - LD=/lib/musl-cross/bin/x86_64-linux-musl-ld
       - CGO_LDFLAGS=-L/lib
     flags:
       - -mod=readonly
