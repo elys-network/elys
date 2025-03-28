@@ -6,7 +6,7 @@ import (
 	elystypes "github.com/elys-network/elys/types"
 	mock "github.com/stretchr/testify/mock"
 
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 
 	types "github.com/cosmos/cosmos-sdk/types"
 )
@@ -22,54 +22,6 @@ type OracleKeeper_Expecter struct {
 
 func (_m *OracleKeeper) EXPECT() *OracleKeeper_Expecter {
 	return &OracleKeeper_Expecter{mock: &_m.Mock}
-}
-
-// CurrencyPairProviders provides a mock function with given fields: ctx
-func (_m *OracleKeeper) CurrencyPairProviders(ctx types.Context) oracletypes.CurrencyPairProvidersList {
-	ret := _m.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for CurrencyPairProviders")
-	}
-
-	var r0 oracletypes.CurrencyPairProvidersList
-	if rf, ok := ret.Get(0).(func(types.Context) oracletypes.CurrencyPairProvidersList); ok {
-		r0 = rf(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(oracletypes.CurrencyPairProvidersList)
-		}
-	}
-
-	return r0
-}
-
-// OracleKeeper_CurrencyPairProviders_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CurrencyPairProviders'
-type OracleKeeper_CurrencyPairProviders_Call struct {
-	*mock.Call
-}
-
-// CurrencyPairProviders is a helper method to define mock.On call
-//   - ctx types.Context
-func (_e *OracleKeeper_Expecter) CurrencyPairProviders(ctx interface{}) *OracleKeeper_CurrencyPairProviders_Call {
-	return &OracleKeeper_CurrencyPairProviders_Call{Call: _e.mock.On("CurrencyPairProviders", ctx)}
-}
-
-func (_c *OracleKeeper_CurrencyPairProviders_Call) Run(run func(ctx types.Context)) *OracleKeeper_CurrencyPairProviders_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context))
-	})
-	return _c
-}
-
-func (_c *OracleKeeper_CurrencyPairProviders_Call) Return(_a0 oracletypes.CurrencyPairProvidersList) *OracleKeeper_CurrencyPairProviders_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *OracleKeeper_CurrencyPairProviders_Call) RunAndReturn(run func(types.Context) oracletypes.CurrencyPairProvidersList) *OracleKeeper_CurrencyPairProviders_Call {
-	_c.Call.Return(run)
-	return _c
 }
 
 // GetAssetInfo provides a mock function with given fields: ctx, denom
@@ -297,108 +249,6 @@ func (_c *OracleKeeper_GetPriceFeeder_Call) Return(val oracletypes.PriceFeeder, 
 
 func (_c *OracleKeeper_GetPriceFeeder_Call) RunAndReturn(run func(types.Context, types.AccAddress) (oracletypes.PriceFeeder, bool)) *OracleKeeper_GetPriceFeeder_Call {
 	_c.Call.Return(run)
-	return _c
-}
-
-// SetAccountedPool provides a mock function with given fields: ctx, accountedPool
-func (_m *OracleKeeper) SetAccountedPool(ctx types.Context, accountedPool oracletypes.AccountedPool) {
-	_m.Called(ctx, accountedPool)
-}
-
-// OracleKeeper_SetAccountedPool_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetAccountedPool'
-type OracleKeeper_SetAccountedPool_Call struct {
-	*mock.Call
-}
-
-// SetAccountedPool is a helper method to define mock.On call
-//   - ctx types.Context
-//   - accountedPool oracletypes.AccountedPool
-func (_e *OracleKeeper_Expecter) SetAccountedPool(ctx interface{}, accountedPool interface{}) *OracleKeeper_SetAccountedPool_Call {
-	return &OracleKeeper_SetAccountedPool_Call{Call: _e.mock.On("SetAccountedPool", ctx, accountedPool)}
-}
-
-func (_c *OracleKeeper_SetAccountedPool_Call) Run(run func(ctx types.Context, accountedPool oracletypes.AccountedPool)) *OracleKeeper_SetAccountedPool_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(oracletypes.AccountedPool))
-	})
-	return _c
-}
-
-func (_c *OracleKeeper_SetAccountedPool_Call) Return() *OracleKeeper_SetAccountedPool_Call {
-	_c.Call.Return()
-	return _c
-}
-
-func (_c *OracleKeeper_SetAccountedPool_Call) RunAndReturn(run func(types.Context, oracletypes.AccountedPool)) *OracleKeeper_SetAccountedPool_Call {
-	_c.Run(run)
-	return _c
-}
-
-// SetCurrencyPairProviders provides a mock function with given fields: ctx, currencyPairProviders
-func (_m *OracleKeeper) SetCurrencyPairProviders(ctx types.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList) {
-	_m.Called(ctx, currencyPairProviders)
-}
-
-// OracleKeeper_SetCurrencyPairProviders_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetCurrencyPairProviders'
-type OracleKeeper_SetCurrencyPairProviders_Call struct {
-	*mock.Call
-}
-
-// SetCurrencyPairProviders is a helper method to define mock.On call
-//   - ctx types.Context
-//   - currencyPairProviders oracletypes.CurrencyPairProvidersList
-func (_e *OracleKeeper_Expecter) SetCurrencyPairProviders(ctx interface{}, currencyPairProviders interface{}) *OracleKeeper_SetCurrencyPairProviders_Call {
-	return &OracleKeeper_SetCurrencyPairProviders_Call{Call: _e.mock.On("SetCurrencyPairProviders", ctx, currencyPairProviders)}
-}
-
-func (_c *OracleKeeper_SetCurrencyPairProviders_Call) Run(run func(ctx types.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)) *OracleKeeper_SetCurrencyPairProviders_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(oracletypes.CurrencyPairProvidersList))
-	})
-	return _c
-}
-
-func (_c *OracleKeeper_SetCurrencyPairProviders_Call) Return() *OracleKeeper_SetCurrencyPairProviders_Call {
-	_c.Call.Return()
-	return _c
-}
-
-func (_c *OracleKeeper_SetCurrencyPairProviders_Call) RunAndReturn(run func(types.Context, oracletypes.CurrencyPairProvidersList)) *OracleKeeper_SetCurrencyPairProviders_Call {
-	_c.Run(run)
-	return _c
-}
-
-// SetPool provides a mock function with given fields: ctx, pool
-func (_m *OracleKeeper) SetPool(ctx types.Context, pool oracletypes.Pool) {
-	_m.Called(ctx, pool)
-}
-
-// OracleKeeper_SetPool_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetPool'
-type OracleKeeper_SetPool_Call struct {
-	*mock.Call
-}
-
-// SetPool is a helper method to define mock.On call
-//   - ctx types.Context
-//   - pool oracletypes.Pool
-func (_e *OracleKeeper_Expecter) SetPool(ctx interface{}, pool interface{}) *OracleKeeper_SetPool_Call {
-	return &OracleKeeper_SetPool_Call{Call: _e.mock.On("SetPool", ctx, pool)}
-}
-
-func (_c *OracleKeeper_SetPool_Call) Run(run func(ctx types.Context, pool oracletypes.Pool)) *OracleKeeper_SetPool_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.Context), args[1].(oracletypes.Pool))
-	})
-	return _c
-}
-
-func (_c *OracleKeeper_SetPool_Call) Return() *OracleKeeper_SetPool_Call {
-	_c.Call.Return()
-	return _c
-}
-
-func (_c *OracleKeeper_SetPool_Call) RunAndReturn(run func(types.Context, oracletypes.Pool)) *OracleKeeper_SetPool_Call {
-	_c.Run(run)
 	return _c
 }
 

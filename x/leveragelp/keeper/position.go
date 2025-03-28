@@ -11,6 +11,7 @@ import (
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -360,14 +361,55 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 
 func (k Keeper) SetAllPositions(ctx sdk.Context) {
 	iterator := k.GetPositionIterator(ctx)
+	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		var position types.Position
-		bytesValue := iterator.Value()
-		k.cdc.Unmarshal(bytesValue, &position)
+		k.cdc.MustUnmarshal(iterator.Value(), &position)
+		leveragedLpAmount := sdkmath.ZeroInt()
+		commitments := k.commKeeper.GetCommitments(ctx, position.GetPositionAddress())
+
+		poolDenom := ammtypes.GetPoolShareDenom(position.AmmPoolId)
+		for _, commitment := range commitments.CommittedTokens {
+			if poolDenom == commitment.Denom {
+				leveragedLpAmount = leveragedLpAmount.Add(commitment.Amount)
+			}
+		}
+
+		// Set correct lev amount
+		position.LeveragedLpAmount = leveragedLpAmount
 		position.BorrowPoolId = stabletypes.UsdcPoolId
 		k.SetPosition(ctx, &position)
 	}
+
+	// Pool liabilities are reset in stablestake migration
+	k.V18MigratonPoolLiabilities(ctx)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var position types.Position
+		k.cdc.MustUnmarshal(iterator.Value(), &position)
+		// After setting pool liabilities
+		balance := k.bankKeeper.GetBalance(ctx, position.GetPositionAddress(), position.Collateral.Denom)
+		if balance.IsPositive() {
+			debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
+			totalLiab := debt.GetTotalLiablities()
+			if totalLiab.GT(balance.Amount) {
+				totalLiab = balance.Amount
+			}
+			if totalLiab.IsPositive() {
+				k.stableKeeper.Repay(ctx, position.GetPositionAddress(), sdk.NewCoin(position.Collateral.Denom, totalLiab), position.AmmPoolId, position.BorrowPoolId)
+			}
+			if balance.Amount.GT(totalLiab) {
+				payToUser := balance.Amount.Sub(totalLiab)
+				k.bankKeeper.SendCoins(ctx, position.GetPositionAddress(), sdk.MustAccAddressFromBech32(position.Address), sdk.Coins{sdk.NewCoin(position.Collateral.Denom, payToUser)})
+			}
+		}
+
+		if position.LeveragedLpAmount.IsZero() {
+			k.DestroyPosition(ctx, sdk.MustAccAddressFromBech32(position.Address), position.Id)
+		}
+	}
+	return
 }
 
 func (k Keeper) V18MigratonPoolLiabilities(ctx sdk.Context) {
@@ -380,7 +422,6 @@ func (k Keeper) V18MigratonPoolLiabilities(ctx sdk.Context) {
 		debt := k.stableKeeper.GetDebtWithoutUpdatedInterest(ctx, position.GetPositionAddress(), stabletypes.UsdcPoolId)
 		k.stableKeeper.AddPoolLiabilities(ctx, position.AmmPoolId, sdk.NewCoin(position.Collateral.Denom, debt.GetTotalLiablities()))
 		k.SetPosition(ctx, &position)
-
 	}
 	return
 }

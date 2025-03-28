@@ -5,6 +5,7 @@ import (
 
 	"cosmossdk.io/math"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -297,6 +298,36 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 			},
 			func(isHealthy, closeAttempted bool) {
 				suite.Require().False(isHealthy)
+				suite.Require().True(closeAttempted)
+			},
+		},
+		{
+			"fail: Add some unexpected panic, function should revert changes and return error",
+			true,
+			"",
+			func() *types.Position {
+				suite.ResetSuite()
+				suite.SetupCoinPrices(suite.ctx)
+				initializeForOpen(suite, addresses, asset1, asset2)
+				openMsg := types.MsgOpen{
+					Creator:          addresses[1].String(),
+					CollateralAsset:  "uusdc",
+					CollateralAmount: math.NewInt(1000_000),
+					AmmPoolId:        1,
+					Leverage:         leverage,
+					StopLossPrice:    math.LegacyNewDec(2),
+				}
+				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg, 1)
+				suite.Require().NoError(err)
+				params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+				params.SafetyFactor = math.LegacyOneDec().MulInt64(1000)
+				err = suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+				suite.Require().NoError(err)
+				suite.AddBlockTime(2 * time.Hour)
+				suite.app.StablestakeKeeper.SubtractPoolLiabilities(suite.ctx, 1, sdk.NewCoin(position.Collateral.Denom, position.Collateral.Amount))
+				return position
+			},
+			func(isHealthy, closeAttempted bool) {
 				suite.Require().True(closeAttempted)
 			},
 		},

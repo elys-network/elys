@@ -9,7 +9,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
-	oracletypes "github.com/ojo-network/ojo/x/oracle/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
 type AccountKeeper interface {
@@ -64,8 +64,4 @@ type OracleKeeper interface {
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) (elystypes.Dec34, uint64)
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
-	SetPool(ctx sdk.Context, pool oracletypes.Pool)
-	SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
-	CurrencyPairProviders(ctx sdk.Context) oracletypes.CurrencyPairProvidersList
-	SetCurrencyPairProviders(ctx sdk.Context, currencyPairProviders oracletypes.CurrencyPairProvidersList)
 }

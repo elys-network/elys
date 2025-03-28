@@ -46,8 +46,10 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 				continue
 			}
 
-			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(ctx, position, pool)
+			cacheContextForUnhealthy, writeForUnhealthy := ctx.CacheContext()
+			isHealthy, closeAttempted, _, err := k.CheckAndLiquidateUnhealthyPosition(cacheContextForUnhealthy, position, pool)
 			if err == nil {
+				writeForUnhealthy()
 				continue
 			}
 			if isHealthy && !closeAttempted {
@@ -56,7 +58,11 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 					ctx.Logger().Error(fmt.Sprintf("error getting for amm pool %d: %s", position.AmmPoolId, poolErr.Error()))
 					continue
 				}
-				_, _, _ = k.CheckAndCloseAtStopLoss(ctx, position, pool, ammPool)
+				cacheContextForStopLoss, writeForStopLoss := ctx.CacheContext()
+				_, _, err = k.CheckAndCloseAtStopLoss(cacheContextForStopLoss, position, pool, ammPool)
+				if err == nil {
+					writeForStopLoss()
+				}
 			}
 		}
 	}
@@ -67,6 +73,8 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
 				ctx.Logger().Error(msg)
+				err = fmt.Errorf("function panicked: %v", r) // Capture the panic as an error
+				closeAttempted = true
 			}
 		}
 	}()
@@ -113,6 +121,7 @@ func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Positio
 		if r := recover(); r != nil {
 			if msg, ok := r.(string); ok {
 				ctx.Logger().Error(msg)
+				err = fmt.Errorf("function panicked: %v", r) // Capture the panic as an error
 			}
 		}
 	}()

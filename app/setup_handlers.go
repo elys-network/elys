@@ -2,13 +2,16 @@ package app
 
 import (
 	"context"
-	storetypes "cosmossdk.io/store/types"
-	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"fmt"
 	"strings"
 
+	storetypes "cosmossdk.io/store/types"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	errorsmod "cosmossdk.io/errors"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
@@ -58,15 +61,27 @@ func (app *ElysApp) setUpgradeHandler() {
 		func(goCtx context.Context, plan upgradetypes.Plan, vm m.VersionMap) (m.VersionMap, error) {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
-			oracleParams := app.OracleKeeper.GetParams(ctx)
-			if len(oracleParams.MandatoryList) == 0 {
-				err := app.ojoOracleMigration(ctx, plan.Height+1)
-				if err != nil {
-					return nil, err
-				}
-			}
 
-			return app.mm.RunMigrations(ctx, app.configurator, vm)
+			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
+
+			//oracleParams := app.OracleKeeper.GetParams(ctx)
+			//if len(oracleParams.MandatoryList) == 0 {
+			//	err := app.ojoOracleMigration(ctx, plan.Height+1)
+			//	if err != nil {
+			//		return nil, err
+			//	}
+			//}
+
+			// Set cosmwasm params
+			wasmParams := wasmTypes.DefaultParams()
+			wasmParams.CodeUploadAccess = wasmTypes.AllowNobody
+			wasmParams.InstantiateDefaultPermission = wasmTypes.AccessTypeNobody
+			if err := app.WasmKeeper.SetParams(ctx, wasmParams); err != nil {
+				return vm, errorsmod.Wrapf(err, "unable to set CosmWasm params")
+			}
+			app.Logger().Info("Successfully set wasm Params in UpgradeHandler")
+
+			return vm, vmErr
 		},
 	)
 }
@@ -85,6 +100,7 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
+			Added: []string{wasmTypes.StoreKey},
 			//Added:   []string{},
 			//Renamed: []storetypes.StoreRename{},
 			//Deleted: []string{},

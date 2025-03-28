@@ -68,5 +68,5 @@ func (k Keeper) ExitPool(
 		return sdk.Coins{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 	}
 
-	return exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, nil
+	return exitCoins, weightBalanceBonus, swapFee, slippage, takerFeesFinal, nil
 }

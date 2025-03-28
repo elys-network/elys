@@ -10,6 +10,7 @@ import (
 	"cosmossdk.io/client/v2/autocli"
 	"cosmossdk.io/log"
 	confixcmd "cosmossdk.io/tools/confix/cmd"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	tmcfg "github.com/cometbft/cometbft/config"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	dbm "github.com/cosmos/cosmos-db"
@@ -48,7 +49,7 @@ import (
 
 	"github.com/elys-network/elys/app"
 	appparams "github.com/elys-network/elys/app/params"
-	"github.com/ojo-network/ojo/pricefeeder"
+	//"github.com/ojo-network/ojo/pricefeeder"
 )
 
 var tempDir = func() string {
@@ -75,6 +76,7 @@ func NewRootCmd() *cobra.Command {
 		map[int64]bool{},
 		tempDirectory,
 		initAppOptions,
+		[]wasmkeeper.Option{},
 	)
 
 	initClientCtx := client.Context{}.
@@ -208,9 +210,9 @@ func initRootCmd(rootCmd *cobra.Command,
 		keys.Commands(),
 	)
 
-	rootCmd.PersistentFlags().String(pricefeeder.FlagConfigPath, "", "Path to price feeder config file")
-	rootCmd.PersistentFlags().String(pricefeeder.FlagLogLevel, "error", "Log level of price feeder process")
-	rootCmd.PersistentFlags().Bool(pricefeeder.FlagEnablePriceFeeder, false, "Enable the price feeder")
+	//rootCmd.PersistentFlags().String(pricefeeder.FlagConfigPath, "", "Path to price feeder config file")
+	//rootCmd.PersistentFlags().String(pricefeeder.FlagLogLevel, "error", "Log level of price feeder process")
+	//rootCmd.PersistentFlags().Bool(pricefeeder.FlagEnablePriceFeeder, false, "Enable the price feeder")
 }
 
 func addModuleInitFlags(startCmd *cobra.Command) {
@@ -324,15 +326,18 @@ func (a appCreator) newApp(
 		skipUpgradeHeights,
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		appOpts,
+		[]wasmkeeper.Option{},
 		baseappOptions...,
 	)
 
 	// load app config into oracle keeper price feeder
-	appConfig, err := pricefeeder.ReadConfigFromAppOpts(appOpts)
-	if err != nil {
-		panic(err)
-	}
-	app.OracleKeeper.PriceFeeder.AppConfig = appConfig
+	//appConfig, err := pricefeeder.ReadConfigFromAppOpts(appOpts)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+
+	//app.OracleKeeper.PriceFeeder.AppConfig = appConfig
 
 	return app
 }
@@ -370,6 +375,7 @@ func (a appCreator) appExport(
 		map[int64]bool{},
 		homePath,
 		appOpts,
+		[]wasmkeeper.Option{},
 	)
 
 	if height != -1 {
@@ -388,7 +394,7 @@ func initAppConfig() (string, interface{}) {
 
 	type CustomAppConfig struct {
 		serverconfig.Config
-		PriceFeeder pricefeeder.AppConfig `mapstructure:"pricefeeder"`
+		//PriceFeeder pricefeeder.AppConfig `mapstructure:"pricefeeder"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default
@@ -406,15 +412,15 @@ func initAppConfig() (string, interface{}) {
 	//   own app.toml to override, or use this default value.
 	//
 	// In simapp, we set the min gas prices to 0.
-	srvCfg.MinGasPrices = "0uelys"
+	srvCfg.MinGasPrices = "0.0003uelys"
 	// srvCfg.BaseConfig.IAVLDisableFastNode = true // disable fastnode by default
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
-		PriceFeeder: pricefeeder.AppConfig{
-			ConfigPath: "",
-			LogLevel:   "info",
-		},
+		//PriceFeeder: pricefeeder.AppConfig{
+		//	ConfigPath: "",
+		//	LogLevel:   "info",
+		//},
 	}
-	customAppTemplate := serverconfig.DefaultConfigTemplate + pricefeeder.DefaultConfigTemplate
+	customAppTemplate := serverconfig.DefaultConfigTemplate //+ pricefeeder.DefaultConfigTemplate
 	return customAppTemplate, customAppConfig
 }

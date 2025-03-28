@@ -94,7 +94,10 @@ func FirstPoolIdFromSwapExactAmountIn(m *MsgSwapExactAmountIn) uint64 {
 
 func TKeyPrefixSwapExactAmountIn(m *MsgSwapExactAmountIn, index uint64) []byte {
 	prefix := TKeyPrefixSwapExactAmountInPrefix(m)
-	return append(prefix, sdk.Uint64ToBigEndian(index)...)
+	sender := sdk.MustAccAddressFromBech32(m.Sender)
+	// We prefix with address bytes here so that SwapRequest becomes deterministically random to prevent MEV attacks.
+	// We do not add address length prefix here, as 32 bytes address might suffer as then they always will be in the end
+	return append(prefix, append(sender, sdk.Uint64ToBigEndian(index)...)...)
 }
 
 func TKeyPrefixSwapExactAmountOutPrefix(m *MsgSwapExactAmountOut) []byte {
@@ -118,5 +121,8 @@ func FirstPoolIdFromSwapExactAmountOut(m *MsgSwapExactAmountOut) uint64 {
 
 func TKeyPrefixSwapExactAmountOut(m *MsgSwapExactAmountOut, index uint64) []byte {
 	prefix := TKeyPrefixSwapExactAmountOutPrefix(m)
-	return append(prefix, sdk.Uint64ToBigEndian(index)...)
+	sender := sdk.MustAccAddressFromBech32(m.Sender)
+	// We prefix with address bytes here so that SwapRequest becomes deterministically random to prevent MEV attacks.
+	// We do not add address length prefix here, as 32 bytes address might suffer as then they always will be in the end
+	return append(prefix, append(sender, sdk.Uint64ToBigEndian(index)...)...)
 }

@@ -49,6 +49,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "token_in"}, {ProtoField: "discount"}, {ProtoField: "routes", Varargs: true}},
 				},
 				{
+					RpcMethod:      "SwapEstimationExactAmountOut",
+					Use:            "swap-estimation-exact-amount-out [token-out] [discount] {pool_id token_in_denom}...",
+					Short:          "Query SwapEstimationExactAmountOut",
+					Example:        "elysd q amm swap-estimation-exact-amount-out 100token_out 1 token_in1 2 token_in2 ...",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "token_out"}, {ProtoField: "discount"}, {ProtoField: "routes", Varargs: true}},
+				},
+				{
 					RpcMethod:      "JoinPoolEstimation",
 					Use:            "join-pool-estimation [pool_id] [tokens-in]",
 					Short:          "Query JoinPoolEstimation",

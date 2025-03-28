@@ -40,10 +40,15 @@ service Query {
       returns (QueryAllDenomLiquidityResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/denom_liquidity";
   }
-  // Queries a list of SwapEstimation items.
+  // Queries a list of SwapEstimation items, uses swap exact amount in route.
   rpc SwapEstimation(QuerySwapEstimationRequest)
       returns (QuerySwapEstimationResponse) {
     option (google.api.http).get = "/elys-network/elys/amm/swap_estimation";
+  }
+  // Queries a list of SwapEstimation items, uses swap exact amount out route.
+  rpc SwapEstimationExactAmountOut(QuerySwapEstimationExactAmountOutRequest)
+      returns (QuerySwapEstimationExactAmountOutResponse) {
+    option (google.api.http).get = "/elys-network/elys/amm/swap_estimation_exact_amount_out";
   }
   // Queries JoinPool estimation
   rpc JoinPoolEstimation(QueryJoinPoolEstimationRequest)
@@ -157,6 +162,16 @@ message QuerySwapEstimationRequest {
   ];
 }
 
+message QuerySwapEstimationExactAmountOutRequest {
+  repeated SwapAmountOutRoute routes = 1;
+  cosmos.base.v1beta1.Coin token_out = 2 [ (gogoproto.nullable) = false ];
+  string discount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
 message QueryJoinPoolEstimationRequest {
   uint64 pool_id = 1;
   repeated cosmos.base.v1beta1.Coin amounts_in = 2
@@ -210,6 +225,37 @@ message QuerySwapEstimationResponse {
       [ (gogoproto.nullable) = false ];
   string slippage = 6;
   string weight_balance_ratio = 7;
+}
+
+message QuerySwapEstimationExactAmountOutResponse {
+  string spot_price = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin token_in = 2 [ (gogoproto.nullable) = false ];
+  string swap_fee = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string discount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin available_liquidity = 5
+      [ (gogoproto.nullable) = false ];
+  string slippage = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string weight_balance_ratio = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QuerySlippageTrackRequest { uint64 pool_id = 1; }
