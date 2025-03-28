@@ -24,12 +24,12 @@ func (k Keeper) SwapEstimationExactAmountOut(goCtx context.Context, req *types.Q
 	}
 
 	return &types.QuerySwapEstimationExactAmountOutResponse{
-		SpotPrice:          spotPrice,
+		SpotPrice:          spotPrice.String(),
 		TokenIn:            tokenIn,
 		SwapFee:            swapFee,
 		Discount:           discount,
 		AvailableLiquidity: availableLiquidity,
-		Slippage:           slippage,
-		WeightBalanceRatio: weightBonus,
+		Slippage:           slippage.String(),
+		WeightBalanceRatio: weightBonus.String(),
 	}, nil
 }
