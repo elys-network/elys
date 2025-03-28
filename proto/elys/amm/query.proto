@@ -48,7 +48,8 @@ service Query {
   // Queries a list of SwapEstimation items, uses swap exact amount out route.
   rpc SwapEstimationExactAmountOut(QuerySwapEstimationExactAmountOutRequest)
       returns (QuerySwapEstimationExactAmountOutResponse) {
-    option (google.api.http).get = "/elys-network/elys/amm/swap_estimation_exact_amount_out";
+    option (google.api.http).get =
+        "/elys-network/elys/amm/swap_estimation_exact_amount_out";
   }
   // Queries JoinPool estimation
   rpc JoinPoolEstimation(QueryJoinPoolEstimationRequest)
