@@ -79,7 +79,7 @@ builds:
       - amd64
     env:
       - CGO_ENABLED=1
-      - CC=/opt/musl-cross/bin/x86_64-linux-musl-gcc,x86_64-linux-gnu-gcc
+      - CC=/opt/musl-cross/bin/x86_64-linux-musl-gcc
       - LD=/opt/musl-cross/bin/x86_64-linux-musl-ld
       - CGO_LDFLAGS=-L/lib
     flags:
@@ -117,7 +117,7 @@ builds:
       - arm64
     env:
       - CGO_ENABLED=1
-      - CC=/opt/musl-cross/bin/aarch64-linux-musl-gcc,aarch64-linux-gnu-gcc
+      - CC=/opt/musl-cross/bin/aarch64-linux-musl-gcc
       - LD=/opt/musl-cross/bin/aarch64-linux-musl-ld
       - CGO_LDFLAGS=-L/lib
     flags:
