@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
 version: 2
 project_name: elysd
 env:
@@ -66,13 +67,21 @@ builds:
     binary: elysd
     hooks:
       pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
+        - wget -O /lib/libwasmvm_muslc.x86_64.a https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a
+        - echo "a4a3d09b36fabb65b119d5ba23442c23694401fcbee4451fe6b7e22e325a4bac /lib/libwasmvm_muslc.x86_64.a" | sha256sum -c
+        - cp /lib/libwasmvm_muslc.x86_64.a /lib/libwasmvm_muslc.a
+        - curl -LO https://musl.cc/x86_64-linux-musl-cross.tgz
+        - tar xf x86_64-linux-musl-cross.tgz
+        - mv x86_64-linux-musl-cross /opt/musl-cross
     goos:
       - linux
     goarch:
       - amd64
     env:
-      - CC=x86_64-linux-gnu-gcc
+      - CGO_ENABLED=1
+      - CC=/opt/musl-cross/bin/x86_64-linux-musl-gcc
+      - LD=/opt/musl-cross/bin/x86_64-linux-musl-ld
+      - CGO_LDFLAGS=-L/lib
     flags:
       - -mod=readonly
       - -trimpath
@@ -84,7 +93,7 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,pebbledb
       - -w -s
       - -linkmode=external
-      - -extldflags '-Wl,-z,muldefs -static -lm'
+      - -extldflags '-Wl,-z,muldefs -static -lm' 
     tags:
       - netgo
       - ledger
@@ -154,6 +163,8 @@ checksum:
   name_template: "sha256sum.txt"
   algorithm: sha256
 # Docs: https://goreleaser.com/customization/changelog/
+changelog:
+  disable: true
 # Docs: https://goreleaser.com/customization/release/
 release:
   github:
