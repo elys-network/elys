@@ -80,7 +80,7 @@ builds:
       - CGO_ENABLED=1
       - CC=/opt/musl-cross/bin/x86_64-linux-musl-gcc
       - LD=/opt/musl-cross/bin/x86_64-linux-musl-ld
-      - CGO_LDFLAGS=-L/lib
+      - CGO_LDFLAGS=-L/lib -L/usr/local/lib
     flags:
       - -mod=readonly
       - -trimpath
@@ -117,7 +117,7 @@ builds:
       - CGO_ENABLED=1
       - CC=/opt/musl-cross/bin/aarch64-linux-musl-gcc
       - LD=/opt/musl-cross/bin/aarch64-linux-musl-ld
-      - CGO_LDFLAGS=-L/lib
+      - CGO_LDFLAGS=-L/lib -L/usr/local/lib
     flags:
       - -mod=readonly
       - -trimpath
