@@ -42,6 +42,7 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
 	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
 	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
+	vaultstypes "github.com/elys-network/elys/x/vaults/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {
@@ -88,6 +89,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		estakingmoduletypes.StoreKey,
 		tiermoduletypes.StoreKey,
 		tradeshieldmoduletypes.StoreKey,
+		vaultstypes.StoreKey,
 	)
 
 	// Define transient store keys
