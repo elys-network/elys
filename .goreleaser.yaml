@@ -73,7 +73,9 @@ builds:
         - ls -lh /lib
         - curl -LO https://musl.cc/x86_64-linux-musl-cross.tgz
         - tar xf x86_64-linux-musl-cross.tgz
-        - mv x86_64-linux-musl-cross /opt/musl-cross
+        - mkdir -p /opt/musl-cross
+        - mv x86_64-linux-musl-*/* /opt/musl-cross/
+        - ls -lh /opt/musl-cross/bin
     goos:
       - linux
     goarch:
