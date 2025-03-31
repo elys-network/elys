@@ -14,11 +14,12 @@ const (
 )
 
 var (
-	DebtPrefixKey     = []byte{0x01}
-	InterestPrefixKey = []byte{0x02}
-	ParamKeyPrefix    = []byte{0x03}
-	AmmPoolKeyPrefix  = []byte{0x04}
-	PoolPrefixKey     = []byte{0x05}
+	DebtPrefixKey        = []byte{0x01}
+	InterestPrefixKey    = []byte{0x02}
+	ParamKeyPrefix       = []byte{0x03}
+	AmmPoolKeyPrefix     = []byte{0x04}
+	PoolPrefixKey        = []byte{0x05}
+	NewInterestPrefixKey = []byte{0x06}
 )
 
 func GetDebtKey(owner sdk.AccAddress, poolId uint64) []byte {
@@ -29,8 +30,8 @@ func GetPoolKey(poolId uint64) []byte {
 	return append(PoolPrefixKey, sdk.Uint64ToBigEndian(poolId)...)
 }
 
-func GetInterestKey(poolId uint64) []byte {
-	return append(InterestPrefixKey, sdk.Uint64ToBigEndian(poolId)...)
+func GetNewInterestKey(poolId uint64) []byte {
+	return append(NewInterestPrefixKey, sdk.Uint64ToBigEndian(poolId)...)
 }
 
 func GetAmmPoolKey(id uint64) []byte {

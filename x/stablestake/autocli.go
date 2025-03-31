@@ -34,6 +34,17 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "all-amm-pools",
 					Short:     "Query all amm pools liabilities",
 				},
+				{
+					RpcMethod:      "Pool",
+					Use:            "pool [pool-id]",
+					Short:          "Query pool",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}},
+				},
+				{
+					RpcMethod: "Pools",
+					Use:       "pools",
+					Short:     "Query all pools",
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
