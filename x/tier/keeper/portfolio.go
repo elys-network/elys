@@ -90,7 +90,7 @@ func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) elystype
 				continue
 			}
 			info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
-			totalValue = totalValue.Add(elystypes.NewDec34FromLegacyDec((info.LpTokenPrice.MulInt(commitment.Amount)).QuoInt(ammtypes.OneShare)))
+			totalValue = totalValue.Add(elystypes.NewDec34FromLegacyDec(info.LpTokenPrice).MulInt(commitment.Amount).QuoInt(ammtypes.OneShare))
 		}
 	}
 

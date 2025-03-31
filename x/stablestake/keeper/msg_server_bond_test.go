@@ -76,7 +76,7 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 				suite.Require().Equal(commitments.CommittedTokens[0].Denom, tc.expSenderCommit.Denom)
 
 				total := suite.app.StablestakeKeeper.AllTVL(suite.ctx, suite.app.OracleKeeper)
-				suite.Require().Equal(total, math.LegacyMustNewDecFromStr("0.01"))
+				suite.Require().Equal(total.String(), "0.01")
 
 			}
 		})

@@ -96,13 +96,13 @@ func TestCalcExitValueWithSlippage(t *testing.T) {
 			accKeeper := mocks.NewAccountedPoolKeeper(t)
 			tc.setupMock(oracleKeeper, accKeeper)
 
-			value, _, _, err := types.CalcExitValueWithSlippage(ctx, oracleKeeper, accKeeper, tc.pool, tc.exitingShares, tc.tokenOutDenom, elystypes.ZeroDec34(), true, types.DefaultParams())
+			value, _, _, err := types.CalcExitValueWithSlippage(ctx, oracleKeeper, accKeeper, tc.pool, tc.exitingShares, tc.tokenOutDenom, elystypes.OneDec34(), true, types.DefaultParams())
 			if tc.expectedErrMsg != "" {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tc.expectedErrMsg)
 			} else {
 				require.NoError(t, err)
-				require.Equal(t, tc.expectedValue, value)
+				require.Equal(t, tc.expectedValue.String(), value.String())
 			}
 
 			oracleKeeper.AssertExpectations(t)
@@ -128,9 +128,9 @@ func TestCalcExitPool(t *testing.T) {
 		{
 			"successful exit with oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromString("0.00001"), uint64(0))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(elystypes.NewDec34FromString("10"), uint64(0))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(elystypes.NewDec34FromString("5"), uint64(0))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
 			types.Pool{
@@ -243,7 +243,7 @@ func TestCalcExitPool(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				require.Equal(t, tc.expectedCoins, exitCoins)
-				require.Equal(t, tc.expectedBonus, weightBalanceBonus)
+				require.Equal(t, tc.expectedBonus.String(), weightBalanceBonus.String())
 			}
 
 			oracleKeeper.AssertExpectations(t)

@@ -39,7 +39,7 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, ErrAmountTooLow
 	}
 
-	exitValue := tvl.Mul(refundedShares).Quo(elystypes.NewDec34FromInt(totalShares.Amount))
+	exitValue := tvl.Mul(refundedShares).QuoInt(totalShares.Amount)
 
 	if !applyFee {
 		return exitValue, elystypes.ZeroDec34(), sdk.Coins{}, nil
@@ -67,8 +67,8 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 	// tokenIn amount will be
 	tokenInAmount := exitValue.Quo(inTokenPrice)
 	weightedAmount := tokenInAmount.Mul(weightMultiplier)
-	resizedAmount := sdkmath.LegacyNewDecFromInt(weightedAmount.ToInt()).
-		Quo(externalLiquidityRatio).RoundInt()
+	resizedAmount := weightedAmount.
+		QuoLegacyDec(externalLiquidityRatio).ToInt()
 	slippageAmount, err := pool.CalcGivenInSlippage(
 		ctx,
 		oracleKeeper,
@@ -80,12 +80,12 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 	if err != nil {
 		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, err
 	}
-	slippageAmount = slippageAmount.Mul(elystypes.NewDec34FromLegacyDec(externalLiquidityRatio))
+	slippageAmount = slippageAmount.MulLegacyDec(externalLiquidityRatio)
 
 	slippageValue := slippageAmount.Mul(outTokenPrice)
 	slippage := slippageValue.Quo(exitValue)
 
-	minSlippage := elystypes.NewDec34FromLegacyDec(params.MinSlippage).Mul(weightMultiplier)
+	minSlippage := weightMultiplier.MulLegacyDec(params.MinSlippage)
 	if slippage.LT(minSlippage) {
 		slippage = minSlippage
 		slippageValue = exitValue.Mul(minSlippage)
@@ -182,10 +182,10 @@ func CalcExitPool(
 			weightBalanceBonus = weightBalanceBonus.Mul(initialWeightIn)
 
 			if isSwapFee {
-				swapFee = elystypes.NewDec34FromLegacyDec(pool.GetPoolParams().SwapFee).Mul(initialWeightIn)
+				swapFee = initialWeightIn.MulLegacyDec(pool.GetPoolParams().SwapFee)
 			}
 
-			takerFeesFinal = elystypes.NewDec34FromLegacyDec(takerFees).Mul(initialWeightIn)
+			takerFeesFinal = initialWeightIn.MulLegacyDec(takerFees)
 
 			tokenOutAmount = (oracleOutAmount.
 				Mul(elystypes.OneDec34().Sub(weightBreakingFee)).
