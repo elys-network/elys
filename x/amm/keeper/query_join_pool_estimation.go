@@ -93,5 +93,10 @@ func (k Keeper) JoinPoolEst(
 			bonusTokenAmount = treasuryTokenAmount
 		}
 	}
-	return tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, sdk.NewCoin(otherAsset.Token.Denom, bonusTokenAmount), nil
+	rewards := sdk.Coin{}
+	if otherAsset.Token.Denom != "" && bonusTokenAmount.IsPositive() {
+		rewards = sdk.NewCoin(otherAsset.Token.Denom, bonusTokenAmount)
+	}
+
+	return tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, rewards, nil
 }
