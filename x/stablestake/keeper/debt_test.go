@@ -157,5 +157,5 @@ func (suite *KeeperTestSuite) TestMove() {
 	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, 1, interest.BlockHeight, interest)
 	suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
 	interests := suite.app.StablestakeKeeper.GetAllInterest(suite.ctx)
-	suite.Require().Equal(uint64(types.UsdcPoolId), interests[0].PoolId)
+	suite.Require().Len(interests, 0)
 }
