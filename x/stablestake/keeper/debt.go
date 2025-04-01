@@ -79,7 +79,7 @@ func (k Keeper) GetAllDebts(ctx sdk.Context) []types.Debt {
 }
 
 func (k Keeper) SetInterestForPool(ctx sdk.Context, poolId uint64, block uint64, interest types.InterestBlock) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetNewInterestKey(poolId))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
 	if store.Has(sdk.Uint64ToBigEndian(block - 1)) {
 		lastBlock := types.InterestBlock{}
 		bz := store.Get(sdk.Uint64ToBigEndian(block - 1))
@@ -95,7 +95,7 @@ func (k Keeper) SetInterestForPool(ctx sdk.Context, poolId uint64, block uint64,
 }
 
 func (k Keeper) DeleteInterestForPool(ctx sdk.Context, delBlock int64, poolId uint64) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetNewInterestKey(poolId))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
 	key := sdk.Uint64ToBigEndian(uint64(delBlock))
 	if store.Has(key) {
 		store.Delete([]byte(key))
@@ -103,7 +103,7 @@ func (k Keeper) DeleteInterestForPool(ctx sdk.Context, delBlock int64, poolId ui
 }
 
 func (k Keeper) GetAllInterestForPool(ctx sdk.Context, poolId uint64) []types.InterestBlock {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetNewInterestKey(poolId))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
 	iterator := storetypes.KVStorePrefixIterator(store, nil)
 	defer iterator.Close()
 
@@ -124,7 +124,7 @@ func (k Keeper) GetAllInterestForPool(ctx sdk.Context, poolId uint64) []types.In
 }
 
 func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.NewInterestPrefixKey)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
 	iterator := storetypes.KVStorePrefixIterator(store, nil)
 	defer iterator.Close()
 
@@ -148,7 +148,7 @@ func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime
 	if startBlock == uint64(ctx.BlockHeight()) {
 		return sdkmath.ZeroInt()
 	}
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetNewInterestKey(poolId))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
 	currentBlockKey := sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight()))
 	startBlockKey := sdk.Uint64ToBigEndian(startBlock)
 
@@ -335,7 +335,7 @@ func (k Keeper) CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, poolI
 	return nil
 }
 
-func (k Keeper) V10Migrate(ctx sdk.Context) {
+func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
 	iterator := storetypes.KVStorePrefixIterator(store, nil)
 	defer iterator.Close()
@@ -381,10 +381,7 @@ func (k Keeper) MoveAllInterest(ctx sdk.Context) {
 	for ; iterator.Valid(); iterator.Next() {
 		interest := types.InterestBlock{}
 		k.cdc.MustUnmarshal(iterator.Value(), &interest)
-		interest.PoolId = types.UsdcPoolId
-
 		store.Delete(iterator.Key())
-		k.SetInterestForPool(ctx, types.UsdcPoolId, interest.BlockHeight, interest)
 	}
 }
 
