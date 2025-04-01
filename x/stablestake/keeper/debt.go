@@ -335,6 +335,44 @@ func (k Keeper) CloseOnUnableToRepay(ctx sdk.Context, addr sdk.AccAddress, poolI
 	return nil
 }
 
+func (k Keeper) V10Migrate(ctx sdk.Context) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
+	iterator := storetypes.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		store.Delete(iterator.Key())
+	}
+
+	store = prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.DebtPrefixKey)
+	iterator = storetypes.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	totalValue := sdkmath.ZeroInt()
+
+	for ; iterator.Valid(); iterator.Next() {
+		debt := types.Debt{}
+		k.cdc.MustUnmarshal(iterator.Value(), &debt)
+
+		if debt.Borrowed.IsZero() {
+			store.Delete(iterator.Key())
+		}
+		totalValue = totalValue.Add(debt.Borrowed)
+		if debt.InterestStacked.LT(debt.Borrowed) {
+			totalValue = totalValue.Add(debt.InterestStacked)
+		} else {
+			store.Delete(iterator.Key())
+		}
+	}
+
+	params := k.GetParams(ctx)
+
+	pool, _ := k.GetPool(ctx, types.UsdcPoolId)
+	pool.TotalValue = totalValue
+	pool.InterestRate = params.LegacyInterestRate
+	k.SetPool(ctx, pool)
+}
+
 func (k Keeper) MoveAllInterest(ctx sdk.Context) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
 	iterator := storetypes.KVStorePrefixIterator(store, nil)
