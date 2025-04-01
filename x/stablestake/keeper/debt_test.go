@@ -152,6 +152,7 @@ func (suite *KeeperTestSuite) TestMove() {
 		InterestRate: math.LegacyNewDec(10),
 		BlockTime:    suite.ctx.BlockTime().Unix(),
 		BlockHeight:  uint64(suite.ctx.BlockHeight()),
+		PoolId:       uint64(types.UsdcPoolId),
 	}
 	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, 1, interest.BlockHeight, interest)
 	suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)

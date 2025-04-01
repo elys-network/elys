@@ -124,7 +124,7 @@ func (k Keeper) GetAllInterestForPool(ctx sdk.Context, poolId uint64) []types.In
 }
 
 func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestPrefixKey)
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.NewInterestPrefixKey)
 	iterator := storetypes.KVStorePrefixIterator(store, nil)
 	defer iterator.Close()
 
