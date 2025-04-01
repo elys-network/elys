@@ -70,21 +70,6 @@ func (k Keeper) CalculateRedemptionRateForPool(ctx sdk.Context, pool types.Pool)
 	return pool.TotalValue.ToLegacyDec().Quo(totalShares.Amount.ToLegacyDec())
 }
 
-func (k Keeper) CalculateRedemptionRateByDenom(ctx sdk.Context, denom string) math.LegacyDec {
-	pool, found := k.GetPoolByDenom(ctx, denom)
-	if !found {
-		return math.LegacyZeroDec()
-	}
-
-	totalShares := k.bk.GetSupply(ctx, types.GetShareDenomForPool(pool.Id))
-
-	if totalShares.Amount.IsZero() {
-		return math.LegacyZeroDec()
-	}
-
-	return pool.TotalValue.ToLegacyDec().Quo(totalShares.Amount.ToLegacyDec())
-}
-
 func (k Keeper) GetLatestPool(ctx sdk.Context) (val types.Pool, found bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iterator := storetypes.KVStoreReversePrefixIterator(store, types.PoolPrefixKey)
