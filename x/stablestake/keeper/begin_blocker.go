@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 )
@@ -23,9 +22,6 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 func (k Keeper) UpdateInterestForAllPools(ctx sdk.Context) {
 	pools := k.GetAllPools(ctx)
 	for _, pool := range pools {
-		fmt.Println("--------")
-		fmt.Println(pool)
-		fmt.Println("--------")
 		pool.InterestRate = k.InterestRateComputationForPool(ctx, pool)
 		k.SetPool(ctx, pool)
 		k.SetInterestForPool(ctx, pool.Id, uint64(ctx.BlockHeight()), types.InterestBlock{InterestRate: pool.InterestRate, BlockTime: ctx.BlockTime().Unix(), BlockHeight: uint64(ctx.BlockHeight())})
