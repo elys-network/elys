@@ -103,10 +103,9 @@ func (k Keeper) ApplyJoinPoolStateChange(
 		bonusTokenAmount := joinCoins[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
-			weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(joinCoins[0].Amount.ToLegacyDec())
+			bonusTokenAmount = treasuryTokenAmount
 		}
-
-		weightBalanceBonusCoins = sdk.Coins{sdk.NewCoin(otherAsset.Token.Denom, weightBalanceBonus.TruncateInt())}
+		weightBalanceBonusCoins = sdk.Coins{sdk.NewCoin(otherAsset.Token.Denom, bonusTokenAmount)}
 
 		// send bonus tokens to recipient if positive
 		if weightBalanceBonusCoins.IsAllPositive() {
