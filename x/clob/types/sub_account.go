@@ -11,5 +11,9 @@ func (s SubAccount) GetOwnerAccAddress() sdk.AccAddress {
 }
 
 func (s SubAccount) GetTradingAccountAddress() sdk.AccAddress {
-	return authtypes.NewModuleAddress(fmt.Sprintf("clob/%s/%d", s.Owner, s.Id))
+	return authtypes.NewModuleAddress(fmt.Sprintf("clob/%s/%d", s.Owner, s.MarketId))
+}
+
+func (s SubAccount) GetLockedBalance() sdk.Coins {
+	return s.TotalBalance.Sub(s.AvailableBalance...)
 }

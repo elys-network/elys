@@ -1,15 +1,17 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-func (k Keeper) GetSubAccount(ctx sdk.Context, owner sdk.AccAddress, id uint64) (types.SubAccount, error) {
-	key := types.GetSubAccountKey(owner, id)
+func (k Keeper) GetSubAccount(ctx sdk.Context, owner sdk.AccAddress, marketId uint64) (types.SubAccount, error) {
+	key := types.GetSubAccountKey(owner, marketId)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
@@ -58,7 +60,7 @@ func (k Keeper) GetAllSubAccount(ctx sdk.Context) []types.SubAccount {
 
 func (k Keeper) SetSubAccount(ctx sdk.Context, s types.SubAccount) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetSubAccountKey(s.GetOwnerAccAddress(), s.Id)
+	key := types.GetSubAccountKey(s.GetOwnerAccAddress(), s.MarketId)
 	b := k.cdc.MustMarshal(&s)
 	store.Set(key, b)
 }
@@ -73,4 +75,22 @@ func (k Keeper) AddToSubAccount(ctx sdk.Context, from sdk.AccAddress, subAccount
 	subAccount.AvailableBalance = subAccount.AvailableBalance.Add(coins...)
 	k.SetSubAccount(ctx, subAccount)
 	return k.bankKeeper.SendCoins(ctx, from, subAccount.GetTradingAccountAddress(), coins)
+}
+
+func (k Keeper) GetAvailableBalanceValue(ctx sdk.Context, subAccount types.SubAccount) (totalValue math.Dec, err error) {
+	for _, coin := range subAccount.AvailableBalance {
+		price, err := k.GetDenomPrice(ctx, coin.Denom)
+		if err != nil {
+			return totalValue, err
+		}
+		v, addErr := price.Mul(utils.IntToDec(coin.Amount))
+		if addErr != nil {
+			return totalValue, addErr
+		}
+		totalValue, err = totalValue.Add(v)
+		if err != nil {
+			return totalValue, addErr
+		}
+	}
+	return totalValue, nil
 }

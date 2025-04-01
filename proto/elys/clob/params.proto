@@ -17,7 +17,7 @@ message Params {
   // makers on a new derivative market
   string default_derivative_maker_fee_rate = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
 
@@ -25,21 +25,21 @@ message Params {
   // takers on a new derivative market
   string default_derivative_taker_fee_rate = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
 
   // default_initial_margin_ratio defines the default initial margin ratio on a
   // new derivative market
   string default_initial_margin_ratio = 4 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
 
   // default_maintenance_margin_ratio defines the default maintenance margin
   // ratio on a new derivative market
   string default_maintenance_margin_ratio = 5 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
 
@@ -54,26 +54,26 @@ message Params {
   // relayer_fee_share_rate defines the trade fee share percentage that goes to
   // relayers
   string relayer_fee_share_rate = 8 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
 
   // default_hourly_funding_rate_cap defines the default maximum absolute value
   // of the hourly funding rate
   string default_hourly_funding_rate_cap = 9 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
 
   // hourly_interest_rate defines the hourly interest rate
   string default_hourly_interest_rate = 10 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
 
   // max_derivative_order_side_count defines the maximum number of derivative
   // active orders a subaccount can have for a given orderbook side
-  uint32 max_derivative_order_side_count = 11;
+  uint64 max_derivative_order_side_count = 11;
 
   // the trading_rewards_vesting_duration defines the vesting times for trading
   // rewards
@@ -82,20 +82,20 @@ message Params {
   // liquidator_reward_share_rate defines the ratio of the split of the surplus
   // collateral that goes to the liquidator
   string liquidator_reward_share_rate = 13 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
 
   // derivative_atomic_market_order_fee_multiplier defines the default
   // multiplier for executing atomic market orders in derivative markets
   string derivative_atomic_market_order_fee_multiplier = 14 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
 
   // minimal_protocol_fee_rate defines the minimal protocol fee rate
   string minimal_protocol_fee_rate = 15 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
 

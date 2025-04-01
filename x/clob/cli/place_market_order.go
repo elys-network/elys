@@ -1,7 +1,7 @@
 package cli
 
 import (
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/math"
 	"errors"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -13,18 +13,13 @@ import (
 
 func CmdPlaceMarketOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "place-market-order [sub-account-id] [market-id] [quantity] [order-type]",
+		Use:     "place-market-order [market-id] [quantity] [order-type]",
 		Short:   "exit a new pool and withdraw the liquidity from it",
 		Example: `elysd tx amm exit-pool 0 1000uatom,1000uusdc 200000000000000000 --from=bob --yes --gas=1000000`,
-		Args:    cobra.ExactArgs(4),
+		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			subAccountId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
@@ -34,11 +29,10 @@ func CmdPlaceMarketOrder() *cobra.Command {
 				return err
 			}
 
-			quantity, err := sdkmath.LegacyNewDecFromStr(args[2])
-			if err != nil {
-				return err
+			quantity, ok := math.NewIntFromString(args[2])
+			if !ok {
+				return errors.New("invalid quantity")
 			}
-
 			var orderType types.OrderType
 			switch args[3] {
 			case "market_buy":
@@ -51,7 +45,6 @@ func CmdPlaceMarketOrder() *cobra.Command {
 
 			msg := types.MsgPlaceMarketOrder{
 				Creator:      clientCtx.GetFromAddress().String(),
-				SubAccountId: subAccountId,
 				MarketId:     marketId,
 				BaseQuantity: quantity,
 				OrderType:    orderType,

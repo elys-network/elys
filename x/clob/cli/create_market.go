@@ -1,10 +1,11 @@
 package cli
 
 import (
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/clob/types"
 	"github.com/spf13/cobra"
 )
@@ -23,18 +24,18 @@ func CmdCreateMarket() *cobra.Command {
 			}
 
 			msg := types.MsgCreatPerpetualMarket{
-				Creator:                clientCtx.GetFromAddress().String(),
-				BaseDenom:              args[0],
-				QuoteDenom:             args[1],
-				InitialMarginRatio:     sdkmath.LegacyMustNewDecFromStr("0.2"),
-				MaintenanceMarginRatio: sdkmath.LegacyMustNewDecFromStr("0.2"),
-				MakerFeeRate:           sdkmath.LegacyZeroDec(),
-				TakerFeeRate:           sdkmath.LegacyZeroDec(),
-				RelayerFeeShareRate:    sdkmath.LegacyZeroDec(),
-				MinPriceTickSize:       sdkmath.LegacyZeroDec(),
-				MinQuantityTickSize:    sdkmath.OneInt(),
-				MinNotional:            sdkmath.LegacyZeroDec(),
-				AllowedCollateral:      []string{"uusdc"},
+				Creator:                 clientCtx.GetFromAddress().String(),
+				BaseDenom:               args[0],
+				QuoteDenom:              args[1],
+				InitialMarginRatio:      math.NewDecWithExp(2, -1),
+				MaintenanceMarginRatio:  math.NewDecWithExp(2, -1),
+				MakerFeeRate:            utils.ZeroDec,
+				TakerFeeRate:            utils.ZeroDec,
+				LiquidationFeeShareRate: utils.ZeroDec,
+				MinPriceTickSize:        utils.ZeroDec,
+				MinQuantityTickSize:     math.OneInt(),
+				MinNotional:             utils.ZeroDec,
+				AllowedCollateral:       []string{"uusdc"},
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

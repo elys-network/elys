@@ -6,16 +6,11 @@ import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/clob/types"
-	oracletypes "github.com/elys-network/elys/x/oracle/types"
 )
 
 func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64) error {
 	market, err := k.GetPerpetualMarket(ctx, marketId)
 	if err != nil {
-		return err
-	}
-	assetInfo, found := k.oracleKeeper.GetAssetInfo(ctx, market.BaseDenom)
-	if !found {
 		return err
 	}
 
@@ -27,7 +22,7 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64) error {
 	for ; buyOrderIterator.Valid() && fullyFilled; buyOrderIterator.Next() {
 		var buyOrder types.PerpetualOrder
 		k.cdc.MustUnmarshal(buyOrderIterator.Value(), &buyOrder)
-		fullyFilled, err = k.ExecuteLimitBuyOrder(ctx, market, &buyOrder, assetInfo)
+		fullyFilled, err = k.ExecuteLimitBuyOrder(ctx, market, &buyOrder)
 		if err != nil {
 			return err
 		}
@@ -48,7 +43,7 @@ func (k Keeper) ExecuteMarket(ctx sdk.Context, marketId uint64) error {
 	return nil
 }
 
-func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMarket, buyOrder *types.PerpetualOrder, assetInfo oracletypes.AssetInfo) (bool, error) {
+func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMarket, buyOrder *types.PerpetualOrder) (bool, error) {
 	if !buyOrder.IsBuy() {
 		return false, errors.New("order is not a buy order")
 	}
@@ -60,7 +55,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 	//lowestSellPrice := k.GetLowestSellPrice(ctx, market.Id)
 
 	sellIterator := k.GetSellOrderIterator(ctx, market.Id)
-	buyerSubAccount, err = k.GetSubAccount(ctx, buyOrder.GetOwnerAccAddress(), buyOrder.SubAccountId)
+	buyerSubAccount, err = k.GetSubAccount(ctx, buyOrder.GetOwnerAccAddress(), market.Id)
 	if err != nil {
 		return false, err
 	}
@@ -76,7 +71,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 
 		lowestSellPrice := sellOrder.Price
 
-		if highestBuyPrice.GTE(lowestSellPrice) {
+		if highestBuyPrice.Cmp(lowestSellPrice) >= 0 {
 			sellOrderFilled := false
 
 			tradePrice := sellOrder.Price
@@ -84,14 +79,21 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 				tradePrice = buyOrder.Price
 			}
 			if sellOrder.BlockHeight == buyOrder.BlockHeight {
-				tradePrice = buyOrder.Price.Add(sellOrder.Price).Quo(math.LegacyNewDec(2))
+				sumPrice, err := buyOrder.Price.Add(sellOrder.Price)
+				if err != nil {
+					return false, err
+				}
+				tradePrice, err = sumPrice.Quo(math.NewDecFromInt64(2))
+				if err != nil {
+					return false, err
+				}
 			}
 
 			// remainingQuantity = buyOrderQuantity at trade price - already filled
 			buyOrderMaxQuantity := buyOrder.Amount.Sub(buyOrder.Filled)
 			sellOrderMaxQuantity := sellOrder.Amount.Sub(sellOrder.Filled)
 
-			tradeQuantity := math.LegacyMinDec(buyOrderMaxQuantity, sellOrderMaxQuantity)
+			tradeQuantity := math.MinInt(buyOrderMaxQuantity, sellOrderMaxQuantity)
 			if tradeQuantity.Equal(buyOrderMaxQuantity) {
 				buyOrderFilled = true
 			}
@@ -111,7 +113,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 			fmt.Println("SELL ORDER EXECUTED: ")
 			fmt.Println(sellOrder)
 
-			sellerSubAccount, err = k.GetSubAccount(ctx, sellOrder.GetOwnerAccAddress(), sellOrder.SubAccountId)
+			sellerSubAccount, err = k.GetSubAccount(ctx, sellOrder.GetOwnerAccAddress(), market.Id)
 			if err != nil {
 				return false, err
 			}

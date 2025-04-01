@@ -21,13 +21,13 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 	}
 
 	sellIterator := k.GetSellOrderIterator(ctx, market.Id)
-	buyerSubAccount, err = k.GetSubAccount(ctx, buyer, msg.SubAccountId)
+	buyerSubAccount, err = k.GetSubAccount(ctx, buyer, market.Id)
 	if err != nil {
 		return false, err
 	}
 
 	var sellOrdersToDelete [][]byte
-	filled := math.LegacyZeroDec()
+	filled := math.ZeroInt()
 
 	for ; sellIterator.Valid() && !buyOrderFilled; sellIterator.Next() {
 		fmt.Println("---")
@@ -41,7 +41,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 		buyOrderMaxQuantity := msg.BaseQuantity.Sub(filled)
 		sellOrderMaxQuantity := sellOrder.Amount.Sub(sellOrder.Filled)
 
-		tradeQuantity := math.LegacyMinDec(buyOrderMaxQuantity, sellOrderMaxQuantity)
+		tradeQuantity := math.MinInt(buyOrderMaxQuantity, sellOrderMaxQuantity)
 		if tradeQuantity.Equal(buyOrderMaxQuantity) {
 			buyOrderFilled = true
 		}
@@ -60,7 +60,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 		fmt.Println("SELL ORDER EXECUTED: ")
 		fmt.Println(sellOrder)
 
-		sellerSubAccount, err := k.GetSubAccount(ctx, sellOrder.GetOwnerAccAddress(), sellOrder.SubAccountId)
+		sellerSubAccount, err := k.GetSubAccount(ctx, sellOrder.GetOwnerAccAddress(), market.Id)
 		if err != nil {
 			return false, err
 		}
@@ -103,13 +103,13 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 	}
 
 	buyIterator := k.GetBuyOrderIterator(ctx, market.Id)
-	sellerSubAccount, err = k.GetSubAccount(ctx, seller, msg.SubAccountId)
+	sellerSubAccount, err = k.GetSubAccount(ctx, seller, market.Id)
 	if err != nil {
 		return false, err
 	}
 
 	var buyOrdersToDelete [][]byte
-	filled := math.LegacyZeroDec()
+	filled := math.ZeroInt()
 
 	for ; buyIterator.Valid() && !sellOrderFilled; buyIterator.Next() {
 		fmt.Println("---")
@@ -123,7 +123,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 		sellOrderMaxQuantity := msg.BaseQuantity.Sub(filled)
 		buyOrderMaxQuantity := buyOrder.Amount.Sub(buyOrder.Filled)
 
-		tradeQuantity := math.LegacyMinDec(buyOrderMaxQuantity, sellOrderMaxQuantity)
+		tradeQuantity := math.MinInt(buyOrderMaxQuantity, sellOrderMaxQuantity)
 		if tradeQuantity.Equal(buyOrderMaxQuantity) {
 			buyOrderFilled = true
 		}
@@ -142,7 +142,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 		fmt.Println("BUY ORDER EXECUTED: ")
 		fmt.Println(buyOrder)
 
-		buyerSubAccount, err := k.GetSubAccount(ctx, buyOrder.GetOwnerAccAddress(), buyOrder.SubAccountId)
+		buyerSubAccount, err := k.GetSubAccount(ctx, buyOrder.GetOwnerAccAddress(), market.Id)
 		if err != nil {
 			return false, err
 		}

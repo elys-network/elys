@@ -4,7 +4,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	"github.com/elys-network/elys/x/clob/utils"
+	"github.com/elys-network/elys/utils"
 	"math"
 )
 
@@ -28,7 +28,7 @@ var (
 	PerpetualPrefix        = []byte{0x04}
 	PerpetualOwnerPrefix   = []byte{0x05}
 	PerpetualOrderPrefix   = []byte{0x06}
-	MarketPricePrefix      = []byte{0x07}
+	LastMarketPricePrefix  = []byte{0x07}
 	PerpetualCounterPrefix = []byte{0x08}
 )
 
@@ -38,9 +38,9 @@ func GetAddressSubAccountPrefixKey(addr sdk.AccAddress) []byte {
 	return key
 }
 
-func GetSubAccountKey(addr sdk.AccAddress, id uint64) []byte {
+func GetSubAccountKey(addr sdk.AccAddress, marketId uint64) []byte {
 	key := GetAddressSubAccountPrefixKey(addr)
-	key = append(key, sdk.Uint64ToBigEndian(id)...)
+	key = append(key, sdk.Uint64ToBigEndian(marketId)...)
 	return key
 }
 
@@ -53,16 +53,14 @@ func GetPerpetualKey(marketId, id uint64) []byte {
 	return append(key, sdk.Uint64ToBigEndian(id)...)
 }
 
-func GetPerpetualOwnerKey(subAccountId uint64, addr sdk.AccAddress, marketId uint64) []byte {
+func GetPerpetualOwnerKey(addr sdk.AccAddress, marketId uint64) []byte {
 	key := append(PerpetualOwnerPrefix, address.MustLengthPrefix(addr.Bytes())...)
-	key = append(key, []byte("/")...)
-	key = append(key, sdk.Uint64ToBigEndian(subAccountId)...)
 	key = append(key, []byte("/")...)
 	key = append(key, sdk.Uint64ToBigEndian(marketId)...)
 	return key
 }
 
-func GetPerpetualOrderKey(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, height uint64) []byte {
+func GetPerpetualOrderKey(marketId uint64, orderType OrderType, price sdkmath.Dec, height uint64) []byte {
 	key := append(PerpetualOrderPrefix, sdk.Uint64ToBigEndian(marketId)...)
 	key = append(key, []byte("/")...)
 	orderTypeByte := FalseByte
@@ -73,7 +71,7 @@ func GetPerpetualOrderKey(marketId uint64, orderType OrderType, price sdkmath.Le
 	}
 	key = append(key, orderTypeByte)
 	key = append(key, []byte("/")...)
-	paddedPrice := utils.GetPaddedPrice(price)
+	paddedPrice := utils.GetPaddedDecString(price)
 	key = append(key, []byte(paddedPrice)...)
 	key = append(key, []byte("/")...)
 	key = append(key, heightBytes...)
@@ -93,8 +91,8 @@ func GetPerpetualOrderBookIteratorKey(marketId uint64, long bool) []byte {
 	return key
 }
 
-func GetMarketPriceKey(id uint64) []byte {
-	return append(MarketPricePrefix, sdk.Uint64ToBigEndian(id)...)
+func GetLastMarketPriceKey(id uint64) []byte {
+	return append(LastMarketPricePrefix, sdk.Uint64ToBigEndian(id)...)
 }
 
 func GetPerpetualCounterKey(marketId uint64) []byte {

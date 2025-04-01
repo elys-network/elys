@@ -1,7 +1,7 @@
 package cli
 
 import (
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/math"
 	"errors"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -13,18 +13,13 @@ import (
 
 func CmdPlaceLimitOrder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "place-limit-order [sub-account-id] [market-id] [price] [quantity] [order-type]",
+		Use:     "place-limit-order [market-id] [price] [quantity] [order-type]",
 		Short:   "exit a new pool and withdraw the liquidity from it",
 		Example: `elysd tx amm exit-pool 0 1000uatom,1000uusdc 200000000000000000 --from=bob --yes --gas=1000000`,
-		Args:    cobra.ExactArgs(5),
+		Args:    cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			subAccountId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
@@ -34,16 +29,15 @@ func CmdPlaceLimitOrder() *cobra.Command {
 				return err
 			}
 
-			price, err := sdkmath.LegacyNewDecFromStr(args[2])
+			price, err := math.NewDecFromString(args[2])
 			if err != nil {
 				return err
 			}
 
-			quantity, err := sdkmath.LegacyNewDecFromStr(args[3])
-			if err != nil {
-				return err
+			quantity, ok := math.NewIntFromString(args[3])
+			if !ok {
+				return errors.New("invalid quantity")
 			}
-
 			var orderType types.OrderType
 			switch args[4] {
 			case "limit_buy":
@@ -56,7 +50,6 @@ func CmdPlaceLimitOrder() *cobra.Command {
 
 			msg := types.MsgPlaceLimitOrder{
 				Creator:      clientCtx.GetFromAddress().String(),
-				SubAccountId: subAccountId,
 				MarketId:     marketId,
 				BaseQuantity: quantity,
 				OrderType:    orderType,

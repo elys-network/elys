@@ -12,7 +12,7 @@ import (
 
 func CmdDeposit() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "deposit [sub-account-id] [amount]",
+		Use:     "deposit market-id] [amount]",
 		Short:   "exit a new pool and withdraw the liquidity from it",
 		Example: `elysd tx amm exit-pool 0 1000uatom,1000uusdc 200000000000000000 --from=bob --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(2),
@@ -23,7 +23,7 @@ func CmdDeposit() *cobra.Command {
 				return err
 			}
 
-			subAccountId, err := strconv.ParseUint(args[0], 10, 64)
+			marketId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
@@ -34,9 +34,9 @@ func CmdDeposit() *cobra.Command {
 			}
 
 			msg := types.MsgDeposit{
-				Sender:       clientCtx.GetFromAddress().String(),
-				SubAccountId: subAccountId,
-				Coin:         amount,
+				Sender:   clientCtx.GetFromAddress().String(),
+				MarketId: marketId,
+				Coin:     amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

@@ -15,18 +15,16 @@ import (
 )
 
 var (
-	md_PerpetualOwner                protoreflect.MessageDescriptor
-	fd_PerpetualOwner_owner          protoreflect.FieldDescriptor
-	fd_PerpetualOwner_sub_account_id protoreflect.FieldDescriptor
-	fd_PerpetualOwner_market_id      protoreflect.FieldDescriptor
-	fd_PerpetualOwner_perpetual_id   protoreflect.FieldDescriptor
+	md_PerpetualOwner              protoreflect.MessageDescriptor
+	fd_PerpetualOwner_owner        protoreflect.FieldDescriptor
+	fd_PerpetualOwner_market_id    protoreflect.FieldDescriptor
+	fd_PerpetualOwner_perpetual_id protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_clob_perpetual_proto_init()
 	md_PerpetualOwner = File_elys_clob_perpetual_proto.Messages().ByName("PerpetualOwner")
 	fd_PerpetualOwner_owner = md_PerpetualOwner.Fields().ByName("owner")
-	fd_PerpetualOwner_sub_account_id = md_PerpetualOwner.Fields().ByName("sub_account_id")
 	fd_PerpetualOwner_market_id = md_PerpetualOwner.Fields().ByName("market_id")
 	fd_PerpetualOwner_perpetual_id = md_PerpetualOwner.Fields().ByName("perpetual_id")
 }
@@ -102,12 +100,6 @@ func (x *fastReflection_PerpetualOwner) Range(f func(protoreflect.FieldDescripto
 			return
 		}
 	}
-	if x.SubAccountId != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.SubAccountId)
-		if !f(fd_PerpetualOwner_sub_account_id, value) {
-			return
-		}
-	}
 	if x.MarketId != uint64(0) {
 		value := protoreflect.ValueOfUint64(x.MarketId)
 		if !f(fd_PerpetualOwner_market_id, value) {
@@ -137,8 +129,6 @@ func (x *fastReflection_PerpetualOwner) Has(fd protoreflect.FieldDescriptor) boo
 	switch fd.FullName() {
 	case "elys.clob.PerpetualOwner.owner":
 		return x.Owner != ""
-	case "elys.clob.PerpetualOwner.sub_account_id":
-		return x.SubAccountId != uint64(0)
 	case "elys.clob.PerpetualOwner.market_id":
 		return x.MarketId != uint64(0)
 	case "elys.clob.PerpetualOwner.perpetual_id":
@@ -161,8 +151,6 @@ func (x *fastReflection_PerpetualOwner) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "elys.clob.PerpetualOwner.owner":
 		x.Owner = ""
-	case "elys.clob.PerpetualOwner.sub_account_id":
-		x.SubAccountId = uint64(0)
 	case "elys.clob.PerpetualOwner.market_id":
 		x.MarketId = uint64(0)
 	case "elys.clob.PerpetualOwner.perpetual_id":
@@ -186,9 +174,6 @@ func (x *fastReflection_PerpetualOwner) Get(descriptor protoreflect.FieldDescrip
 	case "elys.clob.PerpetualOwner.owner":
 		value := x.Owner
 		return protoreflect.ValueOfString(value)
-	case "elys.clob.PerpetualOwner.sub_account_id":
-		value := x.SubAccountId
-		return protoreflect.ValueOfUint64(value)
 	case "elys.clob.PerpetualOwner.market_id":
 		value := x.MarketId
 		return protoreflect.ValueOfUint64(value)
@@ -217,8 +202,6 @@ func (x *fastReflection_PerpetualOwner) Set(fd protoreflect.FieldDescriptor, val
 	switch fd.FullName() {
 	case "elys.clob.PerpetualOwner.owner":
 		x.Owner = value.Interface().(string)
-	case "elys.clob.PerpetualOwner.sub_account_id":
-		x.SubAccountId = value.Uint()
 	case "elys.clob.PerpetualOwner.market_id":
 		x.MarketId = value.Uint()
 	case "elys.clob.PerpetualOwner.perpetual_id":
@@ -245,8 +228,6 @@ func (x *fastReflection_PerpetualOwner) Mutable(fd protoreflect.FieldDescriptor)
 	switch fd.FullName() {
 	case "elys.clob.PerpetualOwner.owner":
 		panic(fmt.Errorf("field owner of message elys.clob.PerpetualOwner is not mutable"))
-	case "elys.clob.PerpetualOwner.sub_account_id":
-		panic(fmt.Errorf("field sub_account_id of message elys.clob.PerpetualOwner is not mutable"))
 	case "elys.clob.PerpetualOwner.market_id":
 		panic(fmt.Errorf("field market_id of message elys.clob.PerpetualOwner is not mutable"))
 	case "elys.clob.PerpetualOwner.perpetual_id":
@@ -266,8 +247,6 @@ func (x *fastReflection_PerpetualOwner) NewField(fd protoreflect.FieldDescriptor
 	switch fd.FullName() {
 	case "elys.clob.PerpetualOwner.owner":
 		return protoreflect.ValueOfString("")
-	case "elys.clob.PerpetualOwner.sub_account_id":
-		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.clob.PerpetualOwner.market_id":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.clob.PerpetualOwner.perpetual_id":
@@ -345,9 +324,6 @@ func (x *fastReflection_PerpetualOwner) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.SubAccountId != 0 {
-			n += 1 + runtime.Sov(uint64(x.SubAccountId))
-		}
 		if x.MarketId != 0 {
 			n += 1 + runtime.Sov(uint64(x.MarketId))
 		}
@@ -386,15 +362,10 @@ func (x *fastReflection_PerpetualOwner) ProtoMethods() *protoiface.Methods {
 		if x.PerpetualId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.PerpetualId))
 			i--
-			dAtA[i] = 0x20
+			dAtA[i] = 0x18
 		}
 		if x.MarketId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.MarketId))
-			i--
-			dAtA[i] = 0x18
-		}
-		if x.SubAccountId != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.SubAccountId))
 			i--
 			dAtA[i] = 0x10
 		}
@@ -488,25 +459,6 @@ func (x *fastReflection_PerpetualOwner) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 2:
 				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SubAccountId", wireType)
-				}
-				x.SubAccountId = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.SubAccountId |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 3:
-				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MarketId", wireType)
 				}
 				x.MarketId = 0
@@ -524,7 +476,7 @@ func (x *fastReflection_PerpetualOwner) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
-			case 4:
+			case 3:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PerpetualId", wireType)
 				}
@@ -579,13 +531,14 @@ func (x *fastReflection_PerpetualOwner) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_Perpetual                protoreflect.MessageDescriptor
-	fd_Perpetual_id             protoreflect.FieldDescriptor
-	fd_Perpetual_market_id      protoreflect.FieldDescriptor
-	fd_Perpetual_entry_price    protoreflect.FieldDescriptor
-	fd_Perpetual_owner          protoreflect.FieldDescriptor
-	fd_Perpetual_sub_account_id protoreflect.FieldDescriptor
-	fd_Perpetual_quantity       protoreflect.FieldDescriptor
+	md_Perpetual                    protoreflect.MessageDescriptor
+	fd_Perpetual_id                 protoreflect.FieldDescriptor
+	fd_Perpetual_market_id          protoreflect.FieldDescriptor
+	fd_Perpetual_entry_price        protoreflect.FieldDescriptor
+	fd_Perpetual_owner              protoreflect.FieldDescriptor
+	fd_Perpetual_quantity           protoreflect.FieldDescriptor
+	fd_Perpetual_margin             protoreflect.FieldDescriptor
+	fd_Perpetual_entry_funding_rate protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -595,8 +548,9 @@ func init() {
 	fd_Perpetual_market_id = md_Perpetual.Fields().ByName("market_id")
 	fd_Perpetual_entry_price = md_Perpetual.Fields().ByName("entry_price")
 	fd_Perpetual_owner = md_Perpetual.Fields().ByName("owner")
-	fd_Perpetual_sub_account_id = md_Perpetual.Fields().ByName("sub_account_id")
 	fd_Perpetual_quantity = md_Perpetual.Fields().ByName("quantity")
+	fd_Perpetual_margin = md_Perpetual.Fields().ByName("margin")
+	fd_Perpetual_entry_funding_rate = md_Perpetual.Fields().ByName("entry_funding_rate")
 }
 
 var _ protoreflect.Message = (*fastReflection_Perpetual)(nil)
@@ -688,15 +642,21 @@ func (x *fastReflection_Perpetual) Range(f func(protoreflect.FieldDescriptor, pr
 			return
 		}
 	}
-	if x.SubAccountId != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.SubAccountId)
-		if !f(fd_Perpetual_sub_account_id, value) {
-			return
-		}
-	}
 	if x.Quantity != "" {
 		value := protoreflect.ValueOfString(x.Quantity)
 		if !f(fd_Perpetual_quantity, value) {
+			return
+		}
+	}
+	if x.Margin != "" {
+		value := protoreflect.ValueOfString(x.Margin)
+		if !f(fd_Perpetual_margin, value) {
+			return
+		}
+	}
+	if x.EntryFundingRate != "" {
+		value := protoreflect.ValueOfString(x.EntryFundingRate)
+		if !f(fd_Perpetual_entry_funding_rate, value) {
 			return
 		}
 	}
@@ -723,10 +683,12 @@ func (x *fastReflection_Perpetual) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.EntryPrice != ""
 	case "elys.clob.Perpetual.owner":
 		return x.Owner != ""
-	case "elys.clob.Perpetual.sub_account_id":
-		return x.SubAccountId != uint64(0)
 	case "elys.clob.Perpetual.quantity":
 		return x.Quantity != ""
+	case "elys.clob.Perpetual.margin":
+		return x.Margin != ""
+	case "elys.clob.Perpetual.entry_funding_rate":
+		return x.EntryFundingRate != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.Perpetual"))
@@ -751,10 +713,12 @@ func (x *fastReflection_Perpetual) Clear(fd protoreflect.FieldDescriptor) {
 		x.EntryPrice = ""
 	case "elys.clob.Perpetual.owner":
 		x.Owner = ""
-	case "elys.clob.Perpetual.sub_account_id":
-		x.SubAccountId = uint64(0)
 	case "elys.clob.Perpetual.quantity":
 		x.Quantity = ""
+	case "elys.clob.Perpetual.margin":
+		x.Margin = ""
+	case "elys.clob.Perpetual.entry_funding_rate":
+		x.EntryFundingRate = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.Perpetual"))
@@ -783,11 +747,14 @@ func (x *fastReflection_Perpetual) Get(descriptor protoreflect.FieldDescriptor) 
 	case "elys.clob.Perpetual.owner":
 		value := x.Owner
 		return protoreflect.ValueOfString(value)
-	case "elys.clob.Perpetual.sub_account_id":
-		value := x.SubAccountId
-		return protoreflect.ValueOfUint64(value)
 	case "elys.clob.Perpetual.quantity":
 		value := x.Quantity
+		return protoreflect.ValueOfString(value)
+	case "elys.clob.Perpetual.margin":
+		value := x.Margin
+		return protoreflect.ValueOfString(value)
+	case "elys.clob.Perpetual.entry_funding_rate":
+		value := x.EntryFundingRate
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
@@ -817,10 +784,12 @@ func (x *fastReflection_Perpetual) Set(fd protoreflect.FieldDescriptor, value pr
 		x.EntryPrice = value.Interface().(string)
 	case "elys.clob.Perpetual.owner":
 		x.Owner = value.Interface().(string)
-	case "elys.clob.Perpetual.sub_account_id":
-		x.SubAccountId = value.Uint()
 	case "elys.clob.Perpetual.quantity":
 		x.Quantity = value.Interface().(string)
+	case "elys.clob.Perpetual.margin":
+		x.Margin = value.Interface().(string)
+	case "elys.clob.Perpetual.entry_funding_rate":
+		x.EntryFundingRate = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.Perpetual"))
@@ -849,10 +818,12 @@ func (x *fastReflection_Perpetual) Mutable(fd protoreflect.FieldDescriptor) prot
 		panic(fmt.Errorf("field entry_price of message elys.clob.Perpetual is not mutable"))
 	case "elys.clob.Perpetual.owner":
 		panic(fmt.Errorf("field owner of message elys.clob.Perpetual is not mutable"))
-	case "elys.clob.Perpetual.sub_account_id":
-		panic(fmt.Errorf("field sub_account_id of message elys.clob.Perpetual is not mutable"))
 	case "elys.clob.Perpetual.quantity":
 		panic(fmt.Errorf("field quantity of message elys.clob.Perpetual is not mutable"))
+	case "elys.clob.Perpetual.margin":
+		panic(fmt.Errorf("field margin of message elys.clob.Perpetual is not mutable"))
+	case "elys.clob.Perpetual.entry_funding_rate":
+		panic(fmt.Errorf("field entry_funding_rate of message elys.clob.Perpetual is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.Perpetual"))
@@ -874,9 +845,11 @@ func (x *fastReflection_Perpetual) NewField(fd protoreflect.FieldDescriptor) pro
 		return protoreflect.ValueOfString("")
 	case "elys.clob.Perpetual.owner":
 		return protoreflect.ValueOfString("")
-	case "elys.clob.Perpetual.sub_account_id":
-		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.clob.Perpetual.quantity":
+		return protoreflect.ValueOfString("")
+	case "elys.clob.Perpetual.margin":
+		return protoreflect.ValueOfString("")
+	case "elys.clob.Perpetual.entry_funding_rate":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -961,10 +934,15 @@ func (x *fastReflection_Perpetual) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.SubAccountId != 0 {
-			n += 1 + runtime.Sov(uint64(x.SubAccountId))
-		}
 		l = len(x.Quantity)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Margin)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.EntryFundingRate)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -997,17 +975,26 @@ func (x *fastReflection_Perpetual) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if len(x.EntryFundingRate) > 0 {
+			i -= len(x.EntryFundingRate)
+			copy(dAtA[i:], x.EntryFundingRate)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.EntryFundingRate)))
+			i--
+			dAtA[i] = 0x3a
+		}
+		if len(x.Margin) > 0 {
+			i -= len(x.Margin)
+			copy(dAtA[i:], x.Margin)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Margin)))
+			i--
+			dAtA[i] = 0x32
+		}
 		if len(x.Quantity) > 0 {
 			i -= len(x.Quantity)
 			copy(dAtA[i:], x.Quantity)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Quantity)))
 			i--
-			dAtA[i] = 0x32
-		}
-		if x.SubAccountId != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.SubAccountId))
-			i--
-			dAtA[i] = 0x28
+			dAtA[i] = 0x2a
 		}
 		if len(x.Owner) > 0 {
 			i -= len(x.Owner)
@@ -1185,25 +1172,6 @@ func (x *fastReflection_Perpetual) ProtoMethods() *protoiface.Methods {
 				x.Owner = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 5:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SubAccountId", wireType)
-				}
-				x.SubAccountId = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.SubAccountId |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 6:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Quantity", wireType)
 				}
@@ -1234,6 +1202,70 @@ func (x *fastReflection_Perpetual) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.Quantity = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Margin", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Margin = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EntryFundingRate", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.EntryFundingRate = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -1735,16 +1767,15 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// key = owner + sub_account_id  + market_id
+// key = owner + market_id
 type PerpetualOwner struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Owner        string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
-	SubAccountId uint64 `protobuf:"varint,2,opt,name=sub_account_id,json=subAccountId,proto3" json:"sub_account_id,omitempty"`
-	MarketId     uint64 `protobuf:"varint,3,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	PerpetualId  uint64 `protobuf:"varint,4,opt,name=perpetual_id,json=perpetualId,proto3" json:"perpetual_id,omitempty"`
+	Owner       string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+	MarketId    uint64 `protobuf:"varint,2,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
+	PerpetualId uint64 `protobuf:"varint,3,opt,name=perpetual_id,json=perpetualId,proto3" json:"perpetual_id,omitempty"`
 }
 
 func (x *PerpetualOwner) Reset() {
@@ -1774,13 +1805,6 @@ func (x *PerpetualOwner) GetOwner() string {
 	return ""
 }
 
-func (x *PerpetualOwner) GetSubAccountId() uint64 {
-	if x != nil {
-		return x.SubAccountId
-	}
-	return 0
-}
-
 func (x *PerpetualOwner) GetMarketId() uint64 {
 	if x != nil {
 		return x.MarketId
@@ -1801,13 +1825,14 @@ type Perpetual struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id           uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	MarketId     uint64 `protobuf:"varint,2,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	EntryPrice   string `protobuf:"bytes,3,opt,name=entry_price,json=entryPrice,proto3" json:"entry_price,omitempty"`
-	Owner        string `protobuf:"bytes,4,opt,name=owner,proto3" json:"owner,omitempty"`
-	SubAccountId uint64 `protobuf:"varint,5,opt,name=sub_account_id,json=subAccountId,proto3" json:"sub_account_id,omitempty"`
+	Id         uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	MarketId   uint64 `protobuf:"varint,2,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
+	EntryPrice string `protobuf:"bytes,3,opt,name=entry_price,json=entryPrice,proto3" json:"entry_price,omitempty"`
+	Owner      string `protobuf:"bytes,4,opt,name=owner,proto3" json:"owner,omitempty"`
 	// quantity of the order
-	Quantity string `protobuf:"bytes,6,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Quantity         string `protobuf:"bytes,5,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Margin           string `protobuf:"bytes,6,opt,name=margin,proto3" json:"margin,omitempty"`
+	EntryFundingRate string `protobuf:"bytes,7,opt,name=entry_funding_rate,json=entryFundingRate,proto3" json:"entry_funding_rate,omitempty"`
 }
 
 func (x *Perpetual) Reset() {
@@ -1858,16 +1883,23 @@ func (x *Perpetual) GetOwner() string {
 	return ""
 }
 
-func (x *Perpetual) GetSubAccountId() uint64 {
-	if x != nil {
-		return x.SubAccountId
-	}
-	return 0
-}
-
 func (x *Perpetual) GetQuantity() string {
 	if x != nil {
 		return x.Quantity
+	}
+	return ""
+}
+
+func (x *Perpetual) GetMargin() string {
+	if x != nil {
+		return x.Margin
+	}
+	return ""
+}
+
+func (x *Perpetual) GetEntryFundingRate() string {
+	if x != nil {
+		return x.EntryFundingRate
 	}
 	return ""
 }
@@ -1923,51 +1955,56 @@ var file_elys_clob_perpetual_proto_rawDesc = []byte{
 	0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa6, 0x01, 0x0a, 0x0e, 0x50, 0x65, 0x72, 0x70,
+	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x80, 0x01, 0x0a, 0x0e, 0x50, 0x65, 0x72, 0x70,
 	0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x77, 0x6e, 0x65, 0x72, 0x12, 0x2e, 0x0a, 0x05, 0x6f, 0x77,
 	0x6e, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63,
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72,
-	0x69, 0x6e, 0x67, 0x52, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x12, 0x24, 0x0a, 0x0e, 0x73, 0x75,
-	0x62, 0x5f, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x04, 0x52, 0x0c, 0x73, 0x75, 0x62, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x64,
-	0x12, 0x1b, 0x0a, 0x09, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x08, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x49, 0x64, 0x12, 0x21, 0x0a,
-	0x0c, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x0b, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x49, 0x64,
-	0x22, 0xb1, 0x02, 0x0a, 0x09, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x12, 0x0e,
-	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1b,
-	0x0a, 0x09, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x04, 0x52, 0x08, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x49, 0x64, 0x12, 0x52, 0x0a, 0x0b, 0x65,
-	0x6e, 0x74, 0x72, 0x79, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
-	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x44, 0x65, 0x63, 0x52, 0x0a, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12,
-	0x2e, 0x0a, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18,
-	0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65,
-	0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x12,
-	0x24, 0x0a, 0x0e, 0x73, 0x75, 0x62, 0x5f, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x69,
-	0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x73, 0x75, 0x62, 0x41, 0x63, 0x63, 0x6f,
-	0x75, 0x6e, 0x74, 0x49, 0x64, 0x12, 0x4d, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74,
-	0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
-	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
-	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e,
-	0x74, 0x69, 0x74, 0x79, 0x22, 0x49, 0x0a, 0x10, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
-	0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x1b, 0x0a, 0x09, 0x6d, 0x61, 0x72, 0x6b,
-	0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x6d, 0x61, 0x72,
-	0x6b, 0x65, 0x74, 0x49, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x42,
-	0x90, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f,
-	0x62, 0x42, 0x0e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x2a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0xa2,
-	0x02, 0x03, 0x45, 0x43, 0x58, 0xaa, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c, 0x6f,
-	0x62, 0xca, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02, 0x15,
-	0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
-	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6c,
-	0x6f, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x69, 0x6e, 0x67, 0x52, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x12, 0x1b, 0x0a, 0x09, 0x6d, 0x61,
+	0x72, 0x6b, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x6d,
+	0x61, 0x72, 0x6b, 0x65, 0x74, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x70, 0x65, 0x72, 0x70, 0x65,
+	0x74, 0x75, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0b, 0x70,
+	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x49, 0x64, 0x22, 0x9f, 0x03, 0x0a, 0x09, 0x50,
+	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x6d, 0x61, 0x72, 0x6b,
+	0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x6d, 0x61, 0x72,
+	0x6b, 0x65, 0x74, 0x49, 0x64, 0x12, 0x4c, 0x0a, 0x0b, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x5f, 0x70,
+	0x72, 0x69, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0a, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x50, 0x72,
+	0x69, 0x63, 0x65, 0x12, 0x2e, 0x0a, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x05, 0x6f, 0x77,
+	0x6e, 0x65, 0x72, 0x12, 0x47, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49,
+	0x6e, 0x74, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x43, 0x0a, 0x06,
+	0x6d, 0x61, 0x72, 0x67, 0x69, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde,
+	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
+	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x06, 0x6d, 0x61, 0x72, 0x67, 0x69,
+	0x6e, 0x12, 0x59, 0x0a, 0x12, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x5f, 0x66, 0x75, 0x6e, 0x64, 0x69,
+	0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x10, 0x65, 0x6e, 0x74, 0x72,
+	0x79, 0x46, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x61, 0x74, 0x65, 0x22, 0x49, 0x0a, 0x10,
+	0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72,
+	0x12, 0x1b, 0x0a, 0x09, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x08, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x49, 0x64, 0x12, 0x18, 0x0a,
+	0x07, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x42, 0x90, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x42, 0x0e, 0x50, 0x65, 0x72, 0x70, 0x65,
+	0x74, 0x75, 0x61, 0x6c, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2a, 0x67, 0x69, 0x74,
+	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
+	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0xa2, 0x02, 0x03, 0x45, 0x43, 0x58, 0xaa, 0x02, 0x09,
+	0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c, 0x6f, 0x62, 0xca, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73,
+	0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02, 0x15, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f,
+	0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a,
+	0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6c, 0x6f, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (

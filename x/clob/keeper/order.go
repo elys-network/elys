@@ -6,10 +6,11 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-func (k Keeper) GetPerpetualOrder(ctx sdk.Context, marketId uint64, orderType types.OrderType, price math.LegacyDec, blockHeight uint64) (types.PerpetualOrder, error) {
+func (k Keeper) GetPerpetualOrder(ctx sdk.Context, marketId uint64, orderType types.OrderType, price math.Dec, blockHeight uint64) (types.PerpetualOrder, error) {
 	key := types.GetPerpetualOrderKey(marketId, orderType, price, blockHeight)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
@@ -82,7 +83,7 @@ func (k Keeper) GetSellOrderIterator(ctx sdk.Context, marketId uint64) storetype
 	return storetypes.KVStorePrefixIterator(store, []byte{})
 }
 
-func (k Keeper) GetHighestBuyPrice(ctx sdk.Context, marketId uint64) math.LegacyDec {
+func (k Keeper) GetHighestBuyPrice(ctx sdk.Context, marketId uint64) math.Dec {
 	iterator := k.GetBuyOrderIterator(ctx, marketId)
 
 	defer iterator.Close()
@@ -92,10 +93,10 @@ func (k Keeper) GetHighestBuyPrice(ctx sdk.Context, marketId uint64) math.Legacy
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		return val.Price
 	}
-	return math.LegacyZeroDec()
+	return utils.ZeroDec
 }
 
-func (k Keeper) GetLowestSellPrice(ctx sdk.Context, marketId uint64) math.LegacyDec {
+func (k Keeper) GetLowestSellPrice(ctx sdk.Context, marketId uint64) math.Dec {
 	iterator := k.GetSellOrderIterator(ctx, marketId)
 
 	defer iterator.Close()
@@ -105,5 +106,13 @@ func (k Keeper) GetLowestSellPrice(ctx sdk.Context, marketId uint64) math.Legacy
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		return val.Price
 	}
-	return math.LegacyZeroDec()
+	return utils.ZeroDec
+}
+
+func (k Keeper) GetMidPrice(ctx sdk.Context, marketId uint64) (math.Dec, error) {
+	sumPrice, err := k.GetLowestSellPrice(ctx, marketId).Add(k.GetLowestSellPrice(ctx, marketId))
+	if err != nil {
+		return utils.ZeroDec, err
+	}
+	return sumPrice.Quo(math.NewDecFromInt64(2))
 }

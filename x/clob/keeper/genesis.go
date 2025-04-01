@@ -22,9 +22,9 @@ func InitGenesis(ctx sdk.Context, k Keeper, data types.GenesisState) {
 	for _, v := range data.PerpetualOwners {
 		k.SetPerpetualOwner(ctx, v)
 	}
-	for _, v := range data.MarketPrices {
-		k.SetMarketPrice(ctx, v.MarketId, v.LastPrice, false)
-		k.SetMarketPrice(ctx, v.MarketId, v.LastPrice, true)
+	for _, v := range data.LastMarketPrices {
+		k.SetLastMarketPrice(ctx, v.MarketId, v.LastPrice, false)
+		k.SetLastMarketPrice(ctx, v.MarketId, v.LastPrice, true)
 	}
 	for _, v := range data.PerpetualCounters {
 		k.setPerpetualCounter(ctx, *v)

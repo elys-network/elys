@@ -6,6 +6,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/clob/types"
 )
 
@@ -77,49 +78,50 @@ func (k Keeper) CheckPerpetualMarketAlreadyExists(ctx sdk.Context, baseDenom, qu
 }
 
 // First it checks transient store and then it checks KVstore
-func (k Keeper) GetMarketPrice(ctx sdk.Context, id uint64) math.LegacyDec {
-	store := runtime.KVStoreAdapter(k.transientStoreService.OpenTransientStore(ctx))
-	key := types.GetMarketPriceKey(id)
-	b := store.Get(key)
+func (k Keeper) GetLastMarketPrice(ctx sdk.Context, id uint64) math.Dec {
+	tStore := runtime.KVStoreAdapter(k.transientStoreService.OpenTransientStore(ctx))
+	key := types.GetLastMarketPriceKey(id)
+	b := tStore.Get(key)
 	if b == nil {
-		store = runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+		store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 		b = store.Get(key)
 		if b == nil {
-			return math.LegacyZeroDec()
+			return utils.ZeroDec
 		}
+		tStore.Set(key, b)
 	}
 
-	var v types.MarketPrice
+	var v types.LastMarketPrice
 	k.cdc.MustUnmarshal(b, &v)
 	return v.LastPrice
 }
 
-func (k Keeper) SetMarketPrice(ctx sdk.Context, id uint64, lastPrice math.LegacyDec, permanent bool) {
-	store := runtime.KVStoreAdapter(k.transientStoreService.OpenTransientStore(ctx))
-	key := types.GetMarketPriceKey(id)
-	v := types.MarketPrice{
+func (k Keeper) SetLastMarketPrice(ctx sdk.Context, id uint64, lastPrice math.Dec, set bool) {
+	tStore := runtime.KVStoreAdapter(k.transientStoreService.OpenTransientStore(ctx))
+	key := types.GetLastMarketPriceKey(id)
+	v := types.LastMarketPrice{
 		MarketId:  id,
 		LastPrice: lastPrice,
 	}
 	b := k.cdc.MustMarshal(&v)
-	store.Set(key, b)
+	tStore.Set(key, b)
 
-	if permanent {
-		store = runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	if set {
+		store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 		store.Set(key, b)
 	}
 }
 
-func (k Keeper) GetAllMarketPrice(ctx sdk.Context) []types.MarketPrice {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.MarketPricePrefix)
+func (k Keeper) GetAllLastMarketPrice(ctx sdk.Context) []types.LastMarketPrice {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LastMarketPricePrefix)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
-	var list []types.MarketPrice
+	var list []types.LastMarketPrice
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.MarketPrice
+		var val types.LastMarketPrice
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}

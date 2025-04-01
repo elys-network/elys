@@ -1,7 +1,9 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/utils"
 )
 
 func (perpetualOwner PerpetualOwner) GetOwnerAccAddress() sdk.AccAddress {
@@ -27,4 +29,12 @@ func (perpetual Perpetual) IsShort() bool {
 
 func (perpetual Perpetual) IsZero() bool {
 	return perpetual.Quantity.IsZero()
+}
+
+func (perpetual Perpetual) QunatityDec() math.Dec {
+	return utils.IntToDec(perpetual.Quantity)
+}
+
+func (perpetual Perpetual) GetEntryValue() (math.Dec, error) {
+	return perpetual.QunatityDec().Mul(perpetual.EntryPrice)
 }

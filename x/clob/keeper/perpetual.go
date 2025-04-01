@@ -1,50 +1,14 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/clob/types"
 )
-
-func (k Keeper) GetPerpetualOwner(ctx sdk.Context, subAccountId uint64, owner sdk.AccAddress, marketId uint64) (types.PerpetualOwner, bool) {
-	key := types.GetPerpetualOwnerKey(subAccountId, owner, marketId)
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-
-	b := store.Get(key)
-	if b == nil {
-		return types.PerpetualOwner{}, false
-	}
-
-	var v types.PerpetualOwner
-	k.cdc.MustUnmarshal(b, &v)
-	return v, true
-}
-
-func (k Keeper) GetAllSubAccountPerpetuals(ctx sdk.Context) []types.PerpetualOwner {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PerpetualOwnerPrefix)
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	var list []types.PerpetualOwner
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.PerpetualOwner
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-
-	return list
-}
-
-func (k Keeper) SetPerpetualOwner(ctx sdk.Context, v types.PerpetualOwner) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualOwnerKey(v.SubAccountId, v.GetOwnerAccAddress(), v.MarketId)
-	b := k.cdc.MustMarshal(&v)
-	store.Set(key, b)
-}
 
 func (k Keeper) GetPerpetual(ctx sdk.Context, marketId, id uint64) (types.Perpetual, error) {
 	key := types.GetPerpetualKey(marketId, id)
@@ -90,50 +54,76 @@ func (k Keeper) DeletePerpetual(ctx sdk.Context, p types.Perpetual) {
 	store.Delete(key)
 }
 
-func (k Keeper) GetAndUpdatePerpetualCounter(ctx sdk.Context, marketId uint64) uint64 {
-	key := types.GetPerpetualCounterKey(marketId)
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+func (k Keeper) GetPerpetualValue(ctx sdk.Context, perpetual types.Perpetual) (math.Dec, error) {
+	midPrice, err := k.GetMidPrice(ctx, perpetual.MarketId)
+	if err != nil {
+		return math.Dec{}, err
+	}
+	return midPrice.Mul(utils.IntToDec(perpetual.Quantity))
+}
 
-	b := store.Get(key)
-	if b == nil {
-		v := types.PerpetualCounter{
-			MarketId: marketId,
-			Counter:  2,
+func (k Keeper) GetMaintenanceMargin(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) (math.Dec, error) {
+	currentValue, err := k.GetPerpetualValue(ctx, perpetual)
+	if err != nil {
+		return math.Dec{}, err
+	}
+	return market.MaintenanceMarginRatio.Mul(currentValue)
+}
+
+// GetCurrentLeverage currentValue / balanceValue
+func (k Keeper) GetCurrentLeverage(ctx sdk.Context, perpetual types.Perpetual) (math.Dec, error) {
+	currentValue, err := k.GetPerpetualValue(ctx, perpetual)
+	if err != nil {
+		return math.Dec{}, err
+	}
+	subaccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), perpetual.MarketId)
+	if err != nil {
+		return math.Dec{}, err
+	}
+	balanceValue, err := k.GetAvailableBalanceValue(ctx, subaccount)
+	if err != nil {
+		return math.Dec{}, err
+	}
+	return currentValue.Quo(balanceValue)
+}
+
+// GetLiquidationPrice
+// Long: Liquidation Price = Entry Price × (1 - 1/Leverage) / (1 - Maintenance Margin Rate)
+// Short:Liquidation Price = Entry Price × (1 + 1/Leverage) / (1 + Maintenance Margin Rate)
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) (math.Dec, error) {
+	leverage, err := k.GetCurrentLeverage(ctx, perpetual)
+	if err != nil {
+		return math.Dec{}, err
+	}
+	num_sub, err := utils.OneDec.Quo(leverage)
+	if err != nil {
+		return math.Dec{}, err
+	}
+	num, err := utils.OneDec.Sub(num_sub)
+	if err != nil {
+		return math.Dec{}, err
+	}
+	den, err := utils.OneDec.Sub(market.MaintenanceMarginRatio)
+	if err != nil {
+		return math.Dec{}, err
+	}
+	if perpetual.IsShort() {
+		num_add, err := utils.OneDec.Quo(leverage)
+		if err != nil {
+			return math.Dec{}, err
 		}
-		b = k.cdc.MustMarshal(&v)
-		store.Set(key, b)
-		return 1
+		num, err = utils.OneDec.Add(num_add)
+		if err != nil {
+			return math.Dec{}, err
+		}
+		den, err = utils.OneDec.Add(market.MaintenanceMarginRatio)
+		if err != nil {
+			return math.Dec{}, err
+		}
 	}
-
-	var v types.PerpetualCounter
-	k.cdc.MustUnmarshal(b, &v)
-	result := v.Counter
-	v.Counter = v.Counter + 1
-	b = k.cdc.MustMarshal(&v)
-	store.Set(key, b)
-	return result
-}
-
-func (k Keeper) GetAllPerpetualCounters(ctx sdk.Context) []types.Perpetual {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PerpetualCounterPrefix)
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	var list []types.Perpetual
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.Perpetual
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
+	result_mult, err := num.Quo(den)
+	if err != nil {
+		return math.Dec{}, err
 	}
-
-	return list
-}
-
-func (k Keeper) setPerpetualCounter(ctx sdk.Context, p types.PerpetualCounter) {
-	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualCounterKey(p.MarketId)
-	b := k.cdc.MustMarshal(&p)
-	store.Set(key, b)
+	return perpetual.EntryPrice.Mul(result_mult)
 }

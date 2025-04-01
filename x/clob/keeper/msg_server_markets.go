@@ -5,6 +5,7 @@ import (
 	"cosmossdk.io/math"
 	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/clob/types"
 )
 
@@ -18,22 +19,22 @@ func (k Keeper) CreatePerpetualMarket(goCtx context.Context, msg *types.MsgCreat
 
 	newMarketId := k.CountAllPerpetualMarket(ctx) + 1
 	perpetualMarket := types.PerpetualMarket{
-		Id:                     newMarketId,
-		BaseDenom:              msg.BaseDenom,
-		QuoteDenom:             msg.QuoteDenom,
-		InitialMarginRatio:     msg.InitialMarginRatio,
-		MaintenanceMarginRatio: msg.MaintenanceMarginRatio,
-		MakerFeeRate:           msg.MakerFeeRate,
-		TakerFeeRate:           msg.TakerFeeRate,
-		RelayerFeeShareRate:    msg.RelayerFeeShareRate,
-		Status:                 types.PerpetualMarketStatus_MARKET_STATUS_ACTIVE,
-		MinPriceTickSize:       msg.MinPriceTickSize,
-		MinQuantityTickSize:    msg.MinQuantityTickSize,
-		MinNotional:            msg.MinNotional,
-		Admin:                  msg.Creator,
-		AllowedCollateral:      msg.AllowedCollateral,
-		TotalLong:              math.ZeroInt(),
-		TotalShort:             math.ZeroInt(),
+		Id:                      newMarketId,
+		BaseDenom:               msg.BaseDenom,
+		QuoteDenom:              msg.QuoteDenom,
+		InitialMarginRatio:      msg.InitialMarginRatio,
+		MaintenanceMarginRatio:  msg.MaintenanceMarginRatio,
+		MakerFeeRate:            msg.MakerFeeRate,
+		TakerFeeRate:            msg.TakerFeeRate,
+		LiquidationFeeShareRate: msg.LiquidationFeeShareRate,
+		Status:                  types.PerpetualMarketStatus_MARKET_STATUS_ACTIVE,
+		MinPriceTickSize:        msg.MinPriceTickSize,
+		MinQuantityTickSize:     msg.MinQuantityTickSize,
+		MinNotional:             msg.MinNotional,
+		Admin:                   msg.Creator,
+		AllowedCollateral:       msg.AllowedCollateral,
+		TotalOpen:               math.ZeroInt(),
+		CurrentFundingRate:      utils.ZeroDec,
 	}
 
 	k.SetPerpetualMarket(ctx, perpetualMarket)

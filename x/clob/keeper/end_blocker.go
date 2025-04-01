@@ -10,7 +10,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 	allMarkets := k.GetAllPerpetualMarket(ctx)
 
 	for _, market := range allMarkets {
-		marketPrice := k.GetMarketPrice(ctx, market.Id)
+		marketPrice := k.GetLastMarketPrice(ctx, market.Id)
 
 		{
 			fmt.Println("Buy Book: ")
@@ -45,9 +45,9 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 			return err
 		}
 
-		marketPrice = k.GetMarketPrice(ctx, market.Id)
+		marketPrice = k.GetLastMarketPrice(ctx, market.Id)
 		if !marketPrice.IsZero() {
-			k.SetMarketPrice(ctx, market.Id, marketPrice, true)
+			k.SetLastMarketPrice(ctx, market.Id, marketPrice, true)
 		}
 	}
 	return nil

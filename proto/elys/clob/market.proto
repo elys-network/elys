@@ -22,31 +22,31 @@ message PerpetualMarket {
   string quote_denom = 3;
   string initial_margin_ratio = 4 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
   string maintenance_margin_ratio = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
   // maker_fee_rate defines the maker fee rate of a derivative market
   string maker_fee_rate = 6 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
   // taker_fee_rate defines the taker fee rate of a derivative market
   string taker_fee_rate = 7 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
   // relayer_fee_share_rate defines the percentage of the transaction fee shared
   // with the relayer in a derivative market
-  string relayer_fee_share_rate = 8 [
+  string liquidation_fee_share_rate = 8 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
   // Status of the market
@@ -55,7 +55,7 @@ message PerpetualMarket {
   // required for orders in the market
   string min_price_tick_size = 10 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
   // min_quantity_tick_size defines the minimum tick size of the quantity
@@ -69,7 +69,7 @@ message PerpetualMarket {
   // orders in the market
   string min_notional = 17 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
 
@@ -78,34 +78,36 @@ message PerpetualMarket {
 
   repeated string allowed_collateral = 19;
 
-  string total_long = 20 [
+  string total_open = 20 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string total_short = 21 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+  uint64 counter = 21;
+  string current_funding_rate = 22 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
-  uint64 counter = 22;
+  uint64 twap_blocks = 23;
 }
 
-message MarketPrice {
+message LastMarketPrice {
   uint64 market_id = 1;
   string last_price = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
-  string best_buy_price = 3 [
+}
+
+message TwapPrice {
+  uint64 market_id = 1;
+  uint64 block = 2;
+  string price = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
-  string best_sell_price = 4 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  uint64 timestamp = 4;
 }

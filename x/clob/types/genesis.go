@@ -8,7 +8,7 @@ func DefaultGenesis() *GenesisState {
 		Perpetuals:       nil,
 		PerpetualOwners:  nil,
 		OrderBooks:       nil,
-		MarketPrices:     nil,
+		LastMarketPrices: nil,
 	}
 }
 
