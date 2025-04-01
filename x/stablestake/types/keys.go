@@ -15,7 +15,7 @@ const (
 
 var (
 	DebtPrefixKey        = []byte{0x01}
-	InterestPrefixKey    = []byte{0x02}
+	InterestPrefixKey    = []byte{0x02} // deprecated
 	ParamKeyPrefix       = []byte{0x03}
 	AmmPoolKeyPrefix     = []byte{0x04}
 	PoolPrefixKey        = []byte{0x05}

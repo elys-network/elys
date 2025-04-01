@@ -5,7 +5,7 @@ import (
 )
 
 func (m Migrator) V10Migration(ctx sdk.Context) error {
-	if ctx.ChainID() == "elys-mainnet" {
+	if ctx.ChainID() == "elys-1" {
 		return nil
 	}
 	m.keeper.V10Migrate(ctx)
