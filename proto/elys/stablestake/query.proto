@@ -6,6 +6,8 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/stablestake/params.proto";
 import "elys/stablestake/pool.proto";
+import "elys/stablestake/types.proto";
+import "elys/stablestake/debt.proto";
 import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
@@ -40,6 +42,16 @@ service Query {
   rpc AllAmmPools(QueryAllAmmPoolsRequest) returns (QueryAllAmmPoolsResponse) {
     option (google.api.http).get =
         "/elys-network/elys/stablestake/all-amm-pools";
+  }
+
+  rpc Debt(QueryDebtRequest) returns (QueryDebtResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/stablestake/debt/{pool_id}/{address}";
+  }
+
+  rpc GetInterest(QueryGetInterestRequest) returns (QueryGetInterestResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/stablestake/interest/{pool_id}/{block_height}";
   }
 }
 
@@ -170,4 +182,20 @@ message PoolResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+}
+
+message QueryDebtRequest {
+  uint64 pool_id = 1;
+  string address = 2;
+}
+
+message QueryDebtResponse { Debt debt = 1 [ (gogoproto.nullable) = false ]; }
+
+message QueryGetInterestRequest {
+  uint64 pool_id = 1;
+  uint64 block_height = 2;
+}
+
+message QueryGetInterestResponse {
+  InterestBlock interest_block = 1 [ (gogoproto.nullable) = false ];
 }

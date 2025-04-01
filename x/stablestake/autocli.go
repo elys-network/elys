@@ -45,6 +45,18 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "pools",
 					Short:     "Query all pools",
 				},
+				{
+					RpcMethod:      "Debt",
+					Use:            "debt [pool-id] [address]",
+					Short:          "Query debt",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "address"}},
+				},
+				{
+					RpcMethod:      "GetInterest",
+					Use:            "interest [pool-id] [block-height]",
+					Short:          "Query interest",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}, {ProtoField: "block_height"}},
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{

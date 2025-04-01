@@ -212,6 +212,18 @@ func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime
 	return newInterest
 }
 
+func (k Keeper) GetInterestAtHeight(ctx sdk.Context, height uint64, poolId uint64) types.InterestBlock {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
+	key := sdk.Uint64ToBigEndian(height)
+	if store.Has(key) {
+		interest := types.InterestBlock{}
+		bz := store.Get(key)
+		k.cdc.MustUnmarshal(bz, &interest)
+		return interest
+	}
+	return types.InterestBlock{}
+}
+
 func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt, borrowingForPool uint64) types.Debt {
 	pool, found := k.GetPool(ctx, debt.PoolId)
 	if !found {
