@@ -98,7 +98,7 @@ func (k Keeper) DeleteInterestForPool(ctx sdk.Context, delBlock int64, poolId ui
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
 	key := sdk.Uint64ToBigEndian(uint64(delBlock))
 	if store.Has(key) {
-		store.Delete([]byte(key))
+		store.Delete(key)
 	}
 }
 
