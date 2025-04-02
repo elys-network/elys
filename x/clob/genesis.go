@@ -16,6 +16,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, v := range genState.PerpetualMarkets {
 		k.SetPerpetualMarket(ctx, v)
 	}
+	for _, v := range genState.Perpetuals {
+		k.SetPerpetual(ctx, v)
+	}
 	for _, v := range genState.PerpetualOwners {
 		k.SetPerpetualOwner(ctx, v)
 	}
@@ -24,6 +27,12 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	}
 	for _, v := range genState.TwapPrices {
 		k.SetTwapPrices(ctx, *v)
+	}
+	for _, v := range genState.PerpetualCounters {
+		k.SetPerpetualCounter(ctx, *v)
+	}
+	for _, v := range genState.FundingRates {
+		k.SetFundingRate(ctx, *v)
 	}
 }
 

@@ -49,7 +49,7 @@ func (k Keeper) GetAllPerpetualCounters(ctx sdk.Context) []types.Perpetual {
 	return list
 }
 
-func (k Keeper) setPerpetualCounter(ctx sdk.Context, p types.PerpetualCounter) {
+func (k Keeper) SetPerpetualCounter(ctx sdk.Context, p types.PerpetualCounter) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPerpetualCounterKey(p.MarketId)
 	b := k.cdc.MustMarshal(&p)
