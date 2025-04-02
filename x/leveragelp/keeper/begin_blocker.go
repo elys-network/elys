@@ -71,11 +71,9 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *types.Position, pool types.Pool) (isHealthy, closeAttempted bool, health math.LegacyDec, err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			if msg, ok := r.(string); ok {
-				ctx.Logger().Error(msg)
-				err = fmt.Errorf("function panicked: %v", r) // Capture the panic as an error
-				closeAttempted = true
-			}
+			err = fmt.Errorf("CheckAndLiquidateUnhealthyPosition (leverageLP) function panicked: %v", r) // Capture the panic as an error
+			closeAttempted = true
+			ctx.Logger().Error(err.Error())
 		}
 	}()
 	h, err := k.GetPositionHealth(ctx, *position)
@@ -119,10 +117,8 @@ func (k Keeper) CheckAndLiquidateUnhealthyPosition(ctx sdk.Context, position *ty
 func (k Keeper) CheckAndCloseAtStopLoss(ctx sdk.Context, position *types.Position, pool types.Pool, ammPool ammtypes.Pool) (underStopLossPrice, closeAttempted bool, err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			if msg, ok := r.(string); ok {
-				ctx.Logger().Error(msg)
-				err = fmt.Errorf("function panicked: %v", r) // Capture the panic as an error
-			}
+			err = fmt.Errorf("CheckAndCloseAtStopLoss (leverageLP) function panicked: %v", r) // Capture the panic as an error
+			ctx.Logger().Error(err.Error())
 		}
 	}()
 	h, err := k.GetPositionHealth(ctx, *position)

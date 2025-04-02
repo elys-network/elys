@@ -122,6 +122,11 @@ func (suite *KeeperTestSuite) TestCloseOnUnableToRepay() {
 	}
 
 	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
+	debtRes, _ := suite.app.StablestakeKeeper.Debt(suite.ctx, &types.QueryDebtRequest{
+		Address: debt.GetOwnerAccount().String(),
+		PoolId:  1,
+	})
+	suite.Require().Equal(debt.Borrowed, debtRes.Debt.Borrowed)
 	suite.app.StablestakeKeeper.CloseOnUnableToRepay(suite.ctx, debt.GetOwnerAccount(), 1, 1)
 
 	r := suite.app.StablestakeKeeper.GetAmmPool(suite.ctx, 1)
@@ -152,9 +157,55 @@ func (suite *KeeperTestSuite) TestMove() {
 		InterestRate: math.LegacyNewDec(10),
 		BlockTime:    suite.ctx.BlockTime().Unix(),
 		BlockHeight:  uint64(suite.ctx.BlockHeight()),
+		PoolId:       uint64(types.UsdcPoolId),
 	}
-	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, 1, interest.BlockHeight, interest)
+	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, interest)
 	suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
+	suite.app.StablestakeKeeper.TestnetMigrate(suite.ctx)
 	interests := suite.app.StablestakeKeeper.GetAllInterest(suite.ctx)
-	suite.Require().Equal(uint64(types.UsdcPoolId), interests[0].PoolId)
+	suite.Require().Len(interests, 0)
+}
+
+func (suite *KeeperTestSuite) TestGetInterestAtHeight() {
+	i := types.InterestBlock{
+		InterestRate: math.LegacyNewDec(2),
+		BlockTime:    100,
+		BlockHeight:  1,
+		PoolId:       1,
+	}
+	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, i)
+	interestBlock := suite.app.StablestakeKeeper.GetInterestAtHeight(suite.ctx, 1, 1)
+	suite.Equal(i.InterestRate, interestBlock.InterestRate)
+	suite.Equal(i.BlockTime, interestBlock.BlockTime)
+	suite.Equal(i.BlockHeight, interestBlock.BlockHeight)
+	suite.Equal(i.PoolId, interestBlock.PoolId)
+
+	interestB, _ := suite.app.StablestakeKeeper.GetInterest(suite.ctx, &types.QueryGetInterestRequest{
+		PoolId:      1,
+		BlockHeight: 1,
+	})
+	suite.Equal(i.InterestRate, interestB.InterestBlock.InterestRate)
+	suite.Equal(i.BlockTime, interestB.InterestBlock.BlockTime)
+}
+
+func (suite *KeeperTestSuite) TestDeleteInterestBlock() {
+	i := types.InterestBlock{
+		InterestRate: math.LegacyNewDec(2),
+		BlockTime:    100,
+		BlockHeight:  1,
+		PoolId:       1,
+	}
+	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, i)
+	interestBlock := suite.app.StablestakeKeeper.GetInterestAtHeight(suite.ctx, 1, 1)
+	suite.Equal(i.InterestRate, interestBlock.InterestRate)
+	suite.Equal(i.BlockTime, interestBlock.BlockTime)
+	suite.Equal(i.BlockHeight, interestBlock.BlockHeight)
+	suite.Equal(i.PoolId, interestBlock.PoolId)
+	suite.app.StablestakeKeeper.DeleteInterestForPool(suite.ctx, 1, 1)
+	interestBlock = suite.app.StablestakeKeeper.GetInterestAtHeight(suite.ctx, 1, 1)
+	suite.Equal(interestBlock, types.InterestBlock{})
+}
+
+func (suite *KeeperTestSuite) TestTestnetMigrate() {
+	suite.app.StablestakeKeeper.TestnetMigrate(suite.ctx)
 }

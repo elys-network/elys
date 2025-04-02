@@ -21,9 +21,11 @@ func CreateNInterest(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.Int
 	for i := range items {
 		items[i].InterestRate = sdkmath.LegacyNewDec(int64(i))
 		items[i].BlockTime = int64(i * 10)
+		items[i].PoolId = 1
 
 		curBlock++
-		keeper.SetInterestForPool(ctx, 1, uint64(curBlock), items[i])
+		items[i].BlockHeight = uint64(curBlock)
+		keeper.SetInterestForPool(ctx, items[i])
 	}
 	return items, curBlock
 }

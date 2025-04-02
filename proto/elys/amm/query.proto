@@ -48,7 +48,8 @@ service Query {
   // Queries a list of SwapEstimation items, uses swap exact amount out route.
   rpc SwapEstimationExactAmountOut(QuerySwapEstimationExactAmountOutRequest)
       returns (QuerySwapEstimationExactAmountOutResponse) {
-    option (google.api.http).get = "/elys-network/elys/amm/swap_estimation_exact_amount_out";
+    option (google.api.http).get =
+        "/elys-network/elys/amm/swap_estimation_exact_amount_out";
   }
   // Queries JoinPool estimation
   rpc JoinPoolEstimation(QueryJoinPoolEstimationRequest)
@@ -187,6 +188,8 @@ message QueryJoinPoolEstimationResponse {
   string weight_balance_ratio = 4;
   string swap_fee = 5;
   string taker_fee = 6;
+  cosmos.base.v1beta1.Coin weight_balance_reward_amount = 7
+      [ (gogoproto.nullable) = false ];
 }
 
 message QueryExitPoolEstimationRequest {
@@ -206,6 +209,8 @@ message QueryExitPoolEstimationResponse {
   string slippage = 3;
   string swap_fee = 4;
   string taker_fee = 5;
+  cosmos.base.v1beta1.Coin weight_balance_reward_amount = 6
+      [ (gogoproto.nullable) = false ];
 }
 
 message QuerySwapEstimationResponse {
@@ -310,6 +315,8 @@ message QuerySwapEstimationByDenomResponse {
   string weight_balance_ratio = 8;
   string slippage = 9;
   string price_impact = 10;
+  cosmos.base.v1beta1.Coin weight_balance_reward_amount = 11
+      [ (gogoproto.nullable) = false ];
 }
 
 message QueryAMMPriceRequest {

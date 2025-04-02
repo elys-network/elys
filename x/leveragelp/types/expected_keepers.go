@@ -27,7 +27,7 @@ type AmmKeeper interface {
 	// Get all pools
 	GetAllPool(sdk.Context) []ammtypes.Pool
 	ExitPoolEst(ctx sdk.Context, poolId uint64, shareInAmount math.Int, tokenOutDenom string) (exitCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, slippage elystypes.Dec34, swapFee elystypes.Dec34, takerFeesFinal elystypes.Dec34, err error)
-	JoinPoolEst(ctx sdk.Context, poolId uint64, tokenInMaxs sdk.Coins) (tokensIn sdk.Coins, sharesOut math.Int, slippage elystypes.Dec34, weightBalanceBonus elystypes.Dec34, swapFee elystypes.Dec34, takerFeesFinal elystypes.Dec34, err error)
+	JoinPoolEst(ctx sdk.Context, poolId uint64, tokenInMaxs sdk.Coins) (tokensIn sdk.Coins, sharesOut math.Int, slippage elystypes.Dec34, weightBalanceBonus elystypes.Dec34, swapFee elystypes.Dec34, takerFeesFinal elystypes.Dec34, weightRewardAmount sdk.Coin, err error)
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
