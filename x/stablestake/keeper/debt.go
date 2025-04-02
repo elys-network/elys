@@ -377,12 +377,27 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 		}
 	}
 
-	params := k.GetParams(ctx)
+	pools := k.GetAllPools(ctx)
+	for _, pool := range pools {
+		k.DeletePool(ctx, pool.Id)
+	}
 
-	pool, _ := k.GetPool(ctx, types.UsdcPoolId)
-	balance := k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), pool.DepositDenom)
-	pool.TotalValue = totalValue.Add(balance.Amount)
-	pool.InterestRate = params.LegacyInterestRate
+	params := k.GetParams(ctx)
+	balance := k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), k.GetDepositDenom(ctx))
+	pool := types.Pool{
+		Id:                   types.UsdcPoolId,
+		DepositDenom:         k.GetDepositDenom(ctx),
+		InterestRateDecrease: params.LegacyInterestRateDecrease,
+		InterestRateIncrease: params.LegacyInterestRateIncrease,
+		HealthGainFactor:     params.LegacyHealthGainFactor,
+		MaxLeverageRatio:     params.LegacyMaxLeverageRatio,
+		MaxWithdrawRatio:     params.LegacyMaxWithdrawRatio,
+		InterestRateMax:      params.LegacyInterestRateMax,
+		InterestRateMin:      params.LegacyInterestRateMin,
+		InterestRate:         params.LegacyInterestRate,
+		TotalValue:           totalValue.Add(balance.Amount),
+	}
+
 	k.SetPool(ctx, pool)
 }
 
