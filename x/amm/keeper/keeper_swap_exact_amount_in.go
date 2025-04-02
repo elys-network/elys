@@ -37,6 +37,7 @@ func (k Keeper) InternalSwapExactAmountIn(
 		if r := recover(); r != nil {
 			tokenOutAmount = math.Int{}
 			err = fmt.Errorf("function SwapExactAmountIn failed due to an internal reason: %v", r)
+			ctx.Logger().Error(err.Error())
 		}
 	}()
 	params := k.GetParams(ctx)
