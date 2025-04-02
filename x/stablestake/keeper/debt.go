@@ -371,7 +371,7 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 		}
 		totalValue = totalValue.Add(debt.Borrowed)
 		if debt.InterestStacked.LT(debt.Borrowed) {
-			totalValue = totalValue.Add(debt.InterestStacked)
+			totalValue = totalValue.Add(debt.InterestStacked).Sub(debt.InterestPaid)
 		} else {
 			store.Delete(iterator.Key())
 		}
@@ -380,7 +380,8 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 	params := k.GetParams(ctx)
 
 	pool, _ := k.GetPool(ctx, types.UsdcPoolId)
-	pool.TotalValue = totalValue
+	balance := k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), pool.DepositDenom)
+	pool.TotalValue = totalValue.Add(balance.Amount)
 	pool.InterestRate = params.LegacyInterestRate
 	k.SetPool(ctx, pool)
 }
