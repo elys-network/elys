@@ -78,19 +78,19 @@ func (k Keeper) GetAllDebts(ctx sdk.Context) []types.Debt {
 	return debts
 }
 
-func (k Keeper) SetInterestForPool(ctx sdk.Context, poolId uint64, block uint64, interest types.InterestBlock) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(poolId))
-	if store.Has(sdk.Uint64ToBigEndian(block - 1)) {
+func (k Keeper) SetInterestForPool(ctx sdk.Context, interest types.InterestBlock) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetInterestKey(interest.PoolId))
+	if store.Has(sdk.Uint64ToBigEndian(interest.BlockHeight - 1)) {
 		lastBlock := types.InterestBlock{}
-		bz := store.Get(sdk.Uint64ToBigEndian(block - 1))
+		bz := store.Get(sdk.Uint64ToBigEndian(interest.BlockHeight - 1))
 		k.cdc.MustUnmarshal(bz, &lastBlock)
 		interest.InterestRate = interest.InterestRate.Add(lastBlock.InterestRate)
 
 		bz = k.cdc.MustMarshal(&interest)
-		store.Set(sdk.Uint64ToBigEndian(block), bz)
+		store.Set(sdk.Uint64ToBigEndian(interest.BlockHeight), bz)
 	} else {
 		bz := k.cdc.MustMarshal(&interest)
-		store.Set(sdk.Uint64ToBigEndian(block), bz)
+		store.Set(sdk.Uint64ToBigEndian(interest.BlockHeight), bz)
 	}
 }
 
@@ -383,6 +383,12 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 	pool.TotalValue = totalValue
 	pool.InterestRate = params.LegacyInterestRate
 	k.SetPool(ctx, pool)
+	k.SetInterestForPool(ctx, types.InterestBlock{
+		InterestRate: pool.InterestRate,
+		BlockTime:    ctx.BlockTime().Unix(),
+		BlockHeight:  uint64(ctx.BlockHeight()),
+		PoolId:       pool.Id,
+	})
 }
 
 func (k Keeper) MoveAllInterest(ctx sdk.Context) {
@@ -395,6 +401,13 @@ func (k Keeper) MoveAllInterest(ctx sdk.Context) {
 		k.cdc.MustUnmarshal(iterator.Value(), &interest)
 		store.Delete(iterator.Key())
 	}
+	pool, _ := k.GetPool(ctx, types.UsdcPoolId)
+	k.SetInterestForPool(ctx, types.InterestBlock{
+		InterestRate: pool.InterestRate,
+		BlockTime:    ctx.BlockTime().Unix(),
+		BlockHeight:  uint64(ctx.BlockHeight()),
+		PoolId:       pool.Id,
+	})
 }
 
 func (k Keeper) MoveAllDebt(ctx sdk.Context) {

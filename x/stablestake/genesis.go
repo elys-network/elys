@@ -15,7 +15,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 	// Set all the interests
 	for _, elem := range genState.InterestList {
-		k.SetInterestForPool(ctx, elem.PoolId, elem.BlockHeight, elem)
+		k.SetInterestForPool(ctx, elem)
 	}
 
 	// this line is used by starport scaffolding # genesis/module/init

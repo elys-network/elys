@@ -154,7 +154,7 @@ func (suite *KeeperTestSuite) TestMove() {
 		BlockHeight:  uint64(suite.ctx.BlockHeight()),
 		PoolId:       uint64(types.UsdcPoolId),
 	}
-	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, 1, interest.BlockHeight, interest)
+	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, interest)
 	suite.app.StablestakeKeeper.MoveAllInterest(suite.ctx)
 	suite.app.StablestakeKeeper.TestnetMigrate(suite.ctx)
 	interests := suite.app.StablestakeKeeper.GetAllInterest(suite.ctx)

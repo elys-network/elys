@@ -24,6 +24,11 @@ func (k Keeper) UpdateInterestForAllPools(ctx sdk.Context) {
 	for _, pool := range pools {
 		pool.InterestRate = k.InterestRateComputationForPool(ctx, pool)
 		k.SetPool(ctx, pool)
-		k.SetInterestForPool(ctx, pool.Id, uint64(ctx.BlockHeight()), types.InterestBlock{InterestRate: pool.InterestRate, BlockTime: ctx.BlockTime().Unix(), BlockHeight: uint64(ctx.BlockHeight())})
+		k.SetInterestForPool(ctx, types.InterestBlock{
+			InterestRate: pool.InterestRate,
+			BlockTime:    ctx.BlockTime().Unix(),
+			BlockHeight:  uint64(ctx.BlockHeight()),
+			PoolId:       pool.Id,
+		})
 	}
 }

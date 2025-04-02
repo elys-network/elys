@@ -23,7 +23,7 @@ func CreateNInterest(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.Int
 		items[i].BlockTime = int64(i * 10)
 
 		curBlock++
-		keeper.SetInterestForPool(ctx, 1, uint64(curBlock), items[i])
+		keeper.SetInterestForPool(ctx, items[i])
 	}
 	return items, curBlock
 }
