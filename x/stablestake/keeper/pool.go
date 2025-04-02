@@ -43,6 +43,11 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store.Set(types.GetPoolKey(pool.Id), b)
 }
 
+func (k Keeper) DeletePool(ctx sdk.Context, poolId uint64) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store.Delete(types.GetPoolKey(poolId))
+}
+
 func (k Keeper) GetPoolByDenom(ctx sdk.Context, denom string) (types.Pool, bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 

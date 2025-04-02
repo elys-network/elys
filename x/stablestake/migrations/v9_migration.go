@@ -12,6 +12,11 @@ func (m Migrator) V9Migration(ctx sdk.Context) error {
 		m.keeper.SetAmmPool(ctx, pool)
 	}
 
+	pools := m.keeper.GetAllPools(ctx)
+	for _, pool := range pools {
+		m.keeper.DeletePool(ctx, pool.Id)
+	}
+
 	m.keeper.MoveAllDebt(ctx)
 	m.keeper.MoveAllInterest(ctx)
 
