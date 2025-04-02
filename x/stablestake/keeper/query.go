@@ -76,3 +76,23 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, pool types.Pool) types.PoolResponse
 		BorrowRatio:          borrowRatio,
 	}
 }
+
+func (k Keeper) Debt(goCtx context.Context, req *types.QueryDebtRequest) (*types.QueryDebtResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	debt := k.GetDebt(ctx, sdk.MustAccAddressFromBech32(req.Address), req.PoolId)
+	return &types.QueryDebtResponse{Debt: debt}, nil
+}
+
+func (k Keeper) GetInterest(goCtx context.Context, req *types.QueryGetInterestRequest) (*types.QueryGetInterestResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	interest := k.GetInterestAtHeight(ctx, req.PoolId, req.BlockHeight)
+	return &types.QueryGetInterestResponse{InterestBlock: interest}, nil
+}
