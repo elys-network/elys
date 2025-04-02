@@ -29,6 +29,7 @@ func (k Keeper) JoinPoolNoSwap(
 			tokenIn = sdk.Coins{}
 			sharesOut = sdkmath.Int{}
 			err = fmt.Errorf("function JoinPoolNoSwap failed due to internal reason: %v", r)
+			ctx.Logger().Error(err.Error())
 		}
 	}()
 	// all pools handled within this method are pointer references, `JoinPool` directly updates the pools
