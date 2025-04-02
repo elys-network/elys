@@ -48,7 +48,8 @@ service Query {
   // Queries a list of SwapEstimation items, uses swap exact amount out route.
   rpc SwapEstimationExactAmountOut(QuerySwapEstimationExactAmountOutRequest)
       returns (QuerySwapEstimationExactAmountOutResponse) {
-    option (google.api.http).get = "/elys-network/elys/amm/swap_estimation_exact_amount_out";
+    option (google.api.http).get =
+        "/elys-network/elys/amm/swap_estimation_exact_amount_out";
   }
   // Queries JoinPool estimation
   rpc JoinPoolEstimation(QueryJoinPoolEstimationRequest)
@@ -203,6 +204,8 @@ message QueryJoinPoolEstimationResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  cosmos.base.v1beta1.Coin weight_balance_reward_amount = 7
+      [ (gogoproto.nullable) = false ];
 }
 
 message QueryExitPoolEstimationRequest {
@@ -238,6 +241,8 @@ message QueryExitPoolEstimationResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  cosmos.base.v1beta1.Coin weight_balance_reward_amount = 6
+      [ (gogoproto.nullable) = false ];
 }
 
 message QuerySwapEstimationResponse {
@@ -382,6 +387,8 @@ message QuerySwapEstimationByDenomResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  cosmos.base.v1beta1.Coin weight_balance_reward_amount = 11
+      [ (gogoproto.nullable) = false ];
 }
 
 message QueryAMMPriceRequest {
