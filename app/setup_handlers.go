@@ -62,9 +62,9 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
-			// if ctx.ChainID() == "elysicstestnet-1" {
-			// 	app.StablestakeKeeper.TestnetMigrate(ctx)
-			// }
+			if ctx.ChainID() == "elysicstestnet-1" {
+				app.StablestakeKeeper.TestnetMigrate(ctx)
+			}
 
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
