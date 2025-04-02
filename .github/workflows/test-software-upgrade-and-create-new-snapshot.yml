@@ -45,8 +45,13 @@ jobs:
 
       - name: Get latest tag
         run: |
-          LATEST_TAG=v2.3.0
-          LATEST_TAG_KEY=v2.3.0-testnet   
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            LATEST_TAG_KEY=${LATEST_TAG}-mainnet
+          else
+            LATEST_TAG_KEY=${LATEST_TAG}-testnet
+          fi   
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
           echo "LATEST_TAG_KEY=$LATEST_TAG_KEY" >> $GITHUB_ENV
           echo "Latest tag: $LATEST_TAG"
