@@ -77,54 +77,152 @@ func (k Keeper) CheckPerpetualMarketAlreadyExists(ctx sdk.Context, baseDenom, qu
 	return false
 }
 
-// First it checks transient store and then it checks KVstore
-func (k Keeper) GetLastMarketPrice(ctx sdk.Context, id uint64) math.Dec {
-	tStore := runtime.KVStoreAdapter(k.transientStoreService.OpenTransientStore(ctx))
-	key := types.GetLastMarketPriceKey(id)
-	b := tStore.Get(key)
-	if b == nil {
-		store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-		b = store.Get(key)
-		if b == nil {
-			return utils.ZeroDec
-		}
-		tStore.Set(key, b)
+func (k Keeper) GetTwapPrice(ctx sdk.Context, marketId uint64) (math.Dec, error) {
+	prefixStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), append(types.TwapPricesPrefix, sdk.Uint64ToBigEndian(marketId)...))
+	iterator := storetypes.KVStoreReversePrefixIterator(prefixStore, []byte{})
+
+	var lastTwapPrice types.TwapPrice
+	defer iterator.Close()
+	for iterator.Valid() {
+		k.cdc.MustUnmarshal(iterator.Value(), &lastTwapPrice)
 	}
 
-	var v types.LastMarketPrice
-	k.cdc.MustUnmarshal(b, &v)
-	return v.LastPrice
+	prefixStore = prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), append(types.TwapPricesPrefix, sdk.Uint64ToBigEndian(marketId)...))
+	forwardIterator := storetypes.KVStorePrefixIterator(prefixStore, []byte{})
+	defer forwardIterator.Close()
+
+	var firstTwapPrice types.TwapPrice
+	for iterator.Valid() {
+		k.cdc.MustUnmarshal(iterator.Value(), &firstTwapPrice)
+	}
+
+	num, err := lastTwapPrice.CumulativePrice.Sub(firstTwapPrice.CumulativePrice)
+	if err != nil {
+		return utils.ZeroDec, err
+	}
+	timeDelta := math.NewDecFromInt64(int64(lastTwapPrice.Timestamp - firstTwapPrice.Timestamp))
+	return num.Quo(timeDelta)
 }
 
-func (k Keeper) SetLastMarketPrice(ctx sdk.Context, id uint64, lastPrice math.Dec, set bool) {
-	tStore := runtime.KVStoreAdapter(k.transientStoreService.OpenTransientStore(ctx))
-	key := types.GetLastMarketPriceKey(id)
-	v := types.LastMarketPrice{
-		MarketId:  id,
-		LastPrice: lastPrice,
+func (k Keeper) SetTwapPrices(ctx sdk.Context, p types.TwapPrice) {
+	prefixStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), append(types.TwapPricesPrefix, sdk.Uint64ToBigEndian(p.MarketId)...))
+	iterator := storetypes.KVStoreReversePrefixIterator(prefixStore, []byte{})
+
+	var lastTwapPrice types.TwapPrice
+	for iterator.Valid() {
+		k.cdc.MustUnmarshal(iterator.Value(), &lastTwapPrice)
 	}
-	b := k.cdc.MustMarshal(&v)
+	_ = iterator.Close()
+
+	if lastTwapPrice.MarketId == 0 {
+		p.CumulativePrice = utils.ZeroDec
+	} else {
+		// lastPrice×(now−lastUpdate)
+		toAdd, err := lastTwapPrice.Price.Mul(math.NewDecFromInt64(int64(p.Timestamp - lastTwapPrice.Timestamp)))
+		if err != nil {
+			panic(err)
+		}
+		p.CumulativePrice, err = lastTwapPrice.CumulativePrice.Add(toAdd)
+		if err != nil {
+			panic(err)
+		}
+	}
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetTwapPricesKey(p.MarketId, p.Block)
+	b := k.cdc.MustMarshal(&p)
+	store.Set(key, b)
+
+	// Setting in transient store for fast access
+	tStore := runtime.KVStoreAdapter(k.transientStoreService.OpenTransientStore(ctx))
 	tStore.Set(key, b)
 
-	if set {
-		store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-		store.Set(key, b)
+	prefixStore = prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), append(types.TwapPricesPrefix, sdk.Uint64ToBigEndian(p.MarketId)...))
+	iteratorForward := storetypes.KVStorePrefixIterator(prefixStore, []byte{})
+	defer iteratorForward.Close()
+
+	for ; iteratorForward.Valid(); iteratorForward.Next() {
+		var old types.TwapPrice
+		k.cdc.MustUnmarshal(iteratorForward.Value(), &old)
+		if old.Block < p.Block-1000 {
+			prefixStore.Delete(iteratorForward.Key())
+		} else {
+			break // store is block-ordered, so stop early
+		}
 	}
 }
 
-func (k Keeper) GetAllLastMarketPrice(ctx sdk.Context) []types.LastMarketPrice {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.LastMarketPricePrefix)
+func (k Keeper) GetAllTwapPrices(ctx sdk.Context) []types.TwapPrice {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.TwapPricesPrefix)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
-	var list []types.LastMarketPrice
+	var list []types.TwapPrice
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.LastMarketPrice
+		var val types.TwapPrice
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
 
 	return list
+}
+
+// GetLastMarketPrice First it checks transient store and then it checks KVstore
+func (k Keeper) GetLastMarketPrice(ctx sdk.Context, marketId uint64) math.Dec {
+	prefixTStore := prefix.NewStore(runtime.KVStoreAdapter(k.transientStoreService.OpenTransientStore(ctx)), append(types.TwapPricesPrefix, sdk.Uint64ToBigEndian(marketId)...))
+	tStoreIterator := storetypes.KVStoreReversePrefixIterator(prefixTStore, []byte{})
+
+	defer tStoreIterator.Close()
+
+	var lastTwapPrice types.TwapPrice
+	lastTwapPrice.Price = utils.ZeroDec
+	for tStoreIterator.Valid() {
+		k.cdc.MustUnmarshal(tStoreIterator.Value(), &lastTwapPrice)
+	}
+
+	if lastTwapPrice.MarketId == 0 {
+		prefixStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), append(types.TwapPricesPrefix, sdk.Uint64ToBigEndian(marketId)...))
+		iterator := storetypes.KVStoreReversePrefixIterator(prefixStore, []byte{})
+
+		defer iterator.Close()
+
+		for iterator.Valid() {
+			k.cdc.MustUnmarshal(iterator.Value(), &lastTwapPrice)
+		}
+
+		// Setting in transient store for fast access
+		tStore := runtime.KVStoreAdapter(k.transientStoreService.OpenTransientStore(ctx))
+		key := types.GetTwapPricesKey(marketId, lastTwapPrice.Block)
+		b := k.cdc.MustMarshal(&lastTwapPrice)
+		tStore.Set(key, b)
+	}
+
+	return lastTwapPrice.Price
+}
+
+func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) (math.Dec, error) {
+	prefixStore := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), append(types.TwapPricesPrefix, sdk.Uint64ToBigEndian(marketId)...))
+	reverseIterator := storetypes.KVStoreReversePrefixIterator(prefixStore, []byte{})
+
+	var lastTwapPrice types.TwapPrice
+	for reverseIterator.Valid() {
+		k.cdc.MustUnmarshal(reverseIterator.Value(), &lastTwapPrice)
+	}
+	defer reverseIterator.Close()
+
+	prefixStore = prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), append(types.TwapPricesPrefix, sdk.Uint64ToBigEndian(marketId)...))
+	iteratorForward := storetypes.KVStorePrefixIterator(prefixStore, []byte{})
+	defer iteratorForward.Close()
+
+	var firstTwapPrice types.TwapPrice
+	for iteratorForward.Valid() {
+		k.cdc.MustUnmarshal(reverseIterator.Value(), &firstTwapPrice)
+	}
+	num, err := lastTwapPrice.CumulativePrice.Sub(firstTwapPrice.CumulativePrice)
+	if err != nil {
+		return math.Dec{}, err
+	}
+	den := math.NewDecFromInt64(int64(lastTwapPrice.Timestamp - firstTwapPrice.Timestamp))
+	return num.Quo(den)
 }

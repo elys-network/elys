@@ -28,8 +28,9 @@ var (
 	PerpetualPrefix        = []byte{0x04}
 	PerpetualOwnerPrefix   = []byte{0x05}
 	PerpetualOrderPrefix   = []byte{0x06}
-	LastMarketPricePrefix  = []byte{0x07}
+	TwapPricesPrefix       = []byte{0x07}
 	PerpetualCounterPrefix = []byte{0x08}
+	FundingRatePrefix      = []byte{0x09}
 )
 
 func GetAddressSubAccountPrefixKey(addr sdk.AccAddress) []byte {
@@ -91,10 +92,14 @@ func GetPerpetualOrderBookIteratorKey(marketId uint64, long bool) []byte {
 	return key
 }
 
-func GetLastMarketPriceKey(id uint64) []byte {
-	return append(LastMarketPricePrefix, sdk.Uint64ToBigEndian(id)...)
+func GetFundingRateKey(id uint64) []byte {
+	return append(FundingRatePrefix, sdk.Uint64ToBigEndian(id)...)
 }
 
 func GetPerpetualCounterKey(marketId uint64) []byte {
 	return append(PerpetualCounterPrefix, sdk.Uint64ToBigEndian(marketId)...)
+}
+
+func GetTwapPricesKey(marketId, block uint64) []byte {
+	return append(TwapPricesPrefix, append(sdk.Uint64ToBigEndian(marketId), sdk.Uint64ToBigEndian(block)...)...)
 }

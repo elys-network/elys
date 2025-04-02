@@ -84,17 +84,12 @@ message PerpetualMarket {
     (gogoproto.nullable) = false
   ];
   uint64 counter = 21;
-  string current_funding_rate = 22 [
+  string max_funding_rate = 22 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
-  uint64 twap_blocks = 23;
-}
-
-message LastMarketPrice {
-  uint64 market_id = 1;
-  string last_price = 2 [
+  string max_funding_rate_change = 23 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
@@ -109,5 +104,20 @@ message TwapPrice {
     (gogoproto.customtype) = "cosmossdk.io/math.Dec",
     (gogoproto.nullable) = false
   ];
-  uint64 timestamp = 4;
+  string cumulative_price = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 timestamp = 5;
+}
+
+message FundingRate {
+  uint64 market_id = 1;
+  uint64 block = 2;
+  string rate = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.nullable) = false
+  ];
 }

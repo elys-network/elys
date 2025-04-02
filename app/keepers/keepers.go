@@ -751,6 +751,7 @@ func NewAppKeeper(
 			app.BurnerKeeper.Hooks(),
 			app.PerpetualKeeper.EpochHooks(),
 			app.EstakingKeeper.EpochHooks(),
+			app.ClobKeeper.EpochHooks(),
 		),
 	)
 

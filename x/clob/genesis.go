@@ -22,8 +22,8 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, v := range genState.OrderBooks {
 		k.SetPerpetualOrder(ctx, *v)
 	}
-	for _, v := range genState.LastMarketPrices {
-		k.SetLastMarketPrice(ctx, v.MarketId, v.LastPrice, true)
+	for _, v := range genState.TwapPrices {
+		k.SetTwapPrices(ctx, *v)
 	}
 }
 

@@ -4,6 +4,17 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
+)
+
+var (
+	EightHourEpochInfo = EpochInfo{
+		Identifier:              EightHoursEpochID,
+		Duration:                time.Hour * 8,
+		CurrentEpoch:            0,
+		CurrentEpochStartHeight: 0,
+		EpochCountingStarted:    false,
+	}
 )
 
 // StartInitialEpoch sets the epoch info fields to their start values

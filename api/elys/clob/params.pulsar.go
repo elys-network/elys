@@ -82,7 +82,7 @@ var (
 	fd_Params_post_only_mode_height_threshold                   protoreflect.FieldDescriptor
 	fd_Params_margin_decrease_price_timestamp_threshold_seconds protoreflect.FieldDescriptor
 	fd_Params_exchange_admins                                   protoreflect.FieldDescriptor
-	fd_Params_max_sub_accounts                                  protoreflect.FieldDescriptor
+	fd_Params_epoch_identifier                                  protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -107,7 +107,7 @@ func init() {
 	fd_Params_post_only_mode_height_threshold = md_Params.Fields().ByName("post_only_mode_height_threshold")
 	fd_Params_margin_decrease_price_timestamp_threshold_seconds = md_Params.Fields().ByName("margin_decrease_price_timestamp_threshold_seconds")
 	fd_Params_exchange_admins = md_Params.Fields().ByName("exchange_admins")
-	fd_Params_max_sub_accounts = md_Params.Fields().ByName("max_sub_accounts")
+	fd_Params_epoch_identifier = md_Params.Fields().ByName("epoch_identifier")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -289,9 +289,9 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
-	if x.MaxSubAccounts != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.MaxSubAccounts)
-		if !f(fd_Params_max_sub_accounts, value) {
+	if x.EpochIdentifier != "" {
+		value := protoreflect.ValueOfString(x.EpochIdentifier)
+		if !f(fd_Params_epoch_identifier, value) {
 			return
 		}
 	}
@@ -348,8 +348,8 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.MarginDecreasePriceTimestampThresholdSeconds != int64(0)
 	case "elys.clob.Params.exchange_admins":
 		return len(x.ExchangeAdmins) != 0
-	case "elys.clob.Params.max_sub_accounts":
-		return x.MaxSubAccounts != uint64(0)
+	case "elys.clob.Params.epoch_identifier":
+		return x.EpochIdentifier != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.Params"))
@@ -404,8 +404,8 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.MarginDecreasePriceTimestampThresholdSeconds = int64(0)
 	case "elys.clob.Params.exchange_admins":
 		x.ExchangeAdmins = nil
-	case "elys.clob.Params.max_sub_accounts":
-		x.MaxSubAccounts = uint64(0)
+	case "elys.clob.Params.epoch_identifier":
+		x.EpochIdentifier = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.Params"))
@@ -482,9 +482,9 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 		}
 		listValue := &_Params_19_list{list: &x.ExchangeAdmins}
 		return protoreflect.ValueOfList(listValue)
-	case "elys.clob.Params.max_sub_accounts":
-		value := x.MaxSubAccounts
-		return protoreflect.ValueOfUint64(value)
+	case "elys.clob.Params.epoch_identifier":
+		value := x.EpochIdentifier
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.Params"))
@@ -545,8 +545,8 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		lv := value.List()
 		clv := lv.(*_Params_19_list)
 		x.ExchangeAdmins = *clv.list
-	case "elys.clob.Params.max_sub_accounts":
-		x.MaxSubAccounts = value.Uint()
+	case "elys.clob.Params.epoch_identifier":
+		x.EpochIdentifier = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.Params"))
@@ -612,8 +612,8 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field post_only_mode_height_threshold of message elys.clob.Params is not mutable"))
 	case "elys.clob.Params.margin_decrease_price_timestamp_threshold_seconds":
 		panic(fmt.Errorf("field margin_decrease_price_timestamp_threshold_seconds of message elys.clob.Params is not mutable"))
-	case "elys.clob.Params.max_sub_accounts":
-		panic(fmt.Errorf("field max_sub_accounts of message elys.clob.Params is not mutable"))
+	case "elys.clob.Params.epoch_identifier":
+		panic(fmt.Errorf("field epoch_identifier of message elys.clob.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.Params"))
@@ -667,8 +667,8 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 	case "elys.clob.Params.exchange_admins":
 		list := []string{}
 		return protoreflect.ValueOfList(&_Params_19_list{list: &list})
-	case "elys.clob.Params.max_sub_accounts":
-		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.clob.Params.epoch_identifier":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.Params"))
@@ -809,8 +809,9 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				n += 2 + l + runtime.Sov(uint64(l))
 			}
 		}
-		if x.MaxSubAccounts != 0 {
-			n += 2 + runtime.Sov(uint64(x.MaxSubAccounts))
+		l = len(x.EpochIdentifier)
+		if l > 0 {
+			n += 2 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -841,12 +842,14 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.MaxSubAccounts != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.MaxSubAccounts))
+		if len(x.EpochIdentifier) > 0 {
+			i -= len(x.EpochIdentifier)
+			copy(dAtA[i:], x.EpochIdentifier)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.EpochIdentifier)))
 			i--
 			dAtA[i] = 0x1
 			i--
-			dAtA[i] = 0xa0
+			dAtA[i] = 0xa2
 		}
 		if len(x.ExchangeAdmins) > 0 {
 			for iNdEx := len(x.ExchangeAdmins) - 1; iNdEx >= 0; iNdEx-- {
@@ -1561,10 +1564,10 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				x.ExchangeAdmins = append(x.ExchangeAdmins, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
 			case 20:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxSubAccounts", wireType)
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EpochIdentifier", wireType)
 				}
-				x.MaxSubAccounts = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1574,11 +1577,24 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.MaxSubAccounts |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.EpochIdentifier = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1683,8 +1699,8 @@ type Params struct {
 	// decrease in margin
 	MarginDecreasePriceTimestampThresholdSeconds int64 `protobuf:"varint,18,opt,name=margin_decrease_price_timestamp_threshold_seconds,json=marginDecreasePriceTimestampThresholdSeconds,proto3" json:"margin_decrease_price_timestamp_threshold_seconds,omitempty"`
 	// List of addresses that are allowed to perform exchange admin operations
-	ExchangeAdmins []string `protobuf:"bytes,19,rep,name=exchange_admins,json=exchangeAdmins,proto3" json:"exchange_admins,omitempty"`
-	MaxSubAccounts uint64   `protobuf:"varint,20,opt,name=max_sub_accounts,json=maxSubAccounts,proto3" json:"max_sub_accounts,omitempty"`
+	ExchangeAdmins  []string `protobuf:"bytes,19,rep,name=exchange_admins,json=exchangeAdmins,proto3" json:"exchange_admins,omitempty"`
+	EpochIdentifier string   `protobuf:"bytes,20,opt,name=epoch_identifier,json=epochIdentifier,proto3" json:"epoch_identifier,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -1840,11 +1856,11 @@ func (x *Params) GetExchangeAdmins() []string {
 	return nil
 }
 
-func (x *Params) GetMaxSubAccounts() uint64 {
+func (x *Params) GetEpochIdentifier() string {
 	if x != nil {
-		return x.MaxSubAccounts
+		return x.EpochIdentifier
 	}
-	return 0
+	return ""
 }
 
 var File_elys_clob_params_proto protoreflect.FileDescriptor
@@ -1857,7 +1873,7 @@ var file_elys_clob_params_proto_rawDesc = []byte{
 	0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x62, 0x61, 0x73,
 	0x65, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x22, 0xd7, 0x0d, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
+	0x72, 0x6f, 0x74, 0x6f, 0x22, 0xd8, 0x0d, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
 	0x71, 0x0a, 0x25, 0x64, 0x65, 0x72, 0x69, 0x76, 0x61, 0x74, 0x69, 0x76, 0x65, 0x5f, 0x6d, 0x61,
 	0x72, 0x6b, 0x65, 0x74, 0x5f, 0x69, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x74, 0x5f, 0x6c, 0x69, 0x73,
 	0x74, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19,
@@ -1964,19 +1980,19 @@ var file_elys_clob_params_proto_rawDesc = []byte{
 	0x68, 0x6f, 0x6c, 0x64, 0x53, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x12, 0x27, 0x0a, 0x0f, 0x65,
 	0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x5f, 0x61, 0x64, 0x6d, 0x69, 0x6e, 0x73, 0x18, 0x13,
 	0x20, 0x03, 0x28, 0x09, 0x52, 0x0e, 0x65, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x41, 0x64,
-	0x6d, 0x69, 0x6e, 0x73, 0x12, 0x28, 0x0a, 0x10, 0x6d, 0x61, 0x78, 0x5f, 0x73, 0x75, 0x62, 0x5f,
-	0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x18, 0x14, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0e,
-	0x6d, 0x61, 0x78, 0x53, 0x75, 0x62, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x42, 0x8d,
-	0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62,
-	0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a,
-	0x2a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70,
-	0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0xa2, 0x02, 0x03, 0x45, 0x43,
-	0x58, 0xaa, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c, 0x6f, 0x62, 0xca, 0x02, 0x09,
-	0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02, 0x15, 0x45, 0x6c, 0x79, 0x73,
-	0x5c, 0x43, 0x6c, 0x6f, 0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
-	0x61, 0xea, 0x02, 0x0a, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6c, 0x6f, 0x62, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6d, 0x69, 0x6e, 0x73, 0x12, 0x29, 0x0a, 0x10, 0x65, 0x70, 0x6f, 0x63, 0x68, 0x5f, 0x69, 0x64,
+	0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x18, 0x14, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f,
+	0x65, 0x70, 0x6f, 0x63, 0x68, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x42,
+	0x8d, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f,
+	0x62, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
+	0x5a, 0x2a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79,
+	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61,
+	0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0xa2, 0x02, 0x03, 0x45,
+	0x43, 0x58, 0xaa, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c, 0x6f, 0x62, 0xca, 0x02,
+	0x09, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02, 0x15, 0x45, 0x6c, 0x79,
+	0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x74, 0x61, 0xea, 0x02, 0x0a, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6c, 0x6f, 0x62, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

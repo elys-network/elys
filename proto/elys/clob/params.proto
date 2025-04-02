@@ -112,5 +112,5 @@ message Params {
   // List of addresses that are allowed to perform exchange admin operations
   repeated string exchange_admins = 19;
 
-  uint64 max_sub_accounts = 20;
+  string epoch_identifier = 20;
 }

@@ -5,7 +5,6 @@ import (
 	"cosmossdk.io/math"
 	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/clob/types"
 )
 
@@ -34,7 +33,8 @@ func (k Keeper) CreatePerpetualMarket(goCtx context.Context, msg *types.MsgCreat
 		Admin:                   msg.Creator,
 		AllowedCollateral:       msg.AllowedCollateral,
 		TotalOpen:               math.ZeroInt(),
-		CurrentFundingRate:      utils.ZeroDec,
+		MaxFundingRateChange:    math.NewDecWithExp(1, 3),
+		MaxFundingRate:          math.NewDecWithExp(2, 2),
 	}
 
 	k.SetPerpetualMarket(ctx, perpetualMarket)

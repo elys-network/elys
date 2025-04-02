@@ -271,7 +271,7 @@ func (x *_GenesisState_6_list) IsValid() bool {
 var _ protoreflect.List = (*_GenesisState_7_list)(nil)
 
 type _GenesisState_7_list struct {
-	list *[]*LastMarketPrice
+	list *[]*TwapPrice
 }
 
 func (x *_GenesisState_7_list) Len() int {
@@ -287,18 +287,18 @@ func (x *_GenesisState_7_list) Get(i int) protoreflect.Value {
 
 func (x *_GenesisState_7_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*LastMarketPrice)
+	concreteValue := valueUnwrapped.Interface().(*TwapPrice)
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_GenesisState_7_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*LastMarketPrice)
+	concreteValue := valueUnwrapped.Interface().(*TwapPrice)
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_GenesisState_7_list) AppendMutable() protoreflect.Value {
-	v := new(LastMarketPrice)
+	v := new(TwapPrice)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
@@ -311,7 +311,7 @@ func (x *_GenesisState_7_list) Truncate(n int) {
 }
 
 func (x *_GenesisState_7_list) NewElement() protoreflect.Value {
-	v := new(LastMarketPrice)
+	v := new(TwapPrice)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
@@ -373,7 +373,7 @@ func (x *_GenesisState_8_list) IsValid() bool {
 var _ protoreflect.List = (*_GenesisState_9_list)(nil)
 
 type _GenesisState_9_list struct {
-	list *[]*TwapPrice
+	list *[]*FundingRate
 }
 
 func (x *_GenesisState_9_list) Len() int {
@@ -389,18 +389,18 @@ func (x *_GenesisState_9_list) Get(i int) protoreflect.Value {
 
 func (x *_GenesisState_9_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*TwapPrice)
+	concreteValue := valueUnwrapped.Interface().(*FundingRate)
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_GenesisState_9_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*TwapPrice)
+	concreteValue := valueUnwrapped.Interface().(*FundingRate)
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_GenesisState_9_list) AppendMutable() protoreflect.Value {
-	v := new(TwapPrice)
+	v := new(FundingRate)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
@@ -413,7 +413,7 @@ func (x *_GenesisState_9_list) Truncate(n int) {
 }
 
 func (x *_GenesisState_9_list) NewElement() protoreflect.Value {
-	v := new(TwapPrice)
+	v := new(FundingRate)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
@@ -429,9 +429,9 @@ var (
 	fd_GenesisState_perpetuals         protoreflect.FieldDescriptor
 	fd_GenesisState_perpetual_owners   protoreflect.FieldDescriptor
 	fd_GenesisState_order_books        protoreflect.FieldDescriptor
-	fd_GenesisState_last_market_prices protoreflect.FieldDescriptor
-	fd_GenesisState_perpetual_counters protoreflect.FieldDescriptor
 	fd_GenesisState_twap_prices        protoreflect.FieldDescriptor
+	fd_GenesisState_perpetual_counters protoreflect.FieldDescriptor
+	fd_GenesisState_funding_rates      protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -443,9 +443,9 @@ func init() {
 	fd_GenesisState_perpetuals = md_GenesisState.Fields().ByName("perpetuals")
 	fd_GenesisState_perpetual_owners = md_GenesisState.Fields().ByName("perpetual_owners")
 	fd_GenesisState_order_books = md_GenesisState.Fields().ByName("order_books")
-	fd_GenesisState_last_market_prices = md_GenesisState.Fields().ByName("last_market_prices")
-	fd_GenesisState_perpetual_counters = md_GenesisState.Fields().ByName("perpetual_counters")
 	fd_GenesisState_twap_prices = md_GenesisState.Fields().ByName("twap_prices")
+	fd_GenesisState_perpetual_counters = md_GenesisState.Fields().ByName("perpetual_counters")
+	fd_GenesisState_funding_rates = md_GenesisState.Fields().ByName("funding_rates")
 }
 
 var _ protoreflect.Message = (*fastReflection_GenesisState)(nil)
@@ -549,9 +549,9 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if len(x.LastMarketPrices) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_7_list{list: &x.LastMarketPrices})
-		if !f(fd_GenesisState_last_market_prices, value) {
+	if len(x.TwapPrices) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_7_list{list: &x.TwapPrices})
+		if !f(fd_GenesisState_twap_prices, value) {
 			return
 		}
 	}
@@ -561,9 +561,9 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if len(x.TwapPrices) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_9_list{list: &x.TwapPrices})
-		if !f(fd_GenesisState_twap_prices, value) {
+	if len(x.FundingRates) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_9_list{list: &x.FundingRates})
+		if !f(fd_GenesisState_funding_rates, value) {
 			return
 		}
 	}
@@ -594,12 +594,12 @@ func (x *fastReflection_GenesisState) Has(fd protoreflect.FieldDescriptor) bool 
 		return len(x.PerpetualOwners) != 0
 	case "elys.clob.GenesisState.order_books":
 		return len(x.OrderBooks) != 0
-	case "elys.clob.GenesisState.last_market_prices":
-		return len(x.LastMarketPrices) != 0
-	case "elys.clob.GenesisState.perpetual_counters":
-		return len(x.PerpetualCounters) != 0
 	case "elys.clob.GenesisState.twap_prices":
 		return len(x.TwapPrices) != 0
+	case "elys.clob.GenesisState.perpetual_counters":
+		return len(x.PerpetualCounters) != 0
+	case "elys.clob.GenesisState.funding_rates":
+		return len(x.FundingRates) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.GenesisState"))
@@ -628,12 +628,12 @@ func (x *fastReflection_GenesisState) Clear(fd protoreflect.FieldDescriptor) {
 		x.PerpetualOwners = nil
 	case "elys.clob.GenesisState.order_books":
 		x.OrderBooks = nil
-	case "elys.clob.GenesisState.last_market_prices":
-		x.LastMarketPrices = nil
-	case "elys.clob.GenesisState.perpetual_counters":
-		x.PerpetualCounters = nil
 	case "elys.clob.GenesisState.twap_prices":
 		x.TwapPrices = nil
+	case "elys.clob.GenesisState.perpetual_counters":
+		x.PerpetualCounters = nil
+	case "elys.clob.GenesisState.funding_rates":
+		x.FundingRates = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.GenesisState"))
@@ -683,11 +683,11 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 		}
 		listValue := &_GenesisState_6_list{list: &x.OrderBooks}
 		return protoreflect.ValueOfList(listValue)
-	case "elys.clob.GenesisState.last_market_prices":
-		if len(x.LastMarketPrices) == 0 {
+	case "elys.clob.GenesisState.twap_prices":
+		if len(x.TwapPrices) == 0 {
 			return protoreflect.ValueOfList(&_GenesisState_7_list{})
 		}
-		listValue := &_GenesisState_7_list{list: &x.LastMarketPrices}
+		listValue := &_GenesisState_7_list{list: &x.TwapPrices}
 		return protoreflect.ValueOfList(listValue)
 	case "elys.clob.GenesisState.perpetual_counters":
 		if len(x.PerpetualCounters) == 0 {
@@ -695,11 +695,11 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 		}
 		listValue := &_GenesisState_8_list{list: &x.PerpetualCounters}
 		return protoreflect.ValueOfList(listValue)
-	case "elys.clob.GenesisState.twap_prices":
-		if len(x.TwapPrices) == 0 {
+	case "elys.clob.GenesisState.funding_rates":
+		if len(x.FundingRates) == 0 {
 			return protoreflect.ValueOfList(&_GenesisState_9_list{})
 		}
-		listValue := &_GenesisState_9_list{list: &x.TwapPrices}
+		listValue := &_GenesisState_9_list{list: &x.FundingRates}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -743,18 +743,18 @@ func (x *fastReflection_GenesisState) Set(fd protoreflect.FieldDescriptor, value
 		lv := value.List()
 		clv := lv.(*_GenesisState_6_list)
 		x.OrderBooks = *clv.list
-	case "elys.clob.GenesisState.last_market_prices":
+	case "elys.clob.GenesisState.twap_prices":
 		lv := value.List()
 		clv := lv.(*_GenesisState_7_list)
-		x.LastMarketPrices = *clv.list
+		x.TwapPrices = *clv.list
 	case "elys.clob.GenesisState.perpetual_counters":
 		lv := value.List()
 		clv := lv.(*_GenesisState_8_list)
 		x.PerpetualCounters = *clv.list
-	case "elys.clob.GenesisState.twap_prices":
+	case "elys.clob.GenesisState.funding_rates":
 		lv := value.List()
 		clv := lv.(*_GenesisState_9_list)
-		x.TwapPrices = *clv.list
+		x.FundingRates = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.clob.GenesisState"))
@@ -810,11 +810,11 @@ func (x *fastReflection_GenesisState) Mutable(fd protoreflect.FieldDescriptor) p
 		}
 		value := &_GenesisState_6_list{list: &x.OrderBooks}
 		return protoreflect.ValueOfList(value)
-	case "elys.clob.GenesisState.last_market_prices":
-		if x.LastMarketPrices == nil {
-			x.LastMarketPrices = []*LastMarketPrice{}
+	case "elys.clob.GenesisState.twap_prices":
+		if x.TwapPrices == nil {
+			x.TwapPrices = []*TwapPrice{}
 		}
-		value := &_GenesisState_7_list{list: &x.LastMarketPrices}
+		value := &_GenesisState_7_list{list: &x.TwapPrices}
 		return protoreflect.ValueOfList(value)
 	case "elys.clob.GenesisState.perpetual_counters":
 		if x.PerpetualCounters == nil {
@@ -822,11 +822,11 @@ func (x *fastReflection_GenesisState) Mutable(fd protoreflect.FieldDescriptor) p
 		}
 		value := &_GenesisState_8_list{list: &x.PerpetualCounters}
 		return protoreflect.ValueOfList(value)
-	case "elys.clob.GenesisState.twap_prices":
-		if x.TwapPrices == nil {
-			x.TwapPrices = []*TwapPrice{}
+	case "elys.clob.GenesisState.funding_rates":
+		if x.FundingRates == nil {
+			x.FundingRates = []*FundingRate{}
 		}
-		value := &_GenesisState_9_list{list: &x.TwapPrices}
+		value := &_GenesisState_9_list{list: &x.FundingRates}
 		return protoreflect.ValueOfList(value)
 	default:
 		if fd.IsExtension() {
@@ -859,14 +859,14 @@ func (x *fastReflection_GenesisState) NewField(fd protoreflect.FieldDescriptor) 
 	case "elys.clob.GenesisState.order_books":
 		list := []*PerpetualOrder{}
 		return protoreflect.ValueOfList(&_GenesisState_6_list{list: &list})
-	case "elys.clob.GenesisState.last_market_prices":
-		list := []*LastMarketPrice{}
+	case "elys.clob.GenesisState.twap_prices":
+		list := []*TwapPrice{}
 		return protoreflect.ValueOfList(&_GenesisState_7_list{list: &list})
 	case "elys.clob.GenesisState.perpetual_counters":
 		list := []*PerpetualCounter{}
 		return protoreflect.ValueOfList(&_GenesisState_8_list{list: &list})
-	case "elys.clob.GenesisState.twap_prices":
-		list := []*TwapPrice{}
+	case "elys.clob.GenesisState.funding_rates":
+		list := []*FundingRate{}
 		return protoreflect.ValueOfList(&_GenesisState_9_list{list: &list})
 	default:
 		if fd.IsExtension() {
@@ -971,8 +971,8 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
-		if len(x.LastMarketPrices) > 0 {
-			for _, e := range x.LastMarketPrices {
+		if len(x.TwapPrices) > 0 {
+			for _, e := range x.TwapPrices {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
@@ -983,8 +983,8 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
-		if len(x.TwapPrices) > 0 {
-			for _, e := range x.TwapPrices {
+		if len(x.FundingRates) > 0 {
+			for _, e := range x.FundingRates {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
@@ -1018,9 +1018,9 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.TwapPrices) > 0 {
-			for iNdEx := len(x.TwapPrices) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.TwapPrices[iNdEx])
+		if len(x.FundingRates) > 0 {
+			for iNdEx := len(x.FundingRates) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.FundingRates[iNdEx])
 				if err != nil {
 					return protoiface.MarshalOutput{
 						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1050,9 +1050,9 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				dAtA[i] = 0x42
 			}
 		}
-		if len(x.LastMarketPrices) > 0 {
-			for iNdEx := len(x.LastMarketPrices) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.LastMarketPrices[iNdEx])
+		if len(x.TwapPrices) > 0 {
+			for iNdEx := len(x.TwapPrices) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.TwapPrices[iNdEx])
 				if err != nil {
 					return protoiface.MarshalOutput{
 						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1417,7 +1417,7 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 7:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LastMarketPrices", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TwapPrices", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -1444,8 +1444,8 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.LastMarketPrices = append(x.LastMarketPrices, &LastMarketPrice{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LastMarketPrices[len(x.LastMarketPrices)-1]); err != nil {
+				x.TwapPrices = append(x.TwapPrices, &TwapPrice{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.TwapPrices[len(x.TwapPrices)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
@@ -1485,7 +1485,7 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 9:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TwapPrices", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FundingRates", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -1512,8 +1512,8 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.TwapPrices = append(x.TwapPrices, &TwapPrice{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.TwapPrices[len(x.TwapPrices)-1]); err != nil {
+				x.FundingRates = append(x.FundingRates, &FundingRate{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.FundingRates[len(x.FundingRates)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
@@ -1578,9 +1578,9 @@ type GenesisState struct {
 	PerpetualOwners  []*PerpetualOwner  `protobuf:"bytes,5,rep,name=perpetual_owners,json=perpetualOwners,proto3" json:"perpetual_owners,omitempty"`
 	// Based on market id, it will have order book for all assets
 	OrderBooks        []*PerpetualOrder   `protobuf:"bytes,6,rep,name=order_books,json=orderBooks,proto3" json:"order_books,omitempty"`
-	LastMarketPrices  []*LastMarketPrice  `protobuf:"bytes,7,rep,name=last_market_prices,json=lastMarketPrices,proto3" json:"last_market_prices,omitempty"`
+	TwapPrices        []*TwapPrice        `protobuf:"bytes,7,rep,name=twap_prices,json=twapPrices,proto3" json:"twap_prices,omitempty"`
 	PerpetualCounters []*PerpetualCounter `protobuf:"bytes,8,rep,name=perpetual_counters,json=perpetualCounters,proto3" json:"perpetual_counters,omitempty"`
-	TwapPrices        []*TwapPrice        `protobuf:"bytes,9,rep,name=twap_prices,json=twapPrices,proto3" json:"twap_prices,omitempty"`
+	FundingRates      []*FundingRate      `protobuf:"bytes,9,rep,name=funding_rates,json=fundingRates,proto3" json:"funding_rates,omitempty"`
 }
 
 func (x *GenesisState) Reset() {
@@ -1645,9 +1645,9 @@ func (x *GenesisState) GetOrderBooks() []*PerpetualOrder {
 	return nil
 }
 
-func (x *GenesisState) GetLastMarketPrices() []*LastMarketPrice {
+func (x *GenesisState) GetTwapPrices() []*TwapPrice {
 	if x != nil {
-		return x.LastMarketPrices
+		return x.TwapPrices
 	}
 	return nil
 }
@@ -1659,9 +1659,9 @@ func (x *GenesisState) GetPerpetualCounters() []*PerpetualCounter {
 	return nil
 }
 
-func (x *GenesisState) GetTwapPrices() []*TwapPrice {
+func (x *GenesisState) GetFundingRates() []*FundingRate {
 	if x != nil {
-		return x.TwapPrices
+		return x.FundingRates
 	}
 	return nil
 }
@@ -1680,7 +1680,7 @@ var file_elys_clob_genesis_proto_rawDesc = []byte{
 	0x6f, 0x1a, 0x19, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0x2f, 0x70, 0x65, 0x72,
 	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1a, 0x65, 0x6c,
 	0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0x2f, 0x73, 0x75, 0x62, 0x61, 0x63, 0x63, 0x6f, 0x75,
-	0x6e, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xdf, 0x04, 0x0a, 0x0c, 0x47, 0x65, 0x6e,
+	0x6e, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xd2, 0x04, 0x0a, 0x0c, 0x47, 0x65, 0x6e,
 	0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x2f, 0x0a, 0x06, 0x70, 0x61, 0x72,
 	0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x65, 0x6c, 0x79, 0x73,
 	0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8, 0xde,
@@ -1705,30 +1705,29 @@ var file_elys_clob_genesis_proto_rawDesc = []byte{
 	0x73, 0x12, 0x3a, 0x0a, 0x0b, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x62, 0x6f, 0x6f, 0x6b, 0x73,
 	0x18, 0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c,
 	0x6f, 0x62, 0x2e, 0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x4f, 0x72, 0x64, 0x65,
-	0x72, 0x52, 0x0a, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x42, 0x6f, 0x6f, 0x6b, 0x73, 0x12, 0x48, 0x0a,
-	0x12, 0x6c, 0x61, 0x73, 0x74, 0x5f, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x5f, 0x70, 0x72, 0x69,
-	0x63, 0x65, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x2e, 0x4c, 0x61, 0x73, 0x74, 0x4d, 0x61, 0x72, 0x6b, 0x65, 0x74,
-	0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x10, 0x6c, 0x61, 0x73, 0x74, 0x4d, 0x61, 0x72, 0x6b, 0x65,
-	0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x12, 0x4a, 0x0a, 0x12, 0x70, 0x65, 0x72, 0x70, 0x65,
-	0x74, 0x75, 0x61, 0x6c, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x73, 0x18, 0x08, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x2e,
-	0x50, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72,
-	0x52, 0x11, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74,
-	0x65, 0x72, 0x73, 0x12, 0x35, 0x0a, 0x0b, 0x74, 0x77, 0x61, 0x70, 0x5f, 0x70, 0x72, 0x69, 0x63,
-	0x65, 0x73, 0x18, 0x09, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x63, 0x6c, 0x6f, 0x62, 0x2e, 0x54, 0x77, 0x61, 0x70, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x0a,
-	0x74, 0x77, 0x61, 0x70, 0x50, 0x72, 0x69, 0x63, 0x65, 0x73, 0x42, 0x8e, 0x01, 0x0a, 0x0d, 0x63,
-	0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x42, 0x0c, 0x47, 0x65,
-	0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2a, 0x67, 0x69,
-	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
-	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65,
-	0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0xa2, 0x02, 0x03, 0x45, 0x43, 0x58, 0xaa, 0x02,
-	0x09, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c, 0x6f, 0x62, 0xca, 0x02, 0x09, 0x45, 0x6c, 0x79,
-	0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02, 0x15, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c,
-	0x6f, 0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
-	0x0a, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6c, 0x6f, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x72, 0x52, 0x0a, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x42, 0x6f, 0x6f, 0x6b, 0x73, 0x12, 0x35, 0x0a,
+	0x0b, 0x74, 0x77, 0x61, 0x70, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x73, 0x18, 0x07, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x14, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x2e, 0x54,
+	0x77, 0x61, 0x70, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x0a, 0x74, 0x77, 0x61, 0x70, 0x50, 0x72,
+	0x69, 0x63, 0x65, 0x73, 0x12, 0x4a, 0x0a, 0x12, 0x70, 0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61,
+	0x6c, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x73, 0x18, 0x08, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x2e, 0x50, 0x65, 0x72,
+	0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x52, 0x11, 0x70,
+	0x65, 0x72, 0x70, 0x65, 0x74, 0x75, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x73,
+	0x12, 0x3b, 0x0a, 0x0d, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x61, 0x74, 0x65,
+	0x73, 0x18, 0x09, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63,
+	0x6c, 0x6f, 0x62, 0x2e, 0x46, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x61, 0x74, 0x65, 0x52,
+	0x0c, 0x66, 0x75, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x61, 0x74, 0x65, 0x73, 0x42, 0x8e, 0x01,
+	0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6c, 0x6f, 0x62, 0x42,
+	0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a,
+	0x2a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73,
+	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70,
+	0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6c, 0x6f, 0x62, 0xa2, 0x02, 0x03, 0x45, 0x43,
+	0x58, 0xaa, 0x02, 0x09, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6c, 0x6f, 0x62, 0xca, 0x02, 0x09,
+	0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6c, 0x6f, 0x62, 0xe2, 0x02, 0x15, 0x45, 0x6c, 0x79, 0x73,
+	0x5c, 0x43, 0x6c, 0x6f, 0x62, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0xea, 0x02, 0x0a, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6c, 0x6f, 0x62, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1752,9 +1751,9 @@ var file_elys_clob_genesis_proto_goTypes = []interface{}{
 	(*Perpetual)(nil),        // 4: elys.clob.Perpetual
 	(*PerpetualOwner)(nil),   // 5: elys.clob.PerpetualOwner
 	(*PerpetualOrder)(nil),   // 6: elys.clob.PerpetualOrder
-	(*LastMarketPrice)(nil),  // 7: elys.clob.LastMarketPrice
+	(*TwapPrice)(nil),        // 7: elys.clob.TwapPrice
 	(*PerpetualCounter)(nil), // 8: elys.clob.PerpetualCounter
-	(*TwapPrice)(nil),        // 9: elys.clob.TwapPrice
+	(*FundingRate)(nil),      // 9: elys.clob.FundingRate
 }
 var file_elys_clob_genesis_proto_depIdxs = []int32{
 	1, // 0: elys.clob.GenesisState.params:type_name -> elys.clob.Params
@@ -1763,9 +1762,9 @@ var file_elys_clob_genesis_proto_depIdxs = []int32{
 	4, // 3: elys.clob.GenesisState.perpetuals:type_name -> elys.clob.Perpetual
 	5, // 4: elys.clob.GenesisState.perpetual_owners:type_name -> elys.clob.PerpetualOwner
 	6, // 5: elys.clob.GenesisState.order_books:type_name -> elys.clob.PerpetualOrder
-	7, // 6: elys.clob.GenesisState.last_market_prices:type_name -> elys.clob.LastMarketPrice
+	7, // 6: elys.clob.GenesisState.twap_prices:type_name -> elys.clob.TwapPrice
 	8, // 7: elys.clob.GenesisState.perpetual_counters:type_name -> elys.clob.PerpetualCounter
-	9, // 8: elys.clob.GenesisState.twap_prices:type_name -> elys.clob.TwapPrice
+	9, // 8: elys.clob.GenesisState.funding_rates:type_name -> elys.clob.FundingRate
 	9, // [9:9] is the sub-list for method output_type
 	9, // [9:9] is the sub-list for method input_type
 	9, // [9:9] is the sub-list for extension type_name

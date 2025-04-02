@@ -10,7 +10,6 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 	allMarkets := k.GetAllPerpetualMarket(ctx)
 
 	for _, market := range allMarkets {
-		marketPrice := k.GetLastMarketPrice(ctx, market.Id)
 
 		{
 			fmt.Println("Buy Book: ")
@@ -43,11 +42,6 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 		err := k.ExecuteMarket(ctx, market.Id)
 		if err != nil {
 			return err
-		}
-
-		marketPrice = k.GetLastMarketPrice(ctx, market.Id)
-		if !marketPrice.IsZero() {
-			k.SetLastMarketPrice(ctx, market.Id, marketPrice, true)
 		}
 	}
 	return nil

@@ -34,6 +34,7 @@ func DefaultGenesisState() *GenesisState {
 			CurrentEpochStartHeight: 0,
 			EpochCountingStarted:    false,
 		},
+		EightHourEpochInfo,
 	})
 }
 

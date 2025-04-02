@@ -31,6 +31,26 @@ func MinDec(d1 math.Dec, d2 math.Dec) math.Dec {
 	return d2
 }
 
+func Abs(d1 math.Dec) math.Dec {
+	if d1.IsPositive() || d1.IsZero() {
+		return d1
+	} else {
+		d2, err := d1.Mul(math.NewDecFromInt64(-1))
+		if err != nil {
+			panic(err)
+		}
+		return d2
+	}
+}
+
+func Neg(d1 math.Dec) math.Dec {
+	d2, err := d1.Mul(math.NewDecFromInt64(-1))
+	if err != nil {
+		panic(err)
+	}
+	return d2
+}
+
 func GetPaddedDecString(price math.Dec) string {
 	b, err := price.BigInt()
 	if err != nil {

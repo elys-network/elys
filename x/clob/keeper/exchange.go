@@ -17,6 +17,8 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 		return err
 	}
 
+	currentFundingRate := k.GetFundingRate(ctx, market.Id)
+
 	requiredInitialMargin, err := trade.GetRequiredInitialMargin(market)
 	if err != nil {
 		return err
@@ -89,7 +91,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 			Owner:            trade.BuyerSubAccount.Owner,
 			Quantity:         trade.Quantity,
 			Margin:           requiredInitialMargin,
-			EntryFundingRate: market.CurrentFundingRate,
+			EntryFundingRate: currentFundingRate.Rate,
 		}
 		buyerPerpetualOwner = types.PerpetualOwner{
 			Owner:       buyerPerpetual.Owner,
@@ -162,7 +164,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 			Owner:            trade.SellerSubAccount.Owner,
 			Quantity:         trade.Quantity.Neg(),
 			Margin:           requiredInitialMargin,
-			EntryFundingRate: market.CurrentFundingRate,
+			EntryFundingRate: currentFundingRate.Rate,
 		}
 		sellerPerpetualOwner = types.PerpetualOwner{
 			Owner:       sellerPerpetual.Owner,
@@ -181,5 +183,12 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 		market.TotalOpen = market.TotalOpen.Sub(trade.Quantity)
 	}
 	k.SetPerpetualMarket(ctx, market)
+	k.SetTwapPrices(ctx, types.TwapPrice{
+		MarketId:        market.Id,
+		Block:           uint64(ctx.BlockHeight()),
+		Price:           trade.Price,
+		CumulativePrice: utils.ZeroDec,
+		Timestamp:       uint64(ctx.BlockHeight()),
+	})
 	return nil
 }

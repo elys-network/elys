@@ -7,7 +7,8 @@ import (
 )
 
 func (k Keeper) SettleFunding(ctx sdk.Context, subAccount *types.SubAccount, market types.PerpetualMarket, perpetual *types.Perpetual) error {
-	fundingRateApplied, err := market.CurrentFundingRate.Sub(perpetual.EntryFundingRate)
+	currentFundingRate := k.GetFundingRate(ctx, market.Id)
+	fundingRateApplied, err := currentFundingRate.Rate.Sub(perpetual.EntryFundingRate)
 	if err != nil {
 		return err
 	}
@@ -37,14 +38,6 @@ func (k Keeper) SettleFunding(ctx sdk.Context, subAccount *types.SubAccount, mar
 		}
 	}
 
-	perpetual.EntryFundingRate = market.CurrentFundingRate
+	perpetual.EntryFundingRate = currentFundingRate.Rate
 	return nil
 }
-
-//premium = TWAP(markPrice) - TWAP(indexPrice)
-
-//fundingRate = clamp(premium / indexPrice, -cap, +cap)
-//
-//func (k Keeper) UpdateFundingRate(ctx sdk.Context, market types.PerpetualMarket) error {
-//	a := math.NewDe()
-//}

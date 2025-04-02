@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/utils"
+	epochstypes "github.com/elys-network/elys/x/epochs/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -28,7 +29,7 @@ func DefaultParams() Params {
 		PostOnlyModeHeightThreshold:                  0,
 		MarginDecreasePriceTimestampThresholdSeconds: 0,
 		ExchangeAdmins:                               nil,
-		MaxSubAccounts:                               3,
+		EpochIdentifier:                              epochstypes.EightHoursEpochID,
 	}
 }
 

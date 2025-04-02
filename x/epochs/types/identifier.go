@@ -28,6 +28,7 @@ const (
 	TenSecondsEpochID  = "tenseconds"
 	TenDaysEpochID     = "ten_days"
 	FiveMinutesEpochID = "five_minutes"
+	EightHoursEpochID  = "eight_hours"
 )
 
 // ValidateEpochIdentifierInterface performs a stateless
