@@ -168,7 +168,7 @@ func (suite *KeeperTestSuite) TestGetInterestAtHeight() {
 		BlockHeight:  1,
 		PoolId:       1,
 	}
-	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, 1, 1, i)
+	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, i)
 	interestBlock := suite.app.StablestakeKeeper.GetInterestAtHeight(suite.ctx, 1, 1)
 	suite.Equal(i.InterestRate, interestBlock.InterestRate)
 	suite.Equal(i.BlockTime, interestBlock.BlockTime)
@@ -183,7 +183,7 @@ func (suite *KeeperTestSuite) TestDeleteInterestBlock() {
 		BlockHeight:  1,
 		PoolId:       1,
 	}
-	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, 1, 1, i)
+	suite.app.StablestakeKeeper.SetInterestForPool(suite.ctx, i)
 	interestBlock := suite.app.StablestakeKeeper.GetInterestAtHeight(suite.ctx, 1, 1)
 	suite.Equal(i.InterestRate, interestBlock.InterestRate)
 	suite.Equal(i.BlockTime, interestBlock.BlockTime)
