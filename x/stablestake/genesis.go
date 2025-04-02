@@ -18,6 +18,16 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetInterestForPool(ctx, elem)
 	}
 
+	// Set all pools
+	for _, elem := range genState.Pools {
+		k.SetPool(ctx, elem)
+	}
+
+	// Set all amm pools
+	for _, elem := range genState.AmmPools {
+		k.SetAmmPool(ctx, elem)
+	}
+
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -29,6 +39,9 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.DebtList = k.GetAllDebts(ctx)
 	genesis.InterestList = k.GetAllInterest(ctx)
+
+	genesis.Pools = k.GetAllPools(ctx)
+	genesis.AmmPools = k.GetAllAmmPools(ctx)
 
 	// this line is used by starport scaffolding # genesis/module/export
 
