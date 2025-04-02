@@ -122,6 +122,11 @@ func (suite *KeeperTestSuite) TestCloseOnUnableToRepay() {
 	}
 
 	suite.app.StablestakeKeeper.SetDebt(suite.ctx, debt)
+	debtRes, _ := suite.app.StablestakeKeeper.Debt(suite.ctx, &types.QueryDebtRequest{
+		Address: debt.GetOwnerAccount().String(),
+		PoolId:  1,
+	})
+	suite.Require().Equal(debt.Borrowed, debtRes.Debt.Borrowed)
 	suite.app.StablestakeKeeper.CloseOnUnableToRepay(suite.ctx, debt.GetOwnerAccount(), 1, 1)
 
 	r := suite.app.StablestakeKeeper.GetAmmPool(suite.ctx, 1)
@@ -174,6 +179,13 @@ func (suite *KeeperTestSuite) TestGetInterestAtHeight() {
 	suite.Equal(i.BlockTime, interestBlock.BlockTime)
 	suite.Equal(i.BlockHeight, interestBlock.BlockHeight)
 	suite.Equal(i.PoolId, interestBlock.PoolId)
+
+	interestB, _ := suite.app.StablestakeKeeper.GetInterest(suite.ctx, &types.QueryGetInterestRequest{
+		PoolId:      1,
+		BlockHeight: 1,
+	})
+	suite.Equal(i.InterestRate, interestB.InterestBlock.InterestRate)
+	suite.Equal(i.BlockTime, interestB.InterestBlock.BlockTime)
 }
 
 func (suite *KeeperTestSuite) TestDeleteInterestBlock() {
