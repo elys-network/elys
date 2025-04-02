@@ -383,12 +383,6 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 	pool.TotalValue = totalValue
 	pool.InterestRate = params.LegacyInterestRate
 	k.SetPool(ctx, pool)
-	k.SetInterestForPool(ctx, types.InterestBlock{
-		InterestRate: pool.InterestRate,
-		BlockTime:    ctx.BlockTime().Unix(),
-		BlockHeight:  uint64(ctx.BlockHeight()),
-		PoolId:       pool.Id,
-	})
 }
 
 func (k Keeper) MoveAllInterest(ctx sdk.Context) {
@@ -401,13 +395,6 @@ func (k Keeper) MoveAllInterest(ctx sdk.Context) {
 		k.cdc.MustUnmarshal(iterator.Value(), &interest)
 		store.Delete(iterator.Key())
 	}
-	pool, _ := k.GetPool(ctx, types.UsdcPoolId)
-	k.SetInterestForPool(ctx, types.InterestBlock{
-		InterestRate: pool.InterestRate,
-		BlockTime:    ctx.BlockTime().Unix(),
-		BlockHeight:  uint64(ctx.BlockHeight()),
-		PoolId:       pool.Id,
-	})
 }
 
 func (k Keeper) MoveAllDebt(ctx sdk.Context) {
