@@ -21,6 +21,7 @@ func (k Keeper) InterestRateComputationForPool(ctx sdk.Context, pool types.Pool)
 
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 	depositDenom := pool.GetDepositDenom()
+	ctx.Logger().Error("depositDenom", depositDenom)
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 
 	// rate = minRate + (min(borrowRatio, param * maxAllowed) / (param * maxAllowed)) * (maxRate - minRate)
