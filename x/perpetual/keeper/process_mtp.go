@@ -3,17 +3,17 @@ package keeper
 import (
 	sdkerrors "cosmossdk.io/errors"
 	"errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
 
-func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool *ammtypes.Pool, closer string) error {
+func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool types.Pool, ammPool *ammtypes.Pool, closer string) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			if msg, ok := r.(string); ok {
-				ctx.Logger().Error(msg)
-			}
+			err = fmt.Errorf("function RouteExactAmountOut failed due to internal reason: %v", r)
+			ctx.Logger().Error(err.Error())
 		}
 	}()
 
@@ -29,7 +29,7 @@ func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool 
 
 	if forceClosed {
 		k.EmitForceClose(ctx, "unhealthy", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
-		return nil
+		return
 	}
 
 	if mtp.CheckForStopLoss(tradingAssetPrice) {
@@ -38,7 +38,7 @@ func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool 
 			return sdkerrors.Wrap(err, "error executing force close")
 		}
 		k.EmitForceClose(ctx, "stop_loss", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
-		return nil
+		return
 	}
 
 	if mtp.CheckForTakeProfit(tradingAssetPrice) {
@@ -47,8 +47,8 @@ func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool 
 			return sdkerrors.Wrap(err, "error executing force close")
 		}
 		k.EmitForceClose(ctx, "take_profit", *mtp, repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, closer, allInterestsPaid, tradingAssetPrice)
-		return nil
+		return
 	}
-
-	return errors.New("position cannot be liquidated")
+	err = errors.New("position cannot be liquidated")
+	return
 }
