@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"strconv"
-
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -23,8 +21,6 @@ func (k Keeper) InterestRateComputationForPool(ctx sdk.Context, pool types.Pool)
 
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 	depositDenom := pool.GetDepositDenom()
-	ctx.Logger().Info("ppool" + strconv.FormatUint(pool.Id, 10))
-	ctx.Logger().Info("depositDenom" + depositDenom)
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 
 	// rate = minRate + (min(borrowRatio, param * maxAllowed) / (param * maxAllowed)) * (maxRate - minRate)
