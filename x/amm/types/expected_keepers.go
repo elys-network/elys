@@ -70,8 +70,6 @@ type AccountedPoolKeeper interface {
 
 type TierKeeper interface {
 	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, tier string, discount sdkmath.LegacyDec)
-
-	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec
 }
 
 type ParameterKeeper interface {
