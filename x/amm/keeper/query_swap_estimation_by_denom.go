@@ -41,16 +41,17 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 	amount.Amount = amount.Amount.Add(((amount.Amount.ToLegacyDec()).Mul(weightBonus)).TruncateInt())
 
 	return &types.QuerySwapEstimationByDenomResponse{
-		InRoute:                   inRoute,
-		OutRoute:                  outRoute,
-		Amount:                    amount,
-		SpotPrice:                 spotPrice,
-		SwapFee:                   swapFee,
-		Discount:                  discount,
-		AvailableLiquidity:        availableLiquidity,
-		Slippage:                  slippage,
-		WeightBalanceRatio:        weightBonus,
-		PriceImpact:               priceImpact,
-		WeightBalanceRewardAmount: sdk.NewCoin(amount.Denom, ((amount.Amount.ToLegacyDec()).Mul(weightBonus)).TruncateInt()),
+		InRoute:            inRoute,
+		OutRoute:           outRoute,
+		Amount:             amount,
+		SpotPrice:          spotPrice,
+		SwapFee:            swapFee,
+		Discount:           discount,
+		AvailableLiquidity: availableLiquidity,
+		Slippage:           slippage,
+		WeightBalanceRatio: weightBonus,
+		PriceImpact:        priceImpact,
+		// sdk.NewCoin() will panic in case of negative weightBonus
+		WeightBalanceRewardAmount: sdk.Coin{Denom: amount.Denom, Amount: amount.Amount.ToLegacyDec().Mul(weightBonus).TruncateInt()},
 	}, nil
 }
