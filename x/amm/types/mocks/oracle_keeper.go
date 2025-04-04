@@ -138,11 +138,11 @@ func (_c *OracleKeeper_GetAssetPrice_Call) RunAndReturn(run func(types.Context, 
 }
 
 // GetAssetPriceFromDenom provides a mock function with given fields: ctx, denom
-func (_m *OracleKeeper) GetAssetPriceFromDenom(ctx types.Context, denom string) math.LegacyDec {
+func (_m *OracleKeeper) GetDenomPrice(ctx types.Context, denom string) math.LegacyDec {
 	ret := _m.Called(ctx, denom)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetAssetPriceFromDenom")
+		panic("no return value specified for GetDenomPrice")
 	}
 
 	var r0 math.LegacyDec
@@ -155,7 +155,7 @@ func (_m *OracleKeeper) GetAssetPriceFromDenom(ctx types.Context, denom string) 
 	return r0
 }
 
-// OracleKeeper_GetAssetPriceFromDenom_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAssetPriceFromDenom'
+// OracleKeeper_GetAssetPriceFromDenom_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDenomPrice'
 type OracleKeeper_GetAssetPriceFromDenom_Call struct {
 	*mock.Call
 }
@@ -164,7 +164,7 @@ type OracleKeeper_GetAssetPriceFromDenom_Call struct {
 //   - ctx types.Context
 //   - denom string
 func (_e *OracleKeeper_Expecter) GetAssetPriceFromDenom(ctx interface{}, denom interface{}) *OracleKeeper_GetAssetPriceFromDenom_Call {
-	return &OracleKeeper_GetAssetPriceFromDenom_Call{Call: _e.mock.On("GetAssetPriceFromDenom", ctx, denom)}
+	return &OracleKeeper_GetAssetPriceFromDenom_Call{Call: _e.mock.On("GetDenomPrice", ctx, denom)}
 }
 
 func (_c *OracleKeeper_GetAssetPriceFromDenom_Call) Run(run func(ctx types.Context, denom string)) *OracleKeeper_GetAssetPriceFromDenom_Call {

@@ -34,7 +34,7 @@ func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.Leg
 	if edenUsdcRate.IsZero() {
 		edenUsdcRate = math.LegacyOneDec()
 	}
-	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	usdcDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrency)
 	if usdcDenomPrice.IsZero() {
 		usdcDecimal := int64(6)
 		usdcEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
@@ -47,14 +47,14 @@ func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.Leg
 }
 
 func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec {
-	oraclePrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, tokenInDenom)
+	oraclePrice := k.oracleKeeper.GetDenomPrice(ctx, tokenInDenom)
 	if !oraclePrice.IsZero() {
 		return oraclePrice
 	}
 
 	// Calc tokenIn / uusdc rate
 	tokenUsdcRate := k.EstimatePrice(ctx, tokenInDenom, baseCurrency)
-	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	usdcDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrency)
 	if usdcDenomPrice.IsZero() {
 		usdcDecimal := int64(6)
 		usdcEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
@@ -84,7 +84,7 @@ func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.
 	if !found {
 		sdkmath.LegacyZeroDec()
 	}
-	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+	tokenPrice := k.oracleKeeper.GetDenomPrice(ctx, denom)
 	if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
 		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	}
@@ -96,7 +96,7 @@ func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdkm
 	if !found || denom == usdcDenom {
 		return sdkmath.LegacyZeroDec()
 	}
-	usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
+	usdcPrice := k.oracleKeeper.GetDenomPrice(ctx, usdcDenom)
 	resp, err := k.InRouteByDenom(ctx, &types.QueryInRouteByDenomRequest{DenomIn: denom, DenomOut: usdcDenom})
 	if err != nil {
 		return sdkmath.LegacyZeroDec()

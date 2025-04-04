@@ -43,8 +43,8 @@ func TestGetTokenARate(t *testing.T) {
 		{
 			"oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
@@ -57,7 +57,7 @@ func TestGetTokenARate(t *testing.T) {
 		{
 			"token price not set for tokenA",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "unknownToken").Return(sdkmath.LegacyZeroDec())
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "unknownToken").Return(sdkmath.LegacyZeroDec())
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
@@ -70,8 +70,8 @@ func TestGetTokenARate(t *testing.T) {
 		{
 			"token price not set for tokenB",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(5))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "unknownToken").Return(sdkmath.LegacyZeroDec())
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "unknownToken").Return(sdkmath.LegacyZeroDec())
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
@@ -84,8 +84,8 @@ func TestGetTokenARate(t *testing.T) {
 		{
 			"Success with oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(5))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(2))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(2))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
@@ -98,8 +98,8 @@ func TestGetTokenARate(t *testing.T) {
 		{
 			"Success with oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(5))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(2))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(2))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
@@ -113,8 +113,8 @@ func TestGetTokenARate(t *testing.T) {
 			"Success with oracle pricing with price less than 1",
 			func(oracleKeeper *mocks.OracleKeeper) {
 				// for 6 decimal tokens
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyMustNewDecFromStr("0.0000002"))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(1))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(sdkmath.LegacyMustNewDecFromStr("0.0000002"))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(1))
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},

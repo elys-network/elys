@@ -27,8 +27,8 @@ func TestCalcExitValueWithSlippage(t *testing.T) {
 		{
 			"successful exit value calculation",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
@@ -48,8 +48,8 @@ func TestCalcExitValueWithSlippage(t *testing.T) {
 		{
 			"total shares is zero",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
@@ -69,8 +69,8 @@ func TestCalcExitValueWithSlippage(t *testing.T) {
 		{
 			"exiting shares greater than total shares",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
@@ -127,9 +127,9 @@ func TestCalcExitPool(t *testing.T) {
 		{
 			"successful exit with oracle pricing",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(10))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenB").Return(sdkmath.LegacyNewDec(5))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},
 			types.Pool{
@@ -180,7 +180,7 @@ func TestCalcExitPool(t *testing.T) {
 		{
 			"exiting shares greater than total shares",
 			func(oracleKeeper *mocks.OracleKeeper, accKeeper *mocks.AccountedPoolKeeper) {
-				oracleKeeper.On("GetAssetPriceFromDenom", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(0))
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(0))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenA").Return(sdkmath.NewInt(1000))
 				accKeeper.On("GetAccountedBalance", mock.Anything, mock.Anything, "tokenB").Return(sdkmath.NewInt(2000))
 			},

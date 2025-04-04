@@ -42,7 +42,7 @@ type AssetProfileKeeper interface {
 
 // OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
-	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
+	GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool)
 	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
