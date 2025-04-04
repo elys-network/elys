@@ -1,31 +1,33 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"errors"
 	"fmt"
 	"math"
 	"strconv"
+
+	sdkmath "cosmossdk.io/math"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func computeExp(x sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
-	if x.Equal(sdkmath.LegacyZeroDec()) {
-		return sdkmath.LegacyOneDec(), nil
+func computeExp(x osmomath.BigDec) (osmomath.BigDec, error) {
+	if x.Equal(osmomath.ZeroBigDec()) {
+		return osmomath.OneBigDec(), nil
 	}
-	if x.Equal(sdkmath.LegacyOneDec()) {
+	if x.Equal(osmomath.OneBigDec()) {
 		return euler, nil
 	}
 	// exp(-42) is approx 5.7 x 10^-19, smallest dec possible is 10^-18
-	if x.LTE(sdkmath.LegacyNewDecFromInt(sdkmath.NewInt(-42))) {
-		return sdkmath.LegacyZeroDec(), nil
+	if x.LTE(osmomath.BigDecFromSDKInt(sdkmath.NewInt(-42))) {
+		return osmomath.ZeroBigDec(), nil
 	}
 
 	// Range reduction: x = k * ln(2) + y
 	k := x.Mul(inverseLn2).TruncateInt64()
-	y := x.Sub(sdkmath.LegacyNewDecFromInt(sdkmath.NewInt(k)).Mul(ln2))
+	y := x.Sub(osmomath.BigDecFromSDKInt(sdkmath.NewInt(k)).Mul(ln2))
 
-	expY := sdkmath.LegacyOneDec()
-	term := sdkmath.LegacyOneDec()
+	expY := osmomath.OneBigDec()
+	term := osmomath.OneBigDec()
 
 	//n decides the precision of the value, higher the n, greater is the accuracy
 	for n := int64(1); ; n++ {
@@ -35,15 +37,15 @@ func computeExp(x sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
 			break
 		}
 		if n > powIterationLimit {
-			return sdkmath.LegacyDec{}, fmt.Errorf("failed to reach precision within %d iterations while comuting Exp for: %s", powIterationLimit, x.String())
+			return osmomath.BigDec{}, fmt.Errorf("failed to reach precision within %d iterations while comuting Exp for: %s", powIterationLimit, x.String())
 		}
 	}
 
-	twoPowK := sdkmath.LegacyOneDec()
+	twoPowK := osmomath.OneBigDec()
 	if k > 0 {
-		twoPowK = twoDec.Power(uint64(k))
+		twoPowK = twoDec.PowerInteger(uint64(k))
 	} else if k < 0 {
-		twoPowK = sdkmath.LegacyOneDec().Quo(twoDec.Power(uint64(-k)))
+		twoPowK = osmomath.OneBigDec().Quo(twoDec.PowerInteger(uint64(-k)))
 	}
 
 	result := expY.Mul(twoPowK)
@@ -51,12 +53,12 @@ func computeExp(x sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
 	return result, nil
 }
 
-func computeLn(x sdkmath.LegacyDec) (result sdkmath.LegacyDec, err error) {
-	if x.LTE(sdkmath.LegacyZeroDec()) {
-		return sdkmath.LegacyDec{}, errors.New("x for computing it's Ln must be greater than 0")
+func computeLn(x osmomath.BigDec) (result osmomath.BigDec, err error) {
+	if x.LTE(osmomath.ZeroBigDec()) {
+		return osmomath.BigDec{}, errors.New("x for computing it's Ln must be greater than 0")
 	}
-	if x.Equal(sdkmath.LegacyOneDec()) {
-		return sdkmath.LegacyZeroDec(), nil
+	if x.Equal(osmomath.OneBigDec()) {
+		return osmomath.ZeroBigDec(), nil
 	}
 	if x.Equal(twoDec) {
 		return ln2, nil
@@ -73,8 +75,8 @@ func computeLn(x sdkmath.LegacyDec) (result sdkmath.LegacyDec, err error) {
 		x = x.MulInt64(2)
 		k--
 	}
-	y := x.Sub(sdkmath.LegacyOneDec())
-	result = sdkmath.LegacyZeroDec()
+	y := x.Sub(osmomath.OneBigDec())
+	result = osmomath.ZeroBigDec()
 	yPower := y
 
 	// maximum value of y is 1
@@ -85,7 +87,7 @@ func computeLn(x sdkmath.LegacyDec) (result sdkmath.LegacyDec, err error) {
 		if (n+1)%2 == 0 {
 			sign = sdkmath.OneInt()
 		}
-		term := yPower.MulInt(sign).QuoInt64(n)
+		term := yPower.Mul(osmomath.BigDecFromSDKInt(sign)).QuoInt64(n)
 		result = result.Add(term)
 		// This won't work if y > 1 because absolute value of term is (y^n)/n,
 		// if y > 1, it's an increasing value
@@ -94,7 +96,7 @@ func computeLn(x sdkmath.LegacyDec) (result sdkmath.LegacyDec, err error) {
 		}
 
 		if n > powIterationLimit {
-			return sdkmath.LegacyDec{}, fmt.Errorf("failed to reach precision within %d iterations while comuting Ln for: %s", powIterationLimit, x.String())
+			return osmomath.BigDec{}, fmt.Errorf("failed to reach precision within %d iterations while comuting Ln for: %s", powIterationLimit, x.String())
 		}
 
 		yPower = yPower.Mul(y)
@@ -104,35 +106,35 @@ func computeLn(x sdkmath.LegacyDec) (result sdkmath.LegacyDec, err error) {
 }
 
 // powerApproximation Check exponentialLogarithmicMethod and maclaurinSeriesApproximation to understand the limits of this function
-func powerApproximation(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
+func powerApproximation(base osmomath.BigDec, exp osmomath.BigDec) (osmomath.BigDec, error) {
 	if !base.IsPositive() {
-		return sdkmath.LegacyDec{}, errors.New("base must be greater than 0")
+		return osmomath.BigDec{}, errors.New("base must be greater than 0")
 	}
-	if exp.LT(sdkmath.LegacyZeroDec()) {
-		return sdkmath.LegacyDec{}, errors.New("exp must be greater than 0")
+	if exp.LT(osmomath.ZeroBigDec()) {
+		return osmomath.BigDec{}, errors.New("exp must be greater than 0")
 	}
 	if exp.IsZero() {
-		return sdkmath.LegacyOneDec(), nil
+		return osmomath.OneBigDec(), nil
 	}
-	if exp.Equal(sdkmath.LegacyOneDec()) {
+	if exp.Equal(osmomath.OneBigDec()) {
 		return base, nil
 	}
-	if exp.Equal(sdkmath.LegacyOneDec().Neg()) {
-		return sdkmath.LegacyOneDec().Quo(base), nil
+	if exp.Equal(osmomath.OneBigDec().Neg()) {
+		return osmomath.OneBigDec().Quo(base), nil
 	}
 	if exp.Equal(oneHalf) {
 		output, err := base.ApproxSqrt()
 		if err != nil {
-			return sdkmath.LegacyDec{}, err
+			return osmomath.BigDec{}, err
 		}
 		return output, nil
 	}
 	// case where exp can be represented as uint64
-	if exp.IsInteger() && exp.IsPositive() && exp.LTE(sdkmath.LegacyMustNewDecFromStr(strconv.FormatUint(math.MaxUint64, 10))) {
-		return base.Power(uint64(exp.TruncateInt64())), nil
+	if exp.IsInteger() && exp.IsPositive() && exp.LTE(osmomath.MustNewBigDecFromStr(strconv.FormatUint(math.MaxUint64, 10))) {
+		return base.PowerInteger(uint64(exp.TruncateInt64())), nil
 	}
 
-	if exp.GT(sdkmath.LegacyOneDec()) {
+	if exp.GT(osmomath.OneBigDec()) {
 		return Pow(base, exp), nil
 	}
 
@@ -149,14 +151,14 @@ func powerApproximation(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) (sdkmath.
 // if the base is large enough, the error propagates and decreases the inaccuracy.
 // For example, when calculating 1000^2.23, it can calculate 1000^0.23 upto required accuracy but when we multiply this result
 // to 1000^2, the error propagates to other decimal places
-func exponentialLogarithmicMethod(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
+func exponentialLogarithmicMethod(base osmomath.BigDec, exp osmomath.BigDec) (osmomath.BigDec, error) {
 	lnBase, err := computeLn(base)
 	if err != nil {
-		return sdkmath.LegacyDec{}, err
+		return osmomath.BigDec{}, err
 	}
 	expResult, err := computeExp(exp.Mul(lnBase))
 	if err != nil {
-		return sdkmath.LegacyDec{}, err
+		return osmomath.BigDec{}, err
 	}
 	return expResult, nil
 }
@@ -164,13 +166,13 @@ func exponentialLogarithmicMethod(base sdkmath.LegacyDec, exp sdkmath.LegacyDec)
 // maclaurinSeriesApproximation This function is very accurate when 0.5 <= base < 2, over 2 it panics
 // When base is extremely close to 2 then this function might panic as it's unable to reach accuracy within desired iterations
 // 0 <= exp < 1.
-func maclaurinSeriesApproximation(originalBase sdkmath.LegacyDec, exp sdkmath.LegacyDec, precision sdkmath.LegacyDec) sdkmath.LegacyDec {
+func maclaurinSeriesApproximation(originalBase osmomath.BigDec, exp osmomath.BigDec, precision osmomath.BigDec) osmomath.BigDec {
 	if !originalBase.IsPositive() {
 		panic(errors.New("base must be greater than 0"))
 	}
 
 	if exp.IsZero() {
-		return sdkmath.LegacyOneDec()
+		return osmomath.OneBigDec()
 	}
 
 	// Common case optimization
@@ -213,13 +215,13 @@ func maclaurinSeriesApproximation(originalBase sdkmath.LegacyDec, exp sdkmath.Le
 	// TODO: If there's a bug, balancer is also wrong here :thonk:
 
 	base := originalBase.Clone()
-	x, xneg := AbsDifferenceWithSign(base, sdkmath.LegacyOneDec())
-	term := sdkmath.LegacyOneDec()
-	sum := sdkmath.LegacyOneDec()
+	x, xneg := AbsDifferenceWithSign(base, osmomath.OneBigDec())
+	term := osmomath.OneBigDec()
+	sum := osmomath.OneBigDec()
 	negative := false
 
 	a := exp.Clone()
-	bigK := sdkmath.LegacyNewDec(0)
+	bigK := osmomath.ZeroBigDec()
 	// TODO: Document this computation via taylor expansion
 	for i := int64(1); term.GTE(precision); i++ {
 		// At each iteration, we need two values, i and i-1.
@@ -227,11 +229,11 @@ func maclaurinSeriesApproximation(originalBase sdkmath.LegacyDec, exp sdkmath.Le
 		// On this line, bigK == i-1.
 		c, cneg := AbsDifferenceWithSign(a, bigK)
 		// On this line, bigK == i.
-		bigK.SetInt64(i)
+		bigK = osmomath.NewBigDec(i)
 		term.MulMut(c).MulMut(x).QuoMut(bigK)
 
 		// a is mutated on absDifferenceWithSign, reset
-		a.Set(exp)
+		a = exp.Clone()
 
 		if term.IsZero() {
 			break

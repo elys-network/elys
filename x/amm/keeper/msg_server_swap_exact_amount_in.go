@@ -46,8 +46,8 @@ func (k Keeper) SwapExactAmountIn(ctx sdk.Context, msg *types.MsgSwapExactAmount
 
 	return &types.MsgSwapExactAmountInResponse{
 		TokenOutAmount: tokenOutAmount,
-		SwapFee:        swapFee,
-		Discount:       discount,
+		SwapFee:        swapFee.Dec(),
+		Discount:       discount.Dec(),
 		Recipient:      recipient.String(),
 	}, nil
 }

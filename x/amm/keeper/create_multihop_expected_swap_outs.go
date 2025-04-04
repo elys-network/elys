@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // createMultihopExpectedSwapOuts defines the output denom and output amount for the last pool in
@@ -27,7 +28,7 @@ func (k Keeper) createMultihopExpectedSwapOuts(
 		}
 
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-		tokenIn, _, err := pool.CalcInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.NewCoins(tokenOut), route.TokenInDenom, pool.GetPoolParams().SwapFee.Quo(math.LegacyNewDec(int64(len(routes)))), k.accountedPoolKeeper)
+		tokenIn, _, err := pool.CalcInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.NewCoins(tokenOut), route.TokenInDenom, pool.GetPoolParams().GetBigDecSwapFee().Quo(osmomath.NewBigDec(int64(len(routes)))), k.accountedPoolKeeper)
 		if err != nil {
 			return nil, err
 		}

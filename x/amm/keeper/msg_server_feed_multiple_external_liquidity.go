@@ -3,12 +3,12 @@ package keeper
 import (
 	"context"
 
-	sdkmath "cosmossdk.io/math"
-
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amountDepthInfo []types.AssetAmountDepth) ([]types.PoolAsset, error) {
@@ -31,15 +31,15 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 					return nil, types.ErrAmountTooLow
 				}
 
-				liquidityRatio := LiquidityRatioFromPriceDepth(el.Depth)
+				liquidityRatio := LiquidityRatioFromPriceDepth(osmomath.BigDecFromDec(el.Depth))
 				// Ensure tvl is not zero to avoid division by zero
 				if liquidityRatio.IsZero() {
 					return nil, types.ErrAmountTooLow
 				}
-				asset.ExternalLiquidityRatio = (O_Tvl.Quo(P_Tvl)).Quo(liquidityRatio)
+				asset.ExternalLiquidityRatio = (O_Tvl.Quo(P_Tvl)).Quo(liquidityRatio.Dec())
 
-				if asset.ExternalLiquidityRatio.LT(sdkmath.LegacyOneDec()) {
-					asset.ExternalLiquidityRatio = sdkmath.LegacyOneDec()
+				if asset.ExternalLiquidityRatio.LT(math.LegacyOneDec()) {
+					asset.ExternalLiquidityRatio = math.LegacyOneDec()
 				}
 			}
 		}
@@ -48,15 +48,15 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 	return updatedAssets, nil
 }
 
-func LiquidityRatioFromPriceDepth(depth sdkmath.LegacyDec) sdkmath.LegacyDec {
-	if depth == sdkmath.LegacyOneDec() {
-		return sdkmath.LegacyOneDec()
+func LiquidityRatioFromPriceDepth(depth osmomath.BigDec) osmomath.BigDec {
+	if depth == osmomath.OneBigDec() {
+		return osmomath.OneBigDec()
 	}
-	sqrt, err := sdkmath.LegacyOneDec().Sub(depth).ApproxSqrt()
+	sqrt, err := osmomath.OneBigDec().Sub(depth).ApproxSqrt()
 	if err != nil {
 		panic(err)
 	}
-	return sdkmath.LegacyOneDec().Sub(sqrt)
+	return osmomath.OneBigDec().Sub(sqrt)
 }
 
 func (k msgServer) FeedMultipleExternalLiquidity(goCtx context.Context, msg *types.MsgFeedMultipleExternalLiquidity) (*types.MsgFeedMultipleExternalLiquidityResponse, error) {

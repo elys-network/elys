@@ -7,6 +7,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // JoinPoolNoSwap aims to LP exactly enough to pool #{poolId} to get shareOutAmount number of LP shares.
@@ -67,7 +68,7 @@ func (k Keeper) JoinPoolNoSwap(
 			tokensIn = neededLpLiquidity
 		}
 		params := k.GetParams(ctx)
-		takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
+		takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		tokensJoined, sharesOut, _, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params, takerFees)
 		if err != nil {
@@ -96,7 +97,7 @@ func (k Keeper) JoinPoolNoSwap(
 	}
 
 	params := k.GetParams(ctx)
-	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
+	takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
@@ -116,16 +117,16 @@ func (k Keeper) JoinPoolNoSwap(
 		}
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
 
-		bonusTokenAmount := tokensJoined[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+		bonusTokenAmount := osmomath.BigDecFromSDKInt(tokensJoined[0].Amount).Mul(weightBalanceBonus).Dec().TruncateInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
-			weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(tokensJoined[0].Amount.ToLegacyDec())
+			weightBalanceBonus = osmomath.BigDecFromSDKInt(treasuryTokenAmount).Quo(osmomath.BigDecFromSDKInt(tokensJoined[0].Amount))
 		}
 	}
 
 	slippageCoins := sdk.Coins{}
 	if pool.PoolParams.UseOracle && len(tokenInMaxs) == 1 {
-		slippageAmount := slippage.Mul(tokenInMaxs[0].Amount.ToLegacyDec()).RoundInt()
+		slippageAmount := slippage.Mul(osmomath.BigDecFromSDKInt(tokenInMaxs[0].Amount)).Dec().RoundInt()
 		if slippageAmount.IsPositive() {
 			slippageCoins = sdk.NewCoins(sdk.NewCoin(tokenInMaxs[0].Denom, slippageAmount))
 			k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenInMaxs[0].Denom, slippageAmount))

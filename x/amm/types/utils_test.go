@@ -9,6 +9,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"
 )
 
@@ -56,14 +57,14 @@ func TestEnsureDenomInPool(t *testing.T) {
 
 func TestAbsDifferenceWithSign(t *testing.T) {
 	tests := []struct {
-		a        sdkmath.LegacyDec
-		b        sdkmath.LegacyDec
-		expected sdkmath.LegacyDec
+		a        osmomath.BigDec
+		b        osmomath.BigDec
+		expected osmomath.BigDec
 		sign     bool
 	}{
-		{sdkmath.LegacyNewDec(5), sdkmath.LegacyNewDec(3), sdkmath.LegacyNewDec(2), false},
-		{sdkmath.LegacyNewDec(3), sdkmath.LegacyNewDec(5), sdkmath.LegacyNewDec(2), true},
-		{sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), false},
+		{osmomath.NewBigDec(5), osmomath.NewBigDec(3), osmomath.NewBigDec(2), false},
+		{osmomath.NewBigDec(3), osmomath.NewBigDec(5), osmomath.NewBigDec(2), true},
+		{osmomath.NewBigDec(0), osmomath.NewBigDec(0), osmomath.NewBigDec(0), false},
 	}
 
 	for _, tt := range tests {
@@ -78,45 +79,45 @@ func TestApplyDiscount(t *testing.T) {
 	// Define test cases
 	tests := []struct {
 		name     string
-		swapFee  sdkmath.LegacyDec
-		discount sdkmath.LegacyDec
-		wantFee  sdkmath.LegacyDec
+		swapFee  osmomath.BigDec
+		discount osmomath.BigDec
+		wantFee  osmomath.BigDec
 	}{
 		{
 			name:     "Zero discount",
-			swapFee:  sdkmath.LegacyNewDecWithPrec(100, 2), // 1.00 as an example
-			discount: sdkmath.LegacyZeroDec(),
-			wantFee:  sdkmath.LegacyNewDecWithPrec(100, 2),
+			swapFee:  osmomath.NewBigDecWithPrec(100, 2), // 1.00 as an example
+			discount: osmomath.ZeroBigDec(),
+			wantFee:  osmomath.NewBigDecWithPrec(100, 2),
 		},
 		{
 			name:     "Positive discount",
-			swapFee:  sdkmath.LegacyNewDecWithPrec(100, 2),
-			discount: sdkmath.LegacyNewDecWithPrec(10, 2), // 0.10 (10%)
-			wantFee:  sdkmath.LegacyNewDecWithPrec(90, 2), // 0.90 after discount
+			swapFee:  osmomath.NewBigDecWithPrec(100, 2),
+			discount: osmomath.NewBigDecWithPrec(10, 2), // 0.10 (10%)
+			wantFee:  osmomath.NewBigDecWithPrec(90, 2), // 0.90 after discount
 		},
 		{
 			name:     "Boundary value for discount",
-			swapFee:  sdkmath.LegacyNewDecWithPrec(100, 2),
-			discount: sdkmath.LegacyNewDecWithPrec(9999, 4), // 0.9999 (99.99%)
-			wantFee:  sdkmath.LegacyNewDecWithPrec(1, 4),    // 0.01 after discount
+			swapFee:  osmomath.NewBigDecWithPrec(100, 2),
+			discount: osmomath.NewBigDecWithPrec(9999, 4), // 0.9999 (99.99%)
+			wantFee:  osmomath.NewBigDecWithPrec(1, 4),    // 0.01 after discount
 		},
 		{
 			name:     "Discount greater than swap fee",
-			swapFee:  sdkmath.LegacyNewDecWithPrec(50, 2), // 0.50
-			discount: sdkmath.LegacyNewDecWithPrec(75, 2), // 0.75
-			wantFee:  sdkmath.LegacyNewDecWithPrec(125, 3),
+			swapFee:  osmomath.NewBigDecWithPrec(50, 2), // 0.50
+			discount: osmomath.NewBigDecWithPrec(75, 2), // 0.75
+			wantFee:  osmomath.NewBigDecWithPrec(125, 3),
 		},
 		{
 			name:     "Zero swap fee with valid discount",
-			swapFee:  sdkmath.LegacyZeroDec(),
-			discount: sdkmath.LegacyNewDecWithPrec(10, 2),
-			wantFee:  sdkmath.LegacyZeroDec(),
+			swapFee:  osmomath.ZeroBigDec(),
+			discount: osmomath.NewBigDecWithPrec(10, 2),
+			wantFee:  osmomath.ZeroBigDec(),
 		},
 		{
 			name:     "Large discount",
-			swapFee:  sdkmath.LegacyNewDecWithPrec(100, 2),
-			discount: sdkmath.LegacyNewDecWithPrec(9000, 4), // 0.90 (90%)
-			wantFee:  sdkmath.LegacyNewDecWithPrec(10, 2),   // 0.10 after discount
+			swapFee:  osmomath.NewBigDecWithPrec(100, 2),
+			discount: osmomath.NewBigDecWithPrec(9000, 4), // 0.90 (90%)
+			wantFee:  osmomath.NewBigDecWithPrec(10, 2),   // 0.10 after discount
 		},
 	}
 

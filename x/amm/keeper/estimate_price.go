@@ -2,18 +2,18 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // Estimate the price : eg, 1 Eden -> x usdc
-func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec {
+func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string) osmomath.BigDec {
 	// Find a pool that can convert tokenIn to usdc
 	pool, found := k.GetBestPoolWithDenoms(ctx, []string{tokenInDenom, baseCurrency}, false)
 	if !found {
-		return math.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 
 	// Executes the swap in the pool and stores the output. Updates pool assets but
@@ -22,17 +22,17 @@ func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 
 	rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, &snapshot, tokenInDenom, baseCurrency, k.accountedPoolKeeper)
 	if err != nil {
-		return math.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 
 	return rate
 }
 
-func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec {
+func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) osmomath.BigDec {
 	// Calc ueden / uusdc rate
 	edenUsdcRate := k.EstimatePrice(ctx, ptypes.Elys, baseCurrency)
 	if edenUsdcRate.IsZero() {
-		edenUsdcRate = math.LegacyOneDec()
+		edenUsdcRate = osmomath.OneBigDec()
 	}
 	usdcDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrency)
 	if usdcDenomPrice.IsZero() {
@@ -41,12 +41,12 @@ func (k Keeper) GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.Leg
 		if found {
 			usdcDecimal = int64(usdcEntry.Decimals)
 		}
-		usdcDenomPrice = math.LegacyNewDecWithPrec(1, usdcDecimal)
+		usdcDenomPrice = osmomath.NewBigDecWithPrec(1, usdcDecimal)
 	}
 	return edenUsdcRate.Mul(usdcDenomPrice)
 }
 
-func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec {
+func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) osmomath.BigDec {
 	oraclePrice := k.oracleKeeper.GetDenomPrice(ctx, tokenInDenom)
 	if !oraclePrice.IsZero() {
 		return oraclePrice
@@ -61,7 +61,7 @@ func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 		if found {
 			usdcDecimal = int64(usdcEntry.Decimals)
 		}
-		usdcDenomPrice = math.LegacyNewDecWithPrec(1, usdcDecimal)
+		usdcDenomPrice = osmomath.NewBigDecWithPrec(1, usdcDecimal)
 	}
 	return tokenUsdcRate.Mul(usdcDenomPrice)
 }
@@ -69,8 +69,8 @@ func (k Keeper) GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 func (k Keeper) CalculateCoinsUSDValue(
 	ctx sdk.Context,
 	coins sdk.Coins,
-) sdkmath.LegacyDec {
-	totalValueInUSD := sdkmath.LegacyZeroDec()
+) osmomath.BigDec {
+	totalValueInUSD := osmomath.ZeroBigDec()
 	for _, coin := range coins {
 		valueInUSD := k.CalculateUSDValue(ctx, coin.Denom, coin.Amount)
 		totalValueInUSD = totalValueInUSD.Add(valueInUSD)
@@ -79,43 +79,43 @@ func (k Keeper) CalculateCoinsUSDValue(
 	return totalValueInUSD
 }
 
-func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec {
+func (k Keeper) CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) osmomath.BigDec {
 	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
 	if !found {
-		sdkmath.LegacyZeroDec()
+		osmomath.ZeroBigDec()
 	}
 	tokenPrice := k.oracleKeeper.GetDenomPrice(ctx, denom)
-	if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
+	if tokenPrice.Equal(osmomath.ZeroBigDec()) {
 		tokenPrice = k.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	}
-	return amount.ToLegacyDec().Mul(tokenPrice)
+	return osmomath.BigDecFromSDKInt(amount).Mul(tokenPrice)
 }
 
-func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdkmath.LegacyDec {
+func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) osmomath.BigDec {
 	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found || denom == usdcDenom {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 	usdcPrice := k.oracleKeeper.GetDenomPrice(ctx, usdcDenom)
 	resp, err := k.InRouteByDenom(ctx, &types.QueryInRouteByDenomRequest{DenomIn: denom, DenomOut: usdcDenom})
 	if err != nil {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 
 	routes := resp.InRoute
-	tokenIn := sdk.NewCoin(denom, sdkmath.NewInt(Pow10(decimal).TruncateInt64()))
-	discount := sdkmath.LegacyNewDec(1)
-	spotPrice, _, _, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, sdkmath.LegacyZeroDec())
+	tokenIn := sdk.NewCoin(denom, math.NewInt(Pow10(decimal).TruncateInt64()))
+	discount := math.LegacyNewDec(1)
+	spotPrice, _, _, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, tokenIn, routes, osmomath.BigDecFromDec(discount), osmomath.ZeroBigDec())
 	if err != nil {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 	return spotPrice.Mul(usdcPrice)
 }
 
-func Pow10(decimal uint64) (value sdkmath.LegacyDec) {
-	value = sdkmath.LegacyNewDec(1)
+func Pow10(decimal uint64) (value osmomath.BigDec) {
+	value = osmomath.NewBigDec(1)
 	for i := 0; i < int(decimal); i++ {
-		value = value.Mul(sdkmath.LegacyNewDec(10))
+		value = value.Mul(osmomath.NewBigDec(10))
 	}
 	return
 }
