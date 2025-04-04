@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) TVL(ctx sdk.Context, oracleKeeper types.OracleKeeper, poolId uint64) math.LegacyDec {
@@ -12,8 +13,8 @@ func (k Keeper) TVL(ctx sdk.Context, oracleKeeper types.OracleKeeper, poolId uin
 		return math.LegacyZeroDec()
 	}
 	totalDeposit := pool.TotalValue
-	price := oracleKeeper.GetAssetPriceFromDenom(ctx, pool.DepositDenom)
-	return price.MulInt(totalDeposit)
+	price := oracleKeeper.GetDenomPrice(ctx, pool.DepositDenom)
+	return price.Mul(osmomath.BigDecFromSDKInt(totalDeposit)).Dec()
 }
 
 func (k Keeper) AllTVL(ctx sdk.Context, oracleKeeper types.OracleKeeper) math.LegacyDec {

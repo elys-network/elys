@@ -2,6 +2,7 @@ package types
 
 import (
 	sdkmath "cosmossdk.io/math"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // solveConstantFunctionInvariant solves the constant function of an AMM
@@ -45,9 +46,9 @@ func solveConstantFunctionInvariant(
 }
 
 // E.g. tokenA: ELYS, tokenB: USDC
-func CalculateTokenARate(tokenBalanceA, tokenWeightA, tokenBalanceB, tokenWeightB sdkmath.LegacyDec) sdkmath.LegacyDec {
+func CalculateTokenARate(tokenBalanceA, tokenWeightA, tokenBalanceB, tokenWeightB osmomath.BigDec) osmomath.BigDec {
 	if tokenBalanceA.IsZero() || tokenWeightB.IsZero() {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 	return tokenBalanceB.
 		Mul(tokenWeightA).

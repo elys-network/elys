@@ -137,7 +137,7 @@ func (_c *OracleKeeper_GetAssetPrice_Call) RunAndReturn(run func(types.Context, 
 	return _c
 }
 
-// GetAssetPriceFromDenom provides a mock function with given fields: ctx, denom
+// GetDenomPrice provides a mock function with given fields: ctx, denom
 func (_m *OracleKeeper) GetDenomPrice(ctx types.Context, denom string) math.LegacyDec {
 	ret := _m.Called(ctx, denom)
 
@@ -155,31 +155,31 @@ func (_m *OracleKeeper) GetDenomPrice(ctx types.Context, denom string) math.Lega
 	return r0
 }
 
-// OracleKeeper_GetAssetPriceFromDenom_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDenomPrice'
-type OracleKeeper_GetAssetPriceFromDenom_Call struct {
+// OracleKeeper_GetDenomPrice_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDenomPrice'
+type OracleKeeper_GetDenomPrice_Call struct {
 	*mock.Call
 }
 
-// GetAssetPriceFromDenom is a helper method to define mock.On call
+// GetDenomPrice is a helper method to define mock.On call
 //   - ctx types.Context
 //   - denom string
-func (_e *OracleKeeper_Expecter) GetAssetPriceFromDenom(ctx interface{}, denom interface{}) *OracleKeeper_GetAssetPriceFromDenom_Call {
-	return &OracleKeeper_GetAssetPriceFromDenom_Call{Call: _e.mock.On("GetDenomPrice", ctx, denom)}
+func (_e *OracleKeeper_Expecter) GetDenomPrice(ctx interface{}, denom interface{}) *OracleKeeper_GetDenomPrice_Call {
+	return &OracleKeeper_GetDenomPrice_Call{Call: _e.mock.On("GetDenomPrice", ctx, denom)}
 }
 
-func (_c *OracleKeeper_GetAssetPriceFromDenom_Call) Run(run func(ctx types.Context, denom string)) *OracleKeeper_GetAssetPriceFromDenom_Call {
+func (_c *OracleKeeper_GetDenomPrice_Call) Run(run func(ctx types.Context, denom string)) *OracleKeeper_GetDenomPrice_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *OracleKeeper_GetAssetPriceFromDenom_Call) Return(_a0 math.LegacyDec) *OracleKeeper_GetAssetPriceFromDenom_Call {
+func (_c *OracleKeeper_GetDenomPrice_Call) Return(_a0 math.LegacyDec) *OracleKeeper_GetDenomPrice_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *OracleKeeper_GetAssetPriceFromDenom_Call) RunAndReturn(run func(types.Context, string) math.LegacyDec) *OracleKeeper_GetAssetPriceFromDenom_Call {
+func (_c *OracleKeeper_GetDenomPrice_Call) RunAndReturn(run func(types.Context, string) math.LegacyDec) *OracleKeeper_GetDenomPrice_Call {
 	_c.Call.Return(run)
 	return _c
 }

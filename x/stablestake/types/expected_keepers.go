@@ -2,8 +2,8 @@ package types
 
 import (
 	"context"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -43,6 +43,6 @@ type AssetProfileKeeper interface {
 // OracleKeeper defines the expected interface needed to retrieve price info
 type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec
+	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
