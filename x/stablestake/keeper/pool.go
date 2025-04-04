@@ -24,7 +24,7 @@ func (k Keeper) GetAllPools(ctx sdk.Context) (pools []types.Pool) {
 	return
 }
 
-// GetPools get pool as types.Pool
+// GetPool get pool as types.Pool
 func (k Keeper) GetPool(ctx sdk.Context, poolId uint64) (pool types.Pool, found bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
@@ -97,7 +97,7 @@ func (k Keeper) GetNextPoolId(ctx sdk.Context) uint64 {
 	return latestPool.Id + 1
 }
 
-// IterateLiquidty iterates over all LiquidityPools and performs a
+// IterateLiquidityPools iterates over all LiquidityPools and performs a
 // callback.
 func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types.Pool) (stop bool)) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
