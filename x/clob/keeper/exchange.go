@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/clob/types"
 )
 
@@ -19,10 +19,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 
 	currentFundingRate := k.GetFundingRate(ctx, market.Id)
 
-	requiredInitialMargin, err := trade.GetRequiredInitialMargin(market)
-	if err != nil {
-		return err
-	}
+	requiredInitialMargin := trade.GetRequiredInitialMargin(market)
 
 	buyerPerpetualOwner, buyerAlreadyOwn := k.GetPerpetualOwner(ctx, trade.BuyerSubAccount.GetOwnerAccAddress(), trade.MarketId)
 	// Deducting margin
@@ -46,9 +43,6 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 		oldQuantity := buyerPerpetual.Quantity
 
 		buyerPerpetual.Quantity = buyerPerpetual.Quantity.Add(trade.Quantity)
-		if err != nil {
-			return err
-		}
 		if buyerPerpetual.IsZero() {
 			// Buyer was in short position
 			k.DeletePerpetual(ctx, buyerPerpetual)
@@ -60,22 +54,10 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 			longFullyClosed = true
 		} else {
 			if wasLong {
-				n1, err := oldEntryPrice.Mul(utils.IntToDec(oldQuantity))
-				if err != nil {
-					return err
-				}
-				n2, err := trade.QuantityDec().Mul(trade.Price)
-				if err != nil {
-					return err
-				}
-				num, err := n1.Add(n2)
-				if err != nil {
-					return err
-				}
-				buyerPerpetual.EntryPrice, err = num.Quo(buyerPerpetual.QunatityDec())
-				if err != nil {
-					return err
-				}
+				n1 := oldEntryPrice.Mul(oldQuantity.ToLegacyDec())
+				n2 := trade.Quantity.ToLegacyDec().Mul(trade.Price)
+				num := n1.Add(n2)
+				buyerPerpetual.EntryPrice = num.Quo(buyerPerpetual.Quantity.ToLegacyDec())
 			} else {
 				buyerPerpetual.EntryPrice = trade.Price
 			}
@@ -133,22 +115,10 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 			shortFullyClosed = true
 		} else {
 			if wasShort {
-				n1, err := oldEntryPrice.Mul(utils.IntToDec(oldQuantity))
-				if err != nil {
-					return err
-				}
-				n2, err := utils.IntToDec(trade.Quantity.Neg()).Mul(trade.Price)
-				if err != nil {
-					return err
-				}
-				num, err := n1.Add(n2)
-				if err != nil {
-					return err
-				}
-				sellerPerpetual.EntryPrice, err = num.Quo(sellerPerpetual.QunatityDec())
-				if err != nil {
-					return err
-				}
+				n1 := oldEntryPrice.Mul(oldQuantity.ToLegacyDec())
+				n2 := trade.Quantity.ToLegacyDec().Neg().Mul(trade.Price)
+				num := n1.Add(n2)
+				sellerPerpetual.EntryPrice = num.Quo(sellerPerpetual.Quantity.ToLegacyDec())
 			} else {
 				sellerPerpetual.EntryPrice = trade.Price
 			}
@@ -187,7 +157,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 		MarketId:        market.Id,
 		Block:           uint64(ctx.BlockHeight()),
 		Price:           trade.Price,
-		CumulativePrice: utils.ZeroDec,
+		CumulativePrice: math.LegacyZeroDec(),
 		Timestamp:       uint64(ctx.BlockHeight()),
 	})
 	return nil

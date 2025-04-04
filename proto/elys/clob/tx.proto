@@ -55,31 +55,31 @@ message MsgCreatPerpetualMarket {
   string base_denom = 2;
   string quote_denom = 3;
   string initial_margin_ratio = 4 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string maintenance_margin_ratio = 5 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // maker_fee_rate defines the maker fee rate of a derivative market
   string maker_fee_rate = 6 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // taker_fee_rate defines the taker fee rate of a derivative market
   string taker_fee_rate = 7 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // relayer_fee_share_rate defines the percentage of the transaction fee shared
   // with the relayer in a derivative market
   string liquidation_fee_share_rate = 8 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string min_price_tick_size = 9 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // min_quantity_tick_size defines the minimum tick size of the quantity
@@ -92,11 +92,20 @@ message MsgCreatPerpetualMarket {
   // min_notional defines the minimum notional (in quote asset) required for
   // orders in the market
   string min_notional = 11 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 
-  repeated string allowed_collateral = 12;
+  string max_funding_rate = 12 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string max_funding_rate_change = 13 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  uint64 max_twap_prices_time = 14;
 }
 
 message MsgCreatPerpetualMarketResponse {
@@ -111,7 +120,7 @@ message MsgPlaceLimitOrder {
   uint64 market_id = 2;
   string price = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string base_quantity = 4 [

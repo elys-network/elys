@@ -71,7 +71,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 
 		lowestSellPrice := sellOrder.Price
 
-		if highestBuyPrice.Cmp(lowestSellPrice) >= 0 {
+		if highestBuyPrice.GTE(lowestSellPrice) {
 			sellOrderFilled := false
 
 			tradePrice := sellOrder.Price
@@ -79,14 +79,8 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 				tradePrice = buyOrder.Price
 			}
 			if sellOrder.BlockHeight == buyOrder.BlockHeight {
-				sumPrice, err := buyOrder.Price.Add(sellOrder.Price)
-				if err != nil {
-					return false, err
-				}
-				tradePrice, err = sumPrice.Quo(math.NewDecFromInt64(2))
-				if err != nil {
-					return false, err
-				}
+				sumPrice := buyOrder.Price.Add(sellOrder.Price)
+				tradePrice = sumPrice.Quo(math.LegacyNewDec(2))
 			}
 
 			// remainingQuantity = buyOrderQuantity at trade price - already filled

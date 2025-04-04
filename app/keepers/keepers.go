@@ -743,6 +743,15 @@ func NewAppKeeper(
 		),
 	)
 
+	app.ClobKeeper = *clobmodulekeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[clobmoduletypes.StoreKey]),
+		runtime.NewTransientStoreService(app.tkeys[clobmoduletypes.TStoreKey]),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.BankKeeper,
+		app.OracleKeeper,
+	)
+
 	app.EpochsKeeper = app.EpochsKeeper.SetHooks(
 		epochsmoduletypes.NewMultiEpochHooks(
 			// insert epoch hooks receivers here
@@ -761,15 +770,6 @@ func NewAppKeeper(
 			app.AccountedPoolKeeper.PerpetualHooks(),
 			app.TierKeeper.PerpetualHooks(),
 		),
-	)
-
-	app.ClobKeeper = *clobmodulekeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[clobmoduletypes.StoreKey]),
-		runtime.NewTransientStoreService(app.tkeys[clobmoduletypes.TStoreKey]),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.BankKeeper,
-		app.OracleKeeper,
 	)
 	return app
 

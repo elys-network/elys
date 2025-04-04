@@ -12,7 +12,7 @@ type EpochHooks struct {
 
 var _ epochstypes.EpochHooks = EpochHooks{}
 
-// Return the wrapper struct
+// EpochHooks Return the wrapper struct
 func (k Keeper) EpochHooks() EpochHooks {
 	return EpochHooks{k}
 }

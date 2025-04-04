@@ -61,7 +61,7 @@ func GetPerpetualOwnerKey(addr sdk.AccAddress, marketId uint64) []byte {
 	return key
 }
 
-func GetPerpetualOrderKey(marketId uint64, orderType OrderType, price sdkmath.Dec, height uint64) []byte {
+func GetPerpetualOrderKey(marketId uint64, orderType OrderType, price sdkmath.LegacyDec, height uint64) []byte {
 	key := append(PerpetualOrderPrefix, sdk.Uint64ToBigEndian(marketId)...)
 	key = append(key, []byte("/")...)
 	orderTypeByte := FalseByte

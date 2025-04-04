@@ -132,11 +132,6 @@ func (suite *KeeperTestSuite) TestCheckPerpetualMarketAlreadyExists() {
 		BaseDenom:  baseDenom,
 		QuoteDenom: quoteDenom,
 	}
-	market2 := types.PerpetualMarket{
-		Id:         2,
-		BaseDenom:  baseDenom,
-		QuoteDenom: quoteDenom,
-	}
 	testCases := []struct {
 		name   string
 		result bool
@@ -146,14 +141,13 @@ func (suite *KeeperTestSuite) TestCheckPerpetualMarketAlreadyExists() {
 			"does not exist",
 			false,
 			func() {
-				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market1)
 			},
 		},
 		{
 			"exists",
 			true,
 			func() {
-				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market2)
+				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market1)
 			},
 		},
 	}

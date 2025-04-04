@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/clob/types"
 )
 
@@ -19,7 +18,7 @@ func (k Keeper) GetFundingRate(ctx sdk.Context, marketId uint64) types.FundingRa
 		return types.FundingRate{
 			MarketId: marketId,
 			Block:    uint64(ctx.BlockHeight()),
-			Rate:     utils.ZeroDec,
+			Rate:     math.LegacyZeroDec(),
 		}
 	}
 
@@ -52,14 +51,11 @@ func (k Keeper) GetAllFundingRate(ctx sdk.Context) []types.FundingRate {
 	return list
 }
 
-//premium = TWAP(markPrice) - TWAP(indexPrice)
-
+// UpdateFundingRate
+// premium = TWAP(markPrice) - TWAP(indexPrice)
 // fundingRate = clamp(premium / indexPrice, -cap, +cap)
 func (k Keeper) UpdateFundingRate(ctx sdk.Context, market types.PerpetualMarket) error {
-	twapMarkPrice, err := k.GetCurrentTwapPrice(ctx, market.Id)
-	if err != nil {
-		return err
-	}
+	twapMarkPrice := k.GetCurrentTwapPrice(ctx, market.Id)
 	assetInfo, found := k.oracleKeeper.GetAssetInfo(ctx, market.BaseDenom)
 	if !found {
 		return fmt.Errorf("asset info (%s) not found", market.BaseDenom)
@@ -68,35 +64,23 @@ func (k Keeper) UpdateFundingRate(ctx sdk.Context, market types.PerpetualMarket)
 	if !found {
 		return fmt.Errorf("asset price (%s) not found", assetInfo.Display)
 	}
-	indexPrice, err := math.DecFromLegacyDec(oraclePrice.Price)
-	if err != nil {
-		return err
-	}
-	premium, err := twapMarkPrice.Sub(indexPrice)
-	if err != nil {
-		return err
-	}
-	fundingRateCal, err := premium.Quo(indexPrice)
-	if err != nil {
-		return err
-	}
+	indexPrice := oraclePrice.Price
+	premium := twapMarkPrice.Sub(indexPrice)
+
+	fundingRateCal := premium.Quo(indexPrice)
+
 	lastFundingRate := k.GetFundingRate(ctx, market.Id)
-	change, err := fundingRateCal.Sub(lastFundingRate.Rate)
-	if err != nil {
-		return err
-	}
+	change := fundingRateCal.Sub(lastFundingRate.Rate)
+
 	if !change.IsZero() {
-		if change.IsPositive() && change.Cmp(market.MaxFundingRateChange) > 0 {
+		if change.IsPositive() && change.GTE(market.MaxFundingRateChange) {
 			change = market.MaxFundingRateChange
 		}
-		if change.IsNegative() && utils.Abs(change).Cmp(market.MaxFundingRateChange) > 0 {
-			change = utils.Neg(market.MaxFundingRateChange)
+		if change.IsNegative() && change.Abs().GTE(market.MaxFundingRateChange) {
+			change = market.MaxFundingRateChange.Neg()
 		}
 	}
-	lastFundingRate.Rate, err = lastFundingRate.Rate.Add(change)
-	if err != nil {
-		return err
-	}
+	lastFundingRate.Rate = lastFundingRate.Rate.Add(change)
 	lastFundingRate.Block = uint64(ctx.BlockHeight())
 	k.SetFundingRate(ctx, lastFundingRate)
 	return nil

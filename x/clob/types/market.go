@@ -22,7 +22,7 @@ func (market PerpetualMarket) ValidateMsgOpenPosition(msg MsgPlaceLimitOrder) er
 	////	return fmt.Errorf("price should in multiples of %s", market.MinPriceTickSize.String())
 	////}
 	//
-	//maxLeverage := utils.OneDec.Quo(market.InitialMarginRatio)
+	//maxLeverage := math.LegacyOneDec().Quo(market.InitialMarginRatio)
 	//if msg.Leverage.ToDec().GT(maxLeverage) {
 	//	return fmt.Errorf("leverage should not be greater than %s", maxLeverage.String())
 	//}

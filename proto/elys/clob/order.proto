@@ -21,7 +21,7 @@ message PerpetualOrder {
   OrderType order_type = 2;
   string price = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   uint64 block_height = 4;

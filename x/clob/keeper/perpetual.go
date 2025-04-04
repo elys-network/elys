@@ -6,7 +6,6 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/clob/types"
 )
 
@@ -54,76 +53,46 @@ func (k Keeper) DeletePerpetual(ctx sdk.Context, p types.Perpetual) {
 	store.Delete(key)
 }
 
-func (k Keeper) GetPerpetualValue(ctx sdk.Context, perpetual types.Perpetual) (math.Dec, error) {
-	midPrice, err := k.GetMidPrice(ctx, perpetual.MarketId)
-	if err != nil {
-		return math.Dec{}, err
-	}
-	return midPrice.Mul(utils.IntToDec(perpetual.Quantity))
+func (k Keeper) GetPerpetualValue(ctx sdk.Context, perpetual types.Perpetual) math.LegacyDec {
+	twapPrice := k.GetCurrentTwapPrice(ctx, perpetual.MarketId)
+	return twapPrice.Mul(perpetual.Quantity.ToLegacyDec())
 }
 
-func (k Keeper) GetMaintenanceMargin(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) (math.Dec, error) {
-	currentValue, err := k.GetPerpetualValue(ctx, perpetual)
-	if err != nil {
-		return math.Dec{}, err
-	}
+func (k Keeper) GetMaintenanceMargin(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) math.LegacyDec {
+	currentValue := k.GetPerpetualValue(ctx, perpetual)
 	return market.MaintenanceMarginRatio.Mul(currentValue)
 }
 
 // GetCurrentLeverage currentValue / balanceValue
-func (k Keeper) GetCurrentLeverage(ctx sdk.Context, perpetual types.Perpetual) (math.Dec, error) {
-	currentValue, err := k.GetPerpetualValue(ctx, perpetual)
-	if err != nil {
-		return math.Dec{}, err
-	}
+func (k Keeper) GetCurrentLeverage(ctx sdk.Context, perpetual types.Perpetual) (math.LegacyDec, error) {
+	currentValue := k.GetPerpetualValue(ctx, perpetual)
 	subaccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), perpetual.MarketId)
 	if err != nil {
-		return math.Dec{}, err
+		return math.LegacyDec{}, err
 	}
 	balanceValue, err := k.GetAvailableBalanceValue(ctx, subaccount)
 	if err != nil {
-		return math.Dec{}, err
+		return math.LegacyDec{}, err
 	}
-	return currentValue.Quo(balanceValue)
+	return currentValue.Quo(balanceValue), nil
 }
 
 // GetLiquidationPrice
 // Long: Liquidation Price = Entry Price × (1 - 1/Leverage) / (1 - Maintenance Margin Rate)
 // Short:Liquidation Price = Entry Price × (1 + 1/Leverage) / (1 + Maintenance Margin Rate)
-func (k Keeper) GetLiquidationPrice(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) (math.Dec, error) {
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) (math.LegacyDec, error) {
 	leverage, err := k.GetCurrentLeverage(ctx, perpetual)
 	if err != nil {
-		return math.Dec{}, err
+		return math.LegacyDec{}, err
 	}
-	num_sub, err := utils.OneDec.Quo(leverage)
-	if err != nil {
-		return math.Dec{}, err
-	}
-	num, err := utils.OneDec.Sub(num_sub)
-	if err != nil {
-		return math.Dec{}, err
-	}
-	den, err := utils.OneDec.Sub(market.MaintenanceMarginRatio)
-	if err != nil {
-		return math.Dec{}, err
-	}
+	num_sub := math.LegacyOneDec().Quo(leverage)
+	num := math.LegacyOneDec().Sub(num_sub)
+	den := math.LegacyOneDec().Sub(market.MaintenanceMarginRatio)
 	if perpetual.IsShort() {
-		num_add, err := utils.OneDec.Quo(leverage)
-		if err != nil {
-			return math.Dec{}, err
-		}
-		num, err = utils.OneDec.Add(num_add)
-		if err != nil {
-			return math.Dec{}, err
-		}
-		den, err = utils.OneDec.Add(market.MaintenanceMarginRatio)
-		if err != nil {
-			return math.Dec{}, err
-		}
+		num_add := math.LegacyOneDec().Quo(leverage)
+		num = math.LegacyOneDec().Add(num_add)
+		den = math.LegacyOneDec().Add(market.MaintenanceMarginRatio)
 	}
-	result_mult, err := num.Quo(den)
-	if err != nil {
-		return math.Dec{}, err
-	}
-	return perpetual.EntryPrice.Mul(result_mult)
+	result_mult := num.Quo(den)
+	return perpetual.EntryPrice.Mul(result_mult), nil
 }

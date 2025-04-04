@@ -6,7 +6,6 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/clob/types"
 )
 
@@ -77,20 +76,14 @@ func (k Keeper) AddToSubAccount(ctx sdk.Context, from sdk.AccAddress, subAccount
 	return k.bankKeeper.SendCoins(ctx, from, subAccount.GetTradingAccountAddress(), coins)
 }
 
-func (k Keeper) GetAvailableBalanceValue(ctx sdk.Context, subAccount types.SubAccount) (totalValue math.Dec, err error) {
+func (k Keeper) GetAvailableBalanceValue(ctx sdk.Context, subAccount types.SubAccount) (totalValue math.LegacyDec, err error) {
 	for _, coin := range subAccount.AvailableBalance {
 		price, err := k.GetDenomPrice(ctx, coin.Denom)
 		if err != nil {
 			return totalValue, err
 		}
-		v, addErr := price.Mul(utils.IntToDec(coin.Amount))
-		if addErr != nil {
-			return totalValue, addErr
-		}
-		totalValue, err = totalValue.Add(v)
-		if err != nil {
-			return totalValue, addErr
-		}
+		v := price.Mul(coin.Amount.ToLegacyDec())
+		totalValue = totalValue.Add(v)
 	}
 	return totalValue, nil
 }

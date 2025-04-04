@@ -20,7 +20,7 @@ message Perpetual {
   uint64 market_id = 2;
   string entry_price = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string owner = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -37,7 +37,7 @@ message Perpetual {
   ];
   string entry_funding_rate = 7 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 }

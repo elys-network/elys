@@ -29,7 +29,7 @@ func CmdPlaceLimitOrder() *cobra.Command {
 				return err
 			}
 
-			price, err := math.NewDecFromString(args[2])
+			price, err := math.LegacyNewDecFromStr(args[2])
 			if err != nil {
 				return err
 			}
