@@ -350,7 +350,7 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 	require.Equal(t, len(pools), 1)
 	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
 	require.NoError(t, err)
-	// call min collateral query	tradingAssetPrice := app.OracleKeeper.GetAssetPriceFromDenom(ctx, ptypes.ATOM)
+	// call min collateral query	tradingAssetPrice := app.OracleKeeper.GetDenomPrice(ctx, ptypes.ATOM)
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
 		PoolId:          1,
 		Position:        types.Position_LONG,

@@ -40,7 +40,7 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		return nil, status.Error(codes.NotFound, "asset profile not found")
 	}
 
-	baseCurrencyPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrencyEntry.Denom)
+	baseCurrencyPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrencyEntry.Denom)
 
 	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, stablestaketypes.UsdcPoolId)
 	totalTVL = totalTVL.Add(stableStakeTVL.TruncateInt())

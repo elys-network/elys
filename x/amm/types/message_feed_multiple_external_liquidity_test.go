@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	"github.com/elys-network/elys/testutil/sample"
 	"github.com/elys-network/elys/x/amm/types"
@@ -95,7 +96,7 @@ func TestMsgFeedMultipleExternalLiquidity_ValidateBasic(t *testing.T) {
 				Liquidity: []types.ExternalLiquidity{
 					{
 						AmountDepthInfo: []types.AssetAmountDepth{
-							{Asset: "tokenA", Depth: sdkmath.LegacyDec{}, Amount: sdkmath.LegacyNewDec(500)},
+							{Asset: "tokenA", Depth: math.LegacyDec{}, Amount: sdkmath.LegacyNewDec(500)},
 						},
 					},
 				},
@@ -109,7 +110,7 @@ func TestMsgFeedMultipleExternalLiquidity_ValidateBasic(t *testing.T) {
 				Liquidity: []types.ExternalLiquidity{
 					{
 						AmountDepthInfo: []types.AssetAmountDepth{
-							{Asset: "tokenA", Depth: sdkmath.LegacyNewDec(1000), Amount: sdkmath.LegacyDec{}},
+							{Asset: "tokenA", Depth: sdkmath.LegacyNewDec(1000), Amount: math.LegacyDec{}},
 						},
 					},
 				},

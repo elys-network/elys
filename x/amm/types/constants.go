@@ -2,6 +2,7 @@ package types
 
 import (
 	"cosmossdk.io/math"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 const (
@@ -23,14 +24,14 @@ var (
 	// This is done so that smooth weight changes have enough precision to actually be smooth.
 	GuaranteedWeightPrecision int64 = 1 << 30
 
-	oneHalf           = math.LegacyMustNewDecFromStr("0.5")
-	twoDec            = math.LegacyMustNewDecFromStr("2")
-	ln2               = math.LegacyMustNewDecFromStr("0.693147180559945309")
-	inverseLn2        = math.LegacyMustNewDecFromStr("1.442695040888963407")
-	euler             = math.LegacyMustNewDecFromStr("2.718281828459045235")
+	oneHalf           = osmomath.MustNewBigDecFromStr("0.5")
+	twoDec            = osmomath.MustNewBigDecFromStr("2")
+	ln2               = osmomath.MustNewBigDecFromStr("0.693147180559945309")
+	inverseLn2        = osmomath.MustNewBigDecFromStr("1.442695040888963407")
+	euler             = osmomath.MustNewBigDecFromStr("2.718281828459045235")
 	powIterationLimit = int64(150_000)
 
 	// PowPrecision Don't EVER change after initializing
 	// TODO: Analyze choice here.
-	powPrecision = math.LegacyMustNewDecFromStr("0.00000001")
+	powPrecision = osmomath.MustNewBigDecFromStr("0.00000001")
 )

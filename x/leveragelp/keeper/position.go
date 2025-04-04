@@ -265,7 +265,7 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdk
 		return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
-	debtDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	debtDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrency)
 	debtValue := debtAmount.ToLegacyDec().Mul(debtDenomPrice)
 
 	ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)

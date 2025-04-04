@@ -10,6 +10,7 @@ import (
 	"github.com/elys-network/elys/x/amm/utils"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // CreatePool attempts to create a pool returning the newly created pool ID or
@@ -95,7 +96,7 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 	}
 
 	if tvl.IsPositive() {
-		pool.TotalShares = sdk.NewCoin(pool.TotalShares.Denom, tvl.Mul(types.OneShare.ToLegacyDec()).RoundInt())
+		pool.TotalShares = sdk.NewCoin(pool.TotalShares.Denom, tvl.Mul(osmomath.BigDecFromSDKInt(types.OneShare)).Dec().RoundInt())
 	}
 
 	// Mint the initial pool shares token to the sender

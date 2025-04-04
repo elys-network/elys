@@ -105,7 +105,7 @@ func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]math.Lega
 	for _, externalIncentive := range externalIncentives {
 		if externalIncentive.FromBlock < curBlockHeight && curBlockHeight <= externalIncentive.ToBlock {
 			totalAmount := math.LegacyNewDecFromInt(externalIncentive.AmountPerBlock.Mul(math.NewInt(totalBlocksPerYear)))
-			price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, externalIncentive.RewardDenom)
+			price := k.oracleKeeper.GetDenomPrice(ctx, externalIncentive.RewardDenom)
 
 			rewardsPerPool[externalIncentive.PoolId] = rewardsPerPool[externalIncentive.PoolId].Add(totalAmount.Mul(price))
 		}
