@@ -11,18 +11,19 @@ import (
 	"github.com/elys-network/elys/x/amm/keeper"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"
 )
 
 func TestPortionCoins(t *testing.T) {
 	coins := sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 1000), sdk.NewInt64Coin(ptypes.Elys, 10000)}
-	portion := keeper.PortionCoins(coins, sdkmath.LegacyZeroDec())
+	portion := keeper.PortionCoins(coins, osmomath.ZeroBigDec())
 	require.Equal(t, portion, sdk.Coins{})
 
-	portion = keeper.PortionCoins(coins, sdkmath.LegacyNewDecWithPrec(1, 1))
+	portion = keeper.PortionCoins(coins, osmomath.NewBigDecWithPrec(1, 1))
 	require.Equal(t, portion, sdk.Coins{sdk.NewInt64Coin(ptypes.Eden, 100), sdk.NewInt64Coin(ptypes.Elys, 1000)})
 
-	portion = keeper.PortionCoins(coins, sdkmath.LegacyNewDec(1))
+	portion = keeper.PortionCoins(coins, osmomath.NewBigDec(1))
 	require.Equal(t, portion, coins)
 }
 
@@ -241,7 +242,7 @@ func (suite *AmmKeeperTestSuite) TestSwapFeesToRevenueToken() {
 	// 		}
 	// 		// Executes the swap in the pool and stores the output. Updates pool assets but
 	// 		// does not actually transfer any tokens to or from the pool.
-	// 		tokenOutCoin, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, sdkmath.LegacyZeroDec())
+	// 		tokenOutCoin, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, osmomath.ZeroBigDec())
 	// 		if err != nil {
 	// 			return err
 	// 		}
@@ -254,7 +255,7 @@ func (suite *AmmKeeperTestSuite) TestSwapFeesToRevenueToken() {
 
 	// 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// 		// Also emits a swap event and updates related liquidity metrics.
-	// 		_, err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, tokenIn, tokenOutCoin, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())
+	// 		_, err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, tokenIn, tokenOutCoin, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec())
 	// 		if err != nil {
 	// 			return err
 	// 		}

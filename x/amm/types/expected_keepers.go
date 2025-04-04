@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	sdkmath "cosmossdk.io/math"
@@ -69,9 +70,9 @@ type AccountedPoolKeeper interface {
 }
 
 type TierKeeper interface {
-	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, tier string, discount sdkmath.LegacyDec)
+	GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio osmomath.BigDec, tier string, discount osmomath.BigDec)
 
-	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec
+	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) osmomath.BigDec
 }
 
 type ParameterKeeper interface {

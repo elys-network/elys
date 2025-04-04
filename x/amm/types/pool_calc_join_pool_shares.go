@@ -5,26 +5,27 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // calcPoolOutGivenSingleIn - balance pAo.
-func (p *Pool) calcSingleAssetJoin(tokenIn sdk.Coin, spreadFactor sdkmath.LegacyDec, tokenInPoolAsset PoolAsset, totalShares sdkmath.Int) (numShares sdkmath.Int, err error) {
+func (p *Pool) calcSingleAssetJoin(tokenIn sdk.Coin, spreadFactor osmomath.BigDec, tokenInPoolAsset PoolAsset, totalShares sdkmath.Int) (numShares sdkmath.Int, err error) {
 	totalWeight := p.TotalWeight
 	if totalWeight.IsZero() {
 		return sdkmath.ZeroInt(), errors.New("pool misconfigured, total weight = 0")
 	}
-	normalizedWeight := sdkmath.LegacyNewDecFromInt(tokenInPoolAsset.Weight).Quo(sdkmath.LegacyNewDecFromInt(totalWeight))
+	normalizedWeight := osmomath.BigDecFromSDKInt(tokenInPoolAsset.Weight).Quo(osmomath.BigDecFromSDKInt(totalWeight))
 	poolShares, err := calcPoolSharesOutGivenSingleAssetIn(
-		sdkmath.LegacyNewDecFromInt(tokenInPoolAsset.Token.Amount),
+		osmomath.BigDecFromSDKInt(tokenInPoolAsset.Token.Amount),
 		normalizedWeight,
-		sdkmath.LegacyNewDecFromInt(totalShares),
-		sdkmath.LegacyNewDecFromInt(tokenIn.Amount),
+		osmomath.BigDecFromSDKInt(totalShares),
+		osmomath.BigDecFromSDKInt(tokenIn.Amount),
 		spreadFactor,
 	)
 	if err != nil {
 		return sdkmath.ZeroInt(), err
 	}
-	return poolShares.TruncateInt(), nil
+	return poolShares.Dec().TruncateInt(), nil
 }
 
 // CalcSingleAssetJoinPoolShares calculates the number of shares created to join pool with the provided amount of `tokenIn`.
@@ -53,7 +54,7 @@ func (p *Pool) CalcSingleAssetJoinPoolShares(tokensIn sdk.Coins) (numShares sdkm
 
 	// 2) Single token provided, so do single asset join and exit.
 	totalShares := p.GetTotalShares()
-	numShares, err = p.calcSingleAssetJoin(tokensIn[0], p.PoolParams.SwapFee, poolAssetsByDenom[tokensIn[0].Denom], totalShares.Amount)
+	numShares, err = p.calcSingleAssetJoin(tokensIn[0], p.PoolParams.GetBigDecSwapFee(), poolAssetsByDenom[tokensIn[0].Denom], totalShares.Amount)
 	if err != nil {
 		return sdkmath.ZeroInt(), sdk.NewCoins(), err
 	}

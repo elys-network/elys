@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/amm/types/mocks"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -22,7 +23,7 @@ func TestGetTokenARate(t *testing.T) {
 		pool           *types.Pool
 		tokenA         string
 		tokenB         string
-		expectedRate   sdkmath.LegacyDec
+		expectedRate   osmomath.BigDec
 		expectedErrMsg string
 	}{
 		{
@@ -37,7 +38,7 @@ func TestGetTokenARate(t *testing.T) {
 			},
 			"tokenA",
 			"tokenB",
-			sdkmath.LegacyNewDec(4).Quo(sdkmath.LegacyNewDec(3)),
+			osmomath.NewBigDec(4).Quo(osmomath.NewBigDec(3)),
 			"",
 		},
 		{
@@ -51,34 +52,34 @@ func TestGetTokenARate(t *testing.T) {
 			},
 			"tokenA",
 			"tokenB",
-			sdkmath.LegacyNewDec(2),
+			osmomath.NewBigDec(2),
 			"",
 		},
 		{
 			"token price not set for tokenA",
 			func(oracleKeeper *mocks.OracleKeeper) {
-				oracleKeeper.On("GetDenomPrice", mock.Anything, "unknownToken").Return(sdkmath.LegacyZeroDec())
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "unknownToken").Return(osmomath.ZeroBigDec)
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 			},
 			"unknownToken",
 			"tokenB",
-			sdkmath.LegacyZeroDec(),
+			osmomath.ZeroBigDec(),
 			"token price not set: unknownToken",
 		},
 		{
 			"token price not set for tokenB",
 			func(oracleKeeper *mocks.OracleKeeper) {
 				oracleKeeper.On("GetDenomPrice", mock.Anything, "tokenA").Return(sdkmath.LegacyNewDec(5))
-				oracleKeeper.On("GetDenomPrice", mock.Anything, "unknownToken").Return(sdkmath.LegacyZeroDec())
+				oracleKeeper.On("GetDenomPrice", mock.Anything, "unknownToken").Return(osmomath.ZeroBigDec)
 			},
 			&types.Pool{
 				PoolParams: types.PoolParams{UseOracle: true},
 			},
 			"tokenA",
 			"unknownToken",
-			sdkmath.LegacyZeroDec(),
+			osmomath.ZeroBigDec(),
 			"token price not set: unknownToken",
 		},
 		{
@@ -92,7 +93,7 @@ func TestGetTokenARate(t *testing.T) {
 			},
 			"tokenA",
 			"tokenB",
-			sdkmath.LegacyNewDec(5).Quo(sdkmath.LegacyNewDec(2)),
+			osmomath.NewBigDec(5).Quo(osmomath.NewBigDec(2)),
 			"",
 		},
 		{
@@ -106,7 +107,7 @@ func TestGetTokenARate(t *testing.T) {
 			},
 			"tokenA",
 			"tokenB",
-			sdkmath.LegacyNewDec(5).Quo(sdkmath.LegacyNewDec(2)),
+			osmomath.NewBigDec(5).Quo(osmomath.NewBigDec(2)),
 			"",
 		},
 		{
@@ -121,7 +122,7 @@ func TestGetTokenARate(t *testing.T) {
 			},
 			"tokenA",
 			"tokenB",
-			sdkmath.LegacyMustNewDecFromStr("0.0000002"),
+			osmomath.MustNewBigDecFromStr("0.0000002"),
 			"",
 		},
 	}

@@ -5,6 +5,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *AmmKeeperTestSuite) TestExitPool() {
@@ -27,7 +28,7 @@ func (suite *AmmKeeperTestSuite) TestExitPool() {
 				suite.SetupCoinPrices()
 				addr := suite.AddAccounts(1, nil)
 				amount := sdkmath.NewInt(100000000000)
-				pool := suite.CreateNewAmmPool(addr[0], true, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				pool := suite.CreateNewAmmPool(addr[0], true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 				return addr[0], 1, pool.TotalShares.Amount.Add(sdkmath.NewInt(10)), sdk.NewCoins(sdk.NewCoin("uatom", math.NewInt(100))), "uatom", false
 			},
 			"Trying to exit >= the number of shares contained in the pool",

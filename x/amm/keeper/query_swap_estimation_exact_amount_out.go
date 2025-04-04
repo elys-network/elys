@@ -3,10 +3,9 @@ package keeper
 import (
 	"context"
 
-	sdkmath "cosmossdk.io/math"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -18,18 +17,18 @@ func (k Keeper) SwapEstimationExactAmountOut(goCtx context.Context, req *types.Q
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	spotPrice, _, tokenIn, swapFee, discount, availableLiquidity, slippage, weightBonus, err := k.CalcOutRouteSpotPrice(ctx, req.TokenOut, req.Routes, req.Discount, sdkmath.LegacyZeroDec())
+	spotPrice, _, tokenIn, swapFee, discount, availableLiquidity, slippage, weightBonus, err := k.CalcOutRouteSpotPrice(ctx, req.TokenOut, req.Routes, osmomath.BigDecFromDec(req.Discount), osmomath.ZeroBigDec())
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.QuerySwapEstimationExactAmountOutResponse{
-		SpotPrice:          spotPrice,
+		SpotPrice:          spotPrice.Dec(),
 		TokenIn:            tokenIn,
-		SwapFee:            swapFee,
-		Discount:           discount,
+		SwapFee:            swapFee.Dec(),
+		Discount:           discount.Dec(),
 		AvailableLiquidity: availableLiquidity,
-		Slippage:           slippage,
-		WeightBalanceRatio: weightBonus,
+		Slippage:           slippage.Dec(),
+		WeightBalanceRatio: weightBonus.Dec(),
 	}, nil
 }

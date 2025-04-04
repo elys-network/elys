@@ -1,7 +1,6 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -20,11 +19,11 @@ func solveConstantFunctionInvariant(
 	tokenBalanceFixedAfter,
 	tokenWeightFixed,
 	tokenBalanceUnknownBefore,
-	tokenWeightUnknown sdkmath.LegacyDec,
-) (sdkmath.LegacyDec, error) {
+	tokenWeightUnknown osmomath.BigDec,
+) (osmomath.BigDec, error) {
 	// Ensure tokenWeightUnknown is not zero to avoid division by zero
 	if tokenWeightUnknown.IsZero() {
-		return sdkmath.LegacyZeroDec(), ErrAmountTooLow
+		return osmomath.ZeroBigDec(), ErrAmountTooLow
 	}
 
 	// weightRatio = (weightX/weightY)
@@ -32,7 +31,7 @@ func solveConstantFunctionInvariant(
 
 	// Ensure tokenBalanceFixedAfter is not zero to avoid division by zero
 	if tokenBalanceFixedAfter.IsZero() || tokenBalanceFixedAfter.IsNegative() {
-		return sdkmath.LegacyZeroDec(), ErrAmountTooLow
+		return osmomath.ZeroBigDec(), ErrAmountTooLow
 	}
 
 	// y = balanceXBefore/balanceXAfter
@@ -40,7 +39,7 @@ func solveConstantFunctionInvariant(
 
 	// amountY = balanceY * (1 - (y ^ weightRatio))
 	yToWeightRatio := Pow(y, weightRatio)
-	paranthetical := sdkmath.LegacyOneDec().Sub(yToWeightRatio)
+	paranthetical := osmomath.OneBigDec().Sub(yToWeightRatio)
 	amountY := tokenBalanceUnknownBefore.Mul(paranthetical)
 	return amountY, nil
 }
@@ -58,8 +57,8 @@ func CalculateTokenARate(tokenBalanceA, tokenWeightA, tokenBalanceB, tokenWeight
 
 // feeRatio returns the fee ratio that is defined as follows:
 // 1 - ((1 - normalizedTokenWeightOut) * spreadFactor)
-func feeRatio(normalizedWeight, spreadFactor sdkmath.LegacyDec) sdkmath.LegacyDec {
-	return sdkmath.LegacyOneDec().Sub((sdkmath.LegacyOneDec().Sub(normalizedWeight)).Mul(spreadFactor))
+func feeRatio(normalizedWeight, spreadFactor osmomath.BigDec) osmomath.BigDec {
+	return osmomath.OneBigDec().Sub((osmomath.OneBigDec().Sub(normalizedWeight)).Mul(spreadFactor))
 }
 
 // balancer notation: pAo - pool shares amount out, given single asset in
@@ -69,8 +68,8 @@ func calcPoolSharesOutGivenSingleAssetIn(
 	normalizedTokenWeightIn,
 	poolShares,
 	tokenAmountIn,
-	spreadFactor sdkmath.LegacyDec,
-) (sdkmath.LegacyDec, error) {
+	spreadFactor osmomath.BigDec,
+) (osmomath.BigDec, error) {
 	// deduct spread factor on the in asset.
 	// We don't charge spread factor on the token amount that we imagine as unswapped (the normalized weight).
 	// So effective_swapfee = spread factor * (1 - normalized_token_weight)
@@ -90,9 +89,9 @@ func calcPoolSharesOutGivenSingleAssetIn(
 		tokenBalanceIn,
 		normalizedTokenWeightIn,
 		poolShares,
-		sdkmath.LegacyOneDec())
+		osmomath.OneBigDec())
 	if err != nil {
-		return sdkmath.LegacyDec{}, err
+		return osmomath.BigDec{}, err
 	}
 	poolAmountOut = poolAmountOut.Neg()
 	return poolAmountOut, nil

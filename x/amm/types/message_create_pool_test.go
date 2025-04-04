@@ -45,12 +45,12 @@ func TestMsgCreatePool_ValidateBasic(t *testing.T) {
 					{
 						Token:                  sdk.NewCoin("uusdc", sdkmath.NewInt(10000000)),
 						Weight:                 sdkmath.NewInt(10),
-						ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
+						ExternalLiquidityRatio: sdkmath.LegacyZeroDec(),
 					},
 					{
 						Token:                  sdk.NewCoin("uatom", sdkmath.NewInt(10000000)),
 						Weight:                 sdkmath.NewInt(10),
-						ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
+						ExternalLiquidityRatio: sdkmath.LegacyZeroDec(),
 					},
 				},
 			},
@@ -87,12 +87,12 @@ func TestMsgCreatePool_ValidateBasic(t *testing.T) {
 					{
 						Token:                  sdk.NewCoin("uusdc", sdkmath.NewInt(10000000)),
 						Weight:                 sdkmath.NewInt(10),
-						ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
+						ExternalLiquidityRatio: sdkmath.LegacyZeroDec(),
 					},
 					{
 						Token:                  sdk.NewCoin("uatom", sdkmath.NewInt(10000000)),
 						Weight:                 sdkmath.NewInt(-1),
-						ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
+						ExternalLiquidityRatio: sdkmath.LegacyZeroDec(),
 					},
 				},
 			},
@@ -111,12 +111,12 @@ func TestMsgCreatePool_ValidateBasic(t *testing.T) {
 					{
 						Token:                  sdk.NewCoin("uusdc", sdkmath.NewInt(10000000)),
 						Weight:                 sdkmath.NewInt(10),
-						ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
+						ExternalLiquidityRatio: sdkmath.LegacyZeroDec(),
 					},
 					{
 						Token:                  sdk.NewCoin("uatom", sdkmath.NewInt(10000000)),
 						Weight:                 sdkmath.NewInt(10),
-						ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
+						ExternalLiquidityRatio: sdkmath.LegacyZeroDec(),
 					},
 				},
 			},
