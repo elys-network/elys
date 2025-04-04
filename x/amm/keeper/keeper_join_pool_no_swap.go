@@ -120,7 +120,7 @@ func (k Keeper) JoinPoolNoSwap(
 		bonusTokenAmount := weightBalanceBonus.MulInt(tokensJoined[0].Amount).ToInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
-			weightBalanceBonus = elystypes.NewDec34FromInt(treasuryTokenAmount).Quo(elystypes.NewDec34FromInt(tokensJoined[0].Amount))
+			weightBalanceBonus = elystypes.NewDec34FromInt(treasuryTokenAmount).QuoInt(tokensJoined[0].Amount)
 		}
 	}
 

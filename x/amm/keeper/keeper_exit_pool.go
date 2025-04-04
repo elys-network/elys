@@ -42,7 +42,7 @@ func (k Keeper) ExitPool(
 		bonusTokenAmount := weightBalanceBonus.MulInt(exitCoins[0].Amount).ToInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
-			weightBalanceBonus = elystypes.NewDec34FromInt(treasuryTokenAmount).Quo(elystypes.NewDec34FromInt(exitCoins[0].Amount))
+			weightBalanceBonus = elystypes.NewDec34FromInt(treasuryTokenAmount).QuoInt(exitCoins[0].Amount)
 		}
 	}
 

@@ -256,7 +256,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 
 	if slippage.LT(elystypes.NewDec34FromLegacyDec(params.MinSlippage)) {
 		slippage = elystypes.NewDec34FromLegacyDec(params.MinSlippage)
-		slippageAmount = oracleOutAmount.Mul(elystypes.NewDec34FromLegacyDec(params.MinSlippage))
+		slippageAmount = oracleOutAmount.MulLegacyDec(params.MinSlippage)
 	}
 
 	// oracleOutAmount = 100 ATOM

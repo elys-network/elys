@@ -70,12 +70,12 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKee
 	if err != nil {
 		return elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
 	}
-	slippageAmount = slippageAmount.Mul(elystypes.NewDec34FromLegacyDec(externalLiquidityRatio))
+	slippageAmount = slippageAmount.MulLegacyDec(externalLiquidityRatio)
 	slippageValue := slippageAmount.Mul(outTokenPrice)
 
 	slippage := slippageValue.Quo(joinValue)
 
-	minSlippage := elystypes.NewDec34FromLegacyDec(params.MinSlippage).Mul(weightMultiplier)
+	minSlippage := weightMultiplier.MulLegacyDec(params.MinSlippage)
 	if slippage.LT(minSlippage) {
 		slippage = minSlippage
 		slippageValue = joinValue.Mul(minSlippage)
@@ -169,7 +169,7 @@ func (p *Pool) JoinPool(
 
 	swapFee = elystypes.ZeroDec34()
 	if isSwapFee {
-		swapFee = elystypes.NewDec34FromLegacyDec(p.GetPoolParams().SwapFee).Mul(initialWeightOut)
+		swapFee = initialWeightOut.MulLegacyDec(p.GetPoolParams().SwapFee)
 	}
 
 	takerFeesFinal = takerfees.Mul(initialWeightOut)
