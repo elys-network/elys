@@ -4,6 +4,7 @@ import (
 	"context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 )
 
@@ -50,4 +51,9 @@ type PerpetualKeeper interface {
 	IsPoolEnabled(ctx sdk.Context, poolId uint64) bool
 	IsPoolClosed(ctx sdk.Context, poolId uint64) bool
 	GetAllMTPs(ctx sdk.Context) []perpetualtypes.MTP
+}
+
+type OracleKeeper interface {
+	//SetAccountedPool(ctx sdk.Context, accountedPool oracletypes.AccountedPool)
+	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }

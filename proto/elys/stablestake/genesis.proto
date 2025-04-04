@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "elys/stablestake/params.proto";
 import "elys/stablestake/debt.proto";
 import "elys/stablestake/types.proto";
+import "elys/stablestake/pool.proto";
 
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
 
@@ -13,4 +14,6 @@ message GenesisState {
   Params params = 1 [ (gogoproto.nullable) = false ];
   repeated Debt debt_list = 2 [ (gogoproto.nullable) = false ];
   repeated InterestBlock interest_list = 3 [ (gogoproto.nullable) = false ];
+  repeated Pool pools = 4 [ (gogoproto.nullable) = false ];
+  repeated AmmPool amm_pools = 5 [ (gogoproto.nullable) = false ];
 }

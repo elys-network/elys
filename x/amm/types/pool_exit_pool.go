@@ -6,17 +6,18 @@ import (
 	elystypes "github.com/elys-network/elys/types"
 )
 
-func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string, params Params) (exitingCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, err error) {
-	exitingCoins, weightBalanceBonus, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeper, exitingShares, tokenOutDenom, params)
+// return exitingCoins, weightBalanceBonus, slippage, swapFee, slippageCoins, nil
+func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string, params Params, takerFees math.LegacyDec, applyWeightBreakingFee bool) (exitingCoins sdk.Coins, weightBalanceBonus elystypes.Dec34, slippage elystypes.Dec34, swapFee elystypes.Dec34, takerFeesFinal elystypes.Dec34, slippageCoins sdk.Coins, err error) {
+	exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeper, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
 	if err != nil {
-		return sdk.Coins{}, elystypes.ZeroDec34(), err
+		return sdk.Coins{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, err
 	}
 
 	if err := p.processExitPool(ctx, exitingCoins, exitingShares); err != nil {
-		return sdk.Coins{}, elystypes.ZeroDec34(), err
+		return sdk.Coins{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{}, err
 	}
 
-	return exitingCoins, weightBalanceBonus, nil
+	return exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, nil
 }
 
 // exitPool exits the pool given exitingCoins and exitingShares.

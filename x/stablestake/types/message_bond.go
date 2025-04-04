@@ -1,19 +1,21 @@
 package types
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ sdk.Msg = &MsgBond{}
 
-func NewMsgBond(creator string, amount math.Int) *MsgBond {
+func NewMsgBond(creator string, amount math.Int, poolId uint64) *MsgBond {
 	return &MsgBond{
 		Creator: creator,
 		Amount:  amount,
+		PoolId:  poolId,
 	}
 }
 

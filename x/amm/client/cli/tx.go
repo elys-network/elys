@@ -28,6 +28,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdCreatePool())
 	cmd.AddCommand(CmdJoinPool())
 	cmd.AddCommand(CmdExitPool())
+	cmd.AddCommand(CmdUpFrontSwapExactAmountIn())
 	cmd.AddCommand(CmdSwapExactAmountIn())
 	cmd.AddCommand(CmdSwapExactAmountOut())
 	cmd.AddCommand(CmdSwapByDenom())

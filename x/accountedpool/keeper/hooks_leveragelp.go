@@ -34,6 +34,11 @@ func (k Keeper) OnLeverageLpPoolEnable(ctx sdk.Context, ammPool ammtypes.Pool) e
 	// Set accounted pool
 	k.SetAccountedPool(ctx, accountedPool)
 
+	//ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventLeverageLpEnable,
+	//	sdk.NewAttribute("pool_id", strconv.FormatUint(poolId, 10)),
+	//	sdk.NewAttribute("initial_tokens", sdk.Coins(accountedPool.TotalTokens).String()),
+	//))
+
 	return nil
 }
 
@@ -51,6 +56,10 @@ func (k Keeper) OnLeverageLpPoolDisable(ctx sdk.Context, ammPool ammtypes.Pool) 
 	}
 
 	k.RemoveAccountedPool(ctx, ammPool.PoolId)
+
+	//ctx.EventManager().EmitEvent(sdk.NewEvent(types.EventLeverageLpDisable,
+	//	sdk.NewAttribute("pool_id", strconv.FormatUint(ammPool.PoolId, 10)),
+	//))
 
 	return nil
 }
@@ -78,8 +87,8 @@ func (h LeverageLpHooks) AfterLeverageLpPositionOpen(ctx sdk.Context, sender sdk
 	return nil
 }
 
-func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) error {
-	return nil
+func (h LeverageLpHooks) AfterLeverageLpPositionClose(ctx sdk.Context, _ sdk.AccAddress, ammPool ammtypes.Pool) error {
+	return h.k.UpdateAccountedPoolOnAmmChange(ctx, ammPool)
 }
 
 func (h LeverageLpHooks) AfterLeverageLpPositionOpenConsolidate(ctx sdk.Context, sender sdk.AccAddress, ammPool ammtypes.Pool) error {

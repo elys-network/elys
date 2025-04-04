@@ -38,7 +38,8 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 		}
 
 		// Get Pool swap fee
-		swapFee := pool.GetPoolParams().SwapFee
+		swapFee := pool.GetPoolParams().SwapFee.Quo(sdkmath.LegacyNewDec(int64(len(routes))))
+		takersFee := k.parameterKeeper.GetParams(ctx).TakerFees.Quo(sdkmath.LegacyNewDec(int64(len(routes))))
 
 		// Override swap fee if applicable
 		if overrideSwapFee.IsPositive() {
@@ -51,9 +52,20 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 		// Estimate swap
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		cacheCtx, _ := ctx.CacheContext()
-		swapResult, swapSlippage, _, weightBalanceBonus, _, swapFee, err := k.SwapInAmtGivenOut(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, swapFee, sdkmath.LegacyOneDec())
+		swapResult, swapSlippage, _, weightBalanceBonus, _, swapFee, err := k.SwapInAmtGivenOut(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, swapFee, sdkmath.LegacyOneDec(), takersFee)
 		if err != nil {
 			return elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, elystypes.ZeroDec34(), elystypes.ZeroDec34(), err
+		}
+
+		if weightBalanceBonus.IsPositive() {
+			rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
+			treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
+
+			bonusTokenAmount := elystypes.NewDec34FromInt(tokenOut.Amount).Mul(weightBalanceBonus).ToInt()
+
+			if treasuryTokenAmount.LT(bonusTokenAmount) {
+				weightBalanceBonus = elystypes.NewDec34FromInt(treasuryTokenAmount).Quo(elystypes.NewDec34FromInt(tokenOut.Amount))
+			}
 		}
 
 		// Calculate the total discounted swap fee

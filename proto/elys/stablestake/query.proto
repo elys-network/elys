@@ -5,6 +5,9 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "elys/stablestake/params.proto";
+import "elys/stablestake/pool.proto";
+import "elys/stablestake/types.proto";
+import "elys/stablestake/debt.proto";
 import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/stablestake/types";
@@ -20,6 +23,36 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/stablestake/borrow-ratio";
   }
+  // Queries a single pool given its index.
+  rpc Pool(QueryGetPoolRequest) returns (QueryGetPoolResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/stablestake/pool/{pool_id}";
+  }
+  // Queries a list of all pools.
+  rpc Pools(QueryAllPoolRequest) returns (QueryAllPoolResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/stablestake/pool/{pagination.key}";
+  }
+
+  rpc AmmPool(QueryAmmPoolRequest) returns (QueryAmmPoolResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/stablestake/amm-pool/{id}";
+  }
+
+  rpc AllAmmPools(QueryAllAmmPoolsRequest) returns (QueryAllAmmPoolsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/stablestake/all-amm-pools";
+  }
+
+  rpc Debt(QueryDebtRequest) returns (QueryDebtResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/stablestake/debt/{pool_id}/{address}";
+  }
+
+  rpc GetInterest(QueryGetInterestRequest) returns (QueryGetInterestResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/stablestake/interest/{pool_id}/{block_height}";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -31,8 +64,20 @@ message QueryParamsResponse {
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
+message QueryAmmPoolRequest { uint64 id = 1; }
+
+message QueryAmmPoolResponse {
+  AmmPool amm_pool = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryAllAmmPoolsRequest {}
+
+message QueryAllAmmPoolsResponse {
+  repeated AmmPool amm_pools = 1 [ (gogoproto.nullable) = false ];
+}
+
 // QueryBorrowRatioRequest is request type for the Query/BorrowRatio RPC method.
-message QueryBorrowRatioRequest {}
+message QueryBorrowRatioRequest { uint64 pool_id = 1; }
 
 // QueryBorrowRatioResponse is response type for the Query/BorrowRatio RPC
 // method.
@@ -52,4 +97,105 @@ message QueryBorrowRatioResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+}
+
+message QueryGetPoolRequest { uint64 pool_id = 1; }
+
+message QueryGetPoolResponse {
+  PoolResponse pool = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryAllPoolRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPoolResponse {
+  repeated PoolResponse pools = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message PoolResponse {
+  string deposit_denom = 1;
+  string redemption_rate = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string interest_rate = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string interest_rate_max = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string interest_rate_min = 5 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string interest_rate_increase = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string interest_rate_decrease = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string health_gain_factor = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string total_value = 9 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string max_leverage_ratio = 10 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  uint64 pool_id = 11;
+  string total_deposit = 12 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_borrow = 13 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string borrow_ratio = 14 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string max_withdraw_ratio = 15 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryDebtRequest {
+  uint64 pool_id = 1;
+  string address = 2;
+}
+
+message QueryDebtResponse { Debt debt = 1 [ (gogoproto.nullable) = false ]; }
+
+message QueryGetInterestRequest {
+  uint64 pool_id = 1;
+  uint64 block_height = 2;
+}
+
+message QueryGetInterestResponse {
+  InterestBlock interest_block = 1 [ (gogoproto.nullable) = false ];
 }

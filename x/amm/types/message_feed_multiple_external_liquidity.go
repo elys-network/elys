@@ -23,8 +23,8 @@ func (msg *MsgFeedMultipleExternalLiquidity) ValidateBasic() error {
 
 	for _, liquidity := range msg.Liquidity {
 		for _, depthInfo := range liquidity.AmountDepthInfo {
-			if err = sdk.ValidateDenom(depthInfo.Asset); err != nil {
-				return err
+			if depthInfo.Asset == "" {
+				return errors.New("asset cannot be empty")
 			}
 			if depthInfo.Depth.IsNil() || depthInfo.Depth.IsNegative() {
 				return errors.New("depth cannot be negative or nil")

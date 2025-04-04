@@ -25,6 +25,7 @@ var (
 	AirdropClaimedKeyPrefix = []byte{0x07}
 	TotalClaimedKeyPrefix   = []byte{0x08}
 	KolKeyPrefix            = []byte{0x09}
+	TotalSupplyKeyPrefix    = []byte{0x10}
 )
 
 func GetCommitmentsKey(creator sdk.AccAddress) []byte {

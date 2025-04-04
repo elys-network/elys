@@ -1,9 +1,11 @@
 package keeper_test
 
 import (
-	"cosmossdk.io/math"
 	"time"
 
+	"cosmossdk.io/math"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -55,11 +57,11 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 				err := suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
 				suite.Require().NoError(err)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
-				_, err = suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg2)
+				_, err = suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg2, 1)
 				suite.Require().NoError(err)
-				_, err = suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg3)
+				_, err = suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg3, 1)
 				suite.Require().NoError(err)
 				// doing this before gives panic
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
@@ -100,11 +102,11 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
-				_, err = suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg2)
+				_, err = suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg2, 1)
 				suite.Require().NoError(err)
-				_, err = suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg3)
+				_, err = suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg3, 1)
 				suite.Require().NoError(err)
 				params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
 				params.FallbackEnabled = true
@@ -135,7 +137,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
 				suite.app.LeveragelpKeeper.RemovePool(suite.ctx, 1)
 				return position1
@@ -158,7 +160,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 				}
 				suite.SetCurrentHeight(1)
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1)
+				position1, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg1, 1)
 				suite.Require().NoError(err)
 				suite.app.AmmKeeper.RemovePool(suite.ctx, 1)
 				return position1
@@ -204,7 +206,7 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 					StopLossPrice:    math.LegacyNewDec(2),
 				}
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg)
+				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg, 1)
 				suite.Require().NoError(err)
 				// doing this before gives panic
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
@@ -231,7 +233,7 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 					Leverage:         leverage,
 					StopLossPrice:    math.LegacyNewDec(2),
 				}
-				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg)
+				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg, 1)
 				suite.Require().NoError(err)
 				return position
 			},
@@ -256,7 +258,7 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 					Leverage:         leverage,
 					StopLossPrice:    math.LegacyNewDec(2),
 				}
-				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg)
+				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg, 1)
 				suite.Require().NoError(err)
 				params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
 				params.SafetyFactor = math.LegacyOneDec().MulInt64(1000)
@@ -285,7 +287,7 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 					Leverage:         leverage,
 					StopLossPrice:    math.LegacyNewDec(2),
 				}
-				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg)
+				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg, 1)
 				suite.Require().NoError(err)
 				params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
 				params.SafetyFactor = math.LegacyOneDec().MulInt64(1000)
@@ -299,16 +301,44 @@ func (suite *KeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() {
 				suite.Require().True(closeAttempted)
 			},
 		},
+		{
+			"fail: Add some unexpected panic, function should revert changes and return error",
+			true,
+			"",
+			func() *types.Position {
+				suite.ResetSuite()
+				suite.SetupCoinPrices(suite.ctx)
+				initializeForOpen(suite, addresses, asset1, asset2)
+				openMsg := types.MsgOpen{
+					Creator:          addresses[1].String(),
+					CollateralAsset:  "uusdc",
+					CollateralAmount: math.NewInt(1000_000),
+					AmmPoolId:        1,
+					Leverage:         leverage,
+					StopLossPrice:    math.LegacyNewDec(2),
+				}
+				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg, 1)
+				suite.Require().NoError(err)
+				params := suite.app.LeveragelpKeeper.GetParams(suite.ctx)
+				params.SafetyFactor = math.LegacyOneDec().MulInt64(1000)
+				err = suite.app.LeveragelpKeeper.SetParams(suite.ctx, &params)
+				suite.Require().NoError(err)
+				suite.AddBlockTime(2 * time.Hour)
+				suite.app.StablestakeKeeper.SubtractPoolLiabilities(suite.ctx, 1, sdk.NewCoin(position.Collateral.Denom, position.Collateral.Amount))
+				return position
+			},
+			func(isHealthy, closeAttempted bool) {
+				suite.Require().True(closeAttempted)
+			},
+		},
 	}
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			position := tc.prerequisiteFunction()
 			pool, found := suite.app.LeveragelpKeeper.GetPool(suite.ctx, 1)
 			suite.Require().True(found)
-			ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, 1)
-			suite.Require().True(found)
 
-			isHealthy, closeAttempted, _, err := suite.app.LeveragelpKeeper.CheckAndLiquidateUnhealthyPosition(suite.ctx, position, pool, ammPool)
+			isHealthy, closeAttempted, _, err := suite.app.LeveragelpKeeper.CheckAndLiquidateUnhealthyPosition(suite.ctx, position, pool)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
@@ -349,7 +379,7 @@ func (suite *KeeperTestSuite) TestCheckAndCloseAtStopLoss() {
 					StopLossPrice:    math.LegacyNewDec(2),
 				}
 				initializeForOpen(suite, addresses, asset1, asset2)
-				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg)
+				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg, 1)
 				suite.Require().NoError(err)
 				// doing this before gives panic
 				suite.RemovePrices(suite.ctx, []string{"uusdc"})
@@ -376,7 +406,7 @@ func (suite *KeeperTestSuite) TestCheckAndCloseAtStopLoss() {
 					Leverage:         leverage,
 					StopLossPrice:    math.LegacyNewDec(1).QuoInt64(2),
 				}
-				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg)
+				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg, 1)
 				suite.Require().NoError(err)
 				suite.AddBlockTime(2 * time.Hour)
 				return position
@@ -402,7 +432,7 @@ func (suite *KeeperTestSuite) TestCheckAndCloseAtStopLoss() {
 					Leverage:         leverage,
 					StopLossPrice:    math.LegacyNewDec(2),
 				}
-				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg)
+				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg, 1)
 				suite.Require().NoError(err)
 				return position
 			},
@@ -427,7 +457,7 @@ func (suite *KeeperTestSuite) TestCheckAndCloseAtStopLoss() {
 					Leverage:         leverage,
 					StopLossPrice:    math.LegacyNewDec(2),
 				}
-				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg)
+				position, err := suite.app.LeveragelpKeeper.OpenLong(suite.ctx, &openMsg, 1)
 				suite.Require().NoError(err)
 				suite.AddBlockTime(2 * time.Hour)
 				return position

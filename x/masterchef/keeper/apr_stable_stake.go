@@ -35,7 +35,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			return elystypes.ZeroDec34(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 		}
 
-		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, stabletypes.UsdcPoolId)
 		if stableTvl.IsZero() {
 			return elystypes.ZeroDec34(), nil
 		}
@@ -48,7 +48,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		edenDenomPrice, _ := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
 		// Get pool info from incentive param
-		poolInfo, found := k.GetPoolInfo(ctx, uint64(stabletypes.PoolId))
+		poolInfo, found := k.GetPoolInfo(ctx, uint64(stabletypes.UsdcPoolId))
 		if !found {
 			return elystypes.ZeroDec34(), nil
 		}
@@ -76,12 +76,15 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			Quo(stableTvl)
 		return apr, nil
 	} else if query.Denom == ptypes.BaseCurrency {
-		params := k.stableKeeper.GetParams(ctx)
+		borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, query.Denom)
+		if !found {
+			return elystypes.ZeroDec34(), errorsmod.Wrap(types.ErrPoolNotFound, "pool not found")
+		}
 		res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{})
 		if err != nil {
 			return elystypes.ZeroDec34(), err
 		}
-		apr := elystypes.NewDec34FromLegacyDec(params.InterestRate).MulLegacyDec(res.BorrowRatio)
+		apr := elystypes.NewDec34FromLegacyDec(borrowPool.InterestRate.Mul(res.BorrowRatio))
 		return apr, nil
 	}
 

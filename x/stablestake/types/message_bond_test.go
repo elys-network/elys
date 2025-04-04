@@ -1,9 +1,10 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
@@ -76,11 +77,13 @@ func TestNewMsgBond(t *testing.T) {
 	got := NewMsgBond(
 		accAdress,
 		amount,
+		UsdcPoolId,
 	)
 
 	want := &MsgBond{
 		Creator: accAdress,
 		Amount:  amount,
+		PoolId:  UsdcPoolId,
 	}
 
 	assert.Equal(t, want, got)

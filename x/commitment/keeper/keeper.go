@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	"cosmossdk.io/core/store"
 
@@ -36,7 +37,7 @@ type (
 
 		accountKeeper      types.AccountKeeper
 		bankKeeper         types.BankKeeper
-		stakingKeeper      types.StakingKeeper
+		stakingKeeper      *stakingkeeper.Keeper
 		assetProfileKeeper types.AssetProfileKeeper
 		authority          string
 	}
@@ -47,7 +48,7 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	stakingKeeper types.StakingKeeper,
+	stakingKeeper *stakingkeeper.Keeper,
 	assetProfileKeeper types.AssetProfileKeeper,
 	authority string,
 ) *Keeper {
@@ -101,83 +102,126 @@ func (k Keeper) BlockedAddr(addr sdk.AccAddress) bool {
 	return k.bankKeeper.BlockedAddr(addr)
 }
 
-func (k Keeper) AddEdenEdenBOnAccount(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) sdk.Coins {
+func (k Keeper) AddEdenEdenBOnAccount(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Coins) {
 	commitments := k.GetCommitments(ctx, addr)
+	var coinsChanged sdk.Coins
 	if amt.AmountOf(ptypes.Eden).IsPositive() {
 		coin := sdk.NewCoin(ptypes.Eden, amt.AmountOf(ptypes.Eden))
+		coinsChanged.Add(coin)
 		amt = amt.Sub(coin)
 		commitments.AddClaimed(coin)
 	}
 	if amt.AmountOf(ptypes.EdenB).IsPositive() {
 		coin := sdk.NewCoin(ptypes.EdenB, amt.AmountOf(ptypes.EdenB))
+		coinsChanged.Add(coin)
 		amt = amt.Sub(coin)
 		commitments.AddClaimed(coin)
 	}
 
 	// Save the updated Commitments
 	k.SetCommitments(ctx, commitments)
-	return amt
+
+	return amt, coinsChanged
 }
 
-func (k Keeper) AddEdenEdenBOnModule(ctx sdk.Context, moduleName string, amt sdk.Coins) sdk.Coins {
+func (k Keeper) AddEdenEdenBOnModule(ctx sdk.Context, moduleName string, amt sdk.Coins) (sdk.Coins, sdk.Coins) {
 	addr := authtypes.NewModuleAddress(moduleName)
 	commitments := k.GetCommitments(ctx, addr)
+	var coinsChanged sdk.Coins
 	if amt.AmountOf(ptypes.Eden).IsPositive() {
 		coin := sdk.NewCoin(ptypes.Eden, amt.AmountOf(ptypes.Eden))
+		coinsChanged.Add(coin)
 		amt = amt.Sub(coin)
 		commitments.AddClaimed(coin)
 	}
 	if amt.AmountOf(ptypes.EdenB).IsPositive() {
 		coin := sdk.NewCoin(ptypes.EdenB, amt.AmountOf(ptypes.EdenB))
+		coinsChanged.Add(coin)
 		amt = amt.Sub(coin)
 		commitments.AddClaimed(coin)
 	}
 
 	// Save the updated Commitments
 	k.SetCommitments(ctx, commitments)
-	return amt
+
+	return amt, coinsChanged
 }
 
-func (k Keeper) SubEdenEdenBOnModule(ctx sdk.Context, moduleName string, amt sdk.Coins) (sdk.Coins, error) {
+func (k Keeper) SubEdenEdenBOnModule(ctx sdk.Context, moduleName string, amt sdk.Coins) (sdk.Coins, sdk.Coins, error) {
 	addr := authtypes.NewModuleAddress(moduleName)
 	commitments := k.GetCommitments(ctx, addr)
+	var coinsChanged sdk.Coins
 	if amt.AmountOf(ptypes.Eden).IsPositive() {
 		coin := sdk.NewCoin(ptypes.Eden, amt.AmountOf(ptypes.Eden))
+		coinsChanged.Add(coin)
 		amt = amt.Sub(coin)
 		err := commitments.SubClaimed(coin)
 		if err != nil {
-			return amt, err
+			return amt, nil, err
 		}
 	}
 	if amt.AmountOf(ptypes.EdenB).IsPositive() {
 		coin := sdk.NewCoin(ptypes.EdenB, amt.AmountOf(ptypes.EdenB))
+		coinsChanged.Add(coin)
 		amt = amt.Sub(coin)
 		err := commitments.SubClaimed(coin)
 		if err != nil {
-			return amt, err
+			return amt, nil, err
 		}
 	}
 
 	// Save the updated Commitments
 	k.SetCommitments(ctx, commitments)
-	return amt, nil
+	return amt, coinsChanged, nil
 }
 
 func (k Keeper) MintCoins(goCtx context.Context, moduleName string, amt sdk.Coins) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	amt = k.AddEdenEdenBOnModule(ctx, moduleName, amt)
+	amt, coinsChanged := k.AddEdenEdenBOnModule(ctx, moduleName, amt)
+
+	prev := k.GetTotalSupply(ctx)
+	prev.TotalEdenSupply = prev.TotalEdenSupply.Add(coinsChanged.AmountOf(ptypes.Eden))
+	prev.TotalEdenbSupply = prev.TotalEdenbSupply.Add(coinsChanged.AmountOf(ptypes.EdenB))
+	k.SetTotalSupply(ctx, prev)
+
+	// Emit event to track Eden and EdenB mint amount
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeMintCoins,
+			sdk.NewAttribute("module", moduleName),
+			sdk.NewAttribute("coins", coinsChanged.String()),
+		),
+	)
+
 	if amt.Empty() {
 		return nil
 	}
+
 	return k.bankKeeper.MintCoins(ctx, moduleName, amt)
 }
 
 func (k Keeper) BurnCoins(goCtx context.Context, moduleName string, amt sdk.Coins) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	amt, err := k.SubEdenEdenBOnModule(ctx, moduleName, amt)
+
+	amt, coinsChanged, err := k.SubEdenEdenBOnModule(ctx, moduleName, amt)
 	if err != nil {
 		return err
 	}
+
+	prev := k.GetTotalSupply(ctx)
+	prev.TotalEdenSupply = prev.TotalEdenSupply.Sub(coinsChanged.AmountOf(ptypes.Eden))
+	prev.TotalEdenbSupply = prev.TotalEdenbSupply.Sub(coinsChanged.AmountOf(ptypes.EdenB))
+	k.SetTotalSupply(ctx, prev)
+
+	// Emit event to track Eden and EdenB burn amount
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeBurnCoins,
+			sdk.NewAttribute("module", moduleName),
+			sdk.NewAttribute("coins", coinsChanged.String()),
+		),
+	)
+
 	if amt.Empty() {
 		return nil
 	}
@@ -187,25 +231,44 @@ func (k Keeper) BurnCoins(goCtx context.Context, moduleName string, amt sdk.Coin
 
 func (k Keeper) SendCoinsFromModuleToModule(goCtx context.Context, senderModule string, recipientModule string, amt sdk.Coins) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_, err := k.SubEdenEdenBOnModule(ctx, senderModule, amt)
+	_, _, err := k.SubEdenEdenBOnModule(ctx, senderModule, amt)
 	if err != nil {
 		return err
 	}
-	amt = k.AddEdenEdenBOnModule(ctx, recipientModule, amt)
+	amt, coinsChanged := k.AddEdenEdenBOnModule(ctx, recipientModule, amt)
+	// Emit event to track Eden and EdenB send amount
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeSendCoins,
+			sdk.NewAttribute("sender_module", senderModule),
+			sdk.NewAttribute("recipient_module", recipientModule),
+			sdk.NewAttribute("coins", coinsChanged.String()),
+		),
+	)
 	if amt.Empty() {
 		return nil
 	}
+
 	return k.bankKeeper.SendCoinsFromModuleToModule(ctx, senderModule, recipientModule, amt)
 }
 
 func (k Keeper) SendCoinsFromModuleToAccount(goCtx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_, err := k.SubEdenEdenBOnModule(ctx, senderModule, amt)
+	_, _, err := k.SubEdenEdenBOnModule(ctx, senderModule, amt)
 	if err != nil {
 		return err
 	}
 
-	amt = k.AddEdenEdenBOnAccount(ctx, recipientAddr, amt)
+	amt, coinsChanged := k.AddEdenEdenBOnAccount(ctx, recipientAddr, amt)
+	// Emit event to track Eden and EdenB send amount
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeSendCoins,
+			sdk.NewAttribute("sender_module", senderModule),
+			sdk.NewAttribute("recipient_address", recipientAddr.String()),
+			sdk.NewAttribute("coins", coinsChanged.String()),
+		),
+	)
 	if amt.Empty() {
 		return nil
 	}

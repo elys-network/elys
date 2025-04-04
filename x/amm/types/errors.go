@@ -39,6 +39,8 @@ var (
 	ErrOnlyBaseAssetsPoolAllowed = errors.Register(ModuleName, 114, "Only base assets paired pool allowed")
 
 	ErrTokenOutAmountZero = errors.Register(ModuleName, 115, "token out amount is zero")
+
+	ErrUnauthorizedUpFrontSwap = errors.Register(ModuleName, 116, "sender is not allowed to make upfront swaps")
 )
 
 const (

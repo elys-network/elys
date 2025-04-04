@@ -4,7 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	keeper "github.com/elys-network/elys/x/tradeshield/keeper"
+	"github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 

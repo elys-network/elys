@@ -15,6 +15,8 @@ import (
 	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/elys-network/elys/app/keepers"
+	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	"github.com/spf13/cast"
 
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -25,6 +27,9 @@ import (
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	wasm "github.com/CosmWasm/wasmd/x/wasm"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -129,6 +134,7 @@ func NewElysApp(
 	skipUpgradeHeights map[int64]bool,
 	homePath string,
 	appOpts servertypes.AppOptions,
+	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *ElysApp {
 
@@ -185,6 +191,7 @@ func NewElysApp(
 		logger,
 		appOpts,
 		AccountAddressPrefix,
+		wasmOpts,
 	)
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -232,7 +239,28 @@ func NewElysApp(
 	app.mm.SetOrderInitGenesis(orderInitBlockers()...)
 
 	// Uncomment if you want to set a custom migration order here.
-	// app.mm.SetOrderMigrations(custom order)
+	allModules := []string{}
+	for _, m := range app.mm.Modules {
+		if moduleWithName, ok := m.(module.HasName); ok {
+			moduleName := moduleWithName.Name()
+			allModules = append(allModules, moduleName)
+		}
+	}
+	// Ensure "stablestake" appears before "leveragelp"
+	stablestakeIndex, leveragelpIndex := -1, -1
+	for i, name := range allModules {
+		if name == stablestaketypes.ModuleName {
+			stablestakeIndex = i
+		} else if name == leveragelpmoduletypes.ModuleName {
+			leveragelpIndex = i
+		}
+	}
+
+	// Swap positions if needed
+	if stablestakeIndex > leveragelpIndex && leveragelpIndex != -1 {
+		allModules[stablestakeIndex], allModules[leveragelpIndex] = allModules[leveragelpIndex], allModules[stablestakeIndex]
+	}
+	app.mm.SetOrderMigrations(allModules...)
 
 	app.mm.RegisterInvariants(app.CrisisKeeper)
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
@@ -265,6 +293,11 @@ func NewElysApp(
 	app.MountTransientStores(app.GetTransientStoreKey())
 	app.MountMemoryStores(app.GetMemoryStoreKey())
 
+	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	if err != nil {
+		panic(fmt.Sprintf("error while reading wasm config: %s", err))
+	}
+
 	anteHandler, err := ante.NewAnteHandler(
 		ante.HandlerOptions{
 
@@ -277,17 +310,34 @@ func NewElysApp(
 				TxFeeChecker:    ante.CheckTxFeeWithValidatorMinGasPrices,
 			},
 
-			BankKeeper:      app.BankKeeper,
-			ParameterKeeper: app.ParameterKeeper,
-			Cdc:             appCodec,
-			IBCKeeper:       app.IBCKeeper,
-			StakingKeeper:   app.StakingKeeper,
-			ConsumerKeeper:  app.ConsumerKeeper,
+			BankKeeper:            app.BankKeeper,
+			ParameterKeeper:       app.ParameterKeeper,
+			Cdc:                   appCodec,
+			IBCKeeper:             app.IBCKeeper,
+			StakingKeeper:         app.StakingKeeper.Keeper,
+			ConsumerKeeper:        app.ConsumerKeeper,
+			WasmConfig:            &wasmConfig,
+			TXCounterStoreService: runtime.NewKVStoreService(app.AppKeepers.GetKVStoreKey()[wasmTypes.StoreKey]),
 		},
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
+
+	//proposalHandler := oracleabci.NewProposalHandler(
+	//	app.Logger(),
+	//	app.OracleKeeper,
+	//	app.StakingKeeper,
+	//)
+	//app.SetPrepareProposal(proposalHandler.PrepareProposalHandler())
+	//app.SetProcessProposal(proposalHandler.ProcessProposalHandler())
+	//
+	//voteExtensionsHandler := oracleabci.NewVoteExtensionHandler(
+	//	app.Logger(),
+	//	app.OracleKeeper,
+	//)
+	//app.SetExtendVoteHandler(voteExtensionsHandler.ExtendVoteHandler())
+	//app.SetVerifyVoteExtensionHandler(voteExtensionsHandler.VerifyVoteExtensionHandler())
 
 	// set ante and post handlers
 	app.SetAnteHandler(anteHandler)
@@ -313,6 +363,15 @@ func NewElysApp(
 		fmt.Fprintln(os.Stderr, err.Error())
 	}
 
+	if manager := app.SnapshotManager(); manager != nil {
+		err := manager.RegisterExtensions(
+			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
+		)
+		if err != nil {
+			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
+		}
+	}
+
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
 			tmos.Exit(fmt.Sprintf("failed to load latest version: %s", err))
@@ -336,7 +395,6 @@ func (app *ElysApp) setPostHandler() {
 // Name returns the name of the App
 func (app *ElysApp) Name() string { return app.BaseApp.Name() }
 
-// PreBlocker application updates every pre block
 func (app *ElysApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
 	return app.mm.PreBlock(ctx)
 }

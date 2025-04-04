@@ -6,16 +6,21 @@ import (
 	"github.com/elys-network/elys/x/stablestake/types"
 )
 
-func (k Keeper) TVL(ctx sdk.Context, oracleKeeper types.OracleKeeper, baseCurrency string) elystypes.Dec34 {
-	params := k.GetParams(ctx)
-	totalDeposit := params.TotalValue
-	price, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+func (k Keeper) TVL(ctx sdk.Context, oracleKeeper types.OracleKeeper, poolId uint64) elystypes.Dec34 {
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return elystypes.ZeroDec34()
+	}
+	totalDeposit := pool.TotalValue
+	price, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, pool.DepositDenom)
 	return price.MulInt(totalDeposit)
 }
 
-func (k Keeper) ShareDenomPrice(ctx sdk.Context, oracleKeeper types.OracleKeeper, baseCurrency string) elystypes.Dec34 {
-	params := k.GetParams(ctx)
-	redemptionRate := params.RedemptionRate
-	price, _ := oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
-	return price.MulLegacyDec(redemptionRate)
+func (k Keeper) AllTVL(ctx sdk.Context, oracleKeeper types.OracleKeeper) elystypes.Dec34 {
+	allPools := k.GetAllPools(ctx)
+	tvl := elystypes.ZeroDec34()
+	for _, pool := range allPools {
+		tvl = tvl.Add(k.TVL(ctx, oracleKeeper, pool.Id))
+	}
+	return tvl
 }

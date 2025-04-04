@@ -124,14 +124,18 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 
 func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosition) ([]*types.PositionAndInterest, error) {
 	positions_and_interest := []*types.PositionAndInterest{}
-	params := k.stableKeeper.GetParams(ctx)
 	hours := sdkmath.LegacyNewDec(365 * 24)
 
 	for _, position := range positions {
+		pool, found := k.stableKeeper.GetPoolByDenom(ctx, position.Position.Collateral.Denom)
+		if !found {
+			return nil, errorsmod.Wrap(types.ErrPoolNotCreatedForBorrow, fmt.Sprintf("Asset: %s", position.Position.Collateral.Denom))
+		}
+
 		var positionAndInterest types.PositionAndInterest
 		positionAndInterest.Position = position
 		price, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Position.Collateral.Denom)
-		interestRateHour := params.InterestRate.Quo(hours)
+		interestRateHour := pool.InterestRate.Quo(hours)
 		positionAndInterest.InterestRateHour = interestRateHour
 		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(sdkmath.LegacyDec(position.Position.Liabilities.Mul(price.ToInt())))
 		positions_and_interest = append(positions_and_interest, &positionAndInterest)

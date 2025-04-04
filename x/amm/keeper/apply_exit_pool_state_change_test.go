@@ -82,7 +82,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 				suite.Require().True(lpTokenBalance.Amount.Equal(sdkmath.ZeroInt()))
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins, false, elystypes.ZeroDec34())
+				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins, false, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{})
 				suite.Require().NoError(err)
 			},
 			func() {},
@@ -100,7 +100,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 
 				coins := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)), sdk.NewCoin("uusdt", sdkmath.NewInt(100000)))
 
-				err := suite.app.AmmKeeper.ApplyExitPoolStateChange(suite.ctx, pool, addr, pool.TotalShares.Amount, coins, false, elystypes.ZeroDec34())
+				err := suite.app.AmmKeeper.ApplyExitPoolStateChange(suite.ctx, pool, addr, pool.TotalShares.Amount, coins, false, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{})
 				suite.Require().Error(err)
 			},
 			func() {},
@@ -171,7 +171,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 				coins = sdk.NewCoins(sdk.NewCoin("invalid_denom", sdkmath.NewInt(100000000)))
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, coins, false, elystypes.ZeroDec34())
+				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, coins, false, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{})
 				suite.Require().Error(err)
 			},
 			func() {},

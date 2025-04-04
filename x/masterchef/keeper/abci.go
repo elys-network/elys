@@ -3,6 +3,7 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
@@ -27,16 +28,15 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 	}
 	// distribute external rewards
 	k.ProcessExternalRewardsDistribution(ctx)
+
+	// convert balances in taker address to elys and burn them
+	k.ProcessTakerFee(ctx)
 	return nil
 }
 
 func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) elystypes.Dec34 {
-	if poolId == stabletypes.PoolId {
-		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-		if !found {
-			return elystypes.ZeroDec34()
-		}
-		return k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+	if poolId >= stabletypes.UsdcPoolId {
+		return k.stableKeeper.TVL(ctx, k.oracleKeeper, poolId)
 	}
 	ammPool, found := k.amm.GetPool(ctx, poolId)
 	if found {
@@ -300,7 +300,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	}
 
 	// Update APR for amm pools
-	k.UpdateAmmPoolAPR(ctx, totalBlocksPerYear, totalProxyTVL.ToLegacyDec())
+	k.UpdateAmmStablePoolAPR(ctx, totalBlocksPerYear, totalProxyTVL, edenDenomPrice)
 
 	return nil
 }
@@ -332,7 +332,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 			continue
 		}
 
-		tokenOutAmount, err := k.amm.InternalSwapExactAmountIn(ctx, address, address, pool, tokenIn, baseCurrency, math.ZeroInt(), math.LegacyZeroDec())
+		tokenOutAmount, err := k.amm.InternalSwapExactAmountIn(ctx, address, address, pool, tokenIn, baseCurrency, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec())
 		if err != nil {
 			// Continue as we can swap it when this amount is higher
 			if err == ammtypes.ErrTokenOutAmountZero {
@@ -531,7 +531,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 // Calculate Proxy TVL
 func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) (elystypes.Dec34, elystypes.Dec34) {
 	// Ensure stablestakePoolParams exist
-	stableStakePoolId := uint64(stabletypes.PoolId)
+	stableStakePoolId := uint64(stabletypes.UsdcPoolId)
 	_, found := k.GetPoolInfo(ctx, stableStakePoolId)
 	if !found {
 		k.InitStableStakePoolParams(ctx, stableStakePoolId)
@@ -614,8 +614,8 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 	return true
 }
 
-// Update APR for AMM pool
-func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL math.LegacyDec) {
+// Update APR for AMM pools and stable stake pools
+func (k Keeper) UpdateAmmStablePoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL elystypes.Dec34, edenDenomPrice elystypes.Dec34) {
 	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	usdcDenomPrice, _ := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
 
@@ -679,4 +679,112 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 		k.SetPoolInfo(ctx, poolInfo)
 		return false
 	})
+
+	k.stableKeeper.IterateLiquidityPools(ctx, func(p stabletypes.Pool) bool {
+		tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, p.Id)
+
+		// Get pool Id
+		poolId := p.GetId()
+
+		// Get pool info from incentive param
+		poolInfo, found := k.GetPoolInfo(ctx, poolId)
+		if !found {
+			k.InitPoolParams(ctx, poolId)
+			poolInfo, _ = k.GetPoolInfo(ctx, poolId)
+		}
+
+		if tvl.IsZero() {
+			return false
+		}
+
+		firstAccum := k.FirstPoolRewardsAccum(ctx, poolId)
+		lastAccum := k.LastPoolRewardsAccum(ctx, poolId)
+		if lastAccum.Timestamp == 0 {
+			return false
+		}
+
+		if firstAccum.Timestamp == lastAccum.Timestamp {
+			poolInfo.DexApr = usdcDenomPrice.
+				MulLegacyDec(lastAccum.DexReward).
+				MulInt64(totalBlocksPerYear).
+				Quo(tvl).
+				ToLegacyDec()
+
+			poolInfo.GasApr = usdcDenomPrice.
+				MulLegacyDec(lastAccum.GasReward).
+				MulInt64(totalBlocksPerYear).
+				Quo(tvl).
+				ToLegacyDec()
+		} else {
+			duration := lastAccum.Timestamp - firstAccum.Timestamp
+			secondsInYear := int64(86400 * 360)
+
+			poolInfo.DexApr = elystypes.NewDec34FromLegacyDec(lastAccum.DexReward.Sub(firstAccum.DexReward)).
+				MulInt64(secondsInYear).
+				QuoInt64(int64(duration)).
+				Mul(usdcDenomPrice).
+				Quo(tvl).
+				ToLegacyDec()
+
+			poolInfo.GasApr = elystypes.NewDec34FromLegacyDec(lastAccum.GasReward.Sub(firstAccum.GasReward)).
+				MulInt64(secondsInYear).
+				QuoInt64(int64(duration)).
+				Mul(usdcDenomPrice).
+				Quo(tvl).
+				ToLegacyDec()
+		}
+		k.SetPoolInfo(ctx, poolInfo)
+		return false
+	})
+}
+
+func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
+	collectionAddressString := k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress
+	// Convert balances in taker address to elys
+	collectionAddress, err := sdk.AccAddressFromBech32(collectionAddressString)
+	if err != nil {
+		ctx.Logger().Error("Invalid taker fee collection address", "error", err)
+		return
+	}
+
+	balances := k.bankKeeper.GetAllBalances(ctx, collectionAddress)
+	for _, balance := range balances {
+		if balance.Denom == ptypes.Elys {
+			continue
+		}
+		_, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+			Sender:    collectionAddressString,
+			Recipient: collectionAddressString,
+			Amount:    sdk.NewCoin(balance.Denom, balance.Amount),
+			DenomIn:   balance.Denom,
+			DenomOut:  ptypes.Elys,
+			MinAmount: sdk.NewCoin(ptypes.Elys, sdkmath.ZeroInt()),
+		})
+		if err != nil {
+			ctx.Logger().Error("Failed to swap taker fee", "error", err)
+			continue
+		}
+	}
+
+	elysBalance := k.bankKeeper.GetBalance(ctx, collectionAddress, ptypes.Elys)
+	if elysBalance.IsPositive() {
+		err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, collectionAddress, types.ModuleName, sdk.NewCoins(elysBalance))
+		if err != nil {
+			ctx.Logger().Error("Failed to send taker fee to masterchef", "error", err)
+		} else {
+			// burn elys token
+			err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(elysBalance))
+			if err != nil {
+				ctx.Logger().Error("Failed to burn taker fee", "error", err)
+			}
+
+			// event for burning taker fees
+			ctx.EventManager().EmitEvents(sdk.Events{
+				sdk.NewEvent(
+					types.TypeEvtTakerFeeBurn,
+					sdk.NewAttribute("amount", elysBalance.String()),
+				),
+			})
+		}
+	}
 }

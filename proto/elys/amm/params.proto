@@ -6,43 +6,6 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/elys-network/elys/x/amm/types";
 
-// Params defines the parameters for the module.
-message LegacyParams {
-  string pool_creation_fee = 1 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-  uint64 slippage_track_duration = 2; // default 1 week: 604,800
-  repeated string base_assets = 3;
-  string weight_breaking_fee_exponent = 4 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string weight_breaking_fee_multiplier = 5 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string weight_breaking_fee_portion = 6 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string weight_recovery_fee_portion = 7 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  string threshold_weight_difference = 8 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
-  repeated string allowed_pool_creators = 9;
-}
-
 message Params {
   string pool_creation_fee = 1 [
     (cosmos_proto.scalar) = "cosmos.Int",
@@ -82,4 +45,11 @@ message Params {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  uint64 lp_lockup_duration = 11;
+  string min_slippage = 12 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  repeated string allowed_upfront_swap_makers = 13;
 }

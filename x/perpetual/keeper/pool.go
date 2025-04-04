@@ -204,8 +204,8 @@ func (k Keeper) SetFundingRate(ctx sdk.Context, block uint64, pool uint64, fundi
 		funding.FundingRateLong = funding.FundingRateLong.Add(lastBlock.FundingRateLong)
 		funding.FundingRateShort = funding.FundingRateShort.Add(lastBlock.FundingRateShort)
 
-		funding.FundingAmountLong = funding.FundingAmountLong.Add(lastBlock.FundingAmountLong)
-		funding.FundingAmountShort = funding.FundingAmountShort.Add(lastBlock.FundingAmountShort)
+		funding.FundingShareLong = funding.FundingShareLong.Add(lastBlock.FundingShareLong)
+		funding.FundingShareShort = funding.FundingShareShort.Add(lastBlock.FundingShareShort)
 
 		bz = k.cdc.MustMarshal(&funding)
 		store.Set(key, bz)
@@ -336,8 +336,8 @@ func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, 
 		endFundingBlock := types.FundingRateBlock{}
 		k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
-		totalCustodyLong := endFundingBlock.FundingAmountLong.Sub(startFundingBlock.FundingAmountLong)
-		totalCustodyShort := endFundingBlock.FundingAmountShort.Sub(startFundingBlock.FundingAmountShort)
+		totalCustodyLong := endFundingBlock.FundingShareLong.Sub(startFundingBlock.FundingShareLong)
+		totalCustodyShort := endFundingBlock.FundingShareShort.Sub(startFundingBlock.FundingShareShort)
 
 		return totalCustodyLong, totalCustodyShort
 	}
@@ -357,8 +357,8 @@ func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, 
 			endFundingBlock := types.FundingRateBlock{}
 			k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
-			totalCustodyLong := endFundingBlock.FundingAmountLong
-			totalCustodyShort := endFundingBlock.FundingAmountShort
+			totalCustodyLong := endFundingBlock.FundingShareLong
+			totalCustodyShort := endFundingBlock.FundingShareShort
 			return totalCustodyLong, totalCustodyShort
 		}
 	}

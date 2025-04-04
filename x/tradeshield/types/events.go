@@ -9,14 +9,14 @@ import (
 )
 
 const (
-	TypeEvtCloseSpotOrder                 = "tradeshield/close_spot_order"
-	TypeEvtCancelPerpetualOrder           = "tradeshield/cancel_perpetual_order"
-	TypeEvtExecuteOrders                  = "tradeshield/execute_orders"
-	TypeEvtExecuteLimitOpenPerpetualOrder = "tradeshield/execute_perpetual_limit_open_order"
-	TypeEvtExecuteLimitBuySpotOrder       = "tradeshield/execute_limit_buy_spot_order"
-	TypeEvtExecuteLimitSellSpotOrder      = "tradeshield/execute_limit_sell_spot_order"
-	TypeEvtExecuteStopLossSpotOrder       = "tradeshield/execute_stop_loss_spot_order"
-	TypeEvtExecuteMarketBuySpotOrder      = "tradeshield/execute_market_buy_spot_order"
+	TypeEvtCloseSpotOrder                 = "tradeshield_close_spot_order"
+	TypeEvtCancelPerpetualOrder           = "tradeshield_cancel_perpetual_order"
+	TypeEvtExecuteOrders                  = "tradeshield_execute_orders"
+	TypeEvtExecuteLimitOpenPerpetualOrder = "tradeshield_execute_perpetual_limit_open_order"
+	TypeEvtExecuteLimitBuySpotOrder       = "tradeshield_execute_limit_buy_spot_order"
+	TypeEvtExecuteLimitSellSpotOrder      = "tradeshield_execute_limit_sell_spot_order"
+	TypeEvtExecuteStopLossSpotOrder       = "tradeshield_execute_stop_loss_spot_order"
+	TypeEvtExecuteMarketBuySpotOrder      = "tradeshield_execute_market_buy_spot_order"
 )
 
 func EmitCloseSpotOrderEvent(ctx sdk.Context, order SpotOrder) {

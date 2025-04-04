@@ -225,6 +225,9 @@ message QueryOpenEstResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  string slippage = 4;
+  string swap_fee = 5;
+  string taker_fee = 6;
 }
 
 message QueryCloseEstRequest {
@@ -259,17 +262,34 @@ message QueryRewardsResponse {
 }
 
 message QueryCloseEstResponse {
-  string liability = 1 [
+  string repay_amount = 1 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string weight_balance_ratio = 2;
-  string amount_returned = 3 [
+  string final_closing_ratio = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string closing_lp_amount = 3 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  repeated cosmos.base.v1beta1.Coin coins_to_amm = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  repeated cosmos.base.v1beta1.Coin user_return_tokens = 5 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  string exit_weight_fee = 6;
+  string weight_breaking_fee = 7;
+  string exit_slippage_fee = 8;
+  string exit_swap_fee = 9;
+  string exit_taker_fee = 10;
 }
 
 message QueryCommittedTokensLockedRequest { string address = 1; }

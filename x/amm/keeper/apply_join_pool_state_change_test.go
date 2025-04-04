@@ -74,7 +74,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 				joinCoins := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)), sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(100000)))
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, elystypes.ZeroDec34())
+				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{})
 				suite.Require().NoError(err)
 			},
 		},
@@ -138,7 +138,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 				)
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, elystypes.ZeroDec34())
+				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{})
 				suite.Require().Error(err)
 			},
 		},
@@ -205,7 +205,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 
 				// must panic
 				suite.Require().Panics(func() {
-					err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, sdkmath.NewInt(-1000), joinCoins, elystypes.ZeroDec34())
+					err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, sdkmath.NewInt(-1000), joinCoins, elystypes.ZeroDec34(), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{})
 					suite.Require().Error(err)
 				})
 			},
@@ -283,7 +283,7 @@ func (suite *AmmKeeperTestSuite) TestApplyJoinPoolStateChange() {
 				)
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, elystypes.NewDec34WithPrec(10, 2))
+				err = app.AmmKeeper.ApplyJoinPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, joinCoins, elystypes.NewDec34WithPrec(10, 2), elystypes.ZeroDec34(), elystypes.ZeroDec34(), sdk.Coins{})
 				suite.Require().NoError(err)
 			},
 		},

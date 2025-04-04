@@ -64,6 +64,10 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/commitment/kol/{address}";
   }
+
+  rpc TotalSupply(QueryTotalSupplyRequest) returns (QueryTotalSupplyResponse) {
+    option (google.api.http).get = "/elys-network/elys/commitment/total_supply";
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -193,4 +197,24 @@ message QueryKolResponse {
   ];
   bool claimed = 2;
   bool refunded = 3;
+}
+
+message QueryTotalSupplyRequest {}
+
+message QueryTotalSupplyResponse {
+  string total_eden = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_edenb = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_eden_vested = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }

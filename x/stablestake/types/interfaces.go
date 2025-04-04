@@ -7,6 +7,6 @@ import (
 
 // StableStakeHooks event hooks for stablestake processing
 type StableStakeHooks interface {
-	AfterBond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int) error
-	AfterUnbond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int) error
+	AfterBond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int, poolId uint64) error
+	AfterUnbond(ctx sdk.Context, sender sdk.AccAddress, shareAmount math.Int, poolId uint64) error
 }

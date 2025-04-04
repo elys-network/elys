@@ -21,6 +21,7 @@ type MsgClient interface {
 	CreatePool(ctx context.Context, in *MsgCreatePool, opts ...grpc.CallOption) (*MsgCreatePoolResponse, error)
 	JoinPool(ctx context.Context, in *MsgJoinPool, opts ...grpc.CallOption) (*MsgJoinPoolResponse, error)
 	ExitPool(ctx context.Context, in *MsgExitPool, opts ...grpc.CallOption) (*MsgExitPoolResponse, error)
+	UpFrontSwapExactAmountIn(ctx context.Context, in *MsgUpFrontSwapExactAmountIn, opts ...grpc.CallOption) (*MsgUpFrontSwapExactAmountInResponse, error)
 	SwapExactAmountIn(ctx context.Context, in *MsgSwapExactAmountIn, opts ...grpc.CallOption) (*MsgSwapExactAmountInResponse, error)
 	SwapExactAmountOut(ctx context.Context, in *MsgSwapExactAmountOut, opts ...grpc.CallOption) (*MsgSwapExactAmountOutResponse, error)
 	SwapByDenom(ctx context.Context, in *MsgSwapByDenom, opts ...grpc.CallOption) (*MsgSwapByDenomResponse, error)
@@ -58,6 +59,15 @@ func (c *msgClient) JoinPool(ctx context.Context, in *MsgJoinPool, opts ...grpc.
 func (c *msgClient) ExitPool(ctx context.Context, in *MsgExitPool, opts ...grpc.CallOption) (*MsgExitPoolResponse, error) {
 	out := new(MsgExitPoolResponse)
 	err := c.cc.Invoke(ctx, "/elys.amm.Msg/ExitPool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpFrontSwapExactAmountIn(ctx context.Context, in *MsgUpFrontSwapExactAmountIn, opts ...grpc.CallOption) (*MsgUpFrontSwapExactAmountInResponse, error) {
+	out := new(MsgUpFrontSwapExactAmountInResponse)
+	err := c.cc.Invoke(ctx, "/elys.amm.Msg/UpFrontSwapExactAmountIn", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -125,6 +135,7 @@ type MsgServer interface {
 	CreatePool(context.Context, *MsgCreatePool) (*MsgCreatePoolResponse, error)
 	JoinPool(context.Context, *MsgJoinPool) (*MsgJoinPoolResponse, error)
 	ExitPool(context.Context, *MsgExitPool) (*MsgExitPoolResponse, error)
+	UpFrontSwapExactAmountIn(context.Context, *MsgUpFrontSwapExactAmountIn) (*MsgUpFrontSwapExactAmountInResponse, error)
 	SwapExactAmountIn(context.Context, *MsgSwapExactAmountIn) (*MsgSwapExactAmountInResponse, error)
 	SwapExactAmountOut(context.Context, *MsgSwapExactAmountOut) (*MsgSwapExactAmountOutResponse, error)
 	SwapByDenom(context.Context, *MsgSwapByDenom) (*MsgSwapByDenomResponse, error)
@@ -146,6 +157,9 @@ func (UnimplementedMsgServer) JoinPool(context.Context, *MsgJoinPool) (*MsgJoinP
 }
 func (UnimplementedMsgServer) ExitPool(context.Context, *MsgExitPool) (*MsgExitPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExitPool not implemented")
+}
+func (UnimplementedMsgServer) UpFrontSwapExactAmountIn(context.Context, *MsgUpFrontSwapExactAmountIn) (*MsgUpFrontSwapExactAmountInResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpFrontSwapExactAmountIn not implemented")
 }
 func (UnimplementedMsgServer) SwapExactAmountIn(context.Context, *MsgSwapExactAmountIn) (*MsgSwapExactAmountInResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SwapExactAmountIn not implemented")
@@ -228,6 +242,24 @@ func _Msg_ExitPool_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).ExitPool(ctx, req.(*MsgExitPool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpFrontSwapExactAmountIn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpFrontSwapExactAmountIn)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpFrontSwapExactAmountIn(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.amm.Msg/UpFrontSwapExactAmountIn",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpFrontSwapExactAmountIn(ctx, req.(*MsgUpFrontSwapExactAmountIn))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -358,6 +390,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ExitPool",
 			Handler:    _Msg_ExitPool_Handler,
+		},
+		{
+			MethodName: "UpFrontSwapExactAmountIn",
+			Handler:    _Msg_UpFrontSwapExactAmountIn_Handler,
 		},
 		{
 			MethodName: "SwapExactAmountIn",

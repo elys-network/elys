@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/transferhook/types"
 )
 
@@ -10,7 +9,7 @@ func (s *KeeperTestSuite) TestParamsQuery() {
 	s.app.TransferhookKeeper.SetParams(s.ctx, types.Params{
 		AmmActive: true,
 	})
-	queryResponse, err := s.app.TransferhookKeeper.Params(sdk.WrapSDKContext(s.ctx), &types.QueryParamsRequest{})
+	queryResponse, err := s.app.TransferhookKeeper.Params(s.ctx, &types.QueryParamsRequest{})
 	s.Require().NoError(err)
 	s.Require().True(queryResponse.Params.AmmActive)
 
@@ -18,7 +17,7 @@ func (s *KeeperTestSuite) TestParamsQuery() {
 	s.app.TransferhookKeeper.SetParams(s.ctx, types.Params{
 		AmmActive: false,
 	})
-	queryResponse, err = s.app.TransferhookKeeper.Params(sdk.WrapSDKContext(s.ctx), &types.QueryParamsRequest{})
+	queryResponse, err = s.app.TransferhookKeeper.Params(s.ctx, &types.QueryParamsRequest{})
 	s.Require().NoError(err)
 	s.Require().False(queryResponse.Params.AmmActive)
 }

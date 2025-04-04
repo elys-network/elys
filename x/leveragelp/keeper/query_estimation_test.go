@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"time"
+
 	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -46,12 +48,14 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 		TotalShares: sdk.NewCoin("amm/pool/1", sdkmath.NewInt(2).Mul(ammtypes.OneShare)),
 		PoolAssets: []ammtypes.PoolAsset{
 			{
-				Token:  poolInit[0],
-				Weight: sdkmath.NewInt(10),
+				Token:                  poolInit[0],
+				Weight:                 sdkmath.NewInt(10),
+				ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
 			},
 			{
-				Token:  poolInit[1],
-				Weight: sdkmath.NewInt(10),
+				Token:                  poolInit[1],
+				Weight:                 sdkmath.NewInt(10),
+				ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
 			},
 		},
 		TotalWeight: sdkmath.NewInt(20),
@@ -65,6 +69,10 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 		Denom:     "uusdt",
 		Liquidity: sdkmath.NewInt(100000),
 	})
+	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, 1)
+	suite.Require().True(found)
+	err = suite.app.PerpetualKeeper.OnLeverageLpEnablePool(suite.ctx, ammPool)
+	suite.Require().NoError(err)
 
 	usdcToken := sdk.NewInt64Coin("uusdc", 100000)
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{usdcToken})
@@ -76,6 +84,7 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 	_, err = stableMsgServer.Bond(suite.ctx, &stablestaketypes.MsgBond{
 		Creator: addr.String(),
 		Amount:  sdkmath.NewInt(10000),
+		PoolId:  1,
 	})
 	suite.Require().NoError(err)
 
@@ -87,13 +96,16 @@ func (suite *KeeperTestSuite) TestQueryEstimation() {
 		AmmPoolId:        1,
 		Leverage:         sdkmath.LegacyNewDec(5),
 		StopLossPrice:    sdkmath.LegacyZeroDec(),
-	})
+	}, 1)
 
-	estimation, _ := k.CloseEst(suite.ctx, &types.QueryCloseEstRequest{
+	suite.AddBlockTime(time.Hour)
+
+	estimation, err := k.CloseEst(suite.ctx, &types.QueryCloseEstRequest{
 		Owner:    addr.String(),
 		Id:       position.Id,
 		LpAmount: sdkmath.NewInt(10000000000000000),
 	})
+	suite.Require().NoError(err)
 	// Total liability is 4000, so 800 is the liability for 10000000000000000 Lp amount
-	suite.Require().Equal(estimation.Liability.String(), "800")
+	suite.Require().Equal(estimation.RepayAmount.String(), "809")
 }

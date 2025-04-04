@@ -2223,7 +2223,6 @@ func _Query_GetAllPrices_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "elys.tier.Query",
 	HandlerType: (*QueryServer)(nil),
