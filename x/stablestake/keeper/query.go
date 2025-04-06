@@ -59,7 +59,7 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, pool types.Pool) types.PoolResponse
 	}
 
 	return types.PoolResponse{
-		RedemptionRate:       k.CalculateRedemptionRateForPool(ctx, pool),
+		RedemptionRate:       k.CalculateRedemptionRateForPool(ctx, pool).Dec(),
 		DepositDenom:         pool.DepositDenom,
 		InterestRate:         pool.InterestRate,
 		InterestRateMax:      pool.InterestRateMax,
