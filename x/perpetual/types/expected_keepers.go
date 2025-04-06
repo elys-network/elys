@@ -9,6 +9,7 @@ import (
 	atypes "github.com/elys-network/elys/x/assetprofile/types"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 type AccountKeeper interface {
@@ -29,8 +30,8 @@ type AmmKeeper interface {
 
 	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
 
-	SwapOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec, weightBreakingFeePerpetualFactor math.LegacyDec, takersFee math.LegacyDec) (tokenOut sdk.Coin, slippage math.LegacyDec, slippageAmount math.LegacyDec, weightBalanceBonus, oracleOut math.LegacyDec, swapFeeFinal math.LegacyDec, err error)
-	SwapInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee math.LegacyDec, weightBreakingFeePerpetualFactor math.LegacyDec, takersFee math.LegacyDec) (tokenIn sdk.Coin, slippage, slippageAmount math.LegacyDec, weightBalanceBonus, oracleIn math.LegacyDec, swapFeeFinal math.LegacyDec, err error)
+	SwapOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee osmomath.BigDec, weightBreakingFeePerpetualFactor osmomath.BigDec, takersFee osmomath.BigDec) (tokenOut sdk.Coin, slippage osmomath.BigDec, slippageAmount osmomath.BigDec, weightBalanceBonus, oracleOut osmomath.BigDec, swapFeeFinal osmomath.BigDec, err error)
+	SwapInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee osmomath.BigDec, weightBreakingFeePerpetualFactor osmomath.BigDec, takersFee osmomath.BigDec) (tokenIn sdk.Coin, slippage, slippageAmount osmomath.BigDec, weightBalanceBonus, oracleIn osmomath.BigDec, swapFeeFinal osmomath.BigDec, err error)
 
 	AddToPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, addShares math.Int, coins sdk.Coins) error
 	RemoveFromPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, removeShares math.Int, coins sdk.Coins) error

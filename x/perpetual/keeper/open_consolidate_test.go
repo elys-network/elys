@@ -32,7 +32,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidate() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -172,7 +172,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 			"",
 			&types.MTP{
 				Collateral:      math.NewInt(800),
-				Liabilities:     math.NewInt(653),
+				Liabilities:     math.NewInt(655),
 				Custody:         math.NewInt(4000),
 				TakeProfitPrice: math.LegacyMustNewDecFromStr("0.692857142857142857"),
 			},
@@ -211,7 +211,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenConsolidateUsingOpen() {
 			"",
 			&types.MTP{
 				Collateral:      math.NewInt(800),
-				Liabilities:     math.NewInt(407),
+				Liabilities:     math.NewInt(409),
 				Custody:         math.NewInt(2800),
 				TakeProfitPrice: math.LegacyMustNewDecFromStr("0.95"),
 			},

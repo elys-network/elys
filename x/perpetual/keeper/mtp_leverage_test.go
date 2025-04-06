@@ -25,7 +25,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 		{
 			"LONG",
 			"",
-			math.LegacyMustNewDecFromStr("1.176470588235294118"),
+			math.LegacyMustNewDecFromStr("1.176470588235294117"),
 			func() {
 				suite.SetupCoinPrices()
 				mtp.Position = types.Position_LONG
@@ -36,7 +36,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 		{
 			"SHORT",
 			"",
-			math.LegacyMustNewDecFromStr("1.666666666666666667"),
+			math.LegacyMustNewDecFromStr("1.666666666666666666"),
 			func() {
 				suite.SetupCoinPrices()
 				mtp.Position = types.Position_SHORT
@@ -61,11 +61,11 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 		suite.Run(tc.name, func() {
 			tc.prerequisiteFunction()
 			effectiveLeverage, err := suite.app.PerpetualKeeper.GetEffectiveLeverage(suite.ctx, mtp)
-			suite.Require().Equal(tc.result, effectiveLeverage)
 			if tc.expectErrMsg != "" {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.expectErrMsg)
 			} else {
+				suite.Require().Equal(tc.result, effectiveLeverage.Dec())
 				suite.Require().NoError(err)
 			}
 		})
