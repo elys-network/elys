@@ -9,6 +9,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen, borrowPool uint64) (*types.Position, error) {
@@ -119,10 +120,10 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	if err != nil {
 		return nil, err
 	}
-	position.PositionHealth = lr
+	position.PositionHealth = lr.Dec()
 
 	// Check if the Position is unhealthy
-	safetyFactor := k.GetSafetyFactor(ctx)
+	safetyFactor := osmomath.BigDecFromDec(k.GetSafetyFactor(ctx))
 	if lr.LTE(safetyFactor) {
 		return nil, types.ErrPositionUnhealthy
 	}

@@ -1,8 +1,10 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	sdkmath "cosmossdk.io/math"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // NewParams creates a new Params instance
@@ -76,4 +78,8 @@ func containsDuplicates(arr []uint64) bool {
 		valueMap[num] = struct{}{}
 	}
 	return false
+}
+
+func (p Params) GetBigDecSafetyFactor() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.SafetyFactor)
 }

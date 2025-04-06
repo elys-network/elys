@@ -7,13 +7,13 @@ import (
 	storetypes "cosmossdk.io/core/store"
 
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) CheckUserAuthorization(ctx sdk.Context, msg *types.MsgOpen) error {
@@ -99,23 +99,23 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 		}
 
 		debtDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrency)
-		debtValue := position.Liabilities.ToLegacyDec().Mul(debtDenomPrice)
+		debtValue := position.GetBigDecLiabilities().Mul(debtDenomPrice)
 
-		positionValue := position.LeveragedLpAmount.ToLegacyDec().Mul(ammTVL).Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+		positionValue := position.GetBigDecLeveragedLpAmount().Mul(ammTVL).Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
 
-		updated_leverage := sdkmath.LegacyZeroDec()
+		updated_leverage := osmomath.ZeroBigDec()
 		denominator := positionValue.Sub(debtValue)
 		if denominator.IsPositive() {
 			updated_leverage = positionValue.Quo(denominator)
 		}
 		if debtValue.IsPositive() {
-			position.PositionHealth = positionValue.Quo(debtValue)
+			position.PositionHealth = positionValue.Quo(debtValue).Dec()
 		}
 
 		updatedLeveragePositions = append(updatedLeveragePositions, &types.QueryPosition{
 			Position:         position,
-			UpdatedLeverage:  updated_leverage,
-			PositionUsdValue: positionValue,
+			UpdatedLeverage:  updated_leverage.Dec(),
+			PositionUsdValue: positionValue.Dec(),
 		})
 	}
 	return updatedLeveragePositions, nil
@@ -123,7 +123,7 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 
 func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosition) ([]*types.PositionAndInterest, error) {
 	positions_and_interest := []*types.PositionAndInterest{}
-	hours := sdkmath.LegacyNewDec(365 * 24)
+	hours := osmomath.NewBigDec(365 * 24)
 
 	for _, position := range positions {
 		pool, found := k.stableKeeper.GetPoolByDenom(ctx, position.Position.Collateral.Denom)
@@ -134,9 +134,9 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 		var positionAndInterest types.PositionAndInterest
 		positionAndInterest.Position = position
 		price := k.oracleKeeper.GetDenomPrice(ctx, position.Position.Collateral.Denom)
-		interestRateHour := pool.InterestRate.Quo(hours)
-		positionAndInterest.InterestRateHour = interestRateHour
-		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(sdkmath.LegacyDec(position.Position.Liabilities.Mul(price.RoundInt())))
+		interestRateHour := pool.GetBigDecInterestRate().Quo(hours)
+		positionAndInterest.InterestRateHour = interestRateHour.Dec()
+		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(osmomath.BigDecFromSDKInt(position.Position.Liabilities.Mul(price.Dec().RoundInt()))).Dec()
 		positions_and_interest = append(positions_and_interest, &positionAndInterest)
 	}
 
@@ -160,7 +160,7 @@ func (k Keeper) MigratePositionHealth(ctx sdk.Context) {
 		if err == nil {
 			positionHealth, err := k.GetPositionHealth(ctx, position)
 			if err == nil {
-				position.PositionHealth = positionHealth
+				position.PositionHealth = positionHealth.Dec()
 				k.SetPosition(ctx, &position)
 			}
 		}
