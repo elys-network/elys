@@ -55,7 +55,7 @@ func (k Keeper) GetUsersPoolData(goCtx context.Context, req *types.QueryGetUsers
 				}
 				redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateForPool(ctx, borrowPool)
 				tokenPrice := k.oracleKeeper.GetDenomPrice(ctx, borrowPool.GetDepositDenom())
-				fiatValue := commitment.Amount.ToLegacyDec().Mul(redemptionRate).Mul(tokenPrice)
+				fiatValue := commitment.GetBigDecAmount().Mul(redemptionRate).Mul(tokenPrice)
 
 				u.Pools = append(u.Pools, &types.Pool{
 					Pool:      borrowPool.DepositDenom,
