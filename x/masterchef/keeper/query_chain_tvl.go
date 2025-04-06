@@ -8,6 +8,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -23,7 +24,7 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	allPools := k.amm.GetAllPool(ctx)
-	poolsTVL := math.LegacyZeroDec()
+	poolsTVL := osmomath.ZeroBigDec()
 	totalTVL := math.ZeroInt()
 
 	for _, pool := range allPools {
@@ -33,7 +34,7 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		}
 		poolsTVL = poolsTVL.Add(tvl)
 	}
-	totalTVL = totalTVL.Add(poolsTVL.TruncateInt())
+	totalTVL = totalTVL.Add(poolsTVL.Dec().TruncateInt())
 
 	baseCurrencyEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
@@ -43,27 +44,27 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 	baseCurrencyPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrencyEntry.Denom)
 
 	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, stablestaketypes.UsdcPoolId)
-	totalTVL = totalTVL.Add(stableStakeTVL.TruncateInt())
+	totalTVL = totalTVL.Add(stableStakeTVL.Dec().TruncateInt())
 
 	elysPrice := k.amm.GetTokenPrice(ctx, ptypes.Elys, baseCurrencyEntry.Denom)
 
 	stakedElys := k.bankKeeper.GetBalance(ctx, authtypes.NewModuleAddress(stakingtypes.BondedPoolName), ptypes.Elys).Amount
-	stakedElysValue := elysPrice.MulInt(stakedElys)
-	totalTVL = totalTVL.Add(stakedElysValue.TruncateInt())
+	stakedElysValue := elysPrice.Mul(osmomath.BigDecFromSDKInt(stakedElys))
+	totalTVL = totalTVL.Add(stakedElysValue.Dec().TruncateInt())
 
 	commitmentParams := k.commitmentKeeper.GetParams(ctx)
 	stakedEden := commitmentParams.TotalCommitted.AmountOf(ptypes.Eden)
-	stakedEdenValue := elysPrice.MulInt(stakedEden)
-	totalTVL = totalTVL.Add(stakedEdenValue.TruncateInt())
+	stakedEdenValue := elysPrice.Mul(osmomath.BigDecFromSDKInt(stakedEden))
+	totalTVL = totalTVL.Add(stakedEdenValue.Dec().TruncateInt())
 
 	stableStakeBalance := k.bankKeeper.GetBalance(ctx, authtypes.NewModuleAddress(stablestaketypes.ModuleName), baseCurrencyEntry.Denom)
 
 	return &types.QueryChainTVLResponse{
 		Total:       totalTVL,
-		Pools:       poolsTVL.TruncateInt(),
-		UsdcStaking: stableStakeTVL.TruncateInt(),
-		StakedElys:  stakedElysValue.TruncateInt(),
-		StakedEden:  stakedEdenValue.TruncateInt(),
-		NetStakings: sdk.NewCoins(sdk.NewCoin(baseCurrencyEntry.DisplayName, (stableStakeBalance.Amount.ToLegacyDec().Mul(baseCurrencyPrice).TruncateInt()))),
+		Pools:       poolsTVL.Dec().TruncateInt(),
+		UsdcStaking: stableStakeTVL.Dec().TruncateInt(),
+		StakedElys:  stakedElysValue.Dec().TruncateInt(),
+		StakedEden:  stakedEdenValue.Dec().TruncateInt(),
+		NetStakings: sdk.NewCoins(sdk.NewCoin(baseCurrencyEntry.DisplayName, (osmomath.BigDecFromSDKInt(stableStakeBalance.Amount).Mul(baseCurrencyPrice).Dec().TruncateInt()))),
 	}, nil
 }

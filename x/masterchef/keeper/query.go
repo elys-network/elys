@@ -126,7 +126,7 @@ func (k Keeper) StableStakeApr(goCtx context.Context, req *types.QueryStableStak
 		return nil, err
 	}
 
-	return &types.QueryStableStakeAprResponse{Apr: apr}, nil
+	return &types.QueryStableStakeAprResponse{Apr: apr.Dec()}, nil
 }
 
 func (k Keeper) PoolAprs(goCtx context.Context, req *types.QueryPoolAprsRequest) (*types.QueryPoolAprsResponse, error) {

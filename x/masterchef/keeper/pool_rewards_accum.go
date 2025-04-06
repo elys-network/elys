@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) GetPoolRewardsAccum(ctx sdk.Context, poolId, timestamp uint64) (types.PoolRewardsAccum, error) {
@@ -104,7 +105,7 @@ func (k Keeper) LastPoolRewardsAccum(ctx sdk.Context, poolId uint64) types.PoolR
 }
 
 // Returns eden rewards using forward calc for 24 hours
-func (k Keeper) ForwardEdenCalc(ctx sdk.Context, poolId uint64) math.LegacyDec {
+func (k Keeper) ForwardEdenCalc(ctx sdk.Context, poolId uint64) osmomath.BigDec {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	iter := storetypes.KVStoreReversePrefixIterator(store, types.GetPoolRewardsAccumPrefix(poolId))
 	defer iter.Close()
@@ -117,7 +118,7 @@ func (k Keeper) ForwardEdenCalc(ctx sdk.Context, poolId uint64) math.LegacyDec {
 	}
 
 	if len(lastTwo) == 2 {
-		diff := lastTwo[1].EdenReward.Sub(lastTwo[0].EdenReward)
+		diff := lastTwo[1].GetBigDecEdenReward().Sub(lastTwo[0].GetBigDecEdenReward())
 		// Here we are assuming average block time of 4s
 		// 1 DAY = 86400
 		// Note: This calculation maybe used in FE, the idea is to
@@ -126,10 +127,10 @@ func (k Keeper) ForwardEdenCalc(ctx sdk.Context, poolId uint64) math.LegacyDec {
 	}
 
 	// Return zero if there are not enough entries
-	return math.LegacyZeroDec()
+	return osmomath.ZeroBigDec()
 }
 
-func (k Keeper) AddPoolRewardsAccum(ctx sdk.Context, poolId, timestamp uint64, height int64, dexReward, gasReward, edenReward math.LegacyDec) {
+func (k Keeper) AddPoolRewardsAccum(ctx sdk.Context, poolId, timestamp uint64, height int64, dexReward, gasReward, edenReward osmomath.BigDec) {
 	lastAccum := k.LastPoolRewardsAccum(ctx, poolId)
 	lastAccum.Timestamp = timestamp
 	lastAccum.BlockHeight = height
@@ -142,8 +143,8 @@ func (k Keeper) AddPoolRewardsAccum(ctx sdk.Context, poolId, timestamp uint64, h
 	if lastAccum.EdenReward.IsNil() {
 		lastAccum.EdenReward = math.LegacyZeroDec()
 	}
-	lastAccum.DexReward = lastAccum.DexReward.Add(dexReward)
-	lastAccum.GasReward = lastAccum.GasReward.Add(gasReward)
-	lastAccum.EdenReward = lastAccum.EdenReward.Add(edenReward)
+	lastAccum.DexReward = lastAccum.GetBigDecDexReward().Add(dexReward).Dec()
+	lastAccum.GasReward = lastAccum.GetBigDecGasReward().Add(gasReward).Dec()
+	lastAccum.EdenReward = lastAccum.GetBigDecEdenReward().Add(edenReward).Dec()
 	k.SetPoolRewardsAccum(ctx, lastAccum)
 }

@@ -13,6 +13,7 @@ import (
 	parametertypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 	tokenomictypes "github.com/elys-network/elys/x/tokenomics/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // CommitmentKeeper
@@ -79,9 +80,9 @@ type AmmKeeper interface {
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
 
-	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee math.LegacyDec) (sdk.Coin, math.LegacyDec, error)
-	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
-	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) math.LegacyDec
+	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee osmomath.BigDec) (sdk.Coin, osmomath.BigDec, error)
+	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) osmomath.BigDec
+	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) osmomath.BigDec
 	InternalSwapExactAmountIn(
 		ctx sdk.Context,
 		sender sdk.AccAddress,
@@ -90,8 +91,8 @@ type AmmKeeper interface {
 		tokenIn sdk.Coin,
 		tokenOutDenom string,
 		tokenOutMinAmount math.Int,
-		swapFee math.LegacyDec,
-		takersFee math.LegacyDec,
+		swapFee osmomath.BigDec,
+		takersFee osmomath.BigDec,
 	) (tokenOutAmount math.Int, err error)
 	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
 }
@@ -124,8 +125,8 @@ type AssetProfileKeeper interface {
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stabletypes.Params)
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)
-	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, poolId uint64) math.LegacyDec
-	AllTVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper) math.LegacyDec
+	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, poolId uint64) osmomath.BigDec
+	AllTVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper) osmomath.BigDec
 	IterateLiquidityPools(sdk.Context, func(stabletypes.Pool) bool)
 	GetPoolByDenom(ctx sdk.Context, denom string) (stabletypes.Pool, bool)
 	GetPool(ctx sdk.Context, poolId uint64) (pool stabletypes.Pool, found bool)

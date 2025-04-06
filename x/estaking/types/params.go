@@ -71,3 +71,7 @@ func (p Params) GetBigDecMaxEdenRewardAprStakers() osmomath.BigDec {
 func (p Params) GetBigDecEdenBoostApr() osmomath.BigDec {
 	return osmomath.BigDecFromDec(p.EdenBoostApr)
 }
+
+func (p Params) GetBigDecProviderStakingRewardsPortion() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.ProviderStakingRewardsPortion)
+}
