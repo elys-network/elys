@@ -103,7 +103,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	if req.Position == types.Position_SHORT {
 		proxyLeverage = req.Leverage.Add(math.LegacyOneDec())
 	}
-	leveragedAmount := req.Collateral.Amount.ToLegacyDec().Mul(proxyLeverage).TruncateInt()
+	leveragedAmount := osmomath.BigDecFromSDKInt(req.Collateral.Amount).MulDec(proxyLeverage).Dec().TruncateInt()
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
 	// SHORT: collateralAsset is always usdc, and custody has to be in usdc, so custodyAmount = leveragedAmount
 	custodyAmount := leveragedAmount
@@ -128,14 +128,14 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 
 		//getting Liabilities
 		if mtp.CollateralAsset != baseCurrency {
-			amountIn := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
+			amountIn := osmomath.BigDecFromSDKInt(req.Collateral.Amount).MulDec(eta).Dec().TruncateInt()
 			liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.Collateral.Denom, amountIn), baseCurrency, ammPool, req.Address)
 			if err != nil {
 				return nil, err
 			}
 			if useLimitPrice {
 				// liabilities needs to be in base currency
-				liabilities = amountIn.ToLegacyDec().Mul(req.LimitPrice).TruncateInt()
+				liabilities = osmomath.BigDecFromSDKInt(amountIn).MulDec(req.LimitPrice).Dec().TruncateInt()
 			}
 		}
 
@@ -143,7 +143,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	//getting Liabilities
 	if req.Position == types.Position_SHORT {
 		// Collateral will be in base currency
-		amountOut := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
+		amountOut := osmomath.BigDecFromSDKInt(req.Collateral.Amount).MulDec(eta).Dec().TruncateInt()
 		tokenOut := sdk.NewCoin(baseCurrency, amountOut)
 		liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, tokenOut, mtp.LiabilitiesAsset, ammPool, mtp.Address)
 		if err != nil {

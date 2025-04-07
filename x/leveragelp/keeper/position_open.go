@@ -70,7 +70,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 }
 
 func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolId uint64, msg *types.MsgOpen) (*types.Position, error) {
-	collateralAmountDec := sdkmath.LegacyNewDecFromInt(msg.CollateralAmount)
+	collateralAmountDec := osmomath.BigDecFromSDKInt(msg.CollateralAmount)
 
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
@@ -82,7 +82,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	leverage := sdkmath.LegacyMinDec(msg.Leverage, pool.LeverageMax)
 
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
-	leveragedAmount := sdkmath.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
+	leveragedAmount := sdkmath.NewInt(collateralAmountDec.MulDec(leverage).Dec().TruncateInt().Int64())
 
 	// send collateral coins to Position address from Position owner address
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)

@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -33,18 +34,18 @@ func (k Keeper) PoolInfo(goCtx context.Context, req *types.QueryPoolInfoRequest)
 		return nil, status.Error(codes.InvalidArgument, "invalid pool id")
 	}
 
-	stable_apr := sdkmath.LegacyZeroDec()
+	stable_apr := osmomath.ZeroBigDec()
 	if req.PoolId >= stabletypes.UsdcPoolId {
 		borrowPool, found := k.stableKeeper.GetPool(ctx, req.PoolId)
 		if found {
 			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{PoolId: req.PoolId})
 			if err == nil {
-				stable_apr = borrowPool.InterestRate.Mul(res.BorrowRatio)
+				stable_apr = borrowPool.GetBigDecInterestRate().MulDec(res.BorrowRatio)
 			}
 		}
 	}
 
-	return &types.QueryPoolInfoResponse{PoolInfo: poolInfo, StableApr: stable_apr}, nil
+	return &types.QueryPoolInfoResponse{PoolInfo: poolInfo, StableApr: stable_apr.Dec()}, nil
 }
 
 func (k Keeper) PoolRewardInfo(goCtx context.Context, req *types.QueryPoolRewardInfoRequest) (*types.QueryPoolRewardInfoResponse, error) {

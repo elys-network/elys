@@ -291,7 +291,7 @@ func (k Keeper) CollectInsuranceFund(ctx sdk.Context, amount math.Int, returnAss
 	params := k.GetParams(ctx)
 	fundAddr := sdk.MustAccAddressFromBech32(params.BorrowInterestPaymentFundAddress)
 
-	insuranceAmount := amount.ToLegacyDec().Mul(params.BorrowInterestPaymentFundPercentage).TruncateInt()
+	insuranceAmount := osmomath.BigDecFromSDKInt(amount).Mul(params.GetBigDecBorrowInterestPaymentFundPercentage()).Dec().TruncateInt()
 
 	if !insuranceAmount.IsZero() {
 		takeCoins := sdk.NewCoins(sdk.NewCoin(returnAsset, insuranceAmount))

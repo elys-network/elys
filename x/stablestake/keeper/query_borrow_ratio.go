@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -29,14 +30,14 @@ func (k Keeper) BorrowRatio(goCtx context.Context, req *types.QueryBorrowRatioRe
 
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 	borrowed := pool.TotalValue.Sub(balance.Amount)
-	borrowRatio := sdkmath.LegacyZeroDec()
+	borrowRatio := osmomath.ZeroBigDec()
 	if pool.TotalValue.GT(sdkmath.ZeroInt()) {
-		borrowRatio = borrowed.ToLegacyDec().Quo(pool.TotalValue.ToLegacyDec())
+		borrowRatio = osmomath.BigDecFromSDKInt(borrowed).Quo(pool.GetBigDecTotalValue())
 	}
 
 	return &types.QueryBorrowRatioResponse{
 		TotalDeposit: pool.TotalValue,
 		TotalBorrow:  borrowed,
-		BorrowRatio:  borrowRatio,
+		BorrowRatio:  borrowRatio.Dec(),
 	}, nil
 }

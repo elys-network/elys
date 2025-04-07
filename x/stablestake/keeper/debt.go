@@ -259,8 +259,8 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, po
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 
-	borrowed := pool.TotalValue.Sub(balance.Amount).ToLegacyDec().Add(amount.Amount.ToLegacyDec())
-	maxAllowed := pool.TotalValue.ToLegacyDec().Mul(pool.MaxLeverageRatio)
+	borrowed := osmomath.BigDecFromSDKInt(pool.TotalValue.Sub(balance.Amount)).Add(osmomath.BigDecFromSDKInt(amount.Amount))
+	maxAllowed := pool.GetBigDecTotalValue().Mul(pool.GetBigDecMaxLeverageRatio())
 	if borrowed.GT(maxAllowed) {
 		return types.ErrMaxBorrowAmount
 	}

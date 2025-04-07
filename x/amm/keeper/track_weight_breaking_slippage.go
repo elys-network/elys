@@ -57,7 +57,7 @@ func (k Keeper) TrackWeightBreakingSlippage(ctx sdk.Context, poolId uint64, toke
 	track := types.WeightBreakingSlippage{
 		PoolId: poolId,
 		Date:   ctx.BlockTime().Format("2006-01-02"),
-		Amount: price.Dec().Mul(math.LegacyNewDecFromInt(token.Amount)),
+		Amount: price.Mul(osmomath.BigDecFromSDKInt(token.Amount)).Dec(),
 	}
 	k.AddWeightAndSlippageFee(ctx, track)
 }

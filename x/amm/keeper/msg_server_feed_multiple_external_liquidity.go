@@ -23,8 +23,8 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 			}
 			if entry.DisplayName == el.Asset {
 
-				O_Tvl := el.Amount
-				P_Tvl := asset.Token.Amount.ToLegacyDec()
+				O_Tvl := osmomath.BigDecFromDec(el.Amount)
+				P_Tvl := osmomath.BigDecFromSDKInt(asset.Token.Amount)
 
 				// Ensure tvl is not zero to avoid division by zero
 				if P_Tvl.IsZero() {
@@ -36,7 +36,7 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 				if liquidityRatio.IsZero() {
 					return nil, types.ErrAmountTooLow
 				}
-				asset.ExternalLiquidityRatio = (O_Tvl.Quo(P_Tvl)).Quo(liquidityRatio.Dec())
+				asset.ExternalLiquidityRatio = (O_Tvl.Quo(P_Tvl)).Quo(liquidityRatio).Dec()
 
 				if asset.ExternalLiquidityRatio.LT(math.LegacyOneDec()) {
 					asset.ExternalLiquidityRatio = math.LegacyOneDec()

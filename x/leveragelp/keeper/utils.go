@@ -53,9 +53,9 @@ func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "amm pool: %d", poolId)
 	}
 
-	poolLeveragelpRatio := pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+	poolLeveragelpRatio := pool.GetBigDecLeveragedLpAmount().Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
 
-	if poolLeveragelpRatio.GT(pool.MaxLeveragelpRatio) {
+	if poolLeveragelpRatio.GT(pool.GetBigDecMaxLeveragelpRatio()) {
 		return errorsmod.Wrap(types.ErrMaxLeverageLpExists, "pool is unhealthy")
 	}
 	return nil

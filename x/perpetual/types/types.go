@@ -72,27 +72,27 @@ func (mtp MTP) Validate() error {
 }
 
 func (mtp *MTP) GetAndSetOpenPrice() {
-	openPrice := sdkmath.LegacyZeroDec()
+	openPrice := osmomath.ZeroBigDec()
 	if mtp.Position == Position_LONG {
 		if mtp.CollateralAsset == mtp.TradingAsset {
 			// open price = liabilities / (custody - collateral)
-			denominator := mtp.Custody.Sub(mtp.Collateral).ToLegacyDec()
+			denominator := osmomath.BigDecFromSDKInt(mtp.Custody.Sub(mtp.Collateral))
 			if !denominator.IsZero() {
-				openPrice = mtp.Liabilities.ToLegacyDec().Quo(denominator)
+				openPrice = mtp.GetBigDecLiabilities().Quo(denominator)
 			}
 		} else {
 			// open price = (collateral + liabilities) / custody
-			openPrice = (mtp.Collateral.Add(mtp.Liabilities)).ToLegacyDec().Quo(mtp.Custody.ToLegacyDec())
+			openPrice = osmomath.BigDecFromSDKInt(mtp.Collateral.Add(mtp.Liabilities)).Quo(mtp.GetBigDecCustody())
 		}
 	} else {
 		if mtp.Liabilities.IsZero() {
-			mtp.OpenPrice = openPrice
+			mtp.OpenPrice = openPrice.Dec()
 		} else {
 			// open price = (custody - collateral) / liabilities
-			openPrice = (mtp.Custody.Sub(mtp.Collateral)).ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec())
+			openPrice = osmomath.BigDecFromSDKInt(mtp.Custody.Sub(mtp.Collateral)).Quo(mtp.GetBigDecLiabilities())
 		}
 	}
-	mtp.OpenPrice = openPrice
+	mtp.OpenPrice = openPrice.Dec()
 	return
 }
 

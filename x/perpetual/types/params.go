@@ -167,3 +167,7 @@ func (p Params) GetBigDecSafetyFactor() osmomath.BigDec {
 func (p Params) GetBigDecBorrowInterestRateMin() osmomath.BigDec {
 	return osmomath.BigDecFromDec(p.BorrowInterestRateMin)
 }
+
+func (p Params) GetBigDecBorrowInterestPaymentFundPercentage() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.BorrowInterestPaymentFundPercentage)
+}

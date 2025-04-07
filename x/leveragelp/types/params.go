@@ -83,3 +83,11 @@ func containsDuplicates(arr []uint64) bool {
 func (p Params) GetBigDecSafetyFactor() osmomath.BigDec {
 	return osmomath.BigDecFromDec(p.SafetyFactor)
 }
+
+func (p Params) GetBigDecPoolOpenThreshold() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.PoolOpenThreshold)
+}
+
+func (p Params) GetBigDecExitBuffer() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.ExitBuffer)
+}

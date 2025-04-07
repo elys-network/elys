@@ -100,12 +100,12 @@ func (suite *AmmKeeperTestSuite) TestGetExternalLiquidityRatio() {
 				{
 					Token:                  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
 					Weight:                 sdkmath.NewInt(50),
-					ExternalLiquidityRatio: sdkmath.LegacyMustNewDecFromStr("34.142135623730950558"),
+					ExternalLiquidityRatio: sdkmath.LegacyMustNewDecFromStr("34.142135623730950488"),
 				},
 				{
 					Token:                  sdk.NewCoin(ptypes.ATOM, sdkmath.NewInt(100000000)),
 					Weight:                 sdkmath.NewInt(50),
-					ExternalLiquidityRatio: sdkmath.LegacyMustNewDecFromStr("34.142135623730950558"),
+					ExternalLiquidityRatio: sdkmath.LegacyMustNewDecFromStr("34.142135623730950488"),
 				},
 			},
 			expectedError: nil,

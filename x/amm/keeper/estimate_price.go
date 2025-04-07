@@ -104,8 +104,8 @@ func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) osmo
 
 	routes := resp.InRoute
 	tokenIn := sdk.NewCoin(denom, math.NewInt(Pow10(decimal).TruncateInt64()))
-	discount := math.LegacyNewDec(1)
-	spotPrice, _, _, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, tokenIn, routes, osmomath.BigDecFromDec(discount), osmomath.ZeroBigDec())
+	discount := osmomath.OneBigDec()
+	spotPrice, _, _, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, osmomath.ZeroBigDec())
 	if err != nil {
 		return osmomath.ZeroBigDec()
 	}
