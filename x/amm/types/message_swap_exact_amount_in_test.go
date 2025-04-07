@@ -81,6 +81,64 @@ func TestMsgSwapExactAmountIn_ValidateBasic(t *testing.T) {
 			},
 			err: errors.New("token in is zero"),
 		},
+		{
+			name: "Invalid routes with same Input and Output denom",
+			msg: types.MsgSwapExactAmountIn{
+				Sender: sample.AccAddress(),
+				Routes: []types.SwapAmountInRoute{
+					{TokenOutDenom: "uusdc"},
+					{TokenOutDenom: "uusdc"},
+					{TokenOutDenom: "uelys"},
+				},
+				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenOutMinAmount: math.NewInt(1),
+				Recipient:         sample.AccAddress(),
+			},
+			err: errors.New("has the same input and output denom as the previous route"),
+		},
+		{
+			name: "Duplicate TokenOutDenom in routes",
+			msg: types.MsgSwapExactAmountIn{
+				Sender: sample.AccAddress(),
+				Routes: []types.SwapAmountInRoute{
+					{TokenOutDenom: "uusdc"},
+					{TokenOutDenom: "uosmo"},
+					{TokenOutDenom: "uelys"},
+					{TokenOutDenom: "uusdc"},
+				},
+				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenOutMinAmount: math.NewInt(1),
+				Recipient:         sample.AccAddress(),
+			},
+			err: errors.New("duplicate TokenOutDenom found in route 3"),
+		},
+		{
+			name: "Circular swap detected",
+			msg: types.MsgSwapExactAmountIn{
+				Sender: sample.AccAddress(),
+				Routes: []types.SwapAmountInRoute{
+					{TokenOutDenom: "uelys"},
+					{TokenOutDenom: "uusdc"},
+				},
+				TokenIn:           sdk.Coin{Denom: "uusdc", Amount: math.NewInt(10)},
+				TokenOutMinAmount: math.NewInt(1),
+				Recipient:         sample.AccAddress(),
+			},
+			err: errors.New("circular swap detected: token in denom matches the last route's token out denom"),
+		},
+		{
+			name: "Valid multiple routes",
+			msg: types.MsgSwapExactAmountIn{
+				Sender: sample.AccAddress(),
+				Routes: []types.SwapAmountInRoute{
+					{TokenOutDenom: "uusdc"},
+					{TokenOutDenom: "uelys"},
+				},
+				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenOutMinAmount: math.NewInt(1),
+				Recipient:         sample.AccAddress(),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
