@@ -2,8 +2,10 @@
 package burner
 
 import (
+	v1beta1 "cosmossdk.io/api/cosmos/base/v1beta1"
 	fmt "fmt"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
+	_ "github.com/cosmos/gogoproto/gogoproto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -12,16 +14,71 @@ import (
 	sync "sync"
 )
 
+var _ protoreflect.List = (*_History_5_list)(nil)
+
+type _History_5_list struct {
+	list *[]*v1beta1.Coin
+}
+
+func (x *_History_5_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_History_5_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_History_5_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_History_5_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_History_5_list) AppendMutable() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_History_5_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_History_5_list) NewElement() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_History_5_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_History           protoreflect.MessageDescriptor
-	fd_History_timestamp protoreflect.FieldDescriptor
-	fd_History_denom     protoreflect.FieldDescriptor
-	fd_History_amount    protoreflect.FieldDescriptor
+	md_History              protoreflect.MessageDescriptor
+	fd_History_block        protoreflect.FieldDescriptor
+	fd_History_burned_coins protoreflect.FieldDescriptor
+	fd_History_timestamp    protoreflect.FieldDescriptor
+	fd_History_denom        protoreflect.FieldDescriptor
+	fd_History_amount       protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_burner_history_proto_init()
 	md_History = File_elys_burner_history_proto.Messages().ByName("History")
+	fd_History_block = md_History.Fields().ByName("block")
+	fd_History_burned_coins = md_History.Fields().ByName("burned_coins")
 	fd_History_timestamp = md_History.Fields().ByName("timestamp")
 	fd_History_denom = md_History.Fields().ByName("denom")
 	fd_History_amount = md_History.Fields().ByName("amount")
@@ -92,6 +149,18 @@ func (x *fastReflection_History) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_History) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Block != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Block)
+		if !f(fd_History_block, value) {
+			return
+		}
+	}
+	if len(x.BurnedCoins) != 0 {
+		value := protoreflect.ValueOfList(&_History_5_list{list: &x.BurnedCoins})
+		if !f(fd_History_burned_coins, value) {
+			return
+		}
+	}
 	if x.Timestamp != "" {
 		value := protoreflect.ValueOfString(x.Timestamp)
 		if !f(fd_History_timestamp, value) {
@@ -125,6 +194,10 @@ func (x *fastReflection_History) Range(f func(protoreflect.FieldDescriptor, prot
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_History) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
+	case "elys.burner.History.block":
+		return x.Block != uint64(0)
+	case "elys.burner.History.burned_coins":
+		return len(x.BurnedCoins) != 0
 	case "elys.burner.History.timestamp":
 		return x.Timestamp != ""
 	case "elys.burner.History.denom":
@@ -147,6 +220,10 @@ func (x *fastReflection_History) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_History) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
+	case "elys.burner.History.block":
+		x.Block = uint64(0)
+	case "elys.burner.History.burned_coins":
+		x.BurnedCoins = nil
 	case "elys.burner.History.timestamp":
 		x.Timestamp = ""
 	case "elys.burner.History.denom":
@@ -169,6 +246,15 @@ func (x *fastReflection_History) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_History) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
+	case "elys.burner.History.block":
+		value := x.Block
+		return protoreflect.ValueOfUint64(value)
+	case "elys.burner.History.burned_coins":
+		if len(x.BurnedCoins) == 0 {
+			return protoreflect.ValueOfList(&_History_5_list{})
+		}
+		listValue := &_History_5_list{list: &x.BurnedCoins}
+		return protoreflect.ValueOfList(listValue)
 	case "elys.burner.History.timestamp":
 		value := x.Timestamp
 		return protoreflect.ValueOfString(value)
@@ -198,6 +284,12 @@ func (x *fastReflection_History) Get(descriptor protoreflect.FieldDescriptor) pr
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_History) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
+	case "elys.burner.History.block":
+		x.Block = value.Uint()
+	case "elys.burner.History.burned_coins":
+		lv := value.List()
+		clv := lv.(*_History_5_list)
+		x.BurnedCoins = *clv.list
 	case "elys.burner.History.timestamp":
 		x.Timestamp = value.Interface().(string)
 	case "elys.burner.History.denom":
@@ -224,6 +316,14 @@ func (x *fastReflection_History) Set(fd protoreflect.FieldDescriptor, value prot
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_History) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.burner.History.burned_coins":
+		if x.BurnedCoins == nil {
+			x.BurnedCoins = []*v1beta1.Coin{}
+		}
+		value := &_History_5_list{list: &x.BurnedCoins}
+		return protoreflect.ValueOfList(value)
+	case "elys.burner.History.block":
+		panic(fmt.Errorf("field block of message elys.burner.History is not mutable"))
 	case "elys.burner.History.timestamp":
 		panic(fmt.Errorf("field timestamp of message elys.burner.History is not mutable"))
 	case "elys.burner.History.denom":
@@ -243,6 +343,11 @@ func (x *fastReflection_History) Mutable(fd protoreflect.FieldDescriptor) protor
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_History) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.burner.History.block":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.burner.History.burned_coins":
+		list := []*v1beta1.Coin{}
+		return protoreflect.ValueOfList(&_History_5_list{list: &list})
 	case "elys.burner.History.timestamp":
 		return protoreflect.ValueOfString("")
 	case "elys.burner.History.denom":
@@ -318,6 +423,15 @@ func (x *fastReflection_History) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
+		if x.Block != 0 {
+			n += 1 + runtime.Sov(uint64(x.Block))
+		}
+		if len(x.BurnedCoins) > 0 {
+			for _, e := range x.BurnedCoins {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
 		l = len(x.Timestamp)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
@@ -358,6 +472,27 @@ func (x *fastReflection_History) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.BurnedCoins) > 0 {
+			for iNdEx := len(x.BurnedCoins) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.BurnedCoins[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x2a
+			}
+		}
+		if x.Block != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Block))
+			i--
+			dAtA[i] = 0x20
 		}
 		if len(x.Amount) > 0 {
 			i -= len(x.Amount)
@@ -429,6 +564,59 @@ func (x *fastReflection_History) ProtoMethods() *protoiface.Methods {
 				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: History: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
+			case 4:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Block", wireType)
+				}
+				x.Block = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Block |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BurnedCoins", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BurnedCoins = append(x.BurnedCoins, &v1beta1.Coin{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.BurnedCoins[len(x.BurnedCoins)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			case 1:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Timestamp", wireType)
@@ -578,9 +766,11 @@ type History struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Timestamp string `protobuf:"bytes,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	Denom     string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
-	Amount    string `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	Block       uint64          `protobuf:"varint,4,opt,name=block,proto3" json:"block,omitempty"`
+	BurnedCoins []*v1beta1.Coin `protobuf:"bytes,5,rep,name=burned_coins,json=burnedCoins,proto3" json:"burned_coins,omitempty"`
+	Timestamp   string          `protobuf:"bytes,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Denom       string          `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Amount      string          `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
 func (x *History) Reset() {
@@ -601,6 +791,20 @@ func (*History) ProtoMessage() {}
 // Deprecated: Use History.ProtoReflect.Descriptor instead.
 func (*History) Descriptor() ([]byte, []int) {
 	return file_elys_burner_history_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *History) GetBlock() uint64 {
+	if x != nil {
+		return x.Block
+	}
+	return 0
+}
+
+func (x *History) GetBurnedCoins() []*v1beta1.Coin {
+	if x != nil {
+		return x.BurnedCoins
+	}
+	return nil
 }
 
 func (x *History) GetTimestamp() string {
@@ -629,23 +833,35 @@ var File_elys_burner_history_proto protoreflect.FileDescriptor
 var file_elys_burner_history_proto_rawDesc = []byte{
 	0x0a, 0x19, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x62, 0x75, 0x72, 0x6e, 0x65, 0x72, 0x2f, 0x68, 0x69,
 	0x73, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0b, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x62, 0x75, 0x72, 0x6e, 0x65, 0x72, 0x22, 0x55, 0x0a, 0x07, 0x48, 0x69, 0x73, 0x74,
-	0x6f, 0x72, 0x79, 0x12, 0x1c, 0x0a, 0x09, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d,
-	0x70, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
-	0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x42,
-	0x9a, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x62, 0x75, 0x72,
-	0x6e, 0x65, 0x72, 0x42, 0x0c, 0x48, 0x69, 0x73, 0x74, 0x6f, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x2c, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x62, 0x75, 0x72, 0x6e, 0x65,
-	0x72, 0xa2, 0x02, 0x03, 0x45, 0x42, 0x58, 0xaa, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x42,
-	0x75, 0x72, 0x6e, 0x65, 0x72, 0xca, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x42, 0x75, 0x72,
-	0x6e, 0x65, 0x72, 0xe2, 0x02, 0x17, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x42, 0x75, 0x72, 0x6e, 0x65,
-	0x72, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c,
-	0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x42, 0x75, 0x72, 0x6e, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x2e, 0x62, 0x75, 0x72, 0x6e, 0x65, 0x72, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1e,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x76, 0x31, 0x62, 0x65,
+	0x74, 0x61, 0x31, 0x2f, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xdb,
+	0x01, 0x0a, 0x07, 0x48, 0x69, 0x73, 0x74, 0x6f, 0x72, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x62, 0x6c,
+	0x6f, 0x63, 0x6b, 0x18, 0x04, 0x20, 0x01, 0x28, 0x04, 0x52, 0x05, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
+	0x12, 0x6e, 0x0a, 0x0c, 0x62, 0x75, 0x72, 0x6e, 0x65, 0x64, 0x5f, 0x63, 0x6f, 0x69, 0x6e, 0x73,
+	0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69,
+	0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75,
+	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f,
+	0x69, 0x6e, 0x73, 0x52, 0x0b, 0x62, 0x75, 0x72, 0x6e, 0x65, 0x64, 0x43, 0x6f, 0x69, 0x6e, 0x73,
+	0x12, 0x1c, 0x0a, 0x09, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x12, 0x14,
+	0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64,
+	0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x42, 0x9a, 0x01, 0x0a,
+	0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x62, 0x75, 0x72, 0x6e, 0x65, 0x72,
+	0x42, 0x0c, 0x48, 0x69, 0x73, 0x74, 0x6f, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
+	0x5a, 0x2c, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79,
+	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61,
+	0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x62, 0x75, 0x72, 0x6e, 0x65, 0x72, 0xa2, 0x02,
+	0x03, 0x45, 0x42, 0x58, 0xaa, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x42, 0x75, 0x72, 0x6e,
+	0x65, 0x72, 0xca, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x42, 0x75, 0x72, 0x6e, 0x65, 0x72,
+	0xe2, 0x02, 0x17, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x42, 0x75, 0x72, 0x6e, 0x65, 0x72, 0x5c, 0x47,
+	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c, 0x45, 0x6c, 0x79,
+	0x73, 0x3a, 0x3a, 0x42, 0x75, 0x72, 0x6e, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -662,14 +878,16 @@ func file_elys_burner_history_proto_rawDescGZIP() []byte {
 
 var file_elys_burner_history_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_elys_burner_history_proto_goTypes = []interface{}{
-	(*History)(nil), // 0: elys.burner.History
+	(*History)(nil),      // 0: elys.burner.History
+	(*v1beta1.Coin)(nil), // 1: cosmos.base.v1beta1.Coin
 }
 var file_elys_burner_history_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: elys.burner.History.burned_coins:type_name -> cosmos.base.v1beta1.Coin
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_elys_burner_history_proto_init() }
