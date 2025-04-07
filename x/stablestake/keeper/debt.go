@@ -362,7 +362,8 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 	iterator = storetypes.KVStorePrefixIterator(store, nil)
 	defer iterator.Close()
 
-	totalValue := sdkmath.ZeroInt()
+	totalValueUSD := sdkmath.ZeroInt()
+	totalValueAtom := sdkmath.ZeroInt()
 
 	for ; iterator.Valid(); iterator.Next() {
 		debt := types.Debt{}
@@ -371,17 +372,21 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 		if debt.Borrowed.IsZero() {
 			store.Delete(iterator.Key())
 		}
-		totalValue = totalValue.Add(debt.Borrowed)
-		if debt.InterestStacked.LT(debt.Borrowed) {
-			totalValue = totalValue.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+		if debt.PoolId == types.UsdcPoolId {
+			totalValueUSD = totalValueUSD.Add(debt.Borrowed)
+			if debt.InterestStacked.LT(debt.Borrowed) {
+				totalValueUSD = totalValueUSD.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+			} else {
+				store.Delete(iterator.Key())
+			}
 		} else {
-			store.Delete(iterator.Key())
+			totalValueAtom = totalValueAtom.Add(debt.Borrowed)
+			if debt.InterestStacked.LT(debt.Borrowed) {
+				totalValueAtom = totalValueAtom.Add(debt.InterestStacked).Sub(debt.InterestPaid)
+			} else {
+				store.Delete(iterator.Key())
+			}
 		}
-	}
-
-	pools := k.GetAllPools(ctx)
-	for _, pool := range pools {
-		k.DeletePool(ctx, pool.Id)
 	}
 
 	params := k.GetParams(ctx)
@@ -397,10 +402,16 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 		InterestRateMax:      params.LegacyInterestRateMax,
 		InterestRateMin:      params.LegacyInterestRateMin,
 		InterestRate:         params.LegacyInterestRate,
-		TotalValue:           totalValue.Add(balance.Amount),
+		TotalValue:           totalValueUSD.Add(balance.Amount),
 	}
-
 	k.SetPool(ctx, pool)
+
+	atomPool, found := k.GetPool(ctx, 32768)
+	if found {
+		balance = k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), atomPool.DepositDenom)
+		atomPool.TotalValue = totalValueAtom.Add(balance.Amount)
+		k.SetPool(ctx, atomPool)
+	}
 }
 
 func (k Keeper) MoveAllInterest(ctx sdk.Context) {
