@@ -106,12 +106,12 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 				{
 					Token:                  tc.poolInitBalance[0],
 					Weight:                 sdkmath.NewInt(10),
-					ExternalLiquidityRatio: sdkmath.LegacyZeroDec(),
+					ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
 				},
 				{
 					Token:                  tc.poolInitBalance[1],
 					Weight:                 sdkmath.NewInt(10),
-					ExternalLiquidityRatio: sdkmath.LegacyZeroDec(),
+					ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
 				},
 			}
 			res, err := msgServer.CreatePool(
