@@ -44,6 +44,7 @@ func (msg *MsgSwapExactAmountIn) ValidateBasic() error {
 			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid recipient address (%s)", err)
 		}
 	}
+	seenDenoms := make(map[string]bool)
 	for i, route := range msg.Routes {
 		if err = sdk.ValidateDenom(route.TokenOutDenom); err != nil {
 			return err
@@ -54,24 +55,11 @@ func (msg *MsgSwapExactAmountIn) ValidateBasic() error {
 			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "route %d has the same input and output denom as the previous route", i)
 		}
 
-		//  Ensure TokenIn denomination matches the first route
-		if len(msg.Routes) > 0 && msg.TokenIn.Denom != msg.Routes[0].TokenOutDenom {
-			return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "token in denom does not match the first route's input denom")
-		}
-
-		// Ensure no circular swaps
-		if len(msg.Routes) > 0 && msg.TokenIn.Denom == msg.Routes[len(msg.Routes)-1].TokenOutDenom {
-			return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "circular swap detected: token in denom matches the last route's token out denom")
-		}
-
 		// Ensure all TokenOutDenom values are unique
-		seenDenoms := make(map[string]bool)
-		for i, route := range msg.Routes {
-			if seenDenoms[route.TokenOutDenom] {
-				return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "duplicate TokenOutDenom found in route %d", i)
-			}
-			seenDenoms[route.TokenOutDenom] = true
+		if seenDenoms[route.TokenOutDenom] {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "duplicate TokenOutDenom found in route %d", i)
 		}
+		seenDenoms[route.TokenOutDenom] = true
 	}
 	if err = msg.TokenIn.Validate(); err != nil {
 		return err
@@ -79,5 +67,11 @@ func (msg *MsgSwapExactAmountIn) ValidateBasic() error {
 	if msg.TokenIn.IsZero() {
 		return errors.New("token in is zero")
 	}
+
+	// Ensure no circular swaps
+	if len(msg.Routes) > 0 && msg.TokenIn.Denom == msg.Routes[len(msg.Routes)-1].TokenOutDenom {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "circular swap detected: token in denom matches the last route's token out denom")
+	}
+
 	return nil
 }
