@@ -356,6 +356,13 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 		store.Delete(iterator.Key())
 	}
 
+	pools := k.GetAllPools(ctx)
+	for _, pool := range pools {
+		if pool.Id == 0 {
+			k.DeletePool(ctx, pool.Id)
+		}
+	}
+
 	store = prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.DebtPrefixKey)
 	iterator = storetypes.KVStorePrefixIterator(store, nil)
 	defer iterator.Close()
