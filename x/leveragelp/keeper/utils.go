@@ -136,7 +136,7 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 		price := k.oracleKeeper.GetDenomPrice(ctx, position.Position.Collateral.Denom)
 		interestRateHour := pool.GetBigDecInterestRate().Quo(hours)
 		positionAndInterest.InterestRateHour = interestRateHour.Dec()
-		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(osmomath.BigDecFromSDKInt(position.Position.Liabilities.Mul(price.Dec().RoundInt()))).Dec()
+		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(position.Position.GetBigDecLiabilities().Mul(price)).Dec()
 		positions_and_interest = append(positions_and_interest, &positionAndInterest)
 	}
 
