@@ -10,9 +10,6 @@ func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(types.ParamsPrefix)
-	if b == nil {
-		panic("cannot found params")
-	}
 
 	var v types.Params
 	k.cdc.MustUnmarshal(b, &v)

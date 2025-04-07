@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/clob/types"
 )
@@ -153,12 +152,6 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 		market.TotalOpen = market.TotalOpen.Sub(trade.Quantity)
 	}
 	k.SetPerpetualMarket(ctx, market)
-	k.SetTwapPrices(ctx, types.TwapPrice{
-		MarketId:        market.Id,
-		Block:           uint64(ctx.BlockHeight()),
-		Price:           trade.Price,
-		CumulativePrice: math.LegacyZeroDec(),
-		Timestamp:       uint64(ctx.BlockHeight()),
-	})
+	k.SetTwapPrices(ctx, trade)
 	return nil
 }

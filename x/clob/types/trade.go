@@ -16,3 +16,7 @@ func (t Trade) GetRequiredInitialMargin(market PerpetualMarket) math.Int {
 	requiredInitialMargin := value.Mul(market.InitialMarginRatio).RoundInt()
 	return requiredInitialMargin
 }
+
+func (t Trade) GetTradeValue() math.LegacyDec {
+	return t.Price.Mul(t.Quantity.ToLegacyDec())
+}

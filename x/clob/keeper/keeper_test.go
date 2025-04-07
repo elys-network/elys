@@ -77,14 +77,17 @@ type KeeperTestSuite struct {
 	legacyAmino *codec.LegacyAmino
 	ctx         sdk.Context
 	app         *simapp.ElysApp
+
+	avgBlockTime uint64
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
 	app := simapp.InitElysTestApp(true, suite.T())
 
 	suite.legacyAmino = app.LegacyAmino()
-	suite.ctx = app.BaseApp.NewContext(true)
+	suite.ctx = app.BaseApp.NewContext(true).WithBlockTime(time.Now())
 	suite.app = app
+	suite.avgBlockTime = 5
 
 	oracleParams := app.OracleKeeper.GetParams(suite.ctx)
 	oracleParams.LifeTimeInBlocks = 10000
@@ -123,5 +126,26 @@ func (suite *KeeperTestSuite) SetPrice(assets []string, prices []math.LegacyDec)
 			Timestamp:   uint64(time.Now().Unix()),
 			BlockHeight: 1,
 		})
+	}
+}
+
+func (suite *KeeperTestSuite) IncreaseHeight(height uint64) {
+	if height == 0 {
+		panic("increment cannot be 0")
+	}
+	for i := uint64(1); i <= height; i++ {
+		//_, err := suite.app.BeginBlocker(suite.ctx)
+		//if err != nil {
+		//	panic(err)
+		//}
+		//_, err = suite.app.EndBlocker(suite.ctx)
+		//if err != nil {
+		//	panic(err)
+		//}
+		currentHeight := suite.ctx.BlockHeight()
+		currentTime := suite.ctx.BlockTime().Unix()
+		ctx := suite.ctx.WithBlockHeight(currentHeight + 1)
+		ctx = ctx.WithBlockTime(time.Unix(currentTime+int64(suite.avgBlockTime), 0))
+		suite.ctx = ctx
 	}
 }

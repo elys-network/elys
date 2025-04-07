@@ -26,7 +26,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetPerpetualOrder(ctx, *v)
 	}
 	for _, v := range genState.TwapPrices {
-		k.SetTwapPrices(ctx, *v)
+		k.SetTwapPricesStruct(ctx, *v)
 	}
 	for _, v := range genState.PerpetualCounters {
 		k.SetPerpetualCounter(ctx, *v)

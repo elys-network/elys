@@ -99,17 +99,22 @@ message PerpetualMarket {
 message TwapPrice {
   uint64 market_id = 1;
   uint64 block = 2;
-  string price = 3 [
+  string average_trade_price = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string cumulative_price = 4 [
+  string total_volume = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string cumulative_price = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  uint64 timestamp = 5;
+  uint64 timestamp = 6;
 }
 
 message FundingRate {
