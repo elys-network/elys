@@ -37,20 +37,25 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 	if err != nil {
 		return nil, err
 	}
+	recoveryReward := sdkmath.ZeroInt()
+	if weightBonus.IsPositive() {
+		recoveryReward = amount.Amount.ToLegacyDec().Mul(weightBonus).TruncateInt()
+	}
 	// Add weight balance amount here, not added in execution as out amount will be changed and that will impact the transfers
-	amount.Amount = amount.Amount.Add(((amount.Amount.ToLegacyDec()).Mul(weightBonus)).TruncateInt())
+	amount.Amount = amount.Amount.Add(recoveryReward)
 
 	return &types.QuerySwapEstimationByDenomResponse{
-		InRoute:                   inRoute,
-		OutRoute:                  outRoute,
-		Amount:                    amount,
-		SpotPrice:                 spotPrice,
-		SwapFee:                   swapFee,
-		Discount:                  discount,
-		AvailableLiquidity:        availableLiquidity,
-		Slippage:                  slippage,
-		WeightBalanceRatio:        weightBonus,
-		PriceImpact:               priceImpact,
-		WeightBalanceRewardAmount: sdk.NewCoin(amount.Denom, ((amount.Amount.ToLegacyDec()).Mul(weightBonus)).TruncateInt()),
+		InRoute:            inRoute,
+		OutRoute:           outRoute,
+		Amount:             amount,
+		SpotPrice:          spotPrice,
+		SwapFee:            swapFee,
+		Discount:           discount,
+		AvailableLiquidity: availableLiquidity,
+		Slippage:           slippage,
+		WeightBalanceRatio: weightBonus,
+		PriceImpact:        priceImpact,
+		// sdk.NewCoin() will panic in case of negative weightBonus
+		WeightBalanceRewardAmount: sdk.Coin{Denom: amount.Denom, Amount: recoveryReward},
 	}, nil
 }
