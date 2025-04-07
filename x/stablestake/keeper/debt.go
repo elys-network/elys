@@ -356,13 +356,6 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 		store.Delete(iterator.Key())
 	}
 
-	pools := k.GetAllPools(ctx)
-	for _, pool := range pools {
-		if pool.Id == 0 {
-			k.DeletePool(ctx, pool.Id)
-		}
-	}
-
 	store = prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.DebtPrefixKey)
 	iterator = storetypes.KVStorePrefixIterator(store, nil)
 	defer iterator.Close()
@@ -411,10 +404,12 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 	}
 	k.SetPool(ctx, pool)
 
-	atomPool, _ := k.GetPool(ctx, 32768)
-	balance = k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), atomPool.DepositDenom)
-	atomPool.TotalValue = totalValueAtom.Add(balance.Amount)
-	k.SetPool(ctx, atomPool)
+	atomPool, found := k.GetPool(ctx, 32768)
+	if found {
+		balance = k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), atomPool.DepositDenom)
+		atomPool.TotalValue = totalValueAtom.Add(balance.Amount)
+		k.SetPool(ctx, atomPool)
+	}
 }
 
 func (k Keeper) MoveAllInterest(ctx sdk.Context) {
