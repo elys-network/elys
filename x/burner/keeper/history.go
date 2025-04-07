@@ -55,3 +55,18 @@ func (k Keeper) GetAllHistory(ctx sdk.Context) (list []types.History) {
 
 	return
 }
+
+func (k Keeper) GetAllLegacyHistory(ctx sdk.Context) (list []types.History) {
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.LegacyHistoryKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.History
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
