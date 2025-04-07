@@ -4,7 +4,7 @@ import (
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
+	ccvconsumertypes "github.com/cosmos/interchain-security/v7/x/ccv/consumer/types"
 	"github.com/elys-network/elys/x/estaking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )

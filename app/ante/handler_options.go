@@ -8,7 +8,7 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
-	ibcconsumerkeeper "github.com/cosmos/interchain-security/v6/x/ccv/consumer/keeper"
+	ibcconsumerkeeper "github.com/cosmos/interchain-security/v7/x/ccv/consumer/keeper"
 	parameterkeeper "github.com/elys-network/elys/x/parameter/keeper"
 )
 

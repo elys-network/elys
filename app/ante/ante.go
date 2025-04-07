@@ -7,7 +7,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
-	consumerante "github.com/cosmos/interchain-security/v6/app/consumer/ante"
+	consumerante "github.com/cosmos/interchain-security/v7/app/consumer/ante"
 )
 
 // NewAnteHandler returns an AnteHandler that checks and increments sequence

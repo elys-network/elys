@@ -22,7 +22,7 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
-	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
+	ccvconsumertypes "github.com/cosmos/interchain-security/v7/x/ccv/consumer/types"
 
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"

@@ -57,7 +57,7 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
+	ccvconsumertypes "github.com/cosmos/interchain-security/v7/x/ccv/consumer/types"
 	"github.com/elys-network/elys/app/ante"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
