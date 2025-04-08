@@ -27,7 +27,7 @@ func (suite *AmmKeeperTestSuite) TestUpFrontSwapExactAmountIn() {
 					Sender:            "cosmos1xv9tklw7d82sezh9haa573wufgy59vmwe6xxe5",
 					Routes:            []types.SwapAmountInRoute{},
 					TokenIn:           sdk.NewCoin("tokenA", sdkmath.NewInt(100)),
-					TokenOutMinAmount: sdkmath.Int(sdkmath.LegacyMustNewDecFromStr("50")),
+					TokenOutMinAmount: sdkmath.NewInt(50),
 				}
 				_, err := suite.app.AmmKeeper.UpFrontSwapExactAmountIn(suite.ctx, msg)
 				return err

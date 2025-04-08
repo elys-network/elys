@@ -33,7 +33,7 @@ func (k Keeper) createMultihopExpectedSwapOuts(
 			return nil, err
 		}
 
-		insExpected[i] = math.Int(tokenIn.Amount)
+		insExpected[i] = tokenIn.Amount
 		tokenOut = tokenIn
 	}
 
