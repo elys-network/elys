@@ -95,6 +95,7 @@ type AmmKeeper interface {
 		takersFee osmomath.BigDec,
 	) (tokenOutAmount math.Int, err error)
 	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
+	CalculateCoinsUSDValue(ctx sdk.Context, coins sdk.Coins) osmomath.BigDec
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info

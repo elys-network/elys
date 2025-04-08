@@ -41,8 +41,6 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		return nil, status.Error(codes.NotFound, "asset profile not found")
 	}
 
-	baseCurrencyPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrencyEntry.Denom)
-
 	stableStakeTVL := k.stableKeeper.TVL(ctx, k.oracleKeeper, stablestaketypes.UsdcPoolId)
 	totalTVL = totalTVL.Add(stableStakeTVL.Dec().TruncateInt())
 
@@ -57,7 +55,8 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 	stakedEdenValue := elysPrice.Mul(osmomath.BigDecFromSDKInt(stakedEden))
 	totalTVL = totalTVL.Add(stakedEdenValue.Dec().TruncateInt())
 
-	stableStakeBalance := k.bankKeeper.GetBalance(ctx, authtypes.NewModuleAddress(stablestaketypes.ModuleName), baseCurrencyEntry.Denom)
+	stableStakeBalance := k.bankKeeper.GetAllBalances(ctx, authtypes.NewModuleAddress(stablestaketypes.ModuleName))
+	stableStakeBalanceUSD := k.amm.CalculateCoinsUSDValue(ctx, stableStakeBalance)
 
 	return &types.QueryChainTVLResponse{
 		Total:       totalTVL,
@@ -65,6 +64,6 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		UsdcStaking: stableStakeTVL.Dec().TruncateInt(),
 		StakedElys:  stakedElysValue.Dec().TruncateInt(),
 		StakedEden:  stakedEdenValue.Dec().TruncateInt(),
-		NetStakings: sdk.NewCoins(sdk.NewCoin(baseCurrencyEntry.DisplayName, (osmomath.BigDecFromSDKInt(stableStakeBalance.Amount).Mul(baseCurrencyPrice).Dec().TruncateInt()))),
+		NetStakings: sdk.NewCoins(sdk.NewCoin(baseCurrencyEntry.DisplayName, stableStakeBalanceUSD.Dec().TruncateInt())),
 	}, nil
 }
