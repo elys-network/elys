@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - test/add-e2e-interchain-test-structure
 
 jobs:
   test:
