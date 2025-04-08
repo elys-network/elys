@@ -4,10 +4,14 @@ import (
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	simapp "github.com/elys-network/elys/app"
+	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	"github.com/elys-network/elys/x/clob/types"
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	"github.com/stretchr/testify/suite"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -69,6 +73,34 @@ var (
 		ElysTicker: "USDC",
 		Decimal:    6,
 	}
+	assetProfileOsmo = assetprofiletypes.Entry{
+		BaseDenom:                "uosmo",
+		Decimals:                 6,
+		Denom:                    "uosmo",
+		Path:                     "",
+		IbcChannelId:             "",
+		IbcCounterpartyChannelId: "",
+		DisplayName:              "OSMO",
+		DisplaySymbol:            "OSMO",
+		Network:                  "",
+		Address:                  "",
+		ExternalSymbol:           "",
+		TransferLimit:            "",
+		Permissions:              nil,
+		UnitDenom:                "uosmo",
+		IbcCounterpartyDenom:     "",
+		IbcCounterpartyChainId:   "",
+		Authority:                "",
+		CommitEnabled:            true,
+		WithdrawEnabled:          true,
+	}
+	oracleProfileOsmo = oracletypes.AssetInfo{
+		Denom:      "uosmo",
+		Display:    "OSMO",
+		BandTicker: "OSMO",
+		ElysTicker: "OSMO",
+		Decimal:    6,
+	}
 )
 
 type KeeperTestSuite struct {
@@ -109,8 +141,10 @@ func (suite *KeeperTestSuite) ResetSuite() {
 func (suite *KeeperTestSuite) SetAssetProfiles() {
 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetProfileAtom)
 	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetProfileUsdc)
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetProfileOsmo)
 	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracleProfileAtom)
 	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracleProfileUsdc)
+	suite.app.OracleKeeper.SetAssetInfo(suite.ctx, oracleProfileOsmo)
 }
 
 func (suite *KeeperTestSuite) SetPrice(assets []string, prices []math.LegacyDec) {
@@ -118,14 +152,15 @@ func (suite *KeeperTestSuite) SetPrice(assets []string, prices []math.LegacyDec)
 		panic("unequal lengths while setting prices during test")
 	}
 	for i, price := range prices {
-		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
+		oraclePrice := oracletypes.Price{
 			Asset:       assets[i],
 			Price:       price,
 			Source:      "test",
 			Provider:    "test",
-			Timestamp:   uint64(time.Now().Unix()),
-			BlockHeight: 1,
-		})
+			Timestamp:   uint64(suite.ctx.BlockTime().Unix()),
+			BlockHeight: uint64(suite.ctx.BlockHeight()),
+		}
+		suite.app.OracleKeeper.SetPrice(suite.ctx, oraclePrice)
 	}
 }
 
@@ -148,4 +183,57 @@ func (suite *KeeperTestSuite) IncreaseHeight(height uint64) {
 		ctx = ctx.WithBlockTime(time.Unix(currentTime+int64(suite.avgBlockTime), 0))
 		suite.ctx = ctx
 	}
+}
+
+func (suite *KeeperTestSuite) SetupSubAccounts(total uint64, balance sdk.Coins) []types.SubAccount {
+	if total == 0 {
+		panic("total subaccounts cannot be 0")
+	}
+
+	all := suite.app.ClobKeeper.GetAllSubAccount(suite.ctx)
+	var list []types.SubAccount
+	for i := uint64(len(all) + 1); i <= uint64(len(all))+total; i++ {
+		err := suite.app.BankKeeper.MintCoins(suite.ctx, ammtypes.ModuleName, balance)
+		suite.Require().NoError(err)
+
+		subAccountAddress := authtypes.NewModuleAddress("subAccount" + strconv.FormatUint(i, 10))
+
+		subAccount := types.SubAccount{
+			Owner:            subAccountAddress.String(),
+			MarketId:         1,
+			AvailableBalance: balance,
+			TotalBalance:     balance,
+			TradeNounce:      0,
+		}
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, ammtypes.ModuleName, subAccount.GetTradingAccountAddress(), balance)
+		suite.Require().NoError(err)
+
+		suite.app.ClobKeeper.SetSubAccount(suite.ctx, subAccount)
+		list = append(list, subAccount)
+	}
+	return list
+}
+
+func (suite *KeeperTestSuite) CreateMarket(baseDenoms ...string) []types.PerpetualMarket {
+	all := suite.app.ClobKeeper.GetAllPerpetualMarket(suite.ctx)
+	var list []types.PerpetualMarket
+	for _, baseDenom := range baseDenoms {
+		if baseDenom == "" || baseDenom == "uusdc" {
+			panic("base Denom cannot be uusdc or empty")
+		}
+		market := types.PerpetualMarket{
+			Id:                     uint64(len(all) + 1),
+			BaseDenom:              baseDenom,
+			QuoteDenom:             "uusdc",
+			InitialMarginRatio:     math.LegacyMustNewDecFromStr("0.1"),
+			MaintenanceMarginRatio: math.LegacyMustNewDecFromStr("0.2"),
+			Status:                 1,
+			MaxFundingRate:         math.LegacyMustNewDecFromStr("0.05"),
+			MaxFundingRateChange:   math.LegacyMustNewDecFromStr("0.01"),
+			MaxTwapPricesTime:      15,
+		}
+		suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
+		list = append(list, market)
+	}
+	return list
 }

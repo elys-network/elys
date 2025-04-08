@@ -5,10 +5,11 @@ import (
 )
 
 type Trade struct {
-	BuyerSubAccount, SellerSubAccount SubAccount
-	MarketId                          uint64
-	Price                             math.LegacyDec
-	Quantity                          math.Int
+	BuyerSubAccount  SubAccount
+	SellerSubAccount SubAccount
+	MarketId         uint64
+	Price            math.LegacyDec
+	Quantity         math.Int
 }
 
 func (t Trade) GetRequiredInitialMargin(market PerpetualMarket) math.Int {

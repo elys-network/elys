@@ -4,7 +4,6 @@ import (
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/clob/types"
@@ -56,27 +55,22 @@ func (k Keeper) GetAllFundingRate(ctx sdk.Context) []types.FundingRate {
 // fundingRate = clamp(premium / indexPrice, -cap, +cap)
 func (k Keeper) UpdateFundingRate(ctx sdk.Context, market types.PerpetualMarket) error {
 	twapMarkPrice := k.GetCurrentTwapPrice(ctx, market.Id)
-	assetInfo, found := k.oracleKeeper.GetAssetInfo(ctx, market.BaseDenom)
-	if !found {
-		return fmt.Errorf("asset info (%s) not found", market.BaseDenom)
+	indexPrice, err := k.GetAssetPrice(ctx, market.BaseDenom)
+	if err != nil {
+		return err
 	}
-	oraclePrice, found := k.oracleKeeper.GetAssetPrice(ctx, assetInfo.Display)
-	if !found {
-		return fmt.Errorf("asset price (%s) not found", assetInfo.Display)
-	}
-	indexPrice := oraclePrice.Price
-	premium := twapMarkPrice.Sub(indexPrice)
 
+	premium := twapMarkPrice.Sub(indexPrice)
 	fundingRateCal := premium.Quo(indexPrice)
 
 	lastFundingRate := k.GetFundingRate(ctx, market.Id)
 	change := fundingRateCal.Sub(lastFundingRate.Rate)
 
 	if !change.IsZero() {
-		if change.IsPositive() && change.GTE(market.MaxFundingRateChange) {
+		if change.IsPositive() && change.GT(market.MaxFundingRateChange) {
 			change = market.MaxFundingRateChange
 		}
-		if change.IsNegative() && change.Abs().GTE(market.MaxFundingRateChange) {
+		if change.IsNegative() && change.Abs().GT(market.MaxFundingRateChange) {
 			change = market.MaxFundingRateChange.Neg()
 		}
 	}

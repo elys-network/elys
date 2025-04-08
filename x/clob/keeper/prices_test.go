@@ -61,6 +61,16 @@ func (suite *KeeperTestSuite) TestTwapPrices() {
 		post   func()
 	}{
 		{
+			"no trade has happened",
+			math.LegacyZeroDec(),
+			func() {
+			},
+			func() {
+				lastAvgTradePrice := suite.app.ClobKeeper.GetLastAverageTradePrice(suite.ctx, 1)
+				suite.Require().Equal(math.LegacyZeroDec(), lastAvgTradePrice)
+			},
+		},
+		{
 			"2 trades at same block, first twap price is 0",
 			math.LegacyZeroDec(),
 			func() {
@@ -403,4 +413,60 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 			}
 		})
 	}
+}
+
+func (suite *KeeperTestSuite) TestSetTwapPricesStruct() {
+	suite.ResetSuite()
+	suite.IncreaseHeight(1)
+	p1 := types.TwapPrice{
+		MarketId:          1,
+		Block:             uint64(suite.ctx.BlockHeight()),
+		AverageTradePrice: math.LegacyNewDecWithPrec(111, 1),
+		TotalVolume:       math.NewInt(150),
+		CumulativePrice:   math.LegacyNewDecWithPrec(1004, 1),
+		Timestamp:         uint64(suite.ctx.BlockTime().Unix()),
+	}
+	suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, p1)
+	all := suite.app.ClobKeeper.GetAllTwapPrices(suite.ctx)
+	suite.Require().Equal(len(all), 1)
+	suite.Require().Equal(all[0], p1)
+
+	suite.IncreaseHeight(1)
+
+	p2 := types.TwapPrice{
+		MarketId:          1,
+		Block:             uint64(suite.ctx.BlockHeight()),
+		AverageTradePrice: math.LegacyNewDecWithPrec(120, 1),
+		TotalVolume:       math.NewInt(120),
+		CumulativePrice:   p1.CumulativePrice.Add(p1.AverageTradePrice.MulInt64(int64(suite.avgBlockTime))),
+		Timestamp:         uint64(suite.ctx.BlockTime().Unix()),
+	}
+	suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, p2)
+	all = suite.app.ClobKeeper.GetAllTwapPrices(suite.ctx)
+	suite.Require().Equal(len(all), 2)
+	suite.Require().Equal(all[0], p1)
+	suite.Require().Equal(all[1], p2)
+
+	currentTwapPrice := suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, 1)
+	suite.Require().Equal(currentTwapPrice, (p2.CumulativePrice.Sub(p1.CumulativePrice)).QuoInt64(int64(suite.avgBlockTime)))
+
+	suite.IncreaseHeight(1)
+
+	p3 := types.TwapPrice{
+		MarketId:          1,
+		Block:             uint64(suite.ctx.BlockHeight()),
+		AverageTradePrice: math.LegacyNewDecWithPrec(125, 1),
+		TotalVolume:       math.NewInt(160),
+		CumulativePrice:   p2.CumulativePrice.Add(p2.AverageTradePrice.MulInt64(int64(suite.avgBlockTime))),
+		Timestamp:         uint64(suite.ctx.BlockTime().Unix()),
+	}
+	suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, p3)
+	all = suite.app.ClobKeeper.GetAllTwapPrices(suite.ctx)
+	suite.Require().Equal(len(all), 3)
+	suite.Require().Equal(all[0], p1)
+	suite.Require().Equal(all[1], p2)
+	suite.Require().Equal(all[2], p3)
+
+	currentTwapPrice = suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, 1)
+	suite.Require().Equal(currentTwapPrice, (p3.CumulativePrice.Sub(p1.CumulativePrice)).QuoInt64(int64(suite.avgBlockTime*2)))
 }

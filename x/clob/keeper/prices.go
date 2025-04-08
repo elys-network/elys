@@ -17,6 +17,15 @@ func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) math.Legac
 	var lastTwapPrice types.TwapPrice
 	if reverseIterator.Valid() {
 		k.cdc.MustUnmarshal(reverseIterator.Value(), &lastTwapPrice)
+	} else {
+		lastTwapPrice = types.TwapPrice{
+			MarketId:          marketId,
+			Block:             uint64(ctx.BlockHeight()),
+			AverageTradePrice: math.LegacyZeroDec(),
+			TotalVolume:       math.ZeroInt(),
+			CumulativePrice:   math.LegacyZeroDec(),
+			Timestamp:         uint64(ctx.BlockTime().Unix()),
+		}
 	}
 
 	_ = reverseIterator.Close()
@@ -27,6 +36,15 @@ func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) math.Legac
 	var firstTwapPrice types.TwapPrice
 	if iteratorForward.Valid() {
 		k.cdc.MustUnmarshal(iteratorForward.Value(), &firstTwapPrice)
+	} else {
+		firstTwapPrice = types.TwapPrice{
+			MarketId:          marketId,
+			Block:             uint64(ctx.BlockHeight()),
+			AverageTradePrice: math.LegacyZeroDec(),
+			TotalVolume:       math.ZeroInt(),
+			CumulativePrice:   math.LegacyZeroDec(),
+			Timestamp:         uint64(ctx.BlockTime().Unix()),
+		}
 	}
 
 	num := lastTwapPrice.CumulativePrice.Sub(firstTwapPrice.CumulativePrice)
