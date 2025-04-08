@@ -31,5 +31,5 @@ func (perpetual Perpetual) IsZero() bool {
 }
 
 func (perpetual Perpetual) GetEntryValue() math.LegacyDec {
-	return perpetual.Quantity.ToLegacyDec().Mul(perpetual.EntryPrice)
+	return perpetual.Quantity.Mul(perpetual.EntryPrice)
 }

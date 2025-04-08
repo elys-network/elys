@@ -87,7 +87,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 			buyOrderMaxQuantity := buyOrder.Amount.Sub(buyOrder.Filled)
 			sellOrderMaxQuantity := sellOrder.Amount.Sub(sellOrder.Filled)
 
-			tradeQuantity := math.MinInt(buyOrderMaxQuantity, sellOrderMaxQuantity)
+			tradeQuantity := math.LegacyMinDec(buyOrderMaxQuantity, sellOrderMaxQuantity)
 			if tradeQuantity.Equal(buyOrderMaxQuantity) {
 				buyOrderFilled = true
 			}

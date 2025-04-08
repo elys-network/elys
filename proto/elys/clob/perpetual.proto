@@ -26,8 +26,8 @@ message Perpetual {
   string owner = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   // quantity of the order
   string quantity = 5 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string margin = 6 [

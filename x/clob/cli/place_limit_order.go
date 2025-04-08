@@ -34,9 +34,9 @@ func CmdPlaceLimitOrder() *cobra.Command {
 				return err
 			}
 
-			quantity, ok := math.NewIntFromString(args[3])
-			if !ok {
-				return errors.New("invalid quantity")
+			quantity, err := math.LegacyNewDecFromStr(args[3])
+			if err != nil {
+				return err
 			}
 			var orderType types.OrderType
 			switch args[4] {

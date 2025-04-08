@@ -29,9 +29,9 @@ func CmdPlaceMarketOrder() *cobra.Command {
 				return err
 			}
 
-			quantity, ok := math.NewIntFromString(args[2])
-			if !ok {
-				return errors.New("invalid quantity")
+			quantity, err := math.LegacyNewDecFromStr(args[2])
+			if err != nil {
+				return err
 			}
 			var orderType types.OrderType
 			switch args[3] {

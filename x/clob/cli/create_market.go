@@ -2,7 +2,6 @@ package cli
 
 import (
 	"cosmossdk.io/math"
-	"errors"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -48,9 +47,9 @@ func CmdCreateMarket() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			minQuantityTick, ok := math.NewIntFromString(args[8])
-			if !ok {
-				return errors.New("invalid minimum quantity tick")
+			minQuantityTick, err := math.LegacyNewDecFromStr(args[8])
+			if err != nil {
+				return err
 			}
 			minNotional, err := math.LegacyNewDecFromStr(args[9])
 			if err != nil {

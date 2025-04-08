@@ -22,7 +22,7 @@ func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) math.Legac
 			MarketId:          marketId,
 			Block:             uint64(ctx.BlockHeight()),
 			AverageTradePrice: math.LegacyZeroDec(),
-			TotalVolume:       math.ZeroInt(),
+			TotalVolume:       math.LegacyZeroDec(),
 			CumulativePrice:   math.LegacyZeroDec(),
 			Timestamp:         uint64(ctx.BlockTime().Unix()),
 		}
@@ -41,7 +41,7 @@ func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) math.Legac
 			MarketId:          marketId,
 			Block:             uint64(ctx.BlockHeight()),
 			AverageTradePrice: math.LegacyZeroDec(),
-			TotalVolume:       math.ZeroInt(),
+			TotalVolume:       math.LegacyZeroDec(),
 			CumulativePrice:   math.LegacyZeroDec(),
 			Timestamp:         uint64(ctx.BlockTime().Unix()),
 		}
@@ -72,7 +72,7 @@ func (k Keeper) SetTwapPrices(ctx sdk.Context, trade types.Trade) {
 		MarketId:          trade.MarketId,
 		Block:             uint64(ctx.BlockHeight()),
 		AverageTradePrice: math.LegacyZeroDec(),
-		TotalVolume:       math.ZeroInt(),
+		TotalVolume:       math.LegacyZeroDec(),
 		CumulativePrice:   math.LegacyZeroDec(),
 		Timestamp:         uint64(ctx.BlockTime().Unix()),
 	}
@@ -81,8 +81,8 @@ func (k Keeper) SetTwapPrices(ctx sdk.Context, trade types.Trade) {
 	if bz != nil {
 		k.cdc.MustUnmarshal(bz, &currentTwapPrice)
 
-		oldTradeValue := currentTwapPrice.AverageTradePrice.Mul(currentTwapPrice.TotalVolume.ToLegacyDec())
-		newAveragePrice := oldTradeValue.Add(trade.GetTradeValue()).Quo(currentTwapPrice.TotalVolume.Add(trade.Quantity).ToLegacyDec())
+		oldTradeValue := currentTwapPrice.AverageTradePrice.Mul(currentTwapPrice.TotalVolume)
+		newAveragePrice := oldTradeValue.Add(trade.GetTradeValue()).Quo(currentTwapPrice.TotalVolume.Add(trade.Quantity))
 
 		currentTwapPrice.AverageTradePrice = newAveragePrice
 		currentTwapPrice.TotalVolume = currentTwapPrice.TotalVolume.Add(trade.Quantity.Abs())

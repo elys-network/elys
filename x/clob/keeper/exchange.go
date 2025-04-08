@@ -53,7 +53,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 		} else {
 			if wasLong {
 				num := buyerOldEntryValue.Add(trade.GetTradeValue())
-				buyerPerpetual.EntryPrice = num.Quo(buyerPerpetual.Quantity.ToLegacyDec())
+				buyerPerpetual.EntryPrice = num.Quo(buyerPerpetual.Quantity)
 			} else {
 				buyerPerpetual.EntryPrice = trade.Price
 			}
@@ -111,7 +111,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 		} else {
 			if wasShort {
 				num := sellerOldEntryValue.Add(trade.GetTradeValue())
-				sellerPerpetual.EntryPrice = num.Quo(sellerPerpetual.Quantity.ToLegacyDec())
+				sellerPerpetual.EntryPrice = num.Quo(sellerPerpetual.Quantity)
 			} else {
 				sellerPerpetual.EntryPrice = trade.Price
 			}

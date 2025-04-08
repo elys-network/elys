@@ -58,7 +58,7 @@ func (k Keeper) GetPerpetualValue(ctx sdk.Context, perpetual types.Perpetual) ma
 	if twapPrice.IsZero() {
 		panic("twap price is zero while calculating perpetual value")
 	}
-	return twapPrice.Mul(perpetual.Quantity.ToLegacyDec())
+	return twapPrice.Mul(perpetual.Quantity)
 }
 
 func (k Keeper) GetMaintenanceMargin(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) math.LegacyDec {

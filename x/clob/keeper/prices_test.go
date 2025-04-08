@@ -16,43 +16,43 @@ func (suite *KeeperTestSuite) TestTwapPrices() {
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(101, 1),
-			Quantity: math.NewInt(100),
+			Quantity: math.LegacyNewDec(100),
 		},
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(103, 1),
-			Quantity: math.NewInt(300),
+			Quantity: math.LegacyNewDec(300),
 		},
 	}
 	p2 := []types.Trade{
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(105, 1),
-			Quantity: math.NewInt(200)},
+			Quantity: math.LegacyNewDec(200)},
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(110, 1),
-			Quantity: math.NewInt(300)},
+			Quantity: math.LegacyNewDec(300)},
 	}
 	p3 := []types.Trade{
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(111, 1),
-			Quantity: math.NewInt(100)},
+			Quantity: math.LegacyNewDec(100)},
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(109, 1),
-			Quantity: math.NewInt(300)},
+			Quantity: math.LegacyNewDec(300)},
 	}
 	p4 := []types.Trade{
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(115, 1),
-			Quantity: math.NewInt(300)},
+			Quantity: math.LegacyNewDec(300)},
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(116, 1),
-			Quantity: math.NewInt(200)},
+			Quantity: math.LegacyNewDec(200)},
 	}
 	testCases := []struct {
 		name   string
@@ -164,8 +164,8 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 		Price:       math.LegacyNewDecWithPrec(1023, 2),
 		BlockHeight: 1,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 	sell2 := types.PerpetualOrder{
 		MarketId:    1,
@@ -173,8 +173,8 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 		Price:       math.LegacyNewDecWithPrec(1027, 2),
 		BlockHeight: 2,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 	sell3 := types.PerpetualOrder{
 		MarketId:    1,
@@ -182,8 +182,8 @@ func (suite *KeeperTestSuite) TestGetLowestSellPrice() {
 		Price:       math.LegacyNewDecWithPrec(1029, 2),
 		BlockHeight: 3,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 
 	testCases := []struct {
@@ -230,8 +230,8 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 		Price:       math.LegacyNewDecWithPrec(1013, 2),
 		BlockHeight: 1,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 	buy2 := types.PerpetualOrder{
 		MarketId:    1,
@@ -239,8 +239,8 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 		Price:       math.LegacyNewDecWithPrec(1017, 2),
 		BlockHeight: 2,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 	buy3 := types.PerpetualOrder{
 		MarketId:    1,
@@ -248,8 +248,8 @@ func (suite *KeeperTestSuite) TestGetHighestBuyPrice() {
 		Price:       math.LegacyNewDecWithPrec(1011, 2),
 		BlockHeight: 3,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 
 	testCases := []struct {
@@ -296,8 +296,8 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 		Price:       math.LegacyNewDecWithPrec(1023, 2),
 		BlockHeight: 1,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 	sell2 := types.PerpetualOrder{
 		MarketId:    1,
@@ -305,8 +305,8 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 		Price:       math.LegacyNewDecWithPrec(1027, 2),
 		BlockHeight: 2,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 	sell3 := types.PerpetualOrder{
 		MarketId:    1,
@@ -314,8 +314,8 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 		Price:       math.LegacyNewDecWithPrec(1020, 2),
 		BlockHeight: 2,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 
 	buy1 := types.PerpetualOrder{
@@ -324,8 +324,8 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 		Price:       math.LegacyNewDecWithPrec(1013, 2),
 		BlockHeight: 1,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 	buy2 := types.PerpetualOrder{
 		MarketId:    1,
@@ -333,8 +333,8 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 		Price:       math.LegacyNewDecWithPrec(1011, 2),
 		BlockHeight: 2,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 	buy3 := types.PerpetualOrder{
 		MarketId:    1,
@@ -342,8 +342,8 @@ func (suite *KeeperTestSuite) TestGetMidPrice() {
 		Price:       math.LegacyNewDecWithPrec(1020, 2),
 		BlockHeight: 1,
 		Owner:       authtypes.NewModuleAddress("1").String(),
-		Amount:      math.NewInt(100),
-		Filled:      math.ZeroInt(),
+		Amount:      math.LegacyNewDec(100),
+		Filled:      math.LegacyZeroDec(),
 	}
 
 	testCases := []struct {
@@ -422,7 +422,7 @@ func (suite *KeeperTestSuite) TestSetTwapPricesStruct() {
 		MarketId:          1,
 		Block:             uint64(suite.ctx.BlockHeight()),
 		AverageTradePrice: math.LegacyNewDecWithPrec(111, 1),
-		TotalVolume:       math.NewInt(150),
+		TotalVolume:       math.LegacyNewDec(150),
 		CumulativePrice:   math.LegacyNewDecWithPrec(1004, 1),
 		Timestamp:         uint64(suite.ctx.BlockTime().Unix()),
 	}
@@ -437,7 +437,7 @@ func (suite *KeeperTestSuite) TestSetTwapPricesStruct() {
 		MarketId:          1,
 		Block:             uint64(suite.ctx.BlockHeight()),
 		AverageTradePrice: math.LegacyNewDecWithPrec(120, 1),
-		TotalVolume:       math.NewInt(120),
+		TotalVolume:       math.LegacyNewDec(120),
 		CumulativePrice:   p1.CumulativePrice.Add(p1.AverageTradePrice.MulInt64(int64(suite.avgBlockTime))),
 		Timestamp:         uint64(suite.ctx.BlockTime().Unix()),
 	}
@@ -456,7 +456,7 @@ func (suite *KeeperTestSuite) TestSetTwapPricesStruct() {
 		MarketId:          1,
 		Block:             uint64(suite.ctx.BlockHeight()),
 		AverageTradePrice: math.LegacyNewDecWithPrec(125, 1),
-		TotalVolume:       math.NewInt(160),
+		TotalVolume:       math.LegacyNewDec(160),
 		CumulativePrice:   p2.CumulativePrice.Add(p2.AverageTradePrice.MulInt64(int64(suite.avgBlockTime))),
 		Timestamp:         uint64(suite.ctx.BlockTime().Unix()),
 	}

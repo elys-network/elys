@@ -61,8 +61,8 @@ message PerpetualMarket {
   // min_quantity_tick_size defines the minimum tick size of the quantity
   // required for orders in the market
   string min_quantity_tick_size = 11 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   // min_notional defines the minimum notional (in quote asset) required for
@@ -77,8 +77,8 @@ message PerpetualMarket {
   string admin = 13;
 
   string total_open = 14 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   uint64 counter = 15;
@@ -105,8 +105,8 @@ message TwapPrice {
     (gogoproto.nullable) = false
   ];
   string total_volume = 4 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string cumulative_price = 5 [

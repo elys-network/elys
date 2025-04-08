@@ -16,23 +16,23 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(101, 1),
-			Quantity: math.NewInt(100),
+			Quantity: math.LegacyNewDec(100),
 		},
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(103, 1),
-			Quantity: math.NewInt(300),
+			Quantity: math.LegacyNewDec(300),
 		},
 	}
 	p2 := []types.Trade{
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(105, 1),
-			Quantity: math.NewInt(200)},
+			Quantity: math.LegacyNewDec(200)},
 		{
 			MarketId: 1,
 			Price:    math.LegacyNewDecWithPrec(110, 1),
-			Quantity: math.NewInt(300)},
+			Quantity: math.LegacyNewDec(300)},
 	}
 	suite.IncreaseHeight(1)
 	for _, p := range p1 {

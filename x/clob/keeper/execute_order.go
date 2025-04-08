@@ -27,7 +27,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 	}
 
 	var sellOrdersToDelete [][]byte
-	filled := math.ZeroInt()
+	filled := math.LegacyZeroDec()
 
 	for ; sellIterator.Valid() && !buyOrderFilled; sellIterator.Next() {
 		fmt.Println("---")
@@ -41,7 +41,7 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 		buyOrderMaxQuantity := msg.BaseQuantity.Sub(filled)
 		sellOrderMaxQuantity := sellOrder.Amount.Sub(sellOrder.Filled)
 
-		tradeQuantity := math.MinInt(buyOrderMaxQuantity, sellOrderMaxQuantity)
+		tradeQuantity := math.LegacyMinDec(buyOrderMaxQuantity, sellOrderMaxQuantity)
 		if tradeQuantity.Equal(buyOrderMaxQuantity) {
 			buyOrderFilled = true
 		}
@@ -109,7 +109,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 	}
 
 	var buyOrdersToDelete [][]byte
-	filled := math.ZeroInt()
+	filled := math.LegacyZeroDec()
 
 	for ; buyIterator.Valid() && !sellOrderFilled; buyIterator.Next() {
 		fmt.Println("---")
@@ -123,7 +123,7 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 		sellOrderMaxQuantity := msg.BaseQuantity.Sub(filled)
 		buyOrderMaxQuantity := buyOrder.Amount.Sub(buyOrder.Filled)
 
-		tradeQuantity := math.MinInt(buyOrderMaxQuantity, sellOrderMaxQuantity)
+		tradeQuantity := math.LegacyMinDec(buyOrderMaxQuantity, sellOrderMaxQuantity)
 		if tradeQuantity.Equal(buyOrderMaxQuantity) {
 			buyOrderFilled = true
 		}

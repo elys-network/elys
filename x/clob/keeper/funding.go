@@ -14,7 +14,7 @@ func (k Keeper) SettleFunding(ctx sdk.Context, subAccount *types.SubAccount, mar
 		if perpetual.IsShort() {
 			paymentSign = 1
 		}
-		fundingPnL := fundingRateApplied.Mul(perpetual.Quantity.Abs().ToLegacyDec().Mul(twapPrice)).RoundInt().MulRaw(paymentSign)
+		fundingPnL := fundingRateApplied.Mul(perpetual.Quantity.Abs().Mul(twapPrice)).RoundInt().MulRaw(paymentSign)
 		if fundingPnL.IsPositive() {
 			err := k.AddToSubAccount(ctx, market.GetAccount(), *subAccount, sdk.NewCoins(sdk.NewCoin(market.QuoteDenom, fundingPnL)))
 			if err != nil {

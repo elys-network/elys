@@ -23,7 +23,7 @@ func (suite *KeeperTestSuite) TestExchange() {
 		SellerSubAccount: sellerSubAccount,
 		MarketId:         1,
 		Price:            math.LegacyNewDecWithPrec(101, 1),
-		Quantity:         math.NewInt(100),
+		Quantity:         math.LegacyNewDec(100),
 	}
 	testCases := []struct {
 		name           string
