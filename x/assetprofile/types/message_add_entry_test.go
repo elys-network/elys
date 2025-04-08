@@ -1,7 +1,7 @@
 package types
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -95,7 +95,7 @@ func TestMsgAddEntry_ValidateBasic(t *testing.T) {
 				BaseDenom: "uusdc",
 				Denom:     "",
 			},
-			err: fmt.Errorf("invalid denom"),
+			err: errors.New("invalid denom"),
 		},
 	}
 	for _, tt := range tests {

@@ -98,6 +98,12 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/tier/get_users_pool_data";
   }
+
+  // Queries a list of GetConsolidatedPrice items.
+  rpc GetAllPrices(QueryGetAllPricesRequest)
+      returns (QueryGetAllPricesResponse) {
+    option (google.api.http).get = "/elys-network/elys/tier/get_all_prices";
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -204,13 +210,17 @@ message QueryGetAmmPriceRequest {
   int32 decimal = 2;
 }
 
-message QueryGetAmmPriceResponse {
+// We use a submessage to avoid the issue with the gRPC codec
+// https://github.com/cosmos/cosmos-sdk/issues/18430
+message GetAmmPriceResponseResult {
   string total = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 }
+
+message QueryGetAmmPriceResponse { GetAmmPriceResponseResult result = 1; }
 
 message QueryGetConsolidatedPriceRequest { string denom = 1; }
 
@@ -263,5 +273,28 @@ message QueryGetUsersPoolDataRequest {
 
 message QueryGetUsersPoolDataResponse {
   repeated UserData users = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message Price {
+  string denom = 1;
+  string oracle_price = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string amm_price = 3 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryGetAllPricesRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryGetAllPricesResponse {
+  repeated Price prices = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

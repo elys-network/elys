@@ -7,6 +7,9 @@ builds:
   - id: elysd-darwin-amd64
     main: ./cmd/elysd/main.go
     binary: elysd
+    hooks:
+      pre:
+        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
     env:
       - CC=o64-clang
       - CGO_LDFLAGS=-L/lib
@@ -22,16 +25,20 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd
       - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,pebbledb
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm,pebbledb
       - -w -s
       - -linkmode=external
     tags:
       - netgo
       - ledger
+      - static_wasm
       - pebbledb
   - id: elysd-darwin-arm64
     main: ./cmd/elysd/main.go
     binary: elysd
+    hooks:
+      pre:
+        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
     env:
       - CC=oa64-clang
       - CGO_LDFLAGS=-L/lib
@@ -47,22 +54,34 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd
       - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,pebbledb
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm,pebbledb
       - -w -s
       - -linkmode=external
     tags:
       - netgo
       - ledger
+      - static_wasm
       - pebbledb
   - id: elysd-linux-amd64
     main: ./cmd/elysd
     binary: elysd
+    hooks:
+      pre:
+        - wget -O /lib/libwasmvm_muslc.x86_64.a https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a
+        - echo "a4a3d09b36fabb65b119d5ba23442c23694401fcbee4451fe6b7e22e325a4bac /lib/libwasmvm_muslc.x86_64.a" | sha256sum -c
+        - cp /lib/libwasmvm_muslc.x86_64.a /lib/libwasmvm_muslc.a
+        - curl -LO https://musl.cc/x86_64-linux-musl-cross.tgz
+        - tar xf x86_64-linux-musl-cross.tgz
+        - mv x86_64-linux-musl-cross /opt/musl-cross
     goos:
       - linux
     goarch:
       - amd64
     env:
-      - CC=x86_64-linux-gnu-gcc
+      - CGO_ENABLED=1
+      - CC=/opt/musl-cross/bin/x86_64-linux-musl-gcc
+      - LD=/opt/musl-cross/bin/x86_64-linux-musl-ld
+      - CGO_LDFLAGS=-L/lib
     flags:
       - -mod=readonly
       - -trimpath
@@ -71,17 +90,22 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd
       - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,osusergo,pebbledb
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,pebbledb
       - -w -s
       - -linkmode=external
+      - -extldflags '-Wl,-z,muldefs -static -lm' 
     tags:
       - netgo
       - ledger
+      - muslc
       - osusergo
       - pebbledb
   - id: elysd-linux-arm64
     main: ./cmd/elysd
     binary: elysd
+    hooks:
+      pre:
+        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.aarch64.a -O /usr/lib/libwasmvm_muslc.aarch64.a
     goos:
       - linux
     goarch:
@@ -96,12 +120,14 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=elysd
       - -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,osusergo,pebbledb
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo,pebbledb
       - -w -s
       - -linkmode=external
+      - -extldflags '-lwasmvm_muslc.aarch64 -Wl,-z,muldefs -static -lm -ldl'
     tags:
       - netgo
       - ledger
+      - muslc
       - osusergo
       - pebbledb
 universal_binaries:

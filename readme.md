@@ -2,13 +2,17 @@
 
 **Elys** is a blockchain built using Cosmos SDK and CometBFT. It is designed to be a fast, scalable, and secure blockchain that can be used to build decentralized applications.
 
-| Parameter    | Value                                                                    |
-| ------------ | ------------------------------------------------------------------------ |
-| Chain ID     | elystestnet-1                                                            |
-| Denomination | uelys                                                                    |
-| Decimals     | 6 (1 elys= 1000000uelys)                                                 |
-| Version      | [See latest version here](https://github.com/elys-network/elys/releases) |
-| RPC Endpoint | https://rpc.testnet.elys.network:443                                     |
+| Parameter            | Value                                                                    |
+| -------------------- | ------------------------------------------------------------------------ |
+| Chain Info           | [See network details here](https://github.com/elys-network/networks)     |
+| Denomination         | uelys                                                                    |
+| Decimals             | 6 (1 elys= 1000000uelys)                                                 |
+| Version              | v2.0.0 |
+| MainNet RPC Endpoint | https://rpc.elys.network:443                                             |
+| MainNet API Endpoint | https://api.elys.network:443                                             |
+| MainNet Explorer     | https://explorer.elys.network ; https://elysscan.io                      |
+| TestNet RPC Endpoint | https://rpc.testnet.elys.network:443                                     |
+| TestNet API Endpoint | https://api.testnet.elys.network:443                                     |
 
 ## Localnet Setup Guide
 
@@ -33,7 +37,7 @@ This guide provides instructions on how to spin up a new localnet using the Elys
    Navigate into the cloned repository and build the binary using:
 
    ```bash
-   git tag -f v999.999.999 && make install
+   git tag -f v999999.999999.999999 && make install
    ```
 
    This command will install the `elysd` daemon.
@@ -51,7 +55,7 @@ This guide provides instructions on how to spin up a new localnet using the Elys
    Use the command below to start the localnet:
 
    ```bash
-   elysd start
+  elysd start --pricefeeder.enable --pricefeeder.config_path="./price-feeder.toml" --pricefeeder.log_level="debug"
    ```
 
 ## Installation
@@ -89,9 +93,9 @@ sudo apt-get install --yes make
 
 In order to generate proto files, install the dependencies below:
 
-* `buf`
-* `clang-format`
-* `protoc-gen-go-cosmos-orm`: `go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest`
+- `buf`
+- `clang-format`
+- `protoc-gen-go-cosmos-orm`: `go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest`
 
 Then run the following command:
 
@@ -162,39 +166,9 @@ You can also use the `make install` command to install the binary in the `bin` d
 
 </details>
 
-### With Ignite (Experimental)
-
-To install the latest version of Elys binary, execute the following command on your machine:
-
-```
-curl https://get.ignite.com/elys-network/elys@latest! | sudo bash
-```
-
-## Development
-
-You can use `ignite-cli` to get you started with your development environment. To install `ignite-cli`, execute the following command on your machine:
-
-```
-curl https://get.ignite.com/ignite/ignite-cli@latest! | sudo bash
-```
-
-### Initialize
-
-To initialize and serve your development environment, execute the following command:
-
-```
-ignite chain serve -r
-```
-
-`serve` command installs dependencies, builds, initializes, and starts Elys in development. The `-r` flag rebuilds the binary before starting the chain.
-
 ## Validator Guide
 
 The validator guide is accessible [here](./validator.md).
-
-## Network Launch
-
-The network guide is accessible [here](./network.md).
 
 ## Architecture
 

@@ -118,10 +118,19 @@ func (x *_LegacyParams_2_list) IsValid() bool {
 }
 
 var (
-	md_LegacyParams                       protoreflect.MessageDescriptor
-	fd_LegacyParams_vesting_infos         protoreflect.FieldDescriptor
-	fd_LegacyParams_total_committed       protoreflect.FieldDescriptor
-	fd_LegacyParams_number_of_commitments protoreflect.FieldDescriptor
+	md_LegacyParams                           protoreflect.MessageDescriptor
+	fd_LegacyParams_vesting_infos             protoreflect.FieldDescriptor
+	fd_LegacyParams_total_committed           protoreflect.FieldDescriptor
+	fd_LegacyParams_number_of_commitments     protoreflect.FieldDescriptor
+	fd_LegacyParams_enable_vest_now           protoreflect.FieldDescriptor
+	fd_LegacyParams_start_atom_stakers_height protoreflect.FieldDescriptor
+	fd_LegacyParams_end_atom_stakers_height   protoreflect.FieldDescriptor
+	fd_LegacyParams_start_cadets_height       protoreflect.FieldDescriptor
+	fd_LegacyParams_end_cadets_height         protoreflect.FieldDescriptor
+	fd_LegacyParams_start_nft_holders_height  protoreflect.FieldDescriptor
+	fd_LegacyParams_end_nft_holders_height    protoreflect.FieldDescriptor
+	fd_LegacyParams_start_governors_height    protoreflect.FieldDescriptor
+	fd_LegacyParams_end_governors_height      protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -130,6 +139,15 @@ func init() {
 	fd_LegacyParams_vesting_infos = md_LegacyParams.Fields().ByName("vesting_infos")
 	fd_LegacyParams_total_committed = md_LegacyParams.Fields().ByName("total_committed")
 	fd_LegacyParams_number_of_commitments = md_LegacyParams.Fields().ByName("number_of_commitments")
+	fd_LegacyParams_enable_vest_now = md_LegacyParams.Fields().ByName("enable_vest_now")
+	fd_LegacyParams_start_atom_stakers_height = md_LegacyParams.Fields().ByName("start_atom_stakers_height")
+	fd_LegacyParams_end_atom_stakers_height = md_LegacyParams.Fields().ByName("end_atom_stakers_height")
+	fd_LegacyParams_start_cadets_height = md_LegacyParams.Fields().ByName("start_cadets_height")
+	fd_LegacyParams_end_cadets_height = md_LegacyParams.Fields().ByName("end_cadets_height")
+	fd_LegacyParams_start_nft_holders_height = md_LegacyParams.Fields().ByName("start_nft_holders_height")
+	fd_LegacyParams_end_nft_holders_height = md_LegacyParams.Fields().ByName("end_nft_holders_height")
+	fd_LegacyParams_start_governors_height = md_LegacyParams.Fields().ByName("start_governors_height")
+	fd_LegacyParams_end_governors_height = md_LegacyParams.Fields().ByName("end_governors_height")
 }
 
 var _ protoreflect.Message = (*fastReflection_LegacyParams)(nil)
@@ -215,6 +233,60 @@ func (x *fastReflection_LegacyParams) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
+	if x.EnableVestNow != false {
+		value := protoreflect.ValueOfBool(x.EnableVestNow)
+		if !f(fd_LegacyParams_enable_vest_now, value) {
+			return
+		}
+	}
+	if x.StartAtomStakersHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.StartAtomStakersHeight)
+		if !f(fd_LegacyParams_start_atom_stakers_height, value) {
+			return
+		}
+	}
+	if x.EndAtomStakersHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.EndAtomStakersHeight)
+		if !f(fd_LegacyParams_end_atom_stakers_height, value) {
+			return
+		}
+	}
+	if x.StartCadetsHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.StartCadetsHeight)
+		if !f(fd_LegacyParams_start_cadets_height, value) {
+			return
+		}
+	}
+	if x.EndCadetsHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.EndCadetsHeight)
+		if !f(fd_LegacyParams_end_cadets_height, value) {
+			return
+		}
+	}
+	if x.StartNftHoldersHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.StartNftHoldersHeight)
+		if !f(fd_LegacyParams_start_nft_holders_height, value) {
+			return
+		}
+	}
+	if x.EndNftHoldersHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.EndNftHoldersHeight)
+		if !f(fd_LegacyParams_end_nft_holders_height, value) {
+			return
+		}
+	}
+	if x.StartGovernorsHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.StartGovernorsHeight)
+		if !f(fd_LegacyParams_start_governors_height, value) {
+			return
+		}
+	}
+	if x.EndGovernorsHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.EndGovernorsHeight)
+		if !f(fd_LegacyParams_end_governors_height, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -236,6 +308,24 @@ func (x *fastReflection_LegacyParams) Has(fd protoreflect.FieldDescriptor) bool 
 		return len(x.TotalCommitted) != 0
 	case "elys.commitment.LegacyParams.number_of_commitments":
 		return x.NumberOfCommitments != uint64(0)
+	case "elys.commitment.LegacyParams.enable_vest_now":
+		return x.EnableVestNow != false
+	case "elys.commitment.LegacyParams.start_atom_stakers_height":
+		return x.StartAtomStakersHeight != uint64(0)
+	case "elys.commitment.LegacyParams.end_atom_stakers_height":
+		return x.EndAtomStakersHeight != uint64(0)
+	case "elys.commitment.LegacyParams.start_cadets_height":
+		return x.StartCadetsHeight != uint64(0)
+	case "elys.commitment.LegacyParams.end_cadets_height":
+		return x.EndCadetsHeight != uint64(0)
+	case "elys.commitment.LegacyParams.start_nft_holders_height":
+		return x.StartNftHoldersHeight != uint64(0)
+	case "elys.commitment.LegacyParams.end_nft_holders_height":
+		return x.EndNftHoldersHeight != uint64(0)
+	case "elys.commitment.LegacyParams.start_governors_height":
+		return x.StartGovernorsHeight != uint64(0)
+	case "elys.commitment.LegacyParams.end_governors_height":
+		return x.EndGovernorsHeight != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.LegacyParams"))
@@ -258,6 +348,24 @@ func (x *fastReflection_LegacyParams) Clear(fd protoreflect.FieldDescriptor) {
 		x.TotalCommitted = nil
 	case "elys.commitment.LegacyParams.number_of_commitments":
 		x.NumberOfCommitments = uint64(0)
+	case "elys.commitment.LegacyParams.enable_vest_now":
+		x.EnableVestNow = false
+	case "elys.commitment.LegacyParams.start_atom_stakers_height":
+		x.StartAtomStakersHeight = uint64(0)
+	case "elys.commitment.LegacyParams.end_atom_stakers_height":
+		x.EndAtomStakersHeight = uint64(0)
+	case "elys.commitment.LegacyParams.start_cadets_height":
+		x.StartCadetsHeight = uint64(0)
+	case "elys.commitment.LegacyParams.end_cadets_height":
+		x.EndCadetsHeight = uint64(0)
+	case "elys.commitment.LegacyParams.start_nft_holders_height":
+		x.StartNftHoldersHeight = uint64(0)
+	case "elys.commitment.LegacyParams.end_nft_holders_height":
+		x.EndNftHoldersHeight = uint64(0)
+	case "elys.commitment.LegacyParams.start_governors_height":
+		x.StartGovernorsHeight = uint64(0)
+	case "elys.commitment.LegacyParams.end_governors_height":
+		x.EndGovernorsHeight = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.LegacyParams"))
@@ -289,6 +397,33 @@ func (x *fastReflection_LegacyParams) Get(descriptor protoreflect.FieldDescripto
 	case "elys.commitment.LegacyParams.number_of_commitments":
 		value := x.NumberOfCommitments
 		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.LegacyParams.enable_vest_now":
+		value := x.EnableVestNow
+		return protoreflect.ValueOfBool(value)
+	case "elys.commitment.LegacyParams.start_atom_stakers_height":
+		value := x.StartAtomStakersHeight
+		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.LegacyParams.end_atom_stakers_height":
+		value := x.EndAtomStakersHeight
+		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.LegacyParams.start_cadets_height":
+		value := x.StartCadetsHeight
+		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.LegacyParams.end_cadets_height":
+		value := x.EndCadetsHeight
+		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.LegacyParams.start_nft_holders_height":
+		value := x.StartNftHoldersHeight
+		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.LegacyParams.end_nft_holders_height":
+		value := x.EndNftHoldersHeight
+		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.LegacyParams.start_governors_height":
+		value := x.StartGovernorsHeight
+		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.LegacyParams.end_governors_height":
+		value := x.EndGovernorsHeight
+		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.LegacyParams"))
@@ -319,6 +454,24 @@ func (x *fastReflection_LegacyParams) Set(fd protoreflect.FieldDescriptor, value
 		x.TotalCommitted = *clv.list
 	case "elys.commitment.LegacyParams.number_of_commitments":
 		x.NumberOfCommitments = value.Uint()
+	case "elys.commitment.LegacyParams.enable_vest_now":
+		x.EnableVestNow = value.Bool()
+	case "elys.commitment.LegacyParams.start_atom_stakers_height":
+		x.StartAtomStakersHeight = value.Uint()
+	case "elys.commitment.LegacyParams.end_atom_stakers_height":
+		x.EndAtomStakersHeight = value.Uint()
+	case "elys.commitment.LegacyParams.start_cadets_height":
+		x.StartCadetsHeight = value.Uint()
+	case "elys.commitment.LegacyParams.end_cadets_height":
+		x.EndCadetsHeight = value.Uint()
+	case "elys.commitment.LegacyParams.start_nft_holders_height":
+		x.StartNftHoldersHeight = value.Uint()
+	case "elys.commitment.LegacyParams.end_nft_holders_height":
+		x.EndNftHoldersHeight = value.Uint()
+	case "elys.commitment.LegacyParams.start_governors_height":
+		x.StartGovernorsHeight = value.Uint()
+	case "elys.commitment.LegacyParams.end_governors_height":
+		x.EndGovernorsHeight = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.LegacyParams"))
@@ -353,6 +506,24 @@ func (x *fastReflection_LegacyParams) Mutable(fd protoreflect.FieldDescriptor) p
 		return protoreflect.ValueOfList(value)
 	case "elys.commitment.LegacyParams.number_of_commitments":
 		panic(fmt.Errorf("field number_of_commitments of message elys.commitment.LegacyParams is not mutable"))
+	case "elys.commitment.LegacyParams.enable_vest_now":
+		panic(fmt.Errorf("field enable_vest_now of message elys.commitment.LegacyParams is not mutable"))
+	case "elys.commitment.LegacyParams.start_atom_stakers_height":
+		panic(fmt.Errorf("field start_atom_stakers_height of message elys.commitment.LegacyParams is not mutable"))
+	case "elys.commitment.LegacyParams.end_atom_stakers_height":
+		panic(fmt.Errorf("field end_atom_stakers_height of message elys.commitment.LegacyParams is not mutable"))
+	case "elys.commitment.LegacyParams.start_cadets_height":
+		panic(fmt.Errorf("field start_cadets_height of message elys.commitment.LegacyParams is not mutable"))
+	case "elys.commitment.LegacyParams.end_cadets_height":
+		panic(fmt.Errorf("field end_cadets_height of message elys.commitment.LegacyParams is not mutable"))
+	case "elys.commitment.LegacyParams.start_nft_holders_height":
+		panic(fmt.Errorf("field start_nft_holders_height of message elys.commitment.LegacyParams is not mutable"))
+	case "elys.commitment.LegacyParams.end_nft_holders_height":
+		panic(fmt.Errorf("field end_nft_holders_height of message elys.commitment.LegacyParams is not mutable"))
+	case "elys.commitment.LegacyParams.start_governors_height":
+		panic(fmt.Errorf("field start_governors_height of message elys.commitment.LegacyParams is not mutable"))
+	case "elys.commitment.LegacyParams.end_governors_height":
+		panic(fmt.Errorf("field end_governors_height of message elys.commitment.LegacyParams is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.LegacyParams"))
@@ -373,6 +544,24 @@ func (x *fastReflection_LegacyParams) NewField(fd protoreflect.FieldDescriptor) 
 		list := []*v1beta1.Coin{}
 		return protoreflect.ValueOfList(&_LegacyParams_2_list{list: &list})
 	case "elys.commitment.LegacyParams.number_of_commitments":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.LegacyParams.enable_vest_now":
+		return protoreflect.ValueOfBool(false)
+	case "elys.commitment.LegacyParams.start_atom_stakers_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.LegacyParams.end_atom_stakers_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.LegacyParams.start_cadets_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.LegacyParams.end_cadets_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.LegacyParams.start_nft_holders_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.LegacyParams.end_nft_holders_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.LegacyParams.start_governors_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.LegacyParams.end_governors_height":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
@@ -458,6 +647,33 @@ func (x *fastReflection_LegacyParams) ProtoMethods() *protoiface.Methods {
 		if x.NumberOfCommitments != 0 {
 			n += 1 + runtime.Sov(uint64(x.NumberOfCommitments))
 		}
+		if x.EnableVestNow {
+			n += 2
+		}
+		if x.StartAtomStakersHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.StartAtomStakersHeight))
+		}
+		if x.EndAtomStakersHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.EndAtomStakersHeight))
+		}
+		if x.StartCadetsHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.StartCadetsHeight))
+		}
+		if x.EndCadetsHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.EndCadetsHeight))
+		}
+		if x.StartNftHoldersHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.StartNftHoldersHeight))
+		}
+		if x.EndNftHoldersHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.EndNftHoldersHeight))
+		}
+		if x.StartGovernorsHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.StartGovernorsHeight))
+		}
+		if x.EndGovernorsHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.EndGovernorsHeight))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -486,6 +702,56 @@ func (x *fastReflection_LegacyParams) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.EndGovernorsHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.EndGovernorsHeight))
+			i--
+			dAtA[i] = 0x60
+		}
+		if x.StartGovernorsHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.StartGovernorsHeight))
+			i--
+			dAtA[i] = 0x58
+		}
+		if x.EndNftHoldersHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.EndNftHoldersHeight))
+			i--
+			dAtA[i] = 0x50
+		}
+		if x.StartNftHoldersHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.StartNftHoldersHeight))
+			i--
+			dAtA[i] = 0x48
+		}
+		if x.EndCadetsHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.EndCadetsHeight))
+			i--
+			dAtA[i] = 0x40
+		}
+		if x.StartCadetsHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.StartCadetsHeight))
+			i--
+			dAtA[i] = 0x38
+		}
+		if x.EndAtomStakersHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.EndAtomStakersHeight))
+			i--
+			dAtA[i] = 0x30
+		}
+		if x.StartAtomStakersHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.StartAtomStakersHeight))
+			i--
+			dAtA[i] = 0x28
+		}
+		if x.EnableVestNow {
+			i--
+			if x.EnableVestNow {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x20
 		}
 		if x.NumberOfCommitments != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.NumberOfCommitments))
@@ -660,6 +926,178 @@ func (x *fastReflection_LegacyParams) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
+			case 4:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EnableVestNow", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.EnableVestNow = bool(v != 0)
+			case 5:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StartAtomStakersHeight", wireType)
+				}
+				x.StartAtomStakersHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.StartAtomStakersHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 6:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EndAtomStakersHeight", wireType)
+				}
+				x.EndAtomStakersHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.EndAtomStakersHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 7:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StartCadetsHeight", wireType)
+				}
+				x.StartCadetsHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.StartCadetsHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 8:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EndCadetsHeight", wireType)
+				}
+				x.EndCadetsHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.EndCadetsHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 9:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StartNftHoldersHeight", wireType)
+				}
+				x.StartNftHoldersHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.StartNftHoldersHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 10:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EndNftHoldersHeight", wireType)
+				}
+				x.EndNftHoldersHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.EndNftHoldersHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 11:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StartGovernorsHeight", wireType)
+				}
+				x.StartGovernorsHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.StartGovernorsHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 12:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EndGovernorsHeight", wireType)
+				}
+				x.EndGovernorsHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.EndGovernorsHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -798,11 +1236,16 @@ func (x *_Params_2_list) IsValid() bool {
 }
 
 var (
-	md_Params                       protoreflect.MessageDescriptor
-	fd_Params_vesting_infos         protoreflect.FieldDescriptor
-	fd_Params_total_committed       protoreflect.FieldDescriptor
-	fd_Params_number_of_commitments protoreflect.FieldDescriptor
-	fd_Params_enable_vest_now       protoreflect.FieldDescriptor
+	md_Params                            protoreflect.MessageDescriptor
+	fd_Params_vesting_infos              protoreflect.FieldDescriptor
+	fd_Params_total_committed            protoreflect.FieldDescriptor
+	fd_Params_number_of_commitments      protoreflect.FieldDescriptor
+	fd_Params_enable_vest_now            protoreflect.FieldDescriptor
+	fd_Params_start_airdrop_claim_height protoreflect.FieldDescriptor
+	fd_Params_end_airdrop_claim_height   protoreflect.FieldDescriptor
+	fd_Params_enable_claim               protoreflect.FieldDescriptor
+	fd_Params_start_kol_claim_height     protoreflect.FieldDescriptor
+	fd_Params_end_kol_claim_height       protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -812,6 +1255,11 @@ func init() {
 	fd_Params_total_committed = md_Params.Fields().ByName("total_committed")
 	fd_Params_number_of_commitments = md_Params.Fields().ByName("number_of_commitments")
 	fd_Params_enable_vest_now = md_Params.Fields().ByName("enable_vest_now")
+	fd_Params_start_airdrop_claim_height = md_Params.Fields().ByName("start_airdrop_claim_height")
+	fd_Params_end_airdrop_claim_height = md_Params.Fields().ByName("end_airdrop_claim_height")
+	fd_Params_enable_claim = md_Params.Fields().ByName("enable_claim")
+	fd_Params_start_kol_claim_height = md_Params.Fields().ByName("start_kol_claim_height")
+	fd_Params_end_kol_claim_height = md_Params.Fields().ByName("end_kol_claim_height")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -903,6 +1351,36 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if x.StartAirdropClaimHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.StartAirdropClaimHeight)
+		if !f(fd_Params_start_airdrop_claim_height, value) {
+			return
+		}
+	}
+	if x.EndAirdropClaimHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.EndAirdropClaimHeight)
+		if !f(fd_Params_end_airdrop_claim_height, value) {
+			return
+		}
+	}
+	if x.EnableClaim != false {
+		value := protoreflect.ValueOfBool(x.EnableClaim)
+		if !f(fd_Params_enable_claim, value) {
+			return
+		}
+	}
+	if x.StartKolClaimHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.StartKolClaimHeight)
+		if !f(fd_Params_start_kol_claim_height, value) {
+			return
+		}
+	}
+	if x.EndKolClaimHeight != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.EndKolClaimHeight)
+		if !f(fd_Params_end_kol_claim_height, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -926,6 +1404,16 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.NumberOfCommitments != uint64(0)
 	case "elys.commitment.Params.enable_vest_now":
 		return x.EnableVestNow != false
+	case "elys.commitment.Params.start_airdrop_claim_height":
+		return x.StartAirdropClaimHeight != uint64(0)
+	case "elys.commitment.Params.end_airdrop_claim_height":
+		return x.EndAirdropClaimHeight != uint64(0)
+	case "elys.commitment.Params.enable_claim":
+		return x.EnableClaim != false
+	case "elys.commitment.Params.start_kol_claim_height":
+		return x.StartKolClaimHeight != uint64(0)
+	case "elys.commitment.Params.end_kol_claim_height":
+		return x.EndKolClaimHeight != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.Params"))
@@ -950,6 +1438,16 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.NumberOfCommitments = uint64(0)
 	case "elys.commitment.Params.enable_vest_now":
 		x.EnableVestNow = false
+	case "elys.commitment.Params.start_airdrop_claim_height":
+		x.StartAirdropClaimHeight = uint64(0)
+	case "elys.commitment.Params.end_airdrop_claim_height":
+		x.EndAirdropClaimHeight = uint64(0)
+	case "elys.commitment.Params.enable_claim":
+		x.EnableClaim = false
+	case "elys.commitment.Params.start_kol_claim_height":
+		x.StartKolClaimHeight = uint64(0)
+	case "elys.commitment.Params.end_kol_claim_height":
+		x.EndKolClaimHeight = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.Params"))
@@ -984,6 +1482,21 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 	case "elys.commitment.Params.enable_vest_now":
 		value := x.EnableVestNow
 		return protoreflect.ValueOfBool(value)
+	case "elys.commitment.Params.start_airdrop_claim_height":
+		value := x.StartAirdropClaimHeight
+		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.Params.end_airdrop_claim_height":
+		value := x.EndAirdropClaimHeight
+		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.Params.enable_claim":
+		value := x.EnableClaim
+		return protoreflect.ValueOfBool(value)
+	case "elys.commitment.Params.start_kol_claim_height":
+		value := x.StartKolClaimHeight
+		return protoreflect.ValueOfUint64(value)
+	case "elys.commitment.Params.end_kol_claim_height":
+		value := x.EndKolClaimHeight
+		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.Params"))
@@ -1016,6 +1529,16 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.NumberOfCommitments = value.Uint()
 	case "elys.commitment.Params.enable_vest_now":
 		x.EnableVestNow = value.Bool()
+	case "elys.commitment.Params.start_airdrop_claim_height":
+		x.StartAirdropClaimHeight = value.Uint()
+	case "elys.commitment.Params.end_airdrop_claim_height":
+		x.EndAirdropClaimHeight = value.Uint()
+	case "elys.commitment.Params.enable_claim":
+		x.EnableClaim = value.Bool()
+	case "elys.commitment.Params.start_kol_claim_height":
+		x.StartKolClaimHeight = value.Uint()
+	case "elys.commitment.Params.end_kol_claim_height":
+		x.EndKolClaimHeight = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.Params"))
@@ -1052,6 +1575,16 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field number_of_commitments of message elys.commitment.Params is not mutable"))
 	case "elys.commitment.Params.enable_vest_now":
 		panic(fmt.Errorf("field enable_vest_now of message elys.commitment.Params is not mutable"))
+	case "elys.commitment.Params.start_airdrop_claim_height":
+		panic(fmt.Errorf("field start_airdrop_claim_height of message elys.commitment.Params is not mutable"))
+	case "elys.commitment.Params.end_airdrop_claim_height":
+		panic(fmt.Errorf("field end_airdrop_claim_height of message elys.commitment.Params is not mutable"))
+	case "elys.commitment.Params.enable_claim":
+		panic(fmt.Errorf("field enable_claim of message elys.commitment.Params is not mutable"))
+	case "elys.commitment.Params.start_kol_claim_height":
+		panic(fmt.Errorf("field start_kol_claim_height of message elys.commitment.Params is not mutable"))
+	case "elys.commitment.Params.end_kol_claim_height":
+		panic(fmt.Errorf("field end_kol_claim_height of message elys.commitment.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.Params"))
@@ -1075,6 +1608,16 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.commitment.Params.enable_vest_now":
 		return protoreflect.ValueOfBool(false)
+	case "elys.commitment.Params.start_airdrop_claim_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.Params.end_airdrop_claim_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.Params.enable_claim":
+		return protoreflect.ValueOfBool(false)
+	case "elys.commitment.Params.start_kol_claim_height":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.commitment.Params.end_kol_claim_height":
+		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.Params"))
@@ -1162,6 +1705,21 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.EnableVestNow {
 			n += 2
 		}
+		if x.StartAirdropClaimHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.StartAirdropClaimHeight))
+		}
+		if x.EndAirdropClaimHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.EndAirdropClaimHeight))
+		}
+		if x.EnableClaim {
+			n += 2
+		}
+		if x.StartKolClaimHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.StartKolClaimHeight))
+		}
+		if x.EndKolClaimHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.EndKolClaimHeight))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -1190,6 +1748,36 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.EndKolClaimHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.EndKolClaimHeight))
+			i--
+			dAtA[i] = 0x48
+		}
+		if x.StartKolClaimHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.StartKolClaimHeight))
+			i--
+			dAtA[i] = 0x40
+		}
+		if x.EnableClaim {
+			i--
+			if x.EnableClaim {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x38
+		}
+		if x.EndAirdropClaimHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.EndAirdropClaimHeight))
+			i--
+			dAtA[i] = 0x30
+		}
+		if x.StartAirdropClaimHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.StartAirdropClaimHeight))
+			i--
+			dAtA[i] = 0x28
 		}
 		if x.EnableVestNow {
 			i--
@@ -1394,6 +1982,102 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					}
 				}
 				x.EnableVestNow = bool(v != 0)
+			case 5:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StartAirdropClaimHeight", wireType)
+				}
+				x.StartAirdropClaimHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.StartAirdropClaimHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 6:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EndAirdropClaimHeight", wireType)
+				}
+				x.EndAirdropClaimHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.EndAirdropClaimHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 7:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EnableClaim", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.EnableClaim = bool(v != 0)
+			case 8:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StartKolClaimHeight", wireType)
+				}
+				x.StartKolClaimHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.StartKolClaimHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 9:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EndKolClaimHeight", wireType)
+				}
+				x.EndKolClaimHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.EndKolClaimHeight |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -2144,15 +2828,23 @@ func (EarnType) EnumDescriptor() ([]byte, []int) {
 	return file_elys_commitment_params_proto_rawDescGZIP(), []int{0}
 }
 
-// Params defines the parameters for the module.
 type LegacyParams struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	VestingInfos        []*VestingInfo  `protobuf:"bytes,1,rep,name=vesting_infos,json=vestingInfos,proto3" json:"vesting_infos,omitempty"`
-	TotalCommitted      []*v1beta1.Coin `protobuf:"bytes,2,rep,name=total_committed,json=totalCommitted,proto3" json:"total_committed,omitempty"`
-	NumberOfCommitments uint64          `protobuf:"varint,3,opt,name=number_of_commitments,json=numberOfCommitments,proto3" json:"number_of_commitments,omitempty"`
+	VestingInfos           []*VestingInfo  `protobuf:"bytes,1,rep,name=vesting_infos,json=vestingInfos,proto3" json:"vesting_infos,omitempty"`
+	TotalCommitted         []*v1beta1.Coin `protobuf:"bytes,2,rep,name=total_committed,json=totalCommitted,proto3" json:"total_committed,omitempty"`
+	NumberOfCommitments    uint64          `protobuf:"varint,3,opt,name=number_of_commitments,json=numberOfCommitments,proto3" json:"number_of_commitments,omitempty"`
+	EnableVestNow          bool            `protobuf:"varint,4,opt,name=enable_vest_now,json=enableVestNow,proto3" json:"enable_vest_now,omitempty"`
+	StartAtomStakersHeight uint64          `protobuf:"varint,5,opt,name=start_atom_stakers_height,json=startAtomStakersHeight,proto3" json:"start_atom_stakers_height,omitempty"`
+	EndAtomStakersHeight   uint64          `protobuf:"varint,6,opt,name=end_atom_stakers_height,json=endAtomStakersHeight,proto3" json:"end_atom_stakers_height,omitempty"`
+	StartCadetsHeight      uint64          `protobuf:"varint,7,opt,name=start_cadets_height,json=startCadetsHeight,proto3" json:"start_cadets_height,omitempty"`
+	EndCadetsHeight        uint64          `protobuf:"varint,8,opt,name=end_cadets_height,json=endCadetsHeight,proto3" json:"end_cadets_height,omitempty"`
+	StartNftHoldersHeight  uint64          `protobuf:"varint,9,opt,name=start_nft_holders_height,json=startNftHoldersHeight,proto3" json:"start_nft_holders_height,omitempty"`
+	EndNftHoldersHeight    uint64          `protobuf:"varint,10,opt,name=end_nft_holders_height,json=endNftHoldersHeight,proto3" json:"end_nft_holders_height,omitempty"`
+	StartGovernorsHeight   uint64          `protobuf:"varint,11,opt,name=start_governors_height,json=startGovernorsHeight,proto3" json:"start_governors_height,omitempty"`
+	EndGovernorsHeight     uint64          `protobuf:"varint,12,opt,name=end_governors_height,json=endGovernorsHeight,proto3" json:"end_governors_height,omitempty"`
 }
 
 func (x *LegacyParams) Reset() {
@@ -2196,15 +2888,83 @@ func (x *LegacyParams) GetNumberOfCommitments() uint64 {
 	return 0
 }
 
+func (x *LegacyParams) GetEnableVestNow() bool {
+	if x != nil {
+		return x.EnableVestNow
+	}
+	return false
+}
+
+func (x *LegacyParams) GetStartAtomStakersHeight() uint64 {
+	if x != nil {
+		return x.StartAtomStakersHeight
+	}
+	return 0
+}
+
+func (x *LegacyParams) GetEndAtomStakersHeight() uint64 {
+	if x != nil {
+		return x.EndAtomStakersHeight
+	}
+	return 0
+}
+
+func (x *LegacyParams) GetStartCadetsHeight() uint64 {
+	if x != nil {
+		return x.StartCadetsHeight
+	}
+	return 0
+}
+
+func (x *LegacyParams) GetEndCadetsHeight() uint64 {
+	if x != nil {
+		return x.EndCadetsHeight
+	}
+	return 0
+}
+
+func (x *LegacyParams) GetStartNftHoldersHeight() uint64 {
+	if x != nil {
+		return x.StartNftHoldersHeight
+	}
+	return 0
+}
+
+func (x *LegacyParams) GetEndNftHoldersHeight() uint64 {
+	if x != nil {
+		return x.EndNftHoldersHeight
+	}
+	return 0
+}
+
+func (x *LegacyParams) GetStartGovernorsHeight() uint64 {
+	if x != nil {
+		return x.StartGovernorsHeight
+	}
+	return 0
+}
+
+func (x *LegacyParams) GetEndGovernorsHeight() uint64 {
+	if x != nil {
+		return x.EndGovernorsHeight
+	}
+	return 0
+}
+
 type Params struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	VestingInfos        []*VestingInfo  `protobuf:"bytes,1,rep,name=vesting_infos,json=vestingInfos,proto3" json:"vesting_infos,omitempty"`
-	TotalCommitted      []*v1beta1.Coin `protobuf:"bytes,2,rep,name=total_committed,json=totalCommitted,proto3" json:"total_committed,omitempty"`
-	NumberOfCommitments uint64          `protobuf:"varint,3,opt,name=number_of_commitments,json=numberOfCommitments,proto3" json:"number_of_commitments,omitempty"`
-	EnableVestNow       bool            `protobuf:"varint,4,opt,name=enable_vest_now,json=enableVestNow,proto3" json:"enable_vest_now,omitempty"`
+	VestingInfos            []*VestingInfo  `protobuf:"bytes,1,rep,name=vesting_infos,json=vestingInfos,proto3" json:"vesting_infos,omitempty"`
+	TotalCommitted          []*v1beta1.Coin `protobuf:"bytes,2,rep,name=total_committed,json=totalCommitted,proto3" json:"total_committed,omitempty"`
+	NumberOfCommitments     uint64          `protobuf:"varint,3,opt,name=number_of_commitments,json=numberOfCommitments,proto3" json:"number_of_commitments,omitempty"`
+	EnableVestNow           bool            `protobuf:"varint,4,opt,name=enable_vest_now,json=enableVestNow,proto3" json:"enable_vest_now,omitempty"`
+	StartAirdropClaimHeight uint64          `protobuf:"varint,5,opt,name=start_airdrop_claim_height,json=startAirdropClaimHeight,proto3" json:"start_airdrop_claim_height,omitempty"`
+	EndAirdropClaimHeight   uint64          `protobuf:"varint,6,opt,name=end_airdrop_claim_height,json=endAirdropClaimHeight,proto3" json:"end_airdrop_claim_height,omitempty"`
+	EnableClaim             bool            `protobuf:"varint,7,opt,name=enable_claim,json=enableClaim,proto3" json:"enable_claim,omitempty"`
+	StartKolClaimHeight     uint64          `protobuf:"varint,8,opt,name=start_kol_claim_height,json=startKolClaimHeight,proto3" json:"start_kol_claim_height,omitempty"`
+	EndKolClaimHeight       uint64          `protobuf:"varint,9,opt,name=end_kol_claim_height,json=endKolClaimHeight,proto3" json:"end_kol_claim_height,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -2253,6 +3013,41 @@ func (x *Params) GetEnableVestNow() bool {
 		return x.EnableVestNow
 	}
 	return false
+}
+
+func (x *Params) GetStartAirdropClaimHeight() uint64 {
+	if x != nil {
+		return x.StartAirdropClaimHeight
+	}
+	return 0
+}
+
+func (x *Params) GetEndAirdropClaimHeight() uint64 {
+	if x != nil {
+		return x.EndAirdropClaimHeight
+	}
+	return 0
+}
+
+func (x *Params) GetEnableClaim() bool {
+	if x != nil {
+		return x.EnableClaim
+	}
+	return false
+}
+
+func (x *Params) GetStartKolClaimHeight() uint64 {
+	if x != nil {
+		return x.StartKolClaimHeight
+	}
+	return 0
+}
+
+func (x *Params) GetEndKolClaimHeight() uint64 {
+	if x != nil {
+		return x.EndKolClaimHeight
+	}
+	return 0
 }
 
 type VestingInfo struct {
@@ -2333,7 +3128,7 @@ var file_elys_commitment_params_proto_rawDesc = []byte{
 	0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x1a, 0x1e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x76, 0x31,
 	0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x22, 0x81, 0x02, 0x0a, 0x0c, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x22, 0xcd, 0x05, 0x0a, 0x0c, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d,
 	0x73, 0x12, 0x47, 0x0a, 0x0d, 0x76, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x69, 0x6e, 0x66,
 	0x6f, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
 	0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x56, 0x65, 0x73, 0x74, 0x69,
@@ -2349,60 +3144,104 @@ var file_elys_commitment_params_proto_rawDesc = []byte{
 	0x12, 0x32, 0x0a, 0x15, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x5f, 0x6f, 0x66, 0x5f, 0x63, 0x6f,
 	0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52,
 	0x13, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x4f, 0x66, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d,
-	0x65, 0x6e, 0x74, 0x73, 0x22, 0xa3, 0x02, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
-	0x47, 0x0a, 0x0d, 0x76, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x73,
-	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f,
-	0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x56, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67,
-	0x49, 0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0c, 0x76, 0x65, 0x73, 0x74,
-	0x69, 0x6e, 0x67, 0x49, 0x6e, 0x66, 0x6f, 0x73, 0x12, 0x74, 0x0a, 0x0f, 0x74, 0x6f, 0x74, 0x61,
-	0x6c, 0x5f, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x74, 0x65, 0x64, 0x18, 0x02, 0x20, 0x03, 0x28,
-	0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e,
-	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde,
-	0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73,
-	0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x0e,
-	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x74, 0x65, 0x64, 0x12, 0x32,
-	0x0a, 0x15, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x5f, 0x6f, 0x66, 0x5f, 0x63, 0x6f, 0x6d, 0x6d,
-	0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x13, 0x6e,
-	0x75, 0x6d, 0x62, 0x65, 0x72, 0x4f, 0x66, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e,
-	0x74, 0x73, 0x12, 0x26, 0x0a, 0x0f, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x76, 0x65, 0x73,
-	0x74, 0x5f, 0x6e, 0x6f, 0x77, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0d, 0x65, 0x6e, 0x61,
-	0x62, 0x6c, 0x65, 0x56, 0x65, 0x73, 0x74, 0x4e, 0x6f, 0x77, 0x22, 0xef, 0x01, 0x0a, 0x0b, 0x56,
-	0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x1d, 0x0a, 0x0a, 0x62, 0x61,
-	0x73, 0x65, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
-	0x62, 0x61, 0x73, 0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x23, 0x0a, 0x0d, 0x76, 0x65, 0x73,
-	0x74, 0x69, 0x6e, 0x67, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0c, 0x76, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1d,
-	0x0a, 0x0a, 0x6e, 0x75, 0x6d, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x03, 0x52, 0x09, 0x6e, 0x75, 0x6d, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x12, 0x53, 0x0a,
-	0x0f, 0x76, 0x65, 0x73, 0x74, 0x5f, 0x6e, 0x6f, 0x77, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72,
-	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
-	0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x49, 0x6e, 0x74, 0x52, 0x0d, 0x76, 0x65, 0x73, 0x74, 0x4e, 0x6f, 0x77, 0x46, 0x61, 0x63, 0x74,
-	0x6f, 0x72, 0x12, 0x28, 0x0a, 0x10, 0x6e, 0x75, 0x6d, 0x5f, 0x6d, 0x61, 0x78, 0x5f, 0x76, 0x65,
-	0x73, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0e, 0x6e, 0x75,
-	0x6d, 0x4d, 0x61, 0x78, 0x56, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x2a, 0x7b, 0x0a, 0x08,
-	0x45, 0x61, 0x72, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0f, 0x0a, 0x0b, 0x41, 0x4c, 0x4c, 0x5f,
-	0x50, 0x52, 0x4f, 0x47, 0x52, 0x41, 0x4d, 0x10, 0x00, 0x12, 0x10, 0x0a, 0x0c, 0x55, 0x53, 0x44,
-	0x43, 0x5f, 0x50, 0x52, 0x4f, 0x47, 0x52, 0x41, 0x4d, 0x10, 0x01, 0x12, 0x10, 0x0a, 0x0c, 0x45,
-	0x4c, 0x59, 0x53, 0x5f, 0x50, 0x52, 0x4f, 0x47, 0x52, 0x41, 0x4d, 0x10, 0x02, 0x12, 0x10, 0x0a,
-	0x0c, 0x45, 0x44, 0x45, 0x4e, 0x5f, 0x50, 0x52, 0x4f, 0x47, 0x52, 0x41, 0x4d, 0x10, 0x03, 0x12,
-	0x11, 0x0a, 0x0d, 0x45, 0x44, 0x45, 0x4e, 0x42, 0x5f, 0x50, 0x52, 0x4f, 0x47, 0x52, 0x41, 0x4d,
-	0x10, 0x04, 0x12, 0x15, 0x0a, 0x11, 0x4c, 0x50, 0x5f, 0x4d, 0x49, 0x4e, 0x49, 0x4e, 0x47, 0x5f,
-	0x50, 0x52, 0x4f, 0x47, 0x52, 0x41, 0x4d, 0x10, 0x05, 0x42, 0xb1, 0x01, 0x0a, 0x13, 0x63, 0x6f,
-	0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e,
-	0x74, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
-	0x5a, 0x30, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61,
-	0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65,
-	0x6e, 0x74, 0xa2, 0x02, 0x03, 0x45, 0x43, 0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e,
-	0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79,
-	0x73, 0x5c, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0xe2, 0x02, 0x1b, 0x45,
-	0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x5c, 0x47,
-	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79,
-	0x73, 0x3a, 0x3a, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x6e, 0x74, 0x73, 0x12, 0x26, 0x0a, 0x0f, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x76,
+	0x65, 0x73, 0x74, 0x5f, 0x6e, 0x6f, 0x77, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0d, 0x65,
+	0x6e, 0x61, 0x62, 0x6c, 0x65, 0x56, 0x65, 0x73, 0x74, 0x4e, 0x6f, 0x77, 0x12, 0x39, 0x0a, 0x19,
+	0x73, 0x74, 0x61, 0x72, 0x74, 0x5f, 0x61, 0x74, 0x6f, 0x6d, 0x5f, 0x73, 0x74, 0x61, 0x6b, 0x65,
+	0x72, 0x73, 0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x16, 0x73, 0x74, 0x61, 0x72, 0x74, 0x41, 0x74, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x6b, 0x65, 0x72,
+	0x73, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x35, 0x0a, 0x17, 0x65, 0x6e, 0x64, 0x5f, 0x61,
+	0x74, 0x6f, 0x6d, 0x5f, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x73, 0x5f, 0x68, 0x65, 0x69, 0x67,
+	0x68, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x14, 0x65, 0x6e, 0x64, 0x41, 0x74, 0x6f,
+	0x6d, 0x53, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x73, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x2e,
+	0x0a, 0x13, 0x73, 0x74, 0x61, 0x72, 0x74, 0x5f, 0x63, 0x61, 0x64, 0x65, 0x74, 0x73, 0x5f, 0x68,
+	0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x04, 0x52, 0x11, 0x73, 0x74, 0x61,
+	0x72, 0x74, 0x43, 0x61, 0x64, 0x65, 0x74, 0x73, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x2a,
+	0x0a, 0x11, 0x65, 0x6e, 0x64, 0x5f, 0x63, 0x61, 0x64, 0x65, 0x74, 0x73, 0x5f, 0x68, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0f, 0x65, 0x6e, 0x64, 0x43, 0x61,
+	0x64, 0x65, 0x74, 0x73, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x37, 0x0a, 0x18, 0x73, 0x74,
+	0x61, 0x72, 0x74, 0x5f, 0x6e, 0x66, 0x74, 0x5f, 0x68, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x73, 0x5f,
+	0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x09, 0x20, 0x01, 0x28, 0x04, 0x52, 0x15, 0x73, 0x74,
+	0x61, 0x72, 0x74, 0x4e, 0x66, 0x74, 0x48, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x73, 0x48, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x12, 0x33, 0x0a, 0x16, 0x65, 0x6e, 0x64, 0x5f, 0x6e, 0x66, 0x74, 0x5f, 0x68,
+	0x6f, 0x6c, 0x64, 0x65, 0x72, 0x73, 0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x0a, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x13, 0x65, 0x6e, 0x64, 0x4e, 0x66, 0x74, 0x48, 0x6f, 0x6c, 0x64, 0x65,
+	0x72, 0x73, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x34, 0x0a, 0x16, 0x73, 0x74, 0x61, 0x72,
+	0x74, 0x5f, 0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x73, 0x5f, 0x68, 0x65, 0x69, 0x67,
+	0x68, 0x74, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x04, 0x52, 0x14, 0x73, 0x74, 0x61, 0x72, 0x74, 0x47,
+	0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x73, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x30,
+	0x0a, 0x14, 0x65, 0x6e, 0x64, 0x5f, 0x67, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x73, 0x5f,
+	0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x04, 0x52, 0x12, 0x65, 0x6e,
+	0x64, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x73, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74,
+	0x22, 0xa2, 0x04, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x47, 0x0a, 0x0d, 0x76,
+	0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x73, 0x18, 0x01, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74,
+	0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x56, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x49, 0x6e, 0x66, 0x6f,
+	0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0c, 0x76, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x49,
+	0x6e, 0x66, 0x6f, 0x73, 0x12, 0x74, 0x0a, 0x0f, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x63, 0x6f,
+	0x6d, 0x6d, 0x69, 0x74, 0x74, 0x65, 0x64, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65,
+	0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf,
+	0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74,
+	0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x0e, 0x74, 0x6f, 0x74, 0x61,
+	0x6c, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x74, 0x65, 0x64, 0x12, 0x32, 0x0a, 0x15, 0x6e, 0x75,
+	0x6d, 0x62, 0x65, 0x72, 0x5f, 0x6f, 0x66, 0x5f, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65,
+	0x6e, 0x74, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x13, 0x6e, 0x75, 0x6d, 0x62, 0x65,
+	0x72, 0x4f, 0x66, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x12, 0x26,
+	0x0a, 0x0f, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x76, 0x65, 0x73, 0x74, 0x5f, 0x6e, 0x6f,
+	0x77, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0d, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x56,
+	0x65, 0x73, 0x74, 0x4e, 0x6f, 0x77, 0x12, 0x3b, 0x0a, 0x1a, 0x73, 0x74, 0x61, 0x72, 0x74, 0x5f,
+	0x61, 0x69, 0x72, 0x64, 0x72, 0x6f, 0x70, 0x5f, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x5f, 0x68, 0x65,
+	0x69, 0x67, 0x68, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x17, 0x73, 0x74, 0x61, 0x72,
+	0x74, 0x41, 0x69, 0x72, 0x64, 0x72, 0x6f, 0x70, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x48, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x12, 0x37, 0x0a, 0x18, 0x65, 0x6e, 0x64, 0x5f, 0x61, 0x69, 0x72, 0x64, 0x72,
+	0x6f, 0x70, 0x5f, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18,
+	0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x15, 0x65, 0x6e, 0x64, 0x41, 0x69, 0x72, 0x64, 0x72, 0x6f,
+	0x70, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x21, 0x0a, 0x0c,
+	0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x18, 0x07, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x0b, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x12,
+	0x33, 0x0a, 0x16, 0x73, 0x74, 0x61, 0x72, 0x74, 0x5f, 0x6b, 0x6f, 0x6c, 0x5f, 0x63, 0x6c, 0x61,
+	0x69, 0x6d, 0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x13, 0x73, 0x74, 0x61, 0x72, 0x74, 0x4b, 0x6f, 0x6c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x48, 0x65,
+	0x69, 0x67, 0x68, 0x74, 0x12, 0x2f, 0x0a, 0x14, 0x65, 0x6e, 0x64, 0x5f, 0x6b, 0x6f, 0x6c, 0x5f,
+	0x63, 0x6c, 0x61, 0x69, 0x6d, 0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x09, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x11, 0x65, 0x6e, 0x64, 0x4b, 0x6f, 0x6c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x48,
+	0x65, 0x69, 0x67, 0x68, 0x74, 0x22, 0xef, 0x01, 0x0a, 0x0b, 0x56, 0x65, 0x73, 0x74, 0x69, 0x6e,
+	0x67, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x1d, 0x0a, 0x0a, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x64, 0x65,
+	0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x62, 0x61, 0x73, 0x65, 0x44,
+	0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x23, 0x0a, 0x0d, 0x76, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x5f,
+	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x76, 0x65, 0x73,
+	0x74, 0x69, 0x6e, 0x67, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1d, 0x0a, 0x0a, 0x6e, 0x75, 0x6d,
+	0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x6e,
+	0x75, 0x6d, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x12, 0x53, 0x0a, 0x0f, 0x76, 0x65, 0x73, 0x74,
+	0x5f, 0x6e, 0x6f, 0x77, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0d,
+	0x76, 0x65, 0x73, 0x74, 0x4e, 0x6f, 0x77, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x12, 0x28, 0x0a,
+	0x10, 0x6e, 0x75, 0x6d, 0x5f, 0x6d, 0x61, 0x78, 0x5f, 0x76, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67,
+	0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0e, 0x6e, 0x75, 0x6d, 0x4d, 0x61, 0x78, 0x56,
+	0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x2a, 0x7b, 0x0a, 0x08, 0x45, 0x61, 0x72, 0x6e, 0x54,
+	0x79, 0x70, 0x65, 0x12, 0x0f, 0x0a, 0x0b, 0x41, 0x4c, 0x4c, 0x5f, 0x50, 0x52, 0x4f, 0x47, 0x52,
+	0x41, 0x4d, 0x10, 0x00, 0x12, 0x10, 0x0a, 0x0c, 0x55, 0x53, 0x44, 0x43, 0x5f, 0x50, 0x52, 0x4f,
+	0x47, 0x52, 0x41, 0x4d, 0x10, 0x01, 0x12, 0x10, 0x0a, 0x0c, 0x45, 0x4c, 0x59, 0x53, 0x5f, 0x50,
+	0x52, 0x4f, 0x47, 0x52, 0x41, 0x4d, 0x10, 0x02, 0x12, 0x10, 0x0a, 0x0c, 0x45, 0x44, 0x45, 0x4e,
+	0x5f, 0x50, 0x52, 0x4f, 0x47, 0x52, 0x41, 0x4d, 0x10, 0x03, 0x12, 0x11, 0x0a, 0x0d, 0x45, 0x44,
+	0x45, 0x4e, 0x42, 0x5f, 0x50, 0x52, 0x4f, 0x47, 0x52, 0x41, 0x4d, 0x10, 0x04, 0x12, 0x15, 0x0a,
+	0x11, 0x4c, 0x50, 0x5f, 0x4d, 0x49, 0x4e, 0x49, 0x4e, 0x47, 0x5f, 0x50, 0x52, 0x4f, 0x47, 0x52,
+	0x41, 0x4d, 0x10, 0x05, 0x42, 0xb1, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x42, 0x0b, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x30, 0x67, 0x69, 0x74,
+	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
+	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0xa2, 0x02, 0x03,
+	0x45, 0x43, 0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x69,
+	0x74, 0x6d, 0x65, 0x6e, 0x74, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6f, 0x6d,
+	0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43,
+	0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
+	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6f,
+	0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

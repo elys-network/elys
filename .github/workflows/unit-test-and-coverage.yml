@@ -1,0 +1,122 @@
+name: Run unit tests and upload coverage
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    environment: coverage
+    name: Run tests and collect coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Run unit tests
+        run: go test -coverpkg=$(go list ./... | grep -v pb.go | tr '\n' ',') -coverprofile=coverage.txt ./...
+
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Check keeper package coverage
+        run: |
+          #!/bin/bash
+          declare -A allow_coverages
+          allow_coverages["ACCOUNTEDPOOL"]="${{vars.ACCOUNTEDPOOL}}"
+          allow_coverages["AMM"]="${{vars.AMM}}"
+          allow_coverages["ASSETPROFILE"]="${{vars.ASSETPROFILE}}"
+          allow_coverages["BURNER"]="${{vars.BURNER}}"
+          allow_coverages["COMMITMENT"]="${{vars.COMMITMENT}}"
+          allow_coverages["EPOCHS"]="${{vars.EPOCHS}}"
+          allow_coverages["ESTAKING"]="${{vars.ESTAKING}}"
+          allow_coverages["MASTERCHEF"]="${{vars.MASTERCHEF}}"
+          allow_coverages["ORACLE"]="${{vars.ORACLE}}"
+          allow_coverages["PARAMETER"]="${{vars.PARAMETER}}"
+          allow_coverages["PERPETUAL"]="${{vars.PERPETUAL}}"
+          allow_coverages["STABLESTAKE"]="${{vars.STABLESTAKE}}"
+          allow_coverages["TIER"]="${{vars.TIER}}"
+          allow_coverages["TRADESHIELD"]="${{vars.TRADESHIELD}}"
+          allow_coverages["TRANSFERHOOK"]="${{vars.TRANSFERHOOK}}"
+          allow_coverages["LEVERAGELP"]="${{vars.LEVERAGELP}}"
+          allow_coverages["TOKENOMICS"]="${{vars.TOKENOMICS}}"
+
+
+          echo "Searching for keeper packages:"
+          find . -type d -path "*/x/*/keeper" -not -path "*/vendor/*"
+
+          module_packages=$(find . -type d -path "*/x/*/keeper" -not -path "*/vendor/*")
+          for module in $module_packages; do
+          echo "Checking keeper package: $module"
+          module_coverage=$(go tool cover -func=coverage.txt | grep "$module" | awk '{sum += $3; count++} END {if (count > 0) print sum / count; else print 0}')
+          if [ -n "$module_coverage" ]; then
+              module_name=$(echo "$module" | sed 's:^.*/\([^/]*\)/keeper$:\1:')
+              module_name=$(echo "$module_name" | tr '[:lower:]' '[:upper:]')
+              allow_coverage=${allow_coverages[$module_name]}
+
+              if awk 'BEGIN {exit !('$module_coverage' < '$allow_coverage' )}'; then
+              echo "Coverage for $module is below ${allow_coverage}: ${module_coverage}%"
+              exit 1
+              else
+              echo "Coverage for $module is ${module_coverage}%  (meets ${allow_coverage}% requirement)"
+              fi
+          else
+              echo "No coverage data found for $module"
+          fi
+          done
+      - name: Check types package coverage
+        run: |
+          #!/bin/bash
+          declare -A allow_coverages
+          allow_coverages["ACCOUNTEDPOOL"]="${{vars.ACCOUNTEDPOOL_TYPES}}"
+          allow_coverages["AMM"]="${{vars.AMM_TYPES}}"
+          allow_coverages["ASSETPROFILE"]="${{vars.ASSETPROFILE_TYPES}}"
+          allow_coverages["BURNER"]="${{vars.BURNER_TYPES}}"
+          allow_coverages["COMMITMENT"]="${{vars.COMMITMENT_TYPES}}"
+          allow_coverages["EPOCHS"]="${{vars.EPOCHS_TYPES}}"
+          allow_coverages["ESTAKING"]="${{vars.ESTAKING_TYPES}}"
+          allow_coverages["MASTERCHEF"]="${{vars.MASTERCHEF_TYPES}}"
+          allow_coverages["ORACLE"]="${{vars.ORACLE_TYPES}}"
+          allow_coverages["PARAMETER"]="${{vars.PARAMETER_TYPES}}"
+          allow_coverages["PERPETUAL"]="${{vars.PERPETUAL_TYPES}}"
+          allow_coverages["STABLESTAKE"]="${{vars.STABLESTAKE_TYPES}}"
+          allow_coverages["TIER"]="${{vars.TIER_TYPES}}"
+          allow_coverages["TRADESHIELD"]="${{vars.TRADESHIELD_TYPES}}"
+          allow_coverages["TRANSFERHOOK"]="${{vars.TRANSFERHOOK_TYPES}}"
+          allow_coverages["LEVERAGELP"]="${{vars.LEVERAGELP_TYPES}}"
+          allow_coverages["TOKENOMICS"]="${{vars.TOKENOMICS_TYPES}}"
+
+
+          echo "Searching for types packages:"
+          find . -type d -path "*/x/*/types" -not -path "*/vendor/*"
+
+          module_packages=$(find . -type d -path "*/x/*/types" -not -path "*/vendor/*")
+          for module in $module_packages; do
+          echo "Checking types package: $module"
+          module_coverage=$(go tool cover -func=coverage.txt | grep "$module" | awk '{sum += $3; count++} END {if (count > 0) print sum / count; else print 0}')
+          if [ -n "$module_coverage" ]; then
+              module_name=$(echo "$module" | sed 's:^.*/\([^/]*\)/types$:\1:')
+              module_name=$(echo "$module_name" | tr '[:lower:]' '[:upper:]')
+              allow_coverage=${allow_coverages[$module_name]}
+
+              if awk 'BEGIN {exit !('$module_coverage' < '$allow_coverage' )}'; then
+              echo "Coverage for $module is below ${allow_coverage}: ${module_coverage}%"
+              exit 1
+              else
+              echo "Coverage for $module is ${module_coverage}%  (meets ${allow_coverage}% requirement)"
+              fi
+          else
+              echo "No coverage data found for $module"
+          fi
+          done

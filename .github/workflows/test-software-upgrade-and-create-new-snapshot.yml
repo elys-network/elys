@@ -1,0 +1,275 @@
+name: Test Software Upgrade and Create New Snapshot
+
+on:
+  pull_request:
+  push:
+    branches:
+      - develop
+      - devnet
+      - main
+
+jobs:
+  create-new-snapshot:
+    runs-on: elys-runner-x2-2
+
+    steps:
+      - name: Check if secrets are set
+        run: |
+          if [ -z "${{ secrets.R2_ACCESS_KEY }}" ]; then
+            echo "R2_ACCESS_KEY is not set."
+            exit 1
+          fi
+          if [ -z "${{ secrets.R2_SECRET_KEY }}" ]; then
+            echo "R2_SECRET_KEY is not set."
+            exit 1
+          fi
+          if [ -z "${{ secrets.R2_ENDPOINT }}" ]; then
+            echo "R2_ENDPOINT is not set."
+            exit 1
+          fi
+          if [ -z "${{ secrets.R2_BUCKET_NAME }}" ]; then
+            echo "R2_BUCKET_NAME is not set."
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+
+      - name: Get latest tag
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            LATEST_TAG_KEY=${LATEST_TAG}-mainnet
+          else
+            LATEST_TAG_KEY=${LATEST_TAG}-testnet
+          fi   
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "LATEST_TAG_KEY=$LATEST_TAG_KEY" >> $GITHUB_ENV
+          echo "Latest tag: $LATEST_TAG"
+          echo "Latest tag key: $LATEST_TAG_KEY"
+
+      - name: Retrieve latest binary
+        run: |
+          DOWNLOAD_URL=https://github.com/elys-network/elys/releases/download/${LATEST_TAG}/elysd-${LATEST_TAG}-linux-amd64
+          OLD_BINARY_PATH=/tmp/elysd-${LATEST_TAG}
+
+          # download binary from release
+          curl -L $DOWNLOAD_URL -o $OLD_BINARY_PATH && chmod +x $OLD_BINARY_PATH
+
+          # build binary from source
+          # git tag -f ${LATEST_TAG}
+          # make build
+          # mv ./build/elysd $OLD_BINARY_PATH
+          # git tag -d ${LATEST_TAG}
+
+          echo "OLD_BINARY_PATH=$OLD_BINARY_PATH" >> $GITHUB_ENV
+
+      - name: Retrieve post upgrade snapshot generator binary
+        run: |
+          # Get latest release version using GitHub API
+          POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION=$(curl -s https://api.github.com/repos/elys-network/post-upgrade-snapshot-generator/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+          echo "Latest post-upgrade-snapshot-generator version: $POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION"
+
+          DOWNLOAD_URL=https://github.com/elys-network/post-upgrade-snapshot-generator/releases/download/${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}-linux-amd64
+          POST_UPGRADE_SNAPSHOT_GENERATOR_PATH=/tmp/post-upgrade-snapshot-generator-${POST_UPGRADE_SNAPSHOT_GENERATOR_VERSION}
+          curl -L $DOWNLOAD_URL -o $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH && chmod +x $POST_UPGRADE_SNAPSHOT_GENERATOR_PATH
+          echo "POST_UPGRADE_SNAPSHOT_GENERATOR_PATH=$POST_UPGRADE_SNAPSHOT_GENERATOR_PATH" >> $GITHUB_ENV
+
+      - name: Build new binary
+        run: |
+          # create new git tag
+          git tag -f v999999.999999.999999
+          # build new elys binary
+          make build
+          NEW_BINARY_PATH=./build/elysd
+          echo "NEW_BINARY_PATH=$NEW_BINARY_PATH" >> $GITHUB_ENV
+
+      - name: Check submit new proposal from cache exists
+        uses: elys-network/actions-cache-s3/restore@eba1d2b54699fda7ee03d826049bc67dcf514887
+        id: cache-submit-new-proposal
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
+          lookup-only: true
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: auto
+          aws-s3-bucket-endpoint: false
+          aws-s3-force-path-style: true
+
+      - name: Retrieve snapshot info and set snapshot path
+        run: |
+          # use mainnet for main branch otherwise use testnet snapshot data
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            url="https://tools.highstakes.ch/snapshots/elys-mainnet"
+          else
+            url="https://tools.highstakes.ch/snapshots/elys"
+          fi
+
+          html_content=$(curl -s "$url")
+
+          SNAPSHOT_DOWNLOAD_URL=$(echo "$html_content" | grep -oP '(?<=<a class="a_custom" href=")[^"]*' | tail -n 1)
+          SNAPSHOT_BLOCK_HEIGHT=$(echo "$html_content" | grep -oP '(?<=<td style="font-weight: bold;"><label style="color: black">)\d+(?=</label></td>)' | tail -n 1)
+
+          echo "SNAPSHOT_DOWNLOAD_URL=$SNAPSHOT_DOWNLOAD_URL" >> $GITHUB_ENV
+          echo "SNAPSHOT_BLOCK_HEIGHT=$SNAPSHOT_BLOCK_HEIGHT" >> $GITHUB_ENV
+
+          echo "Snapshot download URL: $SNAPSHOT_DOWNLOAD_URL"
+          echo "Snapshot block height: $SNAPSHOT_BLOCK_HEIGHT"
+
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            APPLIED_URL=https://api.elys.network/cosmos/upgrade/v1beta1/applied_plan/${LATEST_TAG}
+          else
+            APPLIED_URL=https://api.testnet.elys.network/cosmos/upgrade/v1beta1/applied_plan/${LATEST_TAG}
+          fi
+          curl -L $APPLIED_URL -o /tmp/applied.json
+          echo "Applied.json downloaded to check snapshot version."
+
+          # retrieve height field value from applied.json
+          UPGRADE_HEIGHT=$(cat /tmp/applied.json | awk -F'"' '/"height":/{print $4}')
+          echo "Upgrade height: $UPGRADE_HEIGHT"
+
+          # SNAPSHOT_BLOCK_HEIGHT must be greater than UPGRADE_HEIGHT
+          if [ $SNAPSHOT_BLOCK_HEIGHT -le $UPGRADE_HEIGHT ]; then
+            echo "Snapshot block height ($SNAPSHOT_BLOCK_HEIGHT) is not greater than upgrade height ($UPGRADE_HEIGHT)."
+            exit 1
+          fi
+
+          # set snapshot file path, use mainnet snapshot for main branch otherwise use testnet snapshot
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            SNAPSHOT_FILE_PATH=/tmp/snapshot-mainnet.tar.gz
+          else
+            SNAPSHOT_FILE_PATH=/tmp/snapshot-testnet.tar.gz
+          fi
+
+          echo "SNAPSHOT_FILE_PATH=$SNAPSHOT_FILE_PATH" >> $GITHUB_ENV
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Download snapshot
+        run: |
+          curl -L $SNAPSHOT_DOWNLOAD_URL -o $SNAPSHOT_FILE_PATH
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Chain snapshot and export
+        run: |
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} chain-snapshot-export \
+            ${SNAPSHOT_FILE_PATH} \
+            ${OLD_BINARY_PATH} \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Chain initialization
+        run: |
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} chain-init \
+            ${OLD_BINARY_PATH} \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Create second validator
+        run: |
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} create-second-validator \
+            ${OLD_BINARY_PATH} \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Prepare validator data
+        run: |
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} prepare-validator-data \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Submit new proposal
+        run: |
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} submit-new-proposal \
+            ${OLD_BINARY_PATH} \
+            ${NEW_BINARY_PATH} \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Save submit new proposal to cache
+        uses: elys-network/actions-cache-s3/save@eba1d2b54699fda7ee03d826049bc67dcf514887
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: auto
+          aws-s3-bucket-endpoint: false
+          aws-s3-force-path-style: true
+        if: steps.cache-submit-new-proposal.outputs.cache-hit != 'true'
+
+      - name: Restore submit new proposal from cache
+        uses: elys-network/actions-cache-s3/restore@eba1d2b54699fda7ee03d826049bc67dcf514887
+        with:
+          path: |
+            /home/runner/.elys
+            /home/runner/.elys2
+          key: ${{ runner.os }}-submit-new-proposal-${{ env.LATEST_TAG_KEY }}
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_KEY }}
+          aws-endpoint: ${{ secrets.R2_ENDPOINT }}
+          aws-s3-bucket: ${{ secrets.R2_BUCKET_NAME }}
+          aws-region: auto
+          aws-s3-bucket-endpoint: false
+          aws-s3-force-path-style: true
+        if: steps.cache-submit-new-proposal.outputs.cache-hit == 'true'
+
+      - name: Upgrade to new binary
+        run: |
+          ${POST_UPGRADE_SNAPSHOT_GENERATOR_PATH} upgrade-to-new-binary \
+            ${NEW_BINARY_PATH} \
+            --timeout-next-block 100000 \
+            --timeout-wait-for-node 100000
+
+      - name: Create new snapshot file
+        run: |
+          SANITIZED_HEAD_REF=${{ github.head_ref || github.ref }}
+          SANITIZED_HEAD_REF=$(echo "$SANITIZED_HEAD_REF" | sed 's|refs/heads/||; s|/|_|g')
+          NEW_SNAPSHOT_FILENAME="elys-snapshot-${SANITIZED_HEAD_REF}.tar.lz4"
+          NEW_SNAPSHOT_PATH="/tmp/${NEW_SNAPSHOT_FILENAME}"
+          echo "NEW_SNAPSHOT_FILENAME=$NEW_SNAPSHOT_FILENAME" >> $GITHUB_ENV
+          echo "NEW_SNAPSHOT_PATH=$NEW_SNAPSHOT_PATH" >> $GITHUB_ENV
+          cd /home/runner
+          tar -cf - .elys | lz4 -z - > "$NEW_SNAPSHOT_PATH"
+
+      - name: Upload snapshot
+        env:
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          RCLONE_CONFIG_R2_TYPE: s3
+          RCLONE_CONFIG_R2_PROVIDER: Cloudflare
+          RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY }}
+          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_KEY }}
+          RCLONE_CONFIG_R2_REGION: enam
+          RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        run: |
+          # install rclone
+          curl https://rclone.org/install.sh | sudo bash
+
+          # copy snapshot to r2
+          rclone -vv copy "${NEW_SNAPSHOT_PATH}" r2:${R2_BUCKET_NAME}/
+
+      - name: Info about the snapshot
+        run: |
+          echo "Snapshot URL: https://snapshots.elys.network/$NEW_SNAPSHOT_FILENAME"

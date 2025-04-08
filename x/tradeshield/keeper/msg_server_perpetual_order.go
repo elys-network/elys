@@ -78,7 +78,7 @@ func (k msgServer) CreatePerpetualOpenOrder(goCtx context.Context, msg *types.Ms
 		Collateral:      msg.Collateral,
 		TakeProfitPrice: msg.TakeProfitPrice,
 		PoolId:          msg.PoolId,
-		LimitPrice:      msg.TriggerPrice.Rate,
+		LimitPrice:      msg.TriggerPrice,
 	})
 	if err != nil {
 		return nil, err
@@ -146,7 +146,7 @@ func (k msgServer) UpdatePerpetualOrder(goCtx context.Context, msg *types.MsgUpd
 
 	perpetualParams := k.perpetual.GetParams(ctx)
 
-	ratio := order.TakeProfitPrice.Quo(msg.TriggerPrice.Rate)
+	ratio := order.TakeProfitPrice.Quo(msg.TriggerPrice)
 	if order.Position == types.PerpetualPosition_LONG {
 		if ratio.LT(perpetualParams.MinimumLongTakeProfitPriceRatio) || ratio.GT(perpetualParams.MaximumLongTakeProfitPriceRatio) {
 			return nil, fmt.Errorf("invalid trigger price, take profit price should be between %s and %s times of current market price for long (current ratio: %s)", perpetualParams.MinimumLongTakeProfitPriceRatio.String(), perpetualParams.MaximumLongTakeProfitPriceRatio.String(), ratio.String())
@@ -179,11 +179,17 @@ func (k msgServer) CancelPerpetualOrder(goCtx context.Context, msg *types.MsgCan
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
-	// send the collateral amount back to the owner
-	ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
-	err := k.Keeper.bank.SendCoins(ctx, order.GetOrderAddress(), ownerAddress, sdk.NewCoins(order.Collateral))
-	if err != nil {
-		return nil, err
+	// Get all balances from the spot order address
+	orderAddress := order.GetOrderAddress()
+	balances := k.Keeper.bank.GetAllBalances(ctx, orderAddress)
+
+	// Send all available balances back to the owner if there are any
+	if !balances.IsZero() {
+		ownerAddress := sdk.MustAccAddressFromBech32(order.OwnerAddress)
+		err := k.Keeper.bank.SendCoins(ctx, orderAddress, ownerAddress, balances)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	k.RemovePendingPerpetualOrder(ctx, msg.OrderId)

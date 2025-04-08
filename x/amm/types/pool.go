@@ -104,7 +104,7 @@ func (p *Pool) SetInitialPoolAssets(PoolAssets []PoolAsset) error {
 	// TODO: Refactor this into PoolAsset.validate()
 	for _, asset := range PoolAssets {
 		if asset.Token.Amount.LTE(sdkmath.ZeroInt()) {
-			return fmt.Errorf("can't add the zero or negative balance of token")
+			return errors.New("can't add the zero or negative balance of token")
 		}
 
 		err := asset.validateWeight()
@@ -113,7 +113,7 @@ func (p *Pool) SetInitialPoolAssets(PoolAssets []PoolAsset) error {
 		}
 
 		if exists[asset.Token.Denom] {
-			return fmt.Errorf("same PoolAsset already exists")
+			return errors.New("same PoolAsset already exists")
 		}
 		exists[asset.Token.Denom] = true
 
@@ -172,7 +172,7 @@ func (p *Pool) UpdatePoolAssetBalance(coin sdk.Coin) error {
 	}
 
 	if coin.Amount.LTE(sdkmath.ZeroInt()) {
-		return fmt.Errorf("can't set the pool's balance of a token to be zero or negative")
+		return errors.New("can't set the pool's balance of a token to be zero or negative")
 	}
 
 	// Update the supply of the asset
@@ -215,7 +215,7 @@ func (p Pool) GetTotalPoolLiquidity() sdk.Coins {
 // Returns a pool asset, and its index. If err != nil, then the index will be valid.
 func (p Pool) GetPoolAssetAndIndex(denom string) (int, PoolAsset, error) {
 	if denom == "" {
-		return -1, PoolAsset{}, fmt.Errorf("you tried to find the PoolAsset with empty denom")
+		return -1, PoolAsset{}, errors.New("you tried to find the PoolAsset with empty denom")
 	}
 
 	if len(p.PoolAssets) == 0 {
@@ -251,7 +251,7 @@ func (p Pool) GetAmmPoolBalance(denom string) (sdkmath.Int, error) {
 	return sdkmath.ZeroInt(), ErrDenomNotFoundInPool
 }
 
-// getMaximalNoSwapLPAmount returns the coins(lp liquidity) needed to get the specified amount of shares in the pool.
+// GetMaximalNoSwapLPAmount returns the coins(lp liquidity) needed to get the specified amount of shares in the pool.
 // Steps to getting the needed lp liquidity coins needed for the share of the pools are
 // 1. calculate how much percent of the pool does given share account for(# of input shares / # of current total shares)
 // 2. since we know how much % of the pool we want, iterate through all pool liquidity to calculate how much coins we need for
@@ -288,8 +288,10 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
 	params Params,
-) (exitedCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, err error) {
-	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom, params)
+	takerFees sdkmath.LegacyDec,
+	applyWeightBreakingFee bool,
+) (exitedCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, slippage sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, takerFeesFinal sdkmath.LegacyDec, slippageCoins sdk.Coins, err error) {
+	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
 }
 
 func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
@@ -328,7 +330,7 @@ func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeep
 	return oracleAssetsTVL.Mul(sdkmath.LegacyNewDecFromInt(totalWeight)).Quo(sdkmath.LegacyNewDecFromInt(oracleAssetsWeight)), nil
 }
 
-func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
+func (p *Pool) LpTokenPriceForShare(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
 	ammPoolTvl, err := p.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), err
@@ -338,6 +340,19 @@ func (p *Pool) LpTokenPrice(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolK
 		return sdkmath.LegacyOneDec(), nil
 	}
 	lpTokenPrice := ammPoolTvl.MulInt(OneShare).QuoInt(p.TotalShares.Amount)
+	return lpTokenPrice, nil
+}
+
+func (p *Pool) LpTokenPriceForBaseUnits(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper) (sdkmath.LegacyDec, error) {
+	ammPoolTvl, err := p.TVL(ctx, oracleKeeper, accPoolKeeper)
+	if err != nil {
+		return sdkmath.LegacyZeroDec(), err
+	}
+	// Ensure ammPool.TotalShares is not zero to avoid division by zero
+	if p.TotalShares.IsZero() {
+		return sdkmath.LegacyOneDec(), nil
+	}
+	lpTokenPrice := ammPoolTvl.Quo(p.TotalShares.Amount.ToLegacyDec())
 	return lpTokenPrice, nil
 }
 
@@ -362,5 +377,5 @@ func (pool Pool) GetAssetExternalLiquidityRatio(asset string) (sdkmath.LegacyDec
 			return poolAsset.ExternalLiquidityRatio, nil
 		}
 	}
-	return sdkmath.LegacyZeroDec(), fmt.Errorf("asset not found in the pool")
+	return sdkmath.LegacyZeroDec(), errors.New("asset not found in the pool")
 }

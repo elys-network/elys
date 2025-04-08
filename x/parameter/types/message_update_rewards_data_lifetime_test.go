@@ -1,7 +1,7 @@
 package types
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -34,7 +34,7 @@ func TestMsgUpdateRewardsDataLifetime_ValidateBasic(t *testing.T) {
 				Creator:             sample.AccAddress(),
 				RewardsDataLifetime: 0,
 			},
-			err: fmt.Errorf("rewards_data_lifetime must be > 0"),
+			err: errors.New("rewards_data_lifetime must be > 0"),
 		},
 	}
 	for _, tt := range tests {

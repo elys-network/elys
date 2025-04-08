@@ -1,10 +1,12 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
+
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -31,7 +33,7 @@ func poolAssetsCoins(assets []PoolAsset) sdk.Coins {
 	return coins
 }
 
-// ensureDenomInPool check to make sure the input denoms exist in the provided pool asset map
+// EnsureDenomInPool check to make sure the input denoms exist in the provided pool asset map
 func EnsureDenomInPool(poolAssetsByDenom map[string]PoolAsset, tokensIn sdk.Coins) error {
 	for _, coin := range tokensIn {
 		_, ok := poolAssetsByDenom[coin.Denom]
@@ -114,7 +116,7 @@ func GetPoolAssetByDenom(assets []PoolAsset, denom string) (PoolAsset, bool) {
 // validates a pool asset, to check if it has a valid weight.
 func (pa PoolAsset) validateWeight() error {
 	if pa.Weight.LTE(sdkmath.ZeroInt()) {
-		return fmt.Errorf("a token's weight in the pool must be greater than 0")
+		return errors.New("a token's weight in the pool must be greater than 0")
 	}
 
 	// TODO: add validation for asset weight overflow:

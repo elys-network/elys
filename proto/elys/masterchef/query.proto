@@ -81,7 +81,74 @@ service Query {
   rpc PoolRewards(QueryPoolRewardsRequest) returns (QueryPoolRewardsResponse) {
     option (google.api.http).get = "/elys-network/elys/masterchef/pool_rewards";
   }
+
+  rpc AllLiquidityPoolTVL(QueryAllLiquidityPoolTVLRequest)
+      returns (QueryAllLiquidityPoolTVLResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/masterchef/all_liquidity_pool_tvl";
+  }
+
+  rpc ChainTVL(QueryChainTVLRequest) returns (QueryChainTVLResponse) {
+    option (google.api.http).get = "/elys-network/elys/masterchef/chain_tvl";
+  }
 }
+
+message QueryAllLiquidityPoolTVLRequest {}
+
+message QueryAllLiquidityPoolTVLResponse {
+
+  string total = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string pools = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string usdc_staking = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryChainTVLRequest {}
+
+message QueryChainTVLResponse {
+
+  string total = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string pools = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string usdc_staking = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string staked_elys = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string staked_eden = 5 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin net_stakings = 6 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
@@ -102,6 +169,11 @@ message QueryPoolInfoRequest { uint64 pool_id = 1; }
 
 message QueryPoolInfoResponse {
   PoolInfo pool_info = 1 [ (gogoproto.nullable) = false ];
+  string stable_apr = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryPoolRewardInfoRequest {
@@ -164,12 +236,17 @@ message PoolApr {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string usdc_apr = 3 [
+  string usdc_dex_apr = 3 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string total_apr = 4 [
+  string usdc_gas_apr = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string total_apr = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
@@ -191,6 +268,7 @@ message QueryListFeeInfoResponse {
 message QueryAprRequest {
   elys.commitment.EarnType withdraw_type = 1;
   string denom = 2;
+  uint64 days = 3;
 }
 
 message QueryAprResponse {

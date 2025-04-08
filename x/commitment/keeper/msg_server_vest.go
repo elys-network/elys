@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/elys-network/elys/x/commitment/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
 // Vest converts user's commitment to vesting - start with unclaimed rewards and if it's not enough deduct from committed bucket
@@ -25,7 +26,7 @@ func (k msgServer) Vest(goCtx context.Context, msg *types.MsgVest) (*types.MsgVe
 
 // Vesting token
 // Check if vesting entity count is not exceeding the maximum and if it is fine, creates a new vesting entity
-// Deduct from unclaimed bucket. If it is insufficent, deduct from committed bucket as well.
+// Deduct from unclaimed bucket. If it is insufficient, deduct from committed bucket as well.
 func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.Int, creator sdk.AccAddress) error {
 	vestingInfo, _ := k.GetVestingInfo(ctx, denom)
 
@@ -55,6 +56,13 @@ func (k Keeper) ProcessTokenVesting(ctx sdk.Context, denom string, amount math.I
 		VestStartedTimestamp: ctx.BlockTime().Unix(),
 	})
 	commitments.VestingTokens = vestingTokens
+
+	if denom == ptypes.Eden {
+		prev := k.GetTotalSupply(ctx)
+		prev.TotalEdenSupply = prev.TotalEdenSupply.Sub(amount)
+		prev.TotalEdenVested = prev.TotalEdenVested.Add(amount)
+		k.SetTotalSupply(ctx, prev)
+	}
 
 	// Update the commitments
 	k.SetCommitments(ctx, commitments)

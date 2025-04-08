@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"errors"
 	"fmt"
 
 	"cosmossdk.io/math"
@@ -30,6 +31,7 @@ func (k Keeper) SetMTP(ctx sdk.Context, mtp *types.MTP) error {
 		k.SetOpenMTPCount(ctx, openCount)
 	}
 
+	// TODO Do we need validate MTP every single time we set it?
 	if err := mtp.Validate(); err != nil {
 		return err
 	}
@@ -161,7 +163,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 
 	// Update interest first and then calculate health
 	k.UpdateMTPBorrowInterestUnpaidLiability(ctx, &mtp)
-	err := k.UpdateFundingFee(ctx, &mtp, &pool, ammPool)
+	_, _, _, err := k.UpdateFundingFee(ctx, &mtp, &pool)
 	if err != nil {
 		return nil, err
 	}
@@ -305,7 +307,7 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 		tradingAssetPrice = mtp.TakeProfitPrice
 	}
 	if tradingAssetPrice.IsZero() {
-		return math.Int{}, fmt.Errorf("trading asset price is zero")
+		return math.Int{}, errors.New("trading asset price is zero")
 	}
 
 	// in long it's in trading asset ,if short position, custody asset is already in base currency

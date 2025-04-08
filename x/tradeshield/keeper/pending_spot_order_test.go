@@ -22,7 +22,10 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderGet() {
 	items := suite.createNPendingSpotOrder(10)
 	for _, item := range items {
 		got, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, item.OrderId)
-		item.OrderPrice.Rate = math.LegacyZeroDec()
+		item.OrderPrice = math.LegacyZeroDec()
+		item.LegacyOrderPriceV1 = types.LegacyOrderPriceV1{
+			Rate: math.LegacyZeroDec(),
+		}
 		suite.Require().True(found)
 		suite.Require().Equal(
 			nullify.Fill(&item),
@@ -45,7 +48,7 @@ func (suite *TradeshieldKeeperTestSuite) TestPendingSpotOrderGetAll() {
 
 	for _, item := range suite.app.TradeshieldKeeper.GetAllPendingSpotOrder(suite.ctx) {
 		got, found := suite.app.TradeshieldKeeper.GetPendingSpotOrder(suite.ctx, item.OrderId)
-		item.OrderPrice.Rate = math.LegacyZeroDec()
+		item.OrderPrice = math.LegacyZeroDec()
 		suite.Require().True(found)
 		suite.Require().Equal(
 			nullify.Fill(&item),
@@ -79,14 +82,10 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteStopLossOrder() {
 	_ = suite.CreateNewAmmPool(address[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
 
 	pendingSpotOrder := types.SpotOrder{
-		OwnerAddress: address[1].String(),
-		OrderId:      1, // pending order count will be zero, so ultimately this will be 1
-		OrderType:    types.SpotOrderType_STOPLOSS,
-		OrderPrice: types.OrderPrice{
-			BaseDenom:  "uusdc",
-			QuoteDenom: "uatom",
-			Rate:       math.LegacyNewDec(1),
-		},
+		OwnerAddress:     address[1].String(),
+		OrderId:          1, // pending order count will be zero, so ultimately this will be 1
+		OrderType:        types.SpotOrderType_STOPLOSS,
+		OrderPrice:       math.LegacyNewDec(10),
 		OrderTargetDenom: "uatom",
 		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(1000000000)),
 	}
@@ -131,14 +130,10 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitSellOrder() {
 	_ = suite.CreateNewAmmPool(address[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
 
 	pendingSpotOrder := types.SpotOrder{
-		OwnerAddress: address[0].String(),
-		OrderId:      1, // pending order count will be zero, so ultimately this will be 1
-		OrderType:    types.SpotOrderType_LIMITSELL,
-		OrderPrice: types.OrderPrice{
-			BaseDenom:  "uusdc",
-			QuoteDenom: "uatom",
-			Rate:       math.LegacyNewDec(0),
-		},
+		OwnerAddress:     address[0].String(),
+		OrderId:          1, // pending order count will be zero, so ultimately this will be 1
+		OrderType:        types.SpotOrderType_LIMITSELL,
+		OrderPrice:       math.LegacyNewDec(0),
 		OrderTargetDenom: "uatom",
 		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(1000000)),
 	}
@@ -183,14 +178,10 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteLimitBuyOrder() {
 	_ = suite.CreateNewAmmPool(address[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
 
 	pendingSpotOrder := types.SpotOrder{
-		OwnerAddress: address[1].String(),
-		OrderId:      1, // pending order count will be zero, so ultimately this will be 1
-		OrderType:    types.SpotOrderType_LIMITBUY,
-		OrderPrice: types.OrderPrice{
-			BaseDenom:  "uusdc",
-			QuoteDenom: "uatom",
-			Rate:       math.LegacyNewDec(1),
-		},
+		OwnerAddress:     address[1].String(),
+		OrderId:          1, // pending order count will be zero, so ultimately this will be 1
+		OrderType:        types.SpotOrderType_LIMITBUY,
+		OrderPrice:       math.LegacyNewDec(10),
 		OrderTargetDenom: "uatom",
 		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(100000)),
 	}
@@ -235,14 +226,10 @@ func (suite *TradeshieldKeeperTestSuite) TestExecuteMarketBuyOrder() {
 	_ = suite.CreateNewAmmPool(address[0], true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, math.NewInt(100000000000).MulRaw(10), math.NewInt(100000000000).MulRaw(10))
 
 	order := types.SpotOrder{
-		OwnerAddress: address[0].String(),
-		OrderId:      0,
-		OrderType:    types.SpotOrderType_MARKETBUY,
-		OrderPrice: types.OrderPrice{
-			BaseDenom:  "uusdc",
-			QuoteDenom: "uatom",
-			Rate:       math.LegacyNewDec(1),
-		},
+		OwnerAddress:     address[0].String(),
+		OrderId:          0,
+		OrderType:        types.SpotOrderType_MARKETBUY,
+		OrderPrice:       math.LegacyNewDec(1),
 		OrderTargetDenom: "uatom",
 		OrderAmount:      sdk.NewCoin("uusdc", math.NewInt(1000)),
 	}

@@ -91,17 +91,17 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	// check length of pools
 	suite.Require().Equal(len(pools), 1)
 
-	_, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
+	_, _, _, _, _, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false, true)
 	suite.Require().NoError(err)
 
 	// new user join pool with same shares
 	share := ammtypes.InitPoolSharesSupply.Mul(math.NewIntWithDecimal(1, 5))
 	suite.T().Log(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId))
-	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "10002000000000000000000000")
+	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "10000000000000000000000000")
 	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolBalance(suite.ctx, pools[0].PoolId, addr[0]).String(), "10000000000000000000000000")
 	_, _, err = suite.app.AmmKeeper.JoinPoolNoSwap(suite.ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, math.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000))))
 	suite.Require().NoError(err)
-	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "20002000000000000000000000")
+	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "20000000000000000000000000")
 	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolBalance(suite.ctx, pools[0].PoolId, addr[1]), share)
 
 	// Mint uatom
@@ -140,12 +140,12 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 		User: addr[0].String(),
 	})
 	suite.Require().NoError(err)
-	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "4949505049")
+	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "4950000000")
 	res, err = suite.app.MasterchefKeeper.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[1].String(),
 	})
 	suite.Require().NoError(err)
-	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "4949505049")
+	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "4950000000")
 
 	// check rewards claimed
 	_, err = suite.msgServer.ClaimRewards(ctx, &types.MsgClaimRewards{
@@ -160,7 +160,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	suite.Require().NoError(err)
 
 	atomAmount := suite.app.BankKeeper.GetBalance(ctx, addr[1], "uatom")
-	suite.Require().Equal(atomAmount.Amount.String(), "4949505049")
+	suite.Require().Equal(atomAmount.Amount.String(), "4950000000")
 
 	// no pending rewards
 	res, err = suite.app.MasterchefKeeper.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
@@ -175,7 +175,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	suite.Require().Len(res.TotalRewards, 0)
 
 	// first user exit pool
-	_, err = suite.app.AmmKeeper.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false)
+	_, _, _, _, _, err = suite.app.AmmKeeper.ExitPool(ctx, addr[1], pools[0].PoolId, share.Quo(math.NewInt(2)), sdk.NewCoins(), "", false, true)
 	suite.Require().NoError(err)
 
 	// check rewards after 100 block
@@ -192,12 +192,12 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 		User: addr[0].String(),
 	})
 	suite.Require().NoError(err)
-	suite.Require().Equal(res.TotalRewards[0].String(), "3999680025uatom")
+	suite.Require().Equal(res.TotalRewards[0].String(), "6666666666uatom")
 	res, err = suite.app.MasterchefKeeper.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[1].String(),
 	})
 	suite.Require().NoError(err)
-	suite.Require().Equal(res.TotalRewards[0].String(), "1999840012uatom")
+	suite.Require().Equal(res.TotalRewards[0].String(), "3333333333uatom")
 
 	// check rewards claimed
 	_, err = suite.msgServer.ClaimRewards(ctx, &types.MsgClaimRewards{
@@ -212,7 +212,7 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 	suite.Require().NoError(err)
 
 	atomAmount = suite.app.BankKeeper.GetBalance(ctx, addr[1], "uatom")
-	suite.Require().Equal(atomAmount.String(), "6949345061uatom")
+	suite.Require().Equal(atomAmount.String(), "8283333333uatom")
 
 	// no pending rewards
 	res, err = suite.app.MasterchefKeeper.UserPendingReward(ctx, &types.QueryUserPendingRewardRequest{

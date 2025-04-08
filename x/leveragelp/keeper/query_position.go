@@ -51,7 +51,7 @@ func (k Keeper) LiquidationPrice(goCtx context.Context, req *types.QueryLiquidat
 
 	params := k.GetParams(ctx)
 
-	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress())
+	debt := k.stableKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
 
 	// Ensure position.LeveragedLpAmount is not zero to avoid division by zero
 	if position.LeveragedLpAmount.IsZero() {

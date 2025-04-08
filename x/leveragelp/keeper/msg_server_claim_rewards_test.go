@@ -70,6 +70,7 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 	msgBond := stabletypes.MsgBond{
 		Creator: addresses[1].String(),
 		Amount:  issueAmount.QuoRaw(20),
+		PoolId:  1,
 	}
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)
 	_, err := stableStakeMsgServer.Bond(suite.ctx, &msgBond)

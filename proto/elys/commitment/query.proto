@@ -48,6 +48,26 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/commitment/commitment_vesting_info/{address}";
   }
+
+  rpc AirDrop(QueryAirDropRequest) returns (QueryAirDropResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/commitment/airdrop/{address}";
+  }
+
+  rpc TotalAirdropClaimed(QueryTotalAirDropClaimedRequest)
+      returns (QueryTotalAirDropClaimedResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/commitment/total_airdrop_claimed";
+  }
+
+  rpc Kol(QueryKolRequest) returns (QueryKolResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/commitment/kol/{address}";
+  }
+
+  rpc TotalSupply(QueryTotalSupplyRequest) returns (QueryTotalSupplyResponse) {
+    option (google.api.http).get = "/elys-network/elys/commitment/total_supply";
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -120,4 +140,81 @@ message VestingDetails {
     (gogoproto.nullable) = false
   ];
   int64 remaining_blocks = 5;
+}
+
+message QueryAirDropRequest {
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message QueryAirDropResponse {
+  string atom_staking = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string cadet = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string nft_holder = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string governor = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  bool claimed = 5;
+}
+
+message QueryTotalAirDropClaimedRequest {}
+
+message QueryTotalAirDropClaimedResponse {
+  string total_elys_claimed = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_eden_claimed = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryKolRequest {
+  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message QueryKolResponse {
+  string elys_amount = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  bool claimed = 2;
+  bool refunded = 3;
+}
+
+message QueryTotalSupplyRequest {}
+
+message QueryTotalSupplyResponse {
+  string total_eden = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_edenb = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_eden_vested = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }

@@ -72,7 +72,7 @@ func (k Keeper) UncommitTokens(ctx sdk.Context, addr sdk.AccAddress, denom strin
 
 	// Update total commitment
 	params := k.GetParams(ctx)
-	params.TotalCommitted = params.TotalCommitted.Add(liquidCoins...)
+	params.TotalCommitted = params.TotalCommitted.Sub(liquidCoins...)
 	k.SetParams(ctx, params)
 
 	// Emit Hook if Eden is uncommitted

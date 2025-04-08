@@ -1,10 +1,12 @@
 package types_test
 
 import (
+	"errors"
+	"testing"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
@@ -24,22 +26,67 @@ func TestMsgSwapExactAmountOut_ValidateBasic(t *testing.T) {
 				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
-		}, {
+		},
+		{
 			name: "valid address",
 			msg: types.MsgSwapExactAmountOut{
 				Sender:           sample.AccAddress(),
 				Routes:           nil,
-				TokenOut:         sdk.Coin{ptypes.ATOM, math.NewInt(10)},
+				TokenOut:         sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
 				TokenInMaxAmount: math.NewInt(1),
 				Recipient:        "",
 			},
+		},
+		{
+			name: "Invalid recipient address",
+			msg: types.MsgSwapExactAmountOut{
+				Sender:           sample.AccAddress(),
+				Routes:           nil,
+				TokenOut:         sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenInMaxAmount: math.NewInt(1),
+				Recipient:        "cosmos1invalid",
+			},
+			err: sdkerrors.ErrInvalidAddress,
+		},
+		{
+			name: "Invalid tokenInDenom in route",
+			msg: types.MsgSwapExactAmountOut{
+				Sender:           sample.AccAddress(),
+				Routes:           []types.SwapAmountOutRoute{{TokenInDenom: "invalid denom"}},
+				TokenOut:         sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenInMaxAmount: math.NewInt(1),
+				Recipient:        sample.AccAddress(),
+			},
+			err: errors.New("invalid denom"),
+		},
+		{
+			name: "Invalid tokenOut",
+			msg: types.MsgSwapExactAmountOut{
+				Sender:           sample.AccAddress(),
+				Routes:           []types.SwapAmountOutRoute{{TokenInDenom: "uusdc"}},
+				TokenOut:         sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(-10)},
+				TokenInMaxAmount: math.NewInt(1),
+				Recipient:        sample.AccAddress(),
+			},
+			err: errors.New("negative coin amount"),
+		},
+		{
+			name: "Invalid tokenOut amount",
+			msg: types.MsgSwapExactAmountOut{
+				Sender:           sample.AccAddress(),
+				Routes:           []types.SwapAmountOutRoute{{TokenInDenom: "uusdc"}},
+				TokenOut:         sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(0)},
+				TokenInMaxAmount: math.NewInt(1),
+				Recipient:        sample.AccAddress(),
+			},
+			err: errors.New("token in is zero"),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.msg.ValidateBasic()
 			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
+				require.Contains(t, err.Error(), tt.err.Error())
 				return
 			}
 			require.NoError(t, err)

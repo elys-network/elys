@@ -14,13 +14,13 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool) types.PoolExtraInfo {
+func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool, days int) types.PoolExtraInfo {
 	tvl, _ := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
-	lpTokenPrice, _ := pool.LpTokenPrice(ctx, k.oracleKeeper, k.accountedPoolKeeper)
-	avg := k.GetWeightBreakingSlippageAvg(ctx, pool.PoolId)
+	lpTokenPrice, _ := pool.LpTokenPriceForShare(ctx, k.oracleKeeper, k.accountedPoolKeeper)
+	avg := k.GetWeightBreakingSlippageAvg(ctx, pool.PoolId, days)
 	apr := math.LegacyZeroDec()
 	if tvl.IsPositive() {
-		apr = avg.Mul(math.LegacyNewDec(52)).Quo(tvl)
+		apr = avg.Mul(math.LegacyNewDec(365)).Quo(tvl)
 	}
 	return types.PoolExtraInfo{
 		Tvl:          tvl,
@@ -48,7 +48,7 @@ func (k Keeper) PoolAll(goCtx context.Context, req *types.QueryAllPoolRequest) (
 		}
 
 		pools = append(pools, pool)
-		extraInfos = append(extraInfos, k.PoolExtraInfo(ctx, pool))
+		extraInfos = append(extraInfos, k.PoolExtraInfo(ctx, pool, int(req.Days)))
 		return nil
 	})
 	if err != nil {
@@ -71,6 +71,6 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 
 	return &types.QueryGetPoolResponse{
 		Pool:      pool,
-		ExtraInfo: k.PoolExtraInfo(ctx, pool),
+		ExtraInfo: k.PoolExtraInfo(ctx, pool, int(req.Days)),
 	}, nil
 }

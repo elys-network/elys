@@ -1,455 +1,57 @@
 version: 1
-accounts:
-  - name: treasury
-    coins:
-      - 1000000000000uatom
-      - 1000000000000uinc
-      - 1000000000000uusdc
-      - 1000000000000uusdt
-      - 9000000000000000uelys
-      - 100000000ueden
-    mnemonic: olympic slide park figure frost benefit deer reform fly pull price airport submit monitor silk insect uphold convince pupil project ignore roof warfare slight
-  - name: seed
-    coins:
-      - 9000000000000000uelys
-  - name: cw
-    coins:
-      - 1000000000000uatom
-      - 9000000000000000uelys
-      - 1000000000000uusdc
-      - 1000000000000uusdt
-    mnemonic: wool diet nasty illness balcony life grunt truck verify later raise carpet describe victory snack sand struggle better smart purse miss bicycle copy orphan
 build:
-  main: cmd/elysd
-client:
-  openapi:
-    path: docs/static/openapi.yml
-faucet:
-  name: seed
+  main: ./cmd/elysd
+  binary: elysd
+  proto:
+    path: proto
+    third_party_paths:
+    - third_party/proto
+    - proto_vendor
+accounts:
+- name: alice
   coins:
-    - 1000000000000000uelys
-validators:
-  - name: treasury
-    bonded: 100000000uelys
+  - 39000000000000uelys
+  mnemonic: entry garbage bike poem grunt negative easily annual miss happy license
+    blur false fringe program picture inner tape dismiss eagle include quality drill
+    master
+- name: bob
+  coins:
+  - 5500000000000uelys
+  mnemonic: surface hospital fix visa patch wrong wink scout pyramid erosion lawn pool
+    wild candy until name reject identify tobacco include century battle harbor wrist
+- name: faucet
+  coins:
+  - 5500000000000uelys
+  mnemonic: vanish bench swear surprise bone tilt draw focus ensure inject sphere raise
+    rural horror harvest eagle water consider virus leisure medal behave citizen bid
+faucet:
+  name: faucet
+  coins:
+  - 5500000000000uelys
+  coins_max:
+  - 1000000000uelys
+  host: 0.0.0.0:4500
+  port: 4500
 genesis:
   app_state:
-    crisis:
-      constant_fee:
-        denom: uelys
-    gov:
-      deposit_params:
-        max_deposit_period: 20s
-        min_deposit:
-          - amount: "10000000"
-            denom: uelys
-      params:
-        burn_proposal_deposit_prevote: false
-        burn_vote_quorum: false
-        burn_vote_veto: true
-        max_deposit_period: 20s
-        min_deposit:
-          - amount: "10000000"
-            denom: uelys
-        min_initial_deposit_ratio: "0.000000000000000000"
-        quorum: "0.334000000000000000"
-        threshold: "0.500000000000000000"
-        veto_threshold: "0.334000000000000000"
-        voting_period: 20s
-      tally_params:
-        quorum: "0.334000000000000000"
-        threshold: "0.500000000000000000"
-        veto_threshold: "0.334000000000000000"
-      voting_params:
-        voting_period: 20s
-    mint:
-      params:
-        mint_denom: uelys
-        inflation_rate_change: "0.0"
-        inflation_max: "0.0"
-        inflation_min: "0.0"
-    slashing:
-      params:
-        signed_blocks_window: "30000"
-        min_signed_per_window: "0.05"
-        downtime_jail_duration: 600s
-        slash_fraction_double_sign: "0.05"
-        slash_fraction_downtime: "0.0001"
     staking:
       params:
         bond_denom: uelys
-        unbonding_time: 1209600s
-    estaking:
-      params:
-        eden_commit_val: ""
-        edenb_commit_val: ""
-        max_eden_reward_apr_stakers: "0.3"
-        eden_boost_apr: "1.0"
-    bank:
-      denom_metadata:
-        - base: uelys
-          denom_units:
-            - denom: uelys
-              exponent: 0
-              aliases:
-                - microelys
-            - denom: melys
-              exponent: 3
-              aliases:
-                - millielys
-            - denom: elys
-              exponent: 6
-              aliases: []
-          name: elys
-          symbol: elys
-          description: Native Elys token definition
-          display: elys
-        - base: ueden
-          denom_units:
-            - denom: ueden
-              exponent: 0
-              aliases:
-                - microeden
-            - denom: meden
-              exponent: 3
-              aliases:
-                - millieden
-            - denom: eden
-              exponent: 6
-              aliases: []
-          name: eden
-          symbol: eden
-          description: Eden token definition
-          display: eden
-      balances:
-        - address: elys1w9uac4zrf9z7qd604qxk2y4n74568lfl8vutz4
-          coins:
-            - amount: "1000000000"
-              denom: uatom
-            - amount: "1000000000"
-              denom: ueden
-            - amount: "1000000000"
-              denom: uelys
-            - amount: "1000000000"
-              denom: uusdc
     assetprofile:
-      entryList:
-        - address: ""
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          baseDenom: uelys
-          decimals: "6"
-          denom: uelys
-          displayName: ELYS
-          displaySymbol: ""
-          externalSymbol: ""
-          ibcChannelId: ""
-          ibcCounterpartyChainId: ""
-          ibcCounterpartyChannelId: ""
-          ibcCounterpartyDenom: ""
-          network: ""
-          path: ""
-          permissions: []
-          transferLimit: ""
-          unitDenom: ""
-          commitEnabled: false
-          withdrawEnabled: true
-        - address: ""
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          baseDenom: uusdc
-          decimals: "6"
-          denom: uusdc
-          displayName: USDC
-          displaySymbol: ""
-          externalSymbol: ""
-          ibcChannelId: ""
-          ibcCounterpartyChainId: ""
-          ibcCounterpartyChannelId: ""
-          ibcCounterpartyDenom: ""
-          network: ""
-          path: ""
-          permissions: []
-          transferLimit: ""
-          unitDenom: ""
-          commitEnabled: false
-          withdrawEnabled: true
-        - address: ""
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          baseDenom: ueden
-          decimals: "6"
-          denom: ueden
-          displayName: EDEN
-          displaySymbol: ""
-          externalSymbol: ""
-          ibcChannelId: ""
-          ibcCounterpartyChainId: ""
-          ibcCounterpartyChannelId: ""
-          ibcCounterpartyDenom: ""
-          network: ""
-          path: ""
-          permissions: []
-          transferLimit: ""
-          unitDenom: ""
-          commitEnabled: true
-          withdrawEnabled: true
-        - address: ""
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          baseDenom: uedenb
-          decimals: "6"
-          denom: uedenb
-          displayName: EDEN-BOOST
-          displaySymbol: ""
-          externalSymbol: ""
-          ibcChannelId: ""
-          ibcCounterpartyChainId: ""
-          ibcCounterpartyChannelId: ""
-          ibcCounterpartyDenom: ""
-          network: ""
-          path: ""
-          permissions: []
-          transferLimit: ""
-          unitDenom: ""
-          commitEnabled: true
-          withdrawEnabled: true
-    epochs:
-      epochs:
-        - identifier: week
-          duration: "168h"
-          currentEpoch: "0"
-          currentEpochStartHeight: "0"
-          epochCountingStarted: false
-        - identifier: day
-          duration: "24h"
-          currentEpoch: "0"
-          currentEpochStartHeight: "0"
-          epochCountingStarted: false
-        - identifier: twelvehours
-          duration: "12h"
-          currentEpoch: "0"
-          currentEpochStartHeight: "0"
-          epochCountingStarted: false
-        - identifier: sixhours
-          duration: "6h"
-          currentEpoch: "0"
-          currentEpochStartHeight: "0"
-          epochCountingStarted: false
-        - identifier: fourhours
-          duration: "4h"
-          currentEpoch: "0"
-          currentEpochStartHeight: "0"
-          epochCountingStarted: false
-        - identifier: twohours
-          duration: "2h"
-          currentEpoch: "0"
-          currentEpochStartHeight: "0"
-          epochCountingStarted: false
-        - identifier: hour
-          duration: "1h"
-          currentEpoch: "0"
-          currentEpochStartHeight: "0"
-          epochCountingStarted: false
-        - identifier: halfhour
-          duration: "30m"
-          currentEpoch: "0"
-          currentEpochStartHeight: "0"
-          epochCountingStarted: false
-        - identifier: band_epoch
-          duration: "15s"
-          currentEpoch: "0"
-          currentEpochStartHeight: "0"
-          epochCountingStarted: false
-        - identifier: tenseconds
-          duration: "10s"
-          currentEpoch: "0"
-          currentEpochStartHeight: "0"
-          epochCountingStarted: false
-    commitment:
-      params:
-        vesting_infos:
-          - base_denom: ueden
-            vesting_denom: uelys
-            num_blocks: "100"
-            vest_now_factor: "90"
-            num_max_vestings: "10"
-      commitments:
-        - creator: elys1v30pe777dj9mgsnlv0j2c5wh05m0ya0nlhuv7t
-          committed_tokens:
-            - amount: "10000"
-              denom: ueden
-            - amount: "10000"
-              denom: uedenb
-          vesting_tokens: []
-    tokenomics:
-      airdropList:
-        - intent: AtomStakers
-          amount: 9999999000000
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-        - intent: RowanStakersLP
-          amount: 9999999000000
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-        - intent: Juno
-          amount: 9999999000000
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-        - intent: Osmo
-          amount: 9999999000000
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-        - intent: Evmos
-          amount: 9999999000000
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-      genesisInflation:
-        inflation:
-          lmRewards: 9999999000000
-          icsStakingRewards: 9999999000000
-          communityFund: 9999999000000
-          strategicReserve: 9999999000000
-          teamTokensVested: 9999999000000
-        seedVesting: 9999999000000
-        strategicSalesVesting: 9999999000000
-        authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-      timeBasedInflationList:
-        - startBlockHeight: 1
-          endBlockHeight: 6307200
-          description: 1st Year Inflation
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          inflation:
-            lmRewards: 9999999000000
-            icsStakingRewards: 9999999000000
-            communityFund: 9999999000000
-            strategicReserve: 9999999000000
-            teamTokensVested: 9999999000000
-        - startBlockHeight: 6307201
-          endBlockHeight: 12614401
-          description: 2nd Year Inflation
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          inflation:
-            lmRewards: 9999999000000
-            icsStakingRewards: 9999999000000
-            communityFund: 9999999000000
-            strategicReserve: 9999999000000
-            teamTokensVested: 9999999000000
-        - startBlockHeight: 12614402
-          endBlockHeight: 18921602
-          description: 3rd Year Inflation
-          authority: elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3
-          inflation:
-            lmRewards: 9999999000000
-            icsStakingRewards: 9999999000000
-            communityFund: 9999999000000
-            strategicReserve: 9999999000000
-            teamTokensVested: 9999999000000
-    oracle:
-      assetInfos:
-        - denom: "satoshi"
-          display: "BTC"
-          bandTicker: "BTC"
-          elysTicker: "BTC"
-          decimal: 9
-        - denom: "wei"
-          display: "ETH"
-          bandTicker: "ETH"
-          elysTicker: "ETH"
-          decimal: 18
-        - denom: "uatom"
-          display: "ATOM"
-          bandTicker: "ATOM"
-          elysTicker: "ATOM"
-          decimal: 6
-        - denom: "uusdt"
-          display: "USDT"
-          bandTicker: "USDT"
-          elysTicker: "USDT"
-          decimal: 6
-        - denom: "uusdc"
-          display: "USDC"
-          bandTicker: "USDC"
-          elysTicker: "USDC"
-          decimal: 6
-      params:
-        ask_count: "4"
-        band_channel_source: "channel-0"
-        band_epoch: "band_epoch"
-        client_id: "band_price_id"
-        execute_gas: "600000"
-        fee_limit:
-          - amount: "30"
-            denom: "uband"
-        min_count: "3"
-        multiplier: "18"
-        oracle_script_id: "37"
-        prepare_gas: "600000"
-        price_expiry_time: "8640000000"
-        life_time_in_blocks: "1000000000"
-      portId: "oracle"
-      priceFeeders:
-        - feeder: "elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w"
-          is_active: true
-        - feeder: "elys1v30pe777dj9mgsnlv0j2c5wh05m0ya0nlhuv7t"
-          is_active: true
-      prices:
-        - asset: USDT
-          price: "1.00"
-          provider: elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w
-          source: elys
-          timestamp: "1694743319"
-        - asset: USDC
-          price: "1.00"
-          provider: elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w
-          source: elys
-          timestamp: "1694743319"
-        - asset: ATOM
-          price: "10.00"
-          provider: elys12tzylat4udvjj56uuhu3vj2n4vgp7cf9fwna9w
-          source: elys
-          timestamp: "1694743319"
-    burner:
-      params:
-        epochIdentifier: day
-      historyList:
-        - timestamp: "2023-04-21 14:57:03.612566186 +0000 UTC"
-          denom: "uelys"
-          amount: "1000000"
-        - timestamp: "2023-04-21 14:57:03.612566186 +0000 UTC"
-          denom: "ueden"
-          amount: "1000000"
-    parameter:
-      params:
-        min_commission_rate: "0.05"
-        max_voting_power: "1.00"
-        min_self_delegation: "1"
-    perpetual:
-      params:
-        leverage_max: "10"
-        borrow_interest_rate_max: "0.00000027"
-        borrow_interest_rate_min: "0.00000003"
-        borrow_interest_rate_increase: "0.000000000333333333"
-        borrow_interest_rate_decrease: "0.000000000333333333"
-        health_gain_factor: "0.000000022"
-        epoch_length: 1
-        max_open_positions: 9999
-        pool_open_threshold: "0.65"
-        force_close_fund_percentage: "1.0"
-        force_close_fund_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
-        incremental_borrow_interest_payment_fund_percentage: "0.35"
-        incremental_borrow_interest_payment_fund_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
-        safety_factor: "1.05"
-        incremental_borrow_interest_payment_enabled: true
-        whitelisting_enabled: false
-        invariant_check_epoch: day
-        take_profit_borrow_interest_rate_min: "0.00000003"
-        funding_fee_base_rate: "0.0003"
-        funding_fee_max_rate: "0.001"
-        funding_fee_min_rate: "-0.001"
-        funding_fee_collection_address: "elys1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrec2l"
-        swap_fee: "0.001"
-        max_limit_order: 500
-    stablestake:
-      params:
-        deposit_denom: "uusdc"
-        redemption_rate: "1.000000000000000000"
-    masterchef:
-      params:
-        supported_reward_denoms:
-          - denom: "uinc"
-            min_amount: "1000000"
-        reward_portion_for_lps: "0.6"
-        max_eden_reward_apr_lps: "0.5"
-        protocol_revenue_address: "elys10d07y265gmmuvt4z0w9aw880jnsr700j6z2zm3"
-  chain_id: elystestnet-1
+      entry_list:
+      - base_denom: "uusdc"
+        decimals: 6
+        denom: "uusdc"
+        display_name: "USDC"
+        authority: "elys1zypqa76je7pxsdwkfah6mu9a583sju6xqtgupc"
+  consensus:
+    params:
+        abci:
+          vote_extensions_enable_height: "0"
+  chain_id: elys-testnet
+validators:
+- name: alice
+  bonded: 33500000000000uelys
+  app:
+    pricefeeder:
+      config_path: "./cmd/elysd/price-feeder.example.toml"

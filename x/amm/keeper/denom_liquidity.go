@@ -1,12 +1,12 @@
 package keeper
 
 import (
-	storetypes "cosmossdk.io/store/types"
-	"fmt"
-	"github.com/cosmos/cosmos-sdk/runtime"
+	"errors"
 
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -53,7 +53,7 @@ func (k Keeper) IncreaseDenomLiquidity(ctx sdk.Context, denom string, amount mat
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.DenomLiquidityKeyPrefix))
 	b := store.Get(types.DenomLiquidityKey(denom))
 	if b == nil {
-		return fmt.Errorf("denom not found")
+		return errors.New("denom not found")
 	}
 	var denomLiquidity types.DenomLiquidity
 	k.cdc.MustUnmarshal(b, &denomLiquidity)
@@ -68,12 +68,12 @@ func (k Keeper) DecreaseDenomLiquidity(ctx sdk.Context, denom string, amount mat
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.DenomLiquidityKeyPrefix))
 	b := store.Get(types.DenomLiquidityKey(denom))
 	if b == nil {
-		return fmt.Errorf("denom not found")
+		return errors.New("denom not found")
 	}
 	var denomLiquidity types.DenomLiquidity
 	k.cdc.MustUnmarshal(b, &denomLiquidity)
 	if denomLiquidity.Liquidity.LT(amount) {
-		return fmt.Errorf("not enough liquidity")
+		return errors.New("not enough liquidity")
 	}
 	denomLiquidity.Liquidity = denomLiquidity.Liquidity.Sub(amount)
 	newB := k.cdc.MustMarshal(&denomLiquidity)

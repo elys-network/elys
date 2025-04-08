@@ -5,7 +5,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	query "github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -55,6 +55,7 @@ type PerpetualKeeper interface {
 // AssetProfileKeeper defines the expected interface needed to retrieve denom info
 type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
+	GetAllEntry(ctx sdk.Context) (list []assetprofiletypes.Entry)
 	// GetUsdcDenom returns USDC denom
 	GetUsdcDenom(ctx sdk.Context) (string, bool)
 	// GetEntryByDenom returns a entry from its denom value
@@ -68,7 +69,7 @@ type AmmKeeper interface {
 	GetAllPool(sdk.Context) []ammtypes.Pool
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
-	PoolExtraInfo(ctx sdk.Context, pool ammtypes.Pool) ammtypes.PoolExtraInfo
+	PoolExtraInfo(ctx sdk.Context, pool ammtypes.Pool, days int) ammtypes.PoolExtraInfo
 	InRouteByDenom(goCtx context.Context, req *ammtypes.QueryInRouteByDenomRequest) (*ammtypes.QueryInRouteByDenomResponse, error)
 	CalcInRouteSpotPrice(ctx sdk.Context,
 		tokenIn sdk.Coin,
@@ -103,8 +104,10 @@ type LeverageLpKeeper interface {
 
 type StablestakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stablestaketypes.Params)
-	GetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
-	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress) stablestaketypes.Debt
+	GetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
+	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, borrowingForPool uint64) stablestaketypes.Debt
+	GetPool(ctx sdk.Context, poolId uint64) (pool stablestaketypes.Pool, found bool)
+	CalculateRedemptionRateForPool(ctx sdk.Context, pool stablestaketypes.Pool) math.LegacyDec
 }
 
 type TradeshieldKeeper interface {

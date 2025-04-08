@@ -34,10 +34,6 @@ func (price FeedPrice) Validate() error {
 		return errorsmod.Wrapf(ErrInvalidPrice, "price is negative")
 	}
 
-	if err := sdk.ValidateDenom(price.Asset); err != nil {
-		return err
-	}
-
 	if len(price.Source) == 0 {
 		return errorsmod.Wrapf(ErrInvalidPrice, "source is empty")
 	}

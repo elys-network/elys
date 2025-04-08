@@ -63,6 +63,22 @@ func (k Keeper) GetAllPools(ctx sdk.Context) (list []types.Pool) {
 	return
 }
 
+// GetAllLegacyPools returns all legacy pool
+func (k Keeper) GetAllLegacyPools(ctx sdk.Context) (list []types.LegacyPool) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.PoolKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyPool
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
 func (k Keeper) SetBorrowRate(ctx sdk.Context, block uint64, pool uint64, interest types.InterestBlock) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.InterestRatePrefix)
 	prev := types.GetInterestRateKey(block-1, pool)
@@ -188,8 +204,8 @@ func (k Keeper) SetFundingRate(ctx sdk.Context, block uint64, pool uint64, fundi
 		funding.FundingRateLong = funding.FundingRateLong.Add(lastBlock.FundingRateLong)
 		funding.FundingRateShort = funding.FundingRateShort.Add(lastBlock.FundingRateShort)
 
-		funding.FundingAmountLong = funding.FundingAmountLong.Add(lastBlock.FundingAmountLong)
-		funding.FundingAmountShort = funding.FundingAmountShort.Add(lastBlock.FundingAmountShort)
+		funding.FundingShareLong = funding.FundingShareLong.Add(lastBlock.FundingShareLong)
+		funding.FundingShareShort = funding.FundingShareShort.Add(lastBlock.FundingShareShort)
 
 		bz = k.cdc.MustMarshal(&funding)
 		store.Set(key, bz)
@@ -320,8 +336,8 @@ func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, 
 		endFundingBlock := types.FundingRateBlock{}
 		k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
-		totalCustodyLong := endFundingBlock.FundingAmountLong.Sub(startFundingBlock.FundingAmountLong)
-		totalCustodyShort := endFundingBlock.FundingAmountShort.Sub(startFundingBlock.FundingAmountShort)
+		totalCustodyLong := endFundingBlock.FundingShareLong.Sub(startFundingBlock.FundingShareLong)
+		totalCustodyShort := endFundingBlock.FundingShareShort.Sub(startFundingBlock.FundingShareShort)
 
 		return totalCustodyLong, totalCustodyShort
 	}
@@ -341,8 +357,8 @@ func (k Keeper) GetFundingDistributionValue(ctx sdk.Context, startBlock uint64, 
 			endFundingBlock := types.FundingRateBlock{}
 			k.cdc.MustUnmarshal(bz, &endFundingBlock)
 
-			totalCustodyLong := endFundingBlock.FundingAmountLong
-			totalCustodyShort := endFundingBlock.FundingAmountShort
+			totalCustodyLong := endFundingBlock.FundingShareLong
+			totalCustodyShort := endFundingBlock.FundingShareShort
 			return totalCustodyLong, totalCustodyShort
 		}
 	}

@@ -49,6 +49,19 @@ func (suite *TierKeeperTestSuite) SetupTest() {
 	suite.SetupAssetProfile()
 	suite.SetupCoinPrices()
 	suite.SetAccount()
+
+	suite.app.StablestakeKeeper.SetPool(suite.ctx, stablestaketypes.Pool{
+		InterestRate:         math.LegacyMustNewDecFromStr("0.15"),
+		InterestRateMax:      math.LegacyMustNewDecFromStr("0.17"),
+		InterestRateMin:      math.LegacyMustNewDecFromStr("0.12"),
+		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
+		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     math.LegacyOneDec(),
+		TotalValue:           math.ZeroInt(),
+		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
+		Id:                   1,
+		DepositDenom:         ptypes.BaseCurrency,
+	})
 }
 
 func (suite *TierKeeperTestSuite) ResetSuite() {
@@ -230,7 +243,7 @@ func (suite *TierKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOr
 
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*suite.app.LeveragelpKeeper).AddPool(suite.ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("11.5"))
 	k := suite.app.PerpetualKeeper
 	k.SetPool(suite.ctx, pool)
 

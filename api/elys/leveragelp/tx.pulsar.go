@@ -9562,6 +9562,1914 @@ func (x *fastReflection_MsgClosePositionsResponse) ProtoMethods() *protoiface.Me
 	}
 }
 
+var (
+	md_MsgUpdatePool                      protoreflect.MessageDescriptor
+	fd_MsgUpdatePool_authority            protoreflect.FieldDescriptor
+	fd_MsgUpdatePool_pool_id              protoreflect.FieldDescriptor
+	fd_MsgUpdatePool_leverage_max         protoreflect.FieldDescriptor
+	fd_MsgUpdatePool_max_leveragelp_ratio protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_leveragelp_tx_proto_init()
+	md_MsgUpdatePool = File_elys_leveragelp_tx_proto.Messages().ByName("MsgUpdatePool")
+	fd_MsgUpdatePool_authority = md_MsgUpdatePool.Fields().ByName("authority")
+	fd_MsgUpdatePool_pool_id = md_MsgUpdatePool.Fields().ByName("pool_id")
+	fd_MsgUpdatePool_leverage_max = md_MsgUpdatePool.Fields().ByName("leverage_max")
+	fd_MsgUpdatePool_max_leveragelp_ratio = md_MsgUpdatePool.Fields().ByName("max_leveragelp_ratio")
+}
+
+var _ protoreflect.Message = (*fastReflection_MsgUpdatePool)(nil)
+
+type fastReflection_MsgUpdatePool MsgUpdatePool
+
+func (x *MsgUpdatePool) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgUpdatePool)(x)
+}
+
+func (x *MsgUpdatePool) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_leveragelp_tx_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MsgUpdatePool_messageType fastReflection_MsgUpdatePool_messageType
+var _ protoreflect.MessageType = fastReflection_MsgUpdatePool_messageType{}
+
+type fastReflection_MsgUpdatePool_messageType struct{}
+
+func (x fastReflection_MsgUpdatePool_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgUpdatePool)(nil)
+}
+func (x fastReflection_MsgUpdatePool_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgUpdatePool)
+}
+func (x fastReflection_MsgUpdatePool_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgUpdatePool
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MsgUpdatePool) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgUpdatePool
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MsgUpdatePool) Type() protoreflect.MessageType {
+	return _fastReflection_MsgUpdatePool_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MsgUpdatePool) New() protoreflect.Message {
+	return new(fastReflection_MsgUpdatePool)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MsgUpdatePool) Interface() protoreflect.ProtoMessage {
+	return (*MsgUpdatePool)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MsgUpdatePool) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Authority != "" {
+		value := protoreflect.ValueOfString(x.Authority)
+		if !f(fd_MsgUpdatePool_authority, value) {
+			return
+		}
+	}
+	if x.PoolId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PoolId)
+		if !f(fd_MsgUpdatePool_pool_id, value) {
+			return
+		}
+	}
+	if x.LeverageMax != "" {
+		value := protoreflect.ValueOfString(x.LeverageMax)
+		if !f(fd_MsgUpdatePool_leverage_max, value) {
+			return
+		}
+	}
+	if x.MaxLeveragelpRatio != "" {
+		value := protoreflect.ValueOfString(x.MaxLeveragelpRatio)
+		if !f(fd_MsgUpdatePool_max_leveragelp_ratio, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MsgUpdatePool) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.leveragelp.MsgUpdatePool.authority":
+		return x.Authority != ""
+	case "elys.leveragelp.MsgUpdatePool.pool_id":
+		return x.PoolId != uint64(0)
+	case "elys.leveragelp.MsgUpdatePool.leverage_max":
+		return x.LeverageMax != ""
+	case "elys.leveragelp.MsgUpdatePool.max_leveragelp_ratio":
+		return x.MaxLeveragelpRatio != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePool"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePool does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdatePool) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.leveragelp.MsgUpdatePool.authority":
+		x.Authority = ""
+	case "elys.leveragelp.MsgUpdatePool.pool_id":
+		x.PoolId = uint64(0)
+	case "elys.leveragelp.MsgUpdatePool.leverage_max":
+		x.LeverageMax = ""
+	case "elys.leveragelp.MsgUpdatePool.max_leveragelp_ratio":
+		x.MaxLeveragelpRatio = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePool"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePool does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MsgUpdatePool) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.leveragelp.MsgUpdatePool.authority":
+		value := x.Authority
+		return protoreflect.ValueOfString(value)
+	case "elys.leveragelp.MsgUpdatePool.pool_id":
+		value := x.PoolId
+		return protoreflect.ValueOfUint64(value)
+	case "elys.leveragelp.MsgUpdatePool.leverage_max":
+		value := x.LeverageMax
+		return protoreflect.ValueOfString(value)
+	case "elys.leveragelp.MsgUpdatePool.max_leveragelp_ratio":
+		value := x.MaxLeveragelpRatio
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePool"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePool does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdatePool) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.leveragelp.MsgUpdatePool.authority":
+		x.Authority = value.Interface().(string)
+	case "elys.leveragelp.MsgUpdatePool.pool_id":
+		x.PoolId = value.Uint()
+	case "elys.leveragelp.MsgUpdatePool.leverage_max":
+		x.LeverageMax = value.Interface().(string)
+	case "elys.leveragelp.MsgUpdatePool.max_leveragelp_ratio":
+		x.MaxLeveragelpRatio = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePool"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePool does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdatePool) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.leveragelp.MsgUpdatePool.authority":
+		panic(fmt.Errorf("field authority of message elys.leveragelp.MsgUpdatePool is not mutable"))
+	case "elys.leveragelp.MsgUpdatePool.pool_id":
+		panic(fmt.Errorf("field pool_id of message elys.leveragelp.MsgUpdatePool is not mutable"))
+	case "elys.leveragelp.MsgUpdatePool.leverage_max":
+		panic(fmt.Errorf("field leverage_max of message elys.leveragelp.MsgUpdatePool is not mutable"))
+	case "elys.leveragelp.MsgUpdatePool.max_leveragelp_ratio":
+		panic(fmt.Errorf("field max_leveragelp_ratio of message elys.leveragelp.MsgUpdatePool is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePool"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePool does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MsgUpdatePool) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.leveragelp.MsgUpdatePool.authority":
+		return protoreflect.ValueOfString("")
+	case "elys.leveragelp.MsgUpdatePool.pool_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "elys.leveragelp.MsgUpdatePool.leverage_max":
+		return protoreflect.ValueOfString("")
+	case "elys.leveragelp.MsgUpdatePool.max_leveragelp_ratio":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePool"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePool does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MsgUpdatePool) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.leveragelp.MsgUpdatePool", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MsgUpdatePool) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdatePool) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MsgUpdatePool) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MsgUpdatePool) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MsgUpdatePool)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Authority)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.PoolId != 0 {
+			n += 1 + runtime.Sov(uint64(x.PoolId))
+		}
+		l = len(x.LeverageMax)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MaxLeveragelpRatio)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MsgUpdatePool)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.MaxLeveragelpRatio) > 0 {
+			i -= len(x.MaxLeveragelpRatio)
+			copy(dAtA[i:], x.MaxLeveragelpRatio)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaxLeveragelpRatio)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.LeverageMax) > 0 {
+			i -= len(x.LeverageMax)
+			copy(dAtA[i:], x.LeverageMax)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LeverageMax)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if x.PoolId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PoolId))
+			i--
+			dAtA[i] = 0x10
+		}
+		if len(x.Authority) > 0 {
+			i -= len(x.Authority)
+			copy(dAtA[i:], x.Authority)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Authority)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MsgUpdatePool)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgUpdatePool: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgUpdatePool: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Authority = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+				}
+				x.PoolId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PoolId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LeverageMax", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.LeverageMax = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxLeveragelpRatio", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MaxLeveragelpRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_MsgUpdatePoolResponse protoreflect.MessageDescriptor
+)
+
+func init() {
+	file_elys_leveragelp_tx_proto_init()
+	md_MsgUpdatePoolResponse = File_elys_leveragelp_tx_proto.Messages().ByName("MsgUpdatePoolResponse")
+}
+
+var _ protoreflect.Message = (*fastReflection_MsgUpdatePoolResponse)(nil)
+
+type fastReflection_MsgUpdatePoolResponse MsgUpdatePoolResponse
+
+func (x *MsgUpdatePoolResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgUpdatePoolResponse)(x)
+}
+
+func (x *MsgUpdatePoolResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_leveragelp_tx_proto_msgTypes[22]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MsgUpdatePoolResponse_messageType fastReflection_MsgUpdatePoolResponse_messageType
+var _ protoreflect.MessageType = fastReflection_MsgUpdatePoolResponse_messageType{}
+
+type fastReflection_MsgUpdatePoolResponse_messageType struct{}
+
+func (x fastReflection_MsgUpdatePoolResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgUpdatePoolResponse)(nil)
+}
+func (x fastReflection_MsgUpdatePoolResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgUpdatePoolResponse)
+}
+func (x fastReflection_MsgUpdatePoolResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgUpdatePoolResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MsgUpdatePoolResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgUpdatePoolResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MsgUpdatePoolResponse) Type() protoreflect.MessageType {
+	return _fastReflection_MsgUpdatePoolResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MsgUpdatePoolResponse) New() protoreflect.Message {
+	return new(fastReflection_MsgUpdatePoolResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MsgUpdatePoolResponse) Interface() protoreflect.ProtoMessage {
+	return (*MsgUpdatePoolResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MsgUpdatePoolResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MsgUpdatePoolResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePoolResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePoolResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdatePoolResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePoolResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePoolResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MsgUpdatePoolResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePoolResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePoolResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdatePoolResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePoolResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePoolResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdatePoolResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePoolResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePoolResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MsgUpdatePoolResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdatePoolResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdatePoolResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MsgUpdatePoolResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.leveragelp.MsgUpdatePoolResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MsgUpdatePoolResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdatePoolResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MsgUpdatePoolResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MsgUpdatePoolResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MsgUpdatePoolResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MsgUpdatePoolResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MsgUpdatePoolResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgUpdatePoolResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgUpdatePoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var _ protoreflect.List = (*_MsgUpdateEnabledPools_2_list)(nil)
+
+type _MsgUpdateEnabledPools_2_list struct {
+	list *[]uint64
+}
+
+func (x *_MsgUpdateEnabledPools_2_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MsgUpdateEnabledPools_2_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfUint64((*x.list)[i])
+}
+
+func (x *_MsgUpdateEnabledPools_2_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MsgUpdateEnabledPools_2_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MsgUpdateEnabledPools_2_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message MsgUpdateEnabledPools at list field EnabledPools as it is not of Message kind"))
+}
+
+func (x *_MsgUpdateEnabledPools_2_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MsgUpdateEnabledPools_2_list) NewElement() protoreflect.Value {
+	v := uint64(0)
+	return protoreflect.ValueOfUint64(v)
+}
+
+func (x *_MsgUpdateEnabledPools_2_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_MsgUpdateEnabledPools               protoreflect.MessageDescriptor
+	fd_MsgUpdateEnabledPools_authority     protoreflect.FieldDescriptor
+	fd_MsgUpdateEnabledPools_enabled_pools protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_leveragelp_tx_proto_init()
+	md_MsgUpdateEnabledPools = File_elys_leveragelp_tx_proto.Messages().ByName("MsgUpdateEnabledPools")
+	fd_MsgUpdateEnabledPools_authority = md_MsgUpdateEnabledPools.Fields().ByName("authority")
+	fd_MsgUpdateEnabledPools_enabled_pools = md_MsgUpdateEnabledPools.Fields().ByName("enabled_pools")
+}
+
+var _ protoreflect.Message = (*fastReflection_MsgUpdateEnabledPools)(nil)
+
+type fastReflection_MsgUpdateEnabledPools MsgUpdateEnabledPools
+
+func (x *MsgUpdateEnabledPools) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgUpdateEnabledPools)(x)
+}
+
+func (x *MsgUpdateEnabledPools) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_leveragelp_tx_proto_msgTypes[23]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MsgUpdateEnabledPools_messageType fastReflection_MsgUpdateEnabledPools_messageType
+var _ protoreflect.MessageType = fastReflection_MsgUpdateEnabledPools_messageType{}
+
+type fastReflection_MsgUpdateEnabledPools_messageType struct{}
+
+func (x fastReflection_MsgUpdateEnabledPools_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgUpdateEnabledPools)(nil)
+}
+func (x fastReflection_MsgUpdateEnabledPools_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgUpdateEnabledPools)
+}
+func (x fastReflection_MsgUpdateEnabledPools_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgUpdateEnabledPools
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MsgUpdateEnabledPools) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgUpdateEnabledPools
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MsgUpdateEnabledPools) Type() protoreflect.MessageType {
+	return _fastReflection_MsgUpdateEnabledPools_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MsgUpdateEnabledPools) New() protoreflect.Message {
+	return new(fastReflection_MsgUpdateEnabledPools)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MsgUpdateEnabledPools) Interface() protoreflect.ProtoMessage {
+	return (*MsgUpdateEnabledPools)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MsgUpdateEnabledPools) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Authority != "" {
+		value := protoreflect.ValueOfString(x.Authority)
+		if !f(fd_MsgUpdateEnabledPools_authority, value) {
+			return
+		}
+	}
+	if len(x.EnabledPools) != 0 {
+		value := protoreflect.ValueOfList(&_MsgUpdateEnabledPools_2_list{list: &x.EnabledPools})
+		if !f(fd_MsgUpdateEnabledPools_enabled_pools, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MsgUpdateEnabledPools) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.leveragelp.MsgUpdateEnabledPools.authority":
+		return x.Authority != ""
+	case "elys.leveragelp.MsgUpdateEnabledPools.enabled_pools":
+		return len(x.EnabledPools) != 0
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPools"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPools does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdateEnabledPools) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.leveragelp.MsgUpdateEnabledPools.authority":
+		x.Authority = ""
+	case "elys.leveragelp.MsgUpdateEnabledPools.enabled_pools":
+		x.EnabledPools = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPools"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPools does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MsgUpdateEnabledPools) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.leveragelp.MsgUpdateEnabledPools.authority":
+		value := x.Authority
+		return protoreflect.ValueOfString(value)
+	case "elys.leveragelp.MsgUpdateEnabledPools.enabled_pools":
+		if len(x.EnabledPools) == 0 {
+			return protoreflect.ValueOfList(&_MsgUpdateEnabledPools_2_list{})
+		}
+		listValue := &_MsgUpdateEnabledPools_2_list{list: &x.EnabledPools}
+		return protoreflect.ValueOfList(listValue)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPools"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPools does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdateEnabledPools) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.leveragelp.MsgUpdateEnabledPools.authority":
+		x.Authority = value.Interface().(string)
+	case "elys.leveragelp.MsgUpdateEnabledPools.enabled_pools":
+		lv := value.List()
+		clv := lv.(*_MsgUpdateEnabledPools_2_list)
+		x.EnabledPools = *clv.list
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPools"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPools does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdateEnabledPools) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.leveragelp.MsgUpdateEnabledPools.enabled_pools":
+		if x.EnabledPools == nil {
+			x.EnabledPools = []uint64{}
+		}
+		value := &_MsgUpdateEnabledPools_2_list{list: &x.EnabledPools}
+		return protoreflect.ValueOfList(value)
+	case "elys.leveragelp.MsgUpdateEnabledPools.authority":
+		panic(fmt.Errorf("field authority of message elys.leveragelp.MsgUpdateEnabledPools is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPools"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPools does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MsgUpdateEnabledPools) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.leveragelp.MsgUpdateEnabledPools.authority":
+		return protoreflect.ValueOfString("")
+	case "elys.leveragelp.MsgUpdateEnabledPools.enabled_pools":
+		list := []uint64{}
+		return protoreflect.ValueOfList(&_MsgUpdateEnabledPools_2_list{list: &list})
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPools"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPools does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MsgUpdateEnabledPools) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.leveragelp.MsgUpdateEnabledPools", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MsgUpdateEnabledPools) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdateEnabledPools) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MsgUpdateEnabledPools) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MsgUpdateEnabledPools) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MsgUpdateEnabledPools)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Authority)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.EnabledPools) > 0 {
+			l = 0
+			for _, e := range x.EnabledPools {
+				l += runtime.Sov(uint64(e))
+			}
+			n += 1 + runtime.Sov(uint64(l)) + l
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MsgUpdateEnabledPools)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.EnabledPools) > 0 {
+			var pksize2 int
+			for _, num := range x.EnabledPools {
+				pksize2 += runtime.Sov(uint64(num))
+			}
+			i -= pksize2
+			j1 := i
+			for _, num := range x.EnabledPools {
+				for num >= 1<<7 {
+					dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
+					num >>= 7
+					j1++
+				}
+				dAtA[j1] = uint8(num)
+				j1++
+			}
+			i = runtime.EncodeVarint(dAtA, i, uint64(pksize2))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Authority) > 0 {
+			i -= len(x.Authority)
+			copy(dAtA[i:], x.Authority)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Authority)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MsgUpdateEnabledPools)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgUpdateEnabledPools: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgUpdateEnabledPools: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Authority = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType == 0 {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					x.EnabledPools = append(x.EnabledPools, v)
+				} else if wireType == 2 {
+					var packedLen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						packedLen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if packedLen < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					postIndex := iNdEx + packedLen
+					if postIndex < 0 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+					}
+					if postIndex > l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					var elementCount int
+					var count int
+					for _, integer := range dAtA[iNdEx:postIndex] {
+						if integer < 128 {
+							count++
+						}
+					}
+					elementCount = count
+					if elementCount != 0 && len(x.EnabledPools) == 0 {
+						x.EnabledPools = make([]uint64, 0, elementCount)
+					}
+					for iNdEx < postIndex {
+						var v uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							v |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						x.EnabledPools = append(x.EnabledPools, v)
+					}
+				} else {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EnabledPools", wireType)
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_MsgUpdateEnabledPoolsResponse protoreflect.MessageDescriptor
+)
+
+func init() {
+	file_elys_leveragelp_tx_proto_init()
+	md_MsgUpdateEnabledPoolsResponse = File_elys_leveragelp_tx_proto.Messages().ByName("MsgUpdateEnabledPoolsResponse")
+}
+
+var _ protoreflect.Message = (*fastReflection_MsgUpdateEnabledPoolsResponse)(nil)
+
+type fastReflection_MsgUpdateEnabledPoolsResponse MsgUpdateEnabledPoolsResponse
+
+func (x *MsgUpdateEnabledPoolsResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgUpdateEnabledPoolsResponse)(x)
+}
+
+func (x *MsgUpdateEnabledPoolsResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_leveragelp_tx_proto_msgTypes[24]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_MsgUpdateEnabledPoolsResponse_messageType fastReflection_MsgUpdateEnabledPoolsResponse_messageType
+var _ protoreflect.MessageType = fastReflection_MsgUpdateEnabledPoolsResponse_messageType{}
+
+type fastReflection_MsgUpdateEnabledPoolsResponse_messageType struct{}
+
+func (x fastReflection_MsgUpdateEnabledPoolsResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgUpdateEnabledPoolsResponse)(nil)
+}
+func (x fastReflection_MsgUpdateEnabledPoolsResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgUpdateEnabledPoolsResponse)
+}
+func (x fastReflection_MsgUpdateEnabledPoolsResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgUpdateEnabledPoolsResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgUpdateEnabledPoolsResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) Type() protoreflect.MessageType {
+	return _fastReflection_MsgUpdateEnabledPoolsResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) New() protoreflect.Message {
+	return new(fastReflection_MsgUpdateEnabledPoolsResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) Interface() protoreflect.ProtoMessage {
+	return (*MsgUpdateEnabledPoolsResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPoolsResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPoolsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPoolsResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPoolsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPoolsResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPoolsResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPoolsResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPoolsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPoolsResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPoolsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.leveragelp.MsgUpdateEnabledPoolsResponse"))
+		}
+		panic(fmt.Errorf("message elys.leveragelp.MsgUpdateEnabledPoolsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.leveragelp.MsgUpdateEnabledPoolsResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_MsgUpdateEnabledPoolsResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*MsgUpdateEnabledPoolsResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*MsgUpdateEnabledPoolsResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*MsgUpdateEnabledPoolsResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgUpdateEnabledPoolsResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgUpdateEnabledPoolsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -10367,6 +12275,164 @@ func (*MsgClosePositionsResponse) Descriptor() ([]byte, []int) {
 	return file_elys_leveragelp_tx_proto_rawDescGZIP(), []int{20}
 }
 
+type MsgUpdatePool struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// authority is the address that controls the module (defaults to x/gov unless
+	// overwritten).
+	Authority          string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	PoolId             uint64 `protobuf:"varint,2,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	LeverageMax        string `protobuf:"bytes,3,opt,name=leverage_max,json=leverageMax,proto3" json:"leverage_max,omitempty"`
+	MaxLeveragelpRatio string `protobuf:"bytes,4,opt,name=max_leveragelp_ratio,json=maxLeveragelpRatio,proto3" json:"max_leveragelp_ratio,omitempty"`
+}
+
+func (x *MsgUpdatePool) Reset() {
+	*x = MsgUpdatePool{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_leveragelp_tx_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MsgUpdatePool) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MsgUpdatePool) ProtoMessage() {}
+
+// Deprecated: Use MsgUpdatePool.ProtoReflect.Descriptor instead.
+func (*MsgUpdatePool) Descriptor() ([]byte, []int) {
+	return file_elys_leveragelp_tx_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *MsgUpdatePool) GetAuthority() string {
+	if x != nil {
+		return x.Authority
+	}
+	return ""
+}
+
+func (x *MsgUpdatePool) GetPoolId() uint64 {
+	if x != nil {
+		return x.PoolId
+	}
+	return 0
+}
+
+func (x *MsgUpdatePool) GetLeverageMax() string {
+	if x != nil {
+		return x.LeverageMax
+	}
+	return ""
+}
+
+func (x *MsgUpdatePool) GetMaxLeveragelpRatio() string {
+	if x != nil {
+		return x.MaxLeveragelpRatio
+	}
+	return ""
+}
+
+type MsgUpdatePoolResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *MsgUpdatePoolResponse) Reset() {
+	*x = MsgUpdatePoolResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_leveragelp_tx_proto_msgTypes[22]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MsgUpdatePoolResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MsgUpdatePoolResponse) ProtoMessage() {}
+
+// Deprecated: Use MsgUpdatePoolResponse.ProtoReflect.Descriptor instead.
+func (*MsgUpdatePoolResponse) Descriptor() ([]byte, []int) {
+	return file_elys_leveragelp_tx_proto_rawDescGZIP(), []int{22}
+}
+
+type MsgUpdateEnabledPools struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// authority is the address that controls the module (defaults to x/gov unless
+	// overwritten).
+	Authority    string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	EnabledPools []uint64 `protobuf:"varint,2,rep,packed,name=enabled_pools,json=enabledPools,proto3" json:"enabled_pools,omitempty"`
+}
+
+func (x *MsgUpdateEnabledPools) Reset() {
+	*x = MsgUpdateEnabledPools{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_leveragelp_tx_proto_msgTypes[23]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MsgUpdateEnabledPools) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MsgUpdateEnabledPools) ProtoMessage() {}
+
+// Deprecated: Use MsgUpdateEnabledPools.ProtoReflect.Descriptor instead.
+func (*MsgUpdateEnabledPools) Descriptor() ([]byte, []int) {
+	return file_elys_leveragelp_tx_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *MsgUpdateEnabledPools) GetAuthority() string {
+	if x != nil {
+		return x.Authority
+	}
+	return ""
+}
+
+func (x *MsgUpdateEnabledPools) GetEnabledPools() []uint64 {
+	if x != nil {
+		return x.EnabledPools
+	}
+	return nil
+}
+
+type MsgUpdateEnabledPoolsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *MsgUpdateEnabledPoolsResponse) Reset() {
+	*x = MsgUpdateEnabledPoolsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_leveragelp_tx_proto_msgTypes[24]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MsgUpdateEnabledPoolsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MsgUpdateEnabledPoolsResponse) ProtoMessage() {}
+
+// Deprecated: Use MsgUpdateEnabledPoolsResponse.ProtoReflect.Descriptor instead.
+func (*MsgUpdateEnabledPoolsResponse) Descriptor() ([]byte, []int) {
+	return file_elys_leveragelp_tx_proto_rawDescGZIP(), []int{24}
+}
+
 var File_elys_leveragelp_tx_proto protoreflect.FileDescriptor
 
 var file_elys_leveragelp_tx_proto_rawDesc = []byte{
@@ -10536,73 +12602,120 @@ var file_elys_leveragelp_tx_proto_rawDesc = []byte{
 	0xb0, 0x2a, 0x1c, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2f, 0x4d, 0x73,
 	0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22,
 	0x1b, 0x0a, 0x19, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74,
-	0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xe2, 0x06, 0x0a,
-	0x03, 0x4d, 0x73, 0x67, 0x12, 0x42, 0x0a, 0x04, 0x4f, 0x70, 0x65, 0x6e, 0x12, 0x18, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d,
-	0x73, 0x67, 0x4f, 0x70, 0x65, 0x6e, 0x1a, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65,
-	0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x4f, 0x70, 0x65, 0x6e,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x45, 0x0a, 0x05, 0x43, 0x6c, 0x6f, 0x73,
-	0x65, 0x12, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67,
-	0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x1a, 0x21, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d,
-	0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x5a, 0x0a, 0x0c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12,
-	0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c,
-	0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64,
-	0x73, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67,
-	0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61,
-	0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5a, 0x0a, 0x0c, 0x55,
-	0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x20, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73,
-	0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x28, 0x2e,
+	0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xc8, 0x02, 0x0a,
+	0x0d, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x36,
+	0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74,
+	0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69,
+	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12,
+	0x54, 0x0a, 0x0c, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6d, 0x61, 0x78, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
+	0x67, 0x65, 0x4d, 0x61, 0x78, 0x12, 0x63, 0x0a, 0x14, 0x6d, 0x61, 0x78, 0x5f, 0x6c, 0x65, 0x76,
+	0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x5f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
+	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x6d, 0x61, 0x78, 0x4c, 0x65, 0x76, 0x65, 0x72,
+	0x61, 0x67, 0x65, 0x6c, 0x70, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x3a, 0x2b, 0x82, 0xe7, 0xb0, 0x2a,
+	0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x8a, 0xe7, 0xb0, 0x2a, 0x18, 0x6c,
+	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x22, 0x17, 0x0a, 0x15, 0x4d, 0x73, 0x67, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0xa9, 0x01, 0x0a, 0x15, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e,
+	0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2,
+	0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69,
+	0x74, 0x79, 0x12, 0x23, 0x0a, 0x0d, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x5f, 0x70, 0x6f,
+	0x6f, 0x6c, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x04, 0x52, 0x0c, 0x65, 0x6e, 0x61, 0x62, 0x6c,
+	0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x3a, 0x33, 0x82, 0xe7, 0xb0, 0x2a, 0x09, 0x61, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x8a, 0xe7, 0xb0, 0x2a, 0x20, 0x6c, 0x65, 0x76, 0x65,
+	0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2f, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x22, 0x1f, 0x0a, 0x1d,
+	0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64,
+	0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xa6, 0x08,
+	0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x42, 0x0a, 0x04, 0x4f, 0x70, 0x65, 0x6e, 0x12, 0x18, 0x2e,
 	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e,
-	0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4b, 0x0a, 0x07, 0x41, 0x64, 0x64, 0x50, 0x6f,
-	0x6f, 0x6c, 0x12, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
-	0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x1a,
-	0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c,
-	0x70, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x54, 0x0a, 0x0a, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x6f,
-	0x6f, 0x6c, 0x12, 0x1e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
-	0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x6f,
-	0x6f, 0x6c, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
-	0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50, 0x6f,
-	0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x51, 0x0a, 0x09, 0x57, 0x68,
-	0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x1d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c,
-	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x57, 0x68, 0x69,
-	0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65,
-	0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x57, 0x68, 0x69, 0x74,
-	0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x57, 0x0a,
-	0x0b, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x1f, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d,
-	0x73, 0x67, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x1a, 0x27, 0x2e,
+	0x4d, 0x73, 0x67, 0x4f, 0x70, 0x65, 0x6e, 0x1a, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c,
+	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x4f, 0x70, 0x65,
+	0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x45, 0x0a, 0x05, 0x43, 0x6c, 0x6f,
+	0x73, 0x65, 0x12, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
+	0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x1a, 0x21, 0x2e,
 	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e,
-	0x4d, 0x73, 0x67, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x60, 0x0a, 0x0e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x53, 0x74, 0x6f, 0x70, 0x4c, 0x6f, 0x73, 0x73, 0x12, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70,
-	0x64, 0x61, 0x74, 0x65, 0x53, 0x74, 0x6f, 0x70, 0x4c, 0x6f, 0x73, 0x73, 0x1a, 0x2a, 0x2e, 0x65,
+	0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x5a, 0x0a, 0x0c, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73,
+	0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
+	0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x73, 0x1a, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61,
+	0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x61, 0x69, 0x6d, 0x52, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5a, 0x0a, 0x0c,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x20, 0x2e, 0x65,
 	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d,
-	0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x74, 0x6f, 0x70, 0x4c, 0x6f, 0x73, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x60, 0x0a, 0x0e, 0x43, 0x6c, 0x6f, 0x73,
-	0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x22, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67,
-	0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x1a, 0x2a,
+	0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x28,
 	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
-	0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
-	0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a,
-	0x01, 0x42, 0xad, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c,
-	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f,
-	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x30, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6c, 0x65, 0x76, 0x65,
-	0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0xa2, 0x02, 0x03, 0x45, 0x4c, 0x58, 0xaa, 0x02, 0x0f, 0x45,
-	0x6c, 0x79, 0x73, 0x2e, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0xca, 0x02,
-	0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
-	0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
-	0x6c, 0x70, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
-	0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c,
-	0x70, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4b, 0x0a, 0x07, 0x41, 0x64, 0x64, 0x50,
+	0x6f, 0x6f, 0x6c, 0x12, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72,
+	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x6f, 0x6f, 0x6c,
+	0x1a, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
+	0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x54, 0x0a, 0x0a, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50,
+	0x6f, 0x6f, 0x6c, 0x12, 0x1e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72,
+	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50,
+	0x6f, 0x6f, 0x6c, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72,
+	0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x50,
+	0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x51, 0x0a, 0x09, 0x57,
+	0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x1d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x57, 0x68,
+	0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c,
+	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x57, 0x68, 0x69,
+	0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x57,
+	0x0a, 0x0b, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x1f, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e,
+	0x4d, 0x73, 0x67, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x1a, 0x27,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70,
+	0x2e, 0x4d, 0x73, 0x67, 0x44, 0x65, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x60, 0x0a, 0x0e, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x53, 0x74, 0x6f, 0x70, 0x4c, 0x6f, 0x73, 0x73, 0x12, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x74, 0x6f, 0x70, 0x4c, 0x6f, 0x73, 0x73, 0x1a, 0x2a, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e,
+	0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x74, 0x6f, 0x70, 0x4c, 0x6f, 0x73,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x60, 0x0a, 0x0e, 0x43, 0x6c, 0x6f,
+	0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x22, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73,
+	0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x1a,
+	0x2a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c,
+	0x70, 0x2e, 0x4d, 0x73, 0x67, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x54, 0x0a, 0x0a, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x1e, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x6c, 0x0a, 0x12, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62, 0x6c,
+	0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c,
+	0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x1a,
+	0x2e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c,
+	0x70, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x61, 0x62, 0x6c,
+	0x65, 0x64, 0x50, 0x6f, 0x6f, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a,
+	0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0xad, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x42, 0x07,
+	0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x30, 0x67, 0x69, 0x74, 0x68, 0x75,
+	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f,
+	0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73,
+	0x2f, 0x6c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0xa2, 0x02, 0x03, 0x45, 0x4c,
+	0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x4c, 0x65, 0x76, 0x65, 0x72, 0x61, 0x67,
+	0x65, 0x6c, 0x70, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4c, 0x65, 0x76, 0x65, 0x72,
+	0x61, 0x67, 0x65, 0x6c, 0x70, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4c, 0x65, 0x76,
+	0x65, 0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64,
+	0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x4c, 0x65, 0x76, 0x65,
+	0x72, 0x61, 0x67, 0x65, 0x6c, 0x70, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -10617,37 +12730,41 @@ func file_elys_leveragelp_tx_proto_rawDescGZIP() []byte {
 	return file_elys_leveragelp_tx_proto_rawDescData
 }
 
-var file_elys_leveragelp_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
+var file_elys_leveragelp_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_elys_leveragelp_tx_proto_goTypes = []interface{}{
-	(*MsgOpen)(nil),                   // 0: elys.leveragelp.MsgOpen
-	(*MsgOpenResponse)(nil),           // 1: elys.leveragelp.MsgOpenResponse
-	(*MsgClose)(nil),                  // 2: elys.leveragelp.MsgClose
-	(*MsgCloseResponse)(nil),          // 3: elys.leveragelp.MsgCloseResponse
-	(*MsgClaimRewards)(nil),           // 4: elys.leveragelp.MsgClaimRewards
-	(*MsgClaimRewardsResponse)(nil),   // 5: elys.leveragelp.MsgClaimRewardsResponse
-	(*MsgUpdateParams)(nil),           // 6: elys.leveragelp.MsgUpdateParams
-	(*MsgUpdateParamsResponse)(nil),   // 7: elys.leveragelp.MsgUpdateParamsResponse
-	(*MsgWhitelist)(nil),              // 8: elys.leveragelp.MsgWhitelist
-	(*MsgWhitelistResponse)(nil),      // 9: elys.leveragelp.MsgWhitelistResponse
-	(*MsgDewhitelist)(nil),            // 10: elys.leveragelp.MsgDewhitelist
-	(*MsgDewhitelistResponse)(nil),    // 11: elys.leveragelp.MsgDewhitelistResponse
-	(*MsgUpdateStopLoss)(nil),         // 12: elys.leveragelp.MsgUpdateStopLoss
-	(*MsgUpdateStopLossResponse)(nil), // 13: elys.leveragelp.MsgUpdateStopLossResponse
-	(*AddPool)(nil),                   // 14: elys.leveragelp.AddPool
-	(*MsgAddPool)(nil),                // 15: elys.leveragelp.MsgAddPool
-	(*MsgAddPoolResponse)(nil),        // 16: elys.leveragelp.MsgAddPoolResponse
-	(*MsgRemovePool)(nil),             // 17: elys.leveragelp.MsgRemovePool
-	(*MsgRemovePoolResponse)(nil),     // 18: elys.leveragelp.MsgRemovePoolResponse
-	(*MsgClosePositions)(nil),         // 19: elys.leveragelp.MsgClosePositions
-	(*MsgClosePositionsResponse)(nil), // 20: elys.leveragelp.MsgClosePositionsResponse
-	(*Params)(nil),                    // 21: elys.leveragelp.Params
-	(*PositionRequest)(nil),           // 22: elys.leveragelp.PositionRequest
+	(*MsgOpen)(nil),                       // 0: elys.leveragelp.MsgOpen
+	(*MsgOpenResponse)(nil),               // 1: elys.leveragelp.MsgOpenResponse
+	(*MsgClose)(nil),                      // 2: elys.leveragelp.MsgClose
+	(*MsgCloseResponse)(nil),              // 3: elys.leveragelp.MsgCloseResponse
+	(*MsgClaimRewards)(nil),               // 4: elys.leveragelp.MsgClaimRewards
+	(*MsgClaimRewardsResponse)(nil),       // 5: elys.leveragelp.MsgClaimRewardsResponse
+	(*MsgUpdateParams)(nil),               // 6: elys.leveragelp.MsgUpdateParams
+	(*MsgUpdateParamsResponse)(nil),       // 7: elys.leveragelp.MsgUpdateParamsResponse
+	(*MsgWhitelist)(nil),                  // 8: elys.leveragelp.MsgWhitelist
+	(*MsgWhitelistResponse)(nil),          // 9: elys.leveragelp.MsgWhitelistResponse
+	(*MsgDewhitelist)(nil),                // 10: elys.leveragelp.MsgDewhitelist
+	(*MsgDewhitelistResponse)(nil),        // 11: elys.leveragelp.MsgDewhitelistResponse
+	(*MsgUpdateStopLoss)(nil),             // 12: elys.leveragelp.MsgUpdateStopLoss
+	(*MsgUpdateStopLossResponse)(nil),     // 13: elys.leveragelp.MsgUpdateStopLossResponse
+	(*AddPool)(nil),                       // 14: elys.leveragelp.AddPool
+	(*MsgAddPool)(nil),                    // 15: elys.leveragelp.MsgAddPool
+	(*MsgAddPoolResponse)(nil),            // 16: elys.leveragelp.MsgAddPoolResponse
+	(*MsgRemovePool)(nil),                 // 17: elys.leveragelp.MsgRemovePool
+	(*MsgRemovePoolResponse)(nil),         // 18: elys.leveragelp.MsgRemovePoolResponse
+	(*MsgClosePositions)(nil),             // 19: elys.leveragelp.MsgClosePositions
+	(*MsgClosePositionsResponse)(nil),     // 20: elys.leveragelp.MsgClosePositionsResponse
+	(*MsgUpdatePool)(nil),                 // 21: elys.leveragelp.MsgUpdatePool
+	(*MsgUpdatePoolResponse)(nil),         // 22: elys.leveragelp.MsgUpdatePoolResponse
+	(*MsgUpdateEnabledPools)(nil),         // 23: elys.leveragelp.MsgUpdateEnabledPools
+	(*MsgUpdateEnabledPoolsResponse)(nil), // 24: elys.leveragelp.MsgUpdateEnabledPoolsResponse
+	(*Params)(nil),                        // 25: elys.leveragelp.Params
+	(*PositionRequest)(nil),               // 26: elys.leveragelp.PositionRequest
 }
 var file_elys_leveragelp_tx_proto_depIdxs = []int32{
-	21, // 0: elys.leveragelp.MsgUpdateParams.params:type_name -> elys.leveragelp.Params
+	25, // 0: elys.leveragelp.MsgUpdateParams.params:type_name -> elys.leveragelp.Params
 	14, // 1: elys.leveragelp.MsgAddPool.pool:type_name -> elys.leveragelp.AddPool
-	22, // 2: elys.leveragelp.MsgClosePositions.liquidate:type_name -> elys.leveragelp.PositionRequest
-	22, // 3: elys.leveragelp.MsgClosePositions.stop_loss:type_name -> elys.leveragelp.PositionRequest
+	26, // 2: elys.leveragelp.MsgClosePositions.liquidate:type_name -> elys.leveragelp.PositionRequest
+	26, // 3: elys.leveragelp.MsgClosePositions.stop_loss:type_name -> elys.leveragelp.PositionRequest
 	0,  // 4: elys.leveragelp.Msg.Open:input_type -> elys.leveragelp.MsgOpen
 	2,  // 5: elys.leveragelp.Msg.Close:input_type -> elys.leveragelp.MsgClose
 	4,  // 6: elys.leveragelp.Msg.ClaimRewards:input_type -> elys.leveragelp.MsgClaimRewards
@@ -10658,18 +12775,22 @@ var file_elys_leveragelp_tx_proto_depIdxs = []int32{
 	10, // 11: elys.leveragelp.Msg.Dewhitelist:input_type -> elys.leveragelp.MsgDewhitelist
 	12, // 12: elys.leveragelp.Msg.UpdateStopLoss:input_type -> elys.leveragelp.MsgUpdateStopLoss
 	19, // 13: elys.leveragelp.Msg.ClosePositions:input_type -> elys.leveragelp.MsgClosePositions
-	1,  // 14: elys.leveragelp.Msg.Open:output_type -> elys.leveragelp.MsgOpenResponse
-	3,  // 15: elys.leveragelp.Msg.Close:output_type -> elys.leveragelp.MsgCloseResponse
-	5,  // 16: elys.leveragelp.Msg.ClaimRewards:output_type -> elys.leveragelp.MsgClaimRewardsResponse
-	7,  // 17: elys.leveragelp.Msg.UpdateParams:output_type -> elys.leveragelp.MsgUpdateParamsResponse
-	16, // 18: elys.leveragelp.Msg.AddPool:output_type -> elys.leveragelp.MsgAddPoolResponse
-	18, // 19: elys.leveragelp.Msg.RemovePool:output_type -> elys.leveragelp.MsgRemovePoolResponse
-	9,  // 20: elys.leveragelp.Msg.Whitelist:output_type -> elys.leveragelp.MsgWhitelistResponse
-	11, // 21: elys.leveragelp.Msg.Dewhitelist:output_type -> elys.leveragelp.MsgDewhitelistResponse
-	13, // 22: elys.leveragelp.Msg.UpdateStopLoss:output_type -> elys.leveragelp.MsgUpdateStopLossResponse
-	20, // 23: elys.leveragelp.Msg.ClosePositions:output_type -> elys.leveragelp.MsgClosePositionsResponse
-	14, // [14:24] is the sub-list for method output_type
-	4,  // [4:14] is the sub-list for method input_type
+	21, // 14: elys.leveragelp.Msg.UpdatePool:input_type -> elys.leveragelp.MsgUpdatePool
+	23, // 15: elys.leveragelp.Msg.UpdateEnabledPools:input_type -> elys.leveragelp.MsgUpdateEnabledPools
+	1,  // 16: elys.leveragelp.Msg.Open:output_type -> elys.leveragelp.MsgOpenResponse
+	3,  // 17: elys.leveragelp.Msg.Close:output_type -> elys.leveragelp.MsgCloseResponse
+	5,  // 18: elys.leveragelp.Msg.ClaimRewards:output_type -> elys.leveragelp.MsgClaimRewardsResponse
+	7,  // 19: elys.leveragelp.Msg.UpdateParams:output_type -> elys.leveragelp.MsgUpdateParamsResponse
+	16, // 20: elys.leveragelp.Msg.AddPool:output_type -> elys.leveragelp.MsgAddPoolResponse
+	18, // 21: elys.leveragelp.Msg.RemovePool:output_type -> elys.leveragelp.MsgRemovePoolResponse
+	9,  // 22: elys.leveragelp.Msg.Whitelist:output_type -> elys.leveragelp.MsgWhitelistResponse
+	11, // 23: elys.leveragelp.Msg.Dewhitelist:output_type -> elys.leveragelp.MsgDewhitelistResponse
+	13, // 24: elys.leveragelp.Msg.UpdateStopLoss:output_type -> elys.leveragelp.MsgUpdateStopLossResponse
+	20, // 25: elys.leveragelp.Msg.ClosePositions:output_type -> elys.leveragelp.MsgClosePositionsResponse
+	22, // 26: elys.leveragelp.Msg.UpdatePool:output_type -> elys.leveragelp.MsgUpdatePoolResponse
+	24, // 27: elys.leveragelp.Msg.UpdateEnabledPools:output_type -> elys.leveragelp.MsgUpdateEnabledPoolsResponse
+	16, // [16:28] is the sub-list for method output_type
+	4,  // [4:16] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
@@ -10937,6 +13058,54 @@ func file_elys_leveragelp_tx_proto_init() {
 				return nil
 			}
 		}
+		file_elys_leveragelp_tx_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgUpdatePool); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_leveragelp_tx_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgUpdatePoolResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_leveragelp_tx_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgUpdateEnabledPools); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_leveragelp_tx_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgUpdateEnabledPoolsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -10944,7 +13113,7 @@ func file_elys_leveragelp_tx_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_leveragelp_tx_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   21,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

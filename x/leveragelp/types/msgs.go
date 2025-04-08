@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
@@ -34,8 +35,11 @@ func (msg *MsgClose) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	if msg.LpAmount.IsNegative() {
-		return fmt.Errorf("invalid lp amount: cannot be negative")
+	if msg.LpAmount.IsNil() {
+		return errors.New("invalid lp amount: cannot be nil")
+	}
+	if msg.LpAmount.IsNegative() || msg.LpAmount.IsZero() {
+		return errors.New("invalid lp amount: cannot be zero or negative")
 	}
 	return nil
 }
@@ -88,6 +92,13 @@ func NewMsgUpdateParams(signer string, params *Params) *MsgUpdateParams {
 	return &MsgUpdateParams{
 		Authority: signer,
 		Params:    params,
+	}
+}
+
+func NewMsgUpdateEnabledPools(signer string, enabledPools []uint64) *MsgUpdateEnabledPools {
+	return &MsgUpdateEnabledPools{
+		Authority:    signer,
+		EnabledPools: enabledPools,
 	}
 }
 
@@ -183,6 +194,43 @@ func (msg *MsgClaimRewards) ValidateBasic() error {
 
 	poolIdsMap := make(map[uint64]bool)
 	for _, id := range msg.Ids {
+		if poolIdsMap[id] {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "duplicate pool id %d", id)
+		} else {
+			poolIdsMap[id] = true
+		}
+	}
+	return nil
+}
+
+func (msg *MsgUpdatePool) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
+	}
+
+	if msg.PoolId == 0 {
+		return errors.New("invalid pool id")
+	}
+
+	if msg.LeverageMax.IsNil() || msg.LeverageMax.LTE(math.LegacyOneDec()) {
+		return errors.New("invalid leverage max")
+	}
+
+	if msg.MaxLeveragelpRatio.IsNil() || msg.MaxLeveragelpRatio.IsNegative() {
+		return errors.New("invalid max leverage ratio")
+	}
+	return nil
+}
+
+func (msg *MsgUpdateEnabledPools) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Authority)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid authority address (%s)", err)
+	}
+
+	poolIdsMap := make(map[uint64]bool)
+	for _, id := range msg.EnabledPools {
 		if poolIdsMap[id] {
 			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "duplicate pool id %d", id)
 		} else {

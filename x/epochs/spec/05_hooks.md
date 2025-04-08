@@ -27,7 +27,7 @@ func (k Keeper) AfterEpochEnd(ctx sdk.Context, identifier string, epochNumber in
 func (k Keeper) BeforeEpochStart(ctx sdk.Context, identifier string, epochNumber int64) {...}
 ```
 
-## Recieving Hooks
+## Receiving Hooks
 
 When other modules (outside of `x/epochs`) receive hooks, they need to filter the value `epochIdentifier`, and only do executions for a specific `epochIdentifier`.
 

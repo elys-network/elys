@@ -1,9 +1,10 @@
 package cli
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"errors"
 	"strconv"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -18,9 +19,9 @@ func CmdOpen() *cobra.Command {
 		Use:   "open [position] [leverage] [pool-id] [trading-asset] [collateral] [flags]",
 		Short: "Open perpetual position",
 		Example: `Infinte profitability:
-elysd tx perpetual open long 5 1 uatom 100000000uusdc --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000
+elysd tx perpetual open long 5 1 uatom 100000000uusdc --from=bob --yes --gas=1000000
 Finite profitability:
-elysd tx perpetual open short 5 1 uatom 100000000uusdc --take-profit 100 --stop-loss 10 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+elysd tx perpetual open short 5 1 uatom 100000000uusdc --take-profit 100 --stop-loss 10 --from=bob --yes --gas=1000000`,
 		Args: cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)

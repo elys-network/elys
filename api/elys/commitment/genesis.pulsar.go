@@ -64,10 +64,270 @@ func (x *_GenesisState_2_list) IsValid() bool {
 	return x.list != nil
 }
 
+var _ protoreflect.List = (*_GenesisState_3_list)(nil)
+
+type _GenesisState_3_list struct {
+	list *[]*AtomStaker
+}
+
+func (x *_GenesisState_3_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_3_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_3_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*AtomStaker)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_3_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*AtomStaker)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_3_list) AppendMutable() protoreflect.Value {
+	v := new(AtomStaker)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_3_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_3_list) NewElement() protoreflect.Value {
+	v := new(AtomStaker)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_3_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_4_list)(nil)
+
+type _GenesisState_4_list struct {
+	list *[]*NftHolder
+}
+
+func (x *_GenesisState_4_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_4_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_4_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*NftHolder)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_4_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*NftHolder)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_4_list) AppendMutable() protoreflect.Value {
+	v := new(NftHolder)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_4_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_4_list) NewElement() protoreflect.Value {
+	v := new(NftHolder)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_4_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_5_list)(nil)
+
+type _GenesisState_5_list struct {
+	list *[]*Cadet
+}
+
+func (x *_GenesisState_5_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_5_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Cadet)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_5_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Cadet)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_5_list) AppendMutable() protoreflect.Value {
+	v := new(Cadet)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_5_list) NewElement() protoreflect.Value {
+	v := new(Cadet)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_6_list)(nil)
+
+type _GenesisState_6_list struct {
+	list *[]*Governor
+}
+
+func (x *_GenesisState_6_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_6_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Governor)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_6_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Governor)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_6_list) AppendMutable() protoreflect.Value {
+	v := new(Governor)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_6_list) NewElement() protoreflect.Value {
+	v := new(Governor)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_7_list)(nil)
+
+type _GenesisState_7_list struct {
+	list *[]*KolList
+}
+
+func (x *_GenesisState_7_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_7_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_7_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*KolList)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_7_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*KolList)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_7_list) AppendMutable() protoreflect.Value {
+	v := new(KolList)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_7_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_7_list) NewElement() protoreflect.Value {
+	v := new(KolList)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_7_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_GenesisState             protoreflect.MessageDescriptor
-	fd_GenesisState_params      protoreflect.FieldDescriptor
-	fd_GenesisState_commitments protoreflect.FieldDescriptor
+	md_GenesisState              protoreflect.MessageDescriptor
+	fd_GenesisState_params       protoreflect.FieldDescriptor
+	fd_GenesisState_commitments  protoreflect.FieldDescriptor
+	fd_GenesisState_atom_stakers protoreflect.FieldDescriptor
+	fd_GenesisState_nft_holders  protoreflect.FieldDescriptor
+	fd_GenesisState_cadets       protoreflect.FieldDescriptor
+	fd_GenesisState_governors    protoreflect.FieldDescriptor
+	fd_GenesisState_kol_list     protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -75,6 +335,11 @@ func init() {
 	md_GenesisState = File_elys_commitment_genesis_proto.Messages().ByName("GenesisState")
 	fd_GenesisState_params = md_GenesisState.Fields().ByName("params")
 	fd_GenesisState_commitments = md_GenesisState.Fields().ByName("commitments")
+	fd_GenesisState_atom_stakers = md_GenesisState.Fields().ByName("atom_stakers")
+	fd_GenesisState_nft_holders = md_GenesisState.Fields().ByName("nft_holders")
+	fd_GenesisState_cadets = md_GenesisState.Fields().ByName("cadets")
+	fd_GenesisState_governors = md_GenesisState.Fields().ByName("governors")
+	fd_GenesisState_kol_list = md_GenesisState.Fields().ByName("kol_list")
 }
 
 var _ protoreflect.Message = (*fastReflection_GenesisState)(nil)
@@ -154,6 +419,36 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
+	if len(x.AtomStakers) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_3_list{list: &x.AtomStakers})
+		if !f(fd_GenesisState_atom_stakers, value) {
+			return
+		}
+	}
+	if len(x.NftHolders) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_4_list{list: &x.NftHolders})
+		if !f(fd_GenesisState_nft_holders, value) {
+			return
+		}
+	}
+	if len(x.Cadets) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_5_list{list: &x.Cadets})
+		if !f(fd_GenesisState_cadets, value) {
+			return
+		}
+	}
+	if len(x.Governors) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_6_list{list: &x.Governors})
+		if !f(fd_GenesisState_governors, value) {
+			return
+		}
+	}
+	if len(x.KolList) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_7_list{list: &x.KolList})
+		if !f(fd_GenesisState_kol_list, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -173,6 +468,16 @@ func (x *fastReflection_GenesisState) Has(fd protoreflect.FieldDescriptor) bool 
 		return x.Params != nil
 	case "elys.commitment.GenesisState.commitments":
 		return len(x.Commitments) != 0
+	case "elys.commitment.GenesisState.atom_stakers":
+		return len(x.AtomStakers) != 0
+	case "elys.commitment.GenesisState.nft_holders":
+		return len(x.NftHolders) != 0
+	case "elys.commitment.GenesisState.cadets":
+		return len(x.Cadets) != 0
+	case "elys.commitment.GenesisState.governors":
+		return len(x.Governors) != 0
+	case "elys.commitment.GenesisState.kol_list":
+		return len(x.KolList) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.GenesisState"))
@@ -193,6 +498,16 @@ func (x *fastReflection_GenesisState) Clear(fd protoreflect.FieldDescriptor) {
 		x.Params = nil
 	case "elys.commitment.GenesisState.commitments":
 		x.Commitments = nil
+	case "elys.commitment.GenesisState.atom_stakers":
+		x.AtomStakers = nil
+	case "elys.commitment.GenesisState.nft_holders":
+		x.NftHolders = nil
+	case "elys.commitment.GenesisState.cadets":
+		x.Cadets = nil
+	case "elys.commitment.GenesisState.governors":
+		x.Governors = nil
+	case "elys.commitment.GenesisState.kol_list":
+		x.KolList = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.GenesisState"))
@@ -217,6 +532,36 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 			return protoreflect.ValueOfList(&_GenesisState_2_list{})
 		}
 		listValue := &_GenesisState_2_list{list: &x.Commitments}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.commitment.GenesisState.atom_stakers":
+		if len(x.AtomStakers) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_3_list{})
+		}
+		listValue := &_GenesisState_3_list{list: &x.AtomStakers}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.commitment.GenesisState.nft_holders":
+		if len(x.NftHolders) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_4_list{})
+		}
+		listValue := &_GenesisState_4_list{list: &x.NftHolders}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.commitment.GenesisState.cadets":
+		if len(x.Cadets) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_5_list{})
+		}
+		listValue := &_GenesisState_5_list{list: &x.Cadets}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.commitment.GenesisState.governors":
+		if len(x.Governors) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_6_list{})
+		}
+		listValue := &_GenesisState_6_list{list: &x.Governors}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.commitment.GenesisState.kol_list":
+		if len(x.KolList) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_7_list{})
+		}
+		listValue := &_GenesisState_7_list{list: &x.KolList}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -244,6 +589,26 @@ func (x *fastReflection_GenesisState) Set(fd protoreflect.FieldDescriptor, value
 		lv := value.List()
 		clv := lv.(*_GenesisState_2_list)
 		x.Commitments = *clv.list
+	case "elys.commitment.GenesisState.atom_stakers":
+		lv := value.List()
+		clv := lv.(*_GenesisState_3_list)
+		x.AtomStakers = *clv.list
+	case "elys.commitment.GenesisState.nft_holders":
+		lv := value.List()
+		clv := lv.(*_GenesisState_4_list)
+		x.NftHolders = *clv.list
+	case "elys.commitment.GenesisState.cadets":
+		lv := value.List()
+		clv := lv.(*_GenesisState_5_list)
+		x.Cadets = *clv.list
+	case "elys.commitment.GenesisState.governors":
+		lv := value.List()
+		clv := lv.(*_GenesisState_6_list)
+		x.Governors = *clv.list
+	case "elys.commitment.GenesisState.kol_list":
+		lv := value.List()
+		clv := lv.(*_GenesisState_7_list)
+		x.KolList = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.GenesisState"))
@@ -275,6 +640,36 @@ func (x *fastReflection_GenesisState) Mutable(fd protoreflect.FieldDescriptor) p
 		}
 		value := &_GenesisState_2_list{list: &x.Commitments}
 		return protoreflect.ValueOfList(value)
+	case "elys.commitment.GenesisState.atom_stakers":
+		if x.AtomStakers == nil {
+			x.AtomStakers = []*AtomStaker{}
+		}
+		value := &_GenesisState_3_list{list: &x.AtomStakers}
+		return protoreflect.ValueOfList(value)
+	case "elys.commitment.GenesisState.nft_holders":
+		if x.NftHolders == nil {
+			x.NftHolders = []*NftHolder{}
+		}
+		value := &_GenesisState_4_list{list: &x.NftHolders}
+		return protoreflect.ValueOfList(value)
+	case "elys.commitment.GenesisState.cadets":
+		if x.Cadets == nil {
+			x.Cadets = []*Cadet{}
+		}
+		value := &_GenesisState_5_list{list: &x.Cadets}
+		return protoreflect.ValueOfList(value)
+	case "elys.commitment.GenesisState.governors":
+		if x.Governors == nil {
+			x.Governors = []*Governor{}
+		}
+		value := &_GenesisState_6_list{list: &x.Governors}
+		return protoreflect.ValueOfList(value)
+	case "elys.commitment.GenesisState.kol_list":
+		if x.KolList == nil {
+			x.KolList = []*KolList{}
+		}
+		value := &_GenesisState_7_list{list: &x.KolList}
+		return protoreflect.ValueOfList(value)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.GenesisState"))
@@ -294,6 +689,21 @@ func (x *fastReflection_GenesisState) NewField(fd protoreflect.FieldDescriptor) 
 	case "elys.commitment.GenesisState.commitments":
 		list := []*Commitments{}
 		return protoreflect.ValueOfList(&_GenesisState_2_list{list: &list})
+	case "elys.commitment.GenesisState.atom_stakers":
+		list := []*AtomStaker{}
+		return protoreflect.ValueOfList(&_GenesisState_3_list{list: &list})
+	case "elys.commitment.GenesisState.nft_holders":
+		list := []*NftHolder{}
+		return protoreflect.ValueOfList(&_GenesisState_4_list{list: &list})
+	case "elys.commitment.GenesisState.cadets":
+		list := []*Cadet{}
+		return protoreflect.ValueOfList(&_GenesisState_5_list{list: &list})
+	case "elys.commitment.GenesisState.governors":
+		list := []*Governor{}
+		return protoreflect.ValueOfList(&_GenesisState_6_list{list: &list})
+	case "elys.commitment.GenesisState.kol_list":
+		list := []*KolList{}
+		return protoreflect.ValueOfList(&_GenesisState_7_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.commitment.GenesisState"))
@@ -373,6 +783,36 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
+		if len(x.AtomStakers) > 0 {
+			for _, e := range x.AtomStakers {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.NftHolders) > 0 {
+			for _, e := range x.NftHolders {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.Cadets) > 0 {
+			for _, e := range x.Cadets {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.Governors) > 0 {
+			for _, e := range x.Governors {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.KolList) > 0 {
+			for _, e := range x.KolList {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -401,6 +841,86 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.KolList) > 0 {
+			for iNdEx := len(x.KolList) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.KolList[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x3a
+			}
+		}
+		if len(x.Governors) > 0 {
+			for iNdEx := len(x.Governors) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Governors[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x32
+			}
+		}
+		if len(x.Cadets) > 0 {
+			for iNdEx := len(x.Cadets) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Cadets[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x2a
+			}
+		}
+		if len(x.NftHolders) > 0 {
+			for iNdEx := len(x.NftHolders) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.NftHolders[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x22
+			}
+		}
+		if len(x.AtomStakers) > 0 {
+			for iNdEx := len(x.AtomStakers) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.AtomStakers[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x1a
+			}
 		}
 		if len(x.Commitments) > 0 {
 			for iNdEx := len(x.Commitments) - 1; iNdEx >= 0; iNdEx-- {
@@ -551,6 +1071,176 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AtomStakers", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AtomStakers = append(x.AtomStakers, &AtomStaker{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.AtomStakers[len(x.AtomStakers)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field NftHolders", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.NftHolders = append(x.NftHolders, &NftHolder{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.NftHolders[len(x.NftHolders)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Cadets", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Cadets = append(x.Cadets, &Cadet{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Cadets[len(x.Cadets)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Governors", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Governors = append(x.Governors, &Governor{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Governors[len(x.Governors)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field KolList", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.KolList = append(x.KolList, &KolList{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.KolList[len(x.KolList)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -607,6 +1297,11 @@ type GenesisState struct {
 
 	Params      *Params        `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
 	Commitments []*Commitments `protobuf:"bytes,2,rep,name=commitments,proto3" json:"commitments,omitempty"`
+	AtomStakers []*AtomStaker  `protobuf:"bytes,3,rep,name=atom_stakers,json=atomStakers,proto3" json:"atom_stakers,omitempty"`
+	NftHolders  []*NftHolder   `protobuf:"bytes,4,rep,name=nft_holders,json=nftHolders,proto3" json:"nft_holders,omitempty"`
+	Cadets      []*Cadet       `protobuf:"bytes,5,rep,name=cadets,proto3" json:"cadets,omitempty"`
+	Governors   []*Governor    `protobuf:"bytes,6,rep,name=governors,proto3" json:"governors,omitempty"`
+	KolList     []*KolList     `protobuf:"bytes,7,rep,name=kol_list,json=kolList,proto3" json:"kol_list,omitempty"`
 }
 
 func (x *GenesisState) Reset() {
@@ -643,6 +1338,41 @@ func (x *GenesisState) GetCommitments() []*Commitments {
 	return nil
 }
 
+func (x *GenesisState) GetAtomStakers() []*AtomStaker {
+	if x != nil {
+		return x.AtomStakers
+	}
+	return nil
+}
+
+func (x *GenesisState) GetNftHolders() []*NftHolder {
+	if x != nil {
+		return x.NftHolders
+	}
+	return nil
+}
+
+func (x *GenesisState) GetCadets() []*Cadet {
+	if x != nil {
+		return x.Cadets
+	}
+	return nil
+}
+
+func (x *GenesisState) GetGovernors() []*Governor {
+	if x != nil {
+		return x.Governors
+	}
+	return nil
+}
+
+func (x *GenesisState) GetKolList() []*KolList {
+	if x != nil {
+		return x.KolList
+	}
+	return nil
+}
+
 var File_elys_commitment_genesis_proto protoreflect.FileDescriptor
 
 var file_elys_commitment_genesis_proto_rawDesc = []byte{
@@ -654,27 +1384,47 @@ var file_elys_commitment_genesis_proto_rawDesc = []byte{
 	0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x21, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x69,
 	0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74,
-	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x85, 0x01, 0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65,
-	0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x35, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
-	0x3e, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x02,
-	0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
-	0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e,
-	0x74, 0x73, 0x52, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x42,
-	0xb2, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d,
-	0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73,
-	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x30, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
-	0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63,
-	0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0xa2, 0x02, 0x03, 0x45, 0x43, 0x58, 0xaa,
-	0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e,
-	0x74, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d,
-	0x65, 0x6e, 0x74, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6f, 0x6d, 0x6d, 0x69,
-	0x74, 0x6d, 0x65, 0x6e, 0x74, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
-	0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74,
-	0x6d, 0x65, 0x6e, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1d, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6f,
+	0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2f, 0x61, 0x69, 0x72, 0x64, 0x72, 0x6f, 0x70,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa0, 0x03, 0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73,
+	0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x35, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63,
+	0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x3e,
+	0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x02, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69,
+	0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74,
+	0x73, 0x52, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x12, 0x3e,
+	0x0a, 0x0c, 0x61, 0x74, 0x6f, 0x6d, 0x5f, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x73, 0x18, 0x03,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
+	0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x41, 0x74, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x6b, 0x65,
+	0x72, 0x52, 0x0b, 0x61, 0x74, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x73, 0x12, 0x3b,
+	0x0a, 0x0b, 0x6e, 0x66, 0x74, 0x5f, 0x68, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x73, 0x18, 0x04, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69,
+	0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x4e, 0x66, 0x74, 0x48, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x52,
+	0x0a, 0x6e, 0x66, 0x74, 0x48, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x73, 0x12, 0x2e, 0x0a, 0x06, 0x63,
+	0x61, 0x64, 0x65, 0x74, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x65, 0x6c,
+	0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x43, 0x61,
+	0x64, 0x65, 0x74, 0x52, 0x06, 0x63, 0x61, 0x64, 0x65, 0x74, 0x73, 0x12, 0x37, 0x0a, 0x09, 0x67,
+	0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74,
+	0x2e, 0x47, 0x6f, 0x76, 0x65, 0x72, 0x6e, 0x6f, 0x72, 0x52, 0x09, 0x67, 0x6f, 0x76, 0x65, 0x72,
+	0x6e, 0x6f, 0x72, 0x73, 0x12, 0x33, 0x0a, 0x08, 0x6b, 0x6f, 0x6c, 0x5f, 0x6c, 0x69, 0x73, 0x74,
+	0x18, 0x07, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f,
+	0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x4b, 0x6f, 0x6c, 0x4c, 0x69, 0x73, 0x74,
+	0x52, 0x07, 0x6b, 0x6f, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x42, 0xb2, 0x01, 0x0a, 0x13, 0x63, 0x6f,
+	0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e,
+	0x74, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
+	0x01, 0x5a, 0x30, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
+	0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d,
+	0x65, 0x6e, 0x74, 0xa2, 0x02, 0x03, 0x45, 0x43, 0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73,
+	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0xca, 0x02, 0x0f, 0x45, 0x6c,
+	0x79, 0x73, 0x5c, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0xe2, 0x02, 0x1b,
+	0x45, 0x6c, 0x79, 0x73, 0x5c, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x5c,
+	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45, 0x6c,
+	0x79, 0x73, 0x3a, 0x3a, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -694,15 +1444,25 @@ var file_elys_commitment_genesis_proto_goTypes = []interface{}{
 	(*GenesisState)(nil), // 0: elys.commitment.GenesisState
 	(*Params)(nil),       // 1: elys.commitment.Params
 	(*Commitments)(nil),  // 2: elys.commitment.Commitments
+	(*AtomStaker)(nil),   // 3: elys.commitment.AtomStaker
+	(*NftHolder)(nil),    // 4: elys.commitment.NftHolder
+	(*Cadet)(nil),        // 5: elys.commitment.Cadet
+	(*Governor)(nil),     // 6: elys.commitment.Governor
+	(*KolList)(nil),      // 7: elys.commitment.KolList
 }
 var file_elys_commitment_genesis_proto_depIdxs = []int32{
 	1, // 0: elys.commitment.GenesisState.params:type_name -> elys.commitment.Params
 	2, // 1: elys.commitment.GenesisState.commitments:type_name -> elys.commitment.Commitments
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	3, // 2: elys.commitment.GenesisState.atom_stakers:type_name -> elys.commitment.AtomStaker
+	4, // 3: elys.commitment.GenesisState.nft_holders:type_name -> elys.commitment.NftHolder
+	5, // 4: elys.commitment.GenesisState.cadets:type_name -> elys.commitment.Cadet
+	6, // 5: elys.commitment.GenesisState.governors:type_name -> elys.commitment.Governor
+	7, // 6: elys.commitment.GenesisState.kol_list:type_name -> elys.commitment.KolList
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_elys_commitment_genesis_proto_init() }
@@ -712,6 +1472,7 @@ func file_elys_commitment_genesis_proto_init() {
 	}
 	file_elys_commitment_params_proto_init()
 	file_elys_commitment_commitments_proto_init()
+	file_elys_commitment_airdrop_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_elys_commitment_genesis_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GenesisState); i {

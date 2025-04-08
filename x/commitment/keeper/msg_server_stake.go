@@ -2,9 +2,8 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-
 	errorsmod "cosmossdk.io/errors"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -34,12 +33,8 @@ func (k msgServer) Stake(goCtx context.Context, msg *types.MsgStake) (*types.Msg
 }
 
 func (k msgServer) performStakeElys(ctx sdk.Context, msg *types.MsgStake) error {
-	stakingKeeper, ok := k.stakingKeeper.(*stakingkeeper.Keeper)
-	if !ok {
-		return errorsmod.Wrap(errorsmod.Error{}, "staking keeper")
-	}
 
-	stakingMsgServer := stakingkeeper.NewMsgServerImpl(stakingKeeper)
+	stakingMsgServer := stakingkeeper.NewMsgServerImpl(k.stakingKeeper)
 
 	address, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -53,7 +48,7 @@ func (k msgServer) performStakeElys(ctx sdk.Context, msg *types.MsgStake) error 
 
 	amount := sdk.NewCoin(msg.Asset, msg.Amount)
 	if !amount.IsValid() || amount.Amount.IsZero() {
-		return fmt.Errorf("invalid amount")
+		return errors.New("invalid amount")
 	}
 
 	// Don't allow vested tokens to be staked

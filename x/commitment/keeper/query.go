@@ -47,3 +47,31 @@ func (k Keeper) CommittedTokensLocked(goCtx context.Context, req *types.QueryCom
 		TotalCommitted:  totalCommitted,
 	}, nil
 }
+
+func (k Keeper) Kol(goCtx context.Context, req *types.QueryKolRequest) (*types.QueryKolResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	kol := k.GetKol(ctx, sdk.MustAccAddressFromBech32(req.Address))
+	return &types.QueryKolResponse{
+		ElysAmount: kol.Amount,
+		Claimed:    kol.Claimed,
+		Refunded:   kol.Refunded,
+	}, nil
+}
+
+func (k Keeper) TotalSupply(goCtx context.Context, req *types.QueryTotalSupplyRequest) (*types.QueryTotalSupplyResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	supply := k.GetTotalSupply(ctx)
+	return &types.QueryTotalSupplyResponse{
+		TotalEden:       supply.TotalEdenSupply,
+		TotalEdenb:      supply.TotalEdenbSupply,
+		TotalEdenVested: supply.TotalEdenVested,
+	}, nil
+}

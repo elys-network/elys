@@ -2,7 +2,7 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"fmt"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -23,14 +23,14 @@ func (msg *MsgFeedMultipleExternalLiquidity) ValidateBasic() error {
 
 	for _, liquidity := range msg.Liquidity {
 		for _, depthInfo := range liquidity.AmountDepthInfo {
-			if err = sdk.ValidateDenom(depthInfo.Asset); err != nil {
-				return err
+			if depthInfo.Asset == "" {
+				return errors.New("asset cannot be empty")
 			}
 			if depthInfo.Depth.IsNil() || depthInfo.Depth.IsNegative() {
-				return fmt.Errorf("depth cannot be negative or nil")
+				return errors.New("depth cannot be negative or nil")
 			}
 			if depthInfo.Amount.IsNil() || depthInfo.Amount.IsNegative() {
-				return fmt.Errorf("depth amount cannot be negative or nil")
+				return errors.New("depth amount cannot be negative or nil")
 			}
 		}
 	}

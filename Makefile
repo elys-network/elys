@@ -33,7 +33,8 @@ NOCOLOR=\033[0m
 GO_CURR_VERSION=$(shell echo -e "Current Go version: $(LGREEN)$(GO_MAJOR_VERSION).$(GREEN)$(GO_MINOR_VERSION)$(NOCOLOR)")
 GO_VERSION_ERR_MSG=$(shell echo -e '$(RED)❌ ERROR$(NOCOLOR): Go version $(LGREEN)$(GO_MINIMUM_MAJOR_VERSION).$(GREEN)$(GO_MINIMUM_MINOR_VERSION)$(NOCOLOR)+ is required')
 
-GO_VERSION := $(shell cat go.mod | grep -E 'go [0-9].[0-9]+' | cut -d ' ' -f 2)
+#GO_VERSION := $(shell cat go.mod | grep -E 'go [0-9].[0-9]+' | cut -d ' ' -f 2)
+GO_VERSION := 1.23
 
 BUILDDIR ?= $(CURDIR)/build
 DOCKER := $(shell which docker)
@@ -229,6 +230,7 @@ stop-docker:
 .PHONY: build-docker start-docker clean-docker stop-docker
 
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
+COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm/v2 | sed 's/.* //')
 
 ## release: Build binaries for all platforms and generate checksums
 ifdef GITHUB_TOKEN
@@ -236,6 +238,7 @@ release:
 	docker run \
 		--rm \
 		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
+		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/elysd \
 		-w /go/src/elysd \
@@ -251,6 +254,7 @@ endif
 release-dry-run:
 	docker run \
 		--rm \
+		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/elysd \
 		-w /go/src/elysd \
@@ -263,6 +267,7 @@ release-dry-run:
 release-snapshot:
 	docker run \
 		--rm \
+		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/elysd \
 		-w /go/src/elysd \

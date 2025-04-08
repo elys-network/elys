@@ -16,6 +16,8 @@ func NewParams() Params {
 		WhitelistingEnabled: false,
 		FallbackEnabled:     true,
 		NumberPerBlock:      (int64)(1000),
+		EnabledPools:        []uint64(nil),
+		ExitBuffer:          sdkmath.LegacyMustNewDecFromStr("0.05"),
 	}
 }
 
@@ -31,9 +33,6 @@ func (p Params) Validate() error {
 	}
 	if !p.LeverageMax.GT(sdkmath.LegacyOneDec()) {
 		return fmt.Errorf("leverage max must be greater than 1: %s", p.LeverageMax.String())
-	}
-	if p.LeverageMax.GT(sdkmath.LegacyNewDec(10)) {
-		return fmt.Errorf("leverage max too large: %s", p.LeverageMax.String())
 	}
 	if p.EpochLength <= 0 {
 		return fmt.Errorf("epoch length should be positive: %d", p.EpochLength)
@@ -57,5 +56,24 @@ func (p Params) Validate() error {
 	if p.NumberPerBlock > MaxPageLimit {
 		return fmt.Errorf("number of positions per block should not exceed page limit: %d, number of positions: %d", MaxPageLimit, p.NumberPerBlock)
 	}
+
+	if containsDuplicates(p.EnabledPools) {
+		return fmt.Errorf("array must not contain duplicate values")
+	}
+
+	if p.ExitBuffer.IsNil() {
+		return fmt.Errorf("exit buffer must be not nil")
+	}
 	return nil
+}
+
+func containsDuplicates(arr []uint64) bool {
+	valueMap := make(map[uint64]struct{})
+	for _, num := range arr {
+		if _, exists := valueMap[num]; exists {
+			return true
+		}
+		valueMap[num] = struct{}{}
+	}
+	return false
 }

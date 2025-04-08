@@ -15,7 +15,7 @@ func CmdJoinPool() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "join-pool [pool-id] [max-amounts-in] [share-amount-out]",
 		Short:   "join a new pool and provide the liquidity to it",
-		Example: `elysd tx amm join-pool 0 2000uatom,2000uusdc 200000000000000000 --from=treasury --keyring-backend=test --chain-id=elystestnet-1 --yes --gas=1000000`,
+		Example: `elysd tx amm join-pool 0 2000uatom,2000uusdc 200000000000000000 --from=bob --yes --gas=1000000`,
 		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			poolId, err := cast.ToUint64E(args[0])

@@ -74,6 +74,10 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 		}
 	}
 
+	//err = k.UpdateOraclePoolId(ctx, poolId)
+	//if err != nil {
+	//	return 0, err
+	//}
 	// emitCreatePoolEvents(ctx, poolId, msg)
 	return pool.GetPoolId(), nil
 }

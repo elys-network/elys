@@ -2,7 +2,7 @@ package keeper_test
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"fmt"
+	"errors"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -30,7 +30,7 @@ func (suite *MasterchefKeeperTestSuite) TestTogglePoolEdenRewards() {
 				PoolId:    2,
 			},
 			expectErr:    true,
-			expectErrMsg: fmt.Errorf("invalid authority"),
+			expectErrMsg: errors.New("invalid authority"),
 		},
 		{
 			name: "Invalid Signer Address",

@@ -3,7 +3,6 @@ package cli_test
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -71,7 +70,7 @@ func TestCancelPerpertualOrders(t *testing.T) {
 	ctx := net.Validators[0].ClientCtx
 	val := net.Validators[0]
 
-	tmpFile, err := ioutil.TempFile("", "ids.json")
+	tmpFile, err := os.CreateTemp("", "ids.json")
 	require.NoError(t, err)
 	defer os.Remove(tmpFile.Name())
 

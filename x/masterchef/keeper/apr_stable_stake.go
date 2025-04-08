@@ -2,6 +2,7 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -34,7 +35,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 		}
 
-		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, stabletypes.UsdcPoolId)
 		if stableTvl.IsZero() {
 			return sdkmath.LegacyZeroDec(), nil
 		}
@@ -47,7 +48,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 		edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
 		// Get pool info from incentive param
-		poolInfo, found := k.GetPoolInfo(ctx, uint64(stabletypes.PoolId))
+		poolInfo, found := k.GetPoolInfo(ctx, uint64(stabletypes.UsdcPoolId))
 		if !found {
 			return sdkmath.LegacyZeroDec(), nil
 		}
@@ -75,12 +76,15 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			Quo(stableTvl)
 		return apr, nil
 	} else if query.Denom == ptypes.BaseCurrency {
-		params := k.stableKeeper.GetParams(ctx)
+		borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, query.Denom)
+		if !found {
+			return math.LegacyZeroDec(), errorsmod.Wrap(types.ErrPoolNotFound, "pool not found")
+		}
 		res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{})
 		if err != nil {
 			return sdkmath.LegacyZeroDec(), err
 		}
-		apr := params.InterestRate.Mul(res.BorrowRatio)
+		apr := borrowPool.InterestRate.Mul(res.BorrowRatio)
 		return apr, nil
 	}
 

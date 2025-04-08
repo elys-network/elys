@@ -11,6 +11,8 @@ const (
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
+
+	OneDay = 1
 )
 
 func KeyPrefix(p string) []byte {

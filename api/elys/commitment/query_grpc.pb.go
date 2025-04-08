@@ -28,6 +28,10 @@ type QueryClient interface {
 	NumberOfCommitments(ctx context.Context, in *QueryNumberOfCommitmentsRequest, opts ...grpc.CallOption) (*QueryNumberOfCommitmentsResponse, error)
 	// Queries a list of CommitmentVestingInfo items.
 	CommitmentVestingInfo(ctx context.Context, in *QueryCommitmentVestingInfoRequest, opts ...grpc.CallOption) (*QueryCommitmentVestingInfoResponse, error)
+	AirDrop(ctx context.Context, in *QueryAirDropRequest, opts ...grpc.CallOption) (*QueryAirDropResponse, error)
+	TotalAirdropClaimed(ctx context.Context, in *QueryTotalAirDropClaimedRequest, opts ...grpc.CallOption) (*QueryTotalAirDropClaimedResponse, error)
+	Kol(ctx context.Context, in *QueryKolRequest, opts ...grpc.CallOption) (*QueryKolResponse, error)
+	TotalSupply(ctx context.Context, in *QueryTotalSupplyRequest, opts ...grpc.CallOption) (*QueryTotalSupplyResponse, error)
 }
 
 type queryClient struct {
@@ -83,6 +87,42 @@ func (c *queryClient) CommitmentVestingInfo(ctx context.Context, in *QueryCommit
 	return out, nil
 }
 
+func (c *queryClient) AirDrop(ctx context.Context, in *QueryAirDropRequest, opts ...grpc.CallOption) (*QueryAirDropResponse, error) {
+	out := new(QueryAirDropResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Query/AirDrop", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) TotalAirdropClaimed(ctx context.Context, in *QueryTotalAirDropClaimedRequest, opts ...grpc.CallOption) (*QueryTotalAirDropClaimedResponse, error) {
+	out := new(QueryTotalAirDropClaimedResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Query/TotalAirdropClaimed", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Kol(ctx context.Context, in *QueryKolRequest, opts ...grpc.CallOption) (*QueryKolResponse, error) {
+	out := new(QueryKolResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Query/Kol", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) TotalSupply(ctx context.Context, in *QueryTotalSupplyRequest, opts ...grpc.CallOption) (*QueryTotalSupplyResponse, error) {
+	out := new(QueryTotalSupplyResponse)
+	err := c.cc.Invoke(ctx, "/elys.commitment.Query/TotalSupply", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -97,6 +137,10 @@ type QueryServer interface {
 	NumberOfCommitments(context.Context, *QueryNumberOfCommitmentsRequest) (*QueryNumberOfCommitmentsResponse, error)
 	// Queries a list of CommitmentVestingInfo items.
 	CommitmentVestingInfo(context.Context, *QueryCommitmentVestingInfoRequest) (*QueryCommitmentVestingInfoResponse, error)
+	AirDrop(context.Context, *QueryAirDropRequest) (*QueryAirDropResponse, error)
+	TotalAirdropClaimed(context.Context, *QueryTotalAirDropClaimedRequest) (*QueryTotalAirDropClaimedResponse, error)
+	Kol(context.Context, *QueryKolRequest) (*QueryKolResponse, error)
+	TotalSupply(context.Context, *QueryTotalSupplyRequest) (*QueryTotalSupplyResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -118,6 +162,18 @@ func (UnimplementedQueryServer) NumberOfCommitments(context.Context, *QueryNumbe
 }
 func (UnimplementedQueryServer) CommitmentVestingInfo(context.Context, *QueryCommitmentVestingInfoRequest) (*QueryCommitmentVestingInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommitmentVestingInfo not implemented")
+}
+func (UnimplementedQueryServer) AirDrop(context.Context, *QueryAirDropRequest) (*QueryAirDropResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AirDrop not implemented")
+}
+func (UnimplementedQueryServer) TotalAirdropClaimed(context.Context, *QueryTotalAirDropClaimedRequest) (*QueryTotalAirDropClaimedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalAirdropClaimed not implemented")
+}
+func (UnimplementedQueryServer) Kol(context.Context, *QueryKolRequest) (*QueryKolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Kol not implemented")
+}
+func (UnimplementedQueryServer) TotalSupply(context.Context, *QueryTotalSupplyRequest) (*QueryTotalSupplyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalSupply not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -222,6 +278,78 @@ func _Query_CommitmentVestingInfo_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_AirDrop_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAirDropRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AirDrop(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Query/AirDrop",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AirDrop(ctx, req.(*QueryAirDropRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_TotalAirdropClaimed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTotalAirDropClaimedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).TotalAirdropClaimed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Query/TotalAirdropClaimed",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).TotalAirdropClaimed(ctx, req.(*QueryTotalAirDropClaimedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Kol_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryKolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Kol(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Query/Kol",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Kol(ctx, req.(*QueryKolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_TotalSupply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTotalSupplyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).TotalSupply(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.commitment.Query/TotalSupply",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).TotalSupply(ctx, req.(*QueryTotalSupplyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -248,6 +376,22 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CommitmentVestingInfo",
 			Handler:    _Query_CommitmentVestingInfo_Handler,
+		},
+		{
+			MethodName: "AirDrop",
+			Handler:    _Query_AirDrop_Handler,
+		},
+		{
+			MethodName: "TotalAirdropClaimed",
+			Handler:    _Query_TotalAirdropClaimed_Handler,
+		},
+		{
+			MethodName: "Kol",
+			Handler:    _Query_Kol_Handler,
+		},
+		{
+			MethodName: "TotalSupply",
+			Handler:    _Query_TotalSupply_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
