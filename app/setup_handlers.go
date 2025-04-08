@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
-	errorsmod "cosmossdk.io/errors"
 	"fmt"
 	"strings"
+
+	errorsmod "cosmossdk.io/errors"
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
@@ -109,7 +110,7 @@ func (app *ElysApp) setUpgradeStore() {
 			Added: []string{wasmTypes.StoreKey},
 			//Added:   []string{},
 			//Renamed: []storetypes.StoreRename{},
-			//Deleted: []string{},
+			Deleted: []string{"itransferhook"},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 
