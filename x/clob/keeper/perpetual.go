@@ -81,21 +81,21 @@ func (k Keeper) GetCurrentLeverage(ctx sdk.Context, perpetual types.Perpetual) (
 }
 
 // GetLiquidationPrice
-// Long: Liquidation Price = Entry Price × (1 - 1/Leverage) / (1 - Maintenance Margin Rate)
-// Short:Liquidation Price = Entry Price × (1 + 1/Leverage) / (1 + Maintenance Margin Rate)
+// Long: Liquidation Price = Entry Price × (1 - 1/Current Leverage) / (1 - Maintenance Margin Rate)
+// Short:Liquidation Price = Entry Price × (1 + 1/Current Leverage) / (1 + Maintenance Margin Rate)
 func (k Keeper) GetLiquidationPrice(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) (math.LegacyDec, error) {
 	leverage, err := k.GetCurrentLeverage(ctx, perpetual)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
-	num_sub := math.LegacyOneDec().Quo(leverage)
-	num := math.LegacyOneDec().Sub(num_sub)
+	numSub := math.LegacyOneDec().Quo(leverage)
+	num := math.LegacyOneDec().Sub(numSub)
 	den := math.LegacyOneDec().Sub(market.MaintenanceMarginRatio)
 	if perpetual.IsShort() {
-		num_add := math.LegacyOneDec().Quo(leverage)
-		num = math.LegacyOneDec().Add(num_add)
+		numAdd := math.LegacyOneDec().Quo(leverage)
+		num = math.LegacyOneDec().Add(numAdd)
 		den = math.LegacyOneDec().Add(market.MaintenanceMarginRatio)
 	}
-	result_mult := num.Quo(den)
-	return perpetual.EntryPrice.Mul(result_mult), nil
+	resultMult := num.Quo(den)
+	return perpetual.EntryPrice.Mul(resultMult), nil
 }

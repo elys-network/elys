@@ -1,11 +1,15 @@
 package keeper
 
 import (
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/clob/types"
 )
 
 func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
+	if trade.SellerSubAccount.MarketId != trade.MarketId || trade.BuyerSubAccount.MarketId != trade.MarketId {
+		return errors.New("tarde market id and subaccounts market id does not match")
+	}
 
 	newLong := false
 	newShort := false
