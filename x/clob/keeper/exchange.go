@@ -38,8 +38,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 		}
 
 		wasLong := buyerPerpetual.IsLong()
-		oldEntryPrice := buyerPerpetual.EntryPrice
-		oldQuantity := buyerPerpetual.Quantity
+		buyerOldEntryValue := buyerPerpetual.GetEntryValue()
 
 		buyerPerpetual.Quantity = buyerPerpetual.Quantity.Add(trade.Quantity)
 		if buyerPerpetual.IsZero() {
@@ -53,9 +52,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 			longFullyClosed = true
 		} else {
 			if wasLong {
-				n1 := oldEntryPrice.Mul(oldQuantity.ToLegacyDec())
-				n2 := trade.Quantity.ToLegacyDec().Mul(trade.Price)
-				num := n1.Add(n2)
+				num := buyerOldEntryValue.Add(trade.GetTradeValue())
 				buyerPerpetual.EntryPrice = num.Quo(buyerPerpetual.Quantity.ToLegacyDec())
 			} else {
 				buyerPerpetual.EntryPrice = trade.Price
@@ -102,8 +99,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 		}
 
 		wasShort := sellerPerpetual.IsShort()
-		oldEntryPrice := sellerPerpetual.EntryPrice
-		oldQuantity := sellerPerpetual.Quantity
+		sellerOldEntryValue := sellerPerpetual.GetEntryValue()
 		sellerPerpetual.Quantity = sellerPerpetual.Quantity.Sub(trade.Quantity)
 		if sellerPerpetual.IsZero() {
 			k.DeletePerpetual(ctx, sellerPerpetual)
@@ -114,9 +110,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 			shortFullyClosed = true
 		} else {
 			if wasShort {
-				n1 := oldEntryPrice.Mul(oldQuantity.ToLegacyDec())
-				n2 := trade.Quantity.ToLegacyDec().Neg().Mul(trade.Price)
-				num := n1.Add(n2)
+				num := sellerOldEntryValue.Add(trade.GetTradeValue())
 				sellerPerpetual.EntryPrice = num.Quo(sellerPerpetual.Quantity.ToLegacyDec())
 			} else {
 				sellerPerpetual.EntryPrice = trade.Price

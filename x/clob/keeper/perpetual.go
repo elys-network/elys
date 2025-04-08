@@ -55,6 +55,9 @@ func (k Keeper) DeletePerpetual(ctx sdk.Context, p types.Perpetual) {
 
 func (k Keeper) GetPerpetualValue(ctx sdk.Context, perpetual types.Perpetual) math.LegacyDec {
 	twapPrice := k.GetCurrentTwapPrice(ctx, perpetual.MarketId)
+	if twapPrice.IsZero() {
+		panic("twap price is zero while calculating perpetual value")
+	}
 	return twapPrice.Mul(perpetual.Quantity.ToLegacyDec())
 }
 
