@@ -4,6 +4,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
@@ -16,7 +17,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckLowPoolHealth() {
 	amount := sdkmath.NewInt(1000)
 	poolCreator := addr[0]
 	suite.SetupCoinPrices()
-	ammPool := suite.CreateNewAmmPool(poolCreator, true, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	testCases := []struct {
 		name                 string
 		expectErrMsg         string

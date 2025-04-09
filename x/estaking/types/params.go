@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	epochsmoduletypes "github.com/elys-network/elys/x/epochs/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // DefaultParams returns a default set of parameters
@@ -61,4 +62,16 @@ func (p Params) Validate() error {
 		return fmt.Errorf("ProviderStakingRewardsPortion cannot be negative: %s", p.ProviderStakingRewardsPortion.String())
 	}
 	return nil
+}
+
+func (p Params) GetBigDecMaxEdenRewardAprStakers() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.MaxEdenRewardAprStakers)
+}
+
+func (p Params) GetBigDecEdenBoostApr() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.EdenBoostApr)
+}
+
+func (p Params) GetBigDecProviderStakingRewardsPortion() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.ProviderStakingRewardsPortion)
 }

@@ -24,7 +24,7 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 		PoolId:          ammPool.PoolId,
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000)),
-		TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+		TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 
@@ -35,7 +35,7 @@ func (suite *PerpetualKeeperTestSuite) resetForMTPTriggerChecksAndUpdates() (typ
 		PoolId:          ammPool.PoolId,
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000_000)),
-		TakeProfitPrice: tradingAssetPrice.QuoInt64(4),
+		TakeProfitPrice: tradingAssetPrice.QuoInt64(4).Dec(),
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 

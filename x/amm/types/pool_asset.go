@@ -1,9 +1,10 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"fmt"
+
+	"cosmossdk.io/math"
 )
 
 func (asset PoolAsset) Validate() error {

@@ -5,6 +5,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // NewParams creates a new Params instance
@@ -72,4 +73,8 @@ func (p Params) Validate() error {
 		return fmt.Errorf("rewards data lifetime cannot be negative or zero")
 	}
 	return nil
+}
+
+func (p Params) GetBigDecTakerFees() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.TakerFees)
 }

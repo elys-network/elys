@@ -7,6 +7,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *AmmKeeperTestSuite) TestCalcInRouteSpotPrice() {
@@ -88,25 +89,25 @@ func (suite *AmmKeeperTestSuite) TestCalcInRouteSpotPrice() {
 
 	tokenIn := sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100))
 	routes := []*types.SwapAmountInRoute{{PoolId: 1, TokenOutDenom: ptypes.BaseCurrency}}
-	spotPrice, _, _, totalDiscountedSwapFee, _, _, _, _, err := suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, sdkmath.LegacyZeroDec(), sdkmath.LegacyMustNewDecFromStr("0.1"))
+	spotPrice, _, _, totalDiscountedSwapFee, _, _, _, _, err := suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, osmomath.ZeroBigDec(), osmomath.MustNewBigDecFromStr("0.1"))
 	suite.Require().NoError(err)
-	suite.Require().Equal(spotPrice.String(), sdkmath.LegacyOneDec().String())
-	suite.Require().Equal(sdkmath.LegacyMustNewDecFromStr("0.1"), totalDiscountedSwapFee)
+	suite.Require().Equal(spotPrice.String(), osmomath.OneBigDec().String())
+	suite.Require().Equal(sdkmath.LegacyMustNewDecFromStr("0.1"), totalDiscountedSwapFee.Dec())
 
 	routes = []*types.SwapAmountInRoute{
 		{PoolId: 1, TokenOutDenom: ptypes.BaseCurrency},
 		{PoolId: 2, TokenOutDenom: "uusda"},
 	}
-	spotPrice, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())
+	spotPrice, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, osmomath.ZeroBigDec(), osmomath.ZeroBigDec())
 	suite.Require().NoError(err)
-	suite.Require().Equal(spotPrice.String(), sdkmath.LegacyOneDec().String())
+	suite.Require().Equal(spotPrice.String(), osmomath.OneBigDec().String())
 
 	// Test no routes
-	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, nil, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())
+	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, nil, osmomath.ZeroBigDec(), osmomath.ZeroBigDec())
 	suite.Require().Error(err)
 
 	// Test invalid pool
 	routes = []*types.SwapAmountInRoute{{PoolId: 9999, TokenOutDenom: "uusda"}}
-	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec())
+	_, _, _, _, _, _, _, _, err = suite.app.AmmKeeper.CalcInRouteSpotPrice(suite.ctx, tokenIn, routes, osmomath.ZeroBigDec(), osmomath.ZeroBigDec())
 	suite.Require().Error(err)
 }

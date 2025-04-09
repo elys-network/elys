@@ -9,6 +9,7 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -74,13 +75,13 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	assetPriceAtOpen := tradingAssetPrice
 
 	if useLimitPrice {
-		assetPriceAtOpen = req.LimitPrice
+		assetPriceAtOpen = osmomath.BigDecFromDec(req.LimitPrice)
 	}
 
-	if req.Position == types.Position_LONG && req.TakeProfitPrice.LTE(assetPriceAtOpen) {
+	if req.Position == types.Position_LONG && osmomath.BigDecFromDec(req.TakeProfitPrice).LTE(assetPriceAtOpen) {
 		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be less than equal to trading price for long")
 	}
-	if req.Position == types.Position_SHORT && req.TakeProfitPrice.GTE(assetPriceAtOpen) {
+	if req.Position == types.Position_SHORT && osmomath.BigDecFromDec(req.TakeProfitPrice).GTE(assetPriceAtOpen) {
 		return nil, status.Error(codes.InvalidArgument, "take profit price cannot be greater than equal to trading price for short")
 	}
 
@@ -102,15 +103,15 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	if req.Position == types.Position_SHORT {
 		proxyLeverage = req.Leverage.Add(math.LegacyOneDec())
 	}
-	leveragedAmount := req.Collateral.Amount.ToLegacyDec().Mul(proxyLeverage).TruncateInt()
+	leveragedAmount := osmomath.BigDecFromSDKInt(req.Collateral.Amount).MulDec(proxyLeverage).Dec().TruncateInt()
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
 	// SHORT: collateralAsset is always usdc, and custody has to be in usdc, so custodyAmount = leveragedAmount
 	custodyAmount := leveragedAmount
-	slippage := math.LegacyZeroDec()
+	slippage := osmomath.ZeroBigDec()
 	mtp.Collateral = req.Collateral.Amount
 	eta := proxyLeverage.Sub(math.LegacyOneDec())
-	liabilities := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
-	weightBreakingFee := math.LegacyZeroDec()
+	liabilities := osmomath.BigDecFromSDKInt(req.Collateral.Amount).MulDec(eta).Dec().TruncateInt()
+	weightBreakingFee := osmomath.ZeroBigDec()
 	if req.Position == types.Position_LONG {
 		//getting custody
 		if mtp.CollateralAsset == baseCurrency {
@@ -121,20 +122,20 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 			}
 			if useLimitPrice {
 				// leveragedAmount is collateral asset which is base currency, custodyAmount has to be in trading asset
-				custodyAmount = leveragedAmount.ToLegacyDec().Quo(req.LimitPrice).TruncateInt()
+				custodyAmount = osmomath.BigDecFromSDKInt(leveragedAmount).Quo(osmomath.BigDecFromDec(req.LimitPrice)).Dec().TruncateInt()
 			}
 		}
 
 		//getting Liabilities
 		if mtp.CollateralAsset != baseCurrency {
-			amountIn := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
+			amountIn := osmomath.BigDecFromSDKInt(req.Collateral.Amount).MulDec(eta).Dec().TruncateInt()
 			liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, sdk.NewCoin(req.Collateral.Denom, amountIn), baseCurrency, ammPool, req.Address)
 			if err != nil {
 				return nil, err
 			}
 			if useLimitPrice {
 				// liabilities needs to be in base currency
-				liabilities = amountIn.ToLegacyDec().Mul(req.LimitPrice).TruncateInt()
+				liabilities = osmomath.BigDecFromSDKInt(amountIn).MulDec(req.LimitPrice).Dec().TruncateInt()
 			}
 		}
 
@@ -142,7 +143,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	//getting Liabilities
 	if req.Position == types.Position_SHORT {
 		// Collateral will be in base currency
-		amountOut := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
+		amountOut := osmomath.BigDecFromSDKInt(req.Collateral.Amount).MulDec(eta).Dec().TruncateInt()
 		tokenOut := sdk.NewCoin(baseCurrency, amountOut)
 		liabilities, slippage, weightBreakingFee, err = k.EstimateSwapGivenOut(ctx, tokenOut, mtp.LiabilitiesAsset, ammPool, mtp.Address)
 		if err != nil {
@@ -150,7 +151,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		}
 		if useLimitPrice {
 			// liabilities needs to be in trading asset
-			liabilities = amountOut.ToLegacyDec().Quo(req.LimitPrice).TruncateInt()
+			liabilities = osmomath.BigDecFromSDKInt(amountOut).Quo(osmomath.BigDecFromDec(req.LimitPrice)).Dec().TruncateInt()
 		}
 	}
 	mtp.Liabilities = liabilities
@@ -160,18 +161,18 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, *mtp)
 	mtp.TakeProfitPrice = req.TakeProfitPrice
 	mtp.GetAndSetOpenPrice()
-	executionPrice := mtp.OpenPrice
+	executionPrice := mtp.GetBigDecOpenPrice()
 
 	err = mtp.UpdateMTPTakeProfitBorrowFactor()
 	if err != nil {
 		return nil, err
 	}
-	hourlyInterestRate := math.LegacyZeroDec()
-	blocksPerYear := math.LegacyNewDec(int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear))
-	blocksPerSecond := blocksPerYear.Quo(math.LegacyNewDec(86400 * 365))                        // in seconds
-	startBlock := ctx.BlockHeight() - math.LegacyNewDec(3600).Mul(blocksPerSecond).RoundInt64() // block height 1 hour ago
+	hourlyInterestRate := osmomath.ZeroBigDec()
+	blocksPerYear := osmomath.NewBigDec(int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear))
+	blocksPerSecond := blocksPerYear.QuoInt64(86400 * 365)                                       // in seconds
+	startBlock := ctx.BlockHeight() - osmomath.NewBigDec(3600).Mul(blocksPerSecond).RoundInt64() // block height 1 hour ago
 	if startBlock > 0 {
-		hourlyInterestRate = k.GetBorrowInterestRate(ctx, uint64(startBlock), uint64(ctx.BlockTime().Unix()-3600), req.PoolId, mtp.TakeProfitBorrowFactor)
+		hourlyInterestRate = k.GetBorrowInterestRate(ctx, uint64(startBlock), uint64(ctx.BlockTime().Unix()-3600), req.PoolId, mtp.GetBigDecTakeProfitBorrowFactor())
 	}
 
 	liquidationPrice := k.GetLiquidationPrice(ctx, *mtp)
@@ -182,7 +183,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, err
 	}
 
-	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, req.PoolId, mtp.TakeProfitBorrowFactor)
+	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, req.PoolId, mtp.GetBigDecTakeProfitBorrowFactor())
 
 	longRate, shortRate := k.GetFundingRate(ctx, uint64(ctx.BlockHeight()), uint64(ctx.BlockTime().Unix()), req.PoolId)
 	fundingRate := longRate
@@ -204,23 +205,23 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 
 	return &types.QueryOpenEstimationResponse{
 		Position:           req.Position,
-		EffectiveLeverage:  effectiveLeverage,
+		EffectiveLeverage:  effectiveLeverage.Dec(),
 		TradingAsset:       req.TradingAsset,
 		Collateral:         req.Collateral,
-		HourlyInterestRate: hourlyInterestRate,
+		HourlyInterestRate: hourlyInterestRate.Dec(),
 		PositionSize:       sdk.NewCoin(positionAsset, positionSize),
 		OpenPrice:          mtp.OpenPrice,
 		TakeProfitPrice:    req.TakeProfitPrice,
-		LiquidationPrice:   liquidationPrice,
+		LiquidationPrice:   liquidationPrice.Dec(),
 		EstimatedPnl:       sdk.Coin{Denom: baseCurrency, Amount: estimatedPnLAmount},
 		AvailableLiquidity: availableLiquidity,
-		Slippage:           slippage,
-		PriceImpact:        priceImpact,
-		BorrowInterestRate: borrowInterestRate,
-		FundingRate:        fundingRate,
+		Slippage:           slippage.Dec(),
+		PriceImpact:        priceImpact.Dec(),
+		BorrowInterestRate: borrowInterestRate.Dec(),
+		FundingRate:        fundingRate.Dec(),
 		Custody:            sdk.NewCoin(mtp.CustodyAsset, mtp.Custody),
 		Liabilities:        sdk.NewCoin(mtp.LiabilitiesAsset, mtp.Liabilities),
 		LimitPrice:         req.LimitPrice,
-		WeightBreakingFee:  weightBreakingFee,
+		WeightBreakingFee:  weightBreakingFee.Dec(),
 	}, nil
 }

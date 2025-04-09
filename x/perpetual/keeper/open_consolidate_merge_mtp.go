@@ -10,12 +10,12 @@ func (k Keeper) OpenConsolidateMergeMtp(ctx sdk.Context, existingMtp *types.MTP,
 	// If the previous position is 100 ATOM with a Take Profit Price of 10, and the new position is 50 ATOM with a Take Profit Price of 7, the weighted Take Profit Price should be calculated as:
 	// (100 * 10 + 50 * 7) / (100 + 50) = 9
 	if !types.IsTakeProfitPriceInfinite(*newMtp) {
-		existingCustodyAmt := existingMtp.Custody.ToLegacyDec()
-		newCustodyAmt := newMtp.Custody.ToLegacyDec()
+		existingCustodyAmt := existingMtp.GetBigDecCustody()
+		newCustodyAmt := newMtp.GetBigDecCustody()
 
 		// check no division by zero
 		if existingCustodyAmt.Add(newCustodyAmt).IsPositive() {
-			existingMtp.TakeProfitPrice = existingMtp.TakeProfitPrice.Mul(existingCustodyAmt).Add(newMtp.TakeProfitPrice.Mul(newCustodyAmt)).Quo(existingCustodyAmt.Add(newCustodyAmt))
+			existingMtp.TakeProfitPrice = existingMtp.GetBigDecTakeProfitPrice().Mul(existingCustodyAmt).Add(newMtp.GetBigDecTakeProfitPrice().Mul(newCustodyAmt)).Quo(existingCustodyAmt.Add(newCustodyAmt)).Dec()
 		}
 	}
 

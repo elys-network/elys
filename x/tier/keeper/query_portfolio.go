@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/store/prefix"
 	"github.com/cosmos/cosmos-sdk/runtime"
 
@@ -57,5 +58,5 @@ func (k Keeper) Portfolio(goCtx context.Context, req *types.QueryGetPortfolioReq
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 
-	return &types.QueryGetPortfolioResponse{TotalPortfolio: val.String()}, nil
+	return &types.QueryGetPortfolioResponse{TotalPortfolio: val.Dec().String()}, nil
 }

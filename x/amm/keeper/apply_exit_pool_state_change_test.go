@@ -9,6 +9,7 @@ import (
 	simapp "github.com/elys-network/elys/app"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
@@ -81,7 +82,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 				suite.Require().True(lpTokenBalance.Amount.Equal(sdkmath.ZeroInt()))
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins, false, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coins{})
+				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addrs[0], pool.TotalShares.Amount, coins, false, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{})
 				suite.Require().NoError(err)
 			},
 			func() {},
@@ -99,7 +100,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 
 				coins := sdk.NewCoins(sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000)), sdk.NewCoin("uusdt", sdkmath.NewInt(100000)))
 
-				err := suite.app.AmmKeeper.ApplyExitPoolStateChange(suite.ctx, pool, addr, pool.TotalShares.Amount, coins, false, sdkmath.LegacyZeroDec(), sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdk.Coins{})
+				err := suite.app.AmmKeeper.ApplyExitPoolStateChange(suite.ctx, pool, addr, pool.TotalShares.Amount, coins, false, osmomath.ZeroBigDec(), osmomath.OneBigDec(), osmomath.ZeroBigDec(), sdk.Coins{})
 				suite.Require().Error(err)
 			},
 			func() {},
@@ -170,7 +171,7 @@ func (suite *AmmKeeperTestSuite) TestApplyExitPoolStateChange() {
 				coins = sdk.NewCoins(sdk.NewCoin("invalid_denom", sdkmath.NewInt(100000000)))
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour))
-				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, coins, false, sdkmath.LegacyZeroDec(), sdkmath.LegacyOneDec(), sdkmath.LegacyZeroDec(), sdk.Coins{})
+				err = app.AmmKeeper.ApplyExitPoolStateChange(ctx, pool, addr, pool.TotalShares.Amount, coins, false, osmomath.ZeroBigDec(), osmomath.OneBigDec(), osmomath.ZeroBigDec(), sdk.Coins{})
 				suite.Require().Error(err)
 			},
 			func() {},

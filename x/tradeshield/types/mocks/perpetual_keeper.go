@@ -3,11 +3,11 @@
 package mocks
 
 import (
-	math "cosmossdk.io/math"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 	mock "github.com/stretchr/testify/mock"
 
 	query "github.com/cosmos/cosmos-sdk/types/query"
+	osmomath "github.com/osmosis-labs/osmosis/osmomath"
 
 	types "github.com/cosmos/cosmos-sdk/types"
 )
@@ -85,22 +85,22 @@ func (_c *PerpetualKeeper_Close_Call) RunAndReturn(run func(types.Context, *perp
 }
 
 // GetAssetPrice provides a mock function with given fields: ctx, asset
-func (_m *PerpetualKeeper) GetAssetPrice(ctx types.Context, asset string) (math.LegacyDec, error) {
+func (_m *PerpetualKeeper) GetAssetPrice(ctx types.Context, asset string) (osmomath.BigDec, error) {
 	ret := _m.Called(ctx, asset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAssetPrice")
 	}
 
-	var r0 math.LegacyDec
+	var r0 osmomath.BigDec
 	var r1 error
-	if rf, ok := ret.Get(0).(func(types.Context, string) (math.LegacyDec, error)); ok {
+	if rf, ok := ret.Get(0).(func(types.Context, string) (osmomath.BigDec, error)); ok {
 		return rf(ctx, asset)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, string) math.LegacyDec); ok {
+	if rf, ok := ret.Get(0).(func(types.Context, string) osmomath.BigDec); ok {
 		r0 = rf(ctx, asset)
 	} else {
-		r0 = ret.Get(0).(math.LegacyDec)
+		r0 = ret.Get(0).(osmomath.BigDec)
 	}
 
 	if rf, ok := ret.Get(1).(func(types.Context, string) error); ok {
@@ -131,12 +131,12 @@ func (_c *PerpetualKeeper_GetAssetPrice_Call) Run(run func(ctx types.Context, as
 	return _c
 }
 
-func (_c *PerpetualKeeper_GetAssetPrice_Call) Return(_a0 math.LegacyDec, _a1 error) *PerpetualKeeper_GetAssetPrice_Call {
+func (_c *PerpetualKeeper_GetAssetPrice_Call) Return(_a0 osmomath.BigDec, _a1 error) *PerpetualKeeper_GetAssetPrice_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *PerpetualKeeper_GetAssetPrice_Call) RunAndReturn(run func(types.Context, string) (math.LegacyDec, error)) *PerpetualKeeper_GetAssetPrice_Call {
+func (_c *PerpetualKeeper_GetAssetPrice_Call) RunAndReturn(run func(types.Context, string) (osmomath.BigDec, error)) *PerpetualKeeper_GetAssetPrice_Call {
 	_c.Call.Return(run)
 	return _c
 }

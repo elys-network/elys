@@ -6,6 +6,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -21,14 +22,19 @@ func (k Keeper) JoinPoolEstimation(goCtx context.Context, req *types.QueryJoinPo
 		return nil, err
 	}
 
+	takerFeesLegacyDec := math.LegacyZeroDec()
+	if !takerFees.IsNil() {
+		takerFeesLegacyDec = takerFees.Dec()
+	}
+
 	shareDenom := types.GetPoolShareDenom(req.PoolId)
 	return &types.QueryJoinPoolEstimationResponse{
 		ShareAmountOut:            sdk.NewCoin(shareDenom, sharesOut),
 		AmountsIn:                 tokensIn,
-		Slippage:                  slippage,
-		WeightBalanceRatio:        weightBalanceBonus,
-		SwapFee:                   swapFee,
-		TakerFee:                  takerFees,
+		Slippage:                  slippage.Dec(),
+		WeightBalanceRatio:        weightBalanceBonus.Dec(),
+		SwapFee:                   swapFee.Dec(),
+		TakerFee:                  takerFeesLegacyDec,
 		WeightBalanceRewardAmount: weightRewardAmount,
 	}, nil
 }
@@ -37,11 +43,11 @@ func (k Keeper) JoinPoolEst(
 	ctx sdk.Context,
 	poolId uint64,
 	tokenInMaxs sdk.Coins,
-) (tokensIn sdk.Coins, sharesOut math.Int, slippage math.LegacyDec, weightBalanceBonus math.LegacyDec, swapFee math.LegacyDec, takerFeesFinal math.LegacyDec, weightRewardAmount sdk.Coin, err error) {
+) (tokensIn sdk.Coins, sharesOut math.Int, slippage osmomath.BigDec, weightBalanceBonus osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, weightRewardAmount sdk.Coin, err error) {
 	// all pools handled within this method are pointer references, `JoinPool` directly updates the pools
 	pool, poolExists := k.GetPool(ctx, poolId)
 	if !poolExists {
-		return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), sdk.Coin{}, types.ErrInvalidPoolId
+		return nil, math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, types.ErrInvalidPoolId
 	}
 
 	if !pool.PoolParams.UseOracle {
@@ -49,30 +55,30 @@ func (k Keeper) JoinPoolEst(
 		if len(tokensIn) != 1 {
 			numShares, tokensIn, err := pool.CalcJoinPoolNoSwapShares(tokenInMaxs)
 			if err != nil {
-				return tokensIn, numShares, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), sdk.Coin{}, err
+				return tokensIn, numShares, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, err
 			}
 		}
 
 		params := k.GetParams(ctx)
-		takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
+		takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 		cacheCtx, _ := ctx.CacheContext()
 		tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params, takerFees)
 		if err != nil {
-			return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), sdk.Coin{}, err
+			return nil, math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, err
 		}
 
 		return tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, sdk.Coin{}, nil
 	}
 
 	params := k.GetParams(ctx)
-	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
+	takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 	cacheCtx, _ := ctx.CacheContext()
 	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, _, err := pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
 	if err != nil {
-		return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), sdk.Coin{}, err
+		return nil, math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, err
 	}
 
 	var otherAsset types.PoolAsset
@@ -87,7 +93,7 @@ func (k Keeper) JoinPoolEst(
 			otherAsset = asset
 		}
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
-		bonusTokenAmount = tokensJoined[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+		bonusTokenAmount = osmomath.BigDecFromSDKInt(tokensJoined[0].Amount).Mul(weightBalanceBonus).Dec().TruncateInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
 			bonusTokenAmount = treasuryTokenAmount

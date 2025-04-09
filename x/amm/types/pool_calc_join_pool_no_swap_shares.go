@@ -5,6 +5,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // MaximalExactRatioJoin calculates the maximal amount of tokens that can be joined whilst maintaining pool asset's ratio
@@ -20,9 +21,10 @@ import (
 //  2. get the minimal share ratio that would work as the benchmark for all tokens.
 //  3. calculate the number of shares that could be joined (total share * min share ratio), return the remaining coins
 func MaximalExactRatioJoin(p *Pool, tokensIn sdk.Coins) (numShares sdkmath.Int, remCoins sdk.Coins, err error) {
-	coinShareRatios := make([]sdkmath.LegacyDec, len(tokensIn))
-	minShareRatio := sdkmath.LegacyMaxSortableDec
-	maxShareRatio := sdkmath.LegacyZeroDec()
+	coinShareRatios := make([]osmomath.BigDec, len(tokensIn))
+	maxDec := osmomath.OneBigDec().Quo(osmomath.SmallestBigDec())
+	minShareRatio := maxDec
+	maxShareRatio := osmomath.ZeroBigDec()
 
 	poolLiquidity := p.GetTotalPoolLiquidity()
 	totalShares := p.GetTotalShares()
@@ -35,7 +37,7 @@ func MaximalExactRatioJoin(p *Pool, tokensIn sdk.Coins) (numShares sdkmath.Int, 
 		if poolLiquidity.AmountOfNoDenomValidation(coin.Denom).IsZero() {
 			return numShares, remCoins, errors.New("pool liquidity is zero for denom: " + coin.Denom)
 		}
-		shareRatio := sdkmath.LegacyNewDecFromBigInt(coin.Amount.BigInt()).QuoInt(poolLiquidity.AmountOfNoDenomValidation(coin.Denom))
+		shareRatio := osmomath.BigDecFromSDKInt(coin.Amount).Quo(osmomath.BigDecFromSDKInt(poolLiquidity.AmountOfNoDenomValidation(coin.Denom)))
 		if shareRatio.LT(minShareRatio) {
 			minShareRatio = shareRatio
 		}
@@ -45,14 +47,14 @@ func MaximalExactRatioJoin(p *Pool, tokensIn sdk.Coins) (numShares sdkmath.Int, 
 		coinShareRatios[i] = shareRatio
 	}
 
-	if minShareRatio.Equal(sdkmath.LegacyMaxSortableDec) {
+	if minShareRatio.Equal(maxDec) {
 		return numShares, remCoins, errors.New("unexpected error in MaximalExactRatioJoin")
 	}
 
 	remCoins = sdk.Coins{}
 	// critically we round down here (TruncateInt), to ensure that the returned LP shares
 	// are always less than or equal to % liquidity added.
-	numShares = minShareRatio.MulInt(totalShares.Amount).TruncateInt()
+	numShares = minShareRatio.Mul(osmomath.BigDecFromSDKInt(totalShares.Amount)).Dec().TruncateInt()
 
 	// if we have multiple share values, calculate remainingCoins
 	if !minShareRatio.Equal(maxShareRatio) {
@@ -63,7 +65,7 @@ func MaximalExactRatioJoin(p *Pool, tokensIn sdk.Coins) (numShares sdkmath.Int, 
 				continue
 			}
 
-			usedAmount := minShareRatio.MulInt(poolLiquidity.AmountOfNoDenomValidation(coin.Denom)).Ceil().TruncateInt()
+			usedAmount := minShareRatio.Mul(osmomath.BigDecFromSDKInt(poolLiquidity.AmountOfNoDenomValidation(coin.Denom))).Ceil().Dec().TruncateInt()
 			newAmt := coin.Amount.Sub(usedAmount)
 			// if newAmt is non-zero, add to RemCoins. (It could be zero due to rounding)
 			if !newAmt.IsZero() {

@@ -1,5 +1,7 @@
 package types
 
+import "github.com/osmosis-labs/osmosis/osmomath"
+
 func GetSpotOrderTypeFromString(s string) SpotOrderType {
 	switch s {
 	case "stoploss":
@@ -26,4 +28,12 @@ func GetPerpetualOrderTypeFromString(s string) PerpetualOrderType {
 	default:
 		panic("invalid perpetual order type")
 	}
+}
+
+func (o PerpetualOrder) GetBigDecTriggerPrice() osmomath.BigDec {
+	return osmomath.BigDecFromDec(o.TriggerPrice)
+}
+
+func (o SpotOrder) GetBigDecOrderPrice() osmomath.BigDec {
+	return osmomath.BigDecFromDec(o.OrderPrice)
 }

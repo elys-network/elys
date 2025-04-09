@@ -3,6 +3,8 @@ package types
 import (
 	"context"
 
+	"github.com/osmosis-labs/osmosis/osmomath"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -36,8 +38,8 @@ type BankKeeper interface {
 
 type OracleKeeper interface {
 	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
-	GetAssetPrice(ctx sdk.Context, asset string) (oracletypes.Price, bool)
-	GetAssetPriceFromDenom(ctx sdk.Context, denom string) math.LegacyDec
+	GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool)
+	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
 }
 
@@ -74,13 +76,13 @@ type AmmKeeper interface {
 	CalcInRouteSpotPrice(ctx sdk.Context,
 		tokenIn sdk.Coin,
 		routes []*ammtypes.SwapAmountInRoute,
-		discount math.LegacyDec,
-		overrideSwapFee math.LegacyDec,
-	) (math.LegacyDec, math.LegacyDec, sdk.Coin, math.LegacyDec, math.LegacyDec, sdk.Coin, math.LegacyDec, math.LegacyDec, error)
+		discount osmomath.BigDec,
+		overrideSwapFee osmomath.BigDec,
+	) (osmomath.BigDec, osmomath.BigDec, sdk.Coin, osmomath.BigDec, osmomath.BigDec, sdk.Coin, osmomath.BigDec, osmomath.BigDec, error)
 	Balance(goCtx context.Context, req *ammtypes.QueryBalanceRequest) (*ammtypes.QueryBalanceResponse, error)
-	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) math.LegacyDec
-	CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) math.LegacyDec
-	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) math.LegacyDec
+	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) osmomath.BigDec
+	CalculateUSDValue(ctx sdk.Context, denom string, amount math.Int) osmomath.BigDec
+	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) osmomath.BigDec
 }
 
 type EstakingKeeper interface {
@@ -107,7 +109,7 @@ type StablestakeKeeper interface {
 	GetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
 	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, borrowingForPool uint64) stablestaketypes.Debt
 	GetPool(ctx sdk.Context, poolId uint64) (pool stablestaketypes.Pool, found bool)
-	CalculateRedemptionRateForPool(ctx sdk.Context, pool stablestaketypes.Pool) math.LegacyDec
+	CalculateRedemptionRateForPool(ctx sdk.Context, pool stablestaketypes.Pool) osmomath.BigDec
 }
 
 type TradeshieldKeeper interface {
