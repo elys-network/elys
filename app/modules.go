@@ -114,7 +114,7 @@ var maccPerms = map[string][]string{
 	ammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 	stablestaketypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 	masterchefmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-	wasmTypes.ModuleName:        {authtypes.Burner},
+	wasmTypes.ModuleName:             {authtypes.Burner},
 }
 
 func appModules(
