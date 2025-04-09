@@ -44,7 +44,6 @@ func (msg *MsgSwapExactAmountOut) ValidateBasic() error {
 			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid recipient address (%s)", err)
 		}
 	}
-	seenDenoms := make(map[string]bool)
 	for i, route := range msg.Routes {
 		if err = sdk.ValidateDenom(route.TokenInDenom); err != nil {
 			return err
@@ -54,23 +53,12 @@ func (msg *MsgSwapExactAmountOut) ValidateBasic() error {
 		if i < (len(msg.Routes)-1) && msg.Routes[i+1].TokenInDenom == route.TokenInDenom {
 			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "route %d has the same input and output denom as the previous route", i)
 		}
-
-		// Ensure all TokenInDenom values are unique
-		if seenDenoms[route.TokenInDenom] {
-			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "duplicate TokenInDenom found in route %d", i)
-		}
-		seenDenoms[route.TokenInDenom] = true
 	}
 	if err = msg.TokenOut.Validate(); err != nil {
 		return err
 	}
 	if msg.TokenOut.IsZero() {
 		return errors.New("token in is zero")
-	}
-
-	// Ensure no circular swaps
-	if len(msg.Routes) > 0 && msg.TokenOut.Denom == msg.Routes[0].TokenInDenom {
-		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "circular swap detected: token in denom matches the last route's token out denom")
 	}
 
 	return nil
