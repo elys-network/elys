@@ -179,6 +179,6 @@ func (k Keeper) V6Migrate(ctx sdk.Context) {
 	protocolRevenueAddress, _ := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, protocolRevenueAddress, types.ModuleName, sdk.Coins{totalRewards})
 	if err != nil {
-		ctx.Logger().Error(fmt.Sprintf("migration error: %s", err.Error()))
+		ctx.Logger().Error(fmt.Sprintf("masterchef v6 migration error: %s", err.Error()))
 	}
 }
