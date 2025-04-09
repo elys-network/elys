@@ -11,7 +11,7 @@ func (debt Debt) GetTotalLiablities() sdkmath.Int {
 }
 
 func (debt Debt) GetBigDecTotalLiablities() osmomath.BigDec {
-	return osmomath.BigDecFromSDKInt(debt.Borrowed.Add(debt.InterestStacked).Sub(debt.InterestPaid))
+	return osmomath.BigDecFromSDKInt(debt.GetTotalLiablities())
 }
 
 func (debt Debt) GetOwnerAccount() sdk.AccAddress {

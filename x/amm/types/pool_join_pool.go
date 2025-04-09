@@ -57,7 +57,7 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKee
 	}
 
 	weightedAmount := osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(weightMultiplier)
-	resizedAmount := osmomath.BigDecFromSDKInt(weightedAmount.Dec().TruncateInt()).
+	resizedAmount := weightedAmount.
 		Quo(externalLiquidityRatio).Dec().RoundInt()
 	slippageAmount, err := p.CalcGivenInSlippage(
 		ctx,
