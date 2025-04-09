@@ -105,12 +105,19 @@ func (app *ElysApp) setUpgradeStore() {
 
 	app.Logger().Debug("Upgrade info", "info", upgradeInfo)
 
-	if shouldLoadUpgradeStore(app, upgradeInfo) && upgradeInfo.Name == "v3" {
+	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			Added: []string{wasmTypes.StoreKey},
 			//Added:   []string{},
 			//Renamed: []storetypes.StoreRename{},
 			Deleted: []string{"itransferhook"},
+		}
+		if upgradeInfo.Name == "v3-rc3" {
+			storeUpgrades = storetypes.StoreUpgrades{
+				//Added:   []string{},
+				//Renamed: []storetypes.StoreRename{},
+				Deleted: []string{"itransferhook"},
+			}
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 
