@@ -152,9 +152,16 @@ func (k Keeper) AddPoolRewardsAccum(ctx sdk.Context, poolId, timestamp uint64, h
 
 func (k Keeper) V6Migrate(ctx sdk.Context) {
 	totalRewards := sdk.Coin{}
-	rewards := k.GetAllUserRewardInfos(ctx)
 	usdcDenom, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	for _, reward := range rewards {
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var reward types.UserRewardInfo
+		k.cdc.MustUnmarshal(iterator.Value(), &reward)
 		if reward.RewardDenom == usdcDenom && reward.RewardPending.IsPositive() {
 			totalRewards = totalRewards.Add(sdk.NewCoin(reward.RewardDenom, reward.RewardPending.TruncateInt()))
 		}
