@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -176,5 +177,8 @@ func (k Keeper) V6Migrate(ctx sdk.Context) {
 	// Transfer
 	params := k.GetParams(ctx)
 	protocolRevenueAddress, _ := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
-	k.bankKeeper.SendCoinsFromAccountToModule(ctx, protocolRevenueAddress, types.ModuleName, sdk.Coins{totalRewards})
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, protocolRevenueAddress, types.ModuleName, sdk.Coins{totalRewards})
+	if err != nil {
+		ctx.Logger().Error(fmt.Sprintf("migration error: %s", err.Error()))
+	}
 }
