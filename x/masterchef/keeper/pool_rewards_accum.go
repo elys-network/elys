@@ -2,9 +2,12 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 )
 
@@ -146,4 +149,35 @@ func (k Keeper) AddPoolRewardsAccum(ctx sdk.Context, poolId, timestamp uint64, h
 	lastAccum.GasReward = lastAccum.GasReward.Add(gasReward)
 	lastAccum.EdenReward = lastAccum.EdenReward.Add(edenReward)
 	k.SetPoolRewardsAccum(ctx, lastAccum)
+}
+
+func (k Keeper) V6Migrate(ctx sdk.Context) {
+	usdcDenom, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	totalRewards := sdk.NewCoin(usdcDenom, math.ZeroInt())
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var reward types.UserRewardInfo
+		k.cdc.MustUnmarshal(iterator.Value(), &reward)
+		if reward.RewardDenom == usdcDenom && reward.RewardPending.IsPositive() {
+			totalRewards = totalRewards.Add(sdk.NewCoin(reward.RewardDenom, reward.RewardPending.TruncateInt()))
+		}
+	}
+
+	balance := k.bankKeeper.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), usdcDenom)
+	diff := sdkmath.ZeroInt()
+	if totalRewards.Amount.GT(balance.Amount) {
+		diff = totalRewards.Amount.Sub(balance.Amount)
+		totalRewards.Amount = diff
+	}
+	// Transfer
+	params := k.GetParams(ctx)
+	protocolRevenueAddress, _ := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, protocolRevenueAddress, types.ModuleName, sdk.Coins{totalRewards})
+	if err != nil {
+		ctx.Logger().Error(fmt.Sprintf("masterchef v6 migration error: %s", err.Error()))
+	}
 }
