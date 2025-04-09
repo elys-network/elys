@@ -58,7 +58,11 @@ func (msg *MsgSwapExactAmountOut) ValidateBasic() error {
 		return err
 	}
 	if msg.TokenOut.IsZero() {
-		return errors.New("token in is zero")
+		return errors.New("token out is zero")
+	}
+
+	if !msg.TokenInMaxAmount.IsPositive() {
+		return errors.New("TokenInMaxAmount must be positive")
 	}
 
 	return nil
