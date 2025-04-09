@@ -491,7 +491,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 		// Send coins to protocol revenue address
 		if protocolRevenueCoins.IsAllPositive() {
 			providerPortion := ammkeeper.PortionCoins(protocolRevenueCoins, estakingParams.ProviderStakingRewardsPortion)
-			consumerPortion := stakerRevenueCoins.Sub(providerPortion...)
+			consumerPortion := protocolRevenueCoins.Sub(providerPortion...)
 
 			// This will be sent to provider
 			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerToSendToProviderName, providerPortion)
