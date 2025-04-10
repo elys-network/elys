@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdkmath "cosmossdk.io/math"
 
@@ -26,6 +27,14 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 				O_Tvl := el.Amount
 				P_Tvl := asset.Token.Amount.ToLegacyDec()
 
+				fmt.Println("----GetExternalLiquidityRatio----")
+				fmt.Println(entry.DisplayName)
+				fmt.Println(asset.Token.String())
+				fmt.Println(el.Depth)
+				fmt.Println(el.Amount)
+				fmt.Println("O_Tvl:", O_Tvl.String())
+				fmt.Println("P_TVL:", P_Tvl.String())
+
 				// Ensure tvl is not zero to avoid division by zero
 				if P_Tvl.IsZero() {
 					return nil, types.ErrAmountTooLow
@@ -36,11 +45,15 @@ func (k Keeper) GetExternalLiquidityRatio(ctx sdk.Context, pool types.Pool, amou
 				if liquidityRatio.IsZero() {
 					return nil, types.ErrAmountTooLow
 				}
+				fmt.Println("liquidityRatio:", liquidityRatio.String())
 				asset.ExternalLiquidityRatio = (O_Tvl.Quo(P_Tvl)).Quo(liquidityRatio)
 
+				fmt.Println("ExternalLiquidityRatio:", asset.ExternalLiquidityRatio.String())
 				if asset.ExternalLiquidityRatio.LT(sdkmath.LegacyOneDec()) {
 					asset.ExternalLiquidityRatio = sdkmath.LegacyOneDec()
 				}
+
+				fmt.Println("----GetExternalLiquidityRatio----")
 			}
 		}
 		updatedAssets[i] = asset
