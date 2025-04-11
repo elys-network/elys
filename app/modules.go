@@ -89,8 +89,6 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
 	tradeshieldmodule "github.com/elys-network/elys/x/tradeshield"
 	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
-	"github.com/elys-network/elys/x/transferhook"
-	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
 )
 
 // module account permissions
@@ -114,7 +112,7 @@ var maccPerms = map[string][]string{
 	ammmoduletypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 	stablestaketypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 	masterchefmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-	wasmTypes.ModuleName:        {authtypes.Burner},
+	wasmTypes.ModuleName:             {authtypes.Burner},
 }
 
 func appModules(
@@ -167,7 +165,6 @@ func appModules(
 		parametermodule.NewAppModule(appCodec, app.ParameterKeeper, app.AccountKeeper, app.BankKeeper),
 		stablestake.NewAppModule(appCodec, *app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper),
 		accountedpoolmodule.NewAppModule(appCodec, app.AccountedPoolKeeper, app.AccountKeeper, app.BankKeeper),
-		transferhook.NewAppModule(appCodec, app.TransferhookKeeper),
 		leveragelpmodule.NewAppModule(appCodec, *app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper),
 		masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper),
 		estakingmodule.NewAppModule(appCodec, *app.EstakingKeeper, app.AccountKeeper, app.BankKeeper),
@@ -226,7 +223,6 @@ func simulationModules(
 		parametermodule.NewAppModule(appCodec, app.ParameterKeeper, app.AccountKeeper, app.BankKeeper),
 		stablestake.NewAppModule(appCodec, *app.StablestakeKeeper, app.AccountKeeper, app.BankKeeper),
 		accountedpoolmodule.NewAppModule(appCodec, app.AccountedPoolKeeper, app.AccountKeeper, app.BankKeeper),
-		//transferhook.NewAppModule(appCodec, app.TransferhookKeeper),
 		leveragelpmodule.NewAppModule(appCodec, *app.LeveragelpKeeper, app.AccountKeeper, app.BankKeeper),
 		masterchefmodule.NewAppModule(appCodec, app.MasterchefKeeper, app.AccountKeeper, app.BankKeeper),
 		estakingmodule.NewAppModule(appCodec, *app.EstakingKeeper, app.AccountKeeper, app.BankKeeper),
@@ -282,7 +278,6 @@ func orderBeginBlockers() []string {
 		parametermoduletypes.ModuleName,
 		perpetualmoduletypes.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
-		transferhooktypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
@@ -335,7 +330,6 @@ func orderEndBlockers() []string {
 		parametermoduletypes.ModuleName,
 		perpetualmoduletypes.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
-		transferhooktypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
@@ -390,7 +384,6 @@ func orderInitBlockers() []string {
 		ammmoduletypes.ModuleName,
 		perpetualmoduletypes.ModuleName,
 		accountedpoolmoduletypes.ModuleName,
-		transferhooktypes.ModuleName,
 		leveragelpmoduletypes.ModuleName,
 		masterchefmoduletypes.ModuleName,
 		estakingmoduletypes.ModuleName,
