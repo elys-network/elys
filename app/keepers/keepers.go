@@ -691,7 +691,6 @@ func NewAppKeeper(
 		app.OracleKeeper,
 		app.StablestakeKeeper,
 		app.CommitmentKeeper,
-		app.AssetprofileKeeper,
 		app.MasterchefKeeper,
 		app.AccountedPoolKeeper,
 	)
