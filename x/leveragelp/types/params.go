@@ -18,7 +18,7 @@ func NewParams() Params {
 		NumberPerBlock:      (int64)(1000),
 		EnabledPools:        []uint64(nil),
 		ExitBuffer:          sdkmath.LegacyMustNewDecFromStr("0.05"),
-		StopLossEnabled:     false,
+		StopLossEnabled:     true,
 	}
 }
 
