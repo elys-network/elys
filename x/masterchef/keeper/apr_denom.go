@@ -91,7 +91,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			}
 
 			// Calc Eden price in usdc
-			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
+			// We put Elys as denom as Eden won't be available in amm pool and has the same value as Elys
 			edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 			if edenDenomPrice.IsZero() {
 				return math.LegacyZeroDec(), nil
@@ -108,7 +108,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				return math.LegacyZeroDec(), nil
 			}
 
-			// Mutiply by 365 to get yearly rewards
+			// Multiply by 365 to get yearly rewards
 			entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 			if !found {
 				return math.LegacyZeroDec(), assetprofiletypes.ErrAssetProfileNotFound
