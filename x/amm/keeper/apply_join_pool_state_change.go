@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -100,7 +102,16 @@ func (k Keeper) ApplyJoinPoolStateChange(
 		}
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
 
-		bonusTokenAmount := joinCoins[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+		// ensure token prices for in/out tokens set properly
+		inTokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, joinCoins[0].Denom)
+		if inTokenPrice.IsZero() {
+			return fmt.Errorf("price for inToken not set: %s", joinCoins[0].Denom)
+		}
+		outTokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, otherAsset.Token.Denom)
+		if outTokenPrice.IsZero() {
+			return fmt.Errorf("price for outToken not set: %s", otherAsset.Token.Denom)
+		}
+		bonusTokenAmount := ((joinCoins[0].Amount.ToLegacyDec().Mul(weightBalanceBonus)).Mul(inTokenPrice).Quo(outTokenPrice)).TruncateInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
 			bonusTokenAmount = treasuryTokenAmount
