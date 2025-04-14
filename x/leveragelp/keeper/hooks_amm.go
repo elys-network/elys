@@ -6,7 +6,6 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	"github.com/elys-network/elys/x/leveragelp/types"
 )
 
 func (k Keeper) CheckAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool) error {
@@ -21,7 +20,7 @@ func (k Keeper) CheckAmmPoolBalance(ctx sdk.Context, ammPool ammtypes.Pool) erro
 	for _, asset := range ammPool.PoolAssets {
 		for _, liabilties := range stablestakeAmmPool.TotalLiabilities {
 			if asset.Token.Denom == liabilties.Denom && asset.Token.Amount.LT(liabilties.Amount) {
-				return types.ErrInsufficientUsdcAfterOp
+				return fmt.Errorf("insufficient amount of %s after the operation for leveragelp", asset.Token.Denom)
 			}
 		}
 	}
