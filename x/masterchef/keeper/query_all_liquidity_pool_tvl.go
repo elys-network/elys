@@ -32,7 +32,7 @@ func (k Keeper) AllLiquidityPoolTVL(goCtx context.Context, req *types.QueryAllLi
 	}
 	totalTVL = totalTVL.Add(poolsTVL.TruncateInt())
 
-	stableStakeTVL := k.stableKeeper.AllTVL(ctx, k.oracleKeeper)
+	stableStakeTVL := k.stableKeeper.AllTVL(ctx)
 	totalTVL = totalTVL.Add(stableStakeTVL.TruncateInt())
 
 	return &types.QueryAllLiquidityPoolTVLResponse{

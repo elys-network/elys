@@ -20,6 +20,7 @@ type (
 		bk                 types.BankKeeper
 		commitmentKeeper   *commitmentkeeper.Keeper
 		assetProfileKeeper types.AssetProfileKeeper
+		oracleKeeper       types.OracleKeeper
 		ammKeeper          types.AmmKeeper
 		hooks              types.StableStakeHooks
 	}
@@ -32,6 +33,7 @@ func NewKeeper(
 	bk types.BankKeeper,
 	commitmentKeeper *commitmentkeeper.Keeper,
 	assetProfileKeeper types.AssetProfileKeeper,
+	oracleKeeper types.OracleKeeper,
 	ammKeeper types.AmmKeeper,
 ) *Keeper {
 
@@ -47,6 +49,7 @@ func NewKeeper(
 		bk:                 bk,
 		commitmentKeeper:   commitmentKeeper,
 		assetProfileKeeper: assetProfileKeeper,
+		oracleKeeper:       oracleKeeper,
 		ammKeeper:          ammKeeper,
 	}
 }

@@ -112,7 +112,13 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 
 	position.LeveragedLpAmount = position.LeveragedLpAmount.Add(shares)
 	position.Liabilities = position.Liabilities.Add(borrowCoin.Amount)
-	position.StopLossPrice = msg.StopLossPrice
+
+	params := k.GetParams(ctx)
+	if params.StopLossEnabled {
+		position.StopLossPrice = msg.StopLossPrice
+	} else {
+		position.StopLossPrice = sdkmath.LegacyZeroDec()
+	}
 
 	// Get the Position health.
 	lr, err := k.GetPositionHealth(ctx, *position)

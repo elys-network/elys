@@ -79,7 +79,7 @@ func (suite *MasterchefKeeperTestSuite) SetupApp() {
 		InterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
 		InterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
 		HealthGainFactor:     sdkmath.LegacyOneDec(),
-		TotalValue:           sdkmath.ZeroInt(),
+		NetAmount:            sdkmath.ZeroInt(),
 		MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 		Id:                   stablestaketypes.UsdcPoolId,
 		DepositDenom:         ptypes.BaseCurrency,

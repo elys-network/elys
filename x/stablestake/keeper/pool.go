@@ -72,7 +72,7 @@ func (k Keeper) CalculateRedemptionRateForPool(ctx sdk.Context, pool types.Pool)
 		return math.LegacyZeroDec()
 	}
 
-	return pool.TotalValue.ToLegacyDec().Quo(totalShares.Amount.ToLegacyDec())
+	return pool.NetAmount.ToLegacyDec().Quo(totalShares.Amount.ToLegacyDec())
 }
 
 func (k Keeper) GetLatestPool(ctx sdk.Context) (val types.Pool, found bool) {

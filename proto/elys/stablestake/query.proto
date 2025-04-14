@@ -82,7 +82,7 @@ message QueryBorrowRatioRequest { uint64 pool_id = 1; }
 // QueryBorrowRatioResponse is response type for the Query/BorrowRatio RPC
 // method.
 message QueryBorrowRatioResponse {
-  string total_deposit = 1 [
+  string net_amount = 1 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
@@ -152,8 +152,8 @@ message PoolResponse {
     (gogoproto.nullable) = false
   ];
   string total_value = 9 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string max_leverage_ratio = 10 [
@@ -162,7 +162,7 @@ message PoolResponse {
     (gogoproto.nullable) = false
   ];
   uint64 pool_id = 11;
-  string total_deposit = 12 [
+  string net_amount = 12 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
