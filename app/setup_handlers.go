@@ -77,7 +77,7 @@ func (app *ElysApp) setUpgradeHandler() {
 			//}
 
 			// Set cosmwasm params
-			if plan.Name == "v3" {
+			if !strings.Contains(plan.Name, "v3-rc") {
 				wasmParams := wasmTypes.DefaultParams()
 				wasmParams.CodeUploadAccess = wasmTypes.AllowNobody
 				wasmParams.InstantiateDefaultPermission = wasmTypes.AccessTypeNobody
@@ -104,7 +104,7 @@ func (app *ElysApp) setUpgradeStore() {
 
 	app.Logger().Debug("Upgrade info", "info", upgradeInfo)
 
-	if shouldLoadUpgradeStore(app, upgradeInfo) && upgradeInfo.Name == "v3" {
+	if shouldLoadUpgradeStore(app, upgradeInfo) && !strings.Contains(upgradeInfo.Name, "v3-rc") {
 		storeUpgrades := storetypes.StoreUpgrades{
 			Added: []string{wasmTypes.StoreKey},
 			//Added:   []string{},
