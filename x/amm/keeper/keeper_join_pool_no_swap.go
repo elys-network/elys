@@ -116,7 +116,16 @@ func (k Keeper) JoinPoolNoSwap(
 		}
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
 
-		bonusTokenAmount := tokensJoined[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+		// ensure token prices for in/out tokens set properly
+		inTokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, tokensJoined[0].Denom)
+		if inTokenPrice.IsZero() {
+			return nil, sdkmath.ZeroInt(), fmt.Errorf("price for inToken not set: %s", tokensJoined[0].Denom)
+		}
+		outTokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, otherAsset.Token.Denom)
+		if outTokenPrice.IsZero() {
+			return nil, sdkmath.ZeroInt(), fmt.Errorf("price for outToken not set: %s", otherAsset.Token.Denom)
+		}
+		bonusTokenAmount := ((tokensJoined[0].Amount.ToLegacyDec().Mul(weightBalanceBonus)).Mul(inTokenPrice).Quo(outTokenPrice)).TruncateInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
 			weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(tokensJoined[0].Amount.ToLegacyDec())
