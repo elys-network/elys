@@ -69,7 +69,7 @@ func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
 		{
 			desc: "interest calculation with zero total value",
 			pool: types.Pool{
-				TotalValue:           sdkmath.NewInt(0),
+				NetAmount:            sdkmath.NewInt(0),
 				InterestRate:         sdkmath.LegacyNewDec(5),
 				InterestRateMax:      sdkmath.LegacyNewDec(10),
 				InterestRateMin:      sdkmath.LegacyNewDec(1),
@@ -83,7 +83,7 @@ func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
 		{
 			desc: "interest calculation with zero max leverage",
 			pool: types.Pool{
-				TotalValue:           sdkmath.NewInt(0),
+				NetAmount:            sdkmath.NewInt(0),
 				InterestRate:         sdkmath.LegacyNewDec(5),
 				InterestRateMax:      sdkmath.LegacyNewDec(10),
 				InterestRateMin:      sdkmath.LegacyNewDec(1),
@@ -98,7 +98,7 @@ func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
 		{
 			desc: "interest calculation with zero max leverage",
 			pool: types.Pool{
-				TotalValue:           sdkmath.NewInt(10000),
+				NetAmount:            sdkmath.NewInt(10000),
 				InterestRate:         sdkmath.LegacyNewDec(12),
 				InterestRateMax:      sdkmath.LegacyNewDec(17),
 				InterestRateMin:      sdkmath.LegacyNewDec(12),

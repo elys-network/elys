@@ -334,16 +334,29 @@ message QueryCloseEstResponse {
   ];
 }
 
-message QueryCommittedTokensLockedRequest { string address = 1; }
+message QueryCommittedTokensLockedRequest {
+  string address = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message PositionCommitedToken {
+  uint64 amm_pool_id = 1;
+  uint64 position_id = 2;
+  uint64 borrow_pool_id = 3;
+  string collateral_denom = 4;
+  cosmos.base.v1beta1.Coin locked_committed = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin total_committed = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
 
 message QueryCommittedTokensLockedResponse {
   string address = 1;
-  repeated cosmos.base.v1beta1.Coin locked_committed = 2 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-  ];
-  repeated cosmos.base.v1beta1.Coin total_committed = 3 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-  ];
+  repeated PositionCommitedToken position_commited_token = 2
+      [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }
