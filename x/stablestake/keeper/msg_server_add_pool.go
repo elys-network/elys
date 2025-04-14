@@ -36,7 +36,7 @@ func (k msgServer) AddPool(goCtx context.Context, msg *types.MsgAddPool) (*types
 		InterestRateMax:      msg.InterestRateMax,
 		InterestRateMin:      msg.InterestRateMin,
 		InterestRate:         msg.InterestRate,
-		TotalValue:           math.ZeroInt(),
+		NetAmount:            math.ZeroInt(),
 	}
 
 	k.SetPool(ctx, pool)

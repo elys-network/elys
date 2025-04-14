@@ -586,6 +586,7 @@ func NewAppKeeper(
 		app.BankKeeper,
 		app.CommitmentKeeper,
 		app.AssetprofileKeeper,
+		app.OracleKeeper,
 		app.AmmKeeper,
 	)
 

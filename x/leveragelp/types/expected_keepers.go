@@ -60,7 +60,7 @@ type StableStakeKeeper interface {
 	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, borrowingForPool uint64) stablestaketypes.Debt
 	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64, borrowingForPool uint64) error
 	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64, repayingForPool uint64) error
-	TVL(ctx sdk.Context, oracleKeeper stablestaketypes.OracleKeeper, poolId uint64) sdkmath.LegacyDec
+	TVL(ctx sdk.Context, poolId uint64) sdkmath.LegacyDec
 	GetDebtWithoutUpdatedInterest(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
 	GetPoolByDenom(ctx sdk.Context, denom string) (stablestaketypes.Pool, bool)
 	AddPoolLiabilities(ctx sdk.Context, id uint64, coin sdk.Coin)
