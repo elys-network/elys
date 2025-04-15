@@ -84,7 +84,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 
 				// Track amount in pool
 				weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(sdkmath.LegacyOneDec().Sub(params.WeightBreakingFeePortion))
-				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, weightRecoveryFeeForPool.Mul(weightRecoveryFeeAmount.ToLegacyDec()).TruncateInt()))
+				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, weightRecoveryFeeForPool.Mul(coin.Amount.ToLegacyDec()).TruncateInt()))
 			}
 		}
 	}
