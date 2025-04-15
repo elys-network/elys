@@ -109,7 +109,7 @@ func (suite *KeeperTestSuite) TestQueryGetPosition() {
 			PositionUsdValue: sdkmath.LegacyMustNewDecFromStr("0.004940470091100279"),
 		},
 		InterestRateHour:    sdkmath.LegacyMustNewDecFromStr("0.000017123287671233"),
-		InterestRateHourUsd: sdkmath.LegacyZeroDec(),
+		InterestRateHourUsd: sdkmath.LegacyMustNewDecFromStr("0.000000068493152000"),
 	}
 	pos_for_address_res, _ := k.QueryPositionsForAddress(suite.ctx, &types.PositionsForAddressRequest{Address: addr.String(), Pagination: nil})
 
