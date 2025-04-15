@@ -38,17 +38,20 @@ jobs:
           NODE=https://rpc.devnet.elys.network
           OPTIONS="--node $NODE --chain-id elysics-1 --keyring-backend=test -b=sync --fees=20000uelys --gas=300000 -y"
 
-          # import proposers key
-          ${ELYSD} keys import-hex proposer1 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_1 }} --keyring-backend=test
-          ${ELYSD} keys import-hex proposer2 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_2 }} --keyring-backend=test
-          ${ELYSD} keys import-hex proposer3 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_3 }} --keyring-backend=test
-          ${ELYSD} keys import-hex proposer4 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_4 }} --keyring-backend=test
+          # save private keys to files
+          echo "${{ secrets.PRIVATE_KEY_FUJI }}" > /tmp/private_key_fuji.txt
+          echo "${{ secrets.PRIVATE_KEY_MALLORCA }}" > /tmp/private_key_mallorca.txt
+          echo "${{ secrets.PRIVATE_KEY_BORA }}" > /tmp/private_key_bora.txt
 
-          GOV_ID=9
+          # recover keys
+          echo "${{ secrets.PASSPHRASE_FUJI }}"     | $ELYSD keys import fuji     --keyring-backend test /tmp/private_key_fuji.txt
+          echo "${{ secrets.PASSPHRASE_MALLORCA }}" | $ELYSD keys import mallorca --keyring-backend test /tmp/private_key_mallorca.txt
+          echo "${{ secrets.PASSPHRASE_BORA }}"     | $ELYSD keys import bora     --keyring-backend test /tmp/private_key_bora.txt
+
+          GOV_ID=10
 
           # vote on proposal
-          ${ELYSD} tx gov vote $GOV_ID yes --from=proposer1 $OPTIONS
-          ${ELYSD} tx gov vote $GOV_ID yes --from=proposer2 $OPTIONS
-          ${ELYSD} tx gov vote $GOV_ID yes --from=proposer3 $OPTIONS
-          ${ELYSD} tx gov vote $GOV_ID yes --from=proposer4 $OPTIONS
+           $ELYSD tx gov vote $GOV_ID yes --from=fuji $OPTIONS
+          #$ELYSD tx gov vote $GOV_ID yes --from=mallorca $OPTIONS
+          $ELYSD tx gov vote $GOV_ID yes --from=bora $OPTIONS
           sleep 10
