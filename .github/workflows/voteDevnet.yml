@@ -14,7 +14,7 @@ jobs:
     name: Vote
     runs-on: ubuntu-latest
     steps:
-      - name: Create software upgrade proposal
+      - name: Vote
         run: |
           # Get latest release version using GitHub API
           ELYS_VERSION=$(curl -s https://api.github.com/repos/elys-network/elys/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
@@ -35,7 +35,7 @@ jobs:
           extract_checksum() { awk "/elysd-${ELYS_VERSION}-linux-amd64.tar.gz/ {print \$1; exit}"; }
 
           # environment variables
-          NODE=http://37.27.221.92:27657
+          NODE=https://rpc.devnet.elys.network
           OPTIONS="--node $NODE --chain-id elysics-1 --keyring-backend=test -b=sync --fees=20000uelys --gas=300000 -y"
 
           # import proposers key
@@ -44,18 +44,7 @@ jobs:
           ${ELYSD} keys import-hex proposer3 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_3 }} --keyring-backend=test
           ${ELYSD} keys import-hex proposer4 ${{ secrets.TESTNET_PROPOSER_PRIVATE_KEY_4 }} --keyring-backend=test
 
-          # get checksum
-          checksum=$(cat $SHA256SUM | extract_checksum)
-
-          # query and upgrade height
-          height=$(${ELYSD} status --node $NODE | extract_and_calc_upgrade_height)
-
-          # generate upgrade version
-          upgrade_version=$(echo ${ELYS_VERSION} | cut -d'.' -f1)
-          echo "current version: ${ELYS_VERSION}"
-          echo "upgrade_version: $upgrade_version"
-
-          GOV_ID=57
+          GOV_ID=9
 
           # vote on proposal
           ${ELYSD} tx gov vote $GOV_ID yes --from=proposer1 $OPTIONS
