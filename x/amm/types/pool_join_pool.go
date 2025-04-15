@@ -132,6 +132,7 @@ func (p *Pool) JoinPool(
 		}
 		totalWeight := p.TotalWeight
 		normalizedWeight := poolAssetsByDenom[tokenIn.Denom].Weight.ToLegacyDec().Quo(totalWeight.ToLegacyDec())
+		// We multiply the swap fee and taker fees by the normalized weight because it is calculated like this later in CalcSingleAssetJoinPoolShares function
 		swapFee := feeRatio(normalizedWeight, p.PoolParams.SwapFee)
 		takerFee := feeRatio(normalizedWeight, takerFees)
 
