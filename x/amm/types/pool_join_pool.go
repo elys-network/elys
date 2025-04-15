@@ -92,7 +92,7 @@ func (p *Pool) JoinPool(
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
 	params Params,
-	takerfees sdkmath.LegacyDec,
+	takerFees sdkmath.LegacyDec,
 ) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, takerFeesFinal sdkmath.LegacyDec, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
@@ -122,17 +122,26 @@ func (p *Pool) JoinPool(
 			}
 		}
 
-		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
+		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn, takerFees)
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
+		poolAssetsByDenom, err := GetPoolAssetsByDenom(p.GetAllPoolAssets())
+		if err != nil {
+			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		}
+		totalWeight := p.TotalWeight
+		normalizedWeight := poolAssetsByDenom[tokenIn.Denom].Weight.ToLegacyDec().Quo(totalWeight.ToLegacyDec())
+		// We multiply the swap fee and taker fees by the normalized weight because it is calculated like this later in CalcSingleAssetJoinPoolShares function
+		swapFee := feeRatio(normalizedWeight, p.PoolParams.SwapFee)
+		takerFee := feeRatio(normalizedWeight, takerFees)
 
 		// update pool with the calculated share and liquidity needed to join pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
-		return tokensJoined, numShares, totalSlippage, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
+		return tokensJoined, numShares, totalSlippage, sdkmath.LegacyZeroDec(), swapFee, takerFee, nil
 	}
 
 	accountedAssets := p.GetAccountedBalance(ctx, accountedPoolKeeper, p.PoolAssets)
@@ -171,7 +180,7 @@ func (p *Pool) JoinPool(
 		swapFee = p.GetPoolParams().SwapFee.Mul(initialWeightOut)
 	}
 
-	takerFeesFinal = takerfees.Mul(initialWeightOut)
+	takerFeesFinal = takerFees.Mul(initialWeightOut)
 
 	totalShares := p.GetTotalShares()
 	numSharesDec := sdkmath.LegacyNewDecFromInt(totalShares.Amount).
