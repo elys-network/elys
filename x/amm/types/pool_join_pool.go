@@ -122,7 +122,7 @@ func (p *Pool) JoinPool(
 			}
 		}
 
-		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
+		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn, takerFees)
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
