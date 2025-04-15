@@ -274,6 +274,11 @@ message QuerySwapEstimationResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  string taker_fee = 8 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QuerySwapEstimationExactAmountOutResponse {
@@ -389,6 +394,11 @@ message QuerySwapEstimationByDenomResponse {
   ];
   cosmos.base.v1beta1.Coin weight_balance_reward_amount = 11
       [ (gogoproto.nullable) = false ];
+  string taker_fee = 12 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryAMMPriceRequest {

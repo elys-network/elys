@@ -92,7 +92,7 @@ func (p *Pool) JoinPool(
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
 	params Params,
-	takerfees sdkmath.LegacyDec,
+	takerFees sdkmath.LegacyDec,
 ) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, takerFeesFinal sdkmath.LegacyDec, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
@@ -171,7 +171,7 @@ func (p *Pool) JoinPool(
 		swapFee = p.GetPoolParams().SwapFee.Mul(initialWeightOut)
 	}
 
-	takerFeesFinal = takerfees.Mul(initialWeightOut)
+	takerFeesFinal = takerFees.Mul(initialWeightOut)
 
 	totalShares := p.GetTotalShares()
 	numSharesDec := sdkmath.LegacyNewDecFromInt(totalShares.Amount).

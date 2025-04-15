@@ -250,6 +250,8 @@ message QueryOpenEstResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  cosmos.base.v1beta1.Coin weight_balance_reward_amount = 7
+      [ (gogoproto.nullable) = false ];
 }
 
 message QueryCloseEstRequest {
