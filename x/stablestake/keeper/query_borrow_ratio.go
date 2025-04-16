@@ -29,15 +29,16 @@ func (k Keeper) BorrowRatio(goCtx context.Context, req *types.QueryBorrowRatioRe
 	depositDenom := pool.GetDepositDenom()
 
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := pool.TotalValue.Sub(balance.Amount)
+
+	borrowed := pool.NetAmount.Sub(balance.Amount)
 	borrowRatio := osmomath.ZeroBigDec()
-	if pool.TotalValue.GT(sdkmath.ZeroInt()) {
-		borrowRatio = osmomath.BigDecFromSDKInt(borrowed).Quo(pool.GetBigDecTotalValue())
+	if pool.NetAmount.GT(sdkmath.ZeroInt()) {
+		borrowRatio = osmomath.BigDecFromSDKInt(borrowed).Quo(pool.GetBigDecNetAmount())
 	}
 
 	return &types.QueryBorrowRatioResponse{
-		TotalDeposit: pool.TotalValue,
-		TotalBorrow:  borrowed,
-		BorrowRatio:  borrowRatio.Dec(),
+		NetAmount:   pool.NetAmount,
+		TotalBorrow: borrowed,
+		BorrowRatio: borrowRatio.Dec(),
 	}, nil
 }

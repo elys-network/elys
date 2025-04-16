@@ -50,6 +50,6 @@ func (p Pool) GetBigDecHealthGainFactor() osmomath.BigDec {
 	return osmomath.BigDecFromDec(p.HealthGainFactor)
 }
 
-func (p Pool) GetBigDecTotalValue() osmomath.BigDec {
-	return osmomath.BigDecFromSDKInt(p.TotalValue)
+func (p Pool) GetBigDecNetAmount() osmomath.BigDec {
+	return osmomath.BigDecFromSDKInt(p.NetAmount)
 }

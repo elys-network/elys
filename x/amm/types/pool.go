@@ -381,6 +381,10 @@ func (pool Pool) GetAssetExternalLiquidityRatio(asset string) (osmomath.BigDec, 
 	return osmomath.ZeroBigDec(), errors.New("asset not found in the pool")
 }
 
+func (p Pool) GetBigDecTotalWeight() osmomath.BigDec {
+	return osmomath.BigDecFromSDKInt(p.TotalWeight)
+}
+
 func (p PoolExtraInfo) GetBigDecLpTokenPrice() osmomath.BigDec {
 	return osmomath.BigDecFromDec(p.LpTokenPrice)
 }

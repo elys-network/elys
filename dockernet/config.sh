@@ -64,7 +64,7 @@ ELYS_DENOM=uelys
 ELYS_RPC_PORT=26657
 ELYS_ADMIN_ACCT=admin
 
-# Binaries are contigent on whether we're doing an upgrade or not
+# Binaries are contingent on whether we're doing an upgrade or not
 if [[ "$UPGRADE_NAME" == "" ]]; then 
   ELYS_BINARY="$DOCKERNET_HOME/../build/elysd"
 else

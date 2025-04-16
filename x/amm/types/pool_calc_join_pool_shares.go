@@ -35,7 +35,7 @@ func (p *Pool) calcSingleAssetJoin(tokenIn sdk.Coin, spreadFactor osmomath.BigDe
 //
 // It returns the number of shares created, the amount of coins actually joined into the pool
 // (in case of not being able to fully join), or an error.
-func (p *Pool) CalcSingleAssetJoinPoolShares(tokensIn sdk.Coins) (numShares sdkmath.Int, tokensJoined sdk.Coins, err error) {
+func (p *Pool) CalcSingleAssetJoinPoolShares(tokensIn sdk.Coins, takerFees osmomath.BigDec) (numShares sdkmath.Int, tokensJoined sdk.Coins, err error) {
 	// get all 'pool assets' (aka current pool liquidity + balancer weight)
 	poolAssetsByDenom, err := GetPoolAssetsByDenom(p.GetAllPoolAssets())
 	if err != nil {
@@ -54,7 +54,7 @@ func (p *Pool) CalcSingleAssetJoinPoolShares(tokensIn sdk.Coins) (numShares sdkm
 
 	// 2) Single token provided, so do single asset join and exit.
 	totalShares := p.GetTotalShares()
-	numShares, err = p.calcSingleAssetJoin(tokensIn[0], p.PoolParams.GetBigDecSwapFee(), poolAssetsByDenom[tokensIn[0].Denom], totalShares.Amount)
+	numShares, err = p.calcSingleAssetJoin(tokensIn[0], p.PoolParams.GetBigDecSwapFee().Add(takerFees), poolAssetsByDenom[tokensIn[0].Denom], totalShares.Amount)
 	if err != nil {
 		return sdkmath.ZeroInt(), sdk.NewCoins(), err
 	}

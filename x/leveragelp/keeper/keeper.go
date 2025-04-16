@@ -30,7 +30,6 @@ type (
 		oracleKeeper        ammtypes.OracleKeeper
 		stableKeeper        types.StableStakeKeeper
 		commKeeper          types.CommitmentKeeper
-		assetProfileKeeper  types.AssetProfileKeeper
 		masterchefKeeper    types.MasterchefKeeper
 		accountedPoolKeeper types.AccountedPoolKeeper
 
@@ -47,7 +46,6 @@ func NewKeeper(
 	oracleKeeper ammtypes.OracleKeeper,
 	stableKeeper types.StableStakeKeeper,
 	commitmentKeeper types.CommitmentKeeper,
-	assetProfileKeeper types.AssetProfileKeeper,
 	masterchefKeeper types.MasterchefKeeper,
 	accountedPoolKeeper types.AccountedPoolKeeper,
 ) *Keeper {
@@ -65,7 +63,6 @@ func NewKeeper(
 		oracleKeeper:        oracleKeeper,
 		stableKeeper:        stableKeeper,
 		commKeeper:          commitmentKeeper,
-		assetProfileKeeper:  assetProfileKeeper,
 		masterchefKeeper:    masterchefKeeper,
 		accountedPoolKeeper: accountedPoolKeeper,
 	}

@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -82,7 +84,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 
 				// Track amount in pool
 				weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(osmomath.OneBigDec().Sub(params.GetBigDecWeightBreakingFeePortion()))
-				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, weightRecoveryFeeForPool.Mul(osmomath.BigDecFromSDKInt(weightRecoveryFeeAmount)).Dec().TruncateInt()))
+				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, weightRecoveryFeeForPool.Mul(osmomath.BigDecFromSDKInt(coin.Amount)).Dec().TruncateInt()))
 			}
 		}
 	}
@@ -100,7 +102,16 @@ func (k Keeper) ApplyJoinPoolStateChange(
 		}
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
 
-		bonusTokenAmount := osmomath.BigDecFromSDKInt(joinCoins[0].Amount).Mul(weightBalanceBonus).Dec().TruncateInt()
+		// ensure token prices for in/out tokens set properly
+		inTokenPrice := k.oracleKeeper.GetDenomPrice(ctx, joinCoins[0].Denom)
+		if inTokenPrice.IsZero() {
+			return fmt.Errorf("price for inToken not set: %s", joinCoins[0].Denom)
+		}
+		outTokenPrice := k.oracleKeeper.GetDenomPrice(ctx, otherAsset.Token.Denom)
+		if outTokenPrice.IsZero() {
+			return fmt.Errorf("price for outToken not set: %s", otherAsset.Token.Denom)
+		}
+		bonusTokenAmount := (osmomath.BigDecFromSDKInt(joinCoins[0].Amount).Mul(weightBalanceBonus).Mul(inTokenPrice).Quo(outTokenPrice)).Dec().TruncateInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
 			bonusTokenAmount = treasuryTokenAmount

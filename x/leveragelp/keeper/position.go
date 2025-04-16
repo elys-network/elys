@@ -8,14 +8,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/osmosis-labs/osmosis/osmomath"
 
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -256,19 +253,14 @@ func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (osm
 		return osmomath.ZeroBigDec(), nil
 	}
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
-	debtAmount := debt.GetTotalLiablities()
+	debtAmount := debt.GetBigDecTotalLiablities()
 	if debtAmount.IsZero() {
 		maxDec := osmomath.OneBigDec().Quo(osmomath.SmallestBigDec())
 		return maxDec, nil
 	}
 
-	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	if !found {
-		return osmomath.ZeroBigDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-	}
-
-	debtDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrency)
-	debtValue := osmomath.BigDecFromSDKInt(debtAmount).Mul(debtDenomPrice)
+	debtDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
+	debtValue := debtAmount.Mul(debtDenomPrice)
 
 	ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
 	if err != nil {

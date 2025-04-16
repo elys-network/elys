@@ -106,10 +106,10 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		percentageExitLeverageFee = osmomath.OneBigDec()
 	}
 
-	// We subtract here because CheckAmmUsdcBalance in hooks will validate if there is enough amount to pay liabilities, since we're exiting this one, it needs reduced value
+	// We subtract here because CheckAmmBalance in hooks will validate if there is enough amount to pay liabilities, since we're exiting this one, it needs reduced value
 	k.stableKeeper.SubtractPoolLiabilities(ctx, position.AmmPoolId, sdk.NewCoin(position.Collateral.Denom, repayAmount))
 
-	// Subtract amount that is being reduced from lp pool as it gets checked in CheckAmmUsdcBalance
+	// Subtract amount that is being reduced from lp pool as it gets checked in CheckAmmBalance
 	pool.LeveragedLpAmount = pool.LeveragedLpAmount.Sub(lpSharesForRepay)
 	pool.UpdateAssetLeveragedAmount(ctx, position.Collateral.Denom, lpSharesForRepay, false)
 	// pool is set here

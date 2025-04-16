@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -76,7 +77,8 @@ func (k Keeper) JoinPoolEst(
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 	cacheCtx, _ := ctx.CacheContext()
-	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, _, err := pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
+	tokensJoined := sdk.Coins{}
+	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err = pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
 	if err != nil {
 		return nil, math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, err
 	}
@@ -93,7 +95,17 @@ func (k Keeper) JoinPoolEst(
 			otherAsset = asset
 		}
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
-		bonusTokenAmount = osmomath.BigDecFromSDKInt(tokensJoined[0].Amount).Mul(weightBalanceBonus).Dec().TruncateInt()
+		// bonusTokenAmount = osmomath.BigDecFromSDKInt(tokensJoined[0].Amount).Mul(weightBalanceBonus).Dec().TruncateInt()
+		// ensure token prices for in/out tokens set properly
+		inTokenPrice := k.oracleKeeper.GetDenomPrice(ctx, tokensJoined[0].Denom)
+		if inTokenPrice.IsZero() {
+			return nil, math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, fmt.Errorf("price for inToken not set: %s", tokensJoined[0].Denom)
+		}
+		outTokenPrice := k.oracleKeeper.GetDenomPrice(ctx, otherAsset.Token.Denom)
+		if outTokenPrice.IsZero() {
+			return nil, math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, fmt.Errorf("price for outToken not set: %s", otherAsset.Token.Denom)
+		}
+		bonusTokenAmount = (osmomath.BigDecFromSDKInt(tokensJoined[0].Amount).Mul(weightBalanceBonus).Mul(inTokenPrice).Quo(outTokenPrice)).Dec().TruncateInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
 			bonusTokenAmount = treasuryTokenAmount

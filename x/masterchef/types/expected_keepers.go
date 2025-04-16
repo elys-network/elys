@@ -126,8 +126,8 @@ type AssetProfileKeeper interface {
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stabletypes.Params)
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)
-	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, poolId uint64) osmomath.BigDec
-	AllTVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper) osmomath.BigDec
+	TVL(ctx sdk.Context, poolId uint64) osmomath.BigDec
+	AllTVL(ctx sdk.Context) osmomath.BigDec
 	IterateLiquidityPools(sdk.Context, func(stabletypes.Pool) bool)
 	GetPoolByDenom(ctx sdk.Context, denom string) (stabletypes.Pool, bool)
 	GetPool(ctx sdk.Context, poolId uint64) (pool stabletypes.Pool, found bool)

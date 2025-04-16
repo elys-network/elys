@@ -44,7 +44,7 @@ func (suite *KeeperTestSuite) TestBeginBlocker() {
 				InterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
 				InterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
 				HealthGainFactor:     sdkmath.LegacyOneDec(),
-				TotalValue:           sdkmath.NewInt(1000000),
+				NetAmount:            sdkmath.NewInt(1000000),
 				MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
 				Id:                   1,
 			})

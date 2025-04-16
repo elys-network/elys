@@ -6,7 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -61,10 +60,9 @@ func (k Keeper) LiquidationPrice(goCtx context.Context, req *types.QueryLiquidat
 
 	// lpTokenPrice * lpTokenAmount / totalDebt = params.SafetyFactor
 	// lpTokenPrice = totalDebt * params.SafetyFactor / lpTokenAmount
-	totalDebt := debt.GetTotalLiablities()
-	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	usdcDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrency)
-	liquidationPrice := params.GetBigDecSafetyFactor().Mul(osmomath.BigDecFromSDKInt(totalDebt)).Mul(usdcDenomPrice).Mul(ammtypes.OneShareBigDec).Quo(position.GetBigDecLeveragedLpAmount())
+	totalDebt := debt.GetBigDecTotalLiablities()
+	debtDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
+	liquidationPrice := params.GetBigDecSafetyFactor().Mul(totalDebt).Mul(debtDenomPrice).Mul(ammtypes.OneShareBigDec).Quo(position.GetBigDecLeveragedLpAmount())
 
 	return &types.QueryLiquidationPriceResponse{
 		Price: liquidationPrice.Dec(),

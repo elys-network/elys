@@ -53,11 +53,13 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, pool types.Pool) types.PoolResponse
 	depositDenom := pool.GetDepositDenom()
 
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := pool.TotalValue.Sub(balance.Amount)
+	borrowed := pool.NetAmount.Sub(balance.Amount)
 	borrowRatio := osmomath.ZeroBigDec()
-	if pool.TotalValue.GT(sdkmath.ZeroInt()) {
-		borrowRatio = osmomath.BigDecFromSDKInt(borrowed).Quo(pool.GetBigDecTotalValue())
+	if pool.NetAmount.GT(sdkmath.ZeroInt()) {
+		borrowRatio = osmomath.BigDecFromSDKInt(borrowed).Quo(pool.GetBigDecNetAmount())
 	}
+	denomPrice := k.oracleKeeper.GetDenomPrice(ctx, pool.DepositDenom)
+	totalValue := denomPrice.Mul(pool.GetBigDecNetAmount())
 
 	return types.PoolResponse{
 		RedemptionRate:       k.CalculateRedemptionRateForPool(ctx, pool).Dec(),
@@ -68,11 +70,11 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, pool types.Pool) types.PoolResponse
 		InterestRateIncrease: pool.InterestRateIncrease,
 		InterestRateDecrease: pool.InterestRateDecrease,
 		HealthGainFactor:     pool.HealthGainFactor,
-		TotalValue:           pool.TotalValue,
+		NetAmount:            pool.NetAmount,
 		MaxLeverageRatio:     pool.MaxLeverageRatio,
 		MaxWithdrawRatio:     pool.MaxWithdrawRatio,
 		PoolId:               pool.Id,
-		TotalDeposit:         pool.TotalValue,
+		TotalValue:           totalValue.Dec(),
 		TotalBorrow:          borrowed,
 		BorrowRatio:          borrowRatio.Dec(),
 	}

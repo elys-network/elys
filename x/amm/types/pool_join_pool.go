@@ -93,7 +93,7 @@ func (p *Pool) JoinPool(
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
 	params Params,
-	takerfees osmomath.BigDec,
+	takerFees osmomath.BigDec,
 ) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage osmomath.BigDec, weightBalanceBonus osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
@@ -123,17 +123,26 @@ func (p *Pool) JoinPool(
 			}
 		}
 
-		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
+		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn, takerFees)
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
+		poolAssetsByDenom, err := GetPoolAssetsByDenom(p.GetAllPoolAssets())
+		if err != nil {
+			return sdk.NewCoins(), sdkmath.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		}
+		totalWeight := p.GetBigDecTotalWeight()
+		normalizedWeight := poolAssetsByDenom[tokenIn.Denom].GetBigDecWeight().Quo(totalWeight)
+		// We multiply the swap fee and taker fees by the normalized weight because it is calculated like this later in CalcSingleAssetJoinPoolShares function
+		swapFee := feeRatio(normalizedWeight, p.PoolParams.GetBigDecSwapFee())
+		takerFee := feeRatio(normalizedWeight, takerFees)
 
 		// update pool with the calculated share and liquidity needed to join pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, osmomath.BigDec{}, osmomath.BigDec{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
-		return tokensJoined, numShares, totalSlippage, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), nil
+		return tokensJoined, numShares, totalSlippage, osmomath.ZeroBigDec(), swapFee, takerFee, nil
 	}
 
 	accountedAssets := p.GetAccountedBalance(ctx, accountedPoolKeeper, p.PoolAssets)
@@ -172,7 +181,7 @@ func (p *Pool) JoinPool(
 		swapFee = p.GetPoolParams().GetBigDecSwapFee().Mul(initialWeightOut)
 	}
 
-	takerFeesFinal = takerfees.Mul(initialWeightOut)
+	takerFeesFinal = takerFees.Mul(initialWeightOut)
 
 	totalShares := p.GetTotalShares()
 	numSharesDec := osmomath.BigDecFromSDKInt(totalShares.Amount).

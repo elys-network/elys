@@ -2,11 +2,11 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
-	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/stablestake/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
@@ -48,11 +48,15 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 
 	_, found = k.assetProfileKeeper.GetEntry(ctx, shareDenom)
 	if !found {
+		depositDenomProfile, found := k.assetProfileKeeper.GetEntry(ctx, depositDenom)
+		if !found {
+			return nil, fmt.Errorf("deposit denom (%s) profile not found", depositCoin)
+		}
 		// Set an entity to assetprofile
 		entry := assetprofiletypes.Entry{
 			Authority:                authtypes.NewModuleAddress(types.ModuleName).String(),
 			BaseDenom:                shareDenom,
-			Decimals:                 ptypes.BASE_DECIMAL,
+			Decimals:                 depositDenomProfile.Decimals,
 			Denom:                    shareDenom,
 			Path:                     "",
 			IbcChannelId:             "",
@@ -80,7 +84,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 		return nil, err
 	}
 
-	pool.TotalValue = pool.TotalValue.Add(msg.Amount)
+	pool.NetAmount = pool.NetAmount.Add(msg.Amount)
 	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {

@@ -8,7 +8,7 @@ import (
 )
 
 func (k Keeper) InterestRateComputationForPool(ctx sdk.Context, pool types.Pool) osmomath.BigDec {
-	if pool.TotalValue.IsZero() {
+	if pool.NetAmount.IsZero() {
 		return pool.GetBigDecInterestRate()
 	}
 
@@ -25,8 +25,8 @@ func (k Keeper) InterestRateComputationForPool(ctx sdk.Context, pool types.Pool)
 
 	// rate = minRate + (min(borrowRatio, param * maxAllowed) / (param * maxAllowed)) * (maxRate - minRate)
 	borrowRatio := osmomath.ZeroBigDec()
-	if pool.TotalValue.IsPositive() {
-		borrowRatio = osmomath.BigDecFromSDKInt(pool.TotalValue.Sub(balance.Amount)).Quo(pool.GetBigDecTotalValue())
+	if pool.NetAmount.IsPositive() {
+		borrowRatio = osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(balance.Amount)).Quo(pool.GetBigDecNetAmount())
 	}
 
 	maxAllowed := pool.GetBigDecMaxLeverageRatio().Mul(healthGainFactor)

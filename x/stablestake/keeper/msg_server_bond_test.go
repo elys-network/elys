@@ -76,9 +76,8 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 				suite.Require().Equal(commitments.CommittedTokens[0].Amount.String(), tc.expSenderCommit.Amount.String())
 				suite.Require().Equal(commitments.CommittedTokens[0].Denom, tc.expSenderCommit.Denom)
 
-				total := suite.app.StablestakeKeeper.AllTVL(suite.ctx, suite.app.OracleKeeper)
+				total := suite.app.StablestakeKeeper.AllTVL(suite.ctx)
 				suite.Require().Equal(total, osmomath.MustNewBigDecFromStr("0.01"))
-
 			}
 		})
 	}

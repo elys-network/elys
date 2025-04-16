@@ -72,7 +72,7 @@ func (k Keeper) CalculateRedemptionRateForPool(ctx sdk.Context, pool types.Pool)
 		return osmomath.ZeroBigDec()
 	}
 
-	return pool.GetBigDecTotalValue().Quo(osmomath.BigDecFromSDKInt(totalShares.Amount))
+	return pool.GetBigDecNetAmount().Quo(osmomath.BigDecFromSDKInt(totalShares.Amount))
 }
 
 func (k Keeper) GetLatestPool(ctx sdk.Context) (val types.Pool, found bool) {

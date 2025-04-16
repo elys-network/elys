@@ -92,7 +92,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (osm
 			}
 
 			// Calc Eden price in usdc
-			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
+			// We put Elys as denom as Eden won't be available in amm pool and has the same value as Elys
 			edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 			if edenDenomPrice.IsZero() {
 				return osmomath.ZeroBigDec(), nil
@@ -109,7 +109,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (osm
 				return osmomath.ZeroBigDec(), nil
 			}
 
-			// Mutiply by 365 to get yearly rewards
+			// Multiply by 365 to get yearly rewards
 			entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 			if !found {
 				return osmomath.ZeroBigDec(), assetprofiletypes.ErrAssetProfileNotFound

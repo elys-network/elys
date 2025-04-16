@@ -240,7 +240,7 @@ func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt, borrowin
 
 	k.AddPoolLiabilities(ctx, borrowingForPool, sdk.NewCoin(pool.GetDepositDenom(), newInterest))
 
-	pool.TotalValue = pool.TotalValue.Add(newInterest)
+	pool.NetAmount = pool.NetAmount.Add(newInterest)
 	k.SetPool(ctx, pool)
 	return debt
 }
@@ -259,8 +259,10 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, po
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 
-	borrowed := osmomath.BigDecFromSDKInt(pool.TotalValue.Sub(balance.Amount)).Add(osmomath.BigDecFromSDKInt(amount.Amount))
-	maxAllowed := pool.GetBigDecTotalValue().Mul(pool.GetBigDecMaxLeverageRatio())
+	// borrowed := osmomath.BigDecFromSDKInt(pool.TotalValue.Sub(balance.Amount)).Add(osmomath.BigDecFromSDKInt(amount.Amount))
+	// maxAllowed := pool.GetBigDecTotalValue().Mul(pool.GetBigDecMaxLeverageRatio())
+	borrowed := osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(balance.Amount)).Add(osmomath.BigDecFromSDKInt(amount.Amount))
+	maxAllowed := osmomath.BigDecFromSDKInt(pool.NetAmount).MulDec(pool.MaxLeverageRatio)
 	if borrowed.GT(maxAllowed) {
 		return types.ErrMaxBorrowAmount
 	}
@@ -390,10 +392,10 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 	}
 
 	params := k.GetParams(ctx)
-	balance := k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), k.GetDepositDenom(ctx))
+	balance := k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), k.GetLegacyDepositDenom(ctx))
 	pool := types.Pool{
 		Id:                   types.UsdcPoolId,
-		DepositDenom:         k.GetDepositDenom(ctx),
+		DepositDenom:         k.GetLegacyDepositDenom(ctx),
 		InterestRateDecrease: params.LegacyInterestRateDecrease,
 		InterestRateIncrease: params.LegacyInterestRateIncrease,
 		HealthGainFactor:     params.LegacyHealthGainFactor,
@@ -402,14 +404,14 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 		InterestRateMax:      params.LegacyInterestRateMax,
 		InterestRateMin:      params.LegacyInterestRateMin,
 		InterestRate:         params.LegacyInterestRate,
-		TotalValue:           totalValueUSD.Add(balance.Amount),
+		NetAmount:            totalValueUSD.Add(balance.Amount),
 	}
 	k.SetPool(ctx, pool)
 
 	atomPool, found := k.GetPool(ctx, 32768)
 	if found {
 		balance = k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), atomPool.DepositDenom)
-		atomPool.TotalValue = totalValueAtom.Add(balance.Amount)
+		atomPool.NetAmount = totalValueAtom.Add(balance.Amount)
 		k.SetPool(ctx, atomPool)
 	}
 }

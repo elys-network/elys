@@ -45,8 +45,8 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 	depositDenom := pool.GetDepositDenom()
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := pool.TotalValue.Sub(balance.Amount)
-	borrowedRatio := (osmomath.BigDecFromSDKInt(borrowed).Quo(osmomath.BigDecFromSDKInt(pool.TotalValue.Sub(redemptionAmount))))
+	borrowed := pool.NetAmount.Sub(balance.Amount)
+	borrowedRatio := (osmomath.BigDecFromSDKInt(borrowed).Quo(osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(redemptionAmount))))
 	if borrowedRatio.GT(pool.GetBigDecMaxWithdrawRatio()) {
 		return nil, errorsmod.Wrapf(types.ErrInvalidWithdraw, "borrowedRatio: %d", borrowedRatio)
 	}
@@ -57,7 +57,7 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 		return nil, err
 	}
 
-	pool.TotalValue = pool.TotalValue.Sub(redemptionAmount)
+	pool.NetAmount = pool.NetAmount.Sub(redemptionAmount)
 	k.SetPool(ctx, pool)
 
 	if k.hooks != nil {

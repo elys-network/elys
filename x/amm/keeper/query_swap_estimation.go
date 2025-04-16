@@ -17,10 +17,14 @@ func (k Keeper) SwapEstimation(goCtx context.Context, req *types.QuerySwapEstima
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// Even when multiple routes, taker Fee per route is params.TakerFee/TotalRoutes, so net taker fee will be params.TakerFee
+	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
+
 	discountBigDec := osmomath.ZeroBigDec()
 	if !req.Discount.IsNil() {
 		discountBigDec = osmomath.BigDecFromDec(req.Discount)
 	}
+
 	spotPrice, _, tokenOut, swapFee, discount, availableLiquidity, slippage, weightBonus, err := k.CalcInRouteSpotPrice(ctx, req.TokenIn, req.Routes, discountBigDec, osmomath.ZeroBigDec())
 	if err != nil {
 		return nil, err
@@ -30,6 +34,7 @@ func (k Keeper) SwapEstimation(goCtx context.Context, req *types.QuerySwapEstima
 		SpotPrice:          spotPrice.Dec(),
 		TokenOut:           tokenOut,
 		SwapFee:            swapFee.Dec(),
+		TakerFee:           takerFees,
 		Discount:           discount.Dec(),
 		AvailableLiquidity: availableLiquidity,
 		Slippage:           slippage.Dec(),
