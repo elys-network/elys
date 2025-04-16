@@ -6,6 +6,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -247,29 +248,30 @@ func (k Keeper) GetPositionsForAddress(ctx sdk.Context, positionAddress sdk.AccA
 }
 
 // GetPositionHealth Should not be used in queries as UpdateInterestAndGetDebt updates KVStore as well
-func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (sdkmath.LegacyDec, error) {
+func (k Keeper) GetPositionHealth(ctx sdk.Context, position types.Position) (osmomath.BigDec, error) {
 	if position.LeveragedLpAmount.IsZero() {
-		return sdkmath.LegacyZeroDec(), nil
+		return osmomath.ZeroBigDec(), nil
 	}
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)
-	debtAmount := debt.GetTotalLiablities()
+	debtAmount := debt.GetBigDecTotalLiablities()
 	if debtAmount.IsZero() {
-		return sdkmath.LegacyMaxSortableDec, nil
+		maxDec := osmomath.OneBigDec().Quo(osmomath.SmallestBigDec())
+		return maxDec, nil
 	}
 
-	debtDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Collateral.Denom)
-	debtValue := debtAmount.ToLegacyDec().Mul(debtDenomPrice)
+	debtDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
+	debtValue := debtAmount.Mul(debtDenomPrice)
 
 	ammPool, err := k.GetAmmPool(ctx, position.AmmPoolId)
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), err
+		return osmomath.ZeroBigDec(), err
 	}
 
 	ammTVL, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), err
+		return osmomath.ZeroBigDec(), err
 	}
-	positionValue := position.LeveragedLpAmount.ToLegacyDec().Mul(ammTVL).Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+	positionValue := position.GetBigDecLeveragedLpAmount().Mul(ammTVL).Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
 
 	health := positionValue.Quo(debtValue)
 
@@ -311,7 +313,7 @@ func (k Keeper) MigrateData(ctx sdk.Context) {
 			pool, found := k.GetPool(ctx, position.AmmPoolId)
 			if found {
 				pool.LeveragedLpAmount = pool.LeveragedLpAmount.Add(leveragedLpAmount)
-				pool.Health = k.CalculatePoolHealth(ctx, &pool)
+				pool.Health = k.CalculatePoolHealth(ctx, &pool).Dec()
 				k.SetPool(ctx, pool)
 			}
 

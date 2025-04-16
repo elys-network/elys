@@ -8,6 +8,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/stablestake/keeper"
 	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerBond() {
@@ -76,8 +77,7 @@ func (suite *KeeperTestSuite) TestMsgServerBond() {
 				suite.Require().Equal(commitments.CommittedTokens[0].Denom, tc.expSenderCommit.Denom)
 
 				total := suite.app.StablestakeKeeper.AllTVL(suite.ctx)
-				suite.Require().Equal(total, math.LegacyMustNewDecFromStr("0.01"))
-
+				suite.Require().Equal(total, osmomath.MustNewBigDecFromStr("0.01"))
 			}
 		})
 	}

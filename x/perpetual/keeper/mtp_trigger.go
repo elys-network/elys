@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"errors"
+
 	sdkerrors "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -70,7 +71,7 @@ func (k Keeper) MTPTriggerChecksAndUpdates(ctx sdk.Context, mtp *types.MTP, pool
 	if err != nil {
 		return repayAmt, returnAmt, fundingFeeAmt, fundingAmtDistributed, interestAmt, insuranceAmt, allInterestsPaid, forceClosed, sdkerrors.Wrap(err, "error updating mtp health")
 	}
-	mtp.MtpHealth = h
+	mtp.MtpHealth = h.Dec()
 
 	err = k.SetMTP(ctx, mtp)
 	if err != nil {

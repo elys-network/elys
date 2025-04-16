@@ -19,6 +19,6 @@ func (k Keeper) RewardsTotal(goCtx context.Context, req *types.QueryRewardsTotal
 	total := k.RetrieveRewardsTotal(ctx, sender)
 
 	return &types.QueryRewardsTotalResponse{
-		Total: total,
+		Total: total.Dec(),
 	}, nil
 }

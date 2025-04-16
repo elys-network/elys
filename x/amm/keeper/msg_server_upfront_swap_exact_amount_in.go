@@ -43,7 +43,7 @@ func (k Keeper) UpFrontSwapExactAmountIn(ctx sdk.Context, msg *types.MsgUpFrontS
 
 	return &types.MsgUpFrontSwapExactAmountInResponse{
 		TokenOutAmount: tokenOutAmount,
-		SwapFee:        swapFee,
-		Discount:       discount,
+		SwapFee:        swapFee.Dec(),
+		Discount:       discount.Dec(),
 	}, nil
 }

@@ -6,10 +6,10 @@ import (
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.MsgCloseResponse, error) {
@@ -31,8 +31,8 @@ func (k msgServer) Close(goCtx context.Context, msg *types.MsgClose) (*types.Msg
 		return nil, errorsmod.Wrap(types.ErrInvalidBorrowingAsset, "invalid pool id")
 	}
 
-	closingRatio := msg.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
-	if closingRatio.GT(math.LegacyOneDec()) {
+	closingRatio := osmomath.BigDecFromSDKInt(msg.LpAmount).Quo(position.GetBigDecLeveragedLpAmount())
+	if closingRatio.GT(osmomath.OneBigDec()) {
 		return nil, errors.New("invalid closing ratio for leverage lp")
 	}
 

@@ -7,6 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/elys-network/elys/testutil/keeper"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"
 
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -36,16 +37,16 @@ func TestInterestGet(t *testing.T) {
 	ctx = ctx.WithBlockHeight(lastBlock)
 
 	// 1st case
-	res := keeper.GetInterestForPool(ctx, uint64(ctx.BlockHeight()-2), uint64(ctx.BlockTime().Unix()-1), sdkmath.LegacyNewDec(86400*365), 1)
+	res := keeper.GetInterestForPool(ctx, uint64(ctx.BlockHeight()-2), uint64(ctx.BlockTime().Unix()-1), osmomath.NewBigDec(86400*365), 1)
 	require.Equal(t, res.Int64(), int64(8))
 
 	// 2nd case
-	res = keeper.GetInterestForPool(ctx, uint64(ctx.BlockHeight()-20), uint64(ctx.BlockTime().Unix()-1), sdkmath.LegacyNewDec(86400*365), 1)
+	res = keeper.GetInterestForPool(ctx, uint64(ctx.BlockHeight()-20), uint64(ctx.BlockTime().Unix()-1), osmomath.NewBigDec(86400*365), 1)
 	require.Equal(t, res.Int64(), int64(2))
 
 	// 3rd case
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1000)
-	res = keeper.GetInterestForPool(ctx, uint64(ctx.BlockHeight()-20), uint64(ctx.BlockTime().Unix()-1), sdkmath.LegacyNewDec(86400*365), 1)
+	res = keeper.GetInterestForPool(ctx, uint64(ctx.BlockHeight()-20), uint64(ctx.BlockTime().Unix()-1), osmomath.NewBigDec(86400*365), 1)
 	require.Equal(t, res.Int64(), int64(0))
 
 	all := keeper.GetAllInterestForPool(ctx, 1)
@@ -64,7 +65,7 @@ func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
 		desc    string
 		pool    types.Pool
 		expPass bool
-		want    sdkmath.LegacyDec
+		want    osmomath.BigDec
 	}{
 		{
 			desc: "interest calculation with zero total value",
@@ -78,7 +79,7 @@ func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
 				HealthGainFactor:     sdkmath.LegacyNewDec(1),
 			},
 			expPass: true,
-			want:    sdkmath.LegacyNewDec(5),
+			want:    osmomath.NewBigDec(5),
 		},
 		{
 			desc: "interest calculation with zero max leverage",
@@ -93,7 +94,7 @@ func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
 				MaxLeverageRatio:     sdkmath.LegacyZeroDec(),
 			},
 			expPass: true,
-			want:    sdkmath.LegacyNewDec(5),
+			want:    osmomath.NewBigDec(5),
 		},
 		{
 			desc: "interest calculation with zero max leverage",
@@ -110,7 +111,7 @@ func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
 				DepositDenom:         ptypes.BaseCurrency,
 			},
 			expPass: true,
-			want:    sdkmath.LegacyMustNewDecFromStr("12.01"),
+			want:    osmomath.MustNewBigDecFromStr("12.01"),
 		},
 	} {
 		suite.Run(tc.desc, func() {

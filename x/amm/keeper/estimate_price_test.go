@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *AmmKeeperTestSuite) TestEstimatePrice() {
@@ -18,7 +19,7 @@ func (suite *AmmKeeperTestSuite) TestEstimatePrice() {
 			},
 			func() {
 				price := suite.app.AmmKeeper.GetTokenPrice(suite.ctx, ptypes.BaseCurrency, ptypes.BaseCurrency)
-				suite.Require().Equal(math.LegacyZeroDec(), price)
+				suite.Require().Equal(osmomath.ZeroBigDec(), price)
 			},
 		},
 		{
@@ -29,7 +30,7 @@ func (suite *AmmKeeperTestSuite) TestEstimatePrice() {
 			},
 			func() {
 				price := suite.app.AmmKeeper.GetTokenPrice(suite.ctx, ptypes.BaseCurrency, ptypes.BaseCurrency)
-				suite.Require().Equal(math.LegacyMustNewDecFromStr("0.000001000000000000"), price)
+				suite.Require().Equal(osmomath.MustNewBigDecFromStr("0.000001000000000000"), price)
 			},
 		},
 		{
@@ -41,7 +42,7 @@ func (suite *AmmKeeperTestSuite) TestEstimatePrice() {
 			func() {
 				suite.app.OracleKeeper.RemoveAssetInfo(suite.ctx, ptypes.BaseCurrency)
 				price := suite.app.AmmKeeper.GetTokenPrice(suite.ctx, ptypes.BaseCurrency, ptypes.BaseCurrency)
-				suite.Require().Equal(math.LegacyMustNewDecFromStr("0.000000000000000000"), price)
+				suite.Require().Equal(math.LegacyMustNewDecFromStr("0.000000000000000000"), price.Dec())
 			},
 		},
 	}
@@ -68,7 +69,7 @@ func (suite *AmmKeeperTestSuite) TestCalculateUSDValue() {
 			},
 			func() {
 				value := suite.app.AmmKeeper.CalculateUSDValue(suite.ctx, ptypes.ATOM, math.NewInt(1000))
-				suite.Require().Equal(value, math.LegacyMustNewDecFromStr("0.001"))
+				suite.Require().Equal(value, osmomath.MustNewBigDecFromStr("0.001"))
 			},
 		},
 		{
@@ -79,7 +80,7 @@ func (suite *AmmKeeperTestSuite) TestCalculateUSDValue() {
 			},
 			func() {
 				value := suite.app.AmmKeeper.CalculateUSDValue(suite.ctx, "dummy", math.NewInt(1000))
-				suite.Require().Equal(value.String(), math.LegacyZeroDec().String())
+				suite.Require().Equal(value.String(), osmomath.ZeroBigDec().String())
 			},
 		},
 	}

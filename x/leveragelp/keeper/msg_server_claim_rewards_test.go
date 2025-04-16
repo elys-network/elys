@@ -14,6 +14,7 @@ import (
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddress, asset1, asset2 string, createAmmPool bool) {
@@ -84,13 +85,13 @@ func initializeForClaimRewards(suite *KeeperTestSuite, addresses []sdk.AccAddres
 	}
 }
 
-func openPosition(suite *KeeperTestSuite, address sdk.AccAddress, collateralAmount sdkmath.Int, leverage sdkmath.LegacyDec) {
+func openPosition(suite *KeeperTestSuite, address sdk.AccAddress, collateralAmount sdkmath.Int, leverage osmomath.BigDec) {
 	msg := types.MsgOpen{
 		Creator:          address.String(),
 		CollateralAsset:  ptypes.BaseCurrency,
 		CollateralAmount: collateralAmount,
 		AmmPoolId:        1,
-		Leverage:         leverage,
+		Leverage:         leverage.Dec(),
 		StopLossPrice:    sdkmath.LegacyMustNewDecFromStr("50.0"),
 	}
 	_, err := suite.app.LeveragelpKeeper.Open(suite.ctx, &msg)
@@ -103,7 +104,7 @@ func (suite *KeeperTestSuite) TestMsgServerClaimRewards() {
 	addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, sdkmath.NewInt(1000000))
 	asset1 := ptypes.ATOM
 	asset2 := ptypes.BaseCurrency
-	leverage := sdkmath.LegacyMustNewDecFromStr("2.0")
+	leverage := osmomath.MustNewBigDecFromStr("2.0")
 	collateralAmount := sdkmath.NewInt(10000000)
 	testCases := []struct {
 		name                 string

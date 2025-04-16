@@ -22,7 +22,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 func (k Keeper) UpdateInterestForAllPools(ctx sdk.Context) {
 	pools := k.GetAllPools(ctx)
 	for _, pool := range pools {
-		pool.InterestRate = k.InterestRateComputationForPool(ctx, pool)
+		pool.InterestRate = k.InterestRateComputationForPool(ctx, pool).Dec()
 		k.SetPool(ctx, pool)
 		k.SetInterestForPool(ctx, types.InterestBlock{
 			InterestRate: pool.InterestRate,

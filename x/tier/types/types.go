@@ -3,6 +3,7 @@ package types
 import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 const DateFormat = "2006-01-02"
@@ -46,3 +47,15 @@ var (
 		MinimumPortfolio: sdkmath.LegacyMustNewDecFromStr("500000"),
 	}
 )
+
+func (m MembershipTier) GetBigDecDiscount() osmomath.BigDec {
+	return osmomath.BigDecFromDec(m.Discount)
+}
+
+func (m MembershipTier) GetBigDecMinimumPortfolio() osmomath.BigDec {
+	return osmomath.BigDecFromDec(m.MinimumPortfolio)
+}
+
+func (p *Portfolio) GetBigDecPortFolio() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.Portfolio)
+}

@@ -7,6 +7,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
@@ -32,7 +33,7 @@ func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgO
 	}
 
 	// Convert the collateral amount into a decimal format.
-	collateralAmountDec := msg.Collateral.Amount.ToLegacyDec()
+	collateralAmountDec := osmomath.BigDecFromSDKInt(msg.Collateral.Amount)
 
 	// Define the assets
 	var liabilitiesAsset, custodyAsset string
@@ -51,5 +52,5 @@ func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgO
 	mtp := types.NewMTP(ctx, msg.Creator, msg.Collateral.Denom, msg.TradingAsset, liabilitiesAsset, custodyAsset, msg.Position, msg.TakeProfitPrice, poolId)
 
 	// Call the function to process the open long logic.
-	return k.ProcessOpen(ctx, mtp, proxyLeverage, collateralAmountDec, poolId, msg, baseCurrency)
+	return k.ProcessOpen(ctx, mtp, osmomath.BigDecFromDec(proxyLeverage), collateralAmountDec, poolId, msg, baseCurrency)
 }

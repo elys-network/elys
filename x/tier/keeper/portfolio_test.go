@@ -6,6 +6,7 @@ import (
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	sdkmath "cosmossdk.io/math"
 
@@ -114,7 +115,7 @@ func TestGetPortfolioNative(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, addr[0], tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, portfolio, sdkmath.LegacyNewDec(101000))
+	require.Equal(t, portfolio, osmomath.NewBigDec(101000))
 }
 
 func TestGetPortfolioAmm(t *testing.T) {
@@ -183,7 +184,7 @@ func TestGetPortfolioAmm(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, sender, tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, sdkmath.LegacyNewDec(109000), portfolio)
+	require.Equal(t, osmomath.NewBigDec(109000), portfolio)
 }
 
 func TestPortfolioGetDiscount(t *testing.T) {
@@ -286,7 +287,7 @@ func TestGetPortfolioPerpetual(t *testing.T) {
 
 	portfolio, found := tier.GetPortfolio(ctx, addr, tier.GetDateFromContext(ctx))
 	require.True(t, found)
-	require.Equal(t, sdkmath.LegacyNewDec(10099000), portfolio)
+	require.Equal(t, osmomath.NewBigDec(10099000), portfolio)
 }
 
 // TODO
