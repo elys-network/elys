@@ -133,5 +133,8 @@ func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec {
 	if !found {
 		return osmomath.ZeroBigDec()
 	}
+	if info.Decimal <= 18 {
+		return price.QuoInt64(utils.Pow10Int64(info.Decimal))
+	}
 	return price.Quo(utils.Pow10(info.Decimal))
 }
