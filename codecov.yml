@@ -296,24 +296,6 @@ component_management:
       name: tokenomics_queries
       paths:
         - ./x/tokenomics/**/*query*
-    # transferhook
-    - component_id: module_transferhook_transactions
-      name: transferhook_transactions
-      paths:
-        - ./x/transferhook/**/msg_server*
-    - component_id: module_transferhook_lifecycle
-      name: transferhook_lifecycle
-      paths:
-        - ./x/transferhook/**/abci*
-        - ./x/transferhook/**/*blocker*
-    - component_id: module_transferhook_keeper
-      name: transferhook_keeper
-      paths:
-        - ./x/transferhook/**/keeper*
-    - component_id: module_transferhook_queries
-      name: transferhook_queries
-      paths:
-        - ./x/transferhook/**/*query*
     # tradeshield
     - component_id: module_tradeshield_transactions
       name: tradeshield_transactions
