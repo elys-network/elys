@@ -23,15 +23,4 @@ var (
 	//
 	// This is done so that smooth weight changes have enough precision to actually be smooth.
 	GuaranteedWeightPrecision int64 = 1 << 30
-
-	oneHalf           = osmomath.MustNewBigDecFromStr("0.5")
-	twoDec            = osmomath.MustNewBigDecFromStr("2")
-	ln2               = osmomath.MustNewBigDecFromStr("0.693147180559945309417232121458176568")
-	inverseLn2        = osmomath.MustNewBigDecFromStr("1.442695040888963407359924681001892137")
-	euler             = osmomath.MustNewBigDecFromStr("2.718281828459045235360287471352662497")
-	powIterationLimit = int64(150_000)
-
-	// PowPrecision Don't EVER change after initializing
-	// TODO: Analyze choice here.
-	powPrecision = osmomath.MustNewBigDecFromStr("0.00000001")
 )

@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/elys-network/elys/utils"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
@@ -38,7 +39,7 @@ func solveConstantFunctionInvariant(
 	y := tokenBalanceFixedBefore.Quo(tokenBalanceFixedAfter)
 
 	// amountY = balanceY * (1 - (y ^ weightRatio))
-	yToWeightRatio := Pow(y, weightRatio)
+	yToWeightRatio := utils.Pow(y, weightRatio)
 	paranthetical := osmomath.OneBigDec().Sub(yToWeightRatio)
 	amountY := tokenBalanceUnknownBefore.Mul(paranthetical)
 	return amountY, nil

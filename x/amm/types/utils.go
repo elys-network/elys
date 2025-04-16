@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 	"fmt"
+	"github.com/elys-network/elys/utils"
 	"strconv"
 	"strings"
 
@@ -46,16 +47,6 @@ func EnsureDenomInPool(poolAssetsByDenom map[string]PoolAsset, tokensIn sdk.Coin
 	return nil
 }
 
-// AbsDifferenceWithSign returns | a - b |, (a - b).sign()
-// a is mutated and returned.
-func AbsDifferenceWithSign(a, b osmomath.BigDec) (osmomath.BigDec, bool) {
-	if a.GTE(b) {
-		return a.SubMut(b), false
-	} else {
-		return a.NegMut().AddMut(b), true
-	}
-}
-
 // ApplyDiscount applies discount to swap fee if applicable
 func ApplyDiscount(swapFee osmomath.BigDec, discount osmomath.BigDec) osmomath.BigDec {
 	// apply discount percentage to swap fee
@@ -72,12 +63,12 @@ func GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetW
 		// (45/55*60/40) ^ 2.5
 		if distanceDiff.IsPositive() {
 			if !finalWeightOut.IsZero() && !finalWeightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() {
-				weightBreakingFee = params.GetBigDecWeightBreakingFeeMultiplier().Mul(Pow(finalWeightIn.Mul(targetWeightOut).Quo(finalWeightOut).Quo(targetWeightIn), params.GetBigDecWeightBreakingFeeExponent()))
+				weightBreakingFee = params.GetBigDecWeightBreakingFeeMultiplier().Mul(utils.Pow(finalWeightIn.Mul(targetWeightOut).Quo(finalWeightOut).Quo(targetWeightIn), params.GetBigDecWeightBreakingFeeExponent()))
 			}
 		} else {
 			if !initialWeightOut.IsZero() && !initialWeightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() {
 				weightBreakingFee = params.GetBigDecWeightBreakingFeeMultiplier().
-					Mul(Pow(initialWeightOut.Mul(targetWeightIn).Quo(initialWeightIn).Quo(targetWeightOut), params.GetBigDecWeightBreakingFeeExponent()))
+					Mul(utils.Pow(initialWeightOut.Mul(targetWeightIn).Quo(initialWeightIn).Quo(targetWeightOut), params.GetBigDecWeightBreakingFeeExponent()))
 			}
 		}
 

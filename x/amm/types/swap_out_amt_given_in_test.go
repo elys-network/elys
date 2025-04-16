@@ -504,7 +504,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin("uusdt", 100_000_000), // 100 USDC
 			outTokenDenom:          ptypes.BaseCurrency,
 			swapFee:                osmomath.ZeroBigDec(),
-			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("-0.006347556007845347576004236722241543"),
+			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("-0.006347556007845347575802896806993218"),
 			expTokenOut:            sdk.NewInt64Coin(ptypes.BaseCurrency, 98054944),
 			expErr:                 false,
 		},
@@ -540,7 +540,7 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			tokenIn:                sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000), // 100 USDC
 			outTokenDenom:          "uusdt",
 			swapFee:                osmomath.ZeroBigDec(),
-			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("0.001558845726811989564174701707355285"),
+			expRecoveryBonus:       osmomath.MustNewBigDecFromStr("0.001558845726811989564600000000000000"),
 			expTokenOut:            sdk.NewInt64Coin("uusdt", 98687060),
 			expErr:                 false,
 		},

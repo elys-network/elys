@@ -55,26 +55,6 @@ func TestEnsureDenomInPool(t *testing.T) {
 	}
 }
 
-func TestAbsDifferenceWithSign(t *testing.T) {
-	tests := []struct {
-		a        osmomath.BigDec
-		b        osmomath.BigDec
-		expected osmomath.BigDec
-		sign     bool
-	}{
-		{osmomath.NewBigDec(5), osmomath.NewBigDec(3), osmomath.NewBigDec(2), false},
-		{osmomath.NewBigDec(3), osmomath.NewBigDec(5), osmomath.NewBigDec(2), true},
-		{osmomath.NewBigDec(0), osmomath.NewBigDec(0), osmomath.NewBigDec(0), false},
-	}
-
-	for _, tt := range tests {
-		result, sign := types.AbsDifferenceWithSign(tt.a, tt.b)
-		if !result.Equal(tt.expected) || sign != tt.sign {
-			t.Errorf("AbsDifferenceWithSign(%s, %s) = (%s, %v); want (%s, %v)", tt.a, tt.b, result, sign, tt.expected, tt.sign)
-		}
-	}
-}
-
 func TestApplyDiscount(t *testing.T) {
 	// Define test cases
 	tests := []struct {

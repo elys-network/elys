@@ -1,9 +1,23 @@
-package types
+package utils
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 
 	"github.com/osmosis-labs/osmosis/osmomath"
+)
+
+var (
+	oneHalf           = sdkmath.LegacyMustNewDecFromStr("0.5")
+	twoDec            = sdkmath.LegacyMustNewDecFromStr("2")
+	ln2               = sdkmath.LegacyMustNewDecFromStr("0.693147180559945309")
+	inverseLn2        = sdkmath.LegacyMustNewDecFromStr("1.442695040888963407")
+	euler             = sdkmath.LegacyMustNewDecFromStr("2.718281828459045235")
+	powIterationLimit = int64(150_000)
+
+	// PowPrecision Don't EVER change after initializing
+	// TODO: Analyze choice here.
+	powPrecision = sdkmath.LegacyMustNewDecFromStr("0.00000001")
 )
 
 // Pow computes base^(exp)
@@ -31,10 +45,10 @@ func Pow(base osmomath.BigDec, exp osmomath.BigDec) osmomath.BigDec {
 		return integerPow
 	}
 
-	fractionalPow, err := powerApproximation(base, fractional)
+	fractionalPow, err := powerApproximation(base.Dec(), fractional.Dec())
 	if err != nil {
 		panic(err)
 	}
 
-	return integerPow.Mul(fractionalPow)
+	return integerPow.Mul(osmomath.BigDecFromDec(fractionalPow))
 }

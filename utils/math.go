@@ -1,6 +1,9 @@
 package utils
 
-import "github.com/osmosis-labs/osmosis/osmomath"
+import (
+	sdkmath "cosmossdk.io/math"
+	"github.com/osmosis-labs/osmosis/osmomath"
+)
 
 func Pow10(decimal uint64) osmomath.BigDec {
 	if decimal <= 18 {
@@ -17,4 +20,14 @@ func Pow10(decimal uint64) osmomath.BigDec {
 		value = value.MulInt64(10)
 	}
 	return value
+}
+
+// AbsDifferenceWithSign returns | a - b |, (a - b).sign()
+// a is mutated and returned.
+func AbsDifferenceWithSign(a, b sdkmath.LegacyDec) (sdkmath.LegacyDec, bool) {
+	if a.GTE(b) {
+		return a.SubMut(b), false
+	} else {
+		return a.NegMut().AddMut(b), true
+	}
 }

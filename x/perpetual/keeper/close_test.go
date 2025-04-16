@@ -93,7 +93,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(206),
+			math.NewInt(203),
 		},
 		{
 			"Close with price greater than open price and less than take profit price",
@@ -175,7 +175,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(95),
+			math.NewInt(91),
 		},
 		{
 			"Close at stopLoss price",
@@ -216,7 +216,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(504),
+			math.NewInt(502),
 		},
 		{
 			"Success: close long position,at same price as open price",
@@ -247,7 +247,7 @@ func (suite *PerpetualKeeperTestSuite) TestClose() {
 				}
 			},
 			"",
-			math.NewInt(206),
+			math.NewInt(203),
 		},
 		{
 			"Success: close short position at same price as open price",
