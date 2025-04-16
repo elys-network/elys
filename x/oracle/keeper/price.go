@@ -5,6 +5,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/oracle/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
@@ -123,14 +124,6 @@ func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, b
 	return osmomath.BigDec{}, false
 }
 
-func Pow10(decimal uint64) (value osmomath.BigDec) {
-	value = osmomath.NewBigDec(1)
-	for i := 0; i < int(decimal); i++ {
-		value = value.Mul(osmomath.NewBigDec(10))
-	}
-	return
-}
-
 func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec {
 	info, found := k.GetAssetInfo(ctx, denom)
 	if !found {
@@ -140,5 +133,5 @@ func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec {
 	if !found {
 		return osmomath.ZeroBigDec()
 	}
-	return price.Quo(Pow10(info.Decimal))
+	return price.Quo(utils.Pow10(info.Decimal))
 }

@@ -3,6 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
@@ -103,19 +104,11 @@ func (k Keeper) CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) osmo
 	}
 
 	routes := resp.InRoute
-	tokenIn := sdk.NewCoin(denom, math.NewInt(Pow10(decimal).TruncateInt64()))
+	tokenIn := sdk.NewCoin(denom, math.NewInt(utils.Pow10(decimal).TruncateInt64()))
 	discount := osmomath.OneBigDec()
 	spotPrice, _, _, _, _, _, _, _, err := k.CalcInRouteSpotPrice(ctx, tokenIn, routes, discount, osmomath.ZeroBigDec())
 	if err != nil {
 		return osmomath.ZeroBigDec()
 	}
 	return spotPrice.Mul(usdcPrice)
-}
-
-func Pow10(decimal uint64) (value osmomath.BigDec) {
-	value = osmomath.NewBigDec(1)
-	for i := 0; i < int(decimal); i++ {
-		value = value.Mul(osmomath.NewBigDec(10))
-	}
-	return
 }

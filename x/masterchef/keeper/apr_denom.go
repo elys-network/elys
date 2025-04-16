@@ -3,6 +3,7 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/utils"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/masterchef/types"
@@ -113,7 +114,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (osm
 			if !found {
 				return osmomath.ZeroBigDec(), assetprofiletypes.ErrAssetProfileNotFound
 			}
-			yearlyDexRewardAmount := usdcAmount.MulInt64(365).Quo(Pow10(entry.Decimals))
+			yearlyDexRewardAmount := usdcAmount.MulInt64(365).Quo(utils.Pow10(entry.Decimals))
 
 			apr := yearlyDexRewardAmount.
 				Quo(edenDenomPrice).
@@ -162,12 +163,4 @@ func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (os
 	totalRewardsUsd := usdcDenomPrice.Mul(dailyDexRewardsTotal.Add(dailyGasRewardsTotal)).
 		Add(edenDenomPrice.Mul(dailyEdenRewardsTotal))
 	return totalRewardsUsd, rewardCoins
-}
-
-func Pow10(decimal uint64) (value osmomath.BigDec) {
-	value = osmomath.OneBigDec()
-	for i := 0; i < int(decimal); i++ {
-		value = value.Mul(osmomath.NewBigDec(10))
-	}
-	return
 }
