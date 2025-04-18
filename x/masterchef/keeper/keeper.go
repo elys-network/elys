@@ -25,7 +25,7 @@ type (
 		bankKeeper          types.BankKeeper
 		estakingKeeper      *estakingkeeper.Keeper
 
-		authority string // gov module addresss
+		authority string // gov module address
 	}
 )
 
