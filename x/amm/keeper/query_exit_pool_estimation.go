@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -49,6 +50,8 @@ func (k Keeper) ExitPoolEst(
 	} else if shareInAmount.LTE(math.ZeroInt()) {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrInvalidMathApprox, "Trying to exit a negative amount of shares")
 	}
+
+	fmt.Println("tokenOutDenom: ", tokenOutDenom)
 
 	params := k.GetParams(ctx)
 	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees

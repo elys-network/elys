@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"errors"
+	"fmt"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -67,6 +68,8 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		lpSharesForRepay = position.LeveragedLpAmount
 	}
 
+	fmt.Println("--------EXITING POOL---")
+
 	// we calculate weight breaking fee (-ve of weightBalanceBonus if there is one) that could have occurred
 	_, weightBalanceBonus, slippage, swapFee, takerFee, err := k.amm.ExitPoolEst(ctx, position.AmmPoolId, lpSharesForRepay, position.Collateral.Denom)
 	if err != nil {
@@ -87,12 +90,16 @@ func (k Keeper) CheckHealthStopLossThenRepayAndClose(ctx sdk.Context, position *
 		exitFeeOnClosingPosition = weightBreakingFeeValue.Mul(ammPool.TotalShares.Amount.ToLegacyDec()).Quo(totalLpAmountToClose.ToLegacyDec().Mul(ammPoolTVL))
 	}
 
+	fmt.Println("repayValue", repayValue.String())
 	slippageValue := slippage.Mul(repayValue)
 	swapFeeValue := swapFee.Mul(repayValue)
 	takerFeeValue := takerFee.Mul(repayValue)
 	exitSlippageFeeOnClosingPosition := (slippageValue).Mul(ammPool.TotalShares.Amount.ToLegacyDec()).Quo(totalLpAmountToClose.ToLegacyDec().Mul(ammPoolTVL))
 	exitSwapFeeOnClosingPosition := (swapFeeValue).Mul(ammPool.TotalShares.Amount.ToLegacyDec()).Quo(totalLpAmountToClose.ToLegacyDec().Mul(ammPoolTVL))
 	exitTakerFeeOnClosingPosition := (takerFeeValue).Mul(ammPool.TotalShares.Amount.ToLegacyDec()).Quo(totalLpAmountToClose.ToLegacyDec().Mul(ammPoolTVL))
+	fmt.Println("slippageValue", slippageValue.String())
+	fmt.Println("slippage", slippage.String())
+	fmt.Println("--------EXITING POOL---")
 
 	if totalLpAmountToClose.GT(lpSharesForRepay) {
 		// weightBreakingFeeValue / ((totalLpAmountToClose - lpSharesForRepay) x LP Price)
