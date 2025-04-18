@@ -119,3 +119,56 @@ Input: oldPerpetual (Qty: 0), trade (Qty: 3, Price: $105), isBuyer=true.
 Output: Falls into Case 9 (Open New Position).
 Effect: Buyer's position becomes +3. Buyer realizes no PNL. Buyer pays the initial margin required for the +3 position (calculated as abs(3) * 105 * IMR). This margin is transferred from the buyer's subaccount to the market account.
 The market account acts as the central counterparty for these settlements. The buyer pays margin into it; it pays out the seller's PNL and margin refund. The system ensures these balance out (along with fees, funding, etc., handled elsewhere).
+
+
+Function: SettleRealizedPnL
+
+Purpose:
+
+This function calculates and settles the realized profit or loss (RPNL) that occurs when a specific portion of a trader's perpetual position is closed due to a trade. It handles the actual transfer of funds corresponding to this PNL between the trader's subaccount (subAccount) and the central market account (market.GetAccount()), which acts as the settlement pool. This function focuses only on the PNL settlement aspect of closing a position portion.
+
+Inputs:
+
+ctx sdk.Context: The standard Cosmos SDK context, providing access to state and other modules.
+market types.PerpetualMarket: The market object containing details like the quote currency denomination (QuoteDenom) and the address of the market's settlement account (GetAccount()).
+positionClosed math.LegacyDec: Crucially, this represents the quantity of the position that was just closed by the trade. It must carry the sign of the original position being closed:
+Positive (+) if closing part of a Long position.
+Negative (-) if closing part of a Short position (i.e., buying back).
+subAccount types.SubAccount: The specific subaccount belonging to the trader whose RPNL is being calculated and settled. This account will either receive funds (profit) or send funds (loss).
+entryPrice math.LegacyDec: The average price at which the positionClosed quantity was originally entered (the entry price of the position before this closing trade).
+tradePrice math.LegacyDec: The price at which the positionClosed quantity was executed in the current trade (i.e., the exit price for this portion).
+Outputs:
+
+error: Returns nil if the PNL calculation and fund transfer (if any) were successful. Returns an error if the underlying fund transfer (AddToSubAccount or SendFromSubAccount) fails (e.g., due to insufficient funds in the source account for the transfer).
+Logic Breakdown:
+
+Calculate RPNL:
+
+It computes the realized profit or loss using the standard formula: realizedPnlDec = positionClosed * (tradePrice - entryPrice)
+The use of the signed positionClosed quantity automatically yields the correct PNL sign:
+Closing Long Profit: (+) * (Exit(+) - Entry(-)) = + PNL
+Closing Long Loss: (+) * (Exit(-) - Entry(+)) = - PNL
+Closing Short Profit: (-) * (Exit(-) - Entry(+)) = + PNL
+Closing Short Loss: (-) * (Exit(+) - Entry(-)) = - PNL
+It converts the decimal result (realizedPnlDec) to an integer (realizedPnl) using TruncateInt(), suitable for creating an sdk.Coin.
+Handle Zero PNL:
+
+It checks if !realizedPnl.IsZero(). If the calculated PNL is exactly zero (e.g., exit price equals entry price), no funds need to be transferred, and the function simply returns successfully.
+Settle Non-Zero PNL (Fund Transfer):
+
+If realizedPnl.IsPositive() (Profit for Trader):
+This means the trader made money on the closed portion.
+It calls k.AddToSubAccount(...) to transfer the realizedPnl amount (as an sdk.Coin) from the central market.GetAccount() to the trader's subAccount. The market pool pays the profit.
+Else (realizedPnl.IsNegative()) (Loss for Trader):
+This means the trader lost money on the closed portion.
+It calls k.SendFromSubAccount(...) to transfer the magnitude of the loss (realizedPnl.Neg(), which makes it positive) from the trader's subAccount to the central market.GetAccount(). The trader pays the loss into the market pool.
+Error Propagation: If either AddToSubAccount or SendFromSubAccount returns an error during the fund transfer, this function immediately propagates that error back to the caller.
+
+How it's Used:
+
+This function is designed to be a helper called by SettleMarginAndRPnL. When SettleMarginAndRPnL determines that a trade causes a position decrease, full closure, or a flip, it calculates the appropriate (signed) positionClosed quantity and then invokes SettleRealizedPnL to handle the corresponding profit or loss settlement for that closed portion. SettleMarginAndRPnL separately handles the margin adjustments (refunds/deductions).
+
+Illustrative Examples:
+
+Profit on Long Close: Closing +2 Long @ $110 (EP $100). positionClosed=+2, tradePrice=110, entryPrice=100. realizedPnl = +2 * (110-100) = +20. AddToSubAccount sends 20 from market to trader.
+Loss on Short Close: Closing -5 Short @ $105 (EP $100). positionClosed=-5, tradePrice=105, entryPrice=100. realizedPnl = -5 * (105-100) = -50. SendFromSubAccount sends 50 (-50.Neg()) from trader to market.
