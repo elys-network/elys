@@ -77,6 +77,9 @@ func (k Keeper) GetCurrentLeverage(ctx sdk.Context, perpetual types.Perpetual) (
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
+	if balanceValue.IsZero() || balanceValue.IsNil() {
+		return math.LegacyMaxSortableDec, nil
+	}
 	return currentValue.Quo(balanceValue), nil
 }
 

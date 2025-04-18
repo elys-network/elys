@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/clob/types"
@@ -16,7 +17,7 @@ func (k Keeper) PlaceLimitOrder(goCtx context.Context, msg *types.MsgPlaceLimitO
 		return nil, err
 	}
 
-	if err = market.ValidateMsgOpenPosition(*msg); err != nil {
+	if err = market.ValidateOpenPositionRequest(msg.MarketId, msg.Price, msg.BaseQuantity, false); err != nil {
 		return nil, err
 	}
 
@@ -45,9 +46,9 @@ func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarke
 		return nil, err
 	}
 
-	//if err = market.ValidateMsgOpenPosition(*msg); err != nil {
-	//	return nil, err
-	//}
+	if err = market.ValidateOpenPositionRequest(msg.MarketId, math.LegacyZeroDec(), msg.BaseQuantity, true); err != nil {
+		return nil, err
+	}
 
 	_, err = k.GetSubAccount(ctx, sdk.MustAccAddressFromBech32(msg.Creator), market.Id)
 	if err != nil {

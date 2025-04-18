@@ -12,12 +12,19 @@ type Trade struct {
 	Quantity         math.LegacyDec
 }
 
-func (t Trade) GetRequiredInitialMargin(market PerpetualMarket) math.Int {
-	value := t.Price.Mul(t.Quantity)
-	requiredInitialMargin := value.Mul(market.InitialMarginRatio).RoundInt()
-	return requiredInitialMargin
-}
-
 func (t Trade) GetTradeValue() math.LegacyDec {
 	return t.Price.Mul(t.Quantity)
+}
+
+func NewTrade(marketId uint64, qty, price math.LegacyDec, buyer, seller SubAccount) Trade {
+	if qty.IsNegative() || qty.IsZero() || qty.IsNil() {
+		panic("trade quantity must be positive")
+	}
+	return Trade{
+		MarketId:         marketId,
+		Quantity:         qty, // Assumed magnitude
+		Price:            price,
+		BuyerSubAccount:  buyer,
+		SellerSubAccount: seller,
+	}
 }

@@ -1,32 +1,29 @@
 package types
 
 import (
+	"cosmossdk.io/math"
+	"errors"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
-func (market PerpetualMarket) ValidateMsgOpenPosition(msg MsgPlaceLimitOrder) error {
-	if market.Id != msg.MarketId {
+func (market PerpetualMarket) ValidateOpenPositionRequest(marketId uint64, price, quantity math.LegacyDec, isMarketOrder bool) error {
+	if market.Id != marketId {
 		return ErrPerpetualMarketNotFound
 	}
-	//if msg.Quantity.LT(market.MinNotional) {
-	//	return ErrAmountLessThanNotional
-	//}
-	//division := msg.Quantity.ToDec().QuoInt(market.MinQuantityTickSize)
-	//if !division.TruncateInt().ToDec().Equal(division) {
-	//	return fmt.Errorf("amount should in multiples of %s", market.MinQuantityTickSize.String())
-	//}
-	////division = msg.TriggerPrice.Quo(market.MinPriceTickSize)
-	////if !division.TruncateInt().ToDec().Equal(division) {
-	////	return fmt.Errorf("price should in multiples of %s", market.MinPriceTickSize.String())
-	////}
-	//
-	//maxLeverage := math.LegacyOneDec().Quo(market.InitialMarginRatio)
-	//if msg.Leverage.ToDec().GT(maxLeverage) {
-	//	return fmt.Errorf("leverage should not be greater than %s", maxLeverage.String())
-	//}
-
+	if price.Mul(quantity).LT(market.MinNotional) {
+		return errors.New("trade value less than minimum notional value")
+	}
+	if quantity.LT(market.MinQuantityTickSize) {
+		return errors.New("quantity less than minimum quantity tick size")
+	}
+	if !quantity.Quo(market.MinQuantityTickSize).IsInteger() {
+		return errors.New("quantity is not of proper tick size")
+	}
+	if !price.Quo(market.MinPriceTickSize).IsInteger() {
+		return errors.New("price is not of proper tick size")
+	}
 	return nil
 }
 
@@ -34,6 +31,15 @@ func (market PerpetualMarket) GetAccount() sdk.AccAddress {
 	return authtypes.NewModuleAddress(fmt.Sprintf("clob/perpetual/%d", market.Id))
 }
 
-func (market PerpetualMarket) GetTreasuryAccount() sdk.AccAddress {
-	return authtypes.NewModuleAddress(fmt.Sprintf("clob/perpetual/treasury/%d", market.Id))
+func (market *PerpetualMarket) UpdateTotalOpenInterest(buyerBefore, sellerBefore, tradeSize math.LegacyDec) {
+	if tradeSize.LTE(math.LegacyZeroDec()) {
+		panic("trade size cannot be 0 or negative")
+	}
+	oiBefore := buyerBefore.Abs().Add(sellerBefore.Abs())
+	buyerAfter := buyerBefore.Add(tradeSize)
+	sellerAfter := sellerBefore.Sub(tradeSize)
+	oiAfter := buyerAfter.Abs().Add(sellerAfter.Abs())
+
+	netChange := oiAfter.Sub(oiBefore).QuoInt64(2)
+	market.TotalOpen = market.TotalOpen.Add(netChange)
 }

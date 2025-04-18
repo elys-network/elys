@@ -31,5 +31,17 @@ func (perpetual Perpetual) IsZero() bool {
 }
 
 func (perpetual Perpetual) GetEntryValue() math.LegacyDec {
-	return perpetual.Quantity.Mul(perpetual.EntryPrice)
+	return perpetual.Quantity.Abs().Mul(perpetual.EntryPrice)
+}
+
+func NewPerpetual(id uint64, marketId uint64, owner string, qty, ep math.LegacyDec, margin math.Int, fundingRate math.LegacyDec) Perpetual {
+	return Perpetual{
+		Id:               id,
+		MarketId:         marketId,
+		Owner:            owner,
+		Quantity:         qty,
+		EntryPrice:       ep,
+		Margin:           margin,
+		EntryFundingRate: fundingRate,
+	}
 }

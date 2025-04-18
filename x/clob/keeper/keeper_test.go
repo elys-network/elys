@@ -2,9 +2,12 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	"errors"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	simapp "github.com/elys-network/elys/app"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -236,4 +239,34 @@ func (suite *KeeperTestSuite) CreateMarket(baseDenoms ...string) []types.Perpetu
 		list = append(list, market)
 	}
 	return list
+}
+
+func (suite *KeeperTestSuite) GetAccountBalance(addr sdk.AccAddress, denom string) math.Int {
+	return suite.app.BankKeeper.GetBalance(suite.ctx, addr, denom).Amount
+}
+
+func (suite *KeeperTestSuite) FundAccount(addr sdk.AccAddress, coins sdk.Coins) {
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, coins)
+	suite.Require().NoError(err)
+}
+
+func (suite *KeeperTestSuite) WithdrawFromAccount(addr sdk.AccAddress, coins sdk.Coins) {
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromAccountToModule(suite.ctx, addr, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+}
+
+func (suite *KeeperTestSuite) SetAccountBalance(addr sdk.AccAddress, coins sdk.Coins) {
+	// Implementation depends on test setup - might need direct bank keeper state setting or burn+fund
+	currentCoins := suite.app.BankKeeper.GetAllBalances(suite.ctx, addr)
+	err := suite.app.BankKeeper.SendCoins(suite.ctx, addr, authtypes.NewModuleAddress("dummy_burn"), currentCoins) // Send all current away
+	if err != nil && !errors.Is(err, sdkerrors.ErrInsufficientFunds) {                                             // Ignore error if already empty
+		suite.T().Logf("Error burning coins during SetAccountBalance: %v", err) // Log non-critical error
+	}
+	if !coins.IsZero() {
+		suite.FundAccount(addr, coins) // Fund with desired amount
+	}
 }

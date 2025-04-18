@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/clob/types"
@@ -65,7 +66,11 @@ func (k Keeper) SetSubAccount(ctx sdk.Context, s types.SubAccount) {
 }
 
 func (k Keeper) SendFromSubAccount(ctx sdk.Context, subAccount types.SubAccount, to sdk.AccAddress, coins sdk.Coins) error {
-	subAccount.AvailableBalance = subAccount.AvailableBalance.Sub(coins...)
+	negative := false
+	subAccount.AvailableBalance, negative = subAccount.AvailableBalance.SafeSub(coins...)
+	if negative {
+		return fmt.Errorf("insufficient funds in subaccount (%s, %d) to send from it balance: %s, amount: %s", subAccount.GetOwnerAccAddress(), subAccount.MarketId, subAccount.AvailableBalance.String(), coins.String())
+	}
 	k.SetSubAccount(ctx, subAccount)
 	return k.bankKeeper.SendCoins(ctx, subAccount.GetTradingAccountAddress(), to, coins)
 }
