@@ -3,6 +3,7 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
@@ -70,9 +71,9 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 		}
 	} else if query.Denom == ptypes.BaseCurrency {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {
-			borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, query.Denom)
+			borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, baseCurrency)
 			if !found {
-				return math.LegacyZeroDec(), errorsmod.Wrap(types.ErrPoolNotFound, "pool not found")
+				return math.LegacyZeroDec(), fmt.Errorf("pool not found for denom %s", baseCurrency)
 			}
 			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{
 				PoolId: stabletypes.UsdcPoolId,
