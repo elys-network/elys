@@ -24,7 +24,7 @@ var NextVersion = "vNEXT"
 
 // generate upgrade version from the current version (v999999.999999.999999 => v999999)
 func generateUpgradeVersion() string {
-	return "v3-c5"
+	return "v3-rc5"
 }
 
 func (app *ElysApp) setUpgradeHandler() {
