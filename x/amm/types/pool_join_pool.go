@@ -109,6 +109,9 @@ func (p *Pool) JoinPool(
 		return tokensJoined, numShares, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 	}
 
+	fmt.Println("-------------JoinPool--------------------")
+	fmt.Println("pool params: ", p.PoolParams)
+
 	if !p.PoolParams.UseOracle {
 		tokenIn := tokensIn[0]
 		totalSlippage := sdkmath.LegacyZeroDec()
@@ -122,6 +125,9 @@ func (p *Pool) JoinPool(
 			}
 		}
 
+		fmt.Println("total slippage: ", totalSlippage)
+
+		fmt.Println("HERRRRREEEE. 2222")
 		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn)
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
@@ -132,8 +138,11 @@ func (p *Pool) JoinPool(
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
+		fmt.Println("-------------JoinPool--------------------")
 		return tokensJoined, numShares, totalSlippage, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), nil
 	}
+
+	fmt.Println("-------XXXXXXX------JoinPool-----------XXXXXX---------")
 
 	accountedAssets := p.GetAccountedBalance(ctx, accountedPoolKeeper, p.PoolAssets)
 

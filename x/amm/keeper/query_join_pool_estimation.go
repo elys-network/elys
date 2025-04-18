@@ -45,6 +45,8 @@ func (k Keeper) JoinPoolEst(
 		return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), sdk.Coin{}, types.ErrInvalidPoolId
 	}
 
+	fmt.Println("-------------JoinPoolEst---------------")
+
 	if !pool.PoolParams.UseOracle {
 		tokensIn := tokenInMaxs
 		if len(tokensIn) != 1 {
@@ -62,9 +64,14 @@ func (k Keeper) JoinPoolEst(
 		if err != nil {
 			return nil, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), sdk.Coin{}, err
 		}
+		fmt.Println("swapFee:", swapFee.String())
+		fmt.Println("takerFeesFinal:", takerFeesFinal.String())
 
+		fmt.Println("-------------JoinPoolEst---------------")
 		return tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, sdk.Coin{}, nil
 	}
+
+	fmt.Println("-------------JoinPoolEst---------------XXXXXXXXXX")
 
 	params := k.GetParams(ctx)
 	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
