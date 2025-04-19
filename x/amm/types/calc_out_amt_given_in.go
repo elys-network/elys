@@ -57,6 +57,8 @@ func (p Pool) CalcOutAmtGivenIn(
 		}
 		fmt.Println("-----_Weight Calculation_-----")
 
+		fmt.Println("poolAssetIn", poolAssetIn.String())
+		fmt.Println("poolAssetOut", poolAssetOut.String())
 		oraclePoolWeights := []AssetWeight{}
 
 		totalWeight := sdkmath.LegacyZeroDec()
