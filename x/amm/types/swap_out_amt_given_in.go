@@ -34,7 +34,6 @@ func NormalizedWeights(poolAssets []PoolAsset) (poolWeights []AssetWeight) {
 func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper OracleKeeper, poolAssets []PoolAsset) ([]AssetWeight, error) {
 	oraclePoolWeights := []AssetWeight{}
 	totalWeight := sdkmath.LegacyZeroDec()
-	fmt.Println("----------GetOraclePoolNormalizedWeights----------")
 	for _, asset := range poolAssets {
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
 		if tokenPrice.IsZero() {
@@ -48,8 +47,6 @@ func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper
 		})
 		totalWeight = totalWeight.Add(weight)
 
-		fmt.Println("token ", asset.Token.Denom)
-		fmt.Println("tokenPrice", tokenPrice.String())
 	}
 
 	if totalWeight.IsZero() {
@@ -58,9 +55,6 @@ func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper
 	for i, asset := range oraclePoolWeights {
 		oraclePoolWeights[i].Weight = asset.Weight.Quo(totalWeight)
 	}
-	fmt.Println("totalWeight", totalWeight.String())
-	fmt.Println("oraclePoolWeights", oraclePoolWeights)
-	fmt.Println("----------GetOraclePoolNormalizedWeights----------")
 	return oraclePoolWeights, nil
 }
 
