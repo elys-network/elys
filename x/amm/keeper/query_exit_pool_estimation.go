@@ -46,6 +46,8 @@ func (k Keeper) ExitPoolEst(
 
 	fmt.Println("----------------ExitPoolEst-----------------")
 
+	fmt.Println("=============START=================")
+	fmt.Println("pool assets in start:", pool.PoolAssets)
 	totalSharesAmount := pool.GetTotalShares()
 	if shareInAmount.GTE(totalSharesAmount.Amount) {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrInvalidMathApprox, "Trying to exit >= the number of shares contained in the pool.")
