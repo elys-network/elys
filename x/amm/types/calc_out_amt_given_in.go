@@ -55,12 +55,36 @@ func (p Pool) CalcOutAmtGivenIn(
 		if err != nil {
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
 		}
+		fmt.Println("-----_Weight Calculation_-----")
+
+		oraclePoolWeights := []AssetWeight{}
+
+		totalWeight := sdkmath.LegacyZeroDec()
+
+		for _, asset := range []PoolAsset{poolAssetIn, poolAssetOut} {
+			fmt.Println("denom: ", asset.Token.Denom, " amount: ", asset.Token.Amount.String())
+			tokenPrice := oracle.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
+			amount := asset.Token.Amount
+			weight := amount.ToLegacyDec().Mul(tokenPrice)
+			oraclePoolWeights = append(oraclePoolWeights, AssetWeight{
+				Asset:  asset.Token.Denom,
+				Weight: weight,
+			})
+			totalWeight = totalWeight.Add(weight)
+		}
+		fmt.Println("totalWeight", totalWeight.String())
+		for i, asset := range oraclePoolWeights {
+			oraclePoolWeights[i].Weight = asset.Weight.Quo(totalWeight)
+			fmt.Println("denom: ", asset.Asset, " weight: ", asset.Weight.String())
+		}
+
 		oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, p.PoolId, oracle, []PoolAsset{poolAssetIn, poolAssetOut})
 		if err != nil {
 			return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
 		}
 		inWeight = oracleWeights[0].Weight
 		outWeight = oracleWeights[1].Weight
+		fmt.Println("-----_Weight Calculation_-----")
 	}
 
 	fmt.Println("inWeight", inWeight.String())
