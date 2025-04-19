@@ -33,12 +33,16 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 	totalShares := pool.GetTotalShares()
 	refundedShares := sdkmath.LegacyNewDecFromInt(exitingShares)
 
+	fmt.Println("--------------CalcExitValueWithSlippage------------------")
+
 	// Ensure totalShares is not zero to avoid division by zero
 	if totalShares.IsZero() {
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coins{}, ErrAmountTooLow
 	}
 
 	exitValue := tvl.Mul(refundedShares).Quo(sdkmath.LegacyNewDecFromInt(totalShares.Amount))
+
+	fmt.Println("exitValue:", exitValue.String())
 
 	if !applyFee {
 		return exitValue, sdkmath.LegacyZeroDec(), sdk.Coins{}, nil
@@ -63,11 +67,16 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 		externalLiquidityRatio = sdkmath.LegacyOneDec()
 	}
 
+	fmt.Println("externalLiquidityRatio:", externalLiquidityRatio.String())
+
 	// tokenIn amount will be
 	tokenInAmount := exitValue.Quo(inTokenPrice)
+	fmt.Println("tokenInAmount:", tokenInAmount.String())
 	weightedAmount := tokenInAmount.Mul(weightMultiplier)
+	fmt.Println("weightedAmount:", weightedAmount.String())
 	resizedAmount := sdkmath.LegacyNewDecFromInt(weightedAmount.TruncateInt()).
 		Quo(externalLiquidityRatio).RoundInt()
+	fmt.Println("resizedAmount:", resizedAmount.String())
 	slippageAmount, err := pool.CalcGivenInSlippage(
 		ctx,
 		oracleKeeper,
@@ -79,10 +88,13 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coins{}, err
 	}
+	fmt.Println("slippageAmount1:", slippageAmount.String())
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
-
+	fmt.Println("slippageAmount2:", slippageAmount.String())
 	slippageValue := slippageAmount.Mul(outTokenPrice)
+	fmt.Println("slippageValue:", slippageValue.String())
 	slippage := slippageValue.Quo(exitValue)
+	fmt.Println("slippage:", slippage.String())
 
 	minSlippage := params.MinSlippage.Mul(weightMultiplier)
 	if slippage.LT(minSlippage) {
@@ -98,6 +110,7 @@ func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPo
 
 	slippageCoins := sdk.Coins{sdk.NewCoin(tokenOutDenom, slippageAmount.TruncateInt())}
 
+	fmt.Println("--------------CalcExitValueWithSlippage------------------")
 	return exitValueWithSlippage, slippage, slippageCoins, nil
 }
 

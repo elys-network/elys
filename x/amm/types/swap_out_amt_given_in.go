@@ -144,6 +144,10 @@ func (p Pool) CalcGivenInSlippage(
 		return sdkmath.LegacyZeroDec(), err
 	}
 
+	fmt.Println("----------CalcGivenInSlippage----------")
+
+	fmt.Println("balancerOutCoin", balancerOutCoin.String())
+
 	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), err
@@ -158,13 +162,21 @@ func (p Pool) CalcGivenInSlippage(
 	if outTokenPrice.IsZero() {
 		return sdkmath.LegacyZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
+	fmt.Println("inTokenPrice", inTokenPrice.String())
+	fmt.Println("outTokenPrice", outTokenPrice.String())
+	fmt.Println("tokenIn", tokenIn.String())
 
 	oracleOutAmount := sdkmath.LegacyNewDecFromInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
+
+	fmt.Println("oracleOutAmount", oracleOutAmount.String())
 	balancerOut := sdkmath.LegacyNewDecFromInt(balancerOutCoin.Amount)
 	slippageAmount := oracleOutAmount.Sub(balancerOut)
 	if slippageAmount.IsNegative() {
 		return sdkmath.LegacyZeroDec(), nil
 	}
+	fmt.Println("slippageAmount", slippageAmount.String())
+	fmt.Println("----------CalcGivenInSlippage----------")
+
 	return slippageAmount, nil
 }
 
