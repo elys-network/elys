@@ -143,6 +143,11 @@ func CalcExitPool(
 	exitedCoins := sdk.Coins{}
 	poolLiquidity := pool.GetTotalPoolLiquidity()
 
+	fmt.Println("--------------CalcExitPool------------------")
+
+	fmt.Println("poolLiquidity:", poolLiquidity.String())
+
+	fmt.Println("pool assets:", pool.PoolAssets)
 	if pool.PoolParams.UseOracle && tokenOutDenom != "" {
 
 		accountedAssets := pool.GetAccountedBalance(ctx, accountedPoolKeeper, pool.PoolAssets)
@@ -207,9 +212,12 @@ func CalcExitPool(
 				Mul(sdkmath.LegacyOneDec().Sub(swapFee.Add(takerFeesFinal)))).RoundInt()
 		}
 
+		fmt.Println("--------------CalcExitPool------------------")
+
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, nil
 	}
 
+	fmt.Println("--------------CalcExitPool------------------")
 	for _, asset := range poolLiquidity {
 		// round down here, due to not wanting to over-exit
 		exitAmt := shareOutRatio.MulInt(asset.Amount).TruncateInt()
