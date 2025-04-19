@@ -139,12 +139,12 @@ func (p Pool) CalcGivenInSlippage(
 	tokenOutDenom string,
 	accPoolKeeper AccountedPoolKeeper,
 ) (sdkmath.LegacyDec, error) {
+	fmt.Println("----------CalcGivenInSlippage----------")
+
 	balancerOutCoin, _, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, sdkmath.LegacyZeroDec(), accPoolKeeper)
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), err
 	}
-
-	fmt.Println("----------CalcGivenInSlippage----------")
 
 	fmt.Println("balancerOutCoin", balancerOutCoin.String())
 

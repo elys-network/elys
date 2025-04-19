@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -43,6 +44,8 @@ func (k Keeper) ExitPoolEst(
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), types.ErrInvalidPoolId
 	}
 
+	fmt.Println("----------------ExitPoolEst-----------------")
+
 	totalSharesAmount := pool.GetTotalShares()
 	if shareInAmount.GTE(totalSharesAmount.Amount) {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(types.ErrInvalidMathApprox, "Trying to exit >= the number of shares contained in the pool.")
@@ -57,5 +60,6 @@ func (k Keeper) ExitPoolEst(
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
 
+	fmt.Println("----------------ExitPoolEst-----------------")
 	return exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, nil
 }

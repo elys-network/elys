@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdkmath "cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 )
@@ -16,6 +17,8 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 	if len(routes) == 0 {
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), types.ErrEmptyRoutes
 	}
+
+	fmt.Println("------------CalcInRouteSpotPrice---------------")
 
 	// Start with the initial token input
 	tokensIn := sdk.Coins{tokenIn}
@@ -149,6 +152,6 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 
 	// Construct the token out coin
 	tokenOut := tokensIn[0]
-
+	fmt.Println("------------CalcInRouteSpotPrice---------------")
 	return spotPrice, impactedPrice, tokenOut, totalDiscountedSwapFee, discount, availableLiquidity, slippage, weightBalance, nil
 }

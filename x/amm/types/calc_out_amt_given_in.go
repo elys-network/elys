@@ -3,6 +3,7 @@ package types
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -22,7 +23,12 @@ func (p Pool) CalcOutAmtGivenIn(
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
 	}
 
+	fmt.Println("-----------CalcOutAmtGivenIn--------------")
+
+	fmt.Println("tokenIn", tokenIn.String())
+
 	tokenAmountInAfterFee := sdkmath.LegacyNewDecFromInt(tokenIn.Amount).Mul(sdkmath.LegacyOneDec().Sub(swapFee))
+	fmt.Println("tokenAmountInAfterFee", tokenAmountInAfterFee.String())
 	poolTokenInBalance := sdkmath.LegacyNewDecFromInt(poolAssetIn.Token.Amount)
 	// accounted pool balance
 	acountedPoolAssetInAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetIn.Token.Denom)
@@ -36,6 +42,9 @@ func (p Pool) CalcOutAmtGivenIn(
 	if accountedPoolAssetOutAmt.IsPositive() {
 		poolTokenOutBalance = sdkmath.LegacyNewDecFromInt(accountedPoolAssetOutAmt)
 	}
+
+	fmt.Println("poolTokenInBalance", poolTokenInBalance.String())
+	fmt.Println("poolTokenOutBalance", poolTokenOutBalance.String())
 
 	poolPostSwapInBalance := poolTokenInBalance.Add(tokenAmountInAfterFee)
 
@@ -54,6 +63,9 @@ func (p Pool) CalcOutAmtGivenIn(
 		outWeight = oracleWeights[1].Weight
 	}
 
+	fmt.Println("inWeight", inWeight.String())
+	fmt.Println("outWeight", outWeight.String())
+
 	// deduct swapfee on the tokensIn
 	// delta balanceOut is positive(tokens inside the pool decreases)
 	tokenAmountOut, err := solveConstantFunctionInvariant(
@@ -71,6 +83,7 @@ func (p Pool) CalcOutAmtGivenIn(
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), ErrTokenOutAmountZero
 	}
 
+	fmt.Println("tokenAmountOut", tokenAmountOut.String())
 	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenIn.Denom, tokenOutDenom, accountedPool)
 	if err != nil {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), err
@@ -85,11 +98,14 @@ func (p Pool) CalcOutAmtGivenIn(
 
 	slippage := sdkmath.LegacyOneDec().Sub(tokenAmountOut.Quo(amountOutWithoutSlippage))
 
+	fmt.Println("slippage", slippage.String())
 	// We ignore the decimal component, as we round down the token amount out.
 	tokenAmountOutInt := tokenAmountOut.TruncateInt()
 	if !tokenAmountOutInt.IsPositive() {
 		return sdk.Coin{}, sdkmath.LegacyZeroDec(), ErrTokenOutAmountZero
 	}
 
+	fmt.Println("tokenAmountOutInt", tokenAmountOutInt.String())
+	fmt.Println("-----------CalcOutAmtGivenIn--------------")
 	return sdk.NewCoin(tokenOutDenom, tokenAmountOutInt), slippage, nil
 }
