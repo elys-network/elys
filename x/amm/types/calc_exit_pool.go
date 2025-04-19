@@ -12,6 +12,9 @@ import (
 func CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper,
 	pool Pool, exitingShares sdkmath.Int, tokenOutDenom string,
 	weightMultiplier sdkmath.LegacyDec, applyFee bool, params Params) (sdkmath.LegacyDec, sdkmath.LegacyDec, sdk.Coins, error) {
+
+	fmt.Println("Initalize CalcExitValueWithSlippage")
+	fmt.Println("pool:", pool.PoolAssets)
 	tvl, err := pool.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
 		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coins{}, err
