@@ -1,51 +1,46 @@
 package keepers
 
 import (
+	"bytes"
 	"context"
 
 	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/cmd/cometbft/commands/debug"
 	cmtprotocrypto "github.com/cometbft/cometbft/proto/tendermint/crypto"
-	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
-	cmtjsonclient "github.com/cometbft/cometbft/rpc/jsonrpc/client"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-)
-
-var (
-	flagNodeRPCAddr = "rpc-laddr"
+	ccvconsumerkeeper "github.com/cosmos/interchain-security/v6/x/ccv/consumer/keeper"
 )
 
 type ICSStakingKeeper struct {
 	*stakingkeeper.Keeper
+	consumerKeeper ccvconsumerkeeper.Keeper
 }
 
 // NewICSStakingKeeper creates a new ICS Staking Keeper instance
 func NewICSStakingKeeper(
-	keeper *stakingkeeper.Keeper,
+	stakingKeeper *stakingkeeper.Keeper,
+	consumerKeeper ccvconsumerkeeper.Keeper,
 ) ICSStakingKeeper {
 	_ = debug.DebugCmd
 
 	return ICSStakingKeeper{
-		Keeper: keeper,
+		Keeper:         stakingKeeper,
+		consumerKeeper: consumerKeeper,
 	}
 }
 
 // GetPubKeyByConsAddr returns the consensus public key by consensus address.
 func (k ICSStakingKeeper) GetPubKeyByConsAddr(ctx context.Context, addr sdk.ConsAddress) (cmtprotocrypto.PublicKey, error) {
-	vals, err := getCometValidators(ctx)
-	if err != nil {
-		return cmtprotocrypto.PublicKey{}, err
-	}
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	vals := k.consumerKeeper.GetAllCCValidator(sdkCtx)
 
 	for _, v := range vals {
-		if v.Address == addr.String() {
-			pubkey := v.PubKey.GetCachedValue().(cryptotypes.PubKey)
+		if bytes.Equal(v.Address, addr.Bytes()) {
+			pubkey := v.Pubkey.GetCachedValue().(cryptotypes.PubKey)
 			tmPk, err := cryptocodec.ToCmtProtoPublicKey(pubkey)
 			if err != nil {
 				return cmtprotocrypto.PublicKey{}, err
@@ -58,19 +53,17 @@ func (k ICSStakingKeeper) GetPubKeyByConsAddr(ctx context.Context, addr sdk.Cons
 }
 
 func (k ICSStakingKeeper) GetBondedValidatorsByPower(ctx context.Context) ([]stakingtypes.Validator, error) {
-	vals, err := getCometValidators(ctx)
-	if err != nil {
-		return nil, err
-	}
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	vals := k.consumerKeeper.GetAllCCValidator(sdkCtx)
 
 	stakingVals := make([]stakingtypes.Validator, 0)
 	powerReduction := k.PowerReduction(ctx)
 
 	for _, v := range vals {
-		if v.VotingPower > 0 {
+		if v.Power > 0 {
 			stakingVals = append(stakingVals, stakingtypes.Validator{
-				OperatorAddress: v.Address,
-				Tokens:          sdkmath.NewInt(v.VotingPower).Mul(powerReduction),
+				OperatorAddress: string(v.Address),
+				Tokens:          sdkmath.NewInt(v.Power).Mul(powerReduction),
 				Status:          stakingtypes.Bonded,
 			})
 		}
@@ -78,36 +71,4 @@ func (k ICSStakingKeeper) GetBondedValidatorsByPower(ctx context.Context) ([]sta
 	}
 
 	return stakingVals, nil
-}
-
-func getCometValidators(ctx context.Context) ([]*cmtservice.Validator, error) {
-	var height *int64
-	page := 1
-	limit := 100
-
-	cmtRPCEndpoint, err := debug.DebugCmd.PersistentFlags().GetString(flagNodeRPCAddr)
-	if err != nil {
-		return nil, err
-	}
-
-	cmtHTTPClient, err := cmtjsonclient.DefaultHTTPClient(cmtRPCEndpoint)
-	if err != nil {
-		return nil, err
-	}
-
-	cmtRPCClient, err := rpchttp.NewWithClient(cmtRPCEndpoint, "/websocket", cmtHTTPClient)
-	if err != nil {
-		return nil, err
-	}
-
-	clientCtx := client.Context{
-		Client: cmtRPCClient,
-	}
-
-	response, err := cmtservice.ValidatorsOutput(ctx, clientCtx, height, page, limit)
-	if err != nil {
-		return nil, err
-	}
-
-	return response.Validators, nil
 }
