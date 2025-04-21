@@ -753,7 +753,6 @@ func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
 			DenomIn:   balance.Denom,
 			DenomOut:  ptypes.Elys,
 			MinAmount: sdk.NewCoin(ptypes.Elys, sdkmath.ZeroInt()),
-			MaxAmount: sdk.NewCoin(balance.Denom, balance.Amount),
 		})
 		if err != nil {
 			ctx.Logger().Error("Failed to swap taker fee", "error", err)
