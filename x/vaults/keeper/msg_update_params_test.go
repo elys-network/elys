@@ -6,14 +6,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-    "github.com/elys-network/elys/x/vaults/types"
+	"github.com/elys-network/elys/x/vaults/types"
 )
 
 func TestMsgUpdateParams(t *testing.T) {
 	k, ms, ctx := setupMsgServer(t)
 	params := types.DefaultParams()
-	require.NoError(t, k.SetParams(ctx, params))
 	wctx := sdk.UnwrapSDKContext(ctx)
+	require.NoError(t, k.SetParams(wctx, params))
 
 	// default params
 	testCases := []struct {

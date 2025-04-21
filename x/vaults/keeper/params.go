@@ -1,34 +1,28 @@
 package keeper
 
 import (
-	"context"
-
 	"github.com/cosmos/cosmos-sdk/runtime"
-
-    "github.com/elys-network/elys/x/vaults/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/x/vaults/types"
 )
 
-
 // GetParams get all parameters as types.Params
-func (k Keeper) GetParams(ctx context.Context) (params types.Params) {
+func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	bz := store.Get(types.ParamsKey)
-	if bz == nil {
-		return params
+
+	b := store.Get(types.ParamKeyPrefix)
+	if b == nil {
+		return
 	}
 
-	k.cdc.MustUnmarshal(bz, &params)
-	return params
+	k.cdc.MustUnmarshal(b, &params)
+	return
 }
 
 // SetParams set the params
-func (k Keeper) SetParams(ctx context.Context, params types.Params) error {
+func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	bz, err := k.cdc.Marshal(&params)
-	if err != nil {
-		return err
-	}
-	store.Set(types.ParamsKey, bz)
-
+	b := k.cdc.MustMarshal(&params)
+	store.Set(types.ParamKeyPrefix, b)
 	return nil
 }

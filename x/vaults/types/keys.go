@@ -1,5 +1,7 @@
 package types
 
+import sdk "github.com/cosmos/cosmos-sdk/types"
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "vaults"
@@ -9,16 +11,13 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_vaults"
-
-    
 )
 
 var (
-	ParamsKey = []byte("p_vaults")
+	ParamKeyPrefix = []byte{0x01}
+	VaultKeyPrefix = []byte{0x02}
 )
 
-
-
-func KeyPrefix(p string) []byte {
-    return []byte(p)
+func GetVaultKey(key uint64) []byte {
+	return append(VaultKeyPrefix, sdk.Uint64ToBigEndian(key)...)
 }
