@@ -35,7 +35,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 
 func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
 	if poolId >= stabletypes.UsdcPoolId {
-		return k.stableKeeper.TVL(ctx, k.oracleKeeper, poolId)
+		return k.stableKeeper.TVL(ctx, poolId)
 	}
 	ammPool, found := k.amm.GetPool(ctx, poolId)
 	if found {
@@ -491,7 +491,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 		// Send coins to protocol revenue address
 		if protocolRevenueCoins.IsAllPositive() {
 			providerPortion := ammkeeper.PortionCoins(protocolRevenueCoins, estakingParams.ProviderStakingRewardsPortion)
-			consumerPortion := stakerRevenueCoins.Sub(providerPortion...)
+			consumerPortion := protocolRevenueCoins.Sub(providerPortion...)
 
 			// This will be sent to provider
 			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerToSendToProviderName, providerPortion)
@@ -673,7 +673,7 @@ func (k Keeper) UpdateAmmStablePoolAPR(ctx sdk.Context, totalBlocksPerYear int64
 	})
 
 	k.stableKeeper.IterateLiquidityPools(ctx, func(p stabletypes.Pool) bool {
-		tvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, p.Id)
+		tvl := k.stableKeeper.TVL(ctx, p.Id)
 
 		// Get pool Id
 		poolId := p.GetId()

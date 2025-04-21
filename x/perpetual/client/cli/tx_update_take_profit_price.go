@@ -35,7 +35,7 @@ func CmdUpdateTakeProfitPrice() *cobra.Command {
 			msg := types.NewMsgUpdateTakeProfitPrice(
 				clientCtx.GetFromAddress().String(),
 				uint64(positionId),
-				math.LegacyDec(argPrice),
+				argPrice,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err

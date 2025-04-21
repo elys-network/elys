@@ -52,11 +52,13 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, pool types.Pool) types.PoolResponse
 	depositDenom := pool.GetDepositDenom()
 
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := pool.TotalValue.Sub(balance.Amount)
+	borrowed := pool.NetAmount.Sub(balance.Amount)
 	borrowRatio := sdkmath.LegacyZeroDec()
-	if pool.TotalValue.GT(sdkmath.ZeroInt()) {
-		borrowRatio = borrowed.ToLegacyDec().Quo(pool.TotalValue.ToLegacyDec())
+	if pool.NetAmount.GT(sdkmath.ZeroInt()) {
+		borrowRatio = borrowed.ToLegacyDec().Quo(pool.NetAmount.ToLegacyDec())
 	}
+	denomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, pool.DepositDenom)
+	totalValue := denomPrice.MulInt(pool.NetAmount)
 
 	return types.PoolResponse{
 		RedemptionRate:       k.CalculateRedemptionRateForPool(ctx, pool),
@@ -67,12 +69,32 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, pool types.Pool) types.PoolResponse
 		InterestRateIncrease: pool.InterestRateIncrease,
 		InterestRateDecrease: pool.InterestRateDecrease,
 		HealthGainFactor:     pool.HealthGainFactor,
-		TotalValue:           pool.TotalValue,
+		NetAmount:            pool.NetAmount,
 		MaxLeverageRatio:     pool.MaxLeverageRatio,
 		MaxWithdrawRatio:     pool.MaxWithdrawRatio,
 		PoolId:               pool.Id,
-		TotalDeposit:         pool.TotalValue,
+		TotalValue:           totalValue,
 		TotalBorrow:          borrowed,
 		BorrowRatio:          borrowRatio,
 	}
+}
+
+func (k Keeper) Debt(goCtx context.Context, req *types.QueryDebtRequest) (*types.QueryDebtResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	debt := k.GetDebt(ctx, sdk.MustAccAddressFromBech32(req.Address), req.PoolId)
+	return &types.QueryDebtResponse{Debt: debt}, nil
+}
+
+func (k Keeper) GetInterest(goCtx context.Context, req *types.QueryGetInterestRequest) (*types.QueryGetInterestResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	interest := k.GetInterestAtHeight(ctx, req.PoolId, req.BlockHeight)
+	return &types.QueryGetInterestResponse{InterestBlock: interest}, nil
 }

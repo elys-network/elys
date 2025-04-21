@@ -66,6 +66,32 @@ func TestMsgUpFromSwapExactAmountIn_ValidateBasic(t *testing.T) {
 			},
 			err: errors.New("token in is zero"),
 		},
+		{
+			name: "Invalid routes with same Input and Output denom",
+			msg: types.MsgUpFrontSwapExactAmountIn{
+				Sender: sample.AccAddress(),
+				Routes: []types.SwapAmountInRoute{
+					{TokenOutDenom: "uusdc"},
+					{TokenOutDenom: "uusdc"},
+					{TokenOutDenom: "uelys"},
+				},
+				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenOutMinAmount: math.NewInt(1),
+			},
+			err: errors.New("has the same input and output denom as the previous route"),
+		},
+		{
+			name: "Valid multiple routes",
+			msg: types.MsgUpFrontSwapExactAmountIn{
+				Sender: sample.AccAddress(),
+				Routes: []types.SwapAmountInRoute{
+					{TokenOutDenom: "uusdc"},
+					{TokenOutDenom: "uelys"},
+				},
+				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenOutMinAmount: math.NewInt(1),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

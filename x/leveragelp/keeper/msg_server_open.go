@@ -45,11 +45,11 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	depositDenom := borrowPool.GetDepositDenom()
 	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := borrowPool.TotalValue.Sub(balance.Amount)
+	borrowed := borrowPool.NetAmount.Sub(balance.Amount)
 	borrowRatio := sdkmath.LegacyZeroDec()
-	if borrowPool.TotalValue.GT(sdkmath.ZeroInt()) {
+	if borrowPool.NetAmount.GT(sdkmath.ZeroInt()) {
 		borrowRatio = borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
-			Quo(borrowPool.TotalValue.ToLegacyDec())
+			Quo(borrowPool.NetAmount.ToLegacyDec())
 	}
 
 	ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)

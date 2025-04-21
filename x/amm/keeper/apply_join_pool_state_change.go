@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -82,7 +84,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 
 				// Track amount in pool
 				weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(sdkmath.LegacyOneDec().Sub(params.WeightBreakingFeePortion))
-				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, sdkmath.Int(weightRecoveryFeeForPool.Mul(sdkmath.LegacyDec(weightRecoveryFeeAmount)))))
+				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, weightRecoveryFeeForPool.Mul(coin.Amount.ToLegacyDec()).TruncateInt()))
 			}
 		}
 	}
@@ -100,13 +102,21 @@ func (k Keeper) ApplyJoinPoolStateChange(
 		}
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
 
-		bonusTokenAmount := joinCoins[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+		// ensure token prices for in/out tokens set properly
+		inTokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, joinCoins[0].Denom)
+		if inTokenPrice.IsZero() {
+			return fmt.Errorf("price for inToken not set: %s", joinCoins[0].Denom)
+		}
+		outTokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, otherAsset.Token.Denom)
+		if outTokenPrice.IsZero() {
+			return fmt.Errorf("price for outToken not set: %s", otherAsset.Token.Denom)
+		}
+		bonusTokenAmount := ((joinCoins[0].Amount.ToLegacyDec().Mul(weightBalanceBonus)).Mul(inTokenPrice).Quo(outTokenPrice)).TruncateInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
-			weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(joinCoins[0].Amount.ToLegacyDec())
+			bonusTokenAmount = treasuryTokenAmount
 		}
-
-		weightBalanceBonusCoins = sdk.Coins{sdk.NewCoin(otherAsset.Token.Denom, weightBalanceBonus.TruncateInt())}
+		weightBalanceBonusCoins = sdk.Coins{sdk.NewCoin(otherAsset.Token.Denom, bonusTokenAmount)}
 
 		// send bonus tokens to recipient if positive
 		if weightBalanceBonusCoins.IsAllPositive() {

@@ -37,8 +37,15 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 	if err != nil {
 		return nil, err
 	}
+	recoveryReward := sdkmath.ZeroInt()
+	if weightBonus.IsPositive() {
+		recoveryReward = amount.Amount.ToLegacyDec().Mul(weightBonus).TruncateInt()
+	}
 	// Add weight balance amount here, not added in execution as out amount will be changed and that will impact the transfers
-	amount.Amount = amount.Amount.Add(((amount.Amount.ToLegacyDec()).Mul(weightBonus)).TruncateInt())
+	amount.Amount = amount.Amount.Add(recoveryReward)
+
+	// Even when multiple routes, taker Fee per route is params.TakerFee/TotalRoutes, so net taker fee will be params.TakerFee
+	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
 
 	return &types.QuerySwapEstimationByDenomResponse{
 		InRoute:            inRoute,
@@ -51,5 +58,8 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 		Slippage:           slippage,
 		WeightBalanceRatio: weightBonus,
 		PriceImpact:        priceImpact,
+		TakerFee:           takerFees,
+		// sdk.NewCoin() will panic in case of negative weightBonus
+		WeightBalanceRewardAmount: sdk.Coin{Denom: amount.Denom, Amount: recoveryReward},
 	}, nil
 }

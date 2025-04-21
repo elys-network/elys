@@ -18,6 +18,11 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 	// Update params
 	defer k.SetParams(ctx, params)
 
+	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+	if !found {
+		return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+
 	// If we don't have enough params
 	if query.Denom == ptypes.Eden {
 		lpIncentive := params.LpIncentives
@@ -30,12 +35,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			return sdkmath.LegacyZeroDec(), nil
 		}
 
-		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-		if !found {
-			return sdkmath.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
-		}
-
-		stableTvl := k.stableKeeper.TVL(ctx, k.oracleKeeper, stabletypes.UsdcPoolId)
+		stableTvl := k.stableKeeper.TVL(ctx, stabletypes.UsdcPoolId)
 		if stableTvl.IsZero() {
 			return sdkmath.LegacyZeroDec(), nil
 		}
@@ -76,7 +76,7 @@ func (k Keeper) CalculateStableStakeApr(ctx sdk.Context, query *types.QueryStabl
 			Quo(stableTvl)
 		return apr, nil
 	} else if query.Denom == ptypes.BaseCurrency {
-		borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, query.Denom)
+		borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, baseCurrency)
 		if !found {
 			return math.LegacyZeroDec(), errorsmod.Wrap(types.ErrPoolNotFound, "pool not found")
 		}

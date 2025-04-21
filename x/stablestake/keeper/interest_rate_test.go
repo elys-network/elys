@@ -21,9 +21,11 @@ func CreateNInterest(keeper *keeper.Keeper, ctx sdk.Context, n int) ([]types.Int
 	for i := range items {
 		items[i].InterestRate = sdkmath.LegacyNewDec(int64(i))
 		items[i].BlockTime = int64(i * 10)
+		items[i].PoolId = 1
 
 		curBlock++
-		keeper.SetInterestForPool(ctx, 1, uint64(curBlock), items[i])
+		items[i].BlockHeight = uint64(curBlock)
+		keeper.SetInterestForPool(ctx, items[i])
 	}
 	return items, curBlock
 }
@@ -67,7 +69,7 @@ func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
 		{
 			desc: "interest calculation with zero total value",
 			pool: types.Pool{
-				TotalValue:           sdkmath.NewInt(0),
+				NetAmount:            sdkmath.NewInt(0),
 				InterestRate:         sdkmath.LegacyNewDec(5),
 				InterestRateMax:      sdkmath.LegacyNewDec(10),
 				InterestRateMin:      sdkmath.LegacyNewDec(1),
@@ -81,7 +83,7 @@ func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
 		{
 			desc: "interest calculation with zero max leverage",
 			pool: types.Pool{
-				TotalValue:           sdkmath.NewInt(0),
+				NetAmount:            sdkmath.NewInt(0),
 				InterestRate:         sdkmath.LegacyNewDec(5),
 				InterestRateMax:      sdkmath.LegacyNewDec(10),
 				InterestRateMin:      sdkmath.LegacyNewDec(1),
@@ -96,7 +98,7 @@ func (suite *KeeperTestSuite) TestInterestRateComputationForPool() {
 		{
 			desc: "interest calculation with zero max leverage",
 			pool: types.Pool{
-				TotalValue:           sdkmath.NewInt(10000),
+				NetAmount:            sdkmath.NewInt(10000),
 				InterestRate:         sdkmath.LegacyNewDec(12),
 				InterestRateMax:      sdkmath.LegacyNewDec(17),
 				InterestRateMin:      sdkmath.LegacyNewDec(12),

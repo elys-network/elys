@@ -28,6 +28,7 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		if r := recover(); r != nil {
 			tokenInAmount = math.Int{}
 			err = fmt.Errorf("function RouteExactAmountOut failed due to internal reason: %v", r)
+			ctx.Logger().Error(err.Error())
 		}
 	}()
 

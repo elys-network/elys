@@ -3,6 +3,7 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
@@ -70,9 +71,9 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 		}
 	} else if query.Denom == ptypes.BaseCurrency {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {
-			borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, query.Denom)
+			borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, baseCurrency)
 			if !found {
-				return math.LegacyZeroDec(), errorsmod.Wrap(types.ErrPoolNotFound, "pool not found")
+				return math.LegacyZeroDec(), fmt.Errorf("pool not found for denom %s", baseCurrency)
 			}
 			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{
 				PoolId: stabletypes.UsdcPoolId,
@@ -91,7 +92,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			}
 
 			// Calc Eden price in usdc
-			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
+			// We put Elys as denom as Eden won't be available in amm pool and has the same value as Elys
 			edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 			if edenDenomPrice.IsZero() {
 				return math.LegacyZeroDec(), nil
@@ -108,7 +109,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 				return math.LegacyZeroDec(), nil
 			}
 
-			// Mutiply by 365 to get yearly rewards
+			// Multiply by 365 to get yearly rewards
 			entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 			if !found {
 				return math.LegacyZeroDec(), assetprofiletypes.ErrAssetProfileNotFound

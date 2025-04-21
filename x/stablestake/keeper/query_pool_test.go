@@ -130,7 +130,7 @@ func (suite *KeeperTestSuite) TestPool() {
 		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
 		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
 		HealthGainFactor:     math.LegacyOneDec(),
-		TotalValue:           math.ZeroInt(),
+		NetAmount:            math.ZeroInt(),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		MaxWithdrawRatio:     math.LegacyMustNewDecFromStr("0.7"),
 
@@ -146,13 +146,13 @@ func (suite *KeeperTestSuite) TestPool() {
 		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
 		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
 		HealthGainFactor:     math.LegacyOneDec(),
-		TotalValue:           math.ZeroInt(),
+		NetAmount:            math.ZeroInt(),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		MaxWithdrawRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		PoolId:               1,
 		DepositDenom:         ptypes.BaseCurrency,
 		BorrowRatio:          math.LegacyZeroDec(),
-		TotalDeposit:         math.ZeroInt(),
+		TotalValue:           math.LegacyZeroDec(),
 		TotalBorrow:          math.ZeroInt(),
 	}
 	tests := []struct {
@@ -203,7 +203,7 @@ func (suite *KeeperTestSuite) TestPool() {
 				require.ErrorIs(suite.T(), err, tt.expectedError)
 			} else {
 				require.NoError(suite.T(), err)
-				require.Equal(suite.T(), tt.expectedResp, resp)
+				require.Equal(suite.T(), tt.expectedResp.String(), resp.String())
 			}
 		})
 	}
@@ -217,7 +217,7 @@ func (suite *KeeperTestSuite) TestAllPools() {
 		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
 		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
 		HealthGainFactor:     math.LegacyOneDec(),
-		TotalValue:           math.ZeroInt(),
+		NetAmount:            math.ZeroInt(),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		MaxWithdrawRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		Id:                   1,
@@ -232,13 +232,13 @@ func (suite *KeeperTestSuite) TestAllPools() {
 		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
 		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
 		HealthGainFactor:     math.LegacyOneDec(),
-		TotalValue:           math.ZeroInt(),
+		NetAmount:            math.ZeroInt(),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		MaxWithdrawRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		PoolId:               1,
 		DepositDenom:         ptypes.BaseCurrency,
 		BorrowRatio:          math.LegacyZeroDec(),
-		TotalDeposit:         math.ZeroInt(),
+		TotalValue:           math.LegacyZeroDec(),
 		TotalBorrow:          math.ZeroInt(),
 	}
 	tests := []struct {
@@ -279,7 +279,7 @@ func (suite *KeeperTestSuite) TestAllPools() {
 				require.ErrorIs(suite.T(), err, tt.expectedError)
 			} else {
 				require.NoError(suite.T(), err)
-				require.Equal(suite.T(), tt.expectedResp, resp)
+				require.Equal(suite.T(), tt.expectedResp.String(), resp.String())
 			}
 		})
 	}

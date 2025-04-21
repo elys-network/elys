@@ -47,7 +47,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 		InterestRateIncrease: math.LegacyMustNewDecFromStr("0.01"),
 		InterestRateDecrease: math.LegacyMustNewDecFromStr("0.01"),
 		HealthGainFactor:     math.LegacyOneDec(),
-		TotalValue:           math.ZeroInt(),
+		NetAmount:            math.ZeroInt(),
 		MaxLeverageRatio:     math.LegacyMustNewDecFromStr("0.7"),
 		Id:                   1,
 		DepositDenom:         ptypes.BaseCurrency,

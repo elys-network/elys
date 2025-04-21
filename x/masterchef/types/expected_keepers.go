@@ -94,6 +94,7 @@ type AmmKeeper interface {
 		takersFee math.LegacyDec,
 	) (tokenOutAmount math.Int, err error)
 	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
+	CalculateCoinsUSDValue(ctx sdk.Context, coins sdk.Coins) math.LegacyDec
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info
@@ -124,8 +125,8 @@ type AssetProfileKeeper interface {
 type StableStakeKeeper interface {
 	GetParams(ctx sdk.Context) (params stabletypes.Params)
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)
-	TVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper, poolId uint64) math.LegacyDec
-	AllTVL(ctx sdk.Context, oracleKeeper stabletypes.OracleKeeper) math.LegacyDec
+	TVL(ctx sdk.Context, poolId uint64) math.LegacyDec
+	AllTVL(ctx sdk.Context) math.LegacyDec
 	IterateLiquidityPools(sdk.Context, func(stabletypes.Pool) bool)
 	GetPoolByDenom(ctx sdk.Context, denom string) (stabletypes.Pool, bool)
 	GetPool(ctx sdk.Context, poolId uint64) (pool stabletypes.Pool, found bool)

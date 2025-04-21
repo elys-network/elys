@@ -39,9 +39,14 @@ func (msg *MsgUpFrontSwapExactAmountIn) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 
-	for _, route := range msg.Routes {
+	for i, route := range msg.Routes {
 		if err = sdk.ValidateDenom(route.TokenOutDenom); err != nil {
 			return err
+		}
+
+		// Ensure no route has the same input and output denomination
+		if i > 0 && msg.Routes[i-1].TokenOutDenom == route.TokenOutDenom {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "route %d has the same input and output denom as the previous route", i)
 		}
 	}
 	if err = msg.TokenIn.Validate(); err != nil {
@@ -50,5 +55,6 @@ func (msg *MsgUpFrontSwapExactAmountIn) ValidateBasic() error {
 	if msg.TokenIn.IsZero() {
 		return errors.New("token in is zero")
 	}
+
 	return nil
 }

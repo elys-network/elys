@@ -204,6 +204,8 @@ message QueryJoinPoolEstimationResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  cosmos.base.v1beta1.Coin weight_balance_reward_amount = 7
+      [ (gogoproto.nullable) = false ];
 }
 
 message QueryExitPoolEstimationRequest {
@@ -239,6 +241,8 @@ message QueryExitPoolEstimationResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+  cosmos.base.v1beta1.Coin weight_balance_reward_amount = 6
+      [ (gogoproto.nullable) = false ];
 }
 
 message QuerySwapEstimationResponse {
@@ -266,6 +270,11 @@ message QuerySwapEstimationResponse {
     (gogoproto.nullable) = false
   ];
   string weight_balance_ratio = 7 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string taker_fee = 8 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
@@ -379,6 +388,13 @@ message QuerySwapEstimationByDenomResponse {
     (gogoproto.nullable) = false
   ];
   string price_impact = 10 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin weight_balance_reward_amount = 11
+      [ (gogoproto.nullable) = false ];
+  string taker_fee = 12 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false

@@ -8,7 +8,7 @@ import (
 )
 
 func (k Keeper) InterestRateComputationForPool(ctx sdk.Context, pool types.Pool) sdkmath.LegacyDec {
-	if pool.TotalValue.IsZero() {
+	if pool.NetAmount.IsZero() {
 		return pool.InterestRate
 	}
 
@@ -25,8 +25,8 @@ func (k Keeper) InterestRateComputationForPool(ctx sdk.Context, pool types.Pool)
 
 	// rate = minRate + (min(borrowRatio, param * maxAllowed) / (param * maxAllowed)) * (maxRate - minRate)
 	borrowRatio := sdkmath.LegacyZeroDec()
-	if pool.TotalValue.IsPositive() {
-		borrowRatio = (pool.TotalValue.Sub(balance.Amount).ToLegacyDec()).Quo(pool.TotalValue.ToLegacyDec())
+	if pool.NetAmount.IsPositive() {
+		borrowRatio = (pool.NetAmount.Sub(balance.Amount).ToLegacyDec()).Quo(pool.NetAmount.ToLegacyDec())
 	}
 
 	maxAllowed := pool.MaxLeverageRatio.Mul(healthGainFactor)
