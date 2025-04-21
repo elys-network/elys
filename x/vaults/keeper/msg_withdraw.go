@@ -9,11 +9,42 @@ import (
 )
 
 func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*types.MsgWithdrawResponse, error) {
-
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if err := k.SetParams(ctx, req.Params); err != nil {
+	creator := sdk.MustAccAddressFromBech32(req.Withdrawer)
+
+	shareDenom := types.GetShareDenomForVault(req.VaultId)
+	shareCoin := sdk.NewCoin(shareDenom, req.Shares)
+	shareCoins := sdk.NewCoins(shareCoin)
+	err := k.bk.SendCoinsFromAccountToModule(ctx, creator, types.ModuleName, shareCoins)
+	if err != nil {
 		return nil, err
 	}
+
+	err = k.bk.BurnCoins(ctx, types.ModuleName, shareCoins)
+	if err != nil {
+		return nil, err
+	}
+
+	totalShares := k.bk.GetSupply(ctx, shareDenom).Amount
+	shareRatio := req.Shares.ToLegacyDec().Quo(totalShares.ToLegacyDec())
+
+	toSendCoins := sdk.NewCoins()
+	vault, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return nil, types.ErrVaultNotFound
+	}
+	for _, coin := range vault.AllowedCoins {
+		amount := coin.Amount.ToLegacyDec().Mul(shareRatio).RoundInt()
+		toSendCoins = toSendCoins.Add(sdk.NewCoin(coin.Denom, amount))
+	}
+
+	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, toSendCoins)
+	if err != nil {
+		return nil, err
+	}
+
+	// Commit tokens or not ?
+	// Use module account or create account for each vault ? prefer each vault account
 
 	return &types.MsgWithdrawResponse{}, nil
 }

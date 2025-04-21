@@ -8,17 +8,17 @@ import (
 	"github.com/elys-network/elys/x/vaults/types"
 )
 
-// GetParams get all parameters as types.Params
-func (k Keeper) GetVault(ctx sdk.Context, id uint64) (params types.Params) {
+// GetVault get all parameters as types.Vault
+func (k Keeper) GetVault(ctx sdk.Context, id uint64) (vault types.Vault, found bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(types.GetVaultKey(id))
 	if b == nil {
-		return
+		return types.Vault{}, false
 	}
 
-	k.cdc.MustUnmarshal(b, &params)
-	return
+	k.cdc.MustUnmarshal(b, &vault)
+	return vault, true
 }
 
 // SetParams set the params
