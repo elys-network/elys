@@ -15,9 +15,16 @@ func (k msgServer) AddVault(goCtx context.Context, req *types.MsgAddVault) (*typ
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if err := k.SetParams(ctx, req.Params); err != nil {
-		return nil, err
+
+	vaultId := k.GetNextVaultId(ctx)
+	vault := types.Vault{
+		Id:             vaultId,
+		DepositDenom:   req.DepositDenom,
+		MaxAmountUsd:   req.MaxAmountUsd,
+		AllowedCoins:   req.AllowedCoins,
+		AllowedActions: req.AllowedActions,
 	}
+	k.SetVault(ctx, vault)
 
 	return &types.MsgAddVaultResponse{}, nil
 }
