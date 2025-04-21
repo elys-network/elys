@@ -43,9 +43,9 @@ func (k Keeper) CreatePerpetualMarket(goCtx context.Context, msg *types.MsgCreat
 		MinNotional:             msg.MinNotional,
 		Admin:                   msg.Creator,
 		TotalOpen:               math.LegacyZeroDec(),
-		MaxFundingRateChange:    msg.MaxFundingRateChange,
-		MaxFundingRate:          msg.MaxFundingRate,
-		MaxTwapPricesTime:       msg.MaxTwapPricesTime,
+		MaxAbsFundingRateChange: msg.MaxAbsFundingRateChange,
+		MaxAbsFundingRate:       msg.MaxAbsFundingRate,
+		TwapPricesWindow:        msg.TwapPricesWindow,
 	}
 
 	k.SetPerpetualMarket(ctx, perpetualMarket)

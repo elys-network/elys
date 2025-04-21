@@ -51,6 +51,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 
 	if buyerPerpetual.IsZero() {
 		k.DeletePerpetual(ctx, buyerPerpetual)
+		k.DeletePerpetualOwner(ctx, buyerPerpetual.GetOwnerAccAddress(), trade.MarketId)
 	} else {
 		buyerPerpetual.EntryFundingRate = currentFundingRate.Rate
 		k.SetPerpetual(ctx, buyerPerpetual)
@@ -90,6 +91,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 	}
 	if sellerPerpetual.IsZero() {
 		k.DeletePerpetual(ctx, sellerPerpetual)
+		k.DeletePerpetualOwner(ctx, sellerPerpetual.GetOwnerAccAddress(), trade.MarketId)
 	} else {
 		sellerPerpetual.EntryFundingRate = currentFundingRate.Rate
 		k.SetPerpetual(ctx, sellerPerpetual)
@@ -107,6 +109,9 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 	// Market Changes
 	market.UpdateTotalOpenInterest(buyerPositionBefore, sellerPositionBefore, trade.Quantity)
 	k.SetPerpetualMarket(ctx, market)
-	k.SetTwapPrices(ctx, trade)
+	err = k.SetTwapPrices(ctx, trade)
+	if err != nil {
+		return err
+	}
 	return nil
 }

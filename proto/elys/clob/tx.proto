@@ -96,16 +96,16 @@ message MsgCreatPerpetualMarket {
     (gogoproto.nullable) = false
   ];
 
-  string max_funding_rate = 12 [
+  string max_abs_funding_rate = 12 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string max_funding_rate_change = 13 [
+  string max_abs_funding_rate_change = 13 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 
-  uint64 max_twap_prices_time = 14;
+  uint64 twap_prices_window = 14;
 }
 
 message MsgCreatPerpetualMarketResponse {

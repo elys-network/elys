@@ -93,7 +93,8 @@ type Perpetual struct {
 	EntryPrice cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=entry_price,json=entryPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"entry_price"`
 	Owner      string                      `protobuf:"bytes,4,opt,name=owner,proto3" json:"owner,omitempty"`
 	// quantity of the order
-	Quantity         cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=quantity,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"quantity"`
+	Quantity cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=quantity,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"quantity"`
+	// margin stores margin amount when order gets executed
 	Margin           cosmossdk_io_math.Int       `protobuf:"bytes,6,opt,name=margin,proto3,customtype=cosmossdk.io/math.Int" json:"margin"`
 	EntryFundingRate cosmossdk_io_math.LegacyDec `protobuf:"bytes,7,opt,name=entry_funding_rate,json=entryFundingRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"entry_funding_rate"`
 }

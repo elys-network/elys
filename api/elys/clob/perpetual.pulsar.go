@@ -1830,7 +1830,8 @@ type Perpetual struct {
 	EntryPrice string `protobuf:"bytes,3,opt,name=entry_price,json=entryPrice,proto3" json:"entry_price,omitempty"`
 	Owner      string `protobuf:"bytes,4,opt,name=owner,proto3" json:"owner,omitempty"`
 	// quantity of the order
-	Quantity         string `protobuf:"bytes,5,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Quantity string `protobuf:"bytes,5,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	// margin stores margin amount when order gets executed
 	Margin           string `protobuf:"bytes,6,opt,name=margin,proto3" json:"margin,omitempty"`
 	EntryFundingRate string `protobuf:"bytes,7,opt,name=entry_funding_rate,json=entryFundingRate,proto3" json:"entry_funding_rate,omitempty"`
 }

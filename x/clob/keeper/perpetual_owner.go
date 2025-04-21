@@ -45,3 +45,9 @@ func (k Keeper) SetPerpetualOwner(ctx sdk.Context, v types.PerpetualOwner) {
 	b := k.cdc.MustMarshal(&v)
 	store.Set(key, b)
 }
+
+func (k Keeper) DeletePerpetualOwner(ctx sdk.Context, owner sdk.AccAddress, marketId uint64) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	key := types.GetPerpetualOwnerKey(owner, marketId)
+	store.Delete(key)
+}

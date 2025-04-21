@@ -31,14 +31,16 @@ func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarke
 
 	updatedPerpetual = oldPerpetual
 	subAccount := trade.BuyerSubAccount
-	updatedPerpetual.Quantity = oldPerpetual.Quantity.Add(trade.Quantity)
-	if !isBuyer {
-		updatedPerpetual.Quantity = oldPerpetual.Quantity.Sub(trade.Quantity)
-		subAccount = trade.SellerSubAccount
-	}
 
 	// New Position is opened
-	if oldPerpetual.Quantity.IsZero() || oldPerpetual.Quantity.IsNil() {
+	if oldPerpetual.Quantity.IsNil() || oldPerpetual.Quantity.IsZero() {
+		quantity := trade.Quantity
+		subAccount = trade.BuyerSubAccount
+		if !isBuyer {
+			quantity = trade.Quantity.Neg()
+			subAccount = trade.SellerSubAccount
+		}
+
 		requiredInitialMargin := trade.GetTradeValue().Mul(market.InitialMarginRatio).RoundInt()
 		err = k.SendFromSubAccount(ctx, subAccount, market.GetAccount(), sdk.NewCoins(sdk.NewCoin(market.QuoteDenom, requiredInitialMargin)))
 		if err != nil {
@@ -51,14 +53,16 @@ func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarke
 			MarketId:   trade.MarketId,
 			EntryPrice: trade.Price,
 			Owner:      subAccount.Owner,
-			Quantity:   trade.Quantity,
+			Quantity:   quantity,
 			Margin:     requiredInitialMargin,
 		}
-		if !isBuyer {
-			updatedPerpetual.Quantity = trade.Quantity.Neg()
-		}
-
 		return
+	}
+
+	updatedPerpetual.Quantity = oldPerpetual.Quantity.Add(trade.Quantity)
+	if !isBuyer {
+		updatedPerpetual.Quantity = oldPerpetual.Quantity.Sub(trade.Quantity)
+		subAccount = trade.SellerSubAccount
 	}
 
 	// if its zero then it doesn't matter side.
@@ -254,7 +258,7 @@ func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarke
 }
 
 // SettleRealizedPnL settles the realized profit or loss for a closed position in a perpetual market.
-// It transfers funds between the market and the subaccount based on the realized profit or loss.
+// It transfers funds between the market and the subAccount based on the realized profit or loss.
 // positionClosed should have sign, representing short or long
 func (k Keeper) SettleRealizedPnL(ctx sdk.Context, market types.PerpetualMarket, positionClosed math.LegacyDec, subAccount types.SubAccount, entryPrice, tradePrice math.LegacyDec) (err error) {
 	realizedPnl := positionClosed.Mul(tradePrice.Sub(entryPrice)).TruncateInt()

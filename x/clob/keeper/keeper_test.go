@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"cosmossdk.io/math"
 	"errors"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -21,7 +22,7 @@ import (
 
 var (
 	assetProfileAtom = assetprofiletypes.Entry{
-		BaseDenom:                "uatom",
+		BaseDenom:                BaseDenom,
 		Decimals:                 6,
 		Denom:                    "uatom",
 		Path:                     "",
@@ -49,9 +50,9 @@ var (
 		Decimal:    6,
 	}
 	assetProfileUsdc = assetprofiletypes.Entry{
-		BaseDenom:                "uusdc",
+		BaseDenom:                QuoteDenom,
 		Decimals:                 6,
-		Denom:                    "uusdc",
+		Denom:                    QuoteDenom,
 		Path:                     "",
 		IbcChannelId:             "",
 		IbcCounterpartyChannelId: "",
@@ -62,7 +63,7 @@ var (
 		ExternalSymbol:           "",
 		TransferLimit:            "",
 		Permissions:              nil,
-		UnitDenom:                "uusdc",
+		UnitDenom:                QuoteDenom,
 		IbcCounterpartyDenom:     "",
 		IbcCounterpartyChainId:   "",
 		Authority:                "",
@@ -70,7 +71,7 @@ var (
 		WithdrawEnabled:          true,
 	}
 	oracleProfileUsdc = oracletypes.AssetInfo{
-		Denom:      "uusdc",
+		Denom:      QuoteDenom,
 		Display:    "USDC",
 		BandTicker: "USDC",
 		ElysTicker: "USDC",
@@ -221,19 +222,19 @@ func (suite *KeeperTestSuite) CreateMarket(baseDenoms ...string) []types.Perpetu
 	all := suite.app.ClobKeeper.GetAllPerpetualMarket(suite.ctx)
 	var list []types.PerpetualMarket
 	for _, baseDenom := range baseDenoms {
-		if baseDenom == "" || baseDenom == "uusdc" {
+		if baseDenom == "" || baseDenom == QuoteDenom {
 			panic("base Denom cannot be uusdc or empty")
 		}
 		market := types.PerpetualMarket{
-			Id:                     uint64(len(all) + 1),
-			BaseDenom:              baseDenom,
-			QuoteDenom:             "uusdc",
-			InitialMarginRatio:     math.LegacyMustNewDecFromStr("0.1"),
-			MaintenanceMarginRatio: math.LegacyMustNewDecFromStr("0.2"),
-			Status:                 1,
-			MaxFundingRate:         math.LegacyMustNewDecFromStr("0.05"),
-			MaxFundingRateChange:   math.LegacyMustNewDecFromStr("0.01"),
-			MaxTwapPricesTime:      15,
+			Id:                      uint64(len(all) + 1),
+			BaseDenom:               baseDenom,
+			QuoteDenom:              QuoteDenom,
+			InitialMarginRatio:      IMR,
+			MaintenanceMarginRatio:  math.LegacyMustNewDecFromStr("0.2"),
+			Status:                  1,
+			MaxAbsFundingRate:       math.LegacyMustNewDecFromStr("0.05"),
+			MaxAbsFundingRateChange: math.LegacyMustNewDecFromStr("0.01"),
+			TwapPricesWindow:        15,
 		}
 		suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 		list = append(list, market)
@@ -269,4 +270,114 @@ func (suite *KeeperTestSuite) SetAccountBalance(addr sdk.AccAddress, coins sdk.C
 	if !coins.IsZero() {
 		suite.FundAccount(addr, coins) // Fund with desired amount
 	}
+}
+
+func (suite *KeeperTestSuite) BurnAccountBalance(addr sdk.AccAddress, denom string) error {
+	ctx := suite.ctx // Get context from suite
+
+	// 1. Get the current balance for the specified denomination
+	// Assumes GetBalance returns sdk.Coin{Denom: denom, Amount: math.Int}
+	balanceCoin := suite.app.BankKeeper.GetBalance(ctx, addr, denom)
+	balanceAmt := balanceCoin.Amount
+
+	// 2. If balance is not positive, there's nothing to burn
+	if balanceAmt.IsNil() || !balanceAmt.IsPositive() {
+		return nil // Success, nothing to do
+	}
+
+	// 3. Define the burn address recipient
+	// Common convention. Ensure this module account is initialized in your test app setup.
+	// If not, consider using authtypes.FeeCollectorName or another known module address.
+	burnAddr := authtypes.NewModuleAddress("burn")
+
+	// 4. Create the sdk.Coins object containing the exact balance amount
+	coinsToBurn := sdk.NewCoins(balanceCoin)
+
+	// 5. Attempt to send the coins from the target address to the burn address
+	err := suite.app.BankKeeper.SendCoins(ctx, addr, burnAddr, coinsToBurn)
+	if err != nil {
+		// Wrap the error from the bank keeper for better context
+		return fmt.Errorf("failed to send %s from addr %s to burn addr %s: %w",
+			coinsToBurn.String(), addr.String(), burnAddr.String(), err)
+	}
+
+	// 6. Optionally, verify the balance is now zero (can be useful for debugging tests)
+	// finalBalance := suite.bankKeeper.GetBalance(ctx, addr, denom).Amount
+	// if !finalBalance.IsZero() {
+	// 	return fmt.Errorf("post-burn balance check failed for %s, expected zero, got %s", addr.String(), finalBalance)
+	// }
+
+	return nil // Success
+}
+
+func (suite *KeeperTestSuite) SetupExchangeTest() (market types.PerpetualMarket, buyerAcc types.SubAccount, sellerAcc types.SubAccount, marketAccAddr sdk.AccAddress) {
+	suite.ResetSuite() // Or equivalent setup/teardown
+
+	markets := suite.CreateMarket(BaseDenom)
+	market = markets[0]
+	marketAccAddr = market.GetAccount()
+	// Ensure module account exists
+	// suite.accountKeeper.GetModuleAccount(suite.ctx, suite.app.ClobKeeper.MarketModuleName)
+
+	// Set initial funding rate (zero delta assumed for these tests' balance checks)
+	initialFundingRate := types.FundingRate{MarketId: MarketId, Rate: math.LegacyMustNewDecFromStr("0.0001"), Block: uint64(suite.ctx.BlockHeight())}
+	suite.app.ClobKeeper.SetFundingRate(suite.ctx, initialFundingRate)
+
+	initialBalanceAmt := int64(200_000_000)
+	initialMarketBalanceAmt := int64(500_000_000) // Ensure market has funds
+	initialBalance := sdk.NewCoin(QuoteDenom, math.NewInt(initialBalanceAmt))
+	initialMarketBalanceCoin := sdk.NewCoin(QuoteDenom, math.NewInt(initialMarketBalanceAmt))
+
+	subAccounts := suite.SetupSubAccounts(2, sdk.NewCoins(initialBalance)) // Assumes this creates and funds accounts
+	buyerAcc = subAccounts[0]
+	sellerAcc = subAccounts[1]
+
+	suite.FundAccount(marketAccAddr, sdk.NewCoins(initialMarketBalanceCoin)) // Fund market
+
+	return market, buyerAcc, sellerAcc, marketAccAddr
+}
+
+// SetPerpetualStateWithEntryFR sets perpetual and owner mapping, applying current funding rate
+func (suite *KeeperTestSuite) SetPerpetualStateWithEntryFR(p types.Perpetual) types.Perpetual {
+	// Ensure EntryFundingRate matches current rate for test simplicity
+	currentFundingRate := suite.app.ClobKeeper.GetFundingRate(suite.ctx, p.MarketId)
+	p.EntryFundingRate = currentFundingRate.Rate
+	// Assign ID if not set (useful for setup)
+	if p.Id == 0 {
+		p.Id = suite.app.ClobKeeper.GetAndUpdatePerpetualCounter(suite.ctx, p.MarketId)
+	}
+	suite.app.ClobKeeper.SetPerpetual(suite.ctx, p)
+	suite.app.ClobKeeper.SetPerpetualOwner(suite.ctx, types.PerpetualOwner{
+		Owner: p.Owner, MarketId: p.MarketId, PerpetualId: p.Id,
+	})
+	return p // Return potentially updated perpetual (with ID)
+}
+
+// GetPerpetualState gets perpetual via owner mapping
+func (suite *KeeperTestSuite) GetPerpetualState(ownerAddr sdk.AccAddress, marketId uint64) (types.Perpetual, bool) {
+	ownerMapping, found := suite.app.ClobKeeper.GetPerpetualOwner(suite.ctx, ownerAddr, marketId)
+	if !found {
+		return types.Perpetual{}, false
+	}
+	perp, err := suite.app.ClobKeeper.GetPerpetual(suite.ctx, marketId, ownerMapping.PerpetualId)
+	if err != nil {
+		// Handle specific 'not found' error if GetPerpetual returns one
+		if errors.Is(err, types.ErrPerpetualNotFound) { // Assuming such an error exists
+			// This case implies inconsistent state (owner mapping exists, perpetual doesn't)
+			suite.T().Fatalf("Inconsistent state: PerpetualOwner found for %s/%d, but Perpetual %d not found: %v", ownerAddr.String(), marketId, ownerMapping.PerpetualId, err)
+			return types.Perpetual{}, false // Should ideally not happen
+		}
+		// Fail test for other unexpected errors
+		suite.Require().NoError(err, "Failed to get perpetual when owner mapping exists")
+	}
+	return perp, true
+}
+
+// CheckBalanceChange helper for asserting balance changes
+func (suite *KeeperTestSuite) CheckBalanceChange(addr sdk.AccAddress, initial math.Int, expectedChange math.Int, msg string) {
+	finalBalance := suite.GetAccountBalance(addr, QuoteDenom)
+	expectedFinal := initial.Add(expectedChange)
+	suite.Require().True(expectedFinal.Equal(finalBalance),
+		"%s balance mismatch. Initial %s, Change %s, Expected %s, Got %s",
+		msg, initial, expectedChange, expectedFinal, finalBalance)
 }

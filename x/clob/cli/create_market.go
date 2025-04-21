@@ -80,9 +80,9 @@ func CmdCreateMarket() *cobra.Command {
 				MinPriceTickSize:        minPriceTick,
 				MinQuantityTickSize:     minQuantityTick,
 				MinNotional:             minNotional,
-				MaxFundingRate:          maxFunding,
-				MaxFundingRateChange:    maxFundingRateChange,
-				MaxTwapPricesTime:       twapTime,
+				MaxAbsFundingRate:       maxFunding,
+				MaxAbsFundingRateChange: maxFundingRateChange,
+				TwapPricesWindow:        twapTime,
 			}
 			if err = msg.ValidateBasic(); err != nil {
 				return err

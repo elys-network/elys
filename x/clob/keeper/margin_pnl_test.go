@@ -8,8 +8,13 @@ import (
 )
 
 const (
+	BaseDenom  = "uatom"
 	QuoteDenom = "uusdc"
 	MarketId   = uint64(1)
+)
+
+var (
+	IMR = math.LegacyMustNewDecFromStr("0.1")
 )
 
 func (suite *KeeperTestSuite) TestSettleRealizedPnL() {

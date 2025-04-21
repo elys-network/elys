@@ -36,11 +36,13 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 	}
 	suite.IncreaseHeight(1)
 	for _, p := range p1 {
-		suite.app.ClobKeeper.SetTwapPrices(suite.ctx, p) // cumulativePrice = 0
+		err := suite.app.ClobKeeper.SetTwapPrices(suite.ctx, p) // cumulativePrice = 0
+		suite.Require().NoError(err)
 	}
 	suite.IncreaseHeight(1)
 	for _, p := range p2 {
-		suite.app.ClobKeeper.SetTwapPrices(suite.ctx, p) // cumulativePrice = 10.25*5 = 51.25
+		err := suite.app.ClobKeeper.SetTwapPrices(suite.ctx, p) // cumulativePrice = 10.25*5 = 51.25
+		suite.Require().NoError(err)
 	}
 	twapPrice := math.LegacyMustNewDecFromStr("10.25")
 	suite.Require().Equal(twapPrice, suite.app.ClobKeeper.GetCurrentTwapPrice(suite.ctx, market.Id))
@@ -67,7 +69,7 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 			"",
 			math.LegacyMustNewDecFromStr("0.005025125628140704"),
 			func() {
-				oraclePrice := twapPrice.Sub(twapPrice.Mul(market.MaxFundingRateChange.Quo(math.LegacyNewDec(2)))) //twap price(1 - MaxFundingRateChange/2) = 10.19875
+				oraclePrice := twapPrice.Sub(twapPrice.Mul(market.MaxAbsFundingRateChange.Quo(math.LegacyNewDec(2)))) //twap price(1 - MaxAbsFundingRateChange/2) = 10.19875
 				suite.SetPrice([]string{"ATOM", "USDC"}, []math.LegacyDec{oraclePrice, math.LegacyNewDec(1)})
 			},
 			func() {
@@ -78,7 +80,7 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 			"",
 			math.LegacyMustNewDecFromStr("-0.002493765586034913"),
 			func() {
-				oraclePrice := twapPrice.Add(twapPrice.Mul(market.MaxFundingRateChange.Quo(math.LegacyNewDec(4)))) //twap price(1 + MaxFundingRateChange/4) = 10.275625
+				oraclePrice := twapPrice.Add(twapPrice.Mul(market.MaxAbsFundingRateChange.Quo(math.LegacyNewDec(4)))) //twap price(1 + MaxAbsFundingRateChange/4) = 10.275625
 				suite.SetPrice([]string{"ATOM", "USDC"}, []math.LegacyDec{oraclePrice, math.LegacyNewDec(1)})
 			},
 			func() {
@@ -87,9 +89,9 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 		{
 			"funding rate increases exceeding limit",
 			"",
-			math.LegacyMustNewDecFromStr("-0.002493765586034913").Add(market.MaxFundingRateChange),
+			math.LegacyMustNewDecFromStr("-0.002493765586034913").Add(market.MaxAbsFundingRateChange),
 			func() {
-				oraclePrice := twapPrice.Sub(twapPrice.Mul(market.MaxFundingRateChange.MulInt64(2))) //twap price(1 - 2*MaxFundingRateChange)
+				oraclePrice := twapPrice.Sub(twapPrice.Mul(market.MaxAbsFundingRateChange.MulInt64(2))) //twap price(1 - 2*MaxAbsFundingRateChange)
 				suite.SetPrice([]string{"ATOM", "USDC"}, []math.LegacyDec{oraclePrice, math.LegacyNewDec(1)})
 			},
 			func() {
@@ -100,7 +102,7 @@ func (suite *KeeperTestSuite) TestUpdateFundingRate() {
 			"",
 			math.LegacyMustNewDecFromStr("-0.002493765586034913"),
 			func() {
-				oraclePrice := twapPrice.Add(twapPrice.Mul(market.MaxFundingRateChange.MulInt64(2))) //twap price(1 - 2*MaxFundingRateChange)
+				oraclePrice := twapPrice.Add(twapPrice.Mul(market.MaxAbsFundingRateChange.MulInt64(2))) //twap price(1 - 2*MaxAbsFundingRateChange)
 				suite.SetPrice([]string{"ATOM", "USDC"}, []math.LegacyDec{oraclePrice, math.LegacyNewDec(1)})
 			},
 			func() {

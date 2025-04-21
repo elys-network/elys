@@ -125,7 +125,7 @@ func (suite *KeeperTestSuite) TestCountAllPerpetualMarkets() {
 func (suite *KeeperTestSuite) TestCheckPerpetualMarketAlreadyExists() {
 
 	baseDenom := "uatom"
-	quoteDenom := "uusdc"
+	quoteDenom := QuoteDenom
 
 	market1 := types.PerpetualMarket{
 		Id:         1,

@@ -18,8 +18,14 @@ func (msg MsgCreatPerpetualMarket) ValidateBasic() (err error) {
 	if err != nil {
 		return err
 	}
-	if msg.MaxTwapPricesTime <= 10 {
+	if msg.TwapPricesWindow <= 10 {
 		return fmt.Errorf("max twap prices time must be greater than 10")
+	}
+	if msg.MaxAbsFundingRate.IsNil() || msg.MaxAbsFundingRate.IsNegative() {
+		return fmt.Errorf("max abs funding rate cannot be negative or nil")
+	}
+	if msg.MaxAbsFundingRateChange.IsNil() || msg.MaxAbsFundingRateChange.IsNegative() {
+		return fmt.Errorf("max abs funding rate cannot be negative or nil")
 	}
 	return nil
 }

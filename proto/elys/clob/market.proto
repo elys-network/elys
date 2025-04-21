@@ -82,18 +82,18 @@ message PerpetualMarket {
     (gogoproto.nullable) = false
   ];
   uint64 counter = 15;
-  string max_funding_rate = 16 [
+  string max_abs_funding_rate = 16 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
-  string max_funding_rate_change = 17 [
+  string max_abs_funding_rate_change = 17 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 
-  uint64 max_twap_prices_time = 18;
+  uint64 twap_prices_window = 18;
 }
 
 message TwapPrice {

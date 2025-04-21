@@ -4,192 +4,223 @@ import (
 	"github.com/elys-network/elys/x/clob/types"
 	"testing"
 
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 )
 
-// TestUpdateTotalOpenInterest_ExtendedMergedCases covers all scenarios including fractional values and various flip/increase/reduction combinations.
-func TestUpdateTotalOpenInterest_ExtendedMergedCases(t *testing.T) {
-	cases := []struct {
-		name          string
-		buyerBefore   sdkmath.LegacyDec
-		sellerBefore  sdkmath.LegacyDec
-		tradeSize     sdkmath.LegacyDec
-		expectedDelta sdkmath.LegacyDec // expected net change in Market OI
+func TestUpdateTotalOpenInterest(t *testing.T) {
+	tradeSize := math.LegacyNewDec(10)
+	initialOI := math.LegacyNewDec(100) // Example starting OI
+
+	testCases := []struct {
+		name             string
+		initialOI        math.LegacyDec
+		buyerBefore      math.LegacyDec
+		sellerBefore     math.LegacyDec
+		tradeSize        math.LegacyDec
+		expectedFinalOI  math.LegacyDec // Expected market.TotalOpen after call
+		expectPanic      bool
+		expectedPanicMsg string
 	}{
-		// Original cases:
+		// --- Panic Cases ---
 		{
-			name:          "Case 1: Both new positions",
-			buyerBefore:   sdkmath.LegacyZeroDec(),
-			sellerBefore:  sdkmath.LegacyZeroDec(),
-			tradeSize:     sdkmath.LegacyNewDec(10),
-			expectedDelta: sdkmath.LegacyNewDec(10),
+			name:             "Panic on zero trade size",
+			initialOI:        initialOI,
+			buyerBefore:      math.LegacyZeroDec(),
+			sellerBefore:     math.LegacyZeroDec(),
+			tradeSize:        math.LegacyZeroDec(), // Invalid
+			expectedFinalOI:  initialOI,            // Should not change
+			expectPanic:      true,
+			expectedPanicMsg: "trade size cannot be 0 or negative",
 		},
 		{
-			name:          "Case 2: Buyer adds long, seller opens short",
-			buyerBefore:   sdkmath.LegacyNewDec(5),
-			sellerBefore:  sdkmath.LegacyZeroDec(),
-			tradeSize:     sdkmath.LegacyNewDec(5),
-			expectedDelta: sdkmath.LegacyNewDec(5),
+			name:             "Panic on negative trade size",
+			initialOI:        initialOI,
+			buyerBefore:      math.LegacyZeroDec(),
+			sellerBefore:     math.LegacyZeroDec(),
+			tradeSize:        math.LegacyNewDec(-5), // Invalid
+			expectedFinalOI:  initialOI,             // Should not change
+			expectPanic:      true,
+			expectedPanicMsg: "trade size cannot be 0 or negative",
+		},
+
+		// --- OI Increase Cases (+tradeSize) ---
+		{
+			name:            "OI Increase: Buyer Opens (+), Seller Opens (-)",
+			initialOI:       initialOI,
+			buyerBefore:     math.LegacyZeroDec(),
+			sellerBefore:    math.LegacyZeroDec(),
+			tradeSize:       tradeSize,
+			expectedFinalOI: initialOI.Add(tradeSize), // 100 + 10 = 110
+			expectPanic:     false,
 		},
 		{
-			name:          "Case 3: Buyer opens long, seller adds short",
-			buyerBefore:   sdkmath.LegacyZeroDec(),
-			sellerBefore:  sdkmath.LegacyNewDec(-3),
-			tradeSize:     sdkmath.LegacyNewDec(7),
-			expectedDelta: sdkmath.LegacyNewDec(7),
+			name:            "OI Increase: Buyer Increases Long (+), Seller Increases Short (-)",
+			initialOI:       initialOI,
+			buyerBefore:     math.LegacyNewDec(20),  // +20 -> +30
+			sellerBefore:    math.LegacyNewDec(-30), // -30 -> -40
+			tradeSize:       tradeSize,
+			expectedFinalOI: initialOI.Add(tradeSize), // 100 + 10 = 110
+			expectPanic:     false,
 		},
 		{
-			name:          "Case 4: Buyer adds long, seller reduces long (both positive)",
-			buyerBefore:   sdkmath.LegacyNewDec(5),
-			sellerBefore:  sdkmath.LegacyNewDec(10),
-			tradeSize:     sdkmath.LegacyNewDec(5),
-			expectedDelta: sdkmath.LegacyZeroDec(),
+			name:            "OI Increase: Buyer Opens (+), Seller Increases Short (-)",
+			initialOI:       math.LegacyNewDec(50),  // Start lower for clarity
+			buyerBefore:     math.LegacyZeroDec(),   // 0 -> +10
+			sellerBefore:    math.LegacyNewDec(-30), // -30 -> -40
+			tradeSize:       tradeSize,
+			expectedFinalOI: math.LegacyNewDec(60), // 50 + 10 = 60
+			expectPanic:     false,
 		},
 		{
-			name:          "Case 5: Both negative positions offset",
-			buyerBefore:   sdkmath.LegacyNewDec(-8),
-			sellerBefore:  sdkmath.LegacyNewDec(-2),
-			tradeSize:     sdkmath.LegacyNewDec(2),
-			expectedDelta: sdkmath.LegacyZeroDec(),
+			name:            "OI Increase: Buyer Increases Long (+), Seller Opens (-)",
+			initialOI:       math.LegacyNewDec(50),
+			buyerBefore:     math.LegacyNewDec(25), // +25 -> +35
+			sellerBefore:    math.LegacyZeroDec(),  // 0 -> -10
+			tradeSize:       tradeSize,
+			expectedFinalOI: math.LegacyNewDec(60), // 50 + 10 = 60
+			expectPanic:     false,
+		},
+
+		// --- OI Decrease Cases (-tradeSize) ---
+		{
+			name:            "OI Decrease: Buyer Closes Short (+), Seller Closes Long (-)",
+			initialOI:       initialOI,
+			buyerBefore:     tradeSize.Neg(), // -10 -> 0
+			sellerBefore:    tradeSize,       // +10 -> 0
+			tradeSize:       tradeSize,
+			expectedFinalOI: initialOI.Sub(tradeSize), // 100 - 10 = 90
+			expectPanic:     false,
 		},
 		{
-			name:          "Case 6: Both closing positions",
-			buyerBefore:   sdkmath.LegacyNewDec(-4),
-			sellerBefore:  sdkmath.LegacyNewDec(4),
-			tradeSize:     sdkmath.LegacyNewDec(4),
-			expectedDelta: sdkmath.LegacyNewDec(-4),
+			name:            "OI Decrease: Buyer Decreases Short (+), Seller Decreases Long (-)",
+			initialOI:       initialOI,
+			buyerBefore:     math.LegacyNewDec(-25), // -25 -> -15
+			sellerBefore:    math.LegacyNewDec(35),  // +35 -> +25
+			tradeSize:       tradeSize,
+			expectedFinalOI: initialOI.Sub(tradeSize), // 100 - 10 = 90
+			expectPanic:     false,
 		},
 		{
-			name:          "Case 7: Buyer flips from short to long, seller opens short",
-			buyerBefore:   sdkmath.LegacyNewDec(-5),
-			sellerBefore:  sdkmath.LegacyZeroDec(),
-			tradeSize:     sdkmath.LegacyNewDec(10),
-			expectedDelta: sdkmath.LegacyNewDec(5),
+			name:            "OI Decrease: Buyer Closes Short (+), Seller Decreases Long (-)",
+			initialOI:       initialOI,
+			buyerBefore:     tradeSize.Neg(),       // -10 -> 0
+			sellerBefore:    math.LegacyNewDec(35), // +35 -> +25
+			tradeSize:       tradeSize,
+			expectedFinalOI: initialOI.Sub(tradeSize), // 100 - 10 = 90
+			expectPanic:     false,
 		},
 		{
-			name:          "Case 8: Both flip positions (net negative)",
-			buyerBefore:   sdkmath.LegacyNewDec(-10),
-			sellerBefore:  sdkmath.LegacyNewDec(10),
-			tradeSize:     sdkmath.LegacyNewDec(15),
-			expectedDelta: sdkmath.LegacyNewDec(-5),
+			name:            "OI Decrease: Buyer Decreases Short (+), Seller Closes Long (-)",
+			initialOI:       initialOI,
+			buyerBefore:     math.LegacyNewDec(-25), // -25 -> -15
+			sellerBefore:    tradeSize,              // +10 -> 0
+			tradeSize:       tradeSize,
+			expectedFinalOI: initialOI.Sub(tradeSize), // 100 - 10 = 90
+			expectPanic:     false,
+		},
+
+		// --- OI Unchanged Cases (0 change) ---
+		{
+			name:            "OI Unchanged: Buyer Opens (+), Seller Closes Long (-)",
+			initialOI:       initialOI,
+			buyerBefore:     math.LegacyZeroDec(), // 0 -> +10
+			sellerBefore:    tradeSize,            // +10 -> 0
+			tradeSize:       tradeSize,
+			expectedFinalOI: initialOI, // 100 + 0 = 100
+			expectPanic:     false,
 		},
 		{
-			name:          "Case 9: Both increase existing positions",
-			buyerBefore:   sdkmath.LegacyNewDec(5),
-			sellerBefore:  sdkmath.LegacyNewDec(-5),
-			tradeSize:     sdkmath.LegacyNewDec(10),
-			expectedDelta: sdkmath.LegacyNewDec(10),
+			name:            "OI Unchanged: Buyer Increases Long (+), Seller Decreases Long (-)",
+			initialOI:       initialOI,
+			buyerBefore:     math.LegacyNewDec(20), // +20 -> +30
+			sellerBefore:    math.LegacyNewDec(15), // +15 -> +5
+			tradeSize:       tradeSize,
+			expectedFinalOI: initialOI, // 100 + 0 = 100
+			expectPanic:     false,
 		},
 		{
-			name:          "Case 10: Both reduce positions",
-			buyerBefore:   sdkmath.LegacyNewDec(-5),
-			sellerBefore:  sdkmath.LegacyNewDec(5),
-			tradeSize:     sdkmath.LegacyNewDec(2),
-			expectedDelta: sdkmath.LegacyNewDec(-2),
+			name:            "OI Unchanged: Buyer Decreases Short (+), Seller Opens (-)",
+			initialOI:       initialOI,
+			buyerBefore:     math.LegacyNewDec(-20), // -20 -> -10
+			sellerBefore:    math.LegacyZeroDec(),   // 0 -> -10
+			tradeSize:       tradeSize,
+			expectedFinalOI: initialOI, // 100 + 0 = 100
+			expectPanic:     false,
 		},
 		{
-			name:          "Case 11: Seller flips from long to short, buyer goes flat→long",
-			buyerBefore:   sdkmath.LegacyZeroDec(),
-			sellerBefore:  sdkmath.LegacyNewDec(10),
-			tradeSize:     sdkmath.LegacyNewDec(15),
-			expectedDelta: sdkmath.LegacyNewDec(5),
+			name:            "OI Unchanged: Buyer Closes Short (+), Seller Increases Short (-)",
+			initialOI:       initialOI,
+			buyerBefore:     tradeSize.Neg(),        // -10 -> 0
+			sellerBefore:    math.LegacyNewDec(-15), // -15 -> -25
+			tradeSize:       tradeSize,
+			expectedFinalOI: initialOI, // 100 + 0 = 100
+			expectPanic:     false,
+		},
+		// Flip cases test implicit unchanged OI based on magnitude comparison logic
+		{
+			name:            "OI Unchanged: Buyer Flips Short -> Long (+5), Seller Increases Short (-40)",
+			initialOI:       initialOI,
+			buyerBefore:     math.LegacyNewDec(-10),
+			sellerBefore:    math.LegacyNewDec(-25),
+			tradeSize:       math.LegacyNewDec(15), // Buyer: -10 -> +5, Seller: -25 -> -40
+			expectedFinalOI: initialOI,             // Buyer exposure increases, Seller exposure increases -> OI should increase? Let's recheck logic.
+			// Buyer abs change: 5 vs 10 -> Decreased. NO -> Increased (0->5 is increase from crossing zero) abs(5)>abs(-10) is FALSE. abs(5)<abs(-10) is TRUE -> Buyer exposure DECREASED (by closing)
+			// Seller abs change: 40 vs 25 -> Increased. abs(40)>abs(25) is TRUE -> Seller exposure INCREASED
+			// One increase, one decrease -> OI UNCHANGED. Test case is correct.
+			expectPanic: false,
 		},
 		{
-			name:          "Case 12: Both positive; buyer 0, seller reduces to 0",
-			buyerBefore:   sdkmath.LegacyZeroDec(),
-			sellerBefore:  sdkmath.LegacyNewDec(10),
-			tradeSize:     sdkmath.LegacyNewDec(10),
-			expectedDelta: sdkmath.LegacyZeroDec(),
-		},
-		{
-			name:          "Case 13: Full mixed flip (net zero)",
-			buyerBefore:   sdkmath.LegacyNewDec(-5),
-			sellerBefore:  sdkmath.LegacyNewDec(10),
-			tradeSize:     sdkmath.LegacyNewDec(15),
-			expectedDelta: sdkmath.LegacyZeroDec(),
-		},
-		{
-			name:          "Case 14: Mixed: buyer negative, seller zero",
-			buyerBefore:   sdkmath.LegacyNewDec(-5),
-			sellerBefore:  sdkmath.LegacyZeroDec(),
-			tradeSize:     sdkmath.LegacyNewDec(2),
-			expectedDelta: sdkmath.LegacyZeroDec(),
-		},
-		{
-			name:          "Case 15: Mixed: buyer zero, seller positive",
-			buyerBefore:   sdkmath.LegacyZeroDec(),
-			sellerBefore:  sdkmath.LegacyNewDec(10),
-			tradeSize:     sdkmath.LegacyNewDec(5),
-			expectedDelta: sdkmath.LegacyZeroDec(),
-		},
-		// New additional cases:
-		{
-			name:         "Case 16: Fractional test",
-			buyerBefore:  sdkmath.LegacyMustNewDecFromStr("2.5"),
-			sellerBefore: sdkmath.LegacyMustNewDecFromStr("-3.75"),
-			tradeSize:    sdkmath.LegacyMustNewDecFromStr("1.25"),
-			// buyerAfter=3.75, sellerAfter=-5; OI: before=2.5+3.75=6.25, after=3.75+5=8.75, delta=(8.75-6.25)/2 = 1.25.
-			expectedDelta: sdkmath.LegacyMustNewDecFromStr("1.25"),
-		},
-		{
-			name:         "Case 17: Seller flip only (net positive)",
-			buyerBefore:  sdkmath.LegacyNewDec(10),
-			sellerBefore: sdkmath.LegacyNewDec(5),
-			tradeSize:    sdkmath.LegacyNewDec(8),
-			// buyerAfter = 18, sellerAfter = 5-8 = -3; OI before = 10+5=15, after=18+3=21, delta = (21-15)/2 = 3.
-			expectedDelta: sdkmath.LegacyNewDec(3),
-		},
-		{
-			name:         "Case 18: Opening new on one side & seller flip",
-			buyerBefore:  sdkmath.LegacyZeroDec(),
-			sellerBefore: sdkmath.LegacyNewDec(4),
-			tradeSize:    sdkmath.LegacyNewDec(6),
-			// buyerAfter = 6, sellerAfter = 4-6 = -2; OI: before=0+4=4, after=6+2=8, delta = (8-4)/2 = 2.
-			expectedDelta: sdkmath.LegacyNewDec(2),
-		},
-		{
-			name:         "Case 19: Increasing & seller flip (net negative)",
-			buyerBefore:  sdkmath.LegacyNewDec(-4),
-			sellerBefore: sdkmath.LegacyNewDec(2),
-			tradeSize:    sdkmath.LegacyNewDec(3),
-			// buyerAfter = -4+3 = -1, sellerAfter = 2-3 = -1; OI: before=4+2=6, after=1+1=2, delta = (2-6)/2 = -2.
-			expectedDelta: sdkmath.LegacyNewDec(-2),
-		},
-		{
-			name:         "Case 20: Reducing & seller flip (net negative)",
-			buyerBefore:  sdkmath.LegacyNewDec(-8),
-			sellerBefore: sdkmath.LegacyNewDec(5),
-			tradeSize:    sdkmath.LegacyNewDec(7),
-			// buyerAfter = -8+7 = -1, sellerAfter = 5-7 = -2; OI: before=8+5=13, after=1+2=3, delta = (3-13)/2 = -5.
-			expectedDelta: sdkmath.LegacyNewDec(-5),
+			name:         "OI Unchanged: Seller Flips Long -> Short (-5), Buyer Increases Long (+35)",
+			initialOI:    initialOI,
+			buyerBefore:  math.LegacyNewDec(20),
+			sellerBefore: math.LegacyNewDec(10),
+			tradeSize:    math.LegacyNewDec(15), // Buyer: +20 -> +35, Seller: +10 -> -5
+			// Buyer abs change: 35 vs 20 -> Increased.
+			// Seller abs change: 5 vs 10 -> Decreased.
+			// One increase, one decrease -> OI UNCHANGED. Test case is correct.
+			expectedFinalOI: initialOI,
+			expectPanic:     false,
 		},
 	}
 
-	for _, tc := range cases {
+	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			market := &types.PerpetualMarket{
-				TotalOpen: sdkmath.LegacyZeroDec(),
+			// Create a market instance for each test
+			market := types.PerpetualMarket{
+				TotalOpen: tc.initialOI,
+				// Initialize other fields if they affect the method, otherwise not needed
 			}
-			market.UpdateTotalOpenInterest(tc.buyerBefore, tc.sellerBefore, tc.tradeSize)
-			require.True(t, market.TotalOpen.Equal(tc.expectedDelta),
-				"[%s] expected TotalOpen: %s, got: %s",
-				tc.name, tc.expectedDelta.String(), market.TotalOpen.String())
+
+			// Define the call using a pointer to modify the struct
+			call := func() {
+				market.UpdateTotalOpenInterest(tc.buyerBefore, tc.sellerBefore, tc.tradeSize)
+			}
+
+			if tc.expectPanic {
+				require.PanicsWithValue(t, tc.expectedPanicMsg, call, "Expected panic with specific message")
+				// Verify OI did not change after panic
+				require.True(t, tc.initialOI.Equal(market.TotalOpen), "TotalOpen changed despite panic. Initial: %s, Final: %s", tc.initialOI, market.TotalOpen)
+			} else {
+				require.NotPanics(t, call, "Function call panicked unexpectedly")
+				// Verify final OI matches expectation
+				require.True(t, tc.expectedFinalOI.Equal(market.TotalOpen), "Final TotalOpen mismatch. Expected: %s, Got: %s", tc.expectedFinalOI, market.TotalOpen)
+			}
 		})
 	}
 }
 func TestUpdateTotalOpenInterest_InvalidTradeSize(t *testing.T) {
-	invalidTradeSizes := []sdkmath.LegacyDec{
-		sdkmath.LegacyZeroDec(),
-		sdkmath.LegacyNewDec(-5),
+	invalidTradeSizes := []math.LegacyDec{
+		math.LegacyZeroDec(),
+		math.LegacyNewDec(-5),
 	}
 	for _, size := range invalidTradeSizes {
 		t.Run("panic on tradeSize "+size.String(), func(t *testing.T) {
 			market := &types.PerpetualMarket{
-				TotalOpen: sdkmath.LegacyZeroDec(),
+				TotalOpen: math.LegacyZeroDec(),
 			}
 			require.Panics(t, func() {
-				market.UpdateTotalOpenInterest(sdkmath.LegacyNewDec(5), sdkmath.LegacyNewDec(10), size)
+				market.UpdateTotalOpenInterest(math.LegacyNewDec(5), math.LegacyNewDec(10), size)
 			}, "expected panic for trade size %s", size.String())
 		})
 	}

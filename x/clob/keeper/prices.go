@@ -47,24 +47,29 @@ func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) math.Legac
 		}
 	}
 
+	if lastTwapPrice.Timestamp < firstTwapPrice.Timestamp {
+		panic("twap price timestamp delta incorrect, time delta < 0")
+	}
+
 	num := lastTwapPrice.CumulativePrice.Sub(firstTwapPrice.CumulativePrice)
 	if num.IsZero() {
 		return math.LegacyZeroDec()
-	}
-	if lastTwapPrice.Timestamp <= firstTwapPrice.Timestamp {
-		panic("twap price timestamp delta incorrect, time delta <= 0")
 	}
 	timeDelta := math.LegacyNewDec(int64(lastTwapPrice.Timestamp - firstTwapPrice.Timestamp))
 	return num.Quo(timeDelta)
 }
 
+// SetTwapPricesStruct Should only be called by Import or Init Genesis
 func (k Keeper) SetTwapPricesStruct(ctx sdk.Context, twapPrice types.TwapPrice) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetTwapPricesKey(twapPrice.MarketId, twapPrice.Block)
 	store.Set(key, k.cdc.MustMarshal(&twapPrice))
 }
 
-func (k Keeper) SetTwapPrices(ctx sdk.Context, trade types.Trade) {
+func (k Keeper) SetTwapPrices(ctx sdk.Context, trade types.Trade) error {
+	if trade.Quantity.LTE(math.LegacyZeroDec()) {
+		return errors.New("trade quantity cannot be negative or zero")
+	}
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetTwapPricesKey(trade.MarketId, uint64(ctx.BlockHeight()))
 
@@ -112,7 +117,7 @@ func (k Keeper) SetTwapPrices(ctx sdk.Context, trade types.Trade) {
 		} else {
 			// lastPrice×(now−lastUpdate)
 			if currentTwapPrice.Timestamp <= lastTwapPrice.Timestamp {
-				panic("twap price timestamp delta incorrect, time delta <= 0")
+				return errors.New("twap price timestamp delta incorrect, time delta <= 0")
 			}
 			toAdd := lastTwapPrice.AverageTradePrice.Mul(math.LegacyNewDec(int64(currentTwapPrice.Timestamp - lastTwapPrice.Timestamp)))
 			currentTwapPrice.CumulativePrice = lastTwapPrice.CumulativePrice.Add(toAdd)
@@ -129,7 +134,7 @@ func (k Keeper) SetTwapPrices(ctx sdk.Context, trade types.Trade) {
 
 		market, err := k.GetPerpetualMarket(ctx, currentTwapPrice.MarketId)
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		for ; iteratorForward.Valid(); iteratorForward.Next() {
@@ -137,13 +142,15 @@ func (k Keeper) SetTwapPrices(ctx sdk.Context, trade types.Trade) {
 			k.cdc.MustUnmarshal(iteratorForward.Value(), &old)
 			// usually currentTwapPrice.Timestamp will be equal to ctx.BlockTime.Unix()
 			// While init genesis, this will not delete all old twap prices
-			if old.Timestamp < currentTwapPrice.Timestamp-market.MaxTwapPricesTime {
+			if old.Timestamp < currentTwapPrice.Timestamp-market.TwapPricesWindow {
 				prefixStore.Delete(iteratorForward.Key())
 			} else {
 				break // store is block-ordered, so stop early
 			}
 		}
 	}
+
+	return nil
 }
 
 func (k Keeper) GetAllTwapPrices(ctx sdk.Context) []types.TwapPrice {

@@ -67,14 +67,22 @@ func (k Keeper) UpdateFundingRate(ctx sdk.Context, market types.PerpetualMarket)
 	change := fundingRateCal.Sub(lastFundingRate.Rate)
 
 	if !change.IsZero() {
-		if change.IsPositive() && change.GT(market.MaxFundingRateChange) {
-			change = market.MaxFundingRateChange
+		if change.IsPositive() && change.GT(market.MaxAbsFundingRateChange) {
+			change = market.MaxAbsFundingRateChange
 		}
-		if change.IsNegative() && change.Abs().GT(market.MaxFundingRateChange) {
-			change = market.MaxFundingRateChange.Neg()
+		if change.IsNegative() && change.Abs().GT(market.MaxAbsFundingRateChange) {
+			change = market.MaxAbsFundingRateChange.Neg()
 		}
 	}
 	lastFundingRate.Rate = lastFundingRate.Rate.Add(change)
+	if !lastFundingRate.Rate.IsZero() && lastFundingRate.Rate.Abs().GT(market.MaxAbsFundingRate) {
+		positive := lastFundingRate.Rate.IsPositive()
+		if positive {
+			lastFundingRate.Rate = market.MaxAbsFundingRate
+		} else {
+			lastFundingRate.Rate = market.MaxAbsFundingRate.Neg()
+		}
+	}
 	lastFundingRate.Block = uint64(ctx.BlockHeight())
 	k.SetFundingRate(ctx, lastFundingRate)
 	return nil

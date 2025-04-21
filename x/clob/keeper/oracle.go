@@ -16,6 +16,9 @@ func (k Keeper) GetAssetPrice(ctx sdk.Context, denom string) (math.LegacyDec, er
 	if !found {
 		return math.LegacyDec{}, fmt.Errorf("asset price not found for denom (%s)", denom)
 	}
+	if price.Price.LTE(math.LegacyZeroDec()) || price.Price.IsNil() {
+		return math.LegacyDec{}, fmt.Errorf("asset price (%s) is invalid", price.Price)
+	}
 	return price.Price, nil
 }
 
