@@ -6,6 +6,7 @@ import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 import "elys/vaults/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/elys-network/elys/x/vaults/types";
 
@@ -52,8 +53,7 @@ message MsgDeposit {
   uint64 vault_id = 2;
 
   // amount is the amount of tokens to deposit.
-  cosmos.base.v1beta1.Coin amount = 3 [
-    (gogoproto.nullable) = false  ];
+  cosmos.base.v1beta1.Coin amount = 3 [ (gogoproto.nullable) = false ];
 }
 
 message MsgDepositResponse {
@@ -88,5 +88,6 @@ message MsgWithdrawResponse {
   uint64 vault_id = 1;
   repeated cosmos.base.v1beta1.Coin amount = 2 [
     (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"  ];
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
