@@ -133,8 +133,8 @@ func (p *Pool) JoinPool(
 		totalWeight := p.TotalWeight
 		normalizedWeight := poolAssetsByDenom[tokenIn.Denom].Weight.ToLegacyDec().Quo(totalWeight.ToLegacyDec())
 		// We multiply the swap fee and taker fees by the normalized weight because it is calculated like this later in CalcSingleAssetJoinPoolShares function
-		swapFee = sdkmath.LegacyZeroDec().Sub(feeRatio(normalizedWeight, p.PoolParams.SwapFee))
-		takerFee := sdkmath.LegacyZeroDec().Sub(feeRatio(normalizedWeight, takerFees))
+		swapFee = sdkmath.LegacyOneDec().Sub(feeRatio(normalizedWeight, p.PoolParams.SwapFee))
+		takerFee := sdkmath.LegacyOneDec().Sub(feeRatio(normalizedWeight, takerFees))
 
 		// update pool with the calculated share and liquidity needed to join pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
