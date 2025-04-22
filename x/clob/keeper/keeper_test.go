@@ -221,12 +221,12 @@ func (suite *KeeperTestSuite) SetupSubAccounts(total uint64, balance sdk.Coins) 
 func (suite *KeeperTestSuite) CreateMarket(baseDenoms ...string) []types.PerpetualMarket {
 	all := suite.app.ClobKeeper.GetAllPerpetualMarket(suite.ctx)
 	var list []types.PerpetualMarket
-	for _, baseDenom := range baseDenoms {
+	for i, baseDenom := range baseDenoms {
 		if baseDenom == "" || baseDenom == QuoteDenom {
 			panic("base Denom cannot be uusdc or empty")
 		}
 		market := types.PerpetualMarket{
-			Id:                      uint64(len(all) + 1),
+			Id:                      uint64(len(all) + i + 1),
 			BaseDenom:               baseDenom,
 			QuoteDenom:              QuoteDenom,
 			InitialMarginRatio:      IMR,
@@ -380,4 +380,25 @@ func (suite *KeeperTestSuite) CheckBalanceChange(addr sdk.AccAddress, initial ma
 	suite.Require().True(expectedFinal.Equal(finalBalance),
 		"%s balance mismatch. Initial %s, Change %s, Expected %s, Got %s",
 		msg, initial, expectedChange, expectedFinal, finalBalance)
+}
+
+func (suite *KeeperTestSuite) SetTwapPriceDirectly(marketId uint64, price math.LegacyDec) {
+	// Implementation depends on how GetCurrentTwapPrice is controlled/mocked
+	// Simplest for this example: set the global mock variable
+	suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, types.TwapPrice{
+		MarketId:          marketId,
+		Block:             uint64(suite.ctx.BlockHeight()),
+		AverageTradePrice: price,
+		TotalVolume:       math.LegacyOneDec(),
+		CumulativePrice:   math.LegacyOneDec(),
+		Timestamp:         1,
+	})
+	suite.app.ClobKeeper.SetTwapPricesStruct(suite.ctx, types.TwapPrice{
+		MarketId:          marketId,
+		Block:             uint64(suite.ctx.BlockHeight() + 1),
+		AverageTradePrice: price,
+		TotalVolume:       math.LegacyOneDec(),
+		CumulativePrice:   math.LegacyOneDec().Add(price),
+		Timestamp:         2,
+	})
 }

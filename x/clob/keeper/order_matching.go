@@ -1,9 +1,10 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"fmt"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/clob/types"
 )
@@ -69,6 +70,10 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 		var sellOrder types.PerpetualOrder
 		k.cdc.MustUnmarshal(sellIterator.Value(), &sellOrder)
 
+		if sellOrder.IsBuy() {
+			continue
+		}
+
 		lowestSellPrice := sellOrder.Price
 
 		if highestBuyPrice.GTE(lowestSellPrice) {
@@ -99,8 +104,8 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 			buyOrder.Filled = buyOrder.Filled.Add(tradeQuantity)
 
 			if sellOrderFilled {
+				// iterator.Key() gives key bytes without prefix
 				keysToDelete = append(keysToDelete, types.GetPerpetualOrderKey(sellOrder.MarketId, sellOrder.OrderType, sellOrder.Price, sellOrder.BlockHeight))
-				lowestSellPrice = k.GetLowestSellPrice(ctx, market.Id)
 			} else {
 				k.SetPerpetualOrder(ctx, sellOrder)
 			}
@@ -123,9 +128,6 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 			}
 			fmt.Println("BUY ORDER EXECUTED: ")
 			fmt.Println(*buyOrder)
-			if !buyOrderFilled {
-				k.SetPerpetualOrder(ctx, *buyOrder)
-			}
 			fmt.Println("---")
 		} else {
 			stop = true
@@ -139,6 +141,10 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 	}
 	for _, key := range keysToDelete {
 		k.DeleteOrder(ctx, key)
+	}
+
+	if !buyOrderFilled {
+		k.SetPerpetualOrder(ctx, *buyOrder)
 	}
 
 	return buyOrderFilled, nil

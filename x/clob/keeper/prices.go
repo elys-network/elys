@@ -50,6 +50,10 @@ func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) math.Legac
 	if lastTwapPrice.Timestamp < firstTwapPrice.Timestamp {
 		panic("twap price timestamp delta incorrect, time delta < 0")
 	}
+	// Handles the case when no or only 1 twap price is present
+	if lastTwapPrice.Timestamp == firstTwapPrice.Timestamp {
+		return math.LegacyZeroDec()
+	}
 
 	num := lastTwapPrice.CumulativePrice.Sub(firstTwapPrice.CumulativePrice)
 	if num.IsZero() {
