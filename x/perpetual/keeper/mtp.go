@@ -183,6 +183,11 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 		return nil, err
 	}
 
+	tradingAssetPriceInBaseUnits, err := k.ConvertPriceToBaseUnit(ctx, mtp.TradingAsset, tradingAssetPrice)
+	if err != nil {
+		return nil, err
+	}
+
 	// TODO: replace custody amount with liability amount when fees are defined in terms of liability asset
 	// calculate total fees in base currency using asset price
 	totalFeesInBaseCurrency := mtp.BorrowInterestPaidCustody.Add(mtp.FundingFeePaidCustody)
@@ -190,9 +195,9 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	fundingFeesInBaseCurrency := mtp.FundingFeePaidCustody
 
 	if mtp.Position == types.Position_LONG {
-		totalFeesInBaseCurrency = totalFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
-		borrowInterestFeesInBaseCurrency = borrowInterestFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
-		fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+		totalFeesInBaseCurrency = totalFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits).TruncateInt()
+		borrowInterestFeesInBaseCurrency = borrowInterestFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits).TruncateInt()
+		fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits).TruncateInt()
 	}
 
 	effectiveLeverage, err := k.GetEffectiveLeverage(ctx, mtp)
@@ -310,6 +315,11 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 		return math.Int{}, errors.New("trading asset price is zero")
 	}
 
+	tradingAssetPriceInBaseUnits, err := k.ConvertPriceToBaseUnit(ctx, mtp.TradingAsset, tradingAssetPrice)
+	if err != nil {
+		return math.Int{}, err
+	}
+
 	// in long it's in trading asset ,if short position, custody asset is already in base currency
 	custodyAmtAfterFunding := mtp.Custody
 
@@ -324,7 +334,7 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 		// estimated_pnl = custody_amount - totalLiabilities * market_price - collateral_amount
 
 		// For short position, convert liabilities to base currency
-		totalLiabilitiesInBaseCurrency := totalLiabilities.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+		totalLiabilitiesInBaseCurrency := totalLiabilities.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits).TruncateInt()
 		estimatedPnL = custodyAmtAfterFunding.Sub(totalLiabilitiesInBaseCurrency).Sub(collateralAmt)
 	} else {
 		// Estimated PnL for long position:
@@ -333,13 +343,13 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 			// estimated_pnl = (custody_amount - collateral_amount) * market_price - totalLiabilities
 
 			// For long position, convert both custody and collateral to base currency
-			custodyAfterCollateralInBaseCurrency := (custodyAmtAfterFunding.Sub(collateralAmt)).ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+			custodyAfterCollateralInBaseCurrency := (custodyAmtAfterFunding.Sub(collateralAmt)).ToLegacyDec().Mul(tradingAssetPriceInBaseUnits).TruncateInt()
 			estimatedPnL = custodyAfterCollateralInBaseCurrency.Sub(totalLiabilities)
 		} else {
 			// estimated_pnl = custody_amount * market_price - totalLiabilities - collateral_amount
 
 			// For long position, convert custody to base currency
-			custodyAmountOutInBaseCurrency := custodyAmtAfterFunding.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+			custodyAmountOutInBaseCurrency := custodyAmtAfterFunding.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits).TruncateInt()
 			estimatedPnL = custodyAmountOutInBaseCurrency.Sub(totalLiabilities).Sub(collateralAmt)
 		}
 	}

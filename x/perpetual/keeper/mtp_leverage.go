@@ -10,20 +10,20 @@ import (
 func (k Keeper) GetEffectiveLeverage(ctx sdk.Context, mtp types.MTP) (math.LegacyDec, error) {
 
 	// using swaps will have fees but this is just user facing value for a query
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	tradingAssetPriceInBaseUnits, err := k.GetAssetPriceInBaseUnits(ctx, mtp.TradingAsset)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
 
 	if mtp.Position == types.Position_LONG {
 		// custody is trading asset, liabilities are in usdc
-		custodyInLiabilitiesAsset := mtp.Custody.ToLegacyDec().Mul(tradingAssetPrice)
+		custodyInLiabilitiesAsset := mtp.Custody.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits)
 		denominator := custodyInLiabilitiesAsset.Sub(mtp.Liabilities.ToLegacyDec())
 		effectiveLeverage := custodyInLiabilitiesAsset.Quo(denominator)
 		return effectiveLeverage, nil
 	} else {
 		// custody is usdc, liabilities are in trading asset
-		liabilitiesInCustodyAsset := mtp.Liabilities.ToLegacyDec().Mul(tradingAssetPrice)
+		liabilitiesInCustodyAsset := mtp.Liabilities.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits)
 		denominator := mtp.Custody.ToLegacyDec().Sub(liabilitiesInCustodyAsset)
 		effectiveLeverage := mtp.Custody.ToLegacyDec().Quo(denominator)
 		// We subtract here 1 because we added 1 while opening position for shorts

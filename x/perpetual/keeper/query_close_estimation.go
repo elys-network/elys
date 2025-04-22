@@ -56,7 +56,11 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 	if err != nil {
 		return nil, err
 	}
-	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice)
+	tradingAssetPriceInBaseUnits, err := k.ConvertPriceToBaseUnit(ctx, mtp.TradingAsset, tradingAssetPrice)
+	if err != nil {
+		return nil, err
+	}
+	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPriceInBaseUnits)
 	if err != nil {
 		return nil, err
 	}

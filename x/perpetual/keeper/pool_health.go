@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -111,14 +112,14 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 		}
 	}
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, tradingAsset)
+	tradingAssetPriceInBaseUnits, err := k.GetAssetPriceInBaseUnits(ctx, tradingAsset)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
 
 	for _, poolAsset := range pool.PoolAssetsShort {
 		// For short liabilities will be in trading asset
-		baseCurrencyAmt := poolAsset.Liabilities.ToLegacyDec().Mul(tradingAssetPrice)
+		baseCurrencyAmt := poolAsset.Liabilities.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits)
 		totalLiabilities = totalLiabilities.Add(baseCurrencyAmt)
 	}
 	return sdk.NewCoin(baseCurrency, totalLiabilities.TruncateInt()), nil

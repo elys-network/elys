@@ -99,17 +99,17 @@ func (mtp MTP) GetAccountAddress() sdk.AccAddress {
 	return sdk.MustAccAddressFromBech32(mtp.Address)
 }
 
-func (mtp MTP) GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice sdkmath.LegacyDec) (sdkmath.Int, error) {
+func (mtp MTP) GetBorrowInterestAmountAsCustodyAsset(tradingAssetPriceInBaseUnits sdkmath.LegacyDec) (sdkmath.Int, error) {
 	borrowInterestPaymentInCustody := sdkmath.ZeroInt()
 	if mtp.Position == Position_LONG {
-		if tradingAssetPrice.IsZero() {
+		if tradingAssetPriceInBaseUnits.IsZero() {
 			return sdkmath.ZeroInt(), errors.New("trading asset price is zero in GetBorrowInterestAmountAsCustodyAsset")
 		}
 		// liabilities are in usdc, custody is in trading asset
-		borrowInterestPaymentInCustody = mtp.BorrowInterestUnpaidLiability.ToLegacyDec().Quo(tradingAssetPrice).TruncateInt()
+		borrowInterestPaymentInCustody = mtp.BorrowInterestUnpaidLiability.ToLegacyDec().Quo(tradingAssetPriceInBaseUnits).TruncateInt()
 	} else {
 		// liabilities are in trading asset, custody is in usdc
-		borrowInterestPaymentInCustody = mtp.BorrowInterestUnpaidLiability.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+		borrowInterestPaymentInCustody = mtp.BorrowInterestUnpaidLiability.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits).TruncateInt()
 	}
 	return borrowInterestPaymentInCustody, nil
 }
