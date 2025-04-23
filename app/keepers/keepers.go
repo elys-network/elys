@@ -734,6 +734,9 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[vaultstypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.BankKeeper,
+		app.TierKeeper,
+		app.AmmKeeper,
+		app.CommitmentKeeper,
 	)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition

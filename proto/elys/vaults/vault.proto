@@ -1,15 +1,12 @@
 syntax = "proto3";
 package elys.vaults;
 
-import "amino/amino.proto";
-import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
-import "elys/vaults/params.proto";
-import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/elys-network/elys/x/vaults/types";
 
+// Vault is a structure that defines a vault
 message Vault {
   string deposit_denom = 1;
   // Max amount vault can hold in USD
@@ -19,15 +16,15 @@ message Vault {
     (gogoproto.nullable) = false
   ];
   // Coins allowed to trade in the vault
-  repeated cosmos.base.v1beta1.Coin allowed_coins = 3 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-  ];
+  repeated string allowed_coins = 3;
+  repeated string reward_coins = 4;
   // Actions that can be performed on the vault
-  repeated uint64 allowed_actions = 4;
-  uint64 id = 5;
+  repeated uint64 allowed_actions = 5;
+  string manager = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint64 id = 7;
 }
 
+// Action is a structure that defines an action to be performed on a vault
 message Action {
   uint64 id = 1;
   string name = 2;

@@ -2,9 +2,6 @@
 package vaults
 
 import (
-	_ "cosmossdk.io/api/amino"
-	v1beta1 "cosmossdk.io/api/cosmos/base/v1beta1"
-	_ "cosmossdk.io/api/cosmos/msg/v1"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
@@ -20,7 +17,7 @@ import (
 var _ protoreflect.List = (*_Vault_3_list)(nil)
 
 type _Vault_3_list struct {
-	list *[]*v1beta1.Coin
+	list *[]string
 }
 
 func (x *_Vault_3_list) Len() int {
@@ -31,37 +28,32 @@ func (x *_Vault_3_list) Len() int {
 }
 
 func (x *_Vault_3_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+	return protoreflect.ValueOfString((*x.list)[i])
 }
 
 func (x *_Vault_3_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_Vault_3_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_Vault_3_list) AppendMutable() protoreflect.Value {
-	v := new(v1beta1.Coin)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
+	panic(fmt.Errorf("AppendMutable can not be called on message Vault at list field AllowedCoins as it is not of Message kind"))
 }
 
 func (x *_Vault_3_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
 	*x.list = (*x.list)[:n]
 }
 
 func (x *_Vault_3_list) NewElement() protoreflect.Value {
-	v := new(v1beta1.Coin)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
+	v := ""
+	return protoreflect.ValueOfString(v)
 }
 
 func (x *_Vault_3_list) IsValid() bool {
@@ -71,7 +63,7 @@ func (x *_Vault_3_list) IsValid() bool {
 var _ protoreflect.List = (*_Vault_4_list)(nil)
 
 type _Vault_4_list struct {
-	list *[]uint64
+	list *[]string
 }
 
 func (x *_Vault_4_list) Len() int {
@@ -82,23 +74,23 @@ func (x *_Vault_4_list) Len() int {
 }
 
 func (x *_Vault_4_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfUint64((*x.list)[i])
+	return protoreflect.ValueOfString((*x.list)[i])
 }
 
 func (x *_Vault_4_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Uint()
+	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_Vault_4_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Uint()
+	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_Vault_4_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message Vault at list field AllowedActions as it is not of Message kind"))
+	panic(fmt.Errorf("AppendMutable can not be called on message Vault at list field RewardCoins as it is not of Message kind"))
 }
 
 func (x *_Vault_4_list) Truncate(n int) {
@@ -106,11 +98,57 @@ func (x *_Vault_4_list) Truncate(n int) {
 }
 
 func (x *_Vault_4_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Vault_4_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_Vault_5_list)(nil)
+
+type _Vault_5_list struct {
+	list *[]uint64
+}
+
+func (x *_Vault_5_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_Vault_5_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfUint64((*x.list)[i])
+}
+
+func (x *_Vault_5_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_Vault_5_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Uint()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_Vault_5_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Vault at list field AllowedActions as it is not of Message kind"))
+}
+
+func (x *_Vault_5_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_Vault_5_list) NewElement() protoreflect.Value {
 	v := uint64(0)
 	return protoreflect.ValueOfUint64(v)
 }
 
-func (x *_Vault_4_list) IsValid() bool {
+func (x *_Vault_5_list) IsValid() bool {
 	return x.list != nil
 }
 
@@ -119,7 +157,9 @@ var (
 	fd_Vault_deposit_denom   protoreflect.FieldDescriptor
 	fd_Vault_max_amount_usd  protoreflect.FieldDescriptor
 	fd_Vault_allowed_coins   protoreflect.FieldDescriptor
+	fd_Vault_reward_coins    protoreflect.FieldDescriptor
 	fd_Vault_allowed_actions protoreflect.FieldDescriptor
+	fd_Vault_manager         protoreflect.FieldDescriptor
 	fd_Vault_id              protoreflect.FieldDescriptor
 )
 
@@ -129,7 +169,9 @@ func init() {
 	fd_Vault_deposit_denom = md_Vault.Fields().ByName("deposit_denom")
 	fd_Vault_max_amount_usd = md_Vault.Fields().ByName("max_amount_usd")
 	fd_Vault_allowed_coins = md_Vault.Fields().ByName("allowed_coins")
+	fd_Vault_reward_coins = md_Vault.Fields().ByName("reward_coins")
 	fd_Vault_allowed_actions = md_Vault.Fields().ByName("allowed_actions")
+	fd_Vault_manager = md_Vault.Fields().ByName("manager")
 	fd_Vault_id = md_Vault.Fields().ByName("id")
 }
 
@@ -216,9 +258,21 @@ func (x *fastReflection_Vault) Range(f func(protoreflect.FieldDescriptor, protor
 			return
 		}
 	}
+	if len(x.RewardCoins) != 0 {
+		value := protoreflect.ValueOfList(&_Vault_4_list{list: &x.RewardCoins})
+		if !f(fd_Vault_reward_coins, value) {
+			return
+		}
+	}
 	if len(x.AllowedActions) != 0 {
-		value := protoreflect.ValueOfList(&_Vault_4_list{list: &x.AllowedActions})
+		value := protoreflect.ValueOfList(&_Vault_5_list{list: &x.AllowedActions})
 		if !f(fd_Vault_allowed_actions, value) {
+			return
+		}
+	}
+	if x.Manager != "" {
+		value := protoreflect.ValueOfString(x.Manager)
+		if !f(fd_Vault_manager, value) {
 			return
 		}
 	}
@@ -249,8 +303,12 @@ func (x *fastReflection_Vault) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.MaxAmountUsd != ""
 	case "elys.vaults.Vault.allowed_coins":
 		return len(x.AllowedCoins) != 0
+	case "elys.vaults.Vault.reward_coins":
+		return len(x.RewardCoins) != 0
 	case "elys.vaults.Vault.allowed_actions":
 		return len(x.AllowedActions) != 0
+	case "elys.vaults.Vault.manager":
+		return x.Manager != ""
 	case "elys.vaults.Vault.id":
 		return x.Id != uint64(0)
 	default:
@@ -275,8 +333,12 @@ func (x *fastReflection_Vault) Clear(fd protoreflect.FieldDescriptor) {
 		x.MaxAmountUsd = ""
 	case "elys.vaults.Vault.allowed_coins":
 		x.AllowedCoins = nil
+	case "elys.vaults.Vault.reward_coins":
+		x.RewardCoins = nil
 	case "elys.vaults.Vault.allowed_actions":
 		x.AllowedActions = nil
+	case "elys.vaults.Vault.manager":
+		x.Manager = ""
 	case "elys.vaults.Vault.id":
 		x.Id = uint64(0)
 	default:
@@ -307,12 +369,21 @@ func (x *fastReflection_Vault) Get(descriptor protoreflect.FieldDescriptor) prot
 		}
 		listValue := &_Vault_3_list{list: &x.AllowedCoins}
 		return protoreflect.ValueOfList(listValue)
-	case "elys.vaults.Vault.allowed_actions":
-		if len(x.AllowedActions) == 0 {
+	case "elys.vaults.Vault.reward_coins":
+		if len(x.RewardCoins) == 0 {
 			return protoreflect.ValueOfList(&_Vault_4_list{})
 		}
-		listValue := &_Vault_4_list{list: &x.AllowedActions}
+		listValue := &_Vault_4_list{list: &x.RewardCoins}
 		return protoreflect.ValueOfList(listValue)
+	case "elys.vaults.Vault.allowed_actions":
+		if len(x.AllowedActions) == 0 {
+			return protoreflect.ValueOfList(&_Vault_5_list{})
+		}
+		listValue := &_Vault_5_list{list: &x.AllowedActions}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.vaults.Vault.manager":
+		value := x.Manager
+		return protoreflect.ValueOfString(value)
 	case "elys.vaults.Vault.id":
 		value := x.Id
 		return protoreflect.ValueOfUint64(value)
@@ -344,10 +415,16 @@ func (x *fastReflection_Vault) Set(fd protoreflect.FieldDescriptor, value protor
 		lv := value.List()
 		clv := lv.(*_Vault_3_list)
 		x.AllowedCoins = *clv.list
-	case "elys.vaults.Vault.allowed_actions":
+	case "elys.vaults.Vault.reward_coins":
 		lv := value.List()
 		clv := lv.(*_Vault_4_list)
+		x.RewardCoins = *clv.list
+	case "elys.vaults.Vault.allowed_actions":
+		lv := value.List()
+		clv := lv.(*_Vault_5_list)
 		x.AllowedActions = *clv.list
+	case "elys.vaults.Vault.manager":
+		x.Manager = value.Interface().(string)
 	case "elys.vaults.Vault.id":
 		x.Id = value.Uint()
 	default:
@@ -372,20 +449,28 @@ func (x *fastReflection_Vault) Mutable(fd protoreflect.FieldDescriptor) protoref
 	switch fd.FullName() {
 	case "elys.vaults.Vault.allowed_coins":
 		if x.AllowedCoins == nil {
-			x.AllowedCoins = []*v1beta1.Coin{}
+			x.AllowedCoins = []string{}
 		}
 		value := &_Vault_3_list{list: &x.AllowedCoins}
+		return protoreflect.ValueOfList(value)
+	case "elys.vaults.Vault.reward_coins":
+		if x.RewardCoins == nil {
+			x.RewardCoins = []string{}
+		}
+		value := &_Vault_4_list{list: &x.RewardCoins}
 		return protoreflect.ValueOfList(value)
 	case "elys.vaults.Vault.allowed_actions":
 		if x.AllowedActions == nil {
 			x.AllowedActions = []uint64{}
 		}
-		value := &_Vault_4_list{list: &x.AllowedActions}
+		value := &_Vault_5_list{list: &x.AllowedActions}
 		return protoreflect.ValueOfList(value)
 	case "elys.vaults.Vault.deposit_denom":
 		panic(fmt.Errorf("field deposit_denom of message elys.vaults.Vault is not mutable"))
 	case "elys.vaults.Vault.max_amount_usd":
 		panic(fmt.Errorf("field max_amount_usd of message elys.vaults.Vault is not mutable"))
+	case "elys.vaults.Vault.manager":
+		panic(fmt.Errorf("field manager of message elys.vaults.Vault is not mutable"))
 	case "elys.vaults.Vault.id":
 		panic(fmt.Errorf("field id of message elys.vaults.Vault is not mutable"))
 	default:
@@ -406,11 +491,16 @@ func (x *fastReflection_Vault) NewField(fd protoreflect.FieldDescriptor) protore
 	case "elys.vaults.Vault.max_amount_usd":
 		return protoreflect.ValueOfString("")
 	case "elys.vaults.Vault.allowed_coins":
-		list := []*v1beta1.Coin{}
+		list := []string{}
 		return protoreflect.ValueOfList(&_Vault_3_list{list: &list})
+	case "elys.vaults.Vault.reward_coins":
+		list := []string{}
+		return protoreflect.ValueOfList(&_Vault_4_list{list: &list})
 	case "elys.vaults.Vault.allowed_actions":
 		list := []uint64{}
-		return protoreflect.ValueOfList(&_Vault_4_list{list: &list})
+		return protoreflect.ValueOfList(&_Vault_5_list{list: &list})
+	case "elys.vaults.Vault.manager":
+		return protoreflect.ValueOfString("")
 	case "elys.vaults.Vault.id":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
@@ -491,8 +581,14 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if len(x.AllowedCoins) > 0 {
-			for _, e := range x.AllowedCoins {
-				l = options.Size(e)
+			for _, s := range x.AllowedCoins {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.RewardCoins) > 0 {
+			for _, s := range x.RewardCoins {
+				l = len(s)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
@@ -502,6 +598,10 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 				l += runtime.Sov(uint64(e))
 			}
 			n += 1 + runtime.Sov(uint64(l)) + l
+		}
+		l = len(x.Manager)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.Id != 0 {
 			n += 1 + runtime.Sov(uint64(x.Id))
@@ -538,7 +638,14 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 		if x.Id != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.Id))
 			i--
-			dAtA[i] = 0x28
+			dAtA[i] = 0x38
+		}
+		if len(x.Manager) > 0 {
+			i -= len(x.Manager)
+			copy(dAtA[i:], x.Manager)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Manager)))
+			i--
+			dAtA[i] = 0x32
 		}
 		if len(x.AllowedActions) > 0 {
 			var pksize2 int
@@ -558,20 +665,22 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 			}
 			i = runtime.EncodeVarint(dAtA, i, uint64(pksize2))
 			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x2a
+		}
+		if len(x.RewardCoins) > 0 {
+			for iNdEx := len(x.RewardCoins) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.RewardCoins[iNdEx])
+				copy(dAtA[i:], x.RewardCoins[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.RewardCoins[iNdEx])))
+				i--
+				dAtA[i] = 0x22
+			}
 		}
 		if len(x.AllowedCoins) > 0 {
 			for iNdEx := len(x.AllowedCoins) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.AllowedCoins[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i -= len(x.AllowedCoins[iNdEx])
+				copy(dAtA[i:], x.AllowedCoins[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AllowedCoins[iNdEx])))
 				i--
 				dAtA[i] = 0x1a
 			}
@@ -707,7 +816,7 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AllowedCoins", wireType)
 				}
-				var msglen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -717,27 +826,57 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					msglen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if msglen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + msglen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.AllowedCoins = append(x.AllowedCoins, &v1beta1.Coin{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.AllowedCoins[len(x.AllowedCoins)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
+				x.AllowedCoins = append(x.AllowedCoins, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
 			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field RewardCoins", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.RewardCoins = append(x.RewardCoins, string(dAtA[iNdEx:postIndex]))
+				iNdEx = postIndex
+			case 5:
 				if wireType == 0 {
 					var v uint64
 					for shift := uint(0); ; shift += 7 {
@@ -813,7 +952,39 @@ func (x *fastReflection_Vault) ProtoMethods() *protoiface.Methods {
 				} else {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AllowedActions", wireType)
 				}
-			case 5:
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Manager", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Manager = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 7:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 				}
@@ -1348,6 +1519,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Vault is a structure that defines a vault
 type Vault struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1357,10 +1529,12 @@ type Vault struct {
 	// Max amount vault can hold in USD
 	MaxAmountUsd string `protobuf:"bytes,2,opt,name=max_amount_usd,json=maxAmountUsd,proto3" json:"max_amount_usd,omitempty"`
 	// Coins allowed to trade in the vault
-	AllowedCoins []*v1beta1.Coin `protobuf:"bytes,3,rep,name=allowed_coins,json=allowedCoins,proto3" json:"allowed_coins,omitempty"`
+	AllowedCoins []string `protobuf:"bytes,3,rep,name=allowed_coins,json=allowedCoins,proto3" json:"allowed_coins,omitempty"`
+	RewardCoins  []string `protobuf:"bytes,4,rep,name=reward_coins,json=rewardCoins,proto3" json:"reward_coins,omitempty"`
 	// Actions that can be performed on the vault
-	AllowedActions []uint64 `protobuf:"varint,4,rep,packed,name=allowed_actions,json=allowedActions,proto3" json:"allowed_actions,omitempty"`
-	Id             uint64   `protobuf:"varint,5,opt,name=id,proto3" json:"id,omitempty"`
+	AllowedActions []uint64 `protobuf:"varint,5,rep,packed,name=allowed_actions,json=allowedActions,proto3" json:"allowed_actions,omitempty"`
+	Manager        string   `protobuf:"bytes,6,opt,name=manager,proto3" json:"manager,omitempty"`
+	Id             uint64   `protobuf:"varint,7,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (x *Vault) Reset() {
@@ -1397,9 +1571,16 @@ func (x *Vault) GetMaxAmountUsd() string {
 	return ""
 }
 
-func (x *Vault) GetAllowedCoins() []*v1beta1.Coin {
+func (x *Vault) GetAllowedCoins() []string {
 	if x != nil {
 		return x.AllowedCoins
+	}
+	return nil
+}
+
+func (x *Vault) GetRewardCoins() []string {
+	if x != nil {
+		return x.RewardCoins
 	}
 	return nil
 }
@@ -1411,6 +1592,13 @@ func (x *Vault) GetAllowedActions() []uint64 {
 	return nil
 }
 
+func (x *Vault) GetManager() string {
+	if x != nil {
+		return x.Manager
+	}
+	return ""
+}
+
 func (x *Vault) GetId() uint64 {
 	if x != nil {
 		return x.Id
@@ -1418,6 +1606,7 @@ func (x *Vault) GetId() uint64 {
 	return 0
 }
 
+// Action is a structure that defines an action to be performed on a vault
 type Action struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1466,49 +1655,43 @@ var File_elys_vaults_vault_proto protoreflect.FileDescriptor
 var file_elys_vaults_vault_proto_rawDesc = []byte{
 	0x0a, 0x17, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x2f, 0x76, 0x61,
 	0x75, 0x6c, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0b, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x1a, 0x11, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2f, 0x61, 0x6d,
-	0x69, 0x6e, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x17, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2f, 0x6d, 0x73, 0x67, 0x2f, 0x76, 0x31, 0x2f, 0x6d, 0x73, 0x67, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67,
-	0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x1a, 0x18, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73,
-	0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1e, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74,
-	0x61, 0x31, 0x2f, 0x63, 0x6f, 0x69, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xb0, 0x02,
-	0x0a, 0x05, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x12, 0x23, 0x0a, 0x0d, 0x64, 0x65, 0x70, 0x6f, 0x73,
-	0x69, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c,
-	0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x57, 0x0a, 0x0e,
-	0x6d, 0x61, 0x78, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
-	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x6d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75,
-	0x6e, 0x74, 0x55, 0x73, 0x64, 0x12, 0x70, 0x0a, 0x0d, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64,
-	0x5f, 0x63, 0x6f, 0x69, 0x6e, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74,
-	0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f,
-	0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79,
-	0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x0c, 0x61, 0x6c, 0x6c, 0x6f, 0x77,
-	0x65, 0x64, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x12, 0x27, 0x0a, 0x0f, 0x61, 0x6c, 0x6c, 0x6f, 0x77,
-	0x65, 0x64, 0x5f, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x04,
+	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67,
+	0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xba, 0x02, 0x0a, 0x05, 0x56, 0x61, 0x75, 0x6c,
+	0x74, 0x12, 0x23, 0x0a, 0x0d, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x64, 0x65, 0x6e,
+	0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x57, 0x0a, 0x0e, 0x6d, 0x61, 0x78, 0x5f, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31,
+	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
+	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79,
+	0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65,
+	0x63, 0x52, 0x0c, 0x6d, 0x61, 0x78, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x12,
+	0x23, 0x0a, 0x0d, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x5f, 0x63, 0x6f, 0x69, 0x6e, 0x73,
+	0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0c, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x43,
+	0x6f, 0x69, 0x6e, 0x73, 0x12, 0x21, 0x0a, 0x0c, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x63,
+	0x6f, 0x69, 0x6e, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0b, 0x72, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x12, 0x27, 0x0a, 0x0f, 0x61, 0x6c, 0x6c, 0x6f, 0x77,
+	0x65, 0x64, 0x5f, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x04,
 	0x52, 0x0e, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x64, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73,
-	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64,
-	0x22, 0x2c, 0x0a, 0x06, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61,
-	0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x42, 0x98,
-	0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x76, 0x61, 0x75, 0x6c,
-	0x74, 0x73, 0x42, 0x0a, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
-	0x5a, 0x2c, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61,
-	0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xa2, 0x02,
-	0x03, 0x45, 0x56, 0x58, 0xaa, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x56, 0x61, 0x75, 0x6c,
-	0x74, 0x73, 0xca, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73,
-	0xe2, 0x02, 0x17, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x5c, 0x47,
-	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c, 0x45, 0x6c, 0x79,
-	0x73, 0x3a, 0x3a, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x12, 0x32, 0x0a, 0x07, 0x6d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x6d, 0x61, 0x6e,
+	0x61, 0x67, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x02, 0x69, 0x64, 0x22, 0x2c, 0x0a, 0x06, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12,
+	0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x42, 0x98, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x42, 0x0a, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x50, 0x72, 0x6f,
+	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2c, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x76, 0x61, 0x75, 0x6c,
+	0x74, 0x73, 0xa2, 0x02, 0x03, 0x45, 0x56, 0x58, 0xaa, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x2e,
+	0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0xca, 0x02, 0x0b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61,
+	0x75, 0x6c, 0x74, 0x73, 0xe2, 0x02, 0x17, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x56, 0x61, 0x75, 0x6c,
+	0x74, 0x73, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
+	0x0c, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1525,17 +1708,15 @@ func file_elys_vaults_vault_proto_rawDescGZIP() []byte {
 
 var file_elys_vaults_vault_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_elys_vaults_vault_proto_goTypes = []interface{}{
-	(*Vault)(nil),        // 0: elys.vaults.Vault
-	(*Action)(nil),       // 1: elys.vaults.Action
-	(*v1beta1.Coin)(nil), // 2: cosmos.base.v1beta1.Coin
+	(*Vault)(nil),  // 0: elys.vaults.Vault
+	(*Action)(nil), // 1: elys.vaults.Action
 }
 var file_elys_vaults_vault_proto_depIdxs = []int32{
-	2, // 0: elys.vaults.Vault.allowed_coins:type_name -> cosmos.base.v1beta1.Coin
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // [0:0] is the sub-list for method output_type
+	0, // [0:0] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_elys_vaults_vault_proto_init() }
@@ -1543,7 +1724,6 @@ func file_elys_vaults_vault_proto_init() {
 	if File_elys_vaults_vault_proto != nil {
 		return
 	}
-	file_elys_vaults_params_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_elys_vaults_vault_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Vault); i {

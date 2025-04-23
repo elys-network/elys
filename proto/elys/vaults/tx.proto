@@ -116,12 +116,10 @@ message MsgAddVault {
     (gogoproto.nullable) = false
   ];
   // Coins allowed to trade in the vault
-  repeated cosmos.base.v1beta1.Coin allowed_coins = 4 [
-    (gogoproto.nullable) = false,
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-  ];
+  repeated string allowed_coins = 4;
+  repeated string reward_coins = 5;
   // Actions that can be performed on the vault
-  repeated uint64 allowed_actions = 5;
+  repeated uint64 allowed_actions = 6;
 }
 
 // MsgAddVaultResponse defines the response structure for adding vault
