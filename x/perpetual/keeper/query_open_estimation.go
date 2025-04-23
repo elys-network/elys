@@ -111,6 +111,21 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	eta := proxyLeverage.Sub(math.LegacyOneDec())
 	liabilities := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
 	weightBreakingFee := math.LegacyZeroDec()
+
+	var limitPriceInBaseUnits math.LegacyDec
+
+	if mtp.CollateralAsset == baseCurrency {
+		limitPriceInBaseUnits, err = k.ConvertPriceToBaseUnit(ctx, req.TradingAsset, req.LimitPrice)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		limitPriceInBaseUnits, err = k.ConvertPriceToBaseUnit(ctx, mtp.CollateralAsset, req.LimitPrice)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	if req.Position == types.Position_LONG {
 		//getting custody
 		if mtp.CollateralAsset == baseCurrency {
@@ -121,7 +136,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 			}
 			if useLimitPrice {
 				// leveragedAmount is collateral asset which is base currency, custodyAmount has to be in trading asset
-				custodyAmount = leveragedAmount.ToLegacyDec().Quo(req.LimitPrice).TruncateInt()
+				custodyAmount = leveragedAmount.ToLegacyDec().Quo(limitPriceInBaseUnits).TruncateInt()
 			}
 		}
 
@@ -134,7 +149,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 			}
 			if useLimitPrice {
 				// liabilities needs to be in base currency
-				liabilities = amountIn.ToLegacyDec().Mul(req.LimitPrice).TruncateInt()
+				liabilities = amountIn.ToLegacyDec().Mul(limitPriceInBaseUnits).TruncateInt()
 			}
 		}
 
@@ -150,7 +165,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		}
 		if useLimitPrice {
 			// liabilities needs to be in trading asset
-			liabilities = amountOut.ToLegacyDec().Quo(req.LimitPrice).TruncateInt()
+			liabilities = amountOut.ToLegacyDec().Quo(limitPriceInBaseUnits).TruncateInt()
 		}
 	}
 	mtp.Liabilities = liabilities
