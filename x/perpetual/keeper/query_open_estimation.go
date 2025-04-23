@@ -113,16 +113,17 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	weightBreakingFee := math.LegacyZeroDec()
 
 	var limitPriceInBaseUnits math.LegacyDec
-
-	if mtp.CollateralAsset == baseCurrency {
-		limitPriceInBaseUnits, err = k.ConvertPriceToBaseUnit(ctx, req.TradingAsset, req.LimitPrice)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		limitPriceInBaseUnits, err = k.ConvertPriceToBaseUnit(ctx, mtp.CollateralAsset, req.LimitPrice)
-		if err != nil {
-			return nil, err
+	if useLimitPrice {
+		if mtp.CollateralAsset == baseCurrency {
+			limitPriceInBaseUnits, err = k.ConvertPriceToBaseUnit(ctx, req.TradingAsset, req.LimitPrice)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			limitPriceInBaseUnits, err = k.ConvertPriceToBaseUnit(ctx, mtp.CollateralAsset, req.LimitPrice)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
