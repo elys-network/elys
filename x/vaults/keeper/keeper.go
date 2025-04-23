@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	tierkeeper "github.com/elys-network/elys/x/tier/keeper"
 	"github.com/elys-network/elys/x/vaults/types"
 )
 
@@ -19,8 +20,9 @@ type (
 
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
-		authority string
-		bk        types.BankKeeper
+		authority  string
+		bk         types.BankKeeper
+		tierKeeper *tierkeeper.Keeper
 	}
 )
 
@@ -29,6 +31,7 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	authority string,
 	bk types.BankKeeper,
+	tierKeeper *tierkeeper.Keeper,
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
@@ -39,6 +42,7 @@ func NewKeeper(
 		storeService: storeService,
 		authority:    authority,
 		bk:           bk,
+		tierKeeper:   tierKeeper,
 	}
 }
 
