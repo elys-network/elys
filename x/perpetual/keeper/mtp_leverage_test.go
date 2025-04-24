@@ -17,7 +17,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 	}{
 		{
 			"price not set",
-			"asset price uatom not found",
+			"asset info uatom not found",
 			math.LegacyDec{},
 			func() {
 			},
