@@ -51,8 +51,9 @@ func (k Keeper) GetCurrentTwapPrice(ctx sdk.Context, marketId uint64) math.Legac
 		panic("twap price timestamp delta incorrect, time delta < 0")
 	}
 	// Handles the case when no or only 1 twap price is present
+	// Returning average price because to calculate unrealized PnL, mark price should not be 0 otherwise losses shown will be too high
 	if lastTwapPrice.Timestamp == firstTwapPrice.Timestamp {
-		return math.LegacyZeroDec()
+		return lastTwapPrice.AverageTradePrice
 	}
 
 	num := lastTwapPrice.CumulativePrice.Sub(firstTwapPrice.CumulativePrice)

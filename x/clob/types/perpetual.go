@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -44,4 +46,32 @@ func NewPerpetual(id uint64, marketId uint64, owner string, qty, ep math.LegacyD
 		Margin:           margin,
 		EntryFundingRate: fundingRate,
 	}
+}
+
+func (perpetual Perpetual) CalculateUnrealizedPNL(markPrice math.LegacyDec) (math.LegacyDec, error) {
+
+	if perpetual.Quantity.IsZero() || perpetual.Quantity.IsNil() {
+		return math.LegacyZeroDec(), nil
+	}
+	if perpetual.EntryPrice.IsNil() || !perpetual.EntryPrice.IsPositive() {
+		return math.LegacyDec{}, fmt.Errorf("invalid non-positive entry price: %s", perpetual.EntryPrice.String())
+	}
+	if markPrice.IsNil() || !markPrice.IsPositive() {
+		return math.LegacyDec{}, fmt.Errorf("invalid non-positive mark price: %s", markPrice.String())
+	}
+
+	// --- PNL Calculation ---
+	// Formula: UPNL = Quantity * (Mark Price - Entry Price)
+
+	// Calculate the price difference
+	priceDifference := markPrice.Sub(perpetual.EntryPrice)
+
+	// Multiply by the quantity. The sign of the quantity automatically handles longs/shorts:
+	// Long (Qty > 0): If Mark > Entry, diff is positive -> PNL is positive (profit)
+	// Long (Qty > 0): If Mark < Entry, diff is negative -> PNL is negative (loss)
+	// Short (Qty < 0): If Mark > Entry, diff is positive -> PNL is negative (loss)
+	// Short (Qty < 0): If Mark < Entry, diff is negative -> PNL is positive (profit)
+	unrealizedPNL := perpetual.Quantity.Mul(priceDifference)
+
+	return unrealizedPNL, nil
 }

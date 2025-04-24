@@ -31,7 +31,7 @@ func (k Keeper) LiquidationClose(ctx sdk.Context, perpetual types.Perpetual, mar
 		trade.SellerSubAccount = subAccount
 	}
 
-	// TODO Shoyld bot liquidations impact TWAP price? I think no
+	// TODO Should bot liquidations impact TWAP price? I think no
 	err = k.Exchange(ctx, trade)
 	if err != nil {
 		return err

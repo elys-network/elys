@@ -20,6 +20,13 @@ import (
 	"time"
 )
 
+const (
+	AvgBlockTime = 5
+	BaseDenom    = "uatom"
+	QuoteDenom   = "uusdc"
+	MarketId     = uint64(1)
+)
+
 var (
 	assetProfileAtom = assetprofiletypes.Entry{
 		BaseDenom:                BaseDenom,
@@ -123,7 +130,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.legacyAmino = app.LegacyAmino()
 	suite.ctx = app.BaseApp.NewContext(true).WithBlockTime(time.Now())
 	suite.app = app
-	suite.avgBlockTime = 5
+	suite.avgBlockTime = AvgBlockTime
 
 	oracleParams := app.OracleKeeper.GetParams(suite.ctx)
 	oracleParams.LifeTimeInBlocks = 10000

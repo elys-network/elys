@@ -7,12 +7,6 @@ import (
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-const (
-	BaseDenom  = "uatom"
-	QuoteDenom = "uusdc"
-	MarketId   = uint64(1)
-)
-
 var (
 	IMR = math.LegacyMustNewDecFromStr("0.1")
 )
