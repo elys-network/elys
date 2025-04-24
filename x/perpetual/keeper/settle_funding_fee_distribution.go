@@ -48,13 +48,13 @@ func (k Keeper) FundingFeeDistribution(ctx sdk.Context, mtp *types.MTP, pool *ty
 			return amountDistributed, err
 		}
 
-		tradingAssetPriceInBaseUnits, err := k.GetAssetPriceInBaseUnits(ctx, mtp.TradingAsset)
+		_, tradingAssetPriceBaseDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 		if err != nil {
 			return amountDistributed, err
 		}
 
 		// For short, fundingFeeAmount is in trading asset, need to convert to custody asset which is in usdc
-		custodyAmt := fundingFeeAmount.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits).TruncateInt()
+		custodyAmt := fundingFeeAmount.ToLegacyDec().Mul(tradingAssetPriceBaseDenomRatio).TruncateInt()
 
 		amountDistributed = custodyAmt
 		// update mtp Custody

@@ -130,7 +130,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 
 				addr := suite.AddAccounts(1, nil)
 				firstPositionCreator := addr[0]
-				tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 
 				firstOpenPositionMsg := &types.MsgOpen{
@@ -179,7 +179,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 
 				addr := suite.AddAccounts(1, nil)
 				firstPositionCreator := addr[0]
-				tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 
 				firstOpenPositionMsg := &types.MsgOpen{
@@ -231,7 +231,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 
 				addr := suite.AddAccounts(1, nil)
 				firstPositionCreator := addr[0]
-				tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+				tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 				suite.Require().NoError(err)
 
 				firstOpenPositionMsg := &types.MsgOpen{

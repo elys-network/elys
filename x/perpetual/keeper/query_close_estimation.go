@@ -52,15 +52,12 @@ func (k Keeper) HandleCloseEstimation(ctx sdk.Context, req *types.QueryCloseEsti
 	}
 	unpaidInterestLiability := mtp.BorrowInterestUnpaidLiability
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	tradingAssetPrice, tradingAssetPriceDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 	if err != nil {
 		return nil, err
 	}
-	tradingAssetPriceInBaseUnits, err := k.ConvertPriceToBaseUnit(ctx, mtp.TradingAsset, tradingAssetPrice)
-	if err != nil {
-		return nil, err
-	}
-	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPriceInBaseUnits)
+
+	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPriceDenomRatio)
 	if err != nil {
 		return nil, err
 	}

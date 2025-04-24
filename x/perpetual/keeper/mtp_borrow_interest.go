@@ -39,12 +39,12 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		return math.ZeroInt(), math.ZeroInt(), true, nil
 	}
 
-	tradingAssetPriceInBaseUnits, err := k.GetAssetPriceInBaseUnits(ctx, mtp.TradingAsset)
+	_, tradingAssetPriceDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 	if err != nil {
 		return math.ZeroInt(), math.ZeroInt(), true, err
 	}
 
-	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPriceInBaseUnits)
+	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPriceDenomRatio)
 	if err != nil {
 		return math.ZeroInt(), math.ZeroInt(), true, err
 	}
@@ -58,13 +58,13 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		unpaidInterestLiabilities := math.ZeroInt()
 		if mtp.Position == types.Position_LONG {
 			// custody is in trading asset, liabilities needs to be in usdc,
-			unpaidInterestLiabilities = unpaidInterestCustody.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits).TruncateInt()
+			unpaidInterestLiabilities = unpaidInterestCustody.ToLegacyDec().Mul(tradingAssetPriceDenomRatio).TruncateInt()
 		} else {
 			// custody is in usdc, liabilities needs to be in trading asset,
-			if tradingAssetPriceInBaseUnits.IsZero() {
+			if tradingAssetPriceDenomRatio.IsZero() {
 				return math.ZeroInt(), math.ZeroInt(), false, errors.New("trading asset price is zero in SettleMTPBorrowInterestUnpaidLiability")
 			}
-			borrowInterestPaymentInCustody = unpaidInterestCustody.ToLegacyDec().Quo(tradingAssetPriceInBaseUnits).TruncateInt()
+			borrowInterestPaymentInCustody = unpaidInterestCustody.ToLegacyDec().Quo(tradingAssetPriceDenomRatio).TruncateInt()
 		}
 		mtp.BorrowInterestUnpaidLiability = unpaidInterestLiabilities
 

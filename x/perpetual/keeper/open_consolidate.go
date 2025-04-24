@@ -27,7 +27,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	if forceClosed {
-		tradingAssetPrice, err := k.GetAssetPrice(ctx, msg.TradingAsset)
+		tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, msg.TradingAsset)
 		if err != nil {
 			return nil, err
 		}

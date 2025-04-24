@@ -3,54 +3,51 @@ package keeper
 import (
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
+	oracleKeeper "github.com/elys-network/elys/x/oracle/keeper"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
-func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (math.LegacyDec, error) {
+// returns asset price and and asset price in denom ratio(price*(10^usdcDecimals-assetDecimals))
+func (k Keeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset string) (math.LegacyDec, math.LegacyDec, error) {
 	info, found := k.oracleKeeper.GetAssetInfo(ctx, asset)
 	if !found {
-		return math.LegacyZeroDec(), fmt.Errorf("asset price %s not found", asset)
+		return math.LegacyZeroDec(), math.LegacyZeroDec(), fmt.Errorf("asset price %s not found", asset)
 	}
 	price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
 	if !found {
-		return math.LegacyZeroDec(), fmt.Errorf("asset price %s not found", asset)
+		return math.LegacyZeroDec(), math.LegacyZeroDec(), fmt.Errorf("asset price %s not found", asset)
 	}
-	return price.Price, nil
-}
-
-func (k Keeper) GetAssetPriceInBaseUnits(ctx sdk.Context, asset string) (math.LegacyDec, error) {
-	info, found := k.oracleKeeper.GetAssetInfo(ctx, asset)
+	USDCEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
-		return math.LegacyZeroDec(), fmt.Errorf("asset price %s not found", asset)
+		return math.LegacyZeroDec(), math.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
-	price, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
-	if !found {
-		return math.LegacyZeroDec(), fmt.Errorf("asset price %s not found", asset)
-	}
-
-	USDCDecimals := uint64(6)
-	if info.GetDecimal() < USDCDecimals {
-		baseUnitMultiplier := math.LegacyMustNewDecFromStr("10").Power(USDCDecimals - info.GetDecimal())
-		return price.Price.Mul(baseUnitMultiplier), nil
+	if info.Decimal < USDCEntry.Decimals {
+		baseUnitMultiplier := oracleKeeper.Pow10(USDCEntry.Decimals - info.Decimal)
+		return price.Price, price.Price.Mul(baseUnitMultiplier), nil
 	} else {
-		baseUnitMultiplier := math.LegacyMustNewDecFromStr("10").Power(info.GetDecimal() - USDCDecimals)
-		return price.Price.Quo(baseUnitMultiplier), nil
+		baseUnitMultiplier := oracleKeeper.Pow10(info.Decimal - USDCEntry.Decimals)
+		return price.Price, price.Price.Quo(baseUnitMultiplier), nil
 	}
 }
 
-func (k Keeper) ConvertPriceToBaseUnit(ctx sdk.Context, asset string, price math.LegacyDec) (math.LegacyDec, error) {
+func (k Keeper) ConvertPriceToAssetUsdcDenomRatio(ctx sdk.Context, asset string, price math.LegacyDec) (math.LegacyDec, error) {
 	info, found := k.oracleKeeper.GetAssetInfo(ctx, asset)
 	if !found {
 		return math.LegacyZeroDec(), fmt.Errorf("error converting price to base units, asset info %s not found", asset)
 	}
-
-	USDCDecimals := uint64(6)
-	if info.GetDecimal() < USDCDecimals {
-		baseUnitMultiplier := math.LegacyMustNewDecFromStr("10").Power(USDCDecimals - info.GetDecimal())
+	USDCEntry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
+	if !found {
+		return math.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+	}
+	if info.Decimal < USDCEntry.Decimals {
+		baseUnitMultiplier := oracleKeeper.Pow10(USDCEntry.Decimals - info.Decimal)
 		return price.Mul(baseUnitMultiplier), nil
 	} else {
-		baseUnitMultiplier := math.LegacyMustNewDecFromStr("10").Power(info.GetDecimal() - USDCDecimals)
+		baseUnitMultiplier := oracleKeeper.Pow10(info.Decimal - USDCEntry.Decimals)
 		return price.Quo(baseUnitMultiplier), nil
 	}
 }

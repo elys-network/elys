@@ -33,7 +33,7 @@ func TestOpenEstimation_Long5XAtom100Usdc(t *testing.T) {
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
+	tradingAssetPrice, _, err := app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(ctx, ptypes.ATOM)
 	require.NoError(t, err)
 	// Generate 1 random account with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(1000000000000))
@@ -146,7 +146,7 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
+	tradingAssetPrice, _, err := app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(ctx, ptypes.ATOM)
 	require.NoError(t, err)
 	// Set asset profile
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
@@ -348,9 +348,9 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 
 	// check length of pools
 	require.Equal(t, len(pools), 1)
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
+	tradingAssetPrice, _, err := app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(ctx, ptypes.ATOM)
 	require.NoError(t, err)
-	// call min collateral query	tradingAssetPrice := app.OracleKeeper.GetAssetPriceFromDenom(ctx, ptypes.ATOM)
+	// _,call min collateral query	tradingAssetPrice := app.OracleKeeper.GetAssetPriceAndAssetUsdcDenomRatioFromDenom(ctx, ptypes.ATOM)
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
 		PoolId:          1,
 		Position:        types.Position_LONG,
@@ -487,7 +487,7 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 
 	// check length of pools
 	require.Equal(t, len(pools), 1)
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
+	tradingAssetPrice, _, err := app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(ctx, ptypes.ATOM)
 	require.NoError(t, err)
 	// call min collateral query
 	res, err := mk.OpenEstimation(ctx, &types.QueryOpenEstimationRequest{
@@ -535,7 +535,7 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 	// Setup coin prices
 	SetupStableCoinPrices(ctx, oracle)
 
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
+	tradingAssetPrice, _, err := app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(ctx, ptypes.ATOM)
 	require.NoError(t, err)
 
 	// Set asset profile

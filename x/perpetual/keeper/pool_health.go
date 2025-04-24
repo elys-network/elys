@@ -112,7 +112,7 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 		}
 	}
 
-	tradingAssetPriceInBaseUnits, err := k.GetAssetPriceInBaseUnits(ctx, tradingAsset)
+	_, tradingAssetPriceInBaseUnits, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, tradingAsset)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
