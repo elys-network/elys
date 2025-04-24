@@ -47,6 +47,6 @@ type PerpetualKeeper interface {
 	GetParams(ctx sdk.Context) perpetualtypes.Params
 	HandleOpenEstimation(ctx sdk.Context, req *perpetualtypes.QueryOpenEstimationRequest) (*perpetualtypes.QueryOpenEstimationResponse, error)
 	HandleCloseEstimation(ctx sdk.Context, req *perpetualtypes.QueryCloseEstimationRequest) (res *perpetualtypes.QueryCloseEstimationResponse, err error)
-	GetAssetPrice(ctx sdk.Context, asset string) (sdkmath.LegacyDec, error)
+	GetAssetPriceAndAssetUsdcDenomRatio(ctx sdk.Context, asset string) (sdkmath.LegacyDec, sdkmath.LegacyDec, error)
 	GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*perpetualtypes.MtpAndPrice, *query.PageResponse, error)
 }
