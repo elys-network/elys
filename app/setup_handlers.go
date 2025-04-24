@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	errorsmod "cosmossdk.io/errors"
 	"fmt"
 	"strings"
 
@@ -11,7 +10,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	m "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
@@ -62,10 +60,6 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
-			if ctx.ChainID() == "elysicstestnet-1" {
-				app.StablestakeKeeper.TestnetMigrate(ctx)
-			}
-
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
 			//oracleParams := app.OracleKeeper.GetParams(ctx)
@@ -75,15 +69,6 @@ func (app *ElysApp) setUpgradeHandler() {
 			//		return nil, err
 			//	}
 			//}
-
-			// Set cosmwasm params
-			wasmParams := wasmTypes.DefaultParams()
-			wasmParams.CodeUploadAccess = wasmTypes.AllowNobody
-			wasmParams.InstantiateDefaultPermission = wasmTypes.AccessTypeNobody
-			if err := app.WasmKeeper.SetParams(ctx, wasmParams); err != nil {
-				return vm, errorsmod.Wrapf(err, "unable to set CosmWasm params")
-			}
-			app.Logger().Info("Successfully set wasm Params in UpgradeHandler")
 
 			return vm, vmErr
 		},
@@ -104,7 +89,6 @@ func (app *ElysApp) setUpgradeStore() {
 
 	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{wasmTypes.StoreKey},
 			//Added:   []string{},
 			//Renamed: []storetypes.StoreRename{},
 			//Deleted: []string{},
