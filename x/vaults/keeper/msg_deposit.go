@@ -16,7 +16,36 @@ import (
 func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types.MsgDepositResponse, error) {
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if err := k.SetParams(ctx, req.Params); err != nil {
+	vault, found := k.GetVault(ctx, req.VaultId)
+	if !found {
+		return &types.MsgDepositResponse{}, types.ErrVaultNotFound
+	}
+
+	depositer := sdk.MustAccAddressFromBech32(req.Depositor)
+	redemptionRate := k.CalculateRedemptionRateForVault(ctx, vault.Id)
+	vaultName := types.GetVaultIdModuleName(vault.Id)
+
+	depositCoin := sdk.NewCoin(vault.DepositDenom, req.Amount.Amount)
+	err := k.bk.SendCoinsFromAccountToModule(ctx, depositer, vaultName, sdk.Coins{depositCoin})
+	if err != nil {
+		return nil, err
+	}
+
+	shareDenom := types.GetShareDenomForVault(vault.Id)
+	// Initial case
+	if redemptionRate.IsZero() {
+		redemptionRate = sdkmath.LegacyOneDec()
+	}
+	shareAmount := depositCoin.Amount.ToLegacyDec().Quo(redemptionRate).RoundInt()
+	shareCoins := sdk.NewCoins(sdk.NewCoin(shareDenom, shareAmount))
+
+	err = k.bk.MintCoins(ctx, vaultName, shareCoins)
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.bk.SendCoinsFromModuleToAccount(ctx, vaultName, depositer, shareCoins)
+	if err != nil {
 		return nil, err
 	}
 
@@ -61,4 +90,20 @@ func (k Keeper) VaultUsdValue(ctx sdk.Context, vaultId uint64) (sdkmath.LegacyDe
 		}
 	}
 	return totalValue, nil
+}
+
+func (k Keeper) CalculateRedemptionRateForVault(ctx sdk.Context, vaultId uint64) sdkmath.LegacyDec {
+	totalShares := k.bk.GetSupply(ctx, types.GetShareDenomForVault(vaultId))
+
+	if totalShares.Amount.IsZero() {
+		return sdkmath.LegacyZeroDec()
+	}
+
+	// TODO: Handle zero values for denom, we should not issue shares if price is not available
+	usdValue, err := k.VaultUsdValue(ctx, vaultId)
+	if err != nil {
+		return sdkmath.LegacyZeroDec()
+	}
+
+	return usdValue.Quo(totalShares.Amount.ToLegacyDec())
 }

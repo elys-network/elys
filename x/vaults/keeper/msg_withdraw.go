@@ -44,7 +44,6 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 	}
 
 	// Commit tokens or not ?
-	// Use module account or create account for each vault ? prefer each vault account
 
 	return &types.MsgWithdrawResponse{}, nil
 }
