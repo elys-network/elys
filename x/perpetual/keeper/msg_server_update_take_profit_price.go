@@ -60,7 +60,10 @@ func (k msgServer) UpdateTakeProfitPrice(goCtx context.Context, msg *types.MsgUp
 	}
 
 	mtp.TakeProfitPrice = msg.Price
-	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(mtp)
+	mtp.TakeProfitCustody, err = k.CalcMTPTakeProfitCustody(ctx, mtp)
+	if err != nil {
+		return nil, err
+	}
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, mtp)
 	if err != nil {
 		return nil, err

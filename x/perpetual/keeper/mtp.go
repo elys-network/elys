@@ -371,3 +371,18 @@ func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) math.LegacyD
 
 	return liquidationPrice
 }
+
+func (k Keeper) CalcMTPTakeProfitCustody(ctx sdk.Context, mtp types.MTP) (math.Int, error) {
+	if types.IsTakeProfitPriceInfinite(mtp) || mtp.TakeProfitPrice.IsZero() {
+		return math.ZeroInt(), nil
+	}
+	takeProfitPriceInDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.TakeProfitPrice)
+	if err != nil {
+		return math.ZeroInt(), fmt.Errorf("error converting price to base units, asset info %s not found", ptypes.BaseCurrency)
+	}
+	if mtp.Position == types.Position_LONG {
+		return mtp.Liabilities.ToLegacyDec().Quo(takeProfitPriceInDenomRatio).TruncateInt(), nil
+	} else {
+		return mtp.Liabilities.ToLegacyDec().Mul(takeProfitPriceInDenomRatio).TruncateInt(), nil
+	}
+}
