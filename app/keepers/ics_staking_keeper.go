@@ -62,7 +62,7 @@ func (k ICSStakingKeeper) GetBondedValidatorsByPower(ctx context.Context) ([]sta
 	for _, v := range vals {
 		if v.Power > 0 {
 			stakingVals = append(stakingVals, stakingtypes.Validator{
-				OperatorAddress: string(v.Address),
+				OperatorAddress: sdk.ConsAddress(v.Address).String(),
 				Tokens:          sdkmath.NewInt(v.Power).Mul(powerReduction),
 				Status:          stakingtypes.Bonded,
 			})
