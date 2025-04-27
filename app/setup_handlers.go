@@ -78,15 +78,13 @@ func (app *ElysApp) setUpgradeHandler() {
 			}
 
 			// Set cosmwasm params
-			if plan.Name == "v3" {
-				wasmParams := wasmTypes.DefaultParams()
-				wasmParams.CodeUploadAccess = wasmTypes.AllowNobody
-				wasmParams.InstantiateDefaultPermission = wasmTypes.AccessTypeNobody
-				if err := app.WasmKeeper.SetParams(ctx, wasmParams); err != nil {
-					return vm, errorsmod.Wrapf(err, "unable to set CosmWasm params")
-				}
-				app.Logger().Info("Successfully set wasm Params in UpgradeHandler")
+			wasmParams := wasmTypes.DefaultParams()
+			wasmParams.CodeUploadAccess = wasmTypes.AllowNobody
+			wasmParams.InstantiateDefaultPermission = wasmTypes.AccessTypeNobody
+			if err := app.WasmKeeper.SetParams(ctx, wasmParams); err != nil {
+				return vm, errorsmod.Wrapf(err, "unable to set CosmWasm params")
 			}
+			app.Logger().Info("Successfully set wasm Params in UpgradeHandler")
 
 			return vm, vmErr
 		},
@@ -105,7 +103,7 @@ func (app *ElysApp) setUpgradeStore() {
 
 	app.Logger().Debug("Upgrade info", "info", upgradeInfo)
 
-	if shouldLoadUpgradeStore(app, upgradeInfo) && upgradeInfo.Name == "v3" {
+	if shouldLoadUpgradeStore(app, upgradeInfo) {
 		storeUpgrades := storetypes.StoreUpgrades{
 			Added: []string{wasmTypes.StoreKey},
 			//Added:   []string{},
