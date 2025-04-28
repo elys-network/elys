@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
@@ -18,13 +19,7 @@ func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOp
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	enabledPools := k.GetParams(ctx).EnabledPools
-	found := false
-	for _, poolId := range enabledPools {
-		if poolId == msg.AmmPoolId {
-			found = true
-			break
-		}
-	}
+	found := slices.Contains(enabledPools, msg.AmmPoolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolNotEnabled, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
 	}
