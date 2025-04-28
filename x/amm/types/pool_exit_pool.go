@@ -6,8 +6,8 @@ import (
 )
 
 // return exitingCoins, weightBalanceBonus, slippage, swapFee, slippageCoins, nil
-func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, exitingShares math.Int, tokenOutDenom string, params Params, takerFees math.LegacyDec, applyWeightBreakingFee bool) (exitingCoins sdk.Coins, weightBalanceBonus math.LegacyDec, slippage math.LegacyDec, swapFee math.LegacyDec, takerFeesFinal math.LegacyDec, slippageCoins sdk.Coins, err error) {
-	exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeper, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
+func (p *Pool) ExitPool(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper, snapshot Pool, exitingShares math.Int, tokenOutDenom string, params Params, takerFees math.LegacyDec, applyWeightBreakingFee bool) (exitingCoins sdk.Coins, weightBalanceBonus math.LegacyDec, slippage math.LegacyDec, swapFee math.LegacyDec, takerFeesFinal math.LegacyDec, slippageCoins sdk.Coins, err error) {
+	exitingCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, err = p.CalcExitPoolCoinsFromShares(ctx, oracleKeeper, accountedPoolKeeper, snapshot, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
 	if err != nil {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), sdk.Coins{}, err
 	}

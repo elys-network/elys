@@ -52,7 +52,8 @@ func (k Keeper) ExitPoolEst(
 
 	params := k.GetParams(ctx)
 	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
-	exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, _, err = pool.CalcExitPoolCoinsFromShares(ctx, k.oracleKeeper, k.accountedPoolKeeper, shareInAmount, tokenOutDenom, params, takerFees, true)
+	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+	exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, _, err = pool.CalcExitPoolCoinsFromShares(ctx, k.oracleKeeper, k.accountedPoolKeeper, snapshot, shareInAmount, tokenOutDenom, params, takerFees, true)
 	if err != nil {
 		return sdk.Coins{}, math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec(), err
 	}
