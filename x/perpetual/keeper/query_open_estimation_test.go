@@ -150,14 +150,10 @@ func TestOpenEstimation_Long5XAtom10Atom(t *testing.T) {
 	require.NoError(t, err)
 	// Set asset profile
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom: ptypes.BaseCurrency,
-		Denom:     ptypes.BaseCurrency,
-		Decimals:  6,
-	})
-	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom: ptypes.ATOM,
-		Denom:     ptypes.ATOM,
-		Decimals:  6,
+		BaseDenom:   ptypes.ATOM,
+		Denom:       ptypes.ATOM,
+		Decimals:    6,
+		DisplayName: "ATOM",
 	})
 
 	// Generate 1 random account with 1000stake balanced
@@ -282,6 +278,18 @@ func TestOpenEstimation_Long10XAtom1000Usdc(t *testing.T) {
 		Provider:  provider.String(),
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.BaseCurrency,
+		Denom:       ptypes.BaseCurrency,
+		Decimals:    6,
+		DisplayName: "USDC",
+	})
+	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.ATOM,
+		Denom:       ptypes.ATOM,
+		Decimals:    6,
+		DisplayName: "ATOM",
+	})
 
 	// Generate 1 random account with 1000stake balanced
 	addr := simapp.AddTestAddrs(app, ctx, 1, math.NewInt(1_000_000_000000))
@@ -397,14 +405,10 @@ func TestOpenEstimation_Short5XAtom10Usdc(t *testing.T) {
 
 	// Set asset profile
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom: ptypes.BaseCurrency,
-		Denom:     ptypes.BaseCurrency,
-		Decimals:  6,
-	})
-	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom: ptypes.ATOM,
-		Denom:     ptypes.ATOM,
-		Decimals:  6,
+		BaseDenom:   ptypes.ATOM,
+		Denom:       ptypes.ATOM,
+		Decimals:    6,
+		DisplayName: "ATOM",
 	})
 	provider := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	oracle.SetPrice(ctx, oracletypes.Price{
@@ -540,14 +544,10 @@ func TestOpenEstimation_WrongAsset(t *testing.T) {
 
 	// Set asset profile
 	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom: ptypes.BaseCurrency,
-		Denom:     ptypes.BaseCurrency,
-		Decimals:  6,
-	})
-	app.AssetprofileKeeper.SetEntry(ctx, assetprofiletypes.Entry{
-		BaseDenom: ptypes.ATOM,
-		Denom:     ptypes.ATOM,
-		Decimals:  6,
+		BaseDenom:   ptypes.ATOM,
+		Denom:       ptypes.ATOM,
+		Decimals:    6,
+		DisplayName: "ATOM",
 	})
 
 	// Generate 1 random account with 1000000000000stake balanced

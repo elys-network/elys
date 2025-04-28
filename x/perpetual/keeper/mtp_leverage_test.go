@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -9,6 +10,20 @@ import (
 func (suite *PerpetualKeeperTestSuite) TestGetEffectiveLeverage() {
 	var mtp types.MTP
 	mtp.TradingAsset = ptypes.ATOM
+
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.BaseCurrency,
+		Denom:       ptypes.BaseCurrency,
+		Decimals:    6,
+		DisplayName: "USDC",
+	})
+	suite.app.AssetprofileKeeper.SetEntry(suite.ctx, assetprofiletypes.Entry{
+		BaseDenom:   ptypes.ATOM,
+		Denom:       ptypes.ATOM,
+		Decimals:    6,
+		DisplayName: "ATOM",
+	})
+
 	testCases := []struct {
 		name                 string
 		expectErrMsg         string
