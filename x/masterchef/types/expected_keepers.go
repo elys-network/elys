@@ -92,7 +92,7 @@ type AmmKeeper interface {
 		tokenOutMinAmount math.Int,
 		swapFee math.LegacyDec,
 		takersFee math.LegacyDec,
-	) (tokenOutAmount math.Int, err error)
+	) (tokenOutAmount math.Int, weightBalanceReward sdk.Coin, err error)
 	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
 	CalculateCoinsUSDValue(ctx sdk.Context, coins sdk.Coins) math.LegacyDec
 }

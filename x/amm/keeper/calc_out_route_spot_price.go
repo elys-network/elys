@@ -56,14 +56,16 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
+		bonusTokenAmount := sdkmath.ZeroInt()
 		if weightBalanceBonus.IsPositive() {
 			rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 			treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
 
-			bonusTokenAmount := tokenOut.Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+			bonusTokenAmount = tokenOut.Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
 
 			if treasuryTokenAmount.LT(bonusTokenAmount) {
 				weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(tokenOut.Amount.ToLegacyDec())
+				bonusTokenAmount = treasuryTokenAmount
 			}
 		}
 
@@ -72,6 +74,10 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 
 		if swapResult.IsZero() {
 			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), types.ErrAmountTooLow
+		}
+
+		if bonusTokenAmount.IsPositive() {
+			swapResult = sdk.NewCoin(swapResult.Denom, swapResult.Amount.Add(bonusTokenAmount))
 		}
 
 		// Use the current swap result as the input for the next iteration
@@ -83,7 +89,7 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 		availableLiquidity = poolAsset.Token
-		weightBonus = weightBonus.Add(weightBalanceBonus)
+		weightBonus = weightBalanceBonus
 		slippage = slippage.Add(swapSlippage)
 	}
 

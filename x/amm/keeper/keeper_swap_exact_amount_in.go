@@ -26,9 +26,9 @@ func (k Keeper) InternalSwapExactAmountIn(
 	tokenOutMinAmount math.Int,
 	swapFee math.LegacyDec,
 	takersFee math.LegacyDec,
-) (tokenOutAmount math.Int, err error) {
+) (tokenOutAmount math.Int, weightBalanceReward sdk.Coin, err error) {
 	if tokenIn.Denom == tokenOutDenom {
-		return math.Int{}, errors.New("cannot trade the same denomination in and out")
+		return math.Int{}, sdk.Coin{}, errors.New("cannot trade the same denomination in and out")
 	}
 
 	tokensIn := sdk.Coins{tokenIn}
@@ -46,24 +46,24 @@ func (k Keeper) InternalSwapExactAmountIn(
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
 	tokenOutCoin, _, slippageAmount, weightBalanceBonus, oracleOutAmount, swapFee, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper, math.LegacyOneDec(), params, takersFee)
 	if err != nil {
-		return math.Int{}, err
+		return math.Int{}, sdk.Coin{}, err
 	}
 
 	tokenOutAmount = tokenOutCoin.Amount
 
 	if !tokenOutAmount.IsPositive() {
-		return math.Int{}, types.ErrTokenOutAmountZero
+		return math.Int{}, sdk.Coin{}, types.ErrTokenOutAmountZero
 	}
 
 	if tokenOutAmount.LT(tokenOutMinAmount) {
-		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMinAmount, "%s token is less than the minimum amount", tokenOutDenom)
+		return math.Int{}, sdk.Coin{}, errorsmod.Wrapf(types.ErrLimitMinAmount, "%s token is less than the minimum amount", tokenOutDenom)
 	}
 
 	// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 	// Also emits a swap event and updates related liquidity metrics.
-	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, swapFee, slippageAmount, math.ZeroInt(), oracleOutAmount.TruncateInt(), weightBalanceBonus, takersFee, false)
+	bonusToken, err := k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOutCoin, swapFee, slippageAmount, math.ZeroInt(), oracleOutAmount.TruncateInt(), weightBalanceBonus, takersFee, false)
 	if err != nil {
-		return math.Int{}, err
+		return math.Int{}, sdk.Coin{}, err
 	}
 
 	// track slippage
@@ -73,5 +73,5 @@ func (k Keeper) InternalSwapExactAmountIn(
 		k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenOutCoin.Denom, slippageAmount.RoundInt()))
 	}
 
-	return tokenOutAmount, nil
+	return tokenOutAmount, bonusToken, nil
 }

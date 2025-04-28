@@ -334,7 +334,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 			continue
 		}
 
-		tokenOutAmount, err := k.amm.InternalSwapExactAmountIn(ctx, address, address, pool, tokenIn, baseCurrency, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec())
+		tokenOutAmount, _, err := k.amm.InternalSwapExactAmountIn(ctx, address, address, pool, tokenIn, baseCurrency, math.ZeroInt(), math.LegacyZeroDec(), math.LegacyZeroDec())
 		if err != nil {
 			// Continue as we can swap it when this amount is higher
 			if err == ammtypes.ErrTokenOutAmountZero {
