@@ -125,11 +125,11 @@ func CalcExitPool(
 	shareOutRatio := refundedShares.QuoInt(totalShares.Amount)
 	// exitedCoins = shareOutRatio * pool liquidity
 	exitedCoins := sdk.Coins{}
-	poolLiquidity := pool.GetTotalPoolLiquidity()
+
+	accountedAssets := pool.GetAccountedBalance(ctx, accountedPoolKeeper, pool.PoolAssets)
 
 	if pool.PoolParams.UseOracle && tokenOutDenom != "" {
 
-		accountedAssets := pool.GetAccountedBalance(ctx, accountedPoolKeeper, pool.PoolAssets)
 		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
 
 		initialWeightOut := GetDenomOracleAssetWeight(ctx, pool.PoolId, oracleKeeper, accountedAssets, tokenOutDenom)
@@ -194,16 +194,20 @@ func CalcExitPool(
 		return sdk.Coins{sdk.NewCoin(tokenOutDenom, tokenOutAmount)}, weightBalanceBonus, slippage, swapFee, takerFeesFinal, slippageCoins, nil
 	}
 
-	for _, asset := range poolLiquidity {
+	poolLiquidity := pool.GetTotalPoolLiquidity()
+
+	for _, accountedAsset := range accountedAssets {
 		// round down here, due to not wanting to over-exit
-		exitAmt := shareOutRatio.MulInt(asset.Amount).TruncateInt()
+		exitAmt := shareOutRatio.MulInt(accountedAsset.Token.Amount).TruncateInt()
 		if exitAmt.LTE(sdkmath.ZeroInt()) {
 			continue
 		}
-		if exitAmt.GTE(asset.Amount) {
-			return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coins{}, errors.New("too many shares out")
+		for _, pooledAsset := range poolLiquidity {
+			if pooledAsset.Denom == accountedAsset.Token.Denom && exitAmt.GTE(pooledAsset.Amount) {
+				return sdk.Coins{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coins{}, errors.New("too many shares out")
+			}
 		}
-		exitedCoins = exitedCoins.Add(sdk.NewCoin(asset.Denom, exitAmt))
+		exitedCoins = exitedCoins.Add(sdk.NewCoin(accountedAsset.Token.Denom, exitAmt))
 	}
 
 	return exitedCoins, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coins{}, nil
