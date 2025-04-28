@@ -299,20 +299,23 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	// Liability should include margin interest and funding fee accrued.
 	collateralAmt := mtp.Collateral
 
-	tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
-	if err != nil {
-		return math.Int{}, err
-	}
+	var tradingAssetPrice, tradingAssetPriceDenomRatio math.LegacyDec
+	var err error
 	if useTakeProfitPrice {
 		tradingAssetPrice = mtp.TakeProfitPrice
-	}
-	if tradingAssetPrice.IsZero() {
-		return math.Int{}, errors.New("trading asset price is zero")
+		tradingAssetPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, tradingAssetPrice)
+		if err != nil {
+			return math.Int{}, err
+		}
+	} else {
+		tradingAssetPrice, tradingAssetPriceDenomRatio, err = k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
+		if err != nil {
+			return math.Int{}, err
+		}
 	}
 
-	tradingAssetPriceDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, tradingAssetPrice)
-	if err != nil {
-		return math.Int{}, err
+	if tradingAssetPrice.IsZero() {
+		return math.Int{}, errors.New("trading asset price is zero")
 	}
 
 	// in long it's in trading asset ,if short position, custody asset is already in base currency

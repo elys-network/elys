@@ -43,7 +43,6 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, err
 	}
 	availableLiquidity := sdk.NewCoin(req.TradingAsset, tradingAssetLiquidity)
-
 	// retrieve base currency denom
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
@@ -68,13 +67,17 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	if err != nil {
 		return nil, err
 	}
-
 	useLimitPrice := !req.LimitPrice.IsNil() && !req.LimitPrice.IsZero()
 
 	assetPriceAtOpen := tradingAssetPrice
 
+	var limitPriceDenomRatio math.LegacyDec
 	if useLimitPrice {
 		assetPriceAtOpen = req.LimitPrice
+		limitPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, req.TradingAsset, req.LimitPrice)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if req.Position == types.Position_LONG && req.TakeProfitPrice.LTE(assetPriceAtOpen) {
@@ -111,21 +114,6 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 	eta := proxyLeverage.Sub(math.LegacyOneDec())
 	liabilities := req.Collateral.Amount.ToLegacyDec().Mul(eta).TruncateInt()
 	weightBreakingFee := math.LegacyZeroDec()
-
-	var limitPriceDenomRatio math.LegacyDec
-	if useLimitPrice {
-		if mtp.CollateralAsset == baseCurrency {
-			limitPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, req.TradingAsset, req.LimitPrice)
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			limitPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.CollateralAsset, req.LimitPrice)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
 
 	if req.Position == types.Position_LONG {
 		//getting custody
