@@ -261,7 +261,7 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, po
 
 	// borrowed := osmomath.BigDecFromSDKInt(pool.TotalValue.Sub(balance.Amount)).Add(osmomath.BigDecFromSDKInt(amount.Amount))
 	// maxAllowed := pool.GetBigDecTotalValue().Mul(pool.GetBigDecMaxLeverageRatio())
-	borrowed := osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(balance.Amount)).Add(osmomath.BigDecFromSDKInt(amount.Amount))
+	borrowed := osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(balance.Amount).Add(amount.Amount))
 	maxAllowed := osmomath.BigDecFromSDKInt(pool.NetAmount).MulDec(pool.MaxLeverageRatio)
 	if borrowed.GT(maxAllowed) {
 		return types.ErrMaxBorrowAmount
