@@ -7,6 +7,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
@@ -92,7 +93,7 @@ func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
 		"",
-		sdkmath.LegacyZeroDec(),
+		osmomath.ZeroBigDec(),
 		1,
 	)
 	suite.Require().NoError(err)
@@ -107,7 +108,7 @@ func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
 		"",
-		sdkmath.LegacyZeroDec(),
+		osmomath.ZeroBigDec(),
 		1,
 	)
 	suite.Require().NoError(err)
@@ -122,7 +123,7 @@ func (suite *AmmKeeperTestSuite) TestCalcSwapEstimationByDenom() {
 		suite.ctx, amount,
 		ptypes.Elys, "uusda", ptypes.BaseCurrency,
 		"",
-		sdkmath.LegacyZeroDec(),
+		osmomath.ZeroBigDec(),
 		1,
 	)
 	suite.Require().Error(err)

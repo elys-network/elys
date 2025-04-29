@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.MsgUnbondResponse, error) {
@@ -39,14 +40,14 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 		return nil, err
 	}
 
-	redemptionAmount := shareCoin.Amount.ToLegacyDec().Mul(redemptionRate).RoundInt()
+	redemptionAmount := osmomath.BigDecFromSDKInt(shareCoin.Amount).Mul(redemptionRate).Dec().RoundInt()
 
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 	depositDenom := pool.GetDepositDenom()
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 	borrowed := pool.NetAmount.Sub(balance.Amount)
-	borrowedRatio := (borrowed.ToLegacyDec().Quo(pool.NetAmount.Sub(redemptionAmount).ToLegacyDec()))
-	if borrowedRatio.GT(pool.MaxWithdrawRatio) {
+	borrowedRatio := (osmomath.BigDecFromSDKInt(borrowed).Quo(osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(redemptionAmount))))
+	if borrowedRatio.GT(pool.GetBigDecMaxWithdrawRatio()) {
 		return nil, errorsmod.Wrapf(types.ErrInvalidWithdraw, "borrowedRatio: %d", borrowedRatio)
 	}
 

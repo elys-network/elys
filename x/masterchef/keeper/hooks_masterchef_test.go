@@ -228,5 +228,5 @@ func (suite *MasterchefKeeperTestSuite) TestHookMasterchef() {
 
 	pool, found := suite.app.MasterchefKeeper.GetPoolInfo(ctx, pools[0].PoolId)
 	suite.Require().Equal(true, found)
-	suite.Require().Equal(pool.ExternalIncentiveApr.String(), "4204.799481351999973502")
+	suite.Require().Equal(pool.ExternalIncentiveApr.String(), "4204.799481351999973501")
 }
