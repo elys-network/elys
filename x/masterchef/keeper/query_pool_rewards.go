@@ -110,7 +110,7 @@ func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]osmomath.
 
 	for _, externalIncentive := range externalIncentives {
 		if externalIncentive.FromBlock < curBlockHeight && curBlockHeight <= externalIncentive.ToBlock {
-			totalAmount := osmomath.BigDecFromSDKInt(externalIncentive.AmountPerBlock.Mul(math.NewInt(totalBlocksPerYear)))
+			totalAmount := osmomath.BigDecFromSDKInt(externalIncentive.AmountPerBlock.MulRaw(totalBlocksPerYear))
 			price := k.oracleKeeper.GetDenomPrice(ctx, externalIncentive.RewardDenom)
 
 			rewardsPerPool[externalIncentive.PoolId] = rewardsPerPool[externalIncentive.PoolId].Add(totalAmount.Mul(price))
