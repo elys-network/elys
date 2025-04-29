@@ -22,8 +22,18 @@ import (
 //  3. calculate the number of shares that could be joined (total share * min share ratio), return the remaining coins
 func MaximalExactRatioJoin(p *Pool, tokensIn sdk.Coins) (numShares sdkmath.Int, remCoins sdk.Coins, err error) {
 	coinShareRatios := make([]osmomath.BigDec, len(tokensIn))
+
+	// We use maxBigDec (10^34) instead of LegacymaxSortableDec (10^18) here because the shareRatio
+	// can exceed 10^18 in scenarios where both tokens in `tokensIn` are 18-decimal tokens
+	// and the pool liquidity is very low.
+	// Example: Two 18-decimal tokens A and B, with liquidity amount 5wA and 6wB of each token.
+	// tokensIn = 10000000000000000000 wA, 10000000000000000000 wB will result error
+	// Example: elysd q amm join-pool-estimation 14 467058633087791076390000000000000000000ibc/694A6B26A43A2FBECCFFEAC022DEAxyz207FDD32005CD976B57B98004 1587347696240000000000000000000ibc/F082B65C88E4B6D5EF1DB243CDApqr38A0F5CD3FFDC5D53B3E349
+	// Error: rpc error: code = InvalidArgument desc = unexpected error in MaximalExactRatioJoin: invalid request
+
 	maxDec := osmomath.OneBigDec().Quo(osmomath.SmallestBigDec())
 	minShareRatio := maxDec
+
 	maxShareRatio := osmomath.ZeroBigDec()
 
 	poolLiquidity := p.GetTotalPoolLiquidity()
