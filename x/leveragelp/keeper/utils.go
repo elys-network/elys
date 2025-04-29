@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	storetypes "cosmossdk.io/core/store"
-
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/elys-network/elys/utils"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
@@ -117,7 +117,6 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 
 func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosition) ([]*types.PositionAndInterest, error) {
 	positions_and_interest := []*types.PositionAndInterest{}
-	hours := osmomath.NewBigDec(365 * 24)
 
 	for _, position := range positions {
 		pool, found := k.stableKeeper.GetPoolByDenom(ctx, position.Position.Collateral.Denom)
@@ -128,7 +127,7 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 		var positionAndInterest types.PositionAndInterest
 		positionAndInterest.Position = position
 		price := k.oracleKeeper.GetDenomPrice(ctx, position.Position.Collateral.Denom)
-		interestRateHour := pool.GetBigDecInterestRate().Quo(hours)
+		interestRateHour := pool.GetBigDecInterestRate().Quo(utils.HoursInYear)
 		positionAndInterest.InterestRateHour = interestRateHour.Dec()
 		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(position.Position.GetBigDecLiabilities().Mul(price)).Dec()
 		positions_and_interest = append(positions_and_interest, &positionAndInterest)
