@@ -161,7 +161,7 @@ func (k Keeper) UpdatePoolForSwap(
 	}
 
 	bonusTokenAmount := sdkmath.ZeroInt()
-	bonusToken := sdk.Coin{}
+	bonusToken := sdk.NewCoin(tokenOut.Denom, sdkmath.ZeroInt())
 	// calculate bonus token amount if weightBalanceBonus is positive
 	if pool.PoolParams.UseOracle && weightBalanceBonus.IsPositive() {
 		// get treasury balance
