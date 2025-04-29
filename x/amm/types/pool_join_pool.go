@@ -116,14 +116,14 @@ func (p *Pool) JoinPool(
 		normalizedWeights := NormalizedWeights(p.PoolAssets)
 		for _, weight := range normalizedWeights {
 			if weight.Asset != tokenIn.Denom {
-				_, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, osmomath.ZeroBigDec(), accountedPoolKeeper)
+				_, slippage, err = p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, osmomath.ZeroBigDec(), accountedPoolKeeper)
 				if err == nil {
 					totalSlippage = totalSlippage.Add(slippage.Mul(weight.Weight))
 				}
 			}
 		}
 
-		numShares, tokensJoined, err := p.CalcSingleAssetJoinPoolShares(tokensIn, takerFees)
+		numShares, tokensJoined, err = p.CalcSingleAssetJoinPoolShares(tokensIn, takerFees)
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
@@ -134,8 +134,8 @@ func (p *Pool) JoinPool(
 		totalWeight := p.GetBigDecTotalWeight()
 		normalizedWeight := poolAssetsByDenom[tokenIn.Denom].GetBigDecWeight().Quo(totalWeight)
 		// We multiply the swap fee and taker fees by the normalized weight because it is calculated like this later in CalcSingleAssetJoinPoolShares function
-		swapFee := feeRatio(normalizedWeight, p.PoolParams.GetBigDecSwapFee())
-		takerFee := feeRatio(normalizedWeight, takerFees)
+		swapFee = osmomath.OneBigDec().Sub(feeRatio(normalizedWeight, p.PoolParams.GetBigDecSwapFee()))
+		takerFee := osmomath.OneBigDec().Sub(feeRatio(normalizedWeight, takerFees))
 
 		// update pool with the calculated share and liquidity needed to join pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)

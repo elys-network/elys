@@ -16,6 +16,13 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
+// BeginBlocker of amm module
+func (k Keeper) BeginBlocker(ctx sdk.Context) error {
+	// convert balances in taker address to elys and burn them
+	k.ProcessTakerFee(ctx)
+	return nil
+}
+
 // EndBlocker of amm module
 func (k Keeper) EndBlocker(ctx sdk.Context) error {
 
@@ -29,8 +36,6 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 	// distribute external rewards
 	k.ProcessExternalRewardsDistribution(ctx)
 
-	// convert balances in taker address to elys and burn them
-	k.ProcessTakerFee(ctx)
 	return nil
 }
 
@@ -738,7 +743,8 @@ func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
 
 	balances := k.bankKeeper.GetAllBalances(ctx, collectionAddress)
 	for _, balance := range balances {
-		if balance.Denom == ptypes.Elys {
+		// need atleast certain amount to swap
+		if balance.Denom == ptypes.Elys || balance.Amount.LT(sdkmath.NewInt(1000000)) {
 			continue
 		}
 		_, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
