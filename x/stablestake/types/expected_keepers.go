@@ -38,6 +38,7 @@ type AssetProfileKeeper interface {
 	GetEntry(ctx sdk.Context, baseDenom string) (val assetprofiletypes.Entry, found bool)
 	// GetUsdcDenom returns USDC denom
 	GetUsdcDenom(ctx sdk.Context) (string, bool)
+	GetEntryByDenom(ctx sdk.Context, denom string) (val assetprofiletypes.Entry, found bool)
 }
 
 // OracleKeeper defines the expected interface needed to retrieve price info

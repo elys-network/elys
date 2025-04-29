@@ -49,7 +49,7 @@ func (k msgServer) Bond(goCtx context.Context, msg *types.MsgBond) (*types.MsgBo
 
 	_, found = k.assetProfileKeeper.GetEntry(ctx, shareDenom)
 	if !found {
-		depositDenomProfile, found := k.assetProfileKeeper.GetEntry(ctx, depositDenom)
+		depositDenomProfile, found := k.assetProfileKeeper.GetEntryByDenom(ctx, depositDenom)
 		if !found {
 			return nil, fmt.Errorf("deposit denom (%s) profile not found", depositCoin)
 		}
