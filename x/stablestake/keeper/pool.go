@@ -1,11 +1,11 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) GetAllPools(ctx sdk.Context) (pools []types.Pool) {
@@ -65,14 +65,14 @@ func (k Keeper) GetPoolByDenom(ctx sdk.Context, denom string) (types.Pool, bool)
 	return types.Pool{}, false
 }
 
-func (k Keeper) CalculateRedemptionRateForPool(ctx sdk.Context, pool types.Pool) math.LegacyDec {
+func (k Keeper) CalculateRedemptionRateForPool(ctx sdk.Context, pool types.Pool) osmomath.BigDec {
 	totalShares := k.bk.GetSupply(ctx, types.GetShareDenomForPool(pool.Id))
 
 	if totalShares.Amount.IsZero() {
-		return math.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 
-	return pool.NetAmount.ToLegacyDec().Quo(totalShares.Amount.ToLegacyDec())
+	return pool.GetBigDecNetAmount().Quo(osmomath.BigDecFromSDKInt(totalShares.Amount))
 }
 
 func (k Keeper) GetLatestPool(ctx sdk.Context) (val types.Pool, found bool) {

@@ -76,7 +76,7 @@ func (suite *PerpetualKeeperTestSuite) TestGetFundingPaymentRates() {
 			math.LegacyMustNewDecFromStr("0.166666666666666666"),
 			math.LegacyNewDec(0),
 			math.LegacyMustNewDecFromStr("0.166666666666666666"),
-			math.LegacyMustNewDecFromStr("-0.333333333333333332"),
+			math.LegacyMustNewDecFromStr("-0.333333333333333333"),
 			math.NewInt(500),
 			math.NewInt(2000),
 			math.NewInt(1000),
@@ -89,8 +89,8 @@ func (suite *PerpetualKeeperTestSuite) TestGetFundingPaymentRates() {
 			pool.PoolAssetsLong[0].Collateral = tc.Collateral
 			pool.PoolAssetsShort[0].Liabilities = tc.Liabilities
 			longRate, shortRate := suite.app.PerpetualKeeper.GetFundingPaymentRates(suite.ctx, pool)
-			suite.Require().Equal(tc.expectLongFundingRate, longRate)
-			suite.Require().Equal(tc.expectShortFundingRate, shortRate)
+			suite.Require().Equal(tc.expectLongFundingRate, longRate.Dec())
+			suite.Require().Equal(tc.expectShortFundingRate, shortRate.Dec())
 		})
 	}
 }

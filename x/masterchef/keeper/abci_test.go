@@ -12,6 +12,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
@@ -359,7 +360,7 @@ func (suite *MasterchefKeeperTestSuite) TestExternalRewardsDistribution() {
 
 	// Get Tvl for non-existent pool
 	res := suite.app.MasterchefKeeper.GetPoolTVL(suite.ctx, 1000)
-	suite.Require().Equal(res, sdkmath.LegacyZeroDec())
+	suite.Require().Equal(res, osmomath.ZeroBigDec())
 
 	// increase timestamp
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
