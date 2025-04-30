@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) (debt types.Debt) {
@@ -33,7 +34,7 @@ func (k Keeper) getDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) (de
 
 func (k Keeper) GetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) types.Debt {
 	debt := k.getDebt(ctx, addr, poolId)
-	debt.InterestStacked = debt.InterestStacked.Add(k.GetInterestForPool(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec(), debt.PoolId))
+	debt.InterestStacked = debt.InterestStacked.Add(k.GetInterestForPool(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.GetBigDecBorrowed(), debt.PoolId))
 	debt.LastInterestCalcTime = uint64(ctx.BlockTime().Unix())
 	debt.LastInterestCalcBlock = uint64(ctx.BlockHeight())
 	return debt
@@ -144,7 +145,7 @@ func (k Keeper) GetAllInterest(ctx sdk.Context) []types.InterestBlock {
 	return interests
 }
 
-func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed sdkmath.LegacyDec, poolId uint64) sdkmath.Int {
+func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime uint64, borrowed osmomath.BigDec, poolId uint64) sdkmath.Int {
 	if startBlock == uint64(ctx.BlockHeight()) {
 		return sdkmath.ZeroInt()
 	}
@@ -162,14 +163,15 @@ func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime
 		endInterestBlock := types.InterestBlock{}
 		k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
-		totalInterestRate := endInterestBlock.InterestRate.Sub(startInterestBlock.InterestRate)
+		totalInterestRate := endInterestBlock.GetBigDecInterestRate().Sub(startInterestBlock.GetBigDecInterestRate())
 		numberOfBlocks := ctx.BlockHeight() - int64(startBlock)
 
 		newInterest := borrowed.
 			Mul(totalInterestRate).
-			Mul(sdkmath.LegacyNewDec(ctx.BlockTime().Unix() - int64(startTime))).
-			Quo(sdkmath.LegacyNewDec(numberOfBlocks)).
-			Quo(sdkmath.LegacyNewDec(86400 * 365)).
+			MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
+			QuoInt64(numberOfBlocks).
+			QuoInt64(86400 * 365).
+			Dec().
 			RoundInt()
 		return newInterest
 	}
@@ -189,13 +191,13 @@ func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime
 			endInterestBlock := types.InterestBlock{}
 			k.cdc.MustUnmarshal(bz, &endInterestBlock)
 
-			totalInterest := endInterestBlock.InterestRate
+			totalInterest := endInterestBlock.GetBigDecInterestRate()
 			numberOfBlocks := ctx.BlockHeight() - int64(startBlock) + 1
 
 			newInterest := borrowed.Mul(totalInterest).
-				Mul(sdkmath.LegacyNewDec(ctx.BlockTime().Unix() - int64(startTime))).
-				Quo(sdkmath.LegacyNewDec(numberOfBlocks)).
-				Quo(sdkmath.LegacyNewDec(86400 * 365)).
+				MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
+				QuoInt64(numberOfBlocks).
+				QuoInt64(86400 * 365).Dec().
 				RoundInt()
 			return newInterest
 		}
@@ -205,9 +207,9 @@ func (k Keeper) GetInterestForPool(ctx sdk.Context, startBlock uint64, startTime
 		return sdkmath.ZeroInt()
 	}
 	newInterest := borrowed.
-		Mul(pool.InterestRate).
-		Mul(sdkmath.LegacyNewDec(ctx.BlockTime().Unix() - int64(startTime))).
-		Quo(sdkmath.LegacyNewDec(86400 * 365)).
+		Mul(pool.GetBigDecInterestRate()).
+		MulInt64(ctx.BlockTime().Unix() - int64(startTime)).
+		QuoInt64(86400 * 365).Dec().
 		RoundInt()
 	return newInterest
 }
@@ -229,7 +231,7 @@ func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt, borrowin
 	if !found {
 		return debt
 	}
-	newInterest := k.GetInterestForPool(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.Borrowed.ToLegacyDec(), debt.PoolId)
+	newInterest := k.GetInterestForPool(ctx, debt.LastInterestCalcBlock, debt.LastInterestCalcTime, debt.GetBigDecBorrowed(), debt.PoolId)
 
 	debt.InterestStacked = debt.InterestStacked.Add(newInterest)
 	debt.LastInterestCalcTime = uint64(ctx.BlockTime().Unix())
@@ -238,7 +240,7 @@ func (k Keeper) UpdateInterestStacked(ctx sdk.Context, debt types.Debt, borrowin
 
 	k.AddPoolLiabilities(ctx, borrowingForPool, sdk.NewCoin(pool.GetDepositDenom(), newInterest))
 
-	pool.TotalValue = pool.TotalValue.Add(newInterest)
+	pool.NetAmount = pool.NetAmount.Add(newInterest)
 	k.SetPool(ctx, pool)
 	return debt
 }
@@ -257,8 +259,10 @@ func (k Keeper) Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, po
 	moduleAddr := authtypes.NewModuleAddress(types.ModuleName)
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 
-	borrowed := pool.TotalValue.Sub(balance.Amount).ToLegacyDec().Add(amount.Amount.ToLegacyDec())
-	maxAllowed := pool.TotalValue.ToLegacyDec().Mul(pool.MaxLeverageRatio)
+	// borrowed := osmomath.BigDecFromSDKInt(pool.TotalValue.Sub(balance.Amount)).Add(osmomath.BigDecFromSDKInt(amount.Amount))
+	// maxAllowed := pool.GetBigDecTotalValue().Mul(pool.GetBigDecMaxLeverageRatio())
+	borrowed := osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(balance.Amount).Add(amount.Amount))
+	maxAllowed := osmomath.BigDecFromSDKInt(pool.NetAmount).MulDec(pool.MaxLeverageRatio)
 	if borrowed.GT(maxAllowed) {
 		return types.ErrMaxBorrowAmount
 	}
@@ -388,10 +392,10 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 	}
 
 	params := k.GetParams(ctx)
-	balance := k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), k.GetDepositDenom(ctx))
+	balance := k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), k.GetLegacyDepositDenom(ctx))
 	pool := types.Pool{
 		Id:                   types.UsdcPoolId,
-		DepositDenom:         k.GetDepositDenom(ctx),
+		DepositDenom:         k.GetLegacyDepositDenom(ctx),
 		InterestRateDecrease: params.LegacyInterestRateDecrease,
 		InterestRateIncrease: params.LegacyInterestRateIncrease,
 		HealthGainFactor:     params.LegacyHealthGainFactor,
@@ -400,14 +404,14 @@ func (k Keeper) TestnetMigrate(ctx sdk.Context) {
 		InterestRateMax:      params.LegacyInterestRateMax,
 		InterestRateMin:      params.LegacyInterestRateMin,
 		InterestRate:         params.LegacyInterestRate,
-		TotalValue:           totalValueUSD.Add(balance.Amount),
+		NetAmount:            totalValueUSD.Add(balance.Amount),
 	}
 	k.SetPool(ctx, pool)
 
 	atomPool, found := k.GetPool(ctx, 32768)
 	if found {
 		balance = k.bk.GetBalance(ctx, authtypes.NewModuleAddress(types.ModuleName), atomPool.DepositDenom)
-		atomPool.TotalValue = totalValueAtom.Add(balance.Amount)
+		atomPool.NetAmount = totalValueAtom.Add(balance.Amount)
 		k.SetPool(ctx, atomPool)
 	}
 }

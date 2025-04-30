@@ -1,9 +1,11 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"fmt"
+
+	"cosmossdk.io/math"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (asset PoolAsset) Validate() error {
@@ -20,4 +22,8 @@ func (asset PoolAsset) Validate() error {
 	}
 
 	return nil
+}
+
+func (p PoolAsset) GetBigDecWeight() osmomath.BigDec {
+	return osmomath.BigDecFromSDKInt(p.Weight)
 }

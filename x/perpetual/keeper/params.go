@@ -5,6 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // SetParams set the params
@@ -50,28 +51,54 @@ func (k Keeper) GetMaxLeverageParam(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).LeverageMax
 }
 
+func (k Keeper) GetBigDecMaxLeverageParam(ctx sdk.Context) osmomath.BigDec {
+	return osmomath.BigDecFromDec(k.GetParams(ctx).LeverageMax)
+}
+
 func (k Keeper) GetBorrowInterestRateMax(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).BorrowInterestRateMax
+}
+
+func (k Keeper) GetBigDecBorrowInterestRateMax(ctx sdk.Context) osmomath.BigDec {
+	return osmomath.BigDecFromDec(k.GetParams(ctx).BorrowInterestRateMax)
 }
 
 func (k Keeper) GetBorrowInterestRateMin(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).BorrowInterestRateMin
 }
 
+func (k Keeper) GetBigDecBorrowInterestRateMin(ctx sdk.Context) osmomath.BigDec {
+	return osmomath.BigDecFromDec(k.GetParams(ctx).BorrowInterestRateMin)
+}
+
 func (k Keeper) GetBorrowInterestRateIncrease(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).BorrowInterestRateIncrease
+}
+
+func (k Keeper) GetBigDecBorrowInterestRateIncrease(ctx sdk.Context) osmomath.BigDec {
+	return osmomath.BigDecFromDec(k.GetParams(ctx).BorrowInterestRateIncrease)
 }
 
 func (k Keeper) GetBorrowInterestRateDecrease(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).BorrowInterestRateDecrease
 }
+func (k Keeper) GetBigDecBorrowInterestRateDecrease(ctx sdk.Context) osmomath.BigDec {
+	return osmomath.BigDecFromDec(k.GetParams(ctx).BorrowInterestRateDecrease)
+}
 
 func (k Keeper) GetHealthGainFactor(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).HealthGainFactor
 }
+func (k Keeper) GetBigDecHealthGainFactor(ctx sdk.Context) osmomath.BigDec {
+	return osmomath.BigDecFromDec(k.GetParams(ctx).HealthGainFactor)
+}
 
 func (k Keeper) GetPoolOpenThreshold(ctx sdk.Context) sdkmath.LegacyDec {
 	return k.GetParams(ctx).PoolOpenThreshold
+}
+
+func (k Keeper) GetBigDecPoolOpenThreshold(ctx sdk.Context) osmomath.BigDec {
+	return osmomath.BigDecFromDec(k.GetParams(ctx).PoolOpenThreshold)
 }
 
 func (k Keeper) GetBorrowInterestPaymentFundPercentage(ctx sdk.Context) sdkmath.LegacyDec {

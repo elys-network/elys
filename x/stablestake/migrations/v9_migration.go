@@ -23,7 +23,7 @@ func (m Migrator) V9Migration(ctx sdk.Context) error {
 	params := m.keeper.GetParams(ctx)
 	pool := types.Pool{
 		Id:                   types.UsdcPoolId,
-		DepositDenom:         m.keeper.GetDepositDenom(ctx),
+		DepositDenom:         m.keeper.GetLegacyDepositDenom(ctx),
 		InterestRateDecrease: params.LegacyInterestRateDecrease,
 		InterestRateIncrease: params.LegacyInterestRateIncrease,
 		HealthGainFactor:     params.LegacyHealthGainFactor,
@@ -32,7 +32,7 @@ func (m Migrator) V9Migration(ctx sdk.Context) error {
 		InterestRateMax:      params.LegacyInterestRateMax,
 		InterestRateMin:      params.LegacyInterestRateMin,
 		InterestRate:         params.LegacyInterestRate,
-		TotalValue:           params.TotalValue,
+		NetAmount:            params.TotalValue,
 	}
 
 	m.keeper.SetPool(ctx, pool)

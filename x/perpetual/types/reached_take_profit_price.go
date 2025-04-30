@@ -1,15 +1,13 @@
 package types
 
-import (
-	"cosmossdk.io/math"
-)
+import "github.com/osmosis-labs/osmosis/osmomath"
 
 // ReachedTakeProfitPrice tells if the take profit price is reached
-func ReachedTakeProfitPrice(mtp *MTP, assetPrice math.LegacyDec) bool {
+func ReachedTakeProfitPrice(mtp *MTP, assetPrice osmomath.BigDec) bool {
 	if mtp.Position == Position_LONG {
-		return mtp.TakeProfitPrice.GTE(assetPrice)
+		return mtp.GetBigDecTakeProfitPrice().GTE(assetPrice)
 	} else if mtp.Position == Position_SHORT {
-		return mtp.TakeProfitPrice.LTE(assetPrice)
+		return mtp.GetBigDecTakeProfitPrice().LTE(assetPrice)
 	}
 	return false
 }

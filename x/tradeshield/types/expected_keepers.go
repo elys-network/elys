@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -32,8 +33,8 @@ type BankKeeper interface {
 //go:generate mockery --srcpkg . --name AmmKeeper --structname AmmKeeper --filename amm_keeper.go --with-expecter
 type AmmKeeper interface {
 	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
-	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec
-	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdkmath.LegacyDec
+	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) osmomath.BigDec
+	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) osmomath.BigDec
 }
 
 // PerpetualKeeper defines the expected interface needed to open and close perpetual positions
@@ -47,6 +48,6 @@ type PerpetualKeeper interface {
 	GetParams(ctx sdk.Context) perpetualtypes.Params
 	HandleOpenEstimation(ctx sdk.Context, req *perpetualtypes.QueryOpenEstimationRequest) (*perpetualtypes.QueryOpenEstimationResponse, error)
 	HandleCloseEstimation(ctx sdk.Context, req *perpetualtypes.QueryCloseEstimationRequest) (res *perpetualtypes.QueryCloseEstimationResponse, err error)
-	GetAssetPrice(ctx sdk.Context, asset string) (sdkmath.LegacyDec, error)
+	GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, error)
 	GetMTPsForAddressWithPagination(ctx sdk.Context, mtpAddress sdk.AccAddress, pagination *query.PageRequest) ([]*perpetualtypes.MtpAndPrice, *query.PageResponse, error)
 }

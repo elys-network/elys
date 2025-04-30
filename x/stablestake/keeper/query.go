@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -52,14 +53,16 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, pool types.Pool) types.PoolResponse
 	depositDenom := pool.GetDepositDenom()
 
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := pool.TotalValue.Sub(balance.Amount)
-	borrowRatio := sdkmath.LegacyZeroDec()
-	if pool.TotalValue.GT(sdkmath.ZeroInt()) {
-		borrowRatio = borrowed.ToLegacyDec().Quo(pool.TotalValue.ToLegacyDec())
+	borrowed := pool.NetAmount.Sub(balance.Amount)
+	borrowRatio := osmomath.ZeroBigDec()
+	if pool.NetAmount.GT(sdkmath.ZeroInt()) {
+		borrowRatio = osmomath.BigDecFromSDKInt(borrowed).Quo(pool.GetBigDecNetAmount())
 	}
+	denomPrice := k.oracleKeeper.GetDenomPrice(ctx, pool.DepositDenom)
+	totalValue := denomPrice.Mul(pool.GetBigDecNetAmount())
 
 	return types.PoolResponse{
-		RedemptionRate:       k.CalculateRedemptionRateForPool(ctx, pool),
+		RedemptionRate:       k.CalculateRedemptionRateForPool(ctx, pool).Dec(),
 		DepositDenom:         pool.DepositDenom,
 		InterestRate:         pool.InterestRate,
 		InterestRateMax:      pool.InterestRateMax,
@@ -67,13 +70,13 @@ func (k Keeper) GetPoolInfo(ctx sdk.Context, pool types.Pool) types.PoolResponse
 		InterestRateIncrease: pool.InterestRateIncrease,
 		InterestRateDecrease: pool.InterestRateDecrease,
 		HealthGainFactor:     pool.HealthGainFactor,
-		TotalValue:           pool.TotalValue,
+		NetAmount:            pool.NetAmount,
 		MaxLeverageRatio:     pool.MaxLeverageRatio,
 		MaxWithdrawRatio:     pool.MaxWithdrawRatio,
 		PoolId:               pool.Id,
-		TotalDeposit:         pool.TotalValue,
+		TotalValue:           totalValue.Dec(),
 		TotalBorrow:          borrowed,
-		BorrowRatio:          borrowRatio,
+		BorrowRatio:          borrowRatio.Dec(),
 	}
 }
 

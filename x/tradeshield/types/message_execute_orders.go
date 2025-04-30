@@ -5,6 +5,7 @@ import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"slices"
 )
 
 var _ sdk.Msg = &MsgExecuteOrders{}
@@ -26,16 +27,12 @@ func (msg *MsgExecuteOrders) ValidateBasic() error {
 	if len(msg.SpotOrderIds) == 0 && len(msg.PerpetualOrderIds) == 0 {
 		return fmt.Errorf("SpotOrderIds and PerpetualOrderIds both are empty")
 	}
-	for _, id := range msg.SpotOrderIds {
-		if id == 0 {
-			return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
-		}
+	if slices.Contains(msg.SpotOrderIds, 0) {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
 	}
 
-	for _, id := range msg.PerpetualOrderIds {
-		if id == 0 {
-			return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "perpetual order ID cannot be zero")
-		}
+	if slices.Contains(msg.PerpetualOrderIds, 0) {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "perpetual order ID cannot be zero")
 	}
 
 	return nil

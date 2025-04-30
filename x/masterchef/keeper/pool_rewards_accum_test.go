@@ -5,6 +5,7 @@ import (
 
 	"cosmossdk.io/math"
 	"github.com/elys-network/elys/x/masterchef/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *MasterchefKeeperTestSuite) TestPoolRewardsAccum() {
@@ -73,27 +74,27 @@ func (suite *MasterchefKeeperTestSuite) TestAddPoolRewardsAccum() {
 		poolId     uint64
 		timestamp  uint64
 		height     int64
-		dexReward  math.LegacyDec
-		gasReward  math.LegacyDec
-		edenReward math.LegacyDec
+		dexReward  osmomath.BigDec
+		gasReward  osmomath.BigDec
+		edenReward osmomath.BigDec
 	}{
 		{
 			name:       "Add rewards to new pool",
 			poolId:     1,
 			timestamp:  uint64(time.Now().Unix()),
 			height:     100,
-			dexReward:  math.LegacyNewDec(10),
-			gasReward:  math.LegacyNewDec(5),
-			edenReward: math.LegacyNewDec(3),
+			gasReward:  osmomath.NewBigDec(5),
+			dexReward:  osmomath.NewBigDec(10),
+			edenReward: osmomath.NewBigDec(3),
 		},
 		{
 			name:       "Add rewards to existing pool",
 			poolId:     1,
 			timestamp:  uint64(time.Now().Unix()) + 3600, // 1 hour later
 			height:     200,
-			dexReward:  math.LegacyNewDec(20),
-			gasReward:  math.LegacyNewDec(10),
-			edenReward: math.LegacyNewDec(6),
+			gasReward:  osmomath.NewBigDec(10),
+			dexReward:  osmomath.NewBigDec(20),
+			edenReward: osmomath.NewBigDec(6),
 		},
 	}
 
@@ -109,13 +110,13 @@ func (suite *MasterchefKeeperTestSuite) TestAddPoolRewardsAccum() {
 			suite.Require().Equal(tt.height, accum.BlockHeight)
 
 			if tt.name == "Add rewards to new pool" {
-				suite.Require().Equal(tt.dexReward, accum.DexReward)
-				suite.Require().Equal(tt.gasReward, accum.GasReward)
-				suite.Require().Equal(tt.edenReward, accum.EdenReward)
+				suite.Require().Equal(tt.dexReward, osmomath.BigDecFromDec(accum.DexReward))
+				suite.Require().Equal(tt.gasReward, osmomath.BigDecFromDec(accum.GasReward))
+				suite.Require().Equal(tt.edenReward, osmomath.BigDecFromDec(accum.EdenReward))
 
 				// Check forward
 				forwardEden := suite.app.MasterchefKeeper.ForwardEdenCalc(suite.ctx, tt.poolId)
-				suite.Require().Equal(math.LegacyZeroDec(), forwardEden)
+				suite.Require().Equal(osmomath.ZeroBigDec(), forwardEden)
 			} else {
 				// For existing pool, rewards should be cumulative
 				suite.Require().Equal(math.LegacyNewDec(30), accum.DexReward)
@@ -124,7 +125,7 @@ func (suite *MasterchefKeeperTestSuite) TestAddPoolRewardsAccum() {
 
 				// Check forward
 				forwardEden := suite.app.MasterchefKeeper.ForwardEdenCalc(suite.ctx, tt.poolId)
-				suite.Require().Equal(math.LegacyMustNewDecFromStr("21600").Mul(tt.edenReward), forwardEden)
+				suite.Require().Equal(osmomath.MustNewBigDecFromStr("21600").Mul(tt.edenReward), forwardEden)
 			}
 		})
 	}

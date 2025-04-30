@@ -46,7 +46,7 @@ func (k Keeper) SetBandRequest(ctx sdk.Context, requestID types.OracleRequestID,
 	store.Set(types.BandRequestStoreKey(requestID), k.cdc.MustMarshal(&result))
 }
 
-// SetBandRequest returns band request waiting for responses
+// GetBandRequest returns band request waiting for responses
 func (k Keeper) GetBandRequest(ctx sdk.Context, id types.OracleRequestID) (types.BandPriceCallData, error) {
 	bz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.BandRequestStoreKey(id))
 	if bz == nil {

@@ -1,10 +1,12 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) ApplyJoinPoolStateChange(
@@ -13,9 +15,9 @@ func (k Keeper) ApplyJoinPoolStateChange(
 	joiner sdk.AccAddress,
 	numShares math.Int,
 	joinCoins sdk.Coins,
-	weightBalanceBonus math.LegacyDec,
-	takerFees math.LegacyDec,
-	swapFee sdkmath.LegacyDec,
+	weightBalanceBonus osmomath.BigDec,
+	takerFees osmomath.BigDec,
+	swapFee osmomath.BigDec,
 	slippageCoins sdk.Coins,
 ) error {
 	if err := k.bankKeeper.SendCoins(ctx, joiner, sdk.MustAccAddressFromBech32(pool.GetAddress()), joinCoins); err != nil {
@@ -43,7 +45,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 			return err
 		}
 
-		err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), swapFeeInCoins)
+		err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, math.ZeroInt(), swapFeeInCoins)
 		if err != nil {
 			return err
 		}
@@ -54,16 +56,16 @@ func (k Keeper) ApplyJoinPoolStateChange(
 		}
 	}
 
-	weightRecoveryFeeAmount := sdkmath.ZeroInt()
+	weightRecoveryFeeAmount := math.ZeroInt()
 	weightRecoveryFeeCoins := sdk.Coins{}
 	// send half (weight breaking fee portion) of weight breaking fee to rebalance treasury
 	if pool.PoolParams.UseOracle && weightBalanceBonus.IsNegative() {
 		params := k.GetParams(ctx)
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		// we are multiplying here by params.WeightBreakingFeePortion as we didn't multiply in pool.Join/Exit for weight breaking fee
-		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.WeightBreakingFeePortion)
+		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.GetBigDecWeightBreakingFeePortion())
 		for _, coin := range joinCoins {
-			weightRecoveryFeeAmount = coin.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			weightRecoveryFeeAmount = osmomath.BigDecFromSDKInt(coin.Amount).Mul(weightRecoveryFee).Dec().RoundInt()
 
 			if weightRecoveryFeeAmount.IsPositive() {
 				// send weight recovery fee to rebalance treasury if weight recovery fee amount is positive¬
@@ -75,14 +77,14 @@ func (k Keeper) ApplyJoinPoolStateChange(
 					return err
 				}
 
-				err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), netWeightBreakingFeeCoins)
+				err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, math.ZeroInt(), netWeightBreakingFeeCoins)
 				if err != nil {
 					return err
 				}
 
 				// Track amount in pool
-				weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(sdkmath.LegacyOneDec().Sub(params.WeightBreakingFeePortion))
-				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, sdkmath.Int(weightRecoveryFeeForPool.Mul(sdkmath.LegacyDec(weightRecoveryFeeAmount)))))
+				weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(osmomath.OneBigDec().Sub(params.GetBigDecWeightBreakingFeePortion()))
+				k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(coin.Denom, weightRecoveryFeeForPool.Mul(osmomath.BigDecFromSDKInt(coin.Amount)).Dec().TruncateInt()))
 			}
 		}
 	}
@@ -100,7 +102,16 @@ func (k Keeper) ApplyJoinPoolStateChange(
 		}
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
 
-		bonusTokenAmount := joinCoins[0].Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+		// ensure token prices for in/out tokens set properly
+		inTokenPrice := k.oracleKeeper.GetDenomPrice(ctx, joinCoins[0].Denom)
+		if inTokenPrice.IsZero() {
+			return fmt.Errorf("price for inToken not set: %s", joinCoins[0].Denom)
+		}
+		outTokenPrice := k.oracleKeeper.GetDenomPrice(ctx, otherAsset.Token.Denom)
+		if outTokenPrice.IsZero() {
+			return fmt.Errorf("price for outToken not set: %s", otherAsset.Token.Denom)
+		}
+		bonusTokenAmount := (osmomath.BigDecFromSDKInt(joinCoins[0].Amount).Mul(weightBalanceBonus).Mul(inTokenPrice).Quo(outTokenPrice)).Dec().TruncateInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
 			bonusTokenAmount = treasuryTokenAmount
@@ -132,7 +143,7 @@ func (k Keeper) ApplyJoinPoolStateChange(
 			return err
 		}
 
-		err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), takerFeesInCoins)
+		err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, math.ZeroInt(), takerFeesInCoins)
 		if err != nil {
 			return err
 		}

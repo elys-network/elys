@@ -72,7 +72,7 @@ func (suite *KeeperTestSuite) TestDebt() {
 			suite.Require().NoError(err)
 
 			pool, _ := suite.app.StablestakeKeeper.GetPool(suite.ctx, 1)
-			pool.TotalValue = math.NewInt(10)
+			pool.NetAmount = math.NewInt(10)
 			pool.InterestRate = math.LegacyNewDec(10)
 			suite.app.StablestakeKeeper.SetPool(suite.ctx, pool)
 

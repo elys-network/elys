@@ -2,12 +2,12 @@ package keeper
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage sdkmath.LegacyDec, collateralAmountDec sdkmath.LegacyDec, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
+func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage osmomath.BigDec, collateralAmountDec osmomath.BigDec, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
@@ -21,7 +21,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage sdkma
 	}
 
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
-	leveragedAmount := collateralAmountDec.Mul(proxyLeverage).TruncateInt()
+	leveragedAmount := collateralAmountDec.Mul(proxyLeverage).Dec().TruncateInt()
 
 	// Calculate custody amount
 	// LONG: if collateral asset is trading asset then custodyAmount = leveragedAmount else if it collateral asset is usdc, we swap it to trading asset below
@@ -84,10 +84,11 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage sdkma
 	}
 
 	// Update the MTP health.
-	mtp.MtpHealth, err = k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
+	mtpHealth, err := k.GetMTPHealth(ctx, *mtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
+	mtp.MtpHealth = mtpHealth.Dec()
 
 	// Check if the MTP is unhealthy
 	safetyFactor := k.GetSafetyFactor(ctx)
@@ -99,7 +100,7 @@ func (k Keeper) ProcessOpen(ctx sdk.Context, mtp *types.MTP, proxyLeverage sdkma
 	// If consolidating or adding collateral, this needs to be calculated again
 	stopLossPrice := msg.StopLossPrice
 	if msg.StopLossPrice.IsNil() || msg.StopLossPrice.IsZero() {
-		stopLossPrice = k.GetLiquidationPrice(ctx, *mtp)
+		stopLossPrice = k.GetLiquidationPrice(ctx, *mtp).Dec()
 	}
 	mtp.StopLossPrice = stopLossPrice
 
