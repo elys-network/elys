@@ -8925,6 +8925,7 @@ var (
 	fd_QuerySwapEstimationResponse_available_liquidity  protoreflect.FieldDescriptor
 	fd_QuerySwapEstimationResponse_slippage             protoreflect.FieldDescriptor
 	fd_QuerySwapEstimationResponse_weight_balance_ratio protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationResponse_taker_fee            protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -8937,6 +8938,7 @@ func init() {
 	fd_QuerySwapEstimationResponse_available_liquidity = md_QuerySwapEstimationResponse.Fields().ByName("available_liquidity")
 	fd_QuerySwapEstimationResponse_slippage = md_QuerySwapEstimationResponse.Fields().ByName("slippage")
 	fd_QuerySwapEstimationResponse_weight_balance_ratio = md_QuerySwapEstimationResponse.Fields().ByName("weight_balance_ratio")
+	fd_QuerySwapEstimationResponse_taker_fee = md_QuerySwapEstimationResponse.Fields().ByName("taker_fee")
 }
 
 var _ protoreflect.Message = (*fastReflection_QuerySwapEstimationResponse)(nil)
@@ -9046,6 +9048,12 @@ func (x *fastReflection_QuerySwapEstimationResponse) Range(f func(protoreflect.F
 			return
 		}
 	}
+	if x.TakerFee != "" {
+		value := protoreflect.ValueOfString(x.TakerFee)
+		if !f(fd_QuerySwapEstimationResponse_taker_fee, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -9075,6 +9083,8 @@ func (x *fastReflection_QuerySwapEstimationResponse) Has(fd protoreflect.FieldDe
 		return x.Slippage != ""
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
 		return x.WeightBalanceRatio != ""
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
+		return x.TakerFee != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationResponse"))
@@ -9105,6 +9115,8 @@ func (x *fastReflection_QuerySwapEstimationResponse) Clear(fd protoreflect.Field
 		x.Slippage = ""
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
 		x.WeightBalanceRatio = ""
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
+		x.TakerFee = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationResponse"))
@@ -9142,6 +9154,9 @@ func (x *fastReflection_QuerySwapEstimationResponse) Get(descriptor protoreflect
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
 		value := x.WeightBalanceRatio
 		return protoreflect.ValueOfString(value)
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
+		value := x.TakerFee
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationResponse"))
@@ -9176,6 +9191,8 @@ func (x *fastReflection_QuerySwapEstimationResponse) Set(fd protoreflect.FieldDe
 		x.Slippage = value.Interface().(string)
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
 		x.WeightBalanceRatio = value.Interface().(string)
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
+		x.TakerFee = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationResponse"))
@@ -9216,6 +9233,8 @@ func (x *fastReflection_QuerySwapEstimationResponse) Mutable(fd protoreflect.Fie
 		panic(fmt.Errorf("field slippage of message elys.amm.QuerySwapEstimationResponse is not mutable"))
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
 		panic(fmt.Errorf("field weight_balance_ratio of message elys.amm.QuerySwapEstimationResponse is not mutable"))
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
+		panic(fmt.Errorf("field taker_fee of message elys.amm.QuerySwapEstimationResponse is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationResponse"))
@@ -9244,6 +9263,8 @@ func (x *fastReflection_QuerySwapEstimationResponse) NewField(fd protoreflect.Fi
 	case "elys.amm.QuerySwapEstimationResponse.slippage":
 		return protoreflect.ValueOfString("")
 	case "elys.amm.QuerySwapEstimationResponse.weight_balance_ratio":
+		return protoreflect.ValueOfString("")
+	case "elys.amm.QuerySwapEstimationResponse.taker_fee":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -9342,6 +9363,10 @@ func (x *fastReflection_QuerySwapEstimationResponse) ProtoMethods() *protoiface.
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.TakerFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -9370,6 +9395,13 @@ func (x *fastReflection_QuerySwapEstimationResponse) ProtoMethods() *protoiface.
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.TakerFee) > 0 {
+			i -= len(x.TakerFee)
+			copy(dAtA[i:], x.TakerFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TakerFee)))
+			i--
+			dAtA[i] = 0x42
 		}
 		if len(x.WeightBalanceRatio) > 0 {
 			i -= len(x.WeightBalanceRatio)
@@ -9714,6 +9746,38 @@ func (x *fastReflection_QuerySwapEstimationResponse) ProtoMethods() *protoiface.
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.WeightBalanceRatio = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 8:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TakerFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TakerFee = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -15890,6 +15954,7 @@ var (
 	fd_QuerySwapEstimationByDenomResponse_slippage                     protoreflect.FieldDescriptor
 	fd_QuerySwapEstimationByDenomResponse_price_impact                 protoreflect.FieldDescriptor
 	fd_QuerySwapEstimationByDenomResponse_weight_balance_reward_amount protoreflect.FieldDescriptor
+	fd_QuerySwapEstimationByDenomResponse_taker_fee                    protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -15906,6 +15971,7 @@ func init() {
 	fd_QuerySwapEstimationByDenomResponse_slippage = md_QuerySwapEstimationByDenomResponse.Fields().ByName("slippage")
 	fd_QuerySwapEstimationByDenomResponse_price_impact = md_QuerySwapEstimationByDenomResponse.Fields().ByName("price_impact")
 	fd_QuerySwapEstimationByDenomResponse_weight_balance_reward_amount = md_QuerySwapEstimationByDenomResponse.Fields().ByName("weight_balance_reward_amount")
+	fd_QuerySwapEstimationByDenomResponse_taker_fee = md_QuerySwapEstimationByDenomResponse.Fields().ByName("taker_fee")
 }
 
 var _ protoreflect.Message = (*fastReflection_QuerySwapEstimationByDenomResponse)(nil)
@@ -16039,6 +16105,12 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Range(f func(protore
 			return
 		}
 	}
+	if x.TakerFee != "" {
+		value := protoreflect.ValueOfString(x.TakerFee)
+		if !f(fd_QuerySwapEstimationByDenomResponse_taker_fee, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -16076,6 +16148,8 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Has(fd protoreflect.
 		return x.PriceImpact != ""
 	case "elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount":
 		return x.WeightBalanceRewardAmount != nil
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
+		return x.TakerFee != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationByDenomResponse"))
@@ -16114,6 +16188,8 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Clear(fd protoreflec
 		x.PriceImpact = ""
 	case "elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount":
 		x.WeightBalanceRewardAmount = nil
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
+		x.TakerFee = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationByDenomResponse"))
@@ -16169,6 +16245,9 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Get(descriptor proto
 	case "elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount":
 		value := x.WeightBalanceRewardAmount
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
+		value := x.TakerFee
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationByDenomResponse"))
@@ -16215,6 +16294,8 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Set(fd protoreflect.
 		x.PriceImpact = value.Interface().(string)
 	case "elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount":
 		x.WeightBalanceRewardAmount = value.Message().Interface().(*v1beta11.Coin)
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
+		x.TakerFee = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationByDenomResponse"))
@@ -16274,6 +16355,8 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) Mutable(fd protorefl
 		panic(fmt.Errorf("field slippage of message elys.amm.QuerySwapEstimationByDenomResponse is not mutable"))
 	case "elys.amm.QuerySwapEstimationByDenomResponse.price_impact":
 		panic(fmt.Errorf("field price_impact of message elys.amm.QuerySwapEstimationByDenomResponse is not mutable"))
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
+		panic(fmt.Errorf("field taker_fee of message elys.amm.QuerySwapEstimationByDenomResponse is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationByDenomResponse"))
@@ -16314,6 +16397,8 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) NewField(fd protoref
 	case "elys.amm.QuerySwapEstimationByDenomResponse.weight_balance_reward_amount":
 		m := new(v1beta11.Coin)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.amm.QuerySwapEstimationByDenomResponse.taker_fee":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.amm.QuerySwapEstimationByDenomResponse"))
@@ -16431,6 +16516,10 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) ProtoMethods() *prot
 			l = options.Size(x.WeightBalanceRewardAmount)
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.TakerFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -16459,6 +16548,13 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) ProtoMethods() *prot
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.TakerFee) > 0 {
+			i -= len(x.TakerFee)
+			copy(dAtA[i:], x.TakerFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TakerFee)))
+			i--
+			dAtA[i] = 0x62
 		}
 		if x.WeightBalanceRewardAmount != nil {
 			encoded, err := options.Marshal(x.WeightBalanceRewardAmount)
@@ -16992,6 +17088,38 @@ func (x *fastReflection_QuerySwapEstimationByDenomResponse) ProtoMethods() *prot
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.WeightBalanceRewardAmount); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
+				iNdEx = postIndex
+			case 12:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TakerFee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TakerFee = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -19186,6 +19314,7 @@ type QuerySwapEstimationResponse struct {
 	AvailableLiquidity *v1beta11.Coin `protobuf:"bytes,5,opt,name=available_liquidity,json=availableLiquidity,proto3" json:"available_liquidity,omitempty"`
 	Slippage           string         `protobuf:"bytes,6,opt,name=slippage,proto3" json:"slippage,omitempty"`
 	WeightBalanceRatio string         `protobuf:"bytes,7,opt,name=weight_balance_ratio,json=weightBalanceRatio,proto3" json:"weight_balance_ratio,omitempty"`
+	TakerFee           string         `protobuf:"bytes,8,opt,name=taker_fee,json=takerFee,proto3" json:"taker_fee,omitempty"`
 }
 
 func (x *QuerySwapEstimationResponse) Reset() {
@@ -19253,6 +19382,13 @@ func (x *QuerySwapEstimationResponse) GetSlippage() string {
 func (x *QuerySwapEstimationResponse) GetWeightBalanceRatio() string {
 	if x != nil {
 		return x.WeightBalanceRatio
+	}
+	return ""
+}
+
+func (x *QuerySwapEstimationResponse) GetTakerFee() string {
+	if x != nil {
+		return x.TakerFee
 	}
 	return ""
 }
@@ -19780,6 +19916,7 @@ type QuerySwapEstimationByDenomResponse struct {
 	Slippage                  string                `protobuf:"bytes,9,opt,name=slippage,proto3" json:"slippage,omitempty"`
 	PriceImpact               string                `protobuf:"bytes,10,opt,name=price_impact,json=priceImpact,proto3" json:"price_impact,omitempty"`
 	WeightBalanceRewardAmount *v1beta11.Coin        `protobuf:"bytes,11,opt,name=weight_balance_reward_amount,json=weightBalanceRewardAmount,proto3" json:"weight_balance_reward_amount,omitempty"`
+	TakerFee                  string                `protobuf:"bytes,12,opt,name=taker_fee,json=takerFee,proto3" json:"taker_fee,omitempty"`
 }
 
 func (x *QuerySwapEstimationByDenomResponse) Reset() {
@@ -19877,6 +20014,13 @@ func (x *QuerySwapEstimationByDenomResponse) GetWeightBalanceRewardAmount() *v1b
 		return x.WeightBalanceRewardAmount
 	}
 	return nil
+}
+
+func (x *QuerySwapEstimationByDenomResponse) GetTakerFee() string {
+	if x != nil {
+		return x.TakerFee
+	}
+	return ""
 }
 
 type QueryAMMPriceRequest struct {
@@ -20210,7 +20354,7 @@ var file_elys_amm_query_proto_rawDesc = []byte{
 	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65,
 	0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x19,
 	0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x77,
-	0x61, 0x72, 0x64, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0xd0, 0x04, 0x0a, 0x1b, 0x51, 0x75,
+	0x61, 0x72, 0x64, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0xa0, 0x05, 0x0a, 0x1b, 0x51, 0x75,
 	0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69, 0x6f,
 	0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x50, 0x0a, 0x0a, 0x73, 0x70, 0x6f,
 	0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
@@ -20247,7 +20391,12 @@ var file_elys_amm_query_proto_rawDesc = []byte{
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
 	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
-	0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x22, 0xdc, 0x04, 0x0a,
+	0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x61, 0x74, 0x69, 0x6f, 0x12, 0x4e, 0x0a, 0x09,
+	0x74, 0x61, 0x6b, 0x65, 0x72, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
+	0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44,
+	0x65, 0x63, 0x52, 0x08, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x46, 0x65, 0x65, 0x22, 0xdc, 0x04, 0x0a,
 	0x29, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61,
 	0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x61, 0x63, 0x74, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4f,
 	0x75, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x50, 0x0a, 0x0a, 0x73, 0x70,
@@ -20345,7 +20494,7 @@ var file_elys_amm_query_proto_rawDesc = []byte{
 	0x6d, 0x49, 0x6e, 0x12, 0x1b, 0x0a, 0x09, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x6f, 0x75, 0x74,
 	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x4f, 0x75, 0x74,
 	0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0xfd, 0x06, 0x0a, 0x22, 0x51,
+	0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0xcd, 0x07, 0x0a, 0x22, 0x51,
 	0x75, 0x65, 0x72, 0x79, 0x53, 0x77, 0x61, 0x70, 0x45, 0x73, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x69,
 	0x6f, 0x6e, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
 	0x65, 0x12, 0x36, 0x0a, 0x08, 0x69, 0x6e, 0x5f, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x18, 0x01, 0x20,
@@ -20401,7 +20550,12 @@ var file_elys_amm_query_proto_rawDesc = []byte{
 	0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62,
 	0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
 	0x19, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0xa1, 0x01, 0x0a, 0x14, 0x51,
+	0x77, 0x61, 0x72, 0x64, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x4e, 0x0a, 0x09, 0x74, 0x61,
+	0x6b, 0x65, 0x72, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
+	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
+	0x52, 0x08, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x46, 0x65, 0x65, 0x22, 0xa1, 0x01, 0x0a, 0x14, 0x51,
 	0x75, 0x65, 0x72, 0x79, 0x41, 0x4d, 0x4d, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75,
 	0x65, 0x73, 0x74, 0x12, 0x3a, 0x0a, 0x08, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x69, 0x6e, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62,

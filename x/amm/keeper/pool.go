@@ -7,6 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // SetPool set a specific pool in the store from its index
@@ -145,12 +146,12 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 
 		poolTvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
-			poolTvl = sdkmath.LegacyZeroDec()
+			poolTvl = osmomath.ZeroBigDec()
 		}
 
 		// If all denoms are found in this pool, return the pool id
-		if allDenomsFound && maxTvl.LT(poolTvl) {
-			maxTvl = poolTvl
+		if allDenomsFound && maxTvl.LT(poolTvl.Dec()) {
+			maxTvl = poolTvl.Dec()
 			bestPool = p
 		}
 	}

@@ -6,6 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -18,7 +19,7 @@ func (k Keeper) OpenEst(goCtx context.Context, req *types.QueryOpenEstRequest) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	leveragedAmount := req.Leverage.MulInt(req.CollateralAmount).TruncateInt()
 	leverageCoin := sdk.NewCoin(req.CollateralAsset, leveragedAmount)
-	_, shares, slippage, weightBalanceBonus, swapFee, takerFees, _, err := k.amm.JoinPoolEst(ctx, req.AmmPoolId, sdk.Coins{leverageCoin})
+	_, shares, slippage, weightBalanceBonus, swapFee, takerFees, weightRewardAmount, err := k.amm.JoinPoolEst(ctx, req.AmmPoolId, sdk.Coins{leverageCoin})
 	if err != nil {
 		return nil, err
 	}
@@ -28,12 +29,13 @@ func (k Keeper) OpenEst(goCtx context.Context, req *types.QueryOpenEstRequest) (
 	}
 
 	return &types.QueryOpenEstResponse{
-		PositionSize:       shares,
-		WeightBalanceRatio: weightBalanceBonus,
-		BorrowFee:          pool.InterestRate,
-		Slippage:           slippage,
-		SwapFee:            swapFee,
-		TakerFee:           takerFees,
+		PositionSize:              shares,
+		WeightBalanceRatio:        weightBalanceBonus.Dec(),
+		BorrowFee:                 pool.InterestRate,
+		Slippage:                  slippage.Dec(),
+		SwapFee:                   swapFee.Dec(),
+		TakerFee:                  takerFees.Dec(),
+		WeightBalanceRewardAmount: weightRewardAmount,
 	}, nil
 }
 
@@ -56,7 +58,7 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 		return nil, errors.New("leverage lp pool not found")
 	}
 
-	closingRatio := req.LpAmount.ToLegacyDec().Quo(position.LeveragedLpAmount.ToLegacyDec())
+	closingRatio := osmomath.BigDecFromSDKInt(req.LpAmount).Quo(position.GetBigDecLeveragedLpAmount())
 	finalClosingRatio, totalLpAmountToClose, coinsForAmm, repayAmount, userReturnTokens, exitFeeOnClosingPosition, _, weightBreakingFee, exitSlippageFee, swapFee, takerFee, err := k.CheckHealthStopLossThenRepayAndClose(ctx, &position, &pool, closingRatio, false)
 	if err != nil {
 		return nil, err
@@ -64,14 +66,14 @@ func (k Keeper) CloseEst(goCtx context.Context, req *types.QueryCloseEstRequest)
 
 	return &types.QueryCloseEstResponse{
 		RepayAmount:       repayAmount,
-		FinalClosingRatio: finalClosingRatio,
+		FinalClosingRatio: finalClosingRatio.Dec(),
 		ClosingLpAmount:   totalLpAmountToClose,
 		CoinsToAmm:        coinsForAmm,
 		UserReturnTokens:  userReturnTokens,
-		ExitWeightFee:     exitFeeOnClosingPosition,
-		WeightBreakingFee: weightBreakingFee,
-		ExitSlippageFee:   exitSlippageFee,
-		ExitSwapFee:       swapFee,
-		ExitTakerFee:      takerFee,
+		ExitWeightFee:     exitFeeOnClosingPosition.Dec(),
+		WeightBreakingFee: weightBreakingFee.Dec(),
+		ExitSlippageFee:   exitSlippageFee.Dec(),
+		ExitSwapFee:       swapFee.Dec(),
+		ExitTakerFee:      takerFee.Dec(),
 	}, nil
 }

@@ -66,7 +66,7 @@ done
 echo "Querying pool-rewards ..."
 ASK_USER=true
 while [ "$ASK_USER" = true ]; do
-    echo "Enter the comma seperated pool-id (i.e. 1,2):"
+    echo "Enter the comma separated pool-id (i.e. 1,2):"
     read pool_ids
     $BINARY q masterchef pool-rewards $pool_ids --node $NODE
     echo "Want to make another query, true/false"

@@ -19,6 +19,6 @@ func (k Keeper) LiquidTotal(goCtx context.Context, req *types.QueryLiquidTotalRe
 	total := k.RetrieveLiquidAssetsTotal(ctx, sender)
 
 	return &types.QueryLiquidTotalResponse{
-		Total: total,
+		Total: total.Dec(),
 	}, nil
 }

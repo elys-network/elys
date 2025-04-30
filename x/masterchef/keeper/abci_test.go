@@ -12,6 +12,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	tokenomicskeeper "github.com/elys-network/elys/x/tokenomics/keeper"
 	tokenomicstypes "github.com/elys-network/elys/x/tokenomics/types"
@@ -359,7 +360,7 @@ func (suite *MasterchefKeeperTestSuite) TestExternalRewardsDistribution() {
 
 	// Get Tvl for non-existent pool
 	res := suite.app.MasterchefKeeper.GetPoolTVL(suite.ctx, 1000)
-	suite.Require().Equal(res, sdkmath.LegacyZeroDec())
+	suite.Require().Equal(res, osmomath.ZeroBigDec())
 
 	// increase timestamp
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
@@ -390,22 +391,22 @@ func (suite *MasterchefKeeperTestSuite) TestProcessTakerFees() {
 	suite.ResetSuite(true)
 
 	// Generate 1 random account with 1000stake balanced
-	addr := simapp.AddTestAddrs(suite.app, suite.ctx, 1, sdkmath.NewInt(1000000))
+	addr := simapp.AddTestAddrs(suite.app, suite.ctx, 1, sdkmath.NewInt(100000000000))
 
 	// mint some tokens in taker address
 	takerAddress := suite.app.ParameterKeeper.GetParams(suite.ctx).TakerFeeCollectionAddress
-	suite.MintTokenToAddress(sdk.MustAccAddressFromBech32(takerAddress), sdkmath.NewInt(1000), ptypes.BaseCurrency)
-	suite.MintTokenToAddress(addr[0], sdkmath.NewInt(100000), ptypes.BaseCurrency)
+	suite.MintTokenToAddress(sdk.MustAccAddressFromBech32(takerAddress), sdkmath.NewInt(1000000), ptypes.BaseCurrency)
+	suite.MintTokenToAddress(addr[0], sdkmath.NewInt(100000000), ptypes.BaseCurrency)
 
 	// Pool with 1000 ELYS and 1000 USDC
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Weight: sdkmath.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(100000)),
+			Token:  sdk.NewCoin(ptypes.Elys, sdkmath.NewInt(1000000000)),
 		},
 		{
 			Weight: sdkmath.NewInt(50),
-			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(10000)),
+			Token:  sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
 		},
 	}
 
@@ -423,7 +424,7 @@ func (suite *MasterchefKeeperTestSuite) TestProcessTakerFees() {
 	suite.Require().Equal(len(pools), 1)
 
 	elysSupplyBefore := suite.app.BankKeeper.GetSupply(suite.ctx, ptypes.Elys)
-	suite.Require().Equal(elysSupplyBefore.Amount.String(), "100000002000000")
+	suite.Require().Equal(elysSupplyBefore.Amount.String(), "100100001000000")
 
 	// Process taker fees
 	suite.app.MasterchefKeeper.ProcessTakerFee(suite.ctx)
@@ -436,5 +437,5 @@ func (suite *MasterchefKeeperTestSuite) TestProcessTakerFees() {
 
 	// Check elys supply is reduced
 	elysSupplyAfter := suite.app.BankKeeper.GetSupply(suite.ctx, ptypes.Elys)
-	suite.Require().Equal(elysSupplyAfter.Amount.String(), "100000001990992")
+	suite.Require().Equal(elysSupplyAfter.Amount.String(), "100099991197050")
 }
