@@ -747,7 +747,8 @@ func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
 		if balance.Denom == ptypes.Elys || balance.Amount.LT(sdkmath.NewInt(1000000)) {
 			continue
 		}
-		_, err := k.amm.SwapByDenom(ctx, &ammtypes.MsgSwapByDenom{
+		cacheCtx, write := ctx.CacheContext()
+		_, err := k.amm.SwapByDenom(cacheCtx, &ammtypes.MsgSwapByDenom{
 			Sender:    collectionAddressString,
 			Recipient: collectionAddressString,
 			Amount:    sdk.NewCoin(balance.Denom, balance.Amount),
@@ -758,6 +759,8 @@ func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
 		if err != nil {
 			ctx.Logger().Error("Failed to swap taker fee", "error", err)
 			continue
+		} else {
+			write()
 		}
 	}
 
@@ -768,18 +771,20 @@ func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
 			ctx.Logger().Error("Failed to send taker fee to masterchef", "error", err)
 		} else {
 			// burn elys token
-			err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(elysBalance))
+			cacheCtx, write := ctx.CacheContext()
+			err := k.bankKeeper.BurnCoins(cacheCtx, types.ModuleName, sdk.NewCoins(elysBalance))
 			if err != nil {
 				ctx.Logger().Error("Failed to burn taker fee", "error", err)
+			} else {
+				write()
+				// event for burning taker fees
+				ctx.EventManager().EmitEvents(sdk.Events{
+					sdk.NewEvent(
+						types.TypeEvtTakerFeeBurn,
+						sdk.NewAttribute("amount", elysBalance.String()),
+					),
+				})
 			}
-
-			// event for burning taker fees
-			ctx.EventManager().EmitEvents(sdk.Events{
-				sdk.NewEvent(
-					types.TypeEvtTakerFeeBurn,
-					sdk.NewAttribute("amount", elysBalance.String()),
-				),
-			})
 		}
 	}
 }
