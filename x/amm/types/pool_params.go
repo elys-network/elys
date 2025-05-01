@@ -1,9 +1,11 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"errors"
+
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 var (
@@ -28,4 +30,8 @@ func (params PoolParams) Validate() error {
 	}
 
 	return nil
+}
+
+func (p PoolParams) GetBigDecSwapFee() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.SwapFee)
 }

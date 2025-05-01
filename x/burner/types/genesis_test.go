@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
 
 	"github.com/elys-network/elys/x/burner/types"
@@ -23,12 +24,12 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				HistoryList: []types.History{
 					{
-						Timestamp: "0",
-						Denom:     "0",
+						Block:       1,
+						BurnedCoins: sdk.Coins{sdk.NewInt64Coin("uusdc", 1)},
 					},
 					{
-						Timestamp: "1",
-						Denom:     "1",
+						Block:       2,
+						BurnedCoins: sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 					},
 				},
 				Params: types.DefaultParams(),
@@ -41,12 +42,12 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				HistoryList: []types.History{
 					{
-						Timestamp: "0",
-						Denom:     "0",
+						Block:       1,
+						BurnedCoins: sdk.Coins{sdk.NewInt64Coin("uusdc", 1)},
 					},
 					{
-						Timestamp: "0",
-						Denom:     "0",
+						Block:       1,
+						BurnedCoins: sdk.Coins{sdk.NewInt64Coin("uusdc", 1)},
 					},
 				},
 			},

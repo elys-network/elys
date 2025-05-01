@@ -4,6 +4,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // UpdatePoolForSwap takes a pool, sender, and tokenIn, tokenOut amounts
@@ -18,12 +19,12 @@ func (k Keeper) UpdatePoolForSwap(
 	recipient sdk.AccAddress,
 	tokenIn sdk.Coin,
 	tokenOut sdk.Coin,
-	swapFee sdkmath.LegacyDec,
-	slippageAmount sdkmath.LegacyDec,
+	swapFee osmomath.BigDec,
+	slippageAmount osmomath.BigDec,
 	oracleInAmount sdkmath.Int,
 	oracleOutAmount sdkmath.Int,
-	weightBalanceBonus sdkmath.LegacyDec,
-	takerFees sdkmath.LegacyDec,
+	weightBalanceBonus osmomath.BigDec,
+	takerFees osmomath.BigDec,
 	givenOut bool,
 ) (weightBalanceReward sdk.Coin, err error) {
 	tokensIn := sdk.Coins{tokenIn}
@@ -125,12 +126,12 @@ func (k Keeper) UpdatePoolForSwap(
 		params := k.GetParams(ctx)
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		// we are multiplying here by params.WeightBreakingFeePortion as we didn't multiply in pool.SwapIn/OutGiveOut/In for weight breaking fee
-		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.WeightBreakingFeePortion)
+		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.GetBigDecWeightBreakingFeePortion())
 
 		if givenOut {
-			weightRecoveryFeeAmount = oracleInAmount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			weightRecoveryFeeAmount = osmomath.BigDecFromSDKInt(oracleInAmount).Mul(weightRecoveryFee).Dec().RoundInt()
 		} else {
-			weightRecoveryFeeAmount = tokenIn.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			weightRecoveryFeeAmount = osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(weightRecoveryFee).Dec().RoundInt()
 		}
 
 		if weightRecoveryFeeAmount.IsPositive() {
@@ -149,11 +150,11 @@ func (k Keeper) UpdatePoolForSwap(
 
 			// Track amount in pool
 			weightRecoveryFeeAmountForPool := sdkmath.ZeroInt()
-			weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(sdkmath.LegacyOneDec().Sub(params.WeightBreakingFeePortion))
+			weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(osmomath.OneBigDec().Sub(params.GetBigDecWeightBreakingFeePortion()))
 			if givenOut {
-				weightRecoveryFeeAmountForPool = oracleInAmount.ToLegacyDec().Mul(weightRecoveryFeeForPool).RoundInt()
+				weightRecoveryFeeAmountForPool = osmomath.BigDecFromSDKInt(oracleInAmount).Mul(weightRecoveryFeeForPool).Dec().RoundInt()
 			} else {
-				weightRecoveryFeeAmountForPool = tokenIn.Amount.ToLegacyDec().Mul(weightRecoveryFeeForPool).RoundInt()
+				weightRecoveryFeeAmountForPool = osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(weightRecoveryFeeForPool).Dec().RoundInt()
 			}
 			k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, weightRecoveryFeeAmountForPool))
 		}
@@ -170,9 +171,9 @@ func (k Keeper) UpdatePoolForSwap(
 
 		// bonus token amount is the tokenOut amount times weightBalanceBonus
 		if givenOut {
-			bonusTokenAmount = tokenOut.Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+			bonusTokenAmount = osmomath.BigDecFromSDKInt(tokenOut.Amount).Mul(weightBalanceBonus).Dec().TruncateInt()
 		} else {
-			bonusTokenAmount = oracleOutAmount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+			bonusTokenAmount = osmomath.BigDecFromSDKInt(oracleOutAmount).Mul(weightBalanceBonus).Dec().TruncateInt()
 		}
 
 		// if treasury balance is less than bonusTokenAmount, set bonusTokenAmount to treasury balance
@@ -194,7 +195,7 @@ func (k Keeper) UpdatePoolForSwap(
 
 	// convert the fees into USD
 	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins).String()
-	slippageAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.TruncateInt()).String()
+	slippageAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt()).String()
 	weightRecoveryFeeAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, weightRecoveryFeeAmount).String()
 	bonusTokenAmountInUSD := k.CalculateUSDValue(ctx, tokenOut.Denom, bonusTokenAmount).String()
 	takerFeesAmountInUSD := k.CalculateCoinsUSDValue(ctx, takerFeesInCoins).String()

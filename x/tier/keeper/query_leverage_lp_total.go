@@ -19,7 +19,7 @@ func (k Keeper) LeverageLpTotal(goCtx context.Context, req *types.QueryLeverageL
 	totalValue, totalBorrow, _ := k.RetrieveLeverageLpTotal(ctx, sender)
 
 	return &types.QueryLeverageLpTotalResponse{
-		TotalValue:   totalValue,
-		TotalBorrows: totalBorrow,
+		TotalValue:   totalValue.Dec(),
+		TotalBorrows: totalBorrow.Dec(),
 	}, nil
 }

@@ -7,7 +7,7 @@ toolchain go1.23.1
 require (
 	cosmossdk.io/api v0.7.6
 	cosmossdk.io/client/v2 v2.0.0-beta.7
-	cosmossdk.io/core v0.11.1
+	cosmossdk.io/core v0.12.0
 	cosmossdk.io/errors v1.0.1
 	cosmossdk.io/log v1.5.0
 	cosmossdk.io/math v1.4.0
@@ -29,6 +29,7 @@ require (
 	github.com/cosmos/ibc-go/v8 v8.7.0
 	github.com/cosmos/interchain-security/v6 v6.3.0
 	github.com/gorilla/mux v1.8.1
+	github.com/osmosis-labs/osmosis/osmomath v0.0.17
 	github.com/prometheus/client_golang v1.20.5 // indirect
 	github.com/spf13/cast v1.7.1
 	github.com/spf13/cobra v1.8.1
@@ -143,13 +144,13 @@ require (
 	github.com/gofrs/uuid/v5 v5.1.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.3 // indirect
-	github.com/golang/glog v1.2.3 // indirect
+	github.com/golang/glog v1.2.4 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
 	github.com/google/btree v1.1.3 // indirect
 	github.com/google/cel-go v0.20.1 // indirect
-	github.com/google/flatbuffers v2.0.8+incompatible // indirect
+	github.com/google/flatbuffers v23.5.26+incompatible // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/go-containerregistry v0.19.1 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
@@ -183,7 +184,7 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/jmhodges/levigo v1.0.0 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
-	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
@@ -271,6 +272,7 @@ require (
 )
 
 replace (
+	cosmossdk.io/core => cosmossdk.io/core v0.11.1
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
 	github.com/bandprotocol/bandchain-packet => github.com/elys-network/bandchain-packet v0.0.3-sdk47
 

@@ -1,13 +1,15 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	sdkmath "cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func NewPosition(signer string, collateral sdk.Coin, poolId uint64) *Position {
@@ -58,6 +60,18 @@ func (p Position) GetPositionAddress() sdk.AccAddress {
 	return GetPositionAddress(p.Id)
 }
 
-func (p Position) CheckStopLossReached(lpTokenPrice sdkmath.LegacyDec) bool {
-	return !p.StopLossPrice.IsNil() && lpTokenPrice.LTE(p.StopLossPrice)
+func (p Position) CheckStopLossReached(lpTokenPrice osmomath.BigDec) bool {
+	return !p.StopLossPrice.IsNil() && lpTokenPrice.LTE(osmomath.BigDecFromDec(p.StopLossPrice))
+}
+
+func (p Position) GetBigDecLeveragedLpAmount() osmomath.BigDec {
+	return osmomath.BigDecFromSDKInt(p.LeveragedLpAmount)
+}
+
+func (p Position) GetBigDecStopLossPrice() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.StopLossPrice)
+}
+
+func (p Position) GetBigDecLiabilities() osmomath.BigDec {
+	return osmomath.BigDecFromSDKInt(p.Liabilities)
 }

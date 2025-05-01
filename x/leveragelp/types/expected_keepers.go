@@ -9,6 +9,7 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -24,16 +25,16 @@ type AmmKeeper interface {
 	GetPool(sdk.Context, uint64) (ammtypes.Pool, bool)
 	// Get all pools
 	GetAllPool(sdk.Context) []ammtypes.Pool
-	ExitPoolEst(ctx sdk.Context, poolId uint64, shareInAmount sdkmath.Int, tokenOutDenom string) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, slippage sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, takerFeesFinal sdkmath.LegacyDec, err error)
-	JoinPoolEst(ctx sdk.Context, poolId uint64, tokenInMaxs sdk.Coins) (tokensIn sdk.Coins, sharesOut sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, takerFeesFinal sdkmath.LegacyDec, weightRewardAmount sdk.Coin, err error)
+	ExitPoolEst(ctx sdk.Context, poolId uint64, shareInAmount sdkmath.Int, tokenOutDenom string) (exitCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, err error)
+	JoinPoolEst(ctx sdk.Context, poolId uint64, tokenInMaxs sdk.Coins) (tokensIn sdk.Coins, sharesOut sdkmath.Int, slippage osmomath.BigDec, weightBalanceBonus osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, weightRewardAmount sdk.Coin, err error)
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
 	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
 	AddToPoolBalanceAndUpdateLiquidity(ctx sdk.Context, pool *ammtypes.Pool, addShares sdkmath.Int, coins sdk.Coins) error
-	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee sdkmath.LegacyDec) (sdk.Coin, sdkmath.LegacyDec, error)
-	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee sdkmath.LegacyDec) (tokenIn sdk.Coin, slippage sdkmath.LegacyDec, err error)
+	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee osmomath.BigDec) (sdk.Coin, osmomath.BigDec, error)
+	CalcInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee osmomath.BigDec) (tokenIn sdk.Coin, slippage osmomath.BigDec, err error)
 	JoinPoolNoSwap(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareOutAmount sdkmath.Int, tokenInMaxs sdk.Coins) (tokenIn sdk.Coins, sharesOut sdkmath.Int, err error)
-	ExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdkmath.Int, tokenOutMins sdk.Coins, tokenOutDenom string, isLiquidation, applyWeightBreakingFee bool) (exitCoins sdk.Coins, weightBalanceBonus sdkmath.LegacyDec, slippage sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, takerFeesFinal sdkmath.LegacyDec, err error)
+	ExitPool(ctx sdk.Context, sender sdk.AccAddress, poolId uint64, shareInAmount sdkmath.Int, tokenOutMins sdk.Coins, tokenOutDenom string, isLiquidation, applyWeightBreakingFee bool) (exitCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, err error)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
@@ -60,7 +61,7 @@ type StableStakeKeeper interface {
 	UpdateInterestAndGetDebt(ctx sdk.Context, addr sdk.AccAddress, poolId uint64, borrowingForPool uint64) stablestaketypes.Debt
 	Borrow(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64, borrowingForPool uint64) error
 	Repay(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coin, poolId uint64, repayingForPool uint64) error
-	TVL(ctx sdk.Context, poolId uint64) sdkmath.LegacyDec
+	TVL(ctx sdk.Context, poolId uint64) osmomath.BigDec
 	GetDebtWithoutUpdatedInterest(ctx sdk.Context, addr sdk.AccAddress, poolId uint64) stablestaketypes.Debt
 	GetPoolByDenom(ctx sdk.Context, denom string) (stablestaketypes.Pool, bool)
 	AddPoolLiabilities(ctx sdk.Context, id uint64, coin sdk.Coin)

@@ -1,10 +1,11 @@
-package types
+package utils
 
 import (
 	sdkmath "cosmossdk.io/math"
 	"fmt"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func ConditionalPanic(t *testing.T, expectPanic bool, sut func()) {

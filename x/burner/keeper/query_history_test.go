@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"strconv"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -26,24 +25,21 @@ func TestHistoryQuerySingle(t *testing.T) {
 		{
 			desc: "First",
 			request: &types.QueryGetHistoryRequest{
-				Timestamp: msgs[0].Timestamp,
-				Denom:     msgs[0].Denom,
+				Block: msgs[0].Block,
 			},
 			response: &types.QueryGetHistoryResponse{History: msgs[0]},
 		},
 		{
 			desc: "Second",
 			request: &types.QueryGetHistoryRequest{
-				Timestamp: msgs[1].Timestamp,
-				Denom:     msgs[1].Denom,
+				Block: msgs[1].Block,
 			},
 			response: &types.QueryGetHistoryResponse{History: msgs[1]},
 		},
 		{
 			desc: "KeyNotFound",
 			request: &types.QueryGetHistoryRequest{
-				Timestamp: strconv.Itoa(100000),
-				Denom:     strconv.Itoa(100000),
+				Block: 100000,
 			},
 			err: status.Error(codes.NotFound, "not found"),
 		},

@@ -1,12 +1,13 @@
 package keeper
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/utils"
 	"github.com/elys-network/elys/x/oracle/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // SetPrice set a specific price in the store from its index
@@ -102,39 +103,38 @@ func (k Keeper) MigrateAllLegacyPrices(ctx sdk.Context) {
 	return
 }
 
-func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (types.Price, bool) {
+func (k Keeper) GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool) {
 	// try out elys source
 	val, found := k.GetLatestPriceFromAssetAndSource(ctx, asset, types.ELYS)
 	if found {
-		return val, true
+		return osmomath.BigDecFromDec(val.Price), true
 	}
 
 	// try out band source
 	val, found = k.GetLatestPriceFromAssetAndSource(ctx, asset, types.BAND)
 	if found {
-		return val, true
+		return osmomath.BigDecFromDec(val.Price), true
 	}
 
 	// find from any source if band source does not exist
-	return k.GetLatestPriceFromAnySource(ctx, asset)
-}
-
-func Pow10(decimal uint64) (value sdkmath.LegacyDec) {
-	value = sdkmath.LegacyNewDec(1)
-	for i := 0; i < int(decimal); i++ {
-		value = value.Mul(sdkmath.LegacyNewDec(10))
+	price, found := k.GetLatestPriceFromAnySource(ctx, asset)
+	if found {
+		return osmomath.BigDecFromDec(price.Price), true
 	}
-	return
+	return osmomath.BigDec{}, false
 }
 
-func (k Keeper) GetAssetPriceFromDenom(ctx sdk.Context, denom string) sdkmath.LegacyDec {
+func (k Keeper) GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec {
 	info, found := k.GetAssetInfo(ctx, denom)
 	if !found {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 	price, found := k.GetAssetPrice(ctx, info.Display)
 	if !found {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
-	return price.Price.Quo(Pow10(info.Decimal))
+	if info.Decimal <= 18 {
+		return price.QuoInt64(utils.Pow10Int64(info.Decimal))
+	}
+	return price.Quo(utils.Pow10(info.Decimal))
 }
