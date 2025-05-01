@@ -28,14 +28,16 @@ func (k msgServer) Withdraw(goCtx context.Context, req *types.MsgWithdraw) (*typ
 	totalShares := k.bk.GetSupply(ctx, shareDenom).Amount
 	shareRatio := req.Shares.ToLegacyDec().Quo(totalShares.ToLegacyDec())
 
+	vaultAddress := types.NewVaultAddress(req.VaultId)
 	toSendCoins := sdk.NewCoins()
 	vault, found := k.GetVault(ctx, req.VaultId)
 	if !found {
 		return nil, types.ErrVaultNotFound
 	}
 	for _, coin := range vault.AllowedCoins {
-		amount := coin.Amount.ToLegacyDec().Mul(shareRatio).RoundInt()
-		toSendCoins = toSendCoins.Add(sdk.NewCoin(coin.Denom, amount))
+		balance := k.bk.GetBalance(ctx, vaultAddress, coin)
+		amount := balance.Amount.ToLegacyDec().Mul(shareRatio).RoundInt()
+		toSendCoins = toSendCoins.Add(sdk.NewCoin(coin, amount))
 	}
 
 	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, toSendCoins)
