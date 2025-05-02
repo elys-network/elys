@@ -96,7 +96,7 @@ func (p *Pool) JoinPool(
 ) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, takerFeesFinal sdkmath.LegacyDec, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
-		numShares, tokensJoined, err := p.CalcJoinPoolNoSwapShares(tokensIn)
+		numShares, tokensJoined, err := snapshot.CalcJoinPoolNoSwapShares(tokensIn)
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
