@@ -20,9 +20,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "History",
-					Use:            "show-history [timestamp] [denom]]",
+					Use:            "show-history [block]",
 					Short:          "show a history",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "timestamp"}, {ProtoField: "denom"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "block"}},
 				},
 				{
 					RpcMethod: "HistoryAll",

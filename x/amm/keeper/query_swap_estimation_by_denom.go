@@ -10,6 +10,7 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -33,13 +34,13 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", req.DenomIn)
 	}
 
-	inRoute, outRoute, amount, spotPrice, swapFee, discount, availableLiquidity, slippage, weightBonus, priceImpact, err := k.CalcSwapEstimationByDenom(ctx, req.Amount, req.DenomIn, req.DenomOut, baseCurrency, req.Address, sdkmath.LegacyZeroDec(), entry.Decimals)
+	inRoute, outRoute, amount, spotPrice, swapFee, discount, availableLiquidity, slippage, weightBonus, priceImpact, err := k.CalcSwapEstimationByDenom(ctx, req.Amount, req.DenomIn, req.DenomOut, baseCurrency, req.Address, osmomath.ZeroBigDec(), entry.Decimals)
 	if err != nil {
 		return nil, err
 	}
 	recoveryReward := sdkmath.ZeroInt()
 	if weightBonus.IsPositive() {
-		recoveryReward = amount.Amount.ToLegacyDec().Mul(weightBonus).TruncateInt()
+		recoveryReward = osmomath.BigDecFromSDKInt(amount.Amount).Mul(weightBonus).Dec().TruncateInt()
 	}
 	// Add weight balance amount here, not added in execution as out amount will be changed and that will impact the transfers
 	amount.Amount = amount.Amount.Add(recoveryReward)
@@ -51,13 +52,13 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 		InRoute:            inRoute,
 		OutRoute:           outRoute,
 		Amount:             amount,
-		SpotPrice:          spotPrice,
-		SwapFee:            swapFee,
-		Discount:           discount,
+		SpotPrice:          spotPrice.Dec(),
+		SwapFee:            swapFee.Dec(),
+		Discount:           discount.Dec(),
 		AvailableLiquidity: availableLiquidity,
-		Slippage:           slippage,
-		WeightBalanceRatio: weightBonus,
-		PriceImpact:        priceImpact,
+		Slippage:           slippage.Dec(),
+		WeightBalanceRatio: weightBonus.Dec(),
+		PriceImpact:        priceImpact.Dec(),
 		TakerFee:           takerFees,
 		// sdk.NewCoin() will panic in case of negative weightBonus
 		WeightBalanceRewardAmount: sdk.Coin{Denom: amount.Denom, Amount: recoveryReward},

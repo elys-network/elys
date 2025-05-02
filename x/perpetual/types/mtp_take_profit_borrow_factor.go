@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (mtp *MTP) UpdateMTPTakeProfitBorrowFactor() error {
@@ -9,28 +9,28 @@ func (mtp *MTP) UpdateMTPTakeProfitBorrowFactor() error {
 	if err != nil {
 		return err
 	}
-	mtp.TakeProfitBorrowFactor = takeProfitBorrowFactor
+	mtp.TakeProfitBorrowFactor = takeProfitBorrowFactor.Dec()
 	return nil
 }
 
-func (mtp MTP) CalcMTPTakeProfitBorrowFactor() (sdkmath.LegacyDec, error) {
+func (mtp MTP) CalcMTPTakeProfitBorrowFactor() (osmomath.BigDec, error) {
 	// Ensure mtp.Custody is not zero to avoid division by zero
 	if mtp.Custody.IsZero() {
-		return sdkmath.LegacyZeroDec(), ErrZeroCustodyAmount
+		return osmomath.ZeroBigDec(), ErrZeroCustodyAmount
 	}
 
 	// infinite for long, 0 for short
 	if IsTakeProfitPriceInfinite(mtp) || mtp.TakeProfitPrice.IsZero() {
-		return sdkmath.LegacyOneDec(), nil
+		return osmomath.OneBigDec(), nil
 	}
 
-	takeProfitBorrowFactor := sdkmath.LegacyOneDec()
+	takeProfitBorrowFactor := osmomath.OneBigDec()
 	if mtp.Position == Position_LONG {
 		// takeProfitBorrowFactor = 1 - (liabilities / (custody * take profit price))
-		takeProfitBorrowFactor = sdkmath.LegacyOneDec().Sub(mtp.Liabilities.ToLegacyDec().Quo(mtp.Custody.ToLegacyDec().Mul(mtp.TakeProfitPrice)))
+		takeProfitBorrowFactor = osmomath.OneBigDec().Sub(mtp.GetBigDecLiabilities().Quo(mtp.GetBigDecCustody().MulDec(mtp.TakeProfitPrice)))
 	} else {
 		// takeProfitBorrowFactor = 1 - ((liabilities  * take profit price) / custody)
-		takeProfitBorrowFactor = sdkmath.LegacyOneDec().Sub((mtp.Liabilities.ToLegacyDec().Mul(mtp.TakeProfitPrice)).Quo(mtp.Custody.ToLegacyDec()))
+		takeProfitBorrowFactor = osmomath.OneBigDec().Sub((mtp.GetBigDecLiabilities().MulDec(mtp.TakeProfitPrice)).Quo(mtp.GetBigDecCustody()))
 	}
 
 	return takeProfitBorrowFactor, nil

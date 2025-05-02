@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func NewPool(poolId uint64, maxLeverage sdkmath.LegacyDec) Pool {
@@ -42,4 +43,12 @@ func (p *Pool) UpdateAssetLeveragedAmount(ctx sdk.Context, denom string, amount 
 		newAssetLevAmounts = append(newAssetLevAmounts, asset)
 	}
 	p.AssetLeverageAmounts = newAssetLevAmounts
+}
+
+func (p Pool) GetBigDecLeveragedLpAmount() osmomath.BigDec {
+	return osmomath.BigDecFromSDKInt(p.LeveragedLpAmount)
+}
+
+func (p Pool) GetBigDecMaxLeveragelpRatio() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.MaxLeveragelpRatio)
 }

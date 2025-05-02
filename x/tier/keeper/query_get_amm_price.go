@@ -19,7 +19,7 @@ func (k Keeper) GetAmmPrice(goCtx context.Context, req *types.QueryGetAmmPriceRe
 
 	return &types.QueryGetAmmPriceResponse{
 		Result: &types.GetAmmPriceResponseResult{
-			Total: resp,
+			Total: resp.Dec(),
 		},
 	}, nil
 }

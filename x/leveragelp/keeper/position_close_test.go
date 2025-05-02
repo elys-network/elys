@@ -11,6 +11,7 @@ import (
 	"github.com/elys-network/elys/x/leveragelp/types"
 	stablestakekeeper "github.com/elys-network/elys/x/stablestake/keeper"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *KeeperTestSuite) OpenPosition(addr sdk.AccAddress) (*types.Position, math.LegacyDec, types.Pool) {
@@ -119,7 +120,7 @@ func (suite *KeeperTestSuite) TestForceCloseLong() {
 		Quo(math.LegacyNewDec(86400 * 365))).TruncateInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
-	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, osmomath.OneBigDec(), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.String(), repayAmountOut.String())
 }
@@ -138,7 +139,7 @@ func (suite *KeeperTestSuite) TestForceCloseLongWithNoFullRepayment() {
 		Quo(math.LegacyNewDec(86400 * 365))).RoundInt()
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365 * 5))
-	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec(), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, osmomath.OneBigDec(), false)
 	suite.Require().NoError(err)
 	suite.Require().Greater(repayAmount.String(), repayAmountOut.String())
 }
@@ -159,7 +160,7 @@ func (suite *KeeperTestSuite) TestForceCloseLongPartial() {
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour))
 	suite.SetCurrentHeight(suite.ctx.BlockHeight() + 1)
 	// close 50%
-	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, math.LegacyOneDec().QuoInt64(2), false)
+	_, _, _, repayAmountOut, _, _, _, _, _, _, _, err := k.CheckHealthStopLossThenRepayAndClose(suite.ctx, position, &pool, osmomath.OneBigDec().QuoInt64(2), false)
 	suite.Require().NoError(err)
 	suite.Require().Equal(repayAmount.Quo(math.NewInt(2)).String(), repayAmountOut.String())
 
@@ -177,7 +178,7 @@ func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 	health, err := k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "1.221000000000000000") // slippage enabled on amm
-	suite.Require().Equal("1.248428922744246025", health.String()) // slippage disabled on amm
+	suite.Require().Equal("1.248428922744246029301737955585596100", health.String()) // slippage disabled on amm
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Hour * 24 * 365))
 	suite.SetCurrentHeight(suite.ctx.BlockHeight() + 1)
@@ -186,7 +187,7 @@ func (suite *KeeperTestSuite) TestHealthDecreaseForInterest() {
 	health, err = k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
 	// suite.Require().Equal(health.String(), "0.610500000000000000") // slippage enabled on amm
-	suite.Require().Equal("1.166756002564715911", health.String()) // slippage disabled on amm
+	suite.Require().Equal("1.166756002564715915235269117369715981", health.String()) // slippage disabled on amm
 }
 
 // test positionHealth should be maxDec when liablities is zero
@@ -198,7 +199,7 @@ func (suite *KeeperTestSuite) TestPositionHealth() {
 	suite.Require().True(found)
 	health, err := k.GetPositionHealth(suite.ctx, *position)
 	suite.Require().NoError(err)
-	suite.Require().Equal("1.248428922744246025", health.String())
+	suite.Require().Equal("1.248428922744246029301737955585596100", health.String())
 
 	//setting position debt/liablities to zero
 	debt := suite.app.StablestakeKeeper.GetDebt(suite.ctx, position.GetPositionAddress(), position.BorrowPoolId)
@@ -209,5 +210,5 @@ func (suite *KeeperTestSuite) TestPositionHealth() {
 
 	//get position health
 	positionHealth, _ := suite.app.LeveragelpKeeper.GetPositionHealth(suite.ctx, *position)
-	suite.Require().Equal(math.LegacyMaxSortableDec, positionHealth)
+	suite.Require().Equal(osmomath.OneBigDec().Quo(osmomath.SmallestBigDec()), positionHealth)
 }

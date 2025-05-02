@@ -5,13 +5,13 @@ import (
 	"fmt"
 
 	storetypes "cosmossdk.io/core/store"
-
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/elys-network/elys/utils"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) CheckUserAuthorization(ctx sdk.Context, msg *types.MsgOpen) error {
@@ -51,9 +51,9 @@ func (k Keeper) CheckPoolHealth(ctx sdk.Context, poolId uint64) error {
 		return errorsmod.Wrapf(types.ErrPoolDoesNotExist, "amm pool: %d", poolId)
 	}
 
-	poolLeveragelpRatio := pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+	poolLeveragelpRatio := pool.GetBigDecLeveragedLpAmount().Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
 
-	if poolLeveragelpRatio.GT(pool.MaxLeveragelpRatio) {
+	if poolLeveragelpRatio.GT(pool.GetBigDecMaxLeveragelpRatio()) {
 		return errorsmod.Wrap(types.ErrMaxLeverageLpExists, "pool is unhealthy")
 	}
 	return nil
@@ -92,24 +92,24 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 			return nil, err
 		}
 
-		debtDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Collateral.Denom)
-		debtValue := position.Liabilities.ToLegacyDec().Mul(debtDenomPrice)
+		debtDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
+		debtValue := position.GetBigDecLiabilities().Mul(debtDenomPrice)
 
-		positionValue := position.LeveragedLpAmount.ToLegacyDec().Mul(ammTVL).Quo(ammPool.TotalShares.Amount.ToLegacyDec())
+		positionValue := position.GetBigDecLeveragedLpAmount().Mul(ammTVL).Quo(osmomath.BigDecFromSDKInt(ammPool.TotalShares.Amount))
 
-		updated_leverage := sdkmath.LegacyZeroDec()
+		updated_leverage := osmomath.ZeroBigDec()
 		denominator := positionValue.Sub(debtValue)
 		if denominator.IsPositive() {
 			updated_leverage = positionValue.Quo(denominator)
 		}
 		if debtValue.IsPositive() {
-			position.PositionHealth = positionValue.Quo(debtValue)
+			position.PositionHealth = positionValue.Quo(debtValue).Dec()
 		}
 
 		updatedLeveragePositions = append(updatedLeveragePositions, &types.QueryPosition{
 			Position:         position,
-			UpdatedLeverage:  updated_leverage,
-			PositionUsdValue: positionValue,
+			UpdatedLeverage:  updated_leverage.Dec(),
+			PositionUsdValue: positionValue.Dec(),
 		})
 	}
 	return updatedLeveragePositions, nil
@@ -117,7 +117,6 @@ func (k Keeper) GetLeverageLpUpdatedLeverage(ctx sdk.Context, positions []*types
 
 func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosition) ([]*types.PositionAndInterest, error) {
 	positions_and_interest := []*types.PositionAndInterest{}
-	hours := sdkmath.LegacyNewDec(365 * 24)
 
 	for _, position := range positions {
 		pool, found := k.stableKeeper.GetPoolByDenom(ctx, position.Position.Collateral.Denom)
@@ -127,10 +126,10 @@ func (k Keeper) GetInterestRateUsd(ctx sdk.Context, positions []*types.QueryPosi
 
 		var positionAndInterest types.PositionAndInterest
 		positionAndInterest.Position = position
-		price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, position.Position.Collateral.Denom)
-		interestRateHour := pool.InterestRate.Quo(hours)
-		positionAndInterest.InterestRateHour = interestRateHour
-		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(price).Mul(position.Position.Liabilities.ToLegacyDec())
+		price := k.oracleKeeper.GetDenomPrice(ctx, position.Position.Collateral.Denom)
+		interestRateHour := pool.GetBigDecInterestRate().Quo(utils.HoursInYear)
+		positionAndInterest.InterestRateHour = interestRateHour.Dec()
+		positionAndInterest.InterestRateHourUsd = interestRateHour.Mul(position.Position.GetBigDecLiabilities()).Mul(price).Dec()
 		positions_and_interest = append(positions_and_interest, &positionAndInterest)
 	}
 
@@ -154,7 +153,7 @@ func (k Keeper) MigratePositionHealth(ctx sdk.Context) {
 		if err == nil {
 			positionHealth, err := k.GetPositionHealth(ctx, position)
 			if err == nil {
-				position.PositionHealth = positionHealth
+				position.PositionHealth = positionHealth.Dec()
 				k.SetPosition(ctx, &position)
 			}
 		}
