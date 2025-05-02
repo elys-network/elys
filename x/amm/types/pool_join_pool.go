@@ -96,12 +96,14 @@ func (p *Pool) JoinPool(
 ) (tokensJoined sdk.Coins, numShares sdkmath.Int, slippage sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, swapFee sdkmath.LegacyDec, takerFeesFinal sdkmath.LegacyDec, err error) {
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
+		// We calculate based on snapshot, if there no accounted pool then it will be same as normal pool
 		numShares, tokensJoined, err := snapshot.CalcJoinPoolNoSwapShares(tokensIn)
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
 		}
 
 		// update pool with the calculated share and liquidity needed to join pool
+		// if it's accounted pool, we increase liquidity on the original pool
 		err = p.IncreaseLiquidity(numShares, tokensJoined)
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, sdkmath.LegacyDec{}, sdkmath.LegacyDec{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
