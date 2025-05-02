@@ -137,10 +137,7 @@ func (c Commitments) GetCreatorAccount() sdk.AccAddress {
 }
 
 func (vesting *VestingTokens) VestedSoFar(ctx sdk.Context) math.Int {
-	totalBlocks := ctx.BlockHeight() - vesting.StartBlock
-	if totalBlocks > vesting.NumBlocks {
-		totalBlocks = vesting.NumBlocks
-	}
+	totalBlocks := min(ctx.BlockHeight()-vesting.StartBlock, vesting.NumBlocks)
 	return vesting.TotalAmount.Mul(math.NewInt(totalBlocks)).Quo(math.NewInt(vesting.NumBlocks))
 }
 
