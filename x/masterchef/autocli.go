@@ -85,9 +85,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "Aprs",
-					Use:            "aprs",
+					Use:            "aprs [days]",
 					Short:          "Query aprs",
-					Example:        "elysd q masterchef aprs",
+					Example:        "elysd q masterchef aprs [days]",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "days"}},
 				},
 				{
