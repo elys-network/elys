@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func NewPool(ammPool ammtypes.Pool, leverageMax math.LegacyDec) Pool {
@@ -191,4 +192,16 @@ func (pool Pool) GetNetOpenInterest() math.Int {
 	netOpenInterest := totalLongOpenInterest.Sub(totalShortOpenInterest)
 
 	return netOpenInterest
+}
+
+func (p Pool) GetBigDecBorrowInterestRate() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.BorrowInterestRate)
+}
+
+func (p Pool) GetBigDecFundingRate() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.FundingRate)
+}
+
+func (p PoolAsset) GetBigDecLiabilities() osmomath.BigDec {
+	return osmomath.BigDecFromSDKInt(p.Liabilities)
 }

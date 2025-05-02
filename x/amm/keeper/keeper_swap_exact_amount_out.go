@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // InternalSwapExactAmountOut is a method for swapping to get an exact number of tokens out of a pool,
@@ -22,8 +23,8 @@ func (k Keeper) InternalSwapExactAmountOut(
 	tokenInDenom string,
 	tokenInMaxAmount math.Int,
 	tokenOut sdk.Coin,
-	swapFee math.LegacyDec,
-	takersFee math.LegacyDec,
+	swapFee osmomath.BigDec,
+	takersFee osmomath.BigDec,
 ) (tokenInAmount math.Int, err error) {
 	if tokenInDenom == tokenOut.Denom {
 		return math.Int{}, errors.New("cannot trade the same denomination in and out")
@@ -44,7 +45,7 @@ func (k Keeper) InternalSwapExactAmountOut(
 
 	params := k.GetParams(ctx)
 	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
-	tokenIn, _, slippageAmount, weightBalanceBonus, oracleInAmount, swapFee, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, math.LegacyOneDec(), params, takersFee)
+	tokenIn, _, slippageAmount, weightBalanceBonus, oracleInAmount, swapFee, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, osmomath.OneBigDec(), params, takersFee)
 	if err != nil {
 		return math.Int{}, err
 	}
@@ -58,13 +59,13 @@ func (k Keeper) InternalSwapExactAmountOut(
 		return math.Int{}, errorsmod.Wrapf(types.ErrLimitMaxAmount, "swap requires %s, which is greater than the amount %s", tokenIn, tokenInMaxAmount)
 	}
 
-	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, slippageAmount, oracleInAmount.TruncateInt(), math.ZeroInt(), weightBalanceBonus, takersFee, true)
+	err = k.UpdatePoolForSwap(ctx, pool, sender, recipient, tokenIn, tokenOut, swapFee, slippageAmount, oracleInAmount.Dec().TruncateInt(), math.ZeroInt(), weightBalanceBonus, takersFee, true)
 	if err != nil {
 		return math.Int{}, err
 	}
 
 	// track slippage
-	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, slippageAmount.RoundInt()))
+	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, slippageAmount.Dec().RoundInt()))
 
 	return tokenInAmount, nil
 }

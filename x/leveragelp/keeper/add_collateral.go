@@ -49,7 +49,7 @@ func (k Keeper) ProcessAddCollateral(ctx sdk.Context, address string, id uint64,
 	if err != nil {
 		return err
 	}
-	position.PositionHealth = positionHealth
+	position.PositionHealth = positionHealth.Dec()
 
 	// Update Liabilities
 	debt := k.stableKeeper.UpdateInterestAndGetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId, position.AmmPoolId)

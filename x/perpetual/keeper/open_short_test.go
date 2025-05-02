@@ -10,6 +10,7 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
@@ -53,7 +54,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpenShort() {
 			"pool does not exist",
 
 			func() {
-				ammPool = suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				ammPool = suite.CreateNewAmmPool(poolCreator, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 				poolId = ammPool.PoolId
 				enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 					Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),

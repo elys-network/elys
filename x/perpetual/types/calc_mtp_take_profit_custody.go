@@ -9,8 +9,8 @@ func CalcMTPTakeProfitCustody(mtp MTP) math.Int {
 		return math.ZeroInt()
 	}
 	if mtp.Position == Position_LONG {
-		return mtp.Liabilities.ToLegacyDec().Quo(mtp.TakeProfitPrice).TruncateInt()
+		return mtp.GetBigDecLiabilities().Quo(mtp.GetBigDecTakeProfitPrice()).Dec().TruncateInt()
 	} else {
-		return mtp.Liabilities.ToLegacyDec().Mul(mtp.TakeProfitPrice).TruncateInt()
+		return mtp.GetBigDecLiabilities().Mul(mtp.GetBigDecTakeProfitPrice()).Dec().TruncateInt()
 	}
 }
