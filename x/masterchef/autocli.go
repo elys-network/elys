@@ -84,10 +84,11 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Skip:      true, // use custom command
 				},
 				{
-					RpcMethod: "Aprs",
-					Use:       "aprs",
-					Short:     "Query aprs",
-					Example:   "elysd q masterchef aprs",
+					RpcMethod:      "Aprs",
+					Use:            "aprs",
+					Short:          "Query aprs",
+					Example:        "elysd q masterchef aprs",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "days"}},
 				},
 				{
 					RpcMethod: "AllLiquidityPoolTVL",

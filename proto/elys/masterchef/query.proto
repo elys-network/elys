@@ -279,7 +279,7 @@ message QueryAprResponse {
   ];
 }
 
-message QueryAprsRequest {}
+message QueryAprsRequest { uint64 days = 1; }
 
 message QueryAprsResponse {
   string usdc_apr_usdc = 1 [
