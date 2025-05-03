@@ -154,7 +154,6 @@ type AppKeepers struct {
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
-	ScopedOracleKeeper        capabilitykeeper.ScopedKeeper
 	ScopedCCVConsumerKeeper   capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
@@ -255,7 +254,6 @@ func NewAppKeeper(
 	app.ScopedICAHostKeeper = app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
 	app.ScopedICAControllerKeeper = app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 	app.ScopedTransferKeeper = app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
-	app.ScopedOracleKeeper = app.CapabilityKeeper.ScopeToModule(oracletypes.ModuleName)
 	app.ScopedCCVConsumerKeeper = app.CapabilityKeeper.ScopeToModule(ccvconsumertypes.ModuleName)
 	app.ScopedWasmKeeper = app.CapabilityKeeper.ScopeToModule(wasmTypes.ModuleName)
 
@@ -535,9 +533,6 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.IBCKeeper.ChannelKeeper,
-		app.IBCKeeper.PortKeeper,
-		app.ScopedOracleKeeper,
 	)
 
 	//app.OracleKeeper = oraclekeeper.NewKeeper(
