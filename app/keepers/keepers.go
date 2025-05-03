@@ -737,6 +737,7 @@ func NewAppKeeper(
 		app.TierKeeper,
 		app.AmmKeeper,
 		app.CommitmentKeeper,
+		app.AccountKeeper,
 	)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition

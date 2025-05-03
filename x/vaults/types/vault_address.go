@@ -14,6 +14,6 @@ func NewVaultAddress(vaultId uint64) sdk.AccAddress {
 
 func GetVaultIdModuleName(vaultId uint64) string {
 	vaultIdStr := strconv.FormatUint(vaultId, 10)
-	vaultIdModuleName := ModuleName + "/pool/account/" + vaultIdStr
+	vaultIdModuleName := ModuleName + "/account/" + vaultIdStr
 	return vaultIdModuleName
 }
