@@ -276,7 +276,6 @@ require (
 replace (
 	cosmossdk.io/core => cosmossdk.io/core v0.11.1
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
-	github.com/bandprotocol/bandchain-packet => github.com/elys-network/bandchain-packet v0.0.3-sdk47
 
 	// TODO: remove it: https://github.com/cosmos/cosmos-sdk/issues/13134
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.4.2
