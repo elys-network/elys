@@ -313,7 +313,7 @@ func (suite *AmmKeeperTestSuite) TestSwapExactAmountIn() {
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
-			tokenOut, err := suite.app.AmmKeeper.InternalSwapExactAmountIn(suite.ctx, sender, recipient, pool, tc.tokenIn, tc.tokenOut.Denom, tc.tokenOutMin, osmomath.BigDecFromDec(tc.swapFeeIn), osmomath.ZeroBigDec())
+			tokenOut, _, err := suite.app.AmmKeeper.InternalSwapExactAmountIn(suite.ctx, sender, recipient, pool, tc.tokenIn, tc.tokenOut.Denom, tc.tokenOutMin, osmomath.BigDecFromDec(tc.swapFeeIn), osmomath.ZeroBigDec())
 			if !tc.expPass {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.errMsg)
