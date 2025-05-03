@@ -20,16 +20,6 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/elys-network/elys/oracle/params";
   }
-  // BandPriceResult defines a rpc handler method for MsgRequestBandPrice.
-  rpc BandPriceResult(QueryBandPriceRequest) returns (QueryBandPriceResponse) {
-    option (google.api.http).get =
-        "/elys/oracle/band_price_result/{request_id}";
-  }
-  // LastBandRequestId query the last BandPrice result id
-  rpc LastBandRequestId(QueryLastBandRequestIdRequest)
-      returns (QueryLastBandRequestIdResponse) {
-    option (google.api.http).get = "/elys/oracle/last_band_price_request_id";
-  }
   // Queries a AssetInfo by denom.
   rpc AssetInfo(QueryGetAssetInfoRequest) returns (QueryGetAssetInfoResponse) {
     option (google.api.http).get =
@@ -72,14 +62,6 @@ message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
-
-message QueryBandPriceRequest { int64 request_id = 1; }
-
-message QueryBandPriceResponse { BandPriceResult result = 1; }
-
-message QueryLastBandRequestIdRequest {}
-
-message QueryLastBandRequestIdResponse { int64 request_id = 1; }
 
 message QueryGetAssetInfoRequest { string denom = 1; }
 
