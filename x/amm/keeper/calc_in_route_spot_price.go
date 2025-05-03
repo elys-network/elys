@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
@@ -74,6 +75,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		}
 
 		// Check treasury and update weightBalance
+		bonusTokenAmount := sdkmath.ZeroInt()
 		if weightBalanceBonus.IsPositive() {
 			// get treasury balance
 			rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
@@ -83,6 +85,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 
 			if treasuryTokenAmount.LT(bonusTokenAmount) {
 				weightBalanceBonus = osmomath.BigDecFromSDKInt(treasuryTokenAmount).Quo(oracleOutAmount)
+				bonusTokenAmount = treasuryTokenAmount
 			}
 		}
 
@@ -91,6 +94,10 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 
 		if tokenOut.IsZero() {
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrAmountTooLow
+		}
+
+		if bonusTokenAmount.IsPositive() {
+			tokenOut = sdk.NewCoin(tokenOut.Denom, tokenOut.Amount.Add(bonusTokenAmount))
 		}
 
 		// Use the current swap result as the input for the next iteration
@@ -107,7 +114,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 			poolAsset.Token.Amount = accAmount
 		}
 		availableLiquidity = poolAsset.Token
-		weightBalance = weightBalance.Add(weightBalanceBonus)
+		weightBalance = weightBalanceBonus
 		slippage = slippage.Add(swapSlippage)
 	}
 
