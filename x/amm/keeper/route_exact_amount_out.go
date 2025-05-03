@@ -81,9 +81,14 @@ func (k Keeper) RouteExactAmountOut(ctx sdk.Context,
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
-		_tokenInAmount, swapErr := k.InternalSwapExactAmountOut(ctx, sender, recipient, pool, route.TokenInDenom, insExpected[i], _tokenOut, swapFee, takersFee)
+		_tokenInAmount, weightBalanceReward, swapErr := k.InternalSwapExactAmountOut(ctx, sender, recipient, pool, route.TokenInDenom, insExpected[i], _tokenOut, swapFee, takersFee)
 		if swapErr != nil {
 			return math.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), swapErr
+		}
+
+		if weightBalanceReward.Amount.IsPositive() && weightBalanceReward.Denom == route.TokenInDenom {
+			// If the weight balance reward is positive, we need to add it to the tokenInAmount
+			tokenInAmount = tokenInAmount.Add(weightBalanceReward.Amount)
 		}
 
 		// Sets the final amount of tokens that need to be input into the first pool. Even though this is the final return value for the
