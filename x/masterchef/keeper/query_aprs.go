@@ -18,52 +18,72 @@ func (k Keeper) Aprs(goCtx context.Context, req *types.QueryAprsRequest) (*types
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	usdcAprUsdc, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_USDC_PROGRAM, Denom: ptypes.BaseCurrency})
+	usdcAprUsdc, err := k.CalculateApr(ctx, &types.QueryAprRequest{
+		WithdrawType: commitmenttypes.EarnType_USDC_PROGRAM, Denom: ptypes.BaseCurrency, Days: req.Days,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	edenAprUsdc, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_USDC_PROGRAM, Denom: ptypes.Eden})
+	edenAprUsdc, err := k.CalculateApr(ctx, &types.QueryAprRequest{
+		WithdrawType: commitmenttypes.EarnType_USDC_PROGRAM, Denom: ptypes.Eden, Days: req.Days,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	usdcAprEdenb, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDENB_PROGRAM, Denom: ptypes.BaseCurrency})
+	usdcAprEdenb, err := k.CalculateApr(ctx, &types.QueryAprRequest{
+		WithdrawType: commitmenttypes.EarnType_EDENB_PROGRAM, Denom: ptypes.BaseCurrency, Days: req.Days,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	edenAprEdenb, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDENB_PROGRAM, Denom: ptypes.Eden})
+	edenAprEdenb, err := k.CalculateApr(ctx, &types.QueryAprRequest{
+		WithdrawType: commitmenttypes.EarnType_EDENB_PROGRAM, Denom: ptypes.Eden, Days: req.Days,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	usdcAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.BaseCurrency})
+	usdcAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{
+		WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.BaseCurrency, Days: req.Days,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	edenAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.Eden})
+	edenAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{
+		WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.Eden, Days: req.Days,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	edenbAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.EdenB})
+	edenbAprEden, err := k.CalculateApr(ctx, &types.QueryAprRequest{
+		WithdrawType: commitmenttypes.EarnType_EDEN_PROGRAM, Denom: ptypes.EdenB, Days: req.Days,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	usdcAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.BaseCurrency})
+	usdcAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{
+		WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.BaseCurrency, Days: req.Days,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	edenAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.Eden})
+	edenAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{
+		WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.Eden, Days: req.Days,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	edenbAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.EdenB})
+	edenbAprElys, err := k.CalculateApr(ctx, &types.QueryAprRequest{
+		WithdrawType: commitmenttypes.EarnType_ELYS_PROGRAM, Denom: ptypes.EdenB, Days: req.Days,
+	})
 	if err != nil {
 		return nil, err
 	}
