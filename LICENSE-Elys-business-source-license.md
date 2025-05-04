@@ -1,11 +1,21 @@
-<p align="center"> Business Source License 1.1 – Elys Network  </p>
-
-<p align="center">**Licensor:** Elys Network PTE LTD (Singapore) and Elys Network Inc. (Panama), jointly   </p>
-<p align="center">**Licensed Work:** Elys Network Protocol  </p>
-<p align="center">**Copyright:** © 2025 Elys Network PTE LTD and Elys Network Inc.  </p>
-<p align="center">**Additional Use Grant:** Any uses listed and defined at grants.elys  </p>
-<p align="center">**Change Date:** The earlier of December 17, 2027 or a date specified at license-date.elys  </p>
-<p align="center">**Change License:** GNU General Public License v3.0  </p>
+Copyright (c) 2024 Elys Network PTE LTD and Elys Network Inc.</p>
+This License is based in part on the Business Source License (BSL) created by MariaDB Corporation Ab.
+Permission is granted to use, adapt, and redistribute the BSL license structure and text, provided that proper attribution is included and no modification is made to the core BSL terms outside the permitted parameters defined by MariaDB.
+Attribution:
+Portions of this License text are © MariaDB Corporation Ab.
+Licensed under their permissive reuse policy for the Business Source License.
+For more details, see https://mariadb.com/bsl.
+This License is not an Open Source license. However, the Licensed Work will eventually be made available under an Open Source License as stated in this License.
+<br>
+<br>
+--
+<p align="center">Business Source License 1.1 – Elys Network   
+<p align="center">**Licensor:** Elys Network PTE LTD (Singapore) and Elys Network Inc. (Panama), jointly   
+<p align="center">**Licensed Work:** Elys Network Protocol   
+<p align="center">**Copyright:** © 2025 Elys Network PTE LTD and Elys Network Inc.   
+<p align="center">**Additional Use Grant:** Any uses listed and defined at grants.elys   
+<p align="center">**Change Date:** The earlier of December 17, 2027 or a date specified at license-date.elys   
+<p align="center">**Change License:** GNU General Public License v3.0    
 
 ---
 
@@ -80,12 +90,16 @@
 ---
 
 **Covenants of Licensor**  
-To use the BSL name and format, the Licensor agrees:  
-1. To list GPL v3.0 or a compatible license as the Change License.  
-2. To define Additional Use Grants that do not reduce rights under this License.  
-3. To specify a Change Date.  
-4. Not to modify the BSL license text in any other way.
+     
+In consideration of the right to use this License’s text and the “Business Source License” name and trademark, Licensor covenants to MariaDB, and to all other recipients of the licensed work to be provided by Licensor:   
 
+1. To specify as the Change License the GPL Version 3.0 or a license that is compatible with GPL Version 3.0, where “compatible” means that software provided under the Change License can be included in a program with software provided under GPL Version 3.0. Licensor may specify additional Change Licenses without limitation.   
+
+2. To either: (a) specify an additional grant of rights to use that does not impose any additional restriction on the right granted in this License, as the Additional Use Grant; or (b) insert the text “None”.   
+
+3. To specify a Change Date.   
+
+4. Not to modify this License in any other way.
 
 **Notice**  
 This License is **not an open-source license**. The Licensed Work will become open-source under GPL v3.0 on or after the Change Date.
@@ -100,3 +114,7 @@ Elys Network Inc.
 World Trade Center 200-B, Suite 209  
 Calle 53 Este, Marbella  
 Panama, PA, 0832-1626
+
+---
+
+
