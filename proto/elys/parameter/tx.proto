@@ -22,6 +22,9 @@ service Msg {
       returns (MsgUpdateTotalBlocksPerYearResponse);
   rpc UpdateRewardsDataLifetime(MsgUpdateRewardsDataLifetime)
       returns (MsgUpdateRewardsDataLifetimeResponse);
+  rpc UpdateTakerFees(MsgUpdateTakerFees) returns (MsgUpdateTakerFeesResponse);
+  rpc UpdateTakerFeeCollectionAddress(MsgUpdateTakerFeeCollectionAddress)
+      returns (MsgUpdateTakerFeeCollectionAddressResponse);
 }
 message MsgUpdateMinCommission {
   option (cosmos.msg.v1.signer) = "creator";
@@ -79,3 +82,25 @@ message MsgUpdateRewardsDataLifetime {
 }
 
 message MsgUpdateRewardsDataLifetimeResponse {}
+
+message MsgUpdateTakerFees {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "parameter/MsgUpdateTakerFees";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string taker_fees = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgUpdateTakerFeesResponse {}
+
+message MsgUpdateTakerFeeCollectionAddress {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "parameter/MsgUpdateTakerFeeCollectionAddress";
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string taker_fee_collection_address = 2;
+}
+
+message MsgUpdateTakerFeeCollectionAddressResponse {}
