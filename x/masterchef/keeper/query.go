@@ -2,6 +2,9 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/types/query"
 
 	sdkmath "cosmossdk.io/math"
 
@@ -46,6 +49,42 @@ func (k Keeper) PoolInfo(goCtx context.Context, req *types.QueryPoolInfoRequest)
 	}
 
 	return &types.QueryPoolInfoResponse{PoolInfo: poolInfo, StableApr: stable_apr.Dec()}, nil
+}
+
+func (k Keeper) ListPoolInfos(goCtx context.Context, req *types.QueryListPoolInfosRequest) (*types.QueryListPoolInfosResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	poolStore := prefix.NewStore(store, types.PoolInfoKeyPrefix)
+
+	var list []types.QueryPoolInfoResponse
+
+	pageRes, err := query.Paginate(poolStore, req.Pagination, func(key []byte, value []byte) error {
+		var pool types.PoolInfo
+		if err := k.cdc.Unmarshal(value, &pool); err != nil {
+			return err
+		}
+
+		stable_apr := osmomath.ZeroBigDec()
+		if pool.PoolId >= stabletypes.UsdcPoolId {
+			borrowPool, found := k.stableKeeper.GetPool(ctx, pool.PoolId)
+			if found {
+				res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{PoolId: pool.PoolId})
+				if err == nil {
+					stable_apr = borrowPool.GetBigDecInterestRate().MulDec(res.BorrowRatio)
+				}
+			}
+		}
+
+		list = append(list, types.QueryPoolInfoResponse{PoolInfo: pool, StableApr: stable_apr.Dec()})
+
+		return nil
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryListPoolInfosResponse{List: list, Pagination: pageRes}, nil
 }
 
 func (k Keeper) PoolRewardInfo(goCtx context.Context, req *types.QueryPoolRewardInfoRequest) (*types.QueryPoolRewardInfoResponse, error) {
