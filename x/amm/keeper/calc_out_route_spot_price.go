@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
@@ -56,6 +57,7 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 
+		bonusTokenAmount := sdkmath.ZeroInt()
 		if weightBalanceBonus.IsPositive() {
 			rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 			treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
@@ -64,6 +66,7 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 
 			if treasuryTokenAmount.LT(bonusTokenAmount) {
 				weightBalanceBonus = osmomath.BigDecFromSDKInt(treasuryTokenAmount).Quo(osmomath.BigDecFromSDKInt(tokenOut.Amount))
+				bonusTokenAmount = treasuryTokenAmount
 			}
 		}
 
@@ -72,6 +75,10 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 
 		if swapResult.IsZero() {
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrAmountTooLow
+		}
+
+		if bonusTokenAmount.IsPositive() {
+			swapResult = sdk.NewCoin(swapResult.Denom, swapResult.Amount.Add(bonusTokenAmount))
 		}
 
 		// Use the current swap result as the input for the next iteration
@@ -83,7 +90,7 @@ func (k Keeper) CalcOutRouteSpotPrice(ctx sdk.Context, tokenOut sdk.Coin, routes
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 		availableLiquidity = poolAsset.Token
-		weightBonus = weightBonus.Add(weightBalanceBonus)
+		weightBonus = weightBalanceBonus
 		slippage = slippage.Add(swapSlippage)
 	}
 

@@ -46,11 +46,17 @@ func (k msgServer) Unbond(goCtx context.Context, msg *types.MsgUnbond) (*types.M
 	depositDenom := pool.GetDepositDenom()
 	balance := k.bk.GetBalance(ctx, moduleAddr, depositDenom)
 	borrowed := pool.NetAmount.Sub(balance.Amount)
-	borrowedRatio := (osmomath.BigDecFromSDKInt(borrowed).Quo(osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(redemptionAmount))))
-	if borrowedRatio.GT(pool.GetBigDecMaxWithdrawRatio()) {
-		return nil, errorsmod.Wrapf(types.ErrInvalidWithdraw, "borrowedRatio: %d", borrowedRatio)
+	if borrowed.IsNegative() {
+		return nil, errorsmod.Wrapf(types.ErrInvalidWithdraw, "negative borrowed amount while unbonding: %s", borrowed.String())
 	}
-
+	// in case borrowed is zero, it would mean the only user who bonded, is trying to take it out, so that's a valid case
+	// it also avoids 0/0 as redemptionAmount will be equal to pool.NetAmount
+	if borrowed.IsPositive() {
+		borrowedRatio := (osmomath.BigDecFromSDKInt(borrowed).Quo(osmomath.BigDecFromSDKInt(pool.NetAmount.Sub(redemptionAmount))))
+		if borrowedRatio.GT(pool.GetBigDecMaxWithdrawRatio()) {
+			return nil, errorsmod.Wrapf(types.ErrInvalidWithdraw, "borrowedRatio: %d", borrowedRatio)
+		}
+	}
 	redemptionCoin := sdk.NewCoin(depositDenom, redemptionAmount)
 	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, sdk.Coins{redemptionCoin})
 	if err != nil {

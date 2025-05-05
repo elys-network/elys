@@ -28,7 +28,7 @@ func (k Keeper) RouteExactAmountIn(
 
 	_, tier := k.tierKeeper.GetMembershipTier(ctx, sender)
 	discount := tier.Discount
-
+	var weightBalanceReward sdk.Coin
 	for i, route := range routes {
 		// recipient is the same as the sender until the last pool
 		actualRecipient := sender
@@ -63,10 +63,15 @@ func (k Keeper) RouteExactAmountIn(
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
-		tokenOutAmount, err = k.InternalSwapExactAmountIn(ctx, sender, actualRecipient, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee, takersFee)
+		tokenOutAmount, weightBalanceReward, err = k.InternalSwapExactAmountIn(ctx, sender, actualRecipient, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee, takersFee)
 		if err != nil {
 			ctx.Logger().Error(err.Error())
 			return math.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		}
+
+		if weightBalanceReward.Amount.IsPositive() && weightBalanceReward.Denom == route.TokenOutDenom {
+			// If the weight balance reward is positive, we need to add it to the tokenOutAmount
+			tokenOutAmount = tokenOutAmount.Add(weightBalanceReward.Amount)
 		}
 
 		// Chain output of current pool as the input for the next routed pool
