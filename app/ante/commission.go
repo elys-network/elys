@@ -54,6 +54,7 @@ func (min MinCommissionDecorator) getTotalBondedTokens(ctx sdk.Context) sdkmath.
 func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk.Context, delegateAmount sdkmath.LegacyDec) sdkmath.LegacyDec {
 
 	bondedAmt := min.getTotalBondedTokens(ctx).ToLegacyDec()
+	// If I am the first validator, then accept 100% voting power
 	if bondedAmt.LTE(sdkmath.LegacyZeroDec()) {
 		return sdkmath.LegacyZeroDec()
 	}
