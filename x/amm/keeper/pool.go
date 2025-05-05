@@ -18,7 +18,11 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	}
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
-	store.Set(types.PoolKey(pool.PoolId), b)
+	key := types.PoolKey(pool.PoolId)
+	store.Set(key, b)
+
+	tStore := prefix.NewStore(ctx.KVStore(k.transientStoreKey), types.KeyPrefix(types.PoolKeyPrefix))
+	tStore.Set(key, b)
 }
 
 func (k Keeper) SetLegacyPool(ctx sdk.Context, pool types.LegacyPool) {

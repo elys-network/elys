@@ -106,7 +106,7 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					TokenOutMinAmount: sdkmath.ZeroInt(),
 				},
 			},
-			expSwapOrder: []uint64{1, 0, 2},
+			expSwapOrder: []uint64{1, 2, 0},
 		},
 		{
 			desc:              "three requests combining different swap msg types",
