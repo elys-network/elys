@@ -93,7 +93,7 @@ func (app *ElysApp) setUpgradeStore() {
 		storeUpgrades := storetypes.StoreUpgrades{
 			//Added:   []string{},
 			//Renamed: []storetypes.StoreRename{},
-			//Deleted: []string{},
+			Deleted: []string{"itransferhook"},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 
