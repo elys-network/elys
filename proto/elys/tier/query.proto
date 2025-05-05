@@ -105,10 +105,11 @@ service Query {
     option (google.api.http).get = "/elys-network/elys/tier/get_all_prices";
   }
 
-   // Queries a list of Oracle prices from denoms.
+  // Queries a list of Oracle prices from denoms.
   rpc GetOraclePrices(QueryGetOraclePricesRequest)
-    returns (QueryGetOraclePricesResponse) {
-    option (google.api.http).get = "/elys-network/elys/tier/get_oracle_prices/{denoms}";
+      returns (QueryGetOraclePricesResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/tier/get_oracle_prices/{denoms}";
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
