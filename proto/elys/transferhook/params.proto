@@ -1,9 +1,0 @@
-syntax = "proto3";
-package elys.transferhook;
-
-import "gogoproto/gogo.proto";
-
-option go_package = "github.com/elys-network/elys/x/transferhook/types";
-
-// Params defines the parameters for the module.
-message Params { bool amm_active = 1; }

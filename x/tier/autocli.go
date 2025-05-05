@@ -99,6 +99,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "get-all-prices",
 					Short:     "Query get-all-prices",
 				},
+				{
+					RpcMethod:      "GetOraclePrices",
+					Use:            "get-oracle-prices [denoms]",
+					Short:          "Query get-oracle-prices",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denoms"}},
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
