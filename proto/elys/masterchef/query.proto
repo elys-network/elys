@@ -30,6 +30,11 @@ service Query {
   rpc PoolInfo(QueryPoolInfoRequest) returns (QueryPoolInfoResponse) {
     option (google.api.http).get = "/elys-network/elys/masterchef/pool_info";
   }
+  rpc ListPoolInfos(QueryListPoolInfosRequest)
+      returns (QueryListPoolInfosResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/masterchef/list_pool_infos";
+  }
   rpc PoolRewardInfo(QueryPoolRewardInfoRequest)
       returns (QueryPoolRewardInfoResponse) {
     option (google.api.http).get =
@@ -174,6 +179,15 @@ message QueryPoolInfoResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
+}
+
+message QueryListPoolInfosRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryListPoolInfosResponse {
+  repeated QueryPoolInfoResponse list = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryPoolRewardInfoRequest {

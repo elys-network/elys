@@ -197,7 +197,7 @@ func (k Keeper) GetAllSortedPerpetualOrder(ctx sdk.Context) (list [][]uint64, er
 
 // ExecuteLimitOpenOrder executes a limit open order
 func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	marketPrice, err := k.perpetual.GetAssetPrice(ctx, order.TradingAsset)
+	marketPrice, _, err := k.perpetual.GetAssetPriceAndAssetUsdcDenomRatio(ctx, order.TradingAsset)
 	if err != nil {
 		return err
 	}
@@ -246,7 +246,7 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 
 // ExecuteLimitCloseOrder executes a limit close order
 func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	marketPrice, err := k.perpetual.GetAssetPrice(ctx, order.TradingAsset)
+	marketPrice, _, err := k.perpetual.GetAssetPriceAndAssetUsdcDenomRatio(ctx, order.TradingAsset)
 	if err != nil {
 		return err
 	}

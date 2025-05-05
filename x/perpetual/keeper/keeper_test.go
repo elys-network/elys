@@ -61,6 +61,11 @@ var (
 			display: "ATOM",
 			price:   osmomath.MustNewBigDecFromStr("5.0"),
 		},
+		"wei": {
+			denom:   "wei",
+			display: "ETH",
+			price:   osmomath.MustNewBigDecFromStr("1500.0"),
+		},
 	}
 )
 
