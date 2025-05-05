@@ -5,9 +5,10 @@ package mocks
 import (
 	math "cosmossdk.io/math"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
-	osmomath "github.com/osmosis-labs/osmosis/osmomath"
 
 	mock "github.com/stretchr/testify/mock"
+
+	osmomath "github.com/osmosis-labs/osmosis/osmomath"
 
 	types "github.com/cosmos/cosmos-sdk/types"
 )

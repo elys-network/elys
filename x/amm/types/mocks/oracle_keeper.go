@@ -4,8 +4,9 @@ package mocks
 
 import (
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
-	"github.com/osmosis-labs/osmosis/osmomath"
 	mock "github.com/stretchr/testify/mock"
+
+	osmomath "github.com/osmosis-labs/osmosis/osmomath"
 
 	types "github.com/cosmos/cosmos-sdk/types"
 )
