@@ -344,12 +344,12 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 			},
 		},
 		{
-			"amm pool not found in transient store ",
+			"amount too low ",
 			sdk.NewCoin("uusdc", math.NewInt(100).MulRaw(1000_000_000_000)),
 			"uusdc",
 			ammtypes.Pool{PoolId: 1},
 			true,
-			"(uusdc) does not exist in the pool",
+			"amount too low",
 			func() {
 				suite.SetupCoinPrices(suite.ctx)
 				addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, math.NewInt(1000000))
