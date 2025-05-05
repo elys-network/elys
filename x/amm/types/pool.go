@@ -286,13 +286,14 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper,
+	snapshot Pool,
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
 	params Params,
 	takerFees osmomath.BigDec,
 	applyWeightBreakingFee bool,
 ) (exitedCoins sdk.Coins, weightBalanceBonus osmomath.BigDec, slippage osmomath.BigDec, swapFee osmomath.BigDec, takerFeesFinal osmomath.BigDec, slippageCoins sdk.Coins, err error) {
-	return CalcExitPool(ctx, oracleKeeper, *p, accountedPoolKeeper, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
+	return p.CalcExitPool(ctx, oracleKeeper, snapshot, accountedPoolKeeper, exitingShares, tokenOutDenom, params, takerFees, applyWeightBreakingFee)
 }
 
 func (p *Pool) TVL(ctx sdk.Context, oracleKeeper OracleKeeper, accountedPoolKeeper AccountedPoolKeeper) (osmomath.BigDec, error) {
