@@ -53,7 +53,7 @@ func (k Keeper) ExitPoolEst(
 
 	params := k.GetParams(ctx)
 	takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
-	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 	exitCoins, weightBalanceBonus, slippage, swapFee, takerFeesFinal, _, err = pool.CalcExitPoolCoinsFromShares(ctx, k.oracleKeeper, k.accountedPoolKeeper, snapshot, shareInAmount, tokenOutDenom, params, takerFees, true)
 	if err != nil {
 		return sdk.Coins{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err

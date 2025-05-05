@@ -44,7 +44,7 @@ func (k Keeper) InternalSwapExactAmountIn(
 	params := k.GetParams(ctx)
 	// Executes the swap in the pool and stores the output. Updates pool assets but
 	// does not actually transfer any tokens to or from the pool.
-	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 	tokenOutCoin, _, slippageAmount, weightBalanceBonus, oracleOutAmount, swapFee, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper, osmomath.OneBigDec(), params, takersFee)
 	if err != nil {
 		return math.Int{}, sdk.Coin{}, err

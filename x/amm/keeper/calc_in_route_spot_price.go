@@ -67,7 +67,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		swapFee = types.ApplyDiscount(swapFee, discount)
 
 		// Estimate swap
-		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 		cacheCtx, _ := ctx.CacheContext()
 		tokenOut, swapSlippage, _, weightBalanceBonus, oracleOutAmount, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, osmomath.OneBigDec(), takersFee)
 		if err != nil {
@@ -139,7 +139,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		}
 
 		// Estimate swap
-		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 		rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, &snapshot, tokenInDenom, tokenOutDenom, k.accountedPoolKeeper)
 		if err != nil {
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err

@@ -28,7 +28,7 @@ type AmmKeeper interface {
 	// Get all pools
 	GetAllPool(sdk.Context) []ammtypes.Pool
 
-	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
+	GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val ammtypes.Pool)
 
 	SwapOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee osmomath.BigDec, weightBreakingFeePerpetualFactor osmomath.BigDec, takersFee osmomath.BigDec) (tokenOut sdk.Coin, slippage osmomath.BigDec, slippageAmount osmomath.BigDec, weightBalanceBonus, oracleOut osmomath.BigDec, swapFeeFinal osmomath.BigDec, err error)
 	SwapInAmtGivenOut(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensOut sdk.Coins, tokenInDenom string, swapFee osmomath.BigDec, weightBreakingFeePerpetualFactor osmomath.BigDec, takersFee osmomath.BigDec) (tokenIn sdk.Coin, slippage, slippageAmount osmomath.BigDec, weightBalanceBonus, oracleIn osmomath.BigDec, swapFeeFinal osmomath.BigDec, err error)
