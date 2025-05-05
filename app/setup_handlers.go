@@ -60,6 +60,8 @@ func (app *ElysApp) setUpgradeHandler() {
 			ctx := sdk.UnwrapSDKContext(goCtx)
 			app.Logger().Info("Running upgrade handler for " + upgradeVersion)
 
+			app.AssetprofileKeeper.FixEntries(ctx)
+
 			vm, vmErr := app.mm.RunMigrations(ctx, app.configurator, vm)
 
 			//oracleParams := app.OracleKeeper.GetParams(ctx)
@@ -91,7 +93,7 @@ func (app *ElysApp) setUpgradeStore() {
 		storeUpgrades := storetypes.StoreUpgrades{
 			//Added:   []string{},
 			//Renamed: []storetypes.StoreRename{},
-			//Deleted: []string{},
+			Deleted: []string{"itransferhook"},
 		}
 		app.Logger().Info(fmt.Sprintf("Setting store loader with height %d and store upgrades: %+v\n", upgradeInfo.Height, storeUpgrades))
 

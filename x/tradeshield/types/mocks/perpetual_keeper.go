@@ -3,9 +3,10 @@
 package mocks
 
 import (
-	math "cosmossdk.io/math"
-	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	osmomath "github.com/osmosis-labs/osmosis/osmomath"
 	mock "github.com/stretchr/testify/mock"
+
+	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
 
 	query "github.com/cosmos/cosmos-sdk/types/query"
 
@@ -85,29 +86,29 @@ func (_c *PerpetualKeeper_Close_Call) RunAndReturn(run func(types.Context, *perp
 }
 
 // GetAssetPriceAndAssetUsdcDenomRatio provides a mock function with given fields: ctx, asset
-func (_m *PerpetualKeeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx types.Context, asset string) (math.LegacyDec, math.LegacyDec, error) {
+func (_m *PerpetualKeeper) GetAssetPriceAndAssetUsdcDenomRatio(ctx types.Context, asset string) (osmomath.BigDec, osmomath.BigDec, error) {
 	ret := _m.Called(ctx, asset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAssetPriceAndAssetUsdcDenomRatio")
 	}
 
-	var r0 math.LegacyDec
-	var r1 math.LegacyDec
+	var r0 osmomath.BigDec
+	var r1 osmomath.BigDec
 	var r2 error
-	if rf, ok := ret.Get(0).(func(types.Context, string) (math.LegacyDec, math.LegacyDec, error)); ok {
+	if rf, ok := ret.Get(0).(func(types.Context, string) (osmomath.BigDec, osmomath.BigDec, error)); ok {
 		return rf(ctx, asset)
 	}
-	if rf, ok := ret.Get(0).(func(types.Context, string) math.LegacyDec); ok {
+	if rf, ok := ret.Get(0).(func(types.Context, string) osmomath.BigDec); ok {
 		r0 = rf(ctx, asset)
 	} else {
-		r0 = ret.Get(0).(math.LegacyDec)
+		r0 = ret.Get(0).(osmomath.BigDec)
 	}
 
-	if rf, ok := ret.Get(1).(func(types.Context, string) math.LegacyDec); ok {
+	if rf, ok := ret.Get(1).(func(types.Context, string) osmomath.BigDec); ok {
 		r1 = rf(ctx, asset)
 	} else {
-		r1 = ret.Get(1).(math.LegacyDec)
+		r1 = ret.Get(1).(osmomath.BigDec)
 	}
 
 	if rf, ok := ret.Get(2).(func(types.Context, string) error); ok {
@@ -138,12 +139,12 @@ func (_c *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call) Run(run func
 	return _c
 }
 
-func (_c *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call) Return(_a0 math.LegacyDec, _a1 math.LegacyDec, _a2 error) *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call {
+func (_c *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call) Return(_a0 osmomath.BigDec, _a1 osmomath.BigDec, _a2 error) *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call {
 	_c.Call.Return(_a0, _a1, _a2)
 	return _c
 }
 
-func (_c *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call) RunAndReturn(run func(types.Context, string) (math.LegacyDec, math.LegacyDec, error)) *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call {
+func (_c *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call) RunAndReturn(run func(types.Context, string) (osmomath.BigDec, osmomath.BigDec, error)) *PerpetualKeeper_GetAssetPriceAndAssetUsdcDenomRatio_Call {
 	_c.Call.Return(run)
 	return _c
 }

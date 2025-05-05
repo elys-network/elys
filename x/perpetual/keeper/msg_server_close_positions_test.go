@@ -140,7 +140,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					PoolId:          firstPool,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -189,7 +189,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					PoolId:          firstPool,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyMustNewDecFromStr("2.00"),
 				}
 
@@ -241,7 +241,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 					PoolId:          firstPool,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyMustNewDecFromStr("2.00"),
 				}
 
@@ -250,7 +250,7 @@ func (suite *PerpetualKeeperTestSuite) TestClosePositions() {
 
 				suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 					Asset:     "ATOM",
-					Price:     tradingAssetPrice.MulInt64(4),
+					Price:     tradingAssetPrice.MulInt64(4).Dec(),
 					Source:    "elys",
 					Provider:  oracleProvider.String(),
 					Timestamp: uint64(suite.ctx.BlockTime().Unix()),

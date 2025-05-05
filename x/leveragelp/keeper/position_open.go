@@ -9,6 +9,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) OpenLong(ctx sdk.Context, msg *types.MsgOpen, borrowPool uint64) (*types.Position, error) {
@@ -69,7 +70,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, position *types.Position, msg *
 }
 
 func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolId uint64, msg *types.MsgOpen) (*types.Position, error) {
-	collateralAmountDec := sdkmath.LegacyNewDecFromInt(msg.CollateralAmount)
+	collateralAmountDec := osmomath.BigDecFromSDKInt(msg.CollateralAmount)
 
 	// Fetch the pool associated with the given pool ID.
 	pool, found := k.GetPool(ctx, poolId)
@@ -81,7 +82,7 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	leverage := sdkmath.LegacyMinDec(msg.Leverage, pool.LeverageMax)
 
 	// Calculate the leveraged amount based on the collateral provided and the leverage.
-	leveragedAmount := sdkmath.NewInt(collateralAmountDec.Mul(leverage).TruncateInt().Int64())
+	leveragedAmount := collateralAmountDec.MulDec(leverage).Dec().TruncateInt()
 
 	// send collateral coins to Position address from Position owner address
 	positionOwner := sdk.MustAccAddressFromBech32(position.Address)
@@ -125,10 +126,10 @@ func (k Keeper) ProcessOpenLong(ctx sdk.Context, position *types.Position, poolI
 	if err != nil {
 		return nil, err
 	}
-	position.PositionHealth = lr
+	position.PositionHealth = lr.Dec()
 
 	// Check if the Position is unhealthy
-	safetyFactor := k.GetSafetyFactor(ctx)
+	safetyFactor := osmomath.BigDecFromDec(k.GetSafetyFactor(ctx))
 	if lr.LTE(safetyFactor) {
 		return nil, types.ErrPositionUnhealthy
 	}

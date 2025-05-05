@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *AmmKeeperTestSuite) TestSlippageTrack() {
@@ -32,7 +33,7 @@ func (suite *AmmKeeperTestSuite) TestSlippageTrack() {
 				addr := suite.AddAccounts(1, nil)[0]
 
 				amount := math.NewInt(100000000000)
-				pool := suite.CreateNewAmmPool(addr, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				pool := suite.CreateNewAmmPool(addr, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 
 				_, err := suite.app.AmmKeeper.SlippageTrack(suite.ctx, &types.QuerySlippageTrackRequest{
 					PoolId: pool.PoolId,
@@ -76,7 +77,7 @@ func (suite *AmmKeeperTestSuite) TestSlippageTrackAll() {
 				addr := suite.AddAccounts(1, nil)[0]
 
 				amount := math.NewInt(100000000000)
-				_ = suite.CreateNewAmmPool(addr, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				_ = suite.CreateNewAmmPool(addr, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 
 				_, err := suite.app.AmmKeeper.SlippageTrackAll(suite.ctx, &types.QuerySlippageTrackAllRequest{})
 				suite.Require().NoError(err)

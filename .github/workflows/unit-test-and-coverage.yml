@@ -50,7 +50,6 @@ jobs:
           allow_coverages["STABLESTAKE"]="${{vars.STABLESTAKE}}"
           allow_coverages["TIER"]="${{vars.TIER}}"
           allow_coverages["TRADESHIELD"]="${{vars.TRADESHIELD}}"
-          allow_coverages["TRANSFERHOOK"]="${{vars.TRANSFERHOOK}}"
           allow_coverages["LEVERAGELP"]="${{vars.LEVERAGELP}}"
           allow_coverages["TOKENOMICS"]="${{vars.TOKENOMICS}}"
 
@@ -95,7 +94,6 @@ jobs:
           allow_coverages["STABLESTAKE"]="${{vars.STABLESTAKE_TYPES}}"
           allow_coverages["TIER"]="${{vars.TIER_TYPES}}"
           allow_coverages["TRADESHIELD"]="${{vars.TRADESHIELD_TYPES}}"
-          allow_coverages["TRANSFERHOOK"]="${{vars.TRANSFERHOOK_TYPES}}"
           allow_coverages["LEVERAGELP"]="${{vars.LEVERAGELP_TYPES}}"
           allow_coverages["TOKENOMICS"]="${{vars.TOKENOMICS_TYPES}}"
 

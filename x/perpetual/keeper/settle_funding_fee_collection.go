@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) FundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *types.Pool) (bool, math.Int, error) {
@@ -63,7 +64,7 @@ func (k Keeper) FundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *type
 		// short -> usdc
 		// long -> custody
 		// For short, takeAmountLiabilityAmount is in trading asset, need to convert to custody asset which is in usdc
-		takeAmountCustodyAmount = takeAmountLiabilityAmount.ToLegacyDec().Mul(tradingAssetPriceBaseDenomRatio).TruncateInt()
+		takeAmountCustodyAmount = osmomath.BigDecFromSDKInt(takeAmountLiabilityAmount).Mul(tradingAssetPriceBaseDenomRatio).Dec().TruncateInt()
 
 		if takeAmountCustodyAmount.GT(mtp.Custody) {
 			fullFundingFeePayment = false

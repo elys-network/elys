@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint64) error {
@@ -29,21 +29,21 @@ func (k Keeper) CheckLowPoolHealthAndMinimumCustody(ctx sdk.Context, poolId uint
 	return nil
 }
 
-func (k Keeper) CalculatePoolHealthByPosition(pool *types.Pool, ammPool ammtypes.Pool, position types.Position) math.LegacyDec {
+func (k Keeper) CalculatePoolHealthByPosition(pool *types.Pool, ammPool ammtypes.Pool, position types.Position) osmomath.BigDec {
 	poolAssets := pool.GetPoolAssets(position)
-	H := math.LegacyNewDec(1)
+	H := osmomath.NewBigDec(1)
 	for _, asset := range *poolAssets {
 
 		ammBalance, err := ammPool.GetAmmPoolBalance(asset.AssetDenom)
 		if err != nil {
-			return math.LegacyZeroDec()
+			return osmomath.ZeroBigDec()
 		}
 
-		balance := ammBalance.ToLegacyDec()
-		liabilities := asset.Liabilities.ToLegacyDec()
+		balance := osmomath.BigDecFromSDKInt(ammBalance)
+		liabilities := asset.GetBigDecLiabilities()
 
 		if balance.Add(liabilities).IsZero() {
-			return math.LegacyZeroDec()
+			return osmomath.ZeroBigDec()
 		}
 
 		mul := balance.Quo(balance.Add(liabilities))
@@ -52,10 +52,10 @@ func (k Keeper) CalculatePoolHealthByPosition(pool *types.Pool, ammPool ammtypes
 	return H
 }
 
-func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) math.LegacyDec {
+func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) osmomath.BigDec {
 	ammPool, found := k.amm.GetPool(ctx, pool.AmmPoolId)
 	if !found {
-		return math.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 
 	H := k.CalculatePoolHealthByPosition(pool, ammPool, types.Position_LONG)
@@ -65,7 +65,7 @@ func (k Keeper) CalculatePoolHealth(ctx sdk.Context, pool *types.Pool) math.Lega
 }
 
 func (k Keeper) UpdatePoolHealth(ctx sdk.Context, pool *types.Pool) error {
-	pool.Health = k.CalculatePoolHealth(ctx, pool)
+	pool.Health = k.CalculatePoolHealth(ctx, pool).Dec()
 	k.SetPool(ctx, *pool)
 
 	return nil
@@ -98,10 +98,10 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 	}
 	baseCurrency := entry.Denom
 
-	totalLiabilities := math.LegacyZeroDec()
+	totalLiabilities := osmomath.ZeroBigDec()
 	for _, poolAsset := range pool.PoolAssetsLong {
 		// for long, liabilities will always be in base currency
-		totalLiabilities = totalLiabilities.Add(poolAsset.Liabilities.ToLegacyDec())
+		totalLiabilities = totalLiabilities.Add(poolAsset.GetBigDecLiabilities())
 	}
 
 	tradingAsset := ""
@@ -119,8 +119,8 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 
 	for _, poolAsset := range pool.PoolAssetsShort {
 		// For short liabilities will be in trading asset
-		baseCurrencyAmt := poolAsset.Liabilities.ToLegacyDec().Mul(tradingAssetPriceInBaseUnits)
+		baseCurrencyAmt := poolAsset.GetBigDecLiabilities().Mul(tradingAssetPriceInBaseUnits)
 		totalLiabilities = totalLiabilities.Add(baseCurrencyAmt)
 	}
-	return sdk.NewCoin(baseCurrency, totalLiabilities.TruncateInt()), nil
+	return sdk.NewCoin(baseCurrency, totalLiabilities.Dec().TruncateInt()), nil
 }

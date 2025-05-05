@@ -5,6 +5,7 @@ package mocks
 import (
 	math "cosmossdk.io/math"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
+	osmomath "github.com/osmosis-labs/osmosis/osmomath"
 
 	mock "github.com/stretchr/testify/mock"
 
@@ -25,18 +26,18 @@ func (_m *AmmKeeper) EXPECT() *AmmKeeper_Expecter {
 }
 
 // CalcAmmPrice provides a mock function with given fields: ctx, denom, decimal
-func (_m *AmmKeeper) CalcAmmPrice(ctx types.Context, denom string, decimal uint64) math.LegacyDec {
+func (_m *AmmKeeper) CalcAmmPrice(ctx types.Context, denom string, decimal uint64) osmomath.BigDec {
 	ret := _m.Called(ctx, denom, decimal)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CalcAmmPrice")
 	}
 
-	var r0 math.LegacyDec
-	if rf, ok := ret.Get(0).(func(types.Context, string, uint64) math.LegacyDec); ok {
+	var r0 osmomath.BigDec
+	if rf, ok := ret.Get(0).(func(types.Context, string, uint64) osmomath.BigDec); ok {
 		r0 = rf(ctx, denom, decimal)
 	} else {
-		r0 = ret.Get(0).(math.LegacyDec)
+		r0 = ret.Get(0).(osmomath.BigDec)
 	}
 
 	return r0
@@ -62,29 +63,29 @@ func (_c *AmmKeeper_CalcAmmPrice_Call) Run(run func(ctx types.Context, denom str
 	return _c
 }
 
-func (_c *AmmKeeper_CalcAmmPrice_Call) Return(_a0 math.LegacyDec) *AmmKeeper_CalcAmmPrice_Call {
+func (_c *AmmKeeper_CalcAmmPrice_Call) Return(_a0 osmomath.BigDec) *AmmKeeper_CalcAmmPrice_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *AmmKeeper_CalcAmmPrice_Call) RunAndReturn(run func(types.Context, string, uint64) math.LegacyDec) *AmmKeeper_CalcAmmPrice_Call {
+func (_c *AmmKeeper_CalcAmmPrice_Call) RunAndReturn(run func(types.Context, string, uint64) osmomath.BigDec) *AmmKeeper_CalcAmmPrice_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // CalculateUSDValue provides a mock function with given fields: ctx, denom, amount
-func (_m *AmmKeeper) CalculateUSDValue(ctx types.Context, denom string, amount math.Int) math.LegacyDec {
+func (_m *AmmKeeper) CalculateUSDValue(ctx types.Context, denom string, amount math.Int) osmomath.BigDec {
 	ret := _m.Called(ctx, denom, amount)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CalculateUSDValue")
 	}
 
-	var r0 math.LegacyDec
-	if rf, ok := ret.Get(0).(func(types.Context, string, math.Int) math.LegacyDec); ok {
+	var r0 osmomath.BigDec
+	if rf, ok := ret.Get(0).(func(types.Context, string, math.Int) osmomath.BigDec); ok {
 		r0 = rf(ctx, denom, amount)
 	} else {
-		r0 = ret.Get(0).(math.LegacyDec)
+		r0 = ret.Get(0).(osmomath.BigDec)
 	}
 
 	return r0
@@ -110,12 +111,12 @@ func (_c *AmmKeeper_CalculateUSDValue_Call) Run(run func(ctx types.Context, deno
 	return _c
 }
 
-func (_c *AmmKeeper_CalculateUSDValue_Call) Return(_a0 math.LegacyDec) *AmmKeeper_CalculateUSDValue_Call {
+func (_c *AmmKeeper_CalculateUSDValue_Call) Return(_a0 osmomath.BigDec) *AmmKeeper_CalculateUSDValue_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *AmmKeeper_CalculateUSDValue_Call) RunAndReturn(run func(types.Context, string, math.Int) math.LegacyDec) *AmmKeeper_CalculateUSDValue_Call {
+func (_c *AmmKeeper_CalculateUSDValue_Call) RunAndReturn(run func(types.Context, string, math.Int) osmomath.BigDec) *AmmKeeper_CalculateUSDValue_Call {
 	_c.Call.Return(run)
 	return _c
 }

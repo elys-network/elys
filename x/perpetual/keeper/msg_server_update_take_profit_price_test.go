@@ -47,7 +47,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -78,7 +78,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -109,7 +109,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -140,7 +140,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 
@@ -179,7 +179,7 @@ func (suite *PerpetualKeeperTestSuite) TestUpdateTakeProfitPrice() {
 					PoolId:          ammPool.PoolId,
 					TradingAsset:    ptypes.ATOM,
 					Collateral:      sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(1000)),
-					TakeProfitPrice: tradingAssetPrice.MulInt64(4),
+					TakeProfitPrice: tradingAssetPrice.MulInt64(4).Dec(),
 					StopLossPrice:   math.LegacyZeroDec(),
 				}
 

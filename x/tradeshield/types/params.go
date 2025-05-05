@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // NewParams creates a new Params instance
@@ -54,4 +55,8 @@ func (p Params) Validate() error {
 		return fmt.Errorf("MinimumDeposit is negative")
 	}
 	return nil
+}
+
+func (p Params) GetBigDecTolerance() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.Tolerance)
 }

@@ -1,11 +1,13 @@
-package types
+package utils
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"errors"
 	"fmt"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"math"
 	"strconv"
+
+	sdkmath "cosmossdk.io/math"
 )
 
 func computeExp(x sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
@@ -16,13 +18,13 @@ func computeExp(x sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
 		return euler, nil
 	}
 	// exp(-42) is approx 5.7 x 10^-19, smallest dec possible is 10^-18
-	if x.LTE(sdkmath.LegacyNewDecFromInt(sdkmath.NewInt(-42))) {
+	if x.LTE(sdkmath.LegacyNewDec(-42)) {
 		return sdkmath.LegacyZeroDec(), nil
 	}
 
 	// Range reduction: x = k * ln(2) + y
 	k := x.Mul(inverseLn2).TruncateInt64()
-	y := x.Sub(sdkmath.LegacyNewDecFromInt(sdkmath.NewInt(k)).Mul(ln2))
+	y := x.Sub(sdkmath.LegacyNewDec(k).Mul(ln2))
 
 	expY := sdkmath.LegacyOneDec()
 	term := sdkmath.LegacyOneDec()
@@ -104,6 +106,7 @@ func computeLn(x sdkmath.LegacyDec) (result sdkmath.LegacyDec, err error) {
 }
 
 // powerApproximation Check exponentialLogarithmicMethod and maclaurinSeriesApproximation to understand the limits of this function
+// Power calculation is currently being used to calculate fees, having precision more than 18 decimal places is not that useful as it's as good as 0
 func powerApproximation(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) (sdkmath.LegacyDec, error) {
 	if !base.IsPositive() {
 		return sdkmath.LegacyDec{}, errors.New("base must be greater than 0")
@@ -133,7 +136,8 @@ func powerApproximation(base sdkmath.LegacyDec, exp sdkmath.LegacyDec) (sdkmath.
 	}
 
 	if exp.GT(sdkmath.LegacyOneDec()) {
-		return Pow(base, exp), nil
+		result := Pow(osmomath.BigDecFromDec(base), osmomath.BigDecFromDec(exp))
+		return result.Dec(), nil
 	}
 
 	if base.GTE(oneHalf) && base.LT(twoDec) {

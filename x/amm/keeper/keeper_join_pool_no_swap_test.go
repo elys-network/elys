@@ -4,6 +4,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *AmmKeeperTestSuite) TestJoinPoolNoSwap() {
@@ -26,7 +27,7 @@ func (suite *AmmKeeperTestSuite) TestJoinPoolNoSwap() {
 				suite.SetupCoinPrices()
 				addr := suite.AddAccounts(1, nil)
 				amount := sdkmath.NewInt(100000000000)
-				pool := suite.CreateNewAmmPool(addr[0], false, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), types.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				pool := suite.CreateNewAmmPool(addr[0], false, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 				return addr[0], 1, pool.TotalShares.Amount, sdk.Coins{sdk.NewCoin(types.ATOM, amount.MulRaw(10)), sdk.NewCoin(types.BaseCurrency, amount.MulRaw(10))}
 			},
 			"",
@@ -37,7 +38,7 @@ func (suite *AmmKeeperTestSuite) TestJoinPoolNoSwap() {
 				suite.SetupCoinPrices()
 				addr := suite.AddAccounts(1, nil)
 				amount := sdkmath.NewInt(100000000000)
-				pool := suite.CreateNewAmmPool(addr[0], true, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), types.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				pool := suite.CreateNewAmmPool(addr[0], true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 				return addr[0], 2, pool.TotalShares.Amount, sdk.Coins{sdk.NewCoin(types.ATOM, amount.MulRaw(10))}
 			},
 			"",
