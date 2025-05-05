@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"slices"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -182,10 +183,8 @@ func (msg *MsgCancelPerpetualOrders) ValidateBasic() error {
 	if len(msg.OrderIds) == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order IDs cannot be empty")
 	}
-	for _, id := range msg.OrderIds {
-		if id == 0 {
-			return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
-		}
+	if slices.Contains(msg.OrderIds, 0) {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
 	}
 
 	return nil

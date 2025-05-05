@@ -4,6 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (c Commitments) IsEmpty() bool {
@@ -141,4 +142,8 @@ func (vesting *VestingTokens) VestedSoFar(ctx sdk.Context) math.Int {
 		totalBlocks = vesting.NumBlocks
 	}
 	return vesting.TotalAmount.Mul(math.NewInt(totalBlocks)).Quo(math.NewInt(vesting.NumBlocks))
+}
+
+func (c CommittedTokens) GetBigDecAmount() osmomath.BigDec {
+	return osmomath.BigDecFromSDKInt(c.Amount)
 }

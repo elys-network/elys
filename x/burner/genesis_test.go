@@ -1,6 +1,7 @@
 package burner_test
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
 
 	keepertest "github.com/elys-network/elys/testutil/keeper"
@@ -16,12 +17,12 @@ func TestGenesis(t *testing.T) {
 
 		HistoryList: []types.History{
 			{
-				Timestamp: "0",
-				Denom:     "0",
+				Block:       1,
+				BurnedCoins: sdk.Coins{sdk.NewInt64Coin("uusdc", 1)},
 			},
 			{
-				Timestamp: "1",
-				Denom:     "1",
+				Block:       2,
+				BurnedCoins: sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 			},
 		},
 		// this line is used by starport scaffolding # genesis/test/state

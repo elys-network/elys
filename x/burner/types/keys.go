@@ -1,5 +1,7 @@
 package types
 
+import sdk "github.com/cosmos/cosmos-sdk/types"
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "burner"
@@ -9,9 +11,10 @@ const (
 )
 
 var (
-	ParamsKeyPrefix = []byte{0x01}
+	ParamsKeyPrefix  = []byte{0x01}
+	HistoryKeyPrefix = []byte{0x02}
 )
 
-func KeyPrefix(p string) []byte {
-	return []byte(p)
+func GetHistoryKey(block uint64) []byte {
+	return append(HistoryKeyPrefix, sdk.Uint64ToBigEndian(block)...)
 }

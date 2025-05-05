@@ -10,26 +10,19 @@ import (
 
 // SetHistory set a specific history in the store from its index
 func (k Keeper) SetHistory(ctx sdk.Context, history types.History) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.HistoryKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.HistoryKeyPrefix)
 	b := k.cdc.MustMarshal(&history)
-	store.Set(types.HistoryKey(
-		history.Timestamp,
-		history.Denom,
-	), b)
+	store.Set(types.GetHistoryKey(history.Block), b)
 }
 
 // GetHistory returns a history from its index
 func (k Keeper) GetHistory(
 	ctx sdk.Context,
-	timestamp string,
-	denom string,
+	block uint64,
 ) (val types.History, found bool) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.HistoryKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.HistoryKeyPrefix)
 
-	b := store.Get(types.HistoryKey(
-		timestamp,
-		denom,
-	))
+	b := store.Get(types.GetHistoryKey(block))
 	if b == nil {
 		return val, false
 	}
@@ -41,19 +34,15 @@ func (k Keeper) GetHistory(
 // RemoveHistory removes a history from the store
 func (k Keeper) RemoveHistory(
 	ctx sdk.Context,
-	timestamp string,
-	denom string,
+	block uint64,
 ) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.HistoryKeyPrefix))
-	store.Delete(types.HistoryKey(
-		timestamp,
-		denom,
-	))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.HistoryKeyPrefix)
+	store.Delete(types.GetHistoryKey(block))
 }
 
 // GetAllHistory returns all history
 func (k Keeper) GetAllHistory(ctx sdk.Context) (list []types.History) {
-	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.HistoryKeyPrefix))
+	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.HistoryKeyPrefix)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

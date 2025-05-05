@@ -19,17 +19,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:     "shows the parameters of the module",
 				},
 				{
-					RpcMethod:      "BandPriceResult",
-					Use:            "band-price-result [request-id]",
-					Short:          "Query the BandPrice result data by id",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "request_id"}},
-				},
-				{
-					RpcMethod: "LastBandRequestId",
-					Use:       "last-band-request-id",
-					Short:     "Query the last request id returned by BandPrice ack packet",
-				},
-				{
 					RpcMethod:      "AssetInfo",
 					Use:            "show-asset-info [denom]",
 					Short:          "shows a assetInfo",

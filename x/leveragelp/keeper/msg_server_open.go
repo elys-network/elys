@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
@@ -12,19 +13,14 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	enabledPools := k.GetParams(ctx).EnabledPools
-	found := false
-	for _, poolId := range enabledPools {
-		if poolId == msg.AmmPoolId {
-			found = true
-			break
-		}
-	}
+	found := slices.Contains(enabledPools, msg.AmmPoolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolNotEnabled, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
 	}
@@ -45,11 +41,11 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	depositDenom := borrowPool.GetDepositDenom()
 	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := borrowPool.NetAmount.Sub(balance.Amount)
-	borrowRatio := sdkmath.LegacyZeroDec()
+	borrowed := osmomath.BigDecFromSDKInt(borrowPool.NetAmount.Sub(balance.Amount))
+	borrowRatio := osmomath.ZeroBigDec()
 	if borrowPool.NetAmount.GT(sdkmath.ZeroInt()) {
-		borrowRatio = borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
-			Quo(borrowPool.NetAmount.ToLegacyDec())
+		borrowRatio = borrowed.Add(osmomath.BigDecFromDec(msg.Leverage).Mul(osmomath.BigDecFromSDKInt(msg.CollateralAmount))).
+			Quo(borrowPool.GetBigDecNetAmount())
 	}
 
 	ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
@@ -68,7 +64,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, errorsmod.Wrap(types.ErrAssetNotSupported, fmt.Sprintf("Asset: %s", msg.CollateralAsset))
 	}
 
-	if borrowRatio.GTE(borrowPool.MaxLeverageRatio) {
+	if borrowRatio.GTE(borrowPool.GetBigDecMaxLeverageRatio()) {
 		return nil, errors.New("stable stake pool max borrow capacity used up")
 	}
 

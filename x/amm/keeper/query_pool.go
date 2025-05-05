@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
-	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -18,14 +18,14 @@ func (k Keeper) PoolExtraInfo(ctx sdk.Context, pool types.Pool, days int) types.
 	tvl, _ := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	lpTokenPrice, _ := pool.LpTokenPriceForShare(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 	avg := k.GetWeightBreakingSlippageAvg(ctx, pool.PoolId, days)
-	apr := math.LegacyZeroDec()
+	apr := osmomath.ZeroBigDec()
 	if tvl.IsPositive() {
-		apr = avg.Mul(math.LegacyNewDec(365)).Quo(tvl)
+		apr = avg.Mul(osmomath.NewBigDec(365)).Quo(tvl)
 	}
 	return types.PoolExtraInfo{
-		Tvl:          tvl,
-		LpTokenPrice: lpTokenPrice,
-		LpSavedApr:   apr,
+		Tvl:          tvl.Dec(),
+		LpTokenPrice: lpTokenPrice.Dec(),
+		LpSavedApr:   apr.Dec(),
 	}
 }
 
