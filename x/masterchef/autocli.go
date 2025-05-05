@@ -34,6 +34,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_id"}},
 				},
 				{
+					RpcMethod: "ListPoolInfos",
+					Use:       "list-pool-infos",
+					Short:     "shows all pool infos",
+					Example:   "elysd q masterchef list-pool-infos",
+				},
+				{
 					RpcMethod:      "PoolRewardInfo",
 					Use:            "pool-reward-info [id] [reward-denom]",
 					Short:          "shows pool reward info",
