@@ -5,6 +5,7 @@ Attribution:
 Portions of this License text are © MariaDB Corporation Ab.
 Licensed under their permissive reuse policy for the Business Source License.
 For more details, see https://mariadb.com/bsl.
+
 This License is not an Open Source license. However, the Licensed Work will eventually be made available under an Open Source License as stated in this License.
 <br>
 <br>
@@ -13,28 +14,29 @@ This License is not an Open Source license. However, the Licensed Work will even
 <p align="center">**Licensor:** Elys Network PTE LTD (Singapore) and Elys Network Inc. (Panama), jointly   
 <p align="center">**Licensed Work:** Elys Network Protocol   
 <p align="center">**Copyright:** © 2025 Elys Network PTE LTD and Elys Network Inc.   
-<p align="center">**Additional Use Grant:** Any uses listed and defined at grants.elys   
-<p align="center">**Change Date:** The earlier of December 17, 2027 or a date specified at license-date.elys   
+<p align="center">**Additional Use Grant:** Any uses listed and defined at grants.elys.network   
+<p align="center">**Change Date:** December 17, 2027   
 <p align="center">**Change License:** GNU General Public License v3.0    
 
 ---
 
 **1. Ownership and Intellectual Property Rights**  
-(a) All intellectual property rights in the Licensed Work, including copyright, trademarks, patents, and trade secrets, are owned jointly by the Licensor.  
+(a) All intellectual property (IP) rights in the Licensed Work, including copyright, trademarks, patents, and trade secrets, are owned jointly by the Licensor.  
 (b) The Singapore Entity is the primary holder and administrator of all such rights.  
-(c) The Panama Entity is responsible solely for decentralized token deployment via governance-based smart contracts.  
+(c) The Panama Entity is responsible solely for decentralized token deployment via governance-based mechanisms.  
 (d) This dual-entity structure protects IP jurisdictionally and supports compliant decentralized governance.  
 (e) This License does not grant any rights to equity, ownership, tokens, or governance participation in either entity.
 
 **2. License Grant**  
-(a) The Licensor grants the Licensee the right to copy, modify, create derivative works, redistribute, and make non-production use of the Licensed Work.  
-(b) Production use is prohibited unless explicitly granted under an Additional Use Grant.  
-(c) “Production use” includes any live blockchain deployment, token use with real assets, or commercial application.  
-(d) All grants must be in writing and signed by both Elys Network PTE LTD and Elys Network Inc.
+(a) All grants must be in writing and signed by both Elys Network PTE LTD and Elys Network Inc.
+(b) The Licensor grants the Licensee the right to copy, modify, create derivative works, redistribute, and make non-production use of the Licensed Work.  
+(c) Production use is prohibited unless explicitly granted under an Additional Use Grant.  
+(d) “Production use” includes any live blockchain deployment, token use with real assets, or commercial application.  
+
 
 **3. Additional Use Grants**  
 (a) Additional Use Grants permit limited production use under specified conditions.  
-(b) All such grants must be published at **grants.elys**.  
+(b) All such grants must be published at **grants.elys.network**.  
 (c) Grants may only be issued jointly by both Licensor entities.  
 (d) Each Grant must state the entity, scope, restrictions, compensation (if any), and term.  
 (e) Grants may optionally be registered with IPOS (Singapore) to protect against conflicting rights.
@@ -44,7 +46,7 @@ This License is not an Open Source license. However, the Licensed Work will even
 (b) On the Change Date, the Licensed Work will be licensed under GPL v3.0.  
 (c) Use of the Licensed Work in violation of this License results in automatic termination.  
 (d) Sections 1, 7, 8, 9, and 10 survive termination.  
-(e) The protection period extends through **December 17, 2027**, unless updated via license-date.elys.
+(e) The protection period extends through **December 17, 2027**, unless updated.
 
 **5. Distribution and Modification**  
 (a) All original or modified copies of the Licensed Work must include this License.  
