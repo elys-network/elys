@@ -165,7 +165,7 @@ func (suite *AmmKeeperTestSuite) TestUpdatePoolForSwap() {
 			suite.app.AmmKeeper.SetPool(suite.ctx, pool)
 			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
-			err = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, sender, tc.tokenIn, tc.tokenOut, tc.swapFee, osmomath.ZeroBigDec(), tc.tokenIn.Amount, tc.tokenOut.Amount, tc.weightBalanceBonus, osmomath.ZeroBigDec(), false)
+			_, err = suite.app.AmmKeeper.UpdatePoolForSwap(suite.ctx, pool, sender, sender, tc.tokenIn, tc.tokenOut, tc.swapFee, osmomath.ZeroBigDec(), tc.tokenIn.Amount, tc.tokenOut.Amount, tc.weightBalanceBonus, osmomath.ZeroBigDec(), false)
 			if !tc.expPass {
 				suite.Require().Error(err)
 			} else {

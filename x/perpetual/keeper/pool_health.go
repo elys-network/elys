@@ -112,14 +112,14 @@ func (k Keeper) GetPoolTotalBaseCurrencyLiabilities(ctx sdk.Context, pool types.
 		}
 	}
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, tradingAsset)
+	_, tradingAssetPriceInBaseUnits, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, tradingAsset)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
 
 	for _, poolAsset := range pool.PoolAssetsShort {
 		// For short liabilities will be in trading asset
-		baseCurrencyAmt := poolAsset.GetBigDecLiabilities().Mul(tradingAssetPrice)
+		baseCurrencyAmt := poolAsset.GetBigDecLiabilities().Mul(tradingAssetPriceInBaseUnits)
 		totalLiabilities = totalLiabilities.Add(baseCurrencyAmt)
 	}
 	return sdk.NewCoin(baseCurrency, totalLiabilities.Dec().TruncateInt()), nil

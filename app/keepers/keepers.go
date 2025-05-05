@@ -106,9 +106,6 @@ import (
 	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
 	tradeshieldmodulekeeper "github.com/elys-network/elys/x/tradeshield/keeper"
 	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
-	"github.com/elys-network/elys/x/transferhook"
-	transferhookkeeper "github.com/elys-network/elys/x/transferhook/keeper"
-	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -154,7 +151,6 @@ type AppKeepers struct {
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
-	ScopedOracleKeeper        capabilitykeeper.ScopedKeeper
 	ScopedCCVConsumerKeeper   capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
@@ -167,7 +163,6 @@ type AppKeepers struct {
 	AmmKeeper           *ammmodulekeeper.Keeper
 	ParameterKeeper     parametermodulekeeper.Keeper
 	PerpetualKeeper     *perpetualmodulekeeper.Keeper
-	TransferhookKeeper  transferhookkeeper.Keeper
 	AccountedPoolKeeper accountedpoolmodulekeeper.Keeper
 	StablestakeKeeper   *stablestakekeeper.Keeper
 	LeveragelpKeeper    *leveragelpmodulekeeper.Keeper
@@ -255,7 +250,6 @@ func NewAppKeeper(
 	app.ScopedICAHostKeeper = app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
 	app.ScopedICAControllerKeeper = app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 	app.ScopedTransferKeeper = app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
-	app.ScopedOracleKeeper = app.CapabilityKeeper.ScopeToModule(oracletypes.ModuleName)
 	app.ScopedCCVConsumerKeeper = app.CapabilityKeeper.ScopeToModule(ccvconsumertypes.ModuleName)
 	app.ScopedWasmKeeper = app.CapabilityKeeper.ScopeToModule(wasmTypes.ModuleName)
 
@@ -535,9 +529,6 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[oracletypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.IBCKeeper.ChannelKeeper,
-		app.IBCKeeper.PortKeeper,
-		app.ScopedOracleKeeper,
 	)
 
 	//app.OracleKeeper = oraclekeeper.NewKeeper(
@@ -642,11 +633,6 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	app.TransferhookKeeper = *transferhookkeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[transferhooktypes.StoreKey]),
-		app.AmmKeeper)
-
 	// Configure the hooks keeper
 	hooksKeeper := ibchookskeeper.NewKeeper(
 		app.keys[ibchookstypes.StoreKey],
@@ -747,7 +733,6 @@ func NewAppKeeper(
 
 	var transferStack porttypes.IBCModule
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
-	transferStack = transferhook.NewIBCModule(app.TransferhookKeeper, transferStack)
 	// FIXME: ibccallbacks missing
 	// transferStack = ibccallbacks.NewIBCMiddleware(transferStack, app.IBCFeeKeeper, wasmStackIBCHandler, wasm.DefaultMaxIBCCallbackGas)
 	// transferICS4Wrapper := transferStack.(porttypes.ICS4Wrapper)
@@ -872,7 +857,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
 	paramsKeeper.Subspace(perpetualmoduletypes.ModuleName)
-	paramsKeeper.Subspace(transferhooktypes.ModuleName)
 	paramsKeeper.Subspace(stablestaketypes.ModuleName)
 	paramsKeeper.Subspace(leveragelpmoduletypes.ModuleName)
 	paramsKeeper.Subspace(masterchefmoduletypes.ModuleName)

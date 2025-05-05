@@ -22,7 +22,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 	poolCreator := addr[0]
 	positionCreator := addr[1]
 	poolId := uint64(1)
-	tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+	tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
 	suite.Require().NoError(err)
 

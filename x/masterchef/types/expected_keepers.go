@@ -78,7 +78,7 @@ type AmmKeeper interface {
 	GetAllPool(sdk.Context) []ammtypes.Pool
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
-	GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool ammtypes.Pool) (val ammtypes.Pool)
+	GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val ammtypes.Pool)
 
 	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee osmomath.BigDec) (sdk.Coin, osmomath.BigDec, error)
 	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) osmomath.BigDec
@@ -93,7 +93,7 @@ type AmmKeeper interface {
 		tokenOutMinAmount math.Int,
 		swapFee osmomath.BigDec,
 		takersFee osmomath.BigDec,
-	) (tokenOutAmount math.Int, err error)
+	) (tokenOutAmount math.Int, weightBalanceReward sdk.Coin, err error)
 	SwapByDenom(ctx sdk.Context, msg *ammtypes.MsgSwapByDenom) (*ammtypes.MsgSwapByDenomResponse, error)
 	CalculateCoinsUSDValue(ctx sdk.Context, coins sdk.Coins) osmomath.BigDec
 }

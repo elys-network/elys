@@ -54,7 +54,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 		}
 		// Executes the swap in the pool and stores the output. Updates pool assets but
 		// does not actually transfer any tokens to or from the pool.
-		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 		tokenOutCoin, _, slippageAmount, _, oracleOutAmount, _, err := pool.SwapOutAmtGivenIn(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenIn}, pool.PoolParams.FeeDenom, osmomath.ZeroBigDec(), k.accountedPoolKeeper, osmomath.OneBigDec(), params, takersFees)
 		if err != nil {
 			return err
@@ -68,7 +68,7 @@ func (k Keeper) SwapFeesToRevenueToken(ctx sdk.Context, pool types.Pool, fee sdk
 
 		// Settles balances between the tx sender and the pool to match the swap that was executed earlier.
 		// Also emits a swap event and updates related liquidity metrics.
-		err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, poolRevenueAddress, tokenIn, tokenOutCoin, osmomath.ZeroBigDec(), slippageAmount, sdkmath.ZeroInt(), oracleOutAmount.Dec().TruncateInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), false)
+		_, err = k.UpdatePoolForSwap(ctx, pool, poolRevenueAddress, poolRevenueAddress, tokenIn, tokenOutCoin, osmomath.ZeroBigDec(), slippageAmount, sdkmath.ZeroInt(), oracleOutAmount.Dec().TruncateInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), false)
 		if err != nil {
 			return err
 		}
