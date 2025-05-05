@@ -55,7 +55,7 @@ func (k Keeper) FundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *type
 			return fullFundingFeePayment, math.ZeroInt(), err
 		}
 
-		tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+		_, tradingAssetPriceBaseDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 		if err != nil {
 			return fullFundingFeePayment, math.ZeroInt(), err
 		}
@@ -64,7 +64,7 @@ func (k Keeper) FundingFeeCollection(ctx sdk.Context, mtp *types.MTP, pool *type
 		// short -> usdc
 		// long -> custody
 		// For short, takeAmountLiabilityAmount is in trading asset, need to convert to custody asset which is in usdc
-		takeAmountCustodyAmount = osmomath.BigDecFromSDKInt(takeAmountLiabilityAmount).Mul(tradingAssetPrice).Dec().TruncateInt()
+		takeAmountCustodyAmount = osmomath.BigDecFromSDKInt(takeAmountLiabilityAmount).Mul(tradingAssetPriceBaseDenomRatio).Dec().TruncateInt()
 
 		if takeAmountCustodyAmount.GT(mtp.Custody) {
 			fullFundingFeePayment = false

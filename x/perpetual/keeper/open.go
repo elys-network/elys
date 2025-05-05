@@ -36,7 +36,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	}
 
 	params := k.GetParams(ctx)
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, msg.TradingAsset)
+	tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, msg.TradingAsset)
 	if err != nil {
 		return nil, err
 	}

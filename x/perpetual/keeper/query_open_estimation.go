@@ -44,7 +44,6 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, err
 	}
 	availableLiquidity := sdk.NewCoin(req.TradingAsset, tradingAssetLiquidity)
-
 	// retrieve base currency denom
 	entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 	if !found {
@@ -65,17 +64,21 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		return nil, errorsmod.Wrap(types.ErrInvalidPosition, req.Position.String())
 	}
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, req.TradingAsset)
+	tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, req.TradingAsset)
 	if err != nil {
 		return nil, err
 	}
-
 	useLimitPrice := !req.LimitPrice.IsNil() && !req.LimitPrice.IsZero()
 
 	assetPriceAtOpen := tradingAssetPrice
 
+	var limitPriceDenomRatio osmomath.BigDec
 	if useLimitPrice {
 		assetPriceAtOpen = osmomath.BigDecFromDec(req.LimitPrice)
+		limitPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, req.TradingAsset, assetPriceAtOpen)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if req.Position == types.Position_LONG && osmomath.BigDecFromDec(req.TakeProfitPrice).LTE(assetPriceAtOpen) {
@@ -122,7 +125,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 			}
 			if useLimitPrice {
 				// leveragedAmount is collateral asset which is base currency, custodyAmount has to be in trading asset
-				custodyAmount = osmomath.BigDecFromSDKInt(leveragedAmount).Quo(osmomath.BigDecFromDec(req.LimitPrice)).Dec().TruncateInt()
+				custodyAmount = osmomath.BigDecFromSDKInt(leveragedAmount).Quo(limitPriceDenomRatio).Dec().TruncateInt()
 			}
 		}
 
@@ -135,7 +138,7 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 			}
 			if useLimitPrice {
 				// liabilities needs to be in base currency
-				liabilities = osmomath.BigDecFromSDKInt(amountIn).MulDec(req.LimitPrice).Dec().TruncateInt()
+				liabilities = osmomath.BigDecFromSDKInt(amountIn).Mul(limitPriceDenomRatio).Dec().TruncateInt()
 			}
 		}
 
@@ -151,14 +154,20 @@ func (k Keeper) HandleOpenEstimation(ctx sdk.Context, req *types.QueryOpenEstima
 		}
 		if useLimitPrice {
 			// liabilities needs to be in trading asset
-			liabilities = osmomath.BigDecFromSDKInt(amountOut).Quo(osmomath.BigDecFromDec(req.LimitPrice)).Dec().TruncateInt()
+			liabilities = osmomath.BigDecFromSDKInt(amountOut).Quo(limitPriceDenomRatio).Dec().TruncateInt()
 		}
 	}
 	mtp.Liabilities = liabilities
 	mtp.Custody = custodyAmount
 
-	mtp.TakeProfitCustody = types.CalcMTPTakeProfitCustody(*mtp)
+	mtp.TakeProfitCustody, err = k.CalcMTPTakeProfitCustody(ctx, *mtp)
+	if err != nil {
+		return nil, err
+	}
 	mtp.TakeProfitLiabilities, err = k.CalcMTPTakeProfitLiability(ctx, *mtp)
+	if err != nil {
+		return nil, err
+	}
 	mtp.TakeProfitPrice = req.TakeProfitPrice
 	mtp.GetAndSetOpenPrice()
 	executionPrice := mtp.GetBigDecOpenPrice()
