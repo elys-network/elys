@@ -41,7 +41,6 @@ import (
 	tiermoduletypes "github.com/elys-network/elys/x/tier/types"
 	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
 	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
-	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {
@@ -81,7 +80,6 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		ammmoduletypes.StoreKey,
 		parametermoduletypes.StoreKey,
 		perpetualmoduletypes.StoreKey,
-		transferhooktypes.StoreKey,
 		stablestaketypes.StoreKey,
 		leveragelpmoduletypes.StoreKey,
 		masterchefmoduletypes.StoreKey,
