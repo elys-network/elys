@@ -19,7 +19,7 @@ func (k Keeper) EstimatePrice(ctx sdk.Context, tokenInDenom, baseCurrency string
 
 	// Executes the swap in the pool and stores the output. Updates pool assets but
 	// does not actually transfer any tokens to or from the pool.
-	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 
 	rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, &snapshot, tokenInDenom, baseCurrency, k.accountedPoolKeeper)
 	if err != nil {
