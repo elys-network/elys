@@ -23,8 +23,6 @@ service Msg {
   rpc UpdateRewardsDataLifetime(MsgUpdateRewardsDataLifetime)
       returns (MsgUpdateRewardsDataLifetimeResponse);
   rpc UpdateTakerFees(MsgUpdateTakerFees) returns (MsgUpdateTakerFeesResponse);
-  rpc UpdateTakerFeeCollectionAddress(MsgUpdateTakerFeeCollectionAddress)
-      returns (MsgUpdateTakerFeeCollectionAddressResponse);
 }
 message MsgUpdateMinCommission {
   option (cosmos.msg.v1.signer) = "creator";
@@ -95,12 +93,3 @@ message MsgUpdateTakerFees {
 }
 
 message MsgUpdateTakerFeesResponse {}
-
-message MsgUpdateTakerFeeCollectionAddress {
-  option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "parameter/MsgUpdateTakerFeeCollectionAddress";
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string taker_fee_collection_address = 2;
-}
-
-message MsgUpdateTakerFeeCollectionAddressResponse {}

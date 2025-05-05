@@ -85,16 +85,3 @@ func (k msgServer) UpdateTakerFees(goCtx context.Context, msg *types.MsgUpdateTa
 	k.SetParams(ctx, params)
 	return &types.MsgUpdateTakerFeesResponse{}, nil
 }
-
-func (k msgServer) UpdateTakerFeeCollectionAddress(goCtx context.Context, msg *types.MsgUpdateTakerFeeCollectionAddress) (*types.MsgUpdateTakerFeeCollectionAddressResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	if k.authority != msg.Creator {
-		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, msg.Creator)
-	}
-
-	params := k.GetParams(ctx)
-	params.TakerFeeCollectionAddress = msg.TakerFeeCollectionAddress
-	k.SetParams(ctx, params)
-	return &types.MsgUpdateTakerFeeCollectionAddressResponse{}, nil
-}

@@ -24,7 +24,6 @@ type MsgClient interface {
 	UpdateTotalBlocksPerYear(ctx context.Context, in *MsgUpdateTotalBlocksPerYear, opts ...grpc.CallOption) (*MsgUpdateTotalBlocksPerYearResponse, error)
 	UpdateRewardsDataLifetime(ctx context.Context, in *MsgUpdateRewardsDataLifetime, opts ...grpc.CallOption) (*MsgUpdateRewardsDataLifetimeResponse, error)
 	UpdateTakerFees(ctx context.Context, in *MsgUpdateTakerFees, opts ...grpc.CallOption) (*MsgUpdateTakerFeesResponse, error)
-	UpdateTakerFeeCollectionAddress(ctx context.Context, in *MsgUpdateTakerFeeCollectionAddress, opts ...grpc.CallOption) (*MsgUpdateTakerFeeCollectionAddressResponse, error)
 }
 
 type msgClient struct {
@@ -89,15 +88,6 @@ func (c *msgClient) UpdateTakerFees(ctx context.Context, in *MsgUpdateTakerFees,
 	return out, nil
 }
 
-func (c *msgClient) UpdateTakerFeeCollectionAddress(ctx context.Context, in *MsgUpdateTakerFeeCollectionAddress, opts ...grpc.CallOption) (*MsgUpdateTakerFeeCollectionAddressResponse, error) {
-	out := new(MsgUpdateTakerFeeCollectionAddressResponse)
-	err := c.cc.Invoke(ctx, "/elys.parameter.Msg/UpdateTakerFeeCollectionAddress", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -108,7 +98,6 @@ type MsgServer interface {
 	UpdateTotalBlocksPerYear(context.Context, *MsgUpdateTotalBlocksPerYear) (*MsgUpdateTotalBlocksPerYearResponse, error)
 	UpdateRewardsDataLifetime(context.Context, *MsgUpdateRewardsDataLifetime) (*MsgUpdateRewardsDataLifetimeResponse, error)
 	UpdateTakerFees(context.Context, *MsgUpdateTakerFees) (*MsgUpdateTakerFeesResponse, error)
-	UpdateTakerFeeCollectionAddress(context.Context, *MsgUpdateTakerFeeCollectionAddress) (*MsgUpdateTakerFeeCollectionAddressResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -133,9 +122,6 @@ func (UnimplementedMsgServer) UpdateRewardsDataLifetime(context.Context, *MsgUpd
 }
 func (UnimplementedMsgServer) UpdateTakerFees(context.Context, *MsgUpdateTakerFees) (*MsgUpdateTakerFeesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateTakerFees not implemented")
-}
-func (UnimplementedMsgServer) UpdateTakerFeeCollectionAddress(context.Context, *MsgUpdateTakerFeeCollectionAddress) (*MsgUpdateTakerFeeCollectionAddressResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateTakerFeeCollectionAddress not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -258,24 +244,6 @@ func _Msg_UpdateTakerFees_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateTakerFeeCollectionAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateTakerFeeCollectionAddress)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).UpdateTakerFeeCollectionAddress(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/elys.parameter.Msg/UpdateTakerFeeCollectionAddress",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateTakerFeeCollectionAddress(ctx, req.(*MsgUpdateTakerFeeCollectionAddress))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -306,10 +274,6 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateTakerFees",
 			Handler:    _Msg_UpdateTakerFees_Handler,
-		},
-		{
-			MethodName: "UpdateTakerFeeCollectionAddress",
-			Handler:    _Msg_UpdateTakerFeeCollectionAddress_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
