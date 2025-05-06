@@ -197,19 +197,19 @@ func (k Keeper) GetAllSortedPerpetualOrder(ctx sdk.Context) (list [][]uint64, er
 
 // ExecuteLimitOpenOrder executes a limit open order
 func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	marketPrice, err := k.perpetual.GetAssetPrice(ctx, order.TradingAsset)
+	marketPrice, _, err := k.perpetual.GetAssetPriceAndAssetUsdcDenomRatio(ctx, order.TradingAsset)
 	if err != nil {
 		return err
 	}
 
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
-		if marketPrice.GT(order.TriggerPrice) {
+		if marketPrice.GT(order.GetBigDecTriggerPrice()) {
 			// skip the order
 			return nil
 		}
 	case types.PerpetualPosition_SHORT:
-		if marketPrice.LT(order.TriggerPrice) {
+		if marketPrice.LT(order.GetBigDecTriggerPrice()) {
 			// skip the order
 			return nil
 		}
@@ -246,19 +246,19 @@ func (k Keeper) ExecuteLimitOpenOrder(ctx sdk.Context, order types.PerpetualOrde
 
 // ExecuteLimitCloseOrder executes a limit close order
 func (k Keeper) ExecuteLimitCloseOrder(ctx sdk.Context, order types.PerpetualOrder) error {
-	marketPrice, err := k.perpetual.GetAssetPrice(ctx, order.TradingAsset)
+	marketPrice, _, err := k.perpetual.GetAssetPriceAndAssetUsdcDenomRatio(ctx, order.TradingAsset)
 	if err != nil {
 		return err
 	}
 
 	switch order.Position {
 	case types.PerpetualPosition_LONG:
-		if marketPrice.LT(order.TriggerPrice) {
+		if marketPrice.LT(order.GetBigDecTriggerPrice()) {
 			// skip the order
 			return nil
 		}
 	case types.PerpetualPosition_SHORT:
-		if marketPrice.GT(order.TriggerPrice) {
+		if marketPrice.GT(order.GetBigDecTriggerPrice()) {
 			// skip the order
 			return nil
 		}

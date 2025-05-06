@@ -17,6 +17,7 @@ import (
 	oracletypes "github.com/elys-network/elys/x/oracle/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -24,7 +25,7 @@ import (
 type assetPriceInfo struct {
 	denom   string
 	display string
-	price   math.LegacyDec
+	price   osmomath.BigDec
 }
 
 const (
@@ -36,22 +37,22 @@ var (
 		"uusdc": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   math.LegacyOneDec(),
+			price:   osmomath.OneBigDec(),
 		},
 		"uusdt": {
 			denom:   "uusdt",
 			display: "USDT",
-			price:   math.LegacyOneDec(),
+			price:   osmomath.OneBigDec(),
 		},
 		"uelys": {
 			denom:   ptypes.Elys,
 			display: "ELYS",
-			price:   math.LegacyMustNewDecFromStr("3.0"),
+			price:   osmomath.MustNewBigDecFromStr("3.0"),
 		},
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
-			price:   math.LegacyMustNewDecFromStr("6.0"),
+			price:   osmomath.MustNewBigDecFromStr("6.0"),
 		},
 	}
 )
@@ -164,7 +165,7 @@ func (suite *KeeperTestSuite) SetupCoinPrices(ctx sdk.Context) {
 		})
 		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
 			Asset:     v.display,
-			Price:     v.price,
+			Price:     v.price.Dec(),
 			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(ctx.BlockTime().Unix()),
@@ -184,7 +185,7 @@ func (suite *KeeperTestSuite) AddCoinPrices(ctx sdk.Context, denoms []string) {
 		})
 		suite.app.OracleKeeper.SetPrice(ctx, oracletypes.Price{
 			Asset:     priceMap[v].display,
-			Price:     priceMap[v].price,
+			Price:     priceMap[v].price.Dec(),
 			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(ctx.BlockTime().Unix()),
@@ -343,12 +344,12 @@ func (suite *KeeperTestSuite) TestEstimateSwapGivenOut() {
 			},
 		},
 		{
-			"amm pool not found in transient store ",
+			"amount too low ",
 			sdk.NewCoin("uusdc", math.NewInt(100).MulRaw(1000_000_000_000)),
 			"uusdc",
 			ammtypes.Pool{PoolId: 1},
 			true,
-			"(uusdc) does not exist in the pool",
+			"amount too low",
 			func() {
 				suite.SetupCoinPrices(suite.ctx)
 				addresses := simapp.AddTestAddrs(suite.app, suite.ctx, 10, math.NewInt(1000000))
@@ -390,19 +391,19 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 	testCases := []struct {
 		name                 string
 		prerequisiteFunction func()
-		expectedValue        math.LegacyDec
+		expectedValue        osmomath.BigDec
 	}{
 		{
 			"amm pool not found",
 			func() {},
-			math.LegacyZeroDec(),
+			osmomath.ZeroBigDec(),
 		},
 		{
 			"amm pool shares is  0",
 			func() {
 				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			math.LegacyOneDec(),
+			osmomath.OneBigDec(),
 		},
 		{
 			"success",
@@ -410,7 +411,7 @@ func (suite *KeeperTestSuite) TestCalculatePoolHealth() {
 				ammPool.TotalShares = sdk.NewCoin("shares", totalShares)
 				app.AmmKeeper.SetPool(ctx, ammPool)
 			},
-			(totalShares.Sub(leveragelpAmount)).ToLegacyDec().QuoInt(totalShares),
+			osmomath.BigDecFromSDKInt(totalShares.Sub(leveragelpAmount)).Quo(osmomath.BigDecFromSDKInt(totalShares)),
 		},
 	}
 

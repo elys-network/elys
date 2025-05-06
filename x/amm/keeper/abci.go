@@ -5,19 +5,19 @@ import (
 	"strings"
 	"time"
 
-	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"github.com/elys-network/elys/x/amm/types"
 )
 
-func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) sdkmath.LegacyDec {
+func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) osmomath.BigDec {
 	pool, found := k.GetPool(ctx, poolId)
 	if !found {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
-	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 	return pool.StackedRatioFromSnapshot(ctx, k.oracleKeeper, &snapshot)
 }
 

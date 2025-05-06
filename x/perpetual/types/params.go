@@ -7,6 +7,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // NewParams creates a new Params instance
@@ -133,4 +134,40 @@ func containsDuplicates(arr []uint64) bool {
 		valueMap[num] = struct{}{}
 	}
 	return false
+}
+
+func (p Params) GetBigDecFixedFundingRate() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.FixedFundingRate)
+}
+
+func (p Params) GetBigDecPerpetualSwapFee() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.PerpetualSwapFee)
+}
+
+func (p Params) GetBigDecWeightBreakingFeeFactor() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.WeightBreakingFeeFactor)
+}
+
+func (p Params) GetBigDecMinimumLongTakeProfitPriceRatio() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.MinimumLongTakeProfitPriceRatio)
+}
+
+func (p Params) GetBigDecMaximumLongTakeProfitPriceRatio() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.MaximumLongTakeProfitPriceRatio)
+}
+
+func (p Params) GetBigDecMaximumShortTakeProfitPriceRatio() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.MaximumShortTakeProfitPriceRatio)
+}
+
+func (p Params) GetBigDecSafetyFactor() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.SafetyFactor)
+}
+
+func (p Params) GetBigDecBorrowInterestRateMin() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.BorrowInterestRateMin)
+}
+
+func (p Params) GetBigDecBorrowInterestPaymentFundPercentage() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.BorrowInterestPaymentFundPercentage)
 }

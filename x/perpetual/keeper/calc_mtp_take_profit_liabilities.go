@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	"errors"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
 )
@@ -12,7 +13,8 @@ func (k Keeper) CalcMTPTakeProfitLiability(ctx sdk.Context, mtp types.MTP) (math
 		return math.ZeroInt(), nil
 	}
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	// tradingAssetPriceDenomRatio will also be 0 when tradingAssetPrice is 0
+	_, tradingAssetPriceDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 	if err != nil {
 		return math.ZeroInt(), err
 	}
@@ -21,14 +23,14 @@ func (k Keeper) CalcMTPTakeProfitLiability(ctx sdk.Context, mtp types.MTP) (math
 	if mtp.Position == types.Position_LONG {
 		// convert custody amount to base currency, takeProfitCustody is in trading asset, so convert to liabilities asset which is usdc
 		// We are not using takeProfitLiabilities anywhere at the moment so weight balance bonus doesn't matter here
-		takeProfitLiabilities = mtp.TakeProfitCustody.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+		takeProfitLiabilities = mtp.GetBigDecTakeProfitCustody().Mul(tradingAssetPriceDenomRatio).Dec().TruncateInt()
 	} else {
 		//  takeProfitCustody is in base currency, so convert to liabilities asset which is trading asset
 		// We are not using takeProfitLiabilities anywhere at the moment so weight balance bonus doesn't matter here
-		if tradingAssetPrice.IsZero() {
+		if tradingAssetPriceDenomRatio.IsZero() {
 			return math.ZeroInt(), errors.New("trading asset price is zero while calculating takeProfitLiabilities")
 		}
-		takeProfitLiabilities = mtp.TakeProfitCustody.ToLegacyDec().Quo(tradingAssetPrice).TruncateInt()
+		takeProfitLiabilities = mtp.GetBigDecTakeProfitCustody().Quo(tradingAssetPriceDenomRatio).Dec().TruncateInt()
 	}
 
 	return takeProfitLiabilities, nil

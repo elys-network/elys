@@ -27,7 +27,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	if forceClosed {
-		tradingAssetPrice, err := k.GetAssetPrice(ctx, msg.TradingAsset)
+		tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, msg.TradingAsset)
 		if err != nil {
 			return nil, err
 		}
@@ -43,11 +43,11 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 	}
 
 	if !newMtp.Liabilities.IsZero() {
-		consolidatedOpenPrice := (existingMtp.Custody.ToLegacyDec().Mul(existingMtp.OpenPrice).Add(newMtp.Custody.ToLegacyDec().Mul(newMtp.OpenPrice))).Quo(existingMtp.Custody.ToLegacyDec().Add(newMtp.Custody.ToLegacyDec()))
-		existingMtp.OpenPrice = consolidatedOpenPrice
+		consolidatedOpenPrice := (existingMtp.GetBigDecCustody().Mul(existingMtp.GetBigDecOpenPrice()).Add(newMtp.GetBigDecCustody().Mul(newMtp.GetBigDecOpenPrice()))).Quo(existingMtp.GetBigDecCustody().Add(newMtp.GetBigDecCustody()))
+		existingMtp.OpenPrice = consolidatedOpenPrice.Dec()
 
-		consolidatedTakeProfitPrice := existingMtp.Custody.ToLegacyDec().Mul(existingMtp.TakeProfitPrice).Add(newMtp.Custody.ToLegacyDec().Mul(newMtp.TakeProfitPrice)).Quo(existingMtp.Custody.ToLegacyDec().Add(newMtp.Custody.ToLegacyDec()))
-		existingMtp.TakeProfitPrice = consolidatedTakeProfitPrice
+		consolidatedTakeProfitPrice := existingMtp.GetBigDecCustody().Mul(existingMtp.GetBigDecTakeProfitPrice()).Add(newMtp.GetBigDecCustody().Mul(newMtp.GetBigDecTakeProfitPrice())).Quo(existingMtp.GetBigDecCustody().Add(newMtp.GetBigDecCustody()))
+		existingMtp.TakeProfitPrice = consolidatedTakeProfitPrice.Dec()
 	}
 
 	existingMtp.TakeProfitCustody = existingMtp.TakeProfitCustody.Add(newMtp.TakeProfitCustody)
@@ -55,10 +55,11 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	// no need to update pool's TakeProfitCustody, TakeProfitLiabilities, Custody and Liabilities as it was already in OpenDefineAssets
 
-	existingMtp.MtpHealth, err = k.GetMTPHealth(ctx, *existingMtp, ammPool, baseCurrency)
+	mtpHealth, err := k.GetMTPHealth(ctx, *existingMtp, ammPool, baseCurrency)
 	if err != nil {
 		return nil, err
 	}
+	existingMtp.MtpHealth = mtpHealth.Dec()
 
 	// Check if the MTP is unhealthy
 	safetyFactor := k.GetSafetyFactor(ctx)
@@ -68,7 +69,7 @@ func (k Keeper) OpenConsolidate(ctx sdk.Context, existingMtp *types.MTP, newMtp 
 
 	stopLossPrice := msg.StopLossPrice
 	if msg.StopLossPrice.IsNil() || msg.StopLossPrice.IsZero() {
-		stopLossPrice = k.GetLiquidationPrice(ctx, *existingMtp)
+		stopLossPrice = k.GetLiquidationPrice(ctx, *existingMtp).Dec()
 	}
 	existingMtp.StopLossPrice = stopLossPrice
 

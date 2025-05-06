@@ -1,11 +1,13 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
 	"errors"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) GetBorrowInterestAmount(ctx sdk.Context, mtp *types.MTP) math.Int {
@@ -16,9 +18,9 @@ func (k Keeper) GetBorrowInterestAmount(ctx sdk.Context, mtp *types.MTP) math.In
 	}
 
 	// This already gives a floor tested value for interest rate
-	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, mtp.AmmPoolId, mtp.TakeProfitBorrowFactor)
+	borrowInterestRate := k.GetBorrowInterestRate(ctx, mtp.LastInterestCalcBlock, mtp.LastInterestCalcTime, mtp.AmmPoolId, mtp.GetBigDecTakeProfitBorrowFactor())
 	totalLiability := mtp.Liabilities.Add(mtp.BorrowInterestUnpaidLiability)
-	borrowInterestPayment := totalLiability.ToLegacyDec().Mul(borrowInterestRate).TruncateInt()
+	borrowInterestPayment := osmomath.BigDecFromSDKInt(totalLiability).Mul(borrowInterestRate).Dec().TruncateInt()
 	return borrowInterestPayment
 }
 
@@ -38,12 +40,12 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		return math.ZeroInt(), math.ZeroInt(), true, nil
 	}
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	_, tradingAssetPriceDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 	if err != nil {
 		return math.ZeroInt(), math.ZeroInt(), true, err
 	}
 
-	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPrice)
+	borrowInterestPaymentInCustody, err := mtp.GetBorrowInterestAmountAsCustodyAsset(tradingAssetPriceDenomRatio)
 	if err != nil {
 		return math.ZeroInt(), math.ZeroInt(), true, err
 	}
@@ -57,13 +59,13 @@ func (k Keeper) SettleMTPBorrowInterestUnpaidLiability(ctx sdk.Context, mtp *typ
 		unpaidInterestLiabilities := math.ZeroInt()
 		if mtp.Position == types.Position_LONG {
 			// custody is in trading asset, liabilities needs to be in usdc,
-			unpaidInterestLiabilities = unpaidInterestCustody.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+			unpaidInterestLiabilities = osmomath.BigDecFromSDKInt(unpaidInterestCustody).Mul(tradingAssetPriceDenomRatio).Dec().TruncateInt()
 		} else {
 			// custody is in usdc, liabilities needs to be in trading asset,
-			if tradingAssetPrice.IsZero() {
+			if tradingAssetPriceDenomRatio.IsZero() {
 				return math.ZeroInt(), math.ZeroInt(), false, errors.New("trading asset price is zero in SettleMTPBorrowInterestUnpaidLiability")
 			}
-			borrowInterestPaymentInCustody = unpaidInterestCustody.ToLegacyDec().Quo(tradingAssetPrice).TruncateInt()
+			borrowInterestPaymentInCustody = osmomath.BigDecFromSDKInt(unpaidInterestCustody).Quo(tradingAssetPriceDenomRatio).Dec().TruncateInt()
 		}
 		mtp.BorrowInterestUnpaidLiability = unpaidInterestLiabilities
 

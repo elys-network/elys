@@ -7,6 +7,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // JoinPoolNoSwap aims to LP exactly enough to pool #{poolId} to get shareOutAmount number of LP shares.
@@ -67,8 +68,8 @@ func (k Keeper) JoinPoolNoSwap(
 			tokensIn = neededLpLiquidity
 		}
 		params := k.GetParams(ctx)
-		takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
-		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+		takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
+		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 		tokensJoined, sharesOut, _, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params, takerFees)
 		if err != nil {
 			return nil, sdkmath.ZeroInt(), err
@@ -96,9 +97,9 @@ func (k Keeper) JoinPoolNoSwap(
 	}
 
 	params := k.GetParams(ctx)
-	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
+	takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
-	snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
 	if err != nil {
 		return nil, sdkmath.ZeroInt(), err
@@ -117,24 +118,24 @@ func (k Keeper) JoinPoolNoSwap(
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, otherAsset.Token.Denom).Amount
 
 		// ensure token prices for in/out tokens set properly
-		inTokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, tokensJoined[0].Denom)
+		inTokenPrice := k.oracleKeeper.GetDenomPrice(ctx, tokensJoined[0].Denom)
 		if inTokenPrice.IsZero() {
 			return nil, sdkmath.ZeroInt(), fmt.Errorf("price for inToken not set: %s", tokensJoined[0].Denom)
 		}
-		outTokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, otherAsset.Token.Denom)
+		outTokenPrice := k.oracleKeeper.GetDenomPrice(ctx, otherAsset.Token.Denom)
 		if outTokenPrice.IsZero() {
 			return nil, sdkmath.ZeroInt(), fmt.Errorf("price for outToken not set: %s", otherAsset.Token.Denom)
 		}
-		bonusTokenAmount := ((tokensJoined[0].Amount.ToLegacyDec().Mul(weightBalanceBonus)).Mul(inTokenPrice).Quo(outTokenPrice)).TruncateInt()
+		bonusTokenAmount := (osmomath.BigDecFromSDKInt(tokensJoined[0].Amount).Mul(weightBalanceBonus).Mul(inTokenPrice).Quo(outTokenPrice)).Dec().TruncateInt()
 
 		if treasuryTokenAmount.LT(bonusTokenAmount) {
-			weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(tokensJoined[0].Amount.ToLegacyDec())
+			weightBalanceBonus = osmomath.BigDecFromSDKInt(treasuryTokenAmount).Quo(osmomath.BigDecFromSDKInt(tokensJoined[0].Amount))
 		}
 	}
 
 	slippageCoins := sdk.Coins{}
 	if pool.PoolParams.UseOracle && len(tokenInMaxs) == 1 {
-		slippageAmount := slippage.Mul(tokenInMaxs[0].Amount.ToLegacyDec()).RoundInt()
+		slippageAmount := slippage.Mul(osmomath.BigDecFromSDKInt(tokenInMaxs[0].Amount)).Dec().RoundInt()
 		if slippageAmount.IsPositive() {
 			slippageCoins = sdk.NewCoins(sdk.NewCoin(tokenInMaxs[0].Denom, slippageAmount))
 			k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenInMaxs[0].Denom, slippageAmount))

@@ -1,9 +1,10 @@
 package keeper
 
 import (
-	sdkerrors "cosmossdk.io/errors"
 	"errors"
 	"fmt"
+
+	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/perpetual/types"
@@ -22,7 +23,7 @@ func (k Keeper) CheckAndLiquidatePosition(ctx sdk.Context, mtp *types.MTP, pool 
 		return err
 	}
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	tradingAssetPrice, _, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 	if err != nil {
 		return err
 	}

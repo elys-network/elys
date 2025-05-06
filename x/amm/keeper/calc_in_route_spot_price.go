@@ -4,17 +4,18 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // CalcInRouteSpotPrice calculates the spot price of the given token and in route
 func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 	tokenIn sdk.Coin,
 	routes []*types.SwapAmountInRoute,
-	discount sdkmath.LegacyDec,
-	overrideSwapFee sdkmath.LegacyDec,
-) (sdkmath.LegacyDec, sdkmath.LegacyDec, sdk.Coin, sdkmath.LegacyDec, sdkmath.LegacyDec, sdk.Coin, sdkmath.LegacyDec, sdkmath.LegacyDec, error) {
+	discount osmomath.BigDec,
+	overrideSwapFee osmomath.BigDec,
+) (osmomath.BigDec, osmomath.BigDec, sdk.Coin, osmomath.BigDec, osmomath.BigDec, sdk.Coin, osmomath.BigDec, osmomath.BigDec, error) {
 	if len(routes) == 0 {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), types.ErrEmptyRoutes
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrEmptyRoutes
 	}
 
 	// Start with the initial token input
@@ -31,17 +32,17 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 
 	route := types.SwapAmountInRoutes(routesNoPtr)
 	if err := route.Validate(); err != nil {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
 	// Initialize the total discounted swap fee
-	totalDiscountedSwapFee := sdkmath.LegacyZeroDec()
+	totalDiscountedSwapFee := osmomath.ZeroBigDec()
 
 	// Track the total available liquidity in the pool for final token out denom
 	var availableLiquidity sdk.Coin
 
-	weightBalance := sdkmath.LegacyZeroDec()
-	slippage := sdkmath.LegacyZeroDec()
+	weightBalance := osmomath.ZeroBigDec()
+	slippage := osmomath.ZeroBigDec()
 
 	for _, route := range routes {
 		poolId := route.PoolId
@@ -49,13 +50,13 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 
 		pool, found := k.GetPool(ctx, poolId)
 		if !found {
-			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), types.ErrPoolNotFound
+			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrPoolNotFound
 		}
 
 		// Get Pool swap fee
 		// Divide fees with the number of routes to incentivize multi-hop
-		swapFee := pool.GetPoolParams().SwapFee.Quo(sdkmath.LegacyNewDec(int64(len(routes))))
-		takersFee := k.parameterKeeper.GetParams(ctx).TakerFees.Quo(sdkmath.LegacyNewDec(int64(len(routes))))
+		swapFee := pool.GetPoolParams().GetBigDecSwapFee().Quo(osmomath.NewBigDec(int64(len(routes))))
+		takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees().Quo(osmomath.NewBigDec(int64(len(routes))))
 
 		// Override swap fee if applicable
 		if overrideSwapFee.IsPositive() {
@@ -66,23 +67,25 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		swapFee = types.ApplyDiscount(swapFee, discount)
 
 		// Estimate swap
-		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 		cacheCtx, _ := ctx.CacheContext()
-		tokenOut, swapSlippage, _, weightBalanceBonus, oracleOutAmount, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, sdkmath.LegacyOneDec(), takersFee)
+		tokenOut, swapSlippage, _, weightBalanceBonus, oracleOutAmount, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, osmomath.OneBigDec(), takersFee)
 		if err != nil {
-			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 
 		// Check treasury and update weightBalance
+		bonusTokenAmount := sdkmath.ZeroInt()
 		if weightBalanceBonus.IsPositive() {
 			// get treasury balance
 			rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 			treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
 
-			bonusTokenAmount := oracleOutAmount.Mul(weightBalanceBonus).TruncateInt()
+			bonusTokenAmount := oracleOutAmount.Mul(weightBalanceBonus).Dec().TruncateInt()
 
 			if treasuryTokenAmount.LT(bonusTokenAmount) {
-				weightBalanceBonus = treasuryTokenAmount.ToLegacyDec().Quo(oracleOutAmount)
+				weightBalanceBonus = osmomath.BigDecFromSDKInt(treasuryTokenAmount).Quo(oracleOutAmount)
+				bonusTokenAmount = treasuryTokenAmount
 			}
 		}
 
@@ -90,7 +93,11 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
 		if tokenOut.IsZero() {
-			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), types.ErrAmountTooLow
+			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrAmountTooLow
+		}
+
+		if bonusTokenAmount.IsPositive() {
+			tokenOut = sdk.NewCoin(tokenOut.Denom, tokenOut.Amount.Add(bonusTokenAmount))
 		}
 
 		// Use the current swap result as the input for the next iteration
@@ -99,7 +106,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		// Get the available liquidity for the final token out denom
 		_, poolAsset, err := pool.GetPoolAssetAndIndex(tokenOutDenom)
 		if err != nil {
-			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 		// Use accounted pool balance
 		accAmount := k.accountedPoolKeeper.GetAccountedBalance(ctx, pool.PoolId, poolAsset.Token.Denom)
@@ -107,20 +114,20 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 			poolAsset.Token.Amount = accAmount
 		}
 		availableLiquidity = poolAsset.Token
-		weightBalance = weightBalance.Add(weightBalanceBonus)
+		weightBalance = weightBalanceBonus
 		slippage = slippage.Add(swapSlippage)
 	}
 
 	// Ensure tokenIn.Amount is not zero to avoid division by zero
 	if tokenIn.IsZero() {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), types.ErrAmountTooLow
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrAmountTooLow
 	}
 
 	// Calculate the spot price given the initial token in and the final token out
-	impactedPrice := sdkmath.LegacyNewDecFromInt(tokensIn[0].Amount).Quo(sdkmath.LegacyNewDecFromInt(tokenIn.Amount))
+	impactedPrice := osmomath.BigDecFromSDKInt(tokensIn[0].Amount).Quo(osmomath.BigDecFromSDKInt(tokenIn.Amount))
 
 	// Calculate spot price with GetTokenARate
-	spotPrice := sdkmath.LegacyOneDec()
+	spotPrice := osmomath.OneBigDec()
 	tokenInDenom := tokenIn.Denom
 	for _, route := range routes {
 		poolId := route.PoolId
@@ -128,14 +135,14 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 
 		pool, found := k.GetPool(ctx, poolId)
 		if !found {
-			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), types.ErrPoolNotFound
+			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrPoolNotFound
 		}
 
 		// Estimate swap
-		snapshot := k.GetAccountedPoolSnapshotOrSet(ctx, pool)
+		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 		rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, &snapshot, tokenInDenom, tokenOutDenom, k.accountedPoolKeeper)
 		if err != nil {
-			return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 
 		// set new tokenIn denom for multihop
@@ -144,7 +151,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 	}
 
 	if !spotPrice.IsPositive() {
-		return sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), types.ErrSpotPriceIsZero
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrSpotPriceIsZero
 	}
 
 	// Construct the token out coin

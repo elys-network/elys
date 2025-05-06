@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *AmmKeeperTestSuite) TestQuerySwapEstimationByDenom() {
@@ -73,7 +74,7 @@ func (suite *AmmKeeperTestSuite) TestQuerySwapEstimationByDenom() {
 				addr := suite.AddAccounts(1, nil)[0]
 
 				amount := math.NewInt(100000000000)
-				_ = suite.CreateNewAmmPool(addr, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				_ = suite.CreateNewAmmPool(addr, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 
 				_, err := suite.app.AmmKeeper.SwapEstimationByDenom(suite.ctx, &types.QuerySwapEstimationByDenomRequest{
 					Amount:   sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000)),

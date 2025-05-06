@@ -30,6 +30,11 @@ service Query {
   rpc PoolInfo(QueryPoolInfoRequest) returns (QueryPoolInfoResponse) {
     option (google.api.http).get = "/elys-network/elys/masterchef/pool_info";
   }
+  rpc ListPoolInfos(QueryListPoolInfosRequest)
+      returns (QueryListPoolInfosResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/masterchef/list_pool_infos";
+  }
   rpc PoolRewardInfo(QueryPoolRewardInfoRequest)
       returns (QueryPoolRewardInfoResponse) {
     option (google.api.http).get =
@@ -176,6 +181,15 @@ message QueryPoolInfoResponse {
   ];
 }
 
+message QueryListPoolInfosRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryListPoolInfosResponse {
+  repeated QueryPoolInfoResponse list = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
 message QueryPoolRewardInfoRequest {
   uint64 pool_id = 1;
   string reward_denom = 2;
@@ -279,7 +293,7 @@ message QueryAprResponse {
   ];
 }
 
-message QueryAprsRequest {}
+message QueryAprsRequest { uint64 days = 1; }
 
 message QueryAprsResponse {
   string usdc_apr_usdc = 1 [

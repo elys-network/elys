@@ -39,29 +39,27 @@ func (min MinCommissionDecorator) getValidator(ctx sdk.Context, bech32ValAddr st
 	return val, nil
 }
 
-func (min MinCommissionDecorator) getTotalDelegatedTokens(ctx sdk.Context) sdkmath.Int {
+func (min MinCommissionDecorator) getTotalBondedTokens(ctx sdk.Context) sdkmath.Int {
 	bondDenom, err := min.sk.BondDenom(ctx)
 	if err != nil {
 		panic(err)
 	}
 	bondedPool := min.sk.GetBondedPool(ctx)
-	notBondedPool := min.sk.GetNotBondedPool(ctx)
-
-	notBondedAmount := min.bk.GetBalance(ctx, notBondedPool.GetAddress(), bondDenom).Amount
 	bondedAmount := min.bk.GetBalance(ctx, bondedPool.GetAddress(), bondDenom).Amount
 
-	return notBondedAmount.Add(bondedAmount)
+	return bondedAmount
 }
 
 // Returns the projected voting power as a percentage (not a fraction)
 func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk.Context, delegateAmount sdkmath.LegacyDec) sdkmath.LegacyDec {
-	totalDelegatedTokens := min.getTotalDelegatedTokens(ctx).ToLegacyDec()
+
+	bondedAmt := min.getTotalBondedTokens(ctx).ToLegacyDec()
 	// If I am the first validator, then accept 100% voting power
-	if totalDelegatedTokens.LTE(sdkmath.LegacyZeroDec()) {
+	if bondedAmt.LTE(sdkmath.LegacyZeroDec()) {
 		return sdkmath.LegacyZeroDec()
 	}
 
-	projectedTotalDelegatedTokens := totalDelegatedTokens.Add(delegateAmount)
+	projectedTotalDelegatedTokens := bondedAmt.Add(delegateAmount)
 	projectedValidatorTokens := delegateAmount
 
 	// Ensure projectedTotalDelegatedTokens is not zero to avoid division by zero
@@ -75,9 +73,9 @@ func (min MinCommissionDecorator) CalculateValidatorProjectedVotingPower(ctx sdk
 // Returns the projected voting power as a percentage (not a fraction)
 func (min MinCommissionDecorator) CalculateDelegateProjectedVotingPower(ctx sdk.Context, validator stakingtypes.ValidatorI, delegateAmount sdkmath.LegacyDec) sdkmath.LegacyDec {
 	validatorTokens := validator.GetTokens().ToLegacyDec()
-	totalDelegatedTokens := min.getTotalDelegatedTokens(ctx).ToLegacyDec()
+	bondedAmt := min.getTotalBondedTokens(ctx).ToLegacyDec()
 
-	projectedTotalDelegatedTokens := totalDelegatedTokens.Add(delegateAmount)
+	projectedTotalDelegatedTokens := bondedAmt.Add(delegateAmount)
 	projectedValidatorTokens := validatorTokens.Add(delegateAmount)
 
 	// Ensure projectedTotalDelegatedTokens is not zero to avoid division by zero
@@ -91,7 +89,7 @@ func (min MinCommissionDecorator) CalculateDelegateProjectedVotingPower(ctx sdk.
 // Returns the projected voting power as a percentage (not a fraction)
 func (min MinCommissionDecorator) CalculateRedelegateProjectedVotingPower(ctx sdk.Context, validator stakingtypes.ValidatorI, delegateAmount sdkmath.LegacyDec) sdkmath.LegacyDec {
 	validatorTokens := validator.GetTokens().ToLegacyDec()
-	projectedTotalDelegatedTokens := min.getTotalDelegatedTokens(ctx).ToLegacyDec() // no additional delegated tokens
+	projectedTotalDelegatedTokens := min.getTotalBondedTokens(ctx).ToLegacyDec() // no additional delegated tokens
 
 	projectedValidatorTokens := validatorTokens.Add(delegateAmount)
 

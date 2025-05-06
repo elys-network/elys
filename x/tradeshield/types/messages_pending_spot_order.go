@@ -5,6 +5,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"slices"
 )
 
 var _ sdk.Msg = &MsgCreateSpotOrder{}
@@ -124,10 +125,8 @@ func (msg *MsgCancelSpotOrders) ValidateBasic() error {
 	if len(msg.SpotOrderIds) == 0 {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order IDs cannot be empty")
 	}
-	for _, id := range msg.SpotOrderIds {
-		if id == 0 {
-			return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
-		}
+	if slices.Contains(msg.SpotOrderIds, 0) {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "spot order ID cannot be zero")
 	}
 	return nil
 }

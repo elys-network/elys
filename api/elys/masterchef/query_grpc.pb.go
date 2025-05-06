@@ -22,6 +22,7 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	ExternalIncentive(ctx context.Context, in *QueryExternalIncentiveRequest, opts ...grpc.CallOption) (*QueryExternalIncentiveResponse, error)
 	PoolInfo(ctx context.Context, in *QueryPoolInfoRequest, opts ...grpc.CallOption) (*QueryPoolInfoResponse, error)
+	ListPoolInfos(ctx context.Context, in *QueryListPoolInfosRequest, opts ...grpc.CallOption) (*QueryListPoolInfosResponse, error)
 	PoolRewardInfo(ctx context.Context, in *QueryPoolRewardInfoRequest, opts ...grpc.CallOption) (*QueryPoolRewardInfoResponse, error)
 	UserRewardInfo(ctx context.Context, in *QueryUserRewardInfoRequest, opts ...grpc.CallOption) (*QueryUserRewardInfoResponse, error)
 	UserPendingReward(ctx context.Context, in *QueryUserPendingRewardRequest, opts ...grpc.CallOption) (*QueryUserPendingRewardResponse, error)
@@ -70,6 +71,15 @@ func (c *queryClient) ExternalIncentive(ctx context.Context, in *QueryExternalIn
 func (c *queryClient) PoolInfo(ctx context.Context, in *QueryPoolInfoRequest, opts ...grpc.CallOption) (*QueryPoolInfoResponse, error) {
 	out := new(QueryPoolInfoResponse)
 	err := c.cc.Invoke(ctx, "/elys.masterchef.Query/PoolInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ListPoolInfos(ctx context.Context, in *QueryListPoolInfosRequest, opts ...grpc.CallOption) (*QueryListPoolInfosResponse, error) {
+	out := new(QueryListPoolInfosResponse)
+	err := c.cc.Invoke(ctx, "/elys.masterchef.Query/ListPoolInfos", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -192,6 +202,7 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	ExternalIncentive(context.Context, *QueryExternalIncentiveRequest) (*QueryExternalIncentiveResponse, error)
 	PoolInfo(context.Context, *QueryPoolInfoRequest) (*QueryPoolInfoResponse, error)
+	ListPoolInfos(context.Context, *QueryListPoolInfosRequest) (*QueryListPoolInfosResponse, error)
 	PoolRewardInfo(context.Context, *QueryPoolRewardInfoRequest) (*QueryPoolRewardInfoResponse, error)
 	UserRewardInfo(context.Context, *QueryUserRewardInfoRequest) (*QueryUserRewardInfoResponse, error)
 	UserPendingReward(context.Context, *QueryUserPendingRewardRequest) (*QueryUserPendingRewardResponse, error)
@@ -224,6 +235,9 @@ func (UnimplementedQueryServer) ExternalIncentive(context.Context, *QueryExterna
 }
 func (UnimplementedQueryServer) PoolInfo(context.Context, *QueryPoolInfoRequest) (*QueryPoolInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PoolInfo not implemented")
+}
+func (UnimplementedQueryServer) ListPoolInfos(context.Context, *QueryListPoolInfosRequest) (*QueryListPoolInfosResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPoolInfos not implemented")
 }
 func (UnimplementedQueryServer) PoolRewardInfo(context.Context, *QueryPoolRewardInfoRequest) (*QueryPoolRewardInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PoolRewardInfo not implemented")
@@ -324,6 +338,24 @@ func _Query_PoolInfo_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).PoolInfo(ctx, req.(*QueryPoolInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ListPoolInfos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryListPoolInfosRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ListPoolInfos(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.masterchef.Query/ListPoolInfos",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ListPoolInfos(ctx, req.(*QueryListPoolInfosRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -562,6 +594,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PoolInfo",
 			Handler:    _Query_PoolInfo_Handler,
+		},
+		{
+			MethodName: "ListPoolInfos",
+			Handler:    _Query_ListPoolInfos_Handler,
 		},
 		{
 			MethodName: "PoolRewardInfo",
