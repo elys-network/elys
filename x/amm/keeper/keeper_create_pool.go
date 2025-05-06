@@ -74,6 +74,10 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (uint64, e
 		}
 	}
 
+	//err = k.UpdateOraclePoolId(ctx, poolId)
+	//if err != nil {
+	//	return 0, err
+	//}
 	// emitCreatePoolEvents(ctx, poolId, msg)
 	return pool.GetPoolId(), nil
 }
@@ -91,7 +95,7 @@ func (k Keeper) InitializePool(ctx sdk.Context, pool *types.Pool, sender sdk.Acc
 	}
 
 	if tvl.IsPositive() {
-		pool.TotalShares = sdk.NewCoin(pool.TotalShares.Denom, tvl.Mul(types.OneShare.ToLegacyDec()).RoundInt())
+		pool.TotalShares = sdk.NewCoin(pool.TotalShares.Denom, tvl.Mul(types.OneShareBigDec).Dec().RoundInt())
 	}
 
 	// Mint the initial pool shares token to the sender

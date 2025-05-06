@@ -3,6 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	"github.com/elys-network/elys/x/estaking/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 )
 
@@ -18,11 +19,30 @@ func (k Keeper) CommitmentChanged(ctx sdk.Context, creator sdk.AccAddress, amoun
 
 		del, _ := k.Delegation(ctx, creator, edenValAddr)
 		if del == nil {
+
+			_, err = k.WithdrawAllRewards(ctx, &types.MsgWithdrawAllRewards{DelegatorAddress: creator.String()})
+			if err != nil {
+				return err
+			}
+
 			err = k.Keeper.Hooks().BeforeDelegationRemoved(ctx, creator, edenValAddr)
 			if err != nil {
 				return err
 			}
+
 		} else {
+			hasInfo, err := k.distrKeeper.HasDelegatorStartingInfo(ctx, edenValAddr, creator)
+			if err != nil {
+				return err
+			}
+			// WithdrawAllRewards fails if there is no DelegatorStartingInfo. For EDEN, when a new commitment is created, then this is empty, so we cannot withdraw rewards
+			if hasInfo {
+				_, err = k.WithdrawAllRewards(ctx, &types.MsgWithdrawAllRewards{DelegatorAddress: creator.String()})
+				if err != nil {
+					return err
+				}
+			}
+
 			err = k.Keeper.Hooks().AfterDelegationModified(ctx, creator, edenValAddr)
 			if err != nil {
 				return err

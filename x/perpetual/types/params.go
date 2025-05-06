@@ -1,10 +1,13 @@
 package types
 
 import (
-	"cosmossdk.io/math"
+	"errors"
 	"fmt"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // NewParams creates a new Params instance
@@ -31,6 +34,7 @@ func NewParams() Params {
 		SafetyFactor:                        math.LegacyMustNewDecFromStr("1.025000000000000000"),
 		WeightBreakingFeeFactor:             math.LegacyMustNewDecFromStr("0.5"),
 		WhitelistingEnabled:                 false,
+		EnabledPools:                        []uint64(nil),
 	}
 }
 
@@ -58,7 +62,7 @@ func (p Params) Validate() error {
 		return err
 	}
 	if p.BorrowInterestRateMin.GT(p.BorrowInterestRateMax) {
-		return fmt.Errorf("BorrowInterestRateMin must be less than BorrowInterestRateMax")
+		return errors.New("BorrowInterestRateMin must be less than BorrowInterestRateMax")
 	}
 	if err := CheckLegacyDecNilAndNegative(p.BorrowInterestRateIncrease, "BorrowInterestRateIncrease"); err != nil {
 		return err
@@ -85,22 +89,22 @@ func (p Params) Validate() error {
 		return err
 	}
 	if p.MaximumLongTakeProfitPriceRatio.LTE(math.LegacyOneDec()) {
-		return fmt.Errorf("MaximumLongTakeProfitPriceRatio must be greater than 1")
+		return errors.New("MaximumLongTakeProfitPriceRatio must be greater than 1")
 	}
 	if err := CheckLegacyDecNilAndNegative(p.MaximumShortTakeProfitPriceRatio, "MaximumShortTakeProfitPriceRatio"); err != nil {
 		return err
 	}
 	if p.MaximumShortTakeProfitPriceRatio.GTE(math.LegacyOneDec()) {
-		return fmt.Errorf("MaximumShortTakeProfitPriceRatio must be less than 1")
+		return errors.New("MaximumShortTakeProfitPriceRatio must be less than 1")
 	}
 	if err := CheckLegacyDecNilAndNegative(p.MinimumLongTakeProfitPriceRatio, "MinimumLongTakeProfitPriceRatio"); err != nil {
 		return err
 	}
 	if p.MinimumLongTakeProfitPriceRatio.LTE(math.LegacyOneDec()) {
-		return fmt.Errorf("MinimumLongTakeProfitPriceRatio must be greater than 1")
+		return errors.New("MinimumLongTakeProfitPriceRatio must be greater than 1")
 	}
 	if p.MaximumLongTakeProfitPriceRatio.LTE(p.MinimumLongTakeProfitPriceRatio) {
-		return fmt.Errorf("MaximumLongTakeProfitPriceRatio must be greater than MinimumLongTakeProfitPriceRatio")
+		return errors.New("MaximumLongTakeProfitPriceRatio must be greater than MinimumLongTakeProfitPriceRatio")
 	}
 	if err := CheckLegacyDecNilAndNegative(p.PerpetualSwapFee, "PerpetualSwapFee"); err != nil {
 		return err
@@ -115,5 +119,55 @@ func (p Params) Validate() error {
 		return err
 	}
 
+	if containsDuplicates(p.EnabledPools) {
+		return errors.New("array must not contain duplicate values")
+	}
 	return nil
+}
+
+func containsDuplicates(arr []uint64) bool {
+	valueMap := make(map[uint64]struct{})
+	for _, num := range arr {
+		if _, exists := valueMap[num]; exists {
+			return true
+		}
+		valueMap[num] = struct{}{}
+	}
+	return false
+}
+
+func (p Params) GetBigDecFixedFundingRate() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.FixedFundingRate)
+}
+
+func (p Params) GetBigDecPerpetualSwapFee() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.PerpetualSwapFee)
+}
+
+func (p Params) GetBigDecWeightBreakingFeeFactor() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.WeightBreakingFeeFactor)
+}
+
+func (p Params) GetBigDecMinimumLongTakeProfitPriceRatio() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.MinimumLongTakeProfitPriceRatio)
+}
+
+func (p Params) GetBigDecMaximumLongTakeProfitPriceRatio() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.MaximumLongTakeProfitPriceRatio)
+}
+
+func (p Params) GetBigDecMaximumShortTakeProfitPriceRatio() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.MaximumShortTakeProfitPriceRatio)
+}
+
+func (p Params) GetBigDecSafetyFactor() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.SafetyFactor)
+}
+
+func (p Params) GetBigDecBorrowInterestRateMin() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.BorrowInterestRateMin)
+}
+
+func (p Params) GetBigDecBorrowInterestPaymentFundPercentage() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.BorrowInterestPaymentFundPercentage)
 }

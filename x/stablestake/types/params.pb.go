@@ -87,17 +87,18 @@ func (m *LegacyParams) GetEpochLength() int64 {
 
 // Params defines the parameters for the module.
 type Params struct {
-	DepositDenom         string                      `protobuf:"bytes,1,opt,name=deposit_denom,json=depositDenom,proto3" json:"deposit_denom,omitempty"`
-	RedemptionRate       cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=redemption_rate,json=redemptionRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"redemption_rate"`
-	EpochLength          int64                       `protobuf:"varint,3,opt,name=epoch_length,json=epochLength,proto3" json:"epoch_length,omitempty"`
-	InterestRate         cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=interest_rate,json=interestRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"interest_rate"`
-	InterestRateMax      cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=interest_rate_max,json=interestRateMax,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"interest_rate_max"`
-	InterestRateMin      cosmossdk_io_math.LegacyDec `protobuf:"bytes,6,opt,name=interest_rate_min,json=interestRateMin,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"interest_rate_min"`
-	InterestRateIncrease cosmossdk_io_math.LegacyDec `protobuf:"bytes,7,opt,name=interest_rate_increase,json=interestRateIncrease,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"interest_rate_increase"`
-	InterestRateDecrease cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=interest_rate_decrease,json=interestRateDecrease,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"interest_rate_decrease"`
-	HealthGainFactor     cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=health_gain_factor,json=healthGainFactor,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"health_gain_factor"`
-	TotalValue           cosmossdk_io_math.Int       `protobuf:"bytes,10,opt,name=total_value,json=totalValue,proto3,customtype=cosmossdk.io/math.Int" json:"total_value"`
-	MaxLeverageRatio     cosmossdk_io_math.LegacyDec `protobuf:"bytes,11,opt,name=max_leverage_ratio,json=maxLeverageRatio,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"max_leverage_ratio"`
+	LegacyDepositDenom         string                      `protobuf:"bytes,1,opt,name=legacy_deposit_denom,json=legacyDepositDenom,proto3" json:"legacy_deposit_denom,omitempty"`
+	LegacyRedemptionRate       cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=legacy_redemption_rate,json=legacyRedemptionRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"legacy_redemption_rate"`
+	EpochLength                int64                       `protobuf:"varint,3,opt,name=epoch_length,json=epochLength,proto3" json:"epoch_length,omitempty"`
+	LegacyInterestRate         cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=legacy_interest_rate,json=legacyInterestRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"legacy_interest_rate"`
+	LegacyInterestRateMax      cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=legacy_interest_rate_max,json=legacyInterestRateMax,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"legacy_interest_rate_max"`
+	LegacyInterestRateMin      cosmossdk_io_math.LegacyDec `protobuf:"bytes,6,opt,name=legacy_interest_rate_min,json=legacyInterestRateMin,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"legacy_interest_rate_min"`
+	LegacyInterestRateIncrease cosmossdk_io_math.LegacyDec `protobuf:"bytes,7,opt,name=legacy_interest_rate_increase,json=legacyInterestRateIncrease,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"legacy_interest_rate_increase"`
+	LegacyInterestRateDecrease cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=legacy_interest_rate_decrease,json=legacyInterestRateDecrease,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"legacy_interest_rate_decrease"`
+	LegacyHealthGainFactor     cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=legacy_health_gain_factor,json=legacyHealthGainFactor,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"legacy_health_gain_factor"`
+	TotalValue                 cosmossdk_io_math.Int       `protobuf:"bytes,10,opt,name=total_value,json=totalValue,proto3,customtype=cosmossdk.io/math.Int" json:"total_value"`
+	LegacyMaxLeverageRatio     cosmossdk_io_math.LegacyDec `protobuf:"bytes,11,opt,name=legacy_max_leverage_ratio,json=legacyMaxLeverageRatio,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"legacy_max_leverage_ratio"`
+	LegacyMaxWithdrawRatio     cosmossdk_io_math.LegacyDec `protobuf:"bytes,12,opt,name=legacy_max_withdraw_ratio,json=legacyMaxWithdrawRatio,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"legacy_max_withdraw_ratio"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
@@ -133,9 +134,9 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
-func (m *Params) GetDepositDenom() string {
+func (m *Params) GetLegacyDepositDenom() string {
 	if m != nil {
-		return m.DepositDenom
+		return m.LegacyDepositDenom
 	}
 	return ""
 }
@@ -155,38 +156,44 @@ func init() {
 func init() { proto.RegisterFile("elys/stablestake/params.proto", fileDescriptor_d2a5512d8c510b7b) }
 
 var fileDescriptor_d2a5512d8c510b7b = []byte{
-	// 487 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x95, 0x41, 0x6b, 0xd4, 0x40,
-	0x14, 0xc7, 0x37, 0x56, 0xb7, 0x76, 0x76, 0x6b, 0x6b, 0xa8, 0x12, 0x2b, 0xa6, 0xb5, 0x5e, 0x0a,
-	0xd2, 0x44, 0xf1, 0x1b, 0x94, 0x45, 0x59, 0x59, 0x41, 0x72, 0xe8, 0xa1, 0x20, 0xc3, 0xdb, 0xe4,
-	0x99, 0x0c, 0x9b, 0xcc, 0x84, 0xcc, 0x6b, 0xcd, 0x7e, 0x0b, 0x3f, 0x84, 0x1f, 0xc1, 0x0f, 0x51,
-	0x6f, 0xc5, 0x93, 0x78, 0x28, 0xb2, 0xfb, 0x45, 0x24, 0x93, 0x88, 0xbb, 0xd4, 0x53, 0xec, 0x71,
-	0x6f, 0x99, 0xf7, 0x9f, 0xf9, 0xfd, 0x1e, 0x81, 0xc7, 0x63, 0x4f, 0x30, 0x9d, 0x6a, 0x5f, 0x13,
-	0x8c, 0x53, 0xd4, 0x04, 0x13, 0xf4, 0x73, 0x28, 0x20, 0xd3, 0x5e, 0x5e, 0x28, 0x52, 0xf6, 0x76,
-	0x15, 0x7b, 0x0b, 0xf1, 0xee, 0x4e, 0xac, 0x62, 0x65, 0x42, 0xbf, 0xfa, 0xaa, 0xef, 0xed, 0x3e,
-	0x0a, 0x95, 0xce, 0x94, 0xe6, 0x75, 0x50, 0x1f, 0xea, 0xe8, 0xe0, 0x5b, 0x97, 0xf5, 0x47, 0x18,
-	0x43, 0x38, 0x7d, 0x6f, 0xc8, 0xf6, 0x33, 0xb6, 0x19, 0x61, 0xae, 0xb4, 0x20, 0x1e, 0xa1, 0x54,
-	0x99, 0x63, 0xed, 0x5b, 0x87, 0x1b, 0x41, 0xbf, 0x29, 0x0e, 0xaa, 0x9a, 0x7d, 0xca, 0xb6, 0x0a,
-	0x8c, 0x30, 0xcb, 0x49, 0x28, 0xc9, 0x0b, 0x20, 0x74, 0x6e, 0x55, 0xd7, 0x8e, 0x5f, 0x5e, 0x5c,
-	0xed, 0x75, 0x7e, 0x5e, 0xed, 0x3d, 0xae, 0x25, 0x3a, 0x9a, 0x78, 0x42, 0xf9, 0x19, 0x50, 0xe2,
-	0xd5, 0x96, 0x01, 0x86, 0xdf, 0xbf, 0x1e, 0xb1, 0xa6, 0x87, 0x01, 0x86, 0xc1, 0xbd, 0xbf, 0xa4,
-	0x00, 0x08, 0xed, 0xa7, 0xac, 0x8f, 0xb9, 0x0a, 0x13, 0x9e, 0xa2, 0x8c, 0x29, 0x71, 0xd6, 0xf6,
-	0xad, 0xc3, 0xb5, 0xa0, 0x67, 0x6a, 0x23, 0x53, 0xb2, 0x4f, 0xd8, 0xa6, 0x90, 0x84, 0x05, 0x6a,
-	0xaa, 0xe5, 0xb7, 0xdb, 0xca, 0xfb, 0x7f, 0x38, 0x46, 0xfd, 0x81, 0xdd, 0x5f, 0xe2, 0xf2, 0x0c,
-	0x4a, 0xe7, 0x4e, 0x5b, 0xf6, 0xd6, 0x22, 0xfb, 0x1d, 0x94, 0xff, 0xc0, 0x0b, 0xe9, 0x74, 0x6f,
-	0x06, 0x2f, 0xa4, 0x1d, 0xb3, 0x87, 0xcb, 0x78, 0x21, 0xc3, 0x02, 0x41, 0xa3, 0xb3, 0xde, 0xd6,
-	0xb1, 0xb3, 0xe8, 0x18, 0x36, 0xb8, 0xeb, 0xa2, 0x08, 0x1b, 0xd1, 0xdd, 0x1b, 0x11, 0x0d, 0x1a,
-	0x9c, 0xcd, 0x99, 0x9d, 0x20, 0xa4, 0x94, 0xf0, 0x18, 0x84, 0xe4, 0x1f, 0x21, 0x24, 0x55, 0x38,
-	0x1b, 0x6d, 0x25, 0xdb, 0x35, 0xec, 0x0d, 0x08, 0xf9, 0xda, 0xa0, 0xec, 0x11, 0xeb, 0x91, 0x22,
-	0x48, 0xf9, 0x39, 0xa4, 0x67, 0xe8, 0x30, 0x43, 0x7e, 0xde, 0x90, 0x1f, 0x5c, 0x27, 0x0f, 0x25,
-	0x2d, 0x30, 0x87, 0x92, 0x02, 0x66, 0xde, 0x9f, 0x54, 0xcf, 0x0f, 0xbe, 0xac, 0xb3, 0xee, 0x6a,
-	0x8a, 0x56, 0x53, 0xb4, 0x9a, 0xa2, 0xff, 0x98, 0xa2, 0xaa, 0xdd, 0x0c, 0x4a, 0x9e, 0xe2, 0x39,
-	0x16, 0x10, 0x63, 0xf5, 0x6f, 0x84, 0x72, 0x7a, 0xad, 0xdb, 0xcd, 0xa0, 0x1c, 0x35, 0xac, 0xa0,
-	0x42, 0x1d, 0xbf, 0xbd, 0x98, 0xb9, 0xd6, 0xe5, 0xcc, 0xb5, 0x7e, 0xcd, 0x5c, 0xeb, 0xf3, 0xdc,
-	0xed, 0x5c, 0xce, 0xdd, 0xce, 0x8f, 0xb9, 0xdb, 0x39, 0x7d, 0x11, 0x0b, 0x4a, 0xce, 0xc6, 0x5e,
-	0xa8, 0x32, 0xbf, 0x5a, 0xad, 0x47, 0x12, 0xe9, 0x93, 0x2a, 0x26, 0xe6, 0xe0, 0x97, 0x4b, 0x8b,
-	0x98, 0xa6, 0x39, 0xea, 0x71, 0xd7, 0x6c, 0xd1, 0x57, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0xd7,
-	0x7c, 0x05, 0x2b, 0xa9, 0x07, 0x00, 0x00,
+	// 590 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x96, 0xc1, 0x6e, 0xd3, 0x30,
+	0x18, 0x80, 0x1b, 0x06, 0x85, 0xba, 0x1d, 0x1b, 0x51, 0x37, 0x65, 0x45, 0xcb, 0xc6, 0xb8, 0x4c,
+	0x42, 0x6b, 0x86, 0x78, 0x83, 0xa9, 0x02, 0x8a, 0x3a, 0x09, 0xe5, 0x30, 0xa4, 0x49, 0x28, 0x72,
+	0x93, 0x9f, 0xc4, 0x34, 0xb1, 0xa3, 0xd8, 0x5b, 0xdb, 0x27, 0xe0, 0xca, 0xc3, 0xf0, 0x10, 0xe3,
+	0x36, 0x71, 0x42, 0x1c, 0x26, 0xd4, 0xbe, 0x08, 0x8a, 0x63, 0x4a, 0x4a, 0xb3, 0x03, 0x4d, 0xb9,
+	0x35, 0x76, 0xfc, 0x7d, 0x7f, 0x23, 0x7d, 0x92, 0xd1, 0x2e, 0x84, 0x63, 0x6e, 0x71, 0x81, 0xfb,
+	0x21, 0x70, 0x81, 0x07, 0x60, 0xc5, 0x38, 0xc1, 0x11, 0x6f, 0xc7, 0x09, 0x13, 0x4c, 0xdf, 0x4c,
+	0xb7, 0xdb, 0xb9, 0xed, 0x56, 0xd3, 0x67, 0x3e, 0x93, 0x9b, 0x56, 0xfa, 0x2b, 0x7b, 0xaf, 0xb5,
+	0xe3, 0x32, 0x1e, 0x31, 0xee, 0x64, 0x1b, 0xd9, 0x43, 0xb6, 0x75, 0xf0, 0xb5, 0x8a, 0x1a, 0x3d,
+	0xf0, 0xb1, 0x3b, 0x7e, 0x2b, 0xc9, 0xfa, 0x53, 0xb4, 0xee, 0x41, 0xcc, 0x38, 0x11, 0x8e, 0x07,
+	0x94, 0x45, 0x86, 0xb6, 0xaf, 0x1d, 0xd6, 0xec, 0x86, 0x5a, 0xec, 0xa4, 0x6b, 0xfa, 0x39, 0xda,
+	0x48, 0xc0, 0x83, 0x28, 0x16, 0x84, 0x51, 0x27, 0xc1, 0x02, 0x8c, 0x3b, 0xe9, 0x6b, 0x27, 0xcf,
+	0xaf, 0x6e, 0xf6, 0x2a, 0x3f, 0x6e, 0xf6, 0x1e, 0x67, 0x12, 0xee, 0x0d, 0xda, 0x84, 0x59, 0x11,
+	0x16, 0x41, 0x3b, 0xb3, 0x74, 0xc0, 0xfd, 0xf6, 0xe5, 0x08, 0xa9, 0x19, 0x3a, 0xe0, 0xda, 0x0f,
+	0xff, 0x90, 0x6c, 0x2c, 0x40, 0x7f, 0x82, 0x1a, 0x10, 0x33, 0x37, 0x70, 0x42, 0xa0, 0xbe, 0x08,
+	0x8c, 0xb5, 0x7d, 0xed, 0x70, 0xcd, 0xae, 0xcb, 0xb5, 0x9e, 0x5c, 0xd2, 0xcf, 0xd0, 0x3a, 0xa1,
+	0x02, 0x12, 0xe0, 0x22, 0x93, 0xdf, 0x5d, 0x56, 0xde, 0xf8, 0xcd, 0x91, 0xea, 0xf7, 0xe8, 0xd1,
+	0x1c, 0xd7, 0x89, 0xf0, 0xc8, 0xb8, 0xb7, 0x2c, 0x7b, 0x23, 0xcf, 0x3e, 0xc5, 0xa3, 0x02, 0x3c,
+	0xa1, 0x46, 0x75, 0x35, 0x78, 0x42, 0x75, 0x1f, 0x6d, 0xcf, 0xe3, 0x09, 0x75, 0x13, 0xc0, 0x1c,
+	0x8c, 0xfb, 0xcb, 0x3a, 0x9a, 0x79, 0x47, 0x57, 0xe1, 0x16, 0x45, 0x1e, 0x28, 0xd1, 0x83, 0x95,
+	0x88, 0x3a, 0x0a, 0xa7, 0x3b, 0x48, 0x0f, 0x00, 0x87, 0x22, 0x70, 0x7c, 0x4c, 0xa8, 0xf3, 0x01,
+	0xbb, 0x82, 0x25, 0x46, 0x6d, 0x59, 0xc9, 0x66, 0x06, 0x7b, 0x85, 0x09, 0x7d, 0x29, 0x51, 0x7a,
+	0x0f, 0xd5, 0x05, 0x13, 0x38, 0x74, 0x2e, 0x71, 0x78, 0x01, 0x06, 0x92, 0xe4, 0x67, 0x8a, 0xbc,
+	0xb5, 0x48, 0xee, 0x52, 0x91, 0x63, 0x76, 0xa9, 0xb0, 0x91, 0x3c, 0x7f, 0x96, 0x1e, 0x3f, 0xf8,
+	0x54, 0x43, 0x55, 0x55, 0xd1, 0x31, 0x6a, 0x86, 0x72, 0x0a, 0xa7, 0x28, 0x26, 0x3d, 0x54, 0x13,
+	0xe6, 0x92, 0xf2, 0xd1, 0xb6, 0x3a, 0xb1, 0xb2, 0xb2, 0xd4, 0x08, 0xf6, 0x3f, 0xf7, 0xe5, 0xce,
+	0xa6, 0x5f, 0x51, 0x66, 0xea, 0x0f, 0x77, 0xf3, 0xb1, 0x7d, 0x44, 0x46, 0x91, 0xa4, 0x5c, 0x73,
+	0x5b, 0x8b, 0xa2, 0xb4, 0xbc, 0x5b, 0x5d, 0x65, 0x02, 0x2c, 0x72, 0x11, 0xaa, 0x0b, 0xb4, 0x5b,
+	0xe8, 0x2a, 0x5f, 0x63, 0x6b, 0x51, 0x38, 0x6b, 0xf2, 0x36, 0x6b, 0xf9, 0x34, 0x0b, 0xac, 0xb3,
+	0x40, 0x43, 0xb4, 0xa3, 0xac, 0xab, 0xec, 0x54, 0x85, 0xf0, 0xfa, 0xbf, 0xd6, 0x9a, 0x9b, 0x3d,
+	0xc2, 0x23, 0x27, 0x84, 0x4b, 0x48, 0xb0, 0x0f, 0xe9, 0x57, 0x23, 0xcc, 0xa8, 0x97, 0x9c, 0xfd,
+	0x14, 0x8f, 0x7a, 0x8a, 0x68, 0xa7, 0xc0, 0xbf, 0x6c, 0x43, 0x22, 0x02, 0x2f, 0xc1, 0x43, 0x65,
+	0x6b, 0x94, 0xb7, 0xbd, 0x53, 0x44, 0x69, 0x3b, 0x79, 0x73, 0x35, 0x31, 0xb5, 0xeb, 0x89, 0xa9,
+	0xfd, 0x9c, 0x98, 0xda, 0xe7, 0xa9, 0x59, 0xb9, 0x9e, 0x9a, 0x95, 0xef, 0x53, 0xb3, 0x72, 0x7e,
+	0xec, 0x13, 0x11, 0x5c, 0xf4, 0xdb, 0x2e, 0x8b, 0xac, 0xf4, 0xf6, 0x70, 0x44, 0x41, 0x0c, 0x59,
+	0x32, 0x90, 0x0f, 0xd6, 0x68, 0xee, 0xae, 0x21, 0xc6, 0x31, 0xf0, 0x7e, 0x55, 0x5e, 0x14, 0x5e,
+	0xfc, 0x0a, 0x00, 0x00, 0xff, 0xff, 0xd4, 0xdb, 0xf7, 0x22, 0x8c, 0x08, 0x00, 0x00,
 }
 
 func (m *LegacyParams) Marshal() (dAtA []byte, err error) {
@@ -325,9 +332,19 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	{
-		size := m.MaxLeverageRatio.Size()
+		size := m.LegacyMaxWithdrawRatio.Size()
 		i -= size
-		if _, err := m.MaxLeverageRatio.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.LegacyMaxWithdrawRatio.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x62
+	{
+		size := m.LegacyMaxLeverageRatio.Size()
+		i -= size
+		if _, err := m.LegacyMaxLeverageRatio.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintParams(dAtA, i, uint64(size))
@@ -345,9 +362,9 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x52
 	{
-		size := m.HealthGainFactor.Size()
+		size := m.LegacyHealthGainFactor.Size()
 		i -= size
-		if _, err := m.HealthGainFactor.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.LegacyHealthGainFactor.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintParams(dAtA, i, uint64(size))
@@ -355,9 +372,9 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x4a
 	{
-		size := m.InterestRateDecrease.Size()
+		size := m.LegacyInterestRateDecrease.Size()
 		i -= size
-		if _, err := m.InterestRateDecrease.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.LegacyInterestRateDecrease.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintParams(dAtA, i, uint64(size))
@@ -365,9 +382,9 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x42
 	{
-		size := m.InterestRateIncrease.Size()
+		size := m.LegacyInterestRateIncrease.Size()
 		i -= size
-		if _, err := m.InterestRateIncrease.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.LegacyInterestRateIncrease.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintParams(dAtA, i, uint64(size))
@@ -375,9 +392,9 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x3a
 	{
-		size := m.InterestRateMin.Size()
+		size := m.LegacyInterestRateMin.Size()
 		i -= size
-		if _, err := m.InterestRateMin.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.LegacyInterestRateMin.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintParams(dAtA, i, uint64(size))
@@ -385,9 +402,9 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x32
 	{
-		size := m.InterestRateMax.Size()
+		size := m.LegacyInterestRateMax.Size()
 		i -= size
-		if _, err := m.InterestRateMax.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.LegacyInterestRateMax.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintParams(dAtA, i, uint64(size))
@@ -395,9 +412,9 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x2a
 	{
-		size := m.InterestRate.Size()
+		size := m.LegacyInterestRate.Size()
 		i -= size
-		if _, err := m.InterestRate.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.LegacyInterestRate.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintParams(dAtA, i, uint64(size))
@@ -410,19 +427,19 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x18
 	}
 	{
-		size := m.RedemptionRate.Size()
+		size := m.LegacyRedemptionRate.Size()
 		i -= size
-		if _, err := m.RedemptionRate.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.LegacyRedemptionRate.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
 	dAtA[i] = 0x12
-	if len(m.DepositDenom) > 0 {
-		i -= len(m.DepositDenom)
-		copy(dAtA[i:], m.DepositDenom)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.DepositDenom)))
+	if len(m.LegacyDepositDenom) > 0 {
+		i -= len(m.LegacyDepositDenom)
+		copy(dAtA[i:], m.LegacyDepositDenom)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.LegacyDepositDenom)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -478,30 +495,32 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.DepositDenom)
+	l = len(m.LegacyDepositDenom)
 	if l > 0 {
 		n += 1 + l + sovParams(uint64(l))
 	}
-	l = m.RedemptionRate.Size()
+	l = m.LegacyRedemptionRate.Size()
 	n += 1 + l + sovParams(uint64(l))
 	if m.EpochLength != 0 {
 		n += 1 + sovParams(uint64(m.EpochLength))
 	}
-	l = m.InterestRate.Size()
+	l = m.LegacyInterestRate.Size()
 	n += 1 + l + sovParams(uint64(l))
-	l = m.InterestRateMax.Size()
+	l = m.LegacyInterestRateMax.Size()
 	n += 1 + l + sovParams(uint64(l))
-	l = m.InterestRateMin.Size()
+	l = m.LegacyInterestRateMin.Size()
 	n += 1 + l + sovParams(uint64(l))
-	l = m.InterestRateIncrease.Size()
+	l = m.LegacyInterestRateIncrease.Size()
 	n += 1 + l + sovParams(uint64(l))
-	l = m.InterestRateDecrease.Size()
+	l = m.LegacyInterestRateDecrease.Size()
 	n += 1 + l + sovParams(uint64(l))
-	l = m.HealthGainFactor.Size()
+	l = m.LegacyHealthGainFactor.Size()
 	n += 1 + l + sovParams(uint64(l))
 	l = m.TotalValue.Size()
 	n += 1 + l + sovParams(uint64(l))
-	l = m.MaxLeverageRatio.Size()
+	l = m.LegacyMaxLeverageRatio.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.LegacyMaxWithdrawRatio.Size()
 	n += 1 + l + sovParams(uint64(l))
 	return n
 }
@@ -916,7 +935,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DepositDenom", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyDepositDenom", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -944,11 +963,11 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.DepositDenom = string(dAtA[iNdEx:postIndex])
+			m.LegacyDepositDenom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RedemptionRate", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyRedemptionRate", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -976,7 +995,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.RedemptionRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LegacyRedemptionRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1001,7 +1020,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InterestRate", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyInterestRate", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1029,13 +1048,13 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.InterestRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LegacyInterestRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InterestRateMax", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyInterestRateMax", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1063,13 +1082,13 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.InterestRateMax.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LegacyInterestRateMax.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InterestRateMin", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyInterestRateMin", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1097,13 +1116,13 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.InterestRateMin.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LegacyInterestRateMin.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 7:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InterestRateIncrease", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyInterestRateIncrease", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1131,13 +1150,13 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.InterestRateIncrease.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LegacyInterestRateIncrease.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 8:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InterestRateDecrease", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyInterestRateDecrease", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1165,13 +1184,13 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.InterestRateDecrease.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LegacyInterestRateDecrease.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 9:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field HealthGainFactor", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyHealthGainFactor", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1199,7 +1218,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.HealthGainFactor.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LegacyHealthGainFactor.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1239,7 +1258,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 11:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxLeverageRatio", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyMaxLeverageRatio", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1267,7 +1286,41 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.MaxLeverageRatio.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LegacyMaxLeverageRatio.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 12:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LegacyMaxWithdrawRatio", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.LegacyMaxWithdrawRatio.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

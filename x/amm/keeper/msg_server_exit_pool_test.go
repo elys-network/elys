@@ -62,11 +62,10 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 				UseOracle: true,
 				FeeDenom:  ptypes.BaseCurrency,
 			},
-			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),
-			tokenOutDenom: "uusdt",
-			minAmountsOut: sdk.Coins{sdk.NewInt64Coin("uusdt", 99935)},
-			// expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 95114)}, // slippage enabled
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 99935)}, // slippage disabled
+			shareInAmount:    types.OneShare.Quo(sdkmath.NewInt(10)),
+			tokenOutDenom:    "uusdt",
+			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin("uusdt", 97619)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin("uusdt", 97619)}, // slippage enabled
 			expPass:          true,
 		},
 		{
@@ -77,17 +76,16 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 				UseOracle: true,
 				FeeDenom:  ptypes.BaseCurrency,
 			},
-			shareInAmount: types.OneShare.Quo(sdkmath.NewInt(10)),
-			tokenOutDenom: ptypes.BaseCurrency,
-			minAmountsOut: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99221)},
-			// expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)}, // slippage enabled
-			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99221)}, // slippage disabled
+			shareInAmount:    types.OneShare.Quo(sdkmath.NewInt(10)),
+			tokenOutDenom:    ptypes.BaseCurrency,
+			minAmountsOut:    sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)},
+			expSenderBalance: sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 99197)}, // slippage enabled
 			expPass:          true,
 		},
 	} {
 		suite.Run(tc.desc, func() {
 			suite.SetupTest()
-			suite.SetupStableCoinPrices()
+			suite.SetupCoinPrices()
 			suite.SetAmmParams()
 			suite.SetupAssetProfile()
 
@@ -106,12 +104,14 @@ func (suite *AmmKeeperTestSuite) TestMsgServerExitPool() {
 			msgServer := keeper.NewMsgServerImpl(*suite.app.AmmKeeper)
 			poolAssets := []types.PoolAsset{
 				{
-					Token:  tc.poolInitBalance[0],
-					Weight: sdkmath.NewInt(10),
+					Token:                  tc.poolInitBalance[0],
+					Weight:                 sdkmath.NewInt(10),
+					ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
 				},
 				{
-					Token:  tc.poolInitBalance[1],
-					Weight: sdkmath.NewInt(10),
+					Token:                  tc.poolInitBalance[1],
+					Weight:                 sdkmath.NewInt(10),
+					ExternalLiquidityRatio: sdkmath.LegacyOneDec(),
 				},
 			}
 			res, err := msgServer.CreatePool(

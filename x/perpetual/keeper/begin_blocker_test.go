@@ -10,6 +10,7 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestBeginBlocker() {
@@ -19,7 +20,7 @@ func (suite *PerpetualKeeperTestSuite) TestBeginBlocker() {
 	amount := math.NewInt(1000)
 
 	poolCreator := addr[0]
-	ammPool := suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{
@@ -44,7 +45,7 @@ func (suite *PerpetualKeeperTestSuite) TestComputeFundingRate() {
 			},
 		},
 	}
-	pool := types.NewPool(ammPool)
+	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("5.5"))
 	pool.PoolAssetsLong = []types.PoolAsset{
 		{
 			Liabilities: math.NewInt(0),
@@ -114,8 +115,8 @@ func (suite *PerpetualKeeperTestSuite) TestComputeFundingRate() {
 			pool.PoolAssetsLong[0].Collateral = tc.Collateral
 			pool.PoolAssetsShort[0].Liabilities = tc.Liabilities
 			longRate, shortRate := suite.app.PerpetualKeeper.ComputeFundingRate(suite.ctx, pool)
-			suite.Require().Equal(tc.expectLongRate, longRate)
-			suite.Require().Equal(tc.expectShortRate, shortRate)
+			suite.Require().Equal(tc.expectLongRate, longRate.Dec())
+			suite.Require().Equal(tc.expectShortRate, shortRate.Dec())
 		})
 	}
 }

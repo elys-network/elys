@@ -1,9 +1,10 @@
 package types
 
 import (
+	"errors"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -43,16 +44,22 @@ func (msg *MsgSwapExactAmountIn) ValidateBasic() error {
 			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid recipient address (%s)", err)
 		}
 	}
-	for _, route := range msg.Routes {
+	for i, route := range msg.Routes {
 		if err = sdk.ValidateDenom(route.TokenOutDenom); err != nil {
 			return err
+		}
+
+		// Ensure no route has the same input and output denomination
+		if i > 0 && msg.Routes[i-1].TokenOutDenom == route.TokenOutDenom {
+			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "route %d has the same input and output denom as the previous route", i)
 		}
 	}
 	if err = msg.TokenIn.Validate(); err != nil {
 		return err
 	}
 	if msg.TokenIn.IsZero() {
-		return fmt.Errorf("token in is zero")
+		return errors.New("token in is zero")
 	}
+
 	return nil
 }

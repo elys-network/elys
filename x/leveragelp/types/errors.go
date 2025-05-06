@@ -34,4 +34,7 @@ var (
 	ErrPoolLeverageAmountNotZero = errorsmod.Register(ModuleName, 41, "pool leverage amount is greater than zero")
 	ErrLeverageTooSmall          = errorsmod.Register(ModuleName, 42, "leverage should be more than or equal to 1")
 	ErrMaxLeverageLpExists       = errorsmod.Register(ModuleName, 43, "pool is already leveraged at maximum value")
+	ErrPoolNotEnabled            = errorsmod.Register(ModuleName, 44, "pool is not enabled")
+	ErrPoolNotCreatedForBorrow   = errorsmod.Register(ModuleName, 45, "pool is not created for borrow")
+	ErrAssetNotSupported         = errorsmod.Register(ModuleName, 46, "asset not found in amm pool")
 )

@@ -1,7 +1,7 @@
 package types
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -88,6 +88,24 @@ func TestMsgAddEntry_ValidateBasic(t *testing.T) {
 			err: ErrInvalidBaseDenom,
 		},
 		{
+			name: "invalid base denom - single char",
+			msg: MsgAddEntry{
+				Creator:   sample.AccAddress(),
+				Decimals:  18,
+				BaseDenom: "a",
+			},
+			err: ErrInvalidBaseDenom,
+		},
+		{
+			name: "invalid base denom - too long",
+			msg: MsgAddEntry{
+				Creator:   sample.AccAddress(),
+				Decimals:  18,
+				BaseDenom: "ibc/2180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A652180E84E20F5679FCC760D8C165B60F42065DEF7F46A72B447CFF1B7DC6C0A65",
+			},
+			err: ErrInvalidBaseDenom,
+		},
+		{
 			name: "invalid denom",
 			msg: MsgAddEntry{
 				Creator:   sample.AccAddress(),
@@ -95,7 +113,7 @@ func TestMsgAddEntry_ValidateBasic(t *testing.T) {
 				BaseDenom: "uusdc",
 				Denom:     "",
 			},
-			err: fmt.Errorf("invalid denom"),
+			err: errors.New("invalid denom"),
 		},
 	}
 	for _, tt := range tests {

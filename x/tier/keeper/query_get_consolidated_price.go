@@ -2,9 +2,14 @@ package keeper
 
 import (
 	"context"
+	"strings"
+
+	"github.com/elys-network/elys/utils"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tier/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -19,8 +24,63 @@ func (k Keeper) GetConsolidatedPrice(goCtx context.Context, req *types.QueryGetC
 	oracle, amm, oracleDec := k.RetrieveConsolidatedPrice(ctx, req.Denom)
 
 	return &types.QueryGetConsolidatedPriceResponse{
-		AmmPrice:       amm,
-		OraclePrice:    oracle,
-		OraclePriceDec: oracleDec,
+		AmmPrice:       amm.Dec(),
+		OraclePrice:    oracle.Dec(),
+		OraclePriceDec: oracleDec.Dec(),
+	}, nil
+}
+
+func (k Keeper) GetAllPrices(goCtx context.Context, req *types.QueryGetAllPricesRequest) (*types.QueryGetAllPricesResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	var prices []*types.Price
+
+	assetentries := k.assetProfileKeeper.GetAllEntry(ctx)
+	for _, assetEntry := range assetentries {
+		if strings.HasPrefix(assetEntry.Denom, "amm/pool") || strings.HasPrefix(assetEntry.Denom, "stablestake") {
+			continue
+		}
+		denom := assetEntry.Denom
+		if assetEntry.Denom == ptypes.Eden {
+			denom = ptypes.Elys
+		}
+		tokenPriceOracle := k.oracleKeeper.GetDenomPrice(ctx, denom).Mul(utils.Pow10(assetEntry.Decimals))
+		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, denom, assetEntry.Decimals).Mul(utils.Pow10(assetEntry.Decimals))
+		prices = append(prices, &types.Price{
+			Denom:       assetEntry.Denom,
+			OraclePrice: tokenPriceOracle.Dec(),
+			AmmPrice:    tokenPriceAmm.Dec(),
+		})
+	}
+
+	return &types.QueryGetAllPricesResponse{
+		Prices: prices,
+	}, nil
+}
+
+func (k Keeper) GetOraclePrices(goCtx context.Context, req *types.QueryGetOraclePricesRequest) (*types.QueryGetOraclePricesResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	var prices []*types.OraclePrice
+
+	for _, denom := range req.Denoms {
+		tokenPriceOracle, found := k.oracleKeeper.GetAssetPrice(ctx, denom)
+		if !found {
+			tokenPriceOracle = osmomath.ZeroBigDec()
+		}
+		prices = append(prices, &types.OraclePrice{
+			Denom:       denom,
+			OraclePrice: tokenPriceOracle.Dec(),
+		})
+	}
+
+	return &types.QueryGetOraclePricesResponse{
+		Prices: prices,
 	}, nil
 }

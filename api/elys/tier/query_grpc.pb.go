@@ -45,6 +45,10 @@ type QueryClient interface {
 	Staked(ctx context.Context, in *QueryStakedRequest, opts ...grpc.CallOption) (*QueryStakedResponse, error)
 	// Queries a list of GetUsersPoolData items.
 	GetUsersPoolData(ctx context.Context, in *QueryGetUsersPoolDataRequest, opts ...grpc.CallOption) (*QueryGetUsersPoolDataResponse, error)
+	// Queries a list of GetConsolidatedPrice items.
+	GetAllPrices(ctx context.Context, in *QueryGetAllPricesRequest, opts ...grpc.CallOption) (*QueryGetAllPricesResponse, error)
+	// Queries a list of Oracle prices from denoms.
+	GetOraclePrices(ctx context.Context, in *QueryGetOraclePricesRequest, opts ...grpc.CallOption) (*QueryGetOraclePricesResponse, error)
 }
 
 type queryClient struct {
@@ -181,6 +185,24 @@ func (c *queryClient) GetUsersPoolData(ctx context.Context, in *QueryGetUsersPoo
 	return out, nil
 }
 
+func (c *queryClient) GetAllPrices(ctx context.Context, in *QueryGetAllPricesRequest, opts ...grpc.CallOption) (*QueryGetAllPricesResponse, error) {
+	out := new(QueryGetAllPricesResponse)
+	err := c.cc.Invoke(ctx, "/elys.tier.Query/GetAllPrices", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GetOraclePrices(ctx context.Context, in *QueryGetOraclePricesRequest, opts ...grpc.CallOption) (*QueryGetOraclePricesResponse, error) {
+	out := new(QueryGetOraclePricesResponse)
+	err := c.cc.Invoke(ctx, "/elys.tier.Query/GetOraclePrices", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -212,6 +234,10 @@ type QueryServer interface {
 	Staked(context.Context, *QueryStakedRequest) (*QueryStakedResponse, error)
 	// Queries a list of GetUsersPoolData items.
 	GetUsersPoolData(context.Context, *QueryGetUsersPoolDataRequest) (*QueryGetUsersPoolDataResponse, error)
+	// Queries a list of GetConsolidatedPrice items.
+	GetAllPrices(context.Context, *QueryGetAllPricesRequest) (*QueryGetAllPricesResponse, error)
+	// Queries a list of Oracle prices from denoms.
+	GetOraclePrices(context.Context, *QueryGetOraclePricesRequest) (*QueryGetOraclePricesResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -260,6 +286,12 @@ func (UnimplementedQueryServer) Staked(context.Context, *QueryStakedRequest) (*Q
 }
 func (UnimplementedQueryServer) GetUsersPoolData(context.Context, *QueryGetUsersPoolDataRequest) (*QueryGetUsersPoolDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUsersPoolData not implemented")
+}
+func (UnimplementedQueryServer) GetAllPrices(context.Context, *QueryGetAllPricesRequest) (*QueryGetAllPricesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllPrices not implemented")
+}
+func (UnimplementedQueryServer) GetOraclePrices(context.Context, *QueryGetOraclePricesRequest) (*QueryGetOraclePricesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOraclePrices not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -526,6 +558,42 @@ func _Query_GetUsersPoolData_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_GetAllPrices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetAllPricesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetAllPrices(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.tier.Query/GetAllPrices",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetAllPrices(ctx, req.(*QueryGetAllPricesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GetOraclePrices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetOraclePricesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetOraclePrices(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.tier.Query/GetOraclePrices",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetOraclePrices(ctx, req.(*QueryGetOraclePricesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -588,6 +656,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUsersPoolData",
 			Handler:    _Query_GetUsersPoolData_Handler,
+		},
+		{
+			MethodName: "GetAllPrices",
+			Handler:    _Query_GetAllPrices_Handler,
+		},
+		{
+			MethodName: "GetOraclePrices",
+			Handler:    _Query_GetOraclePrices_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

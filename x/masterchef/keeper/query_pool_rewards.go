@@ -8,6 +8,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -74,38 +75,43 @@ func (k Keeper) PoolRewards(goCtx context.Context, req *types.QueryPoolRewardsRe
 }
 
 // Generate earn pool struct
-func (k *Keeper) generatePoolRewards(ctx sdk.Context, ammPool *ammtypes.Pool, externalRewardsAprs map[uint64]math.LegacyDec) types.PoolRewards {
+func (k *Keeper) generatePoolRewards(ctx sdk.Context, ammPool *ammtypes.Pool, externalRewardsAprs map[uint64]osmomath.BigDec) types.PoolRewards {
 	// Get rewards amount
 	rewardsUsd, rewardCoins := k.GetDailyRewardsAmountForPool(ctx, ammPool.PoolId)
-	edenForward := sdk.NewCoin(ptypes.Eden, k.ForwardEdenCalc(ctx, ammPool.PoolId).RoundInt())
+	edenForward := sdk.NewCoin(ptypes.Eden, k.ForwardEdenCalc(ctx, ammPool.PoolId).Dec().RoundInt())
 	tvl, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
-	apr := rewardsUsd.Mul(math.LegacyNewDec(365))
+	apr := rewardsUsd.MulInt64(365)
 	if err != nil {
-		apr = math.LegacyZeroDec()
+		apr = osmomath.ZeroBigDec()
 	} else {
 		apr = apr.Quo(tvl)
 	}
 
+	externalRewardAprsLegacyDec := math.LegacyZeroDec()
+	if externalRewardApr, ok := externalRewardsAprs[ammPool.PoolId]; ok {
+		externalRewardAprsLegacyDec = externalRewardApr.Dec()
+	}
+
 	return types.PoolRewards{
 		PoolId:             ammPool.PoolId,
-		RewardsUsd:         rewardsUsd,
+		RewardsUsd:         rewardsUsd.Dec(),
 		RewardCoins:        rewardCoins,
 		EdenForward:        edenForward,
-		RewardsUsdApr:      apr,
-		ExternalRewardsApr: externalRewardsAprs[ammPool.PoolId],
+		RewardsUsdApr:      apr.Dec(),
+		ExternalRewardsApr: externalRewardAprsLegacyDec,
 	}
 }
 
-func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]math.LegacyDec {
+func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]osmomath.BigDec {
 	externalIncentives := k.GetAllExternalIncentives(ctx)
-	rewardsPerPool := make(map[uint64]math.LegacyDec)
+	rewardsPerPool := make(map[uint64]osmomath.BigDec)
 	curBlockHeight := ctx.BlockHeight()
 	totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 
 	for _, externalIncentive := range externalIncentives {
 		if externalIncentive.FromBlock < curBlockHeight && curBlockHeight <= externalIncentive.ToBlock {
-			totalAmount := math.LegacyNewDecFromInt(externalIncentive.AmountPerBlock.Mul(math.NewInt(totalBlocksPerYear)))
-			price := k.oracleKeeper.GetAssetPriceFromDenom(ctx, externalIncentive.RewardDenom)
+			totalAmount := osmomath.BigDecFromSDKInt(externalIncentive.AmountPerBlock.MulRaw(totalBlocksPerYear))
+			price := k.oracleKeeper.GetDenomPrice(ctx, externalIncentive.RewardDenom)
 
 			rewardsPerPool[externalIncentive.PoolId] = rewardsPerPool[externalIncentive.PoolId].Add(totalAmount.Mul(price))
 		}
@@ -121,7 +127,7 @@ func (k Keeper) generateExternalRewardsApr(ctx sdk.Context) map[uint64]math.Lega
 		}
 		totalLiquidity, err := pool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
-			rewardsPerPool[key] = math.LegacyZeroDec()
+			rewardsPerPool[key] = osmomath.ZeroBigDec()
 		}
 		externalRewardsApr := value.Quo(totalLiquidity)
 		rewardsPerPool[key] = externalRewardsApr

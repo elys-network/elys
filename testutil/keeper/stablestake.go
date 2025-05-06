@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"testing"
+
 	"cosmossdk.io/store/metrics"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	"testing"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
@@ -36,6 +37,8 @@ func StablestakeKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		cdc,
 		storeService,
 		govAddress.String(),
+		nil,
+		nil,
 		nil,
 		nil,
 		nil,

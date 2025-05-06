@@ -22,6 +22,7 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	ExternalIncentive(ctx context.Context, in *QueryExternalIncentiveRequest, opts ...grpc.CallOption) (*QueryExternalIncentiveResponse, error)
 	PoolInfo(ctx context.Context, in *QueryPoolInfoRequest, opts ...grpc.CallOption) (*QueryPoolInfoResponse, error)
+	ListPoolInfos(ctx context.Context, in *QueryListPoolInfosRequest, opts ...grpc.CallOption) (*QueryListPoolInfosResponse, error)
 	PoolRewardInfo(ctx context.Context, in *QueryPoolRewardInfoRequest, opts ...grpc.CallOption) (*QueryPoolRewardInfoResponse, error)
 	UserRewardInfo(ctx context.Context, in *QueryUserRewardInfoRequest, opts ...grpc.CallOption) (*QueryUserRewardInfoResponse, error)
 	UserPendingReward(ctx context.Context, in *QueryUserPendingRewardRequest, opts ...grpc.CallOption) (*QueryUserPendingRewardResponse, error)
@@ -37,6 +38,8 @@ type QueryClient interface {
 	Aprs(ctx context.Context, in *QueryAprsRequest, opts ...grpc.CallOption) (*QueryAprsResponse, error)
 	// Queries PoolReward items
 	PoolRewards(ctx context.Context, in *QueryPoolRewardsRequest, opts ...grpc.CallOption) (*QueryPoolRewardsResponse, error)
+	AllLiquidityPoolTVL(ctx context.Context, in *QueryAllLiquidityPoolTVLRequest, opts ...grpc.CallOption) (*QueryAllLiquidityPoolTVLResponse, error)
+	ChainTVL(ctx context.Context, in *QueryChainTVLRequest, opts ...grpc.CallOption) (*QueryChainTVLResponse, error)
 }
 
 type queryClient struct {
@@ -68,6 +71,15 @@ func (c *queryClient) ExternalIncentive(ctx context.Context, in *QueryExternalIn
 func (c *queryClient) PoolInfo(ctx context.Context, in *QueryPoolInfoRequest, opts ...grpc.CallOption) (*QueryPoolInfoResponse, error) {
 	out := new(QueryPoolInfoResponse)
 	err := c.cc.Invoke(ctx, "/elys.masterchef.Query/PoolInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ListPoolInfos(ctx context.Context, in *QueryListPoolInfosRequest, opts ...grpc.CallOption) (*QueryListPoolInfosResponse, error) {
+	out := new(QueryListPoolInfosResponse)
+	err := c.cc.Invoke(ctx, "/elys.masterchef.Query/ListPoolInfos", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -164,6 +176,24 @@ func (c *queryClient) PoolRewards(ctx context.Context, in *QueryPoolRewardsReque
 	return out, nil
 }
 
+func (c *queryClient) AllLiquidityPoolTVL(ctx context.Context, in *QueryAllLiquidityPoolTVLRequest, opts ...grpc.CallOption) (*QueryAllLiquidityPoolTVLResponse, error) {
+	out := new(QueryAllLiquidityPoolTVLResponse)
+	err := c.cc.Invoke(ctx, "/elys.masterchef.Query/AllLiquidityPoolTVL", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ChainTVL(ctx context.Context, in *QueryChainTVLRequest, opts ...grpc.CallOption) (*QueryChainTVLResponse, error) {
+	out := new(QueryChainTVLResponse)
+	err := c.cc.Invoke(ctx, "/elys.masterchef.Query/ChainTVL", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -172,6 +202,7 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	ExternalIncentive(context.Context, *QueryExternalIncentiveRequest) (*QueryExternalIncentiveResponse, error)
 	PoolInfo(context.Context, *QueryPoolInfoRequest) (*QueryPoolInfoResponse, error)
+	ListPoolInfos(context.Context, *QueryListPoolInfosRequest) (*QueryListPoolInfosResponse, error)
 	PoolRewardInfo(context.Context, *QueryPoolRewardInfoRequest) (*QueryPoolRewardInfoResponse, error)
 	UserRewardInfo(context.Context, *QueryUserRewardInfoRequest) (*QueryUserRewardInfoResponse, error)
 	UserPendingReward(context.Context, *QueryUserPendingRewardRequest) (*QueryUserPendingRewardResponse, error)
@@ -187,6 +218,8 @@ type QueryServer interface {
 	Aprs(context.Context, *QueryAprsRequest) (*QueryAprsResponse, error)
 	// Queries PoolReward items
 	PoolRewards(context.Context, *QueryPoolRewardsRequest) (*QueryPoolRewardsResponse, error)
+	AllLiquidityPoolTVL(context.Context, *QueryAllLiquidityPoolTVLRequest) (*QueryAllLiquidityPoolTVLResponse, error)
+	ChainTVL(context.Context, *QueryChainTVLRequest) (*QueryChainTVLResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -202,6 +235,9 @@ func (UnimplementedQueryServer) ExternalIncentive(context.Context, *QueryExterna
 }
 func (UnimplementedQueryServer) PoolInfo(context.Context, *QueryPoolInfoRequest) (*QueryPoolInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PoolInfo not implemented")
+}
+func (UnimplementedQueryServer) ListPoolInfos(context.Context, *QueryListPoolInfosRequest) (*QueryListPoolInfosResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPoolInfos not implemented")
 }
 func (UnimplementedQueryServer) PoolRewardInfo(context.Context, *QueryPoolRewardInfoRequest) (*QueryPoolRewardInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PoolRewardInfo not implemented")
@@ -232,6 +268,12 @@ func (UnimplementedQueryServer) Aprs(context.Context, *QueryAprsRequest) (*Query
 }
 func (UnimplementedQueryServer) PoolRewards(context.Context, *QueryPoolRewardsRequest) (*QueryPoolRewardsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PoolRewards not implemented")
+}
+func (UnimplementedQueryServer) AllLiquidityPoolTVL(context.Context, *QueryAllLiquidityPoolTVLRequest) (*QueryAllLiquidityPoolTVLResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllLiquidityPoolTVL not implemented")
+}
+func (UnimplementedQueryServer) ChainTVL(context.Context, *QueryChainTVLRequest) (*QueryChainTVLResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChainTVL not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -296,6 +338,24 @@ func _Query_PoolInfo_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).PoolInfo(ctx, req.(*QueryPoolInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ListPoolInfos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryListPoolInfosRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ListPoolInfos(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.masterchef.Query/ListPoolInfos",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ListPoolInfos(ctx, req.(*QueryListPoolInfosRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -480,6 +540,42 @@ func _Query_PoolRewards_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_AllLiquidityPoolTVL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllLiquidityPoolTVLRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AllLiquidityPoolTVL(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.masterchef.Query/AllLiquidityPoolTVL",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AllLiquidityPoolTVL(ctx, req.(*QueryAllLiquidityPoolTVLRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ChainTVL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryChainTVLRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ChainTVL(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.masterchef.Query/ChainTVL",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ChainTVL(ctx, req.(*QueryChainTVLRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -498,6 +594,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PoolInfo",
 			Handler:    _Query_PoolInfo_Handler,
+		},
+		{
+			MethodName: "ListPoolInfos",
+			Handler:    _Query_ListPoolInfos_Handler,
 		},
 		{
 			MethodName: "PoolRewardInfo",
@@ -538,6 +638,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PoolRewards",
 			Handler:    _Query_PoolRewards_Handler,
+		},
+		{
+			MethodName: "AllLiquidityPoolTVL",
+			Handler:    _Query_AllLiquidityPoolTVL_Handler,
+		},
+		{
+			MethodName: "ChainTVL",
+			Handler:    _Query_ChainTVL_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

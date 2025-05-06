@@ -1,5 +1,13 @@
 package types
 
-import "math"
+import (
+	"math"
 
-const PoolId = math.MaxInt16
+	"github.com/osmosis-labs/osmosis/osmomath"
+)
+
+const UsdcPoolId = math.MaxInt16
+
+func (i InterestBlock) GetBigDecInterestRate() osmomath.BigDec {
+	return osmomath.BigDecFromDec(i.InterestRate)
+}

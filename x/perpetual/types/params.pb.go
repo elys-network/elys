@@ -27,36 +27,34 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type LegacyParams struct {
-	LeverageMax                                    cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=leverage_max,json=leverageMax,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"leverage_max"`
-	BorrowInterestRateMax                          cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=borrow_interest_rate_max,json=borrowInterestRateMax,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"borrow_interest_rate_max"`
-	BorrowInterestRateMin                          cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=borrow_interest_rate_min,json=borrowInterestRateMin,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"borrow_interest_rate_min"`
-	BorrowInterestRateIncrease                     cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=borrow_interest_rate_increase,json=borrowInterestRateIncrease,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"borrow_interest_rate_increase"`
-	BorrowInterestRateDecrease                     cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=borrow_interest_rate_decrease,json=borrowInterestRateDecrease,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"borrow_interest_rate_decrease"`
-	HealthGainFactor                               cosmossdk_io_math.LegacyDec `protobuf:"bytes,6,opt,name=health_gain_factor,json=healthGainFactor,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"health_gain_factor"`
-	MaxOpenPositions                               int64                       `protobuf:"varint,7,opt,name=max_open_positions,json=maxOpenPositions,proto3" json:"max_open_positions,omitempty"`
-	PoolOpenThreshold                              cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=pool_open_threshold,json=poolOpenThreshold,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"pool_open_threshold"`
-	ForceCloseFundPercentage                       cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=force_close_fund_percentage,json=forceCloseFundPercentage,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"force_close_fund_percentage"`
-	ForceCloseFundAddress                          string                      `protobuf:"bytes,10,opt,name=force_close_fund_address,json=forceCloseFundAddress,proto3" json:"force_close_fund_address,omitempty"`
-	IncrementalBorrowInterestPaymentFundPercentage cosmossdk_io_math.LegacyDec `protobuf:"bytes,11,opt,name=incremental_borrow_interest_payment_fund_percentage,json=incrementalBorrowInterestPaymentFundPercentage,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"incremental_borrow_interest_payment_fund_percentage"`
-	IncrementalBorrowInterestPaymentFundAddress    string                      `protobuf:"bytes,12,opt,name=incremental_borrow_interest_payment_fund_address,json=incrementalBorrowInterestPaymentFundAddress,proto3" json:"incremental_borrow_interest_payment_fund_address,omitempty"`
-	SafetyFactor                                   cosmossdk_io_math.LegacyDec `protobuf:"bytes,13,opt,name=safety_factor,json=safetyFactor,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"safety_factor"`
-	IncrementalBorrowInterestPaymentEnabled        bool                        `protobuf:"varint,14,opt,name=incremental_borrow_interest_payment_enabled,json=incrementalBorrowInterestPaymentEnabled,proto3" json:"incremental_borrow_interest_payment_enabled,omitempty"`
-	WhitelistingEnabled                            bool                        `protobuf:"varint,15,opt,name=whitelisting_enabled,json=whitelistingEnabled,proto3" json:"whitelisting_enabled,omitempty"`
-	PerpetualSwapFee                               cosmossdk_io_math.LegacyDec `protobuf:"bytes,16,opt,name=perpetual_swap_fee,json=perpetualSwapFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"perpetual_swap_fee"`
-	MaxLimitOrder                                  int64                       `protobuf:"varint,17,opt,name=max_limit_order,json=maxLimitOrder,proto3" json:"max_limit_order,omitempty"`
-	FixedFundingRate                               cosmossdk_io_math.LegacyDec `protobuf:"bytes,18,opt,name=fixed_funding_rate,json=fixedFundingRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"fixed_funding_rate"`
+	LeverageMax                         cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=leverage_max,json=leverageMax,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"leverage_max"`
+	BorrowInterestRateMax               cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=borrow_interest_rate_max,json=borrowInterestRateMax,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"borrow_interest_rate_max"`
+	BorrowInterestRateMin               cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=borrow_interest_rate_min,json=borrowInterestRateMin,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"borrow_interest_rate_min"`
+	BorrowInterestRateIncrease          cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=borrow_interest_rate_increase,json=borrowInterestRateIncrease,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"borrow_interest_rate_increase"`
+	BorrowInterestRateDecrease          cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=borrow_interest_rate_decrease,json=borrowInterestRateDecrease,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"borrow_interest_rate_decrease"`
+	HealthGainFactor                    cosmossdk_io_math.LegacyDec `protobuf:"bytes,6,opt,name=health_gain_factor,json=healthGainFactor,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"health_gain_factor"`
+	MaxOpenPositions                    int64                       `protobuf:"varint,7,opt,name=max_open_positions,json=maxOpenPositions,proto3" json:"max_open_positions,omitempty"`
+	PoolOpenThreshold                   cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=pool_open_threshold,json=poolOpenThreshold,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"pool_open_threshold"`
+	BorrowInterestPaymentFundPercentage cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=borrow_interest_payment_fund_percentage,json=borrowInterestPaymentFundPercentage,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"borrow_interest_payment_fund_percentage"`
+	BorrowInterestPaymentFundAddress    string                      `protobuf:"bytes,10,opt,name=borrow_interest_payment_fund_address,json=borrowInterestPaymentFundAddress,proto3" json:"borrow_interest_payment_fund_address,omitempty"`
+	SafetyFactor                        cosmossdk_io_math.LegacyDec `protobuf:"bytes,11,opt,name=safety_factor,json=safetyFactor,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"safety_factor"`
+	BorrowInterestPaymentEnabled        bool                        `protobuf:"varint,12,opt,name=borrow_interest_payment_enabled,json=borrowInterestPaymentEnabled,proto3" json:"borrow_interest_payment_enabled,omitempty"`
+	WhitelistingEnabled                 bool                        `protobuf:"varint,13,opt,name=whitelisting_enabled,json=whitelistingEnabled,proto3" json:"whitelisting_enabled,omitempty"`
+	PerpetualSwapFee                    cosmossdk_io_math.LegacyDec `protobuf:"bytes,14,opt,name=perpetual_swap_fee,json=perpetualSwapFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"perpetual_swap_fee"`
+	MaxLimitOrder                       int64                       `protobuf:"varint,15,opt,name=max_limit_order,json=maxLimitOrder,proto3" json:"max_limit_order,omitempty"`
+	FixedFundingRate                    cosmossdk_io_math.LegacyDec `protobuf:"bytes,16,opt,name=fixed_funding_rate,json=fixedFundingRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"fixed_funding_rate"`
 	// minimum value for take_profit_price/current price for long, should be
 	// greater than 1
-	MinimumLongTakeProfitPriceRatio cosmossdk_io_math.LegacyDec `protobuf:"bytes,19,opt,name=minimum_long_take_profit_price_ratio,json=minimumLongTakeProfitPriceRatio,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"minimum_long_take_profit_price_ratio"`
+	MinimumLongTakeProfitPriceRatio cosmossdk_io_math.LegacyDec `protobuf:"bytes,17,opt,name=minimum_long_take_profit_price_ratio,json=minimumLongTakeProfitPriceRatio,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"minimum_long_take_profit_price_ratio"`
 	// max value for take_profit_price/current price for long, should be greater
 	// than 1
-	MaximumLongTakeProfitPriceRatio cosmossdk_io_math.LegacyDec `protobuf:"bytes,20,opt,name=maximum_long_take_profit_price_ratio,json=maximumLongTakeProfitPriceRatio,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"maximum_long_take_profit_price_ratio"`
+	MaximumLongTakeProfitPriceRatio cosmossdk_io_math.LegacyDec `protobuf:"bytes,18,opt,name=maximum_long_take_profit_price_ratio,json=maximumLongTakeProfitPriceRatio,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"maximum_long_take_profit_price_ratio"`
 	// max value for take_profit_price/current price for short, should be less
 	// than 1
-	MaximumShortTakeProfitPriceRatio cosmossdk_io_math.LegacyDec `protobuf:"bytes,21,opt,name=maximum_short_take_profit_price_ratio,json=maximumShortTakeProfitPriceRatio,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"maximum_short_take_profit_price_ratio"`
+	MaximumShortTakeProfitPriceRatio cosmossdk_io_math.LegacyDec `protobuf:"bytes,19,opt,name=maximum_short_take_profit_price_ratio,json=maximumShortTakeProfitPriceRatio,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"maximum_short_take_profit_price_ratio"`
 	// No need for minimumShortTakeProfitPriceRatio as it will be 0, checked in
 	// validate message
-	EnableTakeProfitCustodyLiabilities bool `protobuf:"varint,22,opt,name=enable_take_profit_custody_liabilities,json=enableTakeProfitCustodyLiabilities,proto3" json:"enable_take_profit_custody_liabilities,omitempty"`
+	EnableTakeProfitCustodyLiabilities bool `protobuf:"varint,20,opt,name=enable_take_profit_custody_liabilities,json=enableTakeProfitCustodyLiabilities,proto3" json:"enable_take_profit_custody_liabilities,omitempty"`
 	// We create this and send this value to estimate swap ONLY when opening and
 	// closing the position Ideally this value is set to half. When trader open a
 	// position if they receive a weight balance bonus (which is half of weight
@@ -66,7 +64,7 @@ type LegacyParams struct {
 	// because PoolParams.WeightRecoveryFeePortion can be different Also, if
 	// trader has no bonus only fee, then overall we are only applying the fee
 	// half time
-	WeightBreakingFeeFactor cosmossdk_io_math.LegacyDec `protobuf:"bytes,23,opt,name=weight_breaking_fee_factor,json=weightBreakingFeeFactor,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"weight_breaking_fee_factor"`
+	WeightBreakingFeeFactor cosmossdk_io_math.LegacyDec `protobuf:"bytes,21,opt,name=weight_breaking_fee_factor,json=weightBreakingFeeFactor,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"weight_breaking_fee_factor"`
 }
 
 func (m *LegacyParams) Reset()         { *m = LegacyParams{} }
@@ -109,23 +107,16 @@ func (m *LegacyParams) GetMaxOpenPositions() int64 {
 	return 0
 }
 
-func (m *LegacyParams) GetForceCloseFundAddress() string {
+func (m *LegacyParams) GetBorrowInterestPaymentFundAddress() string {
 	if m != nil {
-		return m.ForceCloseFundAddress
+		return m.BorrowInterestPaymentFundAddress
 	}
 	return ""
 }
 
-func (m *LegacyParams) GetIncrementalBorrowInterestPaymentFundAddress() string {
+func (m *LegacyParams) GetBorrowInterestPaymentEnabled() bool {
 	if m != nil {
-		return m.IncrementalBorrowInterestPaymentFundAddress
-	}
-	return ""
-}
-
-func (m *LegacyParams) GetIncrementalBorrowInterestPaymentEnabled() bool {
-	if m != nil {
-		return m.IncrementalBorrowInterestPaymentEnabled
+		return m.BorrowInterestPaymentEnabled
 	}
 	return false
 }
@@ -190,6 +181,7 @@ type Params struct {
 	// trader has no bonus only fee, then overall we are only applying the fee
 	// half time
 	WeightBreakingFeeFactor cosmossdk_io_math.LegacyDec `protobuf:"bytes,21,opt,name=weight_breaking_fee_factor,json=weightBreakingFeeFactor,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"weight_breaking_fee_factor"`
+	EnabledPools            []uint64                    `protobuf:"varint,22,rep,packed,name=enabled_pools,json=enabledPools,proto3" json:"enabled_pools,omitempty"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
@@ -267,6 +259,13 @@ func (m *Params) GetEnableTakeProfitCustodyLiabilities() bool {
 	return false
 }
 
+func (m *Params) GetEnabledPools() []uint64 {
+	if m != nil {
+		return m.EnabledPools
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*LegacyParams)(nil), "elys.perpetual.LegacyParams")
 	proto.RegisterType((*Params)(nil), "elys.perpetual.Params")
@@ -275,65 +274,59 @@ func init() {
 func init() { proto.RegisterFile("elys/perpetual/params.proto", fileDescriptor_032040a5fba82242) }
 
 var fileDescriptor_032040a5fba82242 = []byte{
-	// 925 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x98, 0xcf, 0x6f, 0x1b, 0x45,
-	0x14, 0xc7, 0xb3, 0x14, 0x42, 0x3b, 0x71, 0x7e, 0x4d, 0x12, 0x3a, 0x24, 0xe0, 0x58, 0xa1, 0xb4,
-	0x91, 0x4a, 0x6d, 0xaa, 0x1e, 0x38, 0x93, 0xa6, 0x86, 0x4a, 0x81, 0x5a, 0x6e, 0xc4, 0x01, 0x21,
-	0x8d, 0x66, 0x77, 0x9f, 0x77, 0x07, 0xef, 0xce, 0xac, 0x66, 0xc6, 0xd8, 0xbe, 0x21, 0x2e, 0x5c,
-	0xf9, 0x0b, 0xf8, 0x2b, 0xf8, 0x23, 0x7a, 0xac, 0x38, 0x21, 0x0e, 0x15, 0x4a, 0xfe, 0x00, 0xce,
-	0xdc, 0xd0, 0xec, 0xec, 0xba, 0x49, 0xd3, 0x10, 0x77, 0x65, 0xd4, 0x1e, 0x72, 0xcb, 0xee, 0x9b,
-	0xf9, 0x7c, 0xbf, 0x2f, 0x7e, 0x33, 0xef, 0x69, 0xd1, 0x16, 0x24, 0x63, 0xdd, 0xca, 0x40, 0x65,
-	0x60, 0x06, 0x2c, 0x69, 0x65, 0x4c, 0xb1, 0x54, 0x37, 0x33, 0x25, 0x8d, 0xc4, 0x4b, 0x36, 0xd8,
-	0x9c, 0x04, 0x37, 0xd7, 0x23, 0x19, 0xc9, 0x3c, 0xd4, 0xb2, 0x7f, 0xb9, 0x55, 0x9b, 0xef, 0x07,
-	0x52, 0xa7, 0x52, 0x53, 0x17, 0x70, 0x0f, 0x2e, 0xb4, 0xf3, 0xf7, 0x2a, 0xaa, 0x1d, 0x40, 0xc4,
-	0x82, 0x71, 0x27, 0xe7, 0xe2, 0x43, 0x54, 0x4b, 0xe0, 0x07, 0x50, 0x2c, 0x02, 0x9a, 0xb2, 0x11,
-	0xf1, 0x1a, 0xde, 0xee, 0xb5, 0xbd, 0xbb, 0x4f, 0x9e, 0x6d, 0xcf, 0xfd, 0xf9, 0x6c, 0x7b, 0xcb,
-	0x6d, 0xd6, 0x61, 0xbf, 0xc9, 0x65, 0x2b, 0x65, 0x26, 0x6e, 0xba, 0xdd, 0xfb, 0x10, 0xfc, 0xfe,
-	0xdb, 0x1d, 0x54, 0xb0, 0xf7, 0x21, 0xe8, 0x2e, 0x94, 0x98, 0xaf, 0xd8, 0x08, 0x7f, 0x8f, 0x88,
-	0x2f, 0x95, 0x92, 0x43, 0xca, 0x85, 0x01, 0x05, 0xda, 0x50, 0xc5, 0x8c, 0x53, 0x78, 0xab, 0xaa,
-	0xc2, 0x86, 0x43, 0x3e, 0x2c, 0x88, 0x5d, 0x66, 0xfe, 0x5b, 0x8b, 0x0b, 0x72, 0x65, 0x96, 0x5a,
-	0x5c, 0x60, 0x83, 0x3e, 0x7c, 0xa9, 0x16, 0x17, 0x81, 0x02, 0xa6, 0x81, 0xbc, 0x5d, 0x55, 0x70,
-	0xf3, 0xac, 0xe0, 0xc3, 0x02, 0x7a, 0xae, 0x6a, 0x08, 0x85, 0xea, 0x3b, 0x33, 0x54, 0xdd, 0x2f,
-	0xa0, 0x98, 0x22, 0x1c, 0x03, 0x4b, 0x4c, 0x4c, 0x23, 0xc6, 0x05, 0xed, 0xb1, 0xc0, 0x48, 0x45,
-	0xe6, 0xab, 0x4a, 0xad, 0x38, 0xd8, 0x17, 0x8c, 0x8b, 0x76, 0x8e, 0xc2, 0x9f, 0x20, 0x9c, 0xb2,
-	0x11, 0x95, 0x19, 0x08, 0x9a, 0x49, 0xcd, 0x0d, 0x97, 0x42, 0x93, 0x77, 0x1b, 0xde, 0xee, 0x95,
-	0xee, 0x4a, 0xca, 0x46, 0x8f, 0x32, 0x10, 0x9d, 0xf2, 0x3d, 0x66, 0x68, 0x2d, 0x93, 0x32, 0x71,
-	0xcb, 0x4d, 0xac, 0x40, 0xc7, 0x32, 0x09, 0xc9, 0xd5, 0xaa, 0x7e, 0x56, 0x2d, 0xcd, 0x4a, 0x1c,
-	0x96, 0x2c, 0x9c, 0xa1, 0xad, 0x9e, 0x54, 0x01, 0xd0, 0x20, 0x91, 0x1a, 0x68, 0x6f, 0x20, 0x42,
-	0x9a, 0x81, 0x0a, 0x40, 0x18, 0x16, 0x01, 0xb9, 0x56, 0x55, 0x8a, 0xe4, 0xd4, 0xfb, 0x16, 0xda,
-	0x1e, 0x88, 0xb0, 0x33, 0x41, 0xe2, 0xcf, 0x10, 0x39, 0xa3, 0xc8, 0xc2, 0x50, 0x81, 0xd6, 0x04,
-	0x59, 0xb9, 0xee, 0xc6, 0xe9, 0xbd, 0x9f, 0xbb, 0x20, 0xfe, 0xd5, 0x43, 0xf7, 0xf2, 0xa2, 0x4b,
-	0x2d, 0x29, 0xa1, 0x2f, 0xd6, 0x47, 0xc6, 0xc6, 0x36, 0x72, 0x26, 0x87, 0x85, 0xaa, 0x39, 0x34,
-	0x4f, 0xa8, 0xed, 0x9d, 0x2a, 0x9a, 0x8e, 0x93, 0x7a, 0x21, 0x33, 0x40, 0x9f, 0x4e, 0xed, 0xaf,
-	0xcc, 0xb8, 0x96, 0x67, 0x7c, 0x7b, 0x1a, 0xa5, 0xf2, 0xff, 0xf0, 0x0d, 0x5a, 0xd4, 0xac, 0x07,
-	0x66, 0x5c, 0xd6, 0xe7, 0x62, 0xd5, 0x04, 0x6b, 0x8e, 0x53, 0xd4, 0xe6, 0x77, 0xe8, 0xf6, 0x34,
-	0xf6, 0x41, 0x30, 0x3f, 0x81, 0x90, 0x2c, 0x35, 0xbc, 0xdd, 0xab, 0xdd, 0x5b, 0x17, 0x39, 0x7f,
-	0xe0, 0x96, 0xe3, 0xbb, 0x68, 0x7d, 0x18, 0x73, 0x03, 0x09, 0xd7, 0x86, 0x8b, 0x68, 0x82, 0x59,
-	0xce, 0x31, 0x6b, 0x27, 0x63, 0xe5, 0x16, 0x8a, 0xf0, 0xe4, 0xda, 0xa7, 0x7a, 0xc8, 0x32, 0xda,
-	0x03, 0x20, 0x2b, 0x95, 0x4f, 0xe3, 0x04, 0xf6, 0x78, 0xc8, 0xb2, 0x36, 0x00, 0xbe, 0x89, 0x96,
-	0xed, 0x69, 0x4c, 0x78, 0xca, 0x0d, 0x95, 0x2a, 0x04, 0x45, 0x56, 0xf3, 0xa3, 0xb8, 0x98, 0xb2,
-	0xd1, 0x81, 0x7d, 0xfb, 0xc8, 0xbe, 0xb4, 0x46, 0x7a, 0x7c, 0x04, 0x61, 0xfe, 0xd3, 0x59, 0xf3,
-	0xf6, 0x2a, 0x22, 0xb8, 0xb2, 0x91, 0x1c, 0xd6, 0x76, 0x2c, 0x7b, 0xff, 0xe0, 0x1f, 0x3d, 0x74,
-	0x23, 0xe5, 0x82, 0xa7, 0x83, 0x94, 0x26, 0x52, 0x44, 0xd4, 0xb0, 0x3e, 0xd8, 0x5e, 0xd6, 0xe3,
-	0x86, 0x66, 0x8a, 0x07, 0x60, 0x25, 0xb9, 0x24, 0x6b, 0x55, 0x35, 0xb7, 0x0b, 0xfc, 0x81, 0x14,
-	0xd1, 0x21, 0xeb, 0x43, 0x27, 0x67, 0x77, 0x2c, 0xba, 0x6b, 0xc9, 0xce, 0x02, 0x1b, 0x5d, 0x6c,
-	0x61, 0xbd, 0xba, 0x05, 0x87, 0x3f, 0xd7, 0xc2, 0x4f, 0x1e, 0xfa, 0xb8, 0xb4, 0xa0, 0x63, 0xa9,
-	0xcc, 0xb9, 0x1e, 0x36, 0xaa, 0x7a, 0x68, 0x14, 0xfc, 0xc7, 0x16, 0xff, 0x52, 0x13, 0x5d, 0x74,
-	0xd3, 0x95, 0xe6, 0x29, 0xf1, 0x60, 0xa0, 0x8d, 0x0c, 0xc7, 0x34, 0xe1, 0xcc, 0xe7, 0x09, 0x37,
-	0x1c, 0x34, 0x79, 0x2f, 0xaf, 0xdc, 0x1d, 0xb7, 0xfa, 0x39, 0xeb, 0xbe, 0x5b, 0x7a, 0xf0, 0x7c,
-	0x25, 0x16, 0x68, 0x73, 0x08, 0x3c, 0x8a, 0x0d, 0xf5, 0x15, 0xb0, 0xbe, 0xad, 0xa0, 0x1e, 0x40,
-	0x79, 0x7c, 0xaf, 0x57, 0x4d, 0xe6, 0xba, 0x83, 0xee, 0x15, 0xcc, 0x36, 0x80, 0x3b, 0xc9, 0x3b,
-	0xff, 0x2c, 0xa3, 0xf9, 0xcb, 0x59, 0xe7, 0x72, 0xd6, 0xb9, 0x9c, 0x75, 0x4e, 0xcd, 0x3a, 0x3f,
-	0x7b, 0xe8, 0xd6, 0xb4, 0x43, 0x43, 0xe5, 0xc1, 0xe7, 0x23, 0x7f, 0x8a, 0x49, 0xe1, 0x6b, 0x74,
-	0x63, 0xaa, 0xe9, 0xc0, 0xcd, 0x43, 0x0d, 0xff, 0x95, 0x47, 0x82, 0x85, 0xd9, 0x8c, 0x04, 0x0f,
-	0xd0, 0xf6, 0x45, 0x63, 0x40, 0x2d, 0xbf, 0x05, 0x3f, 0xf0, 0xab, 0xf4, 0xfe, 0xc5, 0x57, 0xed,
-	0xfd, 0x4b, 0xff, 0x6b, 0xef, 0x5f, 0x9e, 0xbe, 0xf7, 0xaf, 0xbc, 0x86, 0xde, 0xbf, 0xfa, 0xfa,
-	0x7b, 0x3f, 0x7e, 0x03, 0x7a, 0xff, 0xda, 0x9b, 0xd0, 0xfb, 0xd7, 0x67, 0xd4, 0xfb, 0x37, 0x66,
-	0xdd, 0xfb, 0xf7, 0xbe, 0x7c, 0x72, 0x54, 0xf7, 0x9e, 0x1e, 0xd5, 0xbd, 0xbf, 0x8e, 0xea, 0xde,
-	0x2f, 0xc7, 0xf5, 0xb9, 0xa7, 0xc7, 0xf5, 0xb9, 0x3f, 0x8e, 0xeb, 0x73, 0xdf, 0x36, 0x23, 0x6e,
-	0xe2, 0x81, 0xdf, 0x0c, 0x64, 0xda, 0x82, 0x64, 0xac, 0xef, 0x08, 0x30, 0x43, 0xa9, 0xfa, 0xf9,
-	0x43, 0x6b, 0x74, 0xe2, 0xfb, 0x8b, 0x19, 0x67, 0xa0, 0xfd, 0xf9, 0xfc, 0xf3, 0xc9, 0xbd, 0x7f,
-	0x03, 0x00, 0x00, 0xff, 0xff, 0x1d, 0x8b, 0x60, 0x21, 0x9e, 0x11, 0x00, 0x00,
+	// 818 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x98, 0x41, 0x8f, 0x1b, 0x35,
+	0x14, 0xc7, 0x33, 0x6c, 0x59, 0x5a, 0x37, 0xe9, 0xa6, 0xde, 0x2d, 0x98, 0x14, 0x92, 0x68, 0x5b,
+	0x4a, 0x0e, 0x34, 0x51, 0xc5, 0x27, 0x60, 0xd9, 0x06, 0x2a, 0x05, 0x1a, 0x4d, 0x57, 0x1c, 0xb8,
+	0x58, 0xce, 0xcc, 0xcb, 0x8c, 0xc9, 0x8c, 0x3d, 0xb2, 0x1d, 0x32, 0xb9, 0x21, 0x2e, 0x5c, 0xf9,
+	0x04, 0x7c, 0x0a, 0x3e, 0x44, 0x8f, 0x15, 0x27, 0xc4, 0xa1, 0x42, 0xbb, 0x1f, 0x04, 0xe4, 0xf1,
+	0x24, 0xdd, 0x85, 0xcd, 0x22, 0x8d, 0xf6, 0x46, 0x6e, 0x19, 0xbf, 0xe7, 0xdf, 0xff, 0x9f, 0xf1,
+	0x7b, 0x7e, 0xd2, 0xa0, 0xfb, 0x90, 0x2c, 0xf5, 0x20, 0x03, 0x95, 0x81, 0x99, 0xb3, 0x64, 0x90,
+	0x31, 0xc5, 0x52, 0xdd, 0xcf, 0x94, 0x34, 0x12, 0xdf, 0xb1, 0xc1, 0xfe, 0x3a, 0xd8, 0x3a, 0x88,
+	0x64, 0x24, 0x8b, 0xd0, 0xc0, 0xfe, 0x72, 0x59, 0xad, 0xf7, 0x03, 0xa9, 0x53, 0xa9, 0xa9, 0x0b,
+	0xb8, 0x07, 0x17, 0x3a, 0xfc, 0x6b, 0x0f, 0xd5, 0x47, 0x10, 0xb1, 0x60, 0x39, 0x2e, 0xb8, 0xf8,
+	0x04, 0xd5, 0x13, 0xf8, 0x1e, 0x14, 0x8b, 0x80, 0xa6, 0x2c, 0x27, 0x5e, 0xd7, 0xeb, 0xdd, 0x3a,
+	0x7a, 0xf2, 0xf2, 0x75, 0xa7, 0xf6, 0xc7, 0xeb, 0xce, 0x7d, 0xb7, 0x59, 0x87, 0xb3, 0x3e, 0x97,
+	0x83, 0x94, 0x99, 0xb8, 0xef, 0x76, 0x1f, 0x43, 0xf0, 0xdb, 0xaf, 0x8f, 0x51, 0xc9, 0x3e, 0x86,
+	0xc0, 0xbf, 0xbd, 0xc2, 0x7c, 0xc5, 0x72, 0xfc, 0x1d, 0x22, 0x13, 0xa9, 0x94, 0x5c, 0x50, 0x2e,
+	0x0c, 0x28, 0xd0, 0x86, 0x2a, 0x66, 0x9c, 0xc2, 0x5b, 0x55, 0x15, 0xee, 0x39, 0xe4, 0xb3, 0x92,
+	0xe8, 0x33, 0x73, 0xb5, 0x16, 0x17, 0x64, 0xe7, 0x3a, 0xb5, 0xb8, 0xc0, 0x06, 0x7d, 0x78, 0xa9,
+	0x16, 0x17, 0x81, 0x02, 0xa6, 0x81, 0xdc, 0xa8, 0x2a, 0xd8, 0xfa, 0xb7, 0xe0, 0xb3, 0x12, 0xba,
+	0x51, 0x35, 0x84, 0x52, 0xf5, 0xed, 0x6b, 0x54, 0x3d, 0x2e, 0xa1, 0x98, 0x22, 0x1c, 0x03, 0x4b,
+	0x4c, 0x4c, 0x23, 0xc6, 0x05, 0x9d, 0xb2, 0xc0, 0x48, 0x45, 0x76, 0xab, 0x4a, 0x35, 0x1d, 0xec,
+	0x0b, 0xc6, 0xc5, 0xb0, 0x40, 0xe1, 0x4f, 0x10, 0x4e, 0x59, 0x4e, 0x65, 0x06, 0x82, 0x66, 0x52,
+	0x73, 0xc3, 0xa5, 0xd0, 0xe4, 0x9d, 0xae, 0xd7, 0xdb, 0xf1, 0x9b, 0x29, 0xcb, 0x9f, 0x67, 0x20,
+	0xc6, 0xab, 0x75, 0xcc, 0xd0, 0x7e, 0x26, 0x65, 0xe2, 0xd2, 0x4d, 0xac, 0x40, 0xc7, 0x32, 0x09,
+	0xc9, 0xcd, 0xaa, 0x7e, 0xee, 0x5a, 0x9a, 0x95, 0x38, 0x59, 0xb1, 0xf0, 0x4f, 0x1e, 0xfa, 0xf8,
+	0x9f, 0x2f, 0x3a, 0x63, 0xcb, 0x14, 0x84, 0xa1, 0xd3, 0xb9, 0x08, 0x69, 0x06, 0x2a, 0x00, 0x61,
+	0x58, 0x04, 0xe4, 0x56, 0x55, 0xdd, 0x07, 0x17, 0x5f, 0xf9, 0xd8, 0xf1, 0x87, 0x73, 0x11, 0x8e,
+	0xd7, 0x74, 0xfc, 0x35, 0x7a, 0x78, 0xa5, 0x11, 0x16, 0x86, 0x0a, 0xb4, 0x26, 0xc8, 0xba, 0xf0,
+	0xbb, 0x1b, 0x91, 0x9f, 0xb9, 0x3c, 0xfc, 0x0d, 0x6a, 0x68, 0x36, 0x05, 0xb3, 0x5c, 0x1d, 0xe3,
+	0xed, 0xaa, 0xf6, 0xeb, 0x8e, 0x53, 0x1e, 0xe1, 0x53, 0xd4, 0xd9, 0xe4, 0x13, 0x04, 0x9b, 0x24,
+	0x10, 0x92, 0x7a, 0xd7, 0xeb, 0xdd, 0xf4, 0x3f, 0xb8, 0xd4, 0xe2, 0x53, 0x97, 0x83, 0x9f, 0xa0,
+	0x83, 0x45, 0xcc, 0x0d, 0x24, 0x5c, 0x1b, 0x2e, 0xa2, 0xf5, 0xde, 0x46, 0xb1, 0x77, 0xff, 0x7c,
+	0x6c, 0xb5, 0x85, 0x22, 0xbc, 0xbe, 0x06, 0xa9, 0x5e, 0xb0, 0x8c, 0x4e, 0x01, 0xc8, 0x9d, 0xca,
+	0xd5, 0xb9, 0x86, 0xbd, 0x58, 0xb0, 0x6c, 0x08, 0x80, 0x1f, 0xa1, 0x3d, 0x5b, 0x9d, 0x09, 0x4f,
+	0xb9, 0xa1, 0x52, 0x85, 0xa0, 0xc8, 0x5e, 0x51, 0x9a, 0x8d, 0x94, 0xe5, 0x23, 0xbb, 0xfa, 0xdc,
+	0x2e, 0x5a, 0x23, 0x53, 0x9e, 0x43, 0x58, 0x1c, 0x8c, 0x35, 0x6f, 0x5b, 0x93, 0x34, 0x2b, 0x1b,
+	0x29, 0x60, 0x43, 0xc7, 0xb2, 0xfd, 0x88, 0x7f, 0xf0, 0xd0, 0xc3, 0x94, 0x0b, 0x9e, 0xce, 0x53,
+	0x9a, 0x48, 0x11, 0x51, 0xc3, 0x66, 0x60, 0xef, 0xf6, 0x29, 0x37, 0x34, 0x53, 0x3c, 0x00, 0x2b,
+	0xc9, 0x25, 0xb9, 0x5b, 0x55, 0xb3, 0x53, 0xe2, 0x47, 0x52, 0x44, 0x27, 0x6c, 0x06, 0xe3, 0x82,
+	0x3d, 0xb6, 0x68, 0xdf, 0x92, 0x9d, 0x05, 0x96, 0xff, 0xb7, 0x05, 0x5c, 0xdd, 0x82, 0xc3, 0x6f,
+	0xb4, 0xf0, 0xa3, 0x87, 0x3e, 0x5a, 0x59, 0xd0, 0xb1, 0x54, 0x66, 0xa3, 0x87, 0xfd, 0xaa, 0x1e,
+	0xba, 0x25, 0xff, 0x85, 0xc5, 0x5f, 0x6a, 0xc2, 0x47, 0x8f, 0x5c, 0x69, 0x5e, 0x10, 0x0f, 0xe6,
+	0xda, 0xc8, 0x70, 0x49, 0x13, 0xce, 0x26, 0x3c, 0xe1, 0x86, 0x83, 0x26, 0x07, 0x45, 0xe5, 0x1e,
+	0xba, 0xec, 0x37, 0xac, 0xcf, 0x5d, 0xea, 0xe8, 0x4d, 0x26, 0x16, 0xa8, 0xb5, 0x00, 0x1e, 0xc5,
+	0x86, 0x4e, 0x14, 0xb0, 0x99, 0xad, 0xa0, 0x29, 0xc0, 0xaa, 0x4f, 0xef, 0x55, 0xfd, 0x33, 0xef,
+	0x39, 0xe8, 0x51, 0xc9, 0x1c, 0x02, 0xb8, 0x96, 0x3d, 0xfc, 0xa5, 0x89, 0x76, 0xb7, 0xb3, 0x7f,
+	0x3b, 0xfb, 0xb7, 0xb3, 0x7f, 0x3b, 0xfb, 0xb7, 0xb3, 0x7f, 0x3b, 0xfb, 0xb7, 0xb3, 0xff, 0x7f,
+	0x33, 0xfb, 0xf1, 0x03, 0xd4, 0x28, 0xdb, 0x8b, 0xda, 0x1b, 0x50, 0x93, 0x77, 0xbb, 0x3b, 0xbd,
+	0x1b, 0x7e, 0xbd, 0x5c, 0x1c, 0xdb, 0xb5, 0xa3, 0x2f, 0x5f, 0x9e, 0xb6, 0xbd, 0x57, 0xa7, 0x6d,
+	0xef, 0xcf, 0xd3, 0xb6, 0xf7, 0xf3, 0x59, 0xbb, 0xf6, 0xea, 0xac, 0x5d, 0xfb, 0xfd, 0xac, 0x5d,
+	0xfb, 0xb6, 0x1f, 0x71, 0x13, 0xcf, 0x27, 0xfd, 0x40, 0xa6, 0x03, 0x48, 0x96, 0xfa, 0xb1, 0x00,
+	0xb3, 0x90, 0x6a, 0x56, 0x3c, 0x0c, 0xf2, 0x73, 0x1f, 0x2d, 0xcc, 0x32, 0x03, 0x3d, 0xd9, 0x2d,
+	0xbe, 0x39, 0x7c, 0xfa, 0x77, 0x00, 0x00, 0x00, 0xff, 0xff, 0x01, 0xe6, 0x57, 0x1f, 0xd3, 0x10,
+	0x00, 0x00,
 }
 
 func (m *LegacyParams) Marshal() (dAtA []byte, err error) {
@@ -367,7 +360,7 @@ func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x1
 	i--
-	dAtA[i] = 0xba
+	dAtA[i] = 0xaa
 	if m.EnableTakeProfitCustodyLiabilities {
 		i--
 		if m.EnableTakeProfitCustodyLiabilities {
@@ -378,7 +371,7 @@ func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1
 		i--
-		dAtA[i] = 0xb0
+		dAtA[i] = 0xa0
 	}
 	{
 		size := m.MaximumShortTakeProfitPriceRatio.Size()
@@ -391,7 +384,7 @@ func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x1
 	i--
-	dAtA[i] = 0xaa
+	dAtA[i] = 0x9a
 	{
 		size := m.MaximumLongTakeProfitPriceRatio.Size()
 		i -= size
@@ -403,7 +396,7 @@ func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x1
 	i--
-	dAtA[i] = 0xa2
+	dAtA[i] = 0x92
 	{
 		size := m.MinimumLongTakeProfitPriceRatio.Size()
 		i -= size
@@ -415,7 +408,7 @@ func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x1
 	i--
-	dAtA[i] = 0x9a
+	dAtA[i] = 0x8a
 	{
 		size := m.FixedFundingRate.Size()
 		i -= size
@@ -427,13 +420,11 @@ func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x1
 	i--
-	dAtA[i] = 0x92
+	dAtA[i] = 0x82
 	if m.MaxLimitOrder != 0 {
 		i = encodeVarintParams(dAtA, i, uint64(m.MaxLimitOrder))
 		i--
-		dAtA[i] = 0x1
-		i--
-		dAtA[i] = 0x88
+		dAtA[i] = 0x78
 	}
 	{
 		size := m.PerpetualSwapFee.Size()
@@ -444,9 +435,7 @@ func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x1
-	i--
-	dAtA[i] = 0x82
+	dAtA[i] = 0x72
 	if m.WhitelistingEnabled {
 		i--
 		if m.WhitelistingEnabled {
@@ -455,17 +444,17 @@ func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x78
+		dAtA[i] = 0x68
 	}
-	if m.IncrementalBorrowInterestPaymentEnabled {
+	if m.BorrowInterestPaymentEnabled {
 		i--
-		if m.IncrementalBorrowInterestPaymentEnabled {
+		if m.BorrowInterestPaymentEnabled {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x70
+		dAtA[i] = 0x60
 	}
 	{
 		size := m.SafetyFactor.Size()
@@ -476,35 +465,18 @@ func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x6a
-	if len(m.IncrementalBorrowInterestPaymentFundAddress) > 0 {
-		i -= len(m.IncrementalBorrowInterestPaymentFundAddress)
-		copy(dAtA[i:], m.IncrementalBorrowInterestPaymentFundAddress)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.IncrementalBorrowInterestPaymentFundAddress)))
-		i--
-		dAtA[i] = 0x62
-	}
-	{
-		size := m.IncrementalBorrowInterestPaymentFundPercentage.Size()
-		i -= size
-		if _, err := m.IncrementalBorrowInterestPaymentFundPercentage.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintParams(dAtA, i, uint64(size))
-	}
-	i--
 	dAtA[i] = 0x5a
-	if len(m.ForceCloseFundAddress) > 0 {
-		i -= len(m.ForceCloseFundAddress)
-		copy(dAtA[i:], m.ForceCloseFundAddress)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.ForceCloseFundAddress)))
+	if len(m.BorrowInterestPaymentFundAddress) > 0 {
+		i -= len(m.BorrowInterestPaymentFundAddress)
+		copy(dAtA[i:], m.BorrowInterestPaymentFundAddress)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.BorrowInterestPaymentFundAddress)))
 		i--
 		dAtA[i] = 0x52
 	}
 	{
-		size := m.ForceCloseFundPercentage.Size()
+		size := m.BorrowInterestPaymentFundPercentage.Size()
 		i -= size
-		if _, err := m.ForceCloseFundPercentage.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.BorrowInterestPaymentFundPercentage.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintParams(dAtA, i, uint64(size))
@@ -609,6 +581,26 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.EnabledPools) > 0 {
+		dAtA2 := make([]byte, len(m.EnabledPools)*10)
+		var j1 int
+		for _, num := range m.EnabledPools {
+			for num >= 1<<7 {
+				dAtA2[j1] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j1++
+			}
+			dAtA2[j1] = uint8(num)
+			j1++
+		}
+		i -= j1
+		copy(dAtA[i:], dAtA2[:j1])
+		i = encodeVarintParams(dAtA, i, uint64(j1))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xb2
+	}
 	{
 		size := m.WeightBreakingFeeFactor.Size()
 		i -= size
@@ -855,30 +847,24 @@ func (m *LegacyParams) Size() (n int) {
 	}
 	l = m.PoolOpenThreshold.Size()
 	n += 1 + l + sovParams(uint64(l))
-	l = m.ForceCloseFundPercentage.Size()
+	l = m.BorrowInterestPaymentFundPercentage.Size()
 	n += 1 + l + sovParams(uint64(l))
-	l = len(m.ForceCloseFundAddress)
-	if l > 0 {
-		n += 1 + l + sovParams(uint64(l))
-	}
-	l = m.IncrementalBorrowInterestPaymentFundPercentage.Size()
-	n += 1 + l + sovParams(uint64(l))
-	l = len(m.IncrementalBorrowInterestPaymentFundAddress)
+	l = len(m.BorrowInterestPaymentFundAddress)
 	if l > 0 {
 		n += 1 + l + sovParams(uint64(l))
 	}
 	l = m.SafetyFactor.Size()
 	n += 1 + l + sovParams(uint64(l))
-	if m.IncrementalBorrowInterestPaymentEnabled {
+	if m.BorrowInterestPaymentEnabled {
 		n += 2
 	}
 	if m.WhitelistingEnabled {
 		n += 2
 	}
 	l = m.PerpetualSwapFee.Size()
-	n += 2 + l + sovParams(uint64(l))
+	n += 1 + l + sovParams(uint64(l))
 	if m.MaxLimitOrder != 0 {
-		n += 2 + sovParams(uint64(m.MaxLimitOrder))
+		n += 1 + sovParams(uint64(m.MaxLimitOrder))
 	}
 	l = m.FixedFundingRate.Size()
 	n += 2 + l + sovParams(uint64(l))
@@ -951,6 +937,13 @@ func (m *Params) Size() (n int) {
 	}
 	l = m.WeightBreakingFeeFactor.Size()
 	n += 2 + l + sovParams(uint64(l))
+	if len(m.EnabledPools) > 0 {
+		l = 0
+		for _, e := range m.EnabledPools {
+			l += sovParams(uint64(e))
+		}
+		n += 2 + sovParams(uint64(l)) + l
+	}
 	return n
 }
 
@@ -1248,7 +1241,7 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 9:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ForceCloseFundPercentage", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestPaymentFundPercentage", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1276,13 +1269,13 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.ForceCloseFundPercentage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.BorrowInterestPaymentFundPercentage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 10:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ForceCloseFundAddress", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestPaymentFundAddress", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1310,75 +1303,9 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ForceCloseFundAddress = string(dAtA[iNdEx:postIndex])
+			m.BorrowInterestPaymentFundAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IncrementalBorrowInterestPaymentFundPercentage", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.IncrementalBorrowInterestPaymentFundPercentage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 12:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IncrementalBorrowInterestPaymentFundAddress", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.IncrementalBorrowInterestPaymentFundAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 13:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SafetyFactor", wireType)
 			}
@@ -1412,9 +1339,9 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 14:
+		case 12:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IncrementalBorrowInterestPaymentEnabled", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BorrowInterestPaymentEnabled", wireType)
 			}
 			var v int
 			for shift := uint(0); ; shift += 7 {
@@ -1431,8 +1358,8 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-			m.IncrementalBorrowInterestPaymentEnabled = bool(v != 0)
-		case 15:
+			m.BorrowInterestPaymentEnabled = bool(v != 0)
+		case 13:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field WhitelistingEnabled", wireType)
 			}
@@ -1452,7 +1379,7 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.WhitelistingEnabled = bool(v != 0)
-		case 16:
+		case 14:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PerpetualSwapFee", wireType)
 			}
@@ -1486,7 +1413,7 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 17:
+		case 15:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MaxLimitOrder", wireType)
 			}
@@ -1505,7 +1432,7 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 18:
+		case 16:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field FixedFundingRate", wireType)
 			}
@@ -1539,7 +1466,7 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 19:
+		case 17:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MinimumLongTakeProfitPriceRatio", wireType)
 			}
@@ -1573,7 +1500,7 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 20:
+		case 18:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MaximumLongTakeProfitPriceRatio", wireType)
 			}
@@ -1607,7 +1534,7 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 21:
+		case 19:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MaximumShortTakeProfitPriceRatio", wireType)
 			}
@@ -1641,7 +1568,7 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 22:
+		case 20:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field EnableTakeProfitCustodyLiabilities", wireType)
 			}
@@ -1661,7 +1588,7 @@ func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.EnableTakeProfitCustodyLiabilities = bool(v != 0)
-		case 23:
+		case 21:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field WeightBreakingFeeFactor", wireType)
 			}
@@ -2385,6 +2312,82 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 22:
+			if wireType == 0 {
+				var v uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowParams
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.EnabledPools = append(m.EnabledPools, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowParams
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthParams
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthParams
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.EnabledPools) == 0 {
+					m.EnabledPools = make([]uint64, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowParams
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.EnabledPools = append(m.EnabledPools, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field EnabledPools", wireType)
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipParams(dAtA[iNdEx:])

@@ -1,8 +1,11 @@
 package keeper
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
@@ -11,9 +14,16 @@ import (
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
-	perpetualmoduletypes "github.com/elys-network/elys/x/perpetual/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
+
+// BeginBlocker of amm module
+func (k Keeper) BeginBlocker(ctx sdk.Context) error {
+	// convert balances in taker address to elys and burn them
+	k.ProcessTakerFee(ctx)
+	return nil
+}
 
 // EndBlocker of amm module
 func (k Keeper) EndBlocker(ctx sdk.Context) error {
@@ -21,32 +31,33 @@ func (k Keeper) EndBlocker(ctx sdk.Context) error {
 	k.DeleteFeeInfo(ctx)
 
 	// distribute LP rewards
-	err := k.ProcessLPRewardDistribution(ctx)
+	cacheCtx, write := ctx.CacheContext()
+	err := k.ProcessLPRewardDistribution(cacheCtx)
 	if err != nil {
+		ctx.Logger().Error(fmt.Sprintf("Failed to process lp rewards distribution: %s", err.Error()))
 		return err
+	} else {
+		write()
 	}
 	// distribute external rewards
 	k.ProcessExternalRewardsDistribution(ctx)
+
 	return nil
 }
 
-func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) math.LegacyDec {
-	if poolId == stabletypes.PoolId {
-		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-		if !found {
-			return math.LegacyZeroDec()
-		}
-		return k.stableKeeper.TVL(ctx, k.oracleKeeper, baseCurrency)
+func (k Keeper) GetPoolTVL(ctx sdk.Context, poolId uint64) osmomath.BigDec {
+	if poolId >= stabletypes.UsdcPoolId {
+		return k.stableKeeper.TVL(ctx, poolId)
 	}
 	ammPool, found := k.amm.GetPool(ctx, poolId)
 	if found {
 		tvl, err := ammPool.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
-			return math.LegacyZeroDec()
+			return osmomath.ZeroBigDec()
 		}
 		return tvl
 	}
-	return math.LegacyZeroDec()
+	return osmomath.ZeroBigDec()
 }
 
 func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
@@ -55,7 +66,7 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 	totalBlocksPerYear := int64(k.parameterKeeper.GetParams(ctx).TotalBlocksPerYear)
 
 	externalIncentives := k.GetAllExternalIncentives(ctx)
-	externalIncentiveAprs := make(map[uint64]math.LegacyDec)
+	externalIncentiveAprs := make(map[uint64]osmomath.BigDec)
 	for _, externalIncentive := range externalIncentives {
 		pool, found := k.GetPoolInfo(ctx, externalIncentive.PoolId)
 		if !found {
@@ -82,19 +93,19 @@ func (k Keeper) ProcessExternalRewardsDistribution(ctx sdk.Context) {
 				yearlyIncentiveRewardsTotal := externalIncentive.AmountPerBlock.
 					Mul(math.NewInt(totalBlocksPerYear))
 
-				apr := yearlyIncentiveRewardsTotal.ToLegacyDec().
+				apr := osmomath.BigDecFromSDKInt(yearlyIncentiveRewardsTotal).
 					Mul(k.amm.GetTokenPrice(ctx, externalIncentive.RewardDenom, baseCurrency)).
 					Quo(tvl)
-				externalIncentive.Apr = apr
+				externalIncentive.Apr = apr.Dec()
 				k.SetExternalIncentive(ctx, externalIncentive)
 				poolExternalApr, ok := externalIncentiveAprs[pool.PoolId]
 				if !ok {
-					poolExternalApr = math.LegacyZeroDec()
+					poolExternalApr = osmomath.ZeroBigDec()
 				}
 
 				poolExternalApr = poolExternalApr.Add(apr)
 				externalIncentiveAprs[pool.PoolId] = poolExternalApr
-				pool.ExternalIncentiveApr = poolExternalApr
+				pool.ExternalIncentiveApr = poolExternalApr.Dec()
 				k.SetPoolInfo(ctx, pool)
 			}
 		}
@@ -168,11 +179,6 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	if err != nil {
 		return err
 	}
-	perpRevenue, err := k.CollectPerpRevenue(ctx, baseCurrency)
-	if err != nil {
-		return err
-	}
-	gasFeesForLpsDec = gasFeesForLpsDec.Add(perpRevenue...)
 	_, _, rewardsPerPool, err := k.CollectDEXRevenue(ctx)
 	if err != nil {
 		return err
@@ -211,13 +217,13 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	for _, pool := range k.GetAllPoolInfos(ctx) {
 		var err error
 		tvl := k.GetPoolTVL(ctx, pool.PoolId)
-		proxyTVL := tvl.Mul(pool.Multiplier)
+		proxyTVL := tvl.Mul(pool.GetBigDecMultiplier())
 		if proxyTVL.IsZero() {
 			continue
 		}
 
-		poolShare := math.LegacyZeroDec()
-		poolShareEdenEnable := math.LegacyZeroDec()
+		poolShare := osmomath.ZeroBigDec()
+		poolShareEdenEnable := osmomath.ZeroBigDec()
 		if totalProxyTVL.IsPositive() {
 			poolShare = proxyTVL.Quo(totalProxyTVL)
 		}
@@ -227,20 +233,20 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		}
 
 		// Calculate new Eden for this pool
-		newEdenAllocatedForPool := math.LegacyZeroDec()
+		newEdenAllocatedForPool := osmomath.ZeroBigDec()
 
 		// Maximum eden APR - 30% by default
-		poolMaxEdenAmount := params.MaxEdenRewardAprLps.
+		poolMaxEdenAmount := params.GetBigDecMaxEdenRewardAprLps().
 			Mul(proxyTVL).
 			QuoInt64(totalBlocksPerYear).
 			Quo(edenDenomPrice)
 
 		// Use min amount (eden allocation from tokenomics and max apr based eden amount)
 		if pool.EnableEdenRewards {
-			newEdenAllocatedForPool = poolShareEdenEnable.MulInt(lpsEdenAmount)
-			newEdenAllocatedForPool = math.LegacyMinDec(newEdenAllocatedForPool, poolMaxEdenAmount)
+			newEdenAllocatedForPool = poolShareEdenEnable.Mul(osmomath.BigDecFromSDKInt(lpsEdenAmount))
+			newEdenAllocatedForPool = osmomath.MinBigDec(newEdenAllocatedForPool, poolMaxEdenAmount)
 			if newEdenAllocatedForPool.IsPositive() {
-				err = k.commitmentKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.TruncateInt())})
+				err = k.commitmentKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(ptypes.Eden, newEdenAllocatedForPool.Dec().TruncateInt())})
 				if err != nil {
 					return err
 				}
@@ -248,7 +254,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		}
 
 		// Get gas fee rewards per pool
-		gasRewardsAllocatedForPool := poolShare.Mul(gasFeeUsdcAmountForLps)
+		gasRewardsAllocatedForPool := poolShare.Mul(osmomath.BigDecFromDec(gasFeeUsdcAmountForLps))
 
 		// ------------------- DEX rewards calculation -------------------
 		// ---------------------------------------------------------------
@@ -256,17 +262,17 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 		// Get tracked amount for Lps per pool
 		dexRewardsAllocatedForPool, ok := rewardsPerPool[pool.PoolId]
 		if !ok {
-			dexRewardsAllocatedForPool = math.LegacyNewDec(0)
+			dexRewardsAllocatedForPool = osmomath.ZeroBigDec()
 		}
 
 		k.AddEdenInfo(ctx, newEdenAllocatedForPool)
 
 		// Distribute Eden
 		if pool.EnableEdenRewards {
-			k.UpdateAccPerShare(ctx, pool.PoolId, ptypes.Eden, newEdenAllocatedForPool.TruncateInt())
+			k.UpdateAccPerShare(ctx, pool.PoolId, ptypes.Eden, newEdenAllocatedForPool.Dec().TruncateInt())
 		}
 		// Distribute Gas fees + Dex rewards (USDC)
-		k.UpdateAccPerShare(ctx, pool.PoolId, k.GetBaseCurrencyDenom(ctx), gasRewardsAllocatedForPool.Add(dexRewardsAllocatedForPool).TruncateInt())
+		k.UpdateAccPerShare(ctx, pool.PoolId, k.GetBaseCurrencyDenom(ctx), gasRewardsAllocatedForPool.Add(dexRewardsAllocatedForPool).Dec().TruncateInt())
 
 		// Track pool rewards accumulation
 		edenReward := newEdenAllocatedForPool
@@ -294,7 +300,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 			pool.EdenApr = newEdenAllocatedForPool.
 				MulInt64(totalBlocksPerYear).
 				Mul(edenDenomPrice).
-				Quo(tvl)
+				Quo(tvl).Dec()
 		} else {
 			pool.EdenApr = math.LegacyZeroDec()
 		}
@@ -303,7 +309,7 @@ func (k Keeper) UpdateLPRewards(ctx sdk.Context) error {
 	}
 
 	// Update APR for amm pools
-	k.UpdateAmmPoolAPR(ctx, totalBlocksPerYear, totalProxyTVL, edenDenomPrice)
+	k.UpdateAmmStablePoolAPR(ctx, totalBlocksPerYear, totalProxyTVL, edenDenomPrice)
 
 	return nil
 }
@@ -335,7 +341,7 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 			continue
 		}
 
-		tokenOutAmount, err := k.amm.InternalSwapExactAmountIn(ctx, address, address, pool, tokenIn, baseCurrency, math.ZeroInt(), math.LegacyZeroDec())
+		tokenOutAmount, _, err := k.amm.InternalSwapExactAmountIn(ctx, address, address, pool, tokenIn, baseCurrency, math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec())
 		if err != nil {
 			// Continue as we can swap it when this amount is higher
 			if err == ammtypes.ErrTokenOutAmountZero {
@@ -357,6 +363,14 @@ func (k Keeper) ConvertGasFeesToUsdc(ctx sdk.Context, baseCurrency string, addre
 
 		// Sum total swapped
 		totalSwappedCoins = totalSwappedCoins.Add(swappedCoins...)
+	}
+	if !totalSwappedCoins.IsZero() {
+		ctx.EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				types.TypeEvtUsdcFee,
+				sdk.NewAttribute("amount", totalSwappedCoins.String()),
+			),
+		})
 	}
 
 	return totalSwappedCoins, nil
@@ -380,7 +394,7 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 	gasFeesForStakersDec := gasFeeCollectedDec.MulDecTruncate(params.RewardPortionForStakers)
 	gasFeesForProtocolDec := gasFeeCollectedDec.Sub(gasFeesForLpsDec).Sub(gasFeesForStakersDec)
 
-	k.AddFeeInfo(ctx, gasFeesForLpsDec.AmountOf(baseCurrency), gasFeesForStakersDec.AmountOf(baseCurrency), gasFeesForProtocolDec.AmountOf(baseCurrency), true)
+	k.AddFeeInfo(ctx, osmomath.BigDecFromDec(gasFeesForLpsDec.AmountOf(baseCurrency)), osmomath.BigDecFromDec(gasFeesForStakersDec.AmountOf(baseCurrency)), osmomath.BigDecFromDec(gasFeesForProtocolDec.AmountOf(baseCurrency)), true)
 
 	lpsGasFeeCoins, _ := gasFeesForLpsDec.TruncateDecimal()
 	stakersGasFeeCoins, _ := gasFeesForStakersDec.TruncateDecimal() // Before ccv, this used to be remain in FeeCollectorName
@@ -411,7 +425,7 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 			ctx.Logger().Error("Invalid protocol revenue address", "error", err)
 			return gasFeesForLpsDec, err
 		}
-		providerPortion := ammkeeper.PortionCoins(protocolGasFeeCoins, estakingParams.ProviderStakingRewardsPortion)
+		providerPortion := ammkeeper.PortionCoins(protocolGasFeeCoins, osmomath.BigDecFromDec(estakingParams.ProviderStakingRewardsPortion))
 		consumerPortion := protocolGasFeeCoins.Sub(providerPortion...)
 
 		// This will be sent to provider
@@ -428,85 +442,15 @@ func (k Keeper) CollectGasFees(ctx sdk.Context, baseCurrency string) (sdk.DecCoi
 	return gasFeesForLpsDec, nil
 }
 
-// Collect all Perpetual module revenues to Perpetual revenue wallet,
-// transfer collected fees from perpetual moduleto the distribution module account
-// Coins are not in usdc, so convert them to usdc
-func (k Keeper) CollectPerpRevenue(ctx sdk.Context, baseCurrency string) (sdk.DecCoins, error) {
-	fundAddr := authtypes.NewModuleAddress(perpetualmoduletypes.ModuleName)
-	params := k.GetParams(ctx)
-	estakingParams := k.estakingKeeper.GetParams(ctx)
-	// Transfer revenue to a single wallet of Perpetual revenue wallet.
-	fees, err := k.ConvertGasFeesToUsdc(ctx, baseCurrency, fundAddr)
-	if err != nil {
-		return sdk.DecCoins{}, err
-	}
-	if fees.IsZero() {
-		return sdk.DecCoins{}, nil
-	}
-	// Calculate each portion of Gas fees collected - stakers, LPs
-	perpFeeCollectedDec := sdk.NewDecCoinsFromCoins(fees...)
-
-	perpFeesForLpsDec := perpFeeCollectedDec.MulDecTruncate(params.RewardPortionForLps)
-	perpFeesForStakersDec := perpFeeCollectedDec.MulDecTruncate(params.RewardPortionForStakers)
-	perpFeesForProtocolDec := perpFeeCollectedDec.Sub(perpFeesForLpsDec).Sub(perpFeesForStakersDec)
-
-	k.AddFeeInfo(ctx, perpFeesForLpsDec.AmountOf(baseCurrency), perpFeesForStakersDec.AmountOf(baseCurrency), perpFeesForProtocolDec.AmountOf(baseCurrency), true)
-
-	lpsGasFeeCoins, _ := perpFeesForLpsDec.TruncateDecimal()
-	protocolGasFeeCoins, _ := perpFeesForProtocolDec.TruncateDecimal()
-	stakerCoins, _ := perpFeesForStakersDec.TruncateDecimal()
-
-	// Send coins from fund address to masterchef
-	if lpsGasFeeCoins.IsAllPositive() {
-		err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, fundAddr, types.ModuleName, lpsGasFeeCoins)
-		if err != nil {
-			return sdk.DecCoins{}, err
-		}
-	}
-
-	// Send coins to fee collector name
-	if perpFeesForStakersDec.IsAllPositive() {
-		// The distribution module picks from ccvconsumertypes.ConsumerRedistributeName
-		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerRedistributeName, stakerCoins)
-		if err != nil {
-			return sdk.DecCoins{}, err
-		}
-	}
-
-	// Send coins to protocol revenue address
-	if protocolGasFeeCoins.IsAllPositive() {
-		protocolRevenueAddress, err := sdk.AccAddressFromBech32(params.ProtocolRevenueAddress)
-		if err != nil {
-			ctx.Logger().Error("Invalid protocol revenue address", "error", err)
-			return perpFeesForLpsDec, err
-		}
-
-		providerPortion := ammkeeper.PortionCoins(protocolGasFeeCoins, estakingParams.ProviderStakingRewardsPortion)
-		consumerPortion := protocolGasFeeCoins.Sub(providerPortion...)
-
-		// This will be sent to provider
-		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerToSendToProviderName, providerPortion)
-		if err != nil {
-			return sdk.DecCoins{}, err
-		}
-
-		err = k.bankKeeper.SendCoins(ctx, fundAddr, protocolRevenueAddress, consumerPortion)
-		if err != nil {
-			return sdk.DecCoins{}, err
-		}
-	}
-	return perpFeesForLpsDec, nil
-}
-
 // Collect all DEX revenues to DEX revenue wallet,
 // while tracking the 60% of it for LPs reward distribution
 // transfer collected fees from different wallets(liquidity pool, perpetual module etc) to the distribution module account
 // Assume this is already in USDC.
-func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map[uint64]math.LegacyDec, error) {
+func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map[uint64]osmomath.BigDec, error) {
 	// Total collected revenue amount
 	amountTotalCollected := sdk.Coins{}
 	amountLPsCollected := sdk.DecCoins{}
-	rewardsPerPool := make(map[uint64]math.LegacyDec)
+	rewardsPerPool := make(map[uint64]osmomath.BigDec)
 	// LPs Portion param
 	params := k.GetParams(ctx)
 	estakingParams := k.estakingKeeper.GetParams(ctx)
@@ -544,7 +488,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 
 		baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 		if found {
-			k.AddFeeInfo(ctx, revenuePortionForLPs.AmountOf(baseCurrency), revenuePortionForStakers.AmountOf(baseCurrency), revenuePortionForProtocol.AmountOf(baseCurrency), false)
+			k.AddFeeInfo(ctx, osmomath.BigDecFromDec(revenuePortionForLPs.AmountOf(baseCurrency)), osmomath.BigDecFromDec(revenuePortionForStakers.AmountOf(baseCurrency)), osmomath.BigDecFromDec(revenuePortionForProtocol.AmountOf(baseCurrency)), false)
 		}
 
 		// Send coins to fee collector name
@@ -558,8 +502,8 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 
 		// Send coins to protocol revenue address
 		if protocolRevenueCoins.IsAllPositive() {
-			providerPortion := ammkeeper.PortionCoins(protocolRevenueCoins, estakingParams.ProviderStakingRewardsPortion)
-			consumerPortion := stakerRevenueCoins.Sub(providerPortion...)
+			providerPortion := ammkeeper.PortionCoins(protocolRevenueCoins, estakingParams.GetBigDecProviderStakingRewardsPortion())
+			consumerPortion := protocolRevenueCoins.Sub(providerPortion...)
 
 			// This will be sent to provider
 			err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ccvconsumertypes.ConsumerToSendToProviderName, providerPortion)
@@ -575,7 +519,7 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 
 		// Store revenue portion for Lps temporarily
 		if found {
-			rewardsPerPool[poolId] = revenuePortionForLPs.AmountOf(baseCurrency)
+			rewardsPerPool[poolId] = osmomath.BigDecFromDec(revenuePortionForLPs.AmountOf(baseCurrency))
 		}
 
 		// Sum total collected amount
@@ -594,19 +538,19 @@ func (k Keeper) CollectDEXRevenue(ctx sdk.Context) (sdk.Coins, sdk.DecCoins, map
 }
 
 // Calculate Proxy TVL
-func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) (math.LegacyDec, math.LegacyDec) {
+func (k Keeper) CalculateProxyTVL(ctx sdk.Context, baseCurrency string) (osmomath.BigDec, osmomath.BigDec) {
 	// Ensure stablestakePoolParams exist
-	stableStakePoolId := uint64(stabletypes.PoolId)
+	stableStakePoolId := uint64(stabletypes.UsdcPoolId)
 	_, found := k.GetPoolInfo(ctx, stableStakePoolId)
 	if !found {
 		k.InitStableStakePoolParams(ctx, stableStakePoolId)
 	}
 
-	multipliedShareSum := math.LegacyZeroDec()
-	multipliedShareSumOnlyEden := math.LegacyZeroDec()
+	multipliedShareSum := osmomath.ZeroBigDec()
+	multipliedShareSumOnlyEden := osmomath.ZeroBigDec()
 	for _, pool := range k.GetAllPoolInfos(ctx) {
 		tvl := k.GetPoolTVL(ctx, pool.PoolId)
-		proxyTVL := tvl.Mul(pool.Multiplier)
+		proxyTVL := tvl.Mul(pool.GetBigDecMultiplier())
 
 		// Calculate total pool share by TVL and multiplier
 		multipliedShareSum = multipliedShareSum.Add(proxyTVL)
@@ -679,10 +623,10 @@ func (k Keeper) InitStableStakePoolParams(ctx sdk.Context, poolId uint64) bool {
 	return true
 }
 
-// Update APR for AMM pool
-func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL math.LegacyDec, edenDenomPrice math.LegacyDec) {
+// Update APR for AMM pools and stable stake pools
+func (k Keeper) UpdateAmmStablePoolAPR(ctx sdk.Context, totalBlocksPerYear int64, totalProxyTVL osmomath.BigDec, edenDenomPrice osmomath.BigDec) {
 	baseCurrency, _ := k.assetProfileKeeper.GetUsdcDenom(ctx)
-	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	usdcDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrency)
 
 	k.amm.IterateLiquidityPools(ctx, func(p ammtypes.Pool) bool {
 		tvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
@@ -711,32 +655,142 @@ func (k Keeper) UpdateAmmPoolAPR(ctx sdk.Context, totalBlocksPerYear int64, tota
 		}
 
 		if firstAccum.Timestamp == lastAccum.Timestamp {
-			poolInfo.DexApr = lastAccum.DexReward.
+			poolInfo.DexApr = lastAccum.GetBigDecDexReward().
 				MulInt64(totalBlocksPerYear).
 				Mul(usdcDenomPrice).
-				Quo(tvl)
+				Quo(tvl).Dec()
 
-			poolInfo.GasApr = lastAccum.GasReward.
+			poolInfo.GasApr = lastAccum.GetBigDecGasReward().
 				MulInt64(totalBlocksPerYear).
 				Mul(usdcDenomPrice).
-				Quo(tvl)
+				Quo(tvl).Dec()
 		} else {
 			duration := lastAccum.Timestamp - firstAccum.Timestamp
 			secondsInYear := int64(86400 * 360)
 
-			poolInfo.DexApr = lastAccum.DexReward.Sub(firstAccum.DexReward).
+			poolInfo.DexApr = lastAccum.GetBigDecDexReward().Sub(firstAccum.GetBigDecDexReward()).
 				MulInt64(secondsInYear).
 				QuoInt64(int64(duration)).
 				Mul(usdcDenomPrice).
-				Quo(tvl)
+				Quo(tvl).Dec()
 
-			poolInfo.GasApr = lastAccum.GasReward.Sub(firstAccum.GasReward).
+			poolInfo.GasApr = lastAccum.GetBigDecGasReward().Sub(firstAccum.GetBigDecGasReward()).
 				MulInt64(secondsInYear).
 				QuoInt64(int64(duration)).
 				Mul(usdcDenomPrice).
-				Quo(tvl)
+				Quo(tvl).Dec()
 		}
 		k.SetPoolInfo(ctx, poolInfo)
 		return false
 	})
+
+	k.stableKeeper.IterateLiquidityPools(ctx, func(p stabletypes.Pool) bool {
+		tvl := k.stableKeeper.TVL(ctx, p.Id)
+
+		// Get pool Id
+		poolId := p.GetId()
+
+		// Get pool info from incentive param
+		poolInfo, found := k.GetPoolInfo(ctx, poolId)
+		if !found {
+			k.InitPoolParams(ctx, poolId)
+			poolInfo, _ = k.GetPoolInfo(ctx, poolId)
+		}
+
+		if tvl.IsZero() {
+			return false
+		}
+
+		firstAccum := k.FirstPoolRewardsAccum(ctx, poolId)
+		lastAccum := k.LastPoolRewardsAccum(ctx, poolId)
+		if lastAccum.Timestamp == 0 {
+			return false
+		}
+
+		if firstAccum.Timestamp == lastAccum.Timestamp {
+			poolInfo.DexApr = lastAccum.GetBigDecDexReward().
+				MulInt64(totalBlocksPerYear).
+				Mul(usdcDenomPrice).
+				Quo(tvl).Dec()
+
+			poolInfo.GasApr = lastAccum.GetBigDecGasReward().
+				MulInt64(totalBlocksPerYear).
+				Mul(usdcDenomPrice).
+				Quo(tvl).Dec()
+		} else {
+			duration := lastAccum.Timestamp - firstAccum.Timestamp
+			secondsInYear := int64(86400 * 360)
+
+			poolInfo.DexApr = lastAccum.GetBigDecDexReward().Sub(firstAccum.GetBigDecDexReward()).
+				MulInt64(secondsInYear).
+				QuoInt64(int64(duration)).
+				Mul(usdcDenomPrice).
+				Quo(tvl).Dec()
+
+			poolInfo.GasApr = lastAccum.GetBigDecGasReward().Sub(firstAccum.GetBigDecGasReward()).
+				MulInt64(secondsInYear).
+				QuoInt64(int64(duration)).
+				Mul(usdcDenomPrice).
+				Quo(tvl).Dec()
+		}
+		k.SetPoolInfo(ctx, poolInfo)
+		return false
+	})
+}
+
+func (k Keeper) ProcessTakerFee(ctx sdk.Context) {
+	collectionAddressString := k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress
+	// Convert balances in taker address to elys
+	collectionAddress, err := sdk.AccAddressFromBech32(collectionAddressString)
+	if err != nil {
+		ctx.Logger().Error("Invalid taker fee collection address", "error", err)
+		return
+	}
+
+	balances := k.bankKeeper.GetAllBalances(ctx, collectionAddress)
+	for _, balance := range balances {
+		// need at least a certain amount to swap
+		if balance.Denom == ptypes.Elys || balance.Amount.LT(sdkmath.NewInt(1000000)) {
+			continue
+		}
+		cacheCtx, write := ctx.CacheContext()
+		_, err = k.amm.SwapByDenom(cacheCtx, &ammtypes.MsgSwapByDenom{
+			Sender:    collectionAddressString,
+			Recipient: collectionAddressString,
+			Amount:    sdk.NewCoin(balance.Denom, balance.Amount),
+			DenomIn:   balance.Denom,
+			DenomOut:  ptypes.Elys,
+			MinAmount: sdk.NewCoin(ptypes.Elys, sdkmath.ZeroInt()),
+		})
+		if err != nil {
+			ctx.Logger().Warn(fmt.Sprintf("Failed to swap taker fee: %s", err.Error()))
+			continue
+		} else {
+			write()
+		}
+	}
+
+	elysBalance := k.bankKeeper.GetBalance(ctx, collectionAddress, ptypes.Elys)
+	if elysBalance.IsPositive() {
+		err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, collectionAddress, types.ModuleName, sdk.NewCoins(elysBalance))
+		if err != nil {
+			ctx.Logger().Error("Failed to send taker fee to masterchef", "error", err)
+		} else {
+			// burn elys token
+			cacheCtx, write := ctx.CacheContext()
+			err = k.bankKeeper.BurnCoins(cacheCtx, types.ModuleName, sdk.NewCoins(elysBalance))
+			if err != nil {
+				ctx.Logger().Error("Failed to burn taker fee", "error", err)
+			} else {
+				write()
+				// event for burning taker fees
+				ctx.EventManager().EmitEvents(sdk.Events{
+					sdk.NewEvent(
+						types.TypeEvtTakerFeeBurn,
+						sdk.NewAttribute("amount", elysBalance.String()),
+					),
+				})
+			}
+		}
+	}
 }

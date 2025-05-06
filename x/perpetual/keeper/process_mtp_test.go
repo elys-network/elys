@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"testing"
+
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -146,13 +147,13 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 	params = mk.GetParams(ctx)
 	params.BorrowInterestPaymentFundAddress = addr[2].String()
 	params.BorrowInterestPaymentFundPercentage = sdkmath.LegacyMustNewDecFromStr("0.5")
-	mk.SetParams(ctx, &params)
-
+	err = mk.SetParams(ctx, &params)
+	suite.Require().NoError(err)
 	mtp := mtps[0]
 
 	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
 
-	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency)
+	err = mk.CheckAndLiquidatePosition(ctx, &mtp, perpPool, &pool, ptypes.BaseCurrency)
 	suite.Require().NoError(err)
 
 	// Set borrow interest rate to 100% to test liquidation
@@ -187,14 +188,14 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateUnhealthyPosition() 
 		StopLossPrice:                 sdkmath.LegacyZeroDec(),
 	}, mtp)
 
-	err = mk.CheckAndLiquidateUnhealthyPosition(ctx, &mtp, perpPool, pool, ptypes.BaseCurrency)
+	err = mk.CheckAndLiquidatePosition(ctx, &mtp, perpPool, &pool, "")
 	suite.Require().NoError(err)
 
 	mtps = mk.GetAllMTPs(ctx)
 	suite.Require().Equal(len(mtps), 0)
 }
 
-func TestCheckAndCloseAtTakeProfit(t *testing.T) {
+func TestCheckAndLiquidatePosition(t *testing.T) {
 	app := simapp.InitElysTestApp(true, t)
 	ctx := app.BaseApp.NewContext(true)
 	simapp.SetStakingParam(app, ctx)
@@ -328,7 +329,7 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 
 	perpPool, _ := mk.GetPool(ctx, pool.PoolId)
 
-	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, ptypes.BaseCurrency)
+	err = mk.CheckAndLiquidatePosition(ctx, &mtp, perpPool, &pool, "")
 	require.Error(t, err)
 
 	// Set price above target price
@@ -341,7 +342,7 @@ func TestCheckAndCloseAtTakeProfit(t *testing.T) {
 		Timestamp: uint64(ctx.BlockTime().Unix()),
 	})
 
-	err = mk.CheckAndCloseAtTakeProfit(ctx, &mtp, perpPool, ptypes.BaseCurrency)
+	err = mk.CheckAndLiquidatePosition(ctx, &mtp, perpPool, &pool, "")
 	require.NoError(t, err)
 
 	mtps = mk.GetAllMTPs(ctx)
@@ -458,7 +459,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 	}
 	_, err = leveragelpmodulekeeper.NewMsgServerImpl(*app.LeveragelpKeeper).AddPool(ctx, &enablePoolMsg)
 	suite.Require().NoError(err)
-	tradingAssetPrice, err := app.PerpetualKeeper.GetAssetPrice(ctx, ptypes.ATOM)
+	tradingAssetPrice, _, err := app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(ctx, ptypes.ATOM)
 	suite.Require().NoError(err)
 	// Create a perpetual position open msg
 	msg2 := types.NewMsgOpen(
@@ -468,8 +469,8 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 		1,
 		ptypes.ATOM,
 		sdk.NewCoin(ptypes.BaseCurrency, sdkmath.NewInt(100000000)),
-		tradingAssetPrice.MulInt64(10),
-		tradingAssetPrice.QuoInt64(2),
+		tradingAssetPrice.Dec().MulInt64(10),
+		tradingAssetPrice.Dec().QuoInt64(2),
 	)
 	params := app.PerpetualKeeper.GetParams(ctx)
 	params.WhitelistingEnabled = true
@@ -481,7 +482,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	oracle.SetPrice(ctx, oracletypes.Price{
 		Asset:     "ATOM",
-		Price:     tradingAssetPrice.QuoInt64(4),
+		Price:     tradingAssetPrice.Dec().QuoInt64(4),
 		Source:    "elys",
 		Provider:  authtypes.NewModuleAddress("provider").String(),
 		Timestamp: uint64(ctx.BlockTime().Unix() + 6),
@@ -501,7 +502,7 @@ func (suite *PerpetualKeeperTestSuite) TestCheckAndLiquidateStopLossPosition() {
 
 	perpPool, _ := mk.GetPool(ctx, ammPool.PoolId)
 
-	err = mk.CheckAndCloseAtStopLoss(ctx, &mtp, perpPool, ptypes.BaseCurrency)
+	err = mk.CheckAndLiquidatePosition(ctx, &mtp, perpPool, &ammPool, "")
 	suite.Require().NoError(err)
 
 	mtps = mk.GetAllMTPs(ctx)

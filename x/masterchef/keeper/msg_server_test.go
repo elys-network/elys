@@ -1,10 +1,9 @@
 package keeper_test
 
 import (
-	"fmt"
-
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	"errors"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -32,7 +31,7 @@ func (suite *MasterchefKeeperTestSuite) TestMsgUpdateParams() {
 				Params:    types.DefaultParams(),
 			},
 			expectErr:    true,
-			expectErrMsg: fmt.Errorf("invalid authority"),
+			expectErrMsg: errors.New("invalid authority"),
 		},
 		{
 			name: "Invalid Signer Address",
@@ -92,7 +91,7 @@ func (suite *MasterchefKeeperTestSuite) TestMsgUpdatePoolMultipliers() {
 				},
 			},
 			expectErr:    true,
-			expectErrMsg: fmt.Errorf("invalid authority"),
+			expectErrMsg: errors.New("invalid authority"),
 		},
 		{
 			name: "Invalid Signer Address",
@@ -159,7 +158,7 @@ func (suite *MasterchefKeeperTestSuite) TestAddExternalRewardDenom() {
 				Supported:   true,
 			},
 			expectErr:    true,
-			expectErrMsg: fmt.Errorf("invalid authority"),
+			expectErrMsg: errors.New("invalid authority"),
 		},
 		{
 			name: "Invalid Signer Address",
@@ -231,7 +230,7 @@ func (suite *MasterchefKeeperTestSuite) TestAddExternalIncentive() {
 				AmountPerBlock: sdkmath.ZeroInt(),
 			},
 			expectErr:    true,
-			expectErrMsg: fmt.Errorf("invalid amount per block"),
+			expectErrMsg: errors.New("invalid amount per block"),
 		},
 		{
 			name: "Invalid From block",
@@ -244,7 +243,7 @@ func (suite *MasterchefKeeperTestSuite) TestAddExternalIncentive() {
 				AmountPerBlock: sdkmath.ZeroInt(),
 			},
 			expectErr:    true,
-			expectErrMsg: fmt.Errorf("invalid from block"),
+			expectErrMsg: errors.New("invalid from block"),
 		},
 		{
 			name: "Invalid block range",
@@ -257,7 +256,7 @@ func (suite *MasterchefKeeperTestSuite) TestAddExternalIncentive() {
 				AmountPerBlock: sdkmath.ZeroInt(),
 			},
 			expectErr:    true,
-			expectErrMsg: fmt.Errorf("invalid block range"),
+			expectErrMsg: errors.New("invalid block range"),
 		},
 		{
 			name: "Reward denom not supported",
@@ -270,7 +269,7 @@ func (suite *MasterchefKeeperTestSuite) TestAddExternalIncentive() {
 				AmountPerBlock: sdkmath.OneInt(),
 			},
 			expectErr:    true,
-			expectErrMsg: fmt.Errorf("invalid reward denom"),
+			expectErrMsg: errors.New("invalid reward denom"),
 		},
 		{
 			name: "Reward denom amount low",
@@ -283,7 +282,7 @@ func (suite *MasterchefKeeperTestSuite) TestAddExternalIncentive() {
 				AmountPerBlock: sdkmath.OneInt(),
 			},
 			expectErr:    true,
-			expectErrMsg: fmt.Errorf("too small amount"),
+			expectErrMsg: errors.New("too small amount"),
 		},
 	}
 

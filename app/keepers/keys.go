@@ -24,6 +24,7 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ccvconsumertypes "github.com/cosmos/interchain-security/v6/x/ccv/consumer/types"
 
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	accountedpoolmoduletypes "github.com/elys-network/elys/x/accountedpool/types"
 	ammmoduletypes "github.com/elys-network/elys/x/amm/types"
 	assetprofilemoduletypes "github.com/elys-network/elys/x/assetprofile/types"
@@ -40,7 +41,6 @@ import (
 	tiermoduletypes "github.com/elys-network/elys/x/tier/types"
 	tokenomicsmoduletypes "github.com/elys-network/elys/x/tokenomics/types"
 	tradeshieldmoduletypes "github.com/elys-network/elys/x/tradeshield/types"
-	transferhooktypes "github.com/elys-network/elys/x/transferhook/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {
@@ -68,6 +68,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		group.StoreKey,
 		consensusparamtypes.StoreKey,
 		ccvconsumertypes.StoreKey,
+		wasmTypes.StoreKey,
 
 		epochsmoduletypes.StoreKey,
 		assetprofilemoduletypes.StoreKey,
@@ -79,7 +80,6 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		ammmoduletypes.StoreKey,
 		parametermoduletypes.StoreKey,
 		perpetualmoduletypes.StoreKey,
-		transferhooktypes.StoreKey,
 		stablestaketypes.StoreKey,
 		leveragelpmoduletypes.StoreKey,
 		masterchefmoduletypes.StoreKey,

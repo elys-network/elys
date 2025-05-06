@@ -1,11 +1,13 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"gopkg.in/yaml.v2"
 )
 
@@ -103,4 +105,8 @@ func (p Params) Validate() error {
 func (p LegacyParams) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
+}
+
+func (p Params) GetBigDecMaxEdenRewardAprLps() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.MaxEdenRewardAprLps)
 }

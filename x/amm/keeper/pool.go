@@ -4,9 +4,11 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // SetPool set a specific pool in the store from its index
@@ -17,7 +19,8 @@ func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	}
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
 	b := k.cdc.MustMarshal(&pool)
-	store.Set(types.PoolKey(pool.PoolId), b)
+	key := types.PoolKey(pool.PoolId)
+	store.Set(key, b)
 }
 
 func (k Keeper) SetLegacyPool(ctx sdk.Context, pool types.LegacyPool) {
@@ -145,12 +148,12 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 
 		poolTvl, err := p.TVL(ctx, k.oracleKeeper, k.accountedPoolKeeper)
 		if err != nil {
-			poolTvl = sdkmath.LegacyZeroDec()
+			poolTvl = osmomath.ZeroBigDec()
 		}
 
 		// If all denoms are found in this pool, return the pool id
-		if allDenomsFound && maxTvl.LT(poolTvl) {
-			maxTvl = poolTvl
+		if allDenomsFound && maxTvl.LT(poolTvl.Dec()) {
+			maxTvl = poolTvl.Dec()
 			bestPool = p
 		}
 	}
@@ -158,7 +161,7 @@ func (k Keeper) GetBestPoolWithDenoms(ctx sdk.Context, denoms []string, usesOrac
 	return bestPool, !maxTvl.IsNegative()
 }
 
-// IterateLiquidty iterates over all LiquidityPools and performs a
+// IterateLiquidityPools iterates over all LiquidityPools and performs a
 // callback.
 func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types.Pool) (stop bool)) {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.KeyPrefix(types.PoolKeyPrefix))
@@ -176,28 +179,16 @@ func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types
 	}
 }
 
-// GetPoolSnapshotOrSet returns a pool snapshot or set the snapshot
-func (k Keeper) GetPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) (val types.Pool) {
-	store := prefix.NewStore(ctx.KVStore(k.transientStoreKey), types.KeyPrefix(types.PoolKeyPrefix))
-
-	b := store.Get(types.PoolKey(pool.PoolId))
-	if b == nil {
-		b := k.cdc.MustMarshal(&pool)
-		store.Set(types.PoolKey(pool.PoolId), b)
-		return pool
+// GetPoolWithAccountedBalance Gets the pool snapshot and updates the pool balance with accounted pool balance
+func (k Keeper) GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val types.Pool) {
+	snapshot, found := k.GetPool(ctx, poolId)
+	if !found {
+		panic(fmt.Sprintf("pool %d not found", poolId))
 	}
-
-	k.cdc.MustUnmarshal(b, &val)
-	return val
-}
-
-// Gets the pool snapshot and updates the pool balance with accounted pool balance
-func (k Keeper) GetAccountedPoolSnapshotOrSet(ctx sdk.Context, pool types.Pool) (val types.Pool) {
-	snapshot := k.GetPoolSnapshotOrSet(ctx, pool)
 	poolAssets := []types.PoolAsset{}
 	// Update the pool snapshot with accounted pool balance
 	for _, asset := range snapshot.PoolAssets {
-		accAmount := k.accountedPoolKeeper.GetAccountedBalance(ctx, pool.PoolId, asset.Token.Denom)
+		accAmount := k.accountedPoolKeeper.GetAccountedBalance(ctx, poolId, asset.Token.Denom)
 		if accAmount.IsPositive() {
 			asset.Token.Amount = accAmount
 		}

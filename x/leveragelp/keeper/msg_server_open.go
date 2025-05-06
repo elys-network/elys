@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"slices"
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
@@ -11,10 +13,17 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k msgServer) Open(goCtx context.Context, msg *types.MsgOpen) (*types.MsgOpenResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	enabledPools := k.GetParams(ctx).EnabledPools
+	found := slices.Contains(enabledPools, msg.AmmPoolId)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolNotEnabled, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
+	}
 
 	return k.Keeper.Open(ctx, msg)
 }
@@ -23,32 +32,40 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 	if err := k.CheckUserAuthorization(ctx, msg); err != nil {
 		return nil, err
 	}
-	params := k.stableKeeper.GetParams(ctx)
 	moduleAddr := authtypes.NewModuleAddress(stabletypes.ModuleName)
 
-	depositDenom := k.stableKeeper.GetDepositDenom(ctx)
-
-	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
-	borrowed := params.TotalValue.Sub(balance.Amount)
-	borrowRatio := sdkmath.LegacyZeroDec()
-	if params.TotalValue.GT(sdkmath.ZeroInt()) {
-		borrowRatio = borrowed.ToLegacyDec().Add(msg.Leverage.Mul(msg.CollateralAmount.ToLegacyDec())).
-			Quo(params.TotalValue.ToLegacyDec())
-	}
-
-	var poolLeveragelpRatio sdkmath.LegacyDec
-	pool, found := k.GetPool(ctx, msg.AmmPoolId)
+	borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, msg.CollateralAsset)
 	if !found {
-		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
+		return nil, errorsmod.Wrap(types.ErrPoolNotCreatedForBorrow, fmt.Sprintf("Asset: %s", msg.CollateralAsset))
 	}
+
+	depositDenom := borrowPool.GetDepositDenom()
+	balance := k.bankKeeper.GetBalance(ctx, moduleAddr, depositDenom)
+	borrowed := osmomath.BigDecFromSDKInt(borrowPool.NetAmount.Sub(balance.Amount))
+	borrowRatio := osmomath.ZeroBigDec()
+	if borrowPool.NetAmount.GT(sdkmath.ZeroInt()) {
+		borrowRatio = borrowed.Add(osmomath.BigDecFromDec(msg.Leverage).Mul(osmomath.BigDecFromSDKInt(msg.CollateralAmount))).
+			Quo(borrowPool.GetBigDecNetAmount())
+	}
+
 	ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
 	if !found {
 		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
 	}
-	poolLeveragelpRatio = pool.LeveragedLpAmount.ToLegacyDec().Quo(ammPool.TotalShares.Amount.ToLegacyDec())
 
-	if poolLeveragelpRatio.GTE(pool.MaxLeveragelpRatio) || borrowRatio.GTE(params.MaxLeverageRatio) {
-		return nil, errorsmod.Wrap(types.ErrMaxLeverageLpExists, "no new position can be open")
+	found = false
+	for _, asset := range ammPool.PoolAssets {
+		if asset.Token.Denom == msg.CollateralAsset {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrAssetNotSupported, fmt.Sprintf("Asset: %s", msg.CollateralAsset))
+	}
+
+	if borrowRatio.GTE(borrowPool.GetBigDecMaxLeverageRatio()) {
+		return nil, errors.New("stable stake pool max borrow capacity used up")
 	}
 
 	// Check if it is the same direction position for the same trader.
@@ -70,7 +87,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		return nil, err
 	}
 
-	position, err := k.OpenLong(ctx, msg)
+	position, err := k.OpenLong(ctx, msg, borrowPool.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +98,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 
 	if k.hooks != nil {
 		// ammPool will have updated values for opening position
-		ammPool, found = k.amm.GetPool(ctx, msg.AmmPoolId)
+		ammPool, found := k.amm.GetPool(ctx, msg.AmmPoolId)
 		if !found {
 			return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", msg.AmmPoolId))
 		}
@@ -97,6 +114,7 @@ func (k Keeper) Open(ctx sdk.Context, msg *types.MsgOpen) (*types.MsgOpenRespons
 		sdk.NewAttribute("collateral", position.Collateral.String()),
 		sdk.NewAttribute("liabilities", position.Liabilities.String()),
 		sdk.NewAttribute("health", position.PositionHealth.String()),
+		sdk.NewAttribute("leverage_lp_amount", position.LeveragedLpAmount.String()),
 	)
 	ctx.EventManager().EmitEvent(event)
 

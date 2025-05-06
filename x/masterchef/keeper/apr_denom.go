@@ -1,28 +1,31 @@
 package keeper
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/elys-network/elys/utils"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (math.LegacyDec, error) {
+func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (osmomath.BigDec, error) {
 	masterchefParams := k.GetParams(ctx)
 	estakingParams := k.estakingKeeper.GetParams(ctx)
 
 	// If we don't have enough params
 	if estakingParams.StakeIncentives == nil || masterchefParams.LpIncentives == nil {
-		return math.LegacyZeroDec(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
+		return osmomath.ZeroBigDec(), errorsmod.Wrap(types.ErrNoInflationaryParams, "no inflationary params available")
 	}
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
-		return math.LegacyZeroDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
+		return osmomath.ZeroBigDec(), errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", ptypes.BaseCurrency)
 	}
 
 	stkIncentive := estakingParams.StakeIncentives
@@ -38,131 +41,128 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (mat
 			// Elys staking, Eden committed, EdenB committed.
 			totalStakedSnapshot, err := k.estakingKeeper.TotalBondedTokens(ctx)
 			if err != nil {
-				return math.LegacyZeroDec(), err
+				return osmomath.ZeroBigDec(), err
 			}
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {
-				return math.LegacyZeroDec(), nil
+				return osmomath.ZeroBigDec(), nil
 			}
 
 			if stkIncentive == nil || stkIncentive.EdenAmountPerYear.IsNil() {
-				return math.LegacyZeroDec(), nil
+				return osmomath.ZeroBigDec(), nil
 			}
 
 			// Calculate
-			stakersEdenAmount := stkIncentive.EdenAmountPerYear.ToLegacyDec().Quo(math.NewInt(totalBlocksPerYear).ToLegacyDec())
+			stakersEdenAmount := osmomath.BigDecFromSDKInt(stkIncentive.EdenAmountPerYear).QuoInt64(totalBlocksPerYear)
 
 			// Maximum eden APR - 30% by default
-			stakersMaxEdenAmount := estakingParams.MaxEdenRewardAprStakers.
-				MulInt(totalStakedSnapshot).
+			stakersMaxEdenAmount := estakingParams.GetBigDecMaxEdenRewardAprStakers().
+				Mul(osmomath.BigDecFromSDKInt(totalStakedSnapshot)).
 				QuoInt64(totalBlocksPerYear)
 
 			// Use min amount (eden allocation from tokenomics and max apr based eden amount)
-			stakersEdenAmount = math.LegacyMinDec(stakersEdenAmount, stakersMaxEdenAmount)
+			stakersEdenAmount = osmomath.MinBigDec(stakersEdenAmount, stakersMaxEdenAmount)
 
 			// For Eden reward Apr for elys staking
 			apr := stakersEdenAmount.
-				Mul(math.LegacyNewDec(totalBlocksPerYear)).
-				Quo(totalStakedSnapshot.ToLegacyDec())
+				MulInt64(totalBlocksPerYear).
+				Quo(osmomath.BigDecFromSDKInt(totalStakedSnapshot))
 
 			return apr, nil
 		}
 	} else if query.Denom == ptypes.BaseCurrency {
 		if query.WithdrawType == commitmenttypes.EarnType_USDC_PROGRAM {
-			params := k.stableKeeper.GetParams(ctx)
-			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{})
-			if err != nil {
-				return math.LegacyZeroDec(), err
+			borrowPool, found := k.stableKeeper.GetPoolByDenom(ctx, baseCurrency)
+			if !found {
+				return osmomath.ZeroBigDec(), fmt.Errorf("pool not found for denom %s", baseCurrency)
 			}
-			apr := params.InterestRate.Mul(res.BorrowRatio)
+			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{
+				PoolId: stabletypes.UsdcPoolId,
+			})
+			if err != nil {
+				return osmomath.ZeroBigDec(), err
+			}
+			apr := borrowPool.GetBigDecInterestRate().MulDec(res.BorrowRatio)
 			return apr, nil
 		} else {
 			// Elys staking, Eden committed, EdenB committed.
-			// Get 7 days average rewards
-			usdcAmount := k.GetAvgStakerFeesCollected(ctx)
+			// Get x days average rewards
+			usdcAmount := k.GetAvgStakerFeesCollected(ctx, int(query.Days))
 			if usdcAmount.IsZero() {
-				return math.LegacyZeroDec(), nil
+				return osmomath.ZeroBigDec(), nil
 			}
 
 			// Calc Eden price in usdc
-			// We put Elys as denom as Eden won't be avaialble in amm pool and has the same value as Elys
+			// We put Elys as denom as Eden won't be available in amm pool and has the same value as Elys
 			edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 			if edenDenomPrice.IsZero() {
-				return math.LegacyZeroDec(), nil
+				return osmomath.ZeroBigDec(), nil
 			}
 
 			// Update total committed states
 			totalStakedSnapshot, err := k.estakingKeeper.TotalBondedTokens(ctx)
 			if err != nil {
-				return math.LegacyZeroDec(), err
+				return osmomath.ZeroBigDec(), err
 			}
 
 			// Ensure totalStakedSnapshot is not zero to avoid division by zero
 			if totalStakedSnapshot.IsZero() {
-				return math.LegacyZeroDec(), nil
+				return osmomath.ZeroBigDec(), nil
 			}
 
-			// Mutiply by 365 to get yearly rewards
+			// Multiply by 365 to get yearly rewards
 			entry, found := k.assetProfileKeeper.GetEntry(ctx, ptypes.BaseCurrency)
 			if !found {
-				return math.LegacyZeroDec(), assetprofiletypes.ErrAssetProfileNotFound
+				return osmomath.ZeroBigDec(), assetprofiletypes.ErrAssetProfileNotFound
 			}
-			yearlyDexRewardAmount := usdcAmount.Mul(math.LegacyNewDec(365)).Quo(Pow10(entry.Decimals))
+			yearlyDexRewardAmount := usdcAmount.MulInt64(365).Quo(utils.Pow10(entry.Decimals))
 
 			apr := yearlyDexRewardAmount.
 				Quo(edenDenomPrice).
-				QuoInt(totalStakedSnapshot)
+				Quo(osmomath.BigDecFromSDKInt(totalStakedSnapshot))
 
 			return apr, nil
 		}
 	} else if query.Denom == ptypes.EdenB {
-		apr := estakingParams.EdenBoostApr
+		apr := estakingParams.GetBigDecEdenBoostApr()
 		return apr, nil
 	}
 
-	return math.LegacyZeroDec(), nil
+	return osmomath.ZeroBigDec(), nil
 }
 
 // Get total dex rewards amount from the specified pool
-func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (math.LegacyDec, sdk.Coins) {
-	dailyDexRewardsTotal := math.LegacyZeroDec()
-	dailyGasRewardsTotal := math.LegacyZeroDec()
-	dailyEdenRewardsTotal := math.LegacyZeroDec()
+func (k Keeper) GetDailyRewardsAmountForPool(ctx sdk.Context, poolId uint64) (osmomath.BigDec, sdk.Coins) {
+	dailyDexRewardsTotal := osmomath.ZeroBigDec()
+	dailyGasRewardsTotal := osmomath.ZeroBigDec()
+	dailyEdenRewardsTotal := osmomath.ZeroBigDec()
 	firstAccum := k.FirstPoolRewardsAccum(ctx, poolId)
 	lastAccum := k.LastPoolRewardsAccum(ctx, poolId)
 	if lastAccum.Timestamp != 0 {
 		if firstAccum.Timestamp == lastAccum.Timestamp {
-			dailyDexRewardsTotal = lastAccum.DexReward
-			dailyGasRewardsTotal = lastAccum.GasReward
-			dailyEdenRewardsTotal = lastAccum.EdenReward
+			dailyDexRewardsTotal = lastAccum.GetBigDecDexReward()
+			dailyGasRewardsTotal = lastAccum.GetBigDecGasReward()
+			dailyEdenRewardsTotal = lastAccum.GetBigDecEdenReward()
 		} else {
-			dailyDexRewardsTotal = lastAccum.DexReward.Sub(firstAccum.DexReward)
-			dailyGasRewardsTotal = lastAccum.GasReward.Sub(firstAccum.GasReward)
-			dailyEdenRewardsTotal = lastAccum.EdenReward.Sub(firstAccum.EdenReward)
+			dailyDexRewardsTotal = lastAccum.GetBigDecDexReward().Sub(firstAccum.GetBigDecDexReward())
+			dailyGasRewardsTotal = lastAccum.GetBigDecGasReward().Sub(firstAccum.GetBigDecGasReward())
+			dailyEdenRewardsTotal = lastAccum.GetBigDecEdenReward().Sub(firstAccum.GetBigDecEdenReward())
 		}
 	}
 
 	baseCurrency, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
-		return math.LegacyZeroDec(), sdk.Coins{}
+		return osmomath.ZeroBigDec(), sdk.Coins{}
 	}
 
-	rewardCoins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, dailyEdenRewardsTotal.RoundInt()))
-	rewardCoins = rewardCoins.Add(sdk.NewCoin(baseCurrency, dailyDexRewardsTotal.Add(dailyGasRewardsTotal).RoundInt()))
+	rewardCoins := sdk.NewCoins(sdk.NewCoin(ptypes.Eden, dailyEdenRewardsTotal.Dec().RoundInt()))
+	rewardCoins = rewardCoins.Add(sdk.NewCoin(baseCurrency, dailyDexRewardsTotal.Add(dailyGasRewardsTotal).Dec().RoundInt()))
 
-	usdcDenomPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, baseCurrency)
+	usdcDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, baseCurrency)
 	edenDenomPrice := k.amm.GetEdenDenomPrice(ctx, baseCurrency)
 
 	totalRewardsUsd := usdcDenomPrice.Mul(dailyDexRewardsTotal.Add(dailyGasRewardsTotal)).
 		Add(edenDenomPrice.Mul(dailyEdenRewardsTotal))
 	return totalRewardsUsd, rewardCoins
-}
-
-func Pow10(decimal uint64) (value math.LegacyDec) {
-	value = math.LegacyNewDec(1)
-	for i := 0; i < int(decimal); i++ {
-		value = value.Mul(math.LegacyNewDec(10))
-	}
-	return
 }

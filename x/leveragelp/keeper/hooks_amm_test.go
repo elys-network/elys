@@ -7,24 +7,24 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 )
 
-func (suite *KeeperTestSuite) TestCheckAmmPoolUsdcBalance() {
+func (suite *KeeperTestSuite) TestCheckAmmPoolBalance() {
 	k := suite.app.LeveragelpKeeper
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	err := k.CheckAmmPoolUsdcBalance(suite.ctx, ammtypes.Pool{PoolId: 10})
+	err := k.CheckAmmPoolBalance(suite.ctx, ammtypes.Pool{PoolId: 10})
 	suite.Require().NoError(err)
 
 	_, _, pool := suite.OpenPosition(addr)
 
 	ammPool, found := suite.app.AmmKeeper.GetPool(suite.ctx, pool.AmmPoolId)
 	suite.Require().True(found)
-	err = k.CheckAmmPoolUsdcBalance(suite.ctx, ammPool)
+	err = k.CheckAmmPoolBalance(suite.ctx, ammPool)
 	suite.Require().NoError(err)
 
-	usdcDenom := suite.app.StablestakeKeeper.GetParams(suite.ctx).DepositDenom
+	usdcDenom := suite.app.StablestakeKeeper.GetParams(suite.ctx).LegacyDepositDenom
 	suite.Require().Equal(ammPool.PoolAssets[0].Token.Denom, usdcDenom)
 
 	// assume usdc amount reduced to 1000 and check
 	ammPool.PoolAssets[0].Token.Amount = math.NewInt(1000)
-	err = k.CheckAmmPoolUsdcBalance(suite.ctx, ammPool)
+	err = k.CheckAmmPoolBalance(suite.ctx, ammPool)
 	suite.Require().Error(err)
 }

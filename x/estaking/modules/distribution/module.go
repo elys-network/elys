@@ -73,7 +73,7 @@ func NewAppModule(
 	}
 }
 
-// BeginBlocker mirror functionality of cosmos-sdk/distribution BeginBlocker
+// BeginBlock mirror functionality of cosmos-sdk/distribution BeginBlocker
 // however it allocates no proposer reward
 func (am AppModule) BeginBlock(goCtx context.Context) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -105,7 +105,7 @@ func FilterDenoms(coins sdk.Coins, denoms ...string) sdk.Coins {
 	return filtered
 }
 
-// AllocateTokens handles distribution of the collected fees
+// AllocateEdenUsdcTokens handles distribution of the collected fees
 // USDC and Eden is distributed for staking Elys and locking Eden and locking EdenB
 func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 	// fetch and clear the collected fees for distribution, since this is
@@ -185,7 +185,7 @@ func (am AppModule) AllocateEdenUsdcTokens(ctx sdk.Context) {
 	}
 }
 
-// AllocateTokens handles distribution of the collected fees
+// AllocateEdenBTokens handles distribution of the collected fees
 // EdenB is distributed for staking Elys and locking Eden, not for locking EdenB
 func (am AppModule) AllocateEdenBTokens(ctx sdk.Context) {
 	// fetch and clear the collected fees for distribution, since this is

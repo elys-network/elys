@@ -4,6 +4,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // UpdatePoolForSwap takes a pool, sender, and tokenIn, tokenOut amounts
@@ -18,35 +19,69 @@ func (k Keeper) UpdatePoolForSwap(
 	recipient sdk.AccAddress,
 	tokenIn sdk.Coin,
 	tokenOut sdk.Coin,
-	swapFee sdkmath.LegacyDec,
+	swapFee osmomath.BigDec,
+	slippageAmount osmomath.BigDec,
 	oracleInAmount sdkmath.Int,
 	oracleOutAmount sdkmath.Int,
-	weightBalanceBonus sdkmath.LegacyDec,
+	weightBalanceBonus osmomath.BigDec,
+	takerFees osmomath.BigDec,
 	givenOut bool,
-) error {
+) (weightBalanceReward sdk.Coin, err error) {
 	tokensIn := sdk.Coins{tokenIn}
 	tokensOut := sdk.Coins{tokenOut}
 
 	// send tokensIn from sender to pool
 	poolAddr := sdk.MustAccAddressFromBech32(pool.GetAddress())
-	err := k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
+	err = k.bankKeeper.SendCoins(ctx, sender, poolAddr, tokensIn)
 	if err != nil {
-		return err
+		return sdk.Coin{}, err
 	}
 	err = k.AddToPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), tokensIn)
 	if err != nil {
-		return err
+		return sdk.Coin{}, err
 	}
 
 	// send tokensOut from pool to sender
 	err = k.bankKeeper.SendCoins(ctx, poolAddr, recipient, tokensOut)
 	if err != nil {
-		return err
+		return sdk.Coin{}, err
 	}
 
 	err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), tokensOut)
 	if err != nil {
-		return err
+		return sdk.Coin{}, err
+	}
+
+	// Taker fees
+	takerFeesInCoins := sdk.Coins{}
+	if takerFees.IsPositive() {
+		if givenOut {
+			takeFeesFrom := sdk.NewCoins(sdk.NewCoin(tokenIn.Denom, oracleInAmount))
+			if !pool.PoolParams.UseOracle {
+				takeFeesFrom = tokensIn
+			}
+			// if swapInGivenOut, use oracleIn amount to get taker fees
+			takerFeesInCoins = PortionCoins(takeFeesFrom, takerFees)
+		} else {
+			takerFeesInCoins = PortionCoins(tokensIn, takerFees)
+		}
+	}
+
+	// send taker fee to taker collection address
+	if takerFeesInCoins.IsAllPositive() {
+		protocolAddress, err := sdk.AccAddressFromBech32(k.parameterKeeper.GetParams(ctx).TakerFeeCollectionAddress)
+		if err != nil {
+			return sdk.Coin{}, err
+		}
+		err = k.bankKeeper.SendCoins(ctx, poolAddr, protocolAddress, takerFeesInCoins)
+		if err != nil {
+			return sdk.Coin{}, err
+		}
+
+		err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), takerFeesInCoins)
+		if err != nil {
+			return sdk.Coin{}, err
+		}
 	}
 
 	// apply swap fee when weight balance bonus is not available
@@ -69,17 +104,17 @@ func (k Keeper) UpdatePoolForSwap(
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, swapFeeInCoins)
 		if err != nil {
-			return err
+			return sdk.Coin{}, err
 		}
 
 		err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), swapFeeInCoins)
 		if err != nil {
-			return err
+			return sdk.Coin{}, err
 		}
 
 		err = k.OnCollectFee(ctx, pool, swapFeeInCoins)
 		if err != nil {
-			return err
+			return sdk.Coin{}, err
 		}
 	}
 
@@ -91,12 +126,12 @@ func (k Keeper) UpdatePoolForSwap(
 		params := k.GetParams(ctx)
 		rebalanceTreasury := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		// we are multiplying here by params.WeightBreakingFeePortion as we didn't multiply in pool.SwapIn/OutGiveOut/In for weight breaking fee
-		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.WeightBreakingFeePortion)
+		weightRecoveryFee := weightBalanceBonus.Abs().Mul(params.GetBigDecWeightBreakingFeePortion())
 
 		if givenOut {
-			weightRecoveryFeeAmount = oracleInAmount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			weightRecoveryFeeAmount = osmomath.BigDecFromSDKInt(oracleInAmount).Mul(weightRecoveryFee).Dec().RoundInt()
 		} else {
-			weightRecoveryFeeAmount = tokenIn.Amount.ToLegacyDec().Mul(weightRecoveryFee).RoundInt()
+			weightRecoveryFeeAmount = osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(weightRecoveryFee).Dec().RoundInt()
 		}
 
 		if weightRecoveryFeeAmount.IsPositive() {
@@ -105,39 +140,40 @@ func (k Keeper) UpdatePoolForSwap(
 
 			err = k.bankKeeper.SendCoins(ctx, poolAddr, rebalanceTreasury, netWeightBreakingFeeCoins)
 			if err != nil {
-				return err
+				return sdk.Coin{}, err
 			}
 
 			err = k.RemoveFromPoolBalanceAndUpdateLiquidity(ctx, &pool, sdkmath.ZeroInt(), netWeightBreakingFeeCoins)
 			if err != nil {
-				return err
+				return sdk.Coin{}, err
 			}
 
 			// Track amount in pool
 			weightRecoveryFeeAmountForPool := sdkmath.ZeroInt()
-			weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(sdkmath.LegacyOneDec().Sub(params.WeightBreakingFeePortion))
+			weightRecoveryFeeForPool := weightBalanceBonus.Abs().Mul(osmomath.OneBigDec().Sub(params.GetBigDecWeightBreakingFeePortion()))
 			if givenOut {
-				weightRecoveryFeeAmountForPool = oracleInAmount.ToLegacyDec().Mul(weightRecoveryFeeForPool).RoundInt()
+				weightRecoveryFeeAmountForPool = osmomath.BigDecFromSDKInt(oracleInAmount).Mul(weightRecoveryFeeForPool).Dec().RoundInt()
 			} else {
-				weightRecoveryFeeAmountForPool = tokenIn.Amount.ToLegacyDec().Mul(weightRecoveryFeeForPool).RoundInt()
+				weightRecoveryFeeAmountForPool = osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(weightRecoveryFeeForPool).Dec().RoundInt()
 			}
 			k.TrackWeightBreakingSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenIn.Denom, weightRecoveryFeeAmountForPool))
 		}
 
 	}
 
+	bonusTokenAmount := sdkmath.ZeroInt()
+	bonusToken := sdk.NewCoin(tokenOut.Denom, sdkmath.ZeroInt())
 	// calculate bonus token amount if weightBalanceBonus is positive
 	if pool.PoolParams.UseOracle && weightBalanceBonus.IsPositive() {
 		// get treasury balance
 		rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 		treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
 
-		bonusTokenAmount := sdkmath.ZeroInt()
 		// bonus token amount is the tokenOut amount times weightBalanceBonus
 		if givenOut {
-			bonusTokenAmount = tokenOut.Amount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+			bonusTokenAmount = osmomath.BigDecFromSDKInt(tokenOut.Amount).Mul(weightBalanceBonus).Dec().TruncateInt()
 		} else {
-			bonusTokenAmount = oracleOutAmount.ToLegacyDec().Mul(weightBalanceBonus).TruncateInt()
+			bonusTokenAmount = osmomath.BigDecFromSDKInt(oracleOutAmount).Mul(weightBalanceBonus).Dec().TruncateInt()
 		}
 
 		// if treasury balance is less than bonusTokenAmount, set bonusTokenAmount to treasury balance
@@ -147,24 +183,34 @@ func (k Keeper) UpdatePoolForSwap(
 
 		// send bonusTokenAmount from pool addr to recipient addr, we are shortcutting the rebalance treasury address to optimize gas
 		if bonusTokenAmount.IsPositive() {
-			bonusToken := sdk.NewCoin(tokenOut.Denom, bonusTokenAmount)
+			bonusToken = sdk.NewCoin(tokenOut.Denom, bonusTokenAmount)
 			err = k.bankKeeper.SendCoins(ctx, rebalanceTreasuryAddr, recipient, sdk.Coins{bonusToken})
 			if err != nil {
-				return err
+				return sdk.Coin{}, err
 			}
 		}
 	}
 
 	k.SetPool(ctx, pool)
 
+	// convert the fees into USD
+	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins).String()
+	slippageAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt()).String()
+	weightRecoveryFeeAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, weightRecoveryFeeAmount).String()
+	bonusTokenAmountInUSD := k.CalculateUSDValue(ctx, tokenOut.Denom, bonusTokenAmount).String()
+	takerFeesAmountInUSD := k.CalculateCoinsUSDValue(ctx, takerFeesInCoins).String()
+
+	// emit swap fees event
+	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUSD, slippageAmountInUSD, weightRecoveryFeeAmountInUSD, bonusTokenAmountInUSD, takerFeesAmountInUSD)
+
 	// emit swap event
 	types.EmitSwapEvent(ctx, sender, recipient, pool.GetPoolId(), tokensIn, tokensOut)
 	if k.hooks != nil {
 		err = k.hooks.AfterSwap(ctx, sender, pool, tokensIn, tokensOut)
 		if err != nil {
-			return err
+			return sdk.Coin{}, err
 		}
 	}
 
-	return nil
+	return bonusToken, nil
 }

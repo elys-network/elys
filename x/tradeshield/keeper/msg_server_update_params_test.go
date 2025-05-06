@@ -1,12 +1,12 @@
 package keeper_test
 
 import (
-	"fmt"
+	"errors"
 
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	keeper "github.com/elys-network/elys/x/tradeshield/keeper"
+	"github.com/elys-network/elys/x/tradeshield/keeper"
 	"github.com/elys-network/elys/x/tradeshield/types"
 )
 
@@ -22,7 +22,7 @@ func (suite *TradeshieldKeeperTestSuite) TestUpdateParams() {
 			name:      "invalid authority",
 			authority: "invalid_authority",
 			params:    types.Params{},
-			expected:  fmt.Errorf("invalid authority"),
+			expected:  errors.New("invalid authority"),
 		},
 		{
 			name:      "valid authority",
@@ -39,6 +39,7 @@ func (suite *TradeshieldKeeperTestSuite) TestUpdateParams() {
 				RewardPercentage:     math.LegacyMustNewDecFromStr("0.1"),
 				MarginError:          math.LegacyMustNewDecFromStr("0.05"),
 				MinimumDeposit:       math.NewInt(100000),
+				Tolerance:            math.LegacyMustNewDecFromStr("0.05"),
 			},
 			expected: nil,
 		},

@@ -40,6 +40,10 @@ func TestUncommitTokens(t *testing.T) {
 		Amount: initialCommitted,
 	}
 
+	params := app.CommitmentKeeper.GetParams(ctx)
+	params.TotalCommitted = sdk.NewCoins(sdk.NewCoin(denom, initialCommitted))
+	app.CommitmentKeeper.SetParams(ctx, params)
+
 	initialCommitments := types.Commitments{
 		Creator:         creator,
 		CommittedTokens: []*types.CommittedTokens{&committedTokens},

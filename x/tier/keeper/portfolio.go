@@ -6,11 +6,11 @@ import (
 	"strings"
 	"time"
 
-	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -19,6 +19,7 @@ import (
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	mastercheftypes "github.com/elys-network/elys/x/masterchef/types"
 	perpetualtypes "github.com/elys-network/elys/x/perpetual/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	tradeshieldtypes "github.com/elys-network/elys/x/tradeshield/types"
 
 	ptypes "github.com/elys-network/elys/x/parameter/types"
@@ -34,7 +35,7 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 		return
 	}
 
-	totalValue := sdkmath.LegacyNewDec(0)
+	totalValue := osmomath.ZeroBigDec()
 
 	// Liquid assets
 	liq := k.RetrieveLiquidAssetsTotal(ctx, user)
@@ -70,11 +71,11 @@ func (k Keeper) RetrieveAllPortfolio(ctx sdk.Context, user sdk.AccAddress) {
 	tradeshieldTotal := k.RetrieveTradeshieldTotal(ctx, user)
 	totalValue = totalValue.Add(tradeshieldTotal)
 
-	k.SetPortfolio(ctx, types.NewPortfolioWithContextDate(todayDate, user, totalValue))
+	k.SetPortfolio(ctx, types.NewPortfolioWithContextDate(todayDate, user, totalValue.Dec()))
 }
 
-func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdkmath.LegacyDec {
-	totalValue := sdkmath.LegacyNewDec(0)
+func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) osmomath.BigDec {
+	totalValue := osmomath.ZeroBigDec()
 	commitments := k.commitement.GetCommitments(ctx, user)
 	for _, commitment := range commitments.CommittedTokens {
 		// Pool balance
@@ -87,54 +88,58 @@ func (k Keeper) RetrievePoolTotal(ctx sdk.Context, user sdk.AccAddress) sdkmath.
 			if !found {
 				continue
 			}
-			info := k.amm.PoolExtraInfo(ctx, pool)
-			amount := commitment.Amount.ToLegacyDec()
-			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
+			info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
+			amount := osmomath.BigDecFromSDKInt(commitment.Amount)
+			totalValue = totalValue.Add(amount.Mul(info.GetBigDecLpTokenPrice()).Quo(ammtypes.OneShareBigDec))
 		}
 	}
 
 	return totalValue
 }
 
-func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.LegacyDec, sdkmath.LegacyDec, sdkmath.LegacyDec, sdkmath.LegacyDec) {
-	totalCommit := sdkmath.LegacyNewDec(0)
+func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (osmomath.BigDec, osmomath.BigDec, osmomath.BigDec, osmomath.BigDec) {
+	totalCommit := osmomath.ZeroBigDec()
 	commitments := k.commitement.GetCommitments(ctx, user)
-	totalVested := sdkmath.LegacyNewDec(0)
+	totalVested := osmomath.ZeroBigDec()
 	vestingResp, vestErr := k.commitement.CommitmentVestingInfo(ctx, &commitmenttypes.QueryCommitmentVestingInfoRequest{Address: user.String()})
 	if vestErr == nil {
-		totalVested = vestingResp.Total.ToLegacyDec()
+		totalVested = osmomath.BigDecFromSDKInt(vestingResp.Total)
 	}
 	for _, commitment := range commitments.CommittedTokens {
 		if !strings.HasPrefix(commitment.Denom, "amm/pool") {
 			if strings.HasPrefix(commitment.Denom, "stablestake/share") {
-				usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
+				poolId, err := stablestaketypes.GetPoolIDFromPath(commitment.Denom)
+				if err != nil {
+					continue
+				}
+				pool, found := k.stablestakeKeeper.GetPool(ctx, poolId)
 				if !found {
 					continue
 				}
-				tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-				params := k.stablestakeKeeper.GetParams(ctx)
-				usdValue := commitment.Amount.ToLegacyDec().Mul(params.RedemptionRate).Mul(tokenPrice)
+				redemptionRate := k.stablestakeKeeper.CalculateRedemptionRateForPool(ctx, pool)
+				tokenPrice := k.oracleKeeper.GetDenomPrice(ctx, pool.GetDepositDenom())
+				usdValue := commitment.GetBigDecAmount().Mul(redemptionRate).Mul(tokenPrice)
 				totalCommit = totalCommit.Add(usdValue)
 				continue
 			}
 			if commitment.Denom == ptypes.Eden {
 				commitment.Denom = ptypes.Elys
 			}
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, commitment.Denom)
+			tokenPrice := k.oracleKeeper.GetDenomPrice(ctx, commitment.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, commitment.Denom)
 			if !found {
 				continue
 			}
-			if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
+			if tokenPrice.Equal(osmomath.ZeroBigDec()) {
 				tokenPrice = k.amm.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
-			amount := commitment.Amount.ToLegacyDec()
+			amount := commitment.GetBigDecAmount()
 			totalCommit = totalCommit.Add(amount.Mul(tokenPrice))
 		}
 	}
 
 	// Delegations
-	totalDelegations := sdkmath.LegacyNewDec(0)
+	totalDelegations := osmomath.ZeroBigDec()
 	delegations, err := k.stakingKeeper.GetAllDelegatorDelegations(ctx, user)
 	if err != nil {
 		ctx.Logger().Error(err.Error())
@@ -144,20 +149,20 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 	if err != nil {
 		panic(err)
 	}
-	tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, bondDenom)
+	tokenPrice := k.oracleKeeper.GetDenomPrice(ctx, bondDenom)
 	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, bondDenom)
-	if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
+	if tokenPrice.Equal(osmomath.ZeroBigDec()) {
 		tokenPrice = k.amm.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	}
 	if found {
 		for _, delegation := range delegations {
-			amount := delegation.Shares
+			amount := osmomath.BigDecFromDec(delegation.Shares)
 			totalDelegations = totalDelegations.Add(amount.Mul(tokenPrice))
 		}
 	}
 
 	// Max could be 7 for an account
-	totalUnbondings := sdkmath.LegacyNewDec(0)
+	totalUnbondings := osmomath.ZeroBigDec()
 	unbondingDelegations, err := k.stakingKeeper.GetUnbondingDelegations(ctx, user, 100)
 	if err != nil {
 		ctx.Logger().Error(err.Error())
@@ -166,7 +171,7 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 	if found {
 		for _, delegation := range unbondingDelegations {
 			for _, entry := range delegation.Entries {
-				amount := entry.Balance.ToLegacyDec()
+				amount := osmomath.BigDecFromSDKInt(entry.Balance)
 				totalUnbondings = totalUnbondings.Add(amount.Mul(tokenPrice))
 			}
 		}
@@ -174,8 +179,8 @@ func (k Keeper) RetrieveStaked(ctx sdk.Context, user sdk.AccAddress) (sdkmath.Le
 	return totalCommit, totalDelegations, totalUnbondings, totalVested
 }
 
-func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdkmath.LegacyDec {
-	totalValue := sdkmath.LegacyNewDec(0)
+func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) osmomath.BigDec {
+	totalValue := osmomath.ZeroBigDec()
 	estaking, err1 := k.estaking.Rewards(ctx, &estakingtypes.QueryRewardsRequest{Address: user.String()})
 	masterchef, err2 := k.masterchef.UserPendingReward(ctx, &mastercheftypes.QueryUserPendingRewardRequest{User: user.String()})
 
@@ -184,15 +189,15 @@ func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdkma
 			if balance.Denom == ptypes.Eden {
 				balance.Denom = ptypes.Elys
 			}
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+			tokenPrice := k.oracleKeeper.GetDenomPrice(ctx, balance.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 			if !found {
 				continue
 			}
-			if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
+			if tokenPrice.Equal(osmomath.ZeroBigDec()) {
 				tokenPrice = k.amm.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
-			amount := balance.Amount.ToLegacyDec()
+			amount := osmomath.BigDecFromSDKInt(balance.Amount)
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
 		}
 	}
@@ -202,32 +207,32 @@ func (k Keeper) RetrieveRewardsTotal(ctx sdk.Context, user sdk.AccAddress) sdkma
 			if balance.Denom == ptypes.Eden {
 				balance.Denom = ptypes.Elys
 			}
-			tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+			tokenPrice := k.oracleKeeper.GetDenomPrice(ctx, balance.Denom)
 			asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 			if !found {
 				continue
 			}
-			if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
+			if tokenPrice.Equal(osmomath.ZeroBigDec()) {
 				tokenPrice = k.amm.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 			}
-			amount := balance.Amount.ToLegacyDec()
+			amount := osmomath.BigDecFromSDKInt(balance.Amount)
 			totalValue = totalValue.Add(amount.Mul(tokenPrice))
 		}
 	}
 	return totalValue
 }
 
-func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (sdkmath.LegacyDec, sdkmath.LegacyDec, sdkmath.LegacyDec) {
-	totalAssets := sdkmath.LegacyNewDec(0)
-	totalLiability := sdkmath.LegacyNewDec(0)
-	var netValue sdkmath.LegacyDec
+func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (osmomath.BigDec, osmomath.BigDec, osmomath.BigDec) {
+	totalAssets := osmomath.ZeroBigDec()
+	totalLiability := osmomath.ZeroBigDec()
+	var netValue osmomath.BigDec
 	perpetuals, _, err := k.perpetual.GetMTPsForAddressWithPagination(ctx, user, nil)
 	if err != nil {
-		return sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0)
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec()
 	}
 	usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
 	if !found {
-		return sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0), sdkmath.LegacyNewDec(0)
+		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec()
 	}
 
 	for _, perpetual := range perpetuals {
@@ -243,9 +248,9 @@ func (k Keeper) RetrievePerpetualTotal(ctx sdk.Context, user sdk.AccAddress) (sd
 	return totalAssets, totalLiability, netValue
 }
 
-func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) sdkmath.LegacyDec {
+func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) osmomath.BigDec {
 	balances := k.bankKeeper.GetAllBalances(ctx, user)
-	totalValue := sdkmath.LegacyNewDec(0)
+	totalValue := osmomath.ZeroBigDec()
 	// Get eden from AmmBalance
 	edenBal, err := k.amm.Balance(ctx, &ammtypes.QueryBalanceRequest{Denom: ptypes.Eden, Address: user.String()})
 	if err == nil {
@@ -255,54 +260,50 @@ func (k Keeper) RetrieveLiquidAssetsTotal(ctx sdk.Context, user sdk.AccAddress) 
 		if balance.Denom == ptypes.Eden {
 			balance.Denom = ptypes.Elys
 		}
-		tokenPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, balance.Denom)
+		tokenPrice := k.oracleKeeper.GetDenomPrice(ctx, balance.Denom)
 		asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, balance.Denom)
 		if !found {
 			continue
 		}
-		if tokenPrice.Equal(sdkmath.LegacyZeroDec()) {
+		if tokenPrice.Equal(osmomath.ZeroBigDec()) {
 			tokenPrice = k.amm.CalcAmmPrice(ctx, balance.Denom, asset.Decimals)
 		}
-		amount := balance.Amount.ToLegacyDec()
+		amount := osmomath.BigDecFromSDKInt(balance.Amount)
 		totalValue = totalValue.Add(amount.Mul(tokenPrice))
 	}
 	return totalValue
 }
 
-func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) (sdkmath.LegacyDec, sdkmath.LegacyDec, sdkmath.LegacyDec) {
+func (k Keeper) RetrieveLeverageLpTotal(ctx sdk.Context, user sdk.AccAddress) (osmomath.BigDec, osmomath.BigDec, osmomath.BigDec) {
 	positions, _, err := k.leveragelp.GetPositionsForAddress(ctx, user, &query.PageRequest{})
-	totalValue := sdkmath.LegacyNewDec(0)
-	totalBorrow := sdkmath.LegacyNewDec(0)
-	netValue := sdkmath.LegacyNewDec(0)
+	totalValue := osmomath.ZeroBigDec()
+	totalBorrow := osmomath.ZeroBigDec()
+	netValue := osmomath.ZeroBigDec()
 	if err == nil {
 		for _, position := range positions {
 			pool, found := k.amm.GetPool(ctx, position.AmmPoolId)
 			if !found {
 				continue
 			}
-			info := k.amm.PoolExtraInfo(ctx, pool)
-			amount := position.LeveragedLpAmount.ToLegacyDec()
-			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
+			info := k.amm.PoolExtraInfo(ctx, pool, types.OneDay)
+			amount := position.GetBigDecLeveragedLpAmount()
+			totalValue = totalValue.Add(amount.Mul(info.GetBigDecLpTokenPrice()).Quo(ammtypes.OneShareBigDec))
 			// USD value of debt
-			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPositionAddress())
-			usdcDenom, found := k.assetProfileKeeper.GetUsdcDenom(ctx)
-			if !found {
-				continue
-			}
-			usdcPrice := k.oracleKeeper.GetAssetPriceFromDenom(ctx, usdcDenom)
-			liab := debt.GetTotalLiablities().ToLegacyDec()
-			totalBorrow = totalBorrow.Add(liab.Mul(usdcPrice))
+			debt := k.stablestakeKeeper.GetDebt(ctx, position.GetPositionAddress(), position.BorrowPoolId)
+			collateralDenomPrice := k.oracleKeeper.GetDenomPrice(ctx, position.Collateral.Denom)
+			liab := debt.GetBigDecTotalLiablities()
+			totalBorrow = totalBorrow.Add(liab.Mul(collateralDenomPrice))
 		}
 		netValue = totalValue.Sub(totalBorrow)
 	}
 	return totalValue, totalBorrow, netValue
 }
 
-func (k Keeper) RetrieveTradeshieldTotal(ctx sdk.Context, user sdk.AccAddress) sdkmath.LegacyDec {
+func (k Keeper) RetrieveTradeshieldTotal(ctx sdk.Context, user sdk.AccAddress) osmomath.BigDec {
 	pendingStatus := tradeshieldtypes.Status_PENDING
 	// Perpetual orders total
 	perpetualOrders, _, err := k.tradeshieldKeeper.GetPendingPerpetualOrdersForAddress(ctx, user.String(), &pendingStatus, &query.PageRequest{})
-	totalValue := sdkmath.LegacyNewDec(0)
+	totalValue := osmomath.ZeroBigDec()
 	if err == nil {
 		for _, order := range perpetualOrders {
 			balances := k.bankKeeper.GetAllBalances(ctx, order.GetOrderAddress())
@@ -325,22 +326,22 @@ func (k Keeper) RetrieveTradeshieldTotal(ctx sdk.Context, user sdk.AccAddress) s
 	return totalValue
 }
 
-func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (sdkmath.LegacyDec, sdkmath.LegacyDec, sdkmath.LegacyDec) {
+func (k Keeper) RetrieveConsolidatedPrice(ctx sdk.Context, denom string) (osmomath.BigDec, osmomath.BigDec, osmomath.BigDec) {
 	if denom == ptypes.Eden {
 		denom = ptypes.Elys
 	}
-	tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom)
+	tokenPriceOracle := k.oracleKeeper.GetDenomPrice(ctx, denom)
 	asset, found := k.assetProfileKeeper.GetEntryByDenom(ctx, denom)
 	if !found {
-		tokenPriceOracle = sdkmath.LegacyNewDec(0)
+		tokenPriceOracle = osmomath.ZeroBigDec()
 	}
 	tokenPriceAmm := k.amm.CalcAmmPrice(ctx, asset.Denom, asset.Decimals)
 	info, found := k.oracleKeeper.GetAssetInfo(ctx, denom)
-	tokenPriceOracleDec := sdkmath.LegacyZeroDec()
+	tokenPriceOracleDec := osmomath.ZeroBigDec()
 	if found {
 		tokenPriceOracleD, found := k.oracleKeeper.GetAssetPrice(ctx, info.Display)
 		if found {
-			tokenPriceOracleDec = tokenPriceOracleD.Price
+			tokenPriceOracleDec = tokenPriceOracleD
 		}
 	}
 
@@ -356,23 +357,23 @@ func (k Keeper) SetPortfolio(ctx sdk.Context, portfolio types.Portfolio) {
 }
 
 // GetPortfolio returns a portfolio from its index
-func (k Keeper) GetPortfolio(ctx sdk.Context, user sdk.AccAddress, date string) (sdkmath.LegacyDec, bool) {
+func (k Keeper) GetPortfolio(ctx sdk.Context, user sdk.AccAddress, date string) (osmomath.BigDec, bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	key := types.GetPortfolioKey(date, user)
 	portfolioBytes := store.Get(key)
 	if portfolioBytes == nil {
-		return sdkmath.LegacyZeroDec(), false
+		return osmomath.ZeroBigDec(), false
 	}
 	var val types.Portfolio
 	k.cdc.MustUnmarshal(portfolioBytes, &val)
-	return val.Portfolio, true
+	return val.GetBigDecPortFolio(), true
 }
 
-func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio sdkmath.LegacyDec, membership_tier types.MembershipTier) {
+func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_portfolio osmomath.BigDec, membership_tier types.MembershipTier) {
 	year, month, day := ctx.BlockTime().Date()
 	dateToday := time.Date(year, month, day, 0, 0, 0, 0, ctx.BlockTime().Location())
 	startDate := dateToday.AddDate(0, 0, -7)
-	minTotal := sdkmath.LegacyNewDec(math.MaxInt64)
+	minTotal := osmomath.NewBigDec(math.MaxInt64)
 	for d := startDate; !d.After(dateToday); d = d.AddDate(0, 0, 1) {
 		// Traverse all possible portfolio data
 		totalPort, found := k.GetPortfolio(ctx, user, d.Format("2006-01-02"))
@@ -381,23 +382,23 @@ func (k Keeper) GetMembershipTier(ctx sdk.Context, user sdk.AccAddress) (total_p
 		}
 	}
 
-	if minTotal.Equal(sdkmath.LegacyNewDec(math.MaxInt64)) {
-		return sdkmath.LegacyNewDec(0), types.Basic
+	if minTotal.Equal(osmomath.NewBigDec(math.MaxInt64)) {
+		return osmomath.ZeroBigDec(), types.Basic
 	}
 
-	if minTotal.GTE(types.Platinum.MinimumPortfolio) {
+	if minTotal.GTE(types.Platinum.GetBigDecMinimumPortfolio()) {
 		return minTotal, types.Platinum
 	}
 
-	if minTotal.GTE(types.Gold.MinimumPortfolio) {
+	if minTotal.GTE(types.Gold.GetBigDecMinimumPortfolio()) {
 		return minTotal, types.Gold
 	}
 
-	if minTotal.GTE(types.Silver.MinimumPortfolio) {
+	if minTotal.GTE(types.Silver.GetBigDecMinimumPortfolio()) {
 		return minTotal, types.Silver
 	}
 
-	if minTotal.GTE(types.Bronze.MinimumPortfolio) {
+	if minTotal.GTE(types.Bronze.GetBigDecMinimumPortfolio()) {
 		return minTotal, types.Bronze
 	}
 

@@ -35,7 +35,7 @@ func CmdUpdateStopLoss() *cobra.Command {
 			msg := types.NewMsgUpdateStopLoss(
 				clientCtx.GetFromAddress().String(),
 				uint64(positionId),
-				math.LegacyDec(argPrice),
+				argPrice,
 			)
 			if err = msg.ValidateBasic(); err != nil {
 				return err

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/cosmos/cosmos-sdk/runtime"
 
 	"cosmossdk.io/store/prefix"
@@ -51,11 +52,12 @@ func (k Keeper) Pools(goCtx context.Context, req *types.QueryAllPoolRequest) (*t
 				LastHeightBorrowInterestRateComputed: pool.LastHeightBorrowInterestRateComputed,
 				FundingRate:                          pool.FundingRate,
 				NetOpenInterest:                      pool.GetNetOpenInterest(),
-				LongRate:                             longRate,
-				ShortRate:                            shortRate,
+				LongRate:                             longRate.Dec(),
+				ShortRate:                            shortRate.Dec(),
 				TotalLiabilities:                     totalLiabilities,
 				TotalLongOpenInterest:                pool.GetTotalLongOpenInterest(),
 				TotalShortOpenInterest:               pool.GetTotalShortOpenInterest(),
+				LeverageMax:                          pool.LeverageMax,
 			})
 		}
 
@@ -98,11 +100,12 @@ func (k Keeper) Pool(goCtx context.Context, req *types.QueryGetPoolRequest) (*ty
 		LastHeightBorrowInterestRateComputed: val.LastHeightBorrowInterestRateComputed,
 		FundingRate:                          val.FundingRate,
 		NetOpenInterest:                      val.GetNetOpenInterest(),
-		LongRate:                             longRate,
-		ShortRate:                            shortRate,
+		LongRate:                             longRate.Dec(),
+		ShortRate:                            shortRate.Dec(),
 		TotalLiabilities:                     totalLiabilities,
 		TotalLongOpenInterest:                val.GetTotalLongOpenInterest(),
 		TotalShortOpenInterest:               val.GetTotalShortOpenInterest(),
+		LeverageMax:                          val.LeverageMax,
 	}
 
 	return &types.QueryGetPoolResponse{Pool: pool}, nil

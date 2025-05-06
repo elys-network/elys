@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -32,7 +32,7 @@ func TestMsgSwapExactAmountIn_ValidateBasic(t *testing.T) {
 			msg: types.MsgSwapExactAmountIn{
 				Sender:            sample.AccAddress(),
 				Routes:            nil,
-				TokenIn:           sdk.Coin{ptypes.ATOM, math.NewInt(10)},
+				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
 				TokenOutMinAmount: math.NewInt(10),
 				Recipient:         "",
 			},
@@ -57,7 +57,7 @@ func TestMsgSwapExactAmountIn_ValidateBasic(t *testing.T) {
 				TokenOutMinAmount: math.NewInt(1),
 				Recipient:         sample.AccAddress(),
 			},
-			err: fmt.Errorf("invalid denom"),
+			err: errors.New("invalid denom"),
 		},
 		{
 			name: "Invalid TokenIn",
@@ -68,7 +68,7 @@ func TestMsgSwapExactAmountIn_ValidateBasic(t *testing.T) {
 				TokenOutMinAmount: math.NewInt(1),
 				Recipient:         sample.AccAddress(),
 			},
-			err: fmt.Errorf("negative coin amount"),
+			err: errors.New("negative coin amount"),
 		},
 		{
 			name: "Invalid TokenIn amount",
@@ -79,7 +79,35 @@ func TestMsgSwapExactAmountIn_ValidateBasic(t *testing.T) {
 				TokenOutMinAmount: math.NewInt(1),
 				Recipient:         sample.AccAddress(),
 			},
-			err: fmt.Errorf("token in is zero"),
+			err: errors.New("token in is zero"),
+		},
+		{
+			name: "Invalid routes with same Input and Output denom",
+			msg: types.MsgSwapExactAmountIn{
+				Sender: sample.AccAddress(),
+				Routes: []types.SwapAmountInRoute{
+					{TokenOutDenom: "uusdc"},
+					{TokenOutDenom: "uusdc"},
+					{TokenOutDenom: "uelys"},
+				},
+				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenOutMinAmount: math.NewInt(1),
+				Recipient:         sample.AccAddress(),
+			},
+			err: errors.New("has the same input and output denom as the previous route"),
+		},
+		{
+			name: "Valid multiple routes",
+			msg: types.MsgSwapExactAmountIn{
+				Sender: sample.AccAddress(),
+				Routes: []types.SwapAmountInRoute{
+					{TokenOutDenom: "uusdc"},
+					{TokenOutDenom: "uelys"},
+				},
+				TokenIn:           sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenOutMinAmount: math.NewInt(1),
+				Recipient:         sample.AccAddress(),
+			},
 		},
 	}
 	for _, tt := range tests {

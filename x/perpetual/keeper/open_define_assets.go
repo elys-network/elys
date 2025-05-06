@@ -1,17 +1,23 @@
 package keeper
 
 import (
+	"fmt"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgOpen, baseCurrency string) (*types.MTP, error) {
-	// Determine the maximum leverage available and compute the effective leverage to be used.
+	pool, found := k.GetPool(ctx, poolId)
+	if !found {
+		return nil, errorsmod.Wrap(types.ErrPoolDoesNotExist, fmt.Sprintf("poolId: %d", poolId))
+	}
+	// Determine the maximum leverage available for this pool and compute the effective leverage to be used.
 	// values for leverage other than 0 or  >1 are invalidated in validate basic
-	maxLeverage := k.GetMaxLeverageParam(ctx)
-	proxyLeverage := sdkmath.LegacyMinDec(msg.Leverage, maxLeverage)
+	proxyLeverage := sdkmath.LegacyMinDec(msg.Leverage, pool.LeverageMax)
 
 	// just adding collateral
 	if msg.Leverage.IsZero() {
@@ -27,7 +33,7 @@ func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgO
 	}
 
 	// Convert the collateral amount into a decimal format.
-	collateralAmountDec := msg.Collateral.Amount.ToLegacyDec()
+	collateralAmountDec := osmomath.BigDecFromSDKInt(msg.Collateral.Amount)
 
 	// Define the assets
 	var liabilitiesAsset, custodyAsset string
@@ -46,5 +52,5 @@ func (k Keeper) OpenDefineAssets(ctx sdk.Context, poolId uint64, msg *types.MsgO
 	mtp := types.NewMTP(ctx, msg.Creator, msg.Collateral.Denom, msg.TradingAsset, liabilitiesAsset, custodyAsset, msg.Position, msg.TakeProfitPrice, poolId)
 
 	// Call the function to process the open long logic.
-	return k.ProcessOpen(ctx, mtp, proxyLeverage, collateralAmountDec, poolId, msg, baseCurrency)
+	return k.ProcessOpen(ctx, mtp, osmomath.BigDecFromDec(proxyLeverage), collateralAmountDec, poolId, msg, baseCurrency)
 }

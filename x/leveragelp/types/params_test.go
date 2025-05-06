@@ -1,10 +1,11 @@
 package types_test
 
 import (
+	"testing"
+
 	sdkmath "cosmossdk.io/math"
 	"github.com/elys-network/elys/x/leveragelp/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestDefaultParams(t *testing.T) {
@@ -37,12 +38,6 @@ func TestValidateLeverageMax(t *testing.T) {
 				params.LeverageMax = sdkmath.LegacyMustNewDecFromStr("0.5")
 			},
 			err: "leverage max must be greater than 1",
-		}, {
-			name: "LeverageMax is 100",
-			setter: func() {
-				params.LeverageMax = sdkmath.LegacyOneDec().MulInt64(100)
-			},
-			err: "leverage max too large",
 		},
 	}
 	for _, tt := range tests {
@@ -219,6 +214,41 @@ func TestValidateNumberOfBlocks(t *testing.T) {
 				params.NumberPerBlock = types.MaxPageLimit + 1
 			},
 			err: "number of positions per block should not exceed page limit",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.setter()
+			err := params.Validate()
+			if tt.err != "" {
+				require.ErrorContains(t, err, tt.err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestDuplicate(t *testing.T) {
+	params := types.NewParams()
+	tests := []struct {
+		name   string
+		setter func()
+		err    string
+	}{
+		{
+			name: "success",
+			setter: func() {
+				params.EnabledPools = []uint64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+			},
+			err: "",
+		},
+		{
+			name: "Duplicate",
+			setter: func() {
+				params.EnabledPools = []uint64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1}
+			},
+			err: "array must not contain duplicate values",
 		},
 	}
 	for _, tt := range tests {

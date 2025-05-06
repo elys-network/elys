@@ -2,9 +2,10 @@ package tvl
 
 import (
 	"context"
-	"cosmossdk.io/core/appmodule"
 	"encoding/json"
 	"fmt"
+
+	"cosmossdk.io/core/appmodule"
 
 	// this line is used by starport scaffolding # 1
 
@@ -87,11 +88,6 @@ func (a AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cli.GetTxCmd()
 }
 
-// GetQueryCmd returns the root query command for the module. The subcommands of this root command are used by end-users to generate new queries to the subset of the state defined by the module
-func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetQueryCmd(types.StoreKey)
-}
-
 // ----------------------------------------------------------------------------
 // AppModule
 // ----------------------------------------------------------------------------
@@ -163,6 +159,7 @@ func (am AppModule) BeginBlock(_ context.Context) error {
 }
 
 // EndBlock contains the logic that is automatically triggered at the end of each block
-func (am AppModule) EndBlock(_ context.Context) error {
+func (am AppModule) EndBlock(goCtx context.Context) error {
+	am.keeper.EndBlocker(sdk.UnwrapSDKContext(goCtx))
 	return nil
 }

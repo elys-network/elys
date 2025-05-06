@@ -19,6 +19,2080 @@ import (
 )
 
 var (
+	md_QueryAllLiquidityPoolTVLRequest protoreflect.MessageDescriptor
+)
+
+func init() {
+	file_elys_masterchef_query_proto_init()
+	md_QueryAllLiquidityPoolTVLRequest = File_elys_masterchef_query_proto.Messages().ByName("QueryAllLiquidityPoolTVLRequest")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryAllLiquidityPoolTVLRequest)(nil)
+
+type fastReflection_QueryAllLiquidityPoolTVLRequest QueryAllLiquidityPoolTVLRequest
+
+func (x *QueryAllLiquidityPoolTVLRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryAllLiquidityPoolTVLRequest)(x)
+}
+
+func (x *QueryAllLiquidityPoolTVLRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_masterchef_query_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryAllLiquidityPoolTVLRequest_messageType fastReflection_QueryAllLiquidityPoolTVLRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryAllLiquidityPoolTVLRequest_messageType{}
+
+type fastReflection_QueryAllLiquidityPoolTVLRequest_messageType struct{}
+
+func (x fastReflection_QueryAllLiquidityPoolTVLRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryAllLiquidityPoolTVLRequest)(nil)
+}
+func (x fastReflection_QueryAllLiquidityPoolTVLRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryAllLiquidityPoolTVLRequest)
+}
+func (x fastReflection_QueryAllLiquidityPoolTVLRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryAllLiquidityPoolTVLRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryAllLiquidityPoolTVLRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryAllLiquidityPoolTVLRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryAllLiquidityPoolTVLRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryAllLiquidityPoolTVLRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.masterchef.QueryAllLiquidityPoolTVLRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryAllLiquidityPoolTVLRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryAllLiquidityPoolTVLRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryAllLiquidityPoolTVLRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryAllLiquidityPoolTVLRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryAllLiquidityPoolTVLRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryAllLiquidityPoolTVLRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryAllLiquidityPoolTVLResponse              protoreflect.MessageDescriptor
+	fd_QueryAllLiquidityPoolTVLResponse_total        protoreflect.FieldDescriptor
+	fd_QueryAllLiquidityPoolTVLResponse_pools        protoreflect.FieldDescriptor
+	fd_QueryAllLiquidityPoolTVLResponse_usdc_staking protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_masterchef_query_proto_init()
+	md_QueryAllLiquidityPoolTVLResponse = File_elys_masterchef_query_proto.Messages().ByName("QueryAllLiquidityPoolTVLResponse")
+	fd_QueryAllLiquidityPoolTVLResponse_total = md_QueryAllLiquidityPoolTVLResponse.Fields().ByName("total")
+	fd_QueryAllLiquidityPoolTVLResponse_pools = md_QueryAllLiquidityPoolTVLResponse.Fields().ByName("pools")
+	fd_QueryAllLiquidityPoolTVLResponse_usdc_staking = md_QueryAllLiquidityPoolTVLResponse.Fields().ByName("usdc_staking")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryAllLiquidityPoolTVLResponse)(nil)
+
+type fastReflection_QueryAllLiquidityPoolTVLResponse QueryAllLiquidityPoolTVLResponse
+
+func (x *QueryAllLiquidityPoolTVLResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryAllLiquidityPoolTVLResponse)(x)
+}
+
+func (x *QueryAllLiquidityPoolTVLResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_masterchef_query_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryAllLiquidityPoolTVLResponse_messageType fastReflection_QueryAllLiquidityPoolTVLResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryAllLiquidityPoolTVLResponse_messageType{}
+
+type fastReflection_QueryAllLiquidityPoolTVLResponse_messageType struct{}
+
+func (x fastReflection_QueryAllLiquidityPoolTVLResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryAllLiquidityPoolTVLResponse)(nil)
+}
+func (x fastReflection_QueryAllLiquidityPoolTVLResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryAllLiquidityPoolTVLResponse)
+}
+func (x fastReflection_QueryAllLiquidityPoolTVLResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryAllLiquidityPoolTVLResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryAllLiquidityPoolTVLResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryAllLiquidityPoolTVLResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryAllLiquidityPoolTVLResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryAllLiquidityPoolTVLResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Total != "" {
+		value := protoreflect.ValueOfString(x.Total)
+		if !f(fd_QueryAllLiquidityPoolTVLResponse_total, value) {
+			return
+		}
+	}
+	if x.Pools != "" {
+		value := protoreflect.ValueOfString(x.Pools)
+		if !f(fd_QueryAllLiquidityPoolTVLResponse_pools, value) {
+			return
+		}
+	}
+	if x.UsdcStaking != "" {
+		value := protoreflect.ValueOfString(x.UsdcStaking)
+		if !f(fd_QueryAllLiquidityPoolTVLResponse_usdc_staking, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.total":
+		return x.Total != ""
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.pools":
+		return x.Pools != ""
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.usdc_staking":
+		return x.UsdcStaking != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.total":
+		x.Total = ""
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.pools":
+		x.Pools = ""
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.usdc_staking":
+		x.UsdcStaking = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.total":
+		value := x.Total
+		return protoreflect.ValueOfString(value)
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.pools":
+		value := x.Pools
+		return protoreflect.ValueOfString(value)
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.usdc_staking":
+		value := x.UsdcStaking
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.total":
+		x.Total = value.Interface().(string)
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.pools":
+		x.Pools = value.Interface().(string)
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.usdc_staking":
+		x.UsdcStaking = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.total":
+		panic(fmt.Errorf("field total of message elys.masterchef.QueryAllLiquidityPoolTVLResponse is not mutable"))
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.pools":
+		panic(fmt.Errorf("field pools of message elys.masterchef.QueryAllLiquidityPoolTVLResponse is not mutable"))
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.usdc_staking":
+		panic(fmt.Errorf("field usdc_staking of message elys.masterchef.QueryAllLiquidityPoolTVLResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.total":
+		return protoreflect.ValueOfString("")
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.pools":
+		return protoreflect.ValueOfString("")
+	case "elys.masterchef.QueryAllLiquidityPoolTVLResponse.usdc_staking":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAllLiquidityPoolTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryAllLiquidityPoolTVLResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.masterchef.QueryAllLiquidityPoolTVLResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryAllLiquidityPoolTVLResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryAllLiquidityPoolTVLResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Total)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Pools)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.UsdcStaking)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryAllLiquidityPoolTVLResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.UsdcStaking) > 0 {
+			i -= len(x.UsdcStaking)
+			copy(dAtA[i:], x.UsdcStaking)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.UsdcStaking)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.Pools) > 0 {
+			i -= len(x.Pools)
+			copy(dAtA[i:], x.Pools)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Pools)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Total) > 0 {
+			i -= len(x.Total)
+			copy(dAtA[i:], x.Total)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Total)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryAllLiquidityPoolTVLResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryAllLiquidityPoolTVLResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryAllLiquidityPoolTVLResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Total", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Total = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Pools", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Pools = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UsdcStaking", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.UsdcStaking = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryChainTVLRequest protoreflect.MessageDescriptor
+)
+
+func init() {
+	file_elys_masterchef_query_proto_init()
+	md_QueryChainTVLRequest = File_elys_masterchef_query_proto.Messages().ByName("QueryChainTVLRequest")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryChainTVLRequest)(nil)
+
+type fastReflection_QueryChainTVLRequest QueryChainTVLRequest
+
+func (x *QueryChainTVLRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryChainTVLRequest)(x)
+}
+
+func (x *QueryChainTVLRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_masterchef_query_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryChainTVLRequest_messageType fastReflection_QueryChainTVLRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryChainTVLRequest_messageType{}
+
+type fastReflection_QueryChainTVLRequest_messageType struct{}
+
+func (x fastReflection_QueryChainTVLRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryChainTVLRequest)(nil)
+}
+func (x fastReflection_QueryChainTVLRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryChainTVLRequest)
+}
+func (x fastReflection_QueryChainTVLRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryChainTVLRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryChainTVLRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryChainTVLRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryChainTVLRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryChainTVLRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryChainTVLRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryChainTVLRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryChainTVLRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryChainTVLRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryChainTVLRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryChainTVLRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryChainTVLRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryChainTVLRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryChainTVLRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryChainTVLRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryChainTVLRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryChainTVLRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.masterchef.QueryChainTVLRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryChainTVLRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryChainTVLRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryChainTVLRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryChainTVLRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryChainTVLRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryChainTVLRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryChainTVLRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryChainTVLRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryChainTVLRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var _ protoreflect.List = (*_QueryChainTVLResponse_6_list)(nil)
+
+type _QueryChainTVLResponse_6_list struct {
+	list *[]*v1beta1.Coin
+}
+
+func (x *_QueryChainTVLResponse_6_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_QueryChainTVLResponse_6_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_QueryChainTVLResponse_6_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_QueryChainTVLResponse_6_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*v1beta1.Coin)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_QueryChainTVLResponse_6_list) AppendMutable() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryChainTVLResponse_6_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_QueryChainTVLResponse_6_list) NewElement() protoreflect.Value {
+	v := new(v1beta1.Coin)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryChainTVLResponse_6_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_QueryChainTVLResponse              protoreflect.MessageDescriptor
+	fd_QueryChainTVLResponse_total        protoreflect.FieldDescriptor
+	fd_QueryChainTVLResponse_pools        protoreflect.FieldDescriptor
+	fd_QueryChainTVLResponse_usdc_staking protoreflect.FieldDescriptor
+	fd_QueryChainTVLResponse_staked_elys  protoreflect.FieldDescriptor
+	fd_QueryChainTVLResponse_staked_eden  protoreflect.FieldDescriptor
+	fd_QueryChainTVLResponse_net_stakings protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_masterchef_query_proto_init()
+	md_QueryChainTVLResponse = File_elys_masterchef_query_proto.Messages().ByName("QueryChainTVLResponse")
+	fd_QueryChainTVLResponse_total = md_QueryChainTVLResponse.Fields().ByName("total")
+	fd_QueryChainTVLResponse_pools = md_QueryChainTVLResponse.Fields().ByName("pools")
+	fd_QueryChainTVLResponse_usdc_staking = md_QueryChainTVLResponse.Fields().ByName("usdc_staking")
+	fd_QueryChainTVLResponse_staked_elys = md_QueryChainTVLResponse.Fields().ByName("staked_elys")
+	fd_QueryChainTVLResponse_staked_eden = md_QueryChainTVLResponse.Fields().ByName("staked_eden")
+	fd_QueryChainTVLResponse_net_stakings = md_QueryChainTVLResponse.Fields().ByName("net_stakings")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryChainTVLResponse)(nil)
+
+type fastReflection_QueryChainTVLResponse QueryChainTVLResponse
+
+func (x *QueryChainTVLResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryChainTVLResponse)(x)
+}
+
+func (x *QueryChainTVLResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_masterchef_query_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryChainTVLResponse_messageType fastReflection_QueryChainTVLResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryChainTVLResponse_messageType{}
+
+type fastReflection_QueryChainTVLResponse_messageType struct{}
+
+func (x fastReflection_QueryChainTVLResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryChainTVLResponse)(nil)
+}
+func (x fastReflection_QueryChainTVLResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryChainTVLResponse)
+}
+func (x fastReflection_QueryChainTVLResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryChainTVLResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryChainTVLResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryChainTVLResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryChainTVLResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryChainTVLResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryChainTVLResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryChainTVLResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryChainTVLResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryChainTVLResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryChainTVLResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Total != "" {
+		value := protoreflect.ValueOfString(x.Total)
+		if !f(fd_QueryChainTVLResponse_total, value) {
+			return
+		}
+	}
+	if x.Pools != "" {
+		value := protoreflect.ValueOfString(x.Pools)
+		if !f(fd_QueryChainTVLResponse_pools, value) {
+			return
+		}
+	}
+	if x.UsdcStaking != "" {
+		value := protoreflect.ValueOfString(x.UsdcStaking)
+		if !f(fd_QueryChainTVLResponse_usdc_staking, value) {
+			return
+		}
+	}
+	if x.StakedElys != "" {
+		value := protoreflect.ValueOfString(x.StakedElys)
+		if !f(fd_QueryChainTVLResponse_staked_elys, value) {
+			return
+		}
+	}
+	if x.StakedEden != "" {
+		value := protoreflect.ValueOfString(x.StakedEden)
+		if !f(fd_QueryChainTVLResponse_staked_eden, value) {
+			return
+		}
+	}
+	if len(x.NetStakings) != 0 {
+		value := protoreflect.ValueOfList(&_QueryChainTVLResponse_6_list{list: &x.NetStakings})
+		if !f(fd_QueryChainTVLResponse_net_stakings, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryChainTVLResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryChainTVLResponse.total":
+		return x.Total != ""
+	case "elys.masterchef.QueryChainTVLResponse.pools":
+		return x.Pools != ""
+	case "elys.masterchef.QueryChainTVLResponse.usdc_staking":
+		return x.UsdcStaking != ""
+	case "elys.masterchef.QueryChainTVLResponse.staked_elys":
+		return x.StakedElys != ""
+	case "elys.masterchef.QueryChainTVLResponse.staked_eden":
+		return x.StakedEden != ""
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		return len(x.NetStakings) != 0
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryChainTVLResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryChainTVLResponse.total":
+		x.Total = ""
+	case "elys.masterchef.QueryChainTVLResponse.pools":
+		x.Pools = ""
+	case "elys.masterchef.QueryChainTVLResponse.usdc_staking":
+		x.UsdcStaking = ""
+	case "elys.masterchef.QueryChainTVLResponse.staked_elys":
+		x.StakedElys = ""
+	case "elys.masterchef.QueryChainTVLResponse.staked_eden":
+		x.StakedEden = ""
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		x.NetStakings = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryChainTVLResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.masterchef.QueryChainTVLResponse.total":
+		value := x.Total
+		return protoreflect.ValueOfString(value)
+	case "elys.masterchef.QueryChainTVLResponse.pools":
+		value := x.Pools
+		return protoreflect.ValueOfString(value)
+	case "elys.masterchef.QueryChainTVLResponse.usdc_staking":
+		value := x.UsdcStaking
+		return protoreflect.ValueOfString(value)
+	case "elys.masterchef.QueryChainTVLResponse.staked_elys":
+		value := x.StakedElys
+		return protoreflect.ValueOfString(value)
+	case "elys.masterchef.QueryChainTVLResponse.staked_eden":
+		value := x.StakedEden
+		return protoreflect.ValueOfString(value)
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		if len(x.NetStakings) == 0 {
+			return protoreflect.ValueOfList(&_QueryChainTVLResponse_6_list{})
+		}
+		listValue := &_QueryChainTVLResponse_6_list{list: &x.NetStakings}
+		return protoreflect.ValueOfList(listValue)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryChainTVLResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryChainTVLResponse.total":
+		x.Total = value.Interface().(string)
+	case "elys.masterchef.QueryChainTVLResponse.pools":
+		x.Pools = value.Interface().(string)
+	case "elys.masterchef.QueryChainTVLResponse.usdc_staking":
+		x.UsdcStaking = value.Interface().(string)
+	case "elys.masterchef.QueryChainTVLResponse.staked_elys":
+		x.StakedElys = value.Interface().(string)
+	case "elys.masterchef.QueryChainTVLResponse.staked_eden":
+		x.StakedEden = value.Interface().(string)
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		lv := value.List()
+		clv := lv.(*_QueryChainTVLResponse_6_list)
+		x.NetStakings = *clv.list
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryChainTVLResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		if x.NetStakings == nil {
+			x.NetStakings = []*v1beta1.Coin{}
+		}
+		value := &_QueryChainTVLResponse_6_list{list: &x.NetStakings}
+		return protoreflect.ValueOfList(value)
+	case "elys.masterchef.QueryChainTVLResponse.total":
+		panic(fmt.Errorf("field total of message elys.masterchef.QueryChainTVLResponse is not mutable"))
+	case "elys.masterchef.QueryChainTVLResponse.pools":
+		panic(fmt.Errorf("field pools of message elys.masterchef.QueryChainTVLResponse is not mutable"))
+	case "elys.masterchef.QueryChainTVLResponse.usdc_staking":
+		panic(fmt.Errorf("field usdc_staking of message elys.masterchef.QueryChainTVLResponse is not mutable"))
+	case "elys.masterchef.QueryChainTVLResponse.staked_elys":
+		panic(fmt.Errorf("field staked_elys of message elys.masterchef.QueryChainTVLResponse is not mutable"))
+	case "elys.masterchef.QueryChainTVLResponse.staked_eden":
+		panic(fmt.Errorf("field staked_eden of message elys.masterchef.QueryChainTVLResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryChainTVLResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryChainTVLResponse.total":
+		return protoreflect.ValueOfString("")
+	case "elys.masterchef.QueryChainTVLResponse.pools":
+		return protoreflect.ValueOfString("")
+	case "elys.masterchef.QueryChainTVLResponse.usdc_staking":
+		return protoreflect.ValueOfString("")
+	case "elys.masterchef.QueryChainTVLResponse.staked_elys":
+		return protoreflect.ValueOfString("")
+	case "elys.masterchef.QueryChainTVLResponse.staked_eden":
+		return protoreflect.ValueOfString("")
+	case "elys.masterchef.QueryChainTVLResponse.net_stakings":
+		list := []*v1beta1.Coin{}
+		return protoreflect.ValueOfList(&_QueryChainTVLResponse_6_list{list: &list})
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryChainTVLResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryChainTVLResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryChainTVLResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.masterchef.QueryChainTVLResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryChainTVLResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryChainTVLResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryChainTVLResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryChainTVLResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryChainTVLResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Total)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Pools)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.UsdcStaking)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.StakedElys)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.StakedEden)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.NetStakings) > 0 {
+			for _, e := range x.NetStakings {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryChainTVLResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.NetStakings) > 0 {
+			for iNdEx := len(x.NetStakings) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.NetStakings[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x32
+			}
+		}
+		if len(x.StakedEden) > 0 {
+			i -= len(x.StakedEden)
+			copy(dAtA[i:], x.StakedEden)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.StakedEden)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.StakedElys) > 0 {
+			i -= len(x.StakedElys)
+			copy(dAtA[i:], x.StakedElys)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.StakedElys)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.UsdcStaking) > 0 {
+			i -= len(x.UsdcStaking)
+			copy(dAtA[i:], x.UsdcStaking)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.UsdcStaking)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.Pools) > 0 {
+			i -= len(x.Pools)
+			copy(dAtA[i:], x.Pools)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Pools)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Total) > 0 {
+			i -= len(x.Total)
+			copy(dAtA[i:], x.Total)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Total)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryChainTVLResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryChainTVLResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryChainTVLResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Total", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Total = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Pools", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Pools = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UsdcStaking", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.UsdcStaking = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StakedElys", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.StakedElys = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StakedEden", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.StakedEden = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field NetStakings", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.NetStakings = append(x.NetStakings, &v1beta1.Coin{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.NetStakings[len(x.NetStakings)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
 	md_QueryParamsRequest protoreflect.MessageDescriptor
 )
 
@@ -36,7 +2110,7 @@ func (x *QueryParamsRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryParamsRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[0]
+	mi := &file_elys_masterchef_query_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -394,7 +2468,7 @@ func (x *QueryParamsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryParamsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[1]
+	mi := &file_elys_masterchef_query_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -829,7 +2903,7 @@ func (x *QueryExternalIncentiveRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryExternalIncentiveRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[2]
+	mi := &file_elys_masterchef_query_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1233,7 +3307,7 @@ func (x *QueryExternalIncentiveResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryExternalIncentiveResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[3]
+	mi := &file_elys_masterchef_query_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1668,7 +3742,7 @@ func (x *QueryPoolInfoRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryPoolInfoRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[4]
+	mi := &file_elys_masterchef_query_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2053,14 +4127,16 @@ func (x *fastReflection_QueryPoolInfoRequest) ProtoMethods() *protoiface.Methods
 }
 
 var (
-	md_QueryPoolInfoResponse           protoreflect.MessageDescriptor
-	fd_QueryPoolInfoResponse_pool_info protoreflect.FieldDescriptor
+	md_QueryPoolInfoResponse            protoreflect.MessageDescriptor
+	fd_QueryPoolInfoResponse_pool_info  protoreflect.FieldDescriptor
+	fd_QueryPoolInfoResponse_stable_apr protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_masterchef_query_proto_init()
 	md_QueryPoolInfoResponse = File_elys_masterchef_query_proto.Messages().ByName("QueryPoolInfoResponse")
 	fd_QueryPoolInfoResponse_pool_info = md_QueryPoolInfoResponse.Fields().ByName("pool_info")
+	fd_QueryPoolInfoResponse_stable_apr = md_QueryPoolInfoResponse.Fields().ByName("stable_apr")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryPoolInfoResponse)(nil)
@@ -2072,7 +4148,7 @@ func (x *QueryPoolInfoResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryPoolInfoResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[5]
+	mi := &file_elys_masterchef_query_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2134,6 +4210,12 @@ func (x *fastReflection_QueryPoolInfoResponse) Range(f func(protoreflect.FieldDe
 			return
 		}
 	}
+	if x.StableApr != "" {
+		value := protoreflect.ValueOfString(x.StableApr)
+		if !f(fd_QueryPoolInfoResponse_stable_apr, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -2151,6 +4233,8 @@ func (x *fastReflection_QueryPoolInfoResponse) Has(fd protoreflect.FieldDescript
 	switch fd.FullName() {
 	case "elys.masterchef.QueryPoolInfoResponse.pool_info":
 		return x.PoolInfo != nil
+	case "elys.masterchef.QueryPoolInfoResponse.stable_apr":
+		return x.StableApr != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryPoolInfoResponse"))
@@ -2169,6 +4253,8 @@ func (x *fastReflection_QueryPoolInfoResponse) Clear(fd protoreflect.FieldDescri
 	switch fd.FullName() {
 	case "elys.masterchef.QueryPoolInfoResponse.pool_info":
 		x.PoolInfo = nil
+	case "elys.masterchef.QueryPoolInfoResponse.stable_apr":
+		x.StableApr = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryPoolInfoResponse"))
@@ -2188,6 +4274,9 @@ func (x *fastReflection_QueryPoolInfoResponse) Get(descriptor protoreflect.Field
 	case "elys.masterchef.QueryPoolInfoResponse.pool_info":
 		value := x.PoolInfo
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "elys.masterchef.QueryPoolInfoResponse.stable_apr":
+		value := x.StableApr
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryPoolInfoResponse"))
@@ -2210,6 +4299,8 @@ func (x *fastReflection_QueryPoolInfoResponse) Set(fd protoreflect.FieldDescript
 	switch fd.FullName() {
 	case "elys.masterchef.QueryPoolInfoResponse.pool_info":
 		x.PoolInfo = value.Message().Interface().(*PoolInfo)
+	case "elys.masterchef.QueryPoolInfoResponse.stable_apr":
+		x.StableApr = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryPoolInfoResponse"))
@@ -2235,6 +4326,8 @@ func (x *fastReflection_QueryPoolInfoResponse) Mutable(fd protoreflect.FieldDesc
 			x.PoolInfo = new(PoolInfo)
 		}
 		return protoreflect.ValueOfMessage(x.PoolInfo.ProtoReflect())
+	case "elys.masterchef.QueryPoolInfoResponse.stable_apr":
+		panic(fmt.Errorf("field stable_apr of message elys.masterchef.QueryPoolInfoResponse is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryPoolInfoResponse"))
@@ -2251,6 +4344,8 @@ func (x *fastReflection_QueryPoolInfoResponse) NewField(fd protoreflect.FieldDes
 	case "elys.masterchef.QueryPoolInfoResponse.pool_info":
 		m := new(PoolInfo)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "elys.masterchef.QueryPoolInfoResponse.stable_apr":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryPoolInfoResponse"))
@@ -2324,6 +4419,10 @@ func (x *fastReflection_QueryPoolInfoResponse) ProtoMethods() *protoiface.Method
 			l = options.Size(x.PoolInfo)
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.StableApr)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -2352,6 +4451,13 @@ func (x *fastReflection_QueryPoolInfoResponse) ProtoMethods() *protoiface.Method
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.StableApr) > 0 {
+			i -= len(x.StableApr)
+			copy(dAtA[i:], x.StableApr)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.StableApr)))
+			i--
+			dAtA[i] = 0x12
 		}
 		if x.PoolInfo != nil {
 			encoded, err := options.Marshal(x.PoolInfo)
@@ -2452,6 +4558,1046 @@ func (x *fastReflection_QueryPoolInfoResponse) ProtoMethods() *protoiface.Method
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StableApr", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.StableApr = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryListPoolInfosRequest            protoreflect.MessageDescriptor
+	fd_QueryListPoolInfosRequest_pagination protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_masterchef_query_proto_init()
+	md_QueryListPoolInfosRequest = File_elys_masterchef_query_proto.Messages().ByName("QueryListPoolInfosRequest")
+	fd_QueryListPoolInfosRequest_pagination = md_QueryListPoolInfosRequest.Fields().ByName("pagination")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryListPoolInfosRequest)(nil)
+
+type fastReflection_QueryListPoolInfosRequest QueryListPoolInfosRequest
+
+func (x *QueryListPoolInfosRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryListPoolInfosRequest)(x)
+}
+
+func (x *QueryListPoolInfosRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_masterchef_query_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryListPoolInfosRequest_messageType fastReflection_QueryListPoolInfosRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryListPoolInfosRequest_messageType{}
+
+type fastReflection_QueryListPoolInfosRequest_messageType struct{}
+
+func (x fastReflection_QueryListPoolInfosRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryListPoolInfosRequest)(nil)
+}
+func (x fastReflection_QueryListPoolInfosRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryListPoolInfosRequest)
+}
+func (x fastReflection_QueryListPoolInfosRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryListPoolInfosRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryListPoolInfosRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryListPoolInfosRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryListPoolInfosRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryListPoolInfosRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryListPoolInfosRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryListPoolInfosRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryListPoolInfosRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryListPoolInfosRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryListPoolInfosRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Pagination != nil {
+		value := protoreflect.ValueOfMessage(x.Pagination.ProtoReflect())
+		if !f(fd_QueryListPoolInfosRequest_pagination, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryListPoolInfosRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryListPoolInfosRequest.pagination":
+		return x.Pagination != nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryListPoolInfosRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryListPoolInfosRequest.pagination":
+		x.Pagination = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryListPoolInfosRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.masterchef.QueryListPoolInfosRequest.pagination":
+		value := x.Pagination
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryListPoolInfosRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryListPoolInfosRequest.pagination":
+		x.Pagination = value.Message().Interface().(*v1beta11.PageRequest)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryListPoolInfosRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryListPoolInfosRequest.pagination":
+		if x.Pagination == nil {
+			x.Pagination = new(v1beta11.PageRequest)
+		}
+		return protoreflect.ValueOfMessage(x.Pagination.ProtoReflect())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryListPoolInfosRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryListPoolInfosRequest.pagination":
+		m := new(v1beta11.PageRequest)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosRequest"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryListPoolInfosRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.masterchef.QueryListPoolInfosRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryListPoolInfosRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryListPoolInfosRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryListPoolInfosRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryListPoolInfosRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryListPoolInfosRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.Pagination != nil {
+			l = options.Size(x.Pagination)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryListPoolInfosRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Pagination != nil {
+			encoded, err := options.Marshal(x.Pagination)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryListPoolInfosRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryListPoolInfosRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryListPoolInfosRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.Pagination == nil {
+					x.Pagination = &v1beta11.PageRequest{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Pagination); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var _ protoreflect.List = (*_QueryListPoolInfosResponse_1_list)(nil)
+
+type _QueryListPoolInfosResponse_1_list struct {
+	list *[]*QueryPoolInfoResponse
+}
+
+func (x *_QueryListPoolInfosResponse_1_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_QueryListPoolInfosResponse_1_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_QueryListPoolInfosResponse_1_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*QueryPoolInfoResponse)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_QueryListPoolInfosResponse_1_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*QueryPoolInfoResponse)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_QueryListPoolInfosResponse_1_list) AppendMutable() protoreflect.Value {
+	v := new(QueryPoolInfoResponse)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryListPoolInfosResponse_1_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_QueryListPoolInfosResponse_1_list) NewElement() protoreflect.Value {
+	v := new(QueryPoolInfoResponse)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryListPoolInfosResponse_1_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_QueryListPoolInfosResponse            protoreflect.MessageDescriptor
+	fd_QueryListPoolInfosResponse_list       protoreflect.FieldDescriptor
+	fd_QueryListPoolInfosResponse_pagination protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_elys_masterchef_query_proto_init()
+	md_QueryListPoolInfosResponse = File_elys_masterchef_query_proto.Messages().ByName("QueryListPoolInfosResponse")
+	fd_QueryListPoolInfosResponse_list = md_QueryListPoolInfosResponse.Fields().ByName("list")
+	fd_QueryListPoolInfosResponse_pagination = md_QueryListPoolInfosResponse.Fields().ByName("pagination")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryListPoolInfosResponse)(nil)
+
+type fastReflection_QueryListPoolInfosResponse QueryListPoolInfosResponse
+
+func (x *QueryListPoolInfosResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryListPoolInfosResponse)(x)
+}
+
+func (x *QueryListPoolInfosResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_elys_masterchef_query_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryListPoolInfosResponse_messageType fastReflection_QueryListPoolInfosResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryListPoolInfosResponse_messageType{}
+
+type fastReflection_QueryListPoolInfosResponse_messageType struct{}
+
+func (x fastReflection_QueryListPoolInfosResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryListPoolInfosResponse)(nil)
+}
+func (x fastReflection_QueryListPoolInfosResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryListPoolInfosResponse)
+}
+func (x fastReflection_QueryListPoolInfosResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryListPoolInfosResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryListPoolInfosResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryListPoolInfosResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryListPoolInfosResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryListPoolInfosResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryListPoolInfosResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryListPoolInfosResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryListPoolInfosResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryListPoolInfosResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryListPoolInfosResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.List) != 0 {
+		value := protoreflect.ValueOfList(&_QueryListPoolInfosResponse_1_list{list: &x.List})
+		if !f(fd_QueryListPoolInfosResponse_list, value) {
+			return
+		}
+	}
+	if x.Pagination != nil {
+		value := protoreflect.ValueOfMessage(x.Pagination.ProtoReflect())
+		if !f(fd_QueryListPoolInfosResponse_pagination, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryListPoolInfosResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryListPoolInfosResponse.list":
+		return len(x.List) != 0
+	case "elys.masterchef.QueryListPoolInfosResponse.pagination":
+		return x.Pagination != nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryListPoolInfosResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryListPoolInfosResponse.list":
+		x.List = nil
+	case "elys.masterchef.QueryListPoolInfosResponse.pagination":
+		x.Pagination = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryListPoolInfosResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "elys.masterchef.QueryListPoolInfosResponse.list":
+		if len(x.List) == 0 {
+			return protoreflect.ValueOfList(&_QueryListPoolInfosResponse_1_list{})
+		}
+		listValue := &_QueryListPoolInfosResponse_1_list{list: &x.List}
+		return protoreflect.ValueOfList(listValue)
+	case "elys.masterchef.QueryListPoolInfosResponse.pagination":
+		value := x.Pagination
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryListPoolInfosResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryListPoolInfosResponse.list":
+		lv := value.List()
+		clv := lv.(*_QueryListPoolInfosResponse_1_list)
+		x.List = *clv.list
+	case "elys.masterchef.QueryListPoolInfosResponse.pagination":
+		x.Pagination = value.Message().Interface().(*v1beta11.PageResponse)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryListPoolInfosResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryListPoolInfosResponse.list":
+		if x.List == nil {
+			x.List = []*QueryPoolInfoResponse{}
+		}
+		value := &_QueryListPoolInfosResponse_1_list{list: &x.List}
+		return protoreflect.ValueOfList(value)
+	case "elys.masterchef.QueryListPoolInfosResponse.pagination":
+		if x.Pagination == nil {
+			x.Pagination = new(v1beta11.PageResponse)
+		}
+		return protoreflect.ValueOfMessage(x.Pagination.ProtoReflect())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryListPoolInfosResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "elys.masterchef.QueryListPoolInfosResponse.list":
+		list := []*QueryPoolInfoResponse{}
+		return protoreflect.ValueOfList(&_QueryListPoolInfosResponse_1_list{list: &list})
+	case "elys.masterchef.QueryListPoolInfosResponse.pagination":
+		m := new(v1beta11.PageResponse)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryListPoolInfosResponse"))
+		}
+		panic(fmt.Errorf("message elys.masterchef.QueryListPoolInfosResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryListPoolInfosResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in elys.masterchef.QueryListPoolInfosResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryListPoolInfosResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryListPoolInfosResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryListPoolInfosResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryListPoolInfosResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryListPoolInfosResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if len(x.List) > 0 {
+			for _, e := range x.List {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.Pagination != nil {
+			l = options.Size(x.Pagination)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryListPoolInfosResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Pagination != nil {
+			encoded, err := options.Marshal(x.Pagination)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.List) > 0 {
+			for iNdEx := len(x.List) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.List[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0xa
+			}
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryListPoolInfosResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryListPoolInfosResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryListPoolInfosResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field List", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.List = append(x.List, &QueryPoolInfoResponse{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.List[len(x.List)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.Pagination == nil {
+					x.Pagination = &v1beta11.PageResponse{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Pagination); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -2509,7 +5655,7 @@ func (x *QueryPoolRewardInfoRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryPoolRewardInfoRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[6]
+	mi := &file_elys_masterchef_query_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2975,7 +6121,7 @@ func (x *QueryPoolRewardInfoResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryPoolRewardInfoResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[7]
+	mi := &file_elys_masterchef_query_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3414,7 +6560,7 @@ func (x *QueryUserRewardInfoRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryUserRewardInfoRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[8]
+	mi := &file_elys_masterchef_query_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3942,7 +7088,7 @@ func (x *QueryUserRewardInfoResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryUserRewardInfoResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[9]
+	mi := &file_elys_masterchef_query_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4377,7 +7523,7 @@ func (x *QueryUserPendingRewardRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryUserPendingRewardRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[10]
+	mi := &file_elys_masterchef_query_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4850,7 +7996,7 @@ func (x *RewardInfo) ProtoReflect() protoreflect.Message {
 }
 
 func (x *RewardInfo) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[11]
+	mi := &file_elys_masterchef_query_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5443,7 +8589,7 @@ func (x *QueryUserPendingRewardResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryUserPendingRewardResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[12]
+	mi := &file_elys_masterchef_query_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5971,7 +9117,7 @@ func (x *QueryStableStakeAprRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryStableStakeAprRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[13]
+	mi := &file_elys_masterchef_query_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6391,7 +9537,7 @@ func (x *QueryStableStakeAprResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryStableStakeAprResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[14]
+	mi := &file_elys_masterchef_query_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6857,7 +10003,7 @@ func (x *QueryPoolAprsRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryPoolAprsRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[15]
+	mi := &file_elys_masterchef_query_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7398,7 +10544,7 @@ func (x *QueryPoolAprsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryPoolAprsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[16]
+	mi := &file_elys_masterchef_query_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7822,11 +10968,12 @@ func (x *fastReflection_QueryPoolAprsResponse) ProtoMethods() *protoiface.Method
 }
 
 var (
-	md_PoolApr           protoreflect.MessageDescriptor
-	fd_PoolApr_pool_id   protoreflect.FieldDescriptor
-	fd_PoolApr_eden_apr  protoreflect.FieldDescriptor
-	fd_PoolApr_usdc_apr  protoreflect.FieldDescriptor
-	fd_PoolApr_total_apr protoreflect.FieldDescriptor
+	md_PoolApr              protoreflect.MessageDescriptor
+	fd_PoolApr_pool_id      protoreflect.FieldDescriptor
+	fd_PoolApr_eden_apr     protoreflect.FieldDescriptor
+	fd_PoolApr_usdc_dex_apr protoreflect.FieldDescriptor
+	fd_PoolApr_usdc_gas_apr protoreflect.FieldDescriptor
+	fd_PoolApr_total_apr    protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -7834,7 +10981,8 @@ func init() {
 	md_PoolApr = File_elys_masterchef_query_proto.Messages().ByName("PoolApr")
 	fd_PoolApr_pool_id = md_PoolApr.Fields().ByName("pool_id")
 	fd_PoolApr_eden_apr = md_PoolApr.Fields().ByName("eden_apr")
-	fd_PoolApr_usdc_apr = md_PoolApr.Fields().ByName("usdc_apr")
+	fd_PoolApr_usdc_dex_apr = md_PoolApr.Fields().ByName("usdc_dex_apr")
+	fd_PoolApr_usdc_gas_apr = md_PoolApr.Fields().ByName("usdc_gas_apr")
 	fd_PoolApr_total_apr = md_PoolApr.Fields().ByName("total_apr")
 }
 
@@ -7847,7 +10995,7 @@ func (x *PoolApr) ProtoReflect() protoreflect.Message {
 }
 
 func (x *PoolApr) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[17]
+	mi := &file_elys_masterchef_query_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7915,9 +11063,15 @@ func (x *fastReflection_PoolApr) Range(f func(protoreflect.FieldDescriptor, prot
 			return
 		}
 	}
-	if x.UsdcApr != "" {
-		value := protoreflect.ValueOfString(x.UsdcApr)
-		if !f(fd_PoolApr_usdc_apr, value) {
+	if x.UsdcDexApr != "" {
+		value := protoreflect.ValueOfString(x.UsdcDexApr)
+		if !f(fd_PoolApr_usdc_dex_apr, value) {
+			return
+		}
+	}
+	if x.UsdcGasApr != "" {
+		value := protoreflect.ValueOfString(x.UsdcGasApr)
+		if !f(fd_PoolApr_usdc_gas_apr, value) {
 			return
 		}
 	}
@@ -7946,8 +11100,10 @@ func (x *fastReflection_PoolApr) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.PoolId != uint64(0)
 	case "elys.masterchef.PoolApr.eden_apr":
 		return x.EdenApr != ""
-	case "elys.masterchef.PoolApr.usdc_apr":
-		return x.UsdcApr != ""
+	case "elys.masterchef.PoolApr.usdc_dex_apr":
+		return x.UsdcDexApr != ""
+	case "elys.masterchef.PoolApr.usdc_gas_apr":
+		return x.UsdcGasApr != ""
 	case "elys.masterchef.PoolApr.total_apr":
 		return x.TotalApr != ""
 	default:
@@ -7970,8 +11126,10 @@ func (x *fastReflection_PoolApr) Clear(fd protoreflect.FieldDescriptor) {
 		x.PoolId = uint64(0)
 	case "elys.masterchef.PoolApr.eden_apr":
 		x.EdenApr = ""
-	case "elys.masterchef.PoolApr.usdc_apr":
-		x.UsdcApr = ""
+	case "elys.masterchef.PoolApr.usdc_dex_apr":
+		x.UsdcDexApr = ""
+	case "elys.masterchef.PoolApr.usdc_gas_apr":
+		x.UsdcGasApr = ""
 	case "elys.masterchef.PoolApr.total_apr":
 		x.TotalApr = ""
 	default:
@@ -7996,8 +11154,11 @@ func (x *fastReflection_PoolApr) Get(descriptor protoreflect.FieldDescriptor) pr
 	case "elys.masterchef.PoolApr.eden_apr":
 		value := x.EdenApr
 		return protoreflect.ValueOfString(value)
-	case "elys.masterchef.PoolApr.usdc_apr":
-		value := x.UsdcApr
+	case "elys.masterchef.PoolApr.usdc_dex_apr":
+		value := x.UsdcDexApr
+		return protoreflect.ValueOfString(value)
+	case "elys.masterchef.PoolApr.usdc_gas_apr":
+		value := x.UsdcGasApr
 		return protoreflect.ValueOfString(value)
 	case "elys.masterchef.PoolApr.total_apr":
 		value := x.TotalApr
@@ -8026,8 +11187,10 @@ func (x *fastReflection_PoolApr) Set(fd protoreflect.FieldDescriptor, value prot
 		x.PoolId = value.Uint()
 	case "elys.masterchef.PoolApr.eden_apr":
 		x.EdenApr = value.Interface().(string)
-	case "elys.masterchef.PoolApr.usdc_apr":
-		x.UsdcApr = value.Interface().(string)
+	case "elys.masterchef.PoolApr.usdc_dex_apr":
+		x.UsdcDexApr = value.Interface().(string)
+	case "elys.masterchef.PoolApr.usdc_gas_apr":
+		x.UsdcGasApr = value.Interface().(string)
 	case "elys.masterchef.PoolApr.total_apr":
 		x.TotalApr = value.Interface().(string)
 	default:
@@ -8054,8 +11217,10 @@ func (x *fastReflection_PoolApr) Mutable(fd protoreflect.FieldDescriptor) protor
 		panic(fmt.Errorf("field pool_id of message elys.masterchef.PoolApr is not mutable"))
 	case "elys.masterchef.PoolApr.eden_apr":
 		panic(fmt.Errorf("field eden_apr of message elys.masterchef.PoolApr is not mutable"))
-	case "elys.masterchef.PoolApr.usdc_apr":
-		panic(fmt.Errorf("field usdc_apr of message elys.masterchef.PoolApr is not mutable"))
+	case "elys.masterchef.PoolApr.usdc_dex_apr":
+		panic(fmt.Errorf("field usdc_dex_apr of message elys.masterchef.PoolApr is not mutable"))
+	case "elys.masterchef.PoolApr.usdc_gas_apr":
+		panic(fmt.Errorf("field usdc_gas_apr of message elys.masterchef.PoolApr is not mutable"))
 	case "elys.masterchef.PoolApr.total_apr":
 		panic(fmt.Errorf("field total_apr of message elys.masterchef.PoolApr is not mutable"))
 	default:
@@ -8075,7 +11240,9 @@ func (x *fastReflection_PoolApr) NewField(fd protoreflect.FieldDescriptor) proto
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "elys.masterchef.PoolApr.eden_apr":
 		return protoreflect.ValueOfString("")
-	case "elys.masterchef.PoolApr.usdc_apr":
+	case "elys.masterchef.PoolApr.usdc_dex_apr":
+		return protoreflect.ValueOfString("")
+	case "elys.masterchef.PoolApr.usdc_gas_apr":
 		return protoreflect.ValueOfString("")
 	case "elys.masterchef.PoolApr.total_apr":
 		return protoreflect.ValueOfString("")
@@ -8155,7 +11322,11 @@ func (x *fastReflection_PoolApr) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.UsdcApr)
+		l = len(x.UsdcDexApr)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.UsdcGasApr)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -8197,12 +11368,19 @@ func (x *fastReflection_PoolApr) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.TotalApr)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TotalApr)))
 			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.UsdcGasApr) > 0 {
+			i -= len(x.UsdcGasApr)
+			copy(dAtA[i:], x.UsdcGasApr)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.UsdcGasApr)))
+			i--
 			dAtA[i] = 0x22
 		}
-		if len(x.UsdcApr) > 0 {
-			i -= len(x.UsdcApr)
-			copy(dAtA[i:], x.UsdcApr)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.UsdcApr)))
+		if len(x.UsdcDexApr) > 0 {
+			i -= len(x.UsdcDexApr)
+			copy(dAtA[i:], x.UsdcDexApr)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.UsdcDexApr)))
 			i--
 			dAtA[i] = 0x1a
 		}
@@ -8320,7 +11498,7 @@ func (x *fastReflection_PoolApr) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UsdcApr", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UsdcDexApr", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -8348,9 +11526,41 @@ func (x *fastReflection_PoolApr) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.UsdcApr = string(dAtA[iNdEx:postIndex])
+				x.UsdcDexApr = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field UsdcGasApr", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.UsdcGasApr = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TotalApr", wireType)
 				}
@@ -8437,7 +11647,7 @@ func (x *QueryShowFeeInfoRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryShowFeeInfoRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[18]
+	mi := &file_elys_masterchef_query_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8857,7 +12067,7 @@ func (x *QueryShowFeeInfoResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryShowFeeInfoResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[19]
+	mi := &file_elys_masterchef_query_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9290,7 +12500,7 @@ func (x *QueryListFeeInfoRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryListFeeInfoRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[20]
+	mi := &file_elys_masterchef_query_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9699,7 +12909,7 @@ func (x *QueryListFeeInfoResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryListFeeInfoResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[21]
+	mi := &file_elys_masterchef_query_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10126,6 +13336,7 @@ var (
 	md_QueryAprRequest               protoreflect.MessageDescriptor
 	fd_QueryAprRequest_withdraw_type protoreflect.FieldDescriptor
 	fd_QueryAprRequest_denom         protoreflect.FieldDescriptor
+	fd_QueryAprRequest_days          protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -10133,6 +13344,7 @@ func init() {
 	md_QueryAprRequest = File_elys_masterchef_query_proto.Messages().ByName("QueryAprRequest")
 	fd_QueryAprRequest_withdraw_type = md_QueryAprRequest.Fields().ByName("withdraw_type")
 	fd_QueryAprRequest_denom = md_QueryAprRequest.Fields().ByName("denom")
+	fd_QueryAprRequest_days = md_QueryAprRequest.Fields().ByName("days")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryAprRequest)(nil)
@@ -10144,7 +13356,7 @@ func (x *QueryAprRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryAprRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[22]
+	mi := &file_elys_masterchef_query_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10212,6 +13424,12 @@ func (x *fastReflection_QueryAprRequest) Range(f func(protoreflect.FieldDescript
 			return
 		}
 	}
+	if x.Days != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Days)
+		if !f(fd_QueryAprRequest_days, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -10231,6 +13449,8 @@ func (x *fastReflection_QueryAprRequest) Has(fd protoreflect.FieldDescriptor) bo
 		return x.WithdrawType != 0
 	case "elys.masterchef.QueryAprRequest.denom":
 		return x.Denom != ""
+	case "elys.masterchef.QueryAprRequest.days":
+		return x.Days != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprRequest"))
@@ -10251,6 +13471,8 @@ func (x *fastReflection_QueryAprRequest) Clear(fd protoreflect.FieldDescriptor) 
 		x.WithdrawType = 0
 	case "elys.masterchef.QueryAprRequest.denom":
 		x.Denom = ""
+	case "elys.masterchef.QueryAprRequest.days":
+		x.Days = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprRequest"))
@@ -10273,6 +13495,9 @@ func (x *fastReflection_QueryAprRequest) Get(descriptor protoreflect.FieldDescri
 	case "elys.masterchef.QueryAprRequest.denom":
 		value := x.Denom
 		return protoreflect.ValueOfString(value)
+	case "elys.masterchef.QueryAprRequest.days":
+		value := x.Days
+		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprRequest"))
@@ -10297,6 +13522,8 @@ func (x *fastReflection_QueryAprRequest) Set(fd protoreflect.FieldDescriptor, va
 		x.WithdrawType = (commitment.EarnType)(value.Enum())
 	case "elys.masterchef.QueryAprRequest.denom":
 		x.Denom = value.Interface().(string)
+	case "elys.masterchef.QueryAprRequest.days":
+		x.Days = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprRequest"))
@@ -10321,6 +13548,8 @@ func (x *fastReflection_QueryAprRequest) Mutable(fd protoreflect.FieldDescriptor
 		panic(fmt.Errorf("field withdraw_type of message elys.masterchef.QueryAprRequest is not mutable"))
 	case "elys.masterchef.QueryAprRequest.denom":
 		panic(fmt.Errorf("field denom of message elys.masterchef.QueryAprRequest is not mutable"))
+	case "elys.masterchef.QueryAprRequest.days":
+		panic(fmt.Errorf("field days of message elys.masterchef.QueryAprRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprRequest"))
@@ -10338,6 +13567,8 @@ func (x *fastReflection_QueryAprRequest) NewField(fd protoreflect.FieldDescripto
 		return protoreflect.ValueOfEnum(0)
 	case "elys.masterchef.QueryAprRequest.denom":
 		return protoreflect.ValueOfString("")
+	case "elys.masterchef.QueryAprRequest.days":
+		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprRequest"))
@@ -10414,6 +13645,9 @@ func (x *fastReflection_QueryAprRequest) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		if x.Days != 0 {
+			n += 1 + runtime.Sov(uint64(x.Days))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -10442,6 +13676,11 @@ func (x *fastReflection_QueryAprRequest) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Days != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Days))
+			i--
+			dAtA[i] = 0x18
 		}
 		if len(x.Denom) > 0 {
 			i -= len(x.Denom)
@@ -10555,6 +13794,25 @@ func (x *fastReflection_QueryAprRequest) ProtoMethods() *protoiface.Methods {
 				}
 				x.Denom = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Days", wireType)
+				}
+				x.Days = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Days |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -10610,7 +13868,7 @@ func (x *QueryAprResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryAprResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[23]
+	mi := &file_elys_masterchef_query_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -11011,12 +14269,14 @@ func (x *fastReflection_QueryAprResponse) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_QueryAprsRequest protoreflect.MessageDescriptor
+	md_QueryAprsRequest      protoreflect.MessageDescriptor
+	fd_QueryAprsRequest_days protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_elys_masterchef_query_proto_init()
 	md_QueryAprsRequest = File_elys_masterchef_query_proto.Messages().ByName("QueryAprsRequest")
+	fd_QueryAprsRequest_days = md_QueryAprsRequest.Fields().ByName("days")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryAprsRequest)(nil)
@@ -11028,7 +14288,7 @@ func (x *QueryAprsRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryAprsRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[24]
+	mi := &file_elys_masterchef_query_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -11084,6 +14344,12 @@ func (x *fastReflection_QueryAprsRequest) Interface() protoreflect.ProtoMessage 
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_QueryAprsRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Days != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Days)
+		if !f(fd_QueryAprsRequest_days, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -11099,6 +14365,8 @@ func (x *fastReflection_QueryAprsRequest) Range(f func(protoreflect.FieldDescrip
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_QueryAprsRequest) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
+	case "elys.masterchef.QueryAprsRequest.days":
+		return x.Days != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprsRequest"))
@@ -11115,6 +14383,8 @@ func (x *fastReflection_QueryAprsRequest) Has(fd protoreflect.FieldDescriptor) b
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryAprsRequest) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
+	case "elys.masterchef.QueryAprsRequest.days":
+		x.Days = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprsRequest"))
@@ -11131,6 +14401,9 @@ func (x *fastReflection_QueryAprsRequest) Clear(fd protoreflect.FieldDescriptor)
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_QueryAprsRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
+	case "elys.masterchef.QueryAprsRequest.days":
+		value := x.Days
+		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprsRequest"))
@@ -11151,6 +14424,8 @@ func (x *fastReflection_QueryAprsRequest) Get(descriptor protoreflect.FieldDescr
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryAprsRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
+	case "elys.masterchef.QueryAprsRequest.days":
+		x.Days = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprsRequest"))
@@ -11171,6 +14446,8 @@ func (x *fastReflection_QueryAprsRequest) Set(fd protoreflect.FieldDescriptor, v
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryAprsRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.masterchef.QueryAprsRequest.days":
+		panic(fmt.Errorf("field days of message elys.masterchef.QueryAprsRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprsRequest"))
@@ -11184,6 +14461,8 @@ func (x *fastReflection_QueryAprsRequest) Mutable(fd protoreflect.FieldDescripto
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_QueryAprsRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "elys.masterchef.QueryAprsRequest.days":
+		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: elys.masterchef.QueryAprsRequest"))
@@ -11253,6 +14532,9 @@ func (x *fastReflection_QueryAprsRequest) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
+		if x.Days != 0 {
+			n += 1 + runtime.Sov(uint64(x.Days))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -11281,6 +14563,11 @@ func (x *fastReflection_QueryAprsRequest) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Days != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Days))
+			i--
+			dAtA[i] = 0x8
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -11331,6 +14618,25 @@ func (x *fastReflection_QueryAprsRequest) ProtoMethods() *protoiface.Methods {
 				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryAprsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Days", wireType)
+				}
+				x.Days = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Days |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -11404,7 +14710,7 @@ func (x *QueryAprsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryAprsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[25]
+	mi := &file_elys_masterchef_query_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12430,7 +15736,7 @@ func (x *QueryPoolRewardsRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryPoolRewardsRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[26]
+	mi := &file_elys_masterchef_query_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13058,7 +16364,7 @@ func (x *PoolRewards) ProtoReflect() protoreflect.Message {
 }
 
 func (x *PoolRewards) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[27]
+	mi := &file_elys_masterchef_query_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13861,7 +17167,7 @@ func (x *QueryPoolRewardsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryPoolRewardsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_elys_masterchef_query_proto_msgTypes[28]
+	mi := &file_elys_masterchef_query_proto_msgTypes[34]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -14297,6 +17603,184 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type QueryAllLiquidityPoolTVLRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *QueryAllLiquidityPoolTVLRequest) Reset() {
+	*x = QueryAllLiquidityPoolTVLRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_masterchef_query_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryAllLiquidityPoolTVLRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryAllLiquidityPoolTVLRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryAllLiquidityPoolTVLRequest.ProtoReflect.Descriptor instead.
+func (*QueryAllLiquidityPoolTVLRequest) Descriptor() ([]byte, []int) {
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{0}
+}
+
+type QueryAllLiquidityPoolTVLResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Total       string `protobuf:"bytes,1,opt,name=total,proto3" json:"total,omitempty"`
+	Pools       string `protobuf:"bytes,2,opt,name=pools,proto3" json:"pools,omitempty"`
+	UsdcStaking string `protobuf:"bytes,3,opt,name=usdc_staking,json=usdcStaking,proto3" json:"usdc_staking,omitempty"`
+}
+
+func (x *QueryAllLiquidityPoolTVLResponse) Reset() {
+	*x = QueryAllLiquidityPoolTVLResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_masterchef_query_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryAllLiquidityPoolTVLResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryAllLiquidityPoolTVLResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryAllLiquidityPoolTVLResponse.ProtoReflect.Descriptor instead.
+func (*QueryAllLiquidityPoolTVLResponse) Descriptor() ([]byte, []int) {
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *QueryAllLiquidityPoolTVLResponse) GetTotal() string {
+	if x != nil {
+		return x.Total
+	}
+	return ""
+}
+
+func (x *QueryAllLiquidityPoolTVLResponse) GetPools() string {
+	if x != nil {
+		return x.Pools
+	}
+	return ""
+}
+
+func (x *QueryAllLiquidityPoolTVLResponse) GetUsdcStaking() string {
+	if x != nil {
+		return x.UsdcStaking
+	}
+	return ""
+}
+
+type QueryChainTVLRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *QueryChainTVLRequest) Reset() {
+	*x = QueryChainTVLRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_masterchef_query_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryChainTVLRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryChainTVLRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryChainTVLRequest.ProtoReflect.Descriptor instead.
+func (*QueryChainTVLRequest) Descriptor() ([]byte, []int) {
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{2}
+}
+
+type QueryChainTVLResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Total       string          `protobuf:"bytes,1,opt,name=total,proto3" json:"total,omitempty"`
+	Pools       string          `protobuf:"bytes,2,opt,name=pools,proto3" json:"pools,omitempty"`
+	UsdcStaking string          `protobuf:"bytes,3,opt,name=usdc_staking,json=usdcStaking,proto3" json:"usdc_staking,omitempty"`
+	StakedElys  string          `protobuf:"bytes,4,opt,name=staked_elys,json=stakedElys,proto3" json:"staked_elys,omitempty"`
+	StakedEden  string          `protobuf:"bytes,5,opt,name=staked_eden,json=stakedEden,proto3" json:"staked_eden,omitempty"`
+	NetStakings []*v1beta1.Coin `protobuf:"bytes,6,rep,name=net_stakings,json=netStakings,proto3" json:"net_stakings,omitempty"`
+}
+
+func (x *QueryChainTVLResponse) Reset() {
+	*x = QueryChainTVLResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_masterchef_query_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryChainTVLResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryChainTVLResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryChainTVLResponse.ProtoReflect.Descriptor instead.
+func (*QueryChainTVLResponse) Descriptor() ([]byte, []int) {
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *QueryChainTVLResponse) GetTotal() string {
+	if x != nil {
+		return x.Total
+	}
+	return ""
+}
+
+func (x *QueryChainTVLResponse) GetPools() string {
+	if x != nil {
+		return x.Pools
+	}
+	return ""
+}
+
+func (x *QueryChainTVLResponse) GetUsdcStaking() string {
+	if x != nil {
+		return x.UsdcStaking
+	}
+	return ""
+}
+
+func (x *QueryChainTVLResponse) GetStakedElys() string {
+	if x != nil {
+		return x.StakedElys
+	}
+	return ""
+}
+
+func (x *QueryChainTVLResponse) GetStakedEden() string {
+	if x != nil {
+		return x.StakedEden
+	}
+	return ""
+}
+
+func (x *QueryChainTVLResponse) GetNetStakings() []*v1beta1.Coin {
+	if x != nil {
+		return x.NetStakings
+	}
+	return nil
+}
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 type QueryParamsRequest struct {
 	state         protoimpl.MessageState
@@ -14307,7 +17791,7 @@ type QueryParamsRequest struct {
 func (x *QueryParamsRequest) Reset() {
 	*x = QueryParamsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[0]
+		mi := &file_elys_masterchef_query_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14321,7 +17805,7 @@ func (*QueryParamsRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryParamsRequest.ProtoReflect.Descriptor instead.
 func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{0}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{4}
 }
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
@@ -14337,7 +17821,7 @@ type QueryParamsResponse struct {
 func (x *QueryParamsResponse) Reset() {
 	*x = QueryParamsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[1]
+		mi := &file_elys_masterchef_query_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14351,7 +17835,7 @@ func (*QueryParamsResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryParamsResponse.ProtoReflect.Descriptor instead.
 func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{1}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *QueryParamsResponse) GetParams() *Params {
@@ -14372,7 +17856,7 @@ type QueryExternalIncentiveRequest struct {
 func (x *QueryExternalIncentiveRequest) Reset() {
 	*x = QueryExternalIncentiveRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[2]
+		mi := &file_elys_masterchef_query_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14386,7 +17870,7 @@ func (*QueryExternalIncentiveRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryExternalIncentiveRequest.ProtoReflect.Descriptor instead.
 func (*QueryExternalIncentiveRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{2}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *QueryExternalIncentiveRequest) GetId() uint64 {
@@ -14407,7 +17891,7 @@ type QueryExternalIncentiveResponse struct {
 func (x *QueryExternalIncentiveResponse) Reset() {
 	*x = QueryExternalIncentiveResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[3]
+		mi := &file_elys_masterchef_query_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14421,7 +17905,7 @@ func (*QueryExternalIncentiveResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryExternalIncentiveResponse.ProtoReflect.Descriptor instead.
 func (*QueryExternalIncentiveResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{3}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *QueryExternalIncentiveResponse) GetExternalIncentive() *ExternalIncentive {
@@ -14442,7 +17926,7 @@ type QueryPoolInfoRequest struct {
 func (x *QueryPoolInfoRequest) Reset() {
 	*x = QueryPoolInfoRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[4]
+		mi := &file_elys_masterchef_query_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14456,7 +17940,7 @@ func (*QueryPoolInfoRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryPoolInfoRequest.ProtoReflect.Descriptor instead.
 func (*QueryPoolInfoRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{4}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *QueryPoolInfoRequest) GetPoolId() uint64 {
@@ -14471,13 +17955,14 @@ type QueryPoolInfoResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PoolInfo *PoolInfo `protobuf:"bytes,1,opt,name=pool_info,json=poolInfo,proto3" json:"pool_info,omitempty"`
+	PoolInfo  *PoolInfo `protobuf:"bytes,1,opt,name=pool_info,json=poolInfo,proto3" json:"pool_info,omitempty"`
+	StableApr string    `protobuf:"bytes,2,opt,name=stable_apr,json=stableApr,proto3" json:"stable_apr,omitempty"`
 }
 
 func (x *QueryPoolInfoResponse) Reset() {
 	*x = QueryPoolInfoResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[5]
+		mi := &file_elys_masterchef_query_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14491,12 +17976,97 @@ func (*QueryPoolInfoResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryPoolInfoResponse.ProtoReflect.Descriptor instead.
 func (*QueryPoolInfoResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{5}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *QueryPoolInfoResponse) GetPoolInfo() *PoolInfo {
 	if x != nil {
 		return x.PoolInfo
+	}
+	return nil
+}
+
+func (x *QueryPoolInfoResponse) GetStableApr() string {
+	if x != nil {
+		return x.StableApr
+	}
+	return ""
+}
+
+type QueryListPoolInfosRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Pagination *v1beta11.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (x *QueryListPoolInfosRequest) Reset() {
+	*x = QueryListPoolInfosRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_masterchef_query_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryListPoolInfosRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryListPoolInfosRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryListPoolInfosRequest.ProtoReflect.Descriptor instead.
+func (*QueryListPoolInfosRequest) Descriptor() ([]byte, []int) {
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *QueryListPoolInfosRequest) GetPagination() *v1beta11.PageRequest {
+	if x != nil {
+		return x.Pagination
+	}
+	return nil
+}
+
+type QueryListPoolInfosResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	List       []*QueryPoolInfoResponse `protobuf:"bytes,1,rep,name=list,proto3" json:"list,omitempty"`
+	Pagination *v1beta11.PageResponse   `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (x *QueryListPoolInfosResponse) Reset() {
+	*x = QueryListPoolInfosResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_elys_masterchef_query_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryListPoolInfosResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryListPoolInfosResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryListPoolInfosResponse.ProtoReflect.Descriptor instead.
+func (*QueryListPoolInfosResponse) Descriptor() ([]byte, []int) {
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *QueryListPoolInfosResponse) GetList() []*QueryPoolInfoResponse {
+	if x != nil {
+		return x.List
+	}
+	return nil
+}
+
+func (x *QueryListPoolInfosResponse) GetPagination() *v1beta11.PageResponse {
+	if x != nil {
+		return x.Pagination
 	}
 	return nil
 }
@@ -14513,7 +18083,7 @@ type QueryPoolRewardInfoRequest struct {
 func (x *QueryPoolRewardInfoRequest) Reset() {
 	*x = QueryPoolRewardInfoRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[6]
+		mi := &file_elys_masterchef_query_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14527,7 +18097,7 @@ func (*QueryPoolRewardInfoRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryPoolRewardInfoRequest.ProtoReflect.Descriptor instead.
 func (*QueryPoolRewardInfoRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{6}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *QueryPoolRewardInfoRequest) GetPoolId() uint64 {
@@ -14555,7 +18125,7 @@ type QueryPoolRewardInfoResponse struct {
 func (x *QueryPoolRewardInfoResponse) Reset() {
 	*x = QueryPoolRewardInfoResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[7]
+		mi := &file_elys_masterchef_query_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14569,7 +18139,7 @@ func (*QueryPoolRewardInfoResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryPoolRewardInfoResponse.ProtoReflect.Descriptor instead.
 func (*QueryPoolRewardInfoResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{7}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *QueryPoolRewardInfoResponse) GetPoolRewardInfo() *PoolRewardInfo {
@@ -14592,7 +18162,7 @@ type QueryUserRewardInfoRequest struct {
 func (x *QueryUserRewardInfoRequest) Reset() {
 	*x = QueryUserRewardInfoRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[8]
+		mi := &file_elys_masterchef_query_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14606,7 +18176,7 @@ func (*QueryUserRewardInfoRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryUserRewardInfoRequest.ProtoReflect.Descriptor instead.
 func (*QueryUserRewardInfoRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{8}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *QueryUserRewardInfoRequest) GetUser() string {
@@ -14641,7 +18211,7 @@ type QueryUserRewardInfoResponse struct {
 func (x *QueryUserRewardInfoResponse) Reset() {
 	*x = QueryUserRewardInfoResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[9]
+		mi := &file_elys_masterchef_query_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14655,7 +18225,7 @@ func (*QueryUserRewardInfoResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryUserRewardInfoResponse.ProtoReflect.Descriptor instead.
 func (*QueryUserRewardInfoResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{9}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *QueryUserRewardInfoResponse) GetUserRewardInfo() *UserRewardInfo {
@@ -14676,7 +18246,7 @@ type QueryUserPendingRewardRequest struct {
 func (x *QueryUserPendingRewardRequest) Reset() {
 	*x = QueryUserPendingRewardRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[10]
+		mi := &file_elys_masterchef_query_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14690,7 +18260,7 @@ func (*QueryUserPendingRewardRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryUserPendingRewardRequest.ProtoReflect.Descriptor instead.
 func (*QueryUserPendingRewardRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{10}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *QueryUserPendingRewardRequest) GetUser() string {
@@ -14712,7 +18282,7 @@ type RewardInfo struct {
 func (x *RewardInfo) Reset() {
 	*x = RewardInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[11]
+		mi := &file_elys_masterchef_query_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14726,7 +18296,7 @@ func (*RewardInfo) ProtoMessage() {}
 
 // Deprecated: Use RewardInfo.ProtoReflect.Descriptor instead.
 func (*RewardInfo) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{11}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *RewardInfo) GetPoolId() uint64 {
@@ -14755,7 +18325,7 @@ type QueryUserPendingRewardResponse struct {
 func (x *QueryUserPendingRewardResponse) Reset() {
 	*x = QueryUserPendingRewardResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[12]
+		mi := &file_elys_masterchef_query_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14769,7 +18339,7 @@ func (*QueryUserPendingRewardResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryUserPendingRewardResponse.ProtoReflect.Descriptor instead.
 func (*QueryUserPendingRewardResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{12}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *QueryUserPendingRewardResponse) GetRewards() []*RewardInfo {
@@ -14797,7 +18367,7 @@ type QueryStableStakeAprRequest struct {
 func (x *QueryStableStakeAprRequest) Reset() {
 	*x = QueryStableStakeAprRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[13]
+		mi := &file_elys_masterchef_query_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14811,7 +18381,7 @@ func (*QueryStableStakeAprRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryStableStakeAprRequest.ProtoReflect.Descriptor instead.
 func (*QueryStableStakeAprRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{13}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *QueryStableStakeAprRequest) GetDenom() string {
@@ -14832,7 +18402,7 @@ type QueryStableStakeAprResponse struct {
 func (x *QueryStableStakeAprResponse) Reset() {
 	*x = QueryStableStakeAprResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[14]
+		mi := &file_elys_masterchef_query_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14846,7 +18416,7 @@ func (*QueryStableStakeAprResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryStableStakeAprResponse.ProtoReflect.Descriptor instead.
 func (*QueryStableStakeAprResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{14}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *QueryStableStakeAprResponse) GetApr() string {
@@ -14867,7 +18437,7 @@ type QueryPoolAprsRequest struct {
 func (x *QueryPoolAprsRequest) Reset() {
 	*x = QueryPoolAprsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[15]
+		mi := &file_elys_masterchef_query_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14881,7 +18451,7 @@ func (*QueryPoolAprsRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryPoolAprsRequest.ProtoReflect.Descriptor instead.
 func (*QueryPoolAprsRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{15}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *QueryPoolAprsRequest) GetPoolIds() []uint64 {
@@ -14902,7 +18472,7 @@ type QueryPoolAprsResponse struct {
 func (x *QueryPoolAprsResponse) Reset() {
 	*x = QueryPoolAprsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[16]
+		mi := &file_elys_masterchef_query_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14916,7 +18486,7 @@ func (*QueryPoolAprsResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryPoolAprsResponse.ProtoReflect.Descriptor instead.
 func (*QueryPoolAprsResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{16}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *QueryPoolAprsResponse) GetData() []*PoolApr {
@@ -14931,16 +18501,17 @@ type PoolApr struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PoolId   uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
-	EdenApr  string `protobuf:"bytes,2,opt,name=eden_apr,json=edenApr,proto3" json:"eden_apr,omitempty"`
-	UsdcApr  string `protobuf:"bytes,3,opt,name=usdc_apr,json=usdcApr,proto3" json:"usdc_apr,omitempty"`
-	TotalApr string `protobuf:"bytes,4,opt,name=total_apr,json=totalApr,proto3" json:"total_apr,omitempty"`
+	PoolId     uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	EdenApr    string `protobuf:"bytes,2,opt,name=eden_apr,json=edenApr,proto3" json:"eden_apr,omitempty"`
+	UsdcDexApr string `protobuf:"bytes,3,opt,name=usdc_dex_apr,json=usdcDexApr,proto3" json:"usdc_dex_apr,omitempty"`
+	UsdcGasApr string `protobuf:"bytes,4,opt,name=usdc_gas_apr,json=usdcGasApr,proto3" json:"usdc_gas_apr,omitempty"`
+	TotalApr   string `protobuf:"bytes,5,opt,name=total_apr,json=totalApr,proto3" json:"total_apr,omitempty"`
 }
 
 func (x *PoolApr) Reset() {
 	*x = PoolApr{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[17]
+		mi := &file_elys_masterchef_query_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -14954,7 +18525,7 @@ func (*PoolApr) ProtoMessage() {}
 
 // Deprecated: Use PoolApr.ProtoReflect.Descriptor instead.
 func (*PoolApr) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{17}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *PoolApr) GetPoolId() uint64 {
@@ -14971,9 +18542,16 @@ func (x *PoolApr) GetEdenApr() string {
 	return ""
 }
 
-func (x *PoolApr) GetUsdcApr() string {
+func (x *PoolApr) GetUsdcDexApr() string {
 	if x != nil {
-		return x.UsdcApr
+		return x.UsdcDexApr
+	}
+	return ""
+}
+
+func (x *PoolApr) GetUsdcGasApr() string {
+	if x != nil {
+		return x.UsdcGasApr
 	}
 	return ""
 }
@@ -14996,7 +18574,7 @@ type QueryShowFeeInfoRequest struct {
 func (x *QueryShowFeeInfoRequest) Reset() {
 	*x = QueryShowFeeInfoRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[18]
+		mi := &file_elys_masterchef_query_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15010,7 +18588,7 @@ func (*QueryShowFeeInfoRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryShowFeeInfoRequest.ProtoReflect.Descriptor instead.
 func (*QueryShowFeeInfoRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{18}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *QueryShowFeeInfoRequest) GetDate() string {
@@ -15031,7 +18609,7 @@ type QueryShowFeeInfoResponse struct {
 func (x *QueryShowFeeInfoResponse) Reset() {
 	*x = QueryShowFeeInfoResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[19]
+		mi := &file_elys_masterchef_query_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15045,7 +18623,7 @@ func (*QueryShowFeeInfoResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryShowFeeInfoResponse.ProtoReflect.Descriptor instead.
 func (*QueryShowFeeInfoResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{19}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *QueryShowFeeInfoResponse) GetFeeInfo() *FeeInfo {
@@ -15064,7 +18642,7 @@ type QueryListFeeInfoRequest struct {
 func (x *QueryListFeeInfoRequest) Reset() {
 	*x = QueryListFeeInfoRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[20]
+		mi := &file_elys_masterchef_query_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15078,7 +18656,7 @@ func (*QueryListFeeInfoRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryListFeeInfoRequest.ProtoReflect.Descriptor instead.
 func (*QueryListFeeInfoRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{20}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{26}
 }
 
 type QueryListFeeInfoResponse struct {
@@ -15092,7 +18670,7 @@ type QueryListFeeInfoResponse struct {
 func (x *QueryListFeeInfoResponse) Reset() {
 	*x = QueryListFeeInfoResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[21]
+		mi := &file_elys_masterchef_query_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15106,7 +18684,7 @@ func (*QueryListFeeInfoResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryListFeeInfoResponse.ProtoReflect.Descriptor instead.
 func (*QueryListFeeInfoResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{21}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *QueryListFeeInfoResponse) GetFeeInfo() []*FeeInfo {
@@ -15123,12 +18701,13 @@ type QueryAprRequest struct {
 
 	WithdrawType commitment.EarnType `protobuf:"varint,1,opt,name=withdraw_type,json=withdrawType,proto3,enum=elys.commitment.EarnType" json:"withdraw_type,omitempty"`
 	Denom        string              `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Days         uint64              `protobuf:"varint,3,opt,name=days,proto3" json:"days,omitempty"`
 }
 
 func (x *QueryAprRequest) Reset() {
 	*x = QueryAprRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[22]
+		mi := &file_elys_masterchef_query_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15142,7 +18721,7 @@ func (*QueryAprRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryAprRequest.ProtoReflect.Descriptor instead.
 func (*QueryAprRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{22}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *QueryAprRequest) GetWithdrawType() commitment.EarnType {
@@ -15159,6 +18738,13 @@ func (x *QueryAprRequest) GetDenom() string {
 	return ""
 }
 
+func (x *QueryAprRequest) GetDays() uint64 {
+	if x != nil {
+		return x.Days
+	}
+	return 0
+}
+
 type QueryAprResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -15170,7 +18756,7 @@ type QueryAprResponse struct {
 func (x *QueryAprResponse) Reset() {
 	*x = QueryAprResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[23]
+		mi := &file_elys_masterchef_query_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15184,7 +18770,7 @@ func (*QueryAprResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryAprResponse.ProtoReflect.Descriptor instead.
 func (*QueryAprResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{23}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *QueryAprResponse) GetApr() string {
@@ -15198,12 +18784,14 @@ type QueryAprsRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Days uint64 `protobuf:"varint,1,opt,name=days,proto3" json:"days,omitempty"`
 }
 
 func (x *QueryAprsRequest) Reset() {
 	*x = QueryAprsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[24]
+		mi := &file_elys_masterchef_query_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15217,7 +18805,14 @@ func (*QueryAprsRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryAprsRequest.ProtoReflect.Descriptor instead.
 func (*QueryAprsRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{24}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *QueryAprsRequest) GetDays() uint64 {
+	if x != nil {
+		return x.Days
+	}
+	return 0
 }
 
 type QueryAprsResponse struct {
@@ -15240,7 +18835,7 @@ type QueryAprsResponse struct {
 func (x *QueryAprsResponse) Reset() {
 	*x = QueryAprsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[25]
+		mi := &file_elys_masterchef_query_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15254,7 +18849,7 @@ func (*QueryAprsResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryAprsResponse.ProtoReflect.Descriptor instead.
 func (*QueryAprsResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{25}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *QueryAprsResponse) GetUsdcAprUsdc() string {
@@ -15339,7 +18934,7 @@ type QueryPoolRewardsRequest struct {
 func (x *QueryPoolRewardsRequest) Reset() {
 	*x = QueryPoolRewardsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[26]
+		mi := &file_elys_masterchef_query_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15353,7 +18948,7 @@ func (*QueryPoolRewardsRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryPoolRewardsRequest.ProtoReflect.Descriptor instead.
 func (*QueryPoolRewardsRequest) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{26}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *QueryPoolRewardsRequest) GetPoolIds() []uint64 {
@@ -15386,7 +18981,7 @@ type PoolRewards struct {
 func (x *PoolRewards) Reset() {
 	*x = PoolRewards{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[27]
+		mi := &file_elys_masterchef_query_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15400,7 +18995,7 @@ func (*PoolRewards) ProtoMessage() {}
 
 // Deprecated: Use PoolRewards.ProtoReflect.Descriptor instead.
 func (*PoolRewards) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{27}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *PoolRewards) GetPoolId() uint64 {
@@ -15456,7 +19051,7 @@ type QueryPoolRewardsResponse struct {
 func (x *QueryPoolRewardsResponse) Reset() {
 	*x = QueryPoolRewardsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_elys_masterchef_query_proto_msgTypes[28]
+		mi := &file_elys_masterchef_query_proto_msgTypes[34]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -15470,7 +19065,7 @@ func (*QueryPoolRewardsResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryPoolRewardsResponse.ProtoReflect.Descriptor instead.
 func (*QueryPoolRewardsResponse) Descriptor() ([]byte, []int) {
-	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{28}
+	return file_elys_masterchef_query_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *QueryPoolRewardsResponse) GetPools() []*PoolRewards {
@@ -15505,114 +19100,193 @@ var file_elys_masterchef_query_proto_rawDesc = []byte{
 	0x1c, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d, 0x65, 0x6e, 0x74,
 	0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63,
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x14, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x4c,
-	0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x35, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73,
-	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04,
-	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x2f, 0x0a, 0x1d,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49, 0x6e, 0x63,
-	0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a,
-	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x22, 0x79, 0x0a,
-	0x1e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49, 0x6e,
-	0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x57, 0x0a, 0x12, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x5f, 0x69, 0x6e, 0x63, 0x65,
-	0x6e, 0x74, 0x69, 0x76, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x45, 0x78,
-	0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x42,
-	0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x11, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49,
-	0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x22, 0x2f, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x21, 0x0a, 0x1f, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x41, 0x6c, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x6f, 0x6f,
+	0x6c, 0x54, 0x56, 0x4c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0xf8, 0x01, 0x0a, 0x20,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6c, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74,
+	0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x54, 0x56, 0x4c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x41, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4,
+	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x05, 0x74, 0x6f,
+	0x74, 0x61, 0x6c, 0x12, 0x41, 0x0a, 0x05, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e,
+	0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52,
+	0x05, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x4e, 0x0a, 0x0c, 0x75, 0x73, 0x64, 0x63, 0x5f, 0x73,
+	0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde,
+	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
+	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0b, 0x75, 0x73, 0x64, 0x63, 0x53,
+	0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x22, 0x16, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43,
+	0x68, 0x61, 0x69, 0x6e, 0x54, 0x56, 0x4c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0xf9,
+	0x03, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x68, 0x61, 0x69, 0x6e, 0x54, 0x56, 0x4c,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x41, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61,
+	0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
+	0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
+	0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x49, 0x6e, 0x74, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x12, 0x41, 0x0a, 0x05, 0x70,
+	0x6f, 0x6f, 0x6c, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x05, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x12, 0x4e,
+	0x0a, 0x0c, 0x75, 0x73, 0x64, 0x63, 0x5f, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x49, 0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e,
+	0x74, 0x52, 0x0b, 0x75, 0x73, 0x64, 0x63, 0x53, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x12, 0x4c,
+	0x0a, 0x0b, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x64, 0x5f, 0x65, 0x6c, 0x79, 0x73, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49,
+	0x6e, 0x74, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74,
+	0x52, 0x0a, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x64, 0x45, 0x6c, 0x79, 0x73, 0x12, 0x4c, 0x0a, 0x0b,
+	0x73, 0x74, 0x61, 0x6b, 0x65, 0x64, 0x5f, 0x65, 0x64, 0x65, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x2b, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0a,
+	0x73, 0x74, 0x61, 0x6b, 0x65, 0x64, 0x45, 0x64, 0x65, 0x6e, 0x12, 0x6e, 0x0a, 0x0c, 0x6e, 0x65,
+	0x74, 0x5f, 0x73, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76,
+	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f,
+	0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64,
+	0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x0b, 0x6e,
+	0x65, 0x74, 0x53, 0x74, 0x61, 0x6b, 0x69, 0x6e, 0x67, 0x73, 0x22, 0x14, 0x0a, 0x12, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x22, 0x4c, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x35, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d,
+	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x2f,
+	0x0a, 0x1d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49,
+	0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x22,
+	0x79, 0x0a, 0x1e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c,
+	0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x57, 0x0a, 0x12, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x5f, 0x69, 0x6e,
+	0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e,
+	0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76,
+	0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x11, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61,
+	0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x22, 0x2f, 0x0a, 0x14, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x22, 0xa7, 0x01, 0x0a, 0x15,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3c, 0x0a, 0x09, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x6e,
+	0x66, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x49,
+	0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x08, 0x70, 0x6f, 0x6f, 0x6c, 0x49,
+	0x6e, 0x66, 0x6f, 0x12, 0x50, 0x0a, 0x0a, 0x73, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x61, 0x70,
+	0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
+	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
+	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x09, 0x73, 0x74, 0x61, 0x62,
+	0x6c, 0x65, 0x41, 0x70, 0x72, 0x22, 0x63, 0x0a, 0x19, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4c, 0x69,
+	0x73, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74,
+	0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x0a,
+	0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xa7, 0x01, 0x0a, 0x1a, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x40, 0x0a, 0x04, 0x6c, 0x69, 0x73,
+	0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d,
+	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50,
+	0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42,
+	0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x47, 0x0a, 0x0a, 0x70,
+	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x27, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75,
+	0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x22, 0x58, 0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f,
+	0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x72,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x6e,
+	0x0a, 0x1b, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4f, 0x0a,
+	0x10, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x69, 0x6e, 0x66,
+	0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d,
+	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e,
+	0x70, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x6c,
+	0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04,
+	0x75, 0x73, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72,
+	0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x72, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0b, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x6e, 0x0a, 0x1b,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49,
+	0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4f, 0x0a, 0x10, 0x75,
+	0x73, 0x65, 0x72, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73,
+	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e, 0x75, 0x73,
+	0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x33, 0x0a, 0x1d,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67,
+	0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a,
+	0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75, 0x73, 0x65,
+	0x72, 0x22, 0x8a, 0x01, 0x0a, 0x0a, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f,
 	0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x22, 0x55, 0x0a, 0x15, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x3c, 0x0a, 0x09, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73,
-	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f,
-	0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x08, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f,
-	0x22, 0x58, 0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77,
-	0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17,
-	0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52,
-	0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x72, 0x65, 0x77, 0x61, 0x72,
-	0x64, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x72,
-	0x65, 0x77, 0x61, 0x72, 0x64, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x6e, 0x0a, 0x1b, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66,
-	0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4f, 0x0a, 0x10, 0x70, 0x6f, 0x6f,
-	0x6c, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65,
-	0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64,
-	0x49, 0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e, 0x70, 0x6f, 0x6f, 0x6c,
-	0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x6c, 0x0a, 0x1a, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66,
-	0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x17, 0x0a, 0x07,
-	0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70,
-	0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x72, 0x65, 0x77,
-	0x61, 0x72, 0x64, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x6e, 0x0a, 0x1b, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4f, 0x0a, 0x10, 0x75, 0x73, 0x65, 0x72, 0x5f,
-	0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x1f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63,
-	0x68, 0x65, 0x66, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e,
-	0x66, 0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e, 0x75, 0x73, 0x65, 0x72, 0x52, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x33, 0x0a, 0x1d, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x55, 0x73, 0x65, 0x72, 0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x77, 0x61,
-	0x72, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x75, 0x73, 0x65,
-	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x22, 0x8a, 0x01,
-	0x0a, 0x0a, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x17, 0x0a, 0x07,
-	0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70,
-	0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x63, 0x0a, 0x06, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x18,
-	0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62,
-	0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e,
-	0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69,
-	0x6e, 0x73, 0x52, 0x06, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x22, 0xc9, 0x01, 0x0a, 0x1e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52,
-	0x65, 0x77, 0x61, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x35, 0x0a,
-	0x07, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b,
-	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
-	0x2e, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x07, 0x72, 0x65, 0x77,
-	0x61, 0x72, 0x64, 0x73, 0x12, 0x70, 0x0a, 0x0d, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x72, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61,
-	0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70,
-	0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x0c, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x52,
-	0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x22, 0x32, 0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53,
-	0x74, 0x61, 0x62, 0x6c, 0x65, 0x53, 0x74, 0x61, 0x6b, 0x65, 0x41, 0x70, 0x72, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x62, 0x0a, 0x1b, 0x51, 0x75,
+	0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x63, 0x0a, 0x06, 0x72, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
+	0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73,
+	0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x06, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x22, 0xc9,
+	0x01, 0x0a, 0x1e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x50, 0x65, 0x6e, 0x64,
+	0x69, 0x6e, 0x67, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x35, 0x0a, 0x07, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72,
+	0x63, 0x68, 0x65, 0x66, 0x2e, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52,
+	0x07, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x70, 0x0a, 0x0d, 0x74, 0x6f, 0x74, 0x61,
+	0x6c, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00,
+	0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b,
+	0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x0c, 0x74, 0x6f,
+	0x74, 0x61, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x22, 0x32, 0x0a, 0x1a, 0x51, 0x75,
 	0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x53, 0x74, 0x61, 0x6b, 0x65, 0x41, 0x70,
-	0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x43, 0x0a, 0x03, 0x61, 0x70, 0x72,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
-	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x03, 0x61, 0x70, 0x72, 0x22, 0x31,
-	0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x70, 0x72, 0x73, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69,
-	0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x04, 0x52, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64,
-	0x73, 0x22, 0x4b, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x70,
-	0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x32, 0x0a, 0x04, 0x64, 0x61,
-	0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x41,
-	0x70, 0x72, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x8e,
-	0x02, 0x0a, 0x07, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x70, 0x72, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f,
-	0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f,
-	0x6c, 0x49, 0x64, 0x12, 0x4c, 0x0a, 0x08, 0x65, 0x64, 0x65, 0x6e, 0x5f, 0x61, 0x70, 0x72, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
-	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x07, 0x65, 0x64, 0x65, 0x6e, 0x41, 0x70,
-	0x72, 0x12, 0x4c, 0x0a, 0x08, 0x75, 0x73, 0x64, 0x63, 0x5f, 0x61, 0x70, 0x72, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
-	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x07, 0x75, 0x73, 0x64, 0x63, 0x41, 0x70, 0x72, 0x12,
-	0x4e, 0x0a, 0x09, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x61, 0x70, 0x72, 0x18, 0x04, 0x20, 0x01,
+	0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x62,
+	0x0a, 0x1b, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x53, 0x74, 0x61,
+	0x6b, 0x65, 0x41, 0x70, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x43, 0x0a,
+	0x03, 0x61, 0x70, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x03, 0x61,
+	0x70, 0x72, 0x22, 0x31, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x41,
+	0x70, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x70, 0x6f,
+	0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x04, 0x52, 0x07, 0x70, 0x6f,
+	0x6f, 0x6c, 0x49, 0x64, 0x73, 0x22, 0x4b, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f,
+	0x6f, 0x6c, 0x41, 0x70, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x32,
+	0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x50,
+	0x6f, 0x6f, 0x6c, 0x41, 0x70, 0x72, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x04, 0x64, 0x61,
+	0x74, 0x61, 0x22, 0xea, 0x02, 0x0a, 0x07, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x70, 0x72, 0x12, 0x17,
+	0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x4c, 0x0a, 0x08, 0x65, 0x64, 0x65, 0x6e, 0x5f,
+	0x61, 0x70, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
+	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x07, 0x65, 0x64,
+	0x65, 0x6e, 0x41, 0x70, 0x72, 0x12, 0x53, 0x0a, 0x0c, 0x75, 0x73, 0x64, 0x63, 0x5f, 0x64, 0x65,
+	0x78, 0x5f, 0x61, 0x70, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0a,
+	0x75, 0x73, 0x64, 0x63, 0x44, 0x65, 0x78, 0x41, 0x70, 0x72, 0x12, 0x53, 0x0a, 0x0c, 0x75, 0x73,
+	0x64, 0x63, 0x5f, 0x67, 0x61, 0x73, 0x5f, 0x61, 0x70, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
+	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
+	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x44, 0x65, 0x63, 0x52, 0x0a, 0x75, 0x73, 0x64, 0x63, 0x47, 0x61, 0x73, 0x41, 0x70, 0x72, 0x12,
+	0x4e, 0x0a, 0x09, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x61, 0x70, 0x72, 0x18, 0x05, 0x20, 0x01,
 	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
 	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
 	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
@@ -15632,258 +19306,292 @@ var file_elys_masterchef_query_proto_rawDesc = []byte{
 	0x66, 0x65, 0x65, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18,
 	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
 	0x2e, 0x46, 0x65, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x07,
-	0x66, 0x65, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x67, 0x0a, 0x0f, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x66, 0x65, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x7b, 0x0a, 0x0f, 0x51, 0x75, 0x65, 0x72, 0x79,
 	0x41, 0x70, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x3e, 0x0a, 0x0d, 0x77, 0x69,
 	0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x0e, 0x32, 0x19, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x74, 0x6d,
 	0x65, 0x6e, 0x74, 0x2e, 0x45, 0x61, 0x72, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x52, 0x0c, 0x77, 0x69,
 	0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x54, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65,
 	0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x22, 0x57, 0x0a, 0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x70, 0x72, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x43, 0x0a, 0x03, 0x61, 0x70, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
-	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x03, 0x61, 0x70, 0x72, 0x22, 0x12, 0x0a, 0x10, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x41, 0x70, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x81, 0x07,
-	0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x70, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x55, 0x0a, 0x0d, 0x75, 0x73, 0x64, 0x63, 0x5f, 0x61, 0x70, 0x72, 0x5f,
-	0x75, 0x73, 0x64, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
-	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
-	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
-	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x75,
-	0x73, 0x64, 0x63, 0x41, 0x70, 0x72, 0x55, 0x73, 0x64, 0x63, 0x12, 0x55, 0x0a, 0x0d, 0x65, 0x64,
-	0x65, 0x6e, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x75, 0x73, 0x64, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
-	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x65, 0x64, 0x65, 0x6e, 0x41, 0x70, 0x72, 0x55, 0x73, 0x64,
-	0x63, 0x12, 0x57, 0x0a, 0x0e, 0x75, 0x73, 0x64, 0x63, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65, 0x64,
-	0x65, 0x6e, 0x62, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
-	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
-	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
-	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x75, 0x73,
-	0x64, 0x63, 0x41, 0x70, 0x72, 0x45, 0x64, 0x65, 0x6e, 0x62, 0x12, 0x57, 0x0a, 0x0e, 0x65, 0x64,
-	0x65, 0x6e, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65, 0x64, 0x65, 0x6e, 0x62, 0x18, 0x04, 0x20, 0x01,
+	0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x79, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x04,
+	0x64, 0x61, 0x79, 0x73, 0x22, 0x57, 0x0a, 0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x70, 0x72,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x43, 0x0a, 0x03, 0x61, 0x70, 0x72, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x03, 0x61, 0x70, 0x72, 0x22, 0x26, 0x0a,
+	0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x70, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x79, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x04, 0x64, 0x61, 0x79, 0x73, 0x22, 0x81, 0x07, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41,
+	0x70, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x55, 0x0a, 0x0d, 0x75,
+	0x73, 0x64, 0x63, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x75, 0x73, 0x64, 0x63, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
 	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
 	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x65, 0x64, 0x65, 0x6e, 0x41, 0x70, 0x72, 0x45, 0x64,
-	0x65, 0x6e, 0x62, 0x12, 0x55, 0x0a, 0x0d, 0x75, 0x73, 0x64, 0x63, 0x5f, 0x61, 0x70, 0x72, 0x5f,
-	0x65, 0x64, 0x65, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
-	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
-	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
-	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x75,
-	0x73, 0x64, 0x63, 0x41, 0x70, 0x72, 0x45, 0x64, 0x65, 0x6e, 0x12, 0x55, 0x0a, 0x0d, 0x65, 0x64,
-	0x65, 0x6e, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65, 0x64, 0x65, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28,
-	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
-	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x65, 0x64, 0x65, 0x6e, 0x41, 0x70, 0x72, 0x45, 0x64, 0x65,
-	0x6e, 0x12, 0x57, 0x0a, 0x0e, 0x65, 0x64, 0x65, 0x6e, 0x62, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65,
-	0x64, 0x65, 0x6e, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x75, 0x73, 0x64, 0x63, 0x41, 0x70, 0x72, 0x55, 0x73,
+	0x64, 0x63, 0x12, 0x55, 0x0a, 0x0d, 0x65, 0x64, 0x65, 0x6e, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x75,
+	0x73, 0x64, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
 	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
 	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
-	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x65, 0x64,
-	0x65, 0x6e, 0x62, 0x41, 0x70, 0x72, 0x45, 0x64, 0x65, 0x6e, 0x12, 0x55, 0x0a, 0x0d, 0x75, 0x73,
-	0x64, 0x63, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65, 0x6c, 0x79, 0x73, 0x18, 0x08, 0x20, 0x01, 0x28,
+	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x65, 0x64,
+	0x65, 0x6e, 0x41, 0x70, 0x72, 0x55, 0x73, 0x64, 0x63, 0x12, 0x57, 0x0a, 0x0e, 0x75, 0x73, 0x64,
+	0x63, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65, 0x64, 0x65, 0x6e, 0x62, 0x18, 0x03, 0x20, 0x01, 0x28,
 	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
 	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
 	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x75, 0x73, 0x64, 0x63, 0x41, 0x70, 0x72, 0x45, 0x6c, 0x79,
-	0x73, 0x12, 0x55, 0x0a, 0x0d, 0x65, 0x64, 0x65, 0x6e, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65, 0x6c,
-	0x79, 0x73, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
-	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
-	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
-	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x65, 0x64, 0x65,
-	0x6e, 0x41, 0x70, 0x72, 0x45, 0x6c, 0x79, 0x73, 0x12, 0x57, 0x0a, 0x0e, 0x65, 0x64, 0x65, 0x6e,
-	0x62, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65, 0x6c, 0x79, 0x73, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x75, 0x73, 0x64, 0x63, 0x41, 0x70, 0x72, 0x45, 0x64, 0x65,
+	0x6e, 0x62, 0x12, 0x57, 0x0a, 0x0e, 0x65, 0x64, 0x65, 0x6e, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65,
+	0x64, 0x65, 0x6e, 0x62, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2,
+	0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x65,
+	0x64, 0x65, 0x6e, 0x41, 0x70, 0x72, 0x45, 0x64, 0x65, 0x6e, 0x62, 0x12, 0x55, 0x0a, 0x0d, 0x75,
+	0x73, 0x64, 0x63, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65, 0x64, 0x65, 0x6e, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x75, 0x73, 0x64, 0x63, 0x41, 0x70, 0x72, 0x45, 0x64,
+	0x65, 0x6e, 0x12, 0x55, 0x0a, 0x0d, 0x65, 0x64, 0x65, 0x6e, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65,
+	0x64, 0x65, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
+	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x65, 0x64,
+	0x65, 0x6e, 0x41, 0x70, 0x72, 0x45, 0x64, 0x65, 0x6e, 0x12, 0x57, 0x0a, 0x0e, 0x65, 0x64, 0x65,
+	0x6e, 0x62, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65, 0x64, 0x65, 0x6e, 0x18, 0x07, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
+	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x65, 0x64, 0x65, 0x6e, 0x62, 0x41, 0x70, 0x72, 0x45, 0x64,
+	0x65, 0x6e, 0x12, 0x55, 0x0a, 0x0d, 0x75, 0x73, 0x64, 0x63, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65,
+	0x6c, 0x79, 0x73, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
+	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0b, 0x75, 0x73,
+	0x64, 0x63, 0x41, 0x70, 0x72, 0x45, 0x6c, 0x79, 0x73, 0x12, 0x55, 0x0a, 0x0d, 0x65, 0x64, 0x65,
+	0x6e, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65, 0x6c, 0x79, 0x73, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09,
 	0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
 	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61,
 	0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x44, 0x65, 0x63, 0x52, 0x0c, 0x65, 0x64, 0x65, 0x6e, 0x62, 0x41, 0x70, 0x72, 0x45, 0x6c, 0x79,
-	0x73, 0x22, 0x7c, 0x0a, 0x17, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x19, 0x0a, 0x08,
-	0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x04, 0x52, 0x07,
-	0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x73, 0x12, 0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e,
-	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22,
-	0xee, 0x03, 0x0a, 0x0b, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12,
-	0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04,
-	0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x12, 0x52, 0x0a, 0x0b, 0x72, 0x65, 0x77, 0x61,
-	0x72, 0x64, 0x73, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8,
-	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
-	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
-	0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63,
-	0x52, 0x0a, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x55, 0x73, 0x64, 0x12, 0x6e, 0x0a, 0x0c,
-	0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x63, 0x6f, 0x69, 0x6e, 0x73, 0x18, 0x03, 0x20, 0x03,
-	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65,
-	0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8,
-	0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
-	0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d,
-	0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52,
-	0x0b, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x12, 0x42, 0x0a, 0x0c,
-	0x65, 0x64, 0x65, 0x6e, 0x5f, 0x66, 0x6f, 0x72, 0x77, 0x61, 0x72, 0x64, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65,
-	0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8,
-	0xde, 0x1f, 0x00, 0x52, 0x0b, 0x65, 0x64, 0x65, 0x6e, 0x46, 0x6f, 0x72, 0x77, 0x61, 0x72, 0x64,
-	0x12, 0x59, 0x0a, 0x0f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x5f, 0x75, 0x73, 0x64, 0x5f,
-	0x61, 0x70, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
-	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
-	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
-	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0d, 0x72, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x73, 0x55, 0x73, 0x64, 0x41, 0x70, 0x72, 0x12, 0x63, 0x0a, 0x14, 0x65,
-	0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x5f,
-	0x61, 0x70, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda,
-	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
-	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4,
-	0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x65, 0x78,
-	0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x41, 0x70, 0x72,
-	0x22, 0x54, 0x0a, 0x18, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77,
-	0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x38, 0x0a, 0x05,
-	0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x50, 0x6f,
-	0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
-	0x05, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x32, 0xdc, 0x0f, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x12, 0x81, 0x01, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x23, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68,
-	0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2c, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x26, 0x12, 0x24,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x70, 0x61,
-	0x72, 0x61, 0x6d, 0x73, 0x12, 0xae, 0x01, 0x0a, 0x11, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61,
-	0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x12, 0x2e, 0x2e, 0x65, 0x6c, 0x79,
+	0x44, 0x65, 0x63, 0x52, 0x0b, 0x65, 0x64, 0x65, 0x6e, 0x41, 0x70, 0x72, 0x45, 0x6c, 0x79, 0x73,
+	0x12, 0x57, 0x0a, 0x0e, 0x65, 0x64, 0x65, 0x6e, 0x62, 0x5f, 0x61, 0x70, 0x72, 0x5f, 0x65, 0x6c,
+	0x79, 0x73, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
+	0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
+	0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d,
+	0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x65, 0x64, 0x65,
+	0x6e, 0x62, 0x41, 0x70, 0x72, 0x45, 0x6c, 0x79, 0x73, 0x22, 0x7c, 0x0a, 0x17, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x64, 0x73,
+	0x18, 0x01, 0x20, 0x03, 0x28, 0x04, 0x52, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64, 0x73, 0x12,
+	0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73,
+	0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
+	0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67,
+	0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xee, 0x03, 0x0a, 0x0b, 0x50, 0x6f, 0x6f, 0x6c,
+	0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x6f, 0x6c, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x70, 0x6f, 0x6f, 0x6c, 0x49, 0x64,
+	0x12, 0x52, 0x0a, 0x0b, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x5f, 0x75, 0x73, 0x64, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x52, 0x0a, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64,
+	0x73, 0x55, 0x73, 0x64, 0x12, 0x6e, 0x0a, 0x0c, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x63,
+	0x6f, 0x69, 0x6e, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31,
+	0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x30, 0xc8, 0xde, 0x1f, 0x00, 0xaa, 0xdf, 0x1f, 0x28, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2d, 0x73, 0x64, 0x6b, 0x2f, 0x74, 0x79, 0x70, 0x65,
+	0x73, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x73, 0x52, 0x0b, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x43,
+	0x6f, 0x69, 0x6e, 0x73, 0x12, 0x42, 0x0a, 0x0c, 0x65, 0x64, 0x65, 0x6e, 0x5f, 0x66, 0x6f, 0x72,
+	0x77, 0x61, 0x72, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31,
+	0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0b, 0x65, 0x64, 0x65,
+	0x6e, 0x46, 0x6f, 0x72, 0x77, 0x61, 0x72, 0x64, 0x12, 0x59, 0x0a, 0x0f, 0x72, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x73, 0x5f, 0x75, 0x73, 0x64, 0x5f, 0x61, 0x70, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
+	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x0d, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x55, 0x73, 0x64,
+	0x41, 0x70, 0x72, 0x12, 0x63, 0x0a, 0x14, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x5f,
+	0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x5f, 0x61, 0x70, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x31, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67,
+	0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xd2, 0xb4, 0x2d, 0x0a, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x52, 0x12, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x52, 0x65,
+	0x77, 0x61, 0x72, 0x64, 0x73, 0x41, 0x70, 0x72, 0x22, 0x54, 0x0a, 0x18, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x38, 0x0a, 0x05, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x18, 0x01, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65,
+	0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64,
+	0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x05, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x32, 0xc6,
+	0x13, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x81, 0x01, 0x0a, 0x06, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x12, 0x23, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65,
+	0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2c,
+	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x26, 0x12, 0x24, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
+	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65,
+	0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0xae, 0x01, 0x0a,
+	0x11, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69,
+	0x76, 0x65, 0x12, 0x2e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72,
+	0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e,
+	0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x2f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72,
+	0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e,
+	0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x38, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x32, 0x12, 0x30, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
+	0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x65, 0x78, 0x74, 0x65, 0x72,
+	0x6e, 0x61, 0x6c, 0x5f, 0x69, 0x6e, 0x63, 0x65, 0x6e, 0x74, 0x69, 0x76, 0x65, 0x12, 0x8a, 0x01,
+	0x0a, 0x08, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79,
 	0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74,
-	0x69, 0x76, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2f, 0x2e, 0x65, 0x6c, 0x79,
-	0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x49, 0x6e, 0x63, 0x65, 0x6e, 0x74,
-	0x69, 0x76, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x38, 0x82, 0xd3, 0xe4,
-	0x93, 0x02, 0x32, 0x12, 0x30, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f,
-	0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68,
-	0x65, 0x66, 0x2f, 0x65, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x5f, 0x69, 0x6e, 0x63, 0x65,
-	0x6e, 0x74, 0x69, 0x76, 0x65, 0x12, 0x8a, 0x01, 0x0a, 0x08, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e,
-	0x66, 0x6f, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72,
-	0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e,
-	0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x2f, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x29, 0x12, 0x27, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61,
-	0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x6e,
-	0x66, 0x6f, 0x12, 0xa3, 0x01, 0x0a, 0x0e, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72,
+	0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63,
+	0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66,
+	0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2f, 0x82, 0xd3, 0xe4, 0x93, 0x02,
+	0x29, 0x12, 0x27, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
+	0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x12, 0x9f, 0x01, 0x0a, 0x0d, 0x4c,
+	0x69, 0x73, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x73, 0x12, 0x2a, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x4c, 0x69, 0x73, 0x74, 0x50, 0x6f, 0x6f, 0x6c, 0x49, 0x6e, 0x66, 0x6f, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x35, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2f, 0x12, 0x2d, 0x2f,
+	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
+	0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x6c, 0x69, 0x73,
+	0x74, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x73, 0x12, 0xa3, 0x01, 0x0a,
+	0x0e, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x12,
+	0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65,
+	0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x65,
+	0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e,
+	0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x36, 0x82, 0xd3, 0xe4, 0x93,
+	0x02, 0x30, 0x12, 0x2e, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72,
+	0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65,
+	0x66, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x69, 0x6e,
+	0x66, 0x6f, 0x12, 0xa3, 0x01, 0x0a, 0x0e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72,
 	0x64, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73,
-	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f,
-	0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x55, 0x73, 0x65,
+	0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65,
 	0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72,
-	0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65,
+	0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65,
 	0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
 	0x22, 0x36, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x30, 0x12, 0x2e, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
 	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73,
-	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x72, 0x65, 0x77,
-	0x61, 0x72, 0x64, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x12, 0xa3, 0x01, 0x0a, 0x0e, 0x55, 0x73, 0x65,
-	0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x2b, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66,
-	0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
-	0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x36, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x30, 0x12, 0x2e,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x75, 0x73,
-	0x65, 0x72, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x12, 0xaa,
-	0x01, 0x0a, 0x11, 0x55, 0x73, 0x65, 0x72, 0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x12, 0x2e, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74,
-	0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72,
-	0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x2f, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74,
-	0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72,
-	0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x34, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2e, 0x12, 0x2c, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x70, 0x65, 0x6e,
-	0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x12, 0xab, 0x01, 0x0a, 0x0e,
-	0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x53, 0x74, 0x61, 0x6b, 0x65, 0x41, 0x70, 0x72, 0x12, 0x2b,
+	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x72, 0x65, 0x77,
+	0x61, 0x72, 0x64, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x12, 0xaa, 0x01, 0x0a, 0x11, 0x55, 0x73, 0x65,
+	0x72, 0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x12, 0x2e,
 	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
-	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x53, 0x74, 0x61, 0x6b,
-	0x65, 0x41, 0x70, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x53, 0x74, 0x61, 0x6b, 0x65, 0x41, 0x70,
-	0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3e, 0x82, 0xd3, 0xe4, 0x93, 0x02,
-	0x38, 0x12, 0x36, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
-	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
-	0x2f, 0x73, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x61, 0x70,
-	0x72, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x7d, 0x12, 0x8a, 0x01, 0x0a, 0x08, 0x50, 0x6f,
-	0x6f, 0x6c, 0x41, 0x70, 0x72, 0x73, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61,
-	0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f,
-	0x6f, 0x6c, 0x41, 0x70, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e,
-	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x70, 0x72, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2f, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x29, 0x12, 0x27, 0x2f,
-	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
-	0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x70, 0x6f, 0x6f,
-	0x6c, 0x5f, 0x61, 0x70, 0x72, 0x73, 0x12, 0x9e, 0x01, 0x0a, 0x0b, 0x53, 0x68, 0x6f, 0x77, 0x46,
-	0x65, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61,
-	0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x68,
-	0x6f, 0x77, 0x46, 0x65, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e,
+	0x67, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2f,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e,
+	0x67, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x34, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2e, 0x12, 0x2c, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74,
+	0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x70, 0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x72,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x12, 0xab, 0x01, 0x0a, 0x0e, 0x53, 0x74, 0x61, 0x62, 0x6c, 0x65,
+	0x53, 0x74, 0x61, 0x6b, 0x65, 0x41, 0x70, 0x72, 0x12, 0x2b, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e,
+	0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x53, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x53, 0x74, 0x61, 0x6b, 0x65, 0x41, 0x70, 0x72, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73,
+	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61,
+	0x62, 0x6c, 0x65, 0x53, 0x74, 0x61, 0x6b, 0x65, 0x41, 0x70, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x3e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x38, 0x12, 0x36, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f,
+	0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x73, 0x74, 0x61, 0x62, 0x6c,
+	0x65, 0x5f, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x5f, 0x61, 0x70, 0x72, 0x2f, 0x7b, 0x64, 0x65, 0x6e,
+	0x6f, 0x6d, 0x7d, 0x12, 0x8a, 0x01, 0x0a, 0x08, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x70, 0x72, 0x73,
+	0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68,
+	0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x41, 0x70, 0x72, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d,
+	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50,
+	0x6f, 0x6f, 0x6c, 0x41, 0x70, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x2f, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x29, 0x12, 0x27, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74,
+	0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x61, 0x70, 0x72, 0x73,
+	0x12, 0x9e, 0x01, 0x0a, 0x0b, 0x53, 0x68, 0x6f, 0x77, 0x46, 0x65, 0x65, 0x49, 0x6e, 0x66, 0x6f,
+	0x12, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68,
 	0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x68, 0x6f, 0x77, 0x46, 0x65, 0x65, 0x49,
-	0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3a, 0x82, 0xd3, 0xe4,
-	0x93, 0x02, 0x34, 0x12, 0x32, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f,
-	0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68,
-	0x65, 0x66, 0x2f, 0x73, 0x68, 0x6f, 0x77, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x69, 0x6e, 0x66, 0x6f,
-	0x2f, 0x7b, 0x64, 0x61, 0x74, 0x65, 0x7d, 0x12, 0x97, 0x01, 0x0a, 0x0b, 0x4c, 0x69, 0x73, 0x74,
-	0x46, 0x65, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d,
-	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4c,
-	0x69, 0x73, 0x74, 0x46, 0x65, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63,
+	0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x65, 0x6c, 0x79,
+	0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x53, 0x68, 0x6f, 0x77, 0x46, 0x65, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3a, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x34, 0x12, 0x32, 0x2f,
+	0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79,
+	0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x73, 0x68, 0x6f,
+	0x77, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x2f, 0x7b, 0x64, 0x61, 0x74, 0x65,
+	0x7d, 0x12, 0x97, 0x01, 0x0a, 0x0b, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x65, 0x65, 0x49, 0x6e, 0x66,
+	0x6f, 0x12, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63,
 	0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x65, 0x65,
-	0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x33, 0x82, 0xd3,
-	0xe4, 0x93, 0x02, 0x2d, 0x12, 0x2b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
-	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63,
-	0x68, 0x65, 0x66, 0x2f, 0x6c, 0x69, 0x73, 0x74, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x69, 0x6e, 0x66,
-	0x6f, 0x12, 0x8d, 0x01, 0x0a, 0x03, 0x41, 0x70, 0x72, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x41, 0x70, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x65, 0x6c,
+	0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x65, 0x6c,
 	0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x41, 0x70, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x41,
-	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x3b, 0x12, 0x39, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65,
-	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65,
-	0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x61, 0x70, 0x72, 0x2f, 0x7b, 0x77, 0x69, 0x74, 0x68, 0x64,
-	0x72, 0x61, 0x77, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x7d, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x7d, 0x12, 0x79, 0x0a, 0x04, 0x41, 0x70, 0x72, 0x73, 0x12, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73,
-	0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x41, 0x70, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x41, 0x70, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x22, 0x2a, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x24, 0x12, 0x22, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d,
-	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73,
-	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x61, 0x70, 0x72, 0x73, 0x12, 0x96, 0x01, 0x0a,
-	0x0b, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x28, 0x2e, 0x65,
-	0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61,
+	0x65, 0x72, 0x79, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x65, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x33, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2d, 0x12, 0x2b,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x6c, 0x69,
+	0x73, 0x74, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x12, 0x8d, 0x01, 0x0a, 0x03,
+	0x41, 0x70, 0x72, 0x12, 0x20, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65,
+	0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x70, 0x72, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73,
+	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x70, 0x72,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x41, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x3b,
+	0x12, 0x39, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f,
+	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f,
+	0x61, 0x70, 0x72, 0x2f, 0x7b, 0x77, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x5f, 0x74, 0x79,
+	0x70, 0x65, 0x7d, 0x2f, 0x7b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x7d, 0x12, 0x79, 0x0a, 0x04, 0x41,
+	0x70, 0x72, 0x73, 0x12, 0x21, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65,
+	0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x70, 0x72, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61,
+	0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x70,
+	0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2a, 0x82, 0xd3, 0xe4, 0x93,
+	0x02, 0x24, 0x12, 0x22, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72,
+	0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65,
+	0x66, 0x2f, 0x61, 0x70, 0x72, 0x73, 0x12, 0x96, 0x01, 0x0a, 0x0b, 0x50, 0x6f, 0x6f, 0x6c, 0x52,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x28, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61,
 	0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f,
-	0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x32, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2c, 0x12, 0x2a, 0x2f, 0x65, 0x6c, 0x79, 0x73,
-	0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61,
-	0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x72, 0x65,
-	0x77, 0x61, 0x72, 0x64, 0x73, 0x42, 0xb0, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e, 0x65, 0x6c,
-	0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x42, 0x0a, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x30, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74,
-	0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x65, 0x6c,
-	0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0xa2, 0x02, 0x03,
-	0x45, 0x4d, 0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x4d, 0x61, 0x73, 0x74, 0x65,
-	0x72, 0x63, 0x68, 0x65, 0x66, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4d, 0x61, 0x73,
-	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4d,
-	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
-	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a, 0x4d, 0x61,
-	0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x29, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68,
+	0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x77, 0x61,
+	0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x32, 0x82, 0xd3, 0xe4,
+	0x93, 0x02, 0x2c, 0x12, 0x2a, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f,
+	0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68,
+	0x65, 0x66, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12,
+	0xb8, 0x01, 0x0a, 0x13, 0x41, 0x6c, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79,
+	0x50, 0x6f, 0x6f, 0x6c, 0x54, 0x56, 0x4c, 0x12, 0x30, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d,
+	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41,
+	0x6c, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x54,
+	0x56, 0x4c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x31, 0x2e, 0x65, 0x6c, 0x79, 0x73,
+	0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x41, 0x6c, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x6f, 0x6f,
+	0x6c, 0x54, 0x56, 0x4c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3c, 0x82, 0xd3,
+	0xe4, 0x93, 0x02, 0x36, 0x12, 0x34, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77,
+	0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63,
+	0x68, 0x65, 0x66, 0x2f, 0x61, 0x6c, 0x6c, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74,
+	0x79, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x74, 0x76, 0x6c, 0x12, 0x8a, 0x01, 0x0a, 0x08, 0x43,
+	0x68, 0x61, 0x69, 0x6e, 0x54, 0x56, 0x4c, 0x12, 0x25, 0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d,
+	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43,
+	0x68, 0x61, 0x69, 0x6e, 0x54, 0x56, 0x4c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26,
+	0x2e, 0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x68, 0x61, 0x69, 0x6e, 0x54, 0x56, 0x4c, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2f, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x29, 0x12, 0x27,
+	0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c,
+	0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x2f, 0x63, 0x68,
+	0x61, 0x69, 0x6e, 0x5f, 0x74, 0x76, 0x6c, 0x42, 0xb0, 0x01, 0x0a, 0x13, 0x63, 0x6f, 0x6d, 0x2e,
+	0x65, 0x6c, 0x79, 0x73, 0x2e, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x42,
+	0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x30, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2d, 0x6e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x65, 0x6c, 0x79, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f,
+	0x65, 0x6c, 0x79, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0xa2,
+	0x02, 0x03, 0x45, 0x4d, 0x58, 0xaa, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x2e, 0x4d, 0x61, 0x73,
+	0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0xca, 0x02, 0x0f, 0x45, 0x6c, 0x79, 0x73, 0x5c, 0x4d,
+	0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0xe2, 0x02, 0x1b, 0x45, 0x6c, 0x79, 0x73,
+	0x5c, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x5c, 0x47, 0x50, 0x42, 0x4d,
+	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x10, 0x45, 0x6c, 0x79, 0x73, 0x3a, 0x3a,
+	0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x63, 0x68, 0x65, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -15898,95 +19606,112 @@ func file_elys_masterchef_query_proto_rawDescGZIP() []byte {
 	return file_elys_masterchef_query_proto_rawDescData
 }
 
-var file_elys_masterchef_query_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
+var file_elys_masterchef_query_proto_msgTypes = make([]protoimpl.MessageInfo, 35)
 var file_elys_masterchef_query_proto_goTypes = []interface{}{
-	(*QueryParamsRequest)(nil),             // 0: elys.masterchef.QueryParamsRequest
-	(*QueryParamsResponse)(nil),            // 1: elys.masterchef.QueryParamsResponse
-	(*QueryExternalIncentiveRequest)(nil),  // 2: elys.masterchef.QueryExternalIncentiveRequest
-	(*QueryExternalIncentiveResponse)(nil), // 3: elys.masterchef.QueryExternalIncentiveResponse
-	(*QueryPoolInfoRequest)(nil),           // 4: elys.masterchef.QueryPoolInfoRequest
-	(*QueryPoolInfoResponse)(nil),          // 5: elys.masterchef.QueryPoolInfoResponse
-	(*QueryPoolRewardInfoRequest)(nil),     // 6: elys.masterchef.QueryPoolRewardInfoRequest
-	(*QueryPoolRewardInfoResponse)(nil),    // 7: elys.masterchef.QueryPoolRewardInfoResponse
-	(*QueryUserRewardInfoRequest)(nil),     // 8: elys.masterchef.QueryUserRewardInfoRequest
-	(*QueryUserRewardInfoResponse)(nil),    // 9: elys.masterchef.QueryUserRewardInfoResponse
-	(*QueryUserPendingRewardRequest)(nil),  // 10: elys.masterchef.QueryUserPendingRewardRequest
-	(*RewardInfo)(nil),                     // 11: elys.masterchef.RewardInfo
-	(*QueryUserPendingRewardResponse)(nil), // 12: elys.masterchef.QueryUserPendingRewardResponse
-	(*QueryStableStakeAprRequest)(nil),     // 13: elys.masterchef.QueryStableStakeAprRequest
-	(*QueryStableStakeAprResponse)(nil),    // 14: elys.masterchef.QueryStableStakeAprResponse
-	(*QueryPoolAprsRequest)(nil),           // 15: elys.masterchef.QueryPoolAprsRequest
-	(*QueryPoolAprsResponse)(nil),          // 16: elys.masterchef.QueryPoolAprsResponse
-	(*PoolApr)(nil),                        // 17: elys.masterchef.PoolApr
-	(*QueryShowFeeInfoRequest)(nil),        // 18: elys.masterchef.QueryShowFeeInfoRequest
-	(*QueryShowFeeInfoResponse)(nil),       // 19: elys.masterchef.QueryShowFeeInfoResponse
-	(*QueryListFeeInfoRequest)(nil),        // 20: elys.masterchef.QueryListFeeInfoRequest
-	(*QueryListFeeInfoResponse)(nil),       // 21: elys.masterchef.QueryListFeeInfoResponse
-	(*QueryAprRequest)(nil),                // 22: elys.masterchef.QueryAprRequest
-	(*QueryAprResponse)(nil),               // 23: elys.masterchef.QueryAprResponse
-	(*QueryAprsRequest)(nil),               // 24: elys.masterchef.QueryAprsRequest
-	(*QueryAprsResponse)(nil),              // 25: elys.masterchef.QueryAprsResponse
-	(*QueryPoolRewardsRequest)(nil),        // 26: elys.masterchef.QueryPoolRewardsRequest
-	(*PoolRewards)(nil),                    // 27: elys.masterchef.PoolRewards
-	(*QueryPoolRewardsResponse)(nil),       // 28: elys.masterchef.QueryPoolRewardsResponse
-	(*Params)(nil),                         // 29: elys.masterchef.Params
-	(*ExternalIncentive)(nil),              // 30: elys.masterchef.ExternalIncentive
-	(*PoolInfo)(nil),                       // 31: elys.masterchef.PoolInfo
-	(*PoolRewardInfo)(nil),                 // 32: elys.masterchef.PoolRewardInfo
-	(*UserRewardInfo)(nil),                 // 33: elys.masterchef.UserRewardInfo
-	(*v1beta1.Coin)(nil),                   // 34: cosmos.base.v1beta1.Coin
-	(*FeeInfo)(nil),                        // 35: elys.masterchef.FeeInfo
-	(commitment.EarnType)(0),               // 36: elys.commitment.EarnType
-	(*v1beta11.PageRequest)(nil),           // 37: cosmos.base.query.v1beta1.PageRequest
+	(*QueryAllLiquidityPoolTVLRequest)(nil),  // 0: elys.masterchef.QueryAllLiquidityPoolTVLRequest
+	(*QueryAllLiquidityPoolTVLResponse)(nil), // 1: elys.masterchef.QueryAllLiquidityPoolTVLResponse
+	(*QueryChainTVLRequest)(nil),             // 2: elys.masterchef.QueryChainTVLRequest
+	(*QueryChainTVLResponse)(nil),            // 3: elys.masterchef.QueryChainTVLResponse
+	(*QueryParamsRequest)(nil),               // 4: elys.masterchef.QueryParamsRequest
+	(*QueryParamsResponse)(nil),              // 5: elys.masterchef.QueryParamsResponse
+	(*QueryExternalIncentiveRequest)(nil),    // 6: elys.masterchef.QueryExternalIncentiveRequest
+	(*QueryExternalIncentiveResponse)(nil),   // 7: elys.masterchef.QueryExternalIncentiveResponse
+	(*QueryPoolInfoRequest)(nil),             // 8: elys.masterchef.QueryPoolInfoRequest
+	(*QueryPoolInfoResponse)(nil),            // 9: elys.masterchef.QueryPoolInfoResponse
+	(*QueryListPoolInfosRequest)(nil),        // 10: elys.masterchef.QueryListPoolInfosRequest
+	(*QueryListPoolInfosResponse)(nil),       // 11: elys.masterchef.QueryListPoolInfosResponse
+	(*QueryPoolRewardInfoRequest)(nil),       // 12: elys.masterchef.QueryPoolRewardInfoRequest
+	(*QueryPoolRewardInfoResponse)(nil),      // 13: elys.masterchef.QueryPoolRewardInfoResponse
+	(*QueryUserRewardInfoRequest)(nil),       // 14: elys.masterchef.QueryUserRewardInfoRequest
+	(*QueryUserRewardInfoResponse)(nil),      // 15: elys.masterchef.QueryUserRewardInfoResponse
+	(*QueryUserPendingRewardRequest)(nil),    // 16: elys.masterchef.QueryUserPendingRewardRequest
+	(*RewardInfo)(nil),                       // 17: elys.masterchef.RewardInfo
+	(*QueryUserPendingRewardResponse)(nil),   // 18: elys.masterchef.QueryUserPendingRewardResponse
+	(*QueryStableStakeAprRequest)(nil),       // 19: elys.masterchef.QueryStableStakeAprRequest
+	(*QueryStableStakeAprResponse)(nil),      // 20: elys.masterchef.QueryStableStakeAprResponse
+	(*QueryPoolAprsRequest)(nil),             // 21: elys.masterchef.QueryPoolAprsRequest
+	(*QueryPoolAprsResponse)(nil),            // 22: elys.masterchef.QueryPoolAprsResponse
+	(*PoolApr)(nil),                          // 23: elys.masterchef.PoolApr
+	(*QueryShowFeeInfoRequest)(nil),          // 24: elys.masterchef.QueryShowFeeInfoRequest
+	(*QueryShowFeeInfoResponse)(nil),         // 25: elys.masterchef.QueryShowFeeInfoResponse
+	(*QueryListFeeInfoRequest)(nil),          // 26: elys.masterchef.QueryListFeeInfoRequest
+	(*QueryListFeeInfoResponse)(nil),         // 27: elys.masterchef.QueryListFeeInfoResponse
+	(*QueryAprRequest)(nil),                  // 28: elys.masterchef.QueryAprRequest
+	(*QueryAprResponse)(nil),                 // 29: elys.masterchef.QueryAprResponse
+	(*QueryAprsRequest)(nil),                 // 30: elys.masterchef.QueryAprsRequest
+	(*QueryAprsResponse)(nil),                // 31: elys.masterchef.QueryAprsResponse
+	(*QueryPoolRewardsRequest)(nil),          // 32: elys.masterchef.QueryPoolRewardsRequest
+	(*PoolRewards)(nil),                      // 33: elys.masterchef.PoolRewards
+	(*QueryPoolRewardsResponse)(nil),         // 34: elys.masterchef.QueryPoolRewardsResponse
+	(*v1beta1.Coin)(nil),                     // 35: cosmos.base.v1beta1.Coin
+	(*Params)(nil),                           // 36: elys.masterchef.Params
+	(*ExternalIncentive)(nil),                // 37: elys.masterchef.ExternalIncentive
+	(*PoolInfo)(nil),                         // 38: elys.masterchef.PoolInfo
+	(*v1beta11.PageRequest)(nil),             // 39: cosmos.base.query.v1beta1.PageRequest
+	(*v1beta11.PageResponse)(nil),            // 40: cosmos.base.query.v1beta1.PageResponse
+	(*PoolRewardInfo)(nil),                   // 41: elys.masterchef.PoolRewardInfo
+	(*UserRewardInfo)(nil),                   // 42: elys.masterchef.UserRewardInfo
+	(*FeeInfo)(nil),                          // 43: elys.masterchef.FeeInfo
+	(commitment.EarnType)(0),                 // 44: elys.commitment.EarnType
 }
 var file_elys_masterchef_query_proto_depIdxs = []int32{
-	29, // 0: elys.masterchef.QueryParamsResponse.params:type_name -> elys.masterchef.Params
-	30, // 1: elys.masterchef.QueryExternalIncentiveResponse.external_incentive:type_name -> elys.masterchef.ExternalIncentive
-	31, // 2: elys.masterchef.QueryPoolInfoResponse.pool_info:type_name -> elys.masterchef.PoolInfo
-	32, // 3: elys.masterchef.QueryPoolRewardInfoResponse.pool_reward_info:type_name -> elys.masterchef.PoolRewardInfo
-	33, // 4: elys.masterchef.QueryUserRewardInfoResponse.user_reward_info:type_name -> elys.masterchef.UserRewardInfo
-	34, // 5: elys.masterchef.RewardInfo.reward:type_name -> cosmos.base.v1beta1.Coin
-	11, // 6: elys.masterchef.QueryUserPendingRewardResponse.rewards:type_name -> elys.masterchef.RewardInfo
-	34, // 7: elys.masterchef.QueryUserPendingRewardResponse.total_rewards:type_name -> cosmos.base.v1beta1.Coin
-	17, // 8: elys.masterchef.QueryPoolAprsResponse.data:type_name -> elys.masterchef.PoolApr
-	35, // 9: elys.masterchef.QueryShowFeeInfoResponse.fee_info:type_name -> elys.masterchef.FeeInfo
-	35, // 10: elys.masterchef.QueryListFeeInfoResponse.fee_info:type_name -> elys.masterchef.FeeInfo
-	36, // 11: elys.masterchef.QueryAprRequest.withdraw_type:type_name -> elys.commitment.EarnType
-	37, // 12: elys.masterchef.QueryPoolRewardsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	34, // 13: elys.masterchef.PoolRewards.reward_coins:type_name -> cosmos.base.v1beta1.Coin
-	34, // 14: elys.masterchef.PoolRewards.eden_forward:type_name -> cosmos.base.v1beta1.Coin
-	27, // 15: elys.masterchef.QueryPoolRewardsResponse.pools:type_name -> elys.masterchef.PoolRewards
-	0,  // 16: elys.masterchef.Query.Params:input_type -> elys.masterchef.QueryParamsRequest
-	2,  // 17: elys.masterchef.Query.ExternalIncentive:input_type -> elys.masterchef.QueryExternalIncentiveRequest
-	4,  // 18: elys.masterchef.Query.PoolInfo:input_type -> elys.masterchef.QueryPoolInfoRequest
-	6,  // 19: elys.masterchef.Query.PoolRewardInfo:input_type -> elys.masterchef.QueryPoolRewardInfoRequest
-	8,  // 20: elys.masterchef.Query.UserRewardInfo:input_type -> elys.masterchef.QueryUserRewardInfoRequest
-	10, // 21: elys.masterchef.Query.UserPendingReward:input_type -> elys.masterchef.QueryUserPendingRewardRequest
-	13, // 22: elys.masterchef.Query.StableStakeApr:input_type -> elys.masterchef.QueryStableStakeAprRequest
-	15, // 23: elys.masterchef.Query.PoolAprs:input_type -> elys.masterchef.QueryPoolAprsRequest
-	18, // 24: elys.masterchef.Query.ShowFeeInfo:input_type -> elys.masterchef.QueryShowFeeInfoRequest
-	20, // 25: elys.masterchef.Query.ListFeeInfo:input_type -> elys.masterchef.QueryListFeeInfoRequest
-	22, // 26: elys.masterchef.Query.Apr:input_type -> elys.masterchef.QueryAprRequest
-	24, // 27: elys.masterchef.Query.Aprs:input_type -> elys.masterchef.QueryAprsRequest
-	26, // 28: elys.masterchef.Query.PoolRewards:input_type -> elys.masterchef.QueryPoolRewardsRequest
-	1,  // 29: elys.masterchef.Query.Params:output_type -> elys.masterchef.QueryParamsResponse
-	3,  // 30: elys.masterchef.Query.ExternalIncentive:output_type -> elys.masterchef.QueryExternalIncentiveResponse
-	5,  // 31: elys.masterchef.Query.PoolInfo:output_type -> elys.masterchef.QueryPoolInfoResponse
-	7,  // 32: elys.masterchef.Query.PoolRewardInfo:output_type -> elys.masterchef.QueryPoolRewardInfoResponse
-	9,  // 33: elys.masterchef.Query.UserRewardInfo:output_type -> elys.masterchef.QueryUserRewardInfoResponse
-	12, // 34: elys.masterchef.Query.UserPendingReward:output_type -> elys.masterchef.QueryUserPendingRewardResponse
-	14, // 35: elys.masterchef.Query.StableStakeApr:output_type -> elys.masterchef.QueryStableStakeAprResponse
-	16, // 36: elys.masterchef.Query.PoolAprs:output_type -> elys.masterchef.QueryPoolAprsResponse
-	19, // 37: elys.masterchef.Query.ShowFeeInfo:output_type -> elys.masterchef.QueryShowFeeInfoResponse
-	21, // 38: elys.masterchef.Query.ListFeeInfo:output_type -> elys.masterchef.QueryListFeeInfoResponse
-	23, // 39: elys.masterchef.Query.Apr:output_type -> elys.masterchef.QueryAprResponse
-	25, // 40: elys.masterchef.Query.Aprs:output_type -> elys.masterchef.QueryAprsResponse
-	28, // 41: elys.masterchef.Query.PoolRewards:output_type -> elys.masterchef.QueryPoolRewardsResponse
-	29, // [29:42] is the sub-list for method output_type
-	16, // [16:29] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	35, // 0: elys.masterchef.QueryChainTVLResponse.net_stakings:type_name -> cosmos.base.v1beta1.Coin
+	36, // 1: elys.masterchef.QueryParamsResponse.params:type_name -> elys.masterchef.Params
+	37, // 2: elys.masterchef.QueryExternalIncentiveResponse.external_incentive:type_name -> elys.masterchef.ExternalIncentive
+	38, // 3: elys.masterchef.QueryPoolInfoResponse.pool_info:type_name -> elys.masterchef.PoolInfo
+	39, // 4: elys.masterchef.QueryListPoolInfosRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	9,  // 5: elys.masterchef.QueryListPoolInfosResponse.list:type_name -> elys.masterchef.QueryPoolInfoResponse
+	40, // 6: elys.masterchef.QueryListPoolInfosResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	41, // 7: elys.masterchef.QueryPoolRewardInfoResponse.pool_reward_info:type_name -> elys.masterchef.PoolRewardInfo
+	42, // 8: elys.masterchef.QueryUserRewardInfoResponse.user_reward_info:type_name -> elys.masterchef.UserRewardInfo
+	35, // 9: elys.masterchef.RewardInfo.reward:type_name -> cosmos.base.v1beta1.Coin
+	17, // 10: elys.masterchef.QueryUserPendingRewardResponse.rewards:type_name -> elys.masterchef.RewardInfo
+	35, // 11: elys.masterchef.QueryUserPendingRewardResponse.total_rewards:type_name -> cosmos.base.v1beta1.Coin
+	23, // 12: elys.masterchef.QueryPoolAprsResponse.data:type_name -> elys.masterchef.PoolApr
+	43, // 13: elys.masterchef.QueryShowFeeInfoResponse.fee_info:type_name -> elys.masterchef.FeeInfo
+	43, // 14: elys.masterchef.QueryListFeeInfoResponse.fee_info:type_name -> elys.masterchef.FeeInfo
+	44, // 15: elys.masterchef.QueryAprRequest.withdraw_type:type_name -> elys.commitment.EarnType
+	39, // 16: elys.masterchef.QueryPoolRewardsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	35, // 17: elys.masterchef.PoolRewards.reward_coins:type_name -> cosmos.base.v1beta1.Coin
+	35, // 18: elys.masterchef.PoolRewards.eden_forward:type_name -> cosmos.base.v1beta1.Coin
+	33, // 19: elys.masterchef.QueryPoolRewardsResponse.pools:type_name -> elys.masterchef.PoolRewards
+	4,  // 20: elys.masterchef.Query.Params:input_type -> elys.masterchef.QueryParamsRequest
+	6,  // 21: elys.masterchef.Query.ExternalIncentive:input_type -> elys.masterchef.QueryExternalIncentiveRequest
+	8,  // 22: elys.masterchef.Query.PoolInfo:input_type -> elys.masterchef.QueryPoolInfoRequest
+	10, // 23: elys.masterchef.Query.ListPoolInfos:input_type -> elys.masterchef.QueryListPoolInfosRequest
+	12, // 24: elys.masterchef.Query.PoolRewardInfo:input_type -> elys.masterchef.QueryPoolRewardInfoRequest
+	14, // 25: elys.masterchef.Query.UserRewardInfo:input_type -> elys.masterchef.QueryUserRewardInfoRequest
+	16, // 26: elys.masterchef.Query.UserPendingReward:input_type -> elys.masterchef.QueryUserPendingRewardRequest
+	19, // 27: elys.masterchef.Query.StableStakeApr:input_type -> elys.masterchef.QueryStableStakeAprRequest
+	21, // 28: elys.masterchef.Query.PoolAprs:input_type -> elys.masterchef.QueryPoolAprsRequest
+	24, // 29: elys.masterchef.Query.ShowFeeInfo:input_type -> elys.masterchef.QueryShowFeeInfoRequest
+	26, // 30: elys.masterchef.Query.ListFeeInfo:input_type -> elys.masterchef.QueryListFeeInfoRequest
+	28, // 31: elys.masterchef.Query.Apr:input_type -> elys.masterchef.QueryAprRequest
+	30, // 32: elys.masterchef.Query.Aprs:input_type -> elys.masterchef.QueryAprsRequest
+	32, // 33: elys.masterchef.Query.PoolRewards:input_type -> elys.masterchef.QueryPoolRewardsRequest
+	0,  // 34: elys.masterchef.Query.AllLiquidityPoolTVL:input_type -> elys.masterchef.QueryAllLiquidityPoolTVLRequest
+	2,  // 35: elys.masterchef.Query.ChainTVL:input_type -> elys.masterchef.QueryChainTVLRequest
+	5,  // 36: elys.masterchef.Query.Params:output_type -> elys.masterchef.QueryParamsResponse
+	7,  // 37: elys.masterchef.Query.ExternalIncentive:output_type -> elys.masterchef.QueryExternalIncentiveResponse
+	9,  // 38: elys.masterchef.Query.PoolInfo:output_type -> elys.masterchef.QueryPoolInfoResponse
+	11, // 39: elys.masterchef.Query.ListPoolInfos:output_type -> elys.masterchef.QueryListPoolInfosResponse
+	13, // 40: elys.masterchef.Query.PoolRewardInfo:output_type -> elys.masterchef.QueryPoolRewardInfoResponse
+	15, // 41: elys.masterchef.Query.UserRewardInfo:output_type -> elys.masterchef.QueryUserRewardInfoResponse
+	18, // 42: elys.masterchef.Query.UserPendingReward:output_type -> elys.masterchef.QueryUserPendingRewardResponse
+	20, // 43: elys.masterchef.Query.StableStakeApr:output_type -> elys.masterchef.QueryStableStakeAprResponse
+	22, // 44: elys.masterchef.Query.PoolAprs:output_type -> elys.masterchef.QueryPoolAprsResponse
+	25, // 45: elys.masterchef.Query.ShowFeeInfo:output_type -> elys.masterchef.QueryShowFeeInfoResponse
+	27, // 46: elys.masterchef.Query.ListFeeInfo:output_type -> elys.masterchef.QueryListFeeInfoResponse
+	29, // 47: elys.masterchef.Query.Apr:output_type -> elys.masterchef.QueryAprResponse
+	31, // 48: elys.masterchef.Query.Aprs:output_type -> elys.masterchef.QueryAprsResponse
+	34, // 49: elys.masterchef.Query.PoolRewards:output_type -> elys.masterchef.QueryPoolRewardsResponse
+	1,  // 50: elys.masterchef.Query.AllLiquidityPoolTVL:output_type -> elys.masterchef.QueryAllLiquidityPoolTVLResponse
+	3,  // 51: elys.masterchef.Query.ChainTVL:output_type -> elys.masterchef.QueryChainTVLResponse
+	36, // [36:52] is the sub-list for method output_type
+	20, // [20:36] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_elys_masterchef_query_proto_init() }
@@ -16000,7 +19725,7 @@ func file_elys_masterchef_query_proto_init() {
 	file_elys_masterchef_types_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_elys_masterchef_query_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryParamsRequest); i {
+			switch v := v.(*QueryAllLiquidityPoolTVLRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16012,7 +19737,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryParamsResponse); i {
+			switch v := v.(*QueryAllLiquidityPoolTVLResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16024,7 +19749,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryExternalIncentiveRequest); i {
+			switch v := v.(*QueryChainTVLRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16036,7 +19761,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryExternalIncentiveResponse); i {
+			switch v := v.(*QueryChainTVLResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16048,7 +19773,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryPoolInfoRequest); i {
+			switch v := v.(*QueryParamsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16060,7 +19785,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryPoolInfoResponse); i {
+			switch v := v.(*QueryParamsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16072,7 +19797,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryPoolRewardInfoRequest); i {
+			switch v := v.(*QueryExternalIncentiveRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16084,7 +19809,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryPoolRewardInfoResponse); i {
+			switch v := v.(*QueryExternalIncentiveResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16096,7 +19821,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryUserRewardInfoRequest); i {
+			switch v := v.(*QueryPoolInfoRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16108,7 +19833,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryUserRewardInfoResponse); i {
+			switch v := v.(*QueryPoolInfoResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16120,7 +19845,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryUserPendingRewardRequest); i {
+			switch v := v.(*QueryListPoolInfosRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16132,7 +19857,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RewardInfo); i {
+			switch v := v.(*QueryListPoolInfosResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16144,7 +19869,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryUserPendingRewardResponse); i {
+			switch v := v.(*QueryPoolRewardInfoRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16156,7 +19881,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryStableStakeAprRequest); i {
+			switch v := v.(*QueryPoolRewardInfoResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16168,7 +19893,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryStableStakeAprResponse); i {
+			switch v := v.(*QueryUserRewardInfoRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16180,7 +19905,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryPoolAprsRequest); i {
+			switch v := v.(*QueryUserRewardInfoResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16192,7 +19917,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryPoolAprsResponse); i {
+			switch v := v.(*QueryUserPendingRewardRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16204,7 +19929,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PoolApr); i {
+			switch v := v.(*RewardInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16216,7 +19941,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryShowFeeInfoRequest); i {
+			switch v := v.(*QueryUserPendingRewardResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16228,7 +19953,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryShowFeeInfoResponse); i {
+			switch v := v.(*QueryStableStakeAprRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16240,7 +19965,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryListFeeInfoRequest); i {
+			switch v := v.(*QueryStableStakeAprResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16252,7 +19977,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryListFeeInfoResponse); i {
+			switch v := v.(*QueryPoolAprsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16264,7 +19989,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryAprRequest); i {
+			switch v := v.(*QueryPoolAprsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16276,7 +20001,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryAprResponse); i {
+			switch v := v.(*PoolApr); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16288,7 +20013,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryAprsRequest); i {
+			switch v := v.(*QueryShowFeeInfoRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16300,7 +20025,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryAprsResponse); i {
+			switch v := v.(*QueryShowFeeInfoResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16312,7 +20037,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryPoolRewardsRequest); i {
+			switch v := v.(*QueryListFeeInfoRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16324,7 +20049,7 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PoolRewards); i {
+			switch v := v.(*QueryListFeeInfoResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -16336,6 +20061,78 @@ func file_elys_masterchef_query_proto_init() {
 			}
 		}
 		file_elys_masterchef_query_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryAprRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_masterchef_query_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryAprResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_masterchef_query_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryAprsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_masterchef_query_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryAprsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_masterchef_query_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryPoolRewardsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_masterchef_query_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PoolRewards); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_elys_masterchef_query_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*QueryPoolRewardsResponse); i {
 			case 0:
 				return &v.state
@@ -16354,7 +20151,7 @@ func file_elys_masterchef_query_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_elys_masterchef_query_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   29,
+			NumMessages:   35,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

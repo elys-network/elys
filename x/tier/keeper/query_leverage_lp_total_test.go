@@ -33,6 +33,7 @@ func (suite *TierKeeperTestSuite) TestQueryLeverageLpTotalSuccessful() {
 	msgBond := stabletypes.MsgBond{
 		Creator: addr[0].String(),
 		Amount:  math.NewInt(10_000_000_000),
+		PoolId:  1,
 	}
 
 	stableStakeMsgServer := stablekeeper.NewMsgServerImpl(*suite.app.StablestakeKeeper)

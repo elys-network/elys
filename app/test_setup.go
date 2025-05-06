@@ -9,6 +9,7 @@ import (
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmttypes "github.com/cometbft/cometbft/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -54,6 +55,7 @@ func InitiateNewElysApp(t *testing.T) *ElysApp {
 		map[int64]bool{},
 		t.TempDir(),
 		appOptions,
+		[]wasmkeeper.Option{},
 	)
 
 	return app
@@ -171,7 +173,7 @@ func GenesisStateWithValSet(app *ElysApp) (GenesisState, *cmttypes.ValidatorSet,
 	initValPowers := []abci.ValidatorUpdate{}
 
 	for _, val := range valSet.Validators {
-		pk, _ := cryptocodec.FromTmPubKeyInterface(val.PubKey)
+		pk, _ := cryptocodec.FromCmtPubKeyInterface(val.PubKey)
 		pkAny, _ := codectypes.NewAnyWithValue(pk)
 		validator := stakingtypes.Validator{
 			OperatorAddress:   sdk.ValAddress(val.Address).String(),

@@ -1,8 +1,6 @@
 package types
 
-import (
-	"fmt"
-)
+import "errors"
 
 // DefaultIndex is the default global index
 const DefaultIndex uint64 = 1
@@ -20,14 +18,13 @@ func DefaultGenesis() *GenesisState {
 // failure.
 func (gs GenesisState) Validate() error {
 	// Check for duplicated index in history
-	historyIndexMap := make(map[string]struct{})
+	historyIndexMap := make(map[uint64]struct{})
 
 	for _, elem := range gs.HistoryList {
-		index := string(HistoryKey(elem.Timestamp, elem.Denom))
-		if _, ok := historyIndexMap[index]; ok {
-			return fmt.Errorf("duplicated index for history")
+		if _, ok := historyIndexMap[elem.Block]; ok {
+			return errors.New("duplicated index for history")
 		}
-		historyIndexMap[index] = struct{}{}
+		historyIndexMap[elem.Block] = struct{}{}
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

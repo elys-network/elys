@@ -140,17 +140,17 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 	// check length of pools
 	suite.Require().Equal(len(pools), 1)
 
-	_, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false)
+	_, _, _, _, _, err = suite.app.AmmKeeper.ExitPool(suite.ctx, addr[0], pools[0].PoolId, math.NewIntWithDecimal(1, 21), sdk.NewCoins(), "", false, true)
 	suite.Require().NoError(err)
 
 	// new user join pool with same shares
 	share := ammtypes.InitPoolSharesSupply.Mul(math.NewIntWithDecimal(1, 5))
 	suite.T().Log(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId))
-	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "10002000000000000000000000")
+	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "10000000000000000000000000")
 	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolBalance(suite.ctx, pools[0].PoolId, addr[0]).String(), "10000000000000000000000000")
 	_, _, err = suite.app.AmmKeeper.JoinPoolNoSwap(suite.ctx, addr[1], pools[0].PoolId, share, sdk.NewCoins(sdk.NewCoin(ptypes.Elys, math.NewInt(10000000)), sdk.NewCoin(ptypes.BaseCurrency, math.NewInt(10000000))))
 	suite.Require().NoError(err)
-	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "20002000000000000000000000")
+	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolTotalCommit(suite.ctx, pools[0].PoolId).String(), "20000000000000000000000000")
 	suite.Require().Equal(suite.app.MasterchefKeeper.GetPoolBalance(suite.ctx, pools[0].PoolId, addr[1]), share)
 
 	suite.MintTokenToAddress(addr[0], math.NewIntWithDecimal(100000000, 6), ptypes.ATOM)
@@ -195,13 +195,13 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 	})
 	suite.Require().NoError(err)
 	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "49")
-	suite.Require().Equal(res.TotalRewards[1].Amount.String(), "4949535046")
+	suite.Require().Equal(res.TotalRewards[1].Amount.String(), "4950030000")
 	res, err = suite.app.MasterchefKeeper.UserPendingReward(suite.ctx, &types.QueryUserPendingRewardRequest{
 		User: addr[1].String(),
 	})
 	suite.Require().NoError(err)
 	suite.Require().Equal(res.TotalRewards[0].Amount.String(), "49")
-	suite.Require().Equal(res.TotalRewards[1].Amount.String(), "4949535046")
+	suite.Require().Equal(res.TotalRewards[1].Amount.String(), "4950030000")
 
 	prevUSDCBal := suite.app.BankKeeper.GetBalance(suite.ctx, addr[1], ptypes.BaseCurrency)
 
@@ -218,7 +218,7 @@ func (suite *MasterchefKeeperTestSuite) TestUSDCExternalIncentive() {
 	suite.Require().NoError(err)
 
 	curUSDCBal := suite.app.BankKeeper.GetBalance(suite.ctx, addr[1], ptypes.BaseCurrency)
-	amount, _ := math.NewIntFromString("4949535046")
+	amount, _ := math.NewIntFromString("4950030000")
 	suite.Require().Equal(curUSDCBal.Amount.String(), prevUSDCBal.Amount.Add(amount).String())
 
 	// no pending rewards

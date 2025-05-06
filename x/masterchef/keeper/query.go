@@ -2,10 +2,16 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/types/query"
+
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/masterchef/types"
+	stabletypes "github.com/elys-network/elys/x/stablestake/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -31,7 +37,54 @@ func (k Keeper) PoolInfo(goCtx context.Context, req *types.QueryPoolInfoRequest)
 		return nil, status.Error(codes.InvalidArgument, "invalid pool id")
 	}
 
-	return &types.QueryPoolInfoResponse{PoolInfo: poolInfo}, nil
+	stable_apr := osmomath.ZeroBigDec()
+	if req.PoolId >= stabletypes.UsdcPoolId {
+		borrowPool, found := k.stableKeeper.GetPool(ctx, req.PoolId)
+		if found {
+			res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{PoolId: req.PoolId})
+			if err == nil {
+				stable_apr = borrowPool.GetBigDecInterestRate().MulDec(res.BorrowRatio)
+			}
+		}
+	}
+
+	return &types.QueryPoolInfoResponse{PoolInfo: poolInfo, StableApr: stable_apr.Dec()}, nil
+}
+
+func (k Keeper) ListPoolInfos(goCtx context.Context, req *types.QueryListPoolInfosRequest) (*types.QueryListPoolInfosResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	poolStore := prefix.NewStore(store, types.PoolInfoKeyPrefix)
+
+	var list []types.QueryPoolInfoResponse
+
+	pageRes, err := query.Paginate(poolStore, req.Pagination, func(key []byte, value []byte) error {
+		var pool types.PoolInfo
+		if err := k.cdc.Unmarshal(value, &pool); err != nil {
+			return err
+		}
+
+		stable_apr := osmomath.ZeroBigDec()
+		if pool.PoolId >= stabletypes.UsdcPoolId {
+			borrowPool, found := k.stableKeeper.GetPool(ctx, pool.PoolId)
+			if found {
+				res, err := k.stableKeeper.BorrowRatio(ctx, &stabletypes.QueryBorrowRatioRequest{PoolId: pool.PoolId})
+				if err == nil {
+					stable_apr = borrowPool.GetBigDecInterestRate().MulDec(res.BorrowRatio)
+				}
+			}
+		}
+
+		list = append(list, types.QueryPoolInfoResponse{PoolInfo: pool, StableApr: stable_apr.Dec()})
+
+		return nil
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryListPoolInfosResponse{List: list, Pagination: pageRes}, nil
 }
 
 func (k Keeper) PoolRewardInfo(goCtx context.Context, req *types.QueryPoolRewardInfoRequest) (*types.QueryPoolRewardInfoResponse, error) {
@@ -113,7 +166,7 @@ func (k Keeper) StableStakeApr(goCtx context.Context, req *types.QueryStableStak
 		return nil, err
 	}
 
-	return &types.QueryStableStakeAprResponse{Apr: apr}, nil
+	return &types.QueryStableStakeAprResponse{Apr: apr.Dec()}, nil
 }
 
 func (k Keeper) PoolAprs(goCtx context.Context, req *types.QueryPoolAprsRequest) (*types.QueryPoolAprsResponse, error) {

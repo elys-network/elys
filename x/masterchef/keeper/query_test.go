@@ -10,6 +10,7 @@ import (
 	estakingtypes "github.com/elys-network/elys/x/estaking/types"
 	"github.com/elys-network/elys/x/masterchef/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	stablestaketypes "github.com/elys-network/elys/x/stablestake/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -70,6 +71,19 @@ func (suite *MasterchefKeeperTestSuite) SetupApp() {
 		BlocksDistributed: 1000000,
 	}
 	suite.app.MasterchefKeeper.SetParams(suite.ctx, mkParams)
+
+	suite.app.StablestakeKeeper.SetPool(suite.ctx, stablestaketypes.Pool{
+		InterestRate:         sdkmath.LegacyMustNewDecFromStr("0.15"),
+		InterestRateMax:      sdkmath.LegacyMustNewDecFromStr("0.17"),
+		InterestRateMin:      sdkmath.LegacyMustNewDecFromStr("0.12"),
+		InterestRateIncrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+		InterestRateDecrease: sdkmath.LegacyMustNewDecFromStr("0.01"),
+		HealthGainFactor:     sdkmath.LegacyOneDec(),
+		NetAmount:            sdkmath.ZeroInt(),
+		MaxLeverageRatio:     sdkmath.LegacyMustNewDecFromStr("0.7"),
+		Id:                   stablestaketypes.UsdcPoolId,
+		DepositDenom:         ptypes.BaseCurrency,
+	})
 }
 
 func (suite *MasterchefKeeperTestSuite) TestApr() {
@@ -86,7 +100,7 @@ func (suite *MasterchefKeeperTestSuite) TestApr() {
 				Denom:        "ueden",
 			},
 			response: &types.QueryAprResponse{
-				Apr: sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				Apr: sdkmath.LegacyMustNewDecFromStr("0.299999999999999999"),
 			},
 			err: nil,
 		},
@@ -126,12 +140,12 @@ func (suite *MasterchefKeeperTestSuite) TestAprs() {
 				UsdcAprUsdc:  sdkmath.LegacyZeroDec(),
 				EdenAprUsdc:  sdkmath.LegacyZeroDec(),
 				UsdcAprEdenb: sdkmath.LegacyZeroDec(),
-				EdenAprEdenb: sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				EdenAprEdenb: sdkmath.LegacyMustNewDecFromStr("0.299999999999999999"),
 				UsdcAprEden:  sdkmath.LegacyZeroDec(),
-				EdenAprEden:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				EdenAprEden:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999999"),
 				EdenbAprEden: sdkmath.LegacyOneDec(),
 				UsdcAprElys:  sdkmath.LegacyZeroDec(),
-				EdenAprElys:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999995"),
+				EdenAprElys:  sdkmath.LegacyMustNewDecFromStr("0.299999999999999999"),
 				EdenbAprElys: sdkmath.LegacyOneDec(),
 			},
 			err: nil,

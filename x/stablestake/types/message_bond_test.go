@@ -1,9 +1,10 @@
 package types
 
 import (
-	"cosmossdk.io/math"
-	"fmt"
+	"errors"
 	"testing"
+
+	"cosmossdk.io/math"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/elys-network/elys/testutil/sample"
@@ -37,7 +38,7 @@ func TestMsgBond_ValidateBasic(t *testing.T) {
 				Creator: sample.AccAddress(),
 				Amount:  math.NewInt(-100),
 			},
-			err: fmt.Errorf("amount should be positive"),
+			err: errors.New("amount should be positive"),
 		},
 		{
 			name: "nil amount",
@@ -45,7 +46,7 @@ func TestMsgBond_ValidateBasic(t *testing.T) {
 				Creator: sample.AccAddress(),
 				Amount:  math.Int{},
 			},
-			err: fmt.Errorf("amount cannot be nil"),
+			err: errors.New("amount cannot be nil"),
 		},
 		{
 			name: "zero amount",
@@ -53,7 +54,7 @@ func TestMsgBond_ValidateBasic(t *testing.T) {
 				Creator: sample.AccAddress(),
 				Amount:  math.NewInt(0),
 			},
-			err: fmt.Errorf("amount should be positive"),
+			err: errors.New("amount should be positive"),
 		},
 	}
 	for _, tt := range tests {
@@ -76,11 +77,13 @@ func TestNewMsgBond(t *testing.T) {
 	got := NewMsgBond(
 		accAdress,
 		amount,
+		UsdcPoolId,
 	)
 
 	want := &MsgBond{
 		Creator: accAdress,
 		Amount:  amount,
+		PoolId:  UsdcPoolId,
 	}
 
 	assert.Equal(t, want, got)

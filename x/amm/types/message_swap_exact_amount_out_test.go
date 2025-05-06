@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -57,7 +57,7 @@ func TestMsgSwapExactAmountOut_ValidateBasic(t *testing.T) {
 				TokenInMaxAmount: math.NewInt(1),
 				Recipient:        sample.AccAddress(),
 			},
-			err: fmt.Errorf("invalid denom"),
+			err: errors.New("invalid denom"),
 		},
 		{
 			name: "Invalid tokenOut",
@@ -68,7 +68,7 @@ func TestMsgSwapExactAmountOut_ValidateBasic(t *testing.T) {
 				TokenInMaxAmount: math.NewInt(1),
 				Recipient:        sample.AccAddress(),
 			},
-			err: fmt.Errorf("negative coin amount"),
+			err: errors.New("negative coin amount"),
 		},
 		{
 			name: "Invalid tokenOut amount",
@@ -79,7 +79,49 @@ func TestMsgSwapExactAmountOut_ValidateBasic(t *testing.T) {
 				TokenInMaxAmount: math.NewInt(1),
 				Recipient:        sample.AccAddress(),
 			},
-			err: fmt.Errorf("token in is zero"),
+			err: errors.New("token out is zero"),
+		},
+		{
+			name: "Invalid routes with same Input and Output denom",
+			msg: types.MsgSwapExactAmountOut{
+				Sender: sample.AccAddress(),
+				Routes: []types.SwapAmountOutRoute{
+					{TokenInDenom: "uusdc"},
+					{TokenInDenom: "uusdc"},
+					{TokenInDenom: "uelys"},
+				},
+				TokenOut:         sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenInMaxAmount: math.NewInt(1),
+				Recipient:        sample.AccAddress(),
+			},
+			err: errors.New("has the same input and output denom as the previous route"),
+		},
+		{
+			name: "Invalid TokenInMaxAmount",
+			msg: types.MsgSwapExactAmountOut{
+				Sender: sample.AccAddress(),
+				Routes: []types.SwapAmountOutRoute{
+					{TokenInDenom: "uusdc"},
+					{TokenInDenom: "uelys"},
+				},
+				TokenOut:         sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenInMaxAmount: math.NewInt(0),
+				Recipient:        sample.AccAddress(),
+			},
+			err: errors.New("TokenInMaxAmount must be positive"),
+		},
+		{
+			name: "Valid multiple routes",
+			msg: types.MsgSwapExactAmountOut{
+				Sender: sample.AccAddress(),
+				Routes: []types.SwapAmountOutRoute{
+					{TokenInDenom: "uusdc"},
+					{TokenInDenom: "uelys"},
+				},
+				TokenOut:         sdk.Coin{Denom: ptypes.ATOM, Amount: math.NewInt(10)},
+				TokenInMaxAmount: math.NewInt(1),
+				Recipient:        sample.AccAddress(),
+			},
 		},
 	}
 	for _, tt := range tests {
