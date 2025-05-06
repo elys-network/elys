@@ -246,7 +246,6 @@ func (p *Pool) SwapOutAmtGivenIn(
 	if err != nil {
 		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
-	outAmountAfterSlippage := oracleOutAmount.Sub(slippageAmount.Mul(externalLiquidityRatio))
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
 	slippage = slippageAmount.Quo(oracleOutAmount)
 
@@ -254,6 +253,8 @@ func (p *Pool) SwapOutAmtGivenIn(
 		slippage = params.GetBigDecMinSlippage()
 		slippageAmount = oracleOutAmount.Mul(params.GetBigDecMinSlippage())
 	}
+
+	outAmountAfterSlippage := oracleOutAmount.Sub(slippageAmount)
 
 	// oracleOutAmount = 100 ATOM
 	// BalancerOutAmount = 95 ATOM

@@ -109,7 +109,6 @@ func (p *Pool) SwapInAmtGivenOut(
 	if err != nil {
 		return sdk.Coin{}, osmomath.OneBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
-	inAmountAfterSlippage := oracleInAmount.Add(slippageAmount.Mul(externalLiquidityRatio))
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
 	slippage = slippageAmount.Quo(oracleInAmount)
 
@@ -117,6 +116,8 @@ func (p *Pool) SwapInAmtGivenOut(
 		slippage = params.GetBigDecMinSlippage()
 		slippageAmount = oracleInAmount.Mul(params.GetBigDecMinSlippage())
 	}
+
+	inAmountAfterSlippage := oracleInAmount.Add(slippageAmount)
 
 	// calculate weight distance difference to calculate bonus/cut on the operation
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,

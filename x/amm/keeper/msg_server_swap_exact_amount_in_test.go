@@ -222,7 +222,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 		},
 	}
 	expSenderBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000000000), sdk.NewInt64Coin("uusdt", 98928368576)}
-	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000000000), sdk.NewInt64Coin("uusdt", 99974221027)}
+	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000000000), sdk.NewInt64Coin("uusdt", 99934261482)}
 
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
