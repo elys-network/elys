@@ -4,8 +4,8 @@ import (
 	"context"
 	"strings"
 
-	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	tiertypes "github.com/elys-network/elys/x/tier/types"
@@ -23,10 +23,10 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 
 	depositer := sdk.MustAccAddressFromBech32(req.Depositor)
 	redemptionRate := k.CalculateRedemptionRateForVault(ctx, vault.Id)
-	vaultName := types.GetVaultIdModuleName(vault.Id)
+	vaultAddress := types.NewVaultAddress(vault.Id)
 
 	depositCoin := sdk.NewCoin(vault.DepositDenom, req.Amount.Amount)
-	err := k.bk.SendCoinsFromAccountToModule(ctx, depositer, vaultName, sdk.Coins{depositCoin})
+	err := k.bk.SendCoins(ctx, depositer, vaultAddress, sdk.Coins{depositCoin})
 	if err != nil {
 		return nil, err
 	}
@@ -34,17 +34,17 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 	shareDenom := types.GetShareDenomForVault(vault.Id)
 	// Initial case
 	if redemptionRate.IsZero() {
-		redemptionRate = sdkmath.LegacyOneDec()
+		redemptionRate = osmomath.OneBigDec()
 	}
-	shareAmount := depositCoin.Amount.ToLegacyDec().Quo(redemptionRate).RoundInt()
+	shareAmount := (osmomath.BigDecFromSDKInt(depositCoin.Amount).Quo(redemptionRate)).Dec().RoundInt()
 	shareCoins := sdk.NewCoins(sdk.NewCoin(shareDenom, shareAmount))
 
-	err = k.bk.MintCoins(ctx, vaultName, shareCoins)
+	err = k.bk.MintCoins(ctx, types.ModuleName, shareCoins)
 	if err != nil {
 		return nil, err
 	}
 
-	err = k.bk.SendCoinsFromModuleToAccount(ctx, vaultName, depositer, shareCoins)
+	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositer, shareCoins)
 	if err != nil {
 		return nil, err
 	}
@@ -52,13 +52,13 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 	return &types.MsgDepositResponse{}, nil
 }
 
-func (k Keeper) VaultUsdValue(ctx sdk.Context, vaultId uint64) (sdkmath.LegacyDec, error) {
+func (k Keeper) VaultUsdValue(ctx sdk.Context, vaultId uint64) (osmomath.BigDec, error) {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
-		return sdkmath.LegacyZeroDec(), types.ErrVaultNotFound
+		return osmomath.ZeroBigDec(), types.ErrVaultNotFound
 	}
 	vaultAddress := types.NewVaultAddress(vaultId)
-	totalValue := sdkmath.LegacyZeroDec()
+	totalValue := osmomath.ZeroBigDec()
 	commitments := k.commitement.GetCommitments(ctx, vaultAddress)
 	// TODO: Handle zero values for denom, we should issue shares if price is not available
 	for _, commitment := range commitments.CommittedTokens {
@@ -73,8 +73,8 @@ func (k Keeper) VaultUsdValue(ctx sdk.Context, vaultId uint64) (sdkmath.LegacyDe
 				continue
 			}
 			info := k.amm.PoolExtraInfo(ctx, pool, tiertypes.OneDay)
-			amount := commitment.Amount.ToLegacyDec()
-			totalValue = totalValue.Add(amount.Mul(info.LpTokenPrice).QuoInt(ammtypes.OneShare))
+			amount := osmomath.BigDecFromSDKInt(commitment.Amount)
+			totalValue = totalValue.Add(amount.Mul(osmomath.BigDecFromDec(info.LpTokenPrice)).Quo(osmomath.BigDecFromSDKInt(ammtypes.OneShare)))
 		}
 	}
 	for _, coin := range vault.AllowedCoins {
@@ -92,18 +92,18 @@ func (k Keeper) VaultUsdValue(ctx sdk.Context, vaultId uint64) (sdkmath.LegacyDe
 	return totalValue, nil
 }
 
-func (k Keeper) CalculateRedemptionRateForVault(ctx sdk.Context, vaultId uint64) sdkmath.LegacyDec {
+func (k Keeper) CalculateRedemptionRateForVault(ctx sdk.Context, vaultId uint64) osmomath.BigDec {
 	totalShares := k.bk.GetSupply(ctx, types.GetShareDenomForVault(vaultId))
 
 	if totalShares.Amount.IsZero() {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 
 	// TODO: Handle zero values for denom, we should not issue shares if price is not available
 	usdValue, err := k.VaultUsdValue(ctx, vaultId)
 	if err != nil {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 
-	return usdValue.Quo(totalShares.Amount.ToLegacyDec())
+	return usdValue.Quo(osmomath.BigDecFromSDKInt(totalShares.Amount))
 }

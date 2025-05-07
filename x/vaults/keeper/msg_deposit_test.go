@@ -4,11 +4,26 @@ import (
 	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/elys-network/elys/x/vaults/keeper"
 	"github.com/elys-network/elys/x/vaults/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerDeposit() {
+	// Create the vault first with the correct authority
+	msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
+	addVault := types.MsgAddVault{
+		Creator:        authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		DepositDenom:   "ustake",
+		MaxAmountUsd:   sdkmath.LegacyNewDec(1000000),
+		AllowedCoins:   []string{"ustake"},
+		AllowedActions: []uint64{},
+		RewardCoins:    []string{},
+	}
+	_, err := msgServer.AddVault(suite.ctx, &addVault)
+	suite.Require().NoError(err)
+
 	for _, tc := range []struct {
 		desc        string
 		vaultId     uint64
@@ -22,7 +37,6 @@ func (suite *KeeperTestSuite) TestMsgServerDeposit() {
 			vaultId:     1,
 			depositer:   sdk.AccAddress([]byte("depositer1")),
 			amount:      sdk.NewCoin("ustake", sdkmath.NewInt(1000)),
-			setup:       func() {},
 			expectError: false,
 		},
 		// {
@@ -73,19 +87,17 @@ func (suite *KeeperTestSuite) TestMsgServerDeposit() {
 	} {
 		suite.Run(tc.desc, func() {
 			// Setup test case
+			tc.setup = func() {
+				// Mint coins for the depositer
+				coins := sdk.NewCoins(tc.amount)
+				err := suite.app.BankKeeper.MintCoins(suite.ctx, "mint", coins)
+				suite.Require().NoError(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, "mint", tc.depositer, coins)
+				suite.Require().NoError(err)
+			}
 			tc.setup()
 
 			msgServer := keeper.NewMsgServerImpl(suite.app.VaultsKeeper)
-
-			addVault := types.MsgAddVault{
-				Creator:        suite.app.VaultsKeeper.GetAuthority(),
-				DepositDenom:   tc.amount.Denom,
-				MaxAmountUsd:   sdkmath.LegacyNewDec(1000000),
-				AllowedCoins:   []string{tc.amount.Denom},
-				AllowedActions: []uint64{},
-				RewardCoins:    []string{},
-			}
-			_, err := msgServer.AddVault(suite.ctx, &addVault)
 
 			// Prepare the message
 			msg := types.MsgDeposit{
@@ -93,25 +105,22 @@ func (suite *KeeperTestSuite) TestMsgServerDeposit() {
 				Depositor: tc.depositer.String(),
 				Amount:    tc.amount,
 			}
-			_, err = msgServer.Deposit(suite.ctx, &msg)
+			_, err := msgServer.Deposit(suite.ctx, &msg)
 
 			if tc.expectError {
 				suite.Require().Error(err)
 			} else {
 				suite.Require().NoError(err)
 
-				// Verify the deposit was successful
+				// Verify the deposit was successful by checking the vault's balance
 				vaultAddress := types.NewVaultAddress(tc.vaultId)
-				commitments := suite.app.CommitmentKeeper.GetCommitments(suite.ctx, vaultAddress)
-				suite.Require().NotNil(commitments)
-				found := false
-				for _, token := range commitments.CommittedTokens {
-					if token.Denom == tc.amount.Denom && token.Amount.Equal(tc.amount.Amount) {
-						found = true
-						break
-					}
-				}
-				suite.Require().True(found, "deposit not found in commitments")
+				balance := suite.app.BankKeeper.GetBalance(suite.ctx, vaultAddress, tc.amount.Denom)
+				suite.Require().Equal(tc.amount.Amount, balance.Amount)
+
+				// Verify the depositer received the share tokens
+				shareDenom := types.GetShareDenomForVault(tc.vaultId)
+				shareBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.depositer, shareDenom)
+				suite.Require().True(shareBalance.Amount.GT(sdkmath.ZeroInt()), "depositer should have received share tokens")
 			}
 		})
 	}

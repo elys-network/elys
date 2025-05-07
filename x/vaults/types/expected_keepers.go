@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	commitmenttypes "github.com/elys-network/elys/x/commitment/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // AccountKeeper defines the expected interface for the Account module.
@@ -30,13 +31,13 @@ type AmmKeeper interface {
 	CalcInRouteSpotPrice(ctx sdk.Context,
 		tokenIn sdk.Coin,
 		routes []*ammtypes.SwapAmountInRoute,
-		discount sdkmath.LegacyDec,
-		overrideSwapFee sdkmath.LegacyDec,
-	) (sdkmath.LegacyDec, sdkmath.LegacyDec, sdk.Coin, sdkmath.LegacyDec, sdkmath.LegacyDec, sdk.Coin, sdkmath.LegacyDec, sdkmath.LegacyDec, error)
+		discount osmomath.BigDec,
+		overrideSwapFee osmomath.BigDec,
+	) (osmomath.BigDec, osmomath.BigDec, sdk.Coin, osmomath.BigDec, osmomath.BigDec, sdk.Coin, osmomath.BigDec, osmomath.BigDec, error)
 	Balance(goCtx context.Context, req *ammtypes.QueryBalanceRequest) (*ammtypes.QueryBalanceResponse, error)
-	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) sdkmath.LegacyDec
-	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) sdkmath.LegacyDec
-	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) sdkmath.LegacyDec
+	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) osmomath.BigDec
+	CalculateUSDValue(ctx sdk.Context, denom string, amount sdkmath.Int) osmomath.BigDec
+	CalcAmmPrice(ctx sdk.Context, denom string, decimal uint64) osmomath.BigDec
 }
 
 // BankKeeper defines the expected interface for the Bank module.
@@ -48,6 +49,8 @@ type BankKeeper interface {
 	BurnCoins(ctx context.Context, name string, amt sdk.Coins) error
 	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+	SendCoins(goCtx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+
 	// Methods imported from bank should be defined here
 }
 
