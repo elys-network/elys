@@ -4,8 +4,6 @@ on:
   pull_request:
   push:
     branches:
-      - develop
-      - devnet
       - main
 
 jobs:
@@ -25,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
-      - name: Run tests
+      - name: Run unit tests
         run: go test -coverpkg=$(go list ./... | grep -v pb.go | tr '\n' ',') -coverprofile=coverage.txt ./...
 
       - name: Upload results to Codecov
