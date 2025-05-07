@@ -27,6 +27,8 @@ type MsgClient interface {
 	Withdraw(ctx context.Context, in *MsgWithdraw, opts ...grpc.CallOption) (*MsgWithdrawResponse, error)
 	// AddVault defines a method for creating a new vault.
 	AddVault(ctx context.Context, in *MsgAddVault, opts ...grpc.CallOption) (*MsgAddVaultResponse, error)
+	// PerformAction defines a method for performing an action on a vault.
+	PerformAction(ctx context.Context, in *MsgPerformAction, opts ...grpc.CallOption) (*MsgPerformActionResponse, error)
 }
 
 type msgClient struct {
@@ -73,6 +75,15 @@ func (c *msgClient) AddVault(ctx context.Context, in *MsgAddVault, opts ...grpc.
 	return out, nil
 }
 
+func (c *msgClient) PerformAction(ctx context.Context, in *MsgPerformAction, opts ...grpc.CallOption) (*MsgPerformActionResponse, error) {
+	out := new(MsgPerformActionResponse)
+	err := c.cc.Invoke(ctx, "/elys.vaults.Msg/PerformAction", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -86,6 +97,8 @@ type MsgServer interface {
 	Withdraw(context.Context, *MsgWithdraw) (*MsgWithdrawResponse, error)
 	// AddVault defines a method for creating a new vault.
 	AddVault(context.Context, *MsgAddVault) (*MsgAddVaultResponse, error)
+	// PerformAction defines a method for performing an action on a vault.
+	PerformAction(context.Context, *MsgPerformAction) (*MsgPerformActionResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -104,6 +117,9 @@ func (UnimplementedMsgServer) Withdraw(context.Context, *MsgWithdraw) (*MsgWithd
 }
 func (UnimplementedMsgServer) AddVault(context.Context, *MsgAddVault) (*MsgAddVaultResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddVault not implemented")
+}
+func (UnimplementedMsgServer) PerformAction(context.Context, *MsgPerformAction) (*MsgPerformActionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PerformAction not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -190,6 +206,24 @@ func _Msg_AddVault_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_PerformAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPerformAction)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PerformAction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.vaults.Msg/PerformAction",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PerformAction(ctx, req.(*MsgPerformAction))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -212,6 +246,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddVault",
 			Handler:    _Msg_AddVault_Handler,
+		},
+		{
+			MethodName: "PerformAction",
+			Handler:    _Msg_PerformAction_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
