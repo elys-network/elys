@@ -39,51 +39,31 @@ func (suite *KeeperTestSuite) TestMsgServerDeposit() {
 			amount:      sdk.NewCoin("ustake", sdkmath.NewInt(1000)),
 			expectError: false,
 		},
-		// {
-		// 	desc:        "vault not found",
-		// 	vaultId:     999,
-		// 	depositer:   sdk.AccAddress([]byte("depositer2")),
-		// 	amount:      sdk.NewCoin("stake", sdkmath.NewInt(1000)),
-		// 	setup:       func() {}, // No vault setup
-		// 	expectError: true,
-		// },
-		// {
-		// 	desc:      "invalid coin denom",
-		// 	vaultId:   1,
-		// 	depositer: sdk.AccAddress([]byte("depositer3")),
-		// 	amount:    sdk.NewCoin("invalid", sdkmath.NewInt(1000)),
-		// 	setup: func() {
-		// 		// Create a vault
-		// 		vault := types.Vault{
-		// 			Id:           1,
-		// 			AllowedCoins: []string{"stake"},
-		// 		}
-		// 		suite.app.VaultsKeeper.SetVault(suite.ctx, vault)
-		// 	},
-		// 	expectError: true,
-		// },
-		// {
-		// 	desc:      "insufficient funds",
-		// 	vaultId:   1,
-		// 	depositer: sdk.AccAddress([]byte("depositer4")),
-		// 	amount:    sdk.NewCoin("stake", sdkmath.NewInt(1000)),
-		// 	setup: func() {
-		// 		// Create a vault
-		// 		vault := types.Vault{
-		// 			Id:           1,
-		// 			AllowedCoins: []string{"stake"},
-		// 		}
-		// 		suite.app.VaultsKeeper.SetVault(suite.ctx, vault)
-
-		// 		// bootstrap balances
-		// 		tokens := sdk.NewCoins(sdk.NewCoin("stake", sdkmath.NewInt(500)))
-		// 		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tokens)
-		// 		suite.Require().NoError(err)
-		// 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, sdk.AccAddress([]byte("depositer4")), tokens)
-		// 		suite.Require().NoError(err)
-		// 	},
-		// 	expectError: true,
-		// },
+		{
+			desc:        "vault not found",
+			vaultId:     999,
+			depositer:   sdk.AccAddress([]byte("depositer2")),
+			amount:      sdk.NewCoin("stake", sdkmath.NewInt(1000)),
+			setup:       func() {}, // No vault setup
+			expectError: true,
+		},
+		{
+			desc:        "invalid coin denom",
+			vaultId:     1,
+			depositer:   sdk.AccAddress([]byte("depositer3")),
+			amount:      sdk.NewCoin("invalid", sdkmath.NewInt(1000)),
+			setup:       func() {},
+			expectError: true,
+		},
+		{
+			desc:      "insufficient funds",
+			vaultId:   1,
+			depositer: sdk.AccAddress([]byte("depositer4")),
+			amount:    sdk.NewCoin("stake", sdkmath.NewInt(100000)),
+			setup: func() {
+			},
+			expectError: true,
+		},
 	} {
 		suite.Run(tc.desc, func() {
 			// Setup test case
