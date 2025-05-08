@@ -185,16 +185,18 @@ func (k Keeper) GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val
 	if !found {
 		panic(fmt.Sprintf("pool %d not found", poolId))
 	}
-	poolAssets := []types.PoolAsset{}
-	// Update the pool snapshot with accounted pool balance
-	for _, asset := range snapshot.PoolAssets {
-		accAmount := k.accountedPoolKeeper.GetAccountedBalance(ctx, poolId, asset.Token.Denom)
-		if accAmount.IsPositive() {
-			asset.Token.Amount = accAmount
+	if snapshot.PoolParams.UseOracle {
+		poolAssets := []types.PoolAsset{}
+		// Update the pool snapshot with accounted pool balance
+		for _, asset := range snapshot.PoolAssets {
+			accAmount := k.accountedPoolKeeper.GetAccountedBalance(ctx, poolId, asset.Token.Denom)
+			if accAmount.IsPositive() {
+				asset.Token.Amount = accAmount
+			}
+			poolAssets = append(poolAssets, asset)
 		}
-		poolAssets = append(poolAssets, asset)
+		snapshot.PoolAssets = poolAssets
 	}
-	snapshot.PoolAssets = poolAssets
 
 	return types.SnapshotPool{Pool: snapshot}
 }
