@@ -163,7 +163,7 @@ func (p *Pool) JoinPool(
 		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ErrAmountTooLow
 	}
 
-	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx, tokensIn, sdk.NewCoins(), snapshot.PoolAssets)
+	newAssetPools, err := p.NewPoolAssetsAfterSwap(tokensIn, sdk.NewCoins(), snapshot.PoolAssets)
 	if err != nil {
 		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}

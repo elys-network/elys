@@ -316,7 +316,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdkmath.ZeroInt(),
 			}
-			poolAssets, err := pool.NewPoolAssetsAfterSwap(suite.ctx, tc.inCoins, tc.outCoins, tc.poolAssets)
+			poolAssets, err := pool.NewPoolAssetsAfterSwap(tc.inCoins, tc.outCoins, tc.poolAssets)
 			if tc.expErr {
 				suite.Require().Error(err)
 			} else {

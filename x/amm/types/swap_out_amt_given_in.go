@@ -58,7 +58,7 @@ func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper
 	return oraclePoolWeights, nil
 }
 
-func (p Pool) NewPoolAssetsAfterSwap(ctx sdk.Context, inCoins sdk.Coins, outCoins sdk.Coins, poolAssets []PoolAsset) ([]PoolAsset, error) {
+func (p Pool) NewPoolAssetsAfterSwap(inCoins sdk.Coins, outCoins sdk.Coins, poolAssets []PoolAsset) ([]PoolAsset, error) {
 	updatedAssets := []PoolAsset{}
 	for _, asset := range poolAssets {
 		denom := asset.Token.Denom
@@ -295,7 +295,7 @@ func (p *Pool) SwapOutAmtGivenIn(
 	// $10000 trade: 80%
 
 	// calculate weight distance difference to calculate bonus/cut on the operation
-	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
+	newAssetPools, err := p.NewPoolAssetsAfterSwap(
 		tokensIn,
 		sdk.Coins{sdk.NewCoin(tokenOutDenom, outAmountAfterSlippage.Dec().TruncateInt())}, snapshot.PoolAssets,
 	)

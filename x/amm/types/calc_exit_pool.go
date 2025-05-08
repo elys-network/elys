@@ -152,7 +152,7 @@ func (p Pool) CalcExitPool(
 		swapFee = osmomath.ZeroBigDec()
 
 		if applyFee {
-			newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
+			newAssetPools, err := p.NewPoolAssetsAfterSwap(
 				sdk.Coins{},
 				sdk.Coins{sdk.NewCoin(tokenOutDenom, oracleOutAmount.Dec().RoundInt())}, snapshot.PoolAssets,
 			)
