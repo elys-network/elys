@@ -21,7 +21,7 @@ service Query {
   // BorrowRatio queries the borrow ratio compared to total deposit
   rpc BorrowRatio(QueryBorrowRatioRequest) returns (QueryBorrowRatioResponse) {
     option (google.api.http).get =
-        "/elys-network/elys/stablestake/borrow-ratio";
+        "/elys-network/elys/stablestake/borrow-ratio/{pool_id}";
   }
   // Queries a single pool given its index.
   rpc Pool(QueryGetPoolRequest) returns (QueryGetPoolResponse) {

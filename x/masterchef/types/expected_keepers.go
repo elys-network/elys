@@ -128,6 +128,7 @@ type StableStakeKeeper interface {
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)
 	TVL(ctx sdk.Context, poolId uint64) osmomath.BigDec
 	AllTVL(ctx sdk.Context) osmomath.BigDec
+	GetTotalAndPerDenomTVL(ctx sdk.Context) (totalTVL osmomath.BigDec, denomTVL sdk.Coins)
 	IterateLiquidityPools(sdk.Context, func(stabletypes.Pool) bool)
 	GetPoolByDenom(ctx sdk.Context, denom string) (stabletypes.Pool, bool)
 	GetPool(ctx sdk.Context, poolId uint64) (pool stabletypes.Pool, found bool)
