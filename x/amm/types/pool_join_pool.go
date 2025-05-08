@@ -96,7 +96,7 @@ func (p *Pool) JoinPool(
 	// if it's not single sided liquidity, add at pool ratio
 	if len(tokensIn) != 1 {
 		// We calculate based on snapshot, if there no accounted pool then it will be same as normal pool
-		numShares, tokensJoined, err := snapshot.CalcJoinPoolNoSwapShares(tokensIn)
+		numShares, tokensJoined, err = snapshot.CalcJoinPoolNoSwapShares(tokensIn)
 		if err != nil {
 			return sdk.NewCoins(), sdkmath.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
