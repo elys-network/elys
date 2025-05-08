@@ -79,8 +79,6 @@ func (p *Pool) SwapInAmtGivenOut(
 		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
 
-	accountedAssets := p.GetAccountedBalance(ctx, accPoolKeeper, p.PoolAssets)
-
 	// in amount is calculated in this formula
 	// balancer slippage amount = Max(oracleOutAmount-balancerOutAmount, 0)
 	// resizedAmount = tokenIn / externalLiquidityRatio
@@ -120,13 +118,13 @@ func (p *Pool) SwapInAmtGivenOut(
 	// calculate weight distance difference to calculate bonus/cut on the operation
 	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
 		sdk.Coins{sdk.NewCoin(tokenInDenom, inAmountAfterSlippage.Dec().TruncateInt())},
-		tokensOut, accountedAssets,
+		tokensOut, snapshot.PoolAssets,
 	)
 	if err != nil {
 		return sdk.Coin{}, osmomath.OneBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
-	weightBalanceBonus, weightBreakingFee, isSwapFee := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenInDenom, params, weightBreakingFeePerpetualFactor)
+	weightBalanceBonus, weightBreakingFee, isSwapFee := p.CalculateWeightFees(ctx, oracleKeeper, snapshot.PoolAssets, newAssetPools, tokenInDenom, params, weightBreakingFeePerpetualFactor)
 	if !isSwapFee {
 		swapFee = osmomath.ZeroBigDec()
 	}

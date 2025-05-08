@@ -283,15 +283,14 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			suite.Require().NoError(err)
 			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
-			accountedAssets := pool.GetAccountedBalance(suite.ctx, suite.app.AccountedPoolKeeper, pool.PoolAssets)
-			initialWeightIn := types.GetDenomOracleAssetWeight(suite.ctx, 1, suite.app.OracleKeeper, accountedAssets, tc.senderInitBalance[0].Denom)
+			snapshot := suite.app.AmmKeeper.GetPoolWithAccountedBalance(suite.ctx, pool.PoolId)
+			initialWeightIn := types.GetDenomOracleAssetWeight(suite.ctx, 1, suite.app.OracleKeeper, snapshot.PoolAssets, tc.senderInitBalance[0].Denom)
 			initialWeightOut := osmomath.OneBigDec().Sub(initialWeightIn)
 
 			// Step 6: Validate if exploit was successful (It should fail)
 			// Calculate expected number of shares without weight balance bonus
 			totalShares := pool.TotalShares.Amount
-			snapshot := suite.app.AmmKeeper.GetPoolWithAccountedBalance(suite.ctx, pool.PoolId)
-			joinValueWithSlippage, _, _ := pool.CalcJoinValueWithSlippage(suite.ctx, snapshot, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper, tc.senderInitBalance[0], initialWeightOut, types.DefaultParams())
+			joinValueWithSlippage, _, _ := pool.CalcJoinValueWithSlippage(suite.ctx, snapshot, suite.app.OracleKeeper, tc.senderInitBalance[0], initialWeightOut, types.DefaultParams())
 			tvl, _ := pool.TVL(suite.ctx, suite.app.OracleKeeper, suite.app.AccountedPoolKeeper)
 			expectedNumShares := osmomath.BigDecFromSDKInt(totalShares).
 				Mul(joinValueWithSlippage).Quo(tvl).Dec().RoundInt()
