@@ -77,6 +77,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		}
 		fmt.Println("CalcInRouteSpotPrice: 78: weightBalanceBonus: ", weightBalanceBonus)
 		fmt.Println("CalcInRouteSpotPrice: 79: tokenOut: ", tokenOut)
+		fmt.Println("CalcInRouteSpotPrice: 80: oracleOutAmount: ", oracleOutAmount)
 
 		// Check treasury and update weightBalance
 		bonusTokenAmount := sdkmath.ZeroInt()
@@ -92,6 +93,8 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 				bonusTokenAmount = treasuryTokenAmount
 			}
 		}
+		fmt.Println("CalcInRouteSpotPrice: 95: bonusTokenAmount: ", bonusTokenAmount)
+		fmt.Println("CalcInRouteSpotPrice: 96: treasuryTokenAmount: ", weightBalanceBonus)
 
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
