@@ -284,7 +284,7 @@ func (suite *AmmKeeperTestSuite) TestMsgServerJoinPoolExploitScenario() {
 			suite.Require().True(suite.VerifyPoolAssetWithBalance(1))
 
 			snapshot := suite.app.AmmKeeper.GetPoolWithAccountedBalance(suite.ctx, pool.PoolId)
-			initialWeightIn := types.GetDenomOracleAssetWeight(suite.ctx, 1, suite.app.OracleKeeper, snapshot.PoolAssets, tc.senderInitBalance[0].Denom)
+			initialWeightIn := types.GetDenomOracleAssetWeight(suite.ctx, suite.app.OracleKeeper, snapshot.PoolAssets, tc.senderInitBalance[0].Denom)
 			initialWeightOut := osmomath.OneBigDec().Sub(initialWeightIn)
 
 			// Step 6: Validate if exploit was successful (It should fail)

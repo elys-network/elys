@@ -32,7 +32,7 @@ func NormalizedWeights(poolAssets []PoolAsset) (poolWeights []AssetWeight) {
 	return poolWeights
 }
 
-func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper OracleKeeper, poolAssets []PoolAsset) ([]AssetWeight, error) {
+func GetOraclePoolNormalizedWeights(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset) ([]AssetWeight, error) {
 	oraclePoolWeights := []AssetWeight{}
 	totalWeight := osmomath.ZeroBigDec()
 	for _, asset := range poolAssets {
@@ -91,7 +91,7 @@ func (p Pool) StackedRatioFromSnapshot(snapshot SnapshotPool) osmomath.BigDec {
 }
 
 func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset) osmomath.BigDec {
-	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, p.PoolId, oracleKeeper, poolAssets)
+	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, oracleKeeper, poolAssets)
 	if err != nil {
 		return osmomath.ZeroBigDec()
 	}
@@ -109,8 +109,8 @@ func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeepe
 	return distanceSum.Quo(osmomath.BigDecFromDec(sdkmath.LegacyNewDec(int64(len(p.PoolAssets)))))
 }
 
-func GetDenomOracleAssetWeight(ctx sdk.Context, poolId uint64, oracleKeeper OracleKeeper, poolAssets []PoolAsset, denom string) osmomath.BigDec {
-	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, poolId, oracleKeeper, poolAssets)
+func GetDenomOracleAssetWeight(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset, denom string) osmomath.BigDec {
+	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, oracleKeeper, poolAssets)
 	if err != nil {
 		return osmomath.ZeroBigDec()
 	}
