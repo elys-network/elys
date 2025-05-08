@@ -81,7 +81,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 			rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 			treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
 
-			bonusTokenAmount := oracleOutAmount.Mul(weightBalanceBonus).Dec().TruncateInt()
+			bonusTokenAmount = oracleOutAmount.Mul(weightBalanceBonus).Dec().TruncateInt()
 
 			if treasuryTokenAmount.LT(bonusTokenAmount) {
 				weightBalanceBonus = osmomath.BigDecFromSDKInt(treasuryTokenAmount).Quo(oracleOutAmount)
@@ -114,7 +114,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 			poolAsset.Token.Amount = accAmount
 		}
 		availableLiquidity = poolAsset.Token
-		weightBalance = weightBalanceBonus
+		weightBalance = weightBalance.Add(weightBalanceBonus)
 		slippage = slippage.Add(swapSlippage)
 	}
 

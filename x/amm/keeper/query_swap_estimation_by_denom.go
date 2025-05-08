@@ -3,8 +3,6 @@ package keeper
 import (
 	"context"
 
-	sdkmath "cosmossdk.io/math"
-
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -38,12 +36,6 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 	if err != nil {
 		return nil, err
 	}
-	recoveryReward := sdkmath.ZeroInt()
-	if weightBonus.IsPositive() {
-		recoveryReward = osmomath.BigDecFromSDKInt(amount.Amount).Mul(weightBonus).Dec().TruncateInt()
-	}
-	// Add weight balance amount here, not added in execution as out amount will be changed and that will impact the transfers
-	amount.Amount = amount.Amount.Add(recoveryReward)
 
 	// Even when multiple routes, taker Fee per route is params.TakerFee/TotalRoutes, so net taker fee will be params.TakerFee
 	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
@@ -60,7 +52,5 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 		WeightBalanceRatio: weightBonus.Dec(),
 		PriceImpact:        priceImpact.Dec(),
 		TakerFee:           takerFees,
-		// sdk.NewCoin() will panic in case of negative weightBonus
-		WeightBalanceRewardAmount: sdk.Coin{Denom: amount.Denom, Amount: recoveryReward},
 	}, nil
 }
