@@ -174,7 +174,7 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			suite.SetupStableCoinPrices()
 
 			// execute function
-			weights, err := types.GetOraclePoolNormalizedWeights(suite.ctx, uint64(1), suite.app.OracleKeeper, tc.poolAssets)
+			weights, err := types.GetOraclePoolNormalizedWeights(suite.ctx, suite.app.OracleKeeper, tc.poolAssets)
 			if tc.expError {
 				suite.Require().Error(err)
 			} else {
