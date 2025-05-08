@@ -12,7 +12,7 @@ func (p Pool) CalcInAmtGivenOut(
 	ctx sdk.Context,
 	oracle OracleKeeper,
 	snapshot SnapshotPool,
-	tokensOut sdk.Coins, tokenInDenom string, swapFee osmomath.BigDec, accountedPool AccountedPoolKeeper) (
+	tokensOut sdk.Coins, tokenInDenom string, swapFee osmomath.BigDec) (
 	tokenIn sdk.Coin, slippage osmomath.BigDec, err error,
 ) {
 	tokenOut, poolAssetOut, poolAssetIn, err := p.parsePoolAssets(tokensOut, tokenInDenom)
@@ -22,8 +22,9 @@ func (p Pool) CalcInAmtGivenOut(
 
 	outWeight := osmomath.BigDecFromSDKInt(poolAssetOut.Weight)
 	inWeight := osmomath.BigDecFromSDKInt(poolAssetIn.Weight)
+
 	if p.PoolParams.UseOracle {
-		_, poolAssetOut, poolAssetIn, err := snapshot.parsePoolAssets(tokensOut, tokenInDenom)
+		_, poolAssetOut, poolAssetIn, err = snapshot.parsePoolAssets(tokensOut, tokenInDenom)
 		if err != nil {
 			return sdk.Coin{}, osmomath.ZeroBigDec(), err
 		}
@@ -37,18 +38,7 @@ func (p Pool) CalcInAmtGivenOut(
 
 	// delta balanceOut is positive(tokens inside the pool decreases)
 	poolTokenOutBalance := osmomath.BigDecFromSDKInt(poolAssetOut.Token.Amount)
-	// accounted pool balance
-	acountedPoolAssetOutAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetOut.Token.Denom)
-	if acountedPoolAssetOutAmt.IsPositive() {
-		poolTokenOutBalance = osmomath.BigDecFromSDKInt(acountedPoolAssetOutAmt)
-	}
-
 	poolTokenInBalance := osmomath.BigDecFromSDKInt(poolAssetIn.Token.Amount)
-	// accounted pool balance
-	acountedPoolAssetInAmt := accountedPool.GetAccountedBalance(ctx, p.PoolId, poolAssetIn.Token.Denom)
-	if acountedPoolAssetInAmt.IsPositive() {
-		poolTokenInBalance = osmomath.BigDecFromSDKInt(acountedPoolAssetInAmt)
-	}
 
 	poolPostSwapOutBalance := poolTokenOutBalance.Sub(osmomath.BigDecFromSDKInt(tokenOut.Amount))
 	// (x_0)(y_0) = (x_0 + in)(y_0 - out)

@@ -75,7 +75,6 @@ func (p Pool) CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeep
 		snapshot,
 		sdk.Coins{sdk.NewCoin(tokenInDenom, resizedAmount)},
 		tokenOutDenom,
-		accPoolKeeper,
 	)
 	if err != nil {
 		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coins{}, err

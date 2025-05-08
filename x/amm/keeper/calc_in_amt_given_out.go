@@ -22,5 +22,5 @@ func (k Keeper) CalcInAmtGivenOut(
 		return sdk.Coin{}, osmomath.ZeroBigDec(), errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
 	}
 
-	return p.CalcInAmtGivenOut(ctx, oracle, snapshot, tokensOut, tokenInDenom, swapFee, k.accountedPoolKeeper)
+	return p.CalcInAmtGivenOut(ctx, oracle, snapshot, tokensOut, tokenInDenom, swapFee)
 }

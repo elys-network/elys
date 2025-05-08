@@ -65,7 +65,6 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, snapshot SnapshotPool,
 		snapshot,
 		sdk.Coins{sdk.NewCoin(tokenIn.Denom, resizedAmount)},
 		tokenOutDenom,
-		accountedPoolKeeper,
 	)
 	if err != nil {
 		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
@@ -118,7 +117,7 @@ func (p *Pool) JoinPool(
 		normalizedWeights := NormalizedWeights(p.PoolAssets)
 		for _, weight := range normalizedWeights {
 			if weight.Asset != tokenIn.Denom {
-				_, slippage, err = p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, osmomath.ZeroBigDec(), accountedPoolKeeper)
+				_, slippage, err = p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, weight.Asset, osmomath.ZeroBigDec())
 				if err == nil {
 					totalSlippage = totalSlippage.Add(slippage.Mul(weight.Weight))
 				}
