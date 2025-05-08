@@ -64,7 +64,7 @@ func (k Keeper) JoinPoolEst(
 		takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 		cacheCtx, _ := ctx.CacheContext()
-		tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params, takerFees)
+		tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(cacheCtx, snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params, takerFees)
 		if err != nil {
 			return nil, math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, err
 		}
@@ -78,7 +78,7 @@ func (k Keeper) JoinPoolEst(
 	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 	cacheCtx, _ := ctx.CacheContext()
 	tokensJoined := sdk.Coins{}
-	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err = pool.JoinPool(cacheCtx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
+	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err = pool.JoinPool(cacheCtx, snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
 	if err != nil {
 		return nil, math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, err
 	}

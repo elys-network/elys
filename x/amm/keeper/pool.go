@@ -180,23 +180,25 @@ func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types
 }
 
 // GetPoolWithAccountedBalance Gets the pool snapshot and updates the pool balance with accounted pool balance
-func (k Keeper) GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val types.Pool) {
+func (k Keeper) GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val types.SnapshotPool) {
 	snapshot, found := k.GetPool(ctx, poolId)
 	if !found {
 		panic(fmt.Sprintf("pool %d not found", poolId))
 	}
-	poolAssets := []types.PoolAsset{}
-	// Update the pool snapshot with accounted pool balance
-	for _, asset := range snapshot.PoolAssets {
-		accAmount := k.accountedPoolKeeper.GetAccountedBalance(ctx, poolId, asset.Token.Denom)
-		if accAmount.IsPositive() {
-			asset.Token.Amount = accAmount
+	if snapshot.PoolParams.UseOracle {
+		poolAssets := []types.PoolAsset{}
+		// Update the pool snapshot with accounted pool balance
+		for _, asset := range snapshot.PoolAssets {
+			accAmount := k.accountedPoolKeeper.GetAccountedBalance(ctx, poolId, asset.Token.Denom)
+			if accAmount.IsPositive() {
+				asset.Token.Amount = accAmount
+			}
+			poolAssets = append(poolAssets, asset)
 		}
-		poolAssets = append(poolAssets, asset)
+		snapshot.PoolAssets = poolAssets
 	}
-	snapshot.PoolAssets = poolAssets
 
-	return snapshot
+	return types.SnapshotPool{Pool: snapshot}
 }
 
 // AddToPoolBalance Used in perpetual balance changes

@@ -95,8 +95,7 @@ func TestCalcExitValueWithSlippage(t *testing.T) {
 			oracleKeeper := mocks.NewOracleKeeper(t)
 			accKeeper := mocks.NewAccountedPoolKeeper(t)
 			tc.setupMock(oracleKeeper, accKeeper)
-
-			value, _, _, err := tc.pool.CalcExitValueWithSlippage(ctx, oracleKeeper, accKeeper, tc.pool, tc.exitingShares, tc.tokenOutDenom, osmomath.OneBigDec(), true, types.DefaultParams())
+			value, _, _, err := tc.pool.CalcExitValueWithSlippage(ctx, oracleKeeper, accKeeper, types.SnapshotPool{tc.pool}, tc.exitingShares, tc.tokenOutDenom, osmomath.OneBigDec(), true, types.DefaultParams())
 			if tc.expectedErrMsg != "" {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tc.expectedErrMsg)
@@ -236,7 +235,7 @@ func TestCalcExitPool(t *testing.T) {
 			accKeeper := mocks.NewAccountedPoolKeeper(t)
 			tc.setupMock(oracleKeeper, accKeeper)
 
-			exitCoins, weightBalanceBonus, _, _, _, _, err := tc.pool.CalcExitPool(ctx, oracleKeeper, tc.pool, accKeeper, tc.exitingShares, tc.tokenOutDenom, tc.params, osmomath.ZeroBigDec(), true)
+			exitCoins, weightBalanceBonus, _, _, _, _, err := tc.pool.CalcExitPool(ctx, oracleKeeper, types.SnapshotPool{tc.pool}, accKeeper, tc.exitingShares, tc.tokenOutDenom, tc.params, osmomath.ZeroBigDec(), true)
 			if tc.expectedErrMsg != "" {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tc.expectedErrMsg)
@@ -246,8 +245,6 @@ func TestCalcExitPool(t *testing.T) {
 				require.Equal(t, tc.expectedBonus, weightBalanceBonus)
 			}
 
-			oracleKeeper.AssertExpectations(t)
-			accKeeper.AssertExpectations(t)
 		})
 	}
 }

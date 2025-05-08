@@ -174,7 +174,7 @@ func (suite *TestSuite) TestOraclePoolNormalizedWeights() {
 			suite.SetupStableCoinPrices()
 
 			// execute function
-			weights, err := types.GetOraclePoolNormalizedWeights(suite.ctx, uint64(1), suite.app.OracleKeeper, tc.poolAssets)
+			weights, err := types.GetOraclePoolNormalizedWeights(suite.ctx, suite.app.OracleKeeper, tc.poolAssets)
 			if tc.expError {
 				suite.Require().Error(err)
 			} else {
@@ -316,7 +316,7 @@ func (suite *TestSuite) TestNewPoolAssetsAfterSwap() {
 				PoolAssets:  tc.poolAssets,
 				TotalWeight: sdkmath.ZeroInt(),
 			}
-			poolAssets, err := pool.NewPoolAssetsAfterSwap(suite.ctx, tc.inCoins, tc.outCoins, tc.poolAssets)
+			poolAssets, err := pool.NewPoolAssetsAfterSwap(tc.inCoins, tc.outCoins, tc.poolAssets)
 			if tc.expErr {
 				suite.Require().Error(err)
 			} else {
@@ -638,7 +638,8 @@ func (suite *TestSuite) TestSwapOutAmtGivenIn() {
 			params.WeightBreakingFeeMultiplier = sdkmath.LegacyNewDecWithPrec(2, 4)
 			params.WeightBreakingFeeExponent = sdkmath.LegacyNewDecWithPrec(25, 1) // 2.5
 			params.WeightRecoveryFeePortion = sdkmath.LegacyNewDecWithPrec(50, 2)  // 50%
-			tokenOut, _, _, weightBonus, _, _, err := pool.SwapOutAmtGivenIn(suite.ctx, suite.app.OracleKeeper, &pool, sdk.Coins{tc.tokenIn}, tc.outTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, osmomath.OneBigDec(), params, osmomath.ZeroBigDec())
+			snapshot := types.SnapshotPool{pool}
+			tokenOut, _, _, weightBonus, _, _, err := pool.SwapOutAmtGivenIn(suite.ctx, suite.app.OracleKeeper, snapshot, sdk.Coins{tc.tokenIn}, tc.outTokenDenom, tc.swapFee, suite.app.AccountedPoolKeeper, osmomath.OneBigDec(), params, osmomath.ZeroBigDec())
 			if tc.expErr {
 				suite.Require().Error(err)
 				suite.Require().EqualError(err, "token out amount is zero")

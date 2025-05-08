@@ -11,7 +11,7 @@ import (
 // SwapInAmtGivenOut is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 // weightBreakingFeePerpetualFactor should be 1 if perpetual is not the one calling this function
 func (k Keeper) SwapInAmtGivenOut(
-	ctx sdk.Context, poolId uint64, oracleKeeper types.OracleKeeper, snapshot *types.Pool,
+	ctx sdk.Context, poolId uint64, oracleKeeper types.OracleKeeper, snapshot types.SnapshotPool,
 	tokensOut sdk.Coins, tokenInDenom string, swapFee osmomath.BigDec, weightBreakingFeePerpetualFactor osmomath.BigDec, takersFee osmomath.BigDec) (
 	tokenIn sdk.Coin, slippage, slippageAmount osmomath.BigDec, weightBalanceBonus osmomath.BigDec, oracleInAmount osmomath.BigDec, swapFeeFinal osmomath.BigDec, err error,
 ) {

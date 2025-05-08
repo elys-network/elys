@@ -6,14 +6,11 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
-// SwapOutAmtGivenIn is a mutative method for CalcOutAmtGivenIn, which includes the actual swap.
 func (p *Pool) GetTokenARate(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
-	snapshot *Pool,
 	tokenA string,
 	tokenB string,
-	accPoolKeeper AccountedPoolKeeper,
 ) (rate osmomath.BigDec, err error) {
 	// balancer pricing if normal amm pool
 	if !p.PoolParams.UseOracle {
