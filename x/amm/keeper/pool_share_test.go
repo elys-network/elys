@@ -76,5 +76,5 @@ func TestCommitMintedLPTokenToCommitmentModule(t *testing.T) {
 
 	lpTokenDenom := types.GetPoolShareDenom(poolId)
 	lpTokenBalance := bk.GetBalance(ctx, addr[0], lpTokenDenom)
-	fmt.Println("lpTokenBalance", lpTokenBalance.String())
+	fmt.Println("lpTokenBalance: ", lpTokenBalance.String())
 }
