@@ -49,6 +49,8 @@ func (k Keeper) InternalSwapExactAmountIn(
 	if err != nil {
 		return math.Int{}, sdk.Coin{}, err
 	}
+	fmt.Println("keeper_swap_exact_amount_in: 52: tokenOutCoin: ", tokenOutCoin)
+	fmt.Println("keeper_swap_exact_amount_in: 53: weightBalanceBonus: ", weightBalanceBonus)
 
 	tokenOutAmount = tokenOutCoin.Amount
 
@@ -66,6 +68,7 @@ func (k Keeper) InternalSwapExactAmountIn(
 	if err != nil {
 		return math.Int{}, sdk.Coin{}, err
 	}
+	fmt.Println("keeper_swap_exact_amount_in: 71: bonusToken: ", bonusToken)
 
 	// track slippage
 	k.TrackSlippage(ctx, pool.PoolId, sdk.NewCoin(tokenOutCoin.Denom, slippageAmount.Dec().RoundInt()))

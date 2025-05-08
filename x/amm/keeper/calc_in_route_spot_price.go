@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
@@ -73,6 +75,8 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		if err != nil {
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
+		fmt.Println("CalcInRouteSpotPrice: 78: weightBalanceBonus: ", weightBalanceBonus)
+		fmt.Println("CalcInRouteSpotPrice: 79: tokenOut: ", tokenOut)
 
 		// Check treasury and update weightBalance
 		bonusTokenAmount := sdkmath.ZeroInt()
@@ -99,6 +103,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		if bonusTokenAmount.IsPositive() {
 			tokenOut = sdk.NewCoin(tokenOut.Denom, tokenOut.Amount.Add(bonusTokenAmount))
 		}
+		fmt.Println("CalcInRouteSpotPrice: 106: final: tokenOut: ", tokenOut)
 
 		// Use the current swap result as the input for the next iteration
 		tokensIn = sdk.Coins{tokenOut}
