@@ -11,7 +11,7 @@ import (
 func (p Pool) CalcOutAmtGivenIn(
 	ctx sdk.Context,
 	oracle OracleKeeper,
-	snapshot *Pool,
+	snapshot SnapshotPool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee osmomath.BigDec,
@@ -71,7 +71,7 @@ func (p Pool) CalcOutAmtGivenIn(
 		return sdk.Coin{}, osmomath.ZeroBigDec(), ErrTokenOutAmountZero
 	}
 
-	rate, err := p.GetTokenARate(ctx, oracle, snapshot, tokenIn.Denom, tokenOutDenom, accountedPool)
+	rate, err := p.GetTokenARate(ctx, oracle, tokenIn.Denom, tokenOutDenom)
 	if err != nil {
 		return sdk.Coin{}, osmomath.ZeroBigDec(), err
 	}

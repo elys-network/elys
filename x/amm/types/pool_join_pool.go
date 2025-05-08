@@ -18,7 +18,7 @@ type InternalSwapRequest struct {
 	OutToken string
 }
 
-func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper,
+func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, snapshot SnapshotPool, oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper, tokenIn sdk.Coin,
 	weightMultiplier osmomath.BigDec, params Params) (osmomath.BigDec, osmomath.BigDec, error) {
 
@@ -62,7 +62,7 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKee
 	slippageAmount, err := p.CalcGivenInSlippage(
 		ctx,
 		oracleKeeper,
-		p,
+		snapshot,
 		sdk.Coins{sdk.NewCoin(tokenIn.Denom, resizedAmount)},
 		tokenOutDenom,
 		accountedPoolKeeper,
@@ -89,7 +89,7 @@ func (p *Pool) CalcJoinValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKee
 // JoinPool calculates the number of shares needed for an all-asset join given tokensIn with swapFee applied.
 // It updates the liquidity if the pool is joined successfully. If not, returns error.
 func (p *Pool) JoinPool(
-	ctx sdk.Context, snapshot *Pool,
+	ctx sdk.Context, snapshot SnapshotPool,
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper, tokensIn sdk.Coins,
 	params Params,
@@ -152,7 +152,7 @@ func (p *Pool) JoinPool(
 	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedAssets, tokensIn[0].Denom)
 	initialWeightOut := osmomath.OneBigDec().Sub(initialWeightIn)
 
-	joinValueWithSlippage, slippage, err := p.CalcJoinValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, tokensIn[0], initialWeightOut, params)
+	joinValueWithSlippage, slippage, err := p.CalcJoinValueWithSlippage(ctx, snapshot, oracleKeeper, accountedPoolKeeper, tokensIn[0], initialWeightOut, params)
 	if err != nil {
 		return sdk.NewCoins(), sdkmath.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}

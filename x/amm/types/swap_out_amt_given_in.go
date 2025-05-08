@@ -75,7 +75,7 @@ func (p Pool) NewPoolAssetsAfterSwap(ctx sdk.Context, inCoins sdk.Coins, outCoin
 	return updatedAssets, nil
 }
 
-func (p Pool) StackedRatioFromSnapshot(ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool) osmomath.BigDec {
+func (p Pool) StackedRatioFromSnapshot(snapshot SnapshotPool) osmomath.BigDec {
 	stackedRatio := osmomath.ZeroBigDec()
 	for index, asset := range snapshot.PoolAssets {
 		assetDiff := osmomath.BigDecFromSDKInt(p.PoolAssets[index].Token.Amount.Sub(asset.Token.Amount).Abs())
@@ -135,7 +135,7 @@ func GetDenomNormalizedWeight(poolAssets []PoolAsset, denom string) osmomath.Big
 func (p Pool) CalcGivenInSlippage(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
-	snapshot *Pool,
+	snapshot SnapshotPool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	accPoolKeeper AccountedPoolKeeper,
@@ -175,7 +175,7 @@ func (p Pool) CalcGivenInSlippage(
 func (p *Pool) SwapOutAmtGivenIn(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
-	snapshot *Pool,
+	snapshot SnapshotPool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee osmomath.BigDec,

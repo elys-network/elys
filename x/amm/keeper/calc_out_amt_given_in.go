@@ -13,7 +13,7 @@ func (k Keeper) CalcOutAmtGivenIn(
 	ctx sdk.Context,
 	poolId uint64,
 	oracle types.OracleKeeper,
-	snapshot *types.Pool,
+	snapshot types.SnapshotPool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee osmomath.BigDec,

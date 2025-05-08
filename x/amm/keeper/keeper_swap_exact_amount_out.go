@@ -45,7 +45,7 @@ func (k Keeper) InternalSwapExactAmountOut(
 
 	params := k.GetParams(ctx)
 	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
-	tokenIn, _, slippageAmount, weightBalanceBonus, oracleInAmount, swapFee, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, osmomath.OneBigDec(), params, takersFee)
+	tokenIn, _, slippageAmount, weightBalanceBonus, oracleInAmount, swapFee, err := pool.SwapInAmtGivenOut(ctx, k.oracleKeeper, snapshot, sdk.Coins{tokenOut}, tokenInDenom, swapFee, k.accountedPoolKeeper, osmomath.OneBigDec(), params, takersFee)
 	if err != nil {
 		return math.Int{}, sdk.Coin{}, err
 	}

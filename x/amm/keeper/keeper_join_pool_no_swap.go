@@ -70,7 +70,7 @@ func (k Keeper) JoinPoolNoSwap(
 		params := k.GetParams(ctx)
 		takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
-		tokensJoined, sharesOut, _, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params, takerFees)
+		tokensJoined, sharesOut, _, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokensIn, params, takerFees)
 		if err != nil {
 			return nil, sdkmath.ZeroInt(), err
 		}
@@ -100,7 +100,7 @@ func (k Keeper) JoinPoolNoSwap(
 	takerFees := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees()
 	// on oracle pool, full tokenInMaxs are used regardless shareOutAmount
 	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
-	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, &snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
+	tokensJoined, sharesOut, slippage, weightBalanceBonus, swapFee, takerFeesFinal, err := pool.JoinPool(ctx, snapshot, k.oracleKeeper, k.accountedPoolKeeper, tokenInMaxs, params, takerFees)
 	if err != nil {
 		return nil, sdkmath.ZeroInt(), err
 	}

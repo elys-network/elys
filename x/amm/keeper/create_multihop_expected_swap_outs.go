@@ -28,7 +28,7 @@ func (k Keeper) createMultihopExpectedSwapOuts(
 		}
 
 		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
-		tokenIn, _, err := pool.CalcInAmtGivenOut(ctx, k.oracleKeeper, &snapshot, sdk.NewCoins(tokenOut), route.TokenInDenom, pool.GetPoolParams().GetBigDecSwapFee().Quo(osmomath.NewBigDec(int64(len(routes)))), k.accountedPoolKeeper)
+		tokenIn, _, err := pool.CalcInAmtGivenOut(ctx, k.oracleKeeper, snapshot, sdk.NewCoins(tokenOut), route.TokenInDenom, pool.GetPoolParams().GetBigDecSwapFee().Quo(osmomath.NewBigDec(int64(len(routes)))), k.accountedPoolKeeper)
 		if err != nil {
 			return nil, err
 		}

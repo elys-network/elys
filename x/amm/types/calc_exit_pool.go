@@ -11,7 +11,7 @@ import (
 )
 
 func (p Pool) CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeeper, accPoolKeeper AccountedPoolKeeper,
-	snapshot Pool, exitingShares sdkmath.Int, tokenOutDenom string,
+	snapshot SnapshotPool, exitingShares sdkmath.Int, tokenOutDenom string,
 	weightMultiplier osmomath.BigDec, applyFee bool, params Params) (osmomath.BigDec, osmomath.BigDec, sdk.Coins, error) {
 	tvl, err := p.TVL(ctx, oracleKeeper, accPoolKeeper)
 	if err != nil {
@@ -72,7 +72,7 @@ func (p Pool) CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeep
 	slippageAmount, err := p.CalcGivenInSlippage(
 		ctx,
 		oracleKeeper,
-		&snapshot,
+		snapshot,
 		sdk.Coins{sdk.NewCoin(tokenInDenom, resizedAmount)},
 		tokenOutDenom,
 		accPoolKeeper,
@@ -106,7 +106,7 @@ func (p Pool) CalcExitValueWithSlippage(ctx sdk.Context, oracleKeeper OracleKeep
 func (p Pool) CalcExitPool(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
-	snapshot Pool,
+	snapshot SnapshotPool,
 	accountedPoolKeeper AccountedPoolKeeper,
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,

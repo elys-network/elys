@@ -180,7 +180,7 @@ func (k Keeper) IterateLiquidityPools(ctx sdk.Context, handlerFn func(pool types
 }
 
 // GetPoolWithAccountedBalance Gets the pool snapshot and updates the pool balance with accounted pool balance
-func (k Keeper) GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val types.Pool) {
+func (k Keeper) GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val types.SnapshotPool) {
 	snapshot, found := k.GetPool(ctx, poolId)
 	if !found {
 		panic(fmt.Sprintf("pool %d not found", poolId))
@@ -196,7 +196,7 @@ func (k Keeper) GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val
 	}
 	snapshot.PoolAssets = poolAssets
 
-	return snapshot
+	return types.SnapshotPool{Pool: snapshot}
 }
 
 // AddToPoolBalance Used in perpetual balance changes

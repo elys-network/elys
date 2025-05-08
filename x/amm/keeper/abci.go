@@ -18,7 +18,7 @@ func (k Keeper) GetStackedSlippage(ctx sdk.Context, poolId uint64) osmomath.BigD
 		return osmomath.ZeroBigDec()
 	}
 	snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
-	return pool.StackedRatioFromSnapshot(ctx, k.oracleKeeper, &snapshot)
+	return pool.StackedRatioFromSnapshot(snapshot)
 }
 
 func (k Keeper) ApplySwapRequest(ctx sdk.Context, msg sdk.Msg) error {

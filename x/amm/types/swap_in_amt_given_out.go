@@ -10,7 +10,7 @@ import (
 func (p Pool) CalcGivenOutSlippage(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
-	snapshot *Pool,
+	snapshot SnapshotPool,
 	tokensOut sdk.Coins,
 	tokenInDenom string,
 	accPoolKeeper AccountedPoolKeeper,
@@ -49,7 +49,7 @@ func (p Pool) CalcGivenOutSlippage(
 // weightBreakingFeePerpetualFactor should be 1 if perpetual is not the one calling this function
 // Pool, and it's bank balances are updated in keeper.UpdatePoolForSwap
 func (p *Pool) SwapInAmtGivenOut(
-	ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool,
+	ctx sdk.Context, oracleKeeper OracleKeeper, snapshot SnapshotPool,
 	tokensOut sdk.Coins, tokenInDenom string, swapFee osmomath.BigDec, accPoolKeeper AccountedPoolKeeper, weightBreakingFeePerpetualFactor osmomath.BigDec, params Params, takerFees osmomath.BigDec) (
 	tokenIn sdk.Coin, slippage, slippageAmount osmomath.BigDec, weightBalanceBonus osmomath.BigDec, oracleInAmount osmomath.BigDec, swapFeeFinal osmomath.BigDec, err error,
 ) {
