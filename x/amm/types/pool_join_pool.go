@@ -145,7 +145,7 @@ func (p *Pool) JoinPool(
 		return tokensJoined, numShares, totalSlippage, osmomath.ZeroBigDec(), swapFee, takerFee, nil
 	}
 
-	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, snapshot.PoolAssets, tokensIn[0].Denom)
+	initialWeightIn := GetDenomOracleAssetWeight(ctx, oracleKeeper, snapshot.PoolAssets, tokensIn[0].Denom)
 	initialWeightOut := osmomath.OneBigDec().Sub(initialWeightIn)
 
 	joinValueWithSlippage, slippage, err := p.CalcJoinValueWithSlippage(ctx, snapshot, oracleKeeper, tokensIn[0], initialWeightOut, params)

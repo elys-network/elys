@@ -130,7 +130,7 @@ func (p Pool) CalcExitPool(
 
 		tokenPrice := oracleKeeper.GetDenomPrice(ctx, tokenOutDenom)
 
-		initialWeightOut := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, snapshot.PoolAssets, tokenOutDenom)
+		initialWeightOut := GetDenomOracleAssetWeight(ctx, oracleKeeper, snapshot.PoolAssets, tokenOutDenom)
 		initialWeightIn := osmomath.OneBigDec().Sub(initialWeightOut)
 
 		exitValueWithSlippage, slippage, slippageCoins, err := p.CalcExitValueWithSlippage(ctx, oracleKeeper, accountedPoolKeeper, snapshot, exitingShares, tokenOutDenom, initialWeightIn, applyFee, params)

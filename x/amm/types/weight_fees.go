@@ -20,10 +20,10 @@ func (p *Pool) CalculateWeightFees(ctx sdk.Context, oracleKeeper OracleKeeper,
 	targetWeightOut := osmomath.OneBigDec().Sub(targetWeightIn)
 
 	// weight breaking fee as in Plasma pool
-	finalWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, finalAssetsPool, tokenInDenom)
+	finalWeightIn := GetDenomOracleAssetWeight(ctx, oracleKeeper, finalAssetsPool, tokenInDenom)
 	finalWeightOut := osmomath.OneBigDec().Sub(finalWeightIn)
 
-	initialWeightIn := GetDenomOracleAssetWeight(ctx, p.PoolId, oracleKeeper, accountedAssets, tokenInDenom)
+	initialWeightIn := GetDenomOracleAssetWeight(ctx, oracleKeeper, accountedAssets, tokenInDenom)
 	initialWeightOut := osmomath.OneBigDec().Sub(initialWeightIn)
 	weightBreakingFee := GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut, distanceDiff, params)
 	// weightBreakingFeePerpetualFactor is 1 if not send by perpetual
