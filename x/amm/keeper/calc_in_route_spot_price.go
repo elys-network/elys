@@ -92,9 +92,10 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 				weightBalanceBonus = osmomath.BigDecFromSDKInt(treasuryTokenAmount).Quo(oracleOutAmount)
 				bonusTokenAmount = treasuryTokenAmount
 			}
+			fmt.Println("CalcInRouteSpotPrice: 95: treasuryTokenAmount: ", treasuryTokenAmount)
+			fmt.Println("CalcInRouteSpotPrice: 96: tokenOutDenom: ", tokenOut.Denom)
 		}
-		fmt.Println("CalcInRouteSpotPrice: 95: bonusTokenAmount: ", bonusTokenAmount)
-		fmt.Println("CalcInRouteSpotPrice: 96: treasuryTokenAmount: ", weightBalanceBonus)
+		fmt.Println("CalcInRouteSpotPrice: 98: bonusTokenAmount: ", bonusTokenAmount)
 
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
