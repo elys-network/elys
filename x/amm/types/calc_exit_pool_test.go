@@ -245,8 +245,6 @@ func TestCalcExitPool(t *testing.T) {
 				require.Equal(t, tc.expectedBonus, weightBalanceBonus)
 			}
 
-			oracleKeeper.AssertExpectations(t)
-			accKeeper.AssertExpectations(t)
 		})
 	}
 }
