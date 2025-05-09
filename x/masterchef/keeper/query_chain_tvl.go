@@ -65,7 +65,7 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		if !found {
 			return nil, fmt.Errorf("asset info %s not found", token.Denom)
 		}
-		vaultTokensTVLInDisplayDenom = vaultTokensTVLInDisplayDenom.Add(sdk.Coin{Denom: assetInfo.Display, Amount: token.Amount})
+		vaultTokensTVLInDisplayDenom = append(vaultTokensTVLInDisplayDenom, sdk.Coin{Denom: assetInfo.Display, Amount: token.Amount})
 	}
 
 	return &types.QueryChainTVLResponse{
