@@ -41,8 +41,11 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		return nil, status.Error(codes.NotFound, "asset profile not found")
 	}
 
-	stableStakeTotalTVL, stableStakeDenomTVL := k.stableKeeper.GetTotalAndPerDenomTVL(ctx)
-	totalTVL = totalTVL.Add(stableStakeTotalTVL.Dec().TruncateInt())
+	vaultTotalTVL, vaultTokensTVL, err := k.stableKeeper.GetTotalAndPerDenomTVL(ctx)
+	if err != nil {
+		return nil, err
+	}
+	totalTVL = totalTVL.Add(vaultTotalTVL.Dec().TruncateInt())
 
 	elysPrice := k.amm.GetTokenPrice(ctx, ptypes.Elys, baseCurrencyEntry.Denom)
 
@@ -59,12 +62,12 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 	stableStakeBalanceUSD := k.amm.CalculateCoinsUSDValue(ctx, stableStakeBalance)
 
 	return &types.QueryChainTVLResponse{
-		Total:              totalTVL,
-		Pools:              poolsTVL.Dec().TruncateInt(),
-		VaultStaking:       stableStakeTotalTVL.Dec().TruncateInt(),
-		StakedElys:         stakedElysValue.Dec().TruncateInt(),
-		StakedEden:         stakedEdenValue.Dec().TruncateInt(),
-		NetStakings:        sdk.NewCoins(sdk.NewCoin(baseCurrencyEntry.DisplayName, stableStakeBalanceUSD.Dec().TruncateInt())),
-		DenomStakingsInUsd: stableStakeDenomTVL,
+		Total:            totalTVL,
+		Pools:            poolsTVL.Dec().TruncateInt(),
+		NetVaultStakings: vaultTotalTVL.Dec().TruncateInt(),
+		StakedElys:       stakedElysValue.Dec().TruncateInt(),
+		StakedEden:       stakedEdenValue.Dec().TruncateInt(),
+		NetStakings:      sdk.NewCoins(sdk.NewCoin(baseCurrencyEntry.DisplayName, stableStakeBalanceUSD.Dec().TruncateInt())),
+		VaultTokens:      vaultTokensTVL,
 	}, nil
 }

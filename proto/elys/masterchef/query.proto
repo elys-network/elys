@@ -133,7 +133,7 @@ message QueryChainTVLResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string vault_staking = 3 [
+  string net_vault_stakings = 3 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
@@ -152,7 +152,7 @@ message QueryChainTVLResponse {
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
-  repeated cosmos.base.v1beta1.Coin denom_stakings_in_usd = 7 [
+  repeated cosmos.base.v1beta1.Coin vault_tokens = 7 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
