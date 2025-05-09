@@ -39,7 +39,7 @@ func (k Keeper) EstimateSwapGivenIn(ctx sdk.Context, tokenInAmount sdk.Coin, tok
 	// Estimate swap
 	snapshot := k.amm.GetPoolWithAccountedBalance(ctx, ammPool.PoolId)
 	tokensIn := sdk.Coins{tokenInAmount}
-	tokenOut, slippage, _, weightBalanceBonus, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, perpetualFees, params.GetBigDecWeightBreakingFeeFactor(), takersFee)
+	tokenOut, slippage, _, weightBalanceBonus, _, _, err := k.amm.SwapOutAmtGivenIn(ctx, ammPool.PoolId, k.oracleKeeper, snapshot, tokensIn, tokenOutDenom, perpetualFees, params.GetBigDecWeightBreakingFeeFactor(), takersFee)
 	if err != nil {
 		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenIn) for in %s and out denom %s", tokenInAmount.String(), tokenOutDenom)
 	}
@@ -68,7 +68,7 @@ func (k Keeper) EstimateSwapGivenOut(ctx sdk.Context, tokenOutAmount sdk.Coin, t
 
 	// Estimate swap
 	snapshot := k.amm.GetPoolWithAccountedBalance(ctx, ammPool.PoolId)
-	tokenIn, slippage, _, weightBalanceBonus, _, _, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, &snapshot, tokensOut, tokenInDenom, perpetualFees, params.GetBigDecWeightBreakingFeeFactor(), takersFee)
+	tokenIn, slippage, _, weightBalanceBonus, _, _, err := k.amm.SwapInAmtGivenOut(ctx, ammPool.PoolId, k.oracleKeeper, snapshot, tokensOut, tokenInDenom, perpetualFees, params.GetBigDecWeightBreakingFeeFactor(), takersFee)
 	if err != nil {
 		return math.ZeroInt(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errorsmod.Wrapf(err, "unable to swap (EstimateSwapGivenOut) for out %s and in denom %s", tokenOutAmount.String(), tokenInDenom)
 	}

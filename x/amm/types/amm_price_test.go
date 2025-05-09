@@ -14,7 +14,6 @@ import (
 
 func TestGetTokenARate(t *testing.T) {
 	ctx := sdk.Context{}
-	accKeeper := mocks.NewAccountedPoolKeeper(t)
 
 	// Define test cases
 	testCases := []struct {
@@ -132,7 +131,7 @@ func TestGetTokenARate(t *testing.T) {
 			oracleKeeper := mocks.NewOracleKeeper(t)
 			tc.setupMock(oracleKeeper)
 
-			rate, err := tc.pool.GetTokenARate(ctx, oracleKeeper, tc.pool, tc.tokenA, tc.tokenB, accKeeper)
+			rate, err := tc.pool.GetTokenARate(ctx, oracleKeeper, tc.tokenA, tc.tokenB)
 			if tc.expectedErrMsg != "" {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tc.expectedErrMsg)

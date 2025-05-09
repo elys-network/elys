@@ -286,7 +286,7 @@ func (p *Pool) CalcExitPoolCoinsFromShares(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
 	accountedPoolKeeper AccountedPoolKeeper,
-	snapshot Pool,
+	snapshot SnapshotPool,
 	exitingShares sdkmath.Int,
 	tokenOutDenom string,
 	params Params,

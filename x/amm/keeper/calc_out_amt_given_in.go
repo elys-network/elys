@@ -13,7 +13,7 @@ func (k Keeper) CalcOutAmtGivenIn(
 	ctx sdk.Context,
 	poolId uint64,
 	oracle types.OracleKeeper,
-	snapshot *types.Pool,
+	snapshot types.SnapshotPool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee osmomath.BigDec,
@@ -23,5 +23,5 @@ func (k Keeper) CalcOutAmtGivenIn(
 		return sdk.Coin{}, osmomath.ZeroBigDec(), errorsmod.Wrapf(types.ErrInvalidPool, "invalid pool")
 	}
 
-	return p.CalcOutAmtGivenIn(ctx, oracle, snapshot, tokensIn, tokenOutDenom, swapFee, k.accountedPoolKeeper)
+	return p.CalcOutAmtGivenIn(ctx, oracle, snapshot, tokensIn, tokenOutDenom, swapFee)
 }
