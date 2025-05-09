@@ -194,14 +194,27 @@ func (k Keeper) UpdatePoolForSwap(
 	k.SetPool(ctx, pool)
 
 	// convert the fees into USD
-	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins).String()
-	slippageAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt()).String()
-	weightRecoveryFeeAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, weightRecoveryFeeAmount).String()
-	bonusTokenAmountInUSD := k.CalculateUSDValue(ctx, tokenOut.Denom, bonusTokenAmount).String()
-	takerFeesAmountInUSD := k.CalculateCoinsUSDValue(ctx, takerFeesInCoins).String()
+	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins)
+	slippageAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, slippageAmount.Dec().TruncateInt())
+	weightRecoveryFeeAmountInUSD := k.CalculateUSDValue(ctx, tokenIn.Denom, weightRecoveryFeeAmount)
+	bonusTokenAmountInUSD := k.CalculateUSDValue(ctx, tokenOut.Denom, bonusTokenAmount)
+	takerFeesAmountInUSD := k.CalculateCoinsUSDValue(ctx, takerFeesInCoins)
 
 	// emit swap fees event
-	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUSD, slippageAmountInUSD, weightRecoveryFeeAmountInUSD, bonusTokenAmountInUSD, takerFeesAmountInUSD)
+	if !(swapFeeValueInUSD.IsZero() &&
+		slippageAmountInUSD.IsZero() &&
+		weightRecoveryFeeAmountInUSD.IsZero() &&
+		bonusTokenAmountInUSD.IsZero() &&
+		takerFeesAmountInUSD.IsZero()) {
+		types.EmitSwapFeesCollectedEvent(
+			ctx,
+			swapFeeValueInUSD.String(),
+			slippageAmountInUSD.String(),
+			weightRecoveryFeeAmountInUSD.String(),
+			bonusTokenAmountInUSD.String(),
+			takerFeesAmountInUSD.String(),
+		)
+	}
 
 	// emit swap event
 	types.EmitSwapEvent(ctx, sender, recipient, pool.GetPoolId(), tokensIn, tokensOut)
