@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	"github.com/osmosis-labs/osmosis/osmomath"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -46,4 +47,5 @@ type OracleKeeper interface {
 	GetAssetPrice(ctx sdk.Context, asset string) (osmomath.BigDec, bool)
 	GetDenomPrice(ctx sdk.Context, denom string) osmomath.BigDec
 	GetPriceFeeder(ctx sdk.Context, feeder sdk.AccAddress) (val oracletypes.PriceFeeder, found bool)
+	GetAssetInfo(ctx sdk.Context, denom string) (val oracletypes.AssetInfo, found bool)
 }

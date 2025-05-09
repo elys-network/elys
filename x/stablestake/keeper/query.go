@@ -95,7 +95,6 @@ func (k Keeper) GetInterest(goCtx context.Context, req *types.QueryGetInterestRe
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	interest := k.GetInterestAtHeight(ctx, req.PoolId, req.BlockHeight)
+	interest := k.GetInterestAtHeight(ctx, req.BlockHeight, req.PoolId)
 	return &types.QueryGetInterestResponse{InterestBlock: interest}, nil
 }
