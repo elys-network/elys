@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/types/query"
 
@@ -177,4 +179,22 @@ func (k Keeper) PoolAprs(goCtx context.Context, req *types.QueryPoolAprsRequest)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	data := k.CalculatePoolAprs(ctx, req.PoolIds)
 	return &types.QueryPoolAprsResponse{Data: data}, nil
+}
+
+func (k Keeper) TotalPendingRewards(goCtx context.Context, req *types.QueryTotalPendingRewardsRequest) (*types.QueryTotalPendingRewardsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	var totalRewards sdk.Coins
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var reward types.UserRewardInfo
+		k.cdc.MustUnmarshal(iterator.Value(), &reward)
+		if reward.RewardPending.IsPositive() {
+			totalRewards = totalRewards.Add(sdk.NewCoin(reward.RewardDenom, reward.RewardPending.TruncateInt()))
+		}
+	}
+	return &types.QueryTotalPendingRewardsResponse{TotalPendingRewards: totalRewards}, nil
 }

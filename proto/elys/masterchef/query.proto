@@ -96,6 +96,12 @@ service Query {
   rpc ChainTVL(QueryChainTVLRequest) returns (QueryChainTVLResponse) {
     option (google.api.http).get = "/elys-network/elys/masterchef/chain_tvl";
   }
+
+  rpc TotalPendingRewards(QueryTotalPendingRewardsRequest)
+      returns (QueryTotalPendingRewardsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/masterchef/total_pending_rewards";
+  }
 }
 
 message QueryAllLiquidityPoolTVLRequest {}
@@ -381,4 +387,13 @@ message PoolRewards {
 }
 message QueryPoolRewardsResponse {
   repeated PoolRewards pools = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryTotalPendingRewardsRequest {}
+
+message QueryTotalPendingRewardsResponse {
+  repeated cosmos.base.v1beta1.Coin total_pending_rewards = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
