@@ -116,7 +116,7 @@ func (k Keeper) CalculateApr(ctx sdk.Context, query *types.QueryAprRequest) (osm
 			if !found {
 				return osmomath.ZeroBigDec(), assetprofiletypes.ErrAssetProfileNotFound
 			}
-			yearlyDexRewardAmount := usdcAmount.MulInt64(365).Quo(utils.Pow10(entry.Decimals))
+			yearlyDexRewardAmount := usdcAmount.MulInt64(365).QuoInt64(utils.Pow10Int64(entry.Decimals))
 
 			apr := yearlyDexRewardAmount.
 				Quo(edenDenomPrice).
