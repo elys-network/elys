@@ -113,6 +113,11 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Example:        "elysd q masterchef pool-rewards [ids]",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "pool_ids", Varargs: true}},
 				},
+				{
+					RpcMethod: "TotalPendingRewards",
+					Use:       "total-pending-rewards",
+					Short:     "show total pending rewards",
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
