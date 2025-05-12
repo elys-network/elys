@@ -154,6 +154,7 @@ func (k Keeper) TotalPendingRewards(goCtx context.Context, req *types.QueryTotal
 	for ; iterator.Valid(); iterator.Next() {
 		var reward types.UserRewardInfo
 		k.cdc.MustUnmarshal(iterator.Value(), &reward)
+		k.AfterWithdraw(ctx, reward.PoolId, sdk.MustAccAddressFromBech32(reward.User), sdkmath.ZeroInt())
 		if reward.RewardPending.IsPositive() {
 			totalRewards = totalRewards.Add(sdk.NewCoin(reward.RewardDenom, reward.RewardPending.TruncateInt()))
 		}
