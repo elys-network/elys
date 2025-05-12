@@ -139,7 +139,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 	// Calculate spot price with GetTokenARate
 	spotPrice := osmomath.OneBigDec()
 	tokenInDenom := tokenIn.Denom
-	for _, route := range routes {
+	for index, route := range routes {
 		poolId := route.PoolId
 		tokenOutDenom = route.TokenOutDenom
 
@@ -148,19 +148,25 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrPoolNotFound
 		}
 
+		fmt.Println("poolId: ", poolId)
+		fmt.Println("tokenOutDenom: ", route.TokenOutDenom)
+		fmt.Println("index: ", index)
 		rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, tokenInDenom, tokenOutDenom)
 		if err != nil {
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
+		fmt.Println("rate: ", rate.String())
 
 		// set new tokenIn denom for multihop
 		tokenInDenom = tokenOutDenom
 		spotPrice = spotPrice.Mul(rate)
+		fmt.Println("spotPrice: ", spotPrice.String())
 	}
 
 	if !spotPrice.IsPositive() {
 		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrSpotPriceIsZero
 	}
+	fmt.Println("final spotPrice: ", spotPrice.String())
 
 	// Construct the token out coin
 	tokenOut := tokensIn[0]
