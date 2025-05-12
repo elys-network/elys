@@ -5,6 +5,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -175,9 +176,37 @@ func (k Keeper) TotalPendingRewards(goCtx context.Context, req *types.QueryTotal
 		return nil, err
 	}
 
+	// 9388546 + 4794067 + 14847586 + 4402457 + 8681650 + 5794228 + 109561041 + 6458876 + 120916 =
+
 	return &types.QueryTotalPendingRewardsResponse{
 		TotalPendingRewards: totalRewards,
 		Count:               count,
 		Pagination:          pageRes,
+	}, nil
+}
+
+func (k Keeper) PendingRewards(goCtx context.Context, req *types.QueryPendingRewardsRequest) (*types.QueryPendingRewardsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
+
+	defer iterator.Close()
+
+	var totalRewards sdk.Coins
+	count := uint64(0)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.UserRewardInfo
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.RewardPending.IsPositive() {
+			totalRewards = totalRewards.Add(sdk.NewCoin(val.RewardDenom, val.RewardPending.TruncateInt()))
+		}
+		count++
+	}
+
+	return &types.QueryPendingRewardsResponse{
+		TotalPendingRewards: totalRewards,
+		Count:               count,
 	}, nil
 }

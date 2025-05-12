@@ -404,6 +404,9 @@ func (suite *MasterchefKeeperTestSuite) TestTotalPendingRewards() {
 	addr2 := sdk.AccAddress("test2_______________")
 	addr3 := sdk.AccAddress("test3_______________")
 
+	// masterchef address
+	// elys1nwc45a3fl0dz37m5ulvw8pmpfjnewhgz7t96zn
+
 	// Create test user reward info entries
 	userRewardInfos := []types.UserRewardInfo{
 		{

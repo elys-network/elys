@@ -40,6 +40,7 @@ type QueryClient interface {
 	AllLiquidityPoolTVL(ctx context.Context, in *QueryAllLiquidityPoolTVLRequest, opts ...grpc.CallOption) (*QueryAllLiquidityPoolTVLResponse, error)
 	ChainTVL(ctx context.Context, in *QueryChainTVLRequest, opts ...grpc.CallOption) (*QueryChainTVLResponse, error)
 	TotalPendingRewards(ctx context.Context, in *QueryTotalPendingRewardsRequest, opts ...grpc.CallOption) (*QueryTotalPendingRewardsResponse, error)
+	PendingRewards(ctx context.Context, in *QueryPendingRewardsRequest, opts ...grpc.CallOption) (*QueryPendingRewardsResponse, error)
 }
 
 type queryClient struct {
@@ -194,6 +195,15 @@ func (c *queryClient) TotalPendingRewards(ctx context.Context, in *QueryTotalPen
 	return out, nil
 }
 
+func (c *queryClient) PendingRewards(ctx context.Context, in *QueryPendingRewardsRequest, opts ...grpc.CallOption) (*QueryPendingRewardsResponse, error) {
+	out := new(QueryPendingRewardsResponse)
+	err := c.cc.Invoke(ctx, "/elys.masterchef.Query/PendingRewards", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -220,6 +230,7 @@ type QueryServer interface {
 	AllLiquidityPoolTVL(context.Context, *QueryAllLiquidityPoolTVLRequest) (*QueryAllLiquidityPoolTVLResponse, error)
 	ChainTVL(context.Context, *QueryChainTVLRequest) (*QueryChainTVLResponse, error)
 	TotalPendingRewards(context.Context, *QueryTotalPendingRewardsRequest) (*QueryTotalPendingRewardsResponse, error)
+	PendingRewards(context.Context, *QueryPendingRewardsRequest) (*QueryPendingRewardsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -274,6 +285,9 @@ func (UnimplementedQueryServer) ChainTVL(context.Context, *QueryChainTVLRequest)
 }
 func (UnimplementedQueryServer) TotalPendingRewards(context.Context, *QueryTotalPendingRewardsRequest) (*QueryTotalPendingRewardsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TotalPendingRewards not implemented")
+}
+func (UnimplementedQueryServer) PendingRewards(context.Context, *QueryPendingRewardsRequest) (*QueryPendingRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PendingRewards not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -576,6 +590,24 @@ func _Query_TotalPendingRewards_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_PendingRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryPendingRewardsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).PendingRewards(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/elys.masterchef.Query/PendingRewards",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).PendingRewards(ctx, req.(*QueryPendingRewardsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -646,6 +678,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TotalPendingRewards",
 			Handler:    _Query_TotalPendingRewards_Handler,
+		},
+		{
+			MethodName: "PendingRewards",
+			Handler:    _Query_PendingRewards_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

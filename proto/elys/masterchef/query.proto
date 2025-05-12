@@ -97,6 +97,12 @@ service Query {
     option (google.api.http).get =
         "/elys-network/elys/masterchef/total_pending_rewards";
   }
+
+  rpc PendingRewards(QueryPendingRewardsRequest)
+      returns (QueryPendingRewardsResponse) {
+    option (google.api.http).get =
+        "/elys-network/elys/masterchef/pending_rewards";
+  }
 }
 
 message QueryAllLiquidityPoolTVLRequest {}
@@ -382,4 +388,14 @@ message QueryTotalPendingRewardsResponse {
   ];
   uint64 count = 2;
   cosmos.base.query.v1beta1.PageResponse pagination = 3;
+}
+
+message QueryPendingRewardsRequest {}
+
+message QueryPendingRewardsResponse {
+  repeated cosmos.base.v1beta1.Coin total_pending_rewards = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+  uint64 count = 2;
 }
