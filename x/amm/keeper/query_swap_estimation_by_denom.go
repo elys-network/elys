@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -32,6 +33,8 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 		return nil, errorsmod.Wrapf(assetprofiletypes.ErrAssetProfileNotFound, "asset %s not found", req.DenomIn)
 	}
 
+	fmt.Print("***********************SwapEstimationByDenom***************************")
+
 	inRoute, outRoute, amount, spotPrice, swapFee, discount, availableLiquidity, slippage, weightBonus, priceImpact, err := k.CalcSwapEstimationByDenom(ctx, req.Amount, req.DenomIn, req.DenomOut, baseCurrency, req.Address, osmomath.ZeroBigDec(), entry.Decimals)
 	if err != nil {
 		return nil, err
@@ -40,6 +43,7 @@ func (k Keeper) SwapEstimationByDenom(goCtx context.Context, req *types.QuerySwa
 	// Even when multiple routes, taker Fee per route is params.TakerFee/TotalRoutes, so net taker fee will be params.TakerFee
 	takerFees := k.parameterKeeper.GetParams(ctx).TakerFees
 
+	fmt.Print("**************************************************")
 	return &types.QuerySwapEstimationByDenomResponse{
 		InRoute:            inRoute,
 		OutRoute:           outRoute,
