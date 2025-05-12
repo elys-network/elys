@@ -371,7 +371,9 @@ message QueryPoolRewardsResponse {
   repeated PoolRewards pools = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryTotalPendingRewardsRequest {}
+message QueryTotalPendingRewardsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
 
 message QueryTotalPendingRewardsResponse {
   repeated cosmos.base.v1beta1.Coin total_pending_rewards = 1 [
@@ -379,4 +381,5 @@ message QueryTotalPendingRewardsResponse {
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
   uint64 count = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }

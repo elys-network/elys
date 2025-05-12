@@ -4,10 +4,11 @@ import (
 	"context"
 
 	sdkmath "cosmossdk.io/math"
-	storetypes "cosmossdk.io/store/types"
+	"cosmossdk.io/store/prefix"
 
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/elys-network/elys/x/masterchef/types"
 	stabletypes "github.com/elys-network/elys/x/stablestake/types"
 	"google.golang.org/grpc/codes"
@@ -143,22 +144,40 @@ func (k Keeper) PoolAprs(goCtx context.Context, req *types.QueryPoolAprsRequest)
 
 func (k Keeper) TotalPendingRewards(goCtx context.Context, req *types.QueryTotalPendingRewardsRequest) (*types.QueryTotalPendingRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	var totalRewards sdk.Coins
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	iterator := storetypes.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
+	positionStore := prefix.NewStore(store, types.UserRewardInfoKeyPrefix)
 
-	defer iterator.Close()
+	if req.Pagination == nil {
+		req.Pagination = &query.PageRequest{
+			Limit: 5000,
+		}
+	}
 
 	count := uint64(0)
 
-	for ; iterator.Valid(); iterator.Next() {
+	pageRes, err := query.Paginate(positionStore, req.Pagination, func(key []byte, value []byte) error {
 		var reward types.UserRewardInfo
-		k.cdc.MustUnmarshal(iterator.Value(), &reward)
+		k.cdc.MustUnmarshal(value, &reward)
 		k.AfterWithdraw(ctx, reward.PoolId, sdk.MustAccAddressFromBech32(reward.User), sdkmath.ZeroInt())
 		if reward.RewardPending.IsPositive() {
 			totalRewards = totalRewards.Add(sdk.NewCoin(reward.RewardDenom, reward.RewardPending.TruncateInt()))
 		}
 		count++
+		return nil
+	})
+	if err != nil {
+		return nil, err
 	}
-	return &types.QueryTotalPendingRewardsResponse{TotalPendingRewards: totalRewards, Count: count}, nil
+
+	return &types.QueryTotalPendingRewardsResponse{
+		TotalPendingRewards: totalRewards,
+		Count:               count,
+		Pagination:          pageRes,
+	}, nil
 }
