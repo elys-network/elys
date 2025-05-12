@@ -378,4 +378,5 @@ message QueryTotalPendingRewardsResponse {
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
+  uint64 count = 2;
 }

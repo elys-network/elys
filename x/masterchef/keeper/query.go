@@ -149,12 +149,15 @@ func (k Keeper) TotalPendingRewards(goCtx context.Context, req *types.QueryTotal
 
 	defer iterator.Close()
 
+	count := uint64(0)
+
 	for ; iterator.Valid(); iterator.Next() {
 		var reward types.UserRewardInfo
 		k.cdc.MustUnmarshal(iterator.Value(), &reward)
 		if reward.RewardPending.IsPositive() {
 			totalRewards = totalRewards.Add(sdk.NewCoin(reward.RewardDenom, reward.RewardPending.TruncateInt()))
 		}
+		count++
 	}
-	return &types.QueryTotalPendingRewardsResponse{TotalPendingRewards: totalRewards}, nil
+	return &types.QueryTotalPendingRewardsResponse{TotalPendingRewards: totalRewards, Count: count}, nil
 }
