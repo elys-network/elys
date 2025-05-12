@@ -155,7 +155,7 @@ func (k Keeper) TotalPendingRewards(goCtx context.Context, req *types.QueryTotal
 
 	if req.Pagination == nil {
 		req.Pagination = &query.PageRequest{
-			Limit: 5000,
+			Limit: 100000,
 		}
 	}
 
