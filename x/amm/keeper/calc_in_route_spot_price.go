@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdkmath "cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
@@ -44,7 +45,11 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 	weightBalance := osmomath.ZeroBigDec()
 	slippage := osmomath.ZeroBigDec()
 
-	for _, route := range routes {
+	fmt.Print("----------CalcInRouteSpotPrice------")
+
+	for index, route := range routes {
+
+		fmt.Println("index: ", index)
 		poolId := route.PoolId
 		tokenOutDenom = route.TokenOutDenom
 
@@ -101,6 +106,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		}
 
 		// Use the current swap result as the input for the next iteration
+		fmt.Println("tokenOut: ", tokenOut.String())
 		tokensIn = sdk.Coins{tokenOut}
 
 		// Get the available liquidity for the final token out denom
@@ -118,6 +124,8 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		slippage = slippage.Add(swapSlippage)
 	}
 
+	fmt.Println("final tokenIn: ", tokensIn[0].String())
+
 	// Ensure tokenIn.Amount is not zero to avoid division by zero
 	if tokenIn.IsZero() {
 		return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrAmountTooLow
@@ -125,6 +133,8 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 
 	// Calculate the spot price given the initial token in and the final token out
 	impactedPrice := osmomath.BigDecFromSDKInt(tokensIn[0].Amount).Quo(osmomath.BigDecFromSDKInt(tokenIn.Amount))
+
+	fmt.Println("impactedPrice: ", impactedPrice.String())
 
 	// Calculate spot price with GetTokenARate
 	spotPrice := osmomath.OneBigDec()
@@ -154,6 +164,8 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 
 	// Construct the token out coin
 	tokenOut := tokensIn[0]
+
+	fmt.Print("----------CalcInRouteSpotPrice------")
 
 	return spotPrice, impactedPrice, tokenOut, totalDiscountedSwapFee, discount, availableLiquidity, slippage, weightBalance, nil
 }
