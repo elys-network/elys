@@ -55,7 +55,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				_, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p100, b, s, false) }, // B buys 10, S sells 10 @ 100
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p100, b, s) }, // B buys 10, S sells 10 @ 100
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true,
 				BuyerFinalQty: qty10, BuyerFinalEP: p100, BuyerFinalMargin: math.NewInt(100).Mul(denomFactor), // Q=10, EP=100, M=100
@@ -77,7 +77,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, b, s, false) }, // B buys 10, S sells 10 @ 105
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, b, s) }, // B buys 10, S sells 10 @ 105
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true,
 				BuyerFinalQty: qty10, BuyerFinalEP: p105, BuyerFinalMargin: calcMargin(qty10, p105), // Q=10, EP=105, M=105
@@ -101,7 +101,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, b, s, false) }, // B buys 10, S sells 10 @ 105
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, b, s) }, // B buys 10, S sells 10 @ 105
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: false, // Seller closed
 				BuyerFinalQty: qty10, BuyerFinalEP: p105, BuyerFinalMargin: calcMargin(qty10, p105), // Q=10, EP=105, M=105
@@ -125,7 +125,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty15, p105, b, s, false) }, // B buys 15, S sells 15 @ 105
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty15, p105, b, s) }, // B buys 15, S sells 15 @ 105
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true, // Seller flipped to -5
 				BuyerFinalQty: qty15, BuyerFinalEP: p105, BuyerFinalMargin: calcMargin(qty15, p105), // Q=15, EP=105, M=157.5
@@ -149,7 +149,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p95, b, s, false) }, // B buys 5, S sells 5 @ 95
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p95, b, s) }, // B buys 5, S sells 5 @ 95
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true,
 				BuyerFinalQty: qty5, BuyerFinalEP: p95, BuyerFinalMargin: calcMargin(qty5, p95), // Q=5, EP=95, M=48
@@ -175,7 +175,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p105, b, s, false) }, // B buys 5, S sells 5 @ 105
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p105, b, s) }, // B buys 5, S sells 5 @ 105
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true,
 				// Buyer: Q=15, EP=(10*100+5*105)/15=101.66.., M=15*101.66*0.1=152.5->153. MarginDiff=53
@@ -199,7 +199,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p95, b, s, false) }, // B buys 10, S sells 10 @ 95
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p95, b, s) }, // B buys 10, S sells 10 @ 95
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true, // Buyer remains -5
 				BuyerFinalQty: qty5.Neg(), BuyerFinalEP: p100, BuyerFinalMargin: calcMargin(qty5, p100), // Q=-5, EP=100, M=50
@@ -232,7 +232,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				return buyerAcc, sellerAcc
 			},
 			// Seller must be buyer in trade to increase long
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, s, b, false) }, // S buys 10, B sells 10 @ 105
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, s, b) }, // S buys 10, B sells 10 @ 105
 			expected: ExpectedState{
 				Err: "", BuyerExists: false, SellerExists: true, // Buyer closed, Seller increased
 				// Buyer: PNL=+10*(105-100)=+50. Refund=100. Total=+150
@@ -257,7 +257,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				sellerAcc.MarketId = 2
 				return buyerAcc, sellerAcc // Return dummy market for trade obj
 			},
-			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(2, qty10, p100, b, s, false) },
+			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(2, qty10, p100, b, s) },
 			expected: ExpectedState{Err: types.ErrPerpetualMarketNotFound.Error()}, // Use specific error
 		},
 		{
@@ -266,7 +266,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				_, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
 				return buyerAcc, sellerAcc // Return dummy market for trade obj
 			},
-			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(2, qty10, p100, b, s, false) },
+			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(2, qty10, p100, b, s) },
 			expected: ExpectedState{Err: "trade market id and subAccounts market id does not match"}, // Use specific error
 		},
 		{
@@ -276,7 +276,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				return buyerAcc, sellerAcc // Return dummy market for trade obj
 			},
 			trade: func(b, s types.SubAccount) types.Trade {
-				return types.Trade{b, s, MarketId, p105, math.LegacyZeroDec(), false}
+				return types.Trade{b, s, MarketId, p105, math.LegacyZeroDec(), false, false}
 			},
 			expected: ExpectedState{Err: "trade quantity must be greater than zero"}, // Use specific error
 		},
@@ -289,7 +289,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				prevBlockTime := suite.ctx.BlockTime().Add(-10 * time.Second) // Example time step
 				prevCtx := suite.ctx.WithBlockHeight(prevBlockHeight).WithBlockTime(prevBlockTime)
 
-				dummyTrade := types.NewTrade(MarketId, math.LegacyNewDec(1), math.LegacyNewDec(100), buyerAcc, sellerAcc, false)
+				dummyTrade := types.NewTrade(MarketId, math.LegacyNewDec(1), math.LegacyNewDec(100), buyerAcc, sellerAcc)
 				err := suite.app.ClobKeeper.SetTwapPrices(prevCtx, dummyTrade)
 				suite.Require().NoError(err, "Setup: Failed to set previous TWAP price")
 
@@ -325,8 +325,8 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				)
 				return buyerAcc, sellerAcc
 			},
-			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p105, b, s, false) }, // Buyer increases long, triggers SettleFunding first
-			expected: ExpectedState{Err: "insufficient funds"},                                                             // Error expected from AddToSubAccount inside SettleFunding
+			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p105, b, s) }, // Buyer increases long, triggers SettleFunding first
+			expected: ExpectedState{Err: "insufficient funds"},                                                      // Error expected from AddToSubAccount inside SettleFunding
 		},
 		// Add GetPerpetual error case (might require mocking or complex setup)
 		// Add SetTwapPrices error case (might require mocking market lookup inside it)

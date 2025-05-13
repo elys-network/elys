@@ -22,7 +22,7 @@ func (k Keeper) GetPerpetualOwner(ctx sdk.Context, owner sdk.AccAddress, marketI
 	return v, true
 }
 
-func (k Keeper) GetAllSubAccountPerpetuals(ctx sdk.Context) []types.PerpetualOwner {
+func (k Keeper) GetAllPerpetualOwners(ctx sdk.Context) []types.PerpetualOwner {
 	store := prefix.NewStore(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.PerpetualOwnerPrefix)
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 

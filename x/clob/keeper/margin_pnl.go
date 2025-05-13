@@ -21,7 +21,7 @@ import (
 // 9. Opening of new position
 // The function updates quantity, margin and entry price. Doesn't set in the KV store.
 // The Funding rate needs to be updated outside before setting in KV.
-func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarket, oldPerpetual types.Perpetual, trade types.Trade, isBuyer bool) (updatedPerpetual types.Perpetual, err error) {
+func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarket, oldPerpetual types.Perpetual, isLiquidation bool, trade types.Trade, isBuyer bool) (updatedPerpetual types.Perpetual, err error) {
 
 	if trade.Quantity.LTE(math.LegacyZeroDec()) {
 		err = errors.New("trade quantity must be greater than zero")
@@ -77,7 +77,7 @@ func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarke
 	if updatedPerpetual.IsZero() {
 		// Position fully closed, sending back short position margin
 		// buyerPositionBefore is already negative
-		err = k.OnPositionClose(ctx, market, oldPerpetual.Quantity, subAccount, oldPerpetual.EntryPrice, trade.Price, oldPerpetual.MarginAmount, quoteDenomPrice, trade.IsLiquidation)
+		err = k.OnPositionClose(ctx, market, oldPerpetual.Quantity, subAccount, oldPerpetual.EntryPrice, trade.Price, oldPerpetual.MarginAmount, quoteDenomPrice, isLiquidation)
 		if err != nil {
 			return
 		}
@@ -129,7 +129,7 @@ func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarke
 			// position is partially closed for seller, 4 to 2, positionClosed = 2
 			positionClosed := oldPerpetual.Quantity.Sub(updatedPerpetual.Quantity)
 
-			err = k.OnPositionClose(ctx, market, positionClosed, subAccount, oldPerpetual.EntryPrice, trade.Price, diff, quoteDenomPrice, trade.IsLiquidation)
+			err = k.OnPositionClose(ctx, market, positionClosed, subAccount, oldPerpetual.EntryPrice, trade.Price, diff, quoteDenomPrice, isLiquidation)
 			if err != nil {
 				return
 			}
@@ -147,7 +147,7 @@ func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarke
 
 		// Return short position margin
 		// The Whole previous position gets closed, buyer old position is negative
-		err = k.OnPositionClose(ctx, market, oldPerpetual.Quantity, subAccount, oldPerpetual.EntryPrice, trade.Price, oldPerpetual.MarginAmount, quoteDenomPrice, trade.IsLiquidation)
+		err = k.OnPositionClose(ctx, market, oldPerpetual.Quantity, subAccount, oldPerpetual.EntryPrice, trade.Price, oldPerpetual.MarginAmount, quoteDenomPrice, isLiquidation)
 		if err != nil {
 			return
 		}
@@ -183,7 +183,7 @@ func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarke
 			// -4 to -2, positionClosed = -2
 			positionClosed := oldPerpetual.Quantity.Sub(updatedPerpetual.Quantity)
 
-			err = k.OnPositionClose(ctx, market, positionClosed, subAccount, oldPerpetual.EntryPrice, trade.Price, diff, quoteDenomPrice, trade.IsLiquidation)
+			err = k.OnPositionClose(ctx, market, positionClosed, subAccount, oldPerpetual.EntryPrice, trade.Price, diff, quoteDenomPrice, isLiquidation)
 			if err != nil {
 				return
 			}
@@ -226,7 +226,7 @@ func (k Keeper) SettleMarginAndRPnL(ctx sdk.Context, market types.PerpetualMarke
 		// Seller reduces long position
 		// Return long position margin
 		// Whole previous position gets closed, seller old position is +ve
-		err = k.OnPositionClose(ctx, market, oldPerpetual.Quantity, subAccount, oldPerpetual.EntryPrice, trade.Price, oldPerpetual.MarginAmount, quoteDenomPrice, trade.IsLiquidation)
+		err = k.OnPositionClose(ctx, market, oldPerpetual.Quantity, subAccount, oldPerpetual.EntryPrice, trade.Price, oldPerpetual.MarginAmount, quoteDenomPrice, isLiquidation)
 		if err != nil {
 			return
 		}

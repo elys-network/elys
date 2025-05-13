@@ -8,18 +8,18 @@ import (
 	"github.com/elys-network/elys/x/clob/types"
 )
 
-func (k Keeper) GetPerpetualADL(ctx sdk.Context, marketId, id uint64) (types.PerpetualADL, error) {
+func (k Keeper) GetPerpetualADL(ctx sdk.Context, marketId, id uint64) (types.PerpetualADL, bool) {
 	key := types.GetPerpetualADLKey(marketId, id)
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	b := store.Get(key)
 	if b == nil {
-		return types.PerpetualADL{}, types.ErrPerpetualNotFound
+		return types.PerpetualADL{}, false
 	}
 
 	var v types.PerpetualADL
 	k.cdc.MustUnmarshal(b, &v)
-	return v, nil
+	return v, true
 }
 
 func (k Keeper) GetAllPerpetualADLs(ctx sdk.Context) []types.PerpetualADL {
@@ -46,8 +46,8 @@ func (k Keeper) SetPerpetualADL(ctx sdk.Context, p types.PerpetualADL) {
 	store.Set(key, b)
 }
 
-func (k Keeper) DeletePerpetualADL(ctx sdk.Context, p types.PerpetualADL) {
+func (k Keeper) DeletePerpetualADL(ctx sdk.Context, marketId, id uint64) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	key := types.GetPerpetualADLKey(p.MarketId, p.Id)
+	key := types.GetPerpetualADLKey(marketId, id)
 	store.Delete(key)
 }

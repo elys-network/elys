@@ -117,12 +117,13 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 				return false, err
 			}
 			err = k.Exchange(ctx, types.Trade{
-				BuyerSubAccount:  buyerSubAccount,
-				SellerSubAccount: sellerSubAccount,
-				MarketId:         market.Id,
-				Price:            tradePrice,
-				Quantity:         tradeQuantity,
-				IsLiquidation:    false,
+				BuyerSubAccount:     buyerSubAccount,
+				SellerSubAccount:    sellerSubAccount,
+				MarketId:            market.Id,
+				Price:               tradePrice,
+				Quantity:            tradeQuantity,
+				IsBuyerLiquidation:  false,
+				IsSellerLiquidation: false,
 			})
 			if err != nil {
 				return false, err

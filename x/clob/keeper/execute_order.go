@@ -65,12 +65,13 @@ func (k Keeper) ExecuteMarketBuyOrder(ctx sdk.Context, market types.PerpetualMar
 			return false, err
 		}
 		err = k.Exchange(ctx, types.Trade{
-			BuyerSubAccount:  buyerSubAccount,
-			SellerSubAccount: sellerSubAccount,
-			MarketId:         market.Id,
-			Price:            tradePrice,
-			Quantity:         tradeQuantity,
-			IsLiquidation:    isLiquidation,
+			BuyerSubAccount:     buyerSubAccount,
+			SellerSubAccount:    sellerSubAccount,
+			MarketId:            market.Id,
+			Price:               tradePrice,
+			Quantity:            tradeQuantity,
+			IsBuyerLiquidation:  isLiquidation,
+			IsSellerLiquidation: false,
 		})
 		if err != nil {
 			return false, err
@@ -148,12 +149,13 @@ func (k Keeper) ExecuteMarketSellOrder(ctx sdk.Context, market types.PerpetualMa
 			return false, err
 		}
 		err = k.Exchange(ctx, types.Trade{
-			BuyerSubAccount:  buyerSubAccount,
-			SellerSubAccount: sellerSubAccount,
-			MarketId:         market.Id,
-			Price:            tradePrice,
-			Quantity:         tradeQuantity,
-			IsLiquidation:    isLiquidation,
+			BuyerSubAccount:     buyerSubAccount,
+			SellerSubAccount:    sellerSubAccount,
+			MarketId:            market.Id,
+			Price:               tradePrice,
+			Quantity:            tradeQuantity,
+			IsBuyerLiquidation:  false,
+			IsSellerLiquidation: isLiquidation,
 		})
 		if err != nil {
 			return false, err

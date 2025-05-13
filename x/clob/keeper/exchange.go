@@ -44,7 +44,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 
 	}
 
-	buyerPerpetual, err = k.SettleMarginAndRPnL(ctx, market, buyerPerpetual, trade, true)
+	buyerPerpetual, err = k.SettleMarginAndRPnL(ctx, market, buyerPerpetual, trade.IsBuyerLiquidation, trade, true)
 	if err != nil {
 		return err
 	}
@@ -85,7 +85,7 @@ func (k Keeper) Exchange(ctx sdk.Context, trade types.Trade) error {
 
 	}
 
-	sellerPerpetual, err = k.SettleMarginAndRPnL(ctx, market, sellerPerpetual, trade, false)
+	sellerPerpetual, err = k.SettleMarginAndRPnL(ctx, market, sellerPerpetual, trade.IsSellerLiquidation, trade, false)
 	if err != nil {
 		return err
 	}

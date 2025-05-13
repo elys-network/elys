@@ -7,12 +7,13 @@ import (
 )
 
 type Trade struct {
-	BuyerSubAccount  SubAccount
-	SellerSubAccount SubAccount
-	MarketId         uint64
-	Price            math.LegacyDec
-	Quantity         math.LegacyDec
-	IsLiquidation    bool
+	BuyerSubAccount     SubAccount
+	SellerSubAccount    SubAccount
+	MarketId            uint64
+	Price               math.LegacyDec
+	Quantity            math.LegacyDec
+	IsBuyerLiquidation  bool
+	IsSellerLiquidation bool
 }
 
 func (t Trade) Validate() error {
@@ -31,7 +32,7 @@ func (t Trade) GetTradeValue() math.LegacyDec {
 	return t.Price.Mul(t.Quantity)
 }
 
-func NewTrade(marketId uint64, qty, price math.LegacyDec, buyer, seller SubAccount, isLiquidation bool) Trade {
+func NewTrade(marketId uint64, qty, price math.LegacyDec, buyer, seller SubAccount) Trade {
 	if qty.IsNegative() || qty.IsZero() || qty.IsNil() {
 		panic("trade quantity must be positive")
 	}
@@ -41,6 +42,5 @@ func NewTrade(marketId uint64, qty, price math.LegacyDec, buyer, seller SubAccou
 		Price:            price,
 		BuyerSubAccount:  buyer,
 		SellerSubAccount: seller,
-		IsLiquidation:    isLiquidation,
 	}
 }
