@@ -111,6 +111,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "total-pending-rewards",
 					Short:     "show total pending rewards",
 				},
+				{
+					RpcMethod: "PendingRewards",
+					Use:       "pending-rewards",
+					Short:     "show pending rewards",
+					Example:   "elysd q masterchef pending-rewards",
+				},
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{

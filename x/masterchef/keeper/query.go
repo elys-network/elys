@@ -176,8 +176,6 @@ func (k Keeper) TotalPendingRewards(goCtx context.Context, req *types.QueryTotal
 		return nil, err
 	}
 
-	// 9388546 + 4794067 + 14847586 + 4402457 + 8681650 + 5794228 + 109561041 + 6458876 + 120916 =
-
 	return &types.QueryTotalPendingRewardsResponse{
 		TotalPendingRewards: totalRewards,
 		Count:               count,
