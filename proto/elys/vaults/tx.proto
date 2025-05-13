@@ -8,6 +8,7 @@ import "gogoproto/gogo.proto";
 import "elys/vaults/params.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "elys/amm/tx.proto";
+import "elys/commitment/tx.proto";
 
 option go_package = "github.com/elys-network/elys/x/vaults/types";
 
@@ -155,7 +156,13 @@ message MsgPerformAction {
     elys.amm.MsgExitPool exit_pool = 4;
     elys.amm.MsgSwapByDenom swap_by_denom = 5;
     // Commitment
-    // TODO:Claim, stake actions
+    elys.commitment.MsgCommitClaimedRewards commit_claimed_rewards = 6;
+    elys.commitment.MsgUncommitTokens uncommit_tokens = 7;
+    elys.commitment.MsgVest vest = 8;
+    elys.commitment.MsgCancelVest cancel_vest = 9;
+    elys.commitment.MsgClaimVesting claim_vesting = 10;
+    elys.commitment.MsgStake stake = 11;
+    elys.commitment.MsgUnstake unstake = 12;
   }
 }
 

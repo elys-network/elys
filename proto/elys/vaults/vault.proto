@@ -33,12 +33,3 @@ message Vault {
     (gogoproto.nullable) = false
   ];
 }
-
-// Action is a structure that defines an action to be performed on a vault
-message Action {
-  uint64 id = 1;
-  string name = 2;
-  // TODO_VAULT: Add action type
-  // TODO_VAULT: Add action message
-  // TODO_VAULT: Add action params
-}
