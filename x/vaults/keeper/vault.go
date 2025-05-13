@@ -21,6 +21,20 @@ func (k Keeper) GetVault(ctx sdk.Context, id uint64) (vault types.Vault, found b
 	return vault, true
 }
 
+func (k Keeper) GetAllVaults(ctx sdk.Context) []types.Vault {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.VaultKeyPrefix)
+	defer iterator.Close()
+
+	var vaults []types.Vault
+	for ; iterator.Valid(); iterator.Next() {
+		var vault types.Vault
+		k.cdc.MustUnmarshal(iterator.Value(), &vault)
+		vaults = append(vaults, vault)
+	}
+	return vaults
+}
+
 // SetParams set the params
 func (k Keeper) SetVault(ctx sdk.Context, vault types.Vault) error {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
