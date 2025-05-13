@@ -31,7 +31,7 @@ message Perpetual {
     (gogoproto.nullable) = false
   ];
   // margin stores margin amount when order gets executed
-  string margin = 6 [
+  string margin_amount = 6 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false

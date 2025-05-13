@@ -17,3 +17,7 @@ func (s SubAccount) GetTradingAccountAddress() sdk.AccAddress {
 func (s SubAccount) GetLockedBalance() sdk.Coins {
 	return s.TotalBalance.Sub(s.AvailableBalance...)
 }
+
+func (s SubAccount) IsIsolated() bool {
+	return true
+}

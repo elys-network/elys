@@ -348,32 +348,32 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 	}
 
 	p1 := []types.Trade{ // Trades for Block H+1 (Time T0+5s)
-		types.NewTrade(MarketId, math.LegacyNewDec(100), math.LegacyMustNewDecFromStr("10.1"), buyerAcc, sellerAcc),
-		types.NewTrade(MarketId, math.LegacyNewDec(300), math.LegacyMustNewDecFromStr("10.3"), buyerAcc, sellerAcc),
+		types.NewTrade(MarketId, math.LegacyNewDec(100), math.LegacyMustNewDecFromStr("10.1"), buyerAcc, sellerAcc, false),
+		types.NewTrade(MarketId, math.LegacyNewDec(300), math.LegacyMustNewDecFromStr("10.3"), buyerAcc, sellerAcc, false),
 	} // AvgPrice = (1010 + 3090) / 400 = 10.25
 	p1AvgPrice := math.LegacyMustNewDecFromStr("10.25")
 
 	p2 := []types.Trade{ // Trades for Block H+2 (Time T0+10s)
-		types.NewTrade(MarketId, math.LegacyNewDec(200), math.LegacyMustNewDecFromStr("10.5"), buyerAcc, sellerAcc),
-		types.NewTrade(MarketId, math.LegacyNewDec(300), math.LegacyMustNewDecFromStr("11.0"), buyerAcc, sellerAcc),
+		types.NewTrade(MarketId, math.LegacyNewDec(200), math.LegacyMustNewDecFromStr("10.5"), buyerAcc, sellerAcc, false),
+		types.NewTrade(MarketId, math.LegacyNewDec(300), math.LegacyMustNewDecFromStr("11.0"), buyerAcc, sellerAcc, false),
 	} // AvgPrice = (2100 + 3300) / 500 = 10.8
 	p2AvgPrice := math.LegacyMustNewDecFromStr("10.8")
 
 	//p3 := []types.Trade{ // Trades for Block H+3 (Time T0+15s)
-	//	types.NewTrade(MarketId, math.LegacyNewDec(100), math.LegacyMustNewDecFromStr("11.1"), buyerAcc, sellerAcc),
-	//	types.NewTrade(MarketId, math.LegacyNewDec(300), math.LegacyMustNewDecFromStr("10.9"), buyerAcc, sellerAcc),
+	//	types.NewTrade(MarketId, math.LegacyNewDec(100), math.LegacyMustNewDecFromStr("11.1"), buyerAcc, sellerAcc, false),
+	//	types.NewTrade(MarketId, math.LegacyNewDec(300), math.LegacyMustNewDecFromStr("10.9"), buyerAcc, sellerAcc, false),
 	//} // AvgPrice = (1110 + 3270) / 400 = 10.95
 	p3AvgPrice := math.LegacyMustNewDecFromStr("10.95")
 
 	p4 := []types.Trade{ // Trades for Block H+5 (Time T0+25s) - NOTE Height increases by 2 here
-		types.NewTrade(MarketId, math.LegacyNewDec(300), math.LegacyMustNewDecFromStr("11.5"), buyerAcc, sellerAcc),
-		types.NewTrade(MarketId, math.LegacyNewDec(200), math.LegacyMustNewDecFromStr("11.6"), buyerAcc, sellerAcc),
+		types.NewTrade(MarketId, math.LegacyNewDec(300), math.LegacyMustNewDecFromStr("11.5"), buyerAcc, sellerAcc, false),
+		types.NewTrade(MarketId, math.LegacyNewDec(200), math.LegacyMustNewDecFromStr("11.6"), buyerAcc, sellerAcc, false),
 	} // AvgPrice = (3450 + 2320) / 500 = 11.54
 	//p4AvgPrice := math.LegacyMustNewDecFromStr("11.54")
 	p100 := math.LegacyMustNewDecFromStr("100")
 	// === Test GetCurrentTwapPrice Logic ===
 	p5 := []types.Trade{ // Trades for Block H+5 (Time T0+25s) - NOTE Height increases by 2 here
-		types.NewTrade(2, math.LegacyNewDec(300), math.LegacyMustNewDecFromStr("11.5"), buyerAcc, sellerAcc),
+		types.NewTrade(2, math.LegacyNewDec(300), math.LegacyMustNewDecFromStr("11.5"), buyerAcc, sellerAcc, false),
 	}
 	suite.Run("GetCurrentTwapPrice Scenarios", func() {
 		setupTest()
@@ -446,13 +446,13 @@ func (suite *KeeperTestSuite) TestSetTwapFunctions() {
 		}{
 			{
 				name:        "Error: Zero Quantity Trade",
-				trade:       types.Trade{buyerAcc, sellerAcc, MarketId, p100, math.LegacyZeroDec()}, // Zero Qty
-				setupFunc:   func() { setupTest() },                                                 // Basic setup
+				trade:       types.Trade{buyerAcc, sellerAcc, MarketId, p100, math.LegacyZeroDec(), false}, // Zero Qty
+				setupFunc:   func() { setupTest() },                                                        // Basic setup
 				expectedErr: "trade quantity cannot be negative or zero",
 			},
 			{
 				name:        "Error: Negative Quantity Trade",
-				trade:       types.Trade{buyerAcc, sellerAcc, MarketId, p100, math.LegacyNewDec(-10)}, // Negative Qty
+				trade:       types.Trade{buyerAcc, sellerAcc, MarketId, p100, math.LegacyNewDec(-10), false}, // Negative Qty
 				setupFunc:   func() { setupTest() },
 				expectedErr: "trade quantity cannot be negative or zero",
 			},

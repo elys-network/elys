@@ -53,52 +53,50 @@ func (k Keeper) DeletePerpetual(ctx sdk.Context, p types.Perpetual) {
 	store.Delete(key)
 }
 
-func (k Keeper) GetPerpetualValue(ctx sdk.Context, perpetual types.Perpetual) math.LegacyDec {
+func (k Keeper) GetMaintenanceMargin(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) math.LegacyDec {
+	currentValue := k.GetPerpetualAbsValue(ctx, perpetual)
+	return market.MaintenanceMarginRatio.Mul(currentValue)
+}
+
+func (k Keeper) GetPerpetualAbsValue(ctx sdk.Context, perpetual types.Perpetual) math.LegacyDec {
 	twapPrice := k.GetCurrentTwapPrice(ctx, perpetual.MarketId)
 	if twapPrice.IsZero() {
 		panic("twap price is zero while calculating perpetual value")
 	}
-	return twapPrice.Mul(perpetual.Quantity)
+	return twapPrice.Mul(perpetual.Quantity).Abs()
 }
 
-func (k Keeper) GetMaintenanceMargin(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) math.LegacyDec {
-	currentValue := k.GetPerpetualValue(ctx, perpetual)
-	return market.MaintenanceMarginRatio.Mul(currentValue)
+// GetEquityValue = InitialMarginValue + UPnL
+func (k Keeper) GetEquityValue(ctx sdk.Context, perpetual types.Perpetual, subAccount types.SubAccount, market types.PerpetualMarket) (math.LegacyDec, error) {
+	if subAccount.IsIsolated() {
+		// InitialMarginPosted + UnrealizedPNL
+		markPrice := k.GetCurrentTwapPrice(ctx, perpetual.MarketId)
+		unrealizedPnLValue, err := perpetual.CalculateUnrealizedPnLValue(markPrice)
+		if err != nil {
+			return math.LegacyDec{}, err
+		}
+		price, err := k.GetDenomPrice(ctx, market.QuoteDenom)
+		if err != nil {
+			return math.LegacyDec{}, err
+		}
+		initialMarginValue := perpetual.MarginAmount.ToLegacyDec().Mul(price)
+		return initialMarginValue.Add(unrealizedPnLValue), nil
+	} else {
+		// TotalAccountValue
+		panic("implement me")
+	}
 }
 
-// GetCurrentLeverage currentValue / balanceValue
-func (k Keeper) GetCurrentLeverage(ctx sdk.Context, perpetual types.Perpetual) (math.LegacyDec, error) {
-	currentValue := k.GetPerpetualValue(ctx, perpetual)
-	subaccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), perpetual.MarketId)
+// GetEffectiveLeverage PositionValue / EquityValue
+func (k Keeper) GetEffectiveLeverage(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) (math.LegacyDec, error) {
+	subAccount, err := k.GetSubAccount(ctx, perpetual.GetOwnerAccAddress(), perpetual.MarketId)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
-	balanceValue, err := k.GetAvailableBalanceValue(ctx, subaccount)
+	currentValue := k.GetPerpetualAbsValue(ctx, perpetual)
+	equityValue, err := k.GetEquityValue(ctx, perpetual, subAccount, market)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
-	if balanceValue.IsZero() || balanceValue.IsNil() {
-		return math.LegacyMaxSortableDec, nil
-	}
-	return currentValue.Quo(balanceValue), nil
-}
-
-// GetLiquidationPrice
-// Long: Liquidation Price = Entry Price × (1 - 1/Current Leverage) / (1 - Maintenance Margin Rate)
-// Short:Liquidation Price = Entry Price × (1 + 1/Current Leverage) / (1 + Maintenance Margin Rate)
-func (k Keeper) GetLiquidationPrice(ctx sdk.Context, perpetual types.Perpetual, market types.PerpetualMarket) (math.LegacyDec, error) {
-	leverage, err := k.GetCurrentLeverage(ctx, perpetual)
-	if err != nil {
-		return math.LegacyDec{}, err
-	}
-	numSub := math.LegacyOneDec().Quo(leverage)
-	num := math.LegacyOneDec().Sub(numSub)
-	den := math.LegacyOneDec().Sub(market.MaintenanceMarginRatio)
-	if perpetual.IsShort() {
-		numAdd := math.LegacyOneDec().Quo(leverage)
-		num = math.LegacyOneDec().Add(numAdd)
-		den = math.LegacyOneDec().Add(market.MaintenanceMarginRatio)
-	}
-	resultMult := num.Quo(den)
-	return perpetual.EntryPrice.Mul(resultMult), nil
+	return currentValue.Quo(equityValue), nil
 }

@@ -58,9 +58,9 @@ func (k Keeper) PlaceMarketOrder(goCtx context.Context, msg *types.MsgPlaceMarke
 	fullyFilled := false
 	switch msg.OrderType {
 	case types.OrderType_ORDER_TYPE_MARKET_BUY:
-		fullyFilled, err = k.ExecuteMarketBuyOrder(ctx, market, *msg)
+		fullyFilled, err = k.ExecuteMarketBuyOrder(ctx, market, *msg, false)
 	case types.OrderType_ORDER_TYPE_MARKET_SELL:
-		fullyFilled, err = k.ExecuteMarketSellOrder(ctx, market, *msg)
+		fullyFilled, err = k.ExecuteMarketSellOrder(ctx, market, *msg, false)
 	default:
 		return nil, errorsmod.Wrapf(err, "unknown order type: %s", msg.OrderType)
 	}

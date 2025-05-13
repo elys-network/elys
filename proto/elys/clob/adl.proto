@@ -1,0 +1,12 @@
+syntax = "proto3";
+package elys.clob;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/elys-network/elys/x/clob/types";
+
+message PerpetualADL {
+  uint64 id = 1;
+  uint64 market_id = 2;
+}

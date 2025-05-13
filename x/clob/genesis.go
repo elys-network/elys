@@ -34,6 +34,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, v := range genState.FundingRates {
 		k.SetFundingRate(ctx, *v)
 	}
+	for _, v := range genState.PerpetualADLs {
+		k.SetPerpetualADL(ctx, *v)
+	}
 }
 
 // ExportGenesis returns the module's exported genesis

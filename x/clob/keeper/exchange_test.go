@@ -8,11 +8,13 @@ import (
 
 func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 	// Define common values 	// 10%
+	denomFactor := math.NewInt(1000_000)
+
 	calcMargin := func(qty, price math.LegacyDec) math.Int { // Local helper
 		if price.IsNil() || !price.IsPositive() || qty.IsZero() {
 			return math.ZeroInt()
 		}
-		return qty.Abs().Mul(price).Mul(IMR).RoundInt()
+		return qty.Abs().Mul(price).Mul(IMR).MulInt(denomFactor).RoundInt()
 	}
 	p100 := math.LegacyNewDec(100)
 	p105 := math.LegacyNewDec(105)
@@ -53,12 +55,12 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				_, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p100, b, s) }, // B buys 10, S sells 10 @ 100
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p100, b, s, false) }, // B buys 10, S sells 10 @ 100
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true,
-				BuyerFinalQty: qty10, BuyerFinalEP: p100, BuyerFinalMargin: math.NewInt(100), // Q=10, EP=100, M=100
-				SellerFinalQty: qty10.Neg(), SellerFinalEP: p100, SellerFinalMargin: math.NewInt(100), // Q=-10, EP=100, M=100
-				BuyerBalanceChange: math.NewInt(-100), SellerBalanceChange: math.NewInt(-100), MarketBalanceChange: math.NewInt(200),
+				BuyerFinalQty: qty10, BuyerFinalEP: p100, BuyerFinalMargin: math.NewInt(100).Mul(denomFactor), // Q=10, EP=100, M=100
+				SellerFinalQty: qty10.Neg(), SellerFinalEP: p100, SellerFinalMargin: math.NewInt(100).Mul(denomFactor), // Q=-10, EP=100, M=100
+				BuyerBalanceChange: math.NewInt(-100).Mul(denomFactor), SellerBalanceChange: math.NewInt(-100).Mul(denomFactor), MarketBalanceChange: math.NewInt(200).Mul(denomFactor),
 				FinalMarketOI: qty10, TwapBlockDataSet: true, BuyerFundingRateSet: true, SellerFundingRateSet: true,
 			},
 		},
@@ -75,16 +77,16 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, b, s) }, // B buys 10, S sells 10 @ 105
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, b, s, false) }, // B buys 10, S sells 10 @ 105
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true,
 				BuyerFinalQty: qty10, BuyerFinalEP: p105, BuyerFinalMargin: calcMargin(qty10, p105), // Q=10, EP=105, M=105
 				SellerFinalQty: qty5, SellerFinalEP: p100, SellerFinalMargin: calcMargin(qty5, p100), // Q=5, EP=100, M=50
-				BuyerBalanceChange: math.NewInt(-105), // -Margin
+				BuyerBalanceChange: math.NewInt(-105).Mul(denomFactor), // -Margin
 				// Seller: PNL=+10*(105-100)=+50. Margin Refund = 150-50 = +100. Total=+150
-				SellerBalanceChange: math.NewInt(150),
-				MarketBalanceChange: math.NewInt(-45), // +B_M(105) - S_PNL(50) - S_Refund(100) = -45
-				FinalMarketOI:       qty15,            // Unchanged (1 Open, 1 Dec) = 15
+				SellerBalanceChange: math.NewInt(150).Mul(denomFactor),
+				MarketBalanceChange: math.NewInt(-45).Mul(denomFactor), // +B_M(105) - S_PNL(50) - S_Refund(100) = -45
+				FinalMarketOI:       qty15,                             // Unchanged (1 Open, 1 Dec) = 15
 				TwapBlockDataSet:    true, BuyerFundingRateSet: true, SellerFundingRateSet: true,
 			},
 		},
@@ -99,15 +101,15 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, b, s) }, // B buys 10, S sells 10 @ 105
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, b, s, false) }, // B buys 10, S sells 10 @ 105
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: false, // Seller closed
 				BuyerFinalQty: qty10, BuyerFinalEP: p105, BuyerFinalMargin: calcMargin(qty10, p105), // Q=10, EP=105, M=105
 				// SellerFinalPerpetual: N/A
-				BuyerBalanceChange: math.NewInt(-105), // -Margin
+				BuyerBalanceChange: math.NewInt(-105).Mul(denomFactor), // -Margin
 				// Seller PNL = +10*(105-100)=+50. Refund=100. Total=+150
-				SellerBalanceChange: math.NewInt(150),
-				MarketBalanceChange: math.NewInt(-45),                                             // +B_M(105) - S_PNL(50) - S_Refund(100) = -45
+				SellerBalanceChange: math.NewInt(150).Mul(denomFactor),
+				MarketBalanceChange: math.NewInt(-45).Mul(denomFactor),                            // +B_M(105) - S_PNL(50) - S_Refund(100) = -45
 				FinalMarketOI:       qty10,                                                        // Unchanged (1 Open, 1 Close) = 10
 				TwapBlockDataSet:    true, BuyerFundingRateSet: true, SellerFundingRateSet: false, // Seller deleted
 			},
@@ -123,16 +125,16 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty15, p105, b, s) }, // B buys 15, S sells 15 @ 105
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty15, p105, b, s, false) }, // B buys 15, S sells 15 @ 105
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true, // Seller flipped to -5
-				BuyerFinalQty: qty15, BuyerFinalEP: p105, BuyerFinalMargin: calcMargin(qty15, p105), // Q=15, EP=105, M=158
+				BuyerFinalQty: qty15, BuyerFinalEP: p105, BuyerFinalMargin: calcMargin(qty15, p105), // Q=15, EP=105, M=157.5
 				SellerFinalQty: qty5.Neg(), SellerFinalEP: p105, SellerFinalMargin: calcMargin(qty5, p105), // Q=-5, EP=105, M=53
-				BuyerBalanceChange: math.NewInt(-158), // -Margin
+				BuyerBalanceChange: math.LegacyMustNewDecFromStr("-157.5").MulInt(denomFactor).TruncateInt(), // -Margin
 				// Seller: Close +10: PNL=+10*(105-100)=+50. Refund=100. Open -5: Margin=-52 (after rounding). Total = +50+100-52 = +98
-				SellerBalanceChange: math.NewInt(98),
-				MarketBalanceChange: math.NewInt(60), // +B_M(158) - S_PNL(50) - S_Refund(100) + S_NewM(53) = 60
-				FinalMarketOI:       qty10,           // Unchanged (1 Open, 1 Flip) = 15
+				SellerBalanceChange: math.LegacyMustNewDecFromStr("97.5").MulInt(denomFactor).TruncateInt(),
+				MarketBalanceChange: math.NewInt(60).Mul(denomFactor), // +B_M(158) - S_PNL(50) - S_Refund(100) + S_NewM(53) = 60
+				FinalMarketOI:       qty10,                            // Unchanged (1 Open, 1 Flip) = 15
 				TwapBlockDataSet:    true, BuyerFundingRateSet: true, SellerFundingRateSet: true,
 			},
 		},
@@ -147,16 +149,16 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p95, b, s) }, // B buys 5, S sells 5 @ 95
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p95, b, s, false) }, // B buys 5, S sells 5 @ 95
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true,
 				BuyerFinalQty: qty5, BuyerFinalEP: p95, BuyerFinalMargin: calcMargin(qty5, p95), // Q=5, EP=95, M=48
 				// Seller: Q=-15, EP=(-10*100+-5*95)/-15 = 98.33.., M=abs(-15)*98.33*0.1 = 147.5->148
-				SellerFinalQty: qty15.Neg(), SellerFinalEP: math.LegacyMustNewDecFromStr("98.333333333333333333"), SellerFinalMargin: math.NewInt(148),
-				BuyerBalanceChange:  math.NewInt(-48), // -Margin
-				SellerBalanceChange: math.NewInt(-48), // -MarginDiff = -(148-100) = -48
-				MarketBalanceChange: math.NewInt(96),  // +B_M(48) + S_M_Diff(48) = 96
-				FinalMarketOI:       qty15,            // OI Increases by 5 to 15
+				SellerFinalQty: qty15.Neg(), SellerFinalEP: math.LegacyMustNewDecFromStr("98.333333333333333333"), SellerFinalMargin: math.LegacyMustNewDecFromStr("147.5").MulInt(denomFactor).TruncateInt(),
+				BuyerBalanceChange:  math.LegacyMustNewDecFromStr("-47.5").MulInt(denomFactor).TruncateInt(), // -Margin
+				SellerBalanceChange: math.LegacyMustNewDecFromStr("-47.5").MulInt(denomFactor).TruncateInt(), // -MarginDiff = -(148-100) = -48
+				MarketBalanceChange: math.NewInt(95).Mul(denomFactor),                                        // +B_M(48) + S_M_Diff(48) = 96
+				FinalMarketOI:       qty15,                                                                   // OI Increases by 5 to 15
 				TwapBlockDataSet:    true, BuyerFundingRateSet: true, SellerFundingRateSet: true,
 			},
 		},
@@ -173,16 +175,16 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p105, b, s) }, // B buys 5, S sells 5 @ 105
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p105, b, s, false) }, // B buys 5, S sells 5 @ 105
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true,
 				// Buyer: Q=15, EP=(10*100+5*105)/15=101.66.., M=15*101.66*0.1=152.5->153. MarginDiff=53
-				BuyerFinalQty: qty15, BuyerFinalEP: math.LegacyMustNewDecFromStr("101.666666666666666667"), BuyerFinalMargin: math.NewInt(152),
+				BuyerFinalQty: qty15, BuyerFinalEP: math.LegacyMustNewDecFromStr("101.666666666666666667"), BuyerFinalMargin: math.LegacyMustNewDecFromStr("152.5").MulInt(denomFactor).TruncateInt(),
 				SellerFinalQty: qty5.Neg(), SellerFinalEP: p105, SellerFinalMargin: calcMargin(qty5, p105), // Q=-5, EP=105, M=53
-				BuyerBalanceChange:  math.NewInt(-52), // -MarginDiff
-				SellerBalanceChange: math.NewInt(-52), // -Margin
-				MarketBalanceChange: math.NewInt(104), // +B_M_Diff(52) + S_M(52) = 104
-				FinalMarketOI:       qty15,            // OI Increases by 5 to 15
+				BuyerBalanceChange:  math.LegacyMustNewDecFromStr("-52.5").MulInt(denomFactor).TruncateInt(), // -MarginDiff
+				SellerBalanceChange: math.LegacyMustNewDecFromStr("-52.5").MulInt(denomFactor).TruncateInt(), // -Margin
+				MarketBalanceChange: math.NewInt(105).Mul(denomFactor),                                       // +B_M_Diff(52) + S_M(52) = 104
+				FinalMarketOI:       qty15,                                                                   // OI Increases by 5 to 15
 				TwapBlockDataSet:    true, BuyerFundingRateSet: true, SellerFundingRateSet: true,
 			},
 		},
@@ -197,16 +199,16 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				suite.app.ClobKeeper.SetPerpetualMarket(suite.ctx, market)
 				return buyerAcc, sellerAcc
 			},
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p95, b, s) }, // B buys 10, S sells 10 @ 95
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p95, b, s, false) }, // B buys 10, S sells 10 @ 95
 			expected: ExpectedState{
 				Err: "", BuyerExists: true, SellerExists: true, // Buyer remains -5
 				BuyerFinalQty: qty5.Neg(), BuyerFinalEP: p100, BuyerFinalMargin: calcMargin(qty5, p100), // Q=-5, EP=100, M=50
 				SellerFinalQty: qty10.Neg(), SellerFinalEP: p95, SellerFinalMargin: calcMargin(qty10, p95), // Q=-10, EP=95, M=95
 				// Buyer: PNL=-10*(95-100)=+50. Margin Refund = 150-50 = +100. Total=+150
-				BuyerBalanceChange:  math.NewInt(150),
-				SellerBalanceChange: math.NewInt(-95), // -Margin
-				MarketBalanceChange: math.NewInt(-55), // -B_PNL(50) - B_Refund(100) + S_M(95) = -55
-				FinalMarketOI:       qty15,            // Unchanged (1 Dec, 1 Open) = 15
+				BuyerBalanceChange:  math.NewInt(150).Mul(denomFactor),
+				SellerBalanceChange: math.NewInt(-95).Mul(denomFactor), // -Margin
+				MarketBalanceChange: math.NewInt(-55).Mul(denomFactor), // -B_PNL(50) - B_Refund(100) + S_M(95) = -55
+				FinalMarketOI:       qty15,                             // Unchanged (1 Dec, 1 Open) = 15
 				TwapBlockDataSet:    true, BuyerFundingRateSet: true, SellerFundingRateSet: true,
 			},
 		},
@@ -230,20 +232,20 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				return buyerAcc, sellerAcc
 			},
 			// Seller must be buyer in trade to increase long
-			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, s, b) }, // S buys 10, B sells 10 @ 105
+			trade: func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty10, p105, s, b, false) }, // S buys 10, B sells 10 @ 105
 			expected: ExpectedState{
 				Err: "", BuyerExists: false, SellerExists: true, // Buyer closed, Seller increased
 				// Buyer: PNL=+10*(105-100)=+50. Refund=100. Total=+150
-				BuyerBalanceChange: math.NewInt(150),
+				BuyerBalanceChange: math.NewInt(150).Mul(denomFactor),
 				// Seller: Q=15, EP=(5*100+10*105)/15=103.33.., M=15*103.33*0.1=155. MarginDiff=105
-				SellerFinalQty: qty15, SellerFinalEP: math.LegacyMustNewDecFromStr("103.333333333333333333"), SellerFinalMargin: math.NewInt(155),
-				SellerBalanceChange: math.NewInt(-105), // -MarginDiff
-				MarketBalanceChange: math.NewInt(-45),  // -B_PNL(50) - B_Refund(100) + S_M_Diff(105) = -45
-				FinalMarketOI:       qty15,             // Unchanged (1 Close, 1 Inc) = 15
+				SellerFinalQty: qty15, SellerFinalEP: math.LegacyMustNewDecFromStr("103.333333333333333333"), SellerFinalMargin: math.NewInt(155).Mul(denomFactor),
+				SellerBalanceChange: math.NewInt(-105).Mul(denomFactor), // -MarginDiff
+				MarketBalanceChange: math.NewInt(-45).Mul(denomFactor),  // -B_PNL(50) - B_Refund(100) + S_M_Diff(105) = -45
+				FinalMarketOI:       qty15,                              // Unchanged (1 Close, 1 Inc) = 15
 				TwapBlockDataSet:    true, BuyerFundingRateSet: false, SellerFundingRateSet: true,
 			},
 		},
-		// Add Both Flip case...
+		// Add Both Flip cases...
 
 		// === GROUP 5: Error Cases ===
 		// Keep existing error cases for funds, margin checks
@@ -255,7 +257,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				sellerAcc.MarketId = 2
 				return buyerAcc, sellerAcc // Return dummy market for trade obj
 			},
-			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(2, qty10, p100, b, s) },
+			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(2, qty10, p100, b, s, false) },
 			expected: ExpectedState{Err: types.ErrPerpetualMarketNotFound.Error()}, // Use specific error
 		},
 		{
@@ -264,7 +266,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				_, buyerAcc, sellerAcc, _ := suite.SetupExchangeTest()
 				return buyerAcc, sellerAcc // Return dummy market for trade obj
 			},
-			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(2, qty10, p100, b, s) },
+			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(2, qty10, p100, b, s, false) },
 			expected: ExpectedState{Err: "trade market id and subAccounts market id does not match"}, // Use specific error
 		},
 		{
@@ -274,7 +276,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				return buyerAcc, sellerAcc // Return dummy market for trade obj
 			},
 			trade: func(b, s types.SubAccount) types.Trade {
-				return types.Trade{b, s, MarketId, p105, math.LegacyZeroDec()}
+				return types.Trade{b, s, MarketId, p105, math.LegacyZeroDec(), false}
 			},
 			expected: ExpectedState{Err: "trade quantity must be greater than zero"}, // Use specific error
 		},
@@ -287,7 +289,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				prevBlockTime := suite.ctx.BlockTime().Add(-10 * time.Second) // Example time step
 				prevCtx := suite.ctx.WithBlockHeight(prevBlockHeight).WithBlockTime(prevBlockTime)
 
-				dummyTrade := types.NewTrade(MarketId, math.LegacyNewDec(1), math.LegacyNewDec(100), buyerAcc, sellerAcc)
+				dummyTrade := types.NewTrade(MarketId, math.LegacyNewDec(1), math.LegacyNewDec(100), buyerAcc, sellerAcc, false)
 				err := suite.app.ClobKeeper.SetTwapPrices(prevCtx, dummyTrade)
 				suite.Require().NoError(err, "Setup: Failed to set previous TWAP price")
 
@@ -323,8 +325,8 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				)
 				return buyerAcc, sellerAcc
 			},
-			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p105, b, s) }, // Buyer increases long, triggers SettleFunding first
-			expected: ExpectedState{Err: "insufficient funds"},                                                      // Error expected from AddToSubAccount inside SettleFunding
+			trade:    func(b, s types.SubAccount) types.Trade { return types.NewTrade(MarketId, qty5, p105, b, s, false) }, // Buyer increases long, triggers SettleFunding first
+			expected: ExpectedState{Err: "insufficient funds"},                                                             // Error expected from AddToSubAccount inside SettleFunding
 		},
 		// Add GetPerpetual error case (might require mocking or complex setup)
 		// Add SetTwapPrices error case (might require mocking market lookup inside it)
@@ -377,7 +379,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				if tc.expected.BuyerExists {
 					suite.Require().True(tc.expected.BuyerFinalQty.Equal(finalBuyerPerp.Quantity), "Buyer Qty mismatch: Exp %s Got %s", tc.expected.BuyerFinalQty, finalBuyerPerp.Quantity)
 					suite.Require().True(tc.expected.BuyerFinalEP.Equal(finalBuyerPerp.EntryPrice), "Buyer EP mismatch: Exp %s Got %s", tc.expected.BuyerFinalEP, finalBuyerPerp.EntryPrice)
-					suite.Require().True(tc.expected.BuyerFinalMargin.Equal(finalBuyerPerp.Margin), "Buyer Margin mismatch: Exp %s Got %s", tc.expected.BuyerFinalMargin, finalBuyerPerp.Margin)
+					suite.Require().True(tc.expected.BuyerFinalMargin.Equal(finalBuyerPerp.MarginAmount), "Buyer Margin mismatch: Exp %s Got %s", tc.expected.BuyerFinalMargin, finalBuyerPerp.MarginAmount)
 					if tc.expected.BuyerFundingRateSet {
 						suite.Require().True(currentFundingRate.Rate.Equal(finalBuyerPerp.EntryFundingRate), "Buyer EntryFundingRate mismatch: Exp %s Got %s", currentFundingRate.Rate, finalBuyerPerp.EntryFundingRate)
 					}
@@ -392,7 +394,7 @@ func (suite *KeeperTestSuite) TestExchange_Comprehensive() {
 				if tc.expected.SellerExists {
 					suite.Require().True(tc.expected.SellerFinalQty.Equal(finalSellerPerp.Quantity), "Seller Qty mismatch: Exp %s Got %s", tc.expected.SellerFinalQty, finalSellerPerp.Quantity)
 					suite.Require().True(tc.expected.SellerFinalEP.Equal(finalSellerPerp.EntryPrice), "Seller EP mismatch: Exp %s Got %s", tc.expected.SellerFinalEP, finalSellerPerp.EntryPrice)
-					suite.Require().True(tc.expected.SellerFinalMargin.Equal(finalSellerPerp.Margin), "Seller Margin mismatch: Exp %s Got %s", tc.expected.SellerFinalMargin, finalSellerPerp.Margin)
+					suite.Require().True(tc.expected.SellerFinalMargin.Equal(finalSellerPerp.MarginAmount), "Seller Margin mismatch: Exp %s Got %s", tc.expected.SellerFinalMargin, finalSellerPerp.MarginAmount)
 					if tc.expected.SellerFundingRateSet {
 						suite.Require().True(currentFundingRate.Rate.Equal(finalSellerPerp.EntryFundingRate), "Seller EntryFundingRate mismatch: Exp %s Got %s", currentFundingRate.Rate, finalSellerPerp.EntryFundingRate)
 					}

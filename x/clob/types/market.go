@@ -8,6 +8,11 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
+var (
+	MinimumIMRByMMR = math.LegacyMustNewDecFromStr("1.5")
+	MaximumIMRByMMR = math.LegacyMustNewDecFromStr("2.5")
+)
+
 func NewPerpetualMarket(id uint64, baseDenom, quoteDenom, admin string, imr, mmr, makerFee, takerFee, liquidationFeeShare, minPriceTickSize, minQuantityTickSize, minNotional, maxFRChange, maxFR math.LegacyDec, twapPriceWindow uint64, status PerpetualMarketStatus) PerpetualMarket {
 	return PerpetualMarket{
 		Id:                      id,
@@ -51,6 +56,10 @@ func (market PerpetualMarket) ValidateOpenPositionRequest(marketId uint64, price
 
 func (market PerpetualMarket) GetAccount() sdk.AccAddress {
 	return authtypes.NewModuleAddress(fmt.Sprintf("clob/perpetual/%d", market.Id))
+}
+
+func (market PerpetualMarket) GetInsuranceAccount() sdk.AccAddress {
+	return authtypes.NewModuleAddress(fmt.Sprintf("clob/perpetual/insurance/%d", market.Id))
 }
 
 func (market *PerpetualMarket) UpdateTotalOpenInterest(buyerBefore, sellerBefore, tradeSize math.LegacyDec) {

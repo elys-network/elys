@@ -36,19 +36,20 @@ func (perpetual Perpetual) GetEntryValue() math.LegacyDec {
 	return perpetual.Quantity.Abs().Mul(perpetual.EntryPrice)
 }
 
-func NewPerpetual(id uint64, marketId uint64, owner string, qty, ep math.LegacyDec, margin math.Int, fundingRate math.LegacyDec) Perpetual {
+func NewPerpetual(id uint64, marketId uint64, owner string, qty, ep math.LegacyDec, marginAmount math.Int, fundingRate math.LegacyDec) Perpetual {
 	return Perpetual{
 		Id:               id,
 		MarketId:         marketId,
 		Owner:            owner,
 		Quantity:         qty,
 		EntryPrice:       ep,
-		Margin:           margin,
+		MarginAmount:     marginAmount,
 		EntryFundingRate: fundingRate,
 	}
 }
 
-func (perpetual Perpetual) CalculateUnrealizedPNL(markPrice math.LegacyDec) (math.LegacyDec, error) {
+// CalculateUnrealizedPnLValue = Qty * (Current Price - EntryPrice)
+func (perpetual Perpetual) CalculateUnrealizedPnLValue(markPrice math.LegacyDec) (math.LegacyDec, error) {
 
 	if perpetual.Quantity.IsZero() || perpetual.Quantity.IsNil() {
 		return math.LegacyZeroDec(), nil

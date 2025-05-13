@@ -8,6 +8,7 @@ import "elys/clob/market.proto";
 import "elys/clob/order.proto";
 import "elys/clob/perpetual.proto";
 import "elys/clob/subaccount.proto";
+import "elys/clob/adl.proto";
 
 option go_package = "github.com/elys-network/elys/x/clob/types";
 
@@ -24,4 +25,5 @@ message GenesisState {
   repeated TwapPrice twap_prices = 7;
   repeated PerpetualCounter perpetual_counters = 8;
   repeated FundingRate funding_rates = 9;
+  repeated PerpetualADL perpetualADLs = 10;
 }

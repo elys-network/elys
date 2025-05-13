@@ -122,6 +122,7 @@ func (k Keeper) ExecuteLimitBuyOrder(ctx sdk.Context, market types.PerpetualMark
 				MarketId:         market.Id,
 				Price:            tradePrice,
 				Quantity:         tradeQuantity,
+				IsLiquidation:    false,
 			})
 			if err != nil {
 				return false, err

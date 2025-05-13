@@ -31,6 +31,7 @@ var (
 	TwapPricesPrefix       = []byte{0x07}
 	PerpetualCounterPrefix = []byte{0x08}
 	FundingRatePrefix      = []byte{0x09}
+	PerpetualADLPrefix     = []byte{0x0a}
 )
 
 func GetAddressSubAccountPrefixKey(addr sdk.AccAddress) []byte {
@@ -102,4 +103,9 @@ func GetPerpetualCounterKey(marketId uint64) []byte {
 
 func GetTwapPricesKey(marketId, block uint64) []byte {
 	return append(TwapPricesPrefix, append(sdk.Uint64ToBigEndian(marketId), sdk.Uint64ToBigEndian(block)...)...)
+}
+
+func GetPerpetualADLKey(marketId, id uint64) []byte {
+	key := append(PerpetualADLPrefix, sdk.Uint64ToBigEndian(marketId)...)
+	return append(key, sdk.Uint64ToBigEndian(id)...)
 }

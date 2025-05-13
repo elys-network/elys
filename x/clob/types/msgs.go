@@ -27,6 +27,19 @@ func (msg MsgCreatPerpetualMarket) ValidateBasic() (err error) {
 	if msg.MaxAbsFundingRateChange.IsNil() || msg.MaxAbsFundingRateChange.IsNegative() {
 		return fmt.Errorf("max abs funding rate cannot be negative or nil")
 	}
+	if msg.InitialMarginRatio.IsNil() || msg.InitialMarginRatio.IsNegative() || msg.InitialMarginRatio.IsZero() {
+		return fmt.Errorf("initial margin ratio cannot be negative or zero")
+	}
+	if msg.MaintenanceMarginRatio.IsNil() || msg.MaintenanceMarginRatio.IsNegative() || msg.MaintenanceMarginRatio.IsZero() {
+		return fmt.Errorf("maintenance margin ratio cannot be negative or zero")
+	}
+	if msg.MaintenanceMarginRatio.GTE(msg.InitialMarginRatio) {
+		return fmt.Errorf("maintenance margin ratio cannot be greater than or equal to initial margin ratio")
+	}
+	imrMMRRatio := msg.InitialMarginRatio.Quo(msg.MaintenanceMarginRatio)
+	if imrMMRRatio.LT(MinimumIMRByMMR) || imrMMRRatio.GT(MaximumIMRByMMR) {
+		return fmt.Errorf("imr/mmr must be between %s and %s", MinimumIMRByMMR.String(), MaximumIMRByMMR.String())
+	}
 	return nil
 }
 
