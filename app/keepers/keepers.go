@@ -124,7 +124,7 @@ type AppKeepers struct {
 	AccountKeeper    authkeeper.AccountKeeper
 	BankKeeper       bankkeeper.Keeper
 	CapabilityKeeper *capabilitykeeper.Keeper
-	StakingKeeper    ICSStakingKeeper
+	StakingKeeper    *stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
 	GovKeeper        *govkeeper.Keeper
@@ -306,29 +306,23 @@ func NewAppKeeper(
 		app.AccountKeeper,
 	)
 
-	// ... other modules keepers
-	// pre-initialize ConsumerKeeper to satisfy ibckeeper.NewKeeper
-	// which would panic on nil or zero keeper
-	// ConsumerKeeper implements StakingKeeper but all function calls result in no-ops so this is safe
-	// communication over IBC is not affected by these changes
 	app.ConsumerKeeper = ccvconsumerkeeper.NewNonZeroKeeper(
 		appCodec,
 		app.keys[ccvconsumertypes.StoreKey],
 		app.GetSubspace(ccvconsumertypes.ModuleName),
 	)
 
-	app.StakingKeeper = NewICSStakingKeeper(
-		stakingkeeper.NewKeeper(
-			appCodec,
-			runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
-			app.AccountKeeper,
-			app.BankKeeper,
-			authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-			authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
-			authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
-		),
-		app.ConsumerKeeper,
+	app.StakingKeeper = stakingkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(app.keys[stakingtypes.StoreKey]),
+		app.AccountKeeper,
+		app.BankKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	)
+
+	icsValidatorKeeper := NewICSValidatorKeeper(app.ConsumerKeeper)
 
 	app.AssetprofileKeeper = *assetprofilemodulekeeper.NewKeeper(
 		appCodec,
@@ -342,7 +336,7 @@ func NewAppKeeper(
 		runtime.NewKVStoreService(app.keys[commitmentmoduletypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.AssetprofileKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -358,7 +352,7 @@ func NewAppKeeper(
 		appCodec,
 		runtime.NewKVStoreService(app.keys[estakingmoduletypes.StoreKey]),
 		app.ParameterKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.CommitmentKeeper,
 		&app.DistrKeeper,
 		app.AssetprofileKeeper,
@@ -551,7 +545,7 @@ func NewAppKeeper(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.DistrKeeper,
-		app.StakingKeeper,
+		icsValidatorKeeper,
 		distrtypes.ModuleName,
 		cast.ToBool(appOpts.Get("telemetry.enabled")),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -674,7 +668,7 @@ func NewAppKeeper(
 		app.AccountKeeper,
 		app.BankKeeper,
 		// No need to send EstakingKeeper here as gov only does sk.IterateBondedValidatorsByPower, no need to give vp to Eden and EdenB
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.DistrKeeper,
 		bApp.MsgServiceRouter(),
 		govConfig,
@@ -711,7 +705,7 @@ func NewAppKeeper(
 		app.EstakingKeeper,
 		app.MasterchefKeeper,
 		app.CommitmentKeeper,
-		app.StakingKeeper.Keeper,
+		app.StakingKeeper,
 		app.PerpetualKeeper,
 		app.LeveragelpKeeper,
 		app.StablestakeKeeper,
@@ -872,7 +866,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// Can be removed as we are not using param subspace anymore anywhere
 	paramsKeeper.Subspace(assetprofilemoduletypes.ModuleName)
-	paramsKeeper.Subspace(oracletypes.ModuleName)
+	//paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(commitmentmoduletypes.ModuleName)
 	paramsKeeper.Subspace(tokenomicsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(burnermoduletypes.ModuleName)
