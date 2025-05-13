@@ -14,10 +14,15 @@ const (
 )
 
 var (
-	ParamKeyPrefix = []byte{0x01}
-	VaultKeyPrefix = []byte{0x02}
+	ParamKeyPrefix    = []byte{0x01}
+	VaultKeyPrefix    = []byte{0x02}
+	UserDataKeyPrefix = []byte{0x03}
 )
 
 func GetVaultKey(key uint64) []byte {
 	return append(VaultKeyPrefix, sdk.Uint64ToBigEndian(key)...)
+}
+
+func GetUserDataKey(key string) []byte {
+	return append(UserDataKeyPrefix, []byte(key)...)
 }

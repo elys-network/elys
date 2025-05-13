@@ -49,7 +49,24 @@ func (k msgServer) Deposit(goCtx context.Context, req *types.MsgDeposit) (*types
 		return nil, err
 	}
 
-	return &types.MsgDepositResponse{}, nil
+	// convert input amount to USD value
+	usdValue := k.amm.CalculateUSDValue(ctx, vault.DepositDenom, req.Amount.Amount)
+	userData, found := k.GetUserData(ctx, depositer.String())
+	if found {
+		userData.PrincipalAmount = userData.PrincipalAmount.Add(usdValue.Dec())
+	} else {
+		userData = types.UserData{
+			User:            depositer.String(),
+			PrincipalAmount: usdValue.Dec(),
+		}
+	}
+
+	k.SetUserData(ctx, userData)
+
+	return &types.MsgDepositResponse{
+		VaultId: vault.Id,
+		Shares:  shareAmount,
+	}, nil
 }
 
 func (k Keeper) VaultUsdValue(ctx sdk.Context, vaultId uint64) (osmomath.BigDec, error) {

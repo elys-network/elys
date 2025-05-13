@@ -9,6 +9,8 @@ import "elys/vaults/params.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "elys/amm/tx.proto";
 import "elys/commitment/tx.proto";
+import "elys/masterchef/tx.proto";
+import "elys/stablestake/tx.proto";
 
 option go_package = "github.com/elys-network/elys/x/vaults/types";
 
@@ -163,6 +165,11 @@ message MsgPerformAction {
     elys.commitment.MsgClaimVesting claim_vesting = 10;
     elys.commitment.MsgStake stake = 11;
     elys.commitment.MsgUnstake unstake = 12;
+    // Stablestake
+    elys.stablestake.MsgBond bond = 13;
+    elys.stablestake.MsgUnbond unbond = 14;
+    // Masterchef
+    elys.masterchef.MsgClaimRewards claim_rewards = 15;
   }
 }
 

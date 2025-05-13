@@ -1,0 +1,17 @@
+syntax = "proto3";
+package elys.vaults;
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/elys-network/elys/x/vaults/types";
+
+// UserData is a structure that defines a user's data
+message UserData {
+  string user = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string principal_amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
