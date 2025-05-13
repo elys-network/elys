@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/types/query"
 
@@ -177,4 +179,70 @@ func (k Keeper) PoolAprs(goCtx context.Context, req *types.QueryPoolAprsRequest)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	data := k.CalculatePoolAprs(ctx, req.PoolIds)
 	return &types.QueryPoolAprsResponse{Data: data}, nil
+}
+
+func (k Keeper) TotalPendingRewards(goCtx context.Context, req *types.QueryTotalPendingRewardsRequest) (*types.QueryTotalPendingRewardsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	var totalRewards sdk.Coins
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	positionStore := prefix.NewStore(store, types.UserRewardInfoKeyPrefix)
+
+	if req.Pagination == nil {
+		req.Pagination = &query.PageRequest{
+			Limit: 100000,
+		}
+	}
+
+	count := uint64(0)
+
+	pageRes, err := query.Paginate(positionStore, req.Pagination, func(key []byte, value []byte) error {
+		var reward types.UserRewardInfo
+		k.cdc.MustUnmarshal(value, &reward)
+		k.AfterWithdraw(ctx, reward.PoolId, sdk.MustAccAddressFromBech32(reward.User), sdkmath.ZeroInt())
+		if reward.RewardPending.IsPositive() {
+			totalRewards = totalRewards.Add(sdk.NewCoin(reward.RewardDenom, reward.RewardPending.TruncateInt()))
+		}
+		count++
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryTotalPendingRewardsResponse{
+		TotalPendingRewards: totalRewards,
+		Count:               count,
+		Pagination:          pageRes,
+	}, nil
+}
+
+func (k Keeper) PendingRewards(goCtx context.Context, req *types.QueryPendingRewardsRequest) (*types.QueryPendingRewardsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.UserRewardInfoKeyPrefix)
+
+	defer iterator.Close()
+
+	var totalRewards sdk.Coins
+	count := uint64(0)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.UserRewardInfo
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.RewardPending.IsPositive() {
+			totalRewards = totalRewards.Add(sdk.NewCoin(val.RewardDenom, val.RewardPending.TruncateInt()))
+		}
+		count++
+	}
+
+	return &types.QueryPendingRewardsResponse{
+		TotalPendingRewards: totalRewards,
+		Count:               count,
+	}, nil
 }
