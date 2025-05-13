@@ -78,9 +78,8 @@ type AmmKeeper interface {
 	GetAllPool(sdk.Context) []ammtypes.Pool
 	// IterateCommitments iterates over all Commitments and performs a callback.
 	IterateLiquidityPools(sdk.Context, func(ammtypes.Pool) bool)
-	GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val ammtypes.Pool)
+	GetPoolWithAccountedBalance(ctx sdk.Context, poolId uint64) (val ammtypes.SnapshotPool)
 
-	CalcOutAmtGivenIn(ctx sdk.Context, poolId uint64, oracle ammtypes.OracleKeeper, snapshot *ammtypes.Pool, tokensIn sdk.Coins, tokenOutDenom string, swapFee osmomath.BigDec) (sdk.Coin, osmomath.BigDec, error)
 	GetEdenDenomPrice(ctx sdk.Context, baseCurrency string) osmomath.BigDec
 	GetTokenPrice(ctx sdk.Context, tokenInDenom, baseCurrency string) osmomath.BigDec
 	InternalSwapExactAmountIn(
@@ -128,6 +127,7 @@ type StableStakeKeeper interface {
 	BorrowRatio(goCtx context.Context, req *stabletypes.QueryBorrowRatioRequest) (*stabletypes.QueryBorrowRatioResponse, error)
 	TVL(ctx sdk.Context, poolId uint64) osmomath.BigDec
 	AllTVL(ctx sdk.Context) osmomath.BigDec
+	GetTotalAndPerDenomTVL(ctx sdk.Context) (totalTVL osmomath.BigDec, denomTVL sdk.Coins)
 	IterateLiquidityPools(sdk.Context, func(stabletypes.Pool) bool)
 	GetPoolByDenom(ctx sdk.Context, denom string) (stabletypes.Pool, bool)
 	GetPool(ctx sdk.Context, poolId uint64) (pool stabletypes.Pool, found bool)

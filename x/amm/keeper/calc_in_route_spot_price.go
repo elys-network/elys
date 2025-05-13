@@ -69,7 +69,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 		// Estimate swap
 		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
 		cacheCtx, _ := ctx.CacheContext()
-		tokenOut, swapSlippage, _, weightBalanceBonus, oracleOutAmount, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, &snapshot, tokensIn, tokenOutDenom, swapFee, osmomath.OneBigDec(), takersFee)
+		tokenOut, swapSlippage, _, weightBalanceBonus, oracleOutAmount, swapFee, err := k.SwapOutAmtGivenIn(cacheCtx, pool.PoolId, k.oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, osmomath.OneBigDec(), takersFee)
 		if err != nil {
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
@@ -81,7 +81,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 			rebalanceTreasuryAddr := sdk.MustAccAddressFromBech32(pool.GetRebalanceTreasury())
 			treasuryTokenAmount := k.bankKeeper.GetBalance(ctx, rebalanceTreasuryAddr, tokenOut.Denom).Amount
 
-			bonusTokenAmount := oracleOutAmount.Mul(weightBalanceBonus).Dec().TruncateInt()
+			bonusTokenAmount = oracleOutAmount.Mul(weightBalanceBonus).Dec().TruncateInt()
 
 			if treasuryTokenAmount.LT(bonusTokenAmount) {
 				weightBalanceBonus = osmomath.BigDecFromSDKInt(treasuryTokenAmount).Quo(oracleOutAmount)
@@ -114,7 +114,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 			poolAsset.Token.Amount = accAmount
 		}
 		availableLiquidity = poolAsset.Token
-		weightBalance = weightBalanceBonus
+		weightBalance = weightBalance.Add(weightBalanceBonus)
 		slippage = slippage.Add(swapSlippage)
 	}
 
@@ -138,9 +138,7 @@ func (k Keeper) CalcInRouteSpotPrice(ctx sdk.Context,
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrPoolNotFound
 		}
 
-		// Estimate swap
-		snapshot := k.GetPoolWithAccountedBalance(ctx, pool.PoolId)
-		rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, &snapshot, tokenInDenom, tokenOutDenom, k.accountedPoolKeeper)
+		rate, err := pool.GetTokenARate(ctx, k.oracleKeeper, tokenInDenom, tokenOutDenom)
 		if err != nil {
 			return osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}

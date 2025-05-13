@@ -23,3 +23,15 @@ func (k Keeper) AllTVL(ctx sdk.Context) osmomath.BigDec {
 	}
 	return tvl
 }
+
+func (k Keeper) GetTotalAndPerDenomTVL(ctx sdk.Context) (totalTVL osmomath.BigDec, denomTVL sdk.Coins) {
+	allPools := k.GetAllPools(ctx)
+	totalTVL = osmomath.ZeroBigDec()
+	denomTVL = sdk.Coins{}
+	for _, pool := range allPools {
+		poolTVL := k.TVL(ctx, pool.Id)
+		totalTVL = totalTVL.Add(poolTVL)
+		denomTVL = denomTVL.Add(sdk.Coin{Denom: pool.DepositDenom, Amount: poolTVL.Dec().TruncateInt()})
+	}
+	return totalTVL, denomTVL
+}

@@ -85,13 +85,24 @@ func (k Keeper) ApplyExitPoolStateChange(
 	}
 
 	// convert the fees into USD
-	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins).String()
-	slippageAmountInUSD := k.CalculateCoinsUSDValue(ctx, slippageCoins).String()
+	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins)
+	slippageAmountInUSD := k.CalculateCoinsUSDValue(ctx, slippageCoins)
 
-	takerFeesAmountInUSD := k.CalculateCoinsUSDValue(ctx, takerFeesInCoins).String()
+	takerFeesAmountInUSD := k.CalculateCoinsUSDValue(ctx, takerFeesInCoins)
 
 	// emit swap fees event
-	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUSD, slippageAmountInUSD, "0", "0", takerFeesAmountInUSD)
+	if !(swapFeeValueInUSD.IsZero() &&
+		slippageAmountInUSD.IsZero() &&
+		takerFeesAmountInUSD.IsZero()) {
+		types.EmitSwapFeesCollectedEvent(
+			ctx,
+			swapFeeValueInUSD.String(),
+			slippageAmountInUSD.String(),
+			"0",
+			"0",
+			takerFeesAmountInUSD.String(),
+		)
+	}
 
 	types.EmitRemoveLiquidityEvent(ctx, exiter, pool.GetPoolId(), exitCoins)
 	if k.hooks != nil {

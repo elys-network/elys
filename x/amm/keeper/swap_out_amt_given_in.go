@@ -12,7 +12,7 @@ import (
 func (k Keeper) SwapOutAmtGivenIn(
 	ctx sdk.Context, poolId uint64,
 	oracleKeeper types.OracleKeeper,
-	snapshot *types.Pool,
+	snapshot types.SnapshotPool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
 	swapFee osmomath.BigDec,

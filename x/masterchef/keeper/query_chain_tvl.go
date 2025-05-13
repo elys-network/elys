@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/math"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -41,8 +42,8 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 		return nil, status.Error(codes.NotFound, "asset profile not found")
 	}
 
-	stableStakeTVL := k.stableKeeper.TVL(ctx, stablestaketypes.UsdcPoolId)
-	totalTVL = totalTVL.Add(stableStakeTVL.Dec().TruncateInt())
+	vaultTotalTVL, vaultTokensTVL := k.stableKeeper.GetTotalAndPerDenomTVL(ctx)
+	totalTVL = totalTVL.Add(vaultTotalTVL.Dec().TruncateInt())
 
 	elysPrice := k.amm.GetTokenPrice(ctx, ptypes.Elys, baseCurrencyEntry.Denom)
 
@@ -58,12 +59,22 @@ func (k Keeper) ChainTVL(goCtx context.Context, req *types.QueryChainTVLRequest)
 	stableStakeBalance := k.bankKeeper.GetAllBalances(ctx, authtypes.NewModuleAddress(stablestaketypes.ModuleName))
 	stableStakeBalanceUSD := k.amm.CalculateCoinsUSDValue(ctx, stableStakeBalance)
 
+	vaultTokensTVLInDisplayDenom := sdk.Coins{}
+	for _, token := range vaultTokensTVL {
+		assetInfo, found := k.oracleKeeper.GetAssetInfo(ctx, token.Denom)
+		if !found {
+			return nil, fmt.Errorf("asset info %s not found", token.Denom)
+		}
+		vaultTokensTVLInDisplayDenom = append(vaultTokensTVLInDisplayDenom, sdk.Coin{Denom: assetInfo.Display, Amount: token.Amount})
+	}
+
 	return &types.QueryChainTVLResponse{
-		Total:       totalTVL,
-		Pools:       poolsTVL.Dec().TruncateInt(),
-		UsdcStaking: stableStakeTVL.Dec().TruncateInt(),
-		StakedElys:  stakedElysValue.Dec().TruncateInt(),
-		StakedEden:  stakedEdenValue.Dec().TruncateInt(),
-		NetStakings: sdk.NewCoins(sdk.NewCoin(baseCurrencyEntry.DisplayName, stableStakeBalanceUSD.Dec().TruncateInt())),
+		Total:            totalTVL,
+		Pools:            poolsTVL.Dec().TruncateInt(),
+		NetVaultStakings: vaultTotalTVL.Dec().TruncateInt(),
+		StakedElys:       stakedElysValue.Dec().TruncateInt(),
+		StakedEden:       stakedEdenValue.Dec().TruncateInt(),
+		NetStakings:      sdk.NewCoins(sdk.NewCoin(baseCurrencyEntry.DisplayName, stableStakeBalanceUSD.Dec().TruncateInt())),
+		VaultTokens:      vaultTokensTVLInDisplayDenom,
 	}, nil
 }
