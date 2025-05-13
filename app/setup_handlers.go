@@ -91,7 +91,8 @@ func (app *ElysApp) setUpgradeHandler() {
 			// Send coins from protocol revenue address to masterchef module
 			err = app.BankKeeper.SendCoinsFromAccountToModule(ctx, protocolRevenueAddress, types.ModuleName, sdk.NewCoins(usdcAmount))
 			if err != nil {
-				return vm, errorsmod.Wrapf(err, "failed to send USDC to masterchef")
+				// log error
+				app.Logger().Error("failed to send USDC to masterchef", "error", err)
 			}
 
 			return vm, vmErr
