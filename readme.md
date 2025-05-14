@@ -55,7 +55,7 @@ This guide provides instructions on how to spin up a new localnet using the Elys
    Use the command below to start the localnet:
 
    ```bash
-  elysd start --pricefeeder.enable --pricefeeder.config_path="./price-feeder.toml" --pricefeeder.log_level="debug"
+   elysd start --pricefeeder.enable --pricefeeder.config_path="./price-feeder.toml" --pricefeeder.log_level="debug"
    ```
 
 ## Installation

@@ -43,6 +43,10 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "UpdateRewardsDataLifetime",
 					Skip:      true, // skipped because authority gated
 				},
+				{
+					RpcMethod: "UpdateTakerFees",
+					Skip:      true, // skipped because authority gated
+				},
 			},
 		},
 	}

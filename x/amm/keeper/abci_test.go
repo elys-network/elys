@@ -106,7 +106,7 @@ func (suite *AmmKeeperTestSuite) TestExecuteSwapRequests() {
 					TokenOutMinAmount: sdkmath.ZeroInt(),
 				},
 			},
-			expSwapOrder: []uint64{1, 0, 2},
+			expSwapOrder: []uint64{1, 2, 0},
 		},
 		{
 			desc:              "three requests combining different swap msg types",
@@ -473,7 +473,7 @@ func (suite *AmmKeeperTestSuite) TestAbci() {
 
 				poolId := uint64(2)
 				ratio := suite.app.AmmKeeper.GetStackedSlippage(suite.ctx, poolId)
-				suite.Require().Equal(sdkmath.LegacyZeroDec(), ratio)
+				suite.Require().Equal(sdkmath.LegacyZeroDec(), ratio.Dec())
 			},
 			func() {},
 		},

@@ -13,6 +13,7 @@ import (
 	ammtypes "github.com/elys-network/elys/x/amm/types"
 	leveragelpmodulekeeper "github.com/elys-network/elys/x/leveragelp/keeper"
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -29,7 +30,7 @@ import (
 type assetPriceInfo struct {
 	denom   string
 	display string
-	price   math.LegacyDec
+	price   osmomath.BigDec
 }
 
 const (
@@ -43,22 +44,27 @@ var (
 		"uusdc": {
 			denom:   ptypes.BaseCurrency,
 			display: "USDC",
-			price:   math.LegacyOneDec(),
+			price:   osmomath.OneBigDec(),
 		},
 		"uusdt": {
 			denom:   "uusdt",
 			display: "USDT",
-			price:   math.LegacyOneDec(),
+			price:   osmomath.OneBigDec(),
 		},
 		"uelys": {
 			denom:   ptypes.Elys,
 			display: "ELYS",
-			price:   math.LegacyMustNewDecFromStr("3.0"),
+			price:   osmomath.MustNewBigDecFromStr("3.0"),
 		},
 		"uatom": {
 			denom:   ptypes.ATOM,
 			display: "ATOM",
-			price:   math.LegacyMustNewDecFromStr("5.0"),
+			price:   osmomath.MustNewBigDecFromStr("5.0"),
+		},
+		"wei": {
+			denom:   "wei",
+			display: "ETH",
+			price:   osmomath.MustNewBigDecFromStr("1500.0"),
 		},
 	}
 )
@@ -92,7 +98,7 @@ func (suite *PerpetualKeeperTestSuite) ResetAndSetSuite(addr []sdk.AccAddress, u
 	suite.SetupCoinPrices()
 	suite.AddAccounts(len(addr), addr)
 	poolCreator := addr[0]
-	ammPool := suite.CreateNewAmmPool(poolCreator, useOracle, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, baseTokenAmount, assetAmount)
+	ammPool := suite.CreateNewAmmPool(poolCreator, useOracle, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, baseTokenAmount, assetAmount)
 	pool := types.NewPool(ammPool, math.LegacyMustNewDecFromStr("10.5"))
 	suite.app.PerpetualKeeper.SetPool(suite.ctx, pool)
 	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
@@ -126,7 +132,7 @@ func (suite *PerpetualKeeperTestSuite) SetupCoinPrices() {
 		})
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     v.display,
-			Price:     v.price,
+			Price:     v.price.Dec(),
 			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
@@ -146,7 +152,7 @@ func (suite *PerpetualKeeperTestSuite) AddCoinPrices(denoms []string) {
 		})
 		suite.app.OracleKeeper.SetPrice(suite.ctx, oracletypes.Price{
 			Asset:     priceMap[v].display,
-			Price:     priceMap[v].price,
+			Price:     priceMap[v].price.Dec(),
 			Source:    "elys",
 			Provider:  provider.String(),
 			Timestamp: uint64(suite.ctx.BlockTime().Unix()),
@@ -192,7 +198,7 @@ func (suite *PerpetualKeeperTestSuite) AddAccounts(n int, given []sdk.AccAddress
 	return addresses
 }
 
-func (suite *PerpetualKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle bool, swapFee, exitFee math.LegacyDec, asset2 string, baseTokenAmount, assetAmount math.Int) ammtypes.Pool {
+func (suite *PerpetualKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, useOracle bool, swapFee, exitFee osmomath.BigDec, asset2 string, baseTokenAmount, assetAmount math.Int) ammtypes.Pool {
 	poolAssets := []ammtypes.PoolAsset{
 		{
 			Token:                  sdk.NewCoin(ptypes.BaseCurrency, baseTokenAmount),
@@ -210,7 +216,7 @@ func (suite *PerpetualKeeperTestSuite) CreateNewAmmPool(creator sdk.AccAddress, 
 	})
 	poolParams := ammtypes.PoolParams{
 		UseOracle: useOracle,
-		SwapFee:   swapFee,
+		SwapFee:   swapFee.Dec(),
 		FeeDenom:  ptypes.BaseCurrency,
 	}
 
@@ -238,7 +244,7 @@ func (suite *PerpetualKeeperTestSuite) SetPerpetualPool(poolId uint64) (types.Po
 
 	amount := math.NewInt(100000000000)
 
-	ammPool := suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+	ammPool := suite.CreateNewAmmPool(poolCreator, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 	enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 		Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		Pool: leveragelpmoduletypes.AddPool{

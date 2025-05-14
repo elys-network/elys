@@ -12,6 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/query"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -170,7 +171,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 
 	mtpHealth, err := k.GetMTPHealth(ctx, mtp, ammPool, baseCurrency)
 	if err == nil {
-		mtp.MtpHealth = mtpHealth
+		mtp.MtpHealth = mtpHealth.Dec()
 	}
 	pnl, err := k.GetEstimatedPnL(ctx, mtp, baseCurrency, false)
 	if err != nil {
@@ -178,7 +179,7 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	}
 	liquidationPrice := k.GetLiquidationPrice(ctx, mtp)
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
+	tradingAssetPrice, tradingAssetPriceDenomRatio, err := k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
 	if err != nil {
 		return nil, err
 	}
@@ -190,9 +191,9 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 	fundingFeesInBaseCurrency := mtp.FundingFeePaidCustody
 
 	if mtp.Position == types.Position_LONG {
-		totalFeesInBaseCurrency = totalFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
-		borrowInterestFeesInBaseCurrency = borrowInterestFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
-		fundingFeesInBaseCurrency = fundingFeesInBaseCurrency.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+		totalFeesInBaseCurrency = osmomath.BigDecFromSDKInt(totalFeesInBaseCurrency).Mul(tradingAssetPriceDenomRatio).Dec().TruncateInt()
+		borrowInterestFeesInBaseCurrency = osmomath.BigDecFromSDKInt(borrowInterestFeesInBaseCurrency).Mul(tradingAssetPriceDenomRatio).Dec().TruncateInt()
+		fundingFeesInBaseCurrency = osmomath.BigDecFromSDKInt(fundingFeesInBaseCurrency).Mul(tradingAssetPriceDenomRatio).Dec().TruncateInt()
 	}
 
 	effectiveLeverage, err := k.GetEffectiveLeverage(ctx, mtp)
@@ -205,10 +206,10 @@ func (k Keeper) fillMTPData(ctx sdk.Context, mtp types.MTP, baseCurrency string)
 
 	return &types.MtpAndPrice{
 		Mtp:               &mtp,
-		TradingAssetPrice: tradingAssetPrice,
+		TradingAssetPrice: tradingAssetPrice.Dec(),
 		Pnl:               sdk.Coin{baseCurrency, pnl},
-		LiquidationPrice:  liquidationPrice,
-		EffectiveLeverage: effectiveLeverage,
+		LiquidationPrice:  liquidationPrice.Dec(),
+		EffectiveLeverage: effectiveLeverage.Dec(),
 		Fees: &types.Fees{
 			TotalFeesBaseCurrency:            totalFeesInBaseCurrency,
 			BorrowInterestFeesLiabilityAsset: mtp.BorrowInterestPaidCustody,
@@ -299,13 +300,21 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	// Liability should include margin interest and funding fee accrued.
 	collateralAmt := mtp.Collateral
 
-	tradingAssetPrice, err := k.GetAssetPrice(ctx, mtp.TradingAsset)
-	if err != nil {
-		return math.Int{}, err
-	}
+	var tradingAssetPrice, tradingAssetPriceDenomRatio osmomath.BigDec
+	var err error
 	if useTakeProfitPrice {
-		tradingAssetPrice = mtp.TakeProfitPrice
+		tradingAssetPrice = mtp.GetBigDecTakeProfitPrice()
+		tradingAssetPriceDenomRatio, err = k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, tradingAssetPrice)
+		if err != nil {
+			return math.Int{}, err
+		}
+	} else {
+		tradingAssetPrice, tradingAssetPriceDenomRatio, err = k.GetAssetPriceAndAssetUsdcDenomRatio(ctx, mtp.TradingAsset)
+		if err != nil {
+			return math.Int{}, err
+		}
 	}
+
 	if tradingAssetPrice.IsZero() {
 		return math.Int{}, errors.New("trading asset price is zero")
 	}
@@ -324,7 +333,7 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 		// estimated_pnl = custody_amount - totalLiabilities * market_price - collateral_amount
 
 		// For short position, convert liabilities to base currency
-		totalLiabilitiesInBaseCurrency := totalLiabilities.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+		totalLiabilitiesInBaseCurrency := osmomath.BigDecFromSDKInt(totalLiabilities).Mul(tradingAssetPriceDenomRatio).Dec().TruncateInt()
 		estimatedPnL = custodyAmtAfterFunding.Sub(totalLiabilitiesInBaseCurrency).Sub(collateralAmt)
 	} else {
 		// Estimated PnL for long position:
@@ -333,13 +342,13 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 			// estimated_pnl = (custody_amount - collateral_amount) * market_price - totalLiabilities
 
 			// For long position, convert both custody and collateral to base currency
-			custodyAfterCollateralInBaseCurrency := (custodyAmtAfterFunding.Sub(collateralAmt)).ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+			custodyAfterCollateralInBaseCurrency := osmomath.BigDecFromSDKInt(custodyAmtAfterFunding.Sub(collateralAmt)).Mul(tradingAssetPriceDenomRatio).Dec().TruncateInt()
 			estimatedPnL = custodyAfterCollateralInBaseCurrency.Sub(totalLiabilities)
 		} else {
 			// estimated_pnl = custody_amount * market_price - totalLiabilities - collateral_amount
 
 			// For long position, convert custody to base currency
-			custodyAmountOutInBaseCurrency := custodyAmtAfterFunding.ToLegacyDec().Mul(tradingAssetPrice).TruncateInt()
+			custodyAmountOutInBaseCurrency := osmomath.BigDecFromSDKInt(custodyAmtAfterFunding).Mul(tradingAssetPriceDenomRatio).Dec().TruncateInt()
 			estimatedPnL = custodyAmountOutInBaseCurrency.Sub(totalLiabilities).Sub(collateralAmt)
 		}
 	}
@@ -347,22 +356,37 @@ func (k Keeper) GetEstimatedPnL(ctx sdk.Context, mtp types.MTP, baseCurrency str
 	return estimatedPnL, nil
 }
 
-func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) math.LegacyDec {
-	liquidationPrice := math.LegacyZeroDec()
+func (k Keeper) GetLiquidationPrice(ctx sdk.Context, mtp types.MTP) osmomath.BigDec {
+	liquidationPrice := osmomath.ZeroBigDec()
 	params := k.GetParams(ctx)
 	// calculate liquidation price
 	if mtp.Position == types.Position_LONG {
 		// liquidation_price = (safety_factor * liabilities) / custody
 		if !mtp.Custody.IsZero() {
-			liquidationPrice = params.SafetyFactor.Mul(mtp.Liabilities.ToLegacyDec()).Quo(mtp.Custody.ToLegacyDec())
+			liquidationPrice = params.GetBigDecSafetyFactor().Mul(mtp.GetBigDecLiabilities()).Quo(mtp.GetBigDecCustody())
 		}
 	}
 	if mtp.Position == types.Position_SHORT {
 		// liquidation_price =  Custody / (Liabilities * safety_factor)
 		if !mtp.Liabilities.IsZero() {
-			liquidationPrice = mtp.Custody.ToLegacyDec().Quo(mtp.Liabilities.ToLegacyDec().Mul(params.SafetyFactor))
+			liquidationPrice = mtp.GetBigDecCustody().Quo(mtp.GetBigDecLiabilities().Mul(params.GetBigDecSafetyFactor()))
 		}
 	}
 
 	return liquidationPrice
+}
+
+func (k Keeper) CalcMTPTakeProfitCustody(ctx sdk.Context, mtp types.MTP) (math.Int, error) {
+	if types.IsTakeProfitPriceInfinite(mtp) || mtp.TakeProfitPrice.IsZero() {
+		return math.ZeroInt(), nil
+	}
+	takeProfitPriceInDenomRatio, err := k.ConvertPriceToAssetUsdcDenomRatio(ctx, mtp.TradingAsset, mtp.GetBigDecTakeProfitPrice())
+	if err != nil {
+		return math.ZeroInt(), fmt.Errorf("error converting price to base units, asset info %s not found", ptypes.BaseCurrency)
+	}
+	if mtp.Position == types.Position_LONG {
+		return osmomath.BigDecFromSDKInt(mtp.Liabilities).Quo(takeProfitPriceInDenomRatio).Dec().TruncateInt(), nil
+	} else {
+		return osmomath.BigDecFromSDKInt(mtp.Liabilities).Mul(takeProfitPriceInDenomRatio).Dec().TruncateInt(), nil
+	}
 }

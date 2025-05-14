@@ -42,8 +42,15 @@ func (msg *MsgAddEntry) ValidateBasic() error {
 		return ErrDecimalsInvalid
 	}
 
-	if err = sdk.ValidateDenom(msg.BaseDenom); err != nil {
-		return ErrInvalidBaseDenom
+	// eureka assets might have different base denoms
+	//if err = sdk.ValidateDenom(msg.BaseDenom); err != nil {
+	//	return ErrInvalidBaseDenom
+	//}
+	if msg.BaseDenom == "" {
+		return errorsmod.Wrapf(ErrInvalidBaseDenom, "base denom cannot be empty")
+	}
+	if len(msg.BaseDenom) == 1 || len(msg.BaseDenom) > 128 {
+		return errorsmod.Wrapf(ErrInvalidBaseDenom, "base denom cannot be longer than 128 characters or one character")
 	}
 
 	if err = sdk.ValidateDenom(msg.Denom); err != nil {

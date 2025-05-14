@@ -7,6 +7,7 @@ import (
 	"github.com/elys-network/elys/x/amm/types"
 	assetprofiletypes "github.com/elys-network/elys/x/assetprofile/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
+	"slices"
 )
 
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
@@ -42,13 +43,7 @@ func (k Keeper) CheckBaseAssetExist(ctx sdk.Context, denom string) bool {
 		}
 	}
 
-	found := false
-	for _, asset := range params.BaseAssets {
-		if asset == denom {
-			found = true
-			break
-		}
-	}
+	found := slices.Contains(params.BaseAssets, denom)
 	return found
 }
 

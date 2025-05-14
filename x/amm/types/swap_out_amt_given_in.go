@@ -6,11 +6,12 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 type AssetWeight struct {
 	Asset  string
-	Weight sdkmath.LegacyDec
+	Weight osmomath.BigDec
 }
 
 func NormalizedWeights(poolAssets []PoolAsset) (poolWeights []AssetWeight) {
@@ -25,22 +26,22 @@ func NormalizedWeights(poolAssets []PoolAsset) (poolWeights []AssetWeight) {
 	for _, asset := range poolAssets {
 		poolWeights = append(poolWeights, AssetWeight{
 			Asset:  asset.Token.Denom,
-			Weight: sdkmath.LegacyNewDecFromInt(asset.Weight).Quo(sdkmath.LegacyNewDecFromInt(totalWeight)),
+			Weight: osmomath.BigDecFromSDKInt(asset.Weight).Quo(osmomath.BigDecFromSDKInt(totalWeight)),
 		})
 	}
 	return poolWeights
 }
 
-func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper OracleKeeper, poolAssets []PoolAsset) ([]AssetWeight, error) {
+func GetOraclePoolNormalizedWeights(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset) ([]AssetWeight, error) {
 	oraclePoolWeights := []AssetWeight{}
-	totalWeight := sdkmath.LegacyZeroDec()
+	totalWeight := osmomath.ZeroBigDec()
 	for _, asset := range poolAssets {
-		tokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, asset.Token.Denom)
+		tokenPrice := oracleKeeper.GetDenomPrice(ctx, asset.Token.Denom)
 		if tokenPrice.IsZero() {
 			return oraclePoolWeights, fmt.Errorf("price for token not set: %s", asset.Token.Denom)
 		}
 		amount := asset.Token.Amount
-		weight := amount.ToLegacyDec().Mul(tokenPrice)
+		weight := osmomath.BigDecFromSDKInt(amount).Mul(tokenPrice)
 		oraclePoolWeights = append(oraclePoolWeights, AssetWeight{
 			Asset:  asset.Token.Denom,
 			Weight: weight,
@@ -49,7 +50,7 @@ func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper
 	}
 
 	if totalWeight.IsZero() {
-		totalWeight = sdkmath.LegacyOneDec()
+		totalWeight = osmomath.OneBigDec()
 	}
 	for i, asset := range oraclePoolWeights {
 		oraclePoolWeights[i].Weight = asset.Weight.Quo(totalWeight)
@@ -57,7 +58,7 @@ func GetOraclePoolNormalizedWeights(ctx sdk.Context, poolId uint64, oracleKeeper
 	return oraclePoolWeights, nil
 }
 
-func (p Pool) NewPoolAssetsAfterSwap(ctx sdk.Context, inCoins sdk.Coins, outCoins sdk.Coins, poolAssets []PoolAsset) ([]PoolAsset, error) {
+func (p Pool) NewPoolAssetsAfterSwap(inCoins sdk.Coins, outCoins sdk.Coins, poolAssets []PoolAsset) ([]PoolAsset, error) {
 	updatedAssets := []PoolAsset{}
 	for _, asset := range poolAssets {
 		denom := asset.Token.Denom
@@ -74,96 +75,95 @@ func (p Pool) NewPoolAssetsAfterSwap(ctx sdk.Context, inCoins sdk.Coins, outCoin
 	return updatedAssets, nil
 }
 
-func (p Pool) StackedRatioFromSnapshot(ctx sdk.Context, oracleKeeper OracleKeeper, snapshot *Pool) sdkmath.LegacyDec {
-	stackedRatio := sdkmath.LegacyZeroDec()
+func (p Pool) StackedRatioFromSnapshot(snapshot SnapshotPool) osmomath.BigDec {
+	stackedRatio := osmomath.ZeroBigDec()
 	for index, asset := range snapshot.PoolAssets {
-		assetDiff := sdkmath.LegacyNewDecFromInt(p.PoolAssets[index].Token.Amount.Sub(asset.Token.Amount).Abs())
+		assetDiff := osmomath.BigDecFromSDKInt(p.PoolAssets[index].Token.Amount.Sub(asset.Token.Amount).Abs())
 		// Ensure asset.Token is not zero to avoid division by zero
 		if asset.Token.IsZero() {
 			asset.Token.Amount = sdkmath.OneInt()
 		}
-		assetStacked := assetDiff.Quo(sdkmath.LegacyNewDecFromInt(asset.Token.Amount))
+		assetStacked := assetDiff.Quo(osmomath.BigDecFromSDKInt(asset.Token.Amount))
 		stackedRatio = stackedRatio.Add(assetStacked)
 	}
 
 	return stackedRatio
 }
 
-func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset) sdkmath.LegacyDec {
-	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, p.PoolId, oracleKeeper, poolAssets)
+func (p Pool) WeightDistanceFromTarget(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset) osmomath.BigDec {
+	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, oracleKeeper, poolAssets)
 	if err != nil {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 	targetWeights := NormalizedWeights(poolAssets)
 
-	distanceSum := sdkmath.LegacyZeroDec()
+	distanceSum := osmomath.ZeroBigDec()
 	for i := range poolAssets {
 		distance := targetWeights[i].Weight.Sub(oracleWeights[i].Weight).Abs()
 		distanceSum = distanceSum.Add(distance)
 	}
 	// Ensure len(p.PoolAssets) is not zero to avoid division by zero
 	if len(p.PoolAssets) == 0 {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
-	return distanceSum.Quo(sdkmath.LegacyNewDec(int64(len(p.PoolAssets))))
+	return distanceSum.Quo(osmomath.BigDecFromDec(sdkmath.LegacyNewDec(int64(len(p.PoolAssets)))))
 }
 
-func GetDenomOracleAssetWeight(ctx sdk.Context, poolId uint64, oracleKeeper OracleKeeper, poolAssets []PoolAsset, denom string) sdkmath.LegacyDec {
-	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, poolId, oracleKeeper, poolAssets)
+func GetDenomOracleAssetWeight(ctx sdk.Context, oracleKeeper OracleKeeper, poolAssets []PoolAsset, denom string) osmomath.BigDec {
+	oracleWeights, err := GetOraclePoolNormalizedWeights(ctx, oracleKeeper, poolAssets)
 	if err != nil {
-		return sdkmath.LegacyZeroDec()
+		return osmomath.ZeroBigDec()
 	}
 	for _, weight := range oracleWeights {
 		if weight.Asset == denom {
 			return weight.Weight
 		}
 	}
-	return sdkmath.LegacyZeroDec()
+	return osmomath.ZeroBigDec()
 }
 
-func GetDenomNormalizedWeight(poolAssets []PoolAsset, denom string) sdkmath.LegacyDec {
+func GetDenomNormalizedWeight(poolAssets []PoolAsset, denom string) osmomath.BigDec {
 	targetWeights := NormalizedWeights(poolAssets)
 	for _, weight := range targetWeights {
 		if weight.Asset == denom {
 			return weight.Weight
 		}
 	}
-	return sdkmath.LegacyZeroDec()
+	return osmomath.ZeroBigDec()
 }
 
 func (p Pool) CalcGivenInSlippage(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
-	snapshot *Pool,
+	snapshot SnapshotPool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
-	accPoolKeeper AccountedPoolKeeper,
-) (sdkmath.LegacyDec, error) {
-	balancerOutCoin, _, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, sdkmath.LegacyZeroDec(), accPoolKeeper)
+) (osmomath.BigDec, error) {
+	balancerOutCoin, _, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, osmomath.ZeroBigDec())
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), err
+		return osmomath.ZeroBigDec(), err
 	}
 
 	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
 	if err != nil {
-		return sdkmath.LegacyZeroDec(), err
+		return osmomath.ZeroBigDec(), err
 	}
 
 	// ensure token prices for in/out tokens set properly
-	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenIn.Denom)
+	inTokenPrice := oracleKeeper.GetDenomPrice(ctx, tokenIn.Denom)
 	if inTokenPrice.IsZero() {
-		return sdkmath.LegacyZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
+		return osmomath.ZeroBigDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
-	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+	outTokenPrice := oracleKeeper.GetDenomPrice(ctx, tokenOutDenom)
 	if outTokenPrice.IsZero() {
-		return sdkmath.LegacyZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
+		return osmomath.ZeroBigDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
 
-	oracleOutAmount := sdkmath.LegacyNewDecFromInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
-	balancerOut := sdkmath.LegacyNewDecFromInt(balancerOutCoin.Amount)
+	oracleOutAmount := osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
+	balancerOut := osmomath.BigDecFromSDKInt(balancerOutCoin.Amount)
 	slippageAmount := oracleOutAmount.Sub(balancerOut)
 	if slippageAmount.IsNegative() {
-		return sdkmath.LegacyZeroDec(), nil
+		return osmomath.ZeroBigDec(), nil
 	}
 	return slippageAmount, nil
 }
@@ -174,15 +174,15 @@ func (p Pool) CalcGivenInSlippage(
 func (p *Pool) SwapOutAmtGivenIn(
 	ctx sdk.Context,
 	oracleKeeper OracleKeeper,
-	snapshot *Pool,
+	snapshot SnapshotPool,
 	tokensIn sdk.Coins,
 	tokenOutDenom string,
-	swapFee sdkmath.LegacyDec,
+	swapFee osmomath.BigDec,
 	accPoolKeeper AccountedPoolKeeper,
-	weightBreakingFeePerpetualFactor sdkmath.LegacyDec,
+	weightBreakingFeePerpetualFactor osmomath.BigDec,
 	params Params,
-	takerFees sdkmath.LegacyDec,
-) (tokenOut sdk.Coin, slippage, slippageAmount sdkmath.LegacyDec, weightBalanceBonus sdkmath.LegacyDec, oracleOutAmount sdkmath.LegacyDec, swapFeeFinal sdkmath.LegacyDec, err error) {
+	takerFees osmomath.BigDec,
+) (tokenOut sdk.Coin, slippage, slippageAmount osmomath.BigDec, weightBalanceBonus osmomath.BigDec, oracleOutAmount osmomath.BigDec, swapFeeFinal osmomath.BigDec, err error) {
 
 	// Fixed gas consumption per swap to prevent spam
 	ctx.GasMeter().ConsumeGas(BalancerGasFeeForSwap, "balancer swap computation")
@@ -190,69 +190,67 @@ func (p *Pool) SwapOutAmtGivenIn(
 	// early return with balancer swap if normal amm pool
 	if !p.PoolParams.UseOracle {
 		if len(tokensIn) != 1 {
-			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), errors.New("expected tokensIn to be of length one")
+			return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), errors.New("expected tokensIn to be of length one")
 		}
-		balancerOutCoin, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee, accPoolKeeper)
+		balancerOutCoin, slippage, err := p.CalcOutAmtGivenIn(ctx, oracleKeeper, snapshot, tokensIn, tokenOutDenom, swapFee)
 		if err != nil {
-			return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+			return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 		}
 		// Pools and it's bank balances are updated in keeper.UpdatePoolForSwap
-		return balancerOutCoin, slippage, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), swapFee, nil
+		return balancerOutCoin, slippage, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), swapFee, nil
 	}
 
 	tokenIn, poolAssetIn, poolAssetOut, err := p.parsePoolAssets(tokensIn, tokenOutDenom)
 	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
 	// ensure token prices for in/out tokens set properly
-	inTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenIn.Denom)
+	inTokenPrice := oracleKeeper.GetDenomPrice(ctx, tokenIn.Denom)
 	if inTokenPrice.IsZero() {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), fmt.Errorf("price for inToken not set: %s", poolAssetIn.Token.Denom)
 	}
-	outTokenPrice := oracleKeeper.GetAssetPriceFromDenom(ctx, tokenOutDenom)
+	outTokenPrice := oracleKeeper.GetDenomPrice(ctx, tokenOutDenom)
 	if outTokenPrice.IsZero() {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), fmt.Errorf("price for outToken not set: %s", poolAssetOut.Token.Denom)
 	}
-
-	accountedAssets := p.GetAccountedBalance(ctx, accPoolKeeper, p.PoolAssets)
 
 	// out amount is calculated in this formula
 	// balancer slippage amount = Max(oracleOutAmount-balancerOutAmount, 0)
 	// resizedAmount = tokenIn / externalLiquidityRatio
 	// actualSlippageAmount = balancer slippage(resizedAmount)
-	oracleOutAmount = sdkmath.LegacyNewDecFromInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
+	oracleOutAmount = osmomath.BigDecFromSDKInt(tokenIn.Amount).Mul(inTokenPrice).Quo(outTokenPrice)
 
 	externalLiquidityRatio, err := p.GetAssetExternalLiquidityRatio(tokenOutDenom)
 	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
 	// Ensure externalLiquidityRatio is not zero to avoid division by zero
 	if externalLiquidityRatio.IsZero() {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrAmountTooLow
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ErrAmountTooLow
 	}
 
-	resizedAmount := sdkmath.LegacyNewDecFromInt(tokenIn.Amount).Quo(externalLiquidityRatio).RoundInt()
+	resizedAmount := osmomath.BigDecFromSDKInt(tokenIn.Amount).Quo(externalLiquidityRatio).Dec().RoundInt()
 	slippageAmount, err = p.CalcGivenInSlippage(
 		ctx,
 		oracleKeeper,
 		snapshot,
 		sdk.Coins{sdk.NewCoin(tokenIn.Denom, resizedAmount)},
 		tokenOutDenom,
-		accPoolKeeper,
 	)
 	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
-	outAmountAfterSlippage := oracleOutAmount.Sub(slippageAmount.Mul(externalLiquidityRatio))
 	slippageAmount = slippageAmount.Mul(externalLiquidityRatio)
 	slippage = slippageAmount.Quo(oracleOutAmount)
 
-	if slippage.LT(params.MinSlippage) {
-		slippage = params.MinSlippage
-		slippageAmount = oracleOutAmount.Mul(params.MinSlippage)
+	if slippage.LT(params.GetBigDecMinSlippage()) {
+		slippage = params.GetBigDecMinSlippage()
+		slippageAmount = oracleOutAmount.Mul(params.GetBigDecMinSlippage())
 	}
+
+	outAmountAfterSlippage := oracleOutAmount.Sub(slippageAmount)
 
 	// oracleOutAmount = 100 ATOM
 	// BalancerOutAmount = 95 ATOM
@@ -297,41 +295,25 @@ func (p *Pool) SwapOutAmtGivenIn(
 	// $10000 trade: 80%
 
 	// calculate weight distance difference to calculate bonus/cut on the operation
-	newAssetPools, err := p.NewPoolAssetsAfterSwap(ctx,
+	newAssetPools, err := p.NewPoolAssetsAfterSwap(
 		tokensIn,
-		sdk.Coins{sdk.NewCoin(tokenOutDenom, outAmountAfterSlippage.TruncateInt())}, accountedAssets,
+		sdk.Coins{sdk.NewCoin(tokenOutDenom, outAmountAfterSlippage.Dec().TruncateInt())}, snapshot.PoolAssets,
 	)
 	if err != nil {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), err
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
-	weightBalanceBonus, weightBreakingFee, isSwapFee := p.CalculateWeightFees(ctx, oracleKeeper, accountedAssets, newAssetPools, tokenIn.Denom, params, weightBreakingFeePerpetualFactor)
+	weightBalanceBonus, weightBreakingFee, isSwapFee := p.CalculateWeightFees(ctx, oracleKeeper, snapshot.PoolAssets, newAssetPools, tokenIn.Denom, params, weightBreakingFeePerpetualFactor)
 	if !isSwapFee {
-		swapFee = sdkmath.LegacyZeroDec()
+		swapFee = osmomath.ZeroBigDec()
 	}
 
-	if swapFee.GTE(sdkmath.LegacyOneDec()) {
-		return sdk.Coin{}, sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(), ErrTooMuchSwapFee
+	if swapFee.GTE(osmomath.OneBigDec()) {
+		return sdk.Coin{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ErrTooMuchSwapFee
 	}
 	tokenAmountOutInt := outAmountAfterSlippage.
-		Mul(sdkmath.LegacyOneDec().Sub(weightBreakingFee)).
-		Mul(sdkmath.LegacyOneDec().Sub(swapFee.Add(takerFees))).TruncateInt() // We ignore the decimal component, as we round down the token amount out.
+		Mul(osmomath.OneBigDec().Sub(weightBreakingFee)).
+		Mul(osmomath.OneBigDec().Sub(swapFee.Add(takerFees))).Dec().TruncateInt() // We ignore the decimal component, as we round down the token amount out.
 	oracleOutCoin := sdk.NewCoin(tokenOutDenom, tokenAmountOutInt)
 	return oracleOutCoin, slippage, slippageAmount, weightBalanceBonus, oracleOutAmount, swapFee, nil
-}
-
-// TODO: Ideally we should have a single DS for accounted pool to avoid confusion
-// Or refactor/improve amm pool to use accounted pool
-// Task has been added
-func (p *Pool) GetAccountedBalance(ctx sdk.Context, accountedPoolKeeper AccountedPoolKeeper, poolAssets []PoolAsset) (updatedAssets []PoolAsset) {
-	for _, asset := range poolAssets {
-		if p.PoolParams.UseOracle {
-			accountedPoolAmt := accountedPoolKeeper.GetAccountedBalance(ctx, p.PoolId, asset.Token.Denom)
-			if accountedPoolAmt.IsPositive() {
-				asset.Token.Amount = accountedPoolAmt
-			}
-		}
-		updatedAssets = append(updatedAssets, asset)
-	}
-	return updatedAssets
 }

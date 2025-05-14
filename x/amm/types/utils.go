@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 	"fmt"
+	"github.com/elys-network/elys/utils"
 	"strconv"
 	"strings"
 
@@ -10,6 +11,7 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func GetPoolShareDenom(poolId uint64) string {
@@ -45,44 +47,33 @@ func EnsureDenomInPool(poolAssetsByDenom map[string]PoolAsset, tokensIn sdk.Coin
 	return nil
 }
 
-// AbsDifferenceWithSign returns | a - b |, (a - b).sign()
-// a is mutated and returned.
-func AbsDifferenceWithSign(a, b sdkmath.LegacyDec) (sdkmath.LegacyDec, bool) {
-	if a.GTE(b) {
-		return a.SubMut(b), false
-	} else {
-		return a.NegMut().AddMut(b), true
-	}
-}
-
 // ApplyDiscount applies discount to swap fee if applicable
-func ApplyDiscount(swapFee sdkmath.LegacyDec, discount sdkmath.LegacyDec) sdkmath.LegacyDec {
+func ApplyDiscount(swapFee osmomath.BigDec, discount osmomath.BigDec) osmomath.BigDec {
 	// apply discount percentage to swap fee
-	swapFee = swapFee.Mul(sdkmath.LegacyOneDec().Sub(discount))
+	swapFee = swapFee.Mul(osmomath.OneBigDec().Sub(discount))
 	return swapFee
 }
 
 // GetWeightBreakingFee When distanceDiff > 0, pool is getting worse so we calculate WBF based on final weight
 // When distanceDiff < 0, pool is improving, we need to use initial weights. Say target is 50:50, initially pool is 80:20 and now after it is becoming 30:70,
 // this is improving the pool but with finalWeightOut/finalWeightIn it will be 30/70 which doesn't provide enough bonus to user
-func GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut sdkmath.LegacyDec, distanceDiff sdkmath.LegacyDec, params Params) sdkmath.LegacyDec {
-	weightBreakingFee := sdkmath.LegacyZeroDec()
+func GetWeightBreakingFee(finalWeightIn, finalWeightOut, targetWeightIn, targetWeightOut, initialWeightIn, initialWeightOut osmomath.BigDec, distanceDiff osmomath.BigDec, params Params) osmomath.BigDec {
+	weightBreakingFee := osmomath.ZeroBigDec()
 	if !params.WeightBreakingFeeMultiplier.IsZero() {
 		// (45/55*60/40) ^ 2.5
 		if distanceDiff.IsPositive() {
 			if !finalWeightOut.IsZero() && !finalWeightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() {
-				weightBreakingFee = params.WeightBreakingFeeMultiplier.
-					Mul(Pow(finalWeightIn.Mul(targetWeightOut).Quo(finalWeightOut).Quo(targetWeightIn), params.WeightBreakingFeeExponent))
+				weightBreakingFee = params.GetBigDecWeightBreakingFeeMultiplier().Mul(utils.Pow(finalWeightIn.Mul(targetWeightOut).Quo(finalWeightOut).Quo(targetWeightIn), params.GetBigDecWeightBreakingFeeExponent()))
 			}
 		} else {
 			if !initialWeightOut.IsZero() && !initialWeightIn.IsZero() && !targetWeightOut.IsZero() && !targetWeightIn.IsZero() {
-				weightBreakingFee = params.WeightBreakingFeeMultiplier.
-					Mul(Pow(initialWeightOut.Mul(targetWeightIn).Quo(initialWeightIn).Quo(targetWeightOut), params.WeightBreakingFeeExponent))
+				weightBreakingFee = params.GetBigDecWeightBreakingFeeMultiplier().
+					Mul(utils.Pow(initialWeightOut.Mul(targetWeightIn).Quo(initialWeightIn).Quo(targetWeightOut), params.GetBigDecWeightBreakingFeeExponent()))
 			}
 		}
 
-		if weightBreakingFee.GT(sdkmath.LegacyNewDecWithPrec(99, 2)) {
-			weightBreakingFee = sdkmath.LegacyNewDecWithPrec(99, 2)
+		if weightBreakingFee.GT(osmomath.NewBigDecWithPrec(99, 2)) {
+			weightBreakingFee = osmomath.NewBigDecWithPrec(99, 2)
 		}
 	}
 	return weightBreakingFee

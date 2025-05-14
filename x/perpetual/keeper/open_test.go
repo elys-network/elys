@@ -12,6 +12,7 @@ import (
 	leveragelpmoduletypes "github.com/elys-network/elys/x/leveragelp/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/perpetual/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (suite *PerpetualKeeperTestSuite) TestOpen() {
@@ -21,7 +22,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 	poolCreator := addr[0]
 	positionCreator := addr[1]
 	poolId := uint64(1)
-	tradingAssetPrice, err := suite.app.PerpetualKeeper.GetAssetPrice(suite.ctx, ptypes.ATOM)
+	tradingAssetPrice, _, err := suite.app.PerpetualKeeper.GetAssetPriceAndAssetUsdcDenomRatio(suite.ctx, ptypes.ATOM)
 	params := suite.app.PerpetualKeeper.GetParams(suite.ctx)
 	suite.Require().NoError(err)
 
@@ -33,7 +34,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 		PoolId:          poolId,
 		TradingAsset:    ptypes.ATOM,
 		Collateral:      sdk.NewCoin(ptypes.BaseCurrency, amount),
-		TakeProfitPrice: tradingAssetPrice.MulInt64(8),
+		TakeProfitPrice: tradingAssetPrice.Dec().MulInt64(8),
 		StopLossPrice:   math.LegacyZeroDec(),
 	}
 	testCases := []struct {
@@ -145,7 +146,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 					suite.app.PerpetualKeeper.WhitelistAddress(suite.ctx, account)
 				}
 
-				ammPool = suite.CreateNewAmmPool(poolCreator, true, math.LegacyZeroDec(), math.LegacyZeroDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
+				ammPool = suite.CreateNewAmmPool(poolCreator, true, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), ptypes.ATOM, amount.MulRaw(10), amount.MulRaw(10))
 				poolId = ammPool.PoolId
 				enablePoolMsg := leveragelpmoduletypes.MsgAddPool{
 					Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -294,7 +295,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			func() {
 				suite.ResetSuite()
 				suite.SetupCoinPrices()
-				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.MinimumLongTakeProfitPriceRatio).Quo(math.LegacyNewDec(2))
+				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.GetBigDecMinimumLongTakeProfitPriceRatio()).QuoInt64(2).Dec()
 			},
 			func(mtp *types.MTP) {
 			},
@@ -303,7 +304,7 @@ func (suite *PerpetualKeeperTestSuite) TestOpen() {
 			"take profit price above maximum ratio",
 			fmt.Sprintf("take profit price should be between %s and %s times of current market price for long", params.MinimumLongTakeProfitPriceRatio.String(), params.MaximumLongTakeProfitPriceRatio.String()),
 			func() {
-				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.MaximumLongTakeProfitPriceRatio).Mul(math.LegacyNewDec(2))
+				msg.TakeProfitPrice = tradingAssetPrice.Mul(params.GetBigDecMaximumLongTakeProfitPriceRatio()).MulInt64(2).Dec()
 			},
 			func(mtp *types.MTP) {
 			},

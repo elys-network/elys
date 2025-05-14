@@ -210,7 +210,6 @@ func initRootCmd(rootCmd *cobra.Command,
 		keys.Commands(),
 	)
 
-	rootCmd.PersistentFlags().String(pricefeeder.FlagConfigPath, "", "Path to price feeder config file")
 	rootCmd.PersistentFlags().String(pricefeeder.FlagLogLevel, "error", "Log level of price feeder process")
 	rootCmd.PersistentFlags().Bool(pricefeeder.FlagEnablePriceFeeder, false, "Enable the price feeder")
 }
@@ -272,6 +271,7 @@ func txCommand(basicManager module.BasicManager) *cobra.Command {
 		authcmd.GetMultiSignCommand(),
 		authcmd.GetMultiSignBatchCmd(),
 		authcmd.GetValidateSignaturesCommand(),
+		authcmd.GetSimulateCmd(),
 		flags.LineBreak,
 		authcmd.GetBroadcastCommand(),
 		authcmd.GetEncodeCommand(),
@@ -415,8 +415,8 @@ func initAppConfig() (string, interface{}) {
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
 		PriceFeeder: pricefeeder.AppConfig{
-			ConfigPath: "",
-			LogLevel:   "info",
+			Enable:   true,
+			LogLevel: "info",
 		},
 	}
 	customAppTemplate := serverconfig.DefaultConfigTemplate + pricefeeder.DefaultConfigTemplate

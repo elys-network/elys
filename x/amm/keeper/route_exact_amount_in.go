@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // RouteExactAmountIn defines the input denom and input amount for the first pool,
@@ -16,18 +17,18 @@ func (k Keeper) RouteExactAmountIn(
 	routes []types.SwapAmountInRoute,
 	tokenIn sdk.Coin,
 	tokenOutMinAmount math.Int,
-) (tokenOutAmount math.Int, totalDiscountedSwapFee math.LegacyDec, discountOut math.LegacyDec, err error) {
+) (tokenOutAmount math.Int, totalDiscountedSwapFee osmomath.BigDec, discountOut osmomath.BigDec, err error) {
 	route := types.SwapAmountInRoutes(routes)
 	if err := route.Validate(); err != nil {
-		return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
+		return math.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
 	}
 
 	// Initialize the total discounted swap fee
-	totalDiscountedSwapFee = math.LegacyZeroDec()
+	totalDiscountedSwapFee = osmomath.ZeroBigDec()
 
 	_, tier := k.tierKeeper.GetMembershipTier(ctx, sender)
 	discount := tier.Discount
-
+	var weightBalanceReward sdk.Coin
 	for i, route := range routes {
 		// recipient is the same as the sender until the last pool
 		actualRecipient := sender
@@ -45,7 +46,7 @@ func (k Keeper) RouteExactAmountIn(
 		// Execute the expected swap on the current routed pool
 		pool, poolExists := k.GetPool(ctx, route.PoolId)
 		if !poolExists {
-			return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), types.ErrInvalidPoolId
+			return math.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), types.ErrInvalidPoolId
 		}
 
 		// // check if pool is active, if not error
@@ -53,24 +54,29 @@ func (k Keeper) RouteExactAmountIn(
 		// 	return math.Int{}, fmt.Errorf("pool %d is not active", pool.GetId())
 		// }
 
-		swapFee := pool.GetPoolParams().SwapFee.Quo(math.LegacyNewDec(int64(len(routes))))
-		takersFee := k.parameterKeeper.GetParams(ctx).TakerFees.Quo(math.LegacyNewDec(int64(len(routes))))
+		swapFee := pool.GetPoolParams().GetBigDecSwapFee().Quo(osmomath.NewBigDec(int64(len(routes))))
+		takersFee := k.parameterKeeper.GetParams(ctx).GetBigDecTakerFees().Quo(osmomath.NewBigDec(int64(len(routes))))
 
 		// Apply discount to swap fee if applicable
-		swapFee = types.ApplyDiscount(swapFee, discount)
+		swapFee = types.ApplyDiscount(swapFee, osmomath.BigDecFromDec(discount))
 
 		// Calculate the total discounted swap fee
 		totalDiscountedSwapFee = totalDiscountedSwapFee.Add(swapFee)
 
-		tokenOutAmount, err = k.InternalSwapExactAmountIn(ctx, sender, actualRecipient, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee, takersFee)
+		tokenOutAmount, weightBalanceReward, err = k.InternalSwapExactAmountIn(ctx, sender, actualRecipient, pool, tokenIn, route.TokenOutDenom, _outMinAmount, swapFee, takersFee)
 		if err != nil {
 			ctx.Logger().Error(err.Error())
-			return math.Int{}, math.LegacyZeroDec(), math.LegacyZeroDec(), err
+			return math.Int{}, osmomath.ZeroBigDec(), osmomath.ZeroBigDec(), err
+		}
+
+		if weightBalanceReward.Amount.IsPositive() && weightBalanceReward.Denom == route.TokenOutDenom {
+			// If the weight balance reward is positive, we need to add it to the tokenOutAmount
+			tokenOutAmount = tokenOutAmount.Add(weightBalanceReward.Amount)
 		}
 
 		// Chain output of current pool as the input for the next routed pool
 		tokenIn = sdk.NewCoin(route.TokenOutDenom, tokenOutAmount)
 	}
 
-	return tokenOutAmount, totalDiscountedSwapFee, tier.Discount, nil
+	return tokenOutAmount, totalDiscountedSwapFee, osmomath.BigDecFromDec(tier.Discount), nil
 }

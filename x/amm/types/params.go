@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // NewParams creates a new Params instance
@@ -20,11 +21,11 @@ func NewParams(poolCreationFee math.Int, slippageTrackDuration uint64, baseAsset
 		WeightBreakingFeeMultiplier:      math.LegacyMustNewDecFromStr("0.0005"),
 		WeightBreakingFeePortion:         math.LegacyMustNewDecFromStr("0.5"),
 		WeightRecoveryFeePortion:         math.LegacyMustNewDecFromStr("0.1"),
-		ThresholdWeightDifference:        math.LegacyMustNewDecFromStr("0.1"),
+		ThresholdWeightDifference:        math.LegacyMustNewDecFromStr("0.04"),
 		AllowedPoolCreators:              []string{authtypes.NewModuleAddress(govtypes.ModuleName).String()},
 		ThresholdWeightDifferenceSwapFee: math.LegacyMustNewDecFromStr("0.15"),
-		LpLockupDuration:                 3600,
-		MinSlippage:                      math.LegacyMustNewDecFromStr("0.001"),
+		LpLockupDuration:                 60,
+		MinSlippage:                      math.LegacyMustNewDecFromStr("0.0005"),
 		AllowedUpfrontSwapMakers:         []string{},
 	}
 }
@@ -134,4 +135,32 @@ func (p Params) Validate() error {
 
 func (p Params) IsCreatorAllowed(creator string) bool {
 	return slices.Contains(p.AllowedPoolCreators, creator)
+}
+
+func (p Params) GetBigDecMinSlippage() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.MinSlippage)
+}
+
+func (p Params) GetBigDecWeightBreakingFeeMultiplier() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.WeightBreakingFeeMultiplier)
+}
+
+func (p Params) GetBigDecWeightBreakingFeeExponent() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.WeightBreakingFeeExponent)
+}
+
+func (p Params) GetBigDecThresholdWeightDifference() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.ThresholdWeightDifference)
+}
+
+func (p Params) GetBigDecThresholdWeightDifferenceSwapFee() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.ThresholdWeightDifferenceSwapFee)
+}
+
+func (p Params) GetBigDecWeightBreakingFeePortion() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.WeightBreakingFeePortion)
+}
+
+func (p Params) GetBigDecWeightRecoveryFeePortion() osmomath.BigDec {
+	return osmomath.BigDecFromDec(p.WeightRecoveryFeePortion)
 }

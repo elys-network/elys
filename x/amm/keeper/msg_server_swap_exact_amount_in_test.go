@@ -210,25 +210,25 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	//suite.SetupTest()
 	suite.SetupStableCoinPrices()
 
-	senderInitBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000)}
+	senderInitBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000_000)}
 	swapFee := sdkmath.LegacyZeroDec()
-	tokenIn := sdk.NewInt64Coin(ptypes.BaseCurrency, 100000)
+	tokenIn := sdk.NewInt64Coin(ptypes.BaseCurrency, 100_000_000_000)
 	tokenOutMin := sdkmath.ZeroInt()
-	tokenOut := sdk.NewInt64Coin("uusdt", 99000)
+	tokenOut := sdk.NewInt64Coin("uusdt", 98928368576)
 	swapRoute := []types.SwapAmountInRoute{
 		{
 			PoolId:        1,
 			TokenOutDenom: "uusdt",
 		},
 	}
-	expSenderBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 99000)}
-	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000), sdk.NewInt64Coin("uusdt", 90510)}
+	expSenderBalance := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000000000), sdk.NewInt64Coin("uusdt", 98928368576)}
+	expSenderBalanceSplitSwap := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 900000000000), sdk.NewInt64Coin("uusdt", 99934261482)}
 
 	// bootstrap accounts
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	poolAddr := types.NewPoolAddress(uint64(1))
 	treasuryAddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	poolCoins := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000000), sdk.NewInt64Coin("uusdt", 1000000)}
+	poolCoins := sdk.Coins{sdk.NewInt64Coin(ptypes.BaseCurrency, 1000_000_000_000), sdk.NewInt64Coin("uusdt", 1000_000_000_000)}
 
 	// bootstrap balances
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, senderInitBalance)
@@ -242,11 +242,11 @@ func (suite *AmmKeeperTestSuite) TestMsgServerSlippageDifferenceWhenSplit() {
 	// execute function
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 		Denom:     ptypes.BaseCurrency,
-		Liquidity: sdkmath.NewInt(1000000),
+		Liquidity: sdkmath.NewInt(1000000_000_000),
 	})
 	suite.app.AmmKeeper.SetDenomLiquidity(suite.ctx, types.DenomLiquidity{
 		Denom:     "uusdt",
-		Liquidity: sdkmath.NewInt(1000000),
+		Liquidity: sdkmath.NewInt(1000000_000_000),
 	})
 
 	pool := types.Pool{

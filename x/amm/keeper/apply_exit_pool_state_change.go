@@ -4,14 +4,15 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/elys-network/elys/x/amm/types"
+	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 func (k Keeper) ApplyExitPoolStateChange(
 	ctx sdk.Context, pool types.Pool,
 	exiter sdk.AccAddress, numShares sdkmath.Int,
 	exitCoins sdk.Coins, isLiquidation bool,
-	weightBalanceBonus sdkmath.LegacyDec, takerFees sdkmath.LegacyDec,
-	swapFee sdkmath.LegacyDec, slippageCoins sdk.Coins,
+	weightBalanceBonus osmomath.BigDec, takerFees osmomath.BigDec,
+	swapFee osmomath.BigDec, slippageCoins sdk.Coins,
 ) error {
 	// Withdraw exit amount of token from commitment module to exiter's wallet.
 	poolShareDenom := types.GetPoolShareDenom(pool.GetPoolId())
@@ -37,8 +38,8 @@ func (k Keeper) ApplyExitPoolStateChange(
 	swapFeeInCoins := sdk.Coins{}
 	// As swapfee will always be positive only if there is single asset in exitCoins
 	if swapFee.IsPositive() {
-		swapFeeAmount := (exitCoins[0].Amount.ToLegacyDec().Mul(swapFee)).Quo(sdkmath.LegacyOneDec().Sub(swapFee))
-		swapFeeInCoins = sdk.Coins{sdk.NewCoin(exitCoins[0].Denom, swapFeeAmount.RoundInt())}
+		swapFeeAmount := (osmomath.BigDecFromSDKInt(exitCoins[0].Amount).Mul(swapFee)).Quo(osmomath.OneBigDec().Sub(swapFee))
+		swapFeeInCoins = sdk.Coins{sdk.NewCoin(exitCoins[0].Denom, swapFeeAmount.Dec().RoundInt())}
 	}
 
 	// send swap fee to rebalance treasury
@@ -84,13 +85,24 @@ func (k Keeper) ApplyExitPoolStateChange(
 	}
 
 	// convert the fees into USD
-	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins).String()
-	slippageAmountInUSD := k.CalculateCoinsUSDValue(ctx, slippageCoins).String()
+	swapFeeValueInUSD := k.CalculateCoinsUSDValue(ctx, swapFeeInCoins)
+	slippageAmountInUSD := k.CalculateCoinsUSDValue(ctx, slippageCoins)
 
-	takerFeesAmountInUSD := k.CalculateCoinsUSDValue(ctx, takerFeesInCoins).String()
+	takerFeesAmountInUSD := k.CalculateCoinsUSDValue(ctx, takerFeesInCoins)
 
 	// emit swap fees event
-	types.EmitSwapFeesCollectedEvent(ctx, swapFeeValueInUSD, slippageAmountInUSD, "0", "0", takerFeesAmountInUSD)
+	if !(swapFeeValueInUSD.IsZero() &&
+		slippageAmountInUSD.IsZero() &&
+		takerFeesAmountInUSD.IsZero()) {
+		types.EmitSwapFeesCollectedEvent(
+			ctx,
+			swapFeeValueInUSD.String(),
+			slippageAmountInUSD.String(),
+			"0",
+			"0",
+			takerFeesAmountInUSD.String(),
+		)
+	}
 
 	types.EmitRemoveLiquidityEvent(ctx, exiter, pool.GetPoolId(), exitCoins)
 	if k.hooks != nil {

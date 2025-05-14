@@ -120,5 +120,5 @@ func (suite *KeeperTestSuite) TestGetLatestPriceFromAnySource() {
 }
 
 // TODO: add test GetAssetPrice
-// TODO: add test GetAssetPriceFromDenom
+// TODO: add test GetDenomPrice
 */

@@ -4,10 +4,12 @@ import (
 	"context"
 	"strings"
 
+	"github.com/elys-network/elys/utils"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ptypes "github.com/elys-network/elys/x/parameter/types"
 	"github.com/elys-network/elys/x/tier/types"
-	oracle "github.com/ojo-network/ojo/x/oracle/keeper"
+	"github.com/osmosis-labs/osmosis/osmomath"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -22,9 +24,9 @@ func (k Keeper) GetConsolidatedPrice(goCtx context.Context, req *types.QueryGetC
 	oracle, amm, oracleDec := k.RetrieveConsolidatedPrice(ctx, req.Denom)
 
 	return &types.QueryGetConsolidatedPriceResponse{
-		AmmPrice:       amm,
-		OraclePrice:    oracle,
-		OraclePriceDec: oracleDec,
+		AmmPrice:       amm.Dec(),
+		OraclePrice:    oracle.Dec(),
+		OraclePriceDec: oracleDec.Dec(),
 	}, nil
 }
 
@@ -45,16 +47,40 @@ func (k Keeper) GetAllPrices(goCtx context.Context, req *types.QueryGetAllPrices
 		if assetEntry.Denom == ptypes.Eden {
 			denom = ptypes.Elys
 		}
-		tokenPriceOracle := k.oracleKeeper.GetAssetPriceFromDenom(ctx, denom).Mul(oracle.Pow10(assetEntry.Decimals))
-		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, denom, assetEntry.Decimals).Mul(oracle.Pow10(assetEntry.Decimals))
+		tokenPriceOracle := k.oracleKeeper.GetDenomPrice(ctx, denom).Mul(utils.Pow10(assetEntry.Decimals))
+		tokenPriceAmm := k.amm.CalcAmmPrice(ctx, denom, assetEntry.Decimals).Mul(utils.Pow10(assetEntry.Decimals))
 		prices = append(prices, &types.Price{
 			Denom:       assetEntry.Denom,
-			OraclePrice: tokenPriceOracle,
-			AmmPrice:    tokenPriceAmm,
+			OraclePrice: tokenPriceOracle.Dec(),
+			AmmPrice:    tokenPriceAmm.Dec(),
 		})
 	}
 
 	return &types.QueryGetAllPricesResponse{
+		Prices: prices,
+	}, nil
+}
+
+func (k Keeper) GetOraclePrices(goCtx context.Context, req *types.QueryGetOraclePricesRequest) (*types.QueryGetOraclePricesResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	var prices []*types.OraclePrice
+
+	for _, denom := range req.Denoms {
+		tokenPriceOracle, found := k.oracleKeeper.GetAssetPrice(ctx, denom)
+		if !found {
+			tokenPriceOracle = osmomath.ZeroBigDec()
+		}
+		prices = append(prices, &types.OraclePrice{
+			Denom:       denom,
+			OraclePrice: tokenPriceOracle.Dec(),
+		})
+	}
+
+	return &types.QueryGetOraclePricesResponse{
 		Prices: prices,
 	}, nil
 }
