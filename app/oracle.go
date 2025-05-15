@@ -239,7 +239,7 @@ func (app *ElysApp) ojoOracleMigration(ctx sdk.Context, height int64) error {
 	// Add any logic here to run when the chain is upgraded to the new version
 	app.Logger().Info("Migrating legacy oracle prices to new oracle")
 	legacyParams := app.LegacyOracleKeepper.GetParams(ctx)
-	prices := app.LegacyOracleKeepper.GetAllPrice(ctx)
+	prices := app.LegacyOracleKeepper.GetAllLegacyPrice(ctx)
 	assetInfos := app.LegacyOracleKeepper.GetAllAssetInfo(ctx)
 	priceFeeders := app.LegacyOracleKeepper.GetAllPriceFeeder(ctx)
 	allAmmPool := app.AmmKeeper.GetAllPool(ctx)
