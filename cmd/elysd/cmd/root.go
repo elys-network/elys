@@ -211,7 +211,7 @@ func initRootCmd(rootCmd *cobra.Command,
 	)
 
 	rootCmd.PersistentFlags().String(pricefeeder.FlagLogLevel, "error", "Log level of price feeder process")
-	rootCmd.PersistentFlags().Bool(pricefeeder.FlagEnablePriceFeeder, false, "Enable the price feeder")
+	rootCmd.PersistentFlags().Bool(pricefeeder.FlagEnablePriceFeeder, true, "Enable the price feeder")
 }
 
 func addModuleInitFlags(startCmd *cobra.Command) {
